@@ -20,9 +20,9 @@ declare global {
 }
 
 type Props = {
-  effectComposerProps: ReactThreeFiber.Object3DNode<EffectComposer, typeof EffectComposer>
-  renderPassProps: ReactThreeFiber.Object3DNode<RenderPass, typeof RenderPass>
-  glitchPassProps: ReactThreeFiber.Object3DNode<GlitchPass, typeof GlitchPass>
+  effectComposerProps?: ReactThreeFiber.Object3DNode<EffectComposer, typeof EffectComposer>
+  renderPassProps?: ReactThreeFiber.Object3DNode<RenderPass, typeof RenderPass>
+  glitchPassProps?: ReactThreeFiber.Object3DNode<GlitchPass, typeof GlitchPass>
   children: React.ReactElement<Object3D> | React.ReactElement<Object3D>[]
 }
 

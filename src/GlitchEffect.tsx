@@ -23,7 +23,7 @@ type Props = {
   effectComposerProps: ReactThreeFiber.Object3DNode<EffectComposer, typeof EffectComposer>
   renderPassProps: ReactThreeFiber.Object3DNode<RenderPass, typeof RenderPass>
   glitchPassProps: ReactThreeFiber.Object3DNode<GlitchPass, typeof GlitchPass>
-  children: React.ReactElement<Object3D>[]
+  children: React.ReactElement<Object3D> | React.ReactElement<Object3D>[]
 }
 
 const GlitchEffect = forwardRef(({ effectComposerProps, renderPassProps, glitchPassProps, children }: Props, ref) => {

@@ -86,6 +86,19 @@ A wrapper around THREE.PositionalAudio. Add this to groups or meshes to tie them
 
 Adds [ambient-occlusion](https://vanruesc.github.io/postprocessing/public/docs/class/src/effects/SSAOEffect.js~SSAOEffect.html#instance-constructor-constructor), [bloom](https://vanruesc.github.io/postprocessing/public/docs/class/src/effects/BloomEffect.js~BloomEffect.html#instance-constructor-constructor) and SMAA using the [postprocessing](https://github.com/vanruesc/postprocessing) library.
 
+⚠️ AO relies on the depthbuffer! Make sure your near and far clipping planes are narrow enough, or use `<Canvas gl={{ logarithmicDepthBuffer: true }} ... />`.
+
+```jsx
+<StandardEffects
+  smaa // Can be a boolean (default=true)
+  ao // Can be a boolean or all valid postprocessing AO props (default=true)
+  bloom // Can be a boolean or all valid postprocessing Bloom props (default=true)
+  edgeDetection={0.1} // SMAA precision (default=0.1)
+  bloomOpacity={1} // Bloom blendMode opacity (default=1)
+  effects={() => [...fx]} // Define your own: ([smaa, ao, bloom]) => [...effects] (default=undefined)
+/>
+```
+
 ##### ⚡️ Glitch
 
 Adds [glitch effect](https://vanruesc.github.io/postprocessing/public/docs/class/src/effects/GlitchEffect.js~GlitchEffect.html) from [postprocessing](https://vanruesc.github.io/postprocessing) library.

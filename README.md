@@ -86,17 +86,16 @@ A wrapper around THREE.PositionalAudio. Add this to groups or meshes to tie them
 
 Adds [ambient-occlusion](https://vanruesc.github.io/postprocessing/public/docs/class/src/effects/SSAOEffect.js~SSAOEffect.html#instance-constructor-constructor), [bloom](https://vanruesc.github.io/postprocessing/public/docs/class/src/effects/BloomEffect.js~BloomEffect.html#instance-constructor-constructor) and SMAA using the [postprocessing](https://github.com/vanruesc/postprocessing) library.
 
-##### ⚡️ GlitchEffect
+##### ⚡️ Glitch
 
 Adds [glitch effect](https://vanruesc.github.io/postprocessing/public/docs/class/src/effects/GlitchEffect.js~GlitchEffect.html) from [postprocessing](https://vanruesc.github.io/postprocessing) library.
 
 ```jsx
-<GlitchEffect>
-  <mesh>
-    <boxGeometry args={[1, 1, 1]} attach="geometry" />
-    <meshBasicMaterial color="red" attach="material" />
-  </mesh>
-</GlitchEffect>
+<Glitch glitchEffectProps={{ delay: new Vector2(1, 1) }} />
+<mesh rotation={[2, 0, 1]}>
+  <meshBasicMaterial wireframe color="red" attach="material" />
+  <boxGeometry args={[3, 3, 3]} attach="geometry" />
+</mesh>
 ```
 
 ## Shaders

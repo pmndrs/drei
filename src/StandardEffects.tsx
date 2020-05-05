@@ -16,10 +16,12 @@ import {
 } from 'postprocessing'
 
 type Props = {
-  bloom: boolean | BloomProps
-  ao: boolean | AOProps
-  edgeDetectionThreshold: number
-  bloomOpacity: number
+  bloom?: boolean | BloomProps
+  ao?: boolean | AOProps
+  smaa?: boolean
+  edgeDetection?: number
+  bloomOpacity?: number
+  effects?: (effects: any[]) => any[]
 }
 
 type BloomProps = {
@@ -45,28 +47,35 @@ type AOProps = {
   bias?: number
 }
 
-export function StandardEffects({ ao = true, bloom = true, edgeDetectionThreshold = 0.1, bloomOpacity = 1 }: Props) {
+export function StandardEffects({
+  smaa = true,
+  ao = true,
+  bloom = true,
+  edgeDetection = 0.1,
+  bloomOpacity = 1,
+  effects,
+}: Props) {
   const { gl, scene, camera, size } = useThree()
-  const smaa: any = useLoader(SMAAImageLoader, '')
+  const smaaProps: any = useLoader(SMAAImageLoader, '')
   const composer = useMemo(() => {
     const composer = new EffectComposer(gl, { frameBufferType: HalfFloatType })
     composer.addPass(new RenderPass(scene, camera))
-    const smaaEffect = new SMAAEffect(...smaa)
-    smaaEffect.colorEdgesMaterial.setEdgeDetectionThreshold(edgeDetectionThreshold)
+    const smaaEffect = new SMAAEffect(...smaaProps)
+    smaaEffect.colorEdgesMaterial.setEdgeDetectionThreshold(edgeDetection)
 
     const normalPass = new NormalPass(scene, camera)
     const ssaoEffect = new SSAOEffect(camera, normalPass.renderTarget.texture, {
       blendFunction: BlendFunction.MULTIPLY,
-      samples: 30,
-      rings: 4,
+      samples: 21, // May get away with less samples
+      rings: 4, // Just make sure this isn't a multiple of samples
       distanceThreshold: 1.0,
       distanceFalloff: 0.0,
-      rangeThreshold: 0.5,
-      rangeFalloff: 0.1,
+      rangeThreshold: 0.015, // Controls sensitivity based on camera view distance **
+      rangeFalloff: 0.002,
       luminanceInfluence: 0.9,
-      radius: 20,
-      scale: 0.5,
-      bias: 0.5,
+      radius: 20, // Spread range
+      scale: 1.0, // Controls intensity **
+      bias: 0.05,
       ...(ao as AOProps),
     })
 
@@ -82,16 +91,20 @@ export function StandardEffects({ ao = true, bloom = true, edgeDetectionThreshol
 
     bloomEffect.blendMode.opacity.value = bloomOpacity
 
-    const effects = [camera, smaaEffect, ssaoEffect]
-    if (ao) effects.push(ssaoEffect)
-    if (bloom) effects.push(bloomEffect)
+    let effectsArray: any[] = []
+    if (effects) effectsArray = effects([smaaEffect, ssaoEffect, bloomEffect])
+    else {
+      if (smaa) effectsArray.push(smaaEffect)
+      if (ao) effectsArray.push(ssaoEffect)
+      if (bloom) effectsArray.push(bloomEffect)
+    }
 
-    const effectPass = new EffectPass(...effects)
+    const effectPass = new EffectPass(camera, ...effectsArray)
     effectPass.renderToScreen = true
     composer.addPass(normalPass)
     composer.addPass(effectPass)
     return composer
-  }, [camera, gl, scene, smaa])
+  }, [camera, gl, scene, smaa, ao, bloom, edgeDetection, bloomOpacity])
 
   useEffect(() => void composer.setSize(size.width, size.height), [composer, size])
   return useFrame((_, delta) => composer.render(delta), 1)

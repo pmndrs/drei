@@ -1,9 +1,10 @@
 {
   "name": "drei",
-  "version": "0.0.18",
+  "version": "0.0.28",
   "description": "useful add-ons for react-three-fiber",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "sideEffects": false,
   "scripts": {
     "prebuild": "rimraf dist && npm run typegen",
@@ -16,7 +17,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pretty-quick --staged"
+      "pre-commit": "pretty-quick --staged --pattern '**/*.*(js|jsx|ts|tsx)'"
     }
   },
   "prettier": {
@@ -47,7 +48,8 @@
     "@babel/runtime": "^7.9.2",
     "postprocessing": "^6.13.3",
     "react-merge-refs": "^1.0.0",
-    "stats.js": "^0.17.0"
+    "stats.js": "^0.17.0",
+    "utility-types": "^3.10.0"
   },
   "devDependencies": {
     "@babel/core": "7.9.0",

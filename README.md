@@ -50,8 +50,8 @@ A responsive [THREE.PerspectiveCamera](https://threejs.org/docs/index.html#api/e
 
 ```jsx
 <PerspectiveCamera
-  makeDefault               // Registers it as the default camera system-wide (default=true)
-  {...props}                // All THREE.PerspectiveCamera props are valid
+  makeDefault // Registers it as the default camera system-wide (default=true)
+  {...props} // All THREE.PerspectiveCamera props are valid
 >
   <mesh />
 </PerspectiveCamera>
@@ -81,8 +81,8 @@ A wrapper around [THREE.LOD](https://threejs.org/docs/index.html#api/en/objects/
 
 ```jsx
 <Detailed
-  distances={[0, 10, 20]}   // Camera distances, correspends to the # of the children
-  {...props}                // All THREE.LOD props are valid
+  distances={[0, 10, 20]} // Camera distances, correspends to the # of the children
+  {...props} // All THREE.LOD props are valid
 >
   <mesh geometry={highDetail} />
   <mesh geometry={mediumDetail} />
@@ -96,10 +96,10 @@ A wrapper around [THREE.PositionalAudio](https://threejs.org/docs/index.html#api
 
 ```jsx
 <PositionalAudio
-  url="/sound.mp3"          // Url of the sound file
-  distance={1}              // Camera distance (default=1)
-  loop                      // Repat play (default=true)
-  {...props}                // All THREE.PositionalAudio props are valid
+  url="/sound.mp3" // Url of the sound file
+  distance={1} // Camera distance (default=1)
+  loop // Repat play (default=true)
+  {...props} // All THREE.PositionalAudio props are valid
 />
 ```
 
@@ -111,7 +111,6 @@ Adds [ambient-occlusion](https://vanruesc.github.io/postprocessing/public/docs/c
 
 ```jsx
 <StandardEffects
-<<<<<<< HEAD
   smaa // Can be a boolean (default=true)
   ao // Can be a boolean or all valid postprocessing AO props (default=true)
   bloom // Can be a boolean or all valid postprocessing Bloom props (default=true)
@@ -133,17 +132,6 @@ Adds [glitch effect](https://vanruesc.github.io/postprocessing/public/docs/class
 </mesh>
 ```
 
-=======
-  smaa                      // Can be a boolean (default=true)
-  ao                        // Can be a boolean or all valid postprocessing AO props (default=true)
-  bloom                     // Can be a boolean or all valid postprocessing Bloom props (default=true)
-  edgeDetection={0.1}       // SMAA precision (default=0.1)
-  bloomOpacity={1}          // Bloom blendMode opacity (default=1)
-  effects={() => [...fx]}   // Define your own: ([smaa, ao, bloom]) => [...effects] (default=undefined)
-/>
-```
-
->>>>>>> upstream/master
 ## Shaders
 
 ##### ⚡️ `<Sky />` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-sky-3q4ev)
@@ -152,9 +140,9 @@ Adds a [sky](https://threejs.org/examples/webgl_shaders_sky.html) to your scene.
 
 ```jsx
 <Sky
-  distance={450000}         // Camera distance (default=450000)
-  sunPosition={[0, 1, 0]}   // Sun position normal (default=[0, 1, 0])
-  {...props}                // All three/examples/jsm/objects/Sky props are valid
+  distance={450000} // Camera distance (default=450000)
+  sunPosition={[0, 1, 0]} // Sun position normal (default=[0, 1, 0])
+  {...props} // All three/examples/jsm/objects/Sky props are valid
 />
 ```
 
@@ -166,14 +154,14 @@ Allows you to tie HTML content to any object of your scene. It will be projected
 
 ```jsx
 <HTML
-  prepend                   // Project content behind the canvas (default: false)
-  center                    // Adds a -50%/-50% css transform (default: false)
-  fullscreen                // Aligns to the upper-left corner, fills the screen (default:false)
-  scaleFactor={10}          // Scales children if set to a number (default=undefined)
-  zIndexRange={[100, 0]}    // Z-order range (default=[16777271, 0])
-  portal={domnodeRef}       // Reference to target container (default=undefined)
-  {...groupProps}           // All THREE.Group props are valid
-  {...divProps}             // All HTMLDivElement props are valid
+  prepend // Project content behind the canvas (default: false)
+  center // Adds a -50%/-50% css transform (default: false)
+  fullscreen // Aligns to the upper-left corner, fills the screen (default:false)
+  scaleFactor={10} // Scales children if set to a number (default=undefined)
+  zIndexRange={[100, 0]} // Z-order range (default=[16777271, 0])
+  portal={domnodeRef} // Reference to target container (default=undefined)
+  {...groupProps} // All THREE.Group props are valid
+  {...divProps} // All HTMLDivElement props are valid
 >
   <h1>hello</h1>
   <p>world</p>
@@ -186,8 +174,8 @@ Adds [stats](https://github.com/mrdoob/stats.js/) to document.body. It takes ove
 
 ```jsx
 <Stats
-  showPanel={0}             // Start-up panel (default=0)
-  {...props}                // All stats.js props are valid
+  showPanel={0} // Start-up panel (default=0)
+  {...props} // All stats.js props are valid
 />
 ```
 
@@ -200,7 +188,7 @@ useLoader(
   GLTFLoader,
   url,
   draco(
-    '/draco-gtltf/'         // Path to the Draco binaries (default='/draco-gtltf/')
+    '/draco-gtltf/' // Path to the Draco binaries (default='/draco-gtltf/')
   )
 )
 ```

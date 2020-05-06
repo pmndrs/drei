@@ -125,7 +125,7 @@ Adds [ambient-occlusion](https://vanruesc.github.io/postprocessing/public/docs/c
 Adds [glitch effect](https://vanruesc.github.io/postprocessing/public/docs/class/src/effects/GlitchEffect.js~GlitchEffect.html) from [postprocessing](https://vanruesc.github.io/postprocessing) library.
 
 ```jsx
-<Glitch glitchEffectProps={{ delay: new Vector2(1, 1) }} />
+<Glitch delay={new THREE.Vector2(1, 1)} />
 <mesh rotation={[2, 0, 1]}>
   <meshBasicMaterial wireframe color="red" attach="material" />
   <boxGeometry args={[3, 3, 3]} attach="geometry" />

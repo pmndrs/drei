@@ -1,6 +1,6 @@
 {
   "name": "drei",
-  "version": "0.0.32",
+  "version": "0.0.33",
   "description": "useful add-ons for react-three-fiber",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
@@ -94,6 +94,6 @@
   "peerDependencies": {
     "react": ">=16.13",
     "react-dom": ">=16.13",
-    "three-three-fiber": ">=4.0"
+    "react-three-fiber": ">=4.0"
   }
 }

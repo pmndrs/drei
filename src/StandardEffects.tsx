@@ -14,6 +14,7 @@ import {
   NormalPass,
   // @ts-ignore
 } from 'postprocessing'
+import { AlternativeNormalPass } from './AlternativeNormalPass'
 
 type Props = {
   bloom?: boolean | BloomProps
@@ -21,6 +22,7 @@ type Props = {
   smaa?: boolean
   edgeDetection?: number
   bloomOpacity?: number
+  alternativeNormalPass?: boolean
   effects?: (effects: any[]) => any[]
 }
 
@@ -53,6 +55,7 @@ export function StandardEffects({
   bloom = true,
   edgeDetection = 0.1,
   bloomOpacity = 1,
+  alternativeNormalPass = false,
   effects,
 }: Props) {
   const { gl, scene, camera, size } = useThree()
@@ -63,7 +66,7 @@ export function StandardEffects({
     const smaaEffect = new SMAAEffect(...smaaProps)
     smaaEffect.colorEdgesMaterial.setEdgeDetectionThreshold(edgeDetection)
 
-    const normalPass = new NormalPass(scene, camera)
+    const normalPass = new (alternativeNormalPass ? AlternativeNormalPass : NormalPass)(scene, camera)
     const ssaoEffect = new SSAOEffect(camera, normalPass.renderTarget.texture, {
       blendFunction: BlendFunction.MULTIPLY,
       samples: 21, // May get away with less samples

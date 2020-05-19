@@ -3,7 +3,17 @@
   https://github.com/vanruesc/postprocessing/blob/master/src/passes/NormalPass.js
 */
 
-import { Color, MeshNormalMaterial, NearestFilter, RGBFormat, WebGLRenderTarget, Scene, Camera } from 'three'
+import {
+  Color,
+  MeshNormalMaterial,
+  NearestFilter,
+  RGBFormat,
+  WebGLRenderTarget,
+  Scene,
+  Camera,
+  WebGLRenderer,
+  Object3D,
+} from 'three'
 
 // @ts-ignore
 import { Resizer, Pass, RenderPass } from 'postprocessing'
@@ -27,7 +37,7 @@ export class AlternativeNormalPass extends Pass {
       renderTarget,
     }: { resolutionScale?: number; width?: number; height?: number; renderTarget?: WebGLRenderTarget } = {}
   ) {
-    super('NormalPass')
+    super('AlternativeNormalPass')
 
     this.needsSwap = false
 
@@ -47,7 +57,7 @@ export class AlternativeNormalPass extends Pass {
         stencilBuffer: false,
       })
 
-      this.renderTarget.texture.name = 'NormalPass.Target'
+      this.renderTarget.texture.name = 'AlternativeNormalPass.Target'
     }
 
     this.resolution = new Resizer(this, width, height)
@@ -63,12 +73,12 @@ export class AlternativeNormalPass extends Pass {
     this.setSize(this.originalSize.x, this.originalSize.y)
   }
 
-  render(renderer: any) {
+  render(renderer: WebGLRenderer) {
     const renderTarget = this.renderToScreen ? null : this.renderTarget
     const scene: Scene = this.renderPass.scene
 
     // HACK for instancing: traverse the scene and replace the materials
-    scene.traverse((n: any) => {
+    scene.traverse((n: Object3D & any) => {
       if (n.isMesh) {
         if (!n.normalMaterial) {
           n.normalMaterial = new MeshNormalMaterial()
@@ -82,7 +92,7 @@ export class AlternativeNormalPass extends Pass {
     this.renderPass.render(renderer, renderTarget, renderTarget)
 
     // Restore the old materials
-    scene.traverse((n: any) => {
+    scene.traverse((n: Object3D & any) => {
       if (n.isMesh && n.materialOld) {
         n.material = n.materialOld
       }

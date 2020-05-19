@@ -17,12 +17,13 @@ declare global {
 }
 
 type Props = JSX.IntrinsicElements['mesh'] & {
-  children: string
+  children: React.ReactElement
   color?: ReactThreeFiber.Color
   fontSize?: number
   maxWidth?: number
   lineHeight?: number
   letterSpacing?: number
+  text?: string
   textAlign?: 'left' | 'right' | 'center' | 'justify'
   font?: string
   anchorX?: number | 'left' | 'center' | 'right'
@@ -34,5 +35,9 @@ type Props = JSX.IntrinsicElements['mesh'] & {
 }
 
 export const Text = forwardRef(({ children, ...props }: Props, ref) => {
-  return <textMeshImpl ref={ref} text={children} {...props} />
+  return (
+    <textMeshImpl ref={ref} {...props}>
+      {children}
+    </textMeshImpl>
+  )
 })

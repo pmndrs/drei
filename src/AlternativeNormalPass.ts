@@ -1,3 +1,8 @@
+/*
+  Altered version of NormalPass.ts from postprocessing.js
+  https://github.com/vanruesc/postprocessing/blob/master/src/passes/NormalPass.js
+*/
+
 import { Color, MeshNormalMaterial, NearestFilter, RGBFormat, WebGLRenderTarget, Scene, Camera } from 'three'
 
 // @ts-ignore

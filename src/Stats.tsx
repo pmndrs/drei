@@ -6,14 +6,14 @@ import StatsImpl from 'stats.js'
 type Props = {
   showPanel?: number
   className?: string
-  domElement?: HTMLElement
+  domElement?: Node
 }
 
 export function Stats({ showPanel = 0, className, domElement }: Props): null {
   const [stats] = useState(() => new (StatsImpl as any)())
   useEffect(() => {
     stats.showPanel(showPanel)
-    const elem = domElement || document.body;
+    const elem = domElement || document.body
     elem.appendChild(stats.dom)
     if (className) stats.dom.classList.add(className)
     return () => elem.removeChild(stats.dom)

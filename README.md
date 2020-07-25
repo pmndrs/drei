@@ -30,6 +30,7 @@ import { ... } from 'drei'
   - `<OrthographicCamera/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-render-target-kdj94)
 - Controls
   - `<OrbitControls/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-contact-shadow-h5xcw)
+  - `<FlyControls/>`
   - `<MapControls/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/react-three-fiber-map-mkq8e)
   - `<TrackballControls/>`
   - `<TransformControls/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-transformcontrols-hc8gm)

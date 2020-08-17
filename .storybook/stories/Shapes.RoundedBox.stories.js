@@ -3,9 +3,9 @@ import React from 'react'
 import { Setup } from '../Setup'
 import { useTurntable } from '../useTurntable'
 
-import { withKnobs, number, color } from '@storybook/addon-knobs'
+import { withKnobs, number } from '@storybook/addon-knobs'
 
-import { RoundedBox } from '../../src/RoundedBox'
+import { RoundedBox } from '../../src/shapes'
 
 export default {
   title: 'Shapes/RoundedBox',

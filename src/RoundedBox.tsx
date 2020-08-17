@@ -19,11 +19,11 @@ type Props = {
   height: number
   depth: number
   radius0: number
-  smoothness: number
+  smoothness?: number
 } & JSX.IntrinsicElements['mesh']
 
 export const RoundedBox = forwardRef<Mesh, Props>(function RoundedBox(
-  { width, height, depth, radius0, smoothness, children, ...rest },
+  { width, height, depth, radius0, smoothness = 4, children, ...rest },
   ref
 ) {
   const shape = useMemo(() => createShape(width, height, radius0), [width, height, radius0])

@@ -15,29 +15,29 @@ function createShape(width: number, height: number, radius0: number) {
 }
 
 type Props = {
-  width: number
-  height: number
-  depth: number
-  radius0: number
+  width?: number
+  height?: number
+  depth?: number
+  radius?: number
   smoothness?: number
 } & JSX.IntrinsicElements['mesh']
 
 export const RoundedBox = forwardRef<Mesh, Props>(function RoundedBox(
-  { width, height, depth, radius0, smoothness = 4, children, ...rest },
+  { width = 1, height = 1, depth = 1, radius = 0.05, smoothness = 4, children, ...rest },
   ref
 ) {
-  const shape = useMemo(() => createShape(width, height, radius0), [width, height, radius0])
+  const shape = useMemo(() => createShape(width, height, radius), [width, height, radius])
   const params = useMemo(
     () => ({
-      depth: depth - radius0 * 2,
+      depth: depth - radius * 2,
       bevelEnabled: true,
       bevelSegments: smoothness * 2,
       steps: 1,
-      bevelSize: radius0 - eps,
-      bevelThickness: radius0,
+      bevelSize: radius - eps,
+      bevelThickness: radius,
       curveSegments: smoothness,
     }),
-    [depth, radius0, smoothness]
+    [depth, radius, smoothness]
   )
   const geomRef = useUpdate<ExtrudeBufferGeometry>((geometry) => void geometry.center(), [shape, params])
   return (

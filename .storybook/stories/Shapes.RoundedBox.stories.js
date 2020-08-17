@@ -22,7 +22,7 @@ function RoundedBoxScene() {
       width={number('width', 25)}
       height={number('height', 25)}
       depth={number('depth', 25)}
-      radius0={number('radius0', 1)}
+      radius={number('radius', 1)}
       smoothness={number('smoothness', 5)}>
       <meshPhongMaterial attach="material" color="#f3f3f3" wireframe />
     </RoundedBox>

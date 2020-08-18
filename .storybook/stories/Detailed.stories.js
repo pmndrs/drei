@@ -10,7 +10,7 @@ export default {
   component: Detailed,
   decorators: [
     (Story) => (
-      <Setup camera={{ near: 1, far: 1100, fov: 75 }} controls={false}>
+      <Setup camera={{ near: 1, far: 1100, fov: 75 }}>
         <Story />
       </Setup>
     ),

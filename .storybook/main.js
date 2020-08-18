@@ -1,8 +1,18 @@
 const path = require('path')
 
 module.exports = {
-  stories: ['./stories/**/*.stories.js'],
-  addons: ['@storybook/addon-knobs/register', '@storybook/addon-actions', '@storybook/addon-storysource'],
+  stories: ['./stories/**/*.stories.(js|mdx)'],
+  addons: [
+    '@storybook/addon-knobs/register', 
+    '@storybook/addon-controls',
+    {
+      name: '@storybook/addon-docs',
+      options: {
+        transcludeMarkdown: true
+      }
+    }
+  ],
+
   webpackFinal: (config) => {
     config.module.rules.push({
       test: /\.(glsl|vs|fs|vert|frag)$/,

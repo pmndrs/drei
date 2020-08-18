@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import * as THREE from 'three'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 import { useTurntable } from '../useTurntable'
 
 import { Extrude } from '../../src/shapes'
@@ -10,11 +10,7 @@ export default {
   title: 'Shapes/Extrude',
   component: Extrude,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={[-30, 30, 30]}>
-        <Story />
-      </Setup>
-    ),
+    setupDecorator(),
   ],
 }
 

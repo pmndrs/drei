@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 
 import { StandardEffects } from '../../src/StandardEffects'
 
@@ -10,11 +10,7 @@ export default {
   title: 'Abstractions/StandardEffects',
   component: StandardEffects,
   decorators: [
-    (Story) => (
-      <Setup>
-        <Story />
-      </Setup>
-    ),
+    setupDecorator(),
   ],
 }
 

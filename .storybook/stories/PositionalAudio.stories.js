@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 import { OrbitControls } from '../../src/OrbitControls'
 import { PositionalAudio } from '../../src/PositionalAudio'
 
@@ -8,11 +8,7 @@ export default {
   title: 'Abstractions/PositionalAudio',
   component: PositionalAudioScene,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={[0, 0, 20]}>
-        <Story />
-      </Setup>
-    ),
+    setupDecorator(),
   ],
 }
 

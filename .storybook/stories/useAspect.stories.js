@@ -4,18 +4,14 @@ import { useAspect } from '../../src/useAspect'
 
 import { Plane } from '../../src/shapes'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 import { TextureLoader } from 'three'
 
 export default {
   title: 'Misc/useAspect',
   component: useAspect,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={[0, -10, 0]}>
-        <Story />
-      </Setup>
-    ),
+    setupDecorator(),
   ],
 }
 

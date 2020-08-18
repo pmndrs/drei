@@ -3,7 +3,17 @@ import { Canvas } from 'react-three-fiber'
 
 import { OrbitControls } from '../src/OrbitControls'
 
-export function Setup({ children, cameraPosition = [-5, 5, 5], controls = true }) {
+export const setupDecorator = (settings = { 
+  controls: true, 
+  cameraPosition: [0, 0, 10]
+}) => function setupDecorator(Story) {
+
+  const {
+    controls,
+    cameraPosition,
+    ...props
+  } = settings
+
   return (
     <Canvas 
       colorManagement 
@@ -11,16 +21,18 @@ export function Setup({ children, cameraPosition = [-5, 5, 5], controls = true }
       camera={{ position: cameraPosition }}
       pixelRatio={window.devicePixelRatio}
       className="testing"
+      {...props}
       onCreated={({gl}) => {
         gl.setClearColor("#121212")
       }}
     >
       <Suspense fallback={null}>
-        {children}
+        <Story />
       </Suspense>
       <ambientLight intensity={0.8} />
       <pointLight intensity={1} position={[0, 6, 0]} />
       {controls && <OrbitControls />}
     </Canvas>
   )
+  
 }

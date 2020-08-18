@@ -1,7 +1,7 @@
 import React from 'react'
 import { useFrame } from 'react-three-fiber'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 
 import * as shapes from '../../src/shapes'
 
@@ -9,11 +9,7 @@ export default {
   title: 'Shapes',
   component: shapes,
   decorators: [
-    (Story) => (
-      <Setup>
-        <Story />
-      </Setup>
-    ),
+    setupDecorator(),
   ],
 }
 

@@ -70,7 +70,6 @@
     "@babel/preset-react": "7.10.4",
     "@babel/preset-typescript": "^7.10.4",
     "@storybook/addon-docs": "^6.0.12",
-    "@storybook/addon-knobs": "^6.0.12",
     "@storybook/addon-storysource": "^6.0.12",
     "@storybook/addons": "^6.0.12",
     "@storybook/preset-typescript": "^3.0.0",

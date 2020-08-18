@@ -1,7 +1,7 @@
 import React, { useRef, useMemo, useState } from 'react'
 import { useFrame, useThree, createPortal } from 'react-three-fiber'
 import * as THREE from 'three'
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 import { useCamera } from '../../src/useCamera'
 import { OrthographicCamera } from '../../src/OrthographicCamera'
 import { Box } from '../../src/shapes'
@@ -10,11 +10,7 @@ export default {
   title: 'Misc/useCamera',
   component: UseCameraScene,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={[0, 0, 5]}>
-        <Story />
-      </Setup>
-    ),
+    setupDecorator(),
   ],
 }
 

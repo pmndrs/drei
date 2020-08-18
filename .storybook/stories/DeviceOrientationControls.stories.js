@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 
 import { DeviceOrientationControls } from '../../src/DeviceOrientationControls'
 import { Box } from '../../src/shapes'
@@ -22,11 +22,5 @@ DeviceOrientationControlsStory.storyName = 'Default'
 export default {
   title: 'Controls/DeviceOrientationControls',
   component: DeviceOrientationControls,
-  decorators: [
-    (Story) => (
-      <Setup camera={{ near: 1, far: 1100, fov: 75 }} controls={false}>
-        <Story />
-      </Setup>
-    ),
-  ],
+  decorators: [setupDecorator()],
 }

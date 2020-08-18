@@ -2,18 +2,14 @@ import React, { Suspense } from 'react'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { useLoader } from 'react-three-fiber'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 import { draco } from '../../src/draco'
 
 export default {
   title: 'Loaders/draco',
   component: DracoScene,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={[0, 0, 5]}>
-        <Story />
-      </Setup>
-    ),
+    setupDecorator(),
   ],
 }
 

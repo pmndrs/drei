@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 
 import { useCubeTextureLoader } from '../../src/useCubeTextureLoader'
 import { Icosahedron, Sphere } from '../../src/shapes'
@@ -9,11 +9,7 @@ export default {
   title: 'Loaders/useCubeTextureLoader',
   component: useCubeTextureLoader,
   decorators: [
-    (Story) => (
-      <Setup>
-        <Story />
-      </Setup>
-    ),
+    setupDecorator(),
   ],
 }
 

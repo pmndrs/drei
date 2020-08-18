@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import { useFrame } from 'react-three-fiber'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 
 import { Shadow } from '../../src/Shadow'
 import { Icosahedron, Plane } from '../../src/shapes'
@@ -10,12 +10,7 @@ export default {
   title: 'Misc/Shadow',
   component: Shadow,
   decorators: [
-    (Story) => (
-      <Setup>
-        {' '}
-        <Story />
-      </Setup>
-    ),
+    setupDecorator(),
   ],
 }
 

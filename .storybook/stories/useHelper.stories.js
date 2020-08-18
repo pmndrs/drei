@@ -4,7 +4,7 @@ import { BoxHelper, CameraHelper } from 'three'
 import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper'
 import { FaceNormalsHelper } from 'three/examples/jsm/helpers/FaceNormalsHelper'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 
 import { Sphere } from '../../src/shapes'
 import { useHelper } from '../../src/useHelper'
@@ -14,11 +14,7 @@ export default {
   title: 'Misc/useHelper',
   component: useHelper,
   decorators: [
-    (Story) => (
-      <Setup>
-        <Story />
-      </Setup>
-    ),
+    setupDecorator(),
   ],
 }
 

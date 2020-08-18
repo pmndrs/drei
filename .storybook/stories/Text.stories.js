@@ -1,20 +1,15 @@
 import React from 'react'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 
 import { Text } from '../../src/Text'
-import { useTurntable } from '../useTurntable'
 import { MeshWobbleMaterial } from '../../src/MeshWobbleMaterial'
 
 export default {
   title: 'Abstractions/Text',
   component: Text,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={[0, 0, 200]}>
-        <Story />
-      </Setup>
-    ),
+    setupDecorator(),
   ],
 }
 

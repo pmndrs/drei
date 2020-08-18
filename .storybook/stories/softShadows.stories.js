@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 
 import { Plane, Sphere } from '../../src/shapes'
 
@@ -13,12 +13,7 @@ export default {
   title: 'Abstractions/softShadows',
   component: softShadows,
   decorators: [
-    (Story) => (
-      <Setup>
-        {' '}
-        <Story />
-      </Setup>
-    ),
+    setupDecorator(),
   ],
 }
 

@@ -1,7 +1,6 @@
 import React from 'react'
-import { withKnobs, boolean } from '@storybook/addon-knobs'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 
 import { OrbitControls } from '../../src/OrbitControls'
 import { Box } from '../../src/shapes'
@@ -17,7 +16,7 @@ export function OrbitControlsStory(args) {
   )
 }
 
-OrbitControlsStory.storyName = 'Default'
+OrbitControlsStory.story = { name: 'Default' }
 
 OrbitControlsStory.args = {
   enablePan: true,
@@ -29,11 +28,6 @@ export default {
   title: 'Controls/OrbitControls',
   component: OrbitControls,
   decorators: [
-    withKnobs,
-    (Story) => (
-      <Setup controls={false}>
-        <Story />
-      </Setup>
-    ),
+    setupDecorator(),
   ],
 }

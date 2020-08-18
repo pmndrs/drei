@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 
 import { Stars } from '../../src/Stars'
 import { Plane } from '../../src/shapes'
@@ -9,12 +9,7 @@ export default {
   title: 'Abstractions/Stars',
   component: Stars,
   decorators: [
-    (Story) => (
-      <Setup>
-        {' '}
-        <Story />
-      </Setup>
-    ),
+    setupDecorator(),
   ],
 }
 

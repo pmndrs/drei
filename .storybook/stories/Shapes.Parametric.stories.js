@@ -1,7 +1,7 @@
 import React from 'react'
 import { ParametricGeometries } from 'three/examples/jsm/geometries/ParametricGeometries.js'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 import { useTurntable } from '../useTurntable'
 
 import { Parametric } from '../../src/shapes'
@@ -10,11 +10,7 @@ export default {
   title: 'Shapes/Parametric',
   component: Parametric,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={[-30, 30, 30]}>
-        <Story />
-      </Setup>
-    ),
+    setupDecorator(),
   ],
 }
 

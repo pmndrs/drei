@@ -1,13 +1,20 @@
-import React, { Suspense, useState, useRef, useEffect, useMemo } from 'react'
+import React, { useState, useRef, useEffect, useMemo } from 'react'
+
+import { setupDecorator } from '../setup-decorator'
+
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader'
 import { Box3, Sphere } from 'three'
-import { useLoader, Canvas } from 'react-three-fiber'
+import { useLoader } from 'react-three-fiber'
 
 import { MapControls } from '../../src/MapControls'
+import { OrthographicCamera } from '../../src/OrthographicCamera'
 
 export default {
   title: 'Controls/MapControls',
   component: MapControlsScene,
+  decorators: [
+    setupDecorator({ controls: false }),
+  ],
 }
 
 function Cell(props) {
@@ -51,19 +58,16 @@ function Svg() {
   )
 }
 
-function MapControlsScene() {
+export function MapControlsScene() {
   return (
-    <Canvas orthographic camera={{ position: [0, 0, 50], zoom: 10, up: [0, 0, 1], far: 10000 }}>
-      <color attach="background" args={[0xf3f3f3]} />
-      <Suspense fallback={null}>
-        <Svg />
-      </Suspense>
+    <>
+      <Svg />
       <MapControls />
-    </Canvas>
+      <OrthographicCamera makeDefault position={[0, 0, 50]} zoom={10} up={[0, 0, 1]} far={10000} />
+    </>
   )
 }
 
-export const MapControlsSceneSt = () => <MapControlsScene />
-MapControlsSceneSt.story = {
+MapControlsScene.story = {
   name: 'Default',
 }

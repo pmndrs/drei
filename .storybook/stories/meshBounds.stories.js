@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 import { meshBounds } from '../../src/meshBounds'
 import { useTurntable } from '../useTurntable'
 
@@ -8,11 +8,7 @@ export default {
   title: 'Misc/meshBounds',
   component: MeshBounds,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={[0, 0, 5]}>
-        <Story />
-      </Setup>
-    ),
+    setupDecorator(),
   ],
 }
 function MeshBounds(props) {

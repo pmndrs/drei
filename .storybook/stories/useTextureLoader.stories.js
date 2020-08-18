@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 
 import { useTextureLoader } from '../../src/useTextureLoader'
 import { Icosahedron } from '../../src/shapes'
@@ -9,11 +9,7 @@ export default {
   title: 'Loaders/useTextureLoader',
   component: useTextureLoader,
   decorators: [
-    (Story) => (
-      <Setup>
-        <Story />
-      </Setup>
-    ),
+    setupDecorator(),
   ],
 }
 

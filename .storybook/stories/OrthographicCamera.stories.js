@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 
 import { Icosahedron } from '../../src/shapes'
 import { OrthographicCamera } from '../../src/OrthographicCamera'
@@ -8,13 +8,7 @@ import { OrthographicCamera } from '../../src/OrthographicCamera'
 export default {
   title: 'Camera/OrthographicCamera',
   component: OrthographicCamera,
-  decorators: [
-    (Story) => (
-      <Setup>
-        <Story />
-      </Setup>
-    ),
-  ],
+  decorators: [ setupDecorator() ],
 }
 
 const NUM = 3

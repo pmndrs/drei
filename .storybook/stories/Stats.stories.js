@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 
 import { Stats } from '../../src/Stats'
 
@@ -8,11 +8,7 @@ export default {
   title: 'Misc/Stats',
   component: Stats,
   decorators: [
-    (Story) => (
-      <Setup>
-        <Story />
-      </Setup>
-    ),
+    setupDecorator(),
   ],
 }
 

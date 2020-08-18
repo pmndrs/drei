@@ -1,24 +1,20 @@
 import React, { useMemo } from 'react'
 
 import { TrackballControls } from '../../src/TrackballControls'
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 import { Icosahedron } from '../../src/shapes'
 
 export default {
   title: 'Controls/TrackballControls',
-  component: TrackballControlsScene,
+  component: TrackballControls,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={[0, 0, 10]}>
-        <Story />
-      </Setup>
-    ),
+    setupDecorator(),
   ],
 }
 
 const NUM = 2
 
-function TrackballControlsScene() {
+export function TrackballControlsScene() {
   const positions = useMemo(() => {
     const pos = []
     const half = (NUM - 1) / 2
@@ -49,7 +45,4 @@ function TrackballControlsScene() {
   )
 }
 
-export const TrackballControlsSceneSt = () => <TrackballControlsScene />
-TrackballControlsSceneSt.story = {
-  name: 'Default',
-}
+TrackballControlsScene.storyName = "Default"

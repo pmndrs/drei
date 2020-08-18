@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 
 import { Icosahedron } from '../../src/shapes'
 import { Html } from '../../src/Html'
@@ -10,17 +10,13 @@ export default {
   title: 'Abstractions/Html',
   component: Html,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={[-20, 20, -20]}>
-        {' '}
-        <Story />
-      </Setup>
-    ),
+    setupDecorator()
   ],
 }
 
 export function HTMLScene() {
   const ref = useTurntable()
+  
   return (
     <group ref={ref}>
       <Icosahedron args={[2, 2]} position={[3, 6, 4]} material-color="hotpink" material-wireframe>

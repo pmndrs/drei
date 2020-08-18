@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 
 import { useGLTFLoader } from '../../src/useGLTFLoader'
 
@@ -8,11 +8,7 @@ export default {
   title: 'Loaders/useGLTFLoader',
   component: useGLTFLoader,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={[0, 0, 5]}>
-        <Story />
-      </Setup>
-    ),
+    setupDecorator(),
   ],
 }
 

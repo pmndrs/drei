@@ -1,38 +1,24 @@
 import React from 'react'
-import { withKnobs, number, boolean } from '@storybook/addon-knobs'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 
 import { FlyControls } from '../../src/FlyControls'
 import { Box } from '../../src/shapes'
 
-export function FlyControlsStory() {
+export default {
+  title: 'Controls/FlyControls',
+  component: FlyControls,
+  decorators: [ setupDecorator() ],
+}
+
+export function FlyControlsStory(args) {
   return (
     <>
-      <FlyControls
-        autoForward={boolean('AutoForward', false)}
-        dragToLook={boolean('DragToLook', false)}
-        movementSpeed={number('MovementSpeed', 1.0)}
-        rollSpeed={number('RollSpeed', 0.005)}
-      />
-      <Box>
-        <meshBasicMaterial attach="material" wireframe />
-      </Box>
+      <FlyControls {...args} />
+      <Box material-wireframe />
     </>
   )
 }
 
 FlyControlsStory.storyName = 'Default'
 
-export default {
-  title: 'Controls/FlyControls',
-  component: FlyControls,
-  decorators: [
-    withKnobs,
-    (Story) => (
-      <Setup controls={false}>
-        <Story />
-      </Setup>
-    ),
-  ],
-}

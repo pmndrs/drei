@@ -1,8 +1,6 @@
 import React, { useRef, useEffect } from 'react'
 
-import { withKnobs, optionsKnob, boolean } from '@storybook/addon-knobs'
-
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 
 import { TransformControls } from '../../src/TransformControls'
 import { Box } from '../../src/shapes'
@@ -10,22 +8,21 @@ import { OrbitControls } from '../../src/OrbitControls'
 
 export function TransformControlsStory() {
   return (
-    <Setup>
-      <TransformControls>
-        <Box material-wireframe />
-      </TransformControls>
-    </Setup>
+    <TransformControls>
+      <Box material-wireframe />
+    </TransformControls>
   )
 }
 
 TransformControlsStory.storyName = 'Default'
+TransformControlsStory.decorators = [setupDecorator()]
 
 export default {
   title: 'Controls/TransformControls',
   component: TransformControls,
 }
 
-function TransformControlsLockScene({ mode, showX, showY, showZ }) {
+export function TransformControlsLockScene({ mode, showX, showY, showZ }) {
   const orbitControls = useRef()
   const transformControls = useRef()
 
@@ -48,31 +45,8 @@ function TransformControlsLockScene({ mode, showX, showY, showZ }) {
   )
 }
 
-export const TransformControlsLockSt = () => {
-  const modesObj = {
-    scale: 'scale',
-    rotate: 'rotate',
-    translate: 'translate',
-  }
 
-  return (
-    <TransformControlsLockScene
-      mode={optionsKnob('mode', modesObj, 'translate', {
-        display: 'radio',
-      })}
-      showX={boolean('showX', true)}
-      showY={boolean('showY', true)}
-      showZ={boolean('showZ', true)}
-    />
-  )
-}
-
-TransformControlsLockSt.storyName = 'Lock orbit controls while transforming'
-TransformControlsLockSt.decorators = [
-  withKnobs,
-  (Story) => (
-    <Setup controls={false}>
-      <Story />
-    </Setup>
-  ),
+TransformControlsLockScene.storyName = 'Lock orbit controls while transforming'
+TransformControlsLockScene.decorators = [
+  setupDecorator({ controls: false })
 ]

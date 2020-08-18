@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 
 import { Icosahedron } from '../../src/shapes'
 import { PerspectiveCamera } from '../../src/PerspectiveCamera'
@@ -9,11 +9,7 @@ export default {
   title: 'Camera/PerspectiveCamera',
   component: PerspectiveCamera,
   decorators: [
-    (Story) => (
-      <Setup>
-        <Story />
-      </Setup>
-    ),
+    setupDecorator(),
   ],
 }
 

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 
 import { Sky } from '../../src/Sky'
 import { Plane } from '../../src/shapes'
@@ -9,12 +9,7 @@ export default {
   title: 'Abstractions/Sky',
   component: Sky,
   decorators: [
-    (Story) => (
-      <Setup>
-        {' '}
-        <Story />
-      </Setup>
-    ),
+    setupDecorator(),
   ],
 }
 

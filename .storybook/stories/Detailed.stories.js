@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 
 import { Detailed } from '../../src/Detailed'
 import { Icosahedron } from '../../src/shapes'
@@ -8,13 +8,7 @@ import { Icosahedron } from '../../src/shapes'
 export default {
   title: 'Abstractions/Detailed',
   component: Detailed,
-  decorators: [
-    (Story) => (
-      <Setup camera={{ near: 1, far: 1100, fov: 75 }}>
-        <Story />
-      </Setup>
-    ),
-  ],
+  decorators: [setupDecorator()],
 }
 
 export function DetailedScene() {

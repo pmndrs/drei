@@ -2,7 +2,7 @@ import React from 'react'
 import { GeometryUtils } from 'three/examples/jsm/utils/GeometryUtils'
 import { Vector3 } from 'three'
 
-import { Setup } from '../Setup'
+import { setupDecorator } from '../setup-decorator'
 
 import { Line } from '../../src/Line'
 
@@ -10,11 +10,7 @@ export default {
   title: 'Abstractions/Line',
   component: Line,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={[0, 0, 17]}>
-        <Story />
-      </Setup>
-    ),
+    setupDecorator(),
   ],
 }
 

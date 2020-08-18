@@ -7,7 +7,13 @@ import { useTurntable } from '../useTurntable'
 export default {
   title: 'Misc/meshBounds',
   component: MeshBounds,
-  decorators: [(storyFn) => <Setup cameraPosition={[0, 0, 5]}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={[0, 0, 5]}>
+        <Story />
+      </Setup>
+    ),
+  ],
 }
 function MeshBounds(props) {
   const mesh = useTurntable()

@@ -1,5 +1,7 @@
 import React from 'react'
+
 import { Setup } from '../Setup'
+
 import { DeviceOrientationControls } from '../../src/DeviceOrientationControls'
 import { Box } from '../../src/shapes'
 
@@ -21,9 +23,9 @@ export default {
   title: 'Controls/DeviceOrientationControls',
   component: DeviceOrientationControls,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup camera={{ near: 1, far: 1100, fov: 75 }} controls={false}>
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],

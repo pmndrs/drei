@@ -8,7 +8,13 @@ import * as shapes from '../../src/shapes'
 export default {
   title: 'Shapes',
   component: shapes,
-  decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 }
 
 function useTurntable() {

@@ -7,10 +7,16 @@ import { Stats } from '../../src/Stats'
 export default {
   title: 'Misc/Stats',
   component: Stats,
-  decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 }
 
-function Scene() {
+export function Scene() {
   return (
     <>
       <axisHelper />
@@ -19,5 +25,4 @@ function Scene() {
   )
 }
 
-export const DefaultStory = () => <Scene />
-DefaultStory.storyName = 'Default'
+Scene.storyName = 'Default'

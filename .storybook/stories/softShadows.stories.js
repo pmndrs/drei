@@ -12,7 +12,14 @@ softShadows()
 export default {
   title: 'Abstractions/softShadows',
   component: softShadows,
-  decorators: [(storyFn) => <Setup> {storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        {' '}
+        <Story />
+      </Setup>
+    ),
+  ],
 }
 
 function SoftShadowsScene() {
@@ -48,9 +55,7 @@ function SoftShadowsScene() {
       <Plane receiveShadow rotation-x={-Math.PI / 2} position={[0, -0.5, 0]} args={[10, 10, 4, 4]}>
         <shadowMaterial attach="material" opacity={0.5} />
       </Plane>
-      <Plane rotation-x={-Math.PI / 2} position={[0, -0.5, 0]} args={[10, 10, 4, 4]}>
-        <meshBasicMaterial attach="material" opacity={0.5} />
-      </Plane>
+      <Plane rotation-x={-Math.PI / 2} position={[0, -0.5, 0]} args={[10, 10, 4, 4]} material-opacity={0.5} />
     </>
   )
 }

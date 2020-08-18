@@ -27,5 +27,12 @@ FlyControlsStory.storyName = 'Default'
 export default {
   title: 'Controls/FlyControls',
   component: FlyControls,
-  decorators: [withKnobs, (storyFn) => <Setup controls={false}>{storyFn()}</Setup>],
+  decorators: [
+    withKnobs,
+    (Story) => (
+      <Setup controls={false}>
+        <Story />
+      </Setup>
+    ),
+  ],
 }

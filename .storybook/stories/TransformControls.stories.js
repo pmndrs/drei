@@ -12,9 +12,7 @@ export function TransformControlsStory() {
   return (
     <Setup>
       <TransformControls>
-        <Box>
-          <meshBasicMaterial attach="material" wireframe />
-        </Box>
+        <Box material-wireframe />
       </TransformControls>
     </Setup>
   )
@@ -43,9 +41,7 @@ function TransformControlsLockScene({ mode, showX, showY, showZ }) {
   return (
     <>
       <TransformControls ref={transformControls} mode={mode} showX={showX} showY={showY} showZ={showZ}>
-        <Box>
-          <meshBasicMaterial attach="material" wireframe />
-        </Box>
+        <Box material-wireframe />
       </TransformControls>
       <OrbitControls ref={orbitControls} />
     </>
@@ -72,4 +68,11 @@ export const TransformControlsLockSt = () => {
 }
 
 TransformControlsLockSt.storyName = 'Lock orbit controls while transforming'
-TransformControlsLockSt.decorators = [withKnobs, (storyFn) => <Setup controls={false}>{storyFn()}</Setup>]
+TransformControlsLockSt.decorators = [
+  withKnobs,
+  (Story) => (
+    <Setup controls={false}>
+      <Story />
+    </Setup>
+  ),
+]

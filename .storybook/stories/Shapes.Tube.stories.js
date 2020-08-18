@@ -9,10 +9,9 @@ import { Tube } from '../../src/shapes'
 export default {
   title: 'Shapes/Tube',
   component: Tube,
-  decorators: [(storyFn) => <Setup cameraPosition={[-30, 30, 30]}>{storyFn()}</Setup>],
 }
 
-function TubeScene() {
+export function TubeScene() {
   // curve example from https://threejs.org/docs/#api/en/geometries/TubeGeometry
   const path = useMemo(() => {
     function CustomSinCurve(scale) {
@@ -44,5 +43,4 @@ function TubeScene() {
   )
 }
 
-export const TubeSt = () => <TubeScene />
-TubeSt.storyName = 'Default'
+TubeScene.storyName = 'Default'

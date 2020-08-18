@@ -13,20 +13,21 @@ import { PerspectiveCamera } from '../../src/PerspectiveCamera'
 export default {
   title: 'Misc/useHelper',
   component: useHelper,
-  decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 }
 
 function Scene() {
   const mesh = useRef()
   useHelper(mesh, BoxHelper, 'royalblue')
   useHelper(mesh, VertexNormalsHelper, 1, 'red')
-  useHelper(mesh, FaceNormalsHelper, 1, 'hotpink')
 
-  return (
-    <Sphere ref={mesh}>
-      <meshBasicMaterial attach="material" />
-    </Sphere>
-  )
+  return <Sphere ref={mesh} />
 }
 
 export const DefaultStory = () => <Scene />
@@ -36,11 +37,7 @@ function CameraScene() {
   const camera = useRef()
   useHelper(camera, CameraHelper, 1, 'hotpink')
 
-  return (
-    <PerspectiveCamera makeDefault={false} position={[3, 3, 3]} ref={camera}>
-      <meshBasicMaterial attach="material" />
-    </PerspectiveCamera>
-  )
+  return <PerspectiveCamera position={[3, 3, 3]} ref={camera} />
 }
 
 export const CameraStory = () => <CameraScene />

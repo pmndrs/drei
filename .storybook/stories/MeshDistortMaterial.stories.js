@@ -9,7 +9,15 @@ import { Icosahedron } from '../../src/shapes'
 export default {
   title: 'Shaders/MeshDistortMaterial',
   component: MeshDistortMaterial,
-  decorators: [withKnobs, (storyFn) => <Setup> {storyFn()}</Setup>],
+  decorators: [
+    withKnobs,
+    (Story) => (
+      <Setup>
+        {' '}
+        <Story />
+      </Setup>
+    ),
+  ],
 }
 
 function MeshDistortMaterialScene() {

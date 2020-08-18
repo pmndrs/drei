@@ -9,7 +9,13 @@ import { Box, Plane } from '../../src/shapes'
 export default {
   title: 'Abstractions/StandardEffects',
   component: StandardEffects,
-  decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 }
 
 function StandardEffectsScene() {

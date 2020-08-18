@@ -9,7 +9,13 @@ import { Lathe } from '../../src/shapes'
 export default {
   title: 'Shapes/Lathe',
   component: Lathe,
-  decorators: [(storyFn) => <Setup cameraPosition={[-30, 30, 30]}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={[-30, 30, 30]}>
+        <Story />
+      </Setup>
+    ),
+  ],
 }
 
 function LatheScene() {

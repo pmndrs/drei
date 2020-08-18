@@ -8,7 +8,13 @@ import { draco } from '../../src/draco'
 export default {
   title: 'Loaders/draco',
   component: DracoScene,
-  decorators: [(storyFn) => <Setup cameraPosition={[0, 0, 5]}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={[0, 0, 5]}>
+        <Story />
+      </Setup>
+    ),
+  ],
 }
 
 function Suzanne() {

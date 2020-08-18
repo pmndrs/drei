@@ -6,7 +6,14 @@ import { MeshWobbleMaterial, Reflector } from '../../src/Reflector'
 export default {
   title: 'Misc/Reflector',
   component: Reflector,
-  decorators: [(storyFn) => <Setup cameraPosition={[-2, 2, 6]}> {storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={[-2, 2, 6]}>
+        {' '}
+        <Story />
+      </Setup>
+    ),
+  ],
 }
 
 function ReflectorScene() {

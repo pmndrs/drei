@@ -9,29 +9,33 @@ import { useTurntable } from '../useTurntable'
 export default {
   title: 'Abstractions/Html',
   component: Html,
-  decorators: [(storyFn) => <Setup cameraPosition={[-20, 20, -20]}> {storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={[-20, 20, -20]}>
+        {' '}
+        <Story />
+      </Setup>
+    ),
+  ],
 }
 
-function HTMLScene() {
+export function HTMLScene() {
   const ref = useTurntable()
   return (
     <group ref={ref}>
-      <Icosahedron args={[2, 2]} position={[3, 6, 4]}>
-        <meshBasicMaterial attach="material" color="hotpink" wireframe />
+      <Icosahedron args={[2, 2]} position={[3, 6, 4]} material-color="hotpink" material-wireframe>
         <Html scaleFactor={30} className="html-story-block">
           First
         </Html>
       </Icosahedron>
 
-      <Icosahedron args={[2, 2]} position={[10, 0, 10]}>
-        <meshBasicMaterial attach="material" color="hotpink" wireframe />
+      <Icosahedron args={[2, 2]} position={[10, 0, 10]} material-color="hotpink" material-wireframe>
         <Html scaleFactor={30} className="html-story-block">
           Second
         </Html>
       </Icosahedron>
 
-      <Icosahedron args={[2, 2]} position={[-10, 0, -10]}>
-        <meshBasicMaterial attach="material" color="hotpink" wireframe />
+      <Icosahedron args={[2, 2]} position={[-10, 0, -10]} material-color="hotpink" material-wireframe>
         <Html scaleFactor={30} className="html-story-block">
           Third
         </Html>
@@ -40,5 +44,4 @@ function HTMLScene() {
   )
 }
 
-export const HTMLSt = () => <HTMLScene />
-HTMLSt.storyName = 'Default'
+HTMLScene.storyName = 'Default'

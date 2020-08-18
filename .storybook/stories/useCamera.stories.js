@@ -4,11 +4,18 @@ import * as THREE from 'three'
 import { Setup } from '../Setup'
 import { useCamera } from '../../src/useCamera'
 import { OrthographicCamera } from '../../src/OrthographicCamera'
+import { Box } from '../../src/shapes'
 
 export default {
   title: 'Misc/useCamera',
   component: UseCameraScene,
-  decorators: [(storyFn) => <Setup cameraPosition={[0, 0, 5]}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={[0, 0, 5]}>
+        <Story />
+      </Setup>
+    ),
+  ],
 }
 
 function UseCameraScene() {
@@ -36,21 +43,18 @@ function UseCameraScene() {
 
   return createPortal(
     <>
-      <OrthographicCamera ref={virtualCam} makeDefault={false} position={[0, 0, 100]} zoom={2} />
+      <OrthographicCamera ref={virtualCam} position={[0, 0, 100]} zoom={2} />
 
-      <mesh
+      <Box
         ref={ref}
         raycast={useCamera(virtualCam)}
         onPointerOut={() => set(null)}
-        onPointerMove={(e) => set(Math.floor(e.faceIndex / 2))}>
+        onPointerMove={(e) => set(Math.floor(e.faceIndex / 2))}
+        args={[60, 60, 60]}>
         {[...Array(6)].map((_, index) => (
-          <meshLambertMaterial attachArray="material" key={index} color="hotpink" wireframe={hover !== index} />
+          <meshBasicMaterial attachArray="material" key={index} color="hotpink" wireframe={hover !== index} />
         ))}
-        <boxBufferGeometry attach="geometry" args={[60, 60, 60]} />
-      </mesh>
-
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} intensity={0.5} />
+      </Box>
     </>,
     virtualScene
   )

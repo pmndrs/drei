@@ -9,7 +9,14 @@ import { Icosahedron, Plane } from '../../src/shapes'
 export default {
   title: 'Misc/Shadow',
   component: Shadow,
-  decorators: [(storyFn) => <Setup> {storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        {' '}
+        <Story />
+      </Setup>
+    ),
+  ],
 }
 
 function ShadowScene() {

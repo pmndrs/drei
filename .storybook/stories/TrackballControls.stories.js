@@ -7,7 +7,13 @@ import { Icosahedron } from '../../src/shapes'
 export default {
   title: 'Controls/TrackballControls',
   component: TrackballControlsScene,
-  decorators: [(storyFn) => <Setup cameraPosition={[0, 0, 10]}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={[0, 0, 10]}>
+        <Story />
+      </Setup>
+    ),
+  ],
 }
 
 const NUM = 2
@@ -35,9 +41,7 @@ function TrackballControlsScene() {
     <>
       <group>
         {positions.map(({ id, position }) => (
-          <Icosahedron key={id} args={[1, 1]} position={position}>
-            <meshBasicMaterial attach="material" color="white" wireframe />
-          </Icosahedron>
+          <Icosahedron key={id} args={[1, 1]} position={position} material-wireframe />
         ))}
       </group>
       <TrackballControls />

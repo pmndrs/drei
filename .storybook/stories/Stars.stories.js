@@ -8,10 +8,17 @@ import { Plane } from '../../src/shapes'
 export default {
   title: 'Abstractions/Stars',
   component: Stars,
-  decorators: [(storyFn) => <Setup> {storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        {' '}
+        <Story />
+      </Setup>
+    ),
+  ],
 }
 
-function StarsScene() {
+export function StarsScene() {
   return (
     <>
       <Stars />
@@ -23,5 +30,4 @@ function StarsScene() {
   )
 }
 
-export const StarsSt = () => <StarsScene />
-StarsSt.storyName = 'Default'
+StarsScene.storyName = 'Default'

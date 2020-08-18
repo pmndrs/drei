@@ -1,18 +1,25 @@
 import React, { useMemo } from 'react'
-import { Canvas } from 'react-three-fiber'
+
+import { Setup } from '../Setup'
 
 import { Icosahedron } from '../../src/shapes'
 import { PerspectiveCamera } from '../../src/PerspectiveCamera'
-import { OrbitControls } from '../../src/OrbitControls'
 
 export default {
   title: 'Camera/PerspectiveCamera',
-  component: PerspectiveCameraScene,
+  component: PerspectiveCamera,
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 }
 
 const NUM = 3
 
-function PerspectiveCameraScene() {
+export function PerspectiveCameraScene() {
   const positions = useMemo(() => {
     const pos = []
     const half = (NUM - 1) / 2
@@ -30,7 +37,7 @@ function PerspectiveCameraScene() {
   }, [])
 
   return (
-    <Canvas>
+    <>
       <PerspectiveCamera makeDefault position={[0, 0, 10]} />
       <group position={[0, 0, -10]}>
         {positions.map(({ id, position }) => (
@@ -39,12 +46,10 @@ function PerspectiveCameraScene() {
           </Icosahedron>
         ))}
       </group>
-      <OrbitControls />
-    </Canvas>
+    </>
   )
 }
 
-export const PerspectiveCameraSceneSt = () => <PerspectiveCameraScene />
-PerspectiveCameraSceneSt.story = {
+PerspectiveCameraScene.story = {
   name: 'Default',
 }

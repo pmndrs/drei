@@ -10,17 +10,19 @@ import { TextureLoader } from 'three'
 export default {
   title: 'Misc/useAspect',
   component: useAspect,
-  decorators: [(storyFn) => <Setup cameraPosition={[0, -10, 0]}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={[0, -10, 0]}>
+        <Story />
+      </Setup>
+    ),
+  ],
 }
 
 function Simple() {
   const scale = useAspect('cover', 1920, 1080, 1)
 
-  return (
-    <Plane scale={scale} rotation-x={Math.PI / 2} args={[1, 1, 4, 4]}>
-      <meshPhongMaterial attach="material" wireframe />
-    </Plane>
-  )
+  return <Plane scale={scale} rotation-x={Math.PI / 2} args={[1, 1, 4, 4]} material-wireframe />
 }
 
 export const DefaultStory = () => (
@@ -35,11 +37,7 @@ function WithTexture() {
 
   const [map] = useLoader(TextureLoader, [`https://source.unsplash.com/random/1920x1080`])
 
-  return (
-    <Plane scale={scale} rotation-x={Math.PI / 2}>
-      <meshPhongMaterial attach="material" map={map} color="grey" />
-    </Plane>
-  )
+  return <Plane scale={scale} rotation-x={Math.PI / 2} material-map={map} />
 }
 
 export const TextureStory = () => (

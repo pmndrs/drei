@@ -1,30 +1,27 @@
-import React, { Suspense } from 'react'
+import React from 'react'
 
 import { Setup } from '../Setup'
 
 import { useGLTFLoader } from '../../src/useGLTFLoader'
 
 export default {
-  title: 'Loaders/GLTF',
+  title: 'Loaders/useGLTFLoader',
   component: useGLTFLoader,
-  decorators: [(storyFn) => <Setup cameraPosition={[0, 0, 5]}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={[0, 0, 5]}>
+        <Story />
+      </Setup>
+    ),
+  ],
 }
 
-function Suzanne() {
+export function GLTFLoader() {
   const { nodes, materials } = useGLTFLoader('suzanne.glb', true)
 
   return <mesh material={materials['Material.001']} geometry={nodes.Suzanne.geometry} />
 }
 
-function UseGLTFLoaderScene() {
-  return (
-    <Suspense fallback={null}>
-      <Suzanne />
-    </Suspense>
-  )
-}
-
-export const UseGLTFLoaderSceneSt = () => <UseGLTFLoaderScene />
-UseGLTFLoaderSceneSt.story = {
+GLTFLoader.story = {
   name: 'Default',
 }

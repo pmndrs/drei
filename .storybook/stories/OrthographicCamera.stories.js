@@ -1,18 +1,25 @@
 import React, { useMemo } from 'react'
 
+import { Setup } from '../Setup'
+
 import { Icosahedron } from '../../src/shapes'
 import { OrthographicCamera } from '../../src/OrthographicCamera'
-import { Canvas } from 'react-three-fiber'
-import { OrbitControls } from '../../src/OrbitControls'
 
 export default {
   title: 'Camera/OrthographicCamera',
-  component: OrthographicCameraScene,
+  component: OrthographicCamera,
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 }
 
 const NUM = 3
 
-function OrthographicCameraScene() {
+export function OrthographicCameraScene() {
   const positions = useMemo(() => {
     const pos = []
     const half = (NUM - 1) / 2
@@ -30,7 +37,7 @@ function OrthographicCameraScene() {
   }, [])
 
   return (
-    <Canvas>
+    <>
       <OrthographicCamera makeDefault position={[0, 0, 10]} zoom={40} />
       <group position={[0, 0, -10]}>
         {positions.map(({ id, position }) => (
@@ -39,12 +46,8 @@ function OrthographicCameraScene() {
           </Icosahedron>
         ))}
       </group>
-      <OrbitControls />
-    </Canvas>
+    </>
   )
 }
 
-export const OrthographicCameraSceneSt = () => <OrthographicCameraScene />
-OrthographicCameraSceneSt.story = {
-  name: 'Default',
-}
+OrthographicCameraScene.storyName = 'Defaut'

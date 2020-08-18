@@ -9,7 +9,13 @@ import { Extrude } from '../../src/shapes'
 export default {
   title: 'Shapes/Extrude',
   component: Extrude,
-  decorators: [(storyFn) => <Setup cameraPosition={[-30, 30, 30]}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={[-30, 30, 30]}>
+        <Story />
+      </Setup>
+    ),
+  ],
 }
 
 function ExtrudeScene() {

@@ -8,10 +8,17 @@ import { Plane } from '../../src/shapes'
 export default {
   title: 'Abstractions/Sky',
   component: Sky,
-  decorators: [(storyFn) => <Setup> {storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        {' '}
+        <Story />
+      </Setup>
+    ),
+  ],
 }
 
-function SkyScene() {
+export function SkyScene() {
   return (
     <>
       <Sky sunPosition={[0, Math.PI, -1]} />
@@ -23,5 +30,4 @@ function SkyScene() {
   )
 }
 
-export const SkySt = () => <SkyScene />
-SkySt.storyName = 'Default'
+SkyScene.storyName = 'Default'

@@ -9,7 +9,13 @@ import { Parametric } from '../../src/shapes'
 export default {
   title: 'Shapes/Parametric',
   component: Parametric,
-  decorators: [(storyFn) => <Setup cameraPosition={[-30, 30, 30]}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={[-30, 30, 30]}>
+        <Story />
+      </Setup>
+    ),
+  ],
 }
 
 function ParametricScene() {

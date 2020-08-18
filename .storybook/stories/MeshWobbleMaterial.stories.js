@@ -9,7 +9,15 @@ import { Torus } from '../../src/shapes'
 export default {
   title: 'Shaders/MeshWobbleMaterial',
   component: MeshWobbleMaterial,
-  decorators: [withKnobs, (storyFn) => <Setup> {storyFn()}</Setup>],
+  decorators: [
+    withKnobs,
+    (Story) => (
+      <Setup>
+        {' '}
+        <Story />
+      </Setup>
+    ),
+  ],
 }
 
 function MeshWobbleMaterialScene() {

@@ -1,17 +1,23 @@
-import React, { Suspense } from 'react'
+import React from 'react'
 
 import { Setup } from '../Setup'
 
 import { useTextureLoader } from '../../src/useTextureLoader'
-import { Icosahedron, Sphere } from '../../src/shapes'
+import { Icosahedron } from '../../src/shapes'
 
 export default {
-  title: 'Loaders/Texture',
+  title: 'Loaders/useTextureLoader',
   component: useTextureLoader,
-  decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 }
 
-function TexturedMeshes() {
+export function TexturedMeshes() {
   const [matcap1, matcap2] = useTextureLoader(['matcap-1.png', 'matcap-2.png'])
 
   return (
@@ -26,15 +32,6 @@ function TexturedMeshes() {
   )
 }
 
-function UseTextureLoaderScene() {
-  return (
-    <Suspense fallback={null}>
-      <TexturedMeshes />
-    </Suspense>
-  )
-}
-
-export const UseTextureLoaderSceneSt = () => <UseTextureLoaderScene />
-UseTextureLoaderSceneSt.story = {
+TexturedMeshes.story = {
   name: 'Default',
 }

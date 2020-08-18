@@ -19,9 +19,7 @@ function RoundedBoxScene() {
   return (
     <RoundedBox
       ref={ref}
-      width={number('width', 25)}
-      height={number('height', 25)}
-      depth={number('depth', 25)}
+      args={[number('width', 25), number('height', 25), number('depth', 25)]}
       radius={number('radius', 1)}
       smoothness={number('smoothness', 5)}>
       <meshPhongMaterial attach="material" color="#f3f3f3" wireframe />

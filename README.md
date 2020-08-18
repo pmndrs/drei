@@ -136,9 +136,7 @@ A box buffer geometry with rounded corners, done with extrusion.
 
 ```jsx
 <RoundedBox
-  width={1}         // Width of the box
-  height={1}        // Height of the box
-  depth={1}         // Depth of the box
+  args={[1, 1, 1]}  // Width, Height and Depth of the box
   radius={0.05}     // Border-Radius of the box
   smoothness={4}    // Optional, number of subdivisions
   {...meshProps}    // All THREE.Mesh props are valid

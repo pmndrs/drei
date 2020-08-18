@@ -1,6 +1,7 @@
 import React, { forwardRef, useMemo } from 'react'
 import { Mesh, Shape, ExtrudeBufferGeometry } from 'three'
 import { useUpdate } from 'react-three-fiber'
+import { NamedArrayTuple } from 'ts-utils'
 
 const eps = 0.00001
 
@@ -15,15 +16,13 @@ function createShape(width: number, height: number, radius0: number) {
 }
 
 type Props = {
-  width?: number
-  height?: number
-  depth?: number
+  args?: NamedArrayTuple<(width?: number, height?: number, depth?: number) => void>
   radius?: number
   smoothness?: number
-} & JSX.IntrinsicElements['mesh']
+} & Omit<JSX.IntrinsicElements['mesh'], 'args'>
 
 export const RoundedBox = forwardRef<Mesh, Props>(function RoundedBox(
-  { width = 1, height = 1, depth = 1, radius = 0.05, smoothness = 4, children, ...rest },
+  { args: [width = 1, height = 1, depth = 1] = [], radius = 0.05, smoothness = 4, children, ...rest },
   ref
 ) {
   const shape = useMemo(() => createShape(width, height, radius), [width, height, radius])

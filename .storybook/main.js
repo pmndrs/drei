@@ -4,13 +4,13 @@ module.exports = {
   stories: ['./stories/**/*.stories.(js|mdx)'],
   addons: [
     '@storybook/addon-knobs/register', 
-    '@storybook/addon-controls',
     {
       name: '@storybook/addon-docs',
       options: {
         transcludeMarkdown: true
       }
-    }
+    },
+    '@storybook/addon-controls',
   ],
 
   webpackFinal: (config) => {

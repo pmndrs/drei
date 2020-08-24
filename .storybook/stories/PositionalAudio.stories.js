@@ -1,5 +1,7 @@
 import React, { Suspense } from 'react'
 
+import { Sphere } from '../../src/shapes'
+
 import { setupDecorator } from '../setup-decorator'
 import { OrbitControls } from '../../src/OrbitControls'
 import { PositionalAudio } from '../../src/PositionalAudio'
@@ -37,11 +39,9 @@ function PositionalAudioScene() {
       <Suspense fallback={null}>
         <group position={[0, 0, 5]}>
           {args.map(({ position, url }, index) => (
-            <mesh key={`0${index}`} position={position}>
-              <sphereBufferGeometry attach="geometry" />
-              <meshBasicMaterial wireframe attach="material" color="hotpink" />
+            <Sphere key={`0${index}`} position={position} material-color="hotpink" material-wireframe>
               <PositionalAudio url={url} />
-            </mesh>
+            </Sphere>
           ))}
         </group>
       </Suspense>

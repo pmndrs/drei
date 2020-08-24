@@ -12,16 +12,10 @@ export default {
   ],
 }
 
-export function MeshWobbleMaterialScene(args) {
+export const Default = () => {
   return (
     <Torus args={[1, 0.25, 16, 100]}>
-      <MeshWobbleMaterial
-        attach="material"
-        color="#f25042"
-        {...args}
-      />
+      <MeshWobbleMaterial color="#f25042" />
     </Torus>
   )
 }
-
-MeshWobbleMaterialScene.storyName = 'Default'

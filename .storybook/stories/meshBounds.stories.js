@@ -17,15 +17,14 @@ function MeshBounds(props) {
   const [hovered, setHover] = useState(false)
 
   return (
-    <mesh
+    <Box
       {...props}
       raycast={meshBounds}
       ref={mesh}
       onPointerOver={() => setHover(true)}
-      onPointerOut={() => setHover(false)}>
-      <boxBufferGeometry attach="geometry" args={[1, 1, 1]} />
-      <meshStandardMaterial attach="material" color="hotpink" wireframe={!hovered} />
-    </mesh>
+      onPointerOut={() => setHover(false)}
+      material-color="hotpink" material-wireframe={!hovered}
+    />
   )
 }
 

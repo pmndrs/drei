@@ -22,8 +22,8 @@ function Cell(props) {
 
   return (
     <mesh>
-      <meshBasicMaterial attach="material" color={color} opacity={fillOpacity} depthWrite={false} transparent />
-      <shapeBufferGeometry attach="geometry" args={[shape]} />
+      <meshBasicMaterial color={color} opacity={fillOpacity} depthWrite={false} transparent />
+      <shapeBufferGeometry args={[shape]} />
     </mesh>
   )
 }

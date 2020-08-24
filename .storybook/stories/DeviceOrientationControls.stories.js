@@ -9,8 +9,7 @@ export function DeviceOrientationControlsStory() {
   return (
     <>
       <DeviceOrientationControls />
-      <Box args={[100, 100, 100, 4, 4, 4]}>
-        <meshBasicMaterial attach="material" wireframe />
+      <Box args={[100, 100, 100, 4, 4, 4]} material-color="white" material-wireframe>
         <axesHelper args={[100]} />
       </Box>
     </>

@@ -12,16 +12,10 @@ export default {
   ],
 }
 
-export function MeshDistortMaterialScene(args) {
+export const Default = () => {
   return (
     <Icosahedron args={[1, 4]}>
-      <MeshDistortMaterial
-        attach="material"
-        color="#f25042"
-        {...args}
-      />
+      <MeshDistortMaterial color="#f25042" />
     </Icosahedron>
   )
 }
-
-MeshDistortMaterialScene.storyName = 'Default'

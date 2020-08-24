@@ -3,10 +3,18 @@ import { Canvas } from 'react-three-fiber'
 
 import { OrbitControls } from '../src/OrbitControls'
 
-export const setupDecorator = (settings = { 
-  controls: true, 
-  cameraPosition: [0, 0, 10]
-}) => function setupDecorator(Story) {
+export const setupDecorator = (_settings = {}) => function setupDecorator(Story) {
+
+  const defaults = {
+    controls: true,
+    cameraPosition: [0, 0, 10],
+    invalidateFrameLoop: false
+  }
+
+  const settings = {
+    ...defaults,
+    ..._settings,
+  }
 
   const {
     controls,

@@ -1,0 +1,6 @@
+{
+    "name": "drei/macro",
+    "private": true,
+    "main": "../dist/macro/index.cjs.js",
+    "module": "../dist/macro/index.js"
+  }

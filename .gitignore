@@ -3,6 +3,7 @@ coverage/
 dist/
 build/
 types/
+lib/
 storybook-static/
 Thumbs.db
 ehthumbs.db
@@ -16,3 +17,4 @@ coverage/
 .idea
 yarn-error.log
 .size-snapshot.json
+

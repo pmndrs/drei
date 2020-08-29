@@ -26,29 +26,91 @@ const getBabelOptions = ({ useESModules }, targets) => ({
   ],
 })
 
-export default [
-  {
-    input: `./src/index.tsx`,
-    output: { file: `dist/index.js`, format: 'esm' },
+const fs = require('fs')
+const OUTDIR = './dist'
+
+if (!fs.existsSync(OUTDIR)) {
+  fs.mkdirSync(OUTDIR)
+}
+
+const ignore = ['shapes', 'index', 'macro', 'glsl', 'ts-utils']
+
+const files = fs
+  .readdirSync('./src/')
+  .map((file) => {
+    let x = file.split('.').slice(0, -1).join('')
+    return x
+  })
+  .filter((x) => !ignore.includes(x))
+  .filter((x) => x !== '')
+
+files.forEach((filename) => {
+  if (!fs.existsSync(`${OUTDIR}/${filename}`)) {
+    fs.mkdirSync(`${OUTDIR}/${filename}`)
+  }
+
+  fs.writeFileSync(`${OUTDIR}/${filename}/index.js`, `export { ${filename} as default } from "./${filename}.js"`)
+})
+
+const esmPlugins = [
+  json(),
+  glslify(),
+  babel(getBabelOptions({ useESModules: true }, '>1%, not dead, not ie 11, not op_mini all')),
+  sizeSnapshot(),
+  resolve({ extensions }),
+]
+
+const cjsPlugins = [
+  json(),
+  glslify(),
+  babel(getBabelOptions({ useESModules: false })),
+  sizeSnapshot(),
+  resolve({ extensions }),
+]
+
+function makeEsmConfig(file) {
+  return {
+    input: `./src/${file}.tsx`,
+    output: { file: `dist/${file}/${file}.js`, format: 'esm' },
     external,
-    plugins: [
-      json(),
-      glslify(),
-      babel(getBabelOptions({ useESModules: true }, '>1%, not dead, not ie 11, not op_mini all')),
-      sizeSnapshot(),
-      resolve({ extensions }),
-    ],
+    plugins: esmPlugins,
+  }
+}
+
+function makeCjsConfig(file) {
+  return {
+    input: `./src/${file}.tsx`,
+    output: { file: `dist/${file}/${file}.cjs.js`, format: 'cjs' },
+    external,
+    plugins: cjsPlugins,
+  }
+}
+
+export default [
+  ...files.map(makeEsmConfig),
+  {
+    input: `./src/macro/index.tsx`,
+    output: { file: `${OUTDIR}/macro/index.js`, format: 'esm' },
+    external,
+    plugins: esmPlugins,
   },
   {
     input: `./src/index.tsx`,
-    output: { file: `dist/index.cjs.js`, format: 'cjs' },
+    output: { file: `${OUTDIR}/index.js`, format: 'esm' },
     external,
-    plugins: [
-      json(),
-      glslify(),
-      babel(getBabelOptions({ useESModules: false })),
-      sizeSnapshot(),
-      resolve({ extensions }),
-    ],
+    plugins: esmPlugins,
+  },
+  ...files.map(makeCjsConfig),
+  {
+    input: `./src/index.tsx`,
+    output: { file: `${OUTDIR}/index.cjs.js`, format: 'cjs' },
+    external,
+    plugins: cjsPlugins,
+  },
+  {
+    input: `./src/macro/index.tsx`,
+    output: { file: `${OUTDIR}/macro/index.cjs.js`, format: 'cjs' },
+    external,
+    plugins: cjsPlugins,
   },
 ]

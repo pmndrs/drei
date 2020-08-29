@@ -3281,6 +3281,13 @@ babel-plugin-add-react-displayname@^0.0.5:
   resolved "https://registry.yarnpkg.com/babel-plugin-add-react-displayname/-/babel-plugin-add-react-displayname-0.0.5.tgz#339d4cddb7b65fd62d1df9db9fe04de134122bd5"
   integrity sha1-M51M3be2X9YtHfnbn+BN4TQSK9U=
 
+babel-plugin-drei@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/babel-plugin-drei/-/babel-plugin-drei-0.0.2.tgz#072b2ee57cd261301ee36fe4bd162a93888c1e64"
+  integrity sha512-K/42MVCaLjib07twknLCt6cptYNfcYJ4lojJT5c7i8Yf28PQJtJY90ANTgBIiiQdnBkltG3NJ+s7xQAUNZpUoA==
+  dependencies:
+    "@babel/types" "^7.11.0"
+
 babel-plugin-dynamic-import-node@^2.3.3:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/babel-plugin-dynamic-import-node/-/babel-plugin-dynamic-import-node-2.3.3.tgz#84fda19c976ec5c6defef57f9427b3def66e17a3"

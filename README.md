@@ -81,6 +81,7 @@ npm run storybook
   - `useGLTFLoader()`
   - `useTextureLoader()`
   - `useCubeTextureLoader()`
+  - `useProgress()`
 
 # Exports
 
@@ -496,6 +497,28 @@ useLoader(
   )
 )
 ```
+
+#### ⚡️ `useProgress()`
+
+A convenience hook that wraps `THREE.DefaultLoadingManager`'s progress status.
+
+```jsx
+function Loader() {
+  const { active, progress, errors, item, loaded, total } = useProgress()
+  return <Html center>{progress} % loaded</Html>
+}
+
+<Suspense fallback={<Loader />}>
+  ...
+</Suspense>
+```
+
+If you don't want your fallback component to re-render on all changes you can be specific as to what you need:
+
+```jsx
+const errors = useProgress(state => state.errors)
+```
+
 ---
 <a href="https://www.netlify.com">
   <img src="https://www.netlify.com/img/global/badges/netlify-color-bg.svg" alt="Deploys by Netlify" />

@@ -509,11 +509,13 @@ function Loader() {
 }
 
 <Suspense fallback={<Loader />}>
-  ...
+  <GLTFModel />
+  <CubeMapEnv />
+  <TexturedPlane />
 </Suspense>
 ```
 
-If you don't want your fallback component to re-render on all changes you can be specific as to what you need:
+If you don't want your progress component to re-render on all changes you can be specific as to what you need, for instance if the component is supposed to collect errors only:
 
 ```jsx
 const errors = useProgress(state => state.errors)

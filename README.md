@@ -81,7 +81,7 @@ npm run storybook
   - `useGLTFLoader()`
   - `useTextureLoader()`
   - `useCubeTextureLoader()`
-  - `useProgress()`
+  - `useProgress()` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/cranky-newton-k7f9x)
 
 # Exports
 
@@ -498,7 +498,7 @@ useLoader(
 )
 ```
 
-#### ⚡️ `useProgress()`
+#### ⚡️ `useProgress()` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/cranky-newton-k7f9x)
 
 A convenience hook that wraps `THREE.DefaultLoadingManager`'s progress status.
 

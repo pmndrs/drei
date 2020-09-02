@@ -515,7 +515,7 @@ function Loader() {
 </Suspense>
 ```
 
-If you don't want your progress component to re-render on all changes you can be specific as to what you need, for instance if the component is supposed to collect errors only:
+If you don't want your progress component to re-render on all changes you can be specific as to what you need, for instance if the component is supposed to collect errors only. Look into [zustand](https://github.com/react-spring/zustand) for more info about selectors. 
 
 ```jsx
 const errors = useProgress(state => state.errors)

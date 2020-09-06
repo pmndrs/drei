@@ -82,6 +82,8 @@ npm run storybook
   - `useTextureLoader()`
   - `useCubeTextureLoader()`
   - `useProgress()` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/cranky-newton-k7f9x)
+
+- Prototyping
   - `<Loader/>`
 
 # Exports
@@ -521,6 +523,8 @@ const errors = useProgress(state => state.errors)
 ```
 
 👉 Note that your loading component does not have to be a suspense fallback. You can use it anywhere, even in your dom tree, for instance for overlays.
+
+## ⚡️ Prototyping
 
 #### ⚡️ `<Loader/>`
 

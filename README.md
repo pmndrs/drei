@@ -83,11 +83,13 @@ npm run storybook
 
 - Prototyping
   - `<Loader/>`
+  - `useSubdivision()` [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-usesubdivision)
+  - `useTessellation()` [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-usetessellation)
 
 - Modifiers
   - `useSubdivision()` [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-usesubdivision)
-  - `useTessellation()` [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-usetessellation)
-  - `useSimplification()` [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-usesimplification)
+  - `useMatcapTexture()` [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/prototyping-usematcaptexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
+  - `useNormalTexture()` [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/prototyping-usenormaltexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
 
 # Exports
@@ -606,6 +608,57 @@ You can override styles, too.
   dataInterpolation={(p) => `Loading ${p.toFixed(2)}%`} // Text
   initialState={(active) => active} // Initial black out state
 >
+```
+
+#### ⚡️ `useMatcapTexture()` [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/prototyping-usematcaptexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
+
+Loads matcap textures from this repository: https://github.com/emmelleppi/matcaps
+
+(It is a fork of this repository: https://github.com/nidorx/matcaps)
+
+```jsx
+const [matcap, url] = useMatcapTexture(
+ 0, // index of the matcap texture https://github.com/emmelleppi/matcaps/blob/master/matcap-list.json
+ 1024 // size of the texture ( 64, 128, 256, 512, 1024 )
+)
+
+return (
+ ...
+ <meshMatcapMaterial matcap={matcap} />
+ ...
+)
+```
+
+👉 You can also use the exact name of the matcap texture, like so:
+
+```jsx
+const [matcap] = useMatcapTexture("3E2335_D36A1B_8E4A2E_2842A5");
+```
+
+👉 Use the `url` to download the texture when you are ready for production!
+
+#### ⚡️ `useNormalTexture()` [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/prototyping-usenormaltexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
+
+
+Loads normal textures from this repository: https://github.com/emmelleppi/normal-maps
+
+```jsx
+const [normalMap, url] = useNormalTexture(
+  1, // index of the normal texture - https://github.com/emmelleppi/normal-maps/blob/master/normals.json
+  // second argument is texture attributes
+  {
+    offset: [0, 0],
+    repeat: [normRepeat, normRepeat],
+    anisotropy: 8
+  }
+)
+
+return (
+  ...
+  <meshStandardMaterial normalMap={normalMap} />
+  ...
+)
+
 ```
 
 ---

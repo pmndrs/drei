@@ -1,4 +1,8 @@
-[![Build Status](https://travis-ci.org/react-spring/drei.svg?branch=master)](https://travis-ci.org/react-spring/drei) [![npm version](https://badge.fury.io/js/drei.svg)](https://badge.fury.io/js/drei) ![npm](https://img.shields.io/npm/dt/drei.svg) [![Discord Shield](https://discordapp.com/api/guilds/740090768164651008/widget.png?style=shield)](https://discord.gg/ZZjjNvJ)
+[![Build Status](https://img.shields.io/github/workflow/status/react-spring/drei/Release?style=flat&colorA=000000&colorB=000000)](https://github.com/react-spring/drei/releases)
+[![Version](https://img.shields.io/npm/v/drei?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/drei)
+[![Downloads](https://img.shields.io/npm/dt/drei.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/drei)
+[![Discord Shield](https://img.shields.io/discord/740090768164651008?style=flat&colorA=000000&colorB=000000&label=discord&logo=discord&logoColor=ffffff)](https://discord.gg/ZZjjNvJ)
+
 
 <p align="center">
     <img width="500" src="https://imgur.com/arDsXO6.jpg" alt="logo" />
@@ -37,66 +41,113 @@ npm run storybook
 ```
 
 # Index
-
-- Cameras
-  - `<PerspectiveCamera/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-basic-demo-qgcrx)
-  - `<OrthographicCamera/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-render-target-kdj94)
-- Controls
-  - `<OrbitControls/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-contact-shadow-h5xcw)
-  - `<FlyControls/>`
-  - `<MapControls/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/react-three-fiber-map-mkq8e)
-  - `<DeviceOrientationControls/>`
-  - `<TrackballControls/>`
-  - `<TransformControls/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-transformcontrols-hc8gm)
-- Shapes
-  - `<Plane/>`, `<Box/>`, `<Sphere/>`, `<Circle/>`, `<Cone/>`, `<Cylinder/>`, `<Tube/>`, `<Torus/>`, `<TorusKnot/>`, `<Ring/>`, `<Tetrahedron/>`, `<Polyhedron/>`, `<Icosahedron/>`, `<Octahedron/>`, `<Dodecahedron/>`, `<Extrude/>`, `<Lathe/>`, `<Parametric/>`
-  - `<RoundedBox />`
-- Abstractions
-  - `<Text/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-troika-text-eb4mx)
-  - `<Line/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-line-7mtjx)
-  - `<Detailed/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-detailed-dep1v)
-  - `<PositionalAudio/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-positionalaudio-yi1o0) ![](https://img.shields.io/badge/-suspense-brightgreen)
-  - `<Billboard>`
-- Shaders
-  - `<MeshWobbleMaterial/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-sky-g5373)
-  - `<MeshDistortMaterial/>`
-  - `<Sky/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-sky-3q4ev)
-  - `<Stars/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-sky-m2ci7)
-  - `softShadows()` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-soft-shadows-dh2jc)
-  - `shaderMaterial()` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-shader-material-yltgr)
-- Misc
-  - `<Html/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-suspense-zu2wo)
-  - `<Shadow/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-render-target-t5fv8)
-  - `<Stats/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-stats-8p4ph)
-  - `meshBounds()` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-basic-demo-8fpip)
-  - `useCamera()` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/react-three-fiber-viewcube-py4db)
-  - `useHelper()` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-use-helper-ly6kw) ![](https://img.shields.io/badge/-useFrame-red)
-  - `useAspect()`
-  - `<Reflector/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/jolly-benz-pmk9j)
-
-- Loaders
-  - `draco()` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-contact-shadow-h5xcw)
-  - `useGLTFLoader()`
-  - `useTextureLoader()`
-  - `useCubeTextureLoader()`
-  - `useProgress()` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/cranky-newton-k7f9x)
-
-- Prototyping
-  - `<Loader/>`
-  - `useSubdivision()` [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-usesubdivision)
-  - `useTessellation()` [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-usetessellation)
-
-- Modifiers
-  - `useSubdivision()` [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-usesubdivision)
-  - `useMatcapTexture()` [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/prototyping-usematcaptexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
-  - `useNormalTexture()` [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/prototyping-usenormaltexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
-
+<table>
+  <tr>
+    <td>
+      <br />
+      <ul>
+        <li><a href="#cameras">Cameras</a></li>
+        <ul>
+          <li><a href="#perspectivecamera">PerspectiveCamera</a></li>
+          <li><a href="#orthographiccamera">OrthographicCamera</a></li>
+        </ul>
+        <li><a href="#controls">Controls</a></li>
+        <ul>
+          <li><a href="#orbitcontrols">OrbitControls</a></li>
+          <li><a href="#flycontrols">FlyControls</a></li>
+          <li><a href="#mapcontrols">MapControls</a></li>
+          <li><a href="#deviceorientationcontrols">DeviceOrientationControls</a></li>
+          <li><a href="#trackballcontrols">TrackballControls</a></li>
+          <li><a href="#transformcontrols">TransformControls</a></li>
+        </ul>
+        <li><a href="#abstractions">Abstractions</a></li>
+        <ul>
+          <li><a href="#text">Text</a></li>
+          <li><a href="#line">Line</a></li>
+          <li><a href="#detailed">Detailed</a></li>
+          <li><a href="#positionalaudio">PositionalAudio</a></li>
+          <li><a href="#billboard">Billboard</a></li>
+        </ul>
+        <li><a href="#shaders">Shaders</a></li>
+        <ul>
+          <li><a href="#meshwobblematerial">MeshWobbleMaterial</a></li>
+          <li><a href="#meshdistortmaterial">MeshDistortMaterial</a></li>
+          <li><a href="#sky">Sky</a></li>
+          <li><a href="#stars">Stars</a></li>
+          <li><a href="#softshadows">softShadows</a></li>
+          <li><a href="#shadermaterial">shaderMaterial</a></li>
+        </ul>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li><a href="#misc">Misc</a></li>
+        <ul>
+          <li><a href="#html">Html</a></li>
+          <li><a href="#shadow">Shadow</a></li>
+          <li><a href="#stats">Stats</a></li>
+          <li><a href="#meshbounds">meshBounds</a></li>
+          <li><a href="#usecamera">useCamera</a></li>
+          <li><a href="#usehelper">useHelper</a></li>
+          <li><a href="#useaspect">useAspect</a></li>
+          <li><a href="#reflector">Reflector</a></li>
+        </ul>
+        <li><a href="#loaders">Loaders</a></li>
+        <ul>
+          <li><a href="#draco">draco</a></li>
+          <li><a href="#usegltfloader">useGLTFLoader</a></li>
+          <li><a href="#usetextureloader">useTextureLoader</a></li>
+          <li><a href="#usecubetextureloader">useCubeTextureLoader</a></li>
+          <li><a href="#useprogress">useProgress</a></li>
+        </ul>
+        <li><a href="#modifiers">Modifiers</a></li>
+        <ul>
+          <li><a href="#usesubdivision">useSubdivision</a></li>
+          <li><a href="#usetessellation">useTessellation</a></li>
+          <li><a href="#usesimplification">useSimplification</a></li>
+        </ul>
+        <li><a href="#prototyping">Prototyping</a></li>
+        <ul>
+          <li><a href="#loader">Loader</a></li>
+          <li><a href="#usematcaptexture">useMatcapTexture</a></li>
+          <li><a href="#usenormaltexture">useNormalTexture</a></li>
+        </ul>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li><a href="#shapes">Shapes</a></li>
+        <ul>
+          <li><a href="#plane">Plane</a></li>
+          <li><a href="#box">Box</a></li>
+          <li><a href="#sphere">Sphere</a></li>
+          <li><a href="#circle">Circle</a></li>
+          <li><a href="#cone">Cone</a></li>
+          <li><a href="#cylinder">Cylinder</a></li>
+          <li><a href="#tube">Tube</a></li>
+          <li><a href="#torus">Torus</a></li>
+          <li><a href="#torusknot">TorusKnot</a></li>
+          <li><a href="#ring">Ring</a></li>
+          <li><a href="#tetrahedron">Tetrahedron</a></li>
+          <li><a href="#polyhedron">Polyhedron</a></li>
+          <li><a href="#icosahedron">Icosahedron</a></li>
+          <li><a href="#octahedron">Octahedron</a></li>
+          <li><a href="#dodecahedron">Dodecahedron</a></li>
+          <li><a href="#extrude">Extrude</a></li>
+          <li><a href="#lathe">Lathe</a></li>
+          <li><a href="#parametric">Parametric</a></li>
+          <li><a href="#roundedbox">RoundedBox</a></li>
+        </ul>
+      </ul>
+    </td>
+  </tr>
+</table>
 
 # Exports
 
 ## Cameras
 
-##### ⚡️ `<PerspectiveCamera/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-basic-demo-qgcrx)
+#### PerspectiveCamera [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-basic-demo-qgcrx)
 
 A responsive [THREE.PerspectiveCamera](https://threejs.org/docs/index.html#api/en/cameras/PerspectiveCamera) that can set itself as the default.
 
@@ -109,7 +160,7 @@ A responsive [THREE.PerspectiveCamera](https://threejs.org/docs/index.html#api/e
 </PerspectiveCamera>
 ```
 
-##### ⚡️ `<OrthographicCamera/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-render-target-kdj94)
+#### OrthographicCamera [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-render-target-kdj94)
 
 A responsive [THREE.OrthographicCamera](https://threejs.org/docs/index.html#api/en/cameras/OrthographicCamera) that can set itself as the default.
 
@@ -117,15 +168,15 @@ A responsive [THREE.OrthographicCamera](https://threejs.org/docs/index.html#api/
 
 If available controls have damping enabled by default, they manage their own updates, remove themselves on unmount, are compatible with the `invalidateFrameloop` canvas-flag. They inherit all props from their underlying [THREE controls](https://github.com/mrdoob/three.js/tree/dev/examples/jsm/controls).
 
-##### ⚡️ `<OrbitControls/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-contact-shadow-h5xcw)
+#### OrbitControls [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-contact-shadow-h5xcw)
 
-##### ⚡️ `<MapControls/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/react-three-fiber-map-mkq8e)
+#### MapControls [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/react-three-fiber-map-mkq8e)
 
-##### ⚡️ `<TrackballControls/>`
+#### TrackballControls
 
-##### ⚡️ `<DeviceOrientationControls/>`
+#### DeviceOrientationControls
 
-##### ⚡️ `<TransformControls/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-transformcontrols-hc8gm)
+#### TransformControls [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-transformcontrols-hc8gm)
 
 ## Shapes
 
@@ -138,9 +189,43 @@ Buffer-geometry short-cuts:
 </Sphere>
 ```
 
-##### ⚡️ `<Plane/>`, `<Box/>`, `<Sphere/>`, `<Circle/>`, `<Cone/>`, `<Cylinder/>`, `<Tube/>`, `<Torus/>`, `<TorusKnot/>`, `<Ring/>`, `<Tetrahedron/>`, `<Polyhedron/>`, `<Icosahedron/>`, `<Octahedron/>`, `<Dodecahedron/>`, `<Extrude/>`, `<Lathe/>`, `<Parametric/>`
+#### Plane
 
-##### ⚡️ `<RoundedBox/>`
+#### Box
+
+#### Sphere
+
+#### Circle
+
+#### Cone
+
+#### Cylinder
+
+#### Tube
+
+#### Torus
+
+#### TorusKnot
+
+#### Ring
+
+#### Tetrahedron
+
+#### Polyhedron
+
+#### Icosahedron
+
+#### Octahedron
+
+#### Dodecahedron
+
+#### Extrude
+
+#### Lathe
+
+#### Parametric
+
+#### RoundedBox
 
 A box buffer geometry with rounded corners, done with extrusion.
 
@@ -157,7 +242,7 @@ A box buffer geometry with rounded corners, done with extrusion.
 
 ## Abstractions
 
-##### ⚡️ `<Text/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-troika-text-eb4mx)
+#### Text [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-troika-text-eb4mx)
 
 Hi-quality text rendering w/ signed distance fields (SDF) and antialiasing, using [troika-3d-text](https://github.com/protectwise/troika/tree/master/packages/troika-3d-text). All of troikas props are valid!
 
@@ -171,7 +256,7 @@ Hi-quality text rendering w/ signed distance fields (SDF) and antialiasing, usin
 </Text>
 ```
 
-##### ⚡️ `<Line/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-line-7mtjx)
+#### Line [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-line-7mtjx)
 
 Renders a THREE.Line2.
 
@@ -187,7 +272,7 @@ Renders a THREE.Line2.
 />
 ```
 
-##### ⚡️ `<Detailed`> [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-detailed-dep1v)
+#### Detailed [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-detailed-dep1v)
 
 A wrapper around [THREE.LOD](https://threejs.org/docs/index.html#api/en/objects/LOD) (Level of detail).
 
@@ -202,7 +287,7 @@ A wrapper around [THREE.LOD](https://threejs.org/docs/index.html#api/en/objects/
 </Detailed>
 ```
 
-##### ⚡️ `<PositionalAudio/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-positionalaudio-yi1o0) ![](https://img.shields.io/badge/-suspense-brightgreen)
+#### PositionalAudio [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-positionalaudio-yi1o0) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
 A wrapper around [THREE.PositionalAudio](https://threejs.org/docs/index.html#api/en/audio/PositionalAudio). Add this to groups or meshes to tie them to a sound that plays when the camera comes near.
 
@@ -215,11 +300,11 @@ A wrapper around [THREE.PositionalAudio](https://threejs.org/docs/index.html#api
 />
 ```
 
-##### ⚡️ `<StandardEffects/>`
+#### StandardEffects
 
 Standard Effects has been removed from drei in favour of (react-spring/react-postprocessing)[https://github.com/react-spring/react-postprocessing]
 
-##### ⚡️ `<Billboard/>`
+#### Billboard
 
 Adds a `<Plane />` that always faces the camera.
 
@@ -234,7 +319,7 @@ Adds a `<Plane />` that always faces the camera.
 
 ## Shaders
 
-##### ⚡️ `<MeshWobbleMaterial/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-sky-g5373)
+#### MeshWobbleMaterial [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-sky-g5373)
 
 This material makes your geometry wobble and wave around. It was taken from the [threejs-examples](https://threejs.org/examples/#webgl_materials_modified) and adapted into a self-contained material.
 
@@ -249,7 +334,7 @@ This material makes your geometry wobble and wave around. It was taken from the 
 </mesh>
 ```
 
-##### ⚡️ `<MeshDistortMaterial/>`
+#### MeshDistortMaterial
 
 This material makes your geometry distort following simplex noise.
 
@@ -264,7 +349,7 @@ This material makes your geometry distort following simplex noise.
 </mesh>
 ```
 
-##### ⚡️ `<Sky/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-sky-3q4ev)
+#### Sky [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-sky-3q4ev)
 
 Adds a [sky](https://threejs.org/examples/webgl_shaders_sky.html) to your scene.
 
@@ -276,7 +361,7 @@ Adds a [sky](https://threejs.org/examples/webgl_shaders_sky.html) to your scene.
 />
 ```
 
-##### ⚡️ `<Stars/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-sky-m2ci7)
+#### Stars [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-sky-m2ci7)
 
 Adds a blinking shader-based starfield to your scene.
 
@@ -291,7 +376,7 @@ Adds a blinking shader-based starfield to your scene.
 />
 ```
 
-#### ⚡️ `softShadows()` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-soft-shadows-dh2jc)
+#### softShadows [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-soft-shadows-dh2jc)
 
 Injects [percent closer soft shadows (pcss)](https://threejs.org/examples/?q=pcss#webgl_shadowmap_pcss) into threes shader chunk.
 
@@ -305,7 +390,7 @@ softShadows({
 })
 ```
 
-#### ⚡️ `shaderMaterial()` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-shader-material-yltgr)
+#### shaderMaterial [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-shader-material-yltgr)
 
 Creates a THREE.ShaderMaterial for you with easier handling of uniforms, which are also automatically declared as setter/getters on the object.
 
@@ -342,7 +427,7 @@ extend({ ColorShiftMaterial })
 
 ## Misc
 
-#### ⚡️ `<Html/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-suspense-zu2wo)
+#### Html [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-suspense-zu2wo)
 
 Allows you to tie HTML content to any object of your scene. It will be projected to the objects whereabouts automatically.
 
@@ -362,7 +447,7 @@ Allows you to tie HTML content to any object of your scene. It will be projected
 </Html>
 ```
 
-#### ⚡️ `<Reflector/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/jolly-benz-pmk9j)
+#### Reflector [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/jolly-benz-pmk9j)
 
 Easily add reflection to any object
 
@@ -372,7 +457,7 @@ Easily add reflection to any object
 </Reflector>
 ```
 
-#### ⚡️ `<Shadow/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-render-target-t5fv8)
+#### Shadow [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-render-target-t5fv8)
 
 A cheap canvas-texture-based circular gradient.
 
@@ -385,7 +470,7 @@ A cheap canvas-texture-based circular gradient.
 />
 ```
 
-#### ⚡️ `<Stats/>` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-stats-8p4ph)
+#### Stats [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-stats-8p4ph)
 
 Adds [stats](https://github.com/mrdoob/stats.js/) to document.body. It takes over the render-loop!
 
@@ -412,7 +497,7 @@ useEffect(() => {
 return <Stats parent={parent} />
 ```
 
-##### ⚡️ `meshBounds()` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-basic-demo-8fpip)
+#### meshBounds [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-basic-demo-8fpip)
 
 A very fast, but often good-enough bounds-only raycast for meshes. You can use this if performance has precidence over pointer precision.
 
@@ -420,7 +505,7 @@ A very fast, but often good-enough bounds-only raycast for meshes. You can use t
 <mesh raycast={meshBounds} />
 ```
 
-##### ⚡️ `useCamera()` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/react-three-fiber-viewcube-py4db)
+#### useCamera [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/react-three-fiber-viewcube-py4db)
 
 A hook for the rare case when you are using non-default cameras for heads-up-displays or portals, and you need events/raytracing to function properly (raycasting uses the default camera otherwise).
 
@@ -428,7 +513,7 @@ A hook for the rare case when you are using non-default cameras for heads-up-dis
 <mesh raycast={useCamera(customCamera)} />
 ```
 
-##### ⚡️ `useHelper()` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-use-helper-ly6kw)
+#### useHelper [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-use-helper-ly6kw)
 
 A hook for a quick way to add helpers to existing nodes in the scene. It handles removal of the helper on unmount and auto-updates it by default.
 
@@ -437,7 +522,7 @@ const mesh = useRef()
 useHelper(mesh, BoxHelper, 'cyan')
 ```
 
-##### ⚡️ `useAspect()`
+#### useAspect
 
 This hook calculates aspect ratios (for now only what in css would be `image-size: cover` is supported). You can use it to make an image fill the screen. It is responsive and adapts to viewport resize. Just give the hook the image bounds in pixels. It returns an array: `[width, height, 1]`.
 
@@ -456,7 +541,7 @@ return (
 
 ## Modifiers
 
-##### ⚡️ `useSubdivision()` [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-usesubdivision)
+#### useSubdivision [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-usesubdivision)
 
 This hook mutates a mesh geometry using [three's Subdivision modifier](https://threejs.org/examples/webgl_modifier_subdivision.html). 
 
@@ -472,7 +557,7 @@ return (
 )
 ```
 
-##### ⚡️ `useSimplification()` [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-usesimplification)
+#### useSimplification [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-usesimplification)
 
 This hook mutates a mesh geometry using [three's Simplification modifier](https://threejs.org/examples/webgl_modifier_subdivision.html). 
 
@@ -489,7 +574,7 @@ return (
 ```
 
 
-##### ⚡️ `useTessellation()` [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-usetessellation)
+#### useTessellation [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-usetessellation)
 
 This hook mutates a mesh geometry using [three's Tessellation modifier](hhttps://threejs.org/examples/?q=tess#webgl_modifier_tessellation). It will break-up faces withe edge longer than the maxEdgeLength parameter.
 
@@ -508,7 +593,7 @@ return (
 
 ## Loaders
 
-#### ⚡️ `useGLTFLoader()`
+#### useGLTFLoader
 
 A convenience hook that uses `useLoader`, `GLTFLoader` and `draco`:
 
@@ -524,7 +609,7 @@ useGLFTLoader(
 )
 ```
 
-#### ⚡️ `useTextureLoader()`
+#### useTextureLoader
 
 A convenience hook that uses `useLoader` and `TextureLoader`
 
@@ -534,7 +619,7 @@ const texture = useTextureLoader(url)
 const [texture1, texture2] = useTextureLoader([texture1, texture2])
 ```
 
-#### ⚡️ `useCubeTextureLoader()`
+#### useCubeTextureLoader
 
 A convenience hook that uses `useLoader` and `CubeTextureLoader`
 
@@ -545,7 +630,7 @@ const envMap = useCubeTextureLoader(
 )
 ```
 
-##### ⚡️ `draco()` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-contact-shadow-h5xcw)
+#### draco [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-contact-shadow-h5xcw)
 
 Adds the Draco extension to your GLTFLoader, to be used in conjuction with `useLoader` and `GLTFLoader` when more control is needed.
 
@@ -559,7 +644,7 @@ useLoader(
 )
 ```
 
-#### ⚡️ `useProgress()` [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/cranky-newton-k7f9x)
+#### useProgress [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/cranky-newton-k7f9x)
 
 A convenience hook that wraps `THREE.DefaultLoadingManager`'s progress status.
 
@@ -584,7 +669,7 @@ const errors = useProgress(state => state.errors)
 
 ## ⚡️ Prototyping
 
-#### ⚡️ `<Loader/>`
+#### Loader
 
 A quick and easy loading overlay component that you can drop on top of your canvas. It will show an animated loadingbar and a percentage.
 
@@ -610,7 +695,7 @@ You can override styles, too.
 >
 ```
 
-#### ⚡️ `useMatcapTexture()` [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/prototyping-usematcaptexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
+#### useMatcapTexture [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/prototyping-usematcaptexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
 Loads matcap textures from this repository: https://github.com/emmelleppi/matcaps
 
@@ -637,7 +722,7 @@ const [matcap] = useMatcapTexture("3E2335_D36A1B_8E4A2E_2842A5");
 
 👉 Use the `url` to download the texture when you are ready for production!
 
-#### ⚡️ `useNormalTexture()` [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/prototyping-usenormaltexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
+#### useNormalTexture [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/prototyping-usenormaltexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
 
 Loads normal textures from this repository: https://github.com/emmelleppi/normal-maps

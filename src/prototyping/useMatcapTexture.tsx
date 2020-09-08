@@ -18,7 +18,7 @@ function getFormatString(format: number) {
 }
 
 const MATCAP_ROOT = 'https://rawcdn.githack.com/emmelleppi/matcaps/9b36ccaaf0a24881a39062d05566c9e92be4aa0d'
-const DEFAULT_MATCAP = '0404E8_0404B5_0404CB_3333FC'
+const DEFAULT_MATCAP = matcapList[0]
 
 export function useMatcapTexture(id: number | string = 0, format = 1024) {
   const numTot = useMemo(() => Object.keys(matcapList).length, [])

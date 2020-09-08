@@ -4,7 +4,7 @@ import { RepeatWrapping, Texture, Vector2 } from 'three'
 import normalsList from './normal-assets.json'
 
 const NORMAL_ROOT = 'https://rawcdn.githack.com/emmelleppi/normal-maps/f24c810fc1d86b5b1e5dfea914b668f70b5f2923'
-const DEFAULT_NORMAL = '151_norm.JPG'
+const DEFAULT_NORMAL = normalsList[0]
 
 export function useNormalTexture(id = 0, { repeat = [1, 1], anisotropy = 1, offset = [0, 0] }) {
   const numTot = useMemo(() => Object.keys(normalsList).length, [])

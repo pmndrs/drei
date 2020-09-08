@@ -17,7 +17,7 @@ type Props = {
   >
 
 export const Line = React.forwardRef<Line2, Props>(function Line(
-  { points, color = 'black', vertexColors, lineWidth, ...rest },
+  { points, color = 'black', vertexColors, lineWidth, dashed, ...rest },
   ref
 ) {
   const [line2] = useState(() => new Line2())
@@ -29,6 +29,14 @@ export const Line = React.forwardRef<Line2, Props>(function Line(
     if (vertexColors) lineGeometry.setColors(vertexColors.flat())
     line2.computeLineDistances()
   }, [points, vertexColors, line2, lineGeometry])
+  useEffect(() => {
+    if (dashed) {
+      lineMaterial.defines.USE_DASH = ''
+    } else {
+      delete lineMaterial.defines.USE_DASH
+    }
+    lineMaterial.needsUpdate = true
+  }, [dashed, lineMaterial])
   return (
     <primitive dispose={null} object={line2} ref={ref} {...rest}>
       <primitive dispose={null} object={lineGeometry} attach="geometry" />
@@ -40,6 +48,7 @@ export const Line = React.forwardRef<Line2, Props>(function Line(
         vertexColors={Boolean(vertexColors)}
         resolution={resolution}
         linewidth={lineWidth}
+        dashed={dashed}
         {...rest}
       />
     </primitive>

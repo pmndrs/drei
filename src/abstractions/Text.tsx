@@ -39,7 +39,6 @@ export const Text = forwardRef(({ anchorX = 'center', anchorY = 'middle', childr
         if (baseMtl) {
           n.push(
             <primitive
-              dispose={null}
               object={troikaMesh.material}
               {...(child as React.ReactElement).props}
               key={`baseMtl:${index}`}
@@ -61,7 +60,7 @@ export const Text = forwardRef(({ anchorX = 'center', anchorY = 'middle', childr
       })
   )
   return (
-    <primitive dispose={null} object={troikaMesh} ref={ref} text={text} anchorX={anchorX} anchorY={anchorY} {...props}>
+    <primitive object={troikaMesh} ref={ref} text={text} anchorX={anchorX} anchorY={anchorY} {...props}>
       {nodes}
     </primitive>
   )

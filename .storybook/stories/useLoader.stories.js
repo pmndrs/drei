@@ -2,17 +2,12 @@ import { Vector3 } from 'three'
 import React, { Suspense } from 'react'
 import { Canvas, useFrame } from 'react-three-fiber'
 import ThorAndMidgardSerpent from '../public/scene_draco'
-import { useGLTFLoader } from '../../src/loaders/useGLTFLoader'
+import { Html } from '../../src'
 import { Loader } from '../../src/prototyping/Loader'
 
 export default {
   title: 'Prototyping/useLoader',
   component: UseLoader,
-}
-
-function Suzanne() {
-  const { nodes } = useGLTFLoader('suzanne.glb', true)
-  return <mesh geometry={nodes.Suzanne.geometry} />
 }
 
 function ZoomIn() {
@@ -23,13 +18,17 @@ function ZoomIn() {
 function UseLoader() {
   return (
     <>
-      <Loader />
       <Canvas concurrent camera={{ position: [0, 15, 1000], fov: 70 }}>
         <fog attach="fog" args={[0xfff0ea, 10, 60]} />
         <ambientLight intensity={6} />
-        <Suspense fallback={null}>
+        <Suspense
+          fallback={
+            <Html>
+              <Loader />
+            </Html>
+          }
+        >
           <ZoomIn />
-          {/* <Suzanne /> */}
           <ThorAndMidgardSerpent />
         </Suspense>
       </Canvas>

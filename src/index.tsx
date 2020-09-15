@@ -17,6 +17,7 @@ export * from './controls/PointerLockControls'
 
 export * from './loaders/draco'
 export * from './loaders/useCubeTextureLoader'
+export * from './loaders/useFBXLoader'
 export * from './loaders/useGLTFLoader'
 export * from './loaders/useProgress'
 export * from './loaders/useTextureLoader'

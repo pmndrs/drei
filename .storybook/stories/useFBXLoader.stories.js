@@ -1,10 +1,6 @@
 import React, { Suspense } from 'react'
-
 import { Setup } from '../Setup'
-
-import {useFBXLoader} from "../../src/loaders/useFBXLoader";
-import {useCubeTextureLoader} from "../../src";
-import {Vector2} from "three";
+import { useFBXLoader } from "../../src/loaders/useFBXLoader";
 
 export default {
   title: 'Loaders/FBX',

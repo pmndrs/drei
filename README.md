@@ -598,7 +598,7 @@ return (
 
 ## Loaders
 
-#### useGLTFLoader
+#### useGLTFLoader [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/loaders-gltf)
 
 A convenience hook that uses `useLoader`, `GLTFLoader` and `draco`:
 
@@ -614,7 +614,7 @@ useGLFTLoader(
 )
 ```
 
-#### useFBXLoader
+#### useFBXLoader [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/loaders-fbx)
 
 A convenience hook that uses `useLoader` and `FBXLoader`:
 
@@ -630,7 +630,7 @@ function SuzanneFBX() {
 }
 ```
 
-#### useTextureLoader
+#### useTextureLoader [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/loaders-texture)
 
 A convenience hook that uses `useLoader` and `TextureLoader`
 
@@ -640,8 +640,8 @@ const texture = useTextureLoader(url)
 const [texture1, texture2] = useTextureLoader([texture1, texture2])
 ```
 
-#### useCubeTextureLoader
-
+#### useCubeTextureLoader [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/loaders-cubetexture)
+ 
 A convenience hook that uses `useLoader` and `CubeTextureLoader`
 
 ```jsx
@@ -651,7 +651,7 @@ const envMap = useCubeTextureLoader(
 )
 ```
 
-#### draco [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-contact-shadow-h5xcw)
+#### draco [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/loaders-draco)
 
 Adds the Draco extension to your GLTFLoader, to be used in conjuction with `useLoader` and `GLTFLoader` when more control is needed.
 

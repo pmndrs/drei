@@ -1,10 +1,9 @@
-import React, { Suspense } from 'react'
+import React, { Suspense, useEffect } from 'react'
 
 import { Setup } from '../Setup'
 
 import {useFBXLoader} from "../../src/loaders/useFBXLoader";
 import {useCubeTextureLoader} from "../../src";
-import {Vector2} from "three";
 
 export default {
   title: 'Loaders/FBX',
@@ -13,8 +12,16 @@ export default {
 }
 
 function SuzanneFBX() {
-  let  fbx = useFBXLoader('suzanne/suzanne.fbx')
-  return <primitive object={fbx} dispose={null} />
+  const fbx = useFBXLoader('suzanne/suzanne.fbx')
+  const envMap = useCubeTextureLoader(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'], { path: 'cube/' })
+
+  return (
+    <mesh 
+      {...fbx.children[0]} 
+      material-envMap={envMap} 
+      material-reflectivity={1}
+    />
+  )
 }
 
 function UseFBXLoaderScene() {

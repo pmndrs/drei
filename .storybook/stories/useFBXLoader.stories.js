@@ -14,16 +14,6 @@ export default {
 
 function SuzanneFBX() {
   let  fbx = useFBXLoader('suzanne/suzanne.fbx')
-
-  const envMap = useCubeTextureLoader(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'], { path: 'cube/' })
-
-  const mat = fbx.children[0].material;
-  mat.envMap = envMap;
-  mat.reflectivity = 0.6
-  mat.normalScale = new Vector2(0.1,0.1)
-  fbx.children[0].material = mat;
-  // console.log(fbx);
-
   return <primitive object={fbx} dispose={null} />
 }
 

@@ -3,6 +3,5 @@ import { useLoader } from 'react-three-fiber'
 import { Group } from 'three'
 
 export function useFBXLoader(path: string): Group {
-  const fbx = useLoader(FBXLoader, path)
-  return fbx
+  return useLoader<Group>(FBXLoader, path)
 }

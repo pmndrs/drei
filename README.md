@@ -624,16 +624,7 @@ useFBXLoader(
 )
 
 function SuzanneFBX() {
-  let  fbx = useFBXLoader('suzanne/suzanne.fbx')
-  
-  // Example of tweeking material
-  const envMap = useCubeTextureLoader(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'], { path: 'cube/' })
-  const mat = fbx.children[0].material;
-  mat.envMap = envMap;
-  mat.reflectivity = 0.7
-  mat.normalScale = new Vector2(0.2,0.2)
-  fbx.children[0].material = mat;
-    
+  let  fbx = useFBXLoader('suzanne/suzanne.fbx')   
   // wrap fbx in primitive.
   return <primitive object={fbx} dispose={null} />
 }

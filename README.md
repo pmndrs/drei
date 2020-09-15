@@ -96,6 +96,7 @@ npm run storybook
         <ul>
           <li><a href="#draco">draco</a></li>
           <li><a href="#usegltfloader">useGLTFLoader</a></li>
+          <li><a href="#usefbxloader">useFBXLoader</a></li>
           <li><a href="#usetextureloader">useTextureLoader</a></li>
           <li><a href="#usecubetextureloader">useCubeTextureLoader</a></li>
           <li><a href="#useprogress">useProgress</a></li>
@@ -611,6 +612,31 @@ useGLFTLoader(
   url,
   '/my-draco-binaries' // use draco binaries from a custom path
 )
+```
+
+#### useFBXLoader
+
+A convenience hook that uses `useLoader` and `FBXLoader`:
+
+```jsx
+useFBXLoader(
+  url
+)
+
+function SuzanneFBX() {
+  let  fbx = useFBXLoader('suzanne/suzanne.fbx')
+  
+  // Example of tweeking material
+  const envMap = useCubeTextureLoader(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'], { path: 'cube/' })
+  const mat = fbx.children[0].material;
+  mat.envMap = envMap;
+  mat.reflectivity = 0.7
+  mat.normalScale = new Vector2(0.2,0.2)
+  fbx.children[0].material = mat;
+    
+  // wrap fbx in primitive.
+  return <primitive object={fbx} dispose={null} />
+}
 ```
 
 #### useTextureLoader

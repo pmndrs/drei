@@ -1,7 +1,6 @@
-import React, { Suspense, useEffect } from 'react'
+import React, { Suspense } from 'react'
 
 import { Setup } from '../Setup'
-
 import {useFBXLoader} from "../../src/loaders/useFBXLoader";
 import {useCubeTextureLoader} from "../../src";
 

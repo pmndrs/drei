@@ -6,7 +6,7 @@ export function useDetectGPU(
 ): {
   isDesktop: boolean
   isMobile: boolean
-  tier: string | undefined
+  tier: string
   type: string
 } {
   const GPUTier = useMemo(() => {
@@ -15,7 +15,7 @@ export function useDetectGPU(
     return {
       isDesktop: GPUTier.tier.indexOf('DESKTOP') > -1,
       isMobile: GPUTier.tier.indexOf('MOBILE') > -1,
-      tier: GPUTier.tier.split('_').pop(),
+      tier: GPUTier.tier.split('_').pop()!,
       type: GPUTier.type,
     }
   }, [props])

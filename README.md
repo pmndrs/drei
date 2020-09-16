@@ -88,6 +88,7 @@ npm run storybook
           <li><a href="#stats">Stats</a></li>
           <li><a href="#meshbounds">meshBounds</a></li>
           <li><a href="#usecamera">useCamera</a></li>
+          <li><a href="#usedetectgpu">useDetectGPU</a></li>
           <li><a href="#usehelper">useHelper</a></li>
           <li><a href="#useaspect">useAspect</a></li>
           <li><a href="#reflector">Reflector</a></li>
@@ -526,7 +527,21 @@ const mesh = useRef()
 useHelper(mesh, BoxHelper, 'cyan')
 ```
 
-#### useAspect
+#### useDetectGPU [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/misc-usedetectgpu)
+
+This hook uses [DetectGPU by @TimvanScherpenzeel](https://github.com/TimvanScherpenzeel/detect-gpu) to determine what tier should be assigned to the user's GPU. 
+
+👉 This hook CAN be used outside the react-three-fiber `Canvas`.
+
+```jsx
+const GPUTier = useDetectGPU()
+
+// show a fallback for mobile or lowest tier GPUs
+return (
+  {(GPUTier.tier === "0" || GPUTier.isMobile) ? <Fallback /> : <Canvas>...</Canvas>
+```
+
+#### useAspect 
 
 This hook calculates aspect ratios (for now only what in css would be `image-size: cover` is supported). You can use it to make an image fill the screen. It is responsive and adapts to viewport resize. Just give the hook the image bounds in pixels. It returns an array: `[width, height, 1]`.
 

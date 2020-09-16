@@ -28,6 +28,7 @@ export * from './misc/Shadow'
 export * from './misc/Stats'
 export * from './misc/useAspect'
 export * from './misc/useCamera'
+export * from './misc/useDetectGPU'
 export * from './misc/useHelper'
 
 export * from './modifiers/useSimplification'

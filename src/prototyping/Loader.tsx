@@ -19,10 +19,13 @@ const styles = {
     width: 100,
     height: 3,
     background: '#272727',
+    textAlign: 'center',
   },
   bar: {
     height: 3,
+    width: '100%',
     background: 'white',
+    transformOrigin: 'left center',
   },
   data: {
     display: 'inline-block',
@@ -48,16 +51,17 @@ export function Loader({
   const transition = useTransition(initialState(active), {
     from: { opacity: 1, progress: 0 },
     leave: { opacity: 0 },
-    update: { progress },
+    update: { progress: progress / 100 },
   })
   return transition(
     ({ progress, opacity }, active) =>
       active && (
         <a.div style={{ ...styles.container, opacity, ...containerStyles }}>
-          <div style={{ ...styles.inner, ...innerStyles }}>
-            <a.div style={{ ...styles.bar, width: progress, ...barStyles }}>
+          <div>
+            <div style={{ ...styles.inner, ...innerStyles }}>
+              <a.div style={{ ...styles.bar, scaleX: progress, ...barStyles }}></a.div>
               <a.span style={{ ...styles.data, ...dataStyles }}>{progress.to(dataInterpolation)}</a.span>
-            </a.div>
+            </div>
           </div>
         </a.div>
       )

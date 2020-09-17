@@ -31,7 +31,9 @@ function objectScale(el: Object3D, camera: Camera) {
     const dist = objectPos.distanceTo(cameraPos)
     return 1 / (2 * Math.tan(vFOV / 2) * dist)
   }
-  if (camera instanceof OrthographicCamera) return camera.zoom
+  if (camera instanceof OrthographicCamera) {
+    return camera.zoom
+  }
   return 1
 }
 
@@ -55,6 +57,7 @@ export interface HtmlProps
   eps?: number
   portal?: React.MutableRefObject<HTMLElement>
   scaleFactor?: number
+  targetObject?: THREE.Object3D
   zIndexRange?: Array<number>
 }
 
@@ -70,6 +73,7 @@ export const Html = React.forwardRef(
       fullscreen,
       portal,
       scaleFactor,
+      targetObject,
       zIndexRange = [16777271, 0],
       ...props
     }: HtmlProps,
@@ -78,24 +82,30 @@ export const Html = React.forwardRef(
     const { gl, scene, camera, size } = useThree()
     const [el] = useState(() => document.createElement('div'))
     const group = useRef<Group>(null)
+    const groupOrObject = targetObject ?? group.current
     const old = useRef([0, 0])
     const target = portal?.current ?? gl.domElement.parentNode
 
+    // eslint-disable-next-line consistent-return
     useEffect(() => {
-      if (group.current) {
+      if (groupOrObject) {
         scene.updateMatrixWorld()
-        const vec = calculatePosition(group.current, camera, size)
+        const vec = calculatePosition(groupOrObject, camera, size)
         el.style.cssText = `position:absolute;top:0;left:0;transform:translate3d(${vec[0]}px,${vec[1]}px,0);transform-origin:0 0;`
         if (target) {
-          if (prepend) target.prepend(el)
-          else target.appendChild(el)
+          if (prepend) {
+            target.prepend(el)
+          } else {
+            target.appendChild(el)
+          }
         }
         return () => {
-          if (target) target.removeChild(el)
+          if (target) {
+            target.removeChild(el)
+          }
           ReactDOM.unmountComponentAtNode(el)
         }
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [target])
 
     const styles: React.CSSProperties = useMemo(
@@ -113,18 +123,23 @@ export const Html = React.forwardRef(
       [style, center, fullscreen, size]
     )
 
-    useEffect(
-      () => void ReactDOM.render(<div ref={ref} style={styles} className={className} children={children} />, el)
-    )
+    useEffect(() => {
+      ReactDOM.render(
+        <div ref={ref} style={styles} className={className}>
+          {children}
+        </div>,
+        el
+      )
+    })
 
     useFrame(() => {
-      if (group.current) {
-        const vec = calculatePosition(group.current, camera, size)
+      if (groupOrObject) {
+        const vec = calculatePosition(groupOrObject, camera, size)
         if (Math.abs(old.current[0] - vec[0]) > eps || Math.abs(old.current[1] - vec[1]) > eps) {
-          el.style.display = !isObjectBehindCamera(group.current, camera) ? 'block' : 'none'
-          const scale = scaleFactor === undefined ? 1 : objectScale(group.current, camera) * scaleFactor
+          el.style.display = !isObjectBehindCamera(groupOrObject, camera) ? 'block' : 'none'
+          const scale = scaleFactor === undefined ? 1 : objectScale(groupOrObject, camera) * scaleFactor
           el.style.transform = `translate3d(${vec[0]}px,${vec[1]}px,0) scale(${scale})`
-          el.style.zIndex = `${objectZIndex(group.current, camera, zIndexRange)}`
+          el.style.zIndex = `${objectZIndex(groupOrObject, camera, zIndexRange)}`
         }
         old.current = vec
       }
@@ -135,6 +150,11 @@ export const Html = React.forwardRef(
 )
 
 export const HTML = React.forwardRef((props: HtmlProps, ref: React.Ref<HTMLDivElement>) => {
-  useEffect(() => void console.warn('The <HTML> component was renamed to <Html>'), [])
+  useEffect(() => {
+    console.warn('The <HTML> component was renamed to <Html>')
+  }, [])
   return <Html {...props} ref={ref} />
 })
+
+Html.displayName = 'Html'
+HTML.displayName = 'HTML'

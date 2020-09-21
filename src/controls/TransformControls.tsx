@@ -41,7 +41,12 @@ export const TransformControls = forwardRef(
     const controls = useMemo(() => new TransformControlsImpl(camera, gl.domElement), [camera, gl.domElement])
 
     const group = useRef<Group>()
-    useLayoutEffect(() => void controls.attach(group.current as Object3D), [children, controls])
+    useLayoutEffect(() => {
+      controls.attach(group.current as Object3D)
+      return () => {
+        controls.detach()
+      }
+    }, [children, controls])
 
     useEffect(() => {
       controls?.addEventListener?.('change', invalidate)

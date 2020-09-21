@@ -4,12 +4,12 @@ import { withKnobs, text } from '@storybook/addon-knobs'
 
 import { OrbitControls } from '../../src/controls/OrbitControls'
 import { Box } from '../../src/shapes/generated'
-import { ContextBridge } from '../../src/misc/ContextBridge'
+import { useContextBridge } from '../../src/misc/useContextBridge'
 import { Text } from '../../src/abstractions/Text'
 
 export default {
-  title: 'Misc/ContextBridge',
-  component: ContextBridge,
+  title: 'Misc/useContextBridge',
+  component: useContextBridge,
   decorators: [
     (storyFn) => storyFn(),
     withKnobs,
@@ -45,13 +45,11 @@ function Scene() {
 }
 
 function SceneWrapper() {
+  const ContextBridge = useContextBridge(ThemeContext, GreetingContext)
   return (
     <Canvas>
       {/* create the bridge inside the Canvas and forward the context */}
-      <ContextBridge contexts={[
-        {context: ThemeContext, value: React.useContext(ThemeContext)},
-        {context: GreetingContext, value: React.useContext(GreetingContext)},
-      ]}>
+      <ContextBridge>
         <Scene />
       </ContextBridge>
       <OrbitControls enablePan={false} zoomSpeed={0.5} />
@@ -59,7 +57,7 @@ function SceneWrapper() {
   )
 }
 
-function ContextBridgeStory() {
+function UseContextBridgeStory() {
   const greeting = text('Greeting', "Hello World");
   return (
     // Provide several contexts from above the Canvas
@@ -73,5 +71,5 @@ function ContextBridgeStory() {
   )
 }
 
-export const ContextBridgeSt = () => <ContextBridgeStory />
-ContextBridgeSt.storyName = 'Default'
+export const UseContextBridgeSt = () => <UseContextBridgeStory />
+UseContextBridgeSt.storyName = 'Default'

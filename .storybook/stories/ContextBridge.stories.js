@@ -45,16 +45,12 @@ function Scene() {
 }
 
 function SceneWrapper() {
-  // consume the current context
-  const ThemeContextValue = React.useContext(ThemeContext)
-  const GreetingContextValue = React.useContext(GreetingContext)
-
   return (
     <Canvas>
       {/* create the bridge inside the Canvas and forward the context */}
       <ContextBridge contexts={[
-        {context: ThemeContext, value: ThemeContextValue},
-        {context: GreetingContext, value: GreetingContextValue},
+        {context: ThemeContext, value: React.useContext(ThemeContext)},
+        {context: GreetingContext, value: React.useContext(GreetingContext)},
       ]}>
         <Scene />
       </ContextBridge>

@@ -83,7 +83,7 @@ npm run storybook
       <ul>
         <li><a href="#misc">Misc</a></li>
         <ul>
-          <li><a href="#contextbridge">ContextBridge</a></li>
+          <li><a href="#usecontextbridge">useContextBridge</a></li>
           <li><a href="#html">Html</a></li>
           <li><a href="#shadow">Shadow</a></li>
           <li><a href="#stats">Stats</a></li>
@@ -434,8 +434,30 @@ extend({ ColorShiftMaterial })
 
 ## Misc
 
-#### ContextBridge [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/misc-contextbridge--context-bridge-st)
-Allows you to forward contexts provided above the `<Canvas />` to be consumed from within the `<Canvas />`
+#### useContextBridge [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/misc-usecontextbridge--use-context-bridge-st)
+Allows you to forward contexts provided above the `<Canvas />` to be consumed from within the `<Canvas />` normally
+```jsx
+function SceneWrapper() {
+  // bridge any number of contexts
+  const ContextBridge = useContextBridge(ThemeContext, GreetingContext)
+  return (
+    <Canvas>
+      <ContextBridge>
+        <Scene />
+      </ContextBridge>
+    </Canvas>
+  )
+}
+
+function Scene() {
+  // we can now consume a context within the Canvas
+  const theme = React.useContext(ThemeContext)
+  const greeting = React.useContext(GreetingContext)
+  return (
+    //...
+  )
+}
+```
 
 #### Html [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-suspense-zu2wo)
 

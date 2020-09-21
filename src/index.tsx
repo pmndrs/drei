@@ -31,7 +31,7 @@ export * from './misc/useAspect'
 export * from './misc/useCamera'
 export * from './misc/useDetectGPU'
 export * from './misc/useHelper'
-export * from './misc/ContextBridge'
+export * from './misc/useContextBridge'
 
 export * from './modifiers/useSimplification'
 export * from './modifiers/useSubdivision'

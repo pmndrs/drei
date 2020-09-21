@@ -18,21 +18,6 @@ declare global {
   }
 }
 
-type Props = JSX.IntrinsicElements['group'] & {
-  enabled: boolean
-  axis: string | null
-  mode: string
-  translationSnap: number | null
-  rotationSnap: number | null
-  scaleSnap?: number | null
-  space: string
-  size: number
-  dragging: boolean
-  showX: boolean
-  showY: boolean
-  showZ: boolean
-}
-
 export const TransformControls = forwardRef(
   ({ children, ...props }: { children: React.ReactElement<Object3D> } & TransformControls, ref) => {
     const transformOnlyPropNames = [

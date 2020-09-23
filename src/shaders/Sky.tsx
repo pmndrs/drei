@@ -5,10 +5,7 @@ import { Vector3 } from 'three'
 
 export type Sky = {
   distance?: number
-  // sunPosition?: ReactThreeFiber.Vector3
-  sunPositionX?: number
-  sunPositionY?: number
-  sunPositionZ?: number
+  sunPosition?: ReactThreeFiber.Vector3
   inclination?: number
   azimuth?: number
   mieCoefficient?: number
@@ -38,15 +35,16 @@ export const Sky = forwardRef<Sky>(
     {
       inclination = 0,
       azimuth = 0.25,
-      sunPositionX = Math.cos(phi(azimuth)),
-      sunPositionY = Math.sin(phi(azimuth)) * Math.sin(theta(inclination)),
-      sunPositionZ = Math.sin(phi(azimuth)) * Math.cos(theta(inclination)),
       distance = 100,
       mieCoefficient = 0.005,
       mieDirectionalG = 0.8,
       rayleigh = 1,
       turbidity = 2,
-      // sunPosition = [sunPositionX, sunPositionY, sunPositionZ],
+      sunPosition = [
+        Math.cos(phi(azimuth)),
+        Math.sin(phi(azimuth)) * Math.sin(theta(inclination)),
+        Math.sin(phi(azimuth)) * Math.cos(theta(inclination)),
+      ],
       ...props
     }: Sky,
     ref
@@ -61,9 +59,7 @@ export const Sky = forwardRef<Sky>(
         material-uniforms-mieCoefficient-value={mieCoefficient}
         material-uniforms-mieDirectionalG-value={mieDirectionalG}
         material-uniforms-rayleigh-value={rayleigh}
-        material-uniforms-sunPosition-value={[sunPositionX, sunPositionY, sunPositionZ]}
-        material-uniforms-inclination={inclination}
-        material-uniforms-azimuth={azimuth}
+        material-uniforms-sunPosition-value={sunPosition}
         material-uniforms-turbidity-value={turbidity}
         scale={scale}
         {...props}

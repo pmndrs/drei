@@ -383,6 +383,21 @@ Adds a blinking shader-based starfield to your scene.
 />
 ```
 
+#### ContactShadows
+
+A [contact shadow](https://threejs.org/examples/?q=con#webgl_shadow_contact) implementation.
+
+```jsx
+<ContactShadows
+  opacity={1}
+  width={1}
+  height={1}
+  blur={1} // Amount of blue (default=1)
+  far={10} // Focal distance (default=10)
+  resolution={256} // Rendertarget resolution (default=256)
+/>
+```
+
 #### softShadows [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-soft-shadows-dh2jc)
 
 Injects [percent closer soft shadows (pcss)](https://threejs.org/examples/?q=pcss#webgl_shadowmap_pcss) into threes shader chunk.

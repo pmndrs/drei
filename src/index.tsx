@@ -43,6 +43,7 @@ export * from './shaders/shaderMaterial'
 export * from './shaders/Sky'
 export * from './shaders/softShadows'
 export * from './shaders/Stars'
+export * from './shaders/ContactShadows'
 
 export * from './shapes'
 

@@ -74,6 +74,7 @@ npm run storybook
           <li><a href="#meshdistortmaterial">MeshDistortMaterial</a></li>
           <li><a href="#sky">Sky</a></li>
           <li><a href="#stars">Stars</a></li>
+          <li><a href="#contactshadows">ContactShadows</a></li>
           <li><a href="#softshadows">softShadows</a></li>
           <li><a href="#shadermaterial">shaderMaterial</a></li>
         </ul>

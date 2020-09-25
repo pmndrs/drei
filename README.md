@@ -19,11 +19,11 @@ If you find yourself repeating set-up code often and if it's generic enough, add
 - Cleanup on unmount, no left-overs, restore previous states
 
 ```bash
-npm install drei
+npm install @react-three/drei
 ```
 
 ```jsx
-import { ... } from 'drei'
+import { ... } from '@react-three/drei'
 ```
 
 #### Live Playground
@@ -33,7 +33,7 @@ For examples of _drei_ in action, visit [https://drei.react-spring.io/](https://
 Or, run the demo storybook on your computer:
 
 ```bash
-git clone https://github.com/react-spring/drei
+git clone https://github.com/pmndrs/drei
 cd drei
 npm install
 npm run storybook

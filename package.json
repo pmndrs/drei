@@ -1,5 +1,5 @@
 {
-  "name": "drei",
+  "name": "@react-three/drei",
   "version": "1.5.7",
   "private": true,
   "description": "useful add-ons for react-three-fiber",
@@ -11,13 +11,13 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/react-spring/drei.git"
+    "url": "git+https://github.com/pmndrs/drei.git"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/react-spring/drei/issues"
+    "url": "https://github.com/pmndrs/drei/issues"
   },
-  "homepage": "https://github.com/react-spring/drei",
+  "homepage": "https://github.com/pmndrs/drei",
   "main": "index.cjs.js",
   "module": "index.js",
   "types": "index.d.ts",
@@ -102,7 +102,7 @@
     "prettier": "^2.0.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-three-fiber": "^4.2.21",
+    "react-three-fiber": "^5.0.0",
     "rimraf": "^3.0.2",
     "rollup": "^2.26.4",
     "rollup-plugin-babel": "^4.4.0",
@@ -118,6 +118,6 @@
   "peerDependencies": {
     "react": ">=16.13",
     "react-dom": ">=16.13",
-    "react-three-fiber": ">=4.2"
+    "react-three-fiber": ">=5.0"
   }
 }

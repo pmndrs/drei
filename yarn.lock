@@ -9886,14 +9886,15 @@ react-popper@^1.3.7:
     typed-styles "^0.0.7"
     warning "^4.0.2"
 
-react-reconciler@0.26.0-rc.0:
-  version "0.26.0-rc.0"
-  resolved "https://registry.yarnpkg.com/react-reconciler/-/react-reconciler-0.26.0-rc.0.tgz#a409088732dd20aafb008f68d1d15e37b9c26329"
-  integrity sha512-Q1YbFz4PXvD9YVxE4/YQXtEw0OLg53sLr9dsquAnGMtt99hiOTF9xTr4Z2GjF7pTaU6KA1DHLoyh6Nng+d6N3g==
+react-reconciler@0.25.1:
+  version "0.25.1"
+  resolved "https://registry.yarnpkg.com/react-reconciler/-/react-reconciler-0.25.1.tgz#f9814d59d115e1210762287ce987801529363aaa"
+  integrity sha512-R5UwsIvRcSs3w8n9k3tBoTtUHdVhu9u84EG7E5M0Jk9F5i6DA1pQzPfUZd6opYWGy56MJOtV3VADzy6DRwYDjw==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
-    scheduler "0.20.0-rc.0"
+    prop-types "^15.6.2"
+    scheduler "^0.19.1"
 
 react-select@^3.0.8:
   version "3.1.0"
@@ -9939,18 +9940,18 @@ react-textarea-autosize@^8.1.1:
     use-composed-ref "^1.0.0"
     use-latest "^1.0.0"
 
-react-three-fiber@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/react-three-fiber/-/react-three-fiber-5.0.0.tgz#d519505024c883db2dc8d1b90a98a49aa95aefa2"
-  integrity sha512-EHqmljYhbtKl1ZXgoYzhwTDyJRRn2X2w4DTdINwI6+w5Jei5aiRSYp3avoDDKafEBmb/uDt2xejY3wQ1GfhFCQ==
+react-three-fiber@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/react-three-fiber/-/react-three-fiber-5.0.1.tgz#15d40dc833e7db8926634887ed43fce902fcd5e7"
+  integrity sha512-oBixjyauAUXK7PiUOqzUo6v8aXtWd1+5WQ0lNgxd74gvk5v+f3+w3qM5QOA+kuKyv7jUrYNk75bLtU0WbaH1Bw==
   dependencies:
     "@babel/runtime" "^7.11.2"
     "@juggle/resize-observer" "^3.2.0"
     react-merge-refs "^1.1.0"
-    react-reconciler "0.26.0-rc.0"
+    react-reconciler "0.25.1"
     react-use-measure "^2.0.1"
     resize-observer-polyfill "^1.5.1"
-    scheduler "0.20.0-rc.0"
+    scheduler "0.19.1"
     tiny-emitter "^2.1.0"
     use-asset "^0.1.1"
     utility-types "^3.10.0"
@@ -10522,15 +10523,7 @@ saxes@^5.0.0:
   dependencies:
     xmlchars "^2.2.0"
 
-scheduler@0.20.0-rc.0:
-  version "0.20.0-rc.0"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.20.0-rc.0.tgz#9cb397f88f9decea28d159d3aad068b54a6f35e4"
-  integrity sha512-5CZiVhk9xI9VmqaodZH+eO3aKgqYwjZ8uf9lnfRlYEwaB4lbmIq0mzuNY5w52sbPlZP9pifXQaLGudKHMgQZcw==
-  dependencies:
-    loose-envify "^1.1.0"
-    object-assign "^4.1.1"
-
-scheduler@^0.19.1:
+scheduler@0.19.1, scheduler@^0.19.1:
   version "0.19.1"
   resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.19.1.tgz#4f3e2ed2c1a7d65681f4c854fa8c5a1ccb40f196"
   integrity sha512-n/zwRWRYSUj0/3g/otKDRPMh6qv2SYMWNq85IEa8iZyAv8od9zDYpGSnpBEjNgcMNq6Scbu5KfIPxNF72R/2EA==

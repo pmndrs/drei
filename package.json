@@ -55,7 +55,7 @@
     "r3f-troika": "^0.31.1",
     "react-merge-refs": "^1.0.0",
     "stats.js": "^0.17.0",
-    "troika-three-text": "^0.31.0",
+    "troika-three-text": "^0.32.0",
     "utility-types": "^3.10.0",
     "zustand": "^3.0.3"
   },

@@ -67,6 +67,7 @@ npm run storybook
           <li><a href="#detailed">Detailed</a></li>
           <li><a href="#positionalaudio">PositionalAudio</a></li>
           <li><a href="#billboard">Billboard</a></li>
+          <li><a href="#environment">Environment</a></li>
         </ul>
         <li><a href="#shaders">Shaders</a></li>
         <ul>
@@ -322,6 +323,18 @@ Adds a `<Plane />` that always faces the camera.
   lockX={false} // Lock the rotation on the x axis (default=false)
   lockY={false} // Lock the rotation on the y axis (default=false)
   lockZ={false} // Lock the rotation on the z axis (default=false)
+/>
+```
+
+#### Environment
+
+Sets up a global cubemap, which affects `scene.environment`, and optionally `scene.background`.
+
+```jsx
+<Environment
+  background={false}
+  files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']}
+  path={'/'}
 />
 ```
 

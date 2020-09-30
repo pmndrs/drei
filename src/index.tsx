@@ -3,6 +3,7 @@ export * from './abstractions/Detailed'
 export * from './abstractions/Line'
 export * from './abstractions/PositionalAudio'
 export * from './abstractions/Text'
+export * from './abstractions/Environment'
 
 export * from './cameras/OrthographicCamera'
 export * from './cameras/PerspectiveCamera'

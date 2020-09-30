@@ -1,53 +1,75 @@
-export * from './abstractions/Billboard'
-export * from './abstractions/Detailed'
-export * from './abstractions/Line'
-export * from './abstractions/PositionalAudio'
-export * from './abstractions/Text'
-export * from './abstractions/Environment'
+export { Billboard } from './abstractions/Billboard'
+export type { BillboardProps } from './abstractions/Billboard'
+export { Detailed } from './abstractions/Detailed'
+export { Line } from './abstractions/Line'
+export { PositionalAudio } from './abstractions/PositionalAudio'
+export { Text } from './abstractions/Text'
+export { Environment } from './abstractions/Environment'
 
-export * from './cameras/OrthographicCamera'
-export * from './cameras/PerspectiveCamera'
+export { OrthographicCamera } from './cameras/OrthographicCamera'
+export { PerspectiveCamera } from './cameras/PerspectiveCamera'
 
-export * from './controls/DeviceOrientationControls'
-export * from './controls/FlyControls'
-export * from './controls/MapControls'
-export * from './controls/OrbitControls'
-export * from './controls/TrackballControls'
-export * from './controls/TransformControls'
-export * from './controls/PointerLockControls'
+export { DeviceOrientationControls } from './controls/DeviceOrientationControls'
+export { FlyControls } from './controls/FlyControls'
+export { MapControls } from './controls/MapControls'
+export { OrbitControls } from './controls/OrbitControls'
+export { TrackballControls } from './controls/TrackballControls'
+export { TransformControls } from './controls/TransformControls'
+export { PointerLockControls } from './controls/PointerLockControls'
 
-export * from './loaders/draco'
-export * from './loaders/useCubeTextureLoader'
-export * from './loaders/useFBXLoader'
-export * from './loaders/useGLTFLoader'
-export * from './loaders/useProgress'
-export * from './loaders/useTextureLoader'
+export { draco } from './loaders/draco'
+export { useCubeTextureLoader } from './loaders/useCubeTextureLoader'
+export { useFBXLoader } from './loaders/useFBXLoader'
+export { useGLTFLoader } from './loaders/useGLTFLoader'
+export { useProgress } from './loaders/useProgress'
+export { useTextureLoader } from './loaders/useTextureLoader'
 
-export * from './misc/Html'
-export * from './misc/meshBounds'
-export * from './misc/Reflector'
-export * from './misc/Shadow'
-export * from './misc/Stats'
-export * from './misc/useAspect'
-export * from './misc/useCamera'
-export * from './misc/useDetectGPU'
-export * from './misc/useHelper'
-export * from './misc/useContextBridge'
+export { Html, HTML } from './misc/Html'
+export type { HtmlProps } from './misc/Html'
+export { meshBounds } from './misc/meshBounds'
+export { Reflector } from './misc/Reflector'
+export { Shadow } from './misc/Shadow'
+export { Stats } from './misc/Stats'
+export { useAspect } from './misc/useAspect'
+export { useCamera } from './misc/useCamera'
+export { useDetectGPU } from './misc/useDetectGPU'
+export { useHelper } from './misc/useHelper'
+export { useContextBridge } from './misc/useContextBridge'
 
-export * from './modifiers/useSimplification'
-export * from './modifiers/useSubdivision'
-export * from './modifiers/useTessellation'
+export { useSimplification } from './modifiers/useSimplification'
+export { useSubdivision } from './modifiers/useSubdivision'
+export { useTessellation } from './modifiers/useTessellation'
 
-export * from './shaders/MeshDistortMaterial'
-export * from './shaders/MeshWobbleMaterial'
-export * from './shaders/shaderMaterial'
-export * from './shaders/Sky'
-export * from './shaders/softShadows'
-export * from './shaders/Stars'
-export * from './shaders/ContactShadows'
+export { MeshDistortMaterial } from './shaders/MeshDistortMaterial'
+export { MeshWobbleMaterial } from './shaders/MeshWobbleMaterial'
+export { shaderMaterial } from './shaders/shaderMaterial'
+export { Sky } from './shaders/Sky'
+export { softShadows } from './shaders/softShadows'
+export { Stars } from './shaders/Stars'
+export { ContactShadows } from './shaders/ContactShadows'
 
-export * from './shapes'
+export {
+  Box,
+  Circle,
+  Cone,
+  Cylinder,
+  Dodecahedron,
+  Extrude,
+  Icosahedron,
+  Lathe,
+  Octahedron,
+  Parametric,
+  Plane,
+  Polyhedron,
+  Ring,
+  RoundedBox,
+  Sphere,
+  Tetrahedron,
+  Torus,
+  TorusKnot,
+  Tube,
+} from './shapes'
 
-export * from './prototyping/Loader'
-export * from './prototyping/useMatcapTexture'
-export * from './prototyping/useNormalTexture'
+export { Loader } from './prototyping/Loader'
+export { useMatcapTexture } from './prototyping/useMatcapTexture'
+export { useNormalTexture } from './prototyping/useNormalTexture'

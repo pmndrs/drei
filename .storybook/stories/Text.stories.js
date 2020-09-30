@@ -1,23 +1,27 @@
-import * as React from 'react'
+import React from 'react'
+import { DoubleSide } from 'three'
 
 import { Setup } from '../Setup'
 
 import { Text } from '../../src/Text'
 import { useTurntable } from '../useTurntable'
+import { withKnobs, number, color as colorKnob, boolean } from '@storybook/addon-knobs'
 
 export default {
   title: 'Abstractions/Text',
   component: Text,
-  decorators: [(storyFn) => <Setup cameraPosition={[0, 0, 200]}>{storyFn()}</Setup>],
+  decorators: [withKnobs, (storyFn) => <Setup cameraPosition={[0, 0, 200]}>{storyFn()}</Setup>],
 }
 
 function TextScene() {
   const ref = useTurntable()
+  const customMaterial = boolean('Custom Material', false)
+  const defaultColor = '#EC2D2D'
 
   return (
     <Text
       ref={ref}
-      color={'#EC2D2D'}
+      color={customMaterial ? null : defaultColor}
       fontSize={12}
       maxWidth={200}
       lineHeight={1}
@@ -31,6 +35,16 @@ function TextScene() {
       MAGNA ALIQUA. UT ENIM AD MINIM VENIAM, QUIS NOSTRUD EXERCITATION ULLAMCO LABORIS NISI UT ALIQUIP EX EA COMMODO
       CONSEQUAT. DUIS AUTE IRURE DOLOR IN REPREHENDERIT IN VOLUPTATE VELIT ESSE CILLUM DOLORE EU FUGIAT NULLA PARIATUR.
       EXCEPTEUR SINT OCCAECAT CUPIDATAT NON PROIDENT, SUNT IN CULPA QUI OFFICIA DESERUNT MOLLIT ANIM ID EST LABORUM.
+      {
+        customMaterial ?
+        <meshBasicMaterial
+          attach="material"
+          side={DoubleSide}
+          color={colorKnob('Color', defaultColor)}
+          transparent
+          opacity={number('Opacity', 1, { range: true, min: 0, max: 1, step: 0.1 })} />
+        : null
+      }
     </Text>
   )
 }

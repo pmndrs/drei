@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Setup } from '../Setup'
 
-import { Stars } from '../../src/shaders/Stars'
+import { Stars } from '../../src/Stars'
 import { Plane } from '../../src/shapes'
 
 export default {

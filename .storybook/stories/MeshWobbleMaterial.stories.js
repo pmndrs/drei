@@ -3,7 +3,7 @@ import React, { useRef } from 'react'
 import { withKnobs, number } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
-import { MeshWobbleMaterial } from '../../src/shaders/MeshWobbleMaterial'
+import { MeshWobbleMaterial } from '../../src/MeshWobbleMaterial'
 import { Torus } from '../../src/shapes'
 import { useFrame } from 'react-three-fiber'
 

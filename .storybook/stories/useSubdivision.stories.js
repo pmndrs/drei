@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Setup } from '../Setup'
 
-import { useSubdivision } from '../../src/modifiers/useSubdivision'
+import { useSubdivision } from '../../src/useSubdivision'
 import { Octahedron } from '../../src/shapes'
 import { withKnobs, number } from '@storybook/addon-knobs'
 

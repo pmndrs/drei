@@ -2,7 +2,7 @@ import React, {useRef} from 'react'
 import { useFrame } from 'react-three-fiber'
 
 import { Setup } from '../Setup'
-import { Reflector } from '../../src/misc/Reflector'
+import { Reflector } from '../../src/Reflector'
 import { Box } from '../../src/shapes'
 
 export default {

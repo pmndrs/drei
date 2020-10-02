@@ -3,7 +3,7 @@ import React, { Suspense } from 'react'
 import { Canvas, useFrame } from 'react-three-fiber'
 import ThorAndMidgardSerpent from '../public/scene_draco'
 import { Html, Plane, useAspect, useTextureLoader } from '../../src'
-import { Loader } from '../../src/prototyping/Loader'
+import { Loader } from '../../src/Loader'
 
 export default {
   title: 'Prototyping/Loader',

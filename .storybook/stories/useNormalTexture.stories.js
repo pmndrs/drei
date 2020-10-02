@@ -2,8 +2,8 @@ import React, { Suspense } from 'react'
 
 import { Setup } from '../Setup'
 import { withKnobs, number } from '@storybook/addon-knobs'
-import { useGLTFLoader } from '../../src/loaders/useGLTFLoader'
-import { useNormalTexture } from '../../src/prototyping/useNormalTexture'
+import { useGLTFLoader } from '../../src/useGLTFLoader'
+import { useNormalTexture } from '../../src/useNormalTexture'
 
 export default {
   title: 'Prototyping/useNormalTexture',

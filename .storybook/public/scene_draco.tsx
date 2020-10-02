@@ -10,7 +10,7 @@ import * as THREE from 'three'
 import React, { useRef, useState, useEffect } from 'react'
 import { useLoader } from 'react-three-fiber'
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
-import { draco } from '../../src/loaders/draco'
+import { draco } from '../../src/draco'
 
 type GLTFResult = GLTF & {
   nodes: {

@@ -6,7 +6,7 @@
 [![Downloads](https://img.shields.io/npm/dt/@react-three/drei.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)
 [![Discord Shield](https://img.shields.io/discord/740090768164651008?style=flat&colorA=000000&colorB=000000&label=discord&logo=discord&logoColor=ffffff)](https://discord.gg/ZZjjNvJ)
 
-A growing collection of useful helpers and abstractions for [react-three-fiber](https://github.com/pmndrs/react-three-fiber), saving you some boilerplate.
+A growing collection of useful helpers and abstractions for [react-three-fiber](https://github.com/pmndrs/react-three-fiber).
 
 ```bash
 npm install @react-three/drei

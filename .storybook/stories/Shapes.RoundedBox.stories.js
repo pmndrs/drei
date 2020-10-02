@@ -5,7 +5,7 @@ import { useTurntable } from '../useTurntable'
 
 import { withKnobs, number } from '@storybook/addon-knobs'
 
-import { RoundedBox } from '../../src/shapes'
+import { RoundedBox } from '../../src/RoundedBox'
 
 export default {
   title: 'Shapes/RoundedBox',

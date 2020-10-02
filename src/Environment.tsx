@@ -1,7 +1,7 @@
 import { PMREMGenerator } from 'three'
 import { useEffect } from 'react'
 import { useThree } from 'react-three-fiber'
-import { useCubeTextureLoader } from '../loaders/useCubeTextureLoader'
+import { useCubeTextureLoader } from './useCubeTextureLoader'
 
 export function Environment({
   background = false,

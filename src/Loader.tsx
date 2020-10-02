@@ -1,5 +1,5 @@
 import React from 'react'
-import { useProgress } from '../loaders/useProgress'
+import { useProgress } from './useProgress'
 import { a, useTransition } from '@react-spring/web'
 
 const styles = {

@@ -1,42 +1,24 @@
-[![Version](https://img.shields.io/npm/v/react-three/drei?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)
-[![Downloads](https://img.shields.io/npm/dt/react-three/drei.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)
-[![Discord Shield](https://img.shields.io/discord/740090768164651008?style=flat&colorA=000000&colorB=000000&label=discord&logo=discord&logoColor=ffffff)](https://discord.gg/ZZjjNvJ)
-
-
 <p align="center">
     <img width="500" src="https://imgur.com/arDsXO6.jpg" alt="logo" />
 </p>
 
+[![Version](https://img.shields.io/npm/v/react-three/drei?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)
+[![Downloads](https://img.shields.io/npm/dt/react-three/drei.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)
+[![Discord Shield](https://img.shields.io/discord/740090768164651008?style=flat&colorA=000000&colorB=000000&label=discord&logo=discord&logoColor=ffffff)](https://discord.gg/ZZjjNvJ)
+
 A growing collection of useful helpers and abstractions for [react-three-fiber](https://github.com/pmndrs/react-three-fiber), saving you some boilerplate.
-
-If you find yourself repeating set-up code often and if it's generic enough, add it here, everyone benefits!
-
-#### Requirements
-
-- Types
-- ForwardRefs if possible, so that objects can be referenced back
-- Invalidate frames on any movement for those using invalidateFrameloop
-- Cleanup on unmount, no left-overs, restore previous states
 
 ```bash
 npm install @react-three/drei
 ```
 
 ```jsx
-import { ... } from '@react-three/drei'
-```
-
-#### Live Playground
-
-For examples of _drei_ in action, visit [https://drei.react-spring.io/](https://drei.react-spring.io/)
-
-Or, run the demo storybook on your computer:
-
-```bash
-git clone https://github.com/pmndrs/drei
-cd drei
-npm install
-npm run storybook
+// Flat bundle
+import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei'
+// Individual exports (better for bundle size!)
+import { PerspectiveCamera } from '@react-three/drei/PerspectiveCamera'
+import { PositionalAudio } from '@react-three/drei/PositionalAudio'
+...
 ```
 
 # Index
@@ -152,7 +134,9 @@ npm run storybook
 
 ## Cameras
 
-#### PerspectiveCamera [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-basic-demo-qgcrx)
+#### PerspectiveCamera
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-basic-demo-qgcrx)
 
 A responsive [THREE.PerspectiveCamera](https://threejs.org/docs/index.html#api/en/cameras/PerspectiveCamera) that can set itself as the default.
 
@@ -165,7 +149,9 @@ A responsive [THREE.PerspectiveCamera](https://threejs.org/docs/index.html#api/e
 </PerspectiveCamera>
 ```
 
-#### OrthographicCamera [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-render-target-kdj94)
+#### OrthographicCamera
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-render-target-kdj94)
 
 A responsive [THREE.OrthographicCamera](https://threejs.org/docs/index.html#api/en/cameras/OrthographicCamera) that can set itself as the default.
 
@@ -173,9 +159,13 @@ A responsive [THREE.OrthographicCamera](https://threejs.org/docs/index.html#api/
 
 If available controls have damping enabled by default, they manage their own updates, remove themselves on unmount, are compatible with the `invalidateFrameloop` canvas-flag. They inherit all props from their underlying [THREE controls](https://github.com/mrdoob/three.js/tree/dev/examples/jsm/controls).
 
-#### OrbitControls [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-contact-shadow-h5xcw)
+#### OrbitControls
 
-#### MapControls [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/react-three-fiber-map-mkq8e)
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-contact-shadow-h5xcw)
+
+#### MapControls
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/react-three-fiber-map-mkq8e)
 
 #### TrackballControls
 
@@ -183,9 +173,13 @@ If available controls have damping enabled by default, they manage their own upd
 
 #### DeviceOrientationControls
 
-#### TransformControls [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-transformcontrols-hc8gm)
+#### TransformControls
 
-#### PointerLockControls [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/blissful-leaf-vkgi6)
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-transformcontrols-hc8gm)
+
+#### PointerLockControls
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/blissful-leaf-vkgi6)
 
 ## Shapes
 
@@ -240,10 +234,10 @@ A box buffer geometry with rounded corners, done with extrusion.
 
 ```jsx
 <RoundedBox
-  args={[1, 1, 1]}  // Width, Height and Depth of the box
-  radius={0.05}     // Border-Radius of the box
-  smoothness={4}    // Optional, number of subdivisions
-  {...meshProps}    // All THREE.Mesh props are valid
+  args={[1, 1, 1]} // Width, Height and Depth of the box
+  radius={0.05} // Border-Radius of the box
+  smoothness={4} // Optional, number of subdivisions
+  {...meshProps} // All THREE.Mesh props are valid
 >
   <meshPhongMaterial attach="material" color="#f3f3f3" wireframe />
 </RoundedBox>
@@ -251,7 +245,9 @@ A box buffer geometry with rounded corners, done with extrusion.
 
 ## Abstractions
 
-#### Text [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-troika-text-eb4mx)
+#### Text
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-troika-text-eb4mx)
 
 Hi-quality text rendering w/ signed distance fields (SDF) and antialiasing, using [troika-3d-text](https://github.com/protectwise/troika/tree/master/packages/troika-3d-text). All of troikas props are valid!
 
@@ -265,7 +261,9 @@ Hi-quality text rendering w/ signed distance fields (SDF) and antialiasing, usin
 </Text>
 ```
 
-#### Line [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-line-7mtjx)
+#### Line
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-line-7mtjx)
 
 Renders a THREE.Line2.
 
@@ -281,7 +279,9 @@ Renders a THREE.Line2.
 />
 ```
 
-#### Detailed [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-detailed-dep1v)
+#### Detailed
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-detailed-dep1v)
 
 A wrapper around [THREE.LOD](https://threejs.org/docs/index.html#api/en/objects/LOD) (Level of detail).
 
@@ -296,7 +296,9 @@ A wrapper around [THREE.LOD](https://threejs.org/docs/index.html#api/en/objects/
 </Detailed>
 ```
 
-#### PositionalAudio [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-positionalaudio-yi1o0) ![](https://img.shields.io/badge/-suspense-brightgreen)
+#### PositionalAudio
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-positionalaudio-yi1o0) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
 A wrapper around [THREE.PositionalAudio](https://threejs.org/docs/index.html#api/en/audio/PositionalAudio). Add this to groups or meshes to tie them to a sound that plays when the camera comes near.
 
@@ -331,16 +333,14 @@ Adds a `<Plane />` that always faces the camera.
 Sets up a global cubemap, which affects `scene.environment`, and optionally `scene.background`.
 
 ```jsx
-<Environment
-  background={false}
-  files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']}
-  path={'/'}
-/>
+<Environment background={false} files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']} path={'/'} />
 ```
 
 ## Shaders
 
-#### MeshWobbleMaterial [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-sky-g5373)
+#### MeshWobbleMaterial
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-sky-g5373)
 
 This material makes your geometry wobble and wave around. It was taken from the [threejs-examples](https://threejs.org/examples/#webgl_materials_modified) and adapted into a self-contained material.
 
@@ -370,7 +370,9 @@ This material makes your geometry distort following simplex noise.
 </mesh>
 ```
 
-#### Sky [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-sky-3q4ev)
+#### Sky
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-sky-3q4ev)
 
 Adds a [sky](https://threejs.org/examples/webgl_shaders_sky.html) to your scene.
 
@@ -382,7 +384,9 @@ Adds a [sky](https://threejs.org/examples/webgl_shaders_sky.html) to your scene.
 />
 ```
 
-#### Stars [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-sky-m2ci7)
+#### Stars
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-sky-m2ci7)
 
 Adds a blinking shader-based starfield to your scene.
 
@@ -412,7 +416,9 @@ A [contact shadow](https://threejs.org/examples/?q=con#webgl_shadow_contact) imp
 />
 ```
 
-#### softShadows [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-soft-shadows-dh2jc)
+#### softShadows
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-soft-shadows-dh2jc)
 
 Injects [percent closer soft shadows (pcss)](https://threejs.org/examples/?q=pcss#webgl_shadowmap_pcss) into threes shader chunk.
 
@@ -426,13 +432,15 @@ softShadows({
 })
 ```
 
-#### shaderMaterial [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-shader-material-yltgr)
+#### shaderMaterial
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-shader-material-yltgr)
 
 Creates a THREE.ShaderMaterial for you with easier handling of uniforms, which are also automatically declared as setter/getters on the object.
 
 ```jsx
-import { extend } from "react-three-fiber"
-import glsl from "babel-plugin-glsl/macro"
+import { extend } from 'react-three-fiber'
+import glsl from 'babel-plugin-glsl/macro'
 
 const ColorShiftMaterial = shaderMaterial(
   { time: 0, color: new THREE.Color(0.2, 0.0, 0.1) },
@@ -455,16 +463,17 @@ const ColorShiftMaterial = shaderMaterial(
   `
 )
 
-extend({ ColorShiftMaterial })
-
-<mesh>
-  <colorShiftMaterial attach="material" color="hotpink" time={1} />
+extend({ ColorShiftMaterial }) < mesh > <colorShiftMaterial attach="material" color="hotpink" time={1} />
 ```
 
 ## Misc
 
-#### useContextBridge [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/misc-usecontextbridge--use-context-bridge-st)
+#### useContextBridge
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/misc-usecontextbridge--use-context-bridge-st)
+
 Allows you to forward contexts provided above the `<Canvas />` to be consumed from within the `<Canvas />` normally
+
 ```jsx
 function SceneWrapper() {
   // bridge any number of contexts
@@ -488,7 +497,9 @@ function Scene() {
 }
 ```
 
-#### Html [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-suspense-zu2wo)
+#### Html
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-suspense-zu2wo)
 
 Allows you to tie HTML content to any object of your scene. It will be projected to the objects whereabouts automatically.
 
@@ -508,7 +519,9 @@ Allows you to tie HTML content to any object of your scene. It will be projected
 </Html>
 ```
 
-#### Reflector [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/jolly-benz-pmk9j)
+#### Reflector
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/jolly-benz-pmk9j)
 
 Easily add reflection to any object
 
@@ -518,7 +531,9 @@ Easily add reflection to any object
 </Reflector>
 ```
 
-#### Shadow [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-render-target-t5fv8)
+#### Shadow
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-render-target-t5fv8)
 
 A cheap canvas-texture-based circular gradient.
 
@@ -531,7 +546,9 @@ A cheap canvas-texture-based circular gradient.
 />
 ```
 
-#### Stats [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-stats-8p4ph)
+#### Stats
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-stats-8p4ph)
 
 Adds [stats](https://github.com/mrdoob/stats.js/) to document.body. It takes over the render-loop!
 
@@ -558,7 +575,9 @@ useEffect(() => {
 return <Stats parent={parent} />
 ```
 
-#### meshBounds [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-basic-demo-8fpip)
+#### meshBounds
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-basic-demo-8fpip)
 
 A very fast, but often good-enough bounds-only raycast for meshes. You can use this if performance has precidence over pointer precision.
 
@@ -574,7 +593,9 @@ A hook for the rare case when you are using non-default cameras for heads-up-dis
 <mesh raycast={useCamera(customCamera)} />
 ```
 
-#### useHelper [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-use-helper-ly6kw)
+#### useHelper
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-use-helper-ly6kw)
 
 A hook for a quick way to add helpers to existing nodes in the scene. It handles removal of the helper on unmount and auto-updates it by default.
 
@@ -583,9 +604,11 @@ const mesh = useRef()
 useHelper(mesh, BoxHelper, 'cyan')
 ```
 
-#### useDetectGPU [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/misc-usedetectgpu)
+#### useDetectGPU
 
-This hook uses [DetectGPU by @TimvanScherpenzeel](https://github.com/TimvanScherpenzeel/detect-gpu) to determine what tier should be assigned to the user's GPU. 
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/misc-usedetectgpu)
+
+This hook uses [DetectGPU by @TimvanScherpenzeel](https://github.com/TimvanScherpenzeel/detect-gpu) to determine what tier should be assigned to the user's GPU.
 
 👉 This hook CAN be used outside the react-three-fiber `Canvas`.
 
@@ -597,7 +620,7 @@ return (
   {(GPUTier.tier === "0" || GPUTier.isMobile) ? <Fallback /> : <Canvas>...</Canvas>
 ```
 
-#### useAspect 
+#### useAspect
 
 This hook calculates aspect ratios (for now only what in css would be `image-size: cover` is supported). You can use it to make an image fill the screen. It is responsive and adapts to viewport resize. Just give the hook the image bounds in pixels. It returns an array: `[width, height, 1]`.
 
@@ -616,9 +639,11 @@ return (
 
 ## Modifiers
 
-#### useSubdivision [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-usesubdivision)
+#### useSubdivision
 
-This hook mutates a mesh geometry using [three's Subdivision modifier](https://threejs.org/examples/webgl_modifier_subdivision.html). 
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-usesubdivision)
+
+This hook mutates a mesh geometry using [three's Subdivision modifier](https://threejs.org/examples/webgl_modifier_subdivision.html).
 
 👉 Vertex count is quadrupled for each subdivision.
 
@@ -632,9 +657,11 @@ return (
 )
 ```
 
-#### useSimplification [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-usesimplification)
+#### useSimplification
 
-This hook mutates a mesh geometry using [three's Simplification modifier](https://threejs.org/examples/webgl_modifier_simplifier.html). 
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-usesimplification)
+
+This hook mutates a mesh geometry using [three's Simplification modifier](https://threejs.org/examples/webgl_modifier_simplifier.html).
 
 👉 The simplification code is based on [this algorithm](http://www.melax.com/polychop/).
 
@@ -648,16 +675,17 @@ return (
 )
 ```
 
+#### useTessellation
 
-#### useTessellation [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-usetessellation)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-usetessellation)
 
 This hook mutates a mesh geometry using [three's Tessellation modifier](https://threejs.org/examples/?q=tess#webgl_modifier_tessellation). It will break-up faces withe edge longer than the maxEdgeLength parameter.
 
 ```jsx
 const meshRef = useTessellation(
   2, // passes - number of times the geometry will be subdivided
-  8, // maxEdgeLength - faces with edges longer than this number will be broken up
-) 
+  8 // maxEdgeLength - faces with edges longer than this number will be broken up
+)
 
 return (
   <mesh ref={meshRef}>
@@ -668,7 +696,9 @@ return (
 
 ## Loaders
 
-#### useGLTFLoader [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/loaders-gltf)
+#### useGLTFLoader
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/loaders-gltf)
 
 A convenience hook that uses `useLoader`, `GLTFLoader` and `draco`:
 
@@ -684,23 +714,25 @@ useGLFTLoader(
 )
 ```
 
-#### useFBXLoader [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/loaders-fbx)
+#### useFBXLoader
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/loaders-fbx)
 
 A convenience hook that uses `useLoader` and `FBXLoader`:
 
 ```jsx
-useFBXLoader(
-  url
-)
+useFBXLoader(url)
 
 function SuzanneFBX() {
-  let  fbx = useFBXLoader('suzanne/suzanne.fbx')   
+  let fbx = useFBXLoader('suzanne/suzanne.fbx')
   // wrap fbx in primitive.
   return <primitive object={fbx} dispose={null} />
 }
 ```
 
-#### useTextureLoader [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/loaders-texture)
+#### useTextureLoader
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/loaders-texture)
 
 A convenience hook that uses `useLoader` and `TextureLoader`
 
@@ -710,18 +742,19 @@ const texture = useTextureLoader(url)
 const [texture1, texture2] = useTextureLoader([texture1, texture2])
 ```
 
-#### useCubeTextureLoader [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/loaders-cubetexture)
- 
+#### useCubeTextureLoader
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/loaders-cubetexture)
+
 A convenience hook that uses `useLoader` and `CubeTextureLoader`
 
 ```jsx
-const envMap = useCubeTextureLoader(
-  ['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'], 
-  { path: 'cube/' }
-)
+const envMap = useCubeTextureLoader(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'], { path: 'cube/' })
 ```
 
-#### draco [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/loaders-draco)
+#### draco
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/loaders-draco)
 
 Adds the Draco extension to your GLTFLoader, to be used in conjuction with `useLoader` and `GLTFLoader` when more control is needed.
 
@@ -735,7 +768,9 @@ useLoader(
 )
 ```
 
-#### useProgress [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/cranky-newton-k7f9x)
+#### useProgress
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/cranky-newton-k7f9x)
 
 A convenience hook that wraps `THREE.DefaultLoadingManager`'s progress status.
 
@@ -745,15 +780,15 @@ function Loader() {
   return <Html center>{progress} % loaded</Html>
 }
 
-<Suspense fallback={<Loader />}>
+;<Suspense fallback={<Loader />}>
   <AsyncModels />
 </Suspense>
 ```
 
-If you don't want your progress component to re-render on all changes you can be specific as to what you need, for instance if the component is supposed to collect errors only. Look into [zustand](https://github.com/react-spring/zustand) for more info about selectors. 
+If you don't want your progress component to re-render on all changes you can be specific as to what you need, for instance if the component is supposed to collect errors only. Look into [zustand](https://github.com/react-spring/zustand) for more info about selectors.
 
 ```jsx
-const errors = useProgress(state => state.errors)
+const errors = useProgress((state) => state.errors)
 ```
 
 👉 Note that your loading component does not have to be a suspense fallback. You can use it anywhere, even in your dom tree, for instance for overlays.
@@ -776,7 +811,7 @@ A quick and easy loading overlay component that you can drop on top of your canv
 You can override styles, too.
 
 ```jsx
-<Loader 
+<Loader
   containerStyles={...container} // Flex layout styles
   innerStyles={...inner} // Inner container styles
   barStyles={...bar} // Loading-bar styles
@@ -786,7 +821,9 @@ You can override styles, too.
 >
 ```
 
-#### useMatcapTexture [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/prototyping-usematcaptexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
+#### useMatcapTexture
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/prototyping-usematcaptexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
 Loads matcap textures from this repository: https://github.com/emmelleppi/matcaps
 
@@ -808,13 +845,14 @@ return (
 👉 You can also use the exact name of the matcap texture, like so:
 
 ```jsx
-const [matcap] = useMatcapTexture("3E2335_D36A1B_8E4A2E_2842A5");
+const [matcap] = useMatcapTexture('3E2335_D36A1B_8E4A2E_2842A5')
 ```
 
 👉 Use the `url` to download the texture when you are ready for production!
 
-#### useNormalTexture [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/prototyping-usenormaltexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
+#### useNormalTexture
 
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/prototyping-usenormaltexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
 Loads normal textures from this repository: https://github.com/emmelleppi/normal-maps
 
@@ -838,6 +876,7 @@ return (
 ```
 
 ---
+
 <a href="https://www.netlify.com">
   <img src="https://www.netlify.com/img/global/badges/netlify-color-bg.svg" alt="Deploys by Netlify" />
 </a>

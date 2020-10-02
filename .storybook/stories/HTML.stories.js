@@ -3,7 +3,7 @@ import React from 'react'
 import { Setup } from '../Setup'
 
 import { Icosahedron } from '../../src/shapes'
-import { Html } from '../../src/misc/Html'
+import { Html } from '../../src/Html'
 import { useTurntable } from '../useTurntable'
 
 export default {

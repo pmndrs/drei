@@ -1,5 +1,5 @@
 import React, { forwardRef, useMemo } from 'react'
-import { ReactThreeFiber, extend } from 'react-three-fiber'
+import { ReactThreeFiber } from 'react-three-fiber'
 import { Sky as SkyImpl } from 'three/examples/jsm/objects/Sky'
 import { Vector3 } from 'three'
 

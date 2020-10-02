@@ -2,8 +2,8 @@ import React, { Suspense } from 'react'
 
 import { Setup } from '../Setup'
 
-import { useDetectGPU } from '../../src/misc/useDetectGPU'
-import { Text } from '../../src/abstractions/Text'
+import { useDetectGPU } from '../../src/useDetectGPU'
+import { Text } from '../../src/Text'
 
 export default {
   title: 'Misc/useDetectGPU',

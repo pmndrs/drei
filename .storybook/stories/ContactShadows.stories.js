@@ -3,7 +3,7 @@ import { useFrame } from 'react-three-fiber'
 
 import { Setup } from '../Setup'
 
-import { ContactShadows } from '../../src/shaders/ContactShadows'
+import { ContactShadows } from '../../src/ContactShadows'
 import { Icosahedron, Plane } from '../../src/shapes'
 
 export default {

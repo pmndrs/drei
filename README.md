@@ -585,7 +585,9 @@ A very fast, but often good-enough bounds-only raycast for meshes. You can use t
 <mesh raycast={meshBounds} />
 ```
 
-#### useCamera [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/react-three-fiber-viewcube-py4db)
+#### useCamera
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/react-three-fiber-viewcube-py4db)
 
 A hook for the rare case when you are using non-default cameras for heads-up-displays or portals, and you need events/raytracing to function properly (raycasting uses the default camera otherwise).
 

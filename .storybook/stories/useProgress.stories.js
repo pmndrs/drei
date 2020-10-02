@@ -4,8 +4,6 @@ import { Setup } from '../Setup'
 
 import { useProgress } from '../../src/useProgress'
 import { useGLTFLoader } from '../../src/useGLTFLoader'
-import { useFBXLoader } from "../../src/useFBXLoader";
-import {useCubeTextureLoader} from "../../src";
 import { Html } from '../../src/Html'
 
 export default {
@@ -22,7 +20,7 @@ function Helmet() {
 
 
 function Loader() {
-  const { active, progress, errors, item, loaded, total } = useProgress()
+  const { progress } = useProgress()
   return <Html center><span style={{ color: 'white' }}>{progress} % loaded</span></Html>
 }
 

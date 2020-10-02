@@ -763,7 +763,7 @@ useLoader(
   GLTFLoader,
   url,
   draco(
-    '/draco-gtltf/' // Path to the Draco binaries (default='/draco-gtltf/')
+    '/draco-gtltf/' // Draco bin path (default='https://www.gstatic.com/draco/v1/decoders/')
   )
 )
 ```

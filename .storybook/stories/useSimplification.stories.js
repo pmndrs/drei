@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Setup } from '../Setup'
 
-import { useSimplification } from '../../src/modifiers/useSimplification'
+import { useSimplification } from '../../src/useSimplification'
 import { Octahedron } from '../../src/shapes'
 import { withKnobs, number } from '@storybook/addon-knobs'
 

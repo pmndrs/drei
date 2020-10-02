@@ -2,8 +2,8 @@ import React, { Suspense } from 'react'
 
 import { Setup } from '../Setup'
 import { withKnobs, number } from '@storybook/addon-knobs'
-import { useGLTFLoader } from '../../src/loaders/useGLTFLoader'
-import { useMatcapTexture } from '../../src/prototyping/useMatcapTexture'
+import { useGLTFLoader } from '../../src/useGLTFLoader'
+import { useMatcapTexture } from '../../src/useMatcapTexture'
 
 export default {
   title: 'Prototyping/useMatcapTexture',

@@ -6,8 +6,8 @@ import { withKnobs, number, color, boolean } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
 
-import { Line } from '../../src/abstractions/Line'
-import { OrbitControls } from '../../src/controls/OrbitControls'
+import { Line } from '../../src/Line'
+import { OrbitControls } from '../../src/OrbitControls'
 
 export default {
   title: 'Abstractions/Line',

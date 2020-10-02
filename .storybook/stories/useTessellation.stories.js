@@ -2,7 +2,7 @@ import React, { useEffect, useLayoutEffect } from 'react'
 import * as THREE from 'three'
 import { Setup } from '../Setup'
 
-import { useTessellation } from '../../src/modifiers/useTessellation'
+import { useTessellation } from '../../src/useTessellation'
 import { Octahedron } from '../../src/shapes'
 import { shaderMaterial } from '../../src/'
 import { withKnobs, number } from '@storybook/addon-knobs'

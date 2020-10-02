@@ -3,7 +3,7 @@ import { withKnobs, number } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
 
-import { Sky } from '../../src/shaders/Sky'
+import { Sky } from '../../src/Sky'
 import { Plane } from '../../src/shapes'
 
 export default {

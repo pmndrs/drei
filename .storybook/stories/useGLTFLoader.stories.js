@@ -2,7 +2,7 @@ import React, { Suspense } from 'react'
 
 import { Setup } from '../Setup'
 
-import { useGLTFLoader } from '../../src/loaders/useGLTFLoader'
+import { useGLTFLoader } from '../../src/useGLTFLoader'
 
 export default {
   title: 'Loaders/GLTF',

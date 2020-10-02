@@ -3,7 +3,7 @@ import React, { Suspense, useRef } from 'react'
 import { withKnobs, number } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
-import { MeshDistortMaterial } from '../../src/shaders/MeshDistortMaterial'
+import { MeshDistortMaterial } from '../../src/MeshDistortMaterial'
 import { Box, Icosahedron } from '../../src/shapes'
 import { extend } from 'react-three-fiber'
 

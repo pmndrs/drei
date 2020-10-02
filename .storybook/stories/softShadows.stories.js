@@ -4,7 +4,7 @@ import { Setup } from '../Setup'
 
 import { Plane, Sphere } from '../../src/shapes'
 
-import { softShadows } from '../../src/shaders/softShadows'
+import { softShadows } from '../../src/softShadows'
 import { useFrame } from 'react-three-fiber'
 
 softShadows()

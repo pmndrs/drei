@@ -2,10 +2,10 @@ import React from 'react'
 import {Canvas} from 'react-three-fiber'
 import { withKnobs } from '@storybook/addon-knobs'
 
-import { OrbitControls } from '../../src/controls/OrbitControls'
-import { Box } from '../../src/shapes/generated'
-import { useContextBridge } from '../../src/misc/useContextBridge'
-import { Text } from '../../src/abstractions/Text'
+import { OrbitControls } from '../../src/OrbitControls'
+import { Box } from '../../src/shapes'
+import { useContextBridge } from '../../src/useContextBridge'
+import { Text } from '../../src/Text'
 
 export default {
   title: 'Misc/useContextBridge',

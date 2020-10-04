@@ -310,10 +310,6 @@ A wrapper around [THREE.PositionalAudio](https://threejs.org/docs/index.html#api
 />
 ```
 
-#### StandardEffects
-
-Standard Effects has been removed from drei in favour of (react-spring/react-postprocessing)[https://github.com/react-spring/react-postprocessing]
-
 #### Billboard
 
 Adds a `<Plane />` that always faces the camera.

@@ -2,21 +2,21 @@ import React, { Suspense } from 'react'
 
 import { Setup } from '../Setup'
 
-import { useGLTFLoader } from '../../src/useGLTFLoader'
+import { useGLTF } from '../../src/useGLTF'
 
 export default {
   title: 'Loaders/GLTF',
-  component: useGLTFLoader,
+  component: useGLTF,
   decorators: [(storyFn) => <Setup cameraPosition={[0, 0, 5]}>{storyFn()}</Setup>],
 }
 
 function Suzanne() {
-  const { nodes, materials } = useGLTFLoader('suzanne.glb', true)
+  const { nodes, materials } = useGLTF('suzanne.glb', true)
 
   return <mesh material={materials['Material.001']} geometry={nodes.Suzanne.geometry} />
 }
 
-function UseGLTFLoaderScene() {
+function UseGLTFScene() {
   return (
     <Suspense fallback={null}>
       <Suzanne />
@@ -24,13 +24,13 @@ function UseGLTFLoaderScene() {
   )
 }
 
-export const UseGLTFLoaderSceneSt = () => <UseGLTFLoaderScene />
-UseGLTFLoaderSceneSt.story = {
+export const UseGLTFSceneSt = () => <UseGLTFScene />
+UseGLTFSceneSt.story = {
   name: 'Default',
 }
 
 function SuzanneWithLocal() {
-  const { nodes, materials } = useGLTFLoader('suzanne.glb', "/draco-gltf/")
+  const { nodes, materials } = useGLTF('suzanne.glb', '/draco-gltf/')
 
   return (
     <group dispose={null}>
@@ -51,4 +51,3 @@ export const DracoLocalSceneSt = () => <DracoLocalScene />
 DracoLocalSceneSt.story = {
   name: 'Local Binaries',
 }
-

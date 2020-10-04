@@ -21,12 +21,11 @@ export * from './PointerLockControls'
 
 // Loaders
 export * from './Loader'
-export * from './draco'
-export * from './useCubeTextureLoader'
-export * from './useFBXLoader'
-export * from './useGLTFLoader'
+export * from './useCubeTexture'
+export * from './useFBX'
+export * from './useGLTF'
 export * from './useProgress'
-export * from './useTextureLoader'
+export * from './useTexture'
 
 // Misc
 export * from './Html'

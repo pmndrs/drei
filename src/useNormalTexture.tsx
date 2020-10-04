@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react'
-import { useTextureLoader } from './useTextureLoader'
+import { useTexture } from './useTexture'
 import { RepeatWrapping, Texture, Vector2 } from 'three'
 import normalsList from './helpers/normal-assets.json'
 
@@ -13,7 +13,7 @@ export function useNormalTexture(id = 0, { repeat = [1, 1], anisotropy = 1, offs
   const url = `${NORMAL_ROOT}/normals/${imageName}`
 
   // @ts-expect-error
-  const normalTexture: Texture = useTextureLoader(url)
+  const normalTexture: Texture = useTexture(url)
 
   useEffect(() => {
     if (!normalTexture) return

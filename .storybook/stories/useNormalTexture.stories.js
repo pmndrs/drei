@@ -2,7 +2,7 @@ import React, { Suspense } from 'react'
 
 import { Setup } from '../Setup'
 import { withKnobs, number } from '@storybook/addon-knobs'
-import { useGLTFLoader } from '../../src/useGLTFLoader'
+import { useGLTF } from '../../src/useGLTF'
 import { useNormalTexture } from '../../src/useNormalTexture'
 
 export default {
@@ -12,7 +12,7 @@ export default {
 }
 
 function Suzanne() {
-  const { nodes } = useGLTFLoader('suzanne.glb', true)
+  const { nodes } = useGLTF('suzanne.glb', true)
   const repeat = number('texture repeat', 8)
   const scale = number('texture scale', 4)
   const [normalTexture] = useNormalTexture(number('texture index', 3), {

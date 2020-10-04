@@ -3,7 +3,7 @@ import React, { Suspense } from 'react'
 import { Setup } from '../Setup'
 
 import { useProgress } from '../../src/useProgress'
-import { useGLTFLoader } from '../../src/useGLTFLoader'
+import { useGLTF } from '../../src/useGLTF'
 import { Html } from '../../src/Html'
 
 export default {
@@ -13,7 +13,7 @@ export default {
 }
 
 function Helmet() {
-  const { nodes } = useGLTFLoader('https://threejs.org/examples/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf')
+  const { nodes } = useGLTF('https://threejs.org/examples/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf')
 
   return <primitive object={nodes['node_damagedHelmet_-6514']} />
 }

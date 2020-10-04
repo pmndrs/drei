@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useTextureLoader } from './useTextureLoader'
+import { useTexture } from './useTexture'
 import matcapList from './helpers/matcap-assets.json'
 
 function getFormatString(format: number) {
@@ -35,7 +35,7 @@ export function useMatcapTexture(id: number | string = 0, format = 1024) {
   const fileName = `${fileHash || DEFAULT_MATCAP}${getFormatString(format)}.png`
   const url = `${MATCAP_ROOT}/${format}/${fileName}`
 
-  const matcapTexture = useTextureLoader(url)
+  const matcapTexture = useTexture(url)
 
   return [matcapTexture, url, numTot]
 }

@@ -2,17 +2,17 @@ import React, { Suspense } from 'react'
 
 import { Setup } from '../Setup'
 
-import { useCubeTextureLoader } from '../../src/useCubeTextureLoader'
+import { useCubeTexture } from '../../src/useCubeTexture'
 import { Icosahedron, Sphere } from '../../src/shapes'
 
 export default {
   title: 'Loaders/CubeTexture',
-  component: useCubeTextureLoader,
+  component: useCubeTexture,
   decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
 }
 
 function TexturedMeshes() {
-  const envMap = useCubeTextureLoader(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'], { path: 'cube/' })
+  const envMap = useCubeTexture(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'], { path: 'cube/' })
 
   return (
     <>
@@ -23,7 +23,7 @@ function TexturedMeshes() {
   )
 }
 
-function UseCubeTextureLoaderScene() {
+function UseCubeTextureScene() {
   return (
     <Suspense fallback={null}>
       <TexturedMeshes />
@@ -31,7 +31,7 @@ function UseCubeTextureLoaderScene() {
   )
 }
 
-export const UseCubeTextureLoaderSceneSt = () => <UseCubeTextureLoaderScene />
-UseCubeTextureLoaderSceneSt.story = {
+export const UseCubeTextureSceneSt = () => <UseCubeTextureScene />
+UseCubeTextureSceneSt.story = {
   name: 'Default',
 }

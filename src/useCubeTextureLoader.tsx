@@ -13,6 +13,13 @@ export function useCubeTextureLoader(files: string[], { path }: Options): CubeTe
     [files],
     (loader: CubeTextureLoader) => loader.setPath(path)
   )
-
   return cubeTexture
 }
+
+useCubeTextureLoader.preload = (files: string[], { path }: Options) =>
+  useLoader.preload(
+    // @ts-ignore
+    CubeTextureLoader,
+    [files],
+    (loader: CubeTextureLoader) => loader.setPath(path)
+  )

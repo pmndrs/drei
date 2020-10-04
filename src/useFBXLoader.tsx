@@ -5,3 +5,5 @@ import { Group } from 'three'
 export function useFBXLoader(path: string): Group {
   return useLoader<Group>(FBXLoader, path)
 }
+
+useFBXLoader.preload = (path: string) => useLoader.preload(FBXLoader, path)

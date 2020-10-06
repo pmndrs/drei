@@ -17,6 +17,8 @@ type Props = JSX.IntrinsicElements['mesh'] & {
   depthOffset?: number
   overflowWrap?: 'normal' | 'break-word'
   whiteSpace?: 'normal' | 'overflowWrap' | 'overflowWrap'
+  outlineWidth?: number | string
+  outlineColor?: ReactThreeFiber.Color
   onSync?: (troika: TextMeshImpl) => void
 }
 
@@ -26,7 +28,7 @@ export const Text = forwardRef(({ anchorX = 'center', anchorY = 'middle', childr
   const [nodes, text] = useMemo(() => {
     let n: React.ReactNode[] = []
     let t = ''
-    Children.forEach(children, (child, index) => {
+    Children.forEach(children, (child) => {
       if (typeof child === 'string') {
         t += child
       } else {

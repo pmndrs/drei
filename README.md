@@ -704,7 +704,10 @@ A convenience hook that uses `useLoader` and `GLTFLoader`, it defaults to CDN lo
 useGLTF(url)
 
 // Use local draco binaries from a custom path
-useGLFTLoader(url, '/draco-gltf' )
+useGLTF(url, '/draco-gltf')
+
+// Preload asset (you would do this in global space, not inside a component!)
+useGLTF.preload(url)
 ```
 
 #### useFBX

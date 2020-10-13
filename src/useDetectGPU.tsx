@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { getGPUTier, IGetGPUTier } from 'detect-gpu'
 
 export function useDetectGPU(
-  props: IGetGPUTier
+  props?: IGetGPUTier
 ): {
   isDesktop: boolean
   isMobile: boolean

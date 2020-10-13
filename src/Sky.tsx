@@ -3,7 +3,7 @@ import { ReactThreeFiber } from 'react-three-fiber'
 import { Sky as SkyImpl } from 'three/examples/jsm/objects/Sky'
 import { Vector3 } from 'three'
 
-export type Sky = {
+type Props = {
   distance?: number
   sunPosition?: ReactThreeFiber.Vector3
   inclination?: number
@@ -12,7 +12,9 @@ export type Sky = {
   mieDirectionalG?: number
   rayleigh?: number
   turbidity?: number
-} & ReactThreeFiber.Object3DNode<SkyImpl, typeof SkyImpl>
+}
+
+export type Sky = Props & ReactThreeFiber.Object3DNode<SkyImpl, typeof SkyImpl>
 
 declare global {
   namespace JSX {
@@ -30,7 +32,7 @@ const phi = (azimuth: number) => {
   return 2 * Math.PI * (azimuth - 0.5)
 }
 
-export const Sky = forwardRef<Sky>(
+export const Sky = forwardRef(
   (
     {
       inclination = 0,
@@ -46,7 +48,7 @@ export const Sky = forwardRef<Sky>(
         Math.sin(phi(azimuth)) * Math.cos(theta(inclination)),
       ],
       ...props
-    }: Sky,
+    }: Props,
     ref
   ) => {
     const scale = useMemo(() => new Vector3().setScalar(distance), [distance])

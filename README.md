@@ -80,11 +80,10 @@ import { PositionalAudio } from '@react-three/drei/PositionalAudio'
         </ul>
         <li><a href="#loaders">Loaders</a></li>
         <ul>
-          <li><a href="#draco">draco</a></li>
-          <li><a href="#usegltfloader">useGLTFLoader</a></li>
-          <li><a href="#usefbxloader">useFBXLoader</a></li>
-          <li><a href="#usetextureloader">useTextureLoader</a></li>
-          <li><a href="#usecubetextureloader">useCubeTextureLoader</a></li>
+          <li><a href="#usegltf">useGLTF</a></li>
+          <li><a href="#usefbx">useFBX</a></li>
+          <li><a href="#usetexture">useTexture</a></li>
+          <li><a href="#usecubetexture">useCubeTexture</a></li>
           <li><a href="#useprogress">useProgress</a></li>
         </ul>
         <li><a href="#modifiers">Modifiers</a></li>
@@ -310,10 +309,6 @@ A wrapper around [THREE.PositionalAudio](https://threejs.org/docs/index.html#api
   {...props} // All THREE.PositionalAudio props are valid
 />
 ```
-
-#### StandardEffects
-
-Standard Effects has been removed from drei in favour of (react-spring/react-postprocessing)[https://github.com/react-spring/react-postprocessing]
 
 #### Billboard
 
@@ -698,76 +693,59 @@ return (
 
 ## Loaders
 
-#### useGLTFLoader
+#### useGLTF
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/loaders-gltf)
 
-A convenience hook that uses `useLoader`, `GLTFLoader` and `draco`:
+A convenience hook that uses `useLoader` and `GLTFLoader`, it defaults to CDN loaded draco binaries (`https://www.gstatic.com/draco/v1/decoders/`) which are only loaded for compressed models. 
 
 ```jsx
-useGLTFLoader(
-  url,
-  true // use draco binaries in /draco-gltf/
-)
+// Loads model, uses CDN draco when needed
+useGLTF(url)
 
-useGLFTLoader(
-  url,
-  '/my-draco-binaries' // use draco binaries from a custom path
-)
+// Use local draco binaries from a custom path
+useGLTF(url, '/draco-gltf')
+
+// Preload asset (you would do this in global space, not inside a component!)
+useGLTF.preload(url)
 ```
 
-#### useFBXLoader
+#### useFBX
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/loaders-fbx)
 
 A convenience hook that uses `useLoader` and `FBXLoader`:
 
 ```jsx
-useFBXLoader(url)
+useFBX(url)
 
 function SuzanneFBX() {
-  let fbx = useFBXLoader('suzanne/suzanne.fbx')
+  let fbx = useFBX('suzanne/suzanne.fbx')
   // wrap fbx in primitive.
   return <primitive object={fbx} dispose={null} />
 }
 ```
 
-#### useTextureLoader
+#### useTexture
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/loaders-texture)
 
 A convenience hook that uses `useLoader` and `TextureLoader`
 
 ```jsx
-const texture = useTextureLoader(url)
+const texture = useTexture(url)
 
-const [texture1, texture2] = useTextureLoader([texture1, texture2])
+const [texture1, texture2] = useTexture([texture1, texture2])
 ```
 
-#### useCubeTextureLoader
+#### useCubeTexture
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/loaders-cubetexture)
 
 A convenience hook that uses `useLoader` and `CubeTextureLoader`
 
 ```jsx
-const envMap = useCubeTextureLoader(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'], { path: 'cube/' })
-```
-
-#### draco
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/loaders-draco)
-
-Adds the Draco extension to your GLTFLoader, to be used in conjuction with `useLoader` and `GLTFLoader` when more control is needed.
-
-```jsx
-useLoader(
-  GLTFLoader,
-  url,
-  draco(
-    '/draco-gtltf/' // Draco bin path (default='https://www.gstatic.com/draco/v1/decoders/')
-  )
-)
+const envMap = useCubeTexture(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'], { path: 'cube/' })
 ```
 
 #### useProgress

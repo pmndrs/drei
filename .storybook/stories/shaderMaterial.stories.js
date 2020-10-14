@@ -7,7 +7,7 @@ import { MeshDistortMaterial } from '../../src/MeshDistortMaterial'
 import { Box, Icosahedron } from '../../src/shapes'
 import { extend } from 'react-three-fiber'
 
-import { shaderMaterial, useTextureLoader } from '../../src/'
+import { shaderMaterial, useTexture } from '../../src/'
 
 export default {
   title: 'Shaders/shaderMaterial',
@@ -54,7 +54,7 @@ extend({ MyMaterial })
 
 function ShaderMaterialScene() {
 
-  const map = useTextureLoader(`https://source.unsplash.com/random/400x400`)
+  const map = useTexture(`https://source.unsplash.com/random/400x400`)
   
   return (
     <Box args={[5, 5, 5]}>

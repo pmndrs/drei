@@ -1,7 +1,7 @@
 import { PMREMGenerator } from 'three'
 import { useEffect } from 'react'
 import { useThree } from 'react-three-fiber'
-import { useCubeTextureLoader } from './useCubeTextureLoader'
+import { useCubeTexture } from './useCubeTexture'
 
 export function Environment({
   background = false,
@@ -9,7 +9,7 @@ export function Environment({
   path = '/',
 }) {
   const { gl, scene } = useThree()
-  const cubeMap = useCubeTextureLoader(files, { path })
+  const cubeMap = useCubeTexture(files, { path })
   useEffect(() => {
     const gen = new PMREMGenerator(gl)
     gen.compileEquirectangularShader()

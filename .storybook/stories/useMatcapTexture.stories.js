@@ -2,7 +2,7 @@ import React, { Suspense } from 'react'
 
 import { Setup } from '../Setup'
 import { withKnobs, number } from '@storybook/addon-knobs'
-import { useGLTFLoader } from '../../src/useGLTFLoader'
+import { useGLTF } from '../../src/useGLTF'
 import { useMatcapTexture } from '../../src/useMatcapTexture'
 
 export default {
@@ -12,7 +12,7 @@ export default {
 }
 
 function Suzanne() {
-  const { nodes } = useGLTFLoader('suzanne.glb', true)
+  const { nodes } = useGLTF('suzanne.glb', true)
   const [matcapTexture] = useMatcapTexture(
     number('texture index', 111),
     1024

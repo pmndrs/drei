@@ -2,17 +2,17 @@ import React, { Suspense } from 'react'
 
 import { Setup } from '../Setup'
 
-import { useTextureLoader } from '../../src/useTextureLoader'
+import { useTexture } from '../../src/useTexture'
 import { Icosahedron, Sphere } from '../../src/shapes'
 
 export default {
   title: 'Loaders/Texture',
-  component: useTextureLoader,
+  component: useTexture,
   decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
 }
 
 function TexturedMeshes() {
-  const [matcap1, matcap2] = useTextureLoader(['matcap-1.png', 'matcap-2.png'])
+  const [matcap1, matcap2] = useTexture(['matcap-1.png', 'matcap-2.png'])
 
   return (
     <>
@@ -26,7 +26,7 @@ function TexturedMeshes() {
   )
 }
 
-function UseTextureLoaderScene() {
+function UseTextureScene() {
   return (
     <Suspense fallback={null}>
       <TexturedMeshes />
@@ -34,7 +34,7 @@ function UseTextureLoaderScene() {
   )
 }
 
-export const UseTextureLoaderSceneSt = () => <UseTextureLoaderScene />
-UseTextureLoaderSceneSt.story = {
+export const UseTextureSceneSt = () => <UseTextureScene />
+UseTextureSceneSt.story = {
   name: 'Default',
 }

@@ -1,27 +1,41 @@
-import { PMREMGenerator } from 'three'
 import { useEffect } from 'react'
-import { useThree } from 'react-three-fiber'
-import { useCubeTexture } from './useCubeTexture'
+import { useLoader, useThree } from 'react-three-fiber'
+import { CubeTextureLoader, Texture, PMREMGenerator } from 'three'
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
 
-export function Environment({
+function getTexture(texture, gen, isCubeMap) {
+  if (isCubeMap) {
+    gen.compileEquirectangularShader()
+    return gen.fromCubemap(texture).texture
+  }
+  return gen.fromEquirectangular(texture).texture
+}
+
+export default function Environment({
   background = false,
   files = ['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'],
   path = '/',
 }) {
   const { gl, scene } = useThree()
-  const cubeMap = useCubeTexture(files, { path })
+  const isCubeMap = Array.isArray(files)
+  const loader: any = isCubeMap ? CubeTextureLoader : RGBELoader
+  // @ts-expect-error
+  const loaderResult: Texture | Texture[] = useLoader(loader, isCubeMap ? [files] : files, (loader) =>
+    loader.setPath(path)
+  )
+  const map = isCubeMap ? loaderResult[0] : loaderResult
+
   useEffect(() => {
     const gen = new PMREMGenerator(gl)
-    gen.compileEquirectangularShader()
-    const hdrCubeRenderTarget = gen.fromCubemap(cubeMap)
-    cubeMap.dispose()
+    const texture = getTexture(map, gen, isCubeMap)
+    if (background) scene.background = texture
+    scene.environment = texture
+    map.dispose()
     gen.dispose()
-    if (background) scene.background = hdrCubeRenderTarget.texture
-    scene.environment = hdrCubeRenderTarget.texture
     return () => {
-      scene.environment?.dispose()
       scene.environment = scene.background = null
     }
-  }, [cubeMap, background, gl, scene])
+  }, [gl, map, isCubeMap, background, scene])
+
   return null
 }

@@ -14,8 +14,16 @@ type Props = {
   turbidity?: number
 }
 
-const theta = (inclination: number) => Math.PI * (inclination - 0.5)
-const phi = (azimuth: number) => 2 * Math.PI * (azimuth - 0.5)
+export function calcPosFromAngles(inclination: number, azimuth: number, vector: Vector3 = new Vector3()) {
+  const theta = Math.PI * (inclination - 0.5)
+  const phi = 2 * Math.PI * (azimuth - 0.5)
+
+  vector.x = Math.cos(phi)
+  vector.y = Math.sin(theta)
+  vector.z = Math.sin(phi)
+
+  return vector
+}
 
 export const Sky = forwardRef(
   (
@@ -27,11 +35,7 @@ export const Sky = forwardRef(
       mieDirectionalG = 0.8,
       rayleigh = 1,
       turbidity = 2,
-      sunPosition = [
-        Math.cos(phi(azimuth)),
-        Math.sin(phi(azimuth)) * Math.sin(theta(inclination)),
-        Math.sin(phi(azimuth)) * Math.cos(theta(inclination)),
-      ],
+      sunPosition = calcPosFromAngles(inclination, azimuth),
       ...props
     }: Props,
     ref

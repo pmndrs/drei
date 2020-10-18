@@ -14,23 +14,8 @@ type Props = {
   turbidity?: number
 }
 
-export type Sky = Props & ReactThreeFiber.Object3DNode<SkyImpl, typeof SkyImpl>
-
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      skyImpl: Sky
-    }
-  }
-}
-
-const theta = (inclination: number) => {
-  return Math.PI * (inclination - 0.5)
-}
-
-const phi = (azimuth: number) => {
-  return 2 * Math.PI * (azimuth - 0.5)
-}
+const theta = (inclination: number) => Math.PI * (inclination - 0.5)
+const phi = (azimuth: number) => 2 * Math.PI * (azimuth - 0.5)
 
 export const Sky = forwardRef(
   (

@@ -36,7 +36,8 @@ function SkyScene2() {
         rayleigh={number('Rayleigh', 6, { range: true, max: 10, step: 0.1 })} 
         mieCoefficient={number('mieCoefficient', 0.005, { range: true, max: 0.1, step: 0.001 })} 
         mieDirectionalG={number('mieDirectionalG', 0.8, { range: true, max: 1., step: 0.01 })} 
-        sunPosition={[Math.PI, 0, 0]}
+        inclination={number('Inclination', 0.49, { range: true, max: 1, step: 0.01 })}
+        azimuth={number('Azimuth', 0.25, { range: true, max: 1, step: 0.01 })}
         />
       <Plane rotation-x={Math.PI / 2} args={[100, 100, 4, 4]}>
         <meshBasicMaterial color="black" wireframe attach="material" />

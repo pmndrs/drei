@@ -6,6 +6,8 @@ import { Vector3 } from 'three'
 type Props = {
   distance?: number
   sunPosition?: ReactThreeFiber.Vector3
+  inclination?: number
+  azimuth?: number
   mieCoefficient?: number
   mieDirectionalG?: number
   rayleigh?: number
@@ -22,15 +24,29 @@ declare global {
   }
 }
 
+const theta = (inclination: number) => {
+  return Math.PI * (inclination - 0.5)
+}
+
+const phi = (azimuth: number) => {
+  return 2 * Math.PI * (azimuth - 0.5)
+}
+
 export const Sky = forwardRef(
   (
     {
+      inclination = 0,
+      azimuth = 0.25,
       distance = 100,
       mieCoefficient = 0.005,
       mieDirectionalG = 0.8,
       rayleigh = 1,
       turbidity = 2,
-      sunPosition = [0, Math.PI, 0],
+      sunPosition = [
+        Math.cos(phi(azimuth)),
+        Math.sin(phi(azimuth)) * Math.sin(theta(inclination)),
+        Math.sin(phi(azimuth)) * Math.cos(theta(inclination)),
+      ],
       ...props
     }: Props,
     ref

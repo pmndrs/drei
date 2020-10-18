@@ -374,7 +374,9 @@ Adds a [sky](https://threejs.org/examples/webgl_shaders_sky.html) to your scene.
 ```jsx
 <Sky
   distance={450000} // Camera distance (default=450000)
-  sunPosition={[0, 1, 0]} // Sun position normal (default=[0, 1, 0])
+  sunPosition={[0, 1, 0]} // Sun position normal (defaults to inclination and azimuth if not set)
+  inclination={0} // Sun elevation angle from 0 to 1 (default=0)
+  azimuth={0.25} // Sun rotation around the Y axis from 0 to 1 (default=0.25)
   {...props} // All three/examples/jsm/objects/Sky props are valid
 />
 ```
@@ -697,7 +699,7 @@ return (
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/loaders-gltf)
 
-A convenience hook that uses `useLoader` and `GLTFLoader`, it defaults to CDN loaded draco binaries (`https://www.gstatic.com/draco/v1/decoders/`) which are only loaded for compressed models. 
+A convenience hook that uses `useLoader` and `GLTFLoader`, it defaults to CDN loaded draco binaries (`https://www.gstatic.com/draco/v1/decoders/`) which are only loaded for compressed models.
 
 ```jsx
 // Loads model, uses CDN draco when needed

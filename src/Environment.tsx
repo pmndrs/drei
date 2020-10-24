@@ -11,7 +11,7 @@ function getTexture(texture, gen, isCubeMap) {
   return gen.fromEquirectangular(texture).texture
 }
 
-export default function Environment({
+export function Environment({
   background = false,
   files = ['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'],
   path = '/',

@@ -1,6 +1,7 @@
-import { useState, useEffect, RefObject } from 'react'
+import { useEffect, RefObject } from 'react'
 import { addEffect, addAfterEffect } from 'react-three-fiber'
-import * as StatsImpl from 'three/examples/js/libs/stats.min'
+import StatsImpl from 'three/examples/js/libs/stats.min'
+import useEffectfulState from './helpers/useEffectfulState'
 
 type Props = {
   showPanel?: number
@@ -9,19 +10,21 @@ type Props = {
 }
 
 export function Stats({ showPanel = 0, className, parent }: Props): null {
-  const [stats] = useState(() => new (StatsImpl as any)())
+  const stats = useEffectfulState(() => new StatsImpl(), [])
   useEffect(() => {
-    const node = (parent && parent.current) || document.body
-    stats.showPanel(showPanel)
-    node?.appendChild(stats.dom)
-    if (className) stats.dom.classList.add(className)
-    const begin = addEffect(() => stats.begin())
-    const end = addAfterEffect(() => stats.end())
-    return () => {
-      node?.removeChild(stats.dom)
-      begin()
-      end()
+    if (stats) {
+      const node = (parent && parent.current) || document.body
+      stats.showPanel(showPanel)
+      node?.appendChild(stats.dom)
+      if (className) stats.dom.classList.add(className)
+      const begin = addEffect(() => stats.begin())
+      const end = addAfterEffect(() => stats.end())
+      return () => {
+        node?.removeChild(stats.dom)
+        begin()
+        end()
+      }
     }
-  }, [parent])
+  }, [parent, stats, className, showPanel])
   return null
 }

@@ -1,7 +1,8 @@
 import { Object3D, Group } from 'three'
-import React, { forwardRef, useRef, useLayoutEffect, useEffect, useMemo } from 'react'
+import React, { forwardRef, useRef, useLayoutEffect, useEffect } from 'react'
 import { ReactThreeFiber, useThree, Overwrite } from 'react-three-fiber'
 import { TransformControls as TransformControlsImpl } from 'three/examples/jsm/controls/TransformControls'
+import useEffectfulState from './helpers/useEffectfulState'
 import pick from 'lodash.pick'
 import omit from 'lodash.omit'
 
@@ -53,23 +54,27 @@ export const TransformControls = forwardRef(
     const objectProps = omit(props, transformOnlyPropNames)
 
     const { camera, gl, invalidate } = useThree()
-    const controls = useMemo(() => new TransformControlsImpl(camera, gl.domElement), [camera, gl.domElement])
+    const controls = useEffectfulState(
+      () => new TransformControlsImpl(camera, gl.domElement),
+      [camera, gl.domElement],
+      ref as any
+    )
 
     const group = useRef<Group>()
-    useLayoutEffect(() => void controls.attach(group.current as Object3D), [children, controls])
+    useLayoutEffect(() => void controls?.attach(group.current as Object3D), [children, controls])
 
     useEffect(() => {
       controls?.addEventListener?.('change', invalidate)
       return () => controls?.removeEventListener?.('change', invalidate)
     }, [controls, invalidate])
 
-    return (
+    return controls ? (
       <>
-        <primitive dispose={null} object={controls} ref={ref} {...transformProps} />
+        <primitive dispose={undefined} object={controls} {...transformProps} />
         <group ref={group} {...objectProps}>
           {children}
         </group>
       </>
-    )
+    ) : null
   }
 )

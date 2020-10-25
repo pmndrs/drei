@@ -46,7 +46,15 @@ export const Text = forwardRef(({ anchorX = 'center', anchorY = 'middle', childr
       })
   )
   return (
-    <primitive dispose={null} object={troikaMesh} ref={ref} text={text} anchorX={anchorX} anchorY={anchorY} {...props}>
+    <primitive
+      dispose={undefined}
+      object={troikaMesh}
+      ref={ref}
+      text={text}
+      anchorX={anchorX}
+      anchorY={anchorY}
+      {...props}
+    >
       {nodes}
     </primitive>
   )

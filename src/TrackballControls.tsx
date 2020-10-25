@@ -1,6 +1,7 @@
 import React, { forwardRef, useMemo, useEffect } from 'react'
 import { ReactThreeFiber, useThree, useFrame, Overwrite } from 'react-three-fiber'
 import { TrackballControls as TrackballControlsImpl } from 'three/examples/jsm/controls/TrackballControls'
+import useEffectfulState from './helpers/useEffectfulState'
 
 export type TrackballControls = Overwrite<
   ReactThreeFiber.Object3DNode<TrackballControlsImpl, typeof TrackballControlsImpl>,
@@ -17,13 +18,13 @@ declare global {
 
 export const TrackballControls = forwardRef((props: TrackballControls, ref) => {
   const { camera, gl, invalidate } = useThree()
-  const controls = useMemo(() => new TrackballControlsImpl(camera, gl.domElement), [camera, gl])
+  const controls = useEffectfulState(() => new TrackballControlsImpl(camera, gl.domElement), [camera, gl], ref as any)
 
-  useFrame(() => controls.update())
+  useFrame(() => controls?.update())
   useEffect(() => {
     controls?.addEventListener?.('change', invalidate)
     return () => controls?.removeEventListener?.('change', invalidate)
   }, [controls, invalidate])
 
-  return <primitive dispose={null} object={controls} ref={ref} {...props} />
+  return controls ? <primitive dispose={undefined} object={controls} {...props} /> : null
 })

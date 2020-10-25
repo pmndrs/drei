@@ -23,7 +23,7 @@ export const Line = React.forwardRef<Line2, Props>(function Line(
   const [line2] = useState(() => new Line2())
   const [lineGeometry] = useState(() => new LineGeometry())
   const [lineMaterial] = useState(() => new LineMaterial())
-  const resolution = useMemo(() => new THREE.Vector2(512, 512), [])
+  const [resolution] = useState(() => new THREE.Vector2(512, 512))
   useEffect(() => {
     lineGeometry.setPositions(points.flat())
     if (vertexColors) lineGeometry.setColors(vertexColors.flat())
@@ -39,10 +39,10 @@ export const Line = React.forwardRef<Line2, Props>(function Line(
     lineMaterial.needsUpdate = true
   }, [dashed, lineMaterial])
   return (
-    <primitive dispose={null} object={line2} ref={ref} {...rest}>
-      <primitive dispose={null} object={lineGeometry} attach="geometry" />
+    <primitive dispose={undefined} object={line2} ref={ref} {...rest}>
+      <primitive dispose={undefined} object={lineGeometry} attach="geometry" />
       <primitive
-        dispose={null}
+        dispose={undefined}
         object={lineMaterial}
         attach="material"
         color={color}

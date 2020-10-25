@@ -1,5 +1,5 @@
-import React, { forwardRef, useMemo, useRef } from 'react'
-import { useFrame, ReactThreeFiber } from 'react-three-fiber'
+import React, { forwardRef, useMemo, useState, useRef } from 'react'
+import { useFrame } from 'react-three-fiber'
 import { Points, Vector3, Spherical, Color, AdditiveBlending, ShaderMaterial } from 'three'
 
 type Props = {
@@ -71,7 +71,7 @@ export const Stars = forwardRef(
     }, [count, depth, factor, radius, saturation])
     useFrame((state) => material.current && (material.current.uniforms.time.value = state.clock.getElapsedTime()))
 
-    const starfieldMaterial = useMemo(() => new StarfieldMaterial(), [])
+    const [starfieldMaterial] = useState(() => new StarfieldMaterial())
 
     return (
       <points ref={ref as React.MutableRefObject<Points>}>
@@ -81,6 +81,7 @@ export const Stars = forwardRef(
           <bufferAttribute attachObject={['attributes', 'size']} args={[size, 1]} />
         </bufferGeometry>
         <primitive
+          dispose={undefined}
           ref={material}
           object={starfieldMaterial}
           attach="material"

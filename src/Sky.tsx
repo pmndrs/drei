@@ -1,4 +1,4 @@
-import React, { forwardRef, useMemo } from 'react'
+import React, { forwardRef, useMemo, useState } from 'react'
 import { ReactThreeFiber } from 'react-three-fiber'
 import { Sky as SkyImpl } from 'three/examples/jsm/objects/Sky'
 import { Vector3 } from 'three'
@@ -41,10 +41,11 @@ export const Sky = forwardRef(
     ref
   ) => {
     const scale = useMemo(() => new Vector3().setScalar(distance), [distance])
-    const sky = useMemo(() => new SkyImpl(), [])
+    const [sky] = useState(() => new SkyImpl())
 
     return (
       <primitive
+        dispose={undefined}
         object={sky}
         ref={ref}
         material-uniforms-mieCoefficient-value={mieCoefficient}

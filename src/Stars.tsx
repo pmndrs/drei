@@ -1,5 +1,5 @@
 import React, { forwardRef, useMemo, useState, useRef } from 'react'
-import { useFrame } from 'react-three-fiber'
+import { ReactThreeFiber, useFrame } from 'react-three-fiber'
 import { Points, Vector3, Spherical, Color, AdditiveBlending, ShaderMaterial } from 'three'
 
 type Props = {

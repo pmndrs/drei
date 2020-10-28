@@ -27,7 +27,7 @@ export const isWebGL2Available = () => {
   }
 }
 
-export default function Effects({ children, multisamping = 8, renderIndex = 1 }) {
+export function Effects({ children, multisamping = 8, renderIndex = 1 }) {
   const composer = useRef<EffectComposer>()
   const { scene, camera, gl, size } = useThree()
   const [target] = useState(() => {

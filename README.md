@@ -50,6 +50,7 @@ import { PositionalAudio } from '@react-three/drei/PositionalAudio'
           <li><a href="#positionalaudio">PositionalAudio</a></li>
           <li><a href="#billboard">Billboard</a></li>
           <li><a href="#environment">Environment</a></li>
+          <li><a href="#effects">Effects</a></li>
         </ul>
         <li><a href="#shaders">Shaders</a></li>
         <ul>
@@ -329,6 +330,20 @@ Sets up a global cubemap, which affects `scene.environment`, and optionally `sce
 
 ```jsx
 <Environment background={false} files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']} path={'/'} />
+```
+
+#### Effects
+
+Abstraction around threes own [EffectComposer](https://threejs.org/docs/index.html#examples/en/postprocessing/EffectComposer).
+
+```jsx
+<Effects
+  multisamping={8} // Default, uses WebGL2 multisamping if available
+  renderIndex={1}  // Default
+>
+  {/* Generic passes go here ... */}
+  <lUTPass attachArray="passes" lut={texture3D} />
+</Effects>
 ```
 
 ## Shaders

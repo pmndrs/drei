@@ -5,6 +5,7 @@ export * from './Line'
 export * from './PositionalAudio'
 export * from './Text'
 export * from './Environment'
+export * from './Effects'
 
 // Cameras
 export * from './OrthographicCamera'

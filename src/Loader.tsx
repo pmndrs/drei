@@ -39,6 +39,15 @@ const styles = {
   },
 }
 
+interface LoaderOptions {
+  containerStyles: any
+  innerStyles: any
+  barStyles: any
+  dataStyles: any
+  dataInterpolation: (p: number) => string
+  initialState: (active: boolean) => boolean
+}
+
 export function Loader({
   containerStyles,
   innerStyles,
@@ -46,7 +55,7 @@ export function Loader({
   dataStyles,
   dataInterpolation = (p: number) => `Loading ${p.toFixed(2)}%`,
   initialState = (active: boolean) => active,
-}) {
+}: Partial<LoaderOptions>) {
   const { active, progress } = useProgress()
   const transition = useTransition(initialState(active), {
     from: { opacity: 1, progress: 0 },

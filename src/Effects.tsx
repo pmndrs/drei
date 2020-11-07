@@ -61,7 +61,7 @@ export const Effects = forwardRef(
     useFrame(() => composer.current?.render(), renderIndex)
 
     return (
-      <effectComposer ref={mergeRefs(ref, composer)} args={[gl, target]} {...props}>
+      <effectComposer ref={mergeRefs([ref, composer])} args={[gl, target]} {...props}>
         {!disableRenderPass && <renderPass attachArray="passes" args={[scene, camera]} />}
         {!disableGamma && <shaderPass attachArray="passes" args={[GammaCorrectionShader]} />}
         {children}

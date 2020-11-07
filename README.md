@@ -340,6 +340,8 @@ Abstraction around threes own [EffectComposer](https://threejs.org/docs/index.ht
 <Effects
   multisamping={8} // Default, uses WebGL2 multisamping if available
   renderIndex={1}  // Default
+  disableGamma={false}  // Default, would switch off the gamma-correction-pass 
+  disableRenderPass={false} // Default, would remove the first scene-render-pass
 >
   {/* Generic passes go here ... */}
   <lUTPass attachArray="passes" lut={texture3D} />

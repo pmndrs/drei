@@ -11523,23 +11523,23 @@ tr46@^2.0.2:
   dependencies:
     punycode "^2.1.1"
 
-troika-three-text@^0.34.0:
-  version "0.34.0"
-  resolved "https://registry.yarnpkg.com/troika-three-text/-/troika-three-text-0.34.0.tgz#016190e58482fbf7abdab41e329804dc84cee81a"
-  integrity sha512-7lcJAqDZXCwJ8p+nnMgd26eH3g90NlM5L381q0En08zrZXhuQSxp/hmjv1CPIzR7U9+Mhfe+KZ2jGYSuK3zfbw==
+troika-three-text@^0.34.2:
+  version "0.34.2"
+  resolved "https://registry.yarnpkg.com/troika-three-text/-/troika-three-text-0.34.2.tgz#5de211ba9f4378047eac6b3c3fe1e68bb761f86c"
+  integrity sha512-2YNZjI1TJXDrSz3JvQEW4GXJ6/Zlca+On0rbPyqGvcKYZTXzHkUd7a/wBIBicP9Ca/W+V0E+BVLvsoZEXjqTfg==
   dependencies:
     troika-three-utils "^0.34.0"
-    troika-worker-utils "^0.34.0"
+    troika-worker-utils "^0.34.1"
 
 troika-three-utils@^0.34.0:
   version "0.34.0"
   resolved "https://registry.yarnpkg.com/troika-three-utils/-/troika-three-utils-0.34.0.tgz#9c34b31e8f6fd978af4be21382b7a21108ffd3e6"
   integrity sha512-6Dm6FzGFpuiehjKkm3wAV3e+SPnHQ+GxwXnHFToKLcQ1/gVDOIL69BWCosrlEUb0SUOQjQv6sd5QpNT6IIewpQ==
 
-troika-worker-utils@^0.34.0:
-  version "0.34.0"
-  resolved "https://registry.yarnpkg.com/troika-worker-utils/-/troika-worker-utils-0.34.0.tgz#48e05d9cf6ca2bf42a5c96a0f81138369f2ea0a2"
-  integrity sha512-kB42kXw+b+Q1omvv/p1R6sZ7mO03lihAoySGjjjhNfLlJ1A7lsJW8vPi1WiSqVqGrI0BdDTPiyTU2AlYgSjZUg==
+troika-worker-utils@^0.34.1:
+  version "0.34.1"
+  resolved "https://registry.yarnpkg.com/troika-worker-utils/-/troika-worker-utils-0.34.1.tgz#15b59af90a590106161473e4e28778e64e0d3456"
+  integrity sha512-zLTSB6ISd/dpBMG6PFR2v7sqU2bqVwOUd45iWzcgcRE9+w/5YJN8h0+H5EmgRPIVe5xus0UZQKUgVH6FRA+YdQ==
 
 ts-dedent@^1.1.1:
   version "1.1.1"

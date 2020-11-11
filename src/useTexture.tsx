@@ -1,8 +1,13 @@
 import { Texture, TextureLoader } from 'three'
 import { useLoader } from 'react-three-fiber'
 
-export function useTexture(url: string extends any[] ? string[] : string): Texture | Texture[] {
+export function useTexture(url: string): Texture {
   return useLoader(TextureLoader, url)
 }
 
-useTexture.preload = (url: string extends any[] ? string[] : string) => useLoader.preload(TextureLoader, url)
+export function useTextures(urls: string[]): Texture[] {
+  return useLoader<Texture[]>(TextureLoader, urls)
+}
+
+useTexture.preload = (url: string) => useLoader.preload(TextureLoader, url)
+useTextures.preload = (urls: string[]) => useLoader.preload<Texture[]>(TextureLoader, urls)

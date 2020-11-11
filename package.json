@@ -1,6 +1,6 @@
 {
   "name": "@react-three/drei",
-  "version": "2.2.5",
+  "version": "2.2.6",
   "private": true,
   "description": "useful add-ons for react-three-fiber",
   "keywords": [
@@ -54,7 +54,7 @@
     "lodash.pick": "^4.4.0",
     "react-merge-refs": "^1.0.0",
     "stats.js": "^0.17.0",
-    "troika-three-text": "^0.34.0",
+    "troika-three-text": "^0.34.2",
     "utility-types": "^3.10.0",
     "zustand": "^3.0.3"
   },

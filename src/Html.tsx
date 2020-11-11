@@ -119,6 +119,7 @@ export const Html = React.forwardRef(
 
     useFrame(() => {
       if (group.current) {
+        camera.updateMatrixWorld()
         const vec = calculatePosition(group.current, camera, size)
         if (Math.abs(old.current[0] - vec[0]) > eps || Math.abs(old.current[1] - vec[1]) > eps) {
           el.style.display = !isObjectBehindCamera(group.current, camera) ? 'block' : 'none'

@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import { Setup } from '../Setup'
 import { DeviceOrientationControls } from '../../src/DeviceOrientationControls'
 import { Box } from '../../src/shapes'

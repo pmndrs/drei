@@ -1,4 +1,4 @@
-import React, { forwardRef, useMemo, useState, useRef } from 'react'
+import * as React from 'react'
 import { ReactThreeFiber, useFrame } from 'react-three-fiber'
 import { Points, Vector3, Spherical, Color, AdditiveBlending, ShaderMaterial } from 'three'
 
@@ -51,10 +51,14 @@ const genStar = (r: number) => {
   return new Vector3().setFromSpherical(new Spherical(r, Math.acos(1 - Math.random() * 2), Math.random() * 2 * Math.PI))
 }
 
-export const Stars = forwardRef(
+const attachObjectPosition: [string, string] = ['attributes', 'position']
+const attachObjectColor: [string, string] = ['attributes', 'color']
+const attachObjectSize: [string, string] = ['attributes', 'size']
+
+export const Stars = React.forwardRef(
   ({ radius = 100, depth = 50, count = 5000, saturation = 0, factor = 4, fade = false }: Props, ref) => {
-    const material = useRef<StarfieldMaterial>()
-    const [position, color, size] = useMemo(() => {
+    const material = React.useRef<StarfieldMaterial>()
+    const [position, color, size] = React.useMemo(() => {
       const positions: any[] = []
       const colors: any[] = []
       const sizes = Array.from({ length: count }, () => (0.5 + 0.5 * Math.random()) * factor)
@@ -71,14 +75,35 @@ export const Stars = forwardRef(
     }, [count, depth, factor, radius, saturation])
     useFrame((state) => material.current && (material.current.uniforms.time.value = state.clock.getElapsedTime()))
 
-    const [starfieldMaterial] = useState(() => new StarfieldMaterial())
+    const [starfieldMaterial] = React.useState(() => new StarfieldMaterial())
+
+    const positionArgs: [Float32Array, number] = React.useMemo(
+      function memo() {
+        return [position, 3]
+      },
+      [position]
+    )
+
+    const colorArgs: [Float32Array, number] = React.useMemo(
+      function memo() {
+        return [color, 3]
+      },
+      [color]
+    )
+
+    const sizeArgs: [Float32Array, number] = React.useMemo(
+      function memo() {
+        return [size, 3]
+      },
+      [size]
+    )
 
     return (
       <points ref={ref as React.MutableRefObject<Points>}>
         <bufferGeometry attach="geometry">
-          <bufferAttribute attachObject={['attributes', 'position']} args={[position, 3]} />
-          <bufferAttribute attachObject={['attributes', 'color']} args={[color, 3]} />
-          <bufferAttribute attachObject={['attributes', 'size']} args={[size, 1]} />
+          <bufferAttribute attachObject={attachObjectPosition} args={positionArgs} />
+          <bufferAttribute attachObject={attachObjectColor} args={colorArgs} />
+          <bufferAttribute attachObject={attachObjectSize} args={sizeArgs} />
         </bufferGeometry>
         <primitive
           dispose={undefined}

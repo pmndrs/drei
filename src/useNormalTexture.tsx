@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { useTexture } from './useTexture'
 import { RepeatWrapping, Texture, Vector2 } from 'three'
-import normalsList from './helpers/normal-assets.json'
+import * as normalsList from './helpers/normal-assets.json'
 
 const NORMAL_ROOT = 'https://rawcdn.githack.com/emmelleppi/normal-maps/f24c810fc1d86b5b1e5dfea914b668f70b5f2923'
 const DEFAULT_NORMAL = normalsList[0]

@@ -1,5 +1,5 @@
 import { Mesh, Color } from 'three'
-import React, { forwardRef, useMemo } from 'react'
+import * as React from 'react'
 
 type Props = JSX.IntrinsicElements['mesh'] & {
   colorStop?: number
@@ -8,9 +8,11 @@ type Props = JSX.IntrinsicElements['mesh'] & {
   opacity?: number
 }
 
-export const Shadow = forwardRef(
+const planeBufferGeometryArgs: [number, number] = [1, 1]
+
+export const Shadow = React.forwardRef(
   ({ fog = false, colorStop = 0.0, color = 'black', opacity = 0.5, ...props }: Props, ref) => {
-    const canvas = useMemo(() => {
+    const canvas = React.useMemo(() => {
       let canvas = document.createElement('canvas')
       canvas.width = 128
       canvas.height = 128
@@ -29,11 +31,20 @@ export const Shadow = forwardRef(
       context.fillRect(0, 0, canvas.width, canvas.height)
       return canvas
     }, [color, colorStop])
+
+    // memoised for perf
+    const canvases: [HTMLCanvasElement] = React.useMemo(
+      function memo() {
+        return [canvas]
+      },
+      [canvas]
+    )
+
     return (
       <mesh ref={ref as React.MutableRefObject<Mesh>} {...props}>
-        <planeBufferGeometry attach="geometry" args={[1, 1]} />
+        <planeBufferGeometry attach="geometry" args={planeBufferGeometryArgs} />
         <meshBasicMaterial attach="material" transparent opacity={opacity} fog={fog}>
-          <canvasTexture attach="map" args={[canvas]} />
+          <canvasTexture attach="map" args={canvases} />
         </meshBasicMaterial>
       </mesh>
     )

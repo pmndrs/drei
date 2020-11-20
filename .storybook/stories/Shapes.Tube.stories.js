@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import * as React from 'react'
 import * as THREE from 'three'
 
 import { Setup } from '../Setup'
@@ -14,7 +14,7 @@ export default {
 
 function TubeScene() {
   // curve example from https://threejs.org/docs/#api/en/geometries/TubeGeometry
-  const path = useMemo(() => {
+  const path = React.useMemo(() => {
     function CustomSinCurve(scale) {
       THREE.Curve.call(this)
 

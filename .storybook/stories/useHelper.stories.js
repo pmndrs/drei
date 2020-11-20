@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import * as React from 'react'
 
 import { BoxHelper, CameraHelper } from 'three'
 import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper'
@@ -17,7 +17,7 @@ export default {
 }
 
 function Scene() {
-  const mesh = useRef()
+  const mesh = React.useRef()
   useHelper(mesh, BoxHelper, 'royalblue')
   useHelper(mesh, VertexNormalsHelper, 1, 'red')
   useHelper(mesh, FaceNormalsHelper, 1, 'hotpink')

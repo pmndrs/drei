@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import * as React from 'react'
 
 import { withKnobs, number } from '@storybook/addon-knobs'
 
@@ -31,7 +31,7 @@ MeshWobbleMaterialSt.storyName = 'Default'
 
 function MeshWobbleMaterialRefScene() {
 
-  const material = useRef()
+  const material = React.useRef()
 
   useFrame(({ clock }) => {
     material.current.factor = Math.abs(Math.sin(clock.getElapsedTime())) * 2

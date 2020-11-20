@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useTexture } from './useTexture'
-import matcapList from './helpers/matcap-assets.json'
+import * as matcapList from './helpers/matcap-assets.json'
 
 function getFormatString(format: number) {
   switch (format) {

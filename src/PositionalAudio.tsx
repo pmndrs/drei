@@ -1,5 +1,5 @@
 import { AudioLoader, AudioListener, PositionalAudio as PositionalAudioImpl } from 'three'
-import React, { forwardRef, useRef, useState, useEffect } from 'react'
+import * as React from 'react'
 import { useThree, useLoader } from 'react-three-fiber'
 import mergeRefs from 'react-merge-refs'
 
@@ -9,13 +9,13 @@ type Props = JSX.IntrinsicElements['positionalAudio'] & {
   loop?: boolean
 }
 
-export const PositionalAudio = forwardRef(({ url, distance = 1, loop = true, ...props }: Props, ref) => {
-  const sound = useRef<PositionalAudioImpl>()
+export const PositionalAudio = React.forwardRef(({ url, distance = 1, loop = true, ...props }: Props, ref) => {
+  const sound = React.useRef<PositionalAudioImpl>()
   const { camera } = useThree()
-  const [listener] = useState(() => new AudioListener())
+  const [listener] = React.useState(() => new AudioListener())
   const buffer = useLoader(AudioLoader, url)
 
-  useEffect(() => {
+  React.useEffect(() => {
     const _sound = sound.current
     if (_sound) {
       _sound.setBuffer(buffer)
@@ -32,5 +32,12 @@ export const PositionalAudio = forwardRef(({ url, distance = 1, loop = true, ...
       }
     }
   }, [buffer, camera, distance, listener, loop])
-  return <positionalAudio ref={mergeRefs([sound, ref])} args={[listener]} {...props} />
+  const argsMemo: [AudioListener] = React.useMemo(
+    function memo() {
+      return [listener]
+    },
+    [listener]
+  )
+
+  return <positionalAudio ref={mergeRefs([sound, ref])} args={argsMemo} {...props} />
 })

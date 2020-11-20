@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import * as React from 'react'
 
 import { Setup } from '../Setup'
 
@@ -26,9 +26,9 @@ function Loader() {
 
 function UseProgressScene() {
   return (
-    <Suspense fallback={<Loader />}>
+    <React.Suspense fallback={<Loader />}>
       <Helmet />
-    </Suspense>
+    </React.Suspense>
   )
 }
 

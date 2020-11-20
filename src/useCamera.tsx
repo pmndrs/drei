@@ -1,10 +1,10 @@
 import { Raycaster, Camera, Intersection } from 'three'
-import React, { useState } from 'react'
+import * as React from 'react'
 import { useThree, applyProps } from 'react-three-fiber'
 
 export function useCamera(camera: Camera | React.MutableRefObject<Camera>, props?: Partial<Raycaster>) {
   const { mouse } = useThree()
-  const [raycast] = useState(() => {
+  const [raycast] = React.useState(() => {
     let raycaster = new Raycaster()
     if (props) applyProps(raycaster, props, {})
     return function (_: Raycaster, intersects: Intersection[]): void {

@@ -1,5 +1,5 @@
-import React, { forwardRef, useMemo } from 'react'
-import { Mesh, Shape, ExtrudeBufferGeometry } from 'three'
+import * as React from 'react'
+import { Mesh, Shape, ExtrudeBufferGeometry, ExtrudeGeometryOptions } from 'three'
 import { useUpdate } from 'react-three-fiber'
 import { NamedArrayTuple } from './helpers/ts-utils'
 
@@ -21,12 +21,12 @@ type Props = {
   smoothness?: number
 } & Omit<JSX.IntrinsicElements['mesh'], 'args'>
 
-export const RoundedBox = forwardRef<Mesh, Props>(function RoundedBox(
+export const RoundedBox = React.forwardRef<Mesh, Props>(function RoundedBox(
   { args: [width = 1, height = 1, depth = 1] = [], radius = 0.05, smoothness = 4, children, ...rest },
   ref
 ) {
-  const shape = useMemo(() => createShape(width, height, radius), [width, height, radius])
-  const params = useMemo(
+  const shape = React.useMemo(() => createShape(width, height, radius), [width, height, radius])
+  const params = React.useMemo(
     () => ({
       depth: depth - radius * 2,
       bevelEnabled: true,
@@ -38,10 +38,18 @@ export const RoundedBox = forwardRef<Mesh, Props>(function RoundedBox(
     }),
     [depth, radius, smoothness]
   )
+  // memoise args for perf
+  const bufferGeometryArgsMemo: [Shape | Shape[], ExtrudeGeometryOptions] = React.useMemo(
+    function memo() {
+      return [shape, params]
+    },
+    [shape, params]
+  )
+
   const geomRef = useUpdate<ExtrudeBufferGeometry>((geometry) => void geometry.center(), [shape, params])
   return (
     <mesh ref={ref as React.MutableRefObject<Mesh>} {...rest}>
-      <extrudeBufferGeometry attach="geometry" ref={geomRef} args={[shape, params]} />
+      <extrudeBufferGeometry attach="geometry" ref={geomRef} args={bufferGeometryArgsMemo} />
       {children}
     </mesh>
   )

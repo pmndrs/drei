@@ -19,13 +19,13 @@ import {
   ParametricBufferGeometry,
   TorusKnotBufferGeometry,
 } from 'three'
-import React, { forwardRef } from 'react'
+import * as React from 'react'
 
 type Args<T> = T extends new (...args: any) => any ? ConstructorParameters<T> : T
 
 function create<T>(type: string) {
   const El: any = type + 'BufferGeometry'
-  return forwardRef(
+  return React.forwardRef(
     ({ args, children, ...props }: Omit<JSX.IntrinsicElements['mesh'], 'args'> & { args?: Args<T> }, ref) => (
       <mesh ref={ref as React.MutableRefObject<Mesh>} {...props}>
         <El attach="geometry" args={args} />

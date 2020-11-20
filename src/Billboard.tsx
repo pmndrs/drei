@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef } from 'react'
+import * as React from 'react'
 import { Mesh } from 'three'
 import { useFrame } from 'react-three-fiber'
 import { Plane } from './shapes'
@@ -6,11 +6,11 @@ import mergeRefs from 'react-merge-refs'
 
 export type BillboardProps = { follow?: boolean; lockX?: boolean; lockY?: boolean; lockZ?: boolean } & typeof Plane
 
-export const Billboard = forwardRef<Mesh, BillboardProps>(function Billboard(
+export const Billboard = React.forwardRef<Mesh, BillboardProps>(function Billboard(
   { follow = true, lockX = false, lockY = false, lockZ = false, ...props },
   ref
 ) {
-  const localRef = useRef<Mesh>()
+  const localRef = React.useRef<Mesh>()
 
   useFrame(({ camera }) => {
     if (!follow) return

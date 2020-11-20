@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import { useProgress } from './useProgress'
 import { a, useTransition } from '@react-spring/web'
 
@@ -62,17 +62,31 @@ export function Loader({
     leave: { opacity: 0 },
     update: { progress: progress / 100 },
   })
-  return transition(
-    ({ progress, opacity }, active) =>
+  const innerStylesMemo = React.useMemo(
+    function memo() {
+      return { ...styles.inner, ...innerStyles }
+    },
+    [innerStyles]
+  )
+
+  const spanStylesMemo = React.useMemo(function memo() {
+    return { ...styles.data, ...dataStyles }
+  }, [])
+
+  return transition(({ progress, opacity }, active) => {
+    return (
       active && (
+        // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
         <a.div style={{ ...styles.container, opacity, ...containerStyles }}>
           <div>
-            <div style={{ ...styles.inner, ...innerStyles }}>
+            <div style={innerStylesMemo}>
+              {/* eslint-disable-next-line react-perf/jsx-no-new-object-as-prop */}
               <a.div style={{ ...styles.bar, scaleX: progress, ...barStyles }}></a.div>
-              <a.span style={{ ...styles.data, ...dataStyles }}>{progress.to(dataInterpolation)}</a.span>
+              <a.span style={spanStylesMemo}>{progress.to(dataInterpolation)}</a.span>
             </div>
           </div>
         </a.div>
       )
-  )
+    )
+  })
 }

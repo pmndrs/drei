@@ -1,20 +1,20 @@
 import * as THREE from 'three'
-import { useEffect, useRef } from 'react'
+import * as React from 'react'
 import { SimplifyModifier } from 'three/examples/jsm/modifiers/SimplifyModifier'
 
 export function useSimplification(simplePercent: number) {
-  const ref = useRef<THREE.Mesh>()
-  const original = useRef<THREE.BufferGeometry | THREE.Geometry>()
-  const modifier = useRef<SimplifyModifier>()
+  const ref = React.useRef<THREE.Mesh>()
+  const original = React.useRef<THREE.BufferGeometry | THREE.Geometry>()
+  const modifier = React.useRef<SimplifyModifier>()
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!original.current) {
       original.current = ref.current!.geometry.clone()
       modifier.current = new SimplifyModifier()
     }
   }, [])
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (original.current && ref.current) {
       let geometry = new THREE.BufferGeometry()
 

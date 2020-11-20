@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import React, { useMemo, useEffect, useLayoutEffect, useState } from 'react'
+import * as React from 'react'
 import { ReactThreeFiber } from 'react-three-fiber'
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry'
 import { LineMaterial, LineMaterialParameters } from 'three/examples/jsm/lines/LineMaterial'
@@ -20,16 +20,16 @@ export const Line = React.forwardRef<Line2, Props>(function Line(
   { points, color = 'black', vertexColors, lineWidth, dashed, ...rest },
   ref
 ) {
-  const [line2] = useState(() => new Line2())
-  const [lineGeometry] = useState(() => new LineGeometry())
-  const [lineMaterial] = useState(() => new LineMaterial())
-  const [resolution] = useState(() => new THREE.Vector2(512, 512))
-  useEffect(() => {
+  const [line2] = React.useState(() => new Line2())
+  const [lineGeometry] = React.useState(() => new LineGeometry())
+  const [lineMaterial] = React.useState(() => new LineMaterial())
+  const [resolution] = React.useState(() => new THREE.Vector2(512, 512))
+  React.useEffect(() => {
     lineGeometry.setPositions(points.flat())
     if (vertexColors) lineGeometry.setColors(vertexColors.flat())
     line2.computeLineDistances()
   }, [points, vertexColors, line2, lineGeometry])
-  useLayoutEffect(() => {
+  React.useLayoutEffect(() => {
     if (dashed) {
       lineMaterial.defines.USE_DASH = ''
     } else {

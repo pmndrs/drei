@@ -1,5 +1,5 @@
-import { WebGLMultisampleRenderTarget, RGBAFormat, sRGBEncoding } from 'three'
-import React, { forwardRef, useRef, useEffect, useState } from 'react'
+import { WebGLMultisampleRenderTarget, RGBAFormat, sRGBEncoding, WebGLRenderer, Scene, Camera } from 'three'
+import * as React from 'react'
 import { ReactThreeFiber, extend, useThree, useFrame } from 'react-three-fiber'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
@@ -35,14 +35,14 @@ export const isWebGL2Available = () => {
   }
 }
 
-export const Effects = forwardRef(
+export const Effects = React.forwardRef(
   (
     { children, multisamping = 8, renderIndex = 1, disableGamma = false, disableRenderPass = false, ...props }: Props,
     ref
   ) => {
-    const composer = useRef<EffectComposer>()
+    const composer = React.useRef<EffectComposer>()
     const { scene, camera, gl, size } = useThree()
-    const [target] = useState(() => {
+    const [target] = React.useState(() => {
       if (isWebGL2Available() && multisamping > 0) {
         const t = new WebGLMultisampleRenderTarget(size.width, size.height, {
           format: RGBAFormat,
@@ -53,17 +53,35 @@ export const Effects = forwardRef(
       }
     })
 
-    useEffect(() => {
+    React.useEffect(() => {
       composer.current?.setSize(size.width, size.height)
       composer.current?.setPixelRatio(gl.getPixelRatio())
     }, [gl, size])
 
     useFrame(() => composer.current?.render(), renderIndex)
 
+    const effectComposerArgs: [WebGLRenderer, WebGLMultisampleRenderTarget | undefined] = React.useMemo(
+      function memo() {
+        return [gl, target]
+      },
+      [gl, target]
+    )
+
+    const renderPassArgs: [Scene, Camera] = React.useMemo(
+      function memo() {
+        return [scene, camera]
+      },
+      [scene, camera]
+    )
+
+    const shaderPassArgs: [object] = React.useMemo(function memo() {
+      return [GammaCorrectionShader]
+    }, [])
+
     return (
-      <effectComposer ref={mergeRefs([ref, composer])} args={[gl, target]} {...props}>
-        {!disableRenderPass && <renderPass attachArray="passes" args={[scene, camera]} />}
-        {!disableGamma && <shaderPass attachArray="passes" args={[GammaCorrectionShader]} />}
+      <effectComposer ref={mergeRefs([ref, composer])} args={effectComposerArgs} {...props}>
+        {!disableRenderPass && <renderPass attachArray="passes" args={renderPassArgs} />}
+        {!disableGamma && <shaderPass attachArray="passes" args={shaderPassArgs} />}
         {children}
       </effectComposer>
     )

@@ -1,5 +1,5 @@
 import { Mesh } from 'three'
-import React, { forwardRef, useMemo } from 'react'
+import * as React from 'react'
 import { ReactThreeFiber, Overwrite } from 'react-three-fiber'
 import { Reflector as ReflectorImpl, ReflectorOptions } from 'three/examples/jsm/objects/Reflector'
 
@@ -18,9 +18,9 @@ declare global {
 
 type Props = ReflectorOptions & { children: React.ReactElement<any> }
 
-export const Reflector = forwardRef(
+export const Reflector = React.forwardRef(
   ({ children, color, textureWidth, textureHeight, clipBias, shader, encoding, ...props }: Props, ref) => {
-    const reflector = useMemo(
+    const reflector = React.useMemo(
       () =>
         new ReflectorImpl(undefined, {
           color,

@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect } from 'react'
+import * as React from 'react'
 import { ReactThreeFiber, useThree, useFrame, Overwrite } from 'react-three-fiber'
 import { FlyControls as FlyControlsImpl } from 'three/examples/jsm/controls/FlyControls'
 import useEffectfulState from './helpers/useEffectfulState'
@@ -8,7 +8,7 @@ export type FlyControls = Overwrite<
   { target?: ReactThreeFiber.Vector3 }
 >
 
-export const FlyControls = forwardRef((props: FlyControls, ref) => {
+export const FlyControls = React.forwardRef((props: FlyControls, ref) => {
   const { camera, gl, invalidate } = useThree()
   const controls = useEffectfulState<FlyControlsImpl>(
     () => new FlyControlsImpl(camera, gl.domElement),
@@ -16,7 +16,7 @@ export const FlyControls = forwardRef((props: FlyControls, ref) => {
     ref as any
   )
 
-  useEffect(() => {
+  React.useEffect(() => {
     controls?.addEventListener?.('change', invalidate)
     return () => controls?.removeEventListener?.('change', invalidate)
   }, [controls, invalidate])

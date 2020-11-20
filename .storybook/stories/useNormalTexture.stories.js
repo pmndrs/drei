@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import * as React from 'react'
 
 import { Setup } from '../Setup'
 import { withKnobs, number } from '@storybook/addon-knobs'
@@ -36,9 +36,9 @@ function Suzanne() {
 
 function UseNormalTexture() {
   return (
-    <Suspense fallback={null}>
+    <React.Suspense fallback={null}>
       <Suzanne />
-    </Suspense>
+    </React.Suspense>
   )
 }
 

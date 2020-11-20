@@ -2,7 +2,7 @@
 // https://threejs.org/examples/?q=con#webgl_shadow_contact
 
 import * as THREE from 'three'
-import React, { forwardRef, useRef, useMemo } from 'react'
+import * as React from 'react'
 import { useFrame, useThree } from 'react-three-fiber'
 import { HorizontalBlurShader } from 'three/examples/jsm/shaders/HorizontalBlurShader'
 import { VerticalBlurShader } from 'three/examples/jsm/shaders/VerticalBlurShader'
@@ -16,10 +16,13 @@ type Props = JSX.IntrinsicElements['group'] & {
   resolution?: number
 }
 
-export const ContactShadows = forwardRef(
+const scale: [number, number, number] = [1, -1, 1]
+const rotation: [number, number, number] = [-Math.PI / 2, 0, 0]
+
+export const ContactShadows = React.forwardRef(
   ({ opacity = 1, width = 1, height = 1, blur = 1, far = 10, resolution = 256, ...props }: Props, ref) => {
     const { scene, gl } = useThree()
-    const shadowCamera = useRef<THREE.OrthographicCamera>()
+    const shadowCamera = React.useRef<THREE.OrthographicCamera>()
     const [
       renderTarget,
       planeGeometry,
@@ -28,7 +31,7 @@ export const ContactShadows = forwardRef(
       horizontalBlurMaterial,
       verticalBlurMaterial,
       renderTargetBlur,
-    ] = useMemo(() => {
+    ] = React.useMemo(() => {
       const renderTarget = new THREE.WebGLRenderTarget(resolution, resolution)
       const renderTargetBlur = new THREE.WebGLRenderTarget(resolution, resolution)
       renderTargetBlur.texture.generateMipmaps = renderTarget.texture.generateMipmaps = false
@@ -78,12 +81,19 @@ export const ContactShadows = forwardRef(
       }
     })
 
+    const orthographicCameraArgs: [number, number, number, number, number, number] = React.useMemo(
+      function memo() {
+        return [-width / 2, width / 2, height / 2, -height / 2, 0, far]
+      },
+      [far, width, height]
+    )
+
     return (
       <group {...props} ref={ref as any}>
-        <mesh geometry={planeGeometry} scale={[1, -1, 1]} rotation={[-Math.PI / 2, 0, 0]}>
+        <mesh geometry={planeGeometry} scale={scale} rotation={rotation}>
           <meshBasicMaterial map={renderTarget.texture} transparent opacity={opacity} />
         </mesh>
-        <orthographicCamera ref={shadowCamera} args={[-width / 2, width / 2, height / 2, -height / 2, 0, far]} />
+        <orthographicCamera ref={shadowCamera} args={orthographicCameraArgs} />
       </group>
     )
   }

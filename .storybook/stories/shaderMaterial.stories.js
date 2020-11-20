@@ -1,10 +1,10 @@
-import React, { Suspense, useRef } from 'react'
+import * as React from 'react'
 
 import { withKnobs, number } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
 import { MeshDistortMaterial } from '../../src/MeshDistortMaterial'
-import { Box, Icosahedron } from '../../src/shapes'
+import { Box } from '../../src/shapes'
 import { extend } from 'react-three-fiber'
 
 import { shaderMaterial, useTexture } from '../../src/'
@@ -29,9 +29,7 @@ uniform float repeats;
 uniform sampler2D map;
 
 float random (vec2 st) {
-  return fract(sin(dot(st.xy,
-                       vec2(12.9898,78.233)))*
-      43758.5453123);
+  return fract(sin(dot(st.xy,vec2(12.9898,78.233)))*43758.5453123);
 }
 
 void main(){
@@ -70,7 +68,7 @@ function ShaderMaterialScene() {
 }
 
 
-export const ShaderMaterialStory = () => <Suspense fallback={null}>
+export const ShaderMaterialStory = () => <React.Suspense fallback={null}>
 <ShaderMaterialScene />
-</Suspense>
+</React.Suspense>
 ShaderMaterialStory.storyName = 'Default'

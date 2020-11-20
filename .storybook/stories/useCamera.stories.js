@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, useState } from 'react'
+import * as React from 'react'
 import { useFrame, useThree, createPortal } from 'react-three-fiber'
 import * as THREE from 'three'
 import { Setup } from '../Setup'
@@ -12,14 +12,14 @@ export default {
 }
 
 function UseCameraScene() {
-  const virtualCam = useRef()
-  const ref = useRef()
+  const virtualCam = React.useRef()
+  const ref = React.useRef()
 
-  const [hover, set] = useState(null)
+  const [hover, set] = React.useState(null)
 
   const { gl, scene, camera } = useThree()
 
-  const virtualScene = useMemo(() => new THREE.Scene(), [])
+  const virtualScene = React.seMemo(() => new THREE.Scene(), [])
   const matrix = new THREE.Matrix4()
 
   useFrame(() => {

@@ -1,4 +1,4 @@
-import React, { Suspense, useState, useRef, useEffect, useMemo } from 'react'
+import * as React from 'react'
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader'
 import { Box3, Sphere } from 'three'
 import { useLoader, Canvas } from 'react-three-fiber'
@@ -22,12 +22,12 @@ function Cell(props) {
 }
 
 function Svg() {
-  const [center, setCenter] = useState([0, 0, 0])
-  const ref = useRef()
+  const [center, setCenter] = React.useState([0, 0, 0])
+  const ref = React.useRef()
 
   const { paths } = useLoader(SVGLoader, 'map.svg')
 
-  const shapes = useMemo(
+  const shapes = React.useMemo(
     () =>
       paths.flatMap((p) =>
         p.toShapes(true).map((shape) => ({ shape, color: p.color, fillOpacity: p.userData.style.fillOpacity }))
@@ -35,7 +35,7 @@ function Svg() {
     [paths]
   )
 
-  useEffect(() => {
+  React.useEffect(() => {
     const box = new Box3().setFromObject(ref.current)
     const sphere = new Sphere()
     box.getBoundingSphere(sphere)

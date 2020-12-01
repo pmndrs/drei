@@ -1,23 +1,11 @@
-import { useMemo } from 'react'
-import { getGPUTier, IGetGPUTier } from 'detect-gpu'
+import { useEffect, useState } from 'react'
+import { getGPUTier, GetGPUTier, TierResult } from 'detect-gpu'
 
-export function useDetectGPU(
-  props?: IGetGPUTier
-): {
-  isDesktop: boolean
-  isMobile: boolean
-  tier: string
-  type: string
-} {
-  const GPUTier = useMemo(() => {
-    const GPUTier = getGPUTier(props)
+export function useDetectGPU(props?: GetGPUTier): TierResult | null {
+  const [GPUTier, setGPUTier] = useState<TierResult | null>(null)
 
-    return {
-      isDesktop: GPUTier.tier.indexOf('DESKTOP') > -1,
-      isMobile: GPUTier.tier.indexOf('MOBILE') > -1,
-      tier: GPUTier.tier.split('_').pop()!,
-      type: GPUTier.type,
-    }
+  useEffect(() => {
+    getGPUTier(props).then((result) => setGPUTier(result))
   }, [props])
 
   return GPUTier

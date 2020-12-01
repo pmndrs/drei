@@ -14,9 +14,13 @@ export default {
 function Simple() {
   const GPUTier = useDetectGPU()
 
-  return (
+  return GPUTier ? (
     <Text>
-      {GPUTier.tier} {GPUTier.type}
+      Tier {GPUTier.tier.toString()} {GPUTier.type}
+    </Text>
+  ) : (
+    <Text>
+      Detecting GPU …
     </Text>
   )
 }

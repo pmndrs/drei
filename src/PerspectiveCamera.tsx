@@ -5,6 +5,7 @@ import mergeRefs from 'react-merge-refs'
 
 type Props = JSX.IntrinsicElements['perspectiveCamera'] & {
   makeDefault?: boolean
+  children?: React.ReactNode
 }
 
 export const PerspectiveCamera = forwardRef(({ makeDefault = false, ...props }: Props, ref) => {

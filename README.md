@@ -796,7 +796,7 @@ function Loader() {
   return <Html center>{progress} % loaded</Html>
 }
 
-;<Suspense fallback={<Loader />}>
+<Suspense fallback={<Loader />}>
   <AsyncModels />
 </Suspense>
 ```

@@ -3,10 +3,11 @@ import React, { useRef, useMemo } from 'react'
 import { useFrame } from 'react-three-fiber'
 import { Billboard } from './Billboard'
 import { useTexture } from './useTexture'
+import CloudImage from './assets/cloud.base64'
 
 export function Cloud({ opacity = 0.5, speed = 0.4, width = 10, length = 1.5, segments = 20, dir = 1, ...props }) {
   const group = useRef<Group>()
-  const texture = useTexture('/cloud.png') as Texture
+  const texture = useTexture(CloudImage) as Texture
   const clouds = useMemo(
     () =>
       [...new Array(segments)].map((_, index) => ({

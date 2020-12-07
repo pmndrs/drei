@@ -1,0 +1,2 @@
+# ignore base64 files because of Maximum call stack size exceeded error
+src/assets/**/*.base64.ts

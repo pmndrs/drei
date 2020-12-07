@@ -39,6 +39,7 @@ export * from './useCamera'
 export * from './useDetectGPU'
 export * from './useHelper'
 export * from './useContextBridge'
+export * from './useAnimations'
 
 // Modifiers
 export * from './useSimplification'

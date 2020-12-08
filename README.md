@@ -13,12 +13,7 @@ npm install @react-three/drei
 ```
 
 ```jsx
-// Flat bundle
 import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei'
-// Individual exports (better for bundle size!)
-import { PerspectiveCamera } from '@react-three/drei/PerspectiveCamera'
-import { PositionalAudio } from '@react-three/drei/PositionalAudio'
-...
 ```
 
 # Index

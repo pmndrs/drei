@@ -4,11 +4,11 @@ import { useThree, useUpdate } from 'react-three-fiber'
 import mergeRefs from 'react-merge-refs'
 
 type Props = JSX.IntrinsicElements['orthographicCamera'] & {
-  makeDefault: boolean
-  children: React.ReactNode
+  makeDefault?: boolean
+  children?: React.ReactNode
 }
 
-export const OrthographicCamera = forwardRef(({ children, makeDefault = false, ...props }: Props, ref) => {
+export const OrthographicCamera = forwardRef(({ makeDefault = false, ...props }: Props, ref) => {
   const { setDefaultCamera, camera, size } = useThree()
   const cameraRef = useUpdate<OrthographicCameraImpl>((cam) => cam.updateProjectionMatrix(), [size, props])
 
@@ -28,8 +28,6 @@ export const OrthographicCamera = forwardRef(({ children, makeDefault = false, .
       bottom={size.height / -2}
       ref={mergeRefs([cameraRef, ref])}
       {...props}
-    >
-      {children}
-    </orthographicCamera>
+    />
   )
 })

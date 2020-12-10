@@ -44,7 +44,7 @@ export * from './useContextBridge'
 export * from './useSimplification'
 export * from './useSubdivision'
 export * from './useTessellation'
-export * from './useEdge'
+export * from './useEdgeSplit'
 
 // Shaders
 export * from './MeshDistortMaterial'

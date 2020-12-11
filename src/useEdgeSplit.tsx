@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { useEffect, useRef } from 'react'
 import { EdgeSplitModifier } from 'three/examples/jsm/modifiers/EdgeSplitModifier'
 
-export function useEdgeSplit(cutOffAngle) {
+export function useEdgeSplit(cutOffAngle: number) {
   const ref = useRef<THREE.Mesh>()
   const original = useRef<THREE.BufferGeometry | THREE.Geometry>()
   const modifier = useRef<EdgeSplitModifier>()

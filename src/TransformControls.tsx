@@ -1,5 +1,5 @@
+import * as React from 'react'
 import { Object3D, Group } from 'three'
-import React, { forwardRef, useRef, useLayoutEffect, useEffect } from 'react'
 import { ReactThreeFiber, useThree, Overwrite } from 'react-three-fiber'
 import { TransformControls as TransformControlsImpl } from 'three/examples/jsm/controls/TransformControls'
 import useEffectfulState from './helpers/useEffectfulState'
@@ -34,7 +34,7 @@ type Props = JSX.IntrinsicElements['group'] & {
   showZ: boolean
 }
 
-export const TransformControls = forwardRef(
+export const TransformControls = React.forwardRef(
   ({ children, ...props }: { children: React.ReactElement<Object3D> } & TransformControls, ref) => {
     const transformOnlyPropNames = [
       'enabled',
@@ -60,10 +60,10 @@ export const TransformControls = forwardRef(
       ref as any
     )
 
-    const group = useRef<Group>()
-    useLayoutEffect(() => void controls?.attach(group.current as Object3D), [children, controls])
+    const group = React.useRef<Group>()
+    React.useLayoutEffect(() => void controls?.attach(group.current as Object3D), [children, controls])
 
-    useEffect(() => {
+    React.useEffect(() => {
       controls?.addEventListener?.('change', invalidate)
       return () => controls?.removeEventListener?.('change', invalidate)
     }, [controls, invalidate])

@@ -1,4 +1,4 @@
-import { useLayoutEffect } from 'react'
+import * as React from 'react'
 import { useLoader, useThree } from 'react-three-fiber'
 import { CubeTextureLoader, Texture, PMREMGenerator } from 'three'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
@@ -25,7 +25,7 @@ export function Environment({
   )
   const map = isCubeMap ? loaderResult[0] : loaderResult
 
-  useLayoutEffect(() => {
+  React.useLayoutEffect(() => {
     const gen = new PMREMGenerator(gl)
     const texture = getTexture(map, gen, isCubeMap)
     if (background) scene.background = texture

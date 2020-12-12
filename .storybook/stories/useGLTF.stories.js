@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import * as  React from 'react'
 
 import { Setup } from '../Setup'
 
@@ -18,9 +18,9 @@ function Suzanne() {
 
 function UseGLTFScene() {
   return (
-    <Suspense fallback={null}>
+    <React.Suspense fallback={null}>
       <Suzanne />
-    </Suspense>
+    </React.Suspense>
   )
 }
 
@@ -41,9 +41,9 @@ function SuzanneWithLocal() {
 
 function DracoLocalScene() {
   return (
-    <Suspense fallback={null}>
+    <React.Suspense fallback={null}>
       <SuzanneWithLocal />
-    </Suspense>
+    </React.Suspense>
   )
 }
 

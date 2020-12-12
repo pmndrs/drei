@@ -1,6 +1,7 @@
-import { useMemo } from 'react'
+import * as React from 'react'
 import { useTexture } from './useTexture'
-import matcapList from './helpers/matcap-assets.json'
+
+import { matcapList } from './helpers/matcap-assets'
 
 function getFormatString(format: number) {
   switch (format) {
@@ -18,12 +19,13 @@ function getFormatString(format: number) {
 }
 
 const MATCAP_ROOT = 'https://rawcdn.githack.com/emmelleppi/matcaps/9b36ccaaf0a24881a39062d05566c9e92be4aa0d'
+console.log('matcapList', matcapList)
 const DEFAULT_MATCAP = matcapList[0]
 
 export function useMatcapTexture(id: number | string = 0, format = 1024) {
-  const numTot = useMemo(() => Object.keys(matcapList).length, [])
+  const numTot = React.useMemo(() => Object.keys(matcapList).length, [])
 
-  const fileHash = useMemo(() => {
+  const fileHash = React.useMemo(() => {
     if (typeof id === 'string') {
       return id
     } else if (typeof id === 'number') {

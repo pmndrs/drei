@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import {Canvas} from 'react-three-fiber'
 import { withKnobs } from '@storybook/addon-knobs'
 

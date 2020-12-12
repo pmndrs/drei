@@ -1,13 +1,14 @@
-import { useEffect, useMemo } from 'react'
+import * as React from 'react'
 import { useTexture } from './useTexture'
 import { RepeatWrapping, Texture, Vector2 } from 'three'
-import normalsList from './helpers/normal-assets.json'
+
+import { normalsList } from './helpers/normal-assets'
 
 const NORMAL_ROOT = 'https://rawcdn.githack.com/emmelleppi/normal-maps/f24c810fc1d86b5b1e5dfea914b668f70b5f2923'
 const DEFAULT_NORMAL = normalsList[0]
 
 export function useNormalTexture(id = 0, { repeat = [1, 1], anisotropy = 1, offset = [0, 0] }) {
-  const numTot = useMemo(() => Object.keys(normalsList).length, [])
+  const numTot = React.useMemo(() => Object.keys(normalsList).length, [])
 
   const imageName = normalsList[id] || DEFAULT_NORMAL
   const url = `${NORMAL_ROOT}/normals/${imageName}`
@@ -15,7 +16,7 @@ export function useNormalTexture(id = 0, { repeat = [1, 1], anisotropy = 1, offs
   // @ts-expect-error
   const normalTexture: Texture = useTexture(url)
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!normalTexture) return
     normalTexture.wrapS = normalTexture.wrapT = RepeatWrapping
     normalTexture.repeat = new Vector2(repeat[0], repeat[1])

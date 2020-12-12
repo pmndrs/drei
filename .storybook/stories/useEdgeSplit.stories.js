@@ -23,7 +23,7 @@ function CerberusModel() {
 
   return (
     <mesh scale={[8, 8, 8]} ref={meshRef} geometry={children[0].geometry}>
-      <meshStandardMaterial attach="material" flatShading={false} />
+      <meshNormalMaterial />
     </mesh>
   )
 }

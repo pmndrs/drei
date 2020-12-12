@@ -45,6 +45,7 @@ export * from './useSimplification'
 export * from './useSubdivision'
 export * from './useTessellation'
 export * from './useEdgeSplit'
+export * from './CurveModifier'
 
 // Shaders
 export * from './MeshDistortMaterial'

@@ -339,8 +339,8 @@ Abstraction around threes own [EffectComposer](https://threejs.org/docs/index.ht
 ```jsx
 <Effects
   multisamping={8} // Default, uses WebGL2 multisamping if available
-  renderIndex={1}  // Default
-  disableGamma={false}  // Default, would switch off the gamma-correction-pass 
+  renderIndex={1} // Default
+  disableGamma={false} // Default, would switch off the gamma-correction-pass
   disableRenderPass={false} // Default, would remove the first scene-render-pass
 >
   {/* Generic passes go here ... */}
@@ -655,6 +655,26 @@ return (
 
 ## Modifiers
 
+#### CurveModifier
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-curvemodifier)
+
+Given a curve will replace the children of this component with a mesh that move along said curve calling the property `moveAlongCurve` on the passed ref. Uses [three's Curve Modifier](https://threejs.org/examples/?q=curve#webgl_modifier_curve)
+
+```jsx
+const curveRef = useRef()
+
+const curve = React.useMemo(() => new THREE.CatmullRomCurve3([...handlePos], true, 'centripetal'), [handlePos])
+
+return (
+  <CurveModifier ref={curveRef} curve={curve}>
+    <mesh>
+      <boxBufferGeometry args={[10, 10]} />
+    </mesh>
+  </CurveModifier>
+)
+```
+
 #### useEdgeSplit
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-useedgesplit)
@@ -795,9 +815,11 @@ function Loader() {
   return <Html center>{progress} % loaded</Html>
 }
 
-<Suspense fallback={<Loader />}>
-  <AsyncModels />
-</Suspense>
+return (
+  <Suspense fallback={<Loader />}>
+    <AsyncModels />
+  </Suspense>
+)
 ```
 
 If you don't want your progress component to re-render on all changes you can be specific as to what you need, for instance if the component is supposed to collect errors only. Look into [zustand](https://github.com/react-spring/zustand) for more info about selectors.

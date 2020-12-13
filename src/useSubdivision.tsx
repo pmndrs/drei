@@ -21,6 +21,7 @@ export function useSubdivision(subdivisions) {
   useEffect(() => {
     if (original.current && ref.current) {
       const bufferGeometry = new THREE.BufferGeometry()
+      // @ts-expect-error
       const subdivided = bufferGeometry.fromGeometry(modifier.current!.modify(original.current))
       ref.current.geometry = subdivided
     }

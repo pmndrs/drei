@@ -13,12 +13,7 @@ npm install @react-three/drei
 ```
 
 ```jsx
-// Flat bundle
 import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei'
-// Individual exports (better for bundle size!)
-import { PerspectiveCamera } from '@react-three/drei/PerspectiveCamera'
-import { PositionalAudio } from '@react-three/drei/PositionalAudio'
-...
 ```
 
 # Index
@@ -671,6 +666,22 @@ return (
 ```
 
 ## Modifiers
+
+#### useEdgeSplit
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-useedgesplit)
+
+This hook mutates a mesh geometry using [three's Edge Split modifier](https://threejs.org/examples/?q=modifier#webgl_modifier_edgesplit).
+
+```jsx
+const meshRef = useEdgeSplit(Math.PI / 2)
+
+return (
+  <mesh ref={meshRef}>
+    <boxBufferGeometry args={[10, 10]} />
+  </mesh>
+)
+```
 
 #### useSubdivision
 

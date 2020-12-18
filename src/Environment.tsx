@@ -3,6 +3,7 @@ import { useLoader, useThree } from 'react-three-fiber'
 import { CubeTextureLoader, Texture, PMREMGenerator } from 'three'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
 import { useAsset } from 'use-asset'
+import cubemapObj from './helpers/cubemap-assets.json'
 
 function getTexture(texture, gen, isCubeMap) {
   if (isCubeMap) {
@@ -12,11 +13,25 @@ function getTexture(texture, gen, isCubeMap) {
   return gen.fromEquirectangular(texture).texture
 }
 
+const CUBEMAP_ROOT = 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r123/examples/textures/cube'
+
+type Props = {
+  background?: boolean
+  files?: string | string[]
+  path?: string
+  preset?: string
+}
+
 export function Environment({
   background = false,
   files = ['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'],
   path = '/',
-}) {
+  preset = undefined,
+}: Props) {
+  if (preset) {
+    files = cubemapObj[preset].files
+    path = `${CUBEMAP_ROOT}/${cubemapObj[preset].folder}/`
+  }
   const { gl, scene } = useThree()
   const isCubeMap = Array.isArray(files)
   const loader: any = isCubeMap ? CubeTextureLoader : RGBELoader

@@ -4,6 +4,7 @@ import { Setup } from '../Setup'
 
 import { Environment } from '../../src/Environment'
 import { OrbitControls } from '../../src/OrbitControls'
+import cubemapObj from '../../src/helpers/cubemap-assets.json'
 
 export default {
   title: 'Abstractions/Environment',
@@ -28,7 +29,8 @@ function TorusKnot() {
 }
 
 function EnvironmentStory() {
-  const preset = select('Preset', ['pisa', 'bridge2', 'milkyway', 'angus'], 'pisa')
+  const presets = Object.keys(cubemapObj)
+  const preset = select('Preset', presets, presets[0])
   return (
     <>
       <Suspense fallback={null}>

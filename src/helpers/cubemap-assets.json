@@ -1,8 +1,4 @@
 {
-  "pisa": {
-    "folder": "pisa",
-    "files": ["px.png", "nx.png", "py.png", "ny.png", "pz.png", "nz.png"]
-  },
   "bridge2": {
     "folder": "Bridge2",
     "files": ["posx.jpg", "negx.jpg", "posy.jpg", "negy.jpg", "posz.jpg", "negz.jpg"]
@@ -11,8 +7,28 @@
     "folder": "MilkyWay",
     "files": ["dark-s_px.jpg", "dark-s_nx.jpg", "dark-s_py.jpg", "dark-s_ny.jpg", "dark-s_pz.jpg", "dark-s_nz.jpg"]
   },
+  "park2": {
+    "folder": "Park2",
+    "files": ["posx.jpg", "negx.jpg", "posy.jpg", "negy.jpg", "posz.jpg", "negz.jpg"]
+  },
+  "park3": {
+    "folder": "Park3Med",
+    "files": ["px.jpg", "nx.jpg", "py.jpg", "ny.jpg", "pz.jpg", "nz.jpg"]
+  },
+  "castle": {
+    "folder": "SwedishRoyalCastle",
+    "files": ["px.jpg", "nx.jpg", "py.jpg", "ny.jpg", "pz.jpg", "nz.jpg"]
+  },
   "angus": {
     "folder": "angus",
     "files": ["cube_m00_c00.jpg", "cube_m00_c01.jpg", "cube_m00_c02.jpg", "cube_m00_c03.jpg", "cube_m00_c04.jpg", "cube_m00_c05.jpg"]
+  },
+  "pisa": {
+    "folder": "pisa",
+    "files": ["px.png", "nx.png", "py.png", "ny.png", "pz.png", "nz.png"]
+  },
+  "sky": {
+    "folder": "skyboxsun25deg",
+    "files": ["px.jpg", "nx.jpg", "py.jpg", "ny.jpg", "pz.jpg", "nz.jpg"]
   }
 }

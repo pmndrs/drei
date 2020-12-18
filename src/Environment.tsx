@@ -3,7 +3,7 @@ import { useLoader, useThree } from 'react-three-fiber'
 import { CubeTextureLoader, Texture, PMREMGenerator } from 'three'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
 import { useAsset } from 'use-asset'
-import cubemapObj from './helpers/cubemap-assets.json'
+import presetsObj from './helpers/cubemap-assets.json'
 
 function getTexture(texture, gen, isCubeMap) {
   if (isCubeMap) {
@@ -29,8 +29,11 @@ export function Environment({
   preset = undefined,
 }: Props) {
   if (preset) {
-    files = cubemapObj[preset].files
-    path = `${CUBEMAP_ROOT}/${cubemapObj[preset].folder}/`
+    if (!(preset in presetsObj)) {
+      throw new Error('Preset must be one of: ' + Object.keys(presetsObj).join(', '))
+    }
+    files = presetsObj[preset].files
+    path = `${CUBEMAP_ROOT}/${presetsObj[preset].folder}/`
   }
   const { gl, scene } = useThree()
   const isCubeMap = Array.isArray(files)

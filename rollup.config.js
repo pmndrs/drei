@@ -51,6 +51,7 @@ export default [
       sizeSnapshot(),
       resolve({ extensions }),
     ],
+    preserveModules: true,
   },
   {
     input: ['src/*.tsx', '!src/index.tsx'],

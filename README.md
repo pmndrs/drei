@@ -13,12 +13,7 @@ npm install @react-three/drei
 ```
 
 ```jsx
-// Flat bundle
 import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei'
-// Individual exports (better for bundle size!)
-import { PerspectiveCamera } from '@react-three/drei/PerspectiveCamera'
-import { PositionalAudio } from '@react-three/drei/PositionalAudio'
-...
 ```
 
 # Index
@@ -51,6 +46,7 @@ import { PositionalAudio } from '@react-three/drei/PositionalAudio'
           <li><a href="#billboard">Billboard</a></li>
           <li><a href="#environment">Environment</a></li>
           <li><a href="#effects">Effects</a></li>
+          <li><a href="#useanimations">useAnimations</a></li>
         </ul>
         <li><a href="#shaders">Shaders</a></li>
         <ul>
@@ -346,6 +342,22 @@ Abstraction around threes own [EffectComposer](https://threejs.org/docs/index.ht
   {/* Generic passes go here ... */}
   <lUTPass attachArray="passes" lut={texture3D} />
 </Effects>
+```
+
+#### useAnimations
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/react-three-fiber-gltf-camera-animation-forked-pecl6)
+
+A hook that abstracts [AnimationMixer](https://threejs.org/docs/index.html#api/en/animation/AnimationMixer).
+
+```jsx
+const { nodes, materials, animations } = useGLTF(url)
+const { ref, mixer, names, actions, clips } = useAnimations(animations)
+useEffect(() => {
+  actions.jump.play() 
+})
+return (
+  <mesh ref={ref} />
 ```
 
 ## Shaders

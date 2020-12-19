@@ -31,6 +31,7 @@ export function useSubdivision(subdivisions) {
       const bufferGeometry = new THREE.BufferGeometry()
 
       const subdivided = bufferGeometry.fromGeometry(modifier.current!.modify(geometry) as THREE.Geometry)
+
       ref.current.geometry = subdivided
     }
   }, [subdivisions])

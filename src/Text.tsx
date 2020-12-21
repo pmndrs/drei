@@ -23,8 +23,8 @@ type Props = JSX.IntrinsicElements['mesh'] & {
   onSync?: (troika: TextMeshImpl) => void
 }
 
-export const Text = React.forwardRef(
-  ({ anchorX = 'center', anchorY = 'middle', children, onSync, ...props }: Props, ref) => {
+// eslint-disable-next-line prettier/prettier
+export const Text = React.forwardRef(({ anchorX = 'center', anchorY = 'middle', children, onSync, ...props }: Props, ref) => {
     const { invalidate } = useThree()
     const [troikaMesh] = React.useState(() => new TextMeshImpl())
     const [nodes, text] = React.useMemo(() => {

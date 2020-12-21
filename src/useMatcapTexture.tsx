@@ -19,7 +19,7 @@ function getFormatString(format: number) {
 }
 
 const MATCAP_ROOT = 'https://rawcdn.githack.com/emmelleppi/matcaps/9b36ccaaf0a24881a39062d05566c9e92be4aa0d'
-console.log('matcapList', matcapList)
+
 const DEFAULT_MATCAP = matcapList[0]
 
 export function useMatcapTexture(id: number | string = 0, format = 1024) {

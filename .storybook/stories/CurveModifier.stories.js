@@ -1,10 +1,9 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { useFrame } from 'react-three-fiber'
+import { useFrame, useLoader } from 'react-three-fiber'
 
 import { Setup } from '../Setup'
 
-import { Octahedron } from '../../src/shapes'
 import CurveModifier from '../../src/CurveModifier'
 
 export default {
@@ -15,6 +14,8 @@ export default {
 
 function CurveModifierScene() {
   const curveRef = React.useRef()
+  const geomRef = React.useRef()
+  const font = useLoader(THREE.FontLoader, '/fonts/helvetiker_regular.typeface.json')
 
   const handlePos = React.useMemo(() =>
     [
@@ -42,17 +43,36 @@ function CurveModifierScene() {
     }
   })
 
+  React.useEffect(() => {
+    geomRef.current.rotateX(Math.PI)
+  }, [])
+
   return (
     <>
       <CurveModifier ref={curveRef} curve={curve}>
-        <Octahedron args={[3, 2]}>
-          <meshNormalMaterial attach="material" flatShading color="hotpink" />
-        </Octahedron>
+        <mesh>
+          <textGeometry
+            args={[
+              'hello @react-three/drei',
+              {
+                font,
+                size: 1,
+                height: 1,
+              },
+            ]}
+            ref={geomRef}
+          />
+          <meshNormalMaterial attach="material" />
+        </mesh>
       </CurveModifier>
       <primitive object={line} />
     </>
   )
 }
 
-export const CurveModifierSt = () => <CurveModifierScene />
+export const CurveModifierSt = () => (
+  <React.Suspense fallback={null}>
+    <CurveModifierScene />
+  </React.Suspense>
+)
 CurveModifierSt.storyName = 'Default'

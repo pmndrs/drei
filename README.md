@@ -85,6 +85,8 @@ import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei'
         </ul>
         <li><a href="#modifiers">Modifiers</a></li>
         <ul>
+          <li><a href="#curvemodifier">CurveModifier</a></li>
+          <li><a href="#useedgesplit">useEdgeSplit</a></li>
           <li><a href="#usesubdivision">useSubdivision</a></li>
           <li><a href="#usetessellation">useTessellation</a></li>
           <li><a href="#usesimplification">useSimplification</a></li>
@@ -354,7 +356,7 @@ A hook that abstracts [AnimationMixer](https://threejs.org/docs/index.html#api/e
 const { nodes, materials, animations } = useGLTF(url)
 const { ref, mixer, names, actions, clips } = useAnimations(animations)
 useEffect(() => {
-  actions.jump.play() 
+  actions.jump.play()
 })
 return (
   <mesh ref={ref} />

@@ -2,6 +2,7 @@ import * as React from 'react'
 import { useLoader, useThree } from 'react-three-fiber'
 import { CubeTextureLoader, Texture, PMREMGenerator } from 'three'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
+import { useAsset } from 'use-asset'
 
 function getTexture(texture, gen, isCubeMap) {
   if (isCubeMap) {
@@ -25,17 +26,31 @@ export function Environment({
   )
   const map = isCubeMap ? loaderResult[0] : loaderResult
 
+  // PMREMGenerator takes its sweet time to generate the env-map,
+  // Let's make this part of suspense, or else it just yields a frame-skip
+  const texture = useAsset(
+    () =>
+      new Promise((res) => {
+        const gen = new PMREMGenerator(gl)
+        const texture = getTexture(map, gen, isCubeMap)
+        gen.dispose()
+        map.dispose()
+        res(texture)
+      }),
+    [map, background]
+  )
+
   React.useLayoutEffect(() => {
-    const gen = new PMREMGenerator(gl)
-    const texture = getTexture(map, gen, isCubeMap)
+    const oldbg = scene.background
+    const oldenv = scene.environment
     if (background) scene.background = texture
     scene.environment = texture
-    map.dispose()
-    gen.dispose()
     return () => {
-      scene.environment = scene.background = null
+      scene.environment = oldenv
+      scene.background = oldbg
     }
-  }, [gl, map, isCubeMap, background, scene])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [texture])
 
   return null
 }

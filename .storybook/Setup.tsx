@@ -1,9 +1,10 @@
 import * as React from 'react'
+import * as THREE from 'three'
 import { Canvas } from 'react-three-fiber'
 
 import { OrbitControls } from '../src/OrbitControls'
 
-export function Setup({ children, cameraPosition = [-5, 5, 5], controls = true }) {
+export function Setup({ children, cameraPosition = new THREE.Vector3(-5, 5, 5), controls = true }) {
   return (
     <Canvas colorManagement shadowMap camera={{ position: cameraPosition }} pixelRatio={window.devicePixelRatio}>
       {children}

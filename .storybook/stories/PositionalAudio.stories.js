@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import * as React from 'react'
 
 import { Setup } from '../Setup'
 import { OrbitControls } from '../../src/OrbitControls'
@@ -32,7 +32,7 @@ function PositionalAudioScene() {
 
   return (
     <>
-      <Suspense fallback={null}>
+      <React.Suspense fallback={null}>
         <group position={[0, 0, 5]}>
           {args.map(({ position, url }, index) => (
             <mesh key={`0${index}`} position={position}>
@@ -42,7 +42,7 @@ function PositionalAudioScene() {
             </mesh>
           ))}
         </group>
-      </Suspense>
+      </React.Suspense>
       <OrbitControls />
     </>
   )

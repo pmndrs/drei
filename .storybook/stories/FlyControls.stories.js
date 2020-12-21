@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import { withKnobs, number, boolean } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'

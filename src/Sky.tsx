@@ -1,4 +1,4 @@
-import React, { forwardRef, useMemo, useState } from 'react'
+import * as React from 'react'
 import { ReactThreeFiber } from 'react-three-fiber'
 import { Sky as SkyImpl } from 'three/examples/jsm/objects/Sky'
 import { Vector3 } from 'three'
@@ -25,7 +25,7 @@ export function calcPosFromAngles(inclination: number, azimuth: number, vector: 
   return vector
 }
 
-export const Sky = forwardRef(
+export const Sky = React.forwardRef(
   (
     {
       inclination = 0,
@@ -40,8 +40,8 @@ export const Sky = forwardRef(
     }: Props,
     ref
   ) => {
-    const scale = useMemo(() => new Vector3().setScalar(distance), [distance])
-    const [sky] = useState(() => new SkyImpl())
+    const scale = React.useMemo(() => new Vector3().setScalar(distance), [distance])
+    const [sky] = React.useState(() => new SkyImpl())
 
     return (
       <primitive

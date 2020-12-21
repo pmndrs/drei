@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import * as React from 'react'
 
 import { Setup } from '../Setup'
 
@@ -25,9 +25,9 @@ function TexturedMeshes() {
 
 function UseCubeTextureScene() {
   return (
-    <Suspense fallback={null}>
+    <React.Suspense fallback={null}>
       <TexturedMeshes />
-    </Suspense>
+    </React.Suspense>
   )
 }
 

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import * as React from 'react'
 import { useFrame } from 'react-three-fiber'
 
 import { Setup } from '../Setup'
@@ -13,8 +13,8 @@ export default {
 }
 
 function ShadowScene() {
-  const shadow = useRef()
-  const mesh = useRef()
+  const shadow = React.useRef()
+  const mesh = React.useRef()
 
   useFrame(({ clock }) => {
     shadow.current.scale.x = Math.sin(clock.getElapsedTime()) + 3

@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import { useProgress } from './useProgress'
 import { a, useTransition } from '@react-spring/web'
 

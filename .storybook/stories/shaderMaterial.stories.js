@@ -1,4 +1,4 @@
-import React, { Suspense, useRef } from 'react'
+import * as React from 'react'
 
 import { withKnobs, number } from '@storybook/addon-knobs'
 
@@ -70,7 +70,7 @@ function ShaderMaterialScene() {
 }
 
 
-export const ShaderMaterialStory = () => <Suspense fallback={null}>
+export const ShaderMaterialStory = () => <React.Suspense fallback={null}>
 <ShaderMaterialScene />
-</Suspense>
+</React.Suspense>
 ShaderMaterialStory.storyName = 'Default'

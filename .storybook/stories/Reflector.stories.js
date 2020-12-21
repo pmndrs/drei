@@ -1,4 +1,4 @@
-import React, {useRef} from 'react'
+import * as React from 'react'
 import { useFrame } from 'react-three-fiber'
 
 import { Setup } from '../Setup'
@@ -12,7 +12,7 @@ export default {
 }
 
 function ReflectorScene() {
-  const $box = useRef()
+  const $box = React.useRef()
   useFrame(({ clock }) => {
     $box.current.position.y += Math.sin(clock.getElapsedTime()) / 100. 
     $box.current.rotation.y = clock.getElapsedTime() / 2.

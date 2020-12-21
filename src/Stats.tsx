@@ -1,4 +1,4 @@
-import { useEffect, RefObject } from 'react'
+import * as React from 'react'
 import { addEffect, addAfterEffect } from 'react-three-fiber'
 import StatsImpl from 'three/examples/js/libs/stats.min'
 import useEffectfulState from './helpers/useEffectfulState'
@@ -6,12 +6,12 @@ import useEffectfulState from './helpers/useEffectfulState'
 type Props = {
   showPanel?: number
   className?: string
-  parent?: RefObject<HTMLElement>
+  parent?: React.RefObject<HTMLElement>
 }
 
 export function Stats({ showPanel = 0, className, parent }: Props): null {
   const stats = useEffectfulState(() => new StatsImpl(), [])
-  useEffect(() => {
+  React.useEffect(() => {
     if (stats) {
       const node = (parent && parent.current) || document.body
       stats.showPanel(showPanel)

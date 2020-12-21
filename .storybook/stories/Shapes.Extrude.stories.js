@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import * as React from 'react'
 import * as THREE from 'three'
 
 import { Setup } from '../Setup'
@@ -13,7 +13,7 @@ export default {
 }
 
 function ExtrudeScene() {
-  const shape = useMemo(() => {
+  const shape = React.useMemo(() => {
     const _shape = new THREE.Shape()
 
     const width = 8,
@@ -28,7 +28,7 @@ function ExtrudeScene() {
     return _shape
   }, [])
 
-  const extrudeSettings = useMemo(
+  const extrudeSettings = React.useMemo(
     () => ({
       steps: 2,
       depth: 16,

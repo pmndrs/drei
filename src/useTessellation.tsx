@@ -1,24 +1,24 @@
+import * as React from 'react'
 import * as THREE from 'three'
-import { useEffect, useRef } from 'react'
 import { TessellateModifier } from 'three/examples/jsm/modifiers/TessellateModifier'
 
 export function useTessellation(passes = 3, maxEdgeLength) {
-  const ref = useRef<THREE.Mesh>()
-  const original = useRef<THREE.BufferGeometry | THREE.Geometry>()
-  const modifier = useRef<TessellateModifier>()
+  const ref = React.useRef<THREE.Mesh>()
+  const original = React.useRef<THREE.BufferGeometry | THREE.Geometry>()
+  const modifier = React.useRef<TessellateModifier>()
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!original.current) {
       original.current = ref.current!.geometry.clone()
       modifier.current = new TessellateModifier(parseInt(maxEdgeLength))
     }
   }, [maxEdgeLength])
 
-  useEffect(() => {
+  React.useEffect(() => {
     modifier.current!.maxEdgeLength = maxEdgeLength
   }, [maxEdgeLength])
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (original.current && ref.current) {
       let geometry = new THREE.Geometry()
 

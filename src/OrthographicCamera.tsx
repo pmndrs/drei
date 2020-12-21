@@ -1,5 +1,5 @@
+import * as React from 'react'
 import { OrthographicCamera as OrthographicCameraImpl } from 'three'
-import React, { forwardRef, useLayoutEffect } from 'react'
 import { useThree, useUpdate } from 'react-three-fiber'
 import mergeRefs from 'react-merge-refs'
 
@@ -8,11 +8,11 @@ type Props = JSX.IntrinsicElements['orthographicCamera'] & {
   children?: React.ReactNode
 }
 
-export const OrthographicCamera = forwardRef(({ makeDefault = false, ...props }: Props, ref) => {
+export const OrthographicCamera = React.forwardRef(({ makeDefault = false, ...props }: Props, ref) => {
   const { setDefaultCamera, camera, size } = useThree()
   const cameraRef = useUpdate<OrthographicCameraImpl>((cam) => cam.updateProjectionMatrix(), [size, props])
 
-  useLayoutEffect(() => {
+  React.useLayoutEffect(() => {
     if (makeDefault && cameraRef.current) {
       const oldCam = camera
       setDefaultCamera(cameraRef.current)

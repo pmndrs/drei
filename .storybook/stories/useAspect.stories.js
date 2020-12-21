@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import * as React from 'react'
 import { useLoader } from 'react-three-fiber'
 import { useAspect } from '../../src/useAspect'
 
@@ -24,9 +24,9 @@ function Simple() {
 }
 
 export const DefaultStory = () => (
-  <Suspense fallback="">
+  <React.Suspense fallback="">
     <Simple />
-  </Suspense>
+  </React.Suspense>
 )
 DefaultStory.storyName = 'Default'
 
@@ -43,8 +43,8 @@ function WithTexture() {
 }
 
 export const TextureStory = () => (
-  <Suspense fallback="">
+  <React.Suspense fallback="">
     <WithTexture />
-  </Suspense>
+  </React.Suspense>
 )
 TextureStory.storyName = 'With Texture'

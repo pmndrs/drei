@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import * as React from 'react'
 import { Canvas } from 'react-three-fiber'
 
 import { Icosahedron } from '../../src/shapes'
@@ -13,7 +13,7 @@ export default {
 const NUM = 3
 
 function PerspectiveCameraScene() {
-  const positions = useMemo(() => {
+  const positions = React.useMemo(() => {
     const pos = []
     const half = (NUM - 1) / 2
 

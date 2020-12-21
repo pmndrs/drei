@@ -1,6 +1,6 @@
+import * as React from 'react'
+import * as ReactDOM from 'react-dom'
 import { Vector3, Group, Object3D, Camera, PerspectiveCamera, OrthographicCamera } from 'three'
-import React, { useRef, useState, useEffect, useMemo } from 'react'
-import ReactDOM from 'react-dom'
 import { Assign } from 'utility-types'
 import { ReactThreeFiber, useFrame, useThree } from 'react-three-fiber'
 
@@ -76,12 +76,12 @@ export const Html = React.forwardRef(
     ref: React.Ref<HTMLDivElement>
   ) => {
     const { gl, scene, camera, size } = useThree()
-    const [el] = useState(() => document.createElement('div'))
-    const group = useRef<Group>(null)
-    const old = useRef([0, 0])
+    const [el] = React.useState(() => document.createElement('div'))
+    const group = React.useRef<Group>(null)
+    const old = React.useRef([0, 0])
     const target = portal?.current ?? gl.domElement.parentNode
 
-    useEffect(() => {
+    React.useEffect(() => {
       if (group.current) {
         scene.updateMatrixWorld()
         const vec = calculatePosition(group.current, camera, size)
@@ -98,7 +98,7 @@ export const Html = React.forwardRef(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [target])
 
-    const styles: React.CSSProperties = useMemo(
+    const styles: React.CSSProperties = React.useMemo(
       () => ({
         position: 'absolute',
         transform: center ? 'translate3d(-50%,-50%,0)' : 'none',
@@ -113,7 +113,7 @@ export const Html = React.forwardRef(
       [style, center, fullscreen, size]
     )
 
-    useEffect(
+    React.useEffect(
       () => void ReactDOM.render(<div ref={ref} style={styles} className={className} children={children} />, el)
     )
 
@@ -136,6 +136,6 @@ export const Html = React.forwardRef(
 )
 
 export const HTML = React.forwardRef((props: HtmlProps, ref: React.Ref<HTMLDivElement>) => {
-  useEffect(() => void console.warn('The <HTML> component was renamed to <Html>'), [])
+  React.useEffect(() => void console.warn('The <HTML> component was renamed to <Html>'), [])
   return <Html {...props} ref={ref} />
 })

@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect } from 'react'
+import * as React from 'react'
 import { ReactThreeFiber, useThree, useFrame, Overwrite } from 'react-three-fiber'
 import { DeviceOrientationControls as DeviceOrientationControlsImp } from 'three/examples/jsm/controls/DeviceOrientationControls'
 import useEffectfulState from './helpers/useEffectfulState'
@@ -8,18 +8,18 @@ export type DeviceOrientationControls = Overwrite<
   { target?: ReactThreeFiber.Vector3 }
 >
 
-export const DeviceOrientationControls = forwardRef((props: DeviceOrientationControls, ref) => {
+export const DeviceOrientationControls = React.forwardRef((props: DeviceOrientationControls, ref) => {
   const { camera, invalidate } = useThree()
   const controls = useEffectfulState(() => new DeviceOrientationControlsImp(camera), [camera], ref as any)
 
-  useEffect(() => {
+  React.useEffect(() => {
     controls?.addEventListener?.('change', invalidate)
     return () => controls?.removeEventListener?.('change', invalidate)
   }, [controls, invalidate])
 
   useFrame(() => controls?.update())
 
-  useEffect(() => {
+  React.useEffect(() => {
     const current = controls
     current?.connect()
     return () => current?.dispose()

@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import { ParametricGeometries } from 'three/examples/jsm/geometries/ParametricGeometries.js'
 
 import { Setup } from '../Setup'

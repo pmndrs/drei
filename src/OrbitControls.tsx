@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect } from 'react'
+import * as React from 'react'
 import { ReactThreeFiber, useThree, useFrame, Overwrite } from 'react-three-fiber'
 import { OrbitControls as OrbitControlsImpl } from 'three/examples/jsm/controls/OrbitControls'
 import useEffectfulState from './helpers/useEffectfulState'
@@ -16,7 +16,7 @@ declare global {
   }
 }
 
-export const OrbitControls = forwardRef((props: OrbitControls = { enableDamping: true }, ref) => {
+export const OrbitControls = React.forwardRef((props: OrbitControls = { enableDamping: true }, ref) => {
   const { camera, gl, invalidate } = useThree()
   const controls = useEffectfulState<OrbitControlsImpl>(
     () => new OrbitControlsImpl(camera, gl.domElement),
@@ -26,7 +26,7 @@ export const OrbitControls = forwardRef((props: OrbitControls = { enableDamping:
 
   useFrame(() => controls?.update())
 
-  useEffect(() => {
+  React.useEffect(() => {
     controls?.addEventListener?.('change', invalidate)
     return () => controls?.removeEventListener?.('change', invalidate)
   }, [controls, invalidate])

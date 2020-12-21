@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect } from 'react'
+import * as React from 'react'
 import * as THREE from 'three'
 import { Setup } from '../Setup'
 
@@ -50,7 +50,7 @@ function UseTessellationScene() {
   const maxEdgeLength = number("maxEdgeLength", 3)
   const meshRef = useTessellation(passes, maxEdgeLength)
 
-  useEffect(() => {
+  React.useEffect(() => {
    const geometry = meshRef.current.geometry
 
    const numFaces = geometry.attributes.position.count / 3

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import * as React from 'react'
 
 import { PointerLockControls } from '../../src/PointerLockControls'
 import { Setup } from '../Setup'
@@ -13,7 +13,7 @@ export default {
 const NUM = 2
 
 function PointerLockControlsScene() {
-  const positions = useMemo(() => {
+  const positions = React.useMemo(() => {
     const pos = []
     const half = (NUM - 1) / 2
 

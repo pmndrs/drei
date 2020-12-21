@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import * as React from 'react'
 
 import { Icosahedron } from '../../src/shapes'
 import { OrthographicCamera } from '../../src/OrthographicCamera'
@@ -13,7 +13,7 @@ export default {
 const NUM = 3
 
 function OrthographicCameraScene() {
-  const positions = useMemo(() => {
+  const positions = React.useMemo(() => {
     const pos = []
     const half = (NUM - 1) / 2
 

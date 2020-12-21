@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import * as React from 'react'
 
 import { withKnobs, optionsKnob, boolean } from '@storybook/addon-knobs'
 
@@ -28,10 +28,10 @@ export default {
 }
 
 function TransformControlsLockScene({ mode, showX, showY, showZ }) {
-  const orbitControls = useRef()
-  const transformControls = useRef()
+  const orbitControls = React.useRef()
+  const transformControls = React.useRef()
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (transformControls.current) {
       const controls = transformControls.current
       const callback = (event) => (orbitControls.current.enabled = !event.value)

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import * as React from 'react'
 
 import { TrackballControls } from '../../src/TrackballControls'
 import { Setup } from '../Setup'
@@ -13,7 +13,7 @@ export default {
 const NUM = 2
 
 function TrackballControlsScene() {
-  const positions = useMemo(() => {
+  const positions = React.useMemo(() => {
     const pos = []
     const half = (NUM - 1) / 2
 

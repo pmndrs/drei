@@ -1,4 +1,4 @@
-import { useState, useLayoutEffect } from 'react'
+import * as React from 'react'
 
 type RefType<T> = React.MutableRefObject<T> | ((state: T) => void)
 
@@ -8,8 +8,8 @@ function call<T>(ref: RefType<T> | undefined, value: T | null) {
 }
 
 export default function useEffectfulState<T>(fn: () => T, deps: React.DependencyList = [], cb?: RefType<T>) {
-  const [state, set] = useState<T>()
-  useLayoutEffect(() => {
+  const [state, set] = React.useState<T>()
+  React.useLayoutEffect(() => {
     const value = fn()
     set(value)
     call(cb, value)

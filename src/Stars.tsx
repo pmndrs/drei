@@ -1,4 +1,4 @@
-import React, { forwardRef, useMemo, useState, useRef } from 'react'
+import * as React from 'react'
 // eslint-disable-next-line
 import { ReactThreeFiber, useFrame } from 'react-three-fiber'
 import { Points, Vector3, Spherical, Color, AdditiveBlending, ShaderMaterial } from 'three'
@@ -52,10 +52,10 @@ const genStar = (r: number) => {
   return new Vector3().setFromSpherical(new Spherical(r, Math.acos(1 - Math.random() * 2), Math.random() * 2 * Math.PI))
 }
 
-export const Stars = forwardRef(
+export const Stars = React.forwardRef(
   ({ radius = 100, depth = 50, count = 5000, saturation = 0, factor = 4, fade = false }: Props, ref) => {
-    const material = useRef<StarfieldMaterial>()
-    const [position, color, size] = useMemo(() => {
+    const material = React.useRef<StarfieldMaterial>()
+    const [position, color, size] = React.useMemo(() => {
       const positions: any[] = []
       const colors: any[] = []
       const sizes = Array.from({ length: count }, () => (0.5 + 0.5 * Math.random()) * factor)
@@ -72,7 +72,7 @@ export const Stars = forwardRef(
     }, [count, depth, factor, radius, saturation])
     useFrame((state) => material.current && (material.current.uniforms.time.value = state.clock.getElapsedTime()))
 
-    const [starfieldMaterial] = useState(() => new StarfieldMaterial())
+    const [starfieldMaterial] = React.useState(() => new StarfieldMaterial())
 
     return (
       <points ref={ref as React.MutableRefObject<Points>}>

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import * as React from 'react'
 import * as THREE from 'three'
 
 import { Setup } from '../Setup'
@@ -13,7 +13,7 @@ export default {
 }
 
 function LatheScene() {
-  const points = useMemo(() => {
+  const points = React.useMemo(() => {
     const _points = []
     for (let i = 0; i < 10; i++) {
       _points.push(new THREE.Vector2(Math.sin(i * 0.2) * 10 + 5, (i - 5) * 2))

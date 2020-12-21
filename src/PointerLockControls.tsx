@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect } from 'react'
+import * as React from 'react'
 import { ReactThreeFiber, useThree, Overwrite } from 'react-three-fiber'
 import { PointerLockControls as PointerLockControlsImpl } from 'three/examples/jsm/controls/PointerLockControls'
 import useEffectfulState from './helpers/useEffectfulState'
@@ -8,7 +8,7 @@ export type PointerLockControls = Overwrite<
   { target?: ReactThreeFiber.Vector3 }
 >
 
-export const PointerLockControls = forwardRef((props: PointerLockControls, ref) => {
+export const PointerLockControls = React.forwardRef((props: PointerLockControls, ref) => {
   const { camera, gl, invalidate } = useThree()
   const controls = useEffectfulState(
     () => new PointerLockControlsImpl(camera, gl.domElement),
@@ -16,12 +16,12 @@ export const PointerLockControls = forwardRef((props: PointerLockControls, ref) 
     ref as any
   )
 
-  useEffect(() => {
+  React.useEffect(() => {
     controls?.addEventListener?.('change', invalidate)
     return () => controls?.removeEventListener?.('change', invalidate)
   }, [controls, invalidate])
 
-  useEffect(() => {
+  React.useEffect(() => {
     const handler = () => controls?.lock()
     document.addEventListener('click', handler)
     return () => document.removeEventListener('click', handler)

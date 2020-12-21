@@ -1,8 +1,8 @@
-import { useRef } from 'react'
+import * as React from 'react'
 import { useFrame } from 'react-three-fiber'
 
 export function useTurntable() {
-  const ref = useRef()
+  const ref = React.useRef()
   useFrame(() => {
     ref.current.rotation.y += 0.01
   })

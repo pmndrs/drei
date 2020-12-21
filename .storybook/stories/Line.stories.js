@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import { GeometryUtils } from 'three/examples/jsm/utils/GeometryUtils'
 import { Vector3 } from 'three'
 

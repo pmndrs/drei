@@ -20,9 +20,18 @@ export function useSubdivision(subdivisions) {
 
   useEffect(() => {
     if (original.current && ref.current) {
+      let geometry = new THREE.Geometry()
+
+      if (original.current instanceof THREE.BufferGeometry) {
+        geometry.fromBufferGeometry(original.current)
+      } else {
+        geometry = original.current.clone()
+      }
+
       const bufferGeometry = new THREE.BufferGeometry()
-      // @ts-expect-error
-      const subdivided = bufferGeometry.fromGeometry(modifier.current!.modify(original.current))
+
+      const subdivided = bufferGeometry.fromGeometry(modifier.current!.modify(geometry) as THREE.Geometry)
+
       ref.current.geometry = subdivided
     }
   }, [subdivisions])

@@ -31,7 +31,7 @@ export const Text = React.forwardRef(({ anchorX = 'center', anchorY = 'middle', 
       let n: React.ReactNode[] = []
       let t = ''
       React.Children.forEach(children, (child) => {
-        if (typeof child === 'string') {
+        if (typeof child === 'string' || typeof child === 'number') {
           t += child
         } else {
           n.push(child)

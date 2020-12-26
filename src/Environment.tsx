@@ -13,7 +13,7 @@ function getTexture(texture, gen, isCubeMap) {
   return gen.fromEquirectangular(texture).texture
 }
 
-const CUBEMAP_ROOT = 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r123/examples/textures/cube'
+const CUBEMAP_ROOT = 'https://rawcdn.githack.com/mattrossman/drei-assets/b597559ff62f85ec691df28cbea5ecb1263a2085'
 
 type Props = {
   background?: boolean
@@ -32,8 +32,8 @@ export function Environment({
     if (!(preset in presetsObj)) {
       throw new Error('Preset must be one of: ' + Object.keys(presetsObj).join(', '))
     }
-    files = presetsObj[preset].files
-    path = `${CUBEMAP_ROOT}/${presetsObj[preset].folder}/`
+    files = presetsObj[preset]
+    path = CUBEMAP_ROOT + '/hdri/'
   }
   const { gl, scene } = useThree()
   const isCubeMap = Array.isArray(files)

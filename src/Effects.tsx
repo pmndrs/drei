@@ -1,5 +1,5 @@
+import * as React from 'react'
 import { WebGLMultisampleRenderTarget, RGBAFormat, sRGBEncoding } from 'three'
-import React, { forwardRef, useRef, useEffect, useState } from 'react'
 import { ReactThreeFiber, extend, useThree, useFrame } from 'react-three-fiber'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
@@ -35,14 +35,14 @@ export const isWebGL2Available = () => {
   }
 }
 
-export const Effects = forwardRef(
+export const Effects = React.forwardRef(
   (
     { children, multisamping = 8, renderIndex = 1, disableGamma = false, disableRenderPass = false, ...props }: Props,
     ref
   ) => {
-    const composer = useRef<EffectComposer>()
+    const composer = React.useRef<EffectComposer>()
     const { scene, camera, gl, size } = useThree()
-    const [target] = useState(() => {
+    const [target] = React.useState(() => {
       if (isWebGL2Available() && multisamping > 0) {
         const t = new WebGLMultisampleRenderTarget(size.width, size.height, {
           format: RGBAFormat,
@@ -53,7 +53,7 @@ export const Effects = forwardRef(
       }
     })
 
-    useEffect(() => {
+    React.useEffect(() => {
       composer.current?.setSize(size.width, size.height)
       composer.current?.setPixelRatio(gl.getPixelRatio())
     }, [gl, size])

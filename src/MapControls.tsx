@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect } from 'react'
+import * as React from 'react'
 import { ReactThreeFiber, useThree, useFrame, Overwrite } from 'react-three-fiber'
 import { MapControls as MapControlsImpl } from 'three/examples/jsm/controls/OrbitControls'
 import useEffectfulState from './helpers/useEffectfulState'
@@ -16,12 +16,12 @@ declare global {
   }
 }
 
-export const MapControls = forwardRef((props: MapControls = { enableDamping: true }, ref) => {
+export const MapControls = React.forwardRef((props: MapControls = { enableDamping: true }, ref) => {
   const { camera, gl, invalidate } = useThree()
   const controls = useEffectfulState(() => new MapControlsImpl(camera, gl.domElement), [camera, gl], ref as any)
 
   useFrame(() => controls?.update())
-  useEffect(() => {
+  React.useEffect(() => {
     controls?.addEventListener?.('change', invalidate)
     return () => controls?.removeEventListener?.('change', invalidate)
   }, [controls, invalidate])

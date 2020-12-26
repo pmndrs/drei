@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import * as React from 'react'
 
 import { withKnobs, number } from '@storybook/addon-knobs'
 
@@ -32,7 +32,7 @@ MeshDistortMaterialSt.storyName = 'Default'
 
 function MeshDistortMaterialRefScene() {
 
-  const material = useRef()
+  const material = React.useRef()
 
   useFrame(({ clock }) => {
     material.current.distort = Math.sin(clock.getElapsedTime())

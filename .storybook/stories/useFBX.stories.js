@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import * as  React from 'react'
 
 import { Setup } from '../Setup'
 import { useFBX } from '../../src/useFBX'
@@ -19,9 +19,9 @@ function SuzanneFBX() {
 
 function UseFBXScene() {
   return (
-    <Suspense fallback={null}>
+    <React.Suspense fallback={null}>
       <SuzanneFBX />
-    </Suspense>
+    </React.Suspense>
   )
 }
 

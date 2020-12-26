@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import * as React from 'react'
 
 import { Setup } from '../Setup'
 import { meshBounds } from '../../src/meshBounds'
@@ -12,7 +12,7 @@ export default {
 function MeshBounds(props) {
   const mesh = useTurntable()
 
-  const [hovered, setHover] = useState(false)
+  const [hovered, setHover] = React.useState(false)
 
   return (
     <mesh

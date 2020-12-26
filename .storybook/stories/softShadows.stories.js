@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import * as React from 'react'
 
 import { Setup } from '../Setup'
 
@@ -16,7 +16,7 @@ export default {
 }
 
 function SoftShadowsScene() {
-  const sphere = useRef()
+  const sphere = React.useRef()
 
   useFrame(({ clock }) => {
     sphere.current.position.y = Math.sin(clock.getElapsedTime()) + 2

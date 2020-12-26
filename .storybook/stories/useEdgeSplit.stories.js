@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import * as React from 'react'
 import { useLoader } from 'react-three-fiber'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 
@@ -30,9 +30,9 @@ function CerberusModel() {
 
 function UseEdgeSplitScene() {
   return (
-    <Suspense fallback={null}>
+    <React.Suspense fallback={null}>
       <CerberusModel />
-    </Suspense>
+    </React.Suspense>
   )
 }
 

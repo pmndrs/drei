@@ -1,8 +1,8 @@
 // The author of the original code is @mrdoob https://twitter.com/mrdoob
 // https://threejs.org/examples/?q=con#webgl_shadow_contact
 
+import * as React from 'react'
 import * as THREE from 'three'
-import React, { forwardRef, useRef, useMemo } from 'react'
 import { useFrame, useThree } from 'react-three-fiber'
 import { HorizontalBlurShader } from 'three/examples/jsm/shaders/HorizontalBlurShader'
 import { VerticalBlurShader } from 'three/examples/jsm/shaders/VerticalBlurShader'
@@ -16,10 +16,10 @@ type Props = JSX.IntrinsicElements['group'] & {
   resolution?: number
 }
 
-export const ContactShadows = forwardRef(
+export const ContactShadows = React.forwardRef(
   ({ opacity = 1, width = 1, height = 1, blur = 1, far = 10, resolution = 256, ...props }: Props, ref) => {
     const { scene, gl } = useThree()
-    const shadowCamera = useRef<THREE.OrthographicCamera>()
+    const shadowCamera = React.useRef<THREE.OrthographicCamera>()
     const [
       renderTarget,
       planeGeometry,
@@ -28,7 +28,7 @@ export const ContactShadows = forwardRef(
       horizontalBlurMaterial,
       verticalBlurMaterial,
       renderTargetBlur,
-    ] = useMemo(() => {
+    ] = React.useMemo(() => {
       const renderTarget = new THREE.WebGLRenderTarget(resolution, resolution)
       const renderTargetBlur = new THREE.WebGLRenderTarget(resolution, resolution)
       renderTargetBlur.texture.generateMipmaps = renderTarget.texture.generateMipmaps = false

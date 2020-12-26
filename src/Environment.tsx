@@ -1,4 +1,4 @@
-import { useLayoutEffect } from 'react'
+import * as React from 'react'
 import { useLoader, useThree } from 'react-three-fiber'
 import { CubeTextureLoader, Texture, PMREMGenerator } from 'three'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
@@ -58,7 +58,7 @@ export function Environment({
     [map, background]
   )
 
-  useLayoutEffect(() => {
+  React.useLayoutEffect(() => {
     const oldbg = scene.background
     const oldenv = scene.environment
     if (background) scene.background = texture

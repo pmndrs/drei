@@ -1,5 +1,5 @@
+import * as React from 'react'
 import { Mesh, Color } from 'three'
-import React, { forwardRef, useMemo } from 'react'
 
 type Props = JSX.IntrinsicElements['mesh'] & {
   colorStop?: number
@@ -8,9 +8,9 @@ type Props = JSX.IntrinsicElements['mesh'] & {
   opacity?: number
 }
 
-export const Shadow = forwardRef(
+export const Shadow = React.forwardRef(
   ({ fog = false, colorStop = 0.0, color = 'black', opacity = 0.5, ...props }: Props, ref) => {
-    const canvas = useMemo(() => {
+    const canvas = React.useMemo(() => {
       let canvas = document.createElement('canvas')
       canvas.width = 128
       canvas.height = 128

@@ -1,10 +1,10 @@
-import React, { Suspense } from 'react'
+import * as React from 'react'
 import { withKnobs, select, boolean } from '@storybook/addon-knobs'
 import { Setup } from '../Setup'
 
 import { Environment } from '../../src/Environment'
 import { OrbitControls } from '../../src/OrbitControls'
-import presetsObj from '../../src/helpers/cubemap-assets.json'
+import { presetsObj } from '../../src/helpers/cubemap-assets'
 
 export default {
   title: 'Abstractions/Environment',
@@ -33,10 +33,10 @@ function EnvironmentStory() {
   const preset = select('Preset', presets, presets[0])
   return (
     <>
-      <Suspense fallback={null}>
+      <React.Suspense fallback={null}>
         <Environment preset={preset} background={boolean('Background', true)} />
         <TorusKnot />
-      </Suspense>
+      </React.Suspense>
       <OrbitControls autoRotate />
     </>
   )

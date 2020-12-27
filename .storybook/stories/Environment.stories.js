@@ -4,7 +4,7 @@ import { Setup } from '../Setup'
 
 import { Environment } from '../../src/Environment'
 import { OrbitControls } from '../../src/OrbitControls'
-import { presetsObj } from '../../src/helpers/cubemap-assets'
+import { presetsObj } from '../../src/helpers/environment-assets'
 
 export default {
   title: 'Abstractions/Environment',

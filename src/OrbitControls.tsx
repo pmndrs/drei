@@ -17,6 +17,8 @@ declare global {
 }
 
 export const OrbitControls = React.forwardRef((props: OrbitControls = { enableDamping: true }, ref) => {
+  console.log('test')
+
   const { camera, gl, invalidate } = useThree()
   const controls = useEffectfulState<OrbitControlsImpl>(
     () => new OrbitControlsImpl(camera, gl.domElement),

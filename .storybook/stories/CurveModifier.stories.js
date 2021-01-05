@@ -4,7 +4,7 @@ import { useFrame, useLoader } from 'react-three-fiber'
 
 import { Setup } from '../Setup'
 
-import CurveModifier from '../../src/CurveModifier'
+import { CurveModifier } from '../../src/CurveModifier'
 
 export default {
   title: 'Modifiers/CurveModifier',

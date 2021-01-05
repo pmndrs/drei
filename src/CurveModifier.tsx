@@ -7,7 +7,7 @@ interface CurveModifierProps {
   curve?: THREE.Curve<THREE.Vector2 | THREE.Vector3 | THREE.Vector4>
 }
 
-const CurveModifier = React.forwardRef(({ children, curve }: CurveModifierProps, ref) => {
+export const CurveModifier = React.forwardRef(({ children, curve }: CurveModifierProps, ref) => {
   const [object3D, setObj] = React.useState()
   const original = React.useRef<THREE.Mesh>()
   const modifier = React.useRef<Flow>()
@@ -39,5 +39,3 @@ const CurveModifier = React.forwardRef(({ children, curve }: CurveModifierProps,
     })
   )
 })
-
-export default CurveModifier

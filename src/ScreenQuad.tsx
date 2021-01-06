@@ -1,6 +1,8 @@
 // reference: https://medium.com/@luruke/simple-postprocessing-in-three-js-91936ecadfb7
 // and @gsimone ;)
 import * as THREE from 'three'
+import * as React from 'react'
+// eslint-disable-next-line
 import { forwardRef, useMemo } from 'react'
 
 function createScreenQuadGeometry() {
@@ -14,7 +16,7 @@ export const ScreenQuad = forwardRef(function ScreenQuad({ children }, ref) {
   const geometry = useMemo(createScreenQuadGeometry, [])
 
   return (
-    <mesh ref={ref} geometry={geometry} frustumCulled={false}>
+    <mesh ref={ref as any} geometry={geometry} frustumCulled={false}>
       {children}
     </mesh>
   )

@@ -11,7 +11,7 @@ export function useFBO(width?: number | FBOSettings, height?: number, settings?:
   const { size, gl } = useThree()
   const dpr = useMemo(() => gl.getPixelRatio(), [gl])
   const _width = typeof width === 'number' ? width : size.width * dpr
-  const _height = typeof width === 'number' ? height : size.height * dpr
+  const _height = typeof height === 'number' ? height : size.height * dpr
   const _settings = (typeof width === 'number' ? settings : (width as FBOSettings)) || {}
 
   const target = useMemo(() => {

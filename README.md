@@ -241,6 +241,8 @@ A box buffer geometry with rounded corners, done with extrusion.
 </RoundedBox>
 ```
 
+#### ScreenQuad
+
 ## Abstractions
 
 #### Text
@@ -530,6 +532,23 @@ function Scene() {
     //...
   )
 }
+```
+
+#### useFBO
+
+Creates a `THREE.WebGLRenderTarget` or `THREE.WebGLMultisampleRenderTarget`.
+
+```jsx
+const target = useFBO(
+  // width: 500,  height: 500, 
+  // width and height are optional and defaulted to the viewport size
+  // multiplied by the renderer pixel ratio, and recalculated whenever the
+  // viewport size changes.
+  {
+    multisample: true, // if the renderer supports webGL2, it will return a WebGLMultisampleRenderTarget
+    stencilBuffer: false // you can pass any options supported by THREE.WebGLRenderTarget
+  } 
+)
 ```
 
 #### Html

@@ -7,7 +7,7 @@ type FBOSettings = { multisample?: boolean; samples?: number } & THREE.WebGLRend
 // 👇 uncomment when TS version supports function overloads
 
 // export function useFBO(settings?: FBOSettings)
-export function useFBO(width?: number | FBOSettings, height?: number, settings: FBOSettings = {}) {
+export function useFBO(width?: number | FBOSettings, height?: number, settings?: FBOSettings) {
   const { size, gl } = useThree()
   const dpr = useMemo(() => gl.getPixelRatio(), [gl])
   const _width = typeof width === 'number' ? width : size.width * dpr

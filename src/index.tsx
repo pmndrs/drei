@@ -40,6 +40,7 @@ export * from './useDetectGPU'
 export * from './useHelper'
 export * from './useContextBridge'
 export * from './useAnimations'
+export * from './useFBO'
 
 // Modifiers
 export * from './useSimplification'
@@ -60,6 +61,7 @@ export * from './ContactShadows'
 // Shapes
 export * from './shapes'
 export * from './RoundedBox'
+export * from './ScreenQuad'
 
 // Prototyping
 export * from './useMatcapTexture'

@@ -501,6 +501,12 @@ const ColorShiftMaterial = shaderMaterial(
 )
 
 extend({ ColorShiftMaterial }) < mesh > <colorShiftMaterial attach="material" color="hotpink" time={1} />
+extend({ ColorShiftMaterial })
+
+// in your component
+<mesh>
+  <colorShiftMaterial attach="material" color="hotpink" time={1} />
+</mesh>
 ```
 
 ## Misc

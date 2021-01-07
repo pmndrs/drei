@@ -1,7 +1,8 @@
 // reference: https://medium.com/@luruke/simple-postprocessing-in-three-js-91936ecadfb7
 // and @gsimone ;)
+
 import * as THREE from 'three'
-import { forwardRef, useMemo } from 'react'
+import * as React from 'react'
 
 function createScreenQuadGeometry() {
   const geometry = new THREE.BufferGeometry()
@@ -10,8 +11,8 @@ function createScreenQuadGeometry() {
   return geometry
 }
 
-export const ScreenQuad = forwardRef(function ScreenQuad({ children }, ref) {
-  const geometry = useMemo(createScreenQuadGeometry, [])
+export const ScreenQuad = React.forwardRef(function ScreenQuad({ children }, ref) {
+  const geometry = React.useMemo(createScreenQuadGeometry, [])
 
   return (
     <mesh ref={ref} geometry={geometry} frustumCulled={false}>

@@ -3,7 +3,7 @@ import { Group, Texture } from 'three'
 import { useFrame } from 'react-three-fiber'
 import { Billboard } from './Billboard'
 import { useTexture } from './useTexture'
-import CloudImage from './assets/cloud.base64'
+import CloudImage from '../assets/cloud.base64'
 
 // Billboard component broken in TS, pls can somebody fix it
 const TypescriptSucks = Billboard as any

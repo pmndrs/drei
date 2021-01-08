@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useTexture } from './useTexture'
 
-import { matcapList } from './helpers/matcap-assets'
+import { matcapList } from '../helpers/matcap-assets'
 
 function getFormatString(format: number) {
   switch (format) {

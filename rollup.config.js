@@ -29,7 +29,7 @@ const getBabelOptions = ({ useESModules }, targets) => ({
 
 export default [
   {
-    input: ['src/*.tsx', '!src/index.tsx'],
+    input: ['src/*.ts', '!src/index.ts'],
     output: { dir: `dist`, format: 'esm' },
     external,
     plugins: [
@@ -41,7 +41,7 @@ export default [
     ],
   },
   {
-    input: `./src/index.tsx`,
+    input: `./src/index.ts`,
     output: { dir: `dist`, format: 'esm' },
     external,
     plugins: [
@@ -54,7 +54,7 @@ export default [
     preserveModules: true,
   },
   {
-    input: ['src/*.tsx', '!src/index.tsx'],
+    input: ['src/*.ts', '!src/index.ts'],
     output: { dir: `dist`, format: 'cjs' },
     external,
     plugins: [
@@ -68,7 +68,7 @@ export default [
     ],
   },
   {
-    input: `./src/index.tsx`,
+    input: `./src/index.ts`,
     output: { file: `dist/index.cjs.js`, format: 'cjs' },
     external,
     plugins: [

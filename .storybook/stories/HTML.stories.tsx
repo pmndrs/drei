@@ -1,15 +1,15 @@
 import * as React from 'react'
+import * as THREE from 'three'
 
 import { Setup } from '../Setup'
-
-import { Icosahedron } from '../../src/shapes'
-import { Html } from '../../src/Html'
 import { useTurntable } from '../useTurntable'
+
+import { Icosahedron, Html } from '../../src'
 
 export default {
   title: 'Misc/Html',
   component: Html,
-  decorators: [(storyFn) => <Setup cameraPosition={[-20, 20, -20]}> {storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup cameraPosition={new THREE.Vector3(-20, 20, -20)}> {storyFn()}</Setup>],
 }
 
 function HTMLScene() {

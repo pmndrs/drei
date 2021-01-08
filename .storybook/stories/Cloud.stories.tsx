@@ -1,16 +1,17 @@
 import * as React from 'react'
 import { withKnobs } from '@storybook/addon-knobs'
+import { Vector3 } from 'three'
+
 import { Setup } from '../Setup'
 
-import { Cloud } from '../../src/Cloud'
-import { OrbitControls } from '../../src/OrbitControls'
+import { Cloud, OrbitControls } from '../../src'
 
 export default {
   title: 'Abstractions/Cloud',
   component: Cloud,
   decorators: [
     (storyFn) => (
-      <Setup controls={false} cameraPosition={[0, 0, 10]}>
+      <Setup controls={false} cameraPosition={new Vector3(0, 0, 10)}>
         {storyFn()}
       </Setup>
     ),

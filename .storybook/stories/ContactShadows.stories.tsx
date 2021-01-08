@@ -1,10 +1,10 @@
 import * as React from 'react'
 import { useFrame } from 'react-three-fiber'
+import { Mesh } from 'three'
 
 import { Setup } from '../Setup'
 
-import { ContactShadows } from '../../src/ContactShadows'
-import { Icosahedron, Plane } from '../../src/shapes'
+import { ContactShadows, Icosahedron, Plane } from '../../src'
 
 export default {
   title: 'Shaders/ContactShadows',
@@ -13,7 +13,7 @@ export default {
 }
 
 function ContactShadowScene() {
-  const mesh = React.useRef()
+  const mesh = React.useRef<Mesh>(null!)
   useFrame(({ clock }) => {
     mesh.current.position.y = Math.sin(clock.getElapsedTime()) + 2.5
   })

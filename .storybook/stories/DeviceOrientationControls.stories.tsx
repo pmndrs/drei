@@ -1,7 +1,8 @@
 import * as React from 'react'
+
 import { Setup } from '../Setup'
-import { DeviceOrientationControls } from '../../src/DeviceOrientationControls'
-import { Box } from '../../src/shapes'
+
+import { DeviceOrientationControls, Box } from '../../src'
 
 export function DeviceOrientationControlsStory() {
   return (

@@ -4,7 +4,7 @@ import { useFrame, useLoader } from 'react-three-fiber'
 
 import { Setup } from '../Setup'
 
-import { CurveModifier } from '../../src/CurveModifier'
+import { CurveModifier, CurveModifierRef } from '../../src'
 
 export default {
   title: 'Modifiers/CurveModifier',
@@ -13,17 +13,19 @@ export default {
 }
 
 function CurveModifierScene() {
-  const curveRef = React.useRef()
-  const geomRef = React.useRef()
+  const curveRef = React.useRef<CurveModifierRef>()
+  const geomRef = React.useRef<THREE.TextGeometry>(null!)
   const font = useLoader(THREE.FontLoader, '/fonts/helvetiker_regular.typeface.json')
 
-  const handlePos = React.useMemo(() =>
-    [
-      { x: 10, y: 0, z: -10 },
-      { x: 10, y: 0, z: 10 },
-      { x: -10, y: 0, z: 10 },
-      { x: -10, y: 0, z: -10 },
-    ].map((hand) => new THREE.Vector3(...Object.values(hand)))
+  const handlePos = React.useMemo(
+    () =>
+      [
+        { x: 10, y: 0, z: -10 },
+        { x: 10, y: 0, z: 10 },
+        { x: -10, y: 0, z: 10 },
+        { x: -10, y: 0, z: -10 },
+      ].map((hand) => new THREE.Vector3(...Object.values(hand))),
+    []
   )
 
   const curve = React.useMemo(() => new THREE.CatmullRomCurve3(handlePos, true, 'centripetal'), [handlePos])

@@ -1,16 +1,17 @@
 import * as React from 'react'
 import { withKnobs, boolean } from '@storybook/addon-knobs'
+import { Vector3 } from 'three'
+
 import { Setup } from '../Setup'
 
-import { Billboard } from '../../src/Billboard'
-import { OrbitControls } from '../../src/OrbitControls'
+import { Billboard, OrbitControls } from '../../src'
 
 export default {
   title: 'Abstractions/Billboard',
   component: Billboard,
   decorators: [
     (storyFn) => (
-      <Setup controls={false} cameraPosition={[0, 0, 10]}>
+      <Setup controls={false} cameraPosition={new Vector3(0, 0, 10)}>
         {storyFn()}
       </Setup>
     ),

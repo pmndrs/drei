@@ -1,18 +1,16 @@
 import * as React from 'react'
+import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'
 
-import { Detailed } from '../../src/Detailed'
-import { Icosahedron } from '../../src/shapes'
-import { OrbitControls } from '../../src/OrbitControls'
+import { Detailed, Icosahedron, OrbitControls } from '../../src'
 
 export default {
   title: 'Abstractions/Detailed',
   component: Detailed,
   decorators: [
     (storyFn) => (
-      <Setup controls={false} cameraPosition={[0, 0, 100]}>
-        {' '}
+      <Setup controls={false} cameraPosition={new Vector3(0, 0, 100)}>
         {storyFn()}
       </Setup>
     ),

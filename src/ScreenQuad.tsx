@@ -11,7 +11,9 @@ function createScreenQuadGeometry() {
   return geometry
 }
 
-export const ScreenQuad = React.forwardRef(function ScreenQuad({ children }, ref) {
+export const ScreenQuad = React.forwardRef<
+  ((instance: React.ReactNode) => void) | React.RefObject<React.ReactNode> | null | undefined
+>(function ScreenQuad({ children }, ref) {
   const geometry = React.useMemo(createScreenQuadGeometry, [])
 
   return (

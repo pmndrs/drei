@@ -16,7 +16,7 @@ declare global {
   }
 }
 
-type Props = ReflectorOptions & { children: React.ReactElement<any> }
+type Props = ReflectorOptions & Omit<JSX.IntrinsicElements['mesh'], 'args'> & { children: React.ReactElement<any> }
 
 export const Reflector = React.forwardRef(
   ({ children, color, textureWidth, textureHeight, clipBias, shader, encoding, ...props }: Props, ref) => {

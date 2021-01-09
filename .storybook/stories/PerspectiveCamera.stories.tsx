@@ -1,9 +1,7 @@
 import * as React from 'react'
 import { Canvas } from 'react-three-fiber'
 
-import { Icosahedron } from '../../src/shapes'
-import { PerspectiveCamera } from '../../src/PerspectiveCamera'
-import { OrbitControls } from '../../src/OrbitControls'
+import { Icosahedron, PerspectiveCamera, OrbitControls } from '../../src'
 
 export default {
   title: 'Camera/PerspectiveCamera',
@@ -12,9 +10,14 @@ export default {
 
 const NUM = 3
 
+interface Positions {
+  id: string
+  position: [number, number, number]
+}
+
 function PerspectiveCameraScene() {
   const positions = React.useMemo(() => {
-    const pos = []
+    const pos: Positions[] = []
     const half = (NUM - 1) / 2
 
     for (let x = 0; x < NUM; x++) {

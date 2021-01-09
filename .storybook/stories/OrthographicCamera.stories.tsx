@@ -1,9 +1,7 @@
 import * as React from 'react'
-
-import { Icosahedron } from '../../src/shapes'
-import { OrthographicCamera } from '../../src/OrthographicCamera'
 import { Canvas } from 'react-three-fiber'
-import { OrbitControls } from '../../src/OrbitControls'
+
+import { Icosahedron, OrthographicCamera, OrbitControls } from '../../src'
 
 export default {
   title: 'Camera/OrthographicCamera',
@@ -12,9 +10,14 @@ export default {
 
 const NUM = 3
 
+interface Positions {
+  id: string
+  position: [number, number, number]
+}
+
 function OrthographicCameraScene() {
   const positions = React.useMemo(() => {
-    const pos = []
+    const pos: Positions[] = []
     const half = (NUM - 1) / 2
 
     for (let x = 0; x < NUM; x++) {

@@ -1,32 +1,34 @@
 import * as React from 'react'
 import { useFrame } from 'react-three-fiber'
+import { Color, Vector3, Mesh } from 'three'
 
 import { Setup } from '../Setup'
-import { Reflector } from '../../src/Reflector'
-import { Box } from '../../src/shapes'
+
+import { Reflector, Box } from '../../src'
 
 export default {
   title: 'Misc/Reflector',
   component: Reflector,
-  decorators: [(storyFn) => <Setup cameraPosition={[-2, 2, 6]}> {storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(-2, 2, 6)}> {storyFn()}</Setup>],
 }
 
+const reflectorCol = new Color('#333')
+
 function ReflectorScene() {
-  const $box = React.useRef()
+  const $box = React.useRef<Mesh>(null!)
   useFrame(({ clock }) => {
-    $box.current.position.y += Math.sin(clock.getElapsedTime()) / 100. 
-    $box.current.rotation.y = clock.getElapsedTime() / 2.
+    $box.current.position.y += Math.sin(clock.getElapsedTime()) / 100
+    $box.current.rotation.y = clock.getElapsedTime() / 2
   })
-  
+
   return (
-    <>  
-      <Reflector 
-        clipBias={0.1} 
+    <>
+      <Reflector
+        clipBias={0.1}
         textureWidth={1024}
         textureHeight={1024}
-        rotation={[-Math.PI/2, 0, 0]} 
-        color="#333" 
-        opacity={.5}
+        rotation={[-Math.PI / 2, 0, 0]}
+        color={reflectorCol}
       >
         <planeBufferGeometry args={[10, 10]} attach="geometry" />
       </Reflector>

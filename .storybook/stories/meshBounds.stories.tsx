@@ -1,13 +1,15 @@
 import * as React from 'react'
+import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'
-import { meshBounds } from '../../src/meshBounds'
 import { useTurntable } from '../useTurntable'
+
+import { meshBounds } from '../../src'
 
 export default {
   title: 'Misc/meshBounds',
   component: MeshBounds,
-  decorators: [(storyFn) => <Setup cameraPosition={[0, 0, 5]}>{storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 5)}>{storyFn()}</Setup>],
 }
 function MeshBounds(props) {
   const mesh = useTurntable()
@@ -20,7 +22,8 @@ function MeshBounds(props) {
       raycast={meshBounds}
       ref={mesh}
       onPointerOver={() => setHover(true)}
-      onPointerOut={() => setHover(false)}>
+      onPointerOut={() => setHover(false)}
+    >
       <boxBufferGeometry attach="geometry" args={[1, 1, 1]} />
       <meshStandardMaterial attach="material" color="hotpink" wireframe={!hovered} />
     </mesh>

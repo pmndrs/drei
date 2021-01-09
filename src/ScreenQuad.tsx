@@ -2,8 +2,6 @@
 // and @gsimone ;)
 import * as THREE from 'three'
 import * as React from 'react'
-// eslint-disable-next-line
-import { forwardRef, useMemo } from 'react'
 
 function createScreenQuadGeometry() {
   const geometry = new THREE.BufferGeometry()

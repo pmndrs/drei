@@ -568,6 +568,8 @@ const target = useFBO(
 )
 ```
 
+The rendertarget is automatically disposed when unmounted.
+
 #### Html
 
 [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-suspense-zu2wo)

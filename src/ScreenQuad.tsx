@@ -2,8 +2,6 @@
 // and @gsimone ;)
 import * as THREE from 'three'
 import * as React from 'react'
-// eslint-disable-next-line
-import { forwardRef, useMemo } from 'react'
 
 function createScreenQuadGeometry() {
   const geometry = new THREE.BufferGeometry()
@@ -12,11 +10,13 @@ function createScreenQuadGeometry() {
   return geometry
 }
 
-export const ScreenQuad = forwardRef(function ScreenQuad({ children }, ref) {
-  const geometry = useMemo(createScreenQuadGeometry, [])
+export const ScreenQuad = React.forwardRef<
+  ((instance: React.ReactNode) => void) | React.RefObject<React.ReactNode> | null | undefined
+>(function ScreenQuad({ children }, ref) {
+  const geometry = React.useMemo(createScreenQuadGeometry, [])
 
   return (
-    <mesh ref={ref as any} geometry={geometry} frustumCulled={false}>
+    <mesh ref={ref} geometry={geometry} frustumCulled={false}>
       {children}
     </mesh>
   )

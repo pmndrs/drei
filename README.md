@@ -65,6 +65,7 @@ import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei'
         <li><a href="#misc">Misc</a></li>
         <ul>
           <li><a href="#usecontextbridge">useContextBridge</a></li>
+          <li><a href="#usefbo">useFBO</a></li>
           <li><a href="#html">Html</a></li>
           <li><a href="#shadow">Shadow</a></li>
           <li><a href="#stats">Stats</a></li>
@@ -122,6 +123,7 @@ import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei'
           <li><a href="#lathe">Lathe</a></li>
           <li><a href="#parametric">Parametric</a></li>
           <li><a href="#roundedbox">RoundedBox</a></li>
+          <li><a href="#screenquad">Screenquad</a></li>
         </ul>
       </ul>
     </td>
@@ -242,6 +244,16 @@ A box buffer geometry with rounded corners, done with extrusion.
 ```
 
 #### ScreenQuad
+
+```jsx
+<ScreenQuad>
+  <myMaterial />
+</ScreenQuad>
+```
+
+A triangle that fills the screen, ideal for full-screen fragment shader work (raymarching, postprocessing).
+👉 Why a triangle? https://www.cginternals.com/en/blog/2018-01-10-screen-aligned-quads-and-triangles.html
+👉 Use as a post processing mesh: https://medium.com/@luruke/simple-postprocessing-in-three-js-91936ecadfb7
 
 ## Abstractions
 
@@ -500,7 +512,12 @@ const ColorShiftMaterial = shaderMaterial(
   `
 )
 
-extend({ ColorShiftMaterial }) < mesh > <colorShiftMaterial attach="material" color="hotpink" time={1} />
+extend({ ColorShiftMaterial })
+
+// in your component
+<mesh>
+  <colorShiftMaterial attach="material" color="hotpink" time={1} />
+</mesh>
 ```
 
 ## Misc
@@ -550,6 +567,8 @@ const target = useFBO(
   } 
 )
 ```
+
+The rendertarget is automatically disposed when unmounted.
 
 #### Html
 

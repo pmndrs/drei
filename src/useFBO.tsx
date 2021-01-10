@@ -31,5 +31,10 @@ export function useFBO(width?: number | FBOSettings, height?: number, settings?:
     target.setSize(_width, _height)
   }, [target, _width, _height])
 
+  useEffect(() => {
+    return () => target.dispose()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return target
 }

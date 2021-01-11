@@ -1,11 +1,10 @@
 import * as React from 'react'
 import { withKnobs, number } from '@storybook/addon-knobs'
+import { useFrame } from 'react-three-fiber'
 
 import { Setup } from '../Setup'
 
-import { Sky } from '../../src/Sky'
-import { Plane } from '../../src/shapes'
-import { useFrame } from 'react-three-fiber'
+import { Sky, Plane } from '../../src'
 
 export default {
   title: 'Shaders/Sky',
@@ -73,7 +72,7 @@ function SkyScene3() {
         mieCoefficient={number('mieCoefficient', 0.005, { range: true, max: 0.1, step: 0.001 })}
         mieDirectionalG={number('mieDirectionalG', 0.8, { range: true, max: 1, step: 0.01 })}
         inclination={inclination}
-        azimuth={number('Azimuth' , 0.25, { range: true, max: 1, step: 0.01 })}
+        azimuth={number('Azimuth', 0.25, { range: true, max: 1, step: 0.01 })}
       />
       <Plane rotation-x={Math.PI / 2} args={[100, 100, 4, 4]}>
         <meshBasicMaterial color="black" wireframe attach="material" />

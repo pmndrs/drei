@@ -1,12 +1,10 @@
 import * as React from 'react'
-
 import { withKnobs, optionsKnob, boolean } from '@storybook/addon-knobs'
+import { TransformControls as TransformControlsImpl } from 'three/examples/jsm/controls/TransformControls'
 
 import { Setup } from '../Setup'
 
-import { TransformControls } from '../../src/TransformControls'
-import { Box } from '../../src/shapes'
-import { OrbitControls } from '../../src/OrbitControls'
+import { Box, OrbitControls, TransformControls } from '../../src'
 
 export function TransformControlsStory() {
   return (
@@ -28,12 +26,12 @@ export default {
 }
 
 function TransformControlsLockScene({ mode, showX, showY, showZ }) {
-  const orbitControls = React.useRef()
-  const transformControls = React.useRef()
+  const orbitControls = React.useRef<OrbitControls>(null!)
+  const transformControls = React.useRef<TransformControlsImpl>(null!)
 
   React.useEffect(() => {
     if (transformControls.current) {
-      const controls = transformControls.current
+      const { current: controls } = transformControls
       const callback = (event) => (orbitControls.current.enabled = !event.value)
       controls.addEventListener('dragging-changed', callback)
       return () => controls.removeEventListener('dragging-changed', callback)

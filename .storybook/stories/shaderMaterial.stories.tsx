@@ -1,13 +1,11 @@
 import * as React from 'react'
+import { extend } from 'react-three-fiber'
+import { Texture } from 'three'
 
 import { withKnobs, number } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
-import { MeshDistortMaterial } from '../../src/MeshDistortMaterial'
-import { Box, Icosahedron } from '../../src/shapes'
-import { extend } from 'react-three-fiber'
-
-import { shaderMaterial, useTexture } from '../../src/'
+import { Box, MeshDistortMaterial, shaderMaterial, useTexture } from '../../src'
 
 export default {
   title: 'Shaders/shaderMaterial',
@@ -15,7 +13,9 @@ export default {
   decorators: [withKnobs, (storyFn) => <Setup> {storyFn()}</Setup>],
 }
 
-const MyMaterial = shaderMaterial({ map: null, repeats: 1 }, `
+const MyMaterial = shaderMaterial(
+  { map: new Texture(), repeats: 1 },
+  `
 varying vec2 vUv;
 
 void main()	{
@@ -23,7 +23,8 @@ void main()	{
   
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.);
 }
-`, `
+`,
+  `
 varying vec2 vUv;
 uniform float repeats;
 uniform sampler2D map;
@@ -48,29 +49,41 @@ void main(){
   
   gl_FragColor = vec4(color,1.0);
 }
-`)
+`
+)
 
 extend({ MyMaterial })
 
-function ShaderMaterialScene() {
+type MyMaterialImpl = {
+  repeats: number
+  map: Texture | Texture[]
+} & JSX.IntrinsicElements['shaderMaterial']
 
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      myMaterial: MyMaterialImpl
+    }
+  }
+}
+
+function ShaderMaterialScene() {
   const map = useTexture(`https://source.unsplash.com/random/400x400`)
-  
+
   return (
     <Box args={[5, 5, 5]}>
-    
       <myMaterial
-        repeats={number("repeats", 2, { range: true, min: 1, max: 10, step: 1 })}
+        repeats={number('repeats', 2, { range: true, min: 1, max: 10, step: 1 })}
         map={map}
         attach="material"
       />
-      
     </Box>
   )
 }
 
-
-export const ShaderMaterialStory = () => <React.Suspense fallback={null}>
-<ShaderMaterialScene />
-</React.Suspense>
+export const ShaderMaterialStory = () => (
+  <React.Suspense fallback={null}>
+    <ShaderMaterialScene />
+  </React.Suspense>
+)
 ShaderMaterialStory.storyName = 'Default'

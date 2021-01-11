@@ -1,11 +1,10 @@
 import * as React from 'react'
+import { useFrame } from 'react-three-fiber'
+import { Mesh } from 'three'
 
 import { Setup } from '../Setup'
 
-import { Plane, Sphere } from '../../src/shapes'
-
-import { softShadows } from '../../src/softShadows'
-import { useFrame } from 'react-three-fiber'
+import { Plane, Sphere, softShadows } from '../../src'
 
 softShadows()
 
@@ -16,7 +15,7 @@ export default {
 }
 
 function SoftShadowsScene() {
-  const sphere = React.useRef()
+  const sphere = React.useRef<Mesh>(null!)
 
   useFrame(({ clock }) => {
     sphere.current.position.y = Math.sin(clock.getElapsedTime()) + 2
@@ -42,7 +41,7 @@ function SoftShadowsScene() {
       <pointLight position={[0, -10, 0]} intensity={1.5} />
 
       <Sphere ref={sphere} castShadow receiveShadow args={[1, 24, 24]}>
-        <meshPhongMaterial color="royalblue" roughness={0} metalness={0.1} attach="material" />
+        <meshPhongMaterial color="royalblue" attach="material" />
       </Sphere>
 
       <Plane receiveShadow rotation-x={-Math.PI / 2} position={[0, -0.5, 0]} args={[10, 10, 4, 4]}>

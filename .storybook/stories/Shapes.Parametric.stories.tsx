@@ -1,15 +1,16 @@
 import * as React from 'react'
+import { Vector3 } from 'three'
 import { ParametricGeometries } from 'three/examples/jsm/geometries/ParametricGeometries.js'
 
 import { Setup } from '../Setup'
 import { useTurntable } from '../useTurntable'
 
-import { Parametric } from '../../src/shapes'
+import { Parametric } from '../../src'
 
 export default {
   title: 'Shapes/Parametric',
   component: Parametric,
-  decorators: [(storyFn) => <Setup cameraPosition={[-30, 30, 30]}>{storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(-30, 30, 30)}>{storyFn()}</Setup>],
 }
 
 function ParametricScene() {

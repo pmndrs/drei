@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { useFrame } from 'react-three-fiber'
+import { Mesh } from 'three'
 
 import { Setup } from '../Setup'
 
@@ -12,7 +13,7 @@ export default {
 }
 
 function useTurntable() {
-  const ref = React.useRef()
+  const ref = React.useRef<Mesh>(null!)
   useFrame(() => {
     ref.current.rotation.y += 0.01
   })
@@ -20,7 +21,7 @@ function useTurntable() {
   return ref
 }
 
-function Story({ comp, args }) {
+function Story({ comp, args }: { comp: string; args?: any }) {
   const Comp = shapes[comp]
 
   const ref = useTurntable()

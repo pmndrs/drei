@@ -1,20 +1,26 @@
 import * as React from 'react'
+import { Vector3 } from 'three'
 
-import { TrackballControls } from '../../src/TrackballControls'
 import { Setup } from '../Setup'
-import { Icosahedron } from '../../src/shapes'
+
+import { Icosahedron, TrackballControls } from '../../src'
 
 export default {
   title: 'Controls/TrackballControls',
   component: TrackballControlsScene,
-  decorators: [(storyFn) => <Setup cameraPosition={[0, 0, 10]}>{storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 10)}>{storyFn()}</Setup>],
 }
 
 const NUM = 2
 
+interface Positions {
+  id: string
+  position: [number, number, number]
+}
+
 function TrackballControlsScene() {
   const positions = React.useMemo(() => {
-    const pos = []
+    const pos: Positions[] = []
     const half = (NUM - 1) / 2
 
     for (let x = 0; x < NUM; x++) {

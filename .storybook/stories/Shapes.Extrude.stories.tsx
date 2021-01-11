@@ -4,12 +4,12 @@ import * as THREE from 'three'
 import { Setup } from '../Setup'
 import { useTurntable } from '../useTurntable'
 
-import { Extrude } from '../../src/shapes'
+import { Extrude } from '../../src'
 
 export default {
   title: 'Shapes/Extrude',
   component: Extrude,
-  decorators: [(storyFn) => <Setup cameraPosition={[-30, 30, 30]}>{storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup cameraPosition={new THREE.Vector3(-30, 30, 30)}>{storyFn()}</Setup>],
 }
 
 function ExtrudeScene() {

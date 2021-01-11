@@ -1,10 +1,10 @@
 import * as React from 'react'
 import { useFrame } from 'react-three-fiber'
+import { Mesh } from 'three'
 
 import { Setup } from '../Setup'
 
-import { Shadow } from '../../src/Shadow'
-import { Icosahedron, Plane } from '../../src/shapes'
+import { Shadow, Icosahedron, Plane } from '../../src'
 
 export default {
   title: 'Misc/Shadow',
@@ -13,8 +13,8 @@ export default {
 }
 
 function ShadowScene() {
-  const shadow = React.useRef()
-  const mesh = React.useRef()
+  const shadow = React.useRef<Mesh>(null!)
+  const mesh = React.useRef<Mesh>(null!)
 
   useFrame(({ clock }) => {
     shadow.current.scale.x = Math.sin(clock.getElapsedTime()) + 3

@@ -4,12 +4,12 @@ import * as THREE from 'three'
 import { Setup } from '../Setup'
 import { useTurntable } from '../useTurntable'
 
-import { Tube } from '../../src/shapes'
+import { Tube } from '../../src'
 
 export default {
   title: 'Shapes/Tube',
   component: Tube,
-  decorators: [(storyFn) => <Setup cameraPosition={[-30, 30, 30]}>{storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup cameraPosition={new THREE.Vector3(-30, 30, 30)}>{storyFn()}</Setup>],
 }
 
 function TubeScene() {

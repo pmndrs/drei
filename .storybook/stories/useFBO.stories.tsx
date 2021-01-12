@@ -15,8 +15,10 @@ export default {
 }
 
 function SpinningThing() {
-  const mesh = React.useRef()
-  useFrame(() => (mesh.current.rotation.x = mesh.current.rotation.y = mesh.current.rotation.z += 0.01))
+  const mesh = React.useRef<THREE.Mesh>(null!)
+  useFrame(() => {
+    mesh.current.rotation.x = mesh.current.rotation.y = mesh.current.rotation.z += 0.01
+  })
   return (
     <TorusKnot ref={mesh} args={[1, 0.4, 100, 64]}>
       <meshNormalMaterial attach="material" />
@@ -25,7 +27,7 @@ function SpinningThing() {
 }
 
 function UseFBOScene({ color = 'orange', ...props }) {
-  const cam = React.useRef()
+  const cam = React.useRef<THREE.Camera>(null!)
   const scene = React.useMemo(() => {
     const scene = new THREE.Scene()
     scene.background = new THREE.Color(color)

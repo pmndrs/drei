@@ -1,12 +1,11 @@
 import * as React from 'react'
 import { useLoader } from 'react-three-fiber'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
+import { withKnobs, number } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
 
-import { useEdgeSplit } from '../../src/useEdgeSplit'
-
-import { withKnobs, number } from '@storybook/addon-knobs'
+import { useEdgeSplit } from '../../src'
 
 export default {
   title: 'Modifiers/useEdgeSplit',
@@ -22,7 +21,7 @@ function CerberusModel() {
   const meshRef = useEdgeSplit(cutoffEdge * (Math.PI / 180))
 
   return (
-    <mesh scale={[8, 8, 8]} ref={meshRef} geometry={children[0].geometry}>
+    <mesh scale={[8, 8, 8]} ref={meshRef} geometry={(children[0] as THREE.Mesh).geometry}>
       <meshNormalMaterial />
     </mesh>
   )

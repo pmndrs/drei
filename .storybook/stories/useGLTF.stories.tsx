@@ -1,19 +1,20 @@
-import * as  React from 'react'
+import * as React from 'react'
+import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'
 
-import { useGLTF } from '../../src/useGLTF'
+import { useGLTF } from '../../src'
 
 export default {
   title: 'Loaders/GLTF',
   component: useGLTF,
-  decorators: [(storyFn) => <Setup cameraPosition={[0, 0, 5]}>{storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 5)}>{storyFn()}</Setup>],
 }
 
 function Suzanne() {
-  const { nodes, materials } = useGLTF('suzanne.glb', true)
+  const { scene } = useGLTF('suzanne.glb', true)
 
-  return <mesh material={materials['Material.001']} geometry={nodes.Suzanne.geometry} />
+  return <primitive object={scene} />
 }
 
 function UseGLTFScene() {
@@ -30,11 +31,11 @@ UseGLTFSceneSt.story = {
 }
 
 function SuzanneWithLocal() {
-  const { nodes, materials } = useGLTF('suzanne.glb', '/draco-gltf/')
+  const { scene } = useGLTF('suzanne.glb', '/draco-gltf/')
 
   return (
     <group dispose={null}>
-      <mesh material={materials['Material.001']} geometry={nodes.Suzanne.geometry} />
+      <primitive object={scene} />
     </group>
   )
 }

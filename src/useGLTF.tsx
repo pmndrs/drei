@@ -12,7 +12,7 @@ function draco(url: string = 'https://www.gstatic.com/draco/v1/decoders/') {
 }
 
 export function useGLTF(path: string, useDraco: boolean | string = true): GLTF {
-  const gltf = useLoader<GLTF>(
+  const gltf = useLoader(
     GLTFLoader,
     path,
     useDraco ? draco(typeof useDraco === 'string' ? useDraco : undefined) : undefined

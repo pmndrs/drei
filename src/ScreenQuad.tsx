@@ -10,13 +10,13 @@ function createScreenQuadGeometry() {
   return geometry
 }
 
-export const ScreenQuad = React.forwardRef<
-  ((instance: React.ReactNode) => void) | React.RefObject<React.ReactNode> | null | undefined
->(function ScreenQuad({ children }, ref) {
+type Props = Omit<JSX.IntrinsicElements['mesh'], 'args'>
+
+export const ScreenQuad = React.forwardRef<THREE.Mesh, Props>(function ScreenQuad({ children, ...restProps }, ref) {
   const geometry = React.useMemo(createScreenQuadGeometry, [])
 
   return (
-    <mesh ref={ref} geometry={geometry} frustumCulled={false}>
+    <mesh ref={ref} geometry={geometry} frustumCulled={false} {...restProps}>
       {children}
     </mesh>
   )

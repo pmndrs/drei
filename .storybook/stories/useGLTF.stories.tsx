@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Vector3 } from 'three'
+import { Mesh, Vector3 } from 'three'
 
 import { Setup } from '../Setup'
 
@@ -12,9 +12,9 @@ export default {
 }
 
 function Suzanne() {
-  const { scene } = useGLTF('suzanne.glb', true)
+  const { nodes, materials } = useGLTF('suzanne.glb', true)
 
-  return <primitive object={scene} />
+  return <mesh material={materials['Material.001']} geometry={(nodes.Suzanne as Mesh).geometry} />
 }
 
 function UseGLTFScene() {
@@ -31,11 +31,11 @@ UseGLTFSceneSt.story = {
 }
 
 function SuzanneWithLocal() {
-  const { scene } = useGLTF('suzanne.glb', '/draco-gltf/')
+  const { nodes, materials } = useGLTF('suzanne.glb', '/draco-gltf/')
 
   return (
     <group dispose={null}>
-      <primitive object={scene} />
+      <mesh material={materials['Material.001']} geometry={(nodes.Suzanne as Mesh).geometry} />
     </group>
   )
 }

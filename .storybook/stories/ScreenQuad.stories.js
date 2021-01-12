@@ -1,0 +1,54 @@
+import * as React from 'react'
+import * as THREE from 'three'
+import { extend, useThree, useFrame } from 'react-three-fiber'
+
+import { Setup } from '../Setup'
+
+import { ScreenQuad } from '../../src/ScreenQuad'
+import { shaderMaterial } from '../../src/shaderMaterial'
+
+export default {
+  title: 'Shapes/ScreenQuad',
+  component: ScreenQuad,
+  decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
+}
+
+const ColorShiftMaterial = shaderMaterial(
+  { time: 0, resolution: new THREE.Vector2() },
+  `
+  void main() {
+    gl_Position = vec4(position, 1.0);
+  }
+  `,
+  `
+  uniform float time;
+  uniform vec2 resolution;
+  vec3 colorA = vec3(0.149,0.141,0.912);
+  vec3 colorB = vec3(1.000,0.833,0.224);
+  void main() {
+    vec3 color = vec3(0.0);
+    float pct = abs(sin(time));
+    color = mix(colorA, colorB, pct);
+    gl_FragColor = vec4(color,1.0);
+  }
+  `
+)
+
+extend({ ColorShiftMaterial })
+
+function ScreenQuadScene() {
+  const { size } = useThree()
+  const ref = React.useRef()
+  useFrame((state) => {
+    ref.current.uniforms.time.value = state.clock.elapsedTime
+  })
+
+  return (
+    <ScreenQuad>
+      <colorShiftMaterial ref={ref} attach="material" time={0} resolution={[size.width, size.height]} />
+    </ScreenQuad>
+  )
+}
+
+export const ScreenQuadSt = () => <ScreenQuadScene />
+ScreenQuadSt.storyName = 'Default'

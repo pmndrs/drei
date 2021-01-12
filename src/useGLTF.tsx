@@ -11,7 +11,13 @@ function draco(url: string = 'https://www.gstatic.com/draco/v1/decoders/') {
   }
 }
 
-export function useGLTF(path: string, useDraco: boolean | string = true): GLTF {
+type ObjectMap = {
+  nodes: { [name: string]: THREE.Object3D }
+  materials: { [name: string]: THREE.Material }
+}
+
+// temp fix until https://github.com/pmndrs/react-three-fiber/pull/930 is merged
+export function useGLTF(path: string, useDraco: boolean | string = true): GLTF & ObjectMap {
   const gltf = useLoader(
     GLTFLoader,
     path,

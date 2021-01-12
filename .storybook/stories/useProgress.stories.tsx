@@ -1,15 +1,14 @@
 import * as React from 'react'
+import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'
 
-import { useProgress } from '../../src/useProgress'
-import { useGLTF } from '../../src/useGLTF'
-import { Html } from '../../src/Html'
+import { Html, useGLTF, useProgress } from '../../src'
 
 export default {
   title: 'Misc/useProgress',
   component: useProgress,
-  decorators: [(storyFn) => <Setup cameraPosition={[0, 0, 5]}>{storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 5)}>{storyFn()}</Setup>],
 }
 
 function Helmet() {
@@ -18,10 +17,13 @@ function Helmet() {
   return <primitive object={nodes['node_damagedHelmet_-6514']} />
 }
 
-
 function Loader() {
   const { progress } = useProgress()
-  return <Html center><span style={{ color: 'white' }}>{progress} % loaded</span></Html>
+  return (
+    <Html center>
+      <span style={{ color: 'white' }}>{progress} % loaded</span>
+    </Html>
+  )
 }
 
 function UseProgressScene() {

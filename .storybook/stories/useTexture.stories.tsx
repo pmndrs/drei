@@ -1,9 +1,10 @@
 import * as React from 'react'
+import { useLoader } from 'react-three-fiber'
+import { TextureLoader } from 'three'
 
 import { Setup } from '../Setup'
 
-import { useTexture } from '../../src/useTexture'
-import { Icosahedron, Sphere } from '../../src/shapes'
+import { Icosahedron, useTexture } from '../../src'
 
 export default {
   title: 'Loaders/Texture',
@@ -12,7 +13,7 @@ export default {
 }
 
 function TexturedMeshes() {
-  const [matcap1, matcap2] = useTexture(['matcap-1.png', 'matcap-2.png'])
+  const [matcap1, matcap2] = useLoader(TextureLoader, ['matcap-1.png', 'matcap-2.png'])
 
   return (
     <>

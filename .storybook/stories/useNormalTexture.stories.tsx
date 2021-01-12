@@ -1,14 +1,14 @@
-import * as  React from 'react'
+import * as React from 'react'
+import { withKnobs, number } from '@storybook/addon-knobs'
+import { Mesh, Vector2, Vector3 } from 'three'
 
 import { Setup } from '../Setup'
-import { withKnobs, number } from '@storybook/addon-knobs'
-import { useGLTF } from '../../src/useGLTF'
-import { useNormalTexture } from '../../src/useNormalTexture'
+import { useGLTF, useNormalTexture } from '../../src'
 
 export default {
   title: 'Prototyping/useNormalTexture',
   component: useNormalTexture,
-  decorators: [withKnobs, (storyFn) => <Setup cameraPosition={[0, 0, 3]}>{storyFn()}</Setup>],
+  decorators: [withKnobs, (storyFn) => <Setup cameraPosition={new Vector3(0, 0, 3)}>{storyFn()}</Setup>],
 }
 
 function Suzanne() {
@@ -18,18 +18,18 @@ function Suzanne() {
   const [normalTexture] = useNormalTexture(number('texture index', 3), {
     repeat: [repeat, repeat],
     anisotropy: 8,
-  });
+  })
 
   return (
-    <mesh geometry={nodes.Suzanne.geometry} >
-        <meshStandardMaterial
-            attach="material"
-            color="darkmagenta"
-            roughness={0.9}
-            metalness={0.1} 
-            normalScale={[scale, scale]}
-            normalMap={normalTexture}
-        />
+    <mesh geometry={(nodes.Suzanne as Mesh).geometry}>
+      <meshStandardMaterial
+        attach="material"
+        color="darkmagenta"
+        roughness={0.9}
+        metalness={0.1}
+        normalScale={new Vector2(scale, scale)}
+        normalMap={normalTexture}
+      />
     </mesh>
   )
 }

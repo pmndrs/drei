@@ -22,7 +22,7 @@ const MATCAP_ROOT = 'https://rawcdn.githack.com/emmelleppi/matcaps/9b36ccaaf0a24
 
 const DEFAULT_MATCAP = matcapList[0]
 
-export function useMatcapTexture(id: number | string = 0, format = 1024) {
+export function useMatcapTexture(id: number | string = 0, format = 1024): [THREE.Texture, string, number] {
   const numTot = React.useMemo(() => Object.keys(matcapList).length, [])
 
   const fileHash = React.useMemo(() => {

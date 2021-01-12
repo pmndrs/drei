@@ -1,14 +1,14 @@
 import * as React from 'react'
+import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'
 
-import { useDetectGPU } from '../../src/useDetectGPU'
-import { Text } from '../../src/Text'
+import { useDetectGPU, Text } from '../../src'
 
 export default {
   title: 'Misc/useDetectGPU',
   component: useDetectGPU,
-  decorators: [(storyFn) => <Setup cameraPosition={[0, 0, 5]}>{storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 5)}>{storyFn()}</Setup>],
 }
 
 function Simple() {
@@ -19,13 +19,9 @@ function Simple() {
       Tier {GPUTier.tier.toString()} {GPUTier.type}
     </Text>
   ) : (
-    <Text>
-      Detecting GPU …
-    </Text>
+    <Text>Detecting GPU …</Text>
   )
 }
 
-export const DefaultStory = () => (
-  <Simple />
-)
+export const DefaultStory = () => <Simple />
 DefaultStory.storyName = 'Default'

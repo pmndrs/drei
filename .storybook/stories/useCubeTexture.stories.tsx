@@ -2,8 +2,7 @@ import * as React from 'react'
 
 import { Setup } from '../Setup'
 
-import { useCubeTexture } from '../../src/useCubeTexture'
-import { Icosahedron, Sphere } from '../../src/shapes'
+import { useCubeTexture, Icosahedron } from '../../src'
 
 export default {
   title: 'Loaders/CubeTexture',

@@ -4,8 +4,7 @@ import { extend, useThree, useFrame } from 'react-three-fiber'
 
 import { Setup } from '../Setup'
 
-import { ScreenQuad } from '../../src/ScreenQuad'
-import { shaderMaterial } from '../../src/shaderMaterial'
+import { ScreenQuad, shaderMaterial } from '../../src'
 
 export default {
   title: 'Shapes/ScreenQuad',
@@ -36,11 +35,26 @@ const ColorShiftMaterial = shaderMaterial(
 
 extend({ ColorShiftMaterial })
 
+type ColorShiftMaterialImpl = {
+  time: number
+  resolution: number[]
+} & JSX.IntrinsicElements['shaderMaterial']
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      colorShiftMaterial: ColorShiftMaterialImpl
+    }
+  }
+}
+
 function ScreenQuadScene() {
   const { size } = useThree()
-  const ref = React.useRef()
+  const ref = React.useRef<ColorShiftMaterialImpl>(null!)
   useFrame((state) => {
-    ref.current.uniforms.time.value = state.clock.elapsedTime
+    if (ref.current.uniforms) {
+      ref.current.uniforms.time.value = state.clock.elapsedTime
+    }
   })
 
   return (

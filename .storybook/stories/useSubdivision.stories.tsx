@@ -1,10 +1,9 @@
 import * as React from 'react'
+import { withKnobs, number } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
 
-import { useSubdivision } from '../../src/useSubdivision'
-import { Octahedron } from '../../src/shapes'
-import { withKnobs, number } from '@storybook/addon-knobs'
+import { Octahedron, useSubdivision } from '../../src'
 
 export default {
   title: 'Modifiers/useSubdivision',
@@ -13,7 +12,7 @@ export default {
 }
 
 function UseSubdivisionScene() {
-  const meshRef = useSubdivision(number("Subdivisions", 1, { range: true, max: 5, step: 1 }))
+  const meshRef = useSubdivision(number('Subdivisions', 1, { range: true, max: 5, step: 1 }))
 
   return (
     <Octahedron args={[3]} ref={meshRef}>

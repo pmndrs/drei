@@ -1,14 +1,11 @@
 import * as React from 'react'
-
 import { BoxHelper, CameraHelper } from 'three'
 import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper'
 import { FaceNormalsHelper } from 'three/examples/jsm/helpers/FaceNormalsHelper'
 
 import { Setup } from '../Setup'
 
-import { Sphere } from '../../src/shapes'
-import { useHelper } from '../../src/useHelper'
-import { PerspectiveCamera } from '../../src/PerspectiveCamera'
+import { Sphere, useHelper, PerspectiveCamera } from '../../src'
 
 export default {
   title: 'Misc/useHelper',

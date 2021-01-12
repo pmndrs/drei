@@ -1,13 +1,13 @@
-import * as  React from 'react'
+import * as React from 'react'
+import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'
-import { useFBX } from '../../src/useFBX'
-import { useCubeTexture } from '../../src'
+import { useFBX, useCubeTexture } from '../../src'
 
 export default {
   title: 'Loaders/FBX',
   component: useFBX,
-  decorators: [(storyFn) => <Setup cameraPosition={[0, 0, 5]}>{storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 5)}>{storyFn()}</Setup>],
 }
 
 function SuzanneFBX() {

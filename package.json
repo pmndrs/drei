@@ -1,7 +1,6 @@
 {
   "name": "@react-three/drei",
   "version": "2.2.15",
-  "private": true,
   "description": "useful add-ons for react-three-fiber",
   "keywords": [
     "react",
@@ -43,7 +42,7 @@
     "typegen": "tsc --emitDeclarationOnly",
     "storybook": "start-storybook  -s ./.storybook/public -p 6006",
     "build-storybook": "build-storybook -s ./.storybook/public",
-    "copy": "copyfiles package.json readme.md LICENSE dist && json -I -f dist/package.json -e \"delete this.private; this.devDependencies=undefined; this.optionalDependencies=undefined; this.scripts=undefined; this.husky=undefined; this.prettier=undefined; this.jest=undefined; this['lint-staged']=undefined;\""
+    "copy": "copyfiles package.json readme.md LICENSE dist && json -I -f dist/package.json -e \"this.devDependencies=undefined; this.optionalDependencies=undefined; this.scripts=undefined; this.husky=undefined; this.prettier=undefined; this.jest=undefined; this['lint-staged']=undefined;\""
   },
   "dependencies": {
     "@babel/runtime": "^7.11.2",

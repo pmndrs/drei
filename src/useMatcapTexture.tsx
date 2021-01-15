@@ -3,6 +3,8 @@ import { useTexture } from './useTexture'
 
 import { matcapList } from './helpers/matcap-assets'
 
+import { Texture } from 'three'
+
 function getFormatString(format: number) {
   switch (format) {
     case 64:
@@ -22,7 +24,7 @@ const MATCAP_ROOT = 'https://rawcdn.githack.com/emmelleppi/matcaps/9b36ccaaf0a24
 
 const DEFAULT_MATCAP = matcapList[0]
 
-export function useMatcapTexture(id: number | string = 0, format = 1024) {
+export function useMatcapTexture(id: number | string = 0, format = 1024): [THREE.Texture, string, number] {
   const numTot = React.useMemo(() => Object.keys(matcapList).length, [])
 
   const fileHash = React.useMemo(() => {
@@ -37,7 +39,7 @@ export function useMatcapTexture(id: number | string = 0, format = 1024) {
   const fileName = `${fileHash || DEFAULT_MATCAP}${getFormatString(format)}.png`
   const url = `${MATCAP_ROOT}/${format}/${fileName}`
 
-  const matcapTexture = useTexture(url)
+  const matcapTexture = useTexture(url) as Texture
 
   return [matcapTexture, url, numTot]
 }

@@ -1,9 +1,9 @@
 import * as React from 'react'
-import { Object3D, Group, AnimationClip, AnimationAction, AnimationMixer } from 'three'
+import { Object3D, AnimationClip, AnimationAction, AnimationMixer } from 'three'
 import { useFrame } from 'react-three-fiber'
 
 type Api = {
-  ref: React.MutableRefObject<Object3D | Group | undefined>
+  ref: React.MutableRefObject<Object3D | undefined>
   clips: AnimationClip[]
   mixer: AnimationMixer
   names: string[]
@@ -12,7 +12,7 @@ type Api = {
   }
 }
 
-export function useAnimations(clips: AnimationClip[], root?: React.MutableRefObject<Object3D | Group | undefined>) {
+export function useAnimations(clips: AnimationClip[], root?: React.MutableRefObject<Object3D | undefined>) {
   const ref = React.useRef<Object3D>()
   const actualRef = root ? root : ref
   const [mixer] = React.useState(() => new AnimationMixer((undefined as unknown) as Object3D))

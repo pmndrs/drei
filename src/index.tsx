@@ -1,5 +1,6 @@
 // Abstractions
 export * from './Billboard'
+export * from './Cloud'
 export * from './Detailed'
 export * from './Line'
 export * from './PositionalAudio'

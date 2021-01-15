@@ -4,7 +4,8 @@ import { useFrame } from 'react-three-fiber'
 
 type WobbleMaterialType = JSX.IntrinsicElements['meshStandardMaterial'] & {
   time?: number
-  factor: number
+  factor?: number
+  speed?: number
 }
 
 type Props = WobbleMaterialType & {

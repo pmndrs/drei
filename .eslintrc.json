@@ -65,7 +65,7 @@
     {
       "files": ["src"],
       "parserOptions": {
-        "project": "./tsconfig.json"
+        "project": ["./tsconfig.json", "./storybook/tsconfig.json"]
       }
     }
   ]

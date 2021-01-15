@@ -1,5 +1,5 @@
 import { Loader } from 'three'
-import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
 import { useLoader } from 'react-three-fiber'
 
@@ -11,8 +11,8 @@ function draco(url: string = 'https://www.gstatic.com/draco/v1/decoders/') {
   }
 }
 
-export function useGLTF(path: string, useDraco: boolean | string = true): GLTF {
-  const gltf = useLoader<GLTF>(
+export function useGLTF(path: string, useDraco: boolean | string = true) {
+  const gltf = useLoader(
     GLTFLoader,
     path,
     useDraco ? draco(typeof useDraco === 'string' ? useDraco : undefined) : undefined

@@ -2,10 +2,12 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { Flow } from 'three/examples/jsm/modifiers/CurveModifier'
 
-interface CurveModifierProps {
+export interface CurveModifierProps {
   children: React.ReactElement<JSX.IntrinsicElements['mesh']>
   curve?: THREE.Curve<THREE.Vector2 | THREE.Vector3 | THREE.Vector4>
 }
+
+export type CurveModifierRef = Pick<Flow, 'moveAlongCurve'>
 
 export const CurveModifier = React.forwardRef(({ children, curve }: CurveModifierProps, ref) => {
   const [object3D, setObj] = React.useState()

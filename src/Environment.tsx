@@ -1,14 +1,14 @@
 import * as React from 'react'
 import { useLoader, useThree } from 'react-three-fiber'
-import { CubeTextureLoader, Texture, PMREMGenerator } from 'three'
+import { CubeTexture, CubeTextureLoader, Texture, PMREMGenerator } from 'three'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
 import { useAsset } from 'use-asset'
 import { presetsObj } from './helpers/environment-assets'
 
-function getTexture(texture, gen, isCubeMap) {
+function getTexture(texture: Texture | CubeTexture, gen: PMREMGenerator, isCubeMap: boolean) {
   if (isCubeMap) {
     gen.compileEquirectangularShader()
-    return gen.fromCubemap(texture).texture
+    return gen.fromCubemap(texture as CubeTexture).texture
   }
   return gen.fromEquirectangular(texture).texture
 }
@@ -46,11 +46,11 @@ export function Environment({
 
   // PMREMGenerator takes its sweet time to generate the env-map,
   // Let's make this part of suspense, or else it just yields a frame-skip
-  const texture = useAsset(
+  const texture = useAsset<Texture, [Texture, boolean]>(
     () =>
       new Promise((res) => {
         const gen = new PMREMGenerator(gl)
-        const texture = getTexture(map, gen, isCubeMap)
+        const texture = getTexture(map, gen, isCubeMap) as Texture
         gen.dispose()
         map.dispose()
         res(texture)

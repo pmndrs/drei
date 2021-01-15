@@ -1,6 +1,4 @@
 {
   "sandboxes": ["4nc1u"],
-  "publishDirectory": {
-    "@react-three/drei": "dist"
-  }
+  "publishDirectory": "dist"
 }

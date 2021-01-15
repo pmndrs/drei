@@ -7,14 +7,21 @@ import { normalsList } from '../helpers/normal-assets'
 const NORMAL_ROOT = 'https://rawcdn.githack.com/emmelleppi/normal-maps/f24c810fc1d86b5b1e5dfea914b668f70b5f2923'
 const DEFAULT_NORMAL = normalsList[0]
 
-export function useNormalTexture(id = 0, { repeat = [1, 1], anisotropy = 1, offset = [0, 0] }) {
+type Settings = {
+  repeat?: number[]
+  anisotropy?: number
+  offset?: number[]
+}
+
+export function useNormalTexture(id = 0, settings: Settings = {}): [Texture, string, number] {
+  const { repeat = [1, 1], anisotropy = 1, offset = [0, 0] } = settings
+
   const numTot = React.useMemo(() => Object.keys(normalsList).length, [])
 
   const imageName = normalsList[id] || DEFAULT_NORMAL
   const url = `${NORMAL_ROOT}/normals/${imageName}`
 
-  // @ts-expect-error
-  const normalTexture: Texture = useTexture(url)
+  const normalTexture = useTexture(url) as Texture
 
   React.useEffect(() => {
     if (!normalTexture) return

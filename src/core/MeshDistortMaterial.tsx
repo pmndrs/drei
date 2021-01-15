@@ -7,8 +7,8 @@ import distort from '../helpers/glsl/distort.vert.glsl'
 
 type DistortMaterialType = JSX.IntrinsicElements['meshPhysicalMaterial'] & {
   time?: number
-  distort: number
-  radius: number
+  distort?: number
+  radius?: number
 }
 
 type Props = DistortMaterialType & {

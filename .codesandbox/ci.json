@@ -1,0 +1,4 @@
+{
+  "sandboxes": ["4nc1u"],
+  "packages": ["dist"]
+}

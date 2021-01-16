@@ -83,7 +83,7 @@ float PCSS(sampler2D shadowMap, vec4 coords) {
 }`
 
 let deployed = false
-export const softShadows = (props: Props) => {
+export const softShadows = (props?: Props) => {
   // Avoid adding the effect twice, which may happen in HMR scenarios
   if (!deployed) {
     deployed = true

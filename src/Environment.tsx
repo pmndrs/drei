@@ -42,11 +42,11 @@ export function Environment({
   const loaderResult: Texture | Texture[] = useLoader(loader, isCubeMap ? [files] : files, (loader) =>
     loader.setPath(path)
   )
-  const map = isCubeMap ? loaderResult[0] : loaderResult
+  const map: Texture = isCubeMap ? loaderResult[0] : loaderResult
 
   // PMREMGenerator takes its sweet time to generate the env-map,
   // Let's make this part of suspense, or else it just yields a frame-skip
-  const texture = useAsset(
+  const texture = useAsset<Texture, [Texture, boolean]>(
     () =>
       new Promise((res) => {
         const gen = new PMREMGenerator(gl)
@@ -55,7 +55,8 @@ export function Environment({
         map.dispose()
         res(texture)
       }),
-    [map, background]
+    map,
+    background
   )
 
   React.useLayoutEffect(() => {

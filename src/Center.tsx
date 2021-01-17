@@ -1,7 +1,10 @@
 import { Box3, Vector3, Group } from 'three'
 import * as React from 'react'
 
-export const Center = React.forwardRef(function Center({ children, ...props }: JSX.IntrinsicElements['group'], ref) {
+export const Center = React.forwardRef<Group, JSX.IntrinsicElements['group']>(function Center(
+  { children, ...props },
+  ref
+) {
   const outer = React.useRef<Group>()
   const inner = React.useRef<Group>()
   React.useLayoutEffect(() => {
@@ -14,7 +17,7 @@ export const Center = React.forwardRef(function Center({ children, ...props }: J
     }
   }, [children])
   return (
-    <group ref={ref as any} {...props}>
+    <group ref={ref} {...props}>
       <group ref={outer}>
         <group ref={inner}>{children}</group>
       </group>

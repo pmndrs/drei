@@ -380,6 +380,7 @@ Abstraction around threes own [EffectComposer](https://threejs.org/docs/index.ht
 #### useAnimations
 
 [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/react-three-fiber-gltf-camera-animation-forked-pecl6)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/abstractions-useanimations--use-animations-st)
 
 A hook that abstracts [AnimationMixer](https://threejs.org/docs/index.html#api/en/animation/AnimationMixer).
 
@@ -567,14 +568,14 @@ Creates a `THREE.WebGLRenderTarget` or `THREE.WebGLMultisampleRenderTarget`.
 
 ```jsx
 const target = useFBO(
-  // width: 500,  height: 500, 
+  // width: 500,  height: 500,
   // width and height are optional and defaulted to the viewport size
   // multiplied by the renderer pixel ratio, and recalculated whenever the
   // viewport size changes.
   {
     multisample: true, // if the renderer supports webGL2, it will return a WebGLMultisampleRenderTarget
-    stencilBuffer: false // you can pass any options supported by THREE.WebGLRenderTarget
-  } 
+    stencilBuffer: false, // you can pass any options supported by THREE.WebGLRenderTarget
+  }
 )
 ```
 

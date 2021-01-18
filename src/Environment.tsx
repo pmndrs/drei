@@ -46,7 +46,7 @@ export function Environment({
 
   // PMREMGenerator takes its sweet time to generate the env-map,
   // Let's make this part of suspense, or else it just yields a frame-skip
-  const texture = useAsset<Texture, [Texture, boolean]>(
+  const texture = useAsset<Texture, [Texture]>(
     () =>
       new Promise((res) => {
         const gen = new PMREMGenerator(gl)
@@ -55,8 +55,7 @@ export function Environment({
         map.dispose()
         res(texture)
       }),
-    map,
-    background
+    map
   )
 
   React.useLayoutEffect(() => {
@@ -69,7 +68,7 @@ export function Environment({
       scene.background = oldbg
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [texture])
+  }, [texture, background])
 
   return null
 }

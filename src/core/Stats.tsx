@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { addEffect, addAfterEffect } from 'react-three-fiber'
 import StatsImpl from 'three/examples/js/libs/stats.min'
-import useEffectfulState from './helpers/useEffectfulState'
+import useEffectfulState from '../helpers/useEffectfulState'
 
 type Props = {
   showPanel?: number

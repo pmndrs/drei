@@ -1,26 +1,31 @@
 import * as React from 'react'
 import { ReactThreeFiber, useThree, useFrame, Overwrite } from 'react-three-fiber'
-import { MapControls as MapControlsImpl } from 'three/examples/jsm/controls/OrbitControls'
-import useEffectfulState from './helpers/useEffectfulState'
+import { OrbitControls as OrbitControlsImpl } from 'three/examples/jsm/controls/OrbitControls'
+import useEffectfulState from '../helpers/useEffectfulState'
 
-export type MapControls = Overwrite<
-  ReactThreeFiber.Object3DNode<MapControlsImpl, typeof MapControlsImpl>,
+export type OrbitControls = Overwrite<
+  ReactThreeFiber.Object3DNode<OrbitControlsImpl, typeof OrbitControlsImpl>,
   { target?: ReactThreeFiber.Vector3 }
 >
 
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      mapControlsImpl: MapControls
+      orbitControlsImpl: OrbitControls
     }
   }
 }
 
-export const MapControls = React.forwardRef((props: MapControls = { enableDamping: true }, ref) => {
+export const OrbitControls = React.forwardRef((props: OrbitControls = { enableDamping: true }, ref) => {
   const { camera, gl, invalidate } = useThree()
-  const controls = useEffectfulState(() => new MapControlsImpl(camera, gl.domElement), [camera, gl], ref as any)
+  const controls = useEffectfulState<OrbitControlsImpl>(
+    () => new OrbitControlsImpl(camera, gl.domElement),
+    [camera, gl],
+    ref as any
+  )
 
   useFrame(() => controls?.update())
+
   React.useEffect(() => {
     controls?.addEventListener?.('change', invalidate)
     return () => controls?.removeEventListener?.('change', invalidate)

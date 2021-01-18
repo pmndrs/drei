@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { ReactThreeFiber, useThree, Overwrite } from 'react-three-fiber'
 import { PointerLockControls as PointerLockControlsImpl } from 'three/examples/jsm/controls/PointerLockControls'
-import useEffectfulState from './helpers/useEffectfulState'
+import useEffectfulState from '../helpers/useEffectfulState'
 
 export type PointerLockControls = Overwrite<
   ReactThreeFiber.Object3DNode<PointerLockControlsImpl, typeof PointerLockControlsImpl>,

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { ReactThreeFiber, useThree, useFrame, Overwrite } from 'react-three-fiber'
 import { DeviceOrientationControls as DeviceOrientationControlsImp } from 'three/examples/jsm/controls/DeviceOrientationControls'
-import useEffectfulState from './helpers/useEffectfulState'
+import useEffectfulState from '../helpers/useEffectfulState'
 
 export type DeviceOrientationControls = Overwrite<
   ReactThreeFiber.Object3DNode<DeviceOrientationControlsImp, typeof DeviceOrientationControlsImp>,

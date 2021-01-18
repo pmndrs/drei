@@ -3,7 +3,7 @@ import { useLoader, useThree } from 'react-three-fiber'
 import { CubeTexture, CubeTextureLoader, Texture, PMREMGenerator } from 'three'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
 import { useAsset } from 'use-asset'
-import { presetsObj } from './helpers/environment-assets'
+import { presetsObj } from '../helpers/environment-assets'
 
 function getTexture(texture: Texture | CubeTexture, gen: PMREMGenerator, isCubeMap: boolean) {
   if (isCubeMap) {

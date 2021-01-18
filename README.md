@@ -9,12 +9,22 @@
 A growing collection of useful helpers and abstractions for [react-three-fiber](https://github.com/pmndrs/react-three-fiber).
 
 ```bash
-npm install @react-three/drei
+npm install @react-three/drei@latest
 ```
+
+### Basic usage:
 
 ```jsx
 import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei'
 ```
+
+### `react-native` usage:
+
+```jsx
+import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei/native'
+```
+
+The `native` route of the library **does not** export `Html` or `Loader`. There default export of the library is `web` which **does** export `Html` and `Loader`.
 
 # Index
 
@@ -574,6 +584,8 @@ The rendertarget is automatically disposed when unmounted.
 
 [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-suspense-zu2wo)
 
+> :no_entry_sign: Web usage only.
+
 Allows you to tie HTML content to any object of your scene. It will be projected to the objects whereabouts automatically.
 
 ```jsx
@@ -892,6 +904,8 @@ const errors = useProgress((state) => state.errors)
 ## ⚡️ Prototyping
 
 #### Loader
+
+> :no_entry_sign: Web usage only.
 
 A quick and easy loading overlay component that you can drop on top of your canvas. It will show an animated loadingbar and a percentage.
 

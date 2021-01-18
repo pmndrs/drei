@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Mesh, Shape, ExtrudeBufferGeometry } from 'three'
 import { useUpdate } from 'react-three-fiber'
-import { NamedArrayTuple } from './helpers/ts-utils'
+import { NamedArrayTuple } from '../helpers/ts-utils'
 
 const eps = 0.00001
 

@@ -48,6 +48,7 @@
   "dependencies": {
     "@babel/runtime": "^7.11.2",
     "@react-spring/web": "^9.0.0-rc.3",
+    "blob-polyfill": "^4.0.20200601",
     "detect-gpu": "^3.0.0",
     "glsl-noise": "^0.0.0",
     "lodash.omit": "^4.5.0",

@@ -3,7 +3,7 @@ import { Object3D, AnimationClip, AnimationAction, AnimationMixer } from 'three'
 import { useFrame } from 'react-three-fiber'
 
 type Api = {
-  ref: React.MutableRefObject<Object3D | undefined>
+  ref: React.MutableRefObject<Object3D | undefined | null>
   clips: AnimationClip[]
   mixer: AnimationMixer
   names: string[]

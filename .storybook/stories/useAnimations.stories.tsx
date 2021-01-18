@@ -26,7 +26,7 @@ type GLTFResult = GLTF & {
 }
 
 type AnimationControllerProps = {
-  ybotRef: React.MutableRefObject<THREE.Group | undefined>
+  ybotRef: React.MutableRefObject<THREE.Group | undefined | null>
   animations: THREE.AnimationClip[]
 }
 
@@ -52,7 +52,7 @@ function AnimationController(props: AnimationControllerProps) {
 }
 
 function YBotModel(props: JSX.IntrinsicElements['group']) {
-  const ybotRef = React.useRef<THREE.Group>()
+  const ybotRef = React.useRef<THREE.Group>(null)
   const { nodes, animations } = useGLTF('ybot.glb') as GLTFResult
   const [matcapBody] = useMatcapTexture('293534_B2BFC5_738289_8A9AA7', 1024)
   const [matcapJoints] = useMatcapTexture('3A2412_A78B5F_705434_836C47', 1024)

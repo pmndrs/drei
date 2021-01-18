@@ -1,6 +1,6 @@
 {
   "name": "@react-three/drei",
-  "version": "2.2.16",
+  "version": "2.3.0-beta.1",
   "private": true,
   "description": "useful add-ons for react-three-fiber",
   "keywords": [
@@ -112,11 +112,17 @@
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-size-snapshot": "^0.12.0",
     "three": "0.123.0",
-    "typescript": "^3.9.7"
+    "typescript": "^3.9.7",
+    "use-asset": "^1.0.0"
   },
   "peerDependencies": {
     "react": ">=16.13",
     "react-dom": ">=16.13",
     "react-three-fiber": ">=5.0"
+  },
+  "peerDependenciesMeta": {
+    "react-dom": {
+      "optional": true
+    }
   }
 }

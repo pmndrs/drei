@@ -3,7 +3,7 @@ import { useLoader, useThree } from 'react-three-fiber'
 import { CubeTexture, CubeTextureLoader, Texture, PMREMGenerator } from 'three'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
 import { useAsset } from 'use-asset'
-import { presetsObj } from './helpers/environment-assets'
+import { presetsObj } from '../helpers/environment-assets'
 
 function getTexture(texture: Texture | CubeTexture, gen: PMREMGenerator, isCubeMap: boolean) {
   if (isCubeMap) {
@@ -42,7 +42,7 @@ export function Environment({
   const loaderResult: Texture | Texture[] = useLoader(loader, isCubeMap ? [files] : files, (loader) =>
     loader.setPath(path)
   )
-  const map = isCubeMap ? loaderResult[0] : loaderResult
+  const map: Texture = isCubeMap ? loaderResult[0] : loaderResult
 
   // PMREMGenerator takes its sweet time to generate the env-map,
   // Let's make this part of suspense, or else it just yields a frame-skip
@@ -55,7 +55,8 @@ export function Environment({
         map.dispose()
         res(texture)
       }),
-    [map, background]
+    map,
+    background
   )
 
   React.useLayoutEffect(() => {

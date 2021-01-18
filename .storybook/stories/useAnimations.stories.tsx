@@ -25,16 +25,13 @@ type GLTFResult = GLTF & {
   }
 }
 
-type ActionName = 'Dance' | 'Idle' | 'Strut'
-type GLTFActions = Record<ActionName, THREE.AnimationAction>
+type AnimationControllerProps = {
+  ybotRef: React.MutableRefObject<THREE.Group | undefined>
+  animations: THREE.AnimationClip[]
+}
 
-function YBot(props: JSX.IntrinsicElements['group']) {
-  const group = React.useRef<THREE.Group>()
-  const { nodes, animations } = useGLTF('ybot.glb') as GLTFResult
-  const { actions } = useAnimations(animations, group)
-
-  const [matcapBody] = useMatcapTexture('293534_B2BFC5_738289_8A9AA7', 1024)
-  const [matcapJoints] = useMatcapTexture('3A2412_A78B5F_705434_836C47', 1024)
+function AnimationController(props: AnimationControllerProps) {
+  const { actions } = useAnimations(props.animations, props.ybotRef)
 
   // Storybook Knobs
   const actionOptions = Object.keys(actions)
@@ -51,18 +48,31 @@ function YBot(props: JSX.IntrinsicElements['group']) {
     return () => void actions[selectedAction].fadeOut(blendDuration)
   }, [actions, selectedAction, blendDuration])
 
+  return null
+}
+
+function YBotModel(props: JSX.IntrinsicElements['group']) {
+  const ybotRef = React.useRef<THREE.Group>()
+  const { nodes, animations } = useGLTF('ybot.glb') as GLTFResult
+  const [matcapBody] = useMatcapTexture('293534_B2BFC5_738289_8A9AA7', 1024)
+  const [matcapJoints] = useMatcapTexture('3A2412_A78B5F_705434_836C47', 1024)
+
   return (
-    <group ref={group} {...props} dispose={null}>
-      <group rotation={[Math.PI / 2, 0, 0]} scale={[0.01, 0.01, 0.01]}>
-        <primitive object={nodes.mixamorigHips} />
-        <skinnedMesh geometry={nodes.YB_Body.geometry} skeleton={nodes.YB_Body.skeleton}>
-          <meshMatcapMaterial attach="material" matcap={matcapBody} skinning={true} />
-        </skinnedMesh>
-        <skinnedMesh geometry={nodes.YB_Joints.geometry} skeleton={nodes.YB_Joints.skeleton}>
-          <meshMatcapMaterial attach="material" matcap={matcapJoints} skinning={true} />
-        </skinnedMesh>
+    <>
+      <group ref={ybotRef} {...props} dispose={null}>
+        <group rotation={[Math.PI / 2, 0, 0]} scale={[0.01, 0.01, 0.01]}>
+          <primitive object={nodes.mixamorigHips} />
+          <skinnedMesh geometry={nodes.YB_Body.geometry} skeleton={nodes.YB_Body.skeleton}>
+            <meshMatcapMaterial attach="material" matcap={matcapBody} skinning={true} />
+          </skinnedMesh>
+          <skinnedMesh geometry={nodes.YB_Joints.geometry} skeleton={nodes.YB_Joints.skeleton}>
+            <meshMatcapMaterial attach="material" matcap={matcapJoints} skinning={true} />
+          </skinnedMesh>
+        </group>
       </group>
-    </group>
+
+      <AnimationController ybotRef={ybotRef} animations={animations} />
+    </>
   )
 }
 
@@ -71,7 +81,7 @@ useGLTF.preload('ybot.glb')
 function UseAnimationsScene() {
   return (
     <React.Suspense fallback={null}>
-      <YBot position={[0, -1, 0]} />
+      <YBotModel position={[0, -1, 0]} />
     </React.Suspense>
   )
 }

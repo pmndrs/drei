@@ -59,7 +59,7 @@ export default [
     external,
     plugins: [
       multiInput({
-        transformOutputPath: (output) => path.basename(output, '.tsx') + '.cjs.js',
+        transformOutputPath: (output) => path.basename(output, '.ts') + '.cjs.js',
       }),
       json(),
       glslify(),

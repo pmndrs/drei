@@ -484,7 +484,7 @@ Injects [percent closer soft shadows (pcss)](https://threejs.org/examples/?q=pcs
 
 ```jsx
 softShadows({
-  frustrum: 3.75, // Frustrum width (default: 3.75) must be a float
+  frustum: 3.75, // Frustum width (default: 3.75) must be a float
   size: 0.005, // World size (default: 0.005) must be a float
   near: 9.5, // Near plane (default: 9.5) must be a float
   samples: 17, // Samples (default: 17) must be a int

@@ -17,7 +17,7 @@ const pcss = ({
   samples = 17,
   rings = 11,
 }: Props = {}) => `#define LIGHT_WORLD_SIZE ${size}
-#define LIGHT_FRUSTUM_WIDTH ${frustum ?? frustrum}
+#define LIGHT_FRUSTUM_WIDTH ${frustrum ?? frustum}
 #define LIGHT_SIZE_UV (LIGHT_WORLD_SIZE / LIGHT_FRUSTUM_WIDTH)
 #define NEAR_PLANE ${near}
 

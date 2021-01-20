@@ -46,13 +46,11 @@ const defaultConfig: ShakeConfig = {
 }
 
 export interface ShakeController {
-  getConfig: () => ShakeConfig
   setTrauma: (val: number) => void
   getTrauma: () => number
   addTrauma: (val: number) => void
   clearTrauma: () => void
-  setConfig: (newCfg: ShakeConfigPartial) => void
-  toggleDecay: () => void
+  updateConfig: (cfg: ShakeConfigPartial) => void
 }
 
 export function useCameraShake(
@@ -60,13 +58,13 @@ export function useCameraShake(
   shakeConfig?: ShakeConfigPartial
 ) {
   const { setDefaultCamera } = useThree()
-  const shakyCam = React.useRef<THREE.PerspectiveCamera>(new THREE.PerspectiveCamera())
-  const config = React.useRef<ShakeConfig>({ ...defaultConfig, ...shakeConfig })
+  const [config, setConfig] = React.useState<ShakeConfig>({ ...defaultConfig, ...shakeConfig })
+  const shakyCam = React.useRef<Camera>(new THREE.PerspectiveCamera())
   const trauma = React.useRef<number>(0) // range [0-1]
 
-  const yawNoise = React.useRef<Noise2D>(makeNoise2D(config.current.yawNoiseSeed))
-  const pitchNoise = React.useRef<Noise2D>(makeNoise2D(config.current.pitchNoiseSeed))
-  const rollNoise = React.useRef<Noise2D>(makeNoise2D(config.current.rollNoiseSeed))
+  const yawNoise = React.useRef<Noise2D>(makeNoise2D(config.yawNoiseSeed))
+  const pitchNoise = React.useRef<Noise2D>(makeNoise2D(config.pitchNoiseSeed))
+  const rollNoise = React.useRef<Noise2D>(makeNoise2D(config.rollNoiseSeed))
 
   const constrainTrauma = () => {
     if (trauma.current < 0 || trauma.current > 1) {
@@ -92,60 +90,48 @@ export function useCameraShake(
     trauma.current = 0
   }
 
-  const setConfig = (newConfig: ShakeConfigPartial) => {
-    config.current = { ...config.current, ...newConfig }
-  }
-
-  const getConfig = () => {
-    return config.current
-  }
-
-  const toggleDecay = () => {
-    setConfig({ decay: !config.current.decay })
+  const updateConfig = (cfg: ShakeConfigPartial) => {
+    setConfig({ ...config, ...cfg })
   }
 
   React.useEffect(() => {
-    yawNoise.current = makeNoise2D(config.current.yawNoiseSeed)
-  }, [config.current.yawNoiseSeed])
+    yawNoise.current = makeNoise2D(config.yawNoiseSeed)
+  }, [config.yawNoiseSeed])
 
   React.useEffect(() => {
-    pitchNoise.current = makeNoise2D(config.current.pitchNoiseSeed)
-  }, [config.current.pitchNoiseSeed])
+    pitchNoise.current = makeNoise2D(config.pitchNoiseSeed)
+  }, [config.pitchNoiseSeed])
 
   React.useEffect(() => {
-    rollNoise.current = makeNoise2D(config.current.rollNoiseSeed)
-  }, [config.current.rollNoiseSeed])
+    rollNoise.current = makeNoise2D(config.rollNoiseSeed)
+  }, [config.rollNoiseSeed])
 
   useFrame(({ clock }, delta) => {
-    if (controlledCam.current) {
-      if (trauma.current > 0) {
-        shakyCam.current = shakyCam.current.copy(controlledCam.current as never) // I dont understand why this expects never.
+    if (!controlledCam.current) return // ref checks
 
-        const cfg = config.current
-        const shake = Math.pow(trauma.current, 2)
+    if (trauma.current > 0) {
+      shakyCam.current.copy(controlledCam.current as never) // I dont understand why this expects never.
+      const shake = Math.pow(trauma.current, 2)
 
-        const yaw = cfg.maxYaw * shake * yawNoise.current(clock.elapsedTime * cfg.yawFrequency, 1)
-        const pitch = cfg.maxPitch * shake * pitchNoise.current(clock.elapsedTime * cfg.pitchFrequency, 1)
-        const roll = cfg.maxRoll * shake * rollNoise.current(clock.elapsedTime * cfg.rollFrequency, 1)
+      const yaw = config.maxYaw * shake * yawNoise.current(clock.elapsedTime * config.yawFrequency, 1)
+      const pitch = config.maxPitch * shake * pitchNoise.current(clock.elapsedTime * config.pitchFrequency, 1)
+      const roll = config.maxRoll * shake * rollNoise.current(clock.elapsedTime * config.rollFrequency, 1)
 
-        shakyCam.current.rotation.x += pitch
-        shakyCam.current.rotation.y += yaw
-        shakyCam.current.rotation.z += roll
+      shakyCam.current.rotation.x += pitch
+      shakyCam.current.rotation.y += yaw
+      shakyCam.current.rotation.z += roll
 
-        setDefaultCamera(shakyCam.current)
-
-        if (cfg.decay) {
-          trauma.current -= cfg.decayRate * delta
-          constrainTrauma()
-        }
-
-        setDefaultCamera(shakyCam.current)
-      } else {
-        setDefaultCamera(controlledCam.current)
+      if (config.decay) {
+        trauma.current -= config.decayRate * delta
+        constrainTrauma()
       }
+
+      setDefaultCamera(shakyCam.current)
+    } else {
+      setDefaultCamera(controlledCam.current)
     }
   })
 
   // Maybe just give direct access to the trauma/config refs instead?
-  return { setTrauma, getTrauma, addTrauma, clearTrauma, setConfig, getConfig, toggleDecay } as ShakeController
+  return { setTrauma, getTrauma, addTrauma, clearTrauma, updateConfig } as ShakeController
 }

@@ -21,14 +21,19 @@ export const Line = React.forwardRef<Line2, Props>(function Line(
   ref
 ) {
   const [line2] = React.useState(() => new Line2())
-  const [lineGeometry] = React.useState(() => new LineGeometry())
   const [lineMaterial] = React.useState(() => new LineMaterial())
   const [resolution] = React.useState(() => new THREE.Vector2(512, 512))
+
   React.useEffect(() => {
-    lineGeometry.setPositions(points.flat())
-    if (vertexColors) lineGeometry.setColors(vertexColors.flat())
+    const lineGeom = new LineGeometry()
+    lineGeom.setPositions(points.flat())
+    if (vertexColors) {
+      lineGeom.setColors(vertexColors.flat())
+    }
+    line2.geometry = lineGeom
     line2.computeLineDistances()
-  }, [points, vertexColors, line2, lineGeometry])
+  }, [points, vertexColors, line2])
+
   React.useLayoutEffect(() => {
     if (dashed) {
       lineMaterial.defines.USE_DASH = ''
@@ -38,9 +43,9 @@ export const Line = React.forwardRef<Line2, Props>(function Line(
     }
     lineMaterial.needsUpdate = true
   }, [dashed, lineMaterial])
+
   return (
     <primitive dispose={undefined} object={line2} ref={ref} {...rest}>
-      <primitive dispose={undefined} object={lineGeometry} attach="geometry" />
       <primitive
         dispose={undefined}
         object={lineMaterial}

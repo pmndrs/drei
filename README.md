@@ -79,6 +79,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. There 
           <li><a href="#html">Html</a></li>
           <li><a href="#shadow">Shadow</a></li>
           <li><a href="#stats">Stats</a></li>
+          <li><a href="#center">Center</a></li>
           <li><a href="#meshbounds">meshBounds</a></li>
           <li><a href="#usecamera">useCamera</a></li>
           <li><a href="#usedetectgpu">useDetectGPU</a></li>
@@ -659,6 +660,16 @@ useEffect(() => {
 }, [])
 
 return <Stats parent={parent} />
+```
+
+#### Center
+
+Calculates a boundary box and centers its children accordingly.
+
+```jsx
+<Center>
+  <mesh />
+</Center>
 ```
 
 #### meshBounds

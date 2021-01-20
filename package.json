@@ -1,6 +1,6 @@
 {
   "name": "@react-three/drei",
-  "version": "2.2.18",
+  "version": "2.3.0-beta.4",
   "private": true,
   "description": "useful add-ons for react-three-fiber",
   "keywords": [
@@ -48,6 +48,7 @@
   "dependencies": {
     "@babel/runtime": "^7.11.2",
     "@react-spring/web": "^9.0.0-rc.3",
+    "blob-polyfill": "^4.0.20200601",
     "detect-gpu": "^3.0.0",
     "glsl-noise": "^0.0.0",
     "lodash.omit": "^4.5.0",
@@ -119,5 +120,10 @@
     "react": ">=16.13",
     "react-dom": ">=16.13",
     "react-three-fiber": ">=5.0"
+  },
+  "peerDependenciesMeta": {
+    "react-dom": {
+      "optional": true
+    }
   }
 }

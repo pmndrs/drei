@@ -9,12 +9,22 @@
 A growing collection of useful helpers and abstractions for [react-three-fiber](https://github.com/pmndrs/react-three-fiber).
 
 ```bash
-npm install @react-three/drei
+npm install @react-three/drei@latest
 ```
+
+### Basic usage:
 
 ```jsx
 import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei'
 ```
+
+### `react-native` usage:
+
+```jsx
+import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei/native'
+```
+
+The `native` route of the library **does not** export `Html` or `Loader`. There default export of the library is `web` which **does** export `Html` and `Loader`.
 
 # Index
 
@@ -371,6 +381,7 @@ Abstraction around threes own [EffectComposer](https://threejs.org/docs/index.ht
 #### useAnimations
 
 [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/react-three-fiber-gltf-camera-animation-forked-pecl6)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/abstractions-useanimations--use-animations-st)
 
 A hook that abstracts [AnimationMixer](https://threejs.org/docs/index.html#api/en/animation/AnimationMixer).
 
@@ -474,11 +485,11 @@ Injects [percent closer soft shadows (pcss)](https://threejs.org/examples/?q=pcs
 
 ```jsx
 softShadows({
-  frustrum: 3.75, // Frustrum width (default: 3.75)
-  size: 0.005, // World size (default: 0.005)
-  near: 9.5, // Near plane (default: 9.5)
-  samples: 17, // Samples (default: 17)
-  rings: 11, // Rings (default: 11)
+  frustum: 3.75, // Frustum width (default: 3.75) must be a float
+  size: 0.005, // World size (default: 0.005) must be a float
+  near: 9.5, // Near plane (default: 9.5) must be a float
+  samples: 17, // Samples (default: 17) must be a int
+  rings: 11, // Rings (default: 11) must be a int
 })
 ```
 
@@ -558,14 +569,14 @@ Creates a `THREE.WebGLRenderTarget` or `THREE.WebGLMultisampleRenderTarget`.
 
 ```jsx
 const target = useFBO(
-  // width: 500,  height: 500, 
+  // width: 500,  height: 500,
   // width and height are optional and defaulted to the viewport size
   // multiplied by the renderer pixel ratio, and recalculated whenever the
   // viewport size changes.
   {
     multisample: true, // if the renderer supports webGL2, it will return a WebGLMultisampleRenderTarget
-    stencilBuffer: false // you can pass any options supported by THREE.WebGLRenderTarget
-  } 
+    stencilBuffer: false, // you can pass any options supported by THREE.WebGLRenderTarget
+  }
 )
 ```
 
@@ -574,6 +585,8 @@ The rendertarget is automatically disposed when unmounted.
 #### Html
 
 [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-suspense-zu2wo)
+
+> :no_entry_sign: Web usage only.
 
 Allows you to tie HTML content to any object of your scene. It will be projected to the objects whereabouts automatically.
 
@@ -903,6 +916,8 @@ const errors = useProgress((state) => state.errors)
 ## ⚡️ Prototyping
 
 #### Loader
+
+> :no_entry_sign: Web usage only.
 
 A quick and easy loading overlay component that you can drop on top of your canvas. It will show an animated loadingbar and a percentage.
 

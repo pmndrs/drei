@@ -4270,6 +4270,11 @@ bl@^1.0.0:
     readable-stream "^2.3.5"
     safe-buffer "^5.1.1"
 
+blob-polyfill@^4.0.20200601:
+  version "4.0.20200601"
+  resolved "https://registry.yarnpkg.com/blob-polyfill/-/blob-polyfill-4.0.20200601.tgz#16430e9e50d63e122c6aac18b31f5f0bc8c0bf92"
+  integrity sha512-1jB6WOIp6IDxNyng5+9A8g/f0uiphib2ELCN+XAnlssinsW8s1k4VYG9b1TxIUd3pdm9RJSLQuBh6iohYmD4hA==
+
 bluebird@^3.3.5, bluebird@^3.5.5:
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.2.tgz#9f229c15be272454ffa973ace0dbee79a1b0c36f"

@@ -4,7 +4,7 @@ import { Mesh } from 'three'
 
 import { Setup } from '../Setup'
 
-import * as shapes from '../../src/shapes'
+import * as shapes from '../../src/core/shapes'
 
 export default {
   title: 'Shapes',

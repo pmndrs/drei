@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for wanting to make a contribution and wanting to improve this library for everyone! This repository uses Typescript so please continue to do so, you can always reach out in the repo or the [discord](https://discord.gg/9JrR3ZqG)
+Thanks for wanting to make a contribution and wanting to improve this library for everyone! This repository uses Typescript so please continue to do so, you can always reach out in the repo or the [discord](https://pmnd.rs/discord)
 
 ## How to Contribute
 

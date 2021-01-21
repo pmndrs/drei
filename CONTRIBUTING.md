@@ -15,9 +15,12 @@ Be sure your commit messages follow this specification: https://www.conventional
 
 ## Storybook
 
-If you're adding a brand new feature, you need to make sure you add a storybook entry. Storybook has `@storybook/addon-knobs` installed, so make use of them to show off. The most important thing about a story is to be simple & show the essence of the component, remember some people may be looking at using `drei` for the first time & it's important the stories are clear and concise.
+If you're adding a brand new feature, you need to make sure you add a storybook entry, here's a few tips:
 
-If you want to make a more advanced example why not create a codesandbox & be sure to make use of [`use-tweaks`](https://github.com/pmndrs/use-tweaks)!
+- Make use of @storybook/addon-knobs to show component variants & configuration
+- Keep the story simple & show the essence of the component, remember some people may be looking at using drei for the first time & it's important the stories are clear and concise.
+- Keep assets minimal (3D Models, textures) to avoid bloating the repository
+- If you think a more involved example is necessary, you can always add a codesandbox to the main README while keeping the story minimalistic
 
 ## Publishing
 

@@ -113,7 +113,7 @@ export const Html = React.forwardRef(
       [style, center, fullscreen, size]
     )
 
-    React.useEffect(
+    React.useLayoutEffect(
       () => void ReactDOM.render(<div ref={ref} style={styles} className={className} children={children} />, el)
     )
 

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { Camera, useThree, useFrame } from 'react-three-fiber'
-import { makeNoise2D, Noise2D } from 'open-simplex-noise'
+import { makeNoise2D } from 'open-simplex-noise'
 
 export interface ShakeConfig {
   decay: boolean
@@ -50,9 +50,9 @@ export function useCameraShake(
   const shakyCam = React.useRef<Camera>(new THREE.PerspectiveCamera())
   const trauma = React.useRef<number>(initialTrauma ? initialTrauma : 0) // range [0-1]
 
-  const yawNoise = React.useRef<Noise2D>(makeNoise2D(config.yawNoiseSeed))
-  const pitchNoise = React.useRef<Noise2D>(makeNoise2D(config.pitchNoiseSeed))
-  const rollNoise = React.useRef<Noise2D>(makeNoise2D(config.rollNoiseSeed))
+  const yawNoise = React.useMemo(() => makeNoise2D(config.yawNoiseSeed), [config.yawNoiseSeed])
+  const pitchNoise = React.useMemo(() => makeNoise2D(config.pitchNoiseSeed), [config.pitchNoiseSeed])
+  const rollNoise = React.useMemo(() => makeNoise2D(config.rollNoiseSeed), [config.rollNoiseSeed])
 
   const constrainTrauma = () => {
     if (trauma.current < 0 || trauma.current > 1) {
@@ -82,28 +82,16 @@ export function useCameraShake(
     setConfig({ ...config, ...cfg })
   }
 
-  React.useEffect(() => {
-    yawNoise.current = makeNoise2D(config.yawNoiseSeed)
-  }, [config.yawNoiseSeed])
-
-  React.useEffect(() => {
-    pitchNoise.current = makeNoise2D(config.pitchNoiseSeed)
-  }, [config.pitchNoiseSeed])
-
-  React.useEffect(() => {
-    rollNoise.current = makeNoise2D(config.rollNoiseSeed)
-  }, [config.rollNoiseSeed])
-
   useFrame(({ clock }, delta) => {
     if (!controlledCam.current) return // ref checks
 
     if (trauma.current > 0) {
       shakyCam.current.copy(controlledCam.current as never) // I dont understand why this expects never.
-      const shake = Math.pow(trauma.current, 2)
 
-      const yaw = config.maxYaw * shake * yawNoise.current(clock.elapsedTime * config.yawFrequency, 1)
-      const pitch = config.maxPitch * shake * pitchNoise.current(clock.elapsedTime * config.pitchFrequency, 1)
-      const roll = config.maxRoll * shake * rollNoise.current(clock.elapsedTime * config.rollFrequency, 1)
+      const shake = Math.pow(trauma.current, 2)
+      const yaw = config.maxYaw * shake * yawNoise(clock.elapsedTime * config.yawFrequency, 1)
+      const pitch = config.maxPitch * shake * pitchNoise(clock.elapsedTime * config.pitchFrequency, 1)
+      const roll = config.maxRoll * shake * rollNoise(clock.elapsedTime * config.rollFrequency, 1)
 
       shakyCam.current.rotation.x += pitch
       shakyCam.current.rotation.y += yaw

@@ -8,7 +8,7 @@ import { Setup } from '../Setup'
 import { useCameraShake, ShakeConfigPartial, ShakeController, PerspectiveCamera } from '../../src'
 
 export default {
-  title: 'Misc/useCameraShake',
+  title: 'Camera/useCameraShake',
   component: useCameraShake,
   decorators: [
     (storyFn) => (
@@ -102,14 +102,14 @@ const controlsConfig: ShakeConfigPartial = {
   maxYaw: 0.1,
   maxPitch: 0.1,
   maxRoll: 0.1,
-  yawFrequency: 4,
-  pitchFrequency: 4,
-  rollFrequency: 4,
+  yawFrequency: 2,
+  pitchFrequency: 2,
+  rollFrequency: 2,
   yawNoiseSeed: 10,
   pitchNoiseSeed: 20,
   rollNoiseSeed: 30,
 }
 
-export const UseAnimationsSt = ({ ...args }) => <UseCameraShakeDemo cfg={args} />
-UseAnimationsSt.storyName = 'Default'
-UseAnimationsSt.args = { ...controlsConfig }
+export const UseCameraShakeSt = ({ ...args }) => <UseCameraShakeDemo cfg={args} />
+UseCameraShakeSt.storyName = 'Default'
+UseCameraShakeSt.args = { ...controlsConfig }

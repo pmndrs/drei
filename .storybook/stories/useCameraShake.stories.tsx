@@ -5,7 +5,7 @@ import { withKnobs, button } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
 
-import { useCameraShake, ShakeConfigPartial, ShakeController, PerspectiveCamera, useMatcapTexture } from '../../src'
+import { useCameraShake, ShakeConfigPartial, ShakeController, PerspectiveCamera } from '../../src'
 
 export default {
   title: 'Camera/useCameraShake',
@@ -55,37 +55,23 @@ function CameraDolly({ cam }: { cam: React.MutableRefObject<Camera | undefined> 
 }
 
 function Scene() {
-  const knot = React.useRef<THREE.Mesh>()
-  const [knotMatcap] = useMatcapTexture('293534_B2BFC5_738289_8A9AA7', 512)
-  const [cubeMatcap] = useMatcapTexture('3E2335_D36A1B_8E4A2E_2842A5', 512)
+  const cube = React.useRef<THREE.Mesh>()
 
   useFrame(() => {
-    if (knot.current) {
-      knot.current.rotation.x = knot.current.rotation.y += 0.01
+    if (cube.current) {
+      cube.current.rotation.x = cube.current.rotation.y += 0.01
     }
   })
 
   return (
     <>
-      <mesh ref={knot}>
-        <torusKnotBufferGeometry args={[1.5, 0.5, 128, 32]} />
-        <meshMatcapMaterial matcap={knotMatcap} />
+      <mesh ref={cube}>
+        <boxBufferGeometry args={[2, 2, 2]} />
+        <meshStandardMaterial wireframe color="white" />
       </mesh>
-      <mesh position={[-5, 5, 0]}>
-        <boxBufferGeometry args={[5, 5, 5]} />
-        <meshMatcapMaterial matcap={cubeMatcap} />
-      </mesh>
-      <mesh position={[5, 5, 0]}>
-        <boxBufferGeometry args={[5, 5, 5]} />
-        <meshMatcapMaterial matcap={cubeMatcap} />
-      </mesh>
-      <mesh position={[-5, -5, 0]}>
-        <boxBufferGeometry args={[5, 5, 5]} />
-        <meshMatcapMaterial matcap={cubeMatcap} />
-      </mesh>
-      <mesh position={[5, -5, 0]}>
-        <boxBufferGeometry args={[5, 5, 5]} />
-        <meshMatcapMaterial matcap={cubeMatcap} />
+      <mesh position={[0, -6, 0]} rotation={[Math.PI / -2, 0, 0]}>
+        <planeBufferGeometry args={[200, 200, 75, 75]} />
+        <meshBasicMaterial wireframe color="red" side={THREE.DoubleSide} />
       </mesh>
     </>
   )
@@ -93,7 +79,7 @@ function Scene() {
 
 function UseCameraShakeDemo({ cfg }) {
   const controlledCam = React.useRef<Camera>()
-  const shaker = useCameraShake(controlledCam, cfg)
+  const shaker = useCameraShake(controlledCam, cfg, 0.5)
 
   React.useEffect(() => {
     shaker.updateConfig({ ...cfg })
@@ -111,14 +97,14 @@ function UseCameraShakeDemo({ cfg }) {
 }
 
 const controlsConfig: ShakeConfigPartial = {
-  decay: true,
+  decay: false,
   decayRate: 0.75,
   maxYaw: 0.1,
   maxPitch: 0.1,
   maxRoll: 0.1,
-  yawFrequency: 10,
-  pitchFrequency: 10,
-  rollFrequency: 10,
+  yawFrequency: 4,
+  pitchFrequency: 4,
+  rollFrequency: 4,
   yawNoiseSeed: 10,
   pitchNoiseSeed: 20,
   rollNoiseSeed: 30,

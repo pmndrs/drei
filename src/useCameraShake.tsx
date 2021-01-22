@@ -16,20 +16,7 @@ export interface ShakeConfig {
   pitchNoiseSeed: number
   rollNoiseSeed: number
 }
-
-export interface ShakeConfigPartial {
-  decay?: boolean
-  decayRate?: number
-  maxYaw?: number
-  maxPitch?: number
-  maxRoll?: number
-  yawFrequency?: number
-  pitchFrequency?: number
-  rollFrequency?: number
-  yawNoiseSeed?: number
-  pitchNoiseSeed?: number
-  rollNoiseSeed?: number
-}
+export type ShakeConfigPartial = Partial<ShakeConfig>
 
 const defaultConfig: ShakeConfig = {
   decay: true,
@@ -55,12 +42,13 @@ export interface ShakeController {
 
 export function useCameraShake(
   controlledCam: React.MutableRefObject<Camera | undefined>,
-  shakeConfig?: ShakeConfigPartial
+  shakeConfig?: ShakeConfigPartial,
+  initialTrauma?: number
 ) {
   const { setDefaultCamera } = useThree()
   const [config, setConfig] = React.useState<ShakeConfig>({ ...defaultConfig, ...shakeConfig })
   const shakyCam = React.useRef<Camera>(new THREE.PerspectiveCamera())
-  const trauma = React.useRef<number>(0) // range [0-1]
+  const trauma = React.useRef<number>(initialTrauma ? initialTrauma : 0) // range [0-1]
 
   const yawNoise = React.useRef<Noise2D>(makeNoise2D(config.yawNoiseSeed))
   const pitchNoise = React.useRef<Noise2D>(makeNoise2D(config.pitchNoiseSeed))

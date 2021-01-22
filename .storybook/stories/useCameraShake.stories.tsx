@@ -8,7 +8,7 @@ import { Setup } from '../Setup'
 import { useCameraShake, ShakeConfigPartial, ShakeController, PerspectiveCamera } from '../../src'
 
 export default {
-  title: 'Camera/useCameraShake',
+  title: 'Misc/useCameraShake',
   component: useCameraShake,
   decorators: [
     (storyFn) => (

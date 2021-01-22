@@ -1,11 +1,10 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { Camera, useFrame } from 'react-three-fiber'
-import { withKnobs, button } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
 
-import { useCameraShake, ShakeConfigPartial, ShakeController, PerspectiveCamera } from '../../src'
+import { useCameraShake, ShakeConfigPartial, PerspectiveCamera } from '../../src'
 
 export default {
   title: 'Camera/useCameraShake',
@@ -16,33 +15,7 @@ export default {
         {storyFn()}
       </Setup>
     ),
-    withKnobs,
   ],
-}
-
-function StoryBookKnobs({ shaker }: { shaker: ShakeController }) {
-  button('Add 1 trauma', () => {
-    shaker.addTrauma(1)
-    return false
-  })
-  button('Add 0.75 trauma', () => {
-    shaker.addTrauma(0.5)
-    return false
-  })
-  button('Add 0.5 trauma', () => {
-    shaker.addTrauma(0.5)
-    return false
-  })
-  button('Add 0.25 trauma', () => {
-    shaker.addTrauma(0.25)
-    return false
-  })
-  button('Clear trauma', () => {
-    shaker.clearTrauma()
-    return false
-  })
-
-  return null
 }
 
 function CameraDolly({ cam }: { cam: React.MutableRefObject<Camera | undefined> }) {
@@ -79,7 +52,7 @@ function Scene() {
 
 function UseCameraShakeDemo({ cfg }) {
   const controlledCam = React.useRef<Camera>()
-  const shaker = useCameraShake(controlledCam, cfg, 0.5)
+  const shaker = useCameraShake(controlledCam, cfg, 0.75)
 
   React.useEffect(() => {
     shaker.updateConfig({ ...cfg })
@@ -87,7 +60,6 @@ function UseCameraShakeDemo({ cfg }) {
 
   return (
     <>
-      <StoryBookKnobs shaker={shaker} />
       <CameraDolly cam={controlledCam} />
       <React.Suspense fallback={null}>
         <Scene />
@@ -102,9 +74,9 @@ const controlsConfig: ShakeConfigPartial = {
   maxYaw: 0.1,
   maxPitch: 0.1,
   maxRoll: 0.1,
-  yawFrequency: 2,
-  pitchFrequency: 2,
-  rollFrequency: 2,
+  yawFrequency: 1,
+  pitchFrequency: 1,
+  rollFrequency: 1,
   yawNoiseSeed: 10,
   pitchNoiseSeed: 20,
   rollNoiseSeed: 30,

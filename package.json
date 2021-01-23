@@ -114,7 +114,7 @@
     "rollup-plugin-size-snapshot": "^0.12.0",
     "three": "0.123.0",
     "typescript": "^3.9.7",
-    "use-asset": "^1.0.0"
+    "use-asset": "^1.0.1"
   },
   "peerDependencies": {
     "react": ">=16.13",

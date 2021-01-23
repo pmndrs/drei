@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { Camera, useFrame } from 'react-three-fiber'
+import { useFrame } from 'react-three-fiber'
 
 import { Setup } from '../Setup'
 
@@ -16,15 +16,6 @@ export default {
       </Setup>
     ),
   ],
-}
-
-function CameraDolly({ cam }: { cam: React.MutableRefObject<Camera | undefined> }) {
-  useFrame(({ clock }) => {
-    if (cam.current) {
-      cam.current.position.z = 25 + Math.sin(clock.getElapsedTime()) * 3
-    }
-  })
-  return <PerspectiveCamera ref={cam} makeDefault={false} />
 }
 
 function Scene() {
@@ -51,13 +42,17 @@ function Scene() {
 }
 
 function UseCameraShakeDemo({ cfg }) {
-  const controlledCam = React.useRef<Camera>()
+  const camRef = useCameraShake(cfg)
 
-  useCameraShake(controlledCam, cfg)
+  useFrame(({ clock }) => {
+    if (camRef.current) {
+      camRef.current.position.z = 25 + Math.sin(clock.getElapsedTime()) * 3
+    }
+  })
 
   return (
     <>
-      <CameraDolly cam={controlledCam} />
+      <PerspectiveCamera ref={camRef} makeDefault />
       <React.Suspense fallback={null}>
         <Scene />
       </React.Suspense>
@@ -69,9 +64,11 @@ const controlsConfig: ShakeConfigPartial = {
   maxYaw: 0.05,
   maxPitch: 0.05,
   maxRoll: 0.05,
-  yawFrequency: 1,
-  pitchFrequency: 1,
-  rollFrequency: 1,
+  yawFrequency: 0.1,
+  pitchFrequency: 0.1,
+  rollFrequency: 0.1,
+  decay: true,
+  decayRate: 0.1,
 }
 
 export const UseCameraShakeSt = ({ ...args }) => <UseCameraShakeDemo cfg={args} />

@@ -52,11 +52,8 @@ function Scene() {
 
 function UseCameraShakeDemo({ cfg }) {
   const controlledCam = React.useRef<Camera>()
-  const shaker = useCameraShake(controlledCam, cfg, 0.75)
 
-  React.useEffect(() => {
-    shaker.updateConfig({ ...cfg })
-  }, [cfg])
+  useCameraShake(controlledCam, cfg)
 
   return (
     <>
@@ -69,17 +66,12 @@ function UseCameraShakeDemo({ cfg }) {
 }
 
 const controlsConfig: ShakeConfigPartial = {
-  decay: false,
-  decayRate: 0.75,
-  maxYaw: 0.1,
-  maxPitch: 0.1,
-  maxRoll: 0.1,
+  maxYaw: 0.05,
+  maxPitch: 0.05,
+  maxRoll: 0.05,
   yawFrequency: 1,
   pitchFrequency: 1,
   rollFrequency: 1,
-  yawNoiseSeed: 10,
-  pitchNoiseSeed: 20,
-  rollNoiseSeed: 30,
 }
 
 export const UseCameraShakeSt = ({ ...args }) => <UseCameraShakeDemo cfg={args} />

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { useFrame } from 'react-three-fiber'
+import { useFrame, Camera } from 'react-three-fiber'
 
 import { Setup } from '../Setup'
 
@@ -11,7 +11,7 @@ export default {
   component: useCameraShake,
   decorators: [
     (storyFn) => (
-      <Setup cameraPosition={new THREE.Vector3(0, 0, 5)} controls={false}>
+      <Setup cameraPosition={new THREE.Vector3(0, 0, 10)} controls={false}>
         {storyFn()}
       </Setup>
     ),
@@ -42,17 +42,16 @@ function Scene() {
 }
 
 function UseCameraShakeDemo({ cfg }) {
-  const camRef = useCameraShake(cfg)
+  const baseCamRef = React.useRef<Camera>()
+  const shakeCamRef = useCameraShake(baseCamRef.current, cfg)
 
-  useFrame(({ clock }) => {
-    if (camRef.current) {
-      camRef.current.position.z = 25 + Math.sin(clock.getElapsedTime()) * 3
-    }
-  })
+  useFrame(({ gl, scene }) => {
+    gl.render(scene, shakeCamRef.current)
+  }, 1)
 
   return (
     <>
-      <PerspectiveCamera ref={camRef} makeDefault />
+      <PerspectiveCamera makeDefault ref={baseCamRef} position={[0, 0, 20]} />
       <React.Suspense fallback={null}>
         <Scene />
       </React.Suspense>
@@ -64,11 +63,9 @@ const controlsConfig: ShakeConfigPartial = {
   maxYaw: 0.05,
   maxPitch: 0.05,
   maxRoll: 0.05,
-  yawFrequency: 0.1,
-  pitchFrequency: 0.1,
-  rollFrequency: 0.1,
-  decay: true,
-  decayRate: 0.1,
+  yawFrequency: 0.8,
+  pitchFrequency: 0.8,
+  rollFrequency: 0.8,
 }
 
 export const UseCameraShakeSt = ({ ...args }) => <UseCameraShakeDemo cfg={args} />

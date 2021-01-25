@@ -1,8 +1,9 @@
 import * as React from 'react'
 import { useLoader, useThree } from 'react-three-fiber'
-import { CubeTexture, CubeTextureLoader, Texture, PMREMGenerator } from 'three'
+import { CubeTexture, CubeTextureLoader, Texture, PMREMGenerator, Scene } from 'three'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
 import { useAsset } from 'use-asset'
+
 import { presetsObj } from '../helpers/environment-assets'
 
 function getTexture(texture: Texture | CubeTexture, gen: PMREMGenerator, isCubeMap: boolean) {
@@ -20,6 +21,7 @@ type Props = {
   files?: string | string[]
   path?: string
   preset?: string
+  scene?: Scene
 }
 
 export function Environment({
@@ -27,6 +29,7 @@ export function Environment({
   files = ['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'],
   path = '/',
   preset = undefined,
+  scene,
 }: Props) {
   if (preset) {
     if (!(preset in presetsObj)) {
@@ -35,7 +38,7 @@ export function Environment({
     files = presetsObj[preset]
     path = CUBEMAP_ROOT + '/hdri/'
   }
-  const { gl, scene } = useThree()
+  const { gl, scene: defaultScene } = useThree()
   const isCubeMap = Array.isArray(files)
   const loader: any = isCubeMap ? CubeTextureLoader : RGBELoader
   // @ts-expect-error
@@ -59,16 +62,31 @@ export function Environment({
   )
 
   React.useLayoutEffect(() => {
-    const oldbg = scene.background
-    const oldenv = scene.environment
-    if (background) scene.background = texture
-    scene.environment = texture
+    console.log('firing effect', texture)
+    const oldbg = scene ? scene.background : defaultScene.background
+    const oldenv = scene ? scene.environment : defaultScene.environment
+    if (scene) {
+      scene.environment = texture
+      if (background) {
+        scene.background = texture
+      }
+    } else {
+      defaultScene.environment = texture
+      if (background) {
+        defaultScene.background = texture
+      }
+    }
     return () => {
-      scene.environment = oldenv
-      scene.background = oldbg
+      if (scene) {
+        scene.environment = oldenv
+        scene.background = oldbg
+      } else {
+        defaultScene.environment = oldenv
+        defaultScene.background = oldbg
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [texture, background])
+  }, [texture, background, scene])
 
   return null
 }

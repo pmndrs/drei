@@ -670,7 +670,7 @@ Precompiles the scene using [gl.compile](https://threejs.org/docs/index.html#api
     <Model />
     <Preload all/>
   </Suspense>
-</Center>
+</Canvas>
 ```
 
 #### meshBounds

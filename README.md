@@ -76,6 +76,7 @@ import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei'
           <li><a href="#usehelper">useHelper</a></li>
           <li><a href="#useaspect">useAspect</a></li>
           <li><a href="#reflector">Reflector</a></li>
+          <li><a href="#preload">Preload</a></li>
         </ul>
         <li><a href="#loaders">Loaders</a></li>
         <ul>
@@ -656,6 +657,19 @@ Calculates a boundary box and centers its children accordingly.
 ```jsx
 <Center>
   <mesh />
+</Center>
+```
+
+#### Preload
+
+Precompiles the scene using [gl.compile](https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.compile), this makes sure that your scene is responsive from the get go. If you have async model you must drop it into the same suspense bound, and use concurrent mode. If you don't then simply put it into the canvas. By default gl.compile will only preload visible objects, if you supply the `all` prop, it will circumvent that.
+
+```jsx
+<Canvas concurrent>
+  <Suspense fallback={null}>
+    <Model />
+    <Preload all/>
+  </Suspense>
 </Center>
 ```
 

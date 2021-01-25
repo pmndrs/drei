@@ -18,7 +18,15 @@ type Props = JSX.IntrinsicElements['mesh'] & {
   overflowWrap?: 'normal' | 'break-word'
   whiteSpace?: 'normal' | 'overflowWrap' | 'overflowWrap'
   outlineWidth?: number | string
+  outlineOffsetX?: number | string
+  outlineOffsetY?: number | string
+  outlineBlur?: number | string
   outlineColor?: ReactThreeFiber.Color
+  outlineOpacity?: number
+  strokeWidth?: number | string
+  strokeColor?: ReactThreeFiber.Color
+  strokeOpacity?: number
+  fillOpacity?: number
   debugSDF?: boolean
   onSync?: (troika: TextMeshImpl) => void
 }

@@ -351,7 +351,7 @@ Adds a `<Plane />` that always faces the camera.
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/abstractions-environment--environment-st)
 
-Sets up a global cubemap, which affects `scene.environment`, and optionally `scene.background`. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience.
+Sets up a global cubemap, which affects the default `scene.environment`, and optionally `scene.background`, unless a custom scene has been passed. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience.
 
 ```jsx
 <Environment
@@ -359,6 +359,7 @@ Sets up a global cubemap, which affects `scene.environment`, and optionally `sce
   files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']} // Array of cubemap files OR single equirectangular file
   path={'/'} // Path to the above file(s)
   preset={null} // Preset string (overrides files and path)
+  scene={undefined} // adds the ability to pass a custom THREE.Scene
 />
 ```
 

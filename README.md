@@ -668,7 +668,7 @@ Precompiles the scene using [gl.compile](https://threejs.org/docs/index.html#api
 <Canvas concurrent>
   <Suspense fallback={null}>
     <Model />
-    <Preload all/>
+    <Preload all />
   </Suspense>
 </Canvas>
 ```

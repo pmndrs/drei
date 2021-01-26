@@ -76,6 +76,7 @@ import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei'
           <li><a href="#usehelper">useHelper</a></li>
           <li><a href="#useaspect">useAspect</a></li>
           <li><a href="#reflector">Reflector</a></li>
+          <li><a href="#preload">Preload</a></li>
         </ul>
         <li><a href="#loaders">Loaders</a></li>
         <ul>
@@ -657,6 +658,21 @@ Calculates a boundary box and centers its children accordingly.
 <Center>
   <mesh />
 </Center>
+```
+
+#### Preload
+
+The WebGLRenderer will compile materials only when they hit the frustrum, which can cause jank. This component precompiles the scene using [gl.compile](https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.compile) which makes sure that your app is responsive from the get go. 
+
+By default gl.compile will only preload visible objects, if you supply the `all` prop, it will circumvent that. With the `scene` and `camera` props you could also use it in portals.
+
+If you have async models you can drop it into the same suspense boundary *in concurrent mode*.
+
+```jsx
+<Canvas concurrent>
+  <Suspense fallback={null}>
+    <Model />
+    <Preload all />
 ```
 
 #### meshBounds

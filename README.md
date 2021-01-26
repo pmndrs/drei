@@ -12,6 +12,8 @@ A growing collection of useful helpers and abstractions for [react-three-fiber](
 npm install @react-three/drei@latest
 ```
 
+:point_right: this package is now only published under the name `@react-three/drei`. `drei` has been deprecated. :point_left:
+
 ### Basic usage:
 
 ```jsx
@@ -676,11 +678,11 @@ Calculates a boundary box and centers its children accordingly.
 
 #### Preload
 
-The WebGLRenderer will compile materials only when they hit the frustrum, which can cause jank. This component precompiles the scene using [gl.compile](https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.compile) which makes sure that your app is responsive from the get go. 
+The WebGLRenderer will compile materials only when they hit the frustrum, which can cause jank. This component precompiles the scene using [gl.compile](https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.compile) which makes sure that your app is responsive from the get go.
 
 By default gl.compile will only preload visible objects, if you supply the `all` prop, it will circumvent that. With the `scene` and `camera` props you could also use it in portals.
 
-If you have async models you can drop it into the same suspense boundary *in concurrent mode*.
+If you have async models you can drop it into the same suspense boundary _in concurrent mode_.
 
 ```jsx
 <Canvas concurrent>

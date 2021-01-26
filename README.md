@@ -662,13 +662,7 @@ Calculates a boundary box and centers its children accordingly.
 
 #### Preload
 
-The WebGLRenderer will compile materials only when they hit the frustrum. This can cause jank. This component precompiles the scene using [gl.compile](https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.compile) which makes sure that your app is responsive from the get go. 
-
-```jsx
-<Canvas>
-  <Scene />
-  <Preload all />
-```
+The WebGLRenderer will compile materials only when they hit the frustrum, which can cause jank. This component precompiles the scene using [gl.compile](https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.compile) which makes sure that your app is responsive from the get go. 
 
 By default gl.compile will only preload visible objects, if you supply the `all` prop, it will circumvent that. With the `scene` and `camera` props you could also use it in portals.
 

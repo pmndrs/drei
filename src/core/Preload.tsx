@@ -26,6 +26,7 @@ export function Preload({ all, scene, camera }: Props) {
     gl.compile(scene || dScene, camera || dCamera)
     // Flips these objects back
     invisible.forEach((object) => (object.visible = false))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return null
 }

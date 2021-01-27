@@ -11,7 +11,7 @@ import {
   WebGLRenderTarget,
 } from 'three'
 import { useFrame, useThree } from 'react-three-fiber'
-import { BlurPass } from './materials/BlurPass'
+import { BlurPass } from '../materials/BlurPass'
 
 export type ReflectorProps = Omit<JSX.IntrinsicElements['mesh'], 'args'> & {
   resolution?: number
@@ -93,6 +93,7 @@ export function Reflector({
     projectionMatrix.elements[6] = clipPlane.y
     projectionMatrix.elements[10] = clipPlane.z + 1.0
     projectionMatrix.elements[14] = clipPlane.w
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const [renderTarget, fbo1, fbo2, blurpass, reflectorProps] = React.useMemo(() => {

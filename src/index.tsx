@@ -1,3 +1,5 @@
+import { BlurPass } from 'materials/BlurPass'
+
 // Abstractions
 export * from './Billboard'
 export * from './Cloud'
@@ -28,6 +30,10 @@ export * from './useFBX'
 export * from './useGLTF'
 export * from './useProgress'
 export * from './useTexture'
+
+// Materials
+export * from './materials/BlurPass'
+export * from './materials/ReflectorMaterial'
 
 // Misc
 export * from './Html'

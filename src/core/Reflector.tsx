@@ -9,15 +9,25 @@ import {
   Mesh,
   LinearFilter,
   WebGLRenderTarget,
+  Texture,
 } from 'three'
 import { useFrame, useThree } from 'react-three-fiber'
 import { BlurPass } from '../materials/BlurPass'
 
-export type ReflectorProps = Omit<JSX.IntrinsicElements['mesh'], 'args'> & {
+export type ReflectorChildProps = {
+  mirror: boolean
+  textureMatrix: Matrix4
+  tDiffuse: Texture
+}
+
+export type ReflectorProps = Omit<JSX.IntrinsicElements['mesh'], 'args' | 'children'> & {
   resolution?: number
   blur?: [number, number] | number
   args?: [number, number]
   mirror: boolean
+  children: {
+    (Component: string, ComponentProps: ReflectorChildProps): JSX.Element
+  }
 }
 
 export function Reflector({

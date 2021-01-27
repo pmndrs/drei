@@ -4270,6 +4270,11 @@ bl@^1.0.0:
     readable-stream "^2.3.5"
     safe-buffer "^5.1.1"
 
+blob-polyfill@^4.0.20200601:
+  version "4.0.20200601"
+  resolved "https://registry.yarnpkg.com/blob-polyfill/-/blob-polyfill-4.0.20200601.tgz#16430e9e50d63e122c6aac18b31f5f0bc8c0bf92"
+  integrity sha512-1jB6WOIp6IDxNyng5+9A8g/f0uiphib2ELCN+XAnlssinsW8s1k4VYG9b1TxIUd3pdm9RJSLQuBh6iohYmD4hA==
+
 bluebird@^3.3.5, bluebird@^3.5.5:
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.2.tgz#9f229c15be272454ffa973ace0dbee79a1b0c36f"
@@ -12024,23 +12029,23 @@ tr46@^2.0.2:
   dependencies:
     punycode "^2.1.1"
 
-troika-three-text@^0.34.2:
-  version "0.34.2"
-  resolved "https://registry.yarnpkg.com/troika-three-text/-/troika-three-text-0.34.2.tgz#5de211ba9f4378047eac6b3c3fe1e68bb761f86c"
-  integrity sha512-2YNZjI1TJXDrSz3JvQEW4GXJ6/Zlca+On0rbPyqGvcKYZTXzHkUd7a/wBIBicP9Ca/W+V0E+BVLvsoZEXjqTfg==
+troika-three-text@^0.38.0:
+  version "0.38.0"
+  resolved "https://registry.yarnpkg.com/troika-three-text/-/troika-three-text-0.38.0.tgz#a3eaa2ec3bfd9c71a276f1c96b6447d71a3068d9"
+  integrity sha512-I7U6GCi7B81QzAcAgOZFJ5TmzB4nRo9MMWta0aBnev285xEaxDs2OXNYKdkuvuGM02YHvULhcYj4WgU9YsVi0w==
   dependencies:
-    troika-three-utils "^0.34.0"
-    troika-worker-utils "^0.34.1"
+    troika-three-utils "^0.38.0"
+    troika-worker-utils "^0.38.0"
 
-troika-three-utils@^0.34.0:
-  version "0.34.0"
-  resolved "https://registry.yarnpkg.com/troika-three-utils/-/troika-three-utils-0.34.0.tgz#9c34b31e8f6fd978af4be21382b7a21108ffd3e6"
-  integrity sha512-6Dm6FzGFpuiehjKkm3wAV3e+SPnHQ+GxwXnHFToKLcQ1/gVDOIL69BWCosrlEUb0SUOQjQv6sd5QpNT6IIewpQ==
+troika-three-utils@^0.38.0:
+  version "0.38.0"
+  resolved "https://registry.yarnpkg.com/troika-three-utils/-/troika-three-utils-0.38.0.tgz#e52e57e4cfd958ff2fb48aa4ee480f9150abb9e3"
+  integrity sha512-+CjCJC74qu+jh6FvYNno1aDR/47umxtRV6zRhaep5bfXTWXFcyVIEkLqS+Ly5+kvFCDyH5PkS+rkUQnsaDmEsw==
 
-troika-worker-utils@^0.34.1:
-  version "0.34.1"
-  resolved "https://registry.yarnpkg.com/troika-worker-utils/-/troika-worker-utils-0.34.1.tgz#15b59af90a590106161473e4e28778e64e0d3456"
-  integrity sha512-zLTSB6ISd/dpBMG6PFR2v7sqU2bqVwOUd45iWzcgcRE9+w/5YJN8h0+H5EmgRPIVe5xus0UZQKUgVH6FRA+YdQ==
+troika-worker-utils@^0.38.0:
+  version "0.38.0"
+  resolved "https://registry.yarnpkg.com/troika-worker-utils/-/troika-worker-utils-0.38.0.tgz#c6c836a561e1c512826ef44742942c2734fbe039"
+  integrity sha512-3xiULYPcyi2ix57KEOSzXhGyjW/JbpzFo6Zyw6G5ElhEhP5cnyN32Rd0N6DkHqEQ8QdA3CujYPY/V6ZZFSs/oQ==
 
 ts-dedent@^2.0.0:
   version "2.0.0"

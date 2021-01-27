@@ -22,7 +22,6 @@ export * from './TransformControls'
 export * from './PointerLockControls'
 
 // Loaders
-export * from './Loader'
 export * from './useCubeTexture'
 export * from './useFBX'
 export * from './useGLTF'
@@ -30,7 +29,6 @@ export * from './useProgress'
 export * from './useTexture'
 
 // Misc
-export * from './Html'
 export * from './meshBounds'
 export * from './Reflector'
 export * from './Shadow'

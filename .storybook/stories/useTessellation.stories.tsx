@@ -15,7 +15,7 @@ export default {
 
 const VertexDisplaceMaterial = shaderMaterial(
   {
-    amplitude: 1,
+    amplitude: 1.0,
   },
   `
   uniform float amplitude;
@@ -60,8 +60,8 @@ declare global {
 }
 
 function UseTessellationScene() {
-  const passes = number('passes', 3)
-  const maxEdgeLength = number('maxEdgeLength', 3)
+  const passes = number('passes', 4)
+  const maxEdgeLength = number('maxEdgeLength', 0.1)
   const meshRef = useTessellation(passes, maxEdgeLength)
 
   React.useEffect(() => {
@@ -86,7 +86,7 @@ function UseTessellationScene() {
       geometry.setAttribute('displacement', new THREE.BufferAttribute(displacement, 3))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [meshRef.current && meshRef.current.geometry])
 
   useFrame(({ clock }) => {
     const { current: mesh } = meshRef

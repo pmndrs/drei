@@ -4,15 +4,15 @@ import { TessellateModifier } from 'three/examples/jsm/modifiers/TessellateModif
 
 export function useTessellation(passes = 3, maxEdgeLength) {
   const ref = React.useRef<THREE.Mesh>()
-  const original = React.useRef<THREE.BufferGeometry | THREE.Geometry>()
+  const original = React.useRef<THREE.BufferGeometry>()
   const modifier = React.useRef<TessellateModifier>()
 
   React.useEffect(() => {
     if (!original.current) {
       original.current = ref.current!.geometry.clone()
-      modifier.current = new TessellateModifier(parseInt(maxEdgeLength))
+      modifier.current = new TessellateModifier(parseInt(maxEdgeLength), passes)
     }
-  }, [maxEdgeLength])
+  }, [maxEdgeLength, passes])
 
   React.useEffect(() => {
     modifier.current!.maxEdgeLength = maxEdgeLength
@@ -20,22 +20,12 @@ export function useTessellation(passes = 3, maxEdgeLength) {
 
   React.useEffect(() => {
     if (original.current && ref.current) {
-      let geometry = new THREE.Geometry()
+      let geometry = new THREE.BufferGeometry()
 
-      if (original.current instanceof THREE.BufferGeometry) {
-        geometry.fromBufferGeometry(original.current)
-      } else {
-        geometry = original.current.clone()
-      }
+      geometry = original.current.clone()
+      geometry = modifier.current!.modify(geometry)
 
-      const bufferGeometry = new THREE.BufferGeometry()
-
-      for (let i = 0; i < passes; i++) {
-        modifier.current!.modify(geometry)
-      }
-
-      const tessellated = bufferGeometry.fromGeometry(geometry)
-      ref.current.geometry = tessellated
+      ref.current.geometry = geometry
     }
   }, [maxEdgeLength, passes])
 

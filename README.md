@@ -9,12 +9,24 @@
 A growing collection of useful helpers and abstractions for [react-three-fiber](https://github.com/pmndrs/react-three-fiber).
 
 ```bash
-npm install @react-three/drei
+npm install @react-three/drei@latest
 ```
+
+:point_right: this package is now only published under the name `@react-three/drei`. `drei` has been deprecated. :point_left:
+
+### Basic usage:
 
 ```jsx
 import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei'
 ```
+
+### `react-native` usage:
+
+```jsx
+import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei/native'
+```
+
+The `native` route of the library **does not** export `Html` or `Loader`. There default export of the library is `web` which **does** export `Html` and `Loader`.
 
 # Index
 
@@ -90,7 +102,6 @@ import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei'
         <ul>
           <li><a href="#curvemodifier">CurveModifier</a></li>
           <li><a href="#useedgesplit">useEdgeSplit</a></li>
-          <li><a href="#usesubdivision">useSubdivision</a></li>
           <li><a href="#usetessellation">useTessellation</a></li>
           <li><a href="#usesimplification">useSimplification</a></li>
         </ul>
@@ -342,7 +353,7 @@ Adds a `<Plane />` that always faces the camera.
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/abstractions-environment--environment-st)
 
-Sets up a global cubemap, which affects `scene.environment`, and optionally `scene.background`. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience.
+Sets up a global cubemap, which affects the default `scene.environment`, and optionally `scene.background`, unless a custom scene has been passed. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience.
 
 ```jsx
 <Environment
@@ -350,6 +361,7 @@ Sets up a global cubemap, which affects `scene.environment`, and optionally `sce
   files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']} // Array of cubemap files OR single equirectangular file
   path={'/'} // Path to the above file(s)
   preset={null} // Preset string (overrides files and path)
+  scene={undefined} // adds the ability to pass a custom THREE.Scene
 />
 ```
 
@@ -372,6 +384,7 @@ Abstraction around threes own [EffectComposer](https://threejs.org/docs/index.ht
 #### useAnimations
 
 [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/react-three-fiber-gltf-camera-animation-forked-pecl6)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/abstractions-useanimations--use-animations-st)
 
 A hook that abstracts [AnimationMixer](https://threejs.org/docs/index.html#api/en/animation/AnimationMixer).
 
@@ -475,11 +488,11 @@ Injects [percent closer soft shadows (pcss)](https://threejs.org/examples/?q=pcs
 
 ```jsx
 softShadows({
-  frustrum: 3.75, // Frustrum width (default: 3.75)
-  size: 0.005, // World size (default: 0.005)
-  near: 9.5, // Near plane (default: 9.5)
-  samples: 17, // Samples (default: 17)
-  rings: 11, // Rings (default: 11)
+  frustum: 3.75, // Frustum width (default: 3.75) must be a float
+  size: 0.005, // World size (default: 0.005) must be a float
+  near: 9.5, // Near plane (default: 9.5) must be a float
+  samples: 17, // Samples (default: 17) must be a int
+  rings: 11, // Rings (default: 11) must be a int
 })
 ```
 
@@ -559,14 +572,14 @@ Creates a `THREE.WebGLRenderTarget` or `THREE.WebGLMultisampleRenderTarget`.
 
 ```jsx
 const target = useFBO(
-  // width: 500,  height: 500, 
+  // width: 500,  height: 500,
   // width and height are optional and defaulted to the viewport size
   // multiplied by the renderer pixel ratio, and recalculated whenever the
   // viewport size changes.
   {
     multisample: true, // if the renderer supports webGL2, it will return a WebGLMultisampleRenderTarget
-    stencilBuffer: false // you can pass any options supported by THREE.WebGLRenderTarget
-  } 
+    stencilBuffer: false, // you can pass any options supported by THREE.WebGLRenderTarget
+  }
 )
 ```
 
@@ -575,6 +588,8 @@ The rendertarget is automatically disposed when unmounted.
 #### Html
 
 [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-suspense-zu2wo)
+
+> :no_entry_sign: Web usage only.
 
 Allows you to tie HTML content to any object of your scene. It will be projected to the objects whereabouts automatically.
 
@@ -662,11 +677,11 @@ Calculates a boundary box and centers its children accordingly.
 
 #### Preload
 
-The WebGLRenderer will compile materials only when they hit the frustrum, which can cause jank. This component precompiles the scene using [gl.compile](https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.compile) which makes sure that your app is responsive from the get go. 
+The WebGLRenderer will compile materials only when they hit the frustrum, which can cause jank. This component precompiles the scene using [gl.compile](https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.compile) which makes sure that your app is responsive from the get go.
 
 By default gl.compile will only preload visible objects, if you supply the `all` prop, it will circumvent that. With the `scene` and `camera` props you could also use it in portals.
 
-If you have async models you can drop it into the same suspense boundary *in concurrent mode*.
+If you have async models you can drop it into the same suspense boundary _in concurrent mode_.
 
 ```jsx
 <Canvas concurrent>
@@ -765,28 +780,10 @@ return (
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-useedgesplit)
 
-This hook mutates a mesh geometry using [three's Edge Split modifier](https://threejs.org/examples/?q=modifier#webgl_modifier_edgesplit).
+This hook mutates a mesh geometry using [three's Edge Split modifier](https://threejs.org/examples/?q=modifier#webgl_modifier_edgesplit). The first parameter is the cut-off angle, and the second parameter is a `tryKeepNormals` flag (default `true`).
 
 ```jsx
 const meshRef = useEdgeSplit(Math.PI / 2)
-
-return (
-  <mesh ref={meshRef}>
-    <boxBufferGeometry args={[10, 10]} />
-  </mesh>
-)
-```
-
-#### useSubdivision
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-usesubdivision)
-
-This hook mutates a mesh geometry using [three's Subdivision modifier](https://threejs.org/examples/webgl_modifier_subdivision.html).
-
-👉 Vertex count is quadrupled for each subdivision.
-
-```jsx
-const meshRef = useSubdivision(4)
 
 return (
   <mesh ref={meshRef}>
@@ -919,6 +916,8 @@ const errors = useProgress((state) => state.errors)
 ## ⚡️ Prototyping
 
 #### Loader
+
+> :no_entry_sign: Web usage only.
 
 A quick and easy loading overlay component that you can drop on top of your canvas. It will show an animated loadingbar and a percentage.
 

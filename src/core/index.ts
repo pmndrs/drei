@@ -24,7 +24,6 @@ export * from './TransformControls'
 export * from './PointerLockControls'
 
 // Loaders
-export * from './Loader'
 export * from './useCubeTexture'
 export * from './useFBX'
 export * from './useGLTF'
@@ -36,7 +35,6 @@ export * from './materials/BlurPass'
 export * from './materials/ReflectorMaterial'
 
 // Misc
-export * from './Html'
 export * from './meshBounds'
 export * from './Reflector'
 export * from './Shadow'
@@ -53,7 +51,6 @@ export * from './useFBO'
 
 // Modifiers
 export * from './useSimplification'
-export * from './useSubdivision'
 export * from './useTessellation'
 export * from './useEdgeSplit'
 export * from './CurveModifier'

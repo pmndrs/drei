@@ -3,10 +3,7 @@ import { Group, Texture } from 'three'
 import { useFrame } from 'react-three-fiber'
 import { Billboard } from './Billboard'
 import { useTexture } from './useTexture'
-import CloudImage from './assets/cloud.base64'
-
-// Billboard component broken in TS, pls can somebody fix it
-const TypescriptSucks = Billboard as any
+import CloudImage from '../assets/cloud.base64'
 
 export function Cloud({ opacity = 0.5, speed = 0.4, width = 10, length = 1.5, segments = 20, dir = 1, ...props }) {
   const group = React.useRef<Group>()
@@ -34,14 +31,14 @@ export function Cloud({ opacity = 0.5, speed = 0.4, width = 10, length = 1.5, se
     <group {...props}>
       <group position={[0, 0, (segments / 2) * length]} ref={group}>
         {clouds.map(({ x, y, scale, density }, index) => (
-          <TypescriptSucks key={index} scale={[scale, scale, scale]} position={[x, y, -index * length]} lockZ>
+          <Billboard key={index} scale={[scale, scale, scale]} position={[x, y, -index * length]} lockZ>
             <meshStandardMaterial
               map={texture}
               transparent
               opacity={(scale / 6) * density * opacity}
               depthTest={false}
             />
-          </TypescriptSucks>
+          </Billboard>
         ))}
       </group>
     </group>

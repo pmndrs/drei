@@ -47,7 +47,6 @@ export * from './useFBO'
 
 // Modifiers
 export * from './useSimplification'
-export * from './useSubdivision'
 export * from './useTessellation'
 export * from './useEdgeSplit'
 export * from './CurveModifier'

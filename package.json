@@ -119,7 +119,8 @@
   "peerDependencies": {
     "react": ">=16.13",
     "react-dom": ">=16.13",
-    "react-three-fiber": ">=5.0"
+    "react-three-fiber": ">=5.0",
+    "three": ">=0.125.0"
   },
   "peerDependenciesMeta": {
     "react-dom": {

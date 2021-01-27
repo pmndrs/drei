@@ -4,13 +4,13 @@ import { Flow } from 'three/examples/jsm/modifiers/CurveModifier'
 
 export interface CurveModifierProps {
   children: React.ReactElement<JSX.IntrinsicElements['mesh']>
-  curve?: THREE.Curve<THREE.Vector2 | THREE.Vector3 | THREE.Vector4>
+  curve?: THREE.Curve<THREE.Vector3>
 }
 
 export type CurveModifierRef = Pick<Flow, 'moveAlongCurve'>
 
 export const CurveModifier = React.forwardRef(({ children, curve }: CurveModifierProps, ref) => {
-  const [object3D, setObj] = React.useState()
+  const [object3D, setObj] = React.useState<THREE.Object3D | undefined>()
   const original = React.useRef<THREE.Mesh>()
   const modifier = React.useRef<Flow>()
 

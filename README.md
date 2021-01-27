@@ -102,7 +102,6 @@ The `native` route of the library **does not** export `Html` or `Loader`. There 
         <ul>
           <li><a href="#curvemodifier">CurveModifier</a></li>
           <li><a href="#useedgesplit">useEdgeSplit</a></li>
-          <li><a href="#usesubdivision">useSubdivision</a></li>
           <li><a href="#usetessellation">useTessellation</a></li>
           <li><a href="#usesimplification">useSimplification</a></li>
         </ul>
@@ -781,28 +780,10 @@ return (
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-useedgesplit)
 
-This hook mutates a mesh geometry using [three's Edge Split modifier](https://threejs.org/examples/?q=modifier#webgl_modifier_edgesplit).
+This hook mutates a mesh geometry using [three's Edge Split modifier](https://threejs.org/examples/?q=modifier#webgl_modifier_edgesplit). The first parameter is the cut-off angle, and the second parameter is a `tryKeepNormals` flag (default `true`).
 
 ```jsx
 const meshRef = useEdgeSplit(Math.PI / 2)
-
-return (
-  <mesh ref={meshRef}>
-    <boxBufferGeometry args={[10, 10]} />
-  </mesh>
-)
-```
-
-#### useSubdivision
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-usesubdivision)
-
-This hook mutates a mesh geometry using [three's Subdivision modifier](https://threejs.org/examples/webgl_modifier_subdivision.html).
-
-👉 Vertex count is quadrupled for each subdivision.
-
-```jsx
-const meshRef = useSubdivision(4)
 
 return (
   <mesh ref={meshRef}>

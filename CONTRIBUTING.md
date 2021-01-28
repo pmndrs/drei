@@ -5,7 +5,7 @@ Thanks for wanting to make a contribution and wanting to improve this library fo
 ## How to Contribute
 
 1.  Fork and clone the repo
-2.  Run `npm install` to install dependencies
+2.  Run `yarn install` to install dependencies
 3.  Create a branch for your PR with `git checkout -b pr-type/issue-number-your-branch-name beta
 4.  Let's get cooking! 👨🏻‍🍳🥓
 

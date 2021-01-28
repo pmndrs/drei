@@ -1,0 +1,60 @@
+name: release
+on:
+  push:
+    branches:
+      - 'master'
+      - 'beta'
+      - 'alpha'
+  pull_request: {}
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.6.0
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+      - name: Install deps
+        # this runs a build script so there is no dedicated build
+        run: yarn install
+      - name: Run storybook build script
+        run: yarn build-storybook
+  release:
+    needs: main
+    runs-on: ubuntu-latest
+    if: ${{ github.repository == 'pmndrs/drei' && contains('refs/heads/master,refs/heads/beta,refs/heads/alpha',github.ref) && github.event_name == 'push' }}
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.6.0
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+      - name: Install deps
+        # this runs a build script so there is no dedicated build
+        run: yarn install
+      - name: 🚀 Release
+        uses: cycjimmy/semantic-release-action@v2
+        with:
+          semantic_version: 17
+          extra_plugins: |
+            @semantic-release/git
+          branches: |
+            [
+              'master',
+              {name: 'beta', prerelease: true},
+              {name: 'alpha', prerelease: true}
+            ]
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

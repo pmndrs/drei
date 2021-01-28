@@ -611,13 +611,20 @@ Allows you to tie HTML content to any object of your scene. It will be projected
 
 #### Reflector
 
-[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/jolly-benz-pmk9j)
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/drei-reflector-bfplr)
 
-Easily add reflection to any object
+Easily add reflections and/or blur to a planar surface. This reflector can also blur and takes surface roughness into account for a more realistic effect.
 
 ```jsx
-<Reflector>
-  <planeBufferGeometry args={[2, 5]} attach="geometry" />
+<Reflector
+  blur={[0, 0]} // Blur ground reflections (width, heigt), 0 skips blur 
+  mixBlur={1.0} // How much blur mixes with surface roughness
+  mixStrength={0.5} // Strength of the reflections
+  resolution={256} // Off-buffer resolution, lower=faster, higher=better quality
+  args={[1, 1]} // PlaneBufferGeometry arguments
+  mirror={0.5} // Mirror environment, 0 = texture colors, 1 = pick up env colors
+>
+  {(Material, props) => <Material {...props}>}
 </Reflector>
 ```
 

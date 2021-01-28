@@ -106,7 +106,15 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
   }
 }
 
-export type MeshReflectorMaterialImpl = {} & JSX.IntrinsicElements['meshStandardMaterial']
+export type MeshReflectorMaterialImpl = {
+  mixBlur: number
+  mixStrength: number
+  mirror: number
+  textureMatrix: Matrix4
+  tDiffuse: Texture
+  tDiffuseBlur: Texture
+  hasBlur: boolean
+} & JSX.IntrinsicElements['meshStandardMaterial']
 
 declare global {
   namespace JSX {

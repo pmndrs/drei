@@ -9,18 +9,12 @@ import {
   Mesh,
   LinearFilter,
   WebGLRenderTarget,
-  Texture,
 } from 'three'
 import { useFrame, useThree } from 'react-three-fiber'
 import { BlurPass } from '../materials/BlurPass'
+import { MeshReflectorMaterialImpl } from '../materials/ReflectorMaterial'
 
-export type ReflectorChildProps = {
-  mixBlur: number
-  mixStrength: number
-  mirror: number
-  textureMatrix: Matrix4
-  tDiffuse: Texture
-}
+export type ReflectorChildProps = MeshReflectorMaterialImpl
 
 export type ReflectorProps = Omit<JSX.IntrinsicElements['mesh'], 'args' | 'children'> & {
   resolution?: number

@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { BoxHelper, CameraHelper } from 'three'
 import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper'
-import { FaceNormalsHelper } from 'three/examples/jsm/helpers/FaceNormalsHelper'
 
 import { Setup } from '../Setup'
 
@@ -17,7 +16,6 @@ function Scene() {
   const mesh = React.useRef()
   useHelper(mesh, BoxHelper, 'royalblue')
   useHelper(mesh, VertexNormalsHelper, 1, 'red')
-  useHelper(mesh, FaceNormalsHelper, 1, 'hotpink')
 
   return (
     <Sphere ref={mesh}>

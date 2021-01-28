@@ -4,9 +4,7 @@ import { createPortal, useFrame } from 'react-three-fiber'
 
 import { Setup } from '../Setup'
 
-import { useFBO } from '../../src/useFBO'
-import { TorusKnot, Box } from '../../src/shapes'
-import { PerspectiveCamera } from '../../src/PerspectiveCamera'
+import { useFBO, TorusKnot, Box, PerspectiveCamera } from '../../src'
 
 export default {
   title: 'Misc/useFBO',

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useFrame } from 'react-three-fiber'
-import { Color, Vector3, Mesh } from 'three'
+import { Vector3, Mesh } from 'three'
 
 import { Setup } from '../Setup'
 
@@ -12,8 +12,6 @@ export default {
   decorators: [(storyFn) => <Setup cameraPosition={new Vector3(-2, 2, 6)}> {storyFn()}</Setup>],
 }
 
-const reflectorCol = new Color('#333')
-
 function ReflectorScene() {
   const $box = React.useRef<Mesh>(null!)
   useFrame(({ clock }) => {
@@ -24,13 +22,14 @@ function ReflectorScene() {
   return (
     <>
       <Reflector
-        clipBias={0.1}
-        textureWidth={1024}
-        textureHeight={1024}
-        rotation={[-Math.PI / 2, 0, 0]}
-        color={reflectorCol}
+        position={[0, 0, 0]}
+        resolution={512}
+        args={[10, 10]}
+        mirror={0.5}
+        rotation={[-Math.PI / 2, 0, Math.PI / 2]}
+        blur={[400, 100]}
       >
-        <planeBufferGeometry args={[10, 10]} attach="geometry" />
+        {(Material, props) => <Material color="#a0a0a0" metalness={0.5} normalScale={[1, 1]} {...props} />}
       </Reflector>
 
       <Box position={[-2, 1, -1]} material-color="hotpink" material-wireframe />

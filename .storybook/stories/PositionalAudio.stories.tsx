@@ -2,8 +2,7 @@ import * as React from 'react'
 import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'
-import { OrbitControls } from '../../src/OrbitControls'
-import { PositionalAudio } from '../../src/PositionalAudio'
+import { OrbitControls, PositionalAudio } from '../../src'
 
 export default {
   title: 'Abstractions/PositionalAudio',

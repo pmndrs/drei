@@ -15,13 +15,17 @@ import { useFrame, useThree } from 'react-three-fiber'
 import { BlurPass } from '../materials/BlurPass'
 
 export type ReflectorChildProps = {
-  mirror: boolean
+  mixBlur: number
+  mixStrength: number
+  mirror: number
   textureMatrix: Matrix4
   tDiffuse: Texture
 }
 
 export type ReflectorProps = Omit<JSX.IntrinsicElements['mesh'], 'args' | 'children'> & {
   resolution?: number
+  mixBlur?: number
+  mixStrength?: number
   blur?: [number, number] | number
   args?: [number, number]
   mirror: number
@@ -34,9 +38,11 @@ export type ReflectorProps = Omit<JSX.IntrinsicElements['mesh'], 'args' | 'child
 }
 
 export function Reflector({
-  resolution = 512,
+  mixBlur = 0.0,
+  mixStrength = 0.5,
+  resolution = 256,
   blur = [0, 0],
-  args = [12, 12],
+  args = [1, 1],
   mirror,
   children,
   ...props
@@ -109,7 +115,7 @@ export function Reflector({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const [renderTarget, fbo1, fbo2, blurpass, reflectorProps] = React.useMemo(() => {
+  const [fbo1, fbo2, blurpass, reflectorProps] = React.useMemo(() => {
     const parameters = {
       minFilter: LinearFilter,
       magFilter: LinearFilter,
@@ -119,9 +125,17 @@ export function Reflector({
     const fbo1 = new WebGLRenderTarget(resolution, resolution, parameters)
     const fbo2 = new WebGLRenderTarget(resolution, resolution, parameters)
     const blurpass = new BlurPass({ gl, resolution, width: blur[0], height: blur[1] })
-    const reflectorProps = { mirror, textureMatrix, tDiffuse: hasBlur ? fbo2.texture : fbo1.texture }
-    return [renderTarget, fbo1, fbo2, blurpass, reflectorProps]
-  }, [gl, resolution, mirror, blur, hasBlur, textureMatrix])
+    const reflectorProps = {
+      mirror,
+      textureMatrix,
+      mixBlur,
+      tDiffuse: fbo1.texture,
+      tDiffuseBlur: fbo2.texture,
+      hasBlur,
+      mixStrength,
+    }
+    return [fbo1, fbo2, blurpass, reflectorProps]
+  }, [gl, blur, textureMatrix, resolution, mirror, hasBlur, mixBlur, mixStrength])
 
   useFrame(() => {
     meshRef.current.visible = false

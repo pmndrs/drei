@@ -21,20 +21,16 @@ const defaultConfig = {
 }
 
 export interface ShakeController {
-  setTrauma: (val: number) => void
   getTrauma: () => number
-  addTrauma: (val: number) => void
-  clearTrauma: () => void
+  setTrauma: (val: number) => void
 }
-
-type ShakeCamera = Camera & ShakeController
 
 export function useCameraShake(
   baseCamera: Camera | undefined,
   shakeConfig?: ShakeConfigPartial,
   initialTrauma: number = 1
-) {
-  const cameraRef = React.useRef<Camera>(new THREE.PerspectiveCamera())
+): ShakeController {
+  const cameraRef = React.useRef<THREE.Camera>(new THREE.PerspectiveCamera())
   const trauma = React.useRef<number>(initialTrauma)
   const config = React.useMemo<ShakeConfig>(() => ({ ...defaultConfig, ...shakeConfig }), [shakeConfig])
   const yawNoise = React.useMemo(() => makeNoise2D(config.yawNoiseSeed), [config.yawNoiseSeed])
@@ -47,33 +43,20 @@ export function useCameraShake(
     }
   }
 
-  // React.useImperativeHandle(
-  //   cameraRef,
-  //   <T extends ShakeCamera>() => ({
-  //     ...(cameraRef.current as T),
-  //     setTrauma: (val: number) => {
-  //       trauma.current = val
-  //       constrainTrauma()
-  //     },
-  //     getTrauma: () => {
-  //       return trauma.current
-  //     },
-  //     addTrauma: (val: number) => {
-  //       trauma.current += val
-  //       constrainTrauma()
-  //     },
-  //     clearTrauma: () => {
-  //       trauma.current = 0
-  //     },
-  //   }),
-  //   []
-  // )
+  const getTrauma = () => {
+    return trauma.current
+  }
 
-  useFrame(({ clock }, delta) => {
+  const setTrauma = (val: number) => {
+    trauma.current = val
+    constrainTrauma()
+  }
+
+  useFrame(({ gl, clock, scene }, delta) => {
     if (baseCamera === undefined) return
 
     if (trauma.current > 0) {
-      cameraRef.current.copy(baseCamera as never)
+      cameraRef.current.copy(baseCamera)
 
       const shake = Math.pow(trauma.current, 2)
       const yaw = config.maxYaw * shake * yawNoise(clock.elapsedTime * config.yawFrequency, 1)
@@ -88,8 +71,12 @@ export function useCameraShake(
         trauma.current -= config.decayRate * delta
         constrainTrauma()
       }
-    }
-  })
 
-  return cameraRef
+      gl.render(scene, cameraRef.current)
+    } else {
+      gl.render(scene, baseCamera)
+    }
+  }, 1)
+
+  return { getTrauma, setTrauma }
 }

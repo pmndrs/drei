@@ -43,11 +43,7 @@ function Scene() {
 
 function UseCameraShakeDemo({ cfg }) {
   const baseCamRef = React.useRef<Camera>()
-  const shakeCamRef = useCameraShake(baseCamRef.current, cfg)
-
-  useFrame(({ gl, scene }) => {
-    gl.render(scene, shakeCamRef.current)
-  }, 1)
+  useCameraShake(baseCamRef.current, cfg)
 
   return (
     <>

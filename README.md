@@ -1,6 +1,4 @@
-<p align="center">
-    <img width="500" src="https://imgur.com/arDsXO6.jpg" alt="logo" />
-</p>
+![logo](logo.jpg)
 
 [![Version](https://img.shields.io/npm/v/@react-three/drei?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)
 [![Downloads](https://img.shields.io/npm/dt/@react-three/drei.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)

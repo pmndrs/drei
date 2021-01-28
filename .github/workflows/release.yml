@@ -2,10 +2,9 @@ name: release
 on:
   push:
     branches:
-      - 'main'
-      - 'master'
       - 'beta'
-    pull_request: {}
+      - 'alpha'
+  pull_request: {}
 jobs:
   main:
     runs-on: ubuntu-latest
@@ -28,7 +27,7 @@ jobs:
   release:
     needs: main
     runs-on: ubuntu-latest
-    if: ${{ github.repository == 'pmndrs/drei' && contains('refs/heads/master,refs/heads/main,refs/heads/beta',github.ref) && github.event_name == 'push' }}
+    if: ${{ github.repository == 'pmndrs/drei' && contains('refs/heads/beta,refs/heads/alpha',github.ref) && github.event_name == 'push' }}
     steps:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.6.0
@@ -47,14 +46,12 @@ jobs:
         uses: cycjimmy/semantic-release-action@v2
         with:
           semantic_version: 17
-          dry_run: true
           extra_plugins: |
             @semantic-release/git
           branches: |
             [
-              'master',
-              'main',
               {name: 'beta', prerelease: true}
+              {name: 'alpha', prerelease: true }
             ]
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

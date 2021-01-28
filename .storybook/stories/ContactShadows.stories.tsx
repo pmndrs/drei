@@ -23,9 +23,7 @@ function ContactShadowScene() {
       <Icosahedron ref={mesh} args={[1, 2]} position-y={2}>
         <meshBasicMaterial attach="material" color="lightblue" />
       </Icosahedron>
-
-      <ContactShadows width={10} height={10} far={20} rotation={[Math.PI / 2, 0, 0]} />
-
+      <ContactShadows position={[0, 0, 0]} width={10} height={10} far={20} rotation={[Math.PI / 2, 0, 0]} />
       <Plane args={[10, 10]} position={[0, -0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <meshBasicMaterial attach="material" color="white" />
       </Plane>

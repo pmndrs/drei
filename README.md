@@ -26,7 +26,7 @@ import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei'
 import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei/native'
 ```
 
-The `native` route of the library **does not** export `Html` or `Loader`. There default export of the library is `web` which **does** export `Html` and `Loader`.
+The `native` route of the library **does not** export `Html` or `Loader`. The default export of the library is `web` which **does** export `Html` and `Loader`.
 
 # Index
 

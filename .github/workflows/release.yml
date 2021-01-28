@@ -48,6 +48,8 @@ jobs:
         with:
           semantic_version: 17
           dry_run: true
+          extra_plugins: |
+            @semantic-release/git
           branches: |
             [
               'master',

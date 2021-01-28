@@ -50,8 +50,9 @@ jobs:
             @semantic-release/git
           branches: |
             [
+              'main',
               {name: 'beta', prerelease: true},
-              {name: 'alpha', prerelease: true }
+              {name: 'alpha', prerelease: true}
             ]
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

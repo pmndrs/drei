@@ -50,7 +50,7 @@ jobs:
             @semantic-release/git
           branches: |
             [
-              {name: 'beta', prerelease: true}
+              {name: 'beta', prerelease: true},
               {name: 'alpha', prerelease: true }
             ]
         env:

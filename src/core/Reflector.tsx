@@ -24,9 +24,12 @@ export type ReflectorProps = Omit<JSX.IntrinsicElements['mesh'], 'args' | 'child
   resolution?: number
   blur?: [number, number] | number
   args?: [number, number]
-  mirror: boolean
+  mirror: number
   children: {
-    (Component: string, ComponentProps: ReflectorChildProps): JSX.Element
+    (
+      Component: React.ElementType<JSX.IntrinsicElements['meshReflectorMaterial']>,
+      ComponentProps: ReflectorChildProps
+    ): JSX.Element | null
   }
 }
 

@@ -24,7 +24,7 @@ export class BlurPass {
   readonly convolutionMaterial: ConvolutionMaterial
   readonly scene: Scene
   readonly camera: Camera
-  readonly screen: Mesh<BufferGeometry, ConvolutionMaterial>
+  readonly screen: Mesh
   renderToScreen: boolean = false
 
   constructor({ gl, resolution, width = 500, height = 500 }: BlurPassProps) {

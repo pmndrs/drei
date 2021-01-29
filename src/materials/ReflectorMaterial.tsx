@@ -1,5 +1,4 @@
 import { Matrix4, MeshStandardMaterial, Texture } from 'three'
-import { extend } from 'react-three-fiber'
 
 type UninitializedUniform<Value> = { value: Value | null }
 
@@ -115,13 +114,3 @@ export type MeshReflectorMaterialImpl = {
   tDiffuseBlur: Texture
   hasBlur: boolean
 } & JSX.IntrinsicElements['meshStandardMaterial']
-
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      meshReflectorMaterial: MeshReflectorMaterialImpl
-    }
-  }
-}
-
-extend({ MeshReflectorMaterial })

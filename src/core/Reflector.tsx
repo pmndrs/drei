@@ -10,9 +10,9 @@ import {
   LinearFilter,
   WebGLRenderTarget,
 } from 'three'
-import { useFrame, useThree } from 'react-three-fiber'
+import { useFrame, useThree, extend } from 'react-three-fiber'
 import { BlurPass } from '../materials/BlurPass'
-import { MeshReflectorMaterialImpl } from '../materials/ReflectorMaterial'
+import { MeshReflectorMaterialImpl, MeshReflectorMaterial } from '../materials/ReflectorMaterial'
 
 export type ReflectorChildProps = MeshReflectorMaterialImpl
 
@@ -30,6 +30,16 @@ export type ReflectorProps = Omit<JSX.IntrinsicElements['mesh'], 'args' | 'child
     ): JSX.Element | null
   }
 }
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      meshReflectorMaterial: MeshReflectorMaterialImpl
+    }
+  }
+}
+
+extend({ MeshReflectorMaterial })
 
 export function Reflector({
   mixBlur = 0.0,

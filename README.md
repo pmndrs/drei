@@ -7,7 +7,7 @@
 A growing collection of useful helpers and abstractions for [react-three-fiber](https://github.com/pmndrs/react-three-fiber).
 
 ```bash
-npm install @react-three/drei@latest
+npm install @react-three/drei
 ```
 
 :point_right: this package is now only published under the name `@react-three/drei`. `drei` has been deprecated. :point_left:

@@ -1,6 +1,4 @@
-<p align="center">
-    <img width="500" src="https://imgur.com/arDsXO6.jpg" alt="logo" />
-</p>
+![logo](logo.jpg)
 
 [![Version](https://img.shields.io/npm/v/@react-three/drei?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)
 [![Downloads](https://img.shields.io/npm/dt/@react-three/drei.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)
@@ -26,7 +24,7 @@ import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei'
 import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei/native'
 ```
 
-The `native` route of the library **does not** export `Html` or `Loader`. There default export of the library is `web` which **does** export `Html` and `Loader`.
+The `native` route of the library **does not** export `Html` or `Loader`. The default export of the library is `web` which **does** export `Html` and `Loader`.
 
 # Index
 
@@ -617,7 +615,7 @@ Easily add reflections and/or blur to a planar surface. This reflector can also 
 
 ```jsx
 <Reflector
-  blur={[0, 0]} // Blur ground reflections (width, heigt), 0 skips blur 
+  blur={[0, 0]} // Blur ground reflections (width, heigt), 0 skips blur
   mixBlur={1.0} // How much blur mixes with surface roughness
   mixStrength={0.5} // Strength of the reflections
   resolution={256} // Off-buffer resolution, lower=faster, higher=better quality

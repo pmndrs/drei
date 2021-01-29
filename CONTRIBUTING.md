@@ -24,14 +24,10 @@ If you're adding a brand new feature, you need to make sure you add a storybook 
 
 ## Publishing
 
-To publish a new version:
+We use `semantic-release-action` to deploy the package. Because of this only certain commits will trigger the action of creating a release:
 
-```
-npm publish
-```
+- `fix:` will create a `0.0.x` version
+- `feat:` will create a `0.x.0` version
+- `BREAKING CHANGE:` will create a `x.0.0` version
 
-To publish a **beta** version:
-
-```
-npm publish --tag beta
-```
+We release on `master`, `beta` & `alpha`. `beta` & `alpha` are configured to be prerelease. Any other commits will not fire a release.

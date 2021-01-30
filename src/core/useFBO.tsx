@@ -2,12 +2,16 @@ import { useEffect, useMemo } from 'react'
 import * as THREE from 'three'
 import { useThree } from 'react-three-fiber'
 
-type FBOSettings = { multisample?: boolean; samples?: number } & THREE.WebGLRenderTargetOptions
+type FBOSettings<T extends boolean = false> = { multisample?: T; samples?: number } & THREE.WebGLRenderTargetOptions
 
 // 👇 uncomment when TS version supports function overloads
 
 // export function useFBO(settings?: FBOSettings)
-export function useFBO<T = false>(width?: number | FBOSettings, height?: number, settings?: FBOSettings) {
+export function useFBO<T extends boolean = false>(
+  width?: number | FBOSettings<T>,
+  height?: number,
+  settings?: FBOSettings<T>
+): T extends true ? THREE.WebGLRenderTarget | THREE.WebGLMultisampleRenderTarget : THREE.WebGLRenderTarget {
   const { size, gl } = useThree()
   const dpr = useMemo(() => gl.getPixelRatio(), [gl])
   const _width = typeof width === 'number' ? width : size.width * dpr
@@ -23,9 +27,7 @@ export function useFBO<T = false>(width?: number | FBOSettings, height?: number,
     } else {
       target = new THREE.WebGLRenderTarget(_width, _height, targetSettings)
     }
-    return target as T extends true
-      ? THREE.WebGLRenderTarget | THREE.WebGLMultisampleRenderTarget
-      : THREE.WebGLRenderTarget
+    return target
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

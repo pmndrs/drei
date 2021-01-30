@@ -62,7 +62,6 @@ export function Environment({
   )
 
   React.useLayoutEffect(() => {
-    console.log('firing effect', texture)
     const oldbg = scene ? scene.background : defaultScene.background
     const oldenv = scene ? scene.environment : defaultScene.environment
     if (scene) {

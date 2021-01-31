@@ -3,6 +3,7 @@ import { Matrix4, MeshStandardMaterial, Texture } from 'three'
 type UninitializedUniform<Value> = { value: Value | null }
 
 export class MeshReflectorMaterial extends MeshStandardMaterial {
+  private _tDepth: UninitializedUniform<Texture> = { value: null }
   private _tDiffuse: UninitializedUniform<Texture> = { value: null }
   private _tDiffuseBlur: UninitializedUniform<Texture> = { value: null }
   private _textureMatrix: UninitializedUniform<Matrix4> = { value: null }
@@ -10,6 +11,9 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
   private _mirror: { value: number } = { value: 0.0 }
   private _mixBlur: { value: number } = { value: 0.0 }
   private _blurStrength: { value: number } = { value: 0.5 }
+  private _minDepthThreshold: { value: number } = { value: 0 }
+  private _maxDepthThreshold: { value: number } = { value: 1 }
+  private _depthScale: { value: number } = { value: 1 }
 
   constructor(parameters = {}) {
     super(parameters)
@@ -18,11 +22,15 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
   onBeforeCompile(shader) {
     shader.uniforms.hasBlur = this._hasBlur
     shader.uniforms.tDiffuse = this._tDiffuse
+    shader.uniforms.tDepth = this._tDepth
     shader.uniforms.tDiffuseBlur = this._tDiffuseBlur
     shader.uniforms.textureMatrix = this._textureMatrix
     shader.uniforms.mirror = this._mirror
     shader.uniforms.mixBlur = this._mixBlur
     shader.uniforms.mixStrength = this._blurStrength
+    shader.uniforms.minDepthThreshold = this._minDepthThreshold
+    shader.uniforms.maxDepthThreshold = this._maxDepthThreshold
+    shader.uniforms.depthScale = this._depthScale
     shader.vertexShader = `
         uniform mat4 textureMatrix;
         varying vec4 my_vUv;     
@@ -36,29 +44,44 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
     shader.fragmentShader = `
         uniform sampler2D tDiffuse;
         uniform sampler2D tDiffuseBlur;
+        uniform sampler2D tDepth;
+        uniform float cameraNear;
+			  uniform float cameraFar;
         uniform bool hasBlur;
         uniform float mixBlur;
         uniform float mirror;
         uniform float mixStrength;
-        varying vec4 my_vUv;
+        uniform float minDepthThreshold;
+        uniform float maxDepthThreshold;
+        uniform float depthScale;
+        varying vec4 my_vUv;        
         ${shader.fragmentShader}`
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <emissivemap_fragment>',
       `#include <emissivemap_fragment>
+      
+        vec4 depth = texture2DProj(tDepth, my_vUv );
         vec4 base = texture2DProj(tDiffuse, my_vUv);
         vec4 blur = texture2DProj(tDiffuseBlur, my_vUv);
+
+        float depthFactor = smoothstep(minDepthThreshold, maxDepthThreshold, 1.0-(depth.r * depth.a));
+        depthFactor *= depthScale;
+        depthFactor = min(1.0, depthFactor);
+
         float reflectorRoughnessFactor = roughness;
         #ifdef USE_ROUGHNESSMAP
           vec4 reflectorTexelRoughness = texture2D( roughnessMap, vUv );
           reflectorRoughnessFactor *= reflectorTexelRoughness.g;
         #endif
-        vec4 tColor = base;
+
+        vec4 merge = vec4(0.0,0.0,0.0,1.0);
         if (hasBlur) {
-          float blurFactor = min(1.0, mixBlur * reflectorRoughnessFactor);
-          tColor = mix(base, blur, blurFactor);
+          merge = mix(merge, blur, min(1.0, mixBlur * reflectorRoughnessFactor));
         }
-        diffuseColor.rgb = diffuseColor.rgb * (1.0 - min(1.0, mirror)) + tColor.rgb * mixStrength;        
-        diffuseColor = sRGBToLinear(diffuseColor);`
+        merge += mix(merge, base, depthFactor);
+        diffuseColor.rgb = diffuseColor.rgb * ((1.0 - min(1.0, mirror)) + merge.rgb * mixStrength);        
+        diffuseColor = sRGBToLinear(diffuseColor);
+        `
     )
   }
   get tDiffuse(): Texture | null {
@@ -66,6 +89,12 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
   }
   set tDiffuse(v: Texture | null) {
     this._tDiffuse.value = v
+  }
+  get tDepth(): Texture | null {
+    return this._tDepth.value
+  }
+  set tDepth(v: Texture | null) {
+    this._tDepth.value = v
   }
   get tDiffuseBlur(): Texture | null {
     return this._tDiffuseBlur.value
@@ -103,6 +132,24 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
   set mixStrength(v: number) {
     this._blurStrength.value = v
   }
+  get minDepthThreshold(): number {
+    return this._minDepthThreshold.value
+  }
+  set minDepthThreshold(v: number) {
+    this._minDepthThreshold.value = v
+  }
+  get maxDepthThreshold(): number {
+    return this._maxDepthThreshold.value
+  }
+  set maxDepthThreshold(v: number) {
+    this._maxDepthThreshold.value = v
+  }
+  get depthScale(): number {
+    return this._depthScale.value
+  }
+  set depthScale(v: number) {
+    this._depthScale.value = v
+  }
 }
 
 export type MeshReflectorMaterialImpl = {
@@ -113,4 +160,7 @@ export type MeshReflectorMaterialImpl = {
   tDiffuse: Texture
   tDiffuseBlur: Texture
   hasBlur: boolean
+  minDepthThreshold: number
+  maxDepthThreshold: number
+  depthScale: number
 } & JSX.IntrinsicElements['meshStandardMaterial']

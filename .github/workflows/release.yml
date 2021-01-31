@@ -47,6 +47,8 @@ jobs:
         uses: cycjimmy/semantic-release-action@v2
         with:
           semantic_version: 17
+          extra_plugins: |
+            @semantic-release/git
           branches: |
             [
               'master',

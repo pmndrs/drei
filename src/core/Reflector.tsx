@@ -9,6 +9,9 @@ import {
   Mesh,
   LinearFilter,
   WebGLRenderTarget,
+  DepthTexture,
+  DepthFormat,
+  UnsignedShortType,
 } from 'three'
 import { useFrame, useThree, extend } from 'react-three-fiber'
 import { BlurPass } from '../materials/BlurPass'
@@ -23,6 +26,9 @@ export type ReflectorProps = Omit<JSX.IntrinsicElements['mesh'], 'args' | 'child
   blur?: [number, number] | number
   args?: [number, number]
   mirror: number
+  minDepthThreshold?: number
+  maxDepthThreshold?: number
+  depthScale?: number
   children: {
     (
       Component: React.ElementType<JSX.IntrinsicElements['meshReflectorMaterial']>,
@@ -47,6 +53,9 @@ export function Reflector({
   resolution = 256,
   blur = [0, 0],
   args = [1, 1],
+  minDepthThreshold = 0,
+  maxDepthThreshold = 1,
+  depthScale = 1,
   mirror,
   children,
   ...props
@@ -127,6 +136,10 @@ export function Reflector({
       encoding: gl.outputEncoding,
     }
     const fbo1 = new WebGLRenderTarget(resolution, resolution, parameters)
+    fbo1.depthBuffer = true
+    fbo1.depthTexture = new DepthTexture(resolution, resolution)
+    fbo1.depthTexture.format = DepthFormat
+    fbo1.depthTexture.type = UnsignedShortType
     const fbo2 = new WebGLRenderTarget(resolution, resolution, parameters)
     const blurpass = new BlurPass({ gl, resolution, width: blur[0], height: blur[1] })
     const reflectorProps = {
@@ -134,12 +147,28 @@ export function Reflector({
       textureMatrix,
       mixBlur,
       tDiffuse: fbo1.texture,
+      tDepth: fbo1.depthTexture,
       tDiffuseBlur: fbo2.texture,
       hasBlur,
       mixStrength,
+      minDepthThreshold,
+      maxDepthThreshold,
+      depthScale,
     }
     return [fbo1, fbo2, blurpass, reflectorProps]
-  }, [gl, blur, textureMatrix, resolution, mirror, hasBlur, mixBlur, mixStrength])
+  }, [
+    gl,
+    blur,
+    textureMatrix,
+    resolution,
+    mirror,
+    hasBlur,
+    mixBlur,
+    mixStrength,
+    minDepthThreshold,
+    maxDepthThreshold,
+    depthScale,
+  ])
 
   useFrame(() => {
     meshRef.current.visible = false

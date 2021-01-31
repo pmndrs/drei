@@ -28,6 +28,9 @@ function ReflectorScene() {
         mirror={0.5}
         rotation={[-Math.PI / 2, 0, Math.PI / 2]}
         blur={[400, 100]}
+        minDepthThreshold={0.5}
+        maxDepthThreshold={1}
+        depthScale={1}
       >
         {(Material, props) => <Material color="#a0a0a0" metalness={0.5} normalScale={[1, 1]} {...props} />}
       </Reflector>

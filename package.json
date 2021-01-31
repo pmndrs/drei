@@ -117,9 +117,9 @@
     "use-asset": "^1.0.2"
   },
   "peerDependencies": {
-    "react": ">=16.13",
-    "react-dom": ">=16.13",
-    "react-three-fiber": ">=5.0",
+    "react": ">=17.0",
+    "react-dom": ">=17.0",
+    "react-three-fiber": ">=5.3.18",
     "three": ">=0.125.0"
   },
   "peerDependenciesMeta": {

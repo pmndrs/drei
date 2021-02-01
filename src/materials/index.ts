@@ -1,3 +1,3 @@
 // Materials
 export * from './BlurPass'
-export * from './ReflectorMaterial'
+export * from './MeshReflectorMaterial'

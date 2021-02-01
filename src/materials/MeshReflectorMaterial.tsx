@@ -11,9 +11,9 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
   private _mirror: { value: number } = { value: 0.0 }
   private _mixBlur: { value: number } = { value: 0.0 }
   private _blurStrength: { value: number } = { value: 0.5 }
-  private _minDepthThreshold: { value: number } = { value: 0 }
+  private _minDepthThreshold: { value: number } = { value: 0.9 }
   private _maxDepthThreshold: { value: number } = { value: 1 }
-  private _depthScale: { value: number } = { value: 1 }
+  private _depthScale: { value: number } = { value: 0 }
 
   constructor(parameters = {}) {
     super(parameters)
@@ -60,28 +60,28 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
       '#include <emissivemap_fragment>',
       `#include <emissivemap_fragment>
       
-        vec4 depth = texture2DProj(tDepth, my_vUv );
-        vec4 base = texture2DProj(tDiffuse, my_vUv);
-        vec4 blur = texture2DProj(tDiffuseBlur, my_vUv);
+      vec4 depth = texture2DProj(tDepth, my_vUv );
+      vec4 base = texture2DProj(tDiffuse, my_vUv);
+      vec4 blur = texture2DProj(tDiffuseBlur, my_vUv);
 
-        float depthFactor = smoothstep(minDepthThreshold, maxDepthThreshold, 1.0-(depth.r * depth.a));
-        depthFactor *= depthScale;
-        depthFactor = min(1.0, depthFactor);
+      float depthFactor = smoothstep(minDepthThreshold, maxDepthThreshold, 1.0-(depth.r * depth.a));
+      depthFactor *= depthScale;
+      depthFactor = min(1.0, depthFactor);
 
-        float reflectorRoughnessFactor = roughness;
-        #ifdef USE_ROUGHNESSMAP
-          vec4 reflectorTexelRoughness = texture2D( roughnessMap, vUv );
-          reflectorRoughnessFactor *= reflectorTexelRoughness.g;
-        #endif
+      float reflectorRoughnessFactor = roughness;
+      #ifdef USE_ROUGHNESSMAP
+        vec4 reflectorTexelRoughness = texture2D( roughnessMap, vUv );
+        reflectorRoughnessFactor *= reflectorTexelRoughness.g;
+      #endif
 
-        vec4 merge = vec4(0.0,0.0,0.0,1.0);
-        if (hasBlur) {
-          merge = mix(merge, blur, min(1.0, mixBlur * reflectorRoughnessFactor));
-        }
-        merge += mix(merge, base, depthFactor);
-        diffuseColor.rgb = diffuseColor.rgb * ((1.0 - min(1.0, mirror)) + merge.rgb * mixStrength);        
-        diffuseColor = sRGBToLinear(diffuseColor);
-        `
+      vec4 merge = base;
+      if (hasBlur) {
+        float blurFactor = min(1.0, mixBlur * reflectorRoughnessFactor);
+        merge = mix(merge, blur, blurFactor);
+      }
+      merge += mix(merge, base, depthFactor);
+      diffuseColor.rgb = diffuseColor.rgb * ((1.0 - min(1.0, mirror)) + merge.rgb * mixStrength);           
+      diffuseColor = sRGBToLinear(diffuseColor);`
     )
   }
   get tDiffuse(): Texture | null {

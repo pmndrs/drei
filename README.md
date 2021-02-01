@@ -208,8 +208,8 @@ A box buffer geometry with rounded corners, done with extrusion.
 ```
 
 A triangle that fills the screen, ideal for full-screen fragment shader work (raymarching, postprocessing).
-👉 Why a triangle? https://www.cginternals.com/en/blog/2018-01-10-screen-aligned-quads-and-triangles.html
-👉 Use as a post processing mesh: https://medium.com/@luruke/simple-postprocessing-in-three-js-91936ecadfb7
+👉 [Why a triangle?](https://www.cginternals.com/en/blog/2018-01-10-screen-aligned-quads-and-triangles.html)
+👉 [Use as a post processing mesh](https://medium.com/@luruke/simple-postprocessing-in-three-js-91936ecadfb7)
 
 # Abstractions
 
@@ -781,7 +781,6 @@ A convenience hook that uses `useLoader` and `TextureLoader`
 
 ```jsx
 const texture = useTexture(url)
-
 const [texture1, texture2] = useTexture([texture1, texture2])
 ```
 

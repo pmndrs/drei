@@ -74,8 +74,7 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
         reflectorRoughnessFactor *= reflectorTexelRoughness.g;
       #endif
 
-      vec4 tColor = base;
-      vec4 merge = tColor;
+      vec4 merge = base;
       if (hasBlur) {
         float blurFactor = min(1.0, mixBlur * reflectorRoughnessFactor);
         merge = mix(merge, blur, blurFactor);

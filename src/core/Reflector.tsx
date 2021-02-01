@@ -15,7 +15,7 @@ import {
 } from 'three'
 import { useFrame, useThree, extend } from 'react-three-fiber'
 import { BlurPass } from '../materials/BlurPass'
-import { MeshReflectorMaterialImpl, MeshReflectorMaterial } from '../materials/ReflectorMaterial'
+import { MeshReflectorMaterialImpl, MeshReflectorMaterial } from '../materials/MeshReflectorMaterial'
 
 export type ReflectorChildProps = MeshReflectorMaterialImpl
 
@@ -53,9 +53,9 @@ export function Reflector({
   resolution = 256,
   blur = [0, 0],
   args = [1, 1],
-  minDepthThreshold = 0,
+  minDepthThreshold = 0.9,
   maxDepthThreshold = 1,
-  depthScale = 1,
+  depthScale = 0,
   mirror,
   children,
   ...props

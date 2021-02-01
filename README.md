@@ -26,7 +26,7 @@ import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei/nativ
 
 The `native` route of the library **does not** export `Html` or `Loader`. The default export of the library is `web` which **does** export `Html` and `Loader`.
 
-# Index
+### Index
 
 <table>
   <tr>
@@ -39,13 +39,13 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         </ul>
         <li><a href="#controls">Controls</a></li>
         <ul>
-          <li><a href="#orbitcontrols">OrbitControls</a></li>
-          <li><a href="#flycontrols">FlyControls</a></li>
-          <li><a href="#mapcontrols">MapControls</a></li>
-          <li><a href="#deviceorientationcontrols">DeviceOrientationControls</a></li>
-          <li><a href="#trackballcontrols">TrackballControls</a></li>
-          <li><a href="#transformcontrols">TransformControls</a></li>
-          <li><a href="#pointerlockcontrols">PointerLockControls</a></li>
+          <li><a href="#controls">OrbitControls</a></li>
+          <li><a href="#controls">FlyControls</a></li>
+          <li><a href="#controls">MapControls</a></li>
+          <li><a href="#controls">DeviceOrientationControls</a></li>
+          <li><a href="#controls">TrackballControls</a></li>
+          <li><a href="#controls">TransformControls</a></li>
+          <li><a href="#controls">PointerLockControls</a></li>
         </ul>
         <li><a href="#abstractions">Abstractions</a></li>
         <ul>
@@ -144,9 +144,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
   </tr>
 </table>
 
-# Exports
-
-## Cameras
+# Cameras
 
 #### PerspectiveCamera
 
@@ -173,29 +171,9 @@ A responsive [THREE.OrthographicCamera](https://threejs.org/docs/index.html#api/
 
 If available controls have damping enabled by default, they manage their own updates, remove themselves on unmount, are compatible with the `invalidateFrameloop` canvas-flag. They inherit all props from their underlying [THREE controls](https://github.com/mrdoob/three.js/tree/dev/examples/jsm/controls).
 
-#### OrbitControls
+Drei currently exports OrbitControls [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-contact-shadow-h5xcw), MapControls [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/react-three-fiber-map-mkq8e), TrackballControls, FlyControls, DeviceOrientationControls, TransformControls [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-transformcontrols-hc8gm), PointerLockControls [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/blissful-leaf-vkgi6)
 
-[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-contact-shadow-h5xcw)
-
-#### MapControls
-
-[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/react-three-fiber-map-mkq8e)
-
-#### TrackballControls
-
-#### FlyControls
-
-#### DeviceOrientationControls
-
-#### TransformControls
-
-[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-transformcontrols-hc8gm)
-
-#### PointerLockControls
-
-[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/blissful-leaf-vkgi6)
-
-## Shapes
+# Shapes
 
 [Buffer-geometry](https://threejs.org/docs/index.html#api/en/core/BufferGeometry) short-cuts for Plane, Box, Sphere, Circle, Cone, Cylinder, Tube, Torus, TorusKnot, Ring, Tetrahedron, Polyhedron, Icosahedron, Octahedron, Dodecahedron, Extrude, Lathe, Parametric.
 
@@ -233,7 +211,7 @@ A triangle that fills the screen, ideal for full-screen fragment shader work (ra
 👉 Why a triangle? https://www.cginternals.com/en/blog/2018-01-10-screen-aligned-quads-and-triangles.html
 👉 Use as a post processing mesh: https://medium.com/@luruke/simple-postprocessing-in-three-js-91936ecadfb7
 
-## Abstractions
+# Abstractions
 
 #### Text
 
@@ -346,7 +324,7 @@ return (
   <mesh ref={ref} />
 ```
 
-## Shaders
+# Shaders
 
 #### MeshWobbleMaterial
 
@@ -483,7 +461,7 @@ extend({ ColorShiftMaterial })
 </mesh>
 ```
 
-## Misc
+# Misc
 
 #### useContextBridge
 
@@ -685,7 +663,7 @@ return (
     <meshBasicMaterial map={imageTexture} />
 ```
 
-## Modifiers
+# Modifiers
 
 #### CurveModifier
 
@@ -760,7 +738,7 @@ return (
 )
 ```
 
-## Loaders
+# Loaders
 
 #### useGLTF
 
@@ -844,7 +822,7 @@ const errors = useProgress((state) => state.errors)
 
 👉 Note that your loading component does not have to be a suspense fallback. You can use it anywhere, even in your dom tree, for instance for overlays.
 
-## ⚡️ Prototyping
+# Prototyping
 
 #### Loader
 
@@ -928,8 +906,7 @@ return (
 
 ```
 
-## ⚡️ Performance
-
+# Performance
 
 #### Detailed
 

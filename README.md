@@ -130,8 +130,8 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#shapes">Extrude</a></li>
           <li><a href="#shapes">Lathe</a></li>
           <li><a href="#shapes">Parametric</a></li>
-          <li><a href="#shapes">RoundedBox</a></li>
-          <li><a href="#shapes">Screenquad</a></li>
+          <li><a href="#roundedbox">RoundedBox</a></li>
+          <li><a href="#screenquad">Screenquad</a></li>
         </ul>
         <li><a href="#performance">Peformance</a></li>
         <ul>

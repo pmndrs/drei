@@ -18,7 +18,7 @@ npm install @react-three/drei@latest
 import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei'
 ```
 
-### `react-native` usage:
+### React-native:
 
 ```jsx
 import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei/native'
@@ -167,7 +167,7 @@ A responsive [THREE.PerspectiveCamera](https://threejs.org/docs/index.html#api/e
 
 A responsive [THREE.OrthographicCamera](https://threejs.org/docs/index.html#api/en/cameras/OrthographicCamera) that can set itself as the default.
 
-## Controls
+# Controls
 
 If available controls have damping enabled by default, they manage their own updates, remove themselves on unmount, are compatible with the `invalidateFrameloop` canvas-flag. They inherit all props from their underlying [THREE controls](https://github.com/mrdoob/three.js/tree/dev/examples/jsm/controls).
 

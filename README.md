@@ -535,9 +535,7 @@ The rendertarget is automatically disposed when unmounted.
 
 #### Html
 
-[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-suspense-zu2wo)
-
-> :no_entry_sign: Web usage only.
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-suspense-zu2wo) ![](https://img.shields.io/badge/-Dom&nbsp;only-red)
 
 Allows you to tie HTML content to any object of your scene. It will be projected to the objects whereabouts automatically.
 
@@ -850,7 +848,7 @@ const errors = useProgress((state) => state.errors)
 
 #### Loader
 
-> :no_entry_sign: Web usage only.
+![](https://img.shields.io/badge/-Dom&nbsp;only-red)
 
 A quick and easy loading overlay component that you can drop on top of your canvas. It will show an animated loadingbar and a percentage.
 

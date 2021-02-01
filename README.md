@@ -50,8 +50,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <li><a href="#abstractions">Abstractions</a></li>
         <ul>
           <li><a href="#text">Text</a></li>
-          <li><a href="#line">Line</a></li>
-          <li><a href="#detailed">Detailed</a></li>
+          <li><a href="#line">Line</a></li>          
           <li><a href="#positionalaudio">PositionalAudio</a></li>
           <li><a href="#billboard">Billboard</a></li>
           <li><a href="#environment">Environment</a></li>
@@ -79,14 +78,12 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#html">Html</a></li>
           <li><a href="#shadow">Shadow</a></li>
           <li><a href="#stats">Stats</a></li>
-          <li><a href="#center">Center</a></li>
-          <li><a href="#meshbounds">meshBounds</a></li>
+          <li><a href="#center">Center</a></li>          
           <li><a href="#usecamera">useCamera</a></li>
           <li><a href="#usedetectgpu">useDetectGPU</a></li>
           <li><a href="#usehelper">useHelper</a></li>
           <li><a href="#useaspect">useAspect</a></li>
-          <li><a href="#reflector">Reflector</a></li>
-          <li><a href="#preload">Preload</a></li>
+          <li><a href="#reflector">Reflector</a></li>          
         </ul>
         <li><a href="#loaders">Loaders</a></li>
         <ul>
@@ -115,26 +112,32 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
       <ul>
         <li><a href="#shapes">Shapes</a></li>
         <ul>
-          <li><a href="#plane">Plane</a></li>
-          <li><a href="#box">Box</a></li>
-          <li><a href="#sphere">Sphere</a></li>
-          <li><a href="#circle">Circle</a></li>
-          <li><a href="#cone">Cone</a></li>
-          <li><a href="#cylinder">Cylinder</a></li>
-          <li><a href="#tube">Tube</a></li>
-          <li><a href="#torus">Torus</a></li>
-          <li><a href="#torusknot">TorusKnot</a></li>
-          <li><a href="#ring">Ring</a></li>
-          <li><a href="#tetrahedron">Tetrahedron</a></li>
-          <li><a href="#polyhedron">Polyhedron</a></li>
-          <li><a href="#icosahedron">Icosahedron</a></li>
-          <li><a href="#octahedron">Octahedron</a></li>
-          <li><a href="#dodecahedron">Dodecahedron</a></li>
-          <li><a href="#extrude">Extrude</a></li>
-          <li><a href="#lathe">Lathe</a></li>
-          <li><a href="#parametric">Parametric</a></li>
-          <li><a href="#roundedbox">RoundedBox</a></li>
-          <li><a href="#screenquad">Screenquad</a></li>
+          <li><a href="#shapes">Plane</a></li>
+          <li><a href="#shapes">Box</a></li>
+          <li><a href="#shapes">Sphere</a></li>
+          <li><a href="#shapes">Circle</a></li>
+          <li><a href="#shapes">Cone</a></li>
+          <li><a href="#shapes">Cylinder</a></li>
+          <li><a href="#shapes">Tube</a></li>
+          <li><a href="#shapes">Torus</a></li>
+          <li><a href="#shapes">TorusKnot</a></li>
+          <li><a href="#shapes">Ring</a></li>
+          <li><a href="#shapes">Tetrahedron</a></li>
+          <li><a href="#shapes">Polyhedron</a></li>
+          <li><a href="#shapes">Icosahedron</a></li>
+          <li><a href="#shapes">Octahedron</a></li>
+          <li><a href="#shapes">Dodecahedron</a></li>
+          <li><a href="#shapes">Extrude</a></li>
+          <li><a href="#shapes">Lathe</a></li>
+          <li><a href="#shapes">Parametric</a></li>
+          <li><a href="#shapes">RoundedBox</a></li>
+          <li><a href="#shapes">Screenquad</a></li>
+        </ul>
+        <li><a href="#performance">Peformance</a></li>
+        <ul>
+          <li><a href="#detailed">Detailed</a></li>
+          <li><a href="#preload">Preload</a></li>
+          <li><a href="#meshbounds">meshBounds</a></li>
         </ul>
       </ul>
     </td>
@@ -194,50 +197,14 @@ If available controls have damping enabled by default, they manage their own upd
 
 ## Shapes
 
-Buffer-geometry short-cuts:
+[Buffer-geometry](https://threejs.org/docs/index.html#api/en/core/BufferGeometry) short-cuts for Plane, Box, Sphere, Circle, Cone, Cylinder, Tube, Torus, TorusKnot, Ring, Tetrahedron, Polyhedron, Icosahedron, Octahedron, Dodecahedron, Extrude, Lathe, Parametric.
 
 ```jsx
 <Plane args={[2, 2]} />
 <Sphere>
   <meshBasicMaterial attach="material" color="hotpink" />
 </Sphere>
-```
-
-#### Plane
-
-#### Box
-
-#### Sphere
-
-#### Circle
-
-#### Cone
-
-#### Cylinder
-
-#### Tube
-
-#### Torus
-
-#### TorusKnot
-
-#### Ring
-
-#### Tetrahedron
-
-#### Polyhedron
-
-#### Icosahedron
-
-#### Octahedron
-
-#### Dodecahedron
-
-#### Extrude
-
-#### Lathe
-
-#### Parametric
+``` 
 
 #### RoundedBox
 
@@ -300,23 +267,6 @@ Renders a THREE.Line2.
   {...lineProps}                  // All THREE.Line2 props are valid
   {...materialProps}              // All THREE.LineMaterial props are valid
 />
-```
-
-#### Detailed
-
-[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-detailed-dep1v)
-
-A wrapper around [THREE.LOD](https://threejs.org/docs/index.html#api/en/objects/LOD) (Level of detail).
-
-```jsx
-<Detailed
-  distances={[0, 10, 20]} // Camera distances, correspends to the # of the children
-  {...props} // All THREE.LOD props are valid
->
-  <mesh geometry={highDetail} />
-  <mesh geometry={mediumDetail} />
-  <mesh geometry={lowDetail} />
-</Detailed>
 ```
 
 #### PositionalAudio
@@ -683,31 +633,6 @@ Calculates a boundary box and centers its children accordingly.
 </Center>
 ```
 
-#### Preload
-
-The WebGLRenderer will compile materials only when they hit the frustrum, which can cause jank. This component precompiles the scene using [gl.compile](https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.compile) which makes sure that your app is responsive from the get go.
-
-By default gl.compile will only preload visible objects, if you supply the `all` prop, it will circumvent that. With the `scene` and `camera` props you could also use it in portals.
-
-If you have async models you can drop it into the same suspense boundary _in concurrent mode_.
-
-```jsx
-<Canvas concurrent>
-  <Suspense fallback={null}>
-    <Model />
-    <Preload all />
-```
-
-#### meshBounds
-
-[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-basic-demo-8fpip)
-
-A very fast, but often good-enough bounds-only raycast for meshes. You can use this if performance has precidence over pointer precision.
-
-```jsx
-<mesh raycast={meshBounds} />
-```
-
 #### useCamera
 
 [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/react-three-fiber-viewcube-py4db)
@@ -1003,6 +928,51 @@ return (
   ...
 )
 
+```
+
+## ⚡️ Performance
+
+
+#### Detailed
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-detailed-dep1v)
+
+A wrapper around [THREE.LOD](https://threejs.org/docs/index.html#api/en/objects/LOD) (Level of detail).
+
+```jsx
+<Detailed
+  distances={[0, 10, 20]} // Camera distances, correspends to the # of the children
+  {...props} // All THREE.LOD props are valid
+>
+  <mesh geometry={highDetail} />
+  <mesh geometry={mediumDetail} />
+  <mesh geometry={lowDetail} />
+</Detailed>
+```
+
+#### Preload
+
+The WebGLRenderer will compile materials only when they hit the frustrum, which can cause jank. This component precompiles the scene using [gl.compile](https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.compile) which makes sure that your app is responsive from the get go.
+
+By default gl.compile will only preload visible objects, if you supply the `all` prop, it will circumvent that. With the `scene` and `camera` props you could also use it in portals.
+
+If you have async models you can drop it into the same suspense boundary _in concurrent mode_.
+
+```jsx
+<Canvas concurrent>
+  <Suspense fallback={null}>
+    <Model />
+    <Preload all />
+```
+
+#### meshBounds
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-basic-demo-8fpip)
+
+A very fast, but often good-enough bounds-only raycast for meshes. You can use this if performance has precidence over pointer precision.
+
+```jsx
+<mesh raycast={meshBounds} />
 ```
 
 ---

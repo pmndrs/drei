@@ -1,6 +1,6 @@
 #### Live Playground
 
-For examples of _drei_ in action, visit [https://drei.react-spring.io/](https://drei.react-spring.io/)
+For examples of _drei_ in action, visit [https://drei.pmndrs.vercel.app](https://drei.pmndrs.vercel.app)
 
 Or, run the demo storybook on your computer:
 

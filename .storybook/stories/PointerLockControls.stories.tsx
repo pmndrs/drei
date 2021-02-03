@@ -1,6 +1,7 @@
 import * as React from 'react'
-import { Vector3 } from 'three'
 import { Canvas } from 'react-three-fiber'
+
+import { Setup } from '../Setup'
 
 import { PointerLockControls, Icosahedron } from '../../src'
 
@@ -49,12 +50,10 @@ function Icosahedrons() {
 function PointerLockControlsScene() {
   return (
     <>
-      <Canvas colorManagement shadowMap camera={{ position: [0, 0, 10] }} pixelRatio={window.devicePixelRatio}>
+      <Setup controls={false} camera={{ position: [0, 0, 10] }}>
         <Icosahedrons />
         <PointerLockControls />
-        <ambientLight intensity={0.8} />
-        <pointLight intensity={1} position={[0, 6, 0]} />
-      </Canvas>
+      </Setup>
     </>
   )
 }
@@ -79,12 +78,10 @@ function PointerLockControlsSceneWithSelector() {
       >
         Click here to play
       </div>
-      <Canvas colorManagement shadowMap camera={{ position: [0, 0, 10] }} pixelRatio={window.devicePixelRatio}>
+      <Setup controls={false} camera={{ position: [0, 0, 10] }}>
         <Icosahedrons />
         <PointerLockControls selector="#instructions" />
-        <ambientLight intensity={0.8} />
-        <pointLight intensity={1} position={[0, 6, 0]} />
-      </Canvas>
+      </Setup>
     </>
   )
 }

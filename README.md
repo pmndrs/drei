@@ -182,7 +182,7 @@ Drei currently exports OrbitControls [![](https://img.shields.io/badge/-codesand
 <Sphere>
   <meshBasicMaterial attach="material" color="hotpink" />
 </Sphere>
-``` 
+```
 
 #### RoundedBox
 
@@ -513,7 +513,7 @@ The rendertarget is automatically disposed when unmounted.
 
 #### Html
 
-[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-suspense-zu2wo) ![](https://img.shields.io/badge/-Dom&nbsp;only-red)
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-suspense-zu2wo) ![](https://img.shields.io/badge/-Dom only-red)
 
 Allows you to tie HTML content to any object of your scene. It will be projected to the objects whereabouts automatically.
 
@@ -825,9 +825,9 @@ const errors = useProgress((state) => state.errors)
 
 #### Loader
 
-![](https://img.shields.io/badge/-Dom&nbsp;only-red)
+![](https://img.shields.io/badge/-Dom only-red)
 
-A quick and easy loading overlay component that you can drop on top of your canvas. It will show an animated loadingbar and a percentage.
+A quick and easy loading overlay component that you can drop on top of your canvas. It's intended to "hide" the whole app, so if you have multiple suspense wrappers in your application, you should use multiple loaders. It will show an animated loadingbar and a percentage.
 
 ```jsx
 <Canvas>

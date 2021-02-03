@@ -5,7 +5,7 @@ import useEffectfulState from '../helpers/useEffectfulState'
 
 export type PointerLockControls = Overwrite<
   ReactThreeFiber.Object3DNode<PointerLockControlsImpl, typeof PointerLockControlsImpl>,
-  { target?: ReactThreeFiber.Vector3 }
+  { selector?: string }
 >
 
 export const PointerLockControls = React.forwardRef((props: PointerLockControls, ref) => {
@@ -16,6 +16,10 @@ export const PointerLockControls = React.forwardRef((props: PointerLockControls,
     ref as any
   )
 
+  // Only props that are not 'selector' are passed down to the primitive
+  // 'selector' is used here and other props are used on Three.js' side
+  const internalProps = (({ selector: _, ...rest }) => rest)(props)
+
   React.useEffect(() => {
     controls?.addEventListener?.('change', invalidate)
     return () => controls?.removeEventListener?.('change', invalidate)
@@ -23,9 +27,11 @@ export const PointerLockControls = React.forwardRef((props: PointerLockControls,
 
   React.useEffect(() => {
     const handler = () => controls?.lock()
-    document.addEventListener('click', handler)
-    return () => document.removeEventListener('click', handler)
-  }, [controls])
+    const selector = props.selector
+    const element = selector ? document.querySelector(selector) : document
+    element && element.addEventListener('click', handler)
+    return () => (element ? element.removeEventListener('click', handler) : undefined)
+  }, [controls, props.selector])
 
-  return controls ? <primitive dispose={undefined} object={controls} {...props} /> : null
+  return controls ? <primitive dispose={undefined} object={controls} {...internalProps} /> : null
 })

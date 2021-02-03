@@ -12,7 +12,8 @@ function fixBinary(bin) {
 }
 
 // polyfill for SSR as atob is not available - https://gist.github.com/jmshal/b14199f7402c8f3a4568733d8bed0f25
-const atobPolyfill = (a: string) => Buffer.from(a, 'base64').toString('binary')
+const atobPolyfill = (a: string) =>
+  typeof window === undefined ? Buffer.from(a, 'base64').toString('binary') : atob(a)
 
 export const createImageUrl = (blob: string, type: string) =>
   URL.createObjectURL(new Blob([fixBinary(atobPolyfill(blob))], { type }))

@@ -1,19 +1,13 @@
 import * as React from 'react'
-import { Vector3 } from 'three'
+import { Canvas } from 'react-three-fiber'
 
 import { Setup } from '../Setup'
+
 import { PointerLockControls, Icosahedron } from '../../src'
 
 export default {
   title: 'Controls/PointerLockControls',
   component: PointerLockControlsScene,
-  decorators: [
-    (storyFn) => (
-      <Setup cameraPosition={new Vector3(0, 0, 10)} controls={false}>
-        {storyFn()}
-      </Setup>
-    ),
-  ],
 }
 
 const NUM = 2
@@ -23,7 +17,7 @@ interface Positions {
   position: [number, number, number]
 }
 
-function PointerLockControlsScene() {
+function Icosahedrons() {
   const positions = React.useMemo(() => {
     const pos: Positions[] = []
     const half = (NUM - 1) / 2
@@ -43,15 +37,23 @@ function PointerLockControlsScene() {
   }, [])
 
   return (
+    <group>
+      {positions.map(({ id, position }) => (
+        <Icosahedron key={id} args={[1, 1]} position={position}>
+          <meshBasicMaterial attach="material" color="white" wireframe />
+        </Icosahedron>
+      ))}
+    </group>
+  )
+}
+
+function PointerLockControlsScene() {
+  return (
     <>
-      <group>
-        {positions.map(({ id, position }) => (
-          <Icosahedron key={id} args={[1, 1]} position={position}>
-            <meshBasicMaterial attach="material" color="white" wireframe />
-          </Icosahedron>
-        ))}
-      </group>
-      <PointerLockControls />
+      <Setup controls={false} camera={{ position: [0, 0, 10] }}>
+        <Icosahedrons />
+        <PointerLockControls />
+      </Setup>
     </>
   )
 }
@@ -59,4 +61,32 @@ function PointerLockControlsScene() {
 export const PointerLockControlsSceneSt = () => <PointerLockControlsScene />
 PointerLockControlsSceneSt.story = {
   name: 'Default',
+}
+
+function PointerLockControlsSceneWithSelector() {
+  return (
+    <>
+      <div
+        id="instructions"
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '2em',
+          background: 'white',
+        }}
+      >
+        Click here to play
+      </div>
+      <Setup controls={false} camera={{ position: [0, 0, 10] }}>
+        <Icosahedrons />
+        <PointerLockControls selector="#instructions" />
+      </Setup>
+    </>
+  )
+}
+
+export const PointerLockControlsSceneStWithSelector = () => <PointerLockControlsSceneWithSelector />
+PointerLockControlsSceneStWithSelector.story = {
+  name: 'With selector',
 }

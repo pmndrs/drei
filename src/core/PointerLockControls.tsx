@@ -1,14 +1,13 @@
 import * as React from 'react'
-import { ReactThreeFiber, useThree, Overwrite } from 'react-three-fiber'
+import { ReactThreeFiber, useThree } from 'react-three-fiber'
 import { PointerLockControls as PointerLockControlsImpl } from 'three/examples/jsm/controls/PointerLockControls'
 import useEffectfulState from '../helpers/useEffectfulState'
 
-export type PointerLockControls = Overwrite<
-  ReactThreeFiber.Object3DNode<PointerLockControlsImpl, typeof PointerLockControlsImpl>,
-  { target?: ReactThreeFiber.Vector3 }
->
+export type PointerLockControls = ReactThreeFiber.Object3DNode<PointerLockControlsImpl, typeof PointerLockControlsImpl>
 
-export const PointerLockControls = React.forwardRef((props: PointerLockControls, ref) => {
+export type PointerLockControlsProps = PointerLockControls & { selector?: string }
+
+export const PointerLockControls = React.forwardRef(({ selector, ...props }: PointerLockControlsProps, ref) => {
   const { camera, gl, invalidate } = useThree()
   const controls = useEffectfulState(
     () => new PointerLockControlsImpl(camera, gl.domElement),
@@ -23,9 +22,10 @@ export const PointerLockControls = React.forwardRef((props: PointerLockControls,
 
   React.useEffect(() => {
     const handler = () => controls?.lock()
-    document.addEventListener('click', handler)
-    return () => document.removeEventListener('click', handler)
-  }, [controls])
+    const element = selector ? document.querySelector(selector) : document
+    element && element.addEventListener('click', handler)
+    return () => (element ? element.removeEventListener('click', handler) : undefined)
+  }, [controls, selector])
 
   return controls ? <primitive dispose={undefined} object={controls} {...props} /> : null
 })

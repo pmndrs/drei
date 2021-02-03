@@ -53,7 +53,7 @@ export function Loader({
   innerStyles,
   barStyles,
   dataStyles,
-  dataInterpolation = (p: number) => `Loading ${p.toFixed(2)}%`,
+  dataInterpolation = (p: number) => `Loading ${(p * 100).toFixed(2)}%`,
   initialState = (active: boolean) => active,
 }: Partial<LoaderOptions>) {
   const { active, progress } = useProgress()

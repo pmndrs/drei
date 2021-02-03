@@ -27,7 +27,13 @@ export function shaderMaterial(
       const entries = Object.entries(uniforms)
       // Create unforms and shaders
       super({
-        uniforms: entries.reduce((acc, [name, value]) => ({ ...acc, [name]: { value } }), {}),
+        uniforms: entries.reduce((acc, [name, value]) => {
+          const uniform = THREE.UniformsUtils.clone({ [name]: { value } })
+          return {
+            ...acc,
+            ...uniform,
+          }
+        }, {}),
         vertexShader,
         fragmentShader,
       })

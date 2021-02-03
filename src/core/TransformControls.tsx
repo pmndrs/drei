@@ -1,15 +1,12 @@
 import * as React from 'react'
 import { Object3D, Group } from 'three'
-import { ReactThreeFiber, useThree, Overwrite } from 'react-three-fiber'
+import { useThree, ReactThreeFiber } from 'react-three-fiber'
 import { TransformControls as TransformControlsImpl } from 'three/examples/jsm/controls/TransformControls'
 import useEffectfulState from '../helpers/useEffectfulState'
 import pick from 'lodash.pick'
 import omit from 'lodash.omit'
 
-export type TransformControls = Overwrite<
-  ReactThreeFiber.Object3DNode<TransformControlsImpl, typeof TransformControlsImpl>,
-  { target?: ReactThreeFiber.Vector3 }
->
+export type TransformControls = ReactThreeFiber.Object3DNode<TransformControlsImpl, typeof TransformControlsImpl>
 
 declare global {
   namespace JSX {

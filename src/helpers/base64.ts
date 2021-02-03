@@ -1,7 +1,5 @@
 import { Blob } from 'blob-polyfill'
 
-global['Blob'] = Blob
-
 // https://stackoverflow.com/questions/14967647/encode-decode-image-with-base64-breaks-image
 function fixBinary(bin) {
   var length = bin.length

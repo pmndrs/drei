@@ -4,7 +4,6 @@ import { Vector3 } from 'three'
 import { Setup } from '../Setup'
 
 import { Cloud, OrbitControls } from '../../src'
-import { boolean, number } from '@storybook/addon-knobs'
 
 export default {
   title: 'Abstractions/Cloud',

@@ -29,6 +29,7 @@ export type ReflectorProps = Omit<JSX.IntrinsicElements['mesh'], 'args' | 'child
   minDepthThreshold?: number
   maxDepthThreshold?: number
   depthScale?: number
+  debug?: number
   children: {
     (
       Component: React.ElementType<JSX.IntrinsicElements['meshReflectorMaterial']>,
@@ -58,6 +59,7 @@ export function Reflector({
   depthScale = 0,
   mirror,
   children,
+  debug = 0,
   ...props
 }: ReflectorProps) {
   blur = Array.isArray(blur) ? blur : [blur, blur]
@@ -154,6 +156,8 @@ export function Reflector({
       minDepthThreshold,
       maxDepthThreshold,
       depthScale,
+      transparent: true,
+      debug,
     }
     return [fbo1, fbo2, blurpass, reflectorProps]
   }, [
@@ -168,6 +172,7 @@ export function Reflector({
     minDepthThreshold,
     maxDepthThreshold,
     depthScale,
+    debug,
   ])
 
   useFrame(() => {

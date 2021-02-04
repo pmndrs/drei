@@ -3,6 +3,7 @@ import { Matrix4, MeshStandardMaterial, Texture } from 'three'
 type UninitializedUniform<Value> = { value: Value | null }
 
 export class MeshReflectorMaterial extends MeshStandardMaterial {
+  private _debug: { value: number } = { value: 0 }
   private _tDepth: UninitializedUniform<Texture> = { value: null }
   private _tDiffuse: UninitializedUniform<Texture> = { value: null }
   private _tDiffuseBlur: UninitializedUniform<Texture> = { value: null }
@@ -20,6 +21,7 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
     this.setValues(parameters)
   }
   onBeforeCompile(shader) {
+    shader.uniforms.debug = this._debug
     shader.uniforms.hasBlur = this._hasBlur
     shader.uniforms.tDiffuse = this._tDiffuse
     shader.uniforms.tDepth = this._tDepth
@@ -42,6 +44,7 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
         gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );`
     )
     shader.fragmentShader = `
+        uniform int debug;
         uniform sampler2D tDiffuse;
         uniform sampler2D tDiffuseBlur;
         uniform sampler2D tDepth;
@@ -66,7 +69,7 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
 
       float depthFactor = smoothstep(minDepthThreshold, maxDepthThreshold, 1.0-(depth.r * depth.a));
       depthFactor *= depthScale;
-      depthFactor = min(1.0, depthFactor);
+      depthFactor = max(0.0001, min(1.0, depthFactor));
 
       float reflectorRoughnessFactor = roughness;
       #ifdef USE_ROUGHNESSMAP
@@ -74,14 +77,35 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
         reflectorRoughnessFactor *= reflectorTexelRoughness.g;
       #endif
 
-      vec4 merge = base;
+      bool hasDepth = depthFactor >= 0.0001;
+      vec4 merge = hasDepth ? vec4(base.rgb * depthFactor, 1.0) : base;
+      
+      float blurFactor = 0.0;
       if (hasBlur) {
-        float blurFactor = min(1.0, mixBlur * reflectorRoughnessFactor);
-        merge = mix(merge, blur, blurFactor);
+        blurFactor = min(1.0, mixBlur * reflectorRoughnessFactor);
+        merge = mix(base, blur, blurFactor);
       }
-      merge += mix(merge, base, depthFactor);
+      if (hasDepth) {
+        merge = mix(blur, merge, depthFactor);
+        merge = merge * mix(1.0, min(1.0, 0.25 + depthFactor), 0.5);
+      }
+
       diffuseColor.rgb = diffuseColor.rgb * ((1.0 - min(1.0, mirror)) + merge.rgb * mixStrength);           
-      diffuseColor = sRGBToLinear(diffuseColor);`
+      diffuseColor = sRGBToLinear(diffuseColor);
+      
+      if (debug == 1) {
+        diffuseColor = sRGBToLinear(vec4(vec3(depthFactor), 1.0));
+      }
+      if (debug == 2) {
+        diffuseColor = sRGBToLinear(vec4(vec3(blurFactor), 1.0));
+      }
+      if (debug == 3) {
+        diffuseColor = sRGBToLinear(base);
+      }
+      if (debug == 4) {
+        diffuseColor = sRGBToLinear(blur);
+      }
+      `
     )
   }
   get tDiffuse(): Texture | null {
@@ -149,6 +173,12 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
   }
   set depthScale(v: number) {
     this._depthScale.value = v
+  }
+  get debug(): number {
+    return this._debug.value
+  }
+  set debug(v: number) {
+    this._debug.value = v
   }
 }
 

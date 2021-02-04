@@ -52,6 +52,4 @@ function PositionalAudioScene() {
 }
 
 export const PositionalAudioSceneSt = () => <PositionalAudioScene />
-PositionalAudioSceneSt.story = {
-  name: 'Default',
-}
+PositionalAudioSceneSt.storyName = 'Default'

@@ -7,7 +7,7 @@
 A growing collection of useful helpers and abstractions for [react-three-fiber](https://github.com/pmndrs/react-three-fiber).
 
 ```bash
-npm install @react-three/drei@latest
+npm install @react-three/drei
 ```
 
 :point_right: this package is now only published under the name `@react-three/drei`. `drei` has been deprecated. :point_left:
@@ -133,7 +133,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#roundedbox">RoundedBox</a></li>
           <li><a href="#screenquad">Screenquad</a></li>
         </ul>
-        <li><a href="#performance">Peformance</a></li>
+        <li><a href="#performance">Performance</a></li>
         <ul>
           <li><a href="#detailed">Detailed</a></li>
           <li><a href="#preload">Preload</a></li>

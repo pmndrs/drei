@@ -1,6 +1,4 @@
-<p align="center">
-    <img width="500" src="https://imgur.com/arDsXO6.jpg" alt="logo" />
-</p>
+![logo](logo.jpg)
 
 [![Version](https://img.shields.io/npm/v/@react-three/drei?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)
 [![Downloads](https://img.shields.io/npm/dt/@react-three/drei.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)
@@ -12,11 +10,23 @@ A growing collection of useful helpers and abstractions for [react-three-fiber](
 npm install @react-three/drei
 ```
 
+:point_right: this package is now only published under the name `@react-three/drei`. `drei` has been deprecated. :point_left:
+
+### Basic usage:
+
 ```jsx
 import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei'
 ```
 
-# Index
+### React-native:
+
+```jsx
+import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei/native'
+```
+
+The `native` route of the library **does not** export `Html` or `Loader`. The default export of the library is `web` which **does** export `Html` and `Loader`.
+
+### Index
 
 <table>
   <tr>
@@ -29,19 +39,18 @@ import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei'
         </ul>
         <li><a href="#controls">Controls</a></li>
         <ul>
-          <li><a href="#orbitcontrols">OrbitControls</a></li>
-          <li><a href="#flycontrols">FlyControls</a></li>
-          <li><a href="#mapcontrols">MapControls</a></li>
-          <li><a href="#deviceorientationcontrols">DeviceOrientationControls</a></li>
-          <li><a href="#trackballcontrols">TrackballControls</a></li>
-          <li><a href="#transformcontrols">TransformControls</a></li>
-          <li><a href="#pointerlockcontrols">PointerLockControls</a></li>
+          <li><a href="#controls">OrbitControls</a></li>
+          <li><a href="#controls">FlyControls</a></li>
+          <li><a href="#controls">MapControls</a></li>
+          <li><a href="#controls">DeviceOrientationControls</a></li>
+          <li><a href="#controls">TrackballControls</a></li>
+          <li><a href="#controls">TransformControls</a></li>
+          <li><a href="#controls">PointerLockControls</a></li>
         </ul>
         <li><a href="#abstractions">Abstractions</a></li>
         <ul>
           <li><a href="#text">Text</a></li>
-          <li><a href="#line">Line</a></li>
-          <li><a href="#detailed">Detailed</a></li>
+          <li><a href="#line">Line</a></li>          
           <li><a href="#positionalaudio">PositionalAudio</a></li>
           <li><a href="#billboard">Billboard</a></li>
           <li><a href="#environment">Environment</a></li>
@@ -69,13 +78,12 @@ import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei'
           <li><a href="#html">Html</a></li>
           <li><a href="#shadow">Shadow</a></li>
           <li><a href="#stats">Stats</a></li>
-          <li><a href="#center">Center</a></li>
-          <li><a href="#meshbounds">meshBounds</a></li>
+          <li><a href="#center">Center</a></li>          
           <li><a href="#usecamera">useCamera</a></li>
           <li><a href="#usedetectgpu">useDetectGPU</a></li>
           <li><a href="#usehelper">useHelper</a></li>
           <li><a href="#useaspect">useAspect</a></li>
-          <li><a href="#reflector">Reflector</a></li>
+          <li><a href="#reflector">Reflector</a></li>          
         </ul>
         <li><a href="#loaders">Loaders</a></li>
         <ul>
@@ -89,7 +97,6 @@ import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei'
         <ul>
           <li><a href="#curvemodifier">CurveModifier</a></li>
           <li><a href="#useedgesplit">useEdgeSplit</a></li>
-          <li><a href="#usesubdivision">useSubdivision</a></li>
           <li><a href="#usetessellation">useTessellation</a></li>
           <li><a href="#usesimplification">useSimplification</a></li>
         </ul>
@@ -105,35 +112,39 @@ import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei'
       <ul>
         <li><a href="#shapes">Shapes</a></li>
         <ul>
-          <li><a href="#plane">Plane</a></li>
-          <li><a href="#box">Box</a></li>
-          <li><a href="#sphere">Sphere</a></li>
-          <li><a href="#circle">Circle</a></li>
-          <li><a href="#cone">Cone</a></li>
-          <li><a href="#cylinder">Cylinder</a></li>
-          <li><a href="#tube">Tube</a></li>
-          <li><a href="#torus">Torus</a></li>
-          <li><a href="#torusknot">TorusKnot</a></li>
-          <li><a href="#ring">Ring</a></li>
-          <li><a href="#tetrahedron">Tetrahedron</a></li>
-          <li><a href="#polyhedron">Polyhedron</a></li>
-          <li><a href="#icosahedron">Icosahedron</a></li>
-          <li><a href="#octahedron">Octahedron</a></li>
-          <li><a href="#dodecahedron">Dodecahedron</a></li>
-          <li><a href="#extrude">Extrude</a></li>
-          <li><a href="#lathe">Lathe</a></li>
-          <li><a href="#parametric">Parametric</a></li>
+          <li><a href="#shapes">Plane</a></li>
+          <li><a href="#shapes">Box</a></li>
+          <li><a href="#shapes">Sphere</a></li>
+          <li><a href="#shapes">Circle</a></li>
+          <li><a href="#shapes">Cone</a></li>
+          <li><a href="#shapes">Cylinder</a></li>
+          <li><a href="#shapes">Tube</a></li>
+          <li><a href="#shapes">Torus</a></li>
+          <li><a href="#shapes">TorusKnot</a></li>
+          <li><a href="#shapes">Ring</a></li>
+          <li><a href="#shapes">Tetrahedron</a></li>
+          <li><a href="#shapes">Polyhedron</a></li>
+          <li><a href="#shapes">Icosahedron</a></li>
+          <li><a href="#shapes">Octahedron</a></li>
+          <li><a href="#shapes">Dodecahedron</a></li>
+          <li><a href="#shapes">Extrude</a></li>
+          <li><a href="#shapes">Lathe</a></li>
+          <li><a href="#shapes">Parametric</a></li>
           <li><a href="#roundedbox">RoundedBox</a></li>
           <li><a href="#screenquad">Screenquad</a></li>
+        </ul>
+        <li><a href="#performance">Performance</a></li>
+        <ul>
+          <li><a href="#detailed">Detailed</a></li>
+          <li><a href="#preload">Preload</a></li>
+          <li><a href="#meshbounds">meshBounds</a></li>
         </ul>
       </ul>
     </td>
   </tr>
 </table>
 
-# Exports
-
-## Cameras
+# Cameras
 
 #### PerspectiveCamera
 
@@ -156,35 +167,17 @@ A responsive [THREE.PerspectiveCamera](https://threejs.org/docs/index.html#api/e
 
 A responsive [THREE.OrthographicCamera](https://threejs.org/docs/index.html#api/en/cameras/OrthographicCamera) that can set itself as the default.
 
-## Controls
+# Controls
 
 If available controls have damping enabled by default, they manage their own updates, remove themselves on unmount, are compatible with the `invalidateFrameloop` canvas-flag. They inherit all props from their underlying [THREE controls](https://github.com/mrdoob/three.js/tree/dev/examples/jsm/controls).
 
-#### OrbitControls
+Drei currently exports OrbitControls [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-contact-shadow-h5xcw), MapControls [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/react-three-fiber-map-mkq8e), TrackballControls, FlyControls, DeviceOrientationControls, TransformControls [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-transformcontrols-hc8gm), PointerLockControls [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/blissful-leaf-vkgi6)
 
-[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-contact-shadow-h5xcw)
+PointerLockControls additionally supports a `selector` prop, which enables the binding of `click` event handlers for control activation to other elements than `document` (e.g. a 'Click here to play' button).
 
-#### MapControls
+# Shapes
 
-[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/react-three-fiber-map-mkq8e)
-
-#### TrackballControls
-
-#### FlyControls
-
-#### DeviceOrientationControls
-
-#### TransformControls
-
-[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-transformcontrols-hc8gm)
-
-#### PointerLockControls
-
-[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/blissful-leaf-vkgi6)
-
-## Shapes
-
-Buffer-geometry short-cuts:
+[Buffer-geometry](https://threejs.org/docs/index.html#api/en/core/BufferGeometry) short-cuts for Plane, Box, Sphere, Circle, Cone, Cylinder, Tube, Torus, TorusKnot, Ring, Tetrahedron, Polyhedron, Icosahedron, Octahedron, Dodecahedron, Extrude, Lathe, Parametric.
 
 ```jsx
 <Plane args={[2, 2]} />
@@ -192,42 +185,6 @@ Buffer-geometry short-cuts:
   <meshBasicMaterial attach="material" color="hotpink" />
 </Sphere>
 ```
-
-#### Plane
-
-#### Box
-
-#### Sphere
-
-#### Circle
-
-#### Cone
-
-#### Cylinder
-
-#### Tube
-
-#### Torus
-
-#### TorusKnot
-
-#### Ring
-
-#### Tetrahedron
-
-#### Polyhedron
-
-#### Icosahedron
-
-#### Octahedron
-
-#### Dodecahedron
-
-#### Extrude
-
-#### Lathe
-
-#### Parametric
 
 #### RoundedBox
 
@@ -253,10 +210,10 @@ A box buffer geometry with rounded corners, done with extrusion.
 ```
 
 A triangle that fills the screen, ideal for full-screen fragment shader work (raymarching, postprocessing).
-👉 Why a triangle? https://www.cginternals.com/en/blog/2018-01-10-screen-aligned-quads-and-triangles.html
-👉 Use as a post processing mesh: https://medium.com/@luruke/simple-postprocessing-in-three-js-91936ecadfb7
+👉 [Why a triangle?](https://www.cginternals.com/en/blog/2018-01-10-screen-aligned-quads-and-triangles.html)
+👉 [Use as a post processing mesh](https://medium.com/@luruke/simple-postprocessing-in-three-js-91936ecadfb7)
 
-## Abstractions
+# Abstractions
 
 #### Text
 
@@ -292,23 +249,6 @@ Renders a THREE.Line2.
 />
 ```
 
-#### Detailed
-
-[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-detailed-dep1v)
-
-A wrapper around [THREE.LOD](https://threejs.org/docs/index.html#api/en/objects/LOD) (Level of detail).
-
-```jsx
-<Detailed
-  distances={[0, 10, 20]} // Camera distances, correspends to the # of the children
-  {...props} // All THREE.LOD props are valid
->
-  <mesh geometry={highDetail} />
-  <mesh geometry={mediumDetail} />
-  <mesh geometry={lowDetail} />
-</Detailed>
-```
-
 #### PositionalAudio
 
 [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-positionalaudio-yi1o0) ![](https://img.shields.io/badge/-suspense-brightgreen)
@@ -341,7 +281,7 @@ Adds a `<Plane />` that always faces the camera.
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/abstractions-environment--environment-st)
 
-Sets up a global cubemap, which affects `scene.environment`, and optionally `scene.background`. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience.
+Sets up a global cubemap, which affects the default `scene.environment`, and optionally `scene.background`, unless a custom scene has been passed. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience.
 
 ```jsx
 <Environment
@@ -349,6 +289,7 @@ Sets up a global cubemap, which affects `scene.environment`, and optionally `sce
   files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']} // Array of cubemap files OR single equirectangular file
   path={'/'} // Path to the above file(s)
   preset={null} // Preset string (overrides files and path)
+  scene={undefined} // adds the ability to pass a custom THREE.Scene
 />
 ```
 
@@ -371,6 +312,7 @@ Abstraction around threes own [EffectComposer](https://threejs.org/docs/index.ht
 #### useAnimations
 
 [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/react-three-fiber-gltf-camera-animation-forked-pecl6)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/abstractions-useanimations--use-animations-st)
 
 A hook that abstracts [AnimationMixer](https://threejs.org/docs/index.html#api/en/animation/AnimationMixer).
 
@@ -384,7 +326,7 @@ return (
   <mesh ref={ref} />
 ```
 
-## Shaders
+# Shaders
 
 #### MeshWobbleMaterial
 
@@ -474,11 +416,11 @@ Injects [percent closer soft shadows (pcss)](https://threejs.org/examples/?q=pcs
 
 ```jsx
 softShadows({
-  frustrum: 3.75, // Frustrum width (default: 3.75)
-  size: 0.005, // World size (default: 0.005)
-  near: 9.5, // Near plane (default: 9.5)
-  samples: 17, // Samples (default: 17)
-  rings: 11, // Rings (default: 11)
+  frustum: 3.75, // Frustum width (default: 3.75) must be a float
+  size: 0.005, // World size (default: 0.005) must be a float
+  near: 9.5, // Near plane (default: 9.5) must be a float
+  samples: 17, // Samples (default: 17) must be a int
+  rings: 11, // Rings (default: 11) must be a int
 })
 ```
 
@@ -521,7 +463,7 @@ extend({ ColorShiftMaterial })
 </mesh>
 ```
 
-## Misc
+# Misc
 
 #### useContextBridge
 
@@ -558,14 +500,14 @@ Creates a `THREE.WebGLRenderTarget` or `THREE.WebGLMultisampleRenderTarget`.
 
 ```jsx
 const target = useFBO(
-  // width: 500,  height: 500, 
+  // width: 500,  height: 500,
   // width and height are optional and defaulted to the viewport size
   // multiplied by the renderer pixel ratio, and recalculated whenever the
   // viewport size changes.
   {
     multisample: true, // if the renderer supports webGL2, it will return a WebGLMultisampleRenderTarget
-    stencilBuffer: false // you can pass any options supported by THREE.WebGLRenderTarget
-  } 
+    stencilBuffer: false, // you can pass any options supported by THREE.WebGLRenderTarget
+  }
 )
 ```
 
@@ -573,7 +515,7 @@ The rendertarget is automatically disposed when unmounted.
 
 #### Html
 
-[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-suspense-zu2wo)
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-suspense-zu2wo) ![](https://img.shields.io/badge/-Dom only-red)
 
 Allows you to tie HTML content to any object of your scene. It will be projected to the objects whereabouts automatically.
 
@@ -595,13 +537,23 @@ Allows you to tie HTML content to any object of your scene. It will be projected
 
 #### Reflector
 
-[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/jolly-benz-pmk9j)
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/drei-reflector-bfplr)
 
-Easily add reflection to any object
+Easily add reflections and/or blur to a planar surface. This reflector can also blur and takes surface roughness into account for a more realistic effect.
 
 ```jsx
-<Reflector>
-  <planeBufferGeometry args={[2, 5]} attach="geometry" />
+<Reflector
+  blur={[0, 0]} // Blur ground reflections (width, heigt), 0 skips blur
+  mixBlur={1.0} // How much blur mixes with surface roughness
+  mixStrength={0.5} // Strength of the reflections
+  resolution={256} // Off-buffer resolution, lower=faster, higher=better quality
+  args={[1, 1]} // PlaneBufferGeometry arguments
+  mirror={0.5} // Mirror environment, 0 = texture colors, 1 = pick up env colors
+  minDepthThreshold={0.9} // Lower edge for the depthTexture interpolation (default = 0)
+  maxDepthThreshold={1} // Upper edge for the depthTexture interpolation (default = 0)
+  depthScale={1} // Scale the depth factor (0 = no depth, default = 0)
+>
+  {(Material, props) => <Material {...props}>}
 </Reflector>
 ```
 
@@ -659,16 +611,6 @@ Calculates a boundary box and centers its children accordingly.
 </Center>
 ```
 
-#### meshBounds
-
-[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-basic-demo-8fpip)
-
-A very fast, but often good-enough bounds-only raycast for meshes. You can use this if performance has precidence over pointer precision.
-
-```jsx
-<mesh raycast={meshBounds} />
-```
-
 #### useCamera
 
 [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/react-three-fiber-viewcube-py4db)
@@ -723,7 +665,7 @@ return (
     <meshBasicMaterial map={imageTexture} />
 ```
 
-## Modifiers
+# Modifiers
 
 #### CurveModifier
 
@@ -749,28 +691,10 @@ return (
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-useedgesplit)
 
-This hook mutates a mesh geometry using [three's Edge Split modifier](https://threejs.org/examples/?q=modifier#webgl_modifier_edgesplit).
+This hook mutates a mesh geometry using [three's Edge Split modifier](https://threejs.org/examples/?q=modifier#webgl_modifier_edgesplit). The first parameter is the cut-off angle, and the second parameter is a `tryKeepNormals` flag (default `true`).
 
 ```jsx
 const meshRef = useEdgeSplit(Math.PI / 2)
-
-return (
-  <mesh ref={meshRef}>
-    <boxBufferGeometry args={[10, 10]} />
-  </mesh>
-)
-```
-
-#### useSubdivision
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-usesubdivision)
-
-This hook mutates a mesh geometry using [three's Subdivision modifier](https://threejs.org/examples/webgl_modifier_subdivision.html).
-
-👉 Vertex count is quadrupled for each subdivision.
-
-```jsx
-const meshRef = useSubdivision(4)
 
 return (
   <mesh ref={meshRef}>
@@ -816,7 +740,7 @@ return (
 )
 ```
 
-## Loaders
+# Loaders
 
 #### useGLTF
 
@@ -859,7 +783,6 @@ A convenience hook that uses `useLoader` and `TextureLoader`
 
 ```jsx
 const texture = useTexture(url)
-
 const [texture1, texture2] = useTexture([texture1, texture2])
 ```
 
@@ -900,11 +823,13 @@ const errors = useProgress((state) => state.errors)
 
 👉 Note that your loading component does not have to be a suspense fallback. You can use it anywhere, even in your dom tree, for instance for overlays.
 
-## ⚡️ Prototyping
+# Prototyping
 
 #### Loader
 
-A quick and easy loading overlay component that you can drop on top of your canvas. It will show an animated loadingbar and a percentage.
+![](https://img.shields.io/badge/-Dom only-red)
+
+A quick and easy loading overlay component that you can drop on top of your canvas. It's intended to "hide" the whole app, so if you have multiple suspense wrappers in your application, you should use multiple loaders. It will show an animated loadingbar and a percentage.
 
 ```jsx
 <Canvas>
@@ -980,6 +905,50 @@ return (
   ...
 )
 
+```
+
+# Performance
+
+#### Detailed
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-detailed-dep1v)
+
+A wrapper around [THREE.LOD](https://threejs.org/docs/index.html#api/en/objects/LOD) (Level of detail).
+
+```jsx
+<Detailed
+  distances={[0, 10, 20]} // Camera distances, correspends to the # of the children
+  {...props} // All THREE.LOD props are valid
+>
+  <mesh geometry={highDetail} />
+  <mesh geometry={mediumDetail} />
+  <mesh geometry={lowDetail} />
+</Detailed>
+```
+
+#### Preload
+
+The WebGLRenderer will compile materials only when they hit the frustrum, which can cause jank. This component precompiles the scene using [gl.compile](https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.compile) which makes sure that your app is responsive from the get go.
+
+By default gl.compile will only preload visible objects, if you supply the `all` prop, it will circumvent that. With the `scene` and `camera` props you could also use it in portals.
+
+If you have async models you can drop it into the same suspense boundary _in concurrent mode_.
+
+```jsx
+<Canvas concurrent>
+  <Suspense fallback={null}>
+    <Model />
+    <Preload all />
+```
+
+#### meshBounds
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-basic-demo-8fpip)
+
+A very fast, but often good-enough bounds-only raycast for meshes. You can use this if performance has precidence over pointer precision.
+
+```jsx
+<mesh raycast={meshBounds} />
 ```
 
 ---

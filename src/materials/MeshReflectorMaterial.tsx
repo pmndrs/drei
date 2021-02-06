@@ -77,17 +77,21 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
         reflectorRoughnessFactor *= reflectorTexelRoughness.g;
       #endif
 
-      bool hasDepth = depthFactor >= 0.0001;
-      vec4 merge = hasDepth ? vec4(base.rgb * depthFactor, 1.0) : base;
+      vec4 merge = base;
       
+      bool hasDepth = depthFactor >= 0.0001;
+      if (hasDepth) {
+        if (hasBlur) {
+          merge = mix(blur, merge, depthFactor);
+          blur = blur * min(1.0, depthFactor + 0.25);
+        }
+        merge = merge * max(1.0, depthFactor + 0.25);
+      }
+
       float blurFactor = 0.0;
       if (hasBlur) {
         blurFactor = min(1.0, mixBlur * reflectorRoughnessFactor);
-        merge = mix(base, blur, blurFactor);
-      }
-      if (hasDepth) {
-        merge = mix(blur, merge, depthFactor);
-        merge = merge * mix(1.0, min(1.0, 0.25 + depthFactor), 0.5);
+        merge = mix(merge, blur, blurFactor);
       }
 
       diffuseColor.rgb = diffuseColor.rgb * ((1.0 - min(1.0, mirror)) + merge.rgb * mixStrength);           

@@ -3,13 +3,19 @@ import { useFrame } from 'react-three-fiber'
 import { Vector3, Mesh } from 'three'
 
 import { Setup } from '../Setup'
-
-import { Reflector, useTexture, TorusKnot } from '../../src'
+import { Reflector, useTexture, TorusKnot, Box } from '../../src'
 
 export default {
   title: 'Misc/Reflector',
   component: Reflector,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(-2, 2, 6)}> {storyFn()}</Setup>],
+  decorators: [
+    (storyFn) => (
+      <Setup cameraFov={20} cameraPosition={new Vector3(-2, 2, 6)}>
+        {' '}
+        {storyFn()}
+      </Setup>
+    ),
+  ],
 }
 
 function ReflectorScene() {
@@ -26,34 +32,29 @@ function ReflectorScene() {
     <>
       <Reflector
         resolution={1024}
-        args={[30, 30]}
+        args={[10, 10]}
         mirror={0.75}
-        mixBlur={1}
-        mixStrength={2}
+        mixBlur={5}
+        mixStrength={1}
         rotation={[-Math.PI / 2, 0, Math.PI / 2]}
         blur={[500, 250]}
         minDepthThreshold={0.5}
-        maxDepthThreshold={2}
-        depthScale={2}
+        maxDepthThreshold={1.5}
+        depthScale={10}
         debug={0}
       >
         {(Material, props) => (
-          <Material color="#777" metalness={0} roughnessMap={roughness} normalMap={normal} {...props} />
+          <Material color="#a0a0a0" metalness={0.5} roughnessMap={roughness} normalMap={normal} {...props} />
         )}
       </Reflector>
 
-      <TorusKnot args={[0.5, 0.2, 128, 32]} position={[-2, 3, -1]}>
+      <Box args={[2, 3, 0.2]} position={[0, 1.6, -3]}>
         <meshPhysicalMaterial color="hotpink" />
-      </TorusKnot>
+      </Box>
       <TorusKnot args={[0.5, 0.2, 128, 32]} ref={$box} position={[0, 1, 0]}>
         <meshPhysicalMaterial color="hotpink" />
       </TorusKnot>
-      <TorusKnot args={[0.5, 0.2, 128, 32]} position={[2, 1, 1]}>
-        <meshPhysicalMaterial color="hotpink" />
-      </TorusKnot>
-      <ambientLight intensity={1} />
       <spotLight intensity={1} position={[10, 6, 10]} penumbra={1} angle={0.3} />
-      <directionalLight position={[-5, 10, 10]} intensity={1} />
     </>
   )
 }

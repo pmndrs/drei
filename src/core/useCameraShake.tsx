@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { useFrame, Camera } from 'react-three-fiber'
-import { makeNoise2D } from 'open-simplex-noise'
+import { makeNoise3D } from 'open-simplex-noise'
 
 type ShakeConfig = typeof defaultConfig
 export type ShakeConfigPartial = Partial<ShakeConfig>
@@ -18,7 +18,6 @@ const defaultConfig = {
   yawNoiseSeed: 10,
   pitchNoiseSeed: 20,
   rollNoiseSeed: 30,
-  lerpValue: 0.8,
 }
 
 export interface ShakeController {
@@ -31,14 +30,13 @@ export function useCameraShake(
   shakeConfig?: ShakeConfigPartial,
   initialTrauma: number = 1
 ): ShakeController {
-  const origin = React.useRef(new THREE.Euler())
   const trauma = React.useRef<number>(initialTrauma)
 
   const config = React.useMemo<ShakeConfig>(() => ({ ...defaultConfig, ...shakeConfig }), [shakeConfig])
 
-  const yawNoise = React.useMemo(() => makeNoise2D(config.yawNoiseSeed), [config.yawNoiseSeed])
-  const pitchNoise = React.useMemo(() => makeNoise2D(config.pitchNoiseSeed), [config.pitchNoiseSeed])
-  const rollNoise = React.useMemo(() => makeNoise2D(config.rollNoiseSeed), [config.rollNoiseSeed])
+  const yawNoise = React.useMemo(() => makeNoise3D(config.yawNoiseSeed), [config.yawNoiseSeed])
+  const pitchNoise = React.useMemo(() => makeNoise3D(config.pitchNoiseSeed), [config.pitchNoiseSeed])
+  const rollNoise = React.useMemo(() => makeNoise3D(config.rollNoiseSeed), [config.rollNoiseSeed])
 
   const constrainTrauma = () => {
     if (trauma.current < 0 || trauma.current > 1) {
@@ -59,22 +57,21 @@ export function useCameraShake(
     if (baseCamera === undefined) return
 
     if (trauma.current > 0) {
-      origin.current = origin.current.copy(baseCamera.rotation)
-
       const shake = Math.pow(trauma.current, 2)
-      const pitch =
-        config.maxPitch * shake * pitchNoise(clock.elapsedTime * config.pitchFrequency, 1) + origin.current.x
-      const yaw = config.maxYaw * shake * yawNoise(clock.elapsedTime * config.yawFrequency, 1) + origin.current.y
-      const roll = config.maxRoll * shake * rollNoise(clock.elapsedTime * config.rollFrequency, 1) + origin.current.z
+      const pitch = config.maxPitch * shake * pitchNoise(clock.elapsedTime * 0.01, 1, 1)
+      const yaw = config.maxYaw * shake * yawNoise(1, clock.elapsedTime * 0.01, 1)
+      const roll = config.maxRoll * shake * rollNoise(1, 1, clock.elapsedTime * 0.01)
 
       if (config.decay) {
         trauma.current -= config.decayRate * delta
         constrainTrauma()
       }
 
-      baseCamera.rotation.x = THREE.MathUtils.lerp(origin.current.x, pitch, config.lerpValue)
-      baseCamera.rotation.y = THREE.MathUtils.lerp(origin.current.y, yaw, config.lerpValue)
-      baseCamera.rotation.z = THREE.MathUtils.lerp(origin.current.z, roll, config.lerpValue)
+      console.log(pitch, yaw, roll)
+
+      baseCamera.rotation.x += pitch
+      baseCamera.rotation.y += yaw
+      baseCamera.rotation.z += roll
     }
   })
 

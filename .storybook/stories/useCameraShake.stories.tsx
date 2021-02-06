@@ -41,7 +41,20 @@ function Scene() {
   )
 }
 
-function UseCameraShakeDemo({ cfg }) {
+function UseCameraShakeScene({ cfg }) {
+  const { camera } = useThree()
+  useCameraShake(camera, cfg)
+
+  return (
+    <>
+      <React.Suspense fallback={null}>
+        <Scene />
+      </React.Suspense>
+    </>
+  )
+}
+
+function UseCameraShakeWithOrbitScene({ cfg }) {
   const { camera } = useThree()
   useCameraShake(camera, cfg)
 
@@ -64,6 +77,10 @@ const controlsConfig: ShakeConfigPartial = {
   rollFrequency: 0.8,
 }
 
-export const UseCameraShakeSt = ({ ...args }) => <UseCameraShakeDemo cfg={args} />
+export const UseCameraShakeSt = ({ ...args }) => <UseCameraShakeScene cfg={args} />
 UseCameraShakeSt.storyName = 'Default'
 UseCameraShakeSt.args = { ...controlsConfig }
+
+export const UseCameraShakeWithOrbitSt = ({ ...args }) => <UseCameraShakeWithOrbitScene cfg={args} />
+UseCameraShakeWithOrbitSt.storyName = 'With OrbitControls'
+UseCameraShakeWithOrbitSt.args = { ...controlsConfig }

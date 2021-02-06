@@ -38,6 +38,12 @@ export function useCameraShake(
   const pitchNoise = React.useMemo(() => makeNoise3D(config.pitchNoiseSeed), [config.pitchNoiseSeed])
   const rollNoise = React.useMemo(() => makeNoise3D(config.rollNoiseSeed), [config.rollNoiseSeed])
 
+  React.useEffect(() => {
+    if (baseCamera) {
+      origin.current = origin.current.copy(baseCamera.rotation)
+    }
+  }, [baseCamera])
+
   const constrainTrauma = () => {
     if (trauma.current < 0 || trauma.current > 1) {
       trauma.current = trauma.current < 0 ? 0 : 1

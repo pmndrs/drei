@@ -52,7 +52,7 @@ export function useCameraShake(
     constrainTrauma()
   }
 
-  useFrame(({ gl, clock, scene }, delta) => {
+  useFrame(({ clock, setDefaultCamera }, delta) => {
     if (baseCamera === undefined) return
 
     if (trauma.current > 0) {
@@ -72,11 +72,11 @@ export function useCameraShake(
         constrainTrauma()
       }
 
-      gl.render(scene, cameraRef.current)
+      setDefaultCamera(cameraRef.current as Camera)
     } else {
-      gl.render(scene, baseCamera)
+      setDefaultCamera(baseCamera)
     }
-  }, 1)
+  })
 
   return { getTrauma, setTrauma }
 }

@@ -1,10 +1,10 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { useFrame, Camera } from 'react-three-fiber'
+import { useThree, useFrame } from 'react-three-fiber'
 
 import { Setup } from '../Setup'
 
-import { useCameraShake, ShakeConfigPartial, PerspectiveCamera } from '../../src'
+import { useCameraShake, ShakeConfigPartial, OrbitControls } from '../../src'
 
 export default {
   title: 'Camera/useCameraShake',
@@ -42,12 +42,12 @@ function Scene() {
 }
 
 function UseCameraShakeDemo({ cfg }) {
-  const baseCamRef = React.useRef<Camera>()
-  useCameraShake(baseCamRef.current, cfg)
+  const { camera } = useThree()
+  useCameraShake(camera, cfg)
 
   return (
     <>
-      <PerspectiveCamera makeDefault ref={baseCamRef} position={[0, 0, 20]} />
+      <OrbitControls />
       <React.Suspense fallback={null}>
         <Scene />
       </React.Suspense>

@@ -50,7 +50,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <li><a href="#abstractions">Abstractions</a></li>
         <ul>
           <li><a href="#text">Text</a></li>
-          <li><a href="#line">Line</a></li>          
+          <li><a href="#line">Line</a></li>
           <li><a href="#positionalaudio">PositionalAudio</a></li>
           <li><a href="#billboard">Billboard</a></li>
           <li><a href="#environment">Environment</a></li>
@@ -78,12 +78,12 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#html">Html</a></li>
           <li><a href="#shadow">Shadow</a></li>
           <li><a href="#stats">Stats</a></li>
-          <li><a href="#center">Center</a></li>          
+          <li><a href="#center">Center</a></li>
           <li><a href="#usecamera">useCamera</a></li>
           <li><a href="#usedetectgpu">useDetectGPU</a></li>
           <li><a href="#usehelper">useHelper</a></li>
           <li><a href="#useaspect">useAspect</a></li>
-          <li><a href="#reflector">Reflector</a></li>          
+          <li><a href="#reflector">Reflector</a></li>
         </ul>
         <li><a href="#loaders">Loaders</a></li>
         <ul>
@@ -166,6 +166,12 @@ A responsive [THREE.PerspectiveCamera](https://threejs.org/docs/index.html#api/e
 [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-render-target-kdj94)
 
 A responsive [THREE.OrthographicCamera](https://threejs.org/docs/index.html#api/en/cameras/OrthographicCamera) that can set itself as the default.
+
+#### useCameraShake
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/simplex-camera-shake-j6oob)
+
+A hook for applying a configurable camera shake effect.
 
 # Controls
 

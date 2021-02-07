@@ -171,6 +171,7 @@ export function Reflector({
   ])
 
   useFrame(() => {
+    if (!meshRef?.current) return
     meshRef.current.visible = false
     beforeRender()
     gl.setRenderTarget(fbo1)

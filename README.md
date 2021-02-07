@@ -7,7 +7,7 @@
 A growing collection of useful helpers and abstractions for [react-three-fiber](https://github.com/pmndrs/react-three-fiber).
 
 ```bash
-npm install @react-three/drei@latest
+npm install @react-three/drei
 ```
 
 :point_right: this package is now only published under the name `@react-three/drei`. `drei` has been deprecated. :point_left:
@@ -133,7 +133,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#roundedbox">RoundedBox</a></li>
           <li><a href="#screenquad">Screenquad</a></li>
         </ul>
-        <li><a href="#performance">Peformance</a></li>
+        <li><a href="#performance">Performance</a></li>
         <ul>
           <li><a href="#detailed">Detailed</a></li>
           <li><a href="#preload">Preload</a></li>
@@ -173,6 +173,8 @@ If available controls have damping enabled by default, they manage their own upd
 
 Drei currently exports OrbitControls [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-contact-shadow-h5xcw), MapControls [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/react-three-fiber-map-mkq8e), TrackballControls, FlyControls, DeviceOrientationControls, TransformControls [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-drei-transformcontrols-hc8gm), PointerLockControls [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/blissful-leaf-vkgi6)
 
+PointerLockControls additionally supports a `selector` prop, which enables the binding of `click` event handlers for control activation to other elements than `document` (e.g. a 'Click here to play' button).
+
 # Shapes
 
 [Buffer-geometry](https://threejs.org/docs/index.html#api/en/core/BufferGeometry) short-cuts for Plane, Box, Sphere, Circle, Cone, Cylinder, Tube, Torus, TorusKnot, Ring, Tetrahedron, Polyhedron, Icosahedron, Octahedron, Dodecahedron, Extrude, Lathe, Parametric.
@@ -182,7 +184,7 @@ Drei currently exports OrbitControls [![](https://img.shields.io/badge/-codesand
 <Sphere>
   <meshBasicMaterial attach="material" color="hotpink" />
 </Sphere>
-``` 
+```
 
 #### RoundedBox
 
@@ -513,7 +515,7 @@ The rendertarget is automatically disposed when unmounted.
 
 #### Html
 
-[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-suspense-zu2wo) ![](https://img.shields.io/badge/-Dom&nbsp;only-red)
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-suspense-zu2wo) ![](https://img.shields.io/badge/-Dom only-red)
 
 Allows you to tie HTML content to any object of your scene. It will be projected to the objects whereabouts automatically.
 
@@ -825,9 +827,9 @@ const errors = useProgress((state) => state.errors)
 
 #### Loader
 
-![](https://img.shields.io/badge/-Dom&nbsp;only-red)
+![](https://img.shields.io/badge/-Dom only-red)
 
-A quick and easy loading overlay component that you can drop on top of your canvas. It will show an animated loadingbar and a percentage.
+A quick and easy loading overlay component that you can drop on top of your canvas. It's intended to "hide" the whole app, so if you have multiple suspense wrappers in your application, you should use multiple loaders. It will show an animated loadingbar and a percentage.
 
 ```jsx
 <Canvas>

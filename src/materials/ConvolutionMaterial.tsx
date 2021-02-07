@@ -35,11 +35,12 @@ export class ConvolutionMaterial extends ShaderMaterial {
 
         void main() {
           float depthFactor = 0.0;
+          
           #ifdef USE_DEPTH
-          vec4 depth = texture2D(depthBuffer, vUv);
-          depthFactor = smoothstep(minDepthThreshold, maxDepthThreshold, 1.0-(depth.r * depth.a));
-          depthFactor *= depthScale;
-          depthFactor = max(0.0, min(1.0, depthFactor + 0.25));
+            vec4 depth = texture2D(depthBuffer, vUv);
+            depthFactor = smoothstep(minDepthThreshold, maxDepthThreshold, 1.0-(depth.r * depth.a));
+            depthFactor *= depthScale;
+            depthFactor = max(0.0, min(1.0, depthFactor + 0.25));
           #endif
           
           vec4 sum = texture2D(inputBuffer, mix(vUv0, vUv, depthFactor));

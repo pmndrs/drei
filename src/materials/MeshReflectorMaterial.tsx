@@ -77,11 +77,10 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
         depthFactor = max(0.0001, min(1.0, depthFactor));
 
         #ifdef USE_BLUR
-          merge = mix(blur, merge, depthFactor);
-          blur = blur * min(1.0, depthFactor + 0.5);
+          blur = blur * min(1.0, depthFactor + 0.25);
+        #else
+          merge = merge * depthFactor;
         #endif
-  
-        merge = merge * min(1.0, depthFactor);
   
       #endif
 

@@ -34,7 +34,7 @@ function ReflectorScene() {
         resolution={1024}
         args={[10, 10]}
         mirror={0.75}
-        mixBlur={5}
+        mixBlur={10}
         mixStrength={1}
         rotation={[-Math.PI / 2, 0, Math.PI / 2]}
         blur={[500, 500]}

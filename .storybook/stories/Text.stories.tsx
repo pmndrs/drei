@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { DoubleSide, Vector3 } from 'three'
-import { number, color as colorKnob } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
 import { useTurntable } from '../useTurntable'

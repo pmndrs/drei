@@ -63,36 +63,38 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
       '#include <emissivemap_fragment>',
       `#include <emissivemap_fragment>
       
-      vec4 depth = texture2DProj(tDepth, my_vUv );
       vec4 base = texture2DProj(tDiffuse, my_vUv);
       vec4 blur = texture2DProj(tDiffuseBlur, my_vUv);
+      
+      vec4 merge = base;
+      float depthFactor = 0.0001;
+      float blurFactor = 0.0;
 
-      float depthFactor = smoothstep(minDepthThreshold, maxDepthThreshold, 1.0-(depth.r * depth.a));
-      depthFactor *= depthScale;
-      depthFactor = max(0.0001, min(1.0, depthFactor));
+      #ifdef USE_DEPTH
+        vec4 depth = texture2DProj(tDepth, my_vUv);
+        depthFactor = smoothstep(minDepthThreshold, maxDepthThreshold, 1.0-(depth.r * depth.a));
+        depthFactor *= depthScale;
+        depthFactor = max(0.0001, min(1.0, depthFactor));
+
+        #ifdef USE_BLUR
+          merge = mix(blur, merge, depthFactor);
+          blur = blur * min(1.0, depthFactor + 0.5);
+        #endif
+  
+        merge = merge * min(1.0, depthFactor);
+  
+      #endif
 
       float reflectorRoughnessFactor = roughness;
       #ifdef USE_ROUGHNESSMAP
         vec4 reflectorTexelRoughness = texture2D( roughnessMap, vUv );
         reflectorRoughnessFactor *= reflectorTexelRoughness.g;
       #endif
-
-      vec4 merge = base;
       
-      bool hasDepth = depthFactor >= 0.0001;
-      if (hasDepth) {
-        if (hasBlur) {
-          merge = mix(blur, merge, depthFactor);
-          blur = blur * min(1.0, depthFactor + 0.25);
-        }
-        merge = merge * max(1.0, depthFactor + 0.25);
-      }
-
-      float blurFactor = 0.0;
-      if (hasBlur) {
+      #ifdef USE_BLUR
         blurFactor = min(1.0, mixBlur * reflectorRoughnessFactor);
         merge = mix(merge, blur, blurFactor);
-      }
+      #endif
 
       diffuseColor.rgb = diffuseColor.rgb * ((1.0 - min(1.0, mirror)) + merge.rgb * mixStrength);           
       diffuseColor = sRGBToLinear(diffuseColor);
@@ -104,10 +106,10 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
         diffuseColor = sRGBToLinear(vec4(vec3(blurFactor), 1.0));
       }
       if (debug == 3) {
-        diffuseColor = sRGBToLinear(base);
+        diffuseColor = sRGBToLinear(texture2DProj(tDiffuse, my_vUv));
       }
       if (debug == 4) {
-        diffuseColor = sRGBToLinear(blur);
+        diffuseColor = sRGBToLinear(texture2DProj(tDiffuseBlur, my_vUv));
       }
       `
     )

@@ -37,14 +37,21 @@ function ReflectorScene() {
         mixBlur={5}
         mixStrength={1}
         rotation={[-Math.PI / 2, 0, Math.PI / 2]}
-        blur={[500, 250]}
+        blur={[500, 500]}
         minDepthThreshold={0.5}
         maxDepthThreshold={1.5}
-        depthScale={10}
+        depthScale={2}
         debug={0}
       >
         {(Material, props) => (
-          <Material color="#a0a0a0" metalness={0.5} roughnessMap={roughness} normalMap={normal} {...props} />
+          <Material
+            color="#a0a0a0"
+            metalness={0.5}
+            roughnessMap={roughness}
+            roughness={1}
+            normalMap={normal}
+            {...props}
+          />
         )}
       </Reflector>
 

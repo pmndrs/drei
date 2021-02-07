@@ -143,7 +143,15 @@ export function Reflector({
     fbo1.depthTexture.format = DepthFormat
     fbo1.depthTexture.type = UnsignedShortType
     const fbo2 = new WebGLRenderTarget(resolution, resolution, parameters)
-    const blurpass = new BlurPass({ gl, resolution, width: blur[0], height: blur[1] })
+    const blurpass = new BlurPass({
+      gl,
+      resolution,
+      width: blur[0],
+      height: blur[1],
+      minDepthThreshold,
+      maxDepthThreshold,
+      depthScale,
+    })
     const reflectorProps = {
       mirror,
       textureMatrix,
@@ -158,6 +166,8 @@ export function Reflector({
       depthScale,
       transparent: true,
       debug,
+      'defines-USE_BLUR': hasBlur,
+      'defines-USE_DEPTH': depthScale > 0,
     }
     return [fbo1, fbo2, blurpass, reflectorProps]
   }, [

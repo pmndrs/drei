@@ -77,6 +77,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#usecontextbridge">useContextBridge</a></li>
           <li><a href="#usefbo">useFBO</a></li>
           <li><a href="#html">Html</a></li>
+          <li><a href="#html3d">Html3D</a></li>
           <li><a href="#shadow">Shadow</a></li>
           <li><a href="#stats">Stats</a></li>
           <li><a href="#center">Center</a></li>
@@ -605,6 +606,39 @@ Allows you to tie HTML content to any object of your scene. It will be projected
   <h1>hello</h1>
   <p>world</p>
 </Html>
+```
+
+#### Html3D (and MixedCanvas)
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/two-r3f-renderers-share-scene-and-camera-qq1zl)
+
+> :no_entry_sign: Web usage only.
+
+Blend HTML Elements into the scene by using a CSS3DRenderer and clip meshes. Note: Html3D can only be used inside MixedCanvas.
+
+```jsx
+<MixedCanvas
+  scaleFactor={160} // A scale factor is necessary to properly scale html elements (default: 160)
+  cssProps={...} // All Canvas (the one from react-three-fiber/css3D) props are valid
+  {...props} // All Canvas props are valid
+>
+  <Html3D
+    sprite // If true, Html3D is a sprite, otherwise it's an object (default: false)
+    autoClip // If true, a clip mesh is automatically drawn (default:true)
+    ClipComponent={MyClip} // A React Component to render a clip if autoClip is set to true (default: ClipMesh)
+    cssProps={...} // All CSS3DObject (or CSS3DSprite if sprite is set to true) props are valid
+    clipProps={...} // All THREE.Mesh (or THREE.Sprite if sprite is set to true) props are valid
+    {...props} // All THREE.Group props are valid
+  >
+    <h1 style={{fontSize:"70px" /* you need very big pixel sizes to counteract the scale factor */ }}>hello</h1>
+    <p style={{fontSize:"50px"}}>3d world</p>
+  </Html3D>
+  {/* you can insert 3d objects like you would do in a regular Canvas an they will blend */}
+  <mesh>
+    <boxBufferGeometry />
+    <normalMaterial />
+  </mesh>
+</MixedCanvas>
 ```
 
 #### Reflector

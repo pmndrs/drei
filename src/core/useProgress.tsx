@@ -1,4 +1,4 @@
-import { DefaultLoadingManager } from 'three'
+import { LoadingManager } from 'three'
 import create from 'zustand'
 
 type Data = {
@@ -11,12 +11,12 @@ type Data = {
 }
 
 const useProgress = create<Data>((set) => {
-  DefaultLoadingManager.onStart = (item, loaded, total) =>
-    set({ active: true, item, loaded, total, progress: (loaded / total) * 100 })
-  DefaultLoadingManager.onLoad = () => set({ active: false })
-  DefaultLoadingManager.onError = (item) => set((state) => ({ errors: [...state.errors, item] }))
-  DefaultLoadingManager.onProgress = (item, loaded, total) =>
-    set({ item, loaded, total, progress: (loaded / total) * 100 })
+  const loader = new LoadingManager()
+
+  loader.onStart = (item, loaded, total) => set({ active: true, item, loaded, total, progress: (loaded / total) * 100 })
+  loader.onLoad = () => set({ active: false })
+  loader.onError = (item) => set((state) => ({ errors: [...state.errors, item] }))
+  loader.onProgress = (item, loaded, total) => set({ item, loaded, total, progress: (loaded / total) * 100 })
 
   return {
     errors: [],

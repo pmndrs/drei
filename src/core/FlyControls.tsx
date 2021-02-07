@@ -1,12 +1,9 @@
 import * as React from 'react'
-import { ReactThreeFiber, useThree, useFrame, Overwrite } from 'react-three-fiber'
+import { ReactThreeFiber, useThree, useFrame } from 'react-three-fiber'
 import { FlyControls as FlyControlsImpl } from 'three/examples/jsm/controls/FlyControls'
 import useEffectfulState from '../helpers/useEffectfulState'
 
-export type FlyControls = Overwrite<
-  ReactThreeFiber.Object3DNode<FlyControlsImpl, typeof FlyControlsImpl>,
-  { target?: ReactThreeFiber.Vector3 }
->
+export type FlyControls = ReactThreeFiber.Object3DNode<FlyControlsImpl, typeof FlyControlsImpl>
 
 export const FlyControls = React.forwardRef((props: FlyControls, ref) => {
   const { camera, gl, invalidate } = useThree()

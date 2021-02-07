@@ -171,7 +171,21 @@ A responsive [THREE.OrthographicCamera](https://threejs.org/docs/index.html#api/
 
 [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/simplex-camera-shake-j6oob)
 
-A hook for applying a configurable camera shake effect.
+A hook for applying a configurable camera shake effect. Currently only supports rotational camera shake.
+
+```js
+const { camera } = useThree()
+const config = {
+  maxYaw: 0.1, // Max amount camera can yaw in either direction
+  maxPitch: 0.1, // Max amount camera can pitch in either direction
+  maxRoll: 0.1, // Max amount camera can roll in either direction
+  yawFrequency: 1, // Frequency of the the yaw rotation
+  pitchFrequency: 1, // Frequency of the pitch rotation
+  rollFrequency: 1, // Frequency of the roll rotation
+}
+
+useCameraShake(camera, config)
+```
 
 # Controls
 

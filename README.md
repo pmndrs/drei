@@ -610,7 +610,7 @@ Allows you to tie HTML content to any object of your scene. It will be projected
 
 #### Html3D (and MixedCanvas)
 
-[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/two-r3f-renderers-share-scene-and-camera-qq1zl)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/misc-html3d--html-3-d-st)
 
 > :no_entry_sign: Web usage only.
 

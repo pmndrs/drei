@@ -17,6 +17,7 @@ export class ConvolutionMaterial extends ShaderMaterial {
         minDepthThreshold: new Uniform(0.0),
         maxDepthThreshold: new Uniform(1.0),
         depthScale: new Uniform(0.0),
+        depthToBlurRatioBias: new Uniform(0.25),
       },
       fragmentShader: `#include <common>
         #include <dithering_pars_fragment>      
@@ -27,6 +28,7 @@ export class ConvolutionMaterial extends ShaderMaterial {
         uniform float minDepthThreshold;
         uniform float maxDepthThreshold;
         uniform float depthScale;
+        uniform float depthToBlurRatioBias;
         varying vec2 vUv;
         varying vec2 vUv0;
         varying vec2 vUv1;

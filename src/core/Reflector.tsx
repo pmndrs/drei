@@ -29,6 +29,7 @@ export type ReflectorProps = Omit<JSX.IntrinsicElements['mesh'], 'args' | 'child
   minDepthThreshold?: number
   maxDepthThreshold?: number
   depthScale?: number
+  depthToBlurRatioBias?: number
   debug?: number
   children: {
     (
@@ -57,6 +58,7 @@ export function Reflector({
   minDepthThreshold = 0.9,
   maxDepthThreshold = 1,
   depthScale = 0,
+  depthToBlurRatioBias = 0.25,
   mirror,
   children,
   debug = 0,
@@ -151,6 +153,7 @@ export function Reflector({
       minDepthThreshold,
       maxDepthThreshold,
       depthScale,
+      depthToBlurRatioBias,
     })
     const reflectorProps = {
       mirror,
@@ -164,6 +167,7 @@ export function Reflector({
       minDepthThreshold,
       maxDepthThreshold,
       depthScale,
+      depthToBlurRatioBias,
       transparent: true,
       debug,
       'defines-USE_BLUR': hasBlur,
@@ -182,6 +186,7 @@ export function Reflector({
     minDepthThreshold,
     maxDepthThreshold,
     depthScale,
+    depthToBlurRatioBias,
     debug,
   ])
 

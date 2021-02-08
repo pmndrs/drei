@@ -20,6 +20,7 @@ export interface BlurPassProps {
   minDepthThreshold?: number
   maxDepthThreshold?: number
   depthScale?: number
+  depthToBlurRatioBias?: number
 }
 
 export class BlurPass {
@@ -39,6 +40,7 @@ export class BlurPass {
     minDepthThreshold = 0,
     maxDepthThreshold = 1,
     depthScale = 0,
+    depthToBlurRatioBias = 0.25,
   }: BlurPassProps) {
     this.renderTargetA = new WebGLRenderTarget(resolution, resolution, {
       minFilter: LinearFilter,
@@ -56,6 +58,7 @@ export class BlurPass {
     this.convolutionMaterial.uniforms.minDepthThreshold.value = minDepthThreshold
     this.convolutionMaterial.uniforms.maxDepthThreshold.value = maxDepthThreshold
     this.convolutionMaterial.uniforms.depthScale.value = depthScale
+    this.convolutionMaterial.uniforms.depthToBlurRatioBias.value = depthToBlurRatioBias
     this.convolutionMaterial.defines.USE_DEPTH = depthScale > 0
     const vertices = new Float32Array([-1, -1, 0, 3, -1, 0, -1, 3, 0])
     const uvs = new Float32Array([0, 0, 2, 0, 0, 2])

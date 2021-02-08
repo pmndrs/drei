@@ -35,12 +35,13 @@ function ReflectorScene() {
         args={[10, 10]}
         mirror={0.75}
         mixBlur={10}
-        mixStrength={1}
+        mixStrength={2}
         rotation={[-Math.PI / 2, 0, Math.PI / 2]}
-        blur={[500, 500]}
+        blur={[250, 250]}
         minDepthThreshold={0.5}
         maxDepthThreshold={1.5}
         depthScale={2}
+        depthToBlurRatioBias={0.2}
         debug={0}
       >
         {(Material, props) => (

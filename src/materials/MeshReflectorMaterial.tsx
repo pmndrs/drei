@@ -15,6 +15,7 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
   private _minDepthThreshold: { value: number } = { value: 0.9 }
   private _maxDepthThreshold: { value: number } = { value: 1 }
   private _depthScale: { value: number } = { value: 0 }
+  private _depthToBlurRatioBias: { value: number } = { value: 0.25 }
 
   constructor(parameters = {}) {
     super(parameters)
@@ -33,6 +34,7 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
     shader.uniforms.minDepthThreshold = this._minDepthThreshold
     shader.uniforms.maxDepthThreshold = this._maxDepthThreshold
     shader.uniforms.depthScale = this._depthScale
+    shader.uniforms.depthToBlurRatioBias = this._depthToBlurRatioBias
     shader.vertexShader = `
         uniform mat4 textureMatrix;
         varying vec4 my_vUv;     
@@ -57,6 +59,7 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
         uniform float minDepthThreshold;
         uniform float maxDepthThreshold;
         uniform float depthScale;
+        uniform float depthToBlurRatioBias;
         varying vec4 my_vUv;        
         ${shader.fragmentShader}`
     shader.fragmentShader = shader.fragmentShader.replace(
@@ -77,7 +80,7 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
         depthFactor = max(0.0001, min(1.0, depthFactor));
 
         #ifdef USE_BLUR
-          blur = blur * min(1.0, depthFactor + 0.25);
+          blur = blur * min(1.0, depthFactor + depthToBlurRatioBias);
         #else
           merge = merge * depthFactor;
         #endif
@@ -185,6 +188,12 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
   set debug(v: number) {
     this._debug.value = v
   }
+  get depthToBlurRatioBias(): number {
+    return this._depthToBlurRatioBias.value
+  }
+  set depthToBlurRatioBias(v: number) {
+    this._depthToBlurRatioBias.value = v
+  }
 }
 
 export type MeshReflectorMaterialImpl = {
@@ -198,4 +207,5 @@ export type MeshReflectorMaterialImpl = {
   minDepthThreshold: number
   maxDepthThreshold: number
   depthScale: number
+  depthToBlurRatioBias: number
 } & JSX.IntrinsicElements['meshStandardMaterial']

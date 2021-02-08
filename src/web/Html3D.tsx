@@ -158,8 +158,8 @@ export function MixedCanvas({
       function swapPointer({ target }) {
         if (!target.closest(`.__R3F_HTML_ROOT__`)) setGLPointer((canvasContext as CanvasContext).gl, 'auto')
       }
-      document.addEventListener('mousemove', swapPointer)
-      return () => document.removeEventListener('mousemove', swapPointer)
+      document.addEventListener('pointermove', swapPointer)
+      return () => document.removeEventListener('pointermove', swapPointer)
     }
   }, [canvasContext])
   return (

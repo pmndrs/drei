@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { useFrame, Camera } from 'react-three-fiber'
-import { makeNoise2D } from 'open-simplex-noise'
+import { SimplexNoise } from 'three/examples/jsm/math/SimplexNoise'
 
 type ShakeConfig = typeof defaultConfig
 export type ShakeConfigPartial = Partial<ShakeConfig>
@@ -33,9 +33,9 @@ export function useCameraShake(
   const cameraRef = React.useRef<THREE.Camera>(new THREE.PerspectiveCamera())
   const trauma = React.useRef<number>(initialTrauma)
   const config = React.useMemo<ShakeConfig>(() => ({ ...defaultConfig, ...shakeConfig }), [shakeConfig])
-  const yawNoise = React.useMemo(() => makeNoise2D(config.yawNoiseSeed), [config.yawNoiseSeed])
-  const pitchNoise = React.useMemo(() => makeNoise2D(config.pitchNoiseSeed), [config.pitchNoiseSeed])
-  const rollNoise = React.useMemo(() => makeNoise2D(config.rollNoiseSeed), [config.rollNoiseSeed])
+  const yawNoise = React.useMemo(() => new SimplexNoise(), [config.yawNoiseSeed])
+  const pitchNoise = React.useMemo(() => new SimplexNoise(), [config.pitchNoiseSeed])
+  const rollNoise = React.useMemo(() => new SimplexNoise(), [config.rollNoiseSeed])
 
   const constrainTrauma = () => {
     if (trauma.current < 0 || trauma.current > 1) {
@@ -59,9 +59,9 @@ export function useCameraShake(
       cameraRef.current.copy(baseCamera)
 
       const shake = Math.pow(trauma.current, 2)
-      const yaw = config.maxYaw * shake * yawNoise(clock.elapsedTime * config.yawFrequency, 1)
-      const pitch = config.maxPitch * shake * pitchNoise(clock.elapsedTime * config.pitchFrequency, 1)
-      const roll = config.maxRoll * shake * rollNoise(clock.elapsedTime * config.rollFrequency, 1)
+      const yaw = config.maxYaw * shake * yawNoise.noise(clock.elapsedTime * config.yawFrequency, 1)
+      const pitch = config.maxPitch * shake * pitchNoise.noise(clock.elapsedTime * config.pitchFrequency, 1)
+      const roll = config.maxRoll * shake * rollNoise.noise(clock.elapsedTime * config.rollFrequency, 1)
 
       cameraRef.current.rotateX(pitch)
       cameraRef.current.rotateY(yaw)

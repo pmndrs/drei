@@ -18,7 +18,7 @@ export default {
   ],
 }
 
-function ReflectorScene() {
+function ReflectorScene({ blur, depthScale }: { blur?: [number, number]; depthScale?: number }) {
   const roughness = useTexture('roughness_floor.jpeg')
   const normal = useTexture('normal_floor.jpeg')
 
@@ -37,10 +37,10 @@ function ReflectorScene() {
         mixBlur={10}
         mixStrength={2}
         rotation={[-Math.PI / 2, 0, Math.PI / 2]}
-        blur={[250, 250]}
-        minDepthThreshold={0.5}
-        maxDepthThreshold={1.5}
-        depthScale={2}
+        blur={blur || [0, 0]}
+        minDepthThreshold={0.8}
+        maxDepthThreshold={1.2}
+        depthScale={depthScale || 0}
         depthToBlurRatioBias={0.2}
         debug={0}
       >
@@ -69,7 +69,28 @@ function ReflectorScene() {
 
 export const ReflectorSt = () => (
   <React.Suspense fallback={null}>
-    <ReflectorScene />
+    <ReflectorScene blur={[500, 500]} depthScale={2} />
   </React.Suspense>
 )
 ReflectorSt.storyName = 'Default'
+
+export const ReflectorPlain = () => (
+  <React.Suspense fallback={null}>
+    <ReflectorScene />
+  </React.Suspense>
+)
+ReflectorPlain.storyName = 'Plain'
+
+export const ReflectorBlur = () => (
+  <React.Suspense fallback={null}>
+    <ReflectorScene blur={[500, 500]} />
+  </React.Suspense>
+)
+ReflectorBlur.storyName = 'Blur'
+
+export const ReflectorDepth = () => (
+  <React.Suspense fallback={null}>
+    <ReflectorScene depthScale={2} />
+  </React.Suspense>
+)
+ReflectorDepth.storyName = 'Depth'

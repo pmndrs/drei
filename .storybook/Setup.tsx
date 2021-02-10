@@ -4,12 +4,18 @@ import { Canvas } from 'react-three-fiber'
 
 import { OrbitControls } from '../src'
 
-export function Setup({ children, cameraPosition = new THREE.Vector3(-5, 5, 5), controls = true, ...restProps }) {
+export function Setup({
+  children,
+  cameraFov = 75,
+  cameraPosition = new THREE.Vector3(-5, 5, 5),
+  controls = true,
+  ...restProps
+}) {
   return (
     <Canvas
       colorManagement
       shadowMap
-      camera={{ position: cameraPosition }}
+      camera={{ position: cameraPosition, fov: cameraFov }}
       pixelRatio={window.devicePixelRatio}
       {...restProps}
     >

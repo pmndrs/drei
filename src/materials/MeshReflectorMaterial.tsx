@@ -3,6 +3,7 @@ import { Matrix4, MeshStandardMaterial, Texture } from 'three'
 type UninitializedUniform<Value> = { value: Value | null }
 
 export class MeshReflectorMaterial extends MeshStandardMaterial {
+  private _debug: { value: number } = { value: 0 }
   private _tDepth: UninitializedUniform<Texture> = { value: null }
   private _tDiffuse: UninitializedUniform<Texture> = { value: null }
   private _tDiffuseBlur: UninitializedUniform<Texture> = { value: null }
@@ -14,12 +15,14 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
   private _minDepthThreshold: { value: number } = { value: 0.9 }
   private _maxDepthThreshold: { value: number } = { value: 1 }
   private _depthScale: { value: number } = { value: 0 }
+  private _depthToBlurRatioBias: { value: number } = { value: 0.25 }
 
   constructor(parameters = {}) {
     super(parameters)
     this.setValues(parameters)
   }
   onBeforeCompile(shader) {
+    shader.uniforms.debug = this._debug
     shader.uniforms.hasBlur = this._hasBlur
     shader.uniforms.tDiffuse = this._tDiffuse
     shader.uniforms.tDepth = this._tDepth
@@ -31,6 +34,7 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
     shader.uniforms.minDepthThreshold = this._minDepthThreshold
     shader.uniforms.maxDepthThreshold = this._maxDepthThreshold
     shader.uniforms.depthScale = this._depthScale
+    shader.uniforms.depthToBlurRatioBias = this._depthToBlurRatioBias
     shader.vertexShader = `
         uniform mat4 textureMatrix;
         varying vec4 my_vUv;     
@@ -42,6 +46,7 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
         gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );`
     )
     shader.fragmentShader = `
+        uniform int debug;
         uniform sampler2D tDiffuse;
         uniform sampler2D tDiffuseBlur;
         uniform sampler2D tDepth;
@@ -54,34 +59,62 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
         uniform float minDepthThreshold;
         uniform float maxDepthThreshold;
         uniform float depthScale;
+        uniform float depthToBlurRatioBias;
         varying vec4 my_vUv;        
         ${shader.fragmentShader}`
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <emissivemap_fragment>',
       `#include <emissivemap_fragment>
       
-      vec4 depth = texture2DProj(tDepth, my_vUv );
       vec4 base = texture2DProj(tDiffuse, my_vUv);
       vec4 blur = texture2DProj(tDiffuseBlur, my_vUv);
+      
+      vec4 merge = base;
+      float depthFactor = 0.0001;
+      float blurFactor = 0.0;
 
-      float depthFactor = smoothstep(minDepthThreshold, maxDepthThreshold, 1.0-(depth.r * depth.a));
-      depthFactor *= depthScale;
-      depthFactor = min(1.0, depthFactor);
+      #ifdef USE_DEPTH
+        vec4 depth = texture2DProj(tDepth, my_vUv);
+        depthFactor = smoothstep(minDepthThreshold, maxDepthThreshold, 1.0-(depth.r * depth.a));
+        depthFactor *= depthScale;
+        depthFactor = max(0.0001, min(1.0, depthFactor));
+
+        #ifdef USE_BLUR
+          blur = blur * min(1.0, depthFactor + depthToBlurRatioBias);
+          merge = merge * min(1.0, depthFactor + 0.5);;
+        #else
+          merge = merge * depthFactor;
+        #endif
+  
+      #endif
 
       float reflectorRoughnessFactor = roughness;
       #ifdef USE_ROUGHNESSMAP
         vec4 reflectorTexelRoughness = texture2D( roughnessMap, vUv );
         reflectorRoughnessFactor *= reflectorTexelRoughness.g;
       #endif
-
-      vec4 merge = base;
-      if (hasBlur) {
-        float blurFactor = min(1.0, mixBlur * reflectorRoughnessFactor);
+      
+      #ifdef USE_BLUR
+        blurFactor = min(1.0, mixBlur * reflectorRoughnessFactor);
         merge = mix(merge, blur, blurFactor);
-      }
-      merge += mix(merge, base, depthFactor);
+      #endif
+
       diffuseColor.rgb = diffuseColor.rgb * ((1.0 - min(1.0, mirror)) + merge.rgb * mixStrength);           
-      diffuseColor = sRGBToLinear(diffuseColor);`
+      diffuseColor = sRGBToLinear(diffuseColor);
+      
+      if (debug == 1) {
+        diffuseColor = sRGBToLinear(vec4(vec3(depthFactor), 1.0));
+      }
+      if (debug == 2) {
+        diffuseColor = sRGBToLinear(vec4(vec3(blurFactor), 1.0));
+      }
+      if (debug == 3) {
+        diffuseColor = sRGBToLinear(texture2DProj(tDiffuse, my_vUv));
+      }
+      if (debug == 4) {
+        diffuseColor = sRGBToLinear(texture2DProj(tDiffuseBlur, my_vUv));
+      }
+      `
     )
   }
   get tDiffuse(): Texture | null {
@@ -150,6 +183,18 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
   set depthScale(v: number) {
     this._depthScale.value = v
   }
+  get debug(): number {
+    return this._debug.value
+  }
+  set debug(v: number) {
+    this._debug.value = v
+  }
+  get depthToBlurRatioBias(): number {
+    return this._depthToBlurRatioBias.value
+  }
+  set depthToBlurRatioBias(v: number) {
+    this._depthToBlurRatioBias.value = v
+  }
 }
 
 export type MeshReflectorMaterialImpl = {
@@ -163,4 +208,5 @@ export type MeshReflectorMaterialImpl = {
   minDepthThreshold: number
   maxDepthThreshold: number
   depthScale: number
+  depthToBlurRatioBias: number
 } & JSX.IntrinsicElements['meshStandardMaterial']

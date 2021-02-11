@@ -402,7 +402,7 @@ A [contact shadow](https://threejs.org/examples/?q=con#webgl_shadow_contact) imp
   opacity={1}
   width={1}
   height={1}
-  blur={1} // Amount of blue (default=1)
+  blur={1} // Amount of blur (default=1)
   far={10} // Focal distance (default=10)
   resolution={256} // Rendertarget resolution (default=256)
 />

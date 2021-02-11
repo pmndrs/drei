@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useFrame } from 'react-three-fiber'
-import { Vector3, Mesh } from 'three'
+import { Vector3, Mesh, RepeatWrapping } from 'three'
 
 import { Setup } from '../Setup'
 import { Reflector, useTexture, TorusKnot, Box } from '../../src'
@@ -21,6 +21,11 @@ export default {
 function ReflectorScene({ blur, depthScale }: { blur?: [number, number]; depthScale?: number }) {
   const roughness = useTexture('roughness_floor.jpeg')
   const normal = useTexture('normal_floor.jpeg')
+  const distortionMap = useTexture('dist_map.jpeg')
+  React.useEffect(() => {
+    distortionMap.wrapS = distortionMap.wrapT = RepeatWrapping
+    distortionMap.repeat.set(4, 4)
+  }, [distortionMap])
 
   const $box = React.useRef<Mesh>(null!)
   useFrame(({ clock }) => {
@@ -43,6 +48,8 @@ function ReflectorScene({ blur, depthScale }: { blur?: [number, number]; depthSc
         depthScale={depthScale || 0}
         depthToBlurRatioBias={0.2}
         debug={0}
+        distortion={1}
+        tDistortion={distortionMap}
       >
         {(Material, props) => (
           <Material

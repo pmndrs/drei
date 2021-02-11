@@ -178,6 +178,7 @@ A [THREE.CubeCamera](https://threejs.org/docs/index.html#api/en/cameras/CubeCame
 <CubeCamera
   resolution={256} // Size of the off-buffer (256 by default)
   frames={Infinity} // How many frames it should render (Indefinitively by default)
+  fog={customFog} // Allows you to pass a Fog or FogExp2 instance for a smaller frustrum
   near={1}
   far={1000}
 >

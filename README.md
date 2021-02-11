@@ -53,6 +53,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#line">Line</a></li>          
           <li><a href="#positionalaudio">PositionalAudio</a></li>
           <li><a href="#billboard">Billboard</a></li>
+          <li><a href="#navigationGizmo">NavigationGizmo</a></li>
           <li><a href="#environment">Environment</a></li>
           <li><a href="#effects">Effects</a></li>
           <li><a href="#useanimations">useAnimations</a></li>
@@ -275,6 +276,23 @@ Adds a `<Plane />` that always faces the camera.
   lockY={false} // Lock the rotation on the y axis (default=false)
   lockZ={false} // Lock the rotation on the z axis (default=false)
 />
+```
+
+#### NavigationGizmo
+
+Widget that visualizes and controls camera position.
+
+```jsx
+<NavigationGizmo
+  colorX="red"
+  colorY="green"
+  colorZ="blue"
+  onUpdate={/* called during camera animation  */}
+  onAxisSelected={/* 
+    called when one of the axes is clicked.
+    Use this to return current camera target (e.g. from orbit controls) to center animation
+  */}
+>
 ```
 
 #### Environment

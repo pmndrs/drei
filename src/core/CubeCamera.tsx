@@ -40,7 +40,7 @@ export function CubeCamera({
         format: RGBFormat,
         encoding: gl.outputEncoding,
       }),
-    [near, far, resolution]
+    [resolution]
   )
   let count = 0
   useFrame(() => {

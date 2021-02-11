@@ -15,7 +15,7 @@ export function meshBounds(raycaster: Raycaster, intersects: Intersection[]) {
   _sphere.copy(geometry.boundingSphere)
   _sphere.applyMatrix4(matrixWorld)
   if (raycaster.ray.intersectsSphere(_sphere) === false) return
-  _inverseMatrix.getInverse(matrixWorld)
+  _inverseMatrix.clone(matrixWorld).invert()
   _ray.copy(raycaster.ray).applyMatrix4(_inverseMatrix)
   // Check boundingBox before continuing
   if (geometry.boundingBox !== null && _ray.intersectBox(geometry.boundingBox, _vA) === null) return

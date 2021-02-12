@@ -5,7 +5,7 @@ type UninitializedUniform<Value> = { value: Value | null }
 export class MeshReflectorMaterial extends MeshStandardMaterial {
   private _debug: { value: number } = { value: 0 }
   private _tDepth: UninitializedUniform<Texture> = { value: null }
-  private _tDistortion: UninitializedUniform<Texture> = { value: null }
+  private _distortionMap: UninitializedUniform<Texture> = { value: null }
   private _tDiffuse: UninitializedUniform<Texture> = { value: null }
   private _tDiffuseBlur: UninitializedUniform<Texture> = { value: null }
   private _textureMatrix: UninitializedUniform<Matrix4> = { value: null }
@@ -24,11 +24,14 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
     this.setValues(parameters)
   }
   onBeforeCompile(shader) {
+    if (!shader.defines?.USE_UV) {
+      shader.defines.USE_UV = ''
+    }
     shader.uniforms.debug = this._debug
     shader.uniforms.hasBlur = this._hasBlur
     shader.uniforms.tDiffuse = this._tDiffuse
     shader.uniforms.tDepth = this._tDepth
-    shader.uniforms.tDistortion = this._tDistortion
+    shader.uniforms.distortionMap = this._distortionMap
     shader.uniforms.tDiffuseBlur = this._tDiffuseBlur
     shader.uniforms.textureMatrix = this._textureMatrix
     shader.uniforms.mirror = this._mirror
@@ -54,7 +57,7 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
         uniform sampler2D tDiffuse;
         uniform sampler2D tDiffuseBlur;
         uniform sampler2D tDepth;
-        uniform sampler2D tDistortion;
+        uniform sampler2D distortionMap;
         uniform float distortion;
         uniform float cameraNear;
 			  uniform float cameraFar;
@@ -71,10 +74,10 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <emissivemap_fragment>',
       `#include <emissivemap_fragment>
-      
+    
       float distortionFactor = 0.0;
       #ifdef USE_DISTORTION
-        distortionFactor = texture2D(tDistortion, vUv * 2.0).r * distortion;
+        distortionFactor = texture2D(distortionMap, vUv).r * distortion;
       #endif
 
       vec4 new_vUv = my_vUv;
@@ -85,6 +88,19 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
       vec4 blur = texture2DProj(tDiffuseBlur, new_vUv);
       
       vec4 merge = base;
+      
+      #ifdef USE_NORMALMAP
+        vec2 normal_uv = vec2(0.0);
+        vec4 normalColor = texture2D(normalMap, vUv * normalScale);
+        vec3 my_normal = normalize( vec3( normalColor.r * 2.0 - 1.0, normalColor.b,  normalColor.g * 2.0 - 1.0 ) );
+        vec3 coord = new_vUv.xyz / new_vUv.w;
+        normal_uv = coord.xy + coord.z * my_normal.xz * 0.05;
+        vec4 base_normal = texture2D(tDiffuse, normal_uv);
+        vec4 blur_normal = texture2D(tDiffuseBlur, normal_uv);
+        merge = base_normal;
+        blur = blur_normal;
+      #endif
+
       float depthFactor = 0.0001;
       float blurFactor = 0.0;
 
@@ -144,11 +160,11 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
   set tDepth(v: Texture | null) {
     this._tDepth.value = v
   }
-  get tDistortion(): Texture | null {
-    return this._tDistortion.value
+  get distortionMap(): Texture | null {
+    return this._distortionMap.value
   }
-  set tDistortion(v: Texture | null) {
-    this._tDistortion.value = v
+  set distortionMap(v: Texture | null) {
+    this._distortionMap.value = v
   }
   get tDiffuseBlur(): Texture | null {
     return this._tDiffuseBlur.value
@@ -230,7 +246,7 @@ export type MeshReflectorMaterialImpl = {
   mirror: number
   textureMatrix: Matrix4
   tDiffuse: Texture
-  tDistortion?: Texture
+  distortionMap?: Texture
   tDiffuseBlur: Texture
   hasBlur: boolean
   minDepthThreshold: number

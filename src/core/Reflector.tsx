@@ -32,7 +32,7 @@ export type ReflectorProps = Omit<JSX.IntrinsicElements['mesh'], 'args' | 'child
   depthScale?: number
   depthToBlurRatioBias?: number
   debug?: number
-  tDistortion?: Texture
+  distortionMap?: Texture
   distortion?: number
   children: {
     (
@@ -66,7 +66,7 @@ export function Reflector({
   children,
   debug = 0,
   distortion = 1,
-  tDistortion,
+  distortionMap,
   ...props
 }: ReflectorProps) {
   blur = Array.isArray(blur) ? blur : [blur, blur]
@@ -176,10 +176,10 @@ export function Reflector({
       transparent: true,
       debug,
       distortion,
-      tDistortion,
-      'defines-USE_BLUR': hasBlur,
-      'defines-USE_DEPTH': depthScale > 0,
-      'defines-USE_DISTORTION': !!tDistortion,
+      distortionMap,
+      'defines-USE_BLUR': hasBlur ? '' : undefined,
+      'defines-USE_DEPTH': depthScale > 0 ? '' : undefined,
+      'defines-USE_DISTORTION': !!distortionMap ? '' : undefined,
     }
     return [fbo1, fbo2, blurpass, reflectorProps]
   }, [
@@ -197,7 +197,7 @@ export function Reflector({
     depthToBlurRatioBias,
     debug,
     distortion,
-    tDistortion,
+    distortionMap,
   ])
 
   useFrame(() => {

@@ -20,7 +20,7 @@ export default {
 
 function ReflectorScene({ blur, depthScale }: { blur?: [number, number]; depthScale?: number }) {
   const roughness = useTexture('roughness_floor.jpeg')
-  const normal = useTexture('normal_floor.jpeg')
+  const normal = useTexture('NORM.jpg')
   const distortionMap = useTexture('dist_map.jpeg')
   React.useEffect(() => {
     distortionMap.wrapS = distortionMap.wrapT = RepeatWrapping
@@ -48,8 +48,8 @@ function ReflectorScene({ blur, depthScale }: { blur?: [number, number]; depthSc
         depthScale={depthScale || 0}
         depthToBlurRatioBias={0.2}
         debug={0}
-        distortion={1}
-        tDistortion={distortionMap}
+        distortion={0.2}
+        distortionMap={distortionMap}
       >
         {(Material, props) => (
           <Material
@@ -58,6 +58,7 @@ function ReflectorScene({ blur, depthScale }: { blur?: [number, number]; depthSc
             roughnessMap={roughness}
             roughness={1}
             normalMap={normal}
+            normalScale={[0.5, 0.5]}
             {...props}
           />
         )}

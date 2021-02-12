@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useFrame } from 'react-three-fiber'
-import { Vector3, Mesh, RepeatWrapping } from 'three'
+import { Vector3, Mesh, RepeatWrapping, Vector2 } from 'three'
 
 import { Setup } from '../Setup'
 import { Reflector, useTexture, TorusKnot, Box } from '../../src'
@@ -18,16 +18,28 @@ export default {
   ],
 }
 
-function ReflectorScene({ blur, depthScale }: { blur?: [number, number]; depthScale?: number }) {
+function ReflectorScene({
+  blur,
+  depthScale,
+  distortion,
+  normalScale,
+}: {
+  blur?: [number, number]
+  depthScale?: number
+  distortion?: number
+  normalScale?: number
+}) {
   const roughness = useTexture('roughness_floor.jpeg')
   const normal = useTexture('NORM.jpg')
   const distortionMap = useTexture('dist_map.jpeg')
+  const $box = React.useRef<Mesh>(null!)
+  const _normalScale = React.useMemo(() => new Vector2(normalScale || 0), [normalScale])
+
   React.useEffect(() => {
     distortionMap.wrapS = distortionMap.wrapT = RepeatWrapping
     distortionMap.repeat.set(4, 4)
   }, [distortionMap])
 
-  const $box = React.useRef<Mesh>(null!)
   useFrame(({ clock }) => {
     $box.current.position.y += Math.sin(clock.getElapsedTime()) / 25
     $box.current.rotation.y = clock.getElapsedTime() / 2
@@ -48,7 +60,7 @@ function ReflectorScene({ blur, depthScale }: { blur?: [number, number]; depthSc
         depthScale={depthScale || 0}
         depthToBlurRatioBias={0.2}
         debug={0}
-        distortion={0.2}
+        distortion={distortion || 0}
         distortionMap={distortionMap}
       >
         {(Material, props) => (
@@ -58,7 +70,7 @@ function ReflectorScene({ blur, depthScale }: { blur?: [number, number]; depthSc
             roughnessMap={roughness}
             roughness={1}
             normalMap={normal}
-            normalScale={[0.5, 0.5]}
+            normalScale={_normalScale}
             {...props}
           />
         )}
@@ -77,7 +89,7 @@ function ReflectorScene({ blur, depthScale }: { blur?: [number, number]; depthSc
 
 export const ReflectorSt = () => (
   <React.Suspense fallback={null}>
-    <ReflectorScene blur={[500, 500]} depthScale={2} />
+    <ReflectorScene blur={[500, 500]} depthScale={2} distortion={0.3} normalScale={0.5} />
   </React.Suspense>
 )
 ReflectorSt.storyName = 'Default'
@@ -102,3 +114,17 @@ export const ReflectorDepth = () => (
   </React.Suspense>
 )
 ReflectorDepth.storyName = 'Depth'
+
+export const ReflectorDistortion = () => (
+  <React.Suspense fallback={null}>
+    <ReflectorScene distortion={1} />
+  </React.Suspense>
+)
+ReflectorDistortion.storyName = 'Distortion'
+
+export const ReflectorNormalMap = () => (
+  <React.Suspense fallback={null}>
+    <ReflectorScene normalScale={0.5} />
+  </React.Suspense>
+)
+ReflectorNormalMap.storyName = 'NormalMap'

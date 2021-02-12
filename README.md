@@ -552,7 +552,9 @@ Easily add reflections and/or blur to a planar surface. This reflector can also 
   minDepthThreshold={0.9} // Lower edge for the depthTexture interpolation (default = 0)
   maxDepthThreshold={1} // Upper edge for the depthTexture interpolation (default = 0)
   depthScale={1} // Scale the depth factor (0 = no depth, default = 0)
-  depthToBlurRatioBias={0.25} // Adds a bias factor to the depthTexture before calculating the blur amount [blurFactor = blurTexture * (depthTexture + bias)]. It accepts values between 0 and 1, default is 0.25. An amount > 0 of bias makes sure that the blurTexture is not too sharp because of the multiplication with the depthTexture 
+  depthToBlurRatioBias={0.25} // Adds a bias factor to the depthTexture before calculating the blur amount [blurFactor = blurTexture * (depthTexture + bias)]. It accepts values between 0 and 1, default is 0.25. An amount > 0 of bias makes sure that the blurTexture is not too sharp because of the multiplication with the depthTexture
+  distortionMap={distortionTexture} // The texture to create a distortion map. The black and white values map to the perceived distortion
+  distortion={1} // How much the distortion map affects the material (default = 0)
   debug={0} /* Depending on the assigned value, one of the following channels is shown:
     0 = no debug
     1 = depth channel

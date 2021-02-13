@@ -287,11 +287,10 @@ Widget that visualizes and controls camera position.
   colorX="red"
   colorY="green"
   colorZ="blue"
+  alignment="bottom-right" // widget alignment within scene
+  margin={[80, 80]} // widget margins (X, Y)
   onUpdate={/* called during camera animation  */}
-  onAxisSelected={/* 
-    called when one of the axes is clicked.
-    Use this to return current camera target (e.g. from orbit controls) to center animation
-  */}
+  onTarget={/* return current camera target (e.g. from orbit controls) to center animation */}
 >
 ```
 

@@ -4,7 +4,12 @@ import { BoxGeometry, CanvasTexture, Event, Group, Matrix4, Object3D, Quaternion
 import { OrthographicCamera } from './OrthographicCamera'
 import { useCamera } from './useCamera'
 
-function Disc({ arcStyle, text, ...props }: JSX.IntrinsicElements['sprite'] & { arcStyle: string; text?: string }) {
+function Disc({
+  arcStyle,
+  label,
+  labelColor,
+  ...props
+}: JSX.IntrinsicElements['sprite'] & { arcStyle: string; label?: string; labelColor: string }) {
   const texture = React.useMemo(() => {
     const canvas = document.createElement('canvas')
     canvas.width = 64
@@ -17,16 +22,17 @@ function Disc({ arcStyle, text, ...props }: JSX.IntrinsicElements['sprite'] & { 
     context.fillStyle = arcStyle
     context.fill()
 
-    if (text) {
+    if (label) {
       context.font = '24px Arial'
       context.textAlign = 'center'
-      context.fillStyle = '#000000'
-      context.fillText(text, 32, 41)
+      context.fillStyle = labelColor
+      context.fillText(label, 32, 41)
     }
     return new CanvasTexture(canvas)
-  }, [arcStyle, text])
+  }, [arcStyle, label, labelColor])
+
   const [active, setActive] = React.useState(false)
-  const scale = (text ? 1 : 0.75) * (active ? 1.2 : 1)
+  const scale = (label ? 1 : 0.75) * (active ? 1.2 : 1)
   const pointerOver = (e: Event) => void (setActive(true), e.stopPropagation())
   const pointerOut = (e: Event) => void (setActive(false), e.stopPropagation())
   return (
@@ -46,21 +52,21 @@ function Axis({ color, rotation }: JSX.IntrinsicElements['mesh'] & { color: stri
 }
 
 export type NavigationGizmoProps = JSX.IntrinsicElements['group'] & {
-  colorX?: string
-  colorY?: string
-  colorZ?: string
-  // update controls during animation
-  onUpdate: () => void
-  // return the controls target to rotate around
-  onAxisSelected: () => Vector3
+  alignment?: 'top-left' | 'top-right' | 'bottom-right' | 'bottom-left'
+  axisColors?: [string, string, string]
+  labelColor?: string
+  margin?: [number, number]
+  onUpdate: () => void // update controls during animation
+  onTarget: () => Vector3 // return the target to rotate around
 }
 
 export const NavigationGizmo = ({
-  colorX = '#ff3653',
-  colorY = '#8adb00',
-  colorZ = '#2c8fff',
+  axisColors = ['#ff3653', '#8adb00', '#2c8fff'],
+  labelColor = '#000',
+  alignment = 'bottom-right',
+  margin = [80, 80],
   onUpdate,
-  onAxisSelected,
+  onTarget,
 }: NavigationGizmoProps): any => {
   const { gl, scene, camera: mainCamera, size } = useThree()
   const turnRate = 2 * Math.PI // turn rate in angles per second
@@ -83,7 +89,7 @@ export const NavigationGizmo = ({
     if (virtualCam.current && helperRef.current) {
       if (animating) {
         const step = delta * turnRate
-        const focusPoint = onAxisSelected() || new Vector3(0, 0, 0)
+        const focusPoint = onTarget() || new Vector3(0, 0, 0)
 
         // animate position by doing a slerp and then scaling the position on the unit sphere
         q1.rotateTowards(q2, step)
@@ -114,6 +120,7 @@ export const NavigationGizmo = ({
   }, 1)
 
   const discProps = {
+    labelColor,
     raycast: useCamera(virtualCam),
     onPointerDown: (e: Event) => {
       if (target) {
@@ -133,16 +140,21 @@ export const NavigationGizmo = ({
       e.stopPropagation()
     },
   }
+
+  const [marginX, marginY] = margin
+  const x = alignment.endsWith('-left') ? -size.width / 2 + marginX : size.width / 2 - marginX
+  const y = alignment.startsWith('top-') ? size.height / 2 - marginY : -size.height / 2 + marginY
+  const [colorX, colorY, colorZ] = axisColors
   return createPortal(
     <>
       <OrthographicCamera ref={virtualCam} makeDefault={false} position={[0, 0, 100]} />
-      <group ref={helperRef} scale={[40, 40, 40]} position={[size.width / 2 - 80, size.height / 2 - 80, 0]}>
+      <group ref={helperRef} scale={[40, 40, 40]} position={[x, y, 0]}>
         <Axis color={colorX} rotation={[0, 0, 0]} />
         <Axis color={colorY} rotation={[0, 0, Math.PI / 2]} />
         <Axis color={colorZ} rotation={[0, -Math.PI / 2, 0]} />
-        <Disc arcStyle={colorX} position={[1, 0, 0]} text="X" {...discProps} />
-        <Disc arcStyle={colorY} position={[0, 1, 0]} text="Y" {...discProps} />
-        <Disc arcStyle={colorZ} position={[0, 0, 1]} text="Z" {...discProps} />
+        <Disc arcStyle={colorX} position={[1, 0, 0]} label="X" {...discProps} />
+        <Disc arcStyle={colorY} position={[0, 1, 0]} label="Y" {...discProps} />
+        <Disc arcStyle={colorZ} position={[0, 0, 1]} label="Z" {...discProps} />
         <Disc arcStyle={colorX} position={[-1, 0, 0]} {...discProps} />
         <Disc arcStyle={colorY} position={[0, -1, 0]} {...discProps} />
         <Disc arcStyle={colorZ} position={[0, 0, -1]} {...discProps} />

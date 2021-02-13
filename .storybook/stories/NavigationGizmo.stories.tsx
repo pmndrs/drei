@@ -1,4 +1,4 @@
-import { withKnobs } from '@storybook/addon-knobs'
+import { color, number, select, withKnobs } from '@storybook/addon-knobs'
 import * as React from 'react'
 import { extend } from 'react-three-fiber'
 import { Mesh, Vector3 } from 'three'
@@ -31,10 +31,11 @@ const NavigationGizmoStory = () => {
     <React.Suspense fallback={null}>
       <Suzanne />
       <NavigationGizmo
-        colorX="red"
-        colorY="green"
-        colorZ="blue"
-        onAxisSelected={() => controlsRef?.current?.target as Vector3}
+        alignment={select('alignment', ['top-left', 'top-right', 'bottom-right', 'bottom-left'], 'bottom-right')}
+        axisColors={[color('colorX', 'red'), color('colorY', 'green'), color('colorZ', 'blue')]}
+        labelColor={color('labelColor', 'black')}
+        margin={[number('marginX', 80), number('marginY', 80)]}
+        onTarget={() => controlsRef?.current?.target as Vector3}
         onUpdate={() => controlsRef.current?.update!()}
       />
       <OrbitControls ref={controlsRef} />

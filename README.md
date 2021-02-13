@@ -986,9 +986,3 @@ A very fast, but often good-enough bounds-only raycast for meshes. You can use t
 ```jsx
 <mesh raycast={meshBounds} />
 ```
-
----
-
-<a href="https://www.netlify.com">
-  <img src="https://www.netlify.com/img/global/badges/netlify-color-bg.svg" alt="Deploys by Netlify" />
-</a>

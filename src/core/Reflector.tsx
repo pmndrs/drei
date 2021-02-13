@@ -12,6 +12,7 @@ import {
   DepthTexture,
   DepthFormat,
   UnsignedShortType,
+  Texture,
 } from 'three'
 import { useFrame, useThree, extend } from 'react-three-fiber'
 import { BlurPass } from '../materials/BlurPass'
@@ -31,6 +32,8 @@ export type ReflectorProps = Omit<JSX.IntrinsicElements['mesh'], 'args' | 'child
   depthScale?: number
   depthToBlurRatioBias?: number
   debug?: number
+  distortionMap?: Texture
+  distortion?: number
   children: {
     (
       Component: React.ElementType<JSX.IntrinsicElements['meshReflectorMaterial']>,
@@ -62,6 +65,8 @@ export function Reflector({
   mirror,
   children,
   debug = 0,
+  distortion = 1,
+  distortionMap,
   ...props
 }: ReflectorProps) {
   blur = Array.isArray(blur) ? blur : [blur, blur]
@@ -170,8 +175,11 @@ export function Reflector({
       depthToBlurRatioBias,
       transparent: true,
       debug,
-      'defines-USE_BLUR': hasBlur,
-      'defines-USE_DEPTH': depthScale > 0,
+      distortion,
+      distortionMap,
+      'defines-USE_BLUR': hasBlur ? '' : undefined,
+      'defines-USE_DEPTH': depthScale > 0 ? '' : undefined,
+      'defines-USE_DISTORTION': !!distortionMap ? '' : undefined,
     }
     return [fbo1, fbo2, blurpass, reflectorProps]
   }, [
@@ -188,6 +196,8 @@ export function Reflector({
     depthScale,
     depthToBlurRatioBias,
     debug,
+    distortion,
+    distortionMap,
   ])
 
   useFrame(() => {

@@ -170,9 +170,13 @@ A responsive [THREE.OrthographicCamera](https://threejs.org/docs/index.html#api/
 
 #### CubeCamera
 
-[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/frosty-reflector-forked-6k71y)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/camera-cubecamera--default-story)
 
-A [THREE.CubeCamera](https://threejs.org/docs/index.html#api/en/cameras/CubeCamera) that returns its texture as a render-prop. It wraps children and makes them invisible while rendering to the internal buffer. Using the `frames` prop you can control if this renders indefinitively or statically (a given number of times). If you have two static objects in the scene, make it `frames={2}` for instance, so that both objects get to "see" one another in the reflections, which takes multiple renders. If you have moving objects, unset the prop and render with a smaller resolution instead.
+A [THREE.CubeCamera](https://threejs.org/docs/index.html#api/en/cameras/CubeCamera) that returns its texture as a render-prop. It makes children invisible while rendering to the internal buffer so that they are not included in the reflection. 
+
+Using the `frames` prop you can control if this camera renders indefinitively or statically (a given number of times). 
+If you have two static objects in the scene, make it `frames={2}` for instance, so that both objects get to "see" one another in the reflections, which takes multiple renders. 
+If you have moving objects, unset the prop and use a smaller `resolution` instead.
 
 ```jsx
 <CubeCamera
@@ -303,7 +307,7 @@ Adds a `<Plane />` that always faces the camera.
 
 #### Environment
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/abstractions-environment--environment-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-environment--environment-st)
 
 Sets up a global cubemap, which affects the default `scene.environment`, and optionally `scene.background`, unless a custom scene has been passed. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience.
 
@@ -336,7 +340,7 @@ Abstraction around threes own [EffectComposer](https://threejs.org/docs/index.ht
 #### useAnimations
 
 [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/react-three-fiber-gltf-camera-animation-forked-pecl6)
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/abstractions-useanimations--use-animations-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-useanimations--use-animations-st)
 
 A hook that abstracts [AnimationMixer](https://threejs.org/docs/index.html#api/en/animation/AnimationMixer).
 
@@ -491,7 +495,7 @@ extend({ ColorShiftMaterial })
 
 #### useContextBridge
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/misc-usecontextbridge--use-context-bridge-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/misc-usecontextbridge--use-context-bridge-st)
 
 Allows you to forward contexts provided above the `<Canvas />` to be consumed from within the `<Canvas />` normally
 
@@ -666,7 +670,7 @@ useHelper(mesh, BoxHelper, 'cyan')
 
 #### useDetectGPU
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/misc-usedetectgpu)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/misc-usedetectgpu)
 
 This hook uses [DetectGPU by @TimvanScherpenzeel](https://github.com/TimvanScherpenzeel/detect-gpu) to determine what tier should be assigned to the user's GPU.
 
@@ -701,7 +705,7 @@ return (
 
 #### CurveModifier
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-curvemodifier)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/modifiers-curvemodifier)
 
 Given a curve will replace the children of this component with a mesh that move along said curve calling the property `moveAlongCurve` on the passed ref. Uses [three's Curve Modifier](https://threejs.org/examples/?q=curve#webgl_modifier_curve)
 
@@ -721,7 +725,7 @@ return (
 
 #### useEdgeSplit
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-useedgesplit)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/modifiers-useedgesplit)
 
 This hook mutates a mesh geometry using [three's Edge Split modifier](https://threejs.org/examples/?q=modifier#webgl_modifier_edgesplit). The first parameter is the cut-off angle, and the second parameter is a `tryKeepNormals` flag (default `true`).
 
@@ -737,7 +741,7 @@ return (
 
 #### useSimplification
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-usesimplification)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/modifiers-usesimplification)
 
 This hook mutates a mesh geometry using [three's Simplification modifier](https://threejs.org/examples/webgl_modifier_simplifier.html).
 
@@ -755,7 +759,7 @@ return (
 
 #### useTessellation
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/modifiers-usetessellation)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/modifiers-usetessellation)
 
 This hook mutates a mesh geometry using [three's Tessellation modifier](https://threejs.org/examples/?q=tess#webgl_modifier_tessellation). It will break-up faces withe edge longer than the maxEdgeLength parameter.
 
@@ -776,7 +780,7 @@ return (
 
 #### useGLTF
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/loaders-gltf)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-gltf)
 
 A convenience hook that uses `useLoader` and `GLTFLoader`, it defaults to CDN loaded draco binaries (`https://www.gstatic.com/draco/v1/decoders/`) which are only loaded for compressed models.
 
@@ -793,7 +797,7 @@ useGLTF.preload(url)
 
 #### useFBX
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/loaders-fbx)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-fbx)
 
 A convenience hook that uses `useLoader` and `FBXLoader`:
 
@@ -809,7 +813,7 @@ function SuzanneFBX() {
 
 #### useTexture
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/loaders-texture)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-texture)
 
 A convenience hook that uses `useLoader` and `TextureLoader`
 
@@ -820,7 +824,7 @@ const [texture1, texture2] = useTexture([texture1, texture2])
 
 #### useCubeTexture
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/loaders-cubetexture)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-cubetexture)
 
 A convenience hook that uses `useLoader` and `CubeTextureLoader`
 
@@ -887,7 +891,7 @@ You can override styles, too.
 
 #### useMatcapTexture
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/prototyping-usematcaptexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/prototyping-usematcaptexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
 Loads matcap textures from this repository: https://github.com/emmelleppi/matcaps
 
@@ -916,7 +920,7 @@ const [matcap] = useMatcapTexture('3E2335_D36A1B_8E4A2E_2842A5')
 
 #### useNormalTexture
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/prototyping-usenormaltexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/prototyping-usenormaltexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
 Loads normal textures from this repository: https://github.com/emmelleppi/normal-maps
 

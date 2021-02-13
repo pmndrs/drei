@@ -36,6 +36,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <ul>
           <li><a href="#perspectivecamera">PerspectiveCamera</a></li>
           <li><a href="#orthographiccamera">OrthographicCamera</a></li>
+          <li><a href="#cubecamera">CubeCamera</a></li>
         </ul>
         <li><a href="#controls">Controls</a></li>
         <ul>
@@ -166,6 +167,29 @@ A responsive [THREE.PerspectiveCamera](https://threejs.org/docs/index.html#api/e
 [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/r3f-render-target-kdj94)
 
 A responsive [THREE.OrthographicCamera](https://threejs.org/docs/index.html#api/en/cameras/OrthographicCamera) that can set itself as the default.
+
+#### CubeCamera
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/frosty-reflector-forked-6k71y)
+
+A [THREE.CubeCamera](https://threejs.org/docs/index.html#api/en/cameras/CubeCamera) that returns its texture as a render-prop. It wraps children and makes them invisible while rendering to the internal buffer. Using the `frames` prop you can control if this renders indefinitively or statically (a given number of times). If you have two static objects in the scene, make it `frames={2}` for instance, so that both objects get to "see" one another in the reflections, which takes multiple renders. If you have moving objects, unset the prop and render with a smaller resolution instead.
+
+```jsx
+<CubeCamera
+  resolution={256} // Size of the off-buffer (256 by default)
+  frames={Infinity} // How many frames it should render (Indefinitively by default)
+  fog={customFog} // Allows you to pass a Fog or FogExp2 instance for a smaller frustrum
+  near={1}
+  far={1000}
+>
+  {(texture) => (
+    <mesh>
+      <sphereGeometry />
+      <meshStandardMaterial envMap={texture} />
+    </mesh>
+  )}
+</CubeCamera>
+```
 
 # Controls
 
@@ -553,8 +577,6 @@ Easily add reflections and/or blur to a planar surface. This reflector can also 
   maxDepthThreshold={1} // Upper edge for the depthTexture interpolation (default = 0)
   depthScale={1} // Scale the depth factor (0 = no depth, default = 0)
   depthToBlurRatioBias={0.25} // Adds a bias factor to the depthTexture before calculating the blur amount [blurFactor = blurTexture * (depthTexture + bias)]. It accepts values between 0 and 1, default is 0.25. An amount > 0 of bias makes sure that the blurTexture is not too sharp because of the multiplication with the depthTexture
-  distortionMap={distortionTexture} // The texture to create a distortion map. The black and white values map to the perceived distortion
-  distortion={1} // How much the distortion map affects the material (default = 0)
   debug={0} /* Depending on the assigned value, one of the following channels is shown:
     0 = no debug
     1 = depth channel

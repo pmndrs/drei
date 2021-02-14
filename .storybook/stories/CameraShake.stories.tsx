@@ -4,7 +4,7 @@ import { useFrame } from 'react-three-fiber'
 
 import { Setup } from '../Setup'
 
-import { CameraShake, ShakeConfigPartial, OrbitControls } from '../../src'
+import { CameraShake, OrbitControls } from '../../src'
 
 export default {
   title: 'Camera/CameraShake',
@@ -47,7 +47,7 @@ function CameraShakeScene({ cfg }) {
   return (
     <>
       <React.Suspense fallback={null}>
-        <CameraShake config={cfg} ref={cameraRig} />
+        <CameraShake {...cfg} ref={cameraRig} />
         <Scene />
       </React.Suspense>
     </>
@@ -59,14 +59,14 @@ function CameraShakeWithOrbitScene({ cfg }) {
     <>
       <React.Suspense fallback={null}>
         <OrbitControls />
-        <CameraShake config={cfg} additive />
+        <CameraShake {...cfg} additive />
         <Scene />
       </React.Suspense>
     </>
   )
 }
 
-const controlsConfig: ShakeConfigPartial = {
+const controlsConfig = {
   maxYaw: 0.05,
   maxPitch: 0.05,
   maxRoll: 0.05,

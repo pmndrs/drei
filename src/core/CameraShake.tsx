@@ -3,6 +3,7 @@ import { useFrame, useThree } from 'react-three-fiber'
 import { SimplexNoise } from 'three/examples/jsm/math/SimplexNoise'
 
 const defaultConfig = {
+  intensity: 1,
   decay: false,
   decayRate: 0.65,
   maxYaw: 0.1,
@@ -21,16 +22,13 @@ export interface ShakeController {
   setIntensity: (val: number) => void
 }
 
-export interface CameraShakeProps {
-  config?: ShakeConfigPartial
-  intensity?: number
+export interface CameraShakeProps extends ShakeConfigPartial {
   additive?: boolean
-  children?: React.ReactElement
 }
 
 export const CameraShake = React.forwardRef<ShakeController | undefined, CameraShakeProps>((props, ref) => {
   const { camera } = useThree()
-  const config = React.useMemo<ShakeConfig>(() => ({ ...defaultConfig, ...props.config }), [props.config])
+  const config = React.useMemo<ShakeConfig>(() => ({ ...defaultConfig, ...props }), [props])
   const intensity = React.useRef<number>(props.intensity ? props.intensity : 1)
   const [yawNoise] = React.useState(() => new SimplexNoise())
   const [pitchNoise] = React.useState(() => new SimplexNoise())

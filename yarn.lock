@@ -10479,10 +10479,10 @@ react-textarea-autosize@^8.1.1:
     use-composed-ref "^1.0.0"
     use-latest "^1.0.0"
 
-react-three-fiber@^5.3.13:
-  version "5.3.13"
-  resolved "https://registry.yarnpkg.com/react-three-fiber/-/react-three-fiber-5.3.13.tgz#c28d8672693bd622de41146efceff3d584a5d6a2"
-  integrity sha512-oc12HxYc5FkU0INbD4NRqEUo7g0c/ETyCfF6sxUrnkHYVpx5DGv4VZqmudOtsOFD+XZ0nMtW94ffzwgcSqqrrQ==
+react-three-fiber@^5.3.18:
+  version "5.3.18"
+  resolved "https://registry.yarnpkg.com/react-three-fiber/-/react-three-fiber-5.3.18.tgz#50a37d344b631bc932ec0b22ddc8e678e5c9590b"
+  integrity sha512-5OHh2/Dq/V+5CeFSthVFADoN9S0Y7P5TMRtVg57eJSsJsL5BEO/rLhuS0xb7lHJn674jCdLnAAn3nMcsNU0HXA==
   dependencies:
     "@babel/runtime" "^7.12.1"
     react-merge-refs "^1.1.0"
@@ -10491,7 +10491,7 @@ react-three-fiber@^5.3.13:
     resize-observer-polyfill "^1.5.1"
     scheduler "0.20.1"
     tiny-emitter "^2.1.0"
-    use-asset "^0.2.0"
+    use-asset "^1.0.2"
     utility-types "^3.10.0"
 
 react-transition-group@^4.3.0:
@@ -12297,13 +12297,6 @@ url@^0.11.0:
   dependencies:
     punycode "1.3.2"
     querystring "0.2.0"
-
-use-asset@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/use-asset/-/use-asset-0.2.0.tgz#e626f5d16e0ac5861f35d098fa224a6b3067049d"
-  integrity sha512-vNZlJJjzIU+ChWTuJmI3cZKH9oO1QacV0EaRrNUoNPaP5M91NyuWcRy7yWAG4BFyQqkpmzhnw1ahA0B3HgHcZw==
-  dependencies:
-    fast-deep-equal "^3.1.3"
 
 use-asset@^1.0.2:
   version "1.0.2"

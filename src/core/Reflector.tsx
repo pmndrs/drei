@@ -12,6 +12,7 @@ import {
   DepthTexture,
   DepthFormat,
   UnsignedShortType,
+  Texture,
 } from 'three'
 import { useFrame, useThree, extend } from 'react-three-fiber'
 import { BlurPass } from '../materials/BlurPass'
@@ -29,6 +30,10 @@ export type ReflectorProps = Omit<JSX.IntrinsicElements['mesh'], 'args' | 'child
   minDepthThreshold?: number
   maxDepthThreshold?: number
   depthScale?: number
+  depthToBlurRatioBias?: number
+  debug?: number
+  distortionMap?: Texture
+  distortion?: number
   children: {
     (
       Component: React.ElementType<JSX.IntrinsicElements['meshReflectorMaterial']>,
@@ -56,8 +61,12 @@ export function Reflector({
   minDepthThreshold = 0.9,
   maxDepthThreshold = 1,
   depthScale = 0,
+  depthToBlurRatioBias = 0.25,
   mirror,
   children,
+  debug = 0,
+  distortion = 1,
+  distortionMap,
   ...props
 }: ReflectorProps) {
   blur = Array.isArray(blur) ? blur : [blur, blur]
@@ -141,7 +150,16 @@ export function Reflector({
     fbo1.depthTexture.format = DepthFormat
     fbo1.depthTexture.type = UnsignedShortType
     const fbo2 = new WebGLRenderTarget(resolution, resolution, parameters)
-    const blurpass = new BlurPass({ gl, resolution, width: blur[0], height: blur[1] })
+    const blurpass = new BlurPass({
+      gl,
+      resolution,
+      width: blur[0],
+      height: blur[1],
+      minDepthThreshold,
+      maxDepthThreshold,
+      depthScale,
+      depthToBlurRatioBias,
+    })
     const reflectorProps = {
       mirror,
       textureMatrix,
@@ -154,6 +172,14 @@ export function Reflector({
       minDepthThreshold,
       maxDepthThreshold,
       depthScale,
+      depthToBlurRatioBias,
+      transparent: true,
+      debug,
+      distortion,
+      distortionMap,
+      'defines-USE_BLUR': hasBlur ? '' : undefined,
+      'defines-USE_DEPTH': depthScale > 0 ? '' : undefined,
+      'defines-USE_DISTORTION': !!distortionMap ? '' : undefined,
     }
     return [fbo1, fbo2, blurpass, reflectorProps]
   }, [
@@ -168,9 +194,14 @@ export function Reflector({
     minDepthThreshold,
     maxDepthThreshold,
     depthScale,
+    depthToBlurRatioBias,
+    debug,
+    distortion,
+    distortionMap,
   ])
 
   useFrame(() => {
+    if (!meshRef?.current) return
     meshRef.current.visible = false
     beforeRender()
     gl.setRenderTarget(fbo1)

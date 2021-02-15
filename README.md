@@ -51,7 +51,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <li><a href="#abstractions">Abstractions</a></li>
         <ul>
           <li><a href="#text">Text</a></li>
-          <li><a href="#line">Line</a></li>          
+          <li><a href="#line">Line</a></li>
           <li><a href="#positionalaudio">PositionalAudio</a></li>
           <li><a href="#billboard">Billboard</a></li>
           <li><a href="#environment">Environment</a></li>
@@ -79,12 +79,12 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#html">Html</a></li>
           <li><a href="#shadow">Shadow</a></li>
           <li><a href="#stats">Stats</a></li>
-          <li><a href="#center">Center</a></li>          
+          <li><a href="#center">Center</a></li>
           <li><a href="#usecamera">useCamera</a></li>
           <li><a href="#usedetectgpu">useDetectGPU</a></li>
           <li><a href="#usehelper">useHelper</a></li>
           <li><a href="#useaspect">useAspect</a></li>
-          <li><a href="#reflector">Reflector</a></li>          
+          <li><a href="#reflector">Reflector</a></li>
         </ul>
         <li><a href="#loaders">Loaders</a></li>
         <ul>
@@ -167,6 +167,36 @@ A responsive [THREE.PerspectiveCamera](https://threejs.org/docs/index.html#api/e
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei-g784wqfjl.vercel.app/?path=/story/camera-orthographiccamera--orthographic-camera-scene-st)
 
 A responsive [THREE.OrthographicCamera](https://threejs.org/docs/index.html#api/en/cameras/OrthographicCamera) that can set itself as the default.
+
+#### CameraShake
+
+[![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/simplex-camera-shake-j6oob)
+
+A component for applying a configurable camera shake effect. Currently only supports rotational camera shake. Pass a ref to recieve the `ShakeController` API.
+
+```js
+const config = {
+  maxYaw: 0.1, // Max amount camera can yaw in either direction
+  maxPitch: 0.1, // Max amount camera can pitch in either direction
+  maxRoll: 0.1, // Max amount camera can roll in either direction
+  yawFrequency: 1, // Frequency of the the yaw rotation
+  pitchFrequency: 1, // Frequency of the pitch rotation
+  rollFrequency: 1, // Frequency of the roll rotation
+  intensity: 1, // initial intensity of the shake
+  decay: false // should the intensity decay over time
+  decayRate: 0.65 // if decay = true this is the rate at which intensity will reduce at
+  additive: false // this should be used when your scene has orbit controls
+}
+
+<CameraShake {...config} />
+```
+
+```ts
+interface ShakeController {
+  getIntensity: () => number
+  setIntensity: (val: number) => void
+}
+```
 
 #### CubeCamera
 

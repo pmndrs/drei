@@ -167,14 +167,13 @@ A responsive [THREE.PerspectiveCamera](https://threejs.org/docs/index.html#api/e
 
 A responsive [THREE.OrthographicCamera](https://threejs.org/docs/index.html#api/en/cameras/OrthographicCamera) that can set itself as the default.
 
-#### useCameraShake
+#### CameraShake
 
 [![](https://img.shields.io/badge/-codesandbox-blue)](https://codesandbox.io/s/simplex-camera-shake-j6oob)
 
-A hook for applying a configurable camera shake effect. Currently only supports rotational camera shake.
+A component for applying a configurable camera shake effect. Currently only supports rotational camera shake. Pass a ref to recieve the `ShakeController` API.
 
 ```js
-const { camera } = useThree()
 const config = {
   maxYaw: 0.1, // Max amount camera can yaw in either direction
   maxPitch: 0.1, // Max amount camera can pitch in either direction
@@ -182,9 +181,20 @@ const config = {
   yawFrequency: 1, // Frequency of the the yaw rotation
   pitchFrequency: 1, // Frequency of the pitch rotation
   rollFrequency: 1, // Frequency of the roll rotation
+  intensity: 1, // initial intensity of the shake
+  decay: false // should the intensity decay over time
+  decayRate: 0.65 // if decay = true this is the rate at which intensity will reduce at
+  additive: false // this should be used when your scene has orbit controls
 }
 
-useCameraShake(camera, config)
+<CameraShake {...config} />
+```
+
+```ts
+interface ShakeController {
+  getIntensity: () => number
+  setIntensity: (val: number) => void
+}
 ```
 
 # Controls

@@ -87,13 +87,14 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#useaspect">useAspect</a></li>
           <li><a href="#reflector">Reflector</a></li>
         </ul>
-        <li><a href="#loaders">Loaders</a></li>
+        <li><a href="#loading">Loaders</a></li>
         <ul>
+          <li><a href="#loader">Loader</a></li>
+          <li><a href="#useprogress">useProgress</a></li>
           <li><a href="#usegltf">useGLTF</a></li>
           <li><a href="#usefbx">useFBX</a></li>
           <li><a href="#usetexture">useTexture</a></li>
           <li><a href="#usecubetexture">useCubeTexture</a></li>
-          <li><a href="#useprogress">useProgress</a></li>
         </ul>
         <li><a href="#modifiers">Modifiers</a></li>
         <ul>
@@ -104,7 +105,6 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         </ul>
         <li><a href="#prototyping">Prototyping</a></li>
         <ul>
-          <li><a href="#loader">Loader</a></li>
           <li><a href="#usematcaptexture">useMatcapTexture</a></li>
           <li><a href="#usenormaltexture">useNormalTexture</a></li>
         </ul>
@@ -816,7 +816,62 @@ return (
 )
 ```
 
-# Loaders
+# Loading
+
+#### Loader
+
+![](https://img.shields.io/badge/-Dom only-red)
+
+A quick and easy loading overlay component that you can drop on top of your canvas. It's intended to "hide" the whole app, so if you have multiple suspense wrappers in your application, you should use multiple loaders. It will show an animated loadingbar and a percentage.
+
+```jsx
+<Canvas>
+  <Suspense fallback={null}>
+    <AsyncModels />
+  </Suspense>
+</Canvas>
+<Loader />
+```
+
+You can override styles, too.
+
+```jsx
+<Loader
+  containerStyles={...container} // Flex layout styles
+  innerStyles={...inner} // Inner container styles
+  barStyles={...bar} // Loading-bar styles
+  dataStyles={...data} // Text styles
+  dataInterpolation={(p) => `Loading ${p.toFixed(2)}%`} // Text
+  initialState={(active) => active} // Initial black out state
+>
+```
+
+#### useProgress
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-useprogress--use-progress-scene-st)
+
+A convenience hook that wraps `THREE.DefaultLoadingManager`'s progress status.
+
+```jsx
+function Loader() {
+  const { active, progress, errors, item, loaded, total } = useProgress()
+  return <Html center>{progress} % loaded</Html>
+}
+
+return (
+  <Suspense fallback={<Loader />}>
+    <AsyncModels />
+  </Suspense>
+)
+```
+
+If you don't want your progress component to re-render on all changes you can be specific as to what you need, for instance if the component is supposed to collect errors only. Look into [zustand](https://github.com/react-spring/zustand) for more info about selectors.
+
+```jsx
+const errors = useProgress((state) => state.errors)
+```
+
+👉 Note that your loading component does not have to be a suspense fallback. You can use it anywhere, even in your dom tree, for instance for overlays.
 
 #### useGLTF
 
@@ -872,62 +927,7 @@ A convenience hook that uses `useLoader` and `CubeTextureLoader`
 const envMap = useCubeTexture(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'], { path: 'cube/' })
 ```
 
-#### useProgress
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-useprogress--use-progress-scene-st)
-
-A convenience hook that wraps `THREE.DefaultLoadingManager`'s progress status.
-
-```jsx
-function Loader() {
-  const { active, progress, errors, item, loaded, total } = useProgress()
-  return <Html center>{progress} % loaded</Html>
-}
-
-return (
-  <Suspense fallback={<Loader />}>
-    <AsyncModels />
-  </Suspense>
-)
-```
-
-If you don't want your progress component to re-render on all changes you can be specific as to what you need, for instance if the component is supposed to collect errors only. Look into [zustand](https://github.com/react-spring/zustand) for more info about selectors.
-
-```jsx
-const errors = useProgress((state) => state.errors)
-```
-
-👉 Note that your loading component does not have to be a suspense fallback. You can use it anywhere, even in your dom tree, for instance for overlays.
-
 # Prototyping
-
-#### Loader
-
-![](https://img.shields.io/badge/-Dom only-red)
-
-A quick and easy loading overlay component that you can drop on top of your canvas. It's intended to "hide" the whole app, so if you have multiple suspense wrappers in your application, you should use multiple loaders. It will show an animated loadingbar and a percentage.
-
-```jsx
-<Canvas>
-  <Suspense fallback={null}>
-    <AsyncModels />
-  </Suspense>
-</Canvas>
-<Loader />
-```
-
-You can override styles, too.
-
-```jsx
-<Loader
-  containerStyles={...container} // Flex layout styles
-  innerStyles={...inner} // Inner container styles
-  barStyles={...bar} // Loading-bar styles
-  dataStyles={...data} // Text styles
-  dataInterpolation={(p) => `Loading ${p.toFixed(2)}%`} // Text
-  initialState={(active) => active} // Initial black out state
->
-```
 
 #### useMatcapTexture
 

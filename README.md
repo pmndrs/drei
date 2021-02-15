@@ -37,6 +37,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#perspectivecamera">PerspectiveCamera</a></li>
           <li><a href="#orthographiccamera">OrthographicCamera</a></li>
           <li><a href="#cubecamera">CubeCamera</a></li>
+          <li><a href="#camerashake">CameraShake</a></li>
         </ul>
         <li><a href="#controls">Controls</a></li>
         <ul>

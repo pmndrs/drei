@@ -59,10 +59,8 @@ export const BlenderViewportGizmo = ({
   labelColor = '#000',
   ...props
 }: BlenderViewportGizmoProps) => {
-  // axis colors
   const [colorX, colorY, colorZ] = axisColors
   const { tweenCamera, raycast } = useGizmoHelper()
-  // common label color, raycasting provided by NavigationGizmo
   const axisHeadProps = {
     labelColor,
     onPointerDown: (e: Event) => void (tweenCamera(e.object.position), e.stopPropagation()),

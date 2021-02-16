@@ -83,7 +83,7 @@ const EdgeCube = ({ direction }: { direction: [number, number, number] }): JSX.E
       onPointerOver={(e: Event) => void (set(true), e.stopPropagation())}
       onPointerDown={(e: Event) => void (tweenCamera(position), e.stopPropagation())}
     >
-      <meshBasicMaterial color={hover ? 'red' : 'white'} transparent={true} opacity={0.5} visible={hover} />
+      <meshBasicMaterial color={hover ? 'hotpink' : 'white'} transparent={true} opacity={0.5} visible={hover} />
       <boxBufferGeometry attach="geometry" args={dimensions} />
     </mesh>
   )
@@ -102,7 +102,7 @@ const CornerCube = ({ direction }: { direction: [number, number, number] }) => {
       onPointerOver={(e: Event) => void (set(true), e.stopPropagation())}
       onPointerDown={(e: Event) => void (tweenCamera(position), e.stopPropagation())}
     >
-      <meshBasicMaterial color={hover ? 'red' : 'white'} transparent={true} opacity={0.5} visible={hover} />
+      <meshBasicMaterial color={hover ? 'hotpink' : 'white'} transparent={true} opacity={0.5} visible={hover} />
       <boxBufferGeometry attach="geometry" args={[size, size, size]} />
     </mesh>
   )

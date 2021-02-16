@@ -591,6 +591,7 @@ Allows you to tie HTML content to any object of your scene. It will be projected
   scaleFactor={10} // If set (default: undefined), children will be scaled by this factor, and also by distance to a PerspectiveCamera.
   zIndexRange={[100, 0]} // Z-order range (default=[16777271, 0])
   portal={domnodeRef} // Reference to target container (default=undefined)
+  calculatePosition={(el: Object3D, camera: Camera, size: { width: number; height: number }) => number[]} // Override default positioning function. May be removed in the future (default=undefined)
   {...groupProps} // All THREE.Group props are valid
   {...divProps} // All HTMLDivElement props are valid
 >

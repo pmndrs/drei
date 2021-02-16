@@ -30,11 +30,21 @@ body,
   content: '';
   display: block;
   position: absolute;
-  
+
   top: 50%;
   left: -60px;
 
   width: 60px;
   height: 1px;
   background-color: white;
+}
+
+.html-story-label {
+  background-color: white;
+  color: black;
+  width: 100px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

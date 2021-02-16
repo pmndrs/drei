@@ -7,13 +7,16 @@ import { ReactThreeFiber, useFrame, useThree } from 'react-three-fiber'
 const v1 = new Vector3()
 const v2 = new Vector3()
 const v3 = new Vector3()
-function calculatePosition(el: Object3D, camera: Camera, size: { width: number; height: number }) {
+
+function defaultCalculatePosition(el: Object3D, camera: Camera, size: { width: number; height: number }) {
   const objectPos = v1.setFromMatrixPosition(el.matrixWorld)
   objectPos.project(camera)
   const widthHalf = size.width / 2
   const heightHalf = size.height / 2
   return [objectPos.x * widthHalf + widthHalf, -(objectPos.y * heightHalf) + heightHalf]
 }
+
+export type CalculatePosition = typeof defaultCalculatePosition
 
 function isObjectBehindCamera(el: Object3D, camera: Camera) {
   const objectPos = v1.setFromMatrixPosition(el.matrixWorld)
@@ -46,7 +49,6 @@ function objectZIndex(el: Object3D, camera: Camera, zIndexRange: Array<number>) 
   }
   return undefined
 }
-
 export interface HtmlProps
   extends Omit<Assign<React.HTMLAttributes<HTMLDivElement>, ReactThreeFiber.Object3DNode<Group, typeof Group>>, 'ref'> {
   prepend?: boolean
@@ -56,6 +58,7 @@ export interface HtmlProps
   portal?: React.MutableRefObject<HTMLElement>
   scaleFactor?: number
   zIndexRange?: Array<number>
+  calculatePosition?: CalculatePosition
 }
 
 export const Html = React.forwardRef(
@@ -71,6 +74,7 @@ export const Html = React.forwardRef(
       portal,
       scaleFactor,
       zIndexRange = [16777271, 0],
+      calculatePosition = defaultCalculatePosition,
       ...props
     }: HtmlProps,
     ref: React.Ref<HTMLDivElement>

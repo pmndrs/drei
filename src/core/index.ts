@@ -21,6 +21,11 @@ export * from './TrackballControls'
 export * from './TransformControls'
 export * from './PointerLockControls'
 
+// Gizmos
+export * from './GizmoHelper'
+export * from './BlenderViewportGizmo'
+export * from './ViewCubeGizmo'
+
 // Loaders
 export * from './useCubeTexture'
 export * from './useFBX'
@@ -35,7 +40,6 @@ export * from './Shadow'
 export * from './Stats'
 export * from './Center'
 export * from './Preload'
-export * from './NavigationGizmo'
 export * from './useAspect'
 export * from './useCamera'
 export * from './useDetectGPU'

@@ -3,18 +3,27 @@ import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'
 
-import { Html, useGLTF, useProgress } from '../../src'
+import { Environment, Html, useGLTF, useProgress } from '../../src'
+import { withKnobs, boolean } from '@storybook/addon-knobs'
 
 export default {
   title: 'Misc/useProgress',
   component: useProgress,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 5)}>{storyFn()}</Setup>],
+  decorators: [withKnobs, (storyFn) => <Setup cameraPosition={new Vector3(0, 0, 5)}>{storyFn()}</Setup>],
 }
 
 function Helmet() {
   const { nodes } = useGLTF('https://threejs.org/examples/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf')
 
   return <primitive object={nodes['node_damagedHelmet_-6514']} />
+}
+
+function Shoe() {
+  const { nodes } = useGLTF(
+    'https://threejs.org/examples/models/gltf/MaterialsVariantsShoe/glTF/MaterialsVariantsShoe.gltf'
+  )
+
+  return <primitive object={nodes['Shoe']} />
 }
 
 function Loader() {
@@ -26,11 +35,18 @@ function Loader() {
   )
 }
 
-function UseProgressScene() {
+function LoadExtras() {
   return (
     <React.Suspense fallback={<Loader />}>
-      <Helmet />
+      <Environment preset={'studio'} />
+      <Shoe />
     </React.Suspense>
+  )
+}
+
+function UseProgressScene() {
+  return (
+    <React.Suspense fallback={<Loader />}>{boolean('Load extras', false) ? <LoadExtras /> : <Helmet />}</React.Suspense>
   )
 }
 

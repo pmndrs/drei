@@ -57,7 +57,7 @@ export interface HtmlProps
   portal?: React.MutableRefObject<HTMLElement>
   scaleFactor?: number
   zIndexRange?: Array<number>
-  calculatePosition?: (el: Object3D, camera: Camera, size: { width: number; height: number }) => number[]
+  calculatePosition?: typeof defaultCalculatePosition
 }
 
 export const Html = React.forwardRef(

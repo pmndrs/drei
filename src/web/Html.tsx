@@ -7,7 +7,8 @@ import { ReactThreeFiber, useFrame, useThree } from 'react-three-fiber'
 const v1 = new Vector3()
 const v2 = new Vector3()
 const v3 = new Vector3()
-function calculatePosition(el: Object3D, camera: Camera, size: { width: number; height: number }) {
+
+function defaultCalculatePosition(el: Object3D, camera: Camera, size: { width: number; height: number }) {
   const objectPos = v1.setFromMatrixPosition(el.matrixWorld)
   objectPos.project(camera)
   const widthHalf = size.width / 2
@@ -56,6 +57,7 @@ export interface HtmlProps
   portal?: React.MutableRefObject<HTMLElement>
   scaleFactor?: number
   zIndexRange?: Array<number>
+  calculatePosition?: (el: Object3D, camera: Camera, size: { width: number; height: number }) => number[]
 }
 
 export const Html = React.forwardRef(
@@ -71,6 +73,7 @@ export const Html = React.forwardRef(
       portal,
       scaleFactor,
       zIndexRange = [16777271, 0],
+      calculatePosition = defaultCalculatePosition,
       ...props
     }: HtmlProps,
     ref: React.Ref<HTMLDivElement>

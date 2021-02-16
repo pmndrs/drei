@@ -111,12 +111,10 @@ export const GizmoHelper = ({
   const y = alignment.startsWith('top-') ? size.height / 2 - marginY : -size.height / 2 + marginY
   return createPortal(
     <Context.Provider value={gizmoHelperContext}>
-      <React.Suspense fallback={null}>
-        <OrthographicCamera ref={virtualCam} makeDefault={false} position={[0, 0, 100]} />
-        <group ref={gizmoRef} position={[x, y, 0]}>
-          {GizmoHelperComponent}
-        </group>
-      </React.Suspense>
+      <OrthographicCamera ref={virtualCam} makeDefault={false} position={[0, 0, 100]} />
+      <group ref={gizmoRef} position={[x, y, 0]}>
+        {GizmoHelperComponent}
+      </group>
     </Context.Provider>,
     virtualScene
   )

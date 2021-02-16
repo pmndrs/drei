@@ -25,10 +25,11 @@ const BlenderViewportGizmoStory = () => {
   const { scene } = useGLTF('LittlestTokyo.glb')
 
   return (
-    <React.Suspense fallback={null}>
+    <>
       <PerspectiveCamera makeDefault position={[0, 0, 10]} />
-      <primitive object={scene} scale={[0.01, 0.01, 0.01]} />
-
+      <React.Suspense fallback={null}>
+        <primitive object={scene} scale={[0.01, 0.01, 0.01]} />
+      </React.Suspense>
       <GizmoHelper
         alignment={select('alignment', ['top-left', 'top-right', 'bottom-right', 'bottom-left'], 'bottom-right')}
         margin={[number('marginX', 80), number('marginY', 80)]}
@@ -42,9 +43,11 @@ const BlenderViewportGizmoStory = () => {
       </GizmoHelper>
 
       <OrbitControls ref={controlsRef} />
-    </React.Suspense>
+    </>
   )
 }
 
 export const BlenderViewportGizmoStorySt = () => <BlenderViewportGizmoStory />
-BlenderViewportGizmoStorySt.storyName = 'Default'
+BlenderViewportGizmoStorySt.story = {
+  name: 'Default',
+}

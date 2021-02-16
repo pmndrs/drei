@@ -111,11 +111,11 @@ const CornerCube = ({ direction }: { direction: [number, number, number] }) => {
 export const ViewCubeGizmo = () => {
   return (
     <group scale={[60, 60, 60]}>
-      {corners.map((corner) => (
-        <CornerCube direction={corner} />
+      {corners.map((corner, index) => (
+        <CornerCube key={index} direction={corner} />
       ))}
-      {edges.map((edge) => (
-        <EdgeCube direction={edge} />
+      {edges.map((edge, index) => (
+        <EdgeCube key={index} direction={edge} />
       ))}
       <FaceCube />
 

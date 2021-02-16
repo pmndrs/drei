@@ -16,7 +16,7 @@ function defaultCalculatePosition(el: Object3D, camera: Camera, size: { width: n
   return [objectPos.x * widthHalf + widthHalf, -(objectPos.y * heightHalf) + heightHalf]
 }
 
-export type calculatePositionFunction = typeof defaultCalculatePosition
+export type CalculatePosition = typeof defaultCalculatePosition
 
 function isObjectBehindCamera(el: Object3D, camera: Camera) {
   const objectPos = v1.setFromMatrixPosition(el.matrixWorld)
@@ -58,7 +58,7 @@ export interface HtmlProps
   portal?: React.MutableRefObject<HTMLElement>
   scaleFactor?: number
   zIndexRange?: Array<number>
-  calculatePosition?: calculatePositionFunction
+  calculatePosition?: CalculatePosition
 }
 
 export const Html = React.forwardRef(

@@ -5,7 +5,7 @@ import { Setup } from '../Setup'
 import { useTurntable } from '../useTurntable'
 
 import { Icosahedron, Html } from '../../src'
-import { HtmlProps, calculatePositionFunction } from 'web/Html'
+import { HtmlProps, CalculatePosition } from 'web/Html'
 
 export default {
   title: 'Misc/Html',
@@ -39,7 +39,7 @@ export const HTMLSt = () => <HTMLScene scaleFactor={30} className="html-story-bl
 HTMLSt.storyName = 'Default'
 
 const v1 = new THREE.Vector3()
-const overrideCalculatePosition: calculatePositionFunction = (el, camera, size) => {
+const overrideCalculatePosition: CalculatePosition = (el, camera, size) => {
   const objectPos = v1.setFromMatrixPosition(el.matrixWorld)
   objectPos.project(camera)
   const widthHalf = size.width / 2

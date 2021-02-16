@@ -27,9 +27,7 @@ const ViewCubeGizmoStory = () => {
   return (
     <>
       <PerspectiveCamera makeDefault position={[0, 0, 10]} />
-      <React.Suspense fallback={null}>
-        <primitive object={scene} scale={[0.01, 0.01, 0.01]} />
-      </React.Suspense>
+      <primitive object={scene} scale={[0.01, 0.01, 0.01]} />
       <GizmoHelper
         alignment={select('alignment', ['top-left', 'top-right', 'bottom-right', 'bottom-left'], 'bottom-right')}
         margin={[number('marginX', 80), number('marginY', 80)]}
@@ -44,7 +42,10 @@ const ViewCubeGizmoStory = () => {
   )
 }
 
-export const ViewCubeGizmoStorySt = () => <ViewCubeGizmoStory />
-ViewCubeGizmoStorySt.story = {
-  name: 'Default',
-}
+export const DefaultStory = () => (
+  <React.Suspense fallback={null}>
+    <ViewCubeGizmoStory />
+  </React.Suspense>
+)
+
+DefaultStory.storyName = 'Default'

@@ -1,22 +1,29 @@
 import * as React from 'react'
-import { BoxGeometry, CanvasTexture, Event } from 'three'
-import { useGizmoHelper } from './GizmoHelper'
+import { CanvasTexture, Event } from 'three'
+import { useGizmoContext } from '../core/GizmoHelper'
 
-function Axis({ color, rotation }: JSX.IntrinsicElements['mesh'] & { color: string }) {
-  const geometry = React.useMemo(() => new BoxGeometry(0.8, 0.05, 0.05).translate(0.4, 0, 0), [])
+type NewType = JSX.IntrinsicElements['mesh'] & {
+  color: string
+}
+
+function Axis({ color, rotation }: NewType) {
   return (
-    <mesh geometry={geometry} rotation={rotation}>
-      <meshBasicMaterial color={color} toneMapped={false} />
-    </mesh>
+    <group rotation={rotation}>
+      <mesh position={[0.4, 0, 0]}>
+        <boxGeometry args={[0.8, 0.05, 0.05]} />
+        <meshBasicMaterial color={color} toneMapped={false} />
+      </mesh>
+    </group>
   )
 }
 
-function AxisHead({
-  arcStyle,
-  label,
-  labelColor,
-  ...props
-}: JSX.IntrinsicElements['sprite'] & { arcStyle: string; label?: string; labelColor: string }) {
+type AxisHeadProps = JSX.IntrinsicElements['sprite'] & {
+  arcStyle: string
+  label?: string
+  labelColor: string
+}
+
+function AxisHead({ arcStyle, label, labelColor, ...props }: AxisHeadProps) {
   const texture = React.useMemo(() => {
     const canvas = document.createElement('canvas')
     canvas.width = 64
@@ -49,7 +56,7 @@ function AxisHead({
   )
 }
 
-type BlenderViewportGizmoProps = {
+type BlenderViewportGizmoProps = JSX.IntrinsicElements['group'] & {
   axisColors?: [string, string, string]
   labelColor?: string
 }
@@ -60,7 +67,7 @@ export const BlenderViewportGizmo = ({
   ...props
 }: BlenderViewportGizmoProps) => {
   const [colorX, colorY, colorZ] = axisColors
-  const { tweenCamera, raycast } = useGizmoHelper()
+  const { tweenCamera, raycast } = useGizmoContext()
   const axisHeadProps = {
     labelColor,
     onPointerDown: (e: Event) => void (tweenCamera(e.object.position), e.stopPropagation()),

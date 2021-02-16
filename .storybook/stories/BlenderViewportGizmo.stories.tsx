@@ -46,8 +46,10 @@ const BlenderViewportGizmoStory = () => {
     </>
   )
 }
+export const DefaultStory = () => (
+  <React.Suspense fallback={null}>
+    <BlenderViewportGizmoStory />
+  </React.Suspense>
+)
 
-export const BlenderViewportGizmoStorySt = () => <BlenderViewportGizmoStory />
-BlenderViewportGizmoStorySt.story = {
-  name: 'Default',
-}
+DefaultStory.storyName = 'Default'

@@ -282,7 +282,7 @@ Adds a `<Plane />` that always faces the camera.
 
 Used by widgets that visualize and control camera position.
 
-Two example gizmos are included: BlenderViewportGizmo and ViewCubeGizmo, and `useGizmoHelper` makes it easy to create your own.
+Two example gizmos are included: BlenderViewportGizmo and ViewCubeGizmo, and `useGizmoContext` makes it easy to create your own.
 
 ```jsx
 <GizmoHelper

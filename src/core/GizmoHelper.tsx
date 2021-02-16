@@ -11,7 +11,7 @@ type GizmoHelperContext = {
 
 const Context = React.createContext<GizmoHelperContext>({} as GizmoHelperContext)
 
-export const useGizmoHelper = () => {
+export const useGizmoContext = () => {
   return React.useContext<GizmoHelperContext>(Context)
 }
 
@@ -41,15 +41,15 @@ export const GizmoHelper = ({
   const gizmoRef = React.useRef<Group>()
   const virtualCam = React.useRef<any>()
   const virtualScene = React.useMemo(() => new Scene(), [])
-  const [animating, setAnimating] = React.useState(false)
-  const [radius, setRadius] = React.useState(0)
-  const [focusPoint, setFocusPoint] = React.useState(new Vector3(0, 0, 0))
 
-  function tweenCamera(direction: Vector3) {
-    const radius = mainCamera.position.distanceTo(target)
-    setRadius(radius)
-    setFocusPoint(onTarget())
-    setAnimating(true)
+  const animating = React.useRef(false)
+  const radius = React.useRef(0)
+  const focusPoint = React.useRef(new Vector3(0, 0, 0))
+
+  const tweenCamera = (direction: Vector3) => {
+    animating.current = true
+    focusPoint.current = onTarget()
+    radius.current = mainCamera.position.distanceTo(target)
 
     // Rotate from current camera orientation
     dummy.position.copy(target)
@@ -57,27 +57,27 @@ export const GizmoHelper = ({
     q1.copy(dummy.quaternion)
 
     // To new current camera orientation
-    targetPosition.copy(direction).multiplyScalar(radius).add(target)
+    targetPosition.copy(direction).multiplyScalar(radius.current).add(target)
     dummy.lookAt(targetPosition)
     q2.copy(dummy.quaternion)
   }
 
-  function animateStep(delta: number): void {
-    if (!animating) return
+  const animateStep = (delta: number) => {
+    if (!animating.current) return
 
     const step = delta * turnRate
 
     // animate position by doing a slerp and then scaling the position on the unit sphere
     q1.rotateTowards(q2, step)
-    mainCamera.position.set(0, 0, 1).applyQuaternion(q1).multiplyScalar(radius).add(focusPoint)
+    mainCamera.position.set(0, 0, 1).applyQuaternion(q1).multiplyScalar(radius.current).add(focusPoint.current)
 
     // animate orientation
     mainCamera.quaternion.rotateTowards(targetQuaternion, step)
     mainCamera.updateProjectionMatrix()
     onUpdate && onUpdate()
 
-    if (q1.angleTo(q2) === 0) {
-      setAnimating(false)
+    if (q1.angleTo(q2) < 0.01) {
+      animating.current = false
     }
   }
 
@@ -98,7 +98,7 @@ export const GizmoHelper = ({
       gl.clearDepth()
       gl.render(virtualScene, virtualCam.current)
     }
-  }, 1)
+  })
 
   const gizmoHelperContext = {
     tweenCamera,

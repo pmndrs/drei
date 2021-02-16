@@ -16,6 +16,8 @@ function defaultCalculatePosition(el: Object3D, camera: Camera, size: { width: n
   return [objectPos.x * widthHalf + widthHalf, -(objectPos.y * heightHalf) + heightHalf]
 }
 
+export type calculatePositionFunction = typeof defaultCalculatePosition
+
 function isObjectBehindCamera(el: Object3D, camera: Camera) {
   const objectPos = v1.setFromMatrixPosition(el.matrixWorld)
   const cameraPos = v2.setFromMatrixPosition(camera.matrixWorld)
@@ -47,7 +49,6 @@ function objectZIndex(el: Object3D, camera: Camera, zIndexRange: Array<number>) 
   }
   return undefined
 }
-
 export interface HtmlProps
   extends Omit<Assign<React.HTMLAttributes<HTMLDivElement>, ReactThreeFiber.Object3DNode<Group, typeof Group>>, 'ref'> {
   prepend?: boolean
@@ -57,7 +58,7 @@ export interface HtmlProps
   portal?: React.MutableRefObject<HTMLElement>
   scaleFactor?: number
   zIndexRange?: Array<number>
-  calculatePosition?: typeof defaultCalculatePosition
+  calculatePosition?: calculatePositionFunction
 }
 
 export const Html = React.forwardRef(

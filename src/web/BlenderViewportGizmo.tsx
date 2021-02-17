@@ -51,7 +51,7 @@ function AxisHead({ arcStyle, label, labelColor, ...props }: AxisHeadProps) {
   const pointerOut = (e: Event) => void (setActive(false), e.stopPropagation())
   return (
     <sprite scale={[scale, scale, scale]} onPointerOver={pointerOver} onPointerOut={pointerOut} {...props}>
-      <spriteMaterial map={texture} toneMapped={false} />
+      <spriteMaterial map={texture} alphaTest={0.3} toneMapped={false} />
     </sprite>
   )
 }

@@ -37,7 +37,7 @@ export const GizmoHelper = ({
   onTarget,
   children: GizmoHelperComponent,
 }: GizmoHelperProps): any => {
-  const { gl, scene, camera: mainCamera, size } = useThree()
+  const { gl, camera: mainCamera, size } = useThree()
   const gizmoRef = React.useRef<Group>()
   const virtualCam = React.useRef<any>()
   const virtualScene = React.useMemo(() => new Scene(), [])
@@ -88,15 +88,9 @@ export const GizmoHelper = ({
   }
 
   useFrame((_, delta) => {
-    if (virtualCam.current) {
+    if (virtualCam.current && gizmoRef.current) {
       animateStep(delta)
       beforeRender()
-
-      // Render main scene
-      gl.autoClear = true
-      gl.render(scene, mainCamera)
-
-      // Render gizmo
       gl.autoClear = false
       gl.clearDepth()
       gl.render(virtualScene, virtualCam.current)

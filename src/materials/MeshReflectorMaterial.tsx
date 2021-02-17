@@ -80,6 +80,7 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
         distortionFactor = texture2D(distortionMap, vUv).r * distortion;
       #endif
 
+      vec2 normal_uv = vec2(0.0);
       vec4 new_vUv = my_vUv;
       new_vUv.x += distortionFactor;
       new_vUv.y += distortionFactor;
@@ -90,11 +91,10 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
       vec4 merge = base;
       
       #ifdef USE_NORMALMAP
-        vec2 normal_uv = vec2(0.0);
         vec4 normalColor = texture2D(normalMap, vUv * normalScale);
-        vec3 my_normal = normalize( vec3( normalColor.r * 2.0 - 1.0, normalColor.b,  normalColor.g * 2.0 - 1.0 ) );
+        vec3 my_normal = normalize( vec3( normalColor.r * 2.0 - 1.0, normalColor.b ,  normalColor.g * 2.0 - 1.0 ) );
         vec3 coord = new_vUv.xyz / new_vUv.w;
-        normal_uv = coord.xy + coord.z * my_normal.xz * 0.05;
+        normal_uv = coord.xy + coord.z * my_normal.xz * 0.01;
         vec4 base_normal = texture2D(tDiffuse, normal_uv);
         vec4 blur_normal = texture2D(tDiffuseBlur, normal_uv);
         merge = base_normal;
@@ -105,7 +105,14 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
       float blurFactor = 0.0;
 
       #ifdef USE_DEPTH
-        vec4 depth = texture2DProj(tDepth, new_vUv);
+        vec4 depth = vec4(0.0);
+   
+        #ifdef USE_NORMALMAP
+          depth = texture2D(tDepth, normal_uv);
+        #else
+          depth = texture2DProj(tDepth, new_vUv);
+        #endif
+
         depthFactor = smoothstep(minDepthThreshold, maxDepthThreshold, 1.0-(depth.r * depth.a));
         depthFactor *= depthScale;
         depthFactor = max(0.0001, min(1.0, depthFactor));

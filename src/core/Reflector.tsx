@@ -134,8 +134,23 @@ export function Reflector({
     projectionMatrix.elements[6] = clipPlane.y
     projectionMatrix.elements[10] = clipPlane.z + 1.0
     projectionMatrix.elements[14] = clipPlane.w
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [
+    camera.far,
+    camera.matrixWorld,
+    camera.projectionMatrix,
+    cameraWorldPosition,
+    clipPlane,
+    lookAtPosition,
+    normal,
+    q,
+    reflectorPlane,
+    reflectorWorldPosition,
+    rotationMatrix,
+    target,
+    textureMatrix,
+    view,
+    virtualCamera,
+  ])
 
   const [fbo1, fbo2, blurpass, reflectorProps] = React.useMemo(() => {
     const parameters = {
@@ -203,9 +218,9 @@ export function Reflector({
   useFrame(() => {
     if (!meshRef?.current) return
     meshRef.current.visible = false
-    beforeRender()
     gl.setRenderTarget(fbo1)
     gl.render(scene, virtualCamera)
+    beforeRender()
     if (hasBlur) blurpass.render(gl, fbo1, fbo2)
     meshRef.current.visible = true
     gl.setRenderTarget(null)

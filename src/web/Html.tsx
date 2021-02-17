@@ -31,11 +31,12 @@ function objectScale(el, camera) {
   const cameraPos = v2.setFromMatrixPosition(camera.matrixWorld)
   const vFOV = (camera.fov * Math.PI) / 180
   const dist = objectPos.distanceTo(cameraPos)
+  const scaleFOV = 1 / (2 * Math.tan(vFOV / 2) * dist)
 
   if (camera instanceof OrthographicCamera) {
-    return 1 / ((2 * Math.tan(vFOV / 2) * dist) / camera.zoom)
+    return scaleFOV / camera.zoom
   } else if (camera instanceof PerspectiveCamera) {
-    return 1 / (2 * Math.tan(vFOV / 2) * dist)
+    return scaleFOV
   } else {
     return 1
   }

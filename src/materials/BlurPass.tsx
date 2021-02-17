@@ -2,11 +2,12 @@ import {
   Mesh,
   BufferGeometry,
   BufferAttribute,
-  Camera,
   LinearFilter,
   Scene,
   WebGLRenderTarget,
   WebGLRenderer,
+  Camera,
+  Vector2,
 } from 'three'
 
 import { ConvolutionMaterial } from './ConvolutionMaterial'
@@ -16,6 +17,10 @@ export interface BlurPassProps {
   resolution: number
   width?: number
   height?: number
+  minDepthThreshold?: number
+  maxDepthThreshold?: number
+  depthScale?: number
+  depthToBlurRatioBias?: number
 }
 
 export class BlurPass {
@@ -27,7 +32,16 @@ export class BlurPass {
   readonly screen: Mesh
   renderToScreen: boolean = false
 
-  constructor({ gl, resolution, width = 500, height = 500 }: BlurPassProps) {
+  constructor({
+    gl,
+    resolution,
+    width = 500,
+    height = 500,
+    minDepthThreshold = 0,
+    maxDepthThreshold = 1,
+    depthScale = 0,
+    depthToBlurRatioBias = 0.25,
+  }: BlurPassProps) {
     this.renderTargetA = new WebGLRenderTarget(resolution, resolution, {
       minFilter: LinearFilter,
       magFilter: LinearFilter,
@@ -38,8 +52,14 @@ export class BlurPass {
     this.renderTargetB = this.renderTargetA.clone()
     this.convolutionMaterial = new ConvolutionMaterial()
     this.convolutionMaterial.setTexelSize(1.0 / width, 1.0 / height)
+    this.convolutionMaterial.setResolution(new Vector2(width, height))
     this.scene = new Scene()
     this.camera = new Camera()
+    this.convolutionMaterial.uniforms.minDepthThreshold.value = minDepthThreshold
+    this.convolutionMaterial.uniforms.maxDepthThreshold.value = maxDepthThreshold
+    this.convolutionMaterial.uniforms.depthScale.value = depthScale
+    this.convolutionMaterial.uniforms.depthToBlurRatioBias.value = depthToBlurRatioBias
+    this.convolutionMaterial.defines.USE_DEPTH = depthScale > 0
     const vertices = new Float32Array([-1, -1, 0, 3, -1, 0, -1, 3, 0])
     const uvs = new Float32Array([0, 0, 2, 0, 0, 2])
     const geometry = new BufferGeometry()
@@ -57,6 +77,7 @@ export class BlurPass {
     const renderTargetB = this.renderTargetB
     let material = this.convolutionMaterial
     let uniforms = material.uniforms
+    uniforms.depthBuffer.value = inputBuffer.depthTexture
     const kernel = material.kernel
     let lastRT = inputBuffer
     let destRT

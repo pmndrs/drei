@@ -81,13 +81,16 @@ export const GizmoHelper = ({
     }
   }
 
-  useFrame((_, delta) => {
-    if (virtualCam.current && gizmoRef.current) {
-      animateStep(delta)
+  const beforeRender = () => {
+    // Sync gizmo with main camera orientation
+    matrix.copy(mainCamera.matrix).invert()
+    gizmoRef.current?.quaternion.setFromRotationMatrix(matrix)
+  }
 
-      // Sync gizmo with main camera orientation
-      matrix.copy(mainCamera.matrix).invert()
-      gizmoRef.current.quaternion.setFromRotationMatrix(matrix)
+  useFrame((_, delta) => {
+    if (virtualCam.current) {
+      animateStep(delta)
+      beforeRender()
 
       // Render main scene
       gl.autoClear = true

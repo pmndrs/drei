@@ -83,7 +83,7 @@ export const Html = React.forwardRef(
     const [el] = React.useState(() => document.createElement('div'))
     const group = React.useRef<Group>(null)
     const old = React.useRef([0, 0])
-    const target = portal?.current ?? gl.domElement.parentNode
+    const target = portal?.current ?? gl.domElement?.parentNode
 
     React.useEffect(() => {
       if (group.current) {

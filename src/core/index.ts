@@ -23,6 +23,8 @@ export * from './PointerLockControls'
 
 // Gizmos
 export * from './GizmoHelper'
+export * from './GizmoViewcube'
+export * from './GizmoViewport'
 
 // Loaders
 export * from './useCubeTexture'

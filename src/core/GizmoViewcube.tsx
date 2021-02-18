@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useGizmoContext } from '../core/GizmoHelper'
+import { useGizmoContext } from './GizmoHelper'
 import { CanvasTexture, Event, Vector3 } from 'three'
 
 type XYZ = [number, number, number]
@@ -40,7 +40,12 @@ const edgeDimensions = edges.map(
   (edge) => edge.toArray().map((axis: number): number => (axis == 0 ? 0.5 : 0.25)) as XYZ
 )
 
-const FaceMaterial = ({ hover, index }: { hover: boolean; index: number }) => {
+type FaceTypeProps = {
+  hover: boolean
+  index: number
+}
+
+const FaceMaterial = ({ hover, index }: FaceTypeProps) => {
   const texture = React.useMemo(() => {
     const canvas = document.createElement('canvas')
     canvas.width = 128
@@ -63,19 +68,23 @@ const FaceMaterial = ({ hover, index }: { hover: boolean; index: number }) => {
 
 const FaceCube = () => {
   const { tweenCamera, raycast } = useGizmoContext()
-  const [hover, set] = React.useState<number | null>(null)
+  const [hover, setHover] = React.useState<number | null>(null)
+  const handlePointerOut = (e: Event) => {
+    setHover(null)
+    e.stopPropagation()
+  }
   const handlePointerDown = (e: Event) => {
     tweenCamera(e.face.normal)
     e.stopPropagation()
   }
   const handlePointerMove = (e: Event) => {
-    set(Math.floor(e.faceIndex / 2))
+    setHover(Math.floor(e.faceIndex / 2))
     e.stopPropagation()
   }
   return (
     <mesh
       raycast={raycast}
-      onPointerOut={() => set(null)}
+      onPointerOut={handlePointerOut}
       onPointerMove={handlePointerMove}
       onPointerDown={handlePointerDown}
     >
@@ -94,13 +103,13 @@ type EdgeCubeProps = {
 
 const EdgeCube = ({ dimensions, position }: EdgeCubeProps): JSX.Element => {
   const { tweenCamera, raycast } = useGizmoContext()
-  const [hover, set] = React.useState<boolean>(false)
+  const [hover, setHover] = React.useState<boolean>(false)
   const handlePointerOut = (e: Event) => {
-    set(false)
+    setHover(false)
     e.stopPropagation()
   }
   const handlePointerOver = (e: Event) => {
-    set(true)
+    setHover(true)
     e.stopPropagation()
   }
   const handlePointerDown = (e: Event) => {
@@ -121,15 +130,17 @@ const EdgeCube = ({ dimensions, position }: EdgeCubeProps): JSX.Element => {
   )
 }
 
-export const ViewCubeGizmo = () => {
+const keyFor = (vector: Vector3) => vector.toArray().join(',')
+
+export const GizmoViewcube = () => {
   return (
     <group scale={[60, 60, 60]}>
       <FaceCube />
       {edges.map((edge, index) => (
-        <EdgeCube key={index} position={edge} dimensions={edgeDimensions[index]} />
+        <EdgeCube key={keyFor(edge)} position={edge} dimensions={edgeDimensions[index]} />
       ))}
-      {corners.map((corner, index) => (
-        <EdgeCube key={index} position={corner} dimensions={cornerDimensions} />
+      {corners.map((corner) => (
+        <EdgeCube key={keyFor(corner)} position={corner} dimensions={cornerDimensions} />
       ))}
       <ambientLight intensity={0.5} />
       <pointLight position={[10, 10, 10]} intensity={0.5} />

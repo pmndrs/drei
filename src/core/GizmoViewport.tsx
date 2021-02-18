@@ -1,12 +1,13 @@
 import * as React from 'react'
 import { CanvasTexture, Event } from 'three'
-import { useGizmoContext } from '../core/GizmoHelper'
+import { useGizmoContext } from './GizmoHelper'
 
-type NewType = JSX.IntrinsicElements['mesh'] & {
+type AxisProps = {
   color: string
+  rotation: [number, number, number]
 }
 
-function Axis({ color, rotation }: NewType) {
+function Axis({ color, rotation }: AxisProps) {
   return (
     <group rotation={rotation}>
       <mesh position={[0.4, 0, 0]}>
@@ -47,25 +48,25 @@ function AxisHead({ arcStyle, label, labelColor, ...props }: AxisHeadProps) {
 
   const [active, setActive] = React.useState(false)
   const scale = (label ? 1 : 0.75) * (active ? 1.2 : 1)
-  const pointerOver = (e: Event) => void (setActive(true), e.stopPropagation())
-  const pointerOut = (e: Event) => void (setActive(false), e.stopPropagation())
+  const handlePointerOver = (e: Event) => void (setActive(true), e.stopPropagation())
+  const handlePointerOut = (e: Event) => void (setActive(false), e.stopPropagation())
   return (
-    <sprite scale={[scale, scale, scale]} onPointerOver={pointerOver} onPointerOut={pointerOut} {...props}>
+    <sprite scale={[scale, scale, scale]} onPointerOver={handlePointerOver} onPointerOut={handlePointerOut} {...props}>
       <spriteMaterial map={texture} alphaTest={0.3} toneMapped={false} />
     </sprite>
   )
 }
 
-type BlenderViewportGizmoProps = JSX.IntrinsicElements['group'] & {
+type GizmoViewportProps = JSX.IntrinsicElements['group'] & {
   axisColors?: [string, string, string]
   labelColor?: string
 }
 
-export const BlenderViewportGizmo = ({
+export const GizmoViewport = ({
   axisColors = ['#ff3653', '#8adb00', '#2c8fff'],
   labelColor = '#000',
   ...props
-}: BlenderViewportGizmoProps) => {
+}: GizmoViewportProps) => {
   const [colorX, colorY, colorZ] = axisColors
   const { tweenCamera, raycast } = useGizmoContext()
   const axisHeadProps = {

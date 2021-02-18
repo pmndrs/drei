@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { createPortal, useFrame, useThree } from 'react-three-fiber'
-import { Group, Intersection, Matrix4, Object3D, Quaternion, Raycaster, Scene, Vector3 } from 'three'
+import { Camera, Group, Intersection, Matrix4, Object3D, Quaternion, Raycaster, Scene, Vector3 } from 'three'
 import { OrthographicCamera } from './OrthographicCamera'
 import { useCamera } from './useCamera'
 
@@ -39,8 +39,8 @@ export const GizmoHelper = ({
 }: GizmoHelperProps): any => {
   const { gl, camera: mainCamera, size } = useThree()
   const gizmoRef = React.useRef<Group>()
-  const virtualCam = React.useRef<any>()
-  const virtualScene = React.useMemo(() => new Scene(), [])
+  const virtualCam = React.useRef<Camera>(null!)
+  const [virtualScene] = React.useState(() => new Scene())
 
   const animating = React.useRef(false)
   const radius = React.useRef(0)
@@ -100,7 +100,7 @@ export const GizmoHelper = ({
   const gizmoHelperContext = {
     tweenCamera,
     raycast: useCamera(virtualCam),
-  } as GizmoHelperContext
+  }
 
   // Position gizmo component within scene
   const [marginX, marginY] = margin

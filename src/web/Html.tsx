@@ -26,10 +26,7 @@ function isObjectBehindCamera(el: Object3D, camera: Camera) {
   return deltaCamObj.angleTo(camDir) > Math.PI / 2
 }
 
-interface CameraFOV extends Camera {
-  fov: number
-}
-function objectScale(el: Object3D, camera: CameraFOV) {
+function objectScale(el: Object3D, camera: Camera) {
   const objectPos = v1.setFromMatrixPosition(el.matrixWorld)
   const cameraPos = v2.setFromMatrixPosition(camera.matrixWorld)
   const vFOV = (camera.fov * Math.PI) / 180

@@ -48,11 +48,17 @@ function AxisHead({ arcStyle, label, labelColor, ...props }: AxisHeadProps) {
 
   const [active, setActive] = React.useState(false)
   const scale = (label ? 1 : 0.75) * (active ? 1.2 : 1)
-  const handlePointerOver = (e: Event) => void (setActive(true), e.stopPropagation())
-  const handlePointerOut = (e: Event) => void (setActive(false), e.stopPropagation())
+  const handlePointerOver = (e: Event) => {
+    setActive(true)
+    e.stopPropagation()
+  }
+  const handlePointerOut = (e: Event) => {
+    setActive(false)
+    e.stopPropagation()
+  }
   return (
     <sprite scale={[scale, scale, scale]} onPointerOver={handlePointerOver} onPointerOut={handlePointerOut} {...props}>
-      <spriteMaterial map={texture} alphaTest={0.3} toneMapped={false} />
+      <spriteMaterial map={texture} alphaTest={0.3} opacity={label ? 1 : 0.75} toneMapped={false} />
     </sprite>
   )
 }
@@ -71,7 +77,10 @@ export const GizmoViewport = ({
   const { tweenCamera, raycast } = useGizmoContext()
   const axisHeadProps = {
     labelColor,
-    onPointerDown: (e: Event) => void (tweenCamera(e.object.position), e.stopPropagation()),
+    onPointerDown: (e: Event) => {
+      tweenCamera(e.object.position)
+      e.stopPropagation()
+    },
     raycast,
   }
   return (

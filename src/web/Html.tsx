@@ -26,16 +26,20 @@ function isObjectBehindCamera(el: Object3D, camera: Camera) {
   return deltaCamObj.angleTo(camDir) > Math.PI / 2
 }
 
-function objectScale(el: Object3D, camera: Camera) {
-  if (camera instanceof PerspectiveCamera) {
-    const objectPos = v1.setFromMatrixPosition(el.matrixWorld)
-    const cameraPos = v2.setFromMatrixPosition(camera.matrixWorld)
-    const vFOV = (camera.fov * Math.PI) / 180
-    const dist = objectPos.distanceTo(cameraPos)
-    return 1 / (2 * Math.tan(vFOV / 2) * dist)
+function objectScale(el: Object3D, camera) {
+  const objectPos = v1.setFromMatrixPosition(el.matrixWorld)
+  const cameraPos = v2.setFromMatrixPosition(camera.matrixWorld)
+  const vFOV = (camera.fov * Math.PI) / 180
+  const dist = objectPos.distanceTo(cameraPos)
+  const scaleFOV = 2 * Math.tan(vFOV / 2) * dist
+
+  if (camera instanceof OrthographicCamera) {
+    return 1 / (scaleFOV / camera.zoom)
+  } else if (camera instanceof PerspectiveCamera) {
+    return 1 / scaleFOV
+  } else {
+    return 1
   }
-  if (camera instanceof OrthographicCamera) return camera.zoom
-  return 1
 }
 
 function objectZIndex(el: Object3D, camera: Camera, zIndexRange: Array<number>) {

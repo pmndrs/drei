@@ -291,7 +291,10 @@ Two example gizmos are included: GizmoViewport and GizmoViewcube, and `useGizmoC
   onUpdate={/* called during camera animation  */}
   onTarget={/* return current camera target (e.g. from orbit controls) to center animation */}
 > 
-  <GizmoViewport />
+  <GizmoViewport 
+    axisColors={['red', 'green', 'blue']}
+    labelColor="black"
+  />
   {/* alternative: <GizmoViewcube /> */}
 </GizmoHelper>
 ```

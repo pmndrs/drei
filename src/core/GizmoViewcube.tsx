@@ -130,17 +130,15 @@ const EdgeCube = ({ dimensions, position }: EdgeCubeProps): JSX.Element => {
   )
 }
 
-const keyFor = (vector: Vector3) => vector.toArray().join(',')
-
 export const GizmoViewcube = () => {
   return (
     <group scale={[60, 60, 60]}>
       <FaceCube />
       {edges.map((edge, index) => (
-        <EdgeCube key={keyFor(edge)} position={edge} dimensions={edgeDimensions[index]} />
+        <EdgeCube key={index} position={edge} dimensions={edgeDimensions[index]} />
       ))}
-      {corners.map((corner) => (
-        <EdgeCube key={keyFor(corner)} position={corner} dimensions={cornerDimensions} />
+      {corners.map((corner, index) => (
+        <EdgeCube key={index} position={corner} dimensions={cornerDimensions} />
       ))}
       <ambientLight intensity={0.5} />
       <pointLight position={[10, 10, 10]} intensity={0.5} />

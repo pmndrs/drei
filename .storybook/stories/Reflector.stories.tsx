@@ -11,7 +11,6 @@ export default {
   decorators: [
     (storyFn) => (
       <Setup cameraFov={20} cameraPosition={new Vector3(-2, 2, 6)}>
-        {' '}
         {storyFn()}
       </Setup>
     ),

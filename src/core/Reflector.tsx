@@ -36,7 +36,7 @@ export type ReflectorProps = Omit<JSX.IntrinsicElements['mesh'], 'args' | 'child
     debug?: number
     distortionMap?: Texture
     distortion?: number
-    children: {
+    children?: {
       (
         Component: React.ElementType<JSX.IntrinsicElements['meshReflectorMaterial']>,
         ComponentProps: ReflectorChildProps

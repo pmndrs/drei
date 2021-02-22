@@ -77,7 +77,6 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#usecontextbridge">useContextBridge</a></li>
           <li><a href="#usefbo">useFBO</a></li>
           <li><a href="#html">Html</a></li>
-          <li><a href="#html3d">Html3D</a></li>
           <li><a href="#shadow">Shadow</a></li>
           <li><a href="#stats">Stats</a></li>
           <li><a href="#center">Center</a></li>
@@ -595,12 +594,12 @@ Allows you to tie HTML content to any object of your scene. It will be projected
 ```jsx
 <Html
   prepend // Project content behind the canvas (default: false)
-  center // [ignored in transform mode] Adds a -50%/-50% css transform unless (only non transform mode, default: false)
-  fullscreen // [ignored in transform mode] Aligns to the upper-left corner, fills the screen (default:false)
-  scaleFactor={10} // If set (default: undefined), children will be scaled by this factor, and also by distance to a PerspectiveCamera unless transform=true.
+  center // Adds a -50%/-50% css transform (default: false) [ignored in transform mode]
+  fullscreen // Aligns to the upper-left corner, fills the screen (default:false) [ignored in transform mode]
+  scaleFactor={10} // If set (default: undefined), children will be scaled by this factor, and also by distance to a PerspectiveCamera if transform is set to false.
   zIndexRange={[100, 0]} // Z-order range (default=[16777271, 0])
   portal={domnodeRef} // Reference to target container (default=undefined)
-  transform // Whether to render with css matrix3d transformations applied (default=false)
+  transform // If true, applies matrix3d transformations (default=false)
   sprite // Renders as sprite, but only in transform mode (default=false)
   {...groupProps} // All THREE.Group props are valid
   {...divProps} // All HTMLDivElement props are valid

@@ -595,50 +595,19 @@ Allows you to tie HTML content to any object of your scene. It will be projected
 ```jsx
 <Html
   prepend // Project content behind the canvas (default: false)
-  center // Adds a -50%/-50% css transform (default: false)
-  fullscreen // Aligns to the upper-left corner, fills the screen (default:false)
-  scaleFactor={10} // If set (default: undefined), children will be scaled by this factor, and also by distance to a PerspectiveCamera.
+  center // [ignored in transform mode] Adds a -50%/-50% css transform unless (only non transform mode, default: false)
+  fullscreen // [ignored in transform mode] Aligns to the upper-left corner, fills the screen (default:false)
+  scaleFactor={10} // If set (default: undefined), children will be scaled by this factor, and also by distance to a PerspectiveCamera unless transform=true.
   zIndexRange={[100, 0]} // Z-order range (default=[16777271, 0])
   portal={domnodeRef} // Reference to target container (default=undefined)
+  transform // Whether to render with css matrix3d transformations applied (default=false)
+  sprite // Renders as sprite, but only in transform mode (default=false)
   {...groupProps} // All THREE.Group props are valid
   {...divProps} // All HTMLDivElement props are valid
 >
   <h1>hello</h1>
   <p>world</p>
 </Html>
-```
-
-#### Html3D (and MixedCanvas)
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.react-spring.io/?path=/story/misc-html3d--html-3-d-st)
-
-> :no_entry_sign: Web usage only.
-
-Blend HTML Elements into the scene by using a CSS3DRenderer and clip meshes. Note: Html3D can only be used inside MixedCanvas.
-
-```jsx
-<MixedCanvas
-  scaleFactor={160} // A scale factor is necessary to properly scale html elements (default: 160)
-  cssProps={...} // All Canvas (the one from react-three-fiber/css3D) props are valid
-  {...props} // All Canvas props are valid
->
-  <Html3D
-    sprite // If true, Html3D is a sprite, otherwise it's an object (default: false)
-    autoClip // If true, a clip mesh is automatically drawn (default:true)
-    ClipComponent={MyClip} // A React Component to render a clip if autoClip is set to true (default: ClipMesh)
-    cssProps={...} // All CSS3DObject (or CSS3DSprite if sprite is set to true) props are valid
-    clipProps={...} // All THREE.Mesh (or THREE.Sprite if sprite is set to true) props are valid
-    {...props} // All THREE.Group props are valid
-  >
-    <h1 style={{fontSize:"70px" /* you need very big pixel sizes to counteract the scale factor */ }}>hello</h1>
-    <p style={{fontSize:"50px"}}>3d world</p>
-  </Html3D>
-  {/* you can insert 3d objects like you would do in a regular Canvas an they will blend */}
-  <mesh>
-    <boxBufferGeometry />
-    <normalMaterial />
-  </mesh>
-</MixedCanvas>
 ```
 
 #### Reflector

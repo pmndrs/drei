@@ -46,24 +46,34 @@ function HTMLTransformScene() {
     <group ref={ref}>
       <Icosahedron args={[2, 2]} position={[3, 6, 4]}>
         <meshBasicMaterial attach="material" color="hotpink" wireframe />
-        <Html transform scaleFactor={30}>
-          <div className="html-story-block margin300">First</div>
+        <Html transform scaleFactor={30} className="html-story-block margin300">
+          First
         </Html>
       </Icosahedron>
 
       <Icosahedron args={[2, 2]} position={[10, 0, 10]}>
         <meshBasicMaterial attach="material" color="hotpink" wireframe />
-        <Html transform scaleFactor={30}>
-          <div className="html-story-block margin300">Second</div>
+        <Html transform scaleFactor={30} className="html-story-block margin300">
+          Second
         </Html>
       </Icosahedron>
 
       <Icosahedron args={[2, 2]} position={[-10, 0, -10]}>
         <meshBasicMaterial attach="material" color="hotpink" wireframe />
-        <Html sprite transform scaleFactor={30}>
-          <div className="html-story-block margin300">Third (sprite)</div>
+        <Html transform scaleFactor={30} className="html-story-block margin300">
+          Third
         </Html>
       </Icosahedron>
+
+      <Html
+        sprite
+        transform
+        scaleFactor={50}
+        position={[5, 15, 0]}
+        style={{ background: 'hotpink', padding: '3px 7px' }}
+      >
+        Transform mode
+      </Html>
     </group>
   )
 }

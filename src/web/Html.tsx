@@ -95,14 +95,14 @@ export const Html = React.forwardRef(
       zIndexRange = [16777271, 0],
       ...props
     }: HtmlProps,
-    fRef: React.Ref<HTMLDivElement>
+    ref: React.Ref<HTMLDivElement>
   ) => {
     const { gl, scene, camera, size } = useThree()
     const el = React.useMemo(() => document.createElement('div'), [])
     const group = React.useRef<Group>(null)
     const old = React.useRef([0, 0])
-    const iRef = React.useRef<HTMLDivElement>()
-    const [ref, innerRef] = [fRef || iRef, React.useRef()] as React.MutableRefObject<HTMLDivElement>[]
+    const transformOuterRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
+    const transformInnerRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
     const target = portal?.current ?? gl.domElement.parentNode
 
     React.useEffect(() => {
@@ -126,31 +126,39 @@ export const Html = React.forwardRef(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [target, transform])
 
-    const [innerStyles, styles]: React.CSSProperties[] = [
-      React.useMemo(() => ({ position: 'absolute', pointerEvents: 'auto' }), []),
-      React.useMemo(
-        () => ({
-          position: 'absolute',
-          transform: center && !transform ? 'translate3d(-50%,-50%)' : 'none',
-          ...((transform || fullscreen) && {
-            top: transform ? 0 : -size.height / 2,
-            left: transform ? 0 : -size.width / 2,
-            width: size.width,
-            height: size.height,
-          }),
-          transformStyle: transform ? 'preserve-3d' : 'initial',
-          pointerEvents: transform ? 'none' : 'auto',
-          ...style,
+    const styles: React.CSSProperties = React.useMemo(
+      () => ({
+        position: 'absolute',
+        transform: center && !transform ? 'translate3d(-50%,-50%)' : 'none',
+        ...((fullscreen || transform) && {
+          top: transform ? 0 : -size.height / 2,
+          left: transform ? 0 : -size.width / 2,
+          width: size.width,
+          height: size.height,
         }),
-        [style, center, fullscreen, size, transform]
-      ),
-    ]
+        transformStyle: transform ? 'preserve-3d' : 'initial',
+        pointerEvents: transform ? 'none' : 'auto',
+        ...(transform ? {} : style),
+      }),
+      [style, center, fullscreen, size, transform]
+    )
+
+    const transformInnerStyles: React.CSSProperties = React.useMemo(
+      () => ({ position: 'absolute', pointerEvents: 'auto', ...(transform ? style : {}) }),
+      [style, transform]
+    )
 
     React.useLayoutEffect(
       () =>
         void ReactDOM.render(
-          <div ref={ref} style={styles} className={className}>
-            {transform ? <div ref={innerRef} style={innerStyles} children={children} /> : children}
+          <div ref={transform ? transformOuterRef : ref} style={styles} className={transform ? '' : className}>
+            {transform ? (
+              <div ref={transformInnerRef} style={transformInnerStyles}>
+                <div className={className} children={children} />
+              </div>
+            ) : (
+              children
+            )}
           </div>,
           el
         )
@@ -180,8 +188,8 @@ export const Html = React.forwardRef(
             el.style.width = size.width + 'px'
             el.style.height = size.height + 'px'
             el.style.perspective = isOrthographicCamera ? '' : `${fov}px`
-            ref.current.style.transform = `${cameraTransform}${cameraMatrix}translate(${widthHalf}px,${heightHalf}px)`
-            innerRef.current.style.transform = getObjectCSSMatrix(matrix, 1 / ((scaleFactor || 10) / 400))
+            transformOuterRef.current.style.transform = `${cameraTransform}${cameraMatrix}translate(${widthHalf}px,${heightHalf}px)`
+            transformInnerRef.current.style.transform = getObjectCSSMatrix(matrix, 1 / ((scaleFactor || 10) / 400))
           } else {
             const scale = scaleFactor === undefined ? 1 : objectScale(group.current, camera) * scaleFactor
             el.style.transform = `translate3d(${vec[0]}px,${vec[1]}px,0) scale(${scale})`

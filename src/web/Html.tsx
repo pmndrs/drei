@@ -111,7 +111,7 @@ export const Html = React.forwardRef(
         if (transform) {
           el.style.cssText = `position:absolute;top:0;left:0;pointer-events:none;overflow:hidden;`
         } else {
-          const vec = calculatePosition(group.current, camera, size).map((v: number) => v + 'px,')
+          const vec = calculatePosition(group.current, camera, size)
           el.style.cssText = `position:absolute;top:0;left:0;transform:translate3d(${vec[0]}px,${vec[1]}px,0);transform-origin:0 0;`
         }
         if (target) {

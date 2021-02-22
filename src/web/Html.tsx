@@ -154,7 +154,7 @@ export const Html = React.forwardRef(
           <div ref={transform ? transformOuterRef : ref} style={styles} className={transform ? '' : className}>
             {transform ? (
               <div ref={transformInnerRef} style={transformInnerStyles}>
-                <div className={className} children={children} />
+                <div ref={ref} className={className} children={children} />
               </div>
             ) : (
               children

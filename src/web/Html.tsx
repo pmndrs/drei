@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import { Vector3, Group, Object3D, Camera, PerspectiveCamera, OrthographicCamera } from 'three'
+import { Vector3, Group, Object3D, Matrix4, Camera, PerspectiveCamera, OrthographicCamera } from 'three'
 import { Assign } from 'utility-types'
 import { ReactThreeFiber, useFrame, useThree } from 'react-three-fiber'
 
@@ -47,6 +47,24 @@ function objectZIndex(el: Object3D, camera: Camera, zIndexRange: Array<number>) 
   return undefined
 }
 
+const epsilon = (value: number) => (Math.abs(value) < 1e-10 ? 0 : value)
+
+function getCSSMatrix(matrix: Matrix4, multipliers: Array<number>, prepend = '') {
+  let matrix3d = 'matrix3d('
+  for (let i = 0; i !== 16; i++) {
+    matrix3d += epsilon(multipliers[i] * matrix.elements[i]) + (i !== 15 ? ',' : ')')
+  }
+  return prepend + matrix3d
+}
+
+const getCameraCSSMatrix = ((multipliers: number[]) => {
+  return (matrix: Matrix4) => getCSSMatrix(matrix, multipliers)
+})([1, -1, 1, 1, 1, -1, 1, 1, 1, -1, 1, 1, 1, -1, 1, 1])
+
+const getObjectCSSMatrix = ((scaleMultipliers: (n: number) => number[]) => {
+  return (matrix: Matrix4, factor: number) => getCSSMatrix(matrix, scaleMultipliers(factor), 'translate(-50%,-50%)')
+})((f: number) => [1 / f, 1 / f, 1 / f, 1, -1 / f, -1 / f, -1 / f, -1, 1 / f, 1 / f, 1 / f, 1, 1, 1, 1, 1])
+
 export interface HtmlProps
   extends Omit<Assign<React.HTMLAttributes<HTMLDivElement>, ReactThreeFiber.Object3DNode<Group, typeof Group>>, 'ref'> {
   prepend?: boolean
@@ -55,6 +73,8 @@ export interface HtmlProps
   eps?: number
   portal?: React.MutableRefObject<HTMLElement>
   scaleFactor?: number
+  sprite?: boolean
+  transform?: boolean
   zIndexRange?: Array<number>
 }
 
@@ -70,22 +90,30 @@ export const Html = React.forwardRef(
       fullscreen,
       portal,
       scaleFactor,
+      sprite = false,
+      transform = false,
       zIndexRange = [16777271, 0],
       ...props
     }: HtmlProps,
-    ref: React.Ref<HTMLDivElement>
+    fRef: React.Ref<HTMLDivElement>
   ) => {
     const { gl, scene, camera, size } = useThree()
-    const [el] = React.useState(() => document.createElement('div'))
+    const el = React.useMemo(() => document.createElement('div'), [])
     const group = React.useRef<Group>(null)
     const old = React.useRef([0, 0])
+    const iRef = React.useRef<HTMLDivElement>()
+    const [ref, innerRef] = [fRef || iRef, React.useRef()] as React.MutableRefObject<HTMLDivElement>[]
     const target = portal?.current ?? gl.domElement.parentNode
 
     React.useEffect(() => {
       if (group.current) {
         scene.updateMatrixWorld()
-        const vec = calculatePosition(group.current, camera, size)
-        el.style.cssText = `position:absolute;top:0;left:0;transform:translate3d(${vec[0]}px,${vec[1]}px,0);transform-origin:0 0;`
+        if (transform) {
+          el.style.cssText = `position:absolute;top:0;left:0;pointer-events:none;overflow:hidden;`
+        } else {
+          const vec = calculatePosition(group.current, camera, size).map((v: number) => v + 'px,')
+          el.style.cssText = `position:absolute;top:0;left:0;transform:translate3d(${vec[0]}px,${vec[1]}px,0);transform-origin:0 0;`
+        }
         if (target) {
           if (prepend) target.prepend(el)
           else target.appendChild(el)
@@ -96,38 +124,70 @@ export const Html = React.forwardRef(
         }
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [target])
+    }, [target, transform])
 
-    const styles: React.CSSProperties = React.useMemo(
-      () => ({
-        position: 'absolute',
-        transform: center ? 'translate3d(-50%,-50%,0)' : 'none',
-        ...(fullscreen && {
-          top: -size.height / 2,
-          left: -size.width / 2,
-          width: size.width,
-          height: size.height,
+    const [innerStyles, styles]: React.CSSProperties[] = [
+      React.useMemo(() => ({ position: 'absolute', pointerEvents: 'auto' }), []),
+      React.useMemo(
+        () => ({
+          position: 'absolute',
+          transform: center && !transform ? 'translate3d(-50%,-50%)' : 'none',
+          ...((transform || fullscreen) && {
+            top: transform ? 0 : -size.height / 2,
+            left: transform ? 0 : -size.width / 2,
+            width: size.width,
+            height: size.height,
+          }),
+          transformStyle: transform ? 'preserve-3d' : 'initial',
+          pointerEvents: transform ? 'none' : 'auto',
+          ...style,
         }),
-        ...style,
-      }),
-      [style, center, fullscreen, size]
-    )
+        [style, center, fullscreen, size, transform]
+      ),
+    ]
 
     React.useLayoutEffect(
-      () => void ReactDOM.render(<div ref={ref} style={styles} className={className} children={children} />, el)
+      () =>
+        void ReactDOM.render(
+          <div ref={ref} style={styles} className={className}>
+            {transform ? <div ref={innerRef} style={innerStyles} children={children} /> : children}
+          </div>,
+          el
+        )
     )
 
     useFrame(() => {
       if (group.current) {
         camera.updateMatrixWorld()
-        const vec = calculatePosition(group.current, camera, size)
-        if (Math.abs(old.current[0] - vec[0]) > eps || Math.abs(old.current[1] - vec[1]) > eps) {
+        const vec = transform ? old.current : calculatePosition(group.current, camera, size)
+        if (transform || Math.abs(old.current[0] - vec[0]) > eps || Math.abs(old.current[1] - vec[1]) > eps) {
           el.style.display = !isObjectBehindCamera(group.current, camera) ? 'block' : 'none'
-          const scale = scaleFactor === undefined ? 1 : objectScale(group.current, camera) * scaleFactor
-          el.style.transform = `translate3d(${vec[0]}px,${vec[1]}px,0) scale(${scale})`
           el.style.zIndex = `${objectZIndex(group.current, camera, zIndexRange)}`
+          if (transform) {
+            const [widthHalf, heightHalf] = [size.width / 2, size.height / 2]
+            const fov = camera.projectionMatrix.elements[5] * heightHalf
+            const { isOrthographicCamera, top, left, bottom, right } = camera as OrthographicCamera
+            const cameraMatrix = getCameraCSSMatrix(camera.matrixWorldInverse)
+            const cameraTransform = isOrthographicCamera
+              ? `scale(${fov})translate(${epsilon(-(right + left) / 2)}px,${epsilon((top + bottom) / 2)}px)`
+              : `translateZ(${fov}px)`
+            let matrix = group.current.matrixWorld
+            if (sprite) {
+              matrix = camera.matrixWorldInverse.clone().transpose().copyPosition(matrix).scale(group.current.scale)
+              matrix.elements[3] = matrix.elements[7] = matrix.elements[11] = 0
+              matrix.elements[15] = 1
+            }
+            el.style.width = size.width + 'px'
+            el.style.height = size.height + 'px'
+            el.style.perspective = isOrthographicCamera ? '' : `${fov}px`
+            ref.current.style.transform = `${cameraTransform}${cameraMatrix}translate(${widthHalf}px,${heightHalf}px)`
+            innerRef.current.style.transform = getObjectCSSMatrix(matrix, 1 / ((scaleFactor || 10) / 400))
+          } else {
+            const scale = scaleFactor === undefined ? 1 : objectScale(group.current, camera) * scaleFactor
+            el.style.transform = `translate3d(${vec[0]}px,${vec[1]}px,0) scale(${scale})`
+            old.current = vec
+          }
         }
-        old.current = vec
       }
     })
 

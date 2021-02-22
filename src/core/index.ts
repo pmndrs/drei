@@ -11,6 +11,8 @@ export * from './Effects'
 // Cameras
 export * from './OrthographicCamera'
 export * from './PerspectiveCamera'
+export * from './CameraShake'
+export * from './CubeCamera'
 
 // Controls
 export * from './DeviceOrientationControls'

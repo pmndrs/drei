@@ -55,7 +55,7 @@
     "lodash.pick": "^4.4.0",
     "react-merge-refs": "^1.0.0",
     "stats.js": "^0.17.0",
-    "troika-three-text": "^0.38.0",
+    "troika-three-text": "^0.38.1",
     "utility-types": "^3.10.0",
     "zustand": "^3.0.3"
   },
@@ -70,6 +70,7 @@
     "@babel/preset-react": "7.10.4",
     "@babel/preset-typescript": "^7.10.4",
     "@storybook/addon-actions": "^6.1.14",
+    "@storybook/addon-controls": "^6.1.14",
     "@storybook/addon-knobs": "^6.1.14",
     "@storybook/addon-storysource": "^6.1.14",
     "@storybook/addons": "^6.1.14",
@@ -102,7 +103,7 @@
     "prettier": "^2.0.5",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "react-three-fiber": "^5.3.13",
+    "react-three-fiber": "^5.3.18",
     "rimraf": "^3.0.2",
     "rollup": "^2.26.4",
     "rollup-plugin-babel": "^4.4.0",
@@ -117,9 +118,9 @@
     "use-asset": "^1.0.2"
   },
   "peerDependencies": {
-    "react": ">=16.13",
-    "react-dom": ">=16.13",
-    "react-three-fiber": ">=5.0",
+    "react": ">=17.0",
+    "react-dom": ">=17.0",
+    "react-three-fiber": ">=5.3.18",
     "three": ">=0.125.0"
   },
   "peerDependenciesMeta": {

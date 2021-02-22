@@ -9,15 +9,31 @@ type Data = {
   loaded: number
   total: number
 }
+let saveLastTotalLoaded = 0
 
 const useProgress = create<Data>((set) => {
-  DefaultLoadingManager.onStart = (item, loaded, total) =>
-    set({ active: true, item, loaded, total, progress: (loaded / total) * 100 })
+  DefaultLoadingManager.onStart = (item, loaded, total) => {
+    set({
+      active: true,
+      item,
+      loaded,
+      total,
+      progress: ((loaded - saveLastTotalLoaded) / (total - saveLastTotalLoaded)) * 100,
+    })
+  }
   DefaultLoadingManager.onLoad = () => set({ active: false })
   DefaultLoadingManager.onError = (item) => set((state) => ({ errors: [...state.errors, item] }))
-  DefaultLoadingManager.onProgress = (item, loaded, total) =>
-    set({ item, loaded, total, progress: (loaded / total) * 100 })
-
+  DefaultLoadingManager.onProgress = (item, loaded, total) => {
+    if (loaded === total) {
+      saveLastTotalLoaded = total
+    }
+    set({
+      item,
+      loaded,
+      total,
+      progress: ((loaded - saveLastTotalLoaded) / (total - saveLastTotalLoaded)) * 100 || 100,
+    })
+  }
   return {
     errors: [],
     active: false,

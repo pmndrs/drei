@@ -7,16 +7,13 @@ import { ReactThreeFiber, useFrame, useThree } from 'react-three-fiber'
 const v1 = new Vector3()
 const v2 = new Vector3()
 const v3 = new Vector3()
-
-function defaultCalculatePosition(el: Object3D, camera: Camera, size: { width: number; height: number }) {
+function calculatePosition(el: Object3D, camera: Camera, size: { width: number; height: number }) {
   const objectPos = v1.setFromMatrixPosition(el.matrixWorld)
   objectPos.project(camera)
   const widthHalf = size.width / 2
   const heightHalf = size.height / 2
   return [objectPos.x * widthHalf + widthHalf, -(objectPos.y * heightHalf) + heightHalf]
 }
-
-export type CalculatePosition = typeof defaultCalculatePosition
 
 function isObjectBehindCamera(el: Object3D, camera: Camera) {
   const objectPos = v1.setFromMatrixPosition(el.matrixWorld)
@@ -26,20 +23,16 @@ function isObjectBehindCamera(el: Object3D, camera: Camera) {
   return deltaCamObj.angleTo(camDir) > Math.PI / 2
 }
 
-function objectScale(el: Object3D, camera) {
-  const objectPos = v1.setFromMatrixPosition(el.matrixWorld)
-  const cameraPos = v2.setFromMatrixPosition(camera.matrixWorld)
-  const vFOV = (camera.fov * Math.PI) / 180
-  const dist = objectPos.distanceTo(cameraPos)
-  const scaleFOV = 2 * Math.tan(vFOV / 2) * dist
-
-  if (camera instanceof OrthographicCamera) {
-    return 1 / (scaleFOV / camera.zoom)
-  } else if (camera instanceof PerspectiveCamera) {
-    return 1 / scaleFOV
-  } else {
-    return 1
+function objectScale(el: Object3D, camera: Camera) {
+  if (camera instanceof PerspectiveCamera) {
+    const objectPos = v1.setFromMatrixPosition(el.matrixWorld)
+    const cameraPos = v2.setFromMatrixPosition(camera.matrixWorld)
+    const vFOV = (camera.fov * Math.PI) / 180
+    const dist = objectPos.distanceTo(cameraPos)
+    return 1 / (2 * Math.tan(vFOV / 2) * dist)
   }
+  if (camera instanceof OrthographicCamera) return camera.zoom
+  return 1
 }
 
 function objectZIndex(el: Object3D, camera: Camera, zIndexRange: Array<number>) {
@@ -56,7 +49,7 @@ function objectZIndex(el: Object3D, camera: Camera, zIndexRange: Array<number>) 
 
 const epsilon = (value: number) => (Math.abs(value) < 1e-10 ? 0 : value)
 
-function getCSSMatrix(matrix: Matrix4, multipliers: Array<number>, prepend = '') {
+function getCSSMatrix(matrix: Matrix4, multipliers: number[], prepend = '') {
   let matrix3d = 'matrix3d('
   for (let i = 0; i !== 16; i++) {
     matrix3d += epsilon(multipliers[i] * matrix.elements[i]) + (i !== 15 ? ',' : ')')
@@ -83,7 +76,6 @@ export interface HtmlProps
   sprite?: boolean
   transform?: boolean
   zIndexRange?: Array<number>
-  calculatePosition?: CalculatePosition
 }
 
 export const Html = React.forwardRef(
@@ -101,17 +93,16 @@ export const Html = React.forwardRef(
       sprite = false,
       transform = false,
       zIndexRange = [16777271, 0],
-      calculatePosition = defaultCalculatePosition,
       ...props
     }: HtmlProps,
     ref: React.Ref<HTMLDivElement>
   ) => {
     const { gl, scene, camera, size } = useThree()
-    const el = React.useMemo(() => document.createElement('div'), [])
+    const [el] = React.useState(() => document.createElement('div'))
     const group = React.useRef<Group>(null)
     const old = React.useRef([0, 0])
-    const transformOuterRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
-    const transformInnerRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
+    const transformOuterRef = React.useRef<HTMLDivElement>(null)
+    const transformInnerRef = React.useRef<HTMLDivElement>(null)
     const target = portal?.current ?? gl.domElement.parentNode
 
     React.useEffect(() => {
@@ -135,43 +126,51 @@ export const Html = React.forwardRef(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [target, transform])
 
-    const styles: React.CSSProperties = React.useMemo(
-      () => ({
-        position: 'absolute',
-        transform: center && !transform ? 'translate3d(-50%,-50%)' : 'none',
-        ...((fullscreen || transform) && {
+    const styles: React.CSSProperties = React.useMemo(() => {
+      if (transform) {
+        return {
+          position: 'absolute',
           top: transform ? 0 : -size.height / 2,
           left: transform ? 0 : -size.width / 2,
           width: size.width,
           height: size.height,
-        }),
-        transformStyle: transform ? 'preserve-3d' : 'initial',
-        pointerEvents: transform ? 'none' : 'auto',
-        ...(transform ? {} : style),
-      }),
-      [style, center, fullscreen, size, transform]
-    )
+          transformStyle: 'preserve-3d',
+          pointerEvents: 'none',
+        }
+      } else {
+        return {
+          position: 'absolute',
+          transform: center ? 'translate3d(-50%,-50%)' : 'none',
+          ...(fullscreen && {
+            top: -size.height / 2,
+            left: -size.width / 2,
+            width: size.width,
+            height: size.height,
+          }),
+          ...style,
+        }
+      }
+    }, [style, center, fullscreen, size, transform])
 
     const transformInnerStyles: React.CSSProperties = React.useMemo(
       () => ({ position: 'absolute', pointerEvents: 'auto', ...(transform ? style : {}) }),
       [style, transform]
     )
 
-    React.useLayoutEffect(
-      () =>
+    React.useLayoutEffect(() => {
+      if (transform) {
         void ReactDOM.render(
-          <div ref={transform ? transformOuterRef : ref} style={styles} className={transform ? '' : className}>
-            {transform ? (
-              <div ref={transformInnerRef} style={transformInnerStyles}>
-                <div ref={ref} className={className} children={children} />
-              </div>
-            ) : (
-              children
-            )}
+          <div ref={transformOuterRef} style={styles}>
+            <div ref={transformInnerRef} style={transformInnerStyles}>
+              <div ref={ref} className={className} children={children} />
+            </div>
           </div>,
           el
         )
-    )
+      } else {
+        void ReactDOM.render(<div ref={ref} style={styles} className={className} children={children} />, el)
+      }
+    })
 
     useFrame(() => {
       if (group.current) {

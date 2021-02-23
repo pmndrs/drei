@@ -196,8 +196,10 @@ export const Html = React.forwardRef(
             el.style.width = size.width + 'px'
             el.style.height = size.height + 'px'
             el.style.perspective = isOrthographicCamera ? '' : `${fov}px`
-            transformOuterRef.current.style.transform = `${cameraTransform}${cameraMatrix}translate(${widthHalf}px,${heightHalf}px)`
-            transformInnerRef.current.style.transform = getObjectCSSMatrix(matrix, 1 / ((scaleFactor || 10) / 400))
+            if (transformOuterRef.current && transformInnerRef.current) {
+              transformOuterRef.current.style.transform = `${cameraTransform}${cameraMatrix}translate(${widthHalf}px,${heightHalf}px)`
+              transformInnerRef.current.style.transform = getObjectCSSMatrix(matrix, 1 / ((scaleFactor || 10) / 400))
+            }
           } else {
             const scale = scaleFactor === undefined ? 1 : objectScale(group.current, camera) * scaleFactor
             el.style.transform = `translate3d(${vec[0]}px,${vec[1]}px,0) scale(${scale})`

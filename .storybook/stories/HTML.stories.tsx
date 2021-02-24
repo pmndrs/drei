@@ -32,7 +32,7 @@ function HTMLScene({
         <Html {...htmlProps}>Second</Html>
       </Icosahedron>
 
-      <Icosahedron args={[2, 2]} position={[-10, 0, -10]}>
+      <Icosahedron args={[2, 2]} position={[-20, 0, -20]}>
         <meshBasicMaterial attach="material" color={color} wireframe />
         <Html {...htmlProps}>Third</Html>
       </Icosahedron>

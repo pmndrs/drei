@@ -159,7 +159,7 @@ export const Html = React.forwardRef(
 
     React.useLayoutEffect(() => {
       if (transform) {
-        void ReactDOM.render(
+        ReactDOM.render(
           <div ref={transformOuterRef} style={styles}>
             <div ref={transformInnerRef} style={transformInnerStyles}>
               <div ref={ref} className={className} children={children} />
@@ -168,7 +168,7 @@ export const Html = React.forwardRef(
           el
         )
       } else {
-        void ReactDOM.render(<div ref={ref} style={styles} className={className} children={children} />, el)
+        ReactDOM.render(<div ref={ref} style={styles} className={className} children={children} />, el)
       }
     })
 

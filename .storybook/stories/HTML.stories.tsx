@@ -24,29 +24,23 @@ function HTMLScene({
     <group ref={ref}>
       <Icosahedron args={[2, 2]} position={[3, 6, 4]}>
         <meshBasicMaterial attach="material" color={color} wireframe />
-        <Html {...htmlProps}>
-          First
-        </Html>
+        <Html {...htmlProps}>First</Html>
       </Icosahedron>
 
       <Icosahedron args={[2, 2]} position={[10, 0, 10]}>
         <meshBasicMaterial attach="material" color={color} wireframe />
-        <Html {...htmlProps}>
-          Second
-        </Html>
+        <Html {...htmlProps}>Second</Html>
       </Icosahedron>
 
       <Icosahedron args={[2, 2]} position={[-10, 0, -10]}>
         <meshBasicMaterial attach="material" color={color} wireframe />
-        <Html {...htmlProps}>
-          Third
-        </Html>
+        <Html {...htmlProps}>Third</Html>
       </Icosahedron>
       {children}
     </group>
   )
 }
-                           
+
 export const HTMLSt = () => <HTMLScene scaleFactor={30} className="html-story-block" />
 HTMLSt.storyName = 'Default'
 
@@ -56,9 +50,14 @@ function HTMLTransformScene() {
       <Html
         sprite
         transform
-        scaleFactor={50}
+        scaleFactor={20}
         position={[5, 15, 0]}
-        style={{ background: 'palegreen', padding: '3px 7px' }}
+        style={{
+          background: 'palegreen',
+          fontSize: '50px',
+          padding: '10px 18px',
+          border: '2px solid black',
+        }}
       >
         Transform mode
       </Html>

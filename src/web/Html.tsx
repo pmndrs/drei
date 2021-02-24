@@ -130,8 +130,8 @@ export const Html = React.forwardRef(
       if (transform) {
         return {
           position: 'absolute',
-          top: transform ? 0 : -size.height / 2,
-          left: transform ? 0 : -size.width / 2,
+          top: 0,
+          left: 0,
           width: size.width,
           height: size.height,
           transformStyle: 'preserve-3d',
@@ -153,8 +153,8 @@ export const Html = React.forwardRef(
     }, [style, center, fullscreen, size, transform])
 
     const transformInnerStyles: React.CSSProperties = React.useMemo(
-      () => ({ position: 'absolute', pointerEvents: 'auto', ...(transform ? style : {}) }),
-      [style, transform]
+      () => ({ position: 'absolute', pointerEvents: 'auto', ...style }),
+      [style]
     )
 
     React.useLayoutEffect(() => {

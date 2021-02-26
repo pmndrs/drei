@@ -1,6 +1,6 @@
 {
   "name": "@react-three/drei",
-  "version": "3.8.7",
+  "version": "0.0.0-semantic-release",
   "private": true,
   "description": "useful add-ons for react-three-fiber",
   "keywords": [

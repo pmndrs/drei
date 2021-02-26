@@ -1,14 +1,14 @@
 import * as React from 'react'
-import * as THREE from 'three'
+import { Vector2, Vector3, Color } from 'three'
 import { ReactThreeFiber } from 'react-three-fiber'
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry'
 import { LineMaterial, LineMaterialParameters } from 'three/examples/jsm/lines/LineMaterial'
 import { Line2 } from 'three/examples/jsm/lines/Line2'
 
 type Props = {
-  points: [number, number, number][]
-  color?: THREE.Color | string | number
-  vertexColors?: [number, number, number][]
+  points: Array<Vector3 | [number, number, number]>
+  color?: Color | string | number
+  vertexColors?: Array<Color | [number, number, number]>
   lineWidth?: number
 } & Omit<ReactThreeFiber.Object3DNode<Line2, typeof Line2>, 'args'> &
   Omit<
@@ -22,14 +22,16 @@ export const Line = React.forwardRef<Line2, Props>(function Line(
 ) {
   const [line2] = React.useState(() => new Line2())
   const [lineMaterial] = React.useState(() => new LineMaterial())
-  const [resolution] = React.useState(() => new THREE.Vector2(512, 512))
+  const [resolution] = React.useState(() => new Vector2(512, 512))
 
   const lineGeom = React.useMemo(() => {
     const geom = new LineGeometry()
-    geom.setPositions(points.flat())
+    const pValues = points.map((p) => (p instanceof Vector3 ? p.toArray() : p))
+    geom.setPositions(pValues.flat())
 
     if (vertexColors) {
-      geom.setColors(vertexColors.flat())
+      const cValues = vertexColors.map((c) => (c instanceof Color ? c.toArray() : c))
+      geom.setColors(cValues.flat())
     }
 
     return geom

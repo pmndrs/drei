@@ -4,8 +4,8 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { useFrame, useThree } from 'react-three-fiber'
-import { HorizontalBlurShader } from 'three/examples/jsm/shaders/HorizontalBlurShader'
-import { VerticalBlurShader } from 'three/examples/jsm/shaders/VerticalBlurShader'
+import { HorizontalBlurShader } from 'three-stdlib/shaders/HorizontalBlurShader'
+import { VerticalBlurShader } from 'three-stdlib/shaders/VerticalBlurShader'
 
 type Props = JSX.IntrinsicElements['group'] & {
   opacity?: number

@@ -57,6 +57,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#line">Line</a></li>
           <li><a href="#positionalaudio">PositionalAudio</a></li>
           <li><a href="#billboard">Billboard</a></li>
+          <li><a href="#gizmoHelper">GizmoHelper</a></li>
           <li><a href="#environment">Environment</a></li>
           <li><a href="#effects">Effects</a></li>
           <li><a href="#useanimations">useAnimations</a></li>
@@ -338,6 +339,27 @@ Adds a `<Plane />` that always faces the camera.
 />
 ```
 
+#### GizmoHelper
+
+Used by widgets that visualize and control camera position.
+
+Two example gizmos are included: GizmoViewport and GizmoViewcube, and `useGizmoContext` makes it easy to create your own.
+
+```jsx
+<GizmoHelper
+  alignment="bottom-right" // widget alignment within scene
+  margin={[80, 80]} // widget margins (X, Y)
+  onUpdate={/* called during camera animation  */}
+  onTarget={/* return current camera target (e.g. from orbit controls) to center animation */}
+> 
+  <GizmoViewport 
+    axisColors={['red', 'green', 'blue']}
+    labelColor="black"
+  />
+  {/* alternative: <GizmoViewcube /> */}
+</GizmoHelper>
+```
+
 #### Environment
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-environment--environment-st)
@@ -588,12 +610,14 @@ Allows you to tie HTML content to any object of your scene. It will be projected
 ```jsx
 <Html
   prepend // Project content behind the canvas (default: false)
-  center // Adds a -50%/-50% css transform (default: false)
-  fullscreen // Aligns to the upper-left corner, fills the screen (default:false)
-  scaleFactor={10} // If set (default: undefined), children will be scaled by this factor, and also by distance to a PerspectiveCamera.
+  center // Adds a -50%/-50% css transform (default: false) [ignored in transform mode]
+  fullscreen // Aligns to the upper-left corner, fills the screen (default:false) [ignored in transform mode]
+  scaleFactor={10} // If set (default: undefined), children will be scaled by this factor, and also by distance to a PerspectiveCamera if transform is set to false.
   zIndexRange={[100, 0]} // Z-order range (default=[16777271, 0])
   portal={domnodeRef} // Reference to target container (default=undefined)
-  calculatePosition={(el: Object3D, camera: Camera, size: { width: number; height: number }) => number[]} // Override default positioning function. May be removed in the future (default=undefined)
+  transform // If true, applies matrix3d transformations (default=false)
+  sprite // Renders as sprite, but only in transform mode (default=false)
+  calculatePosition={(el: Object3D, camera: Camera, size: { width: number; height: number }) => number[]} // Override default positioning function. May be removed in the future (default=undefined) [ignored in transform mode]
   {...groupProps} // All THREE.Group props are valid
   {...divProps} // All HTMLDivElement props are valid
 >

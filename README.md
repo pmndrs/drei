@@ -12,6 +12,8 @@ npm install @react-three/drei
 
 :point_right: this package is now only published under the name `@react-three/drei`. `drei` has been deprecated. :point_left:
 
+:point_right: this package is using the stand-alone `[three-stdlib](https://github.com/pmndrs/three-stdlib)` instead of `[three/examples/jsm](https://github.com/mrdoob/three.js/tree/dev/examples/jsm)`. :point_left:
+
 ### Basic usage:
 
 ```jsx
@@ -432,7 +434,7 @@ Adds a [sky](https://threejs.org/examples/webgl_shaders_sky.html) to your scene.
   sunPosition={[0, 1, 0]} // Sun position normal (defaults to inclination and azimuth if not set)
   inclination={0} // Sun elevation angle from 0 to 1 (default=0)
   azimuth={0.25} // Sun rotation around the Y axis from 0 to 1 (default=0.25)
-  {...props} // All three/examples/jsm/objects/Sky props are valid
+  {...props} // All three-stdlib/objects/Sky props are valid
 />
 ```
 

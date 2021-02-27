@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
-import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
+import { GLTF } from 'three-stdlib/loaders/GLTFLoader'
 import { withKnobs, select, number } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'

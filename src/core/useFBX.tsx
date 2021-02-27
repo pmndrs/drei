@@ -1,4 +1,4 @@
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
+import { FBXLoader } from 'three-stdlib/loaders/FBXLoader'
 import { useLoader } from 'react-three-fiber'
 import { Group } from 'three'
 

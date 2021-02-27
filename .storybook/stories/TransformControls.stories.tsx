@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { withKnobs, optionsKnob, boolean } from '@storybook/addon-knobs'
-import { TransformControls as TransformControlsImpl } from 'three/examples/jsm/controls/TransformControls'
+import { TransformControls as TransformControlsImpl } from 'three-stdlib/controls/TransformControls'
 
 import { Setup } from '../Setup'
 

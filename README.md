@@ -55,6 +55,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#line">Line</a></li>
           <li><a href="#positionalaudio">PositionalAudio</a></li>
           <li><a href="#billboard">Billboard</a></li>
+          <li><a href="#gizmoHelper">GizmoHelper</a></li>
           <li><a href="#environment">Environment</a></li>
           <li><a href="#effects">Effects</a></li>
           <li><a href="#useanimations">useAnimations</a></li>
@@ -334,6 +335,27 @@ Adds a `<Plane />` that always faces the camera.
   lockY={false} // Lock the rotation on the y axis (default=false)
   lockZ={false} // Lock the rotation on the z axis (default=false)
 />
+```
+
+#### GizmoHelper
+
+Used by widgets that visualize and control camera position.
+
+Two example gizmos are included: GizmoViewport and GizmoViewcube, and `useGizmoContext` makes it easy to create your own.
+
+```jsx
+<GizmoHelper
+  alignment="bottom-right" // widget alignment within scene
+  margin={[80, 80]} // widget margins (X, Y)
+  onUpdate={/* called during camera animation  */}
+  onTarget={/* return current camera target (e.g. from orbit controls) to center animation */}
+> 
+  <GizmoViewport 
+    axisColors={['red', 'green', 'blue']}
+    labelColor="black"
+  />
+  {/* alternative: <GizmoViewcube /> */}
+</GizmoHelper>
 ```
 
 #### Environment

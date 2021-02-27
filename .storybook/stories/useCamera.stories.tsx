@@ -16,7 +16,7 @@ function UseCameraScene() {
   const virtualCam = React.useRef<THREE.Camera>(null!)
   const ref = React.useRef<THREE.Mesh>()
 
-  const [hover, set] = React.useState<null | number>(null)
+  const [hover, setHover] = React.useState<null | number>(null)
 
   const { gl, scene, camera } = useThree()
 
@@ -39,16 +39,13 @@ function UseCameraScene() {
     gl.render(virtualScene, virtualCam.current)
   }, 1)
 
+  const handlePointerOut = () => setHover(null)
+  const handlePointerMove = (e: THREE.Event) => setHover(Math.floor(e.faceIndex ?? 0 / 2))
   return (createPortal(
     <>
       <OrthographicCamera ref={virtualCam} makeDefault={false} position={[0, 0, 100]} zoom={2} />
 
-      <mesh
-        ref={ref}
-        raycast={useCamera(virtualCam)}
-        onPointerOut={() => set(null)}
-        onPointerMove={(e) => set(Math.floor(e.faceIndex ?? 0 / 2))}
-      >
+      <mesh ref={ref} raycast={useCamera(virtualCam)} onPointerOut={handlePointerOut} onPointerMove={handlePointerMove}>
         {[...Array(6)].map((_, index) => (
           <meshLambertMaterial attachArray="material" key={index} color="hotpink" wireframe={hover !== index} />
         ))}

@@ -26,6 +26,10 @@ body,
   margin-left: 100px;
 }
 
+.html-story-block.margin300 {
+  margin-left: 300px;
+}
+
 .html-story-block:before {
   content: '';
   display: block;

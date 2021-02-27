@@ -14,30 +14,59 @@ export default {
   decorators: [(storyFn) => <Setup cameraPosition={new THREE.Vector3(-20, 20, -20)}> {storyFn()}</Setup>],
 }
 
-function HTMLScene(htmlProps: HtmlProps) {
+function HTMLScene({
+  children = null,
+  color = 'hotpink',
+  ...htmlProps
+}: HtmlProps & { color?: string; children?: React.ReactNode }) {
   const ref = useTurntable()
   return (
     <group ref={ref}>
       <Icosahedron args={[2, 2]} position={[3, 6, 4]}>
-        <meshBasicMaterial attach="material" color="hotpink" wireframe />
+        <meshBasicMaterial attach="material" color={color} wireframe />
         <Html {...htmlProps}>First</Html>
       </Icosahedron>
 
       <Icosahedron args={[2, 2]} position={[10, 0, 10]}>
-        <meshBasicMaterial attach="material" color="hotpink" wireframe />
+        <meshBasicMaterial attach="material" color={color} wireframe />
         <Html {...htmlProps}>Second</Html>
       </Icosahedron>
 
       <Icosahedron args={[2, 2]} position={[-20, 0, -20]}>
-        <meshBasicMaterial attach="material" color="hotpink" wireframe />
+        <meshBasicMaterial attach="material" color={color} wireframe />
         <Html {...htmlProps}>Third</Html>
       </Icosahedron>
+      {children}
     </group>
   )
 }
 
 export const HTMLSt = () => <HTMLScene scaleFactor={30} className="html-story-block" />
 HTMLSt.storyName = 'Default'
+
+function HTMLTransformScene() {
+  return (
+    <HTMLScene color="palegreen" transform className="html-story-block margin300" scaleFactor={30}>
+      <Html
+        sprite
+        transform
+        scaleFactor={20}
+        position={[5, 15, 0]}
+        style={{
+          background: 'palegreen',
+          fontSize: '50px',
+          padding: '10px 18px',
+          border: '2px solid black',
+        }}
+      >
+        Transform mode
+      </Html>
+    </HTMLScene>
+  )
+}
+
+export const HTMLTransformSt = () => <HTMLTransformScene />
+HTMLTransformSt.storyName = 'Transform mode'
 
 function HTMLOrthographicScene() {
   const ref = useFadeInOut()

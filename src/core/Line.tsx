@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { Vector2, Vector3, Color } from 'three'
 import { ReactThreeFiber } from 'react-three-fiber'
-import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry'
-import { LineMaterial, LineMaterialParameters } from 'three/examples/jsm/lines/LineMaterial'
-import { Line2 } from 'three/examples/jsm/lines/Line2'
+import { LineGeometry } from 'three-stdlib/lines/LineGeometry'
+import { LineMaterial, LineMaterialParameters } from 'three-stdlib/lines/LineMaterial'
+import { Line2 } from 'three-stdlib/lines/Line2'
 
 type Props = {
   points: Array<Vector3 | [number, number, number]>

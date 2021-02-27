@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { ReactThreeFiber, useThree, useFrame, Overwrite } from 'react-three-fiber'
-import { MapControls as MapControlsImpl } from 'three/examples/jsm/controls/OrbitControls'
+import { MapControls as MapControlsImpl } from 'three-stdlib/controls/OrbitControls'
 import useEffectfulState from '../helpers/useEffectfulState'
 
 export type MapControls = Overwrite<

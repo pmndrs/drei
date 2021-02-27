@@ -3439,6 +3439,11 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
+"@webgpu/glslang@^0.0.15":
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/@webgpu/glslang/-/glslang-0.0.15.tgz#f5ccaf6015241e6175f4b90906b053f88483d1f2"
+  integrity sha512-niT+Prh3Aff8Uf1MVBVUsaNjFj9rJAKDXuoHIKiQbB+6IUP/3J3JIhBNyZ7lDhytvXxw6ppgnwKZdDJ08UMj4Q==
+
 "@webxr-input-profiles/motion-controllers@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@webxr-input-profiles/motion-controllers/-/motion-controllers-1.0.0.tgz#0a84533288af39d85bfe1987721035925d69be47"
@@ -6373,6 +6378,11 @@ fb-watchman@^2.0.0:
   integrity sha512-DkPJKQeY6kKwmuMretBhr7G6Vodr7bFwDYTXIkfG1gjvNpaxBTQV3PbXg6bR1c1UP4jPOX0jHUbbHANL9vRjVg==
   dependencies:
     bser "2.1.1"
+
+fflate@^0.6.4:
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/fflate/-/fflate-0.6.4.tgz#09011d8ad6c2f180782bd0e32007d5307d43c8fd"
+  integrity sha512-YUO27Eim8e+i8dMZf9J6jKivfbGyb5BP1XJgBmtFb6qAcaD5kPLdapVVkfFyFlUa4crk7sCFUOQW77YxUvbtqQ==
 
 figgy-pudding@^3.5.1:
   version "3.5.2"
@@ -11907,23 +11917,19 @@ text-table@0.2.0, text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
-three-stdlib@^0.0.6:
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-0.0.6.tgz#a9c3fda247201f19a984d9284c1b053d218145c6"
-  integrity sha512-ISbL2dcfgg8vVasshzP7ciAukV8yoMadm5tdXUvORDmsaEIzNkQO+UlR3Z9bGM0aajzL3RtVouKshvdoRVcTaw==
+three-stdlib@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-0.0.7.tgz#8e0cebb3ed653e821b7456cd62e0108fc4519e65"
+  integrity sha512-AHVhSGuYGUFDE88Kd/9ILDRFQLVwqTJooEbjR7vYYvx+r5ac4XDLi+/xs8mnyUtZk1qBWyqR9JgRVg+AVnuP3Q==
   dependencies:
+    "@webgpu/glslang" "^0.0.15"
     "@webxr-input-profiles/motion-controllers" "^1.0.0"
-    three "^0.126.0"
+    fflate "^0.6.4"
 
 three@0.125.0:
   version "0.125.0"
   resolved "https://registry.yarnpkg.com/three/-/three-0.125.0.tgz#19e922b9dc51ad0b706893aeee888de68e99850a"
   integrity sha512-qL36qUGsPQ/Ofo/RZdXwHwM7A8wzUSAIyawtjIebJSPvounUQeneSqxI0aBY2iwKpseGy+RUtj3C5f/z4poyXw==
-
-three@^0.126.0:
-  version "0.126.0"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.126.0.tgz#924818341cd4441ef247e3cbf236f6160b90a216"
-  integrity sha512-/MecvboUefStCkUfXLImoJxthN+FoLPcEP7pz1r1Dd9i8BPGGuj+S1sOPRvW4Z+ViZjP2oWWm1inNC/MT52ybA==
 
 throat@^5.0.0:
   version "5.0.0"

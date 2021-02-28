@@ -1,10 +1,8 @@
 import * as React from 'react'
 import { WebGLMultisampleRenderTarget, RGBAFormat, sRGBEncoding } from 'three'
 import { ReactThreeFiber, extend, useThree, useFrame } from 'react-three-fiber'
-import { EffectComposer } from 'three-stdlib/postprocessing/EffectComposer'
-import { RenderPass } from 'three-stdlib/postprocessing/RenderPass'
-import { ShaderPass } from 'three-stdlib/postprocessing/ShaderPass'
-import { GammaCorrectionShader } from 'three-stdlib/shaders/GammaCorrectionShader'
+import { EffectComposer, RenderPass, ShaderPass, GammaCorrectionShader } from 'three-stdlib'
+
 import mergeRefs from 'react-merge-refs'
 
 extend({ EffectComposer, RenderPass, ShaderPass })

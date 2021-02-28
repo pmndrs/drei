@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useFrame, useThree } from 'react-three-fiber'
-import { SimplexNoise } from 'three-stdlib/math/SimplexNoise'
+import { SimplexNoise } from 'three-stdlib'
 
 export interface ShakeController {
   getIntensity: () => number

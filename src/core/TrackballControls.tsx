@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { ReactThreeFiber, useThree, useFrame, Overwrite } from 'react-three-fiber'
-import { TrackballControls as TrackballControlsImpl } from 'three-stdlib/controls/TrackballControls'
+import { TrackballControls as TrackballControlsImpl } from 'three-stdlib'
 import useEffectfulState from '../helpers/useEffectfulState'
 
 export type TrackballControls = Overwrite<

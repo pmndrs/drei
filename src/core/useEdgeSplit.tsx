@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { EdgeSplitModifier } from 'three-stdlib/modifiers/EdgeSplitModifier'
+import { EdgeSplitModifier } from 'three-stdlib'
 
 export function useEdgeSplit(cutOffAngle: number, tryKeepNormals: boolean = true) {
   const ref = React.useRef<THREE.Mesh>()

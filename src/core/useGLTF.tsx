@@ -1,6 +1,6 @@
 import { Loader } from 'three'
-import { GLTFLoader } from 'three-stdlib/loaders/GLTFLoader'
-import { DRACOLoader } from 'three-stdlib/loaders/DRACOLoader'
+import { GLTFLoader, DRACOLoader } from 'three-stdlib'
+
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
 import { useLoader } from 'react-three-fiber'
 

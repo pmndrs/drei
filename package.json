@@ -114,7 +114,7 @@
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-size-snapshot": "^0.12.0",
     "three": "0.125.0",
-    "three-stdlib": "^0.0.11",
+    "three-stdlib": "^0.0.14",
     "typescript": "^3.9.7",
     "use-asset": "^1.0.2"
   },
@@ -123,7 +123,7 @@
     "react-dom": ">=17.0",
     "react-three-fiber": ">=5.3.18",
     "three": ">=0.125.0",
-    "three-stdlib": ">=0.0.7"
+    "three-stdlib": ">=0.0.14"
   },
   "peerDependenciesMeta": {
     "react-dom": {

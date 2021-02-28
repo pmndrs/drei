@@ -351,11 +351,8 @@ Two example gizmos are included: GizmoViewport and GizmoViewcube, and `useGizmoC
   margin={[80, 80]} // widget margins (X, Y)
   onUpdate={/* called during camera animation  */}
   onTarget={/* return current camera target (e.g. from orbit controls) to center animation */}
-> 
-  <GizmoViewport 
-    axisColors={['red', 'green', 'blue']}
-    labelColor="black"
-  />
+>
+  <GizmoViewport axisColors={['red', 'green', 'blue']} labelColor="black" />
   {/* alternative: <GizmoViewcube /> */}
 </GizmoHelper>
 ```
@@ -456,7 +453,7 @@ Adds a [sky](https://threejs.org/examples/webgl_shaders_sky.html) to your scene.
   sunPosition={[0, 1, 0]} // Sun position normal (defaults to inclination and azimuth if not set)
   inclination={0} // Sun elevation angle from 0 to 1 (default=0)
   azimuth={0.25} // Sun rotation around the Y axis from 0 to 1 (default=0.25)
-  {...props} // All three-stdlib/objects/Sky props are valid
+  {...props} // All three/examples/jsm/objects/Sky props are valid
 />
 ```
 

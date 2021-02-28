@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Object3D, Group } from 'three'
 import { useThree, ReactThreeFiber } from 'react-three-fiber'
-import { TransformControls as TransformControlsImpl } from 'three-stdlib/controls/TransformControls'
+import { TransformControls as TransformControlsImpl } from 'three-stdlib'
 import useEffectfulState from '../helpers/useEffectfulState'
 import pick from 'lodash.pick'
 import omit from 'lodash.omit'

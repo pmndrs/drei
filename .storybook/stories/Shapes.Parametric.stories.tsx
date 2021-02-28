@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
-import { ParametricGeometries } from 'three-stdlib/geometries/ParametricGeometries.js'
+import { ParametricGeometries } from 'three-stdlib'
 
 import { Setup } from '../Setup'
 import { useTurntable } from '../useTurntable'

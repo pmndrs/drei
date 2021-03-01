@@ -34,7 +34,9 @@ function objectScale(el: Object3D, camera) {
   const scaleFOV = 2 * Math.tan(vFOV / 2) * dist
 
   if (camera instanceof OrthographicCamera) {
-    return 1 / (scaleFOV / camera.zoom)
+    // Maybe someone should take a look at this scaleFOV can be 0
+    const scale = scaleFOV != 0 ? 1 / (scaleFOV / camera.zoom) : camera.zoom
+    return scale
   } else if (camera instanceof PerspectiveCamera) {
     return 1 / scaleFOV
   } else {
@@ -109,7 +111,8 @@ export const Html = React.forwardRef(
     const { gl, scene, camera, size } = useThree()
     const [el] = React.useState(() => document.createElement('div'))
     const group = React.useRef<Group>(null)
-    const old = React.useRef([0, 0])
+    const oldZoom = React.useRef(0)
+    const oldPosition = React.useRef([0, 0])
     const transformOuterRef = React.useRef<HTMLDivElement>(null)
     const transformInnerRef = React.useRef<HTMLDivElement>(null)
     const target = portal?.current ?? gl.domElement.parentNode
@@ -184,8 +187,14 @@ export const Html = React.forwardRef(
     useFrame(() => {
       if (group.current) {
         camera.updateMatrixWorld()
-        const vec = transform ? old.current : calculatePosition(group.current, camera, size)
-        if (transform || Math.abs(old.current[0] - vec[0]) > eps || Math.abs(old.current[1] - vec[1]) > eps) {
+        const vec = transform ? oldPosition.current : calculatePosition(group.current, camera, size)
+
+        if (
+          transform ||
+          Math.abs(oldZoom.current - camera.zoom) > eps ||
+          Math.abs(oldPosition.current[0] - vec[0]) > eps ||
+          Math.abs(oldPosition.current[1] - vec[1]) > eps
+        ) {
           el.style.display = !isObjectBehindCamera(group.current, camera) ? 'block' : 'none'
           el.style.zIndex = `${objectZIndex(group.current, camera, zIndexRange)}`
           if (transform) {
@@ -212,8 +221,9 @@ export const Html = React.forwardRef(
           } else {
             const scale = scaleFactor === undefined ? 1 : objectScale(group.current, camera) * scaleFactor
             el.style.transform = `translate3d(${vec[0]}px,${vec[1]}px,0) scale(${scale})`
-            old.current = vec
           }
+          oldPosition.current = vec
+          oldZoom.current = camera.zoom
         }
       }
     })

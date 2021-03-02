@@ -26,18 +26,16 @@ function isObjectBehindCamera(el: Object3D, camera: Camera) {
   return deltaCamObj.angleTo(camDir) > Math.PI / 2
 }
 
-function objectScale(el: Object3D, camera) {
-  const objectPos = v1.setFromMatrixPosition(el.matrixWorld)
-  const cameraPos = v2.setFromMatrixPosition(camera.matrixWorld)
-  const vFOV = (camera.fov * Math.PI) / 180
-  const dist = objectPos.distanceTo(cameraPos)
-  const scaleFOV = 2 * Math.tan(vFOV / 2) * dist
+function objectScale(el: Object3D, camera: Camera) {
 
   if (camera instanceof OrthographicCamera) {
-    // Maybe someone should take a look at this scaleFOV can be 0
-    const scale = scaleFOV != 0 ? 1 / (scaleFOV / camera.zoom) : camera.zoom
-    return scale
+    return camera.zoom
   } else if (camera instanceof PerspectiveCamera) {
+    const objectPos = v1.setFromMatrixPosition(el.matrixWorld)
+    const cameraPos = v2.setFromMatrixPosition(camera.matrixWorld)
+    const vFOV = (camera.fov * Math.PI) / 180
+    const dist = objectPos.distanceTo(cameraPos)
+    const scaleFOV = 2 * Math.tan(vFOV / 2) * dist
     return 1 / scaleFOV
   } else {
     return 1

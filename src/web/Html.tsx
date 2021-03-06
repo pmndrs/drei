@@ -1,3 +1,4 @@
+import * as THREE from 'three'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Vector3, Group, Object3D, Camera, PerspectiveCamera, OrthographicCamera } from 'three'
@@ -58,6 +59,7 @@ export interface HtmlProps
   prepend?: boolean
   center?: boolean
   fullscreen?: boolean
+  occluder?: React.RefObject<Object3D>
   eps?: number
   portal?: React.MutableRefObject<HTMLElement>
   scaleFactor?: number
@@ -69,6 +71,7 @@ export const Html = React.forwardRef(
   (
     {
       children,
+      occluder,
       eps = 0.001,
       style,
       className,
@@ -88,6 +91,43 @@ export const Html = React.forwardRef(
     const group = React.useRef<Group>(null)
     const old = React.useRef([0, 0])
     const target = portal?.current ?? gl.domElement?.parentNode
+
+    const [opacity, setOpacity] = React.useState(1) 
+    
+    useFrame(() => {
+      
+      if (occluder?.current && group.current) {
+        v1.setFromMatrixPosition(group.current.matrixWorld)
+        v2.setFromMatrixPosition(camera.matrixWorld)
+
+        const dir = new THREE.Vector3()
+        
+        const ray = new THREE.Raycaster(v1, dir.subVectors(v2, v1).normalize())
+
+        const hit = ray.intersectObject(occluder.current)[0]
+
+        const x = new THREE.Object3D()
+        
+        if (typeof hit !== "undefined") {
+          x.position.copy(hit.point)
+          const position = calculatePosition(x, camera, size)
+          const targetPosition = calculatePosition(group.current, camera, size)
+
+          const v1 = new THREE.Vector2(...position)
+          const v2 = new THREE.Vector2(...targetPosition)
+          
+          setOpacity(v1.distanceTo(v2)  / 100)
+        } else {
+          setOpacity(1)
+        }
+        
+        // const dist = v1.distanceTo(p.point)
+        
+      }
+      
+    })
+    
+
 
     React.useEffect(() => {
       if (group.current) {
@@ -114,11 +154,12 @@ export const Html = React.forwardRef(
           top: -size.height / 2,
           left: -size.width / 2,
           width: size.width,
-          height: size.height,
+          height: size.height
         }),
+        opacity,
         ...style,
       }),
-      [style, center, fullscreen, size]
+      [style, center, fullscreen, size, opacity]
     )
 
     React.useLayoutEffect(

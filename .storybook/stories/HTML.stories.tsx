@@ -5,7 +5,7 @@ import { Setup } from '../Setup'
 import { useTurntable } from '../useTurntable'
 import { useFadeInOut } from '../useFadeInOut'
 
-import { Icosahedron, Html, OrthographicCamera } from '../../src'
+import { Icosahedron, Html, OrthographicCamera, Octahedron } from '../../src'
 import { HtmlProps, CalculatePosition } from 'web/Html'
 
 export default {
@@ -82,3 +82,28 @@ export const HTMLCalculatePosition = () => (
   <HTMLScene className="html-story-label" calculatePosition={overrideCalculatePosition} />
 )
 HTMLCalculatePosition.storyName = 'Custom Calculate Position'
+
+
+function HTML2Scene(htmlProps: HtmlProps) {
+
+  const ref = React.useRef<THREE.Object3D>(null)
+  
+  return (
+    <group>
+
+      <Octahedron args={[5, 5]} ref={ref}>
+        <meshBasicMaterial attach="material" color="hotpink" />
+      </Octahedron>
+      
+      <Octahedron args={[2, 2]} position={[3, 6, 4]}>
+        <meshBasicMaterial attach="material" color="hotpink" wireframe />
+        <Html {...htmlProps} occluder={ref}>First</Html>
+      </Octahedron>
+    </group>
+  )
+}
+
+export const Occlude = () => (
+  <HTML2Scene className="html-story-label" calculatePosition={overrideCalculatePosition} />
+)
+Occlude.storyName = 'Occluder'

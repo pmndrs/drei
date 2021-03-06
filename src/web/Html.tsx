@@ -27,7 +27,6 @@ function isObjectBehindCamera(el: Object3D, camera: Camera) {
 }
 
 function objectScale(el: Object3D, camera: Camera) {
-
   if (camera instanceof OrthographicCamera) {
     return camera.zoom
   } else if (camera instanceof PerspectiveCamera) {
@@ -79,7 +78,7 @@ export interface HtmlProps
   fullscreen?: boolean
   eps?: number
   portal?: React.MutableRefObject<HTMLElement>
-  scaleFactor?: number
+  distanceFactor?: number
   sprite?: boolean
   transform?: boolean
   zIndexRange?: Array<number>
@@ -97,7 +96,7 @@ export const Html = React.forwardRef(
       center,
       fullscreen,
       portal,
-      scaleFactor,
+      distanceFactor,
       sprite = false,
       transform = false,
       zIndexRange = [16777271, 0],
@@ -214,10 +213,10 @@ export const Html = React.forwardRef(
             el.style.perspective = isOrthographicCamera ? '' : `${fov}px`
             if (transformOuterRef.current && transformInnerRef.current) {
               transformOuterRef.current.style.transform = `${cameraTransform}${cameraMatrix}translate(${widthHalf}px,${heightHalf}px)`
-              transformInnerRef.current.style.transform = getObjectCSSMatrix(matrix, 1 / ((scaleFactor || 10) / 400))
+              transformInnerRef.current.style.transform = getObjectCSSMatrix(matrix, 1 / ((distanceFactor || 10) / 400))
             }
           } else {
-            const scale = scaleFactor === undefined ? 1 : objectScale(group.current, camera) * scaleFactor
+            const scale = distanceFactor === undefined ? 1 : objectScale(group.current, camera) * distanceFactor
             el.style.transform = `translate3d(${vec[0]}px,${vec[1]}px,0) scale(${scale})`
           }
           oldPosition.current = vec

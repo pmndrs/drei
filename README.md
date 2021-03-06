@@ -233,6 +233,19 @@ If available controls have damping enabled by default, they manage their own upd
 
 Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-scene-st), TrackballControls, FlyControls, DeviceOrientationControls, TransformControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-transformcontrols--transform-controls-story), PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st)
 
+Every control component can be used with a custom camera using the `camera` prop:
+
+```jsx
+const myCamera = useResource()
+
+return (
+  <>
+    <PerspectiveCamera ref={myCamera} position={[0, 5, 5]} />
+    <OrbitControls camera={myCamera.current} />
+  </>
+)
+```
+
 PointerLockControls additionally supports a `selector` prop, which enables the binding of `click` event handlers for control activation to other elements than `document` (e.g. a 'Click here to play' button).
 
 # Shapes

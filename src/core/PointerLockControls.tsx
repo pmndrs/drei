@@ -5,13 +5,20 @@ import useEffectfulState from '../helpers/useEffectfulState'
 
 export type PointerLockControls = ReactThreeFiber.Object3DNode<PointerLockControlsImpl, typeof PointerLockControlsImpl>
 
-export type PointerLockControlsProps = PointerLockControls & { selector?: string }
+export type PointerLockControlsProps = PointerLockControls & { selector?: string; camera?: THREE.Camera }
 
 export const PointerLockControls = React.forwardRef(({ selector, ...props }: PointerLockControlsProps, ref) => {
-  const { camera, gl, invalidate } = useThree()
+  const { camera, ...rest } = props
+  const { camera: defaultCamera, gl, invalidate } = useThree()
+  const explCamera = camera || defaultCamera
+
   const controls = useEffectfulState(
-    () => new PointerLockControlsImpl(camera, gl.domElement),
-    [camera, gl.domElement],
+    () => {
+      if (explCamera) {
+        return new PointerLockControlsImpl(explCamera, gl.domElement)
+      }
+    },
+    [explCamera, gl.domElement],
     ref as any
   )
 
@@ -27,5 +34,5 @@ export const PointerLockControls = React.forwardRef(({ selector, ...props }: Poi
     return () => (element ? element.removeEventListener('click', handler) : undefined)
   }, [controls, selector])
 
-  return controls ? <primitive dispose={undefined} object={controls} {...props} /> : null
+  return controls ? <primitive dispose={undefined} object={controls} {...rest} /> : null
 })

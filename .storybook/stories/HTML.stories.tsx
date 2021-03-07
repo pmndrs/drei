@@ -3,10 +3,10 @@ import * as THREE from 'three'
 
 import { Setup } from '../Setup'
 import { useTurntable } from '../useTurntable'
-import { useFadeInOut } from '../useFadeInOut'
 
 import { Icosahedron, Html, OrthographicCamera } from '../../src'
 import { HtmlProps, CalculatePosition } from 'web/Html'
+import { useFrame, useThree } from 'react-three-fiber'
 
 export default {
   title: 'Misc/Html',
@@ -41,16 +41,16 @@ function HTMLScene({
   )
 }
 
-export const HTMLSt = () => <HTMLScene scaleFactor={30} className="html-story-block" />
+export const HTMLSt = () => <HTMLScene distanceFactor={30} className="html-story-block" />
 HTMLSt.storyName = 'Default'
 
 function HTMLTransformScene() {
   return (
-    <HTMLScene color="palegreen" transform className="html-story-block margin300" scaleFactor={30}>
+    <HTMLScene color="palegreen" transform className="html-story-block margin300" distanceFactor={30}>
       <Html
         sprite
         transform
-        scaleFactor={20}
+        distanceFactor={20}
         position={[5, 15, 0]}
         style={{
           background: 'palegreen',
@@ -69,22 +69,36 @@ export const HTMLTransformSt = () => <HTMLTransformScene />
 HTMLTransformSt.storyName = 'Transform mode'
 
 function HTMLOrthographicScene() {
-  const ref = useFadeInOut()
+  const { camera } = useThree()
+  const [zoomIn, setZoomIn] = React.useState(true)
 
   const initialCamera = {
     position: new THREE.Vector3(0, 0, -10),
-    fov: 40,
   }
+
+  useFrame(() => {
+    zoomIn ? (camera.zoom += 0.01) : (camera.zoom -= 0.01)
+    camera.updateProjectionMatrix()
+
+    if (camera.zoom > 3) {
+      setZoomIn(false)
+    } else if (camera.zoom < 1) {
+      setZoomIn(true)
+    }
+  })
 
   return (
     <>
       <OrthographicCamera makeDefault={true} applyMatrix4={undefined} {...initialCamera} />
 
-      <Icosahedron args={[200, 5]} position={[100, 0, 0]} ref={ref}>
+      <Icosahedron args={[200, 5]} position={[0, 0, 0]}>
         <meshBasicMaterial attach="material" color="hotpink" wireframe />
-        <Html scaleFactor={250} className="html-story-block">
-          Orthographic Scaling
-        </Html>
+        {
+          // for smoother text use css will-change: transform
+          <Html className="html-story-label" distanceFactor={1}>
+            Orthographic
+          </Html>
+        }
       </Icosahedron>
       <ambientLight intensity={0.8} />
       <pointLight intensity={1} position={[0, 6, 0]} />

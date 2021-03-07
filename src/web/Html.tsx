@@ -26,16 +26,15 @@ function isObjectBehindCamera(el: Object3D, camera: Camera) {
   return deltaCamObj.angleTo(camDir) > Math.PI / 2
 }
 
-function objectScale(el: Object3D, camera) {
-  const objectPos = v1.setFromMatrixPosition(el.matrixWorld)
-  const cameraPos = v2.setFromMatrixPosition(camera.matrixWorld)
-  const vFOV = (camera.fov * Math.PI) / 180
-  const dist = objectPos.distanceTo(cameraPos)
-  const scaleFOV = 2 * Math.tan(vFOV / 2) * dist
-
+function objectScale(el: Object3D, camera: Camera) {
   if (camera instanceof OrthographicCamera) {
-    return 1 / (scaleFOV / camera.zoom)
+    return camera.zoom
   } else if (camera instanceof PerspectiveCamera) {
+    const objectPos = v1.setFromMatrixPosition(el.matrixWorld)
+    const cameraPos = v2.setFromMatrixPosition(camera.matrixWorld)
+    const vFOV = (camera.fov * Math.PI) / 180
+    const dist = objectPos.distanceTo(cameraPos)
+    const scaleFOV = 2 * Math.tan(vFOV / 2) * dist
     return 1 / scaleFOV
   } else {
     return 1
@@ -79,7 +78,7 @@ export interface HtmlProps
   fullscreen?: boolean
   eps?: number
   portal?: React.MutableRefObject<HTMLElement>
-  scaleFactor?: number
+  distanceFactor?: number
   sprite?: boolean
   transform?: boolean
   zIndexRange?: Array<number>
@@ -97,7 +96,7 @@ export const Html = React.forwardRef(
       center,
       fullscreen,
       portal,
-      scaleFactor,
+      distanceFactor,
       sprite = false,
       transform = false,
       zIndexRange = [16777271, 0],
@@ -109,7 +108,8 @@ export const Html = React.forwardRef(
     const { gl, scene, camera, size } = useThree()
     const [el] = React.useState(() => document.createElement('div'))
     const group = React.useRef<Group>(null)
-    const old = React.useRef([0, 0])
+    const oldZoom = React.useRef(0)
+    const oldPosition = React.useRef([0, 0])
     const transformOuterRef = React.useRef<HTMLDivElement>(null)
     const transformInnerRef = React.useRef<HTMLDivElement>(null)
     const target = portal?.current ?? gl.domElement.parentNode
@@ -184,8 +184,14 @@ export const Html = React.forwardRef(
     useFrame(() => {
       if (group.current) {
         camera.updateMatrixWorld()
-        const vec = transform ? old.current : calculatePosition(group.current, camera, size)
-        if (transform || Math.abs(old.current[0] - vec[0]) > eps || Math.abs(old.current[1] - vec[1]) > eps) {
+        const vec = transform ? oldPosition.current : calculatePosition(group.current, camera, size)
+
+        if (
+          transform ||
+          Math.abs(oldZoom.current - camera.zoom) > eps ||
+          Math.abs(oldPosition.current[0] - vec[0]) > eps ||
+          Math.abs(oldPosition.current[1] - vec[1]) > eps
+        ) {
           el.style.display = !isObjectBehindCamera(group.current, camera) ? 'block' : 'none'
           el.style.zIndex = `${objectZIndex(group.current, camera, zIndexRange)}`
           if (transform) {
@@ -207,13 +213,14 @@ export const Html = React.forwardRef(
             el.style.perspective = isOrthographicCamera ? '' : `${fov}px`
             if (transformOuterRef.current && transformInnerRef.current) {
               transformOuterRef.current.style.transform = `${cameraTransform}${cameraMatrix}translate(${widthHalf}px,${heightHalf}px)`
-              transformInnerRef.current.style.transform = getObjectCSSMatrix(matrix, 1 / ((scaleFactor || 10) / 400))
+              transformInnerRef.current.style.transform = getObjectCSSMatrix(matrix, 1 / ((distanceFactor || 10) / 400))
             }
           } else {
-            const scale = scaleFactor === undefined ? 1 : objectScale(group.current, camera) * scaleFactor
+            const scale = distanceFactor === undefined ? 1 : objectScale(group.current, camera) * distanceFactor
             el.style.transform = `translate3d(${vec[0]}px,${vec[1]}px,0) scale(${scale})`
-            old.current = vec
           }
+          oldPosition.current = vec
+          oldZoom.current = camera.zoom
         }
       }
     })

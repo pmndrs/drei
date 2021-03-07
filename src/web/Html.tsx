@@ -149,7 +149,7 @@ export const Html = React.forwardRef(
       } else {
         return {
           position: 'absolute',
-          transform: center ? 'translate3d(-50%,-50%)' : 'none',
+          transform: center ? 'translate3d(-50%,-50%,0)' : 'none',
           ...(fullscreen && {
             top: -size.height / 2,
             left: -size.width / 2,

@@ -11952,10 +11952,10 @@ text-table@0.2.0, text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
-three-stdlib@^0.0.15:
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-0.0.15.tgz#33e8d98c61ebdb50dc2b15730e2496ab49d6ec74"
-  integrity sha512-7siG5A8edZqivZDmUnqmw0zUAEazqaornGa1VjpXO5nl/Zlj8iEmjUbxVHHhpItsinzaghAvMMODMsDl8jz4Vg==
+three-stdlib@^1.0.0-beta.2:
+  version "1.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-1.0.0-beta.2.tgz#0bdbbfd127f794942d877ce77ef18119e17d90cf"
+  integrity sha512-hrNHvlnjt/hujCI4nRaynaQBKl5ApaQRTFhr64faFFMoJ3/med4IOYKpeykYUyk6FcQaJ1lZj+7+RVvHMYAyhg==
   dependencies:
     "@webgpu/glslang" "^0.0.15"
     "@webxr-input-profiles/motion-controllers" "^1.0.0"

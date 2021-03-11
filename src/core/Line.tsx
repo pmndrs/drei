@@ -5,7 +5,7 @@ import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry'
 import { LineMaterial, LineMaterialParameters } from 'three/examples/jsm/lines/LineMaterial'
 import { Line2 } from 'three/examples/jsm/lines/Line2'
 
-type Props = {
+export type LineProps = {
   points: Array<Vector3 | [number, number, number]>
   color?: Color | string | number
   vertexColors?: Array<Color | [number, number, number]>
@@ -16,7 +16,7 @@ type Props = {
     'color' | 'vertexColors' | 'resolution' | 'args'
   >
 
-export const Line = React.forwardRef<Line2, Props>(function Line(
+export const Line = React.forwardRef<Line2, LineProps>(function Line(
   { points, color = 'black', vertexColors, lineWidth, dashed, ...rest },
   ref
 ) {

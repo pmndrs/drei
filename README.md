@@ -53,6 +53,8 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <ul>
           <li><a href="#text">Text</a></li>
           <li><a href="#line">Line</a></li>
+          <li><a href="#quadraticbezierline">QuadraticBezierLine</a></li>
+          <li><a href="#cubicbezierline">CubicBezierLine</a></li>
           <li><a href="#positionalaudio">PositionalAudio</a></li>
           <li><a href="#billboard">Billboard</a></li>
           <li><a href="#gizmoHelper">GizmoHelper</a></li>
@@ -313,6 +315,47 @@ Renders a THREE.Line2.
 ```jsx
 <Line
   points={[[0, 0, 0], ...]}       // Array of points
+  color="black"                   // Default
+  lineWidth={1}                   // In pixels (default)
+  dashed={false}                  // Default
+  vertexColors={[[0, 0, 0], ...]} // Optional array of RGB values for each point
+  {...lineProps}                  // All THREE.Line2 props are valid
+  {...materialProps}              // All THREE.LineMaterial props are valid
+/>
+```
+
+#### QuadraticBezierLine
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-line--quadratic-bezier)
+
+Renders a THREE.Line2 using THREE.QuadraticBezierCurve3 for interpolation.
+
+```jsx
+<QuadraticBezierLine
+  start={[0, 0, 0]}               // Starting point
+  end={[10, 0, 10]}               // Ending point
+  mid={[5, 0, 5]}                 // Optional control point
+  color="black"                   // Default
+  lineWidth={1}                   // In pixels (default)
+  dashed={false}                  // Default
+  vertexColors={[[0, 0, 0], ...]} // Optional array of RGB values for each point
+  {...lineProps}                  // All THREE.Line2 props are valid
+  {...materialProps}              // All THREE.LineMaterial props are valid
+/>
+```
+
+#### CubicBezierLine
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-line--cubic-bezier)
+
+Renders a THREE.Line2 using THREE.CubicBezierCurve3 for interpolation.
+
+```jsx
+<CubicBezierLine
+  start={[0, 0, 0]}               // Starting point
+  end={[10, 0, 10]}               // Ending point
+  midA={[5, 0, 0]}                // First control point
+  midB={[0, 0, 5]}                // Second control point
   color="black"                   // Default
   lineWidth={1}                   // In pixels (default)
   dashed={false}                  // Default

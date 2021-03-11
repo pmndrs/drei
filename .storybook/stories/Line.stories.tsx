@@ -5,7 +5,7 @@ import { withKnobs, number, color, boolean } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
 
-import { Line, OrbitControls } from '../../src'
+import { Line, OrbitControls, QuadraticBezierLine } from '../../src'
 
 export default {
   title: 'Abstractions/Line',
@@ -36,6 +36,32 @@ export function BasicLine() {
 BasicLine.storyName = 'Basic'
 
 BasicLine.decorators = [
+  withKnobs,
+  (storyFn) => (
+    <Setup controls={false} cameraPosition={new Vector3(0, 0, 17)}>
+      {storyFn()}
+    </Setup>
+  ),
+]
+
+export function QuadraticBezier() {
+  return (
+    <>
+      <QuadraticBezierLine
+        start={[number('startX', 0), number('startY', 0), number('startZ', 0)]}
+        end={[number('endX', 4), number('endY', 7), number('endZ', 5)]}
+        segments={number('segments', 10)}
+        color={color('color', 'red')}
+        lineWidth={number('lineWidth', 2)}
+        dashed={boolean('dashed', true)}
+      />
+      <OrbitControls zoomSpeed={0.5} />
+    </>
+  )
+}
+QuadraticBezier.storyName = 'QuadraticBezier'
+
+QuadraticBezier.decorators = [
   withKnobs,
   (storyFn) => (
     <Setup controls={false} cameraPosition={new Vector3(0, 0, 17)}>

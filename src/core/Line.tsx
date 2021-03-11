@@ -37,9 +37,9 @@ export const Line = React.forwardRef<Line2, Props>(function Line(
     return geom
   }, [points, vertexColors])
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     line2.computeLineDistances()
-  }, [line2])
+  }, [points, line2])
 
   React.useLayoutEffect(() => {
     if (dashed) {

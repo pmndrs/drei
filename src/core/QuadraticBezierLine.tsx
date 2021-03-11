@@ -3,7 +3,7 @@ import { QuadraticBezierCurve3, Vector3 } from 'three'
 import { Line2 } from 'three/examples/jsm/lines/Line2'
 import { Line, LineProps } from './Line'
 
-type Props = Omit<LineProps, 'points'> & {
+type Props = Omit<LineProps, 'points' | 'ref'> & {
   start: Vector3 | [number, number, number]
   end: Vector3 | [number, number, number]
   mid?: Vector3 | [number, number, number]
@@ -31,5 +31,5 @@ export const QuadraticBezierLine = React.forwardRef<Line2, Props>(function Quadr
     return interpolatedV
   }, [start, end, mid, segments])
 
-  return <Line ref={ref as any} points={points} {...rest} />
+  return <Line ref={ref} points={points} {...rest} />
 })

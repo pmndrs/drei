@@ -16,7 +16,8 @@ class StarfieldMaterial extends ShaderMaterial {
   constructor() {
     super({
       uniforms: { time: { value: 0.0 }, fade: { value: 1.0 } },
-      vertexShader: `uniform float time;
+      vertexShader: /* glsl */ `
+      uniform float time;
       attribute float size;
       varying vec3 vColor;
       void main() {
@@ -25,7 +26,8 @@ class StarfieldMaterial extends ShaderMaterial {
         gl_PointSize = size * (30.0 / -mvPosition.z) * (3.0 + sin(mvPosition.x + 2.0 * time + 100.0));
         gl_Position = projectionMatrix * mvPosition;
       }`,
-      fragmentShader: `uniform sampler2D pointTexture;
+      fragmentShader: /* glsl */ `
+      uniform sampler2D pointTexture;
       uniform float fade;
       varying vec3 vColor;
       void main() {

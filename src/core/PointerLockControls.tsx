@@ -8,7 +8,7 @@ export type PointerLockControls = ReactThreeFiber.Object3DNode<PointerLockContro
 export type PointerLockControlsProps = PointerLockControls & { selector?: string }
 
 export const PointerLockControls = React.forwardRef(({ selector, ...props }: PointerLockControlsProps, ref) => {
-  const { camera, gl, invalidate } = useThree()
+  const { camera, gl, invalidate } = useThree(({ camera, gl, invalidate }) => ({ camera, gl, invalidate }))
   const controls = useEffectfulState(
     () => new PointerLockControlsImpl(camera, gl.domElement),
     [camera, gl.domElement],

@@ -90,7 +90,7 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
     const [q] = React.useState(() => new Vector4())
     const [textureMatrix] = React.useState(() => new Matrix4())
     const [virtualCamera] = React.useState(() => new PerspectiveCamera())
-    const { gl, scene, camera } = useThree()
+    const { gl, scene, camera } = useThree(({ gl, scene, camera }) => ({ gl, scene, camera }))
 
     const beforeRender = React.useCallback(() => {
       reflectorWorldPosition.setFromMatrixPosition(meshRef.current.matrixWorld)

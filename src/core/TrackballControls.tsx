@@ -17,7 +17,7 @@ declare global {
 }
 
 export const TrackballControls = React.forwardRef((props: TrackballControls, ref) => {
-  const { camera, gl, invalidate } = useThree()
+  const { camera, gl, invalidate } = useThree(({ camera, gl, invalidate }) => ({ camera, gl, invalidate }))
   const controls = useEffectfulState(() => new TrackballControlsImpl(camera, gl.domElement), [camera, gl], ref as any)
 
   useFrame(() => controls?.update())

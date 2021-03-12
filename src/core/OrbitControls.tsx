@@ -5,7 +5,10 @@ import useEffectfulState from '../helpers/useEffectfulState'
 
 export type OrbitControls = Overwrite<
   ReactThreeFiber.Object3DNode<OrbitControlsImpl, typeof OrbitControlsImpl>,
-  { target?: ReactThreeFiber.Vector3 }
+  {
+    target?: ReactThreeFiber.Vector3
+    camera?: THREE.Camera
+  }
 >
 
 declare global {
@@ -17,10 +20,17 @@ declare global {
 }
 
 export const OrbitControls = React.forwardRef((props: OrbitControls = { enableDamping: true }, ref) => {
-  const { camera, gl, invalidate } = useThree()
-  const controls = useEffectfulState<OrbitControlsImpl>(
-    () => new OrbitControlsImpl(camera, gl.domElement),
-    [camera, gl],
+  const { camera, ...rest } = props
+  const { camera: defaultCamera, gl, invalidate } = useThree()
+  const explCamera = camera || defaultCamera
+
+  const controls = useEffectfulState<OrbitControlsImpl | undefined>(
+    () => {
+      if (explCamera) {
+        return new OrbitControlsImpl(explCamera, gl.domElement)
+      }
+    },
+    [explCamera, gl],
     ref as any
   )
 
@@ -31,5 +41,5 @@ export const OrbitControls = React.forwardRef((props: OrbitControls = { enableDa
     return () => controls?.removeEventListener?.('change', invalidate)
   }, [controls, invalidate])
 
-  return controls ? <primitive dispose={undefined} object={controls} enableDamping {...props} /> : null
+  return controls ? <primitive dispose={undefined} object={controls} enableDamping {...rest} /> : null
 })

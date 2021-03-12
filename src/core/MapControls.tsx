@@ -5,7 +5,7 @@ import useEffectfulState from '../helpers/useEffectfulState'
 
 export type MapControls = Overwrite<
   ReactThreeFiber.Object3DNode<MapControlsImpl, typeof MapControlsImpl>,
-  { target?: ReactThreeFiber.Vector3 }
+  { target?: ReactThreeFiber.Vector3; camera?: THREE.Camera }
 >
 
 declare global {
@@ -17,8 +17,18 @@ declare global {
 }
 
 export const MapControls = React.forwardRef((props: MapControls = { enableDamping: true }, ref) => {
-  const { camera, gl, invalidate } = useThree()
-  const controls = useEffectfulState(() => new MapControlsImpl(camera, gl.domElement), [camera, gl], ref as any)
+  const { camera, ...rest } = props
+  const { camera: defaultCamera, gl, invalidate } = useThree()
+  const explCamera = camera || defaultCamera
+  const controls = useEffectfulState(
+    () => {
+      if (explCamera) {
+        return new MapControlsImpl(explCamera, gl.domElement)
+      }
+    },
+    [explCamera, gl],
+    ref as any
+  )
 
   useFrame(() => controls?.update())
   React.useEffect(() => {
@@ -26,5 +36,5 @@ export const MapControls = React.forwardRef((props: MapControls = { enableDampin
     return () => controls?.removeEventListener?.('change', invalidate)
   }, [controls, invalidate])
 
-  return controls ? <primitive dispose={undefined} object={controls} enableDamping {...props} /> : null
+  return controls ? <primitive dispose={undefined} object={controls} enableDamping {...rest} /> : null
 })

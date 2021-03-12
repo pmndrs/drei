@@ -15,10 +15,10 @@
     "emitDeclarationOnly": true,
     "outDir": "dist",
     "resolveJsonModule": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "noImplicitThis": false,
-    "baseUrl": "./src"
+    "baseUrl": "./src",
   },
-  "include": ["./src", "./desc.d.ts"],
+  "include": ["./src"],
   "exclude": ["./node_modules/**/*"]
 }

@@ -3168,6 +3168,11 @@
   resolved "https://registry.yarnpkg.com/@types/tapable/-/tapable-1.0.6.tgz#a9ca4b70a18b270ccb2bc0aaafefd1d486b7ea74"
   integrity sha512-W+bw9ds02rAQaMvaLYxAbJ6cvguW/iJXNT6lTssS1ps6QdrMKttqEAMEG/b5CR8TZl3/L7/lH0ZV5nNR1LXikA==
 
+"@types/three@^0.126.0":
+  version "0.126.0"
+  resolved "https://registry.yarnpkg.com/@types/three/-/three-0.126.0.tgz#58f80e13ab5f8084741e8a9d7e804b9a31039043"
+  integrity sha512-C7cFOWQpcGQAJ0PJSdU6ncZFn51fWKaV8o1Dz2fvikFRGWY8cI5/M/q5JHX7/TzCfMRadLP690Ksh8QvanSW8Q==
+
 "@types/uglify-js@*":
   version "3.9.3"
   resolved "https://registry.yarnpkg.com/@types/uglify-js/-/uglify-js-3.9.3.tgz#d94ed608e295bc5424c9600e6b8565407b6b4b6b"
@@ -11973,10 +11978,10 @@ three-stdlib@^1.0.0-beta.2:
     opentype.js "^1.3.3"
     zstddec "^0.0.2"
 
-three@0.125.0:
-  version "0.125.0"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.125.0.tgz#19e922b9dc51ad0b706893aeee888de68e99850a"
-  integrity sha512-qL36qUGsPQ/Ofo/RZdXwHwM7A8wzUSAIyawtjIebJSPvounUQeneSqxI0aBY2iwKpseGy+RUtj3C5f/z4poyXw==
+three@^0.126.1:
+  version "0.126.1"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.126.1.tgz#cf4e4e52060fd952f6f0d5440cbd422c66bc4be7"
+  integrity sha512-eOEXnZeE1FDV0XgL1u08auIP13jxdN9LQBAEmlErYzMxtIIfuGIAZbijOyookALUhqVzVOx0Tywj6n192VM+nQ==
 
 throat@^5.0.0:
   version "5.0.0"

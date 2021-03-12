@@ -200,7 +200,7 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
       depthFactor *= depthScale;
       depthFactor = max(0.0001, min(1.0, depthFactor));
 
-      float lod = min(1.0, mixBlur * reflectorRoughnessFactor);
+      float lod = 1.0 - min(1.0, mixBlur * reflectorRoughnessFactor);
       vec4 baseColor = texture2D(tDiffuse, proj_vUv);
       vec4 mixedColor;
 

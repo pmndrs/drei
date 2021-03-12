@@ -12,7 +12,7 @@ export function useFBO<T extends boolean = false>(
   height?: number,
   settings?: FBOSettings<T>
 ): T extends true ? THREE.WebGLRenderTarget | THREE.WebGLMultisampleRenderTarget : THREE.WebGLRenderTarget {
-  const { size, gl } = useThree()
+  const { size, gl } = useThree(({ gl, size }) => ({ gl, size }))
   const dpr = useMemo(() => gl.getPixelRatio(), [gl])
   const _width = typeof width === 'number' ? width : size.width * dpr
   const _height = typeof height === 'number' ? height : size.height * dpr

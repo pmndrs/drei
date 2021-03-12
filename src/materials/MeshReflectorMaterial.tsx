@@ -1,4 +1,4 @@
-import { Matrix4, MeshStandardMaterial, Texture } from 'three'
+import { Matrix4, MeshStandardMaterial, Texture, Vector2 } from 'three'
 
 type UninitializedUniform<Value> = { value: Value | null }
 
@@ -7,7 +7,22 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
   private _tDepth: UninitializedUniform<Texture> = { value: null }
   private _distortionMap: UninitializedUniform<Texture> = { value: null }
   private _tDiffuse: UninitializedUniform<Texture> = { value: null }
-  private _tDiffuseBlur: UninitializedUniform<Texture> = { value: null }
+  private _u_mipmap_0: UninitializedUniform<Texture> = { value: null }
+  private _u_mipmap_1: UninitializedUniform<Texture> = { value: null }
+  private _u_mipmap_2: UninitializedUniform<Texture> = { value: null }
+  private _u_mipmap_3: UninitializedUniform<Texture> = { value: null }
+  private _u_mipmap_4: UninitializedUniform<Texture> = { value: null }
+  private _u_mipmap_5: UninitializedUniform<Texture> = { value: null }
+  private _u_mipmap_6: UninitializedUniform<Texture> = { value: null }
+  private _u_mipmap_7: UninitializedUniform<Texture> = { value: null }
+  private _u_mipmap_res_0: UninitializedUniform<Vector2> = { value: null }
+  private _u_mipmap_res_1: UninitializedUniform<Vector2> = { value: null }
+  private _u_mipmap_res_2: UninitializedUniform<Vector2> = { value: null }
+  private _u_mipmap_res_3: UninitializedUniform<Vector2> = { value: null }
+  private _u_mipmap_res_4: UninitializedUniform<Vector2> = { value: null }
+  private _u_mipmap_res_5: UninitializedUniform<Vector2> = { value: null }
+  private _u_mipmap_res_6: UninitializedUniform<Vector2> = { value: null }
+  private _u_mipmap_res_7: UninitializedUniform<Vector2> = { value: null }
   private _textureMatrix: UninitializedUniform<Matrix4> = { value: null }
   private _hasBlur: { value: boolean } = { value: false }
   private _mirror: { value: number } = { value: 0.0 }
@@ -32,7 +47,22 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
     shader.uniforms.tDiffuse = this._tDiffuse
     shader.uniforms.tDepth = this._tDepth
     shader.uniforms.distortionMap = this._distortionMap
-    shader.uniforms.tDiffuseBlur = this._tDiffuseBlur
+    shader.uniforms.u_mipmap_0 = this._u_mipmap_0
+    shader.uniforms.u_mipmap_1 = this._u_mipmap_1
+    shader.uniforms.u_mipmap_2 = this._u_mipmap_2
+    shader.uniforms.u_mipmap_3 = this._u_mipmap_3
+    shader.uniforms.u_mipmap_4 = this._u_mipmap_4
+    shader.uniforms.u_mipmap_5 = this._u_mipmap_5
+    shader.uniforms.u_mipmap_6 = this._u_mipmap_6
+    shader.uniforms.u_mipmap_7 = this._u_mipmap_7
+    shader.uniforms.u_mipmap_res_0 = this._u_mipmap_res_0
+    shader.uniforms.u_mipmap_res_1 = this._u_mipmap_res_1
+    shader.uniforms.u_mipmap_res_2 = this._u_mipmap_res_2
+    shader.uniforms.u_mipmap_res_3 = this._u_mipmap_res_3
+    shader.uniforms.u_mipmap_res_4 = this._u_mipmap_res_4
+    shader.uniforms.u_mipmap_res_5 = this._u_mipmap_res_5
+    shader.uniforms.u_mipmap_res_6 = this._u_mipmap_res_6
+    shader.uniforms.u_mipmap_res_7 = this._u_mipmap_res_7
     shader.uniforms.textureMatrix = this._textureMatrix
     shader.uniforms.mirror = this._mirror
     shader.uniforms.mixBlur = this._mixBlur
@@ -55,9 +85,24 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
     shader.fragmentShader = `
         uniform int debug;
         uniform sampler2D tDiffuse;
-        uniform sampler2D tDiffuseBlur;
         uniform sampler2D tDepth;
         uniform sampler2D distortionMap;
+        uniform sampler2D u_mipmap_0;
+        uniform sampler2D u_mipmap_1;
+        uniform sampler2D u_mipmap_2;
+        uniform sampler2D u_mipmap_3;
+        uniform sampler2D u_mipmap_4;
+        uniform sampler2D u_mipmap_5;
+        uniform sampler2D u_mipmap_6;
+        uniform sampler2D u_mipmap_7;
+        uniform vec2 u_mipmap_res_0;
+        uniform vec2 u_mipmap_res_1;
+        uniform vec2 u_mipmap_res_2;
+        uniform vec2 u_mipmap_res_3;
+        uniform vec2 u_mipmap_res_4;
+        uniform vec2 u_mipmap_res_5;
+        uniform vec2 u_mipmap_res_6;
+        uniform vec2 u_mipmap_res_7;
         uniform float distortion;
         uniform float cameraNear;
 			  uniform float cameraFar;
@@ -69,89 +114,148 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
         uniform float maxDepthThreshold;
         uniform float depthScale;
         uniform float depthToBlurRatioBias;
-        varying vec4 my_vUv;        
+        varying vec4 my_vUv;  
+        
+        // from http://www.java-gaming.org/index.php?topic=35123.0
+        vec4 cubic( float v ) {
+          vec4 n = vec4( 1.0, 2.0, 3.0, 4.0 ) - v;
+          vec4 s = n * n * n;
+          float x = s.x;
+          float y = s.y - 4.0 * s.x;
+          float z = s.z - 4.0 * s.y + 6.0 * s.x;
+          float w = 6.0 - x - y - z;
+          return vec4( x, y, z, w ) * ( 1.0 / 6.0 );
+        }
+        
+        vec4 textureBicubic( sampler2D sampler, vec2 texCoords, vec2 texSize ) {
+          vec2 invTexSize = 1.0 / texSize;
+          texCoords = texCoords * texSize - 0.5;
+          vec2 fxy = fract( texCoords );
+          texCoords -= fxy;
+
+          vec4 xcubic = cubic( fxy.x );
+          vec4 ycubic = cubic( fxy.y );
+          vec4 c = texCoords.xxyy + vec2 ( - 0.5, + 1.5 ).xyxy;
+          vec4 s = vec4( xcubic.xz + xcubic.yw, ycubic.xz + ycubic.yw );
+
+          vec4 offset = c + vec4( xcubic.yw, ycubic.yw ) / s;
+          offset *= invTexSize.xxyy;
+        
+          vec4 sample0 = texture2D( sampler, offset.xz);
+          vec4 sample1 = texture2D( sampler, offset.yz);
+          vec4 sample2 = texture2D( sampler, offset.xw);
+          vec4 sample3 = texture2D( sampler, offset.yw);
+        
+          float sx = s.x / ( s.x + s.y );
+          float sy = s.z / ( s.z + s.w );
+
+          return mix(
+            mix(
+              sample3,
+              sample2,
+              sx
+            ),
+            mix(
+              sample1,
+              sample0,
+              sx
+            ),
+            sy
+          );
+        }
+
+
         ${shader.fragmentShader}`
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <emissivemap_fragment>',
       `#include <emissivemap_fragment>
     
+      float depthFactor = 0.0001;
+      float blurFactor = 0.0;
       float distortionFactor = 0.0;
+      vec3 my_normal = vec3(0.0);
+      float reflectorRoughnessFactor = roughness;
+      vec3 coord = my_vUv.xyz / my_vUv.w;
+
       #ifdef USE_DISTORTION
         distortionFactor = texture2D(distortionMap, vUv).r * distortion;
       #endif
 
-      vec2 normal_uv = vec2(0.0);
-      vec4 new_vUv = my_vUv;
-      new_vUv.x += distortionFactor;
-      new_vUv.y += distortionFactor;
-
-      vec4 base = texture2DProj(tDiffuse, new_vUv);
-      vec4 blur = texture2DProj(tDiffuseBlur, new_vUv);
-      
-      vec4 merge = base;
-      
       #ifdef USE_NORMALMAP
         vec4 normalColor = texture2D(normalMap, vUv * normalScale);
-        vec3 my_normal = normalize( vec3( normalColor.r * 2.0 - 1.0, normalColor.b ,  normalColor.g * 2.0 - 1.0 ) );
-        vec3 coord = new_vUv.xyz / new_vUv.w;
-        normal_uv = coord.xy + coord.z * my_normal.xz * 0.01;
-        vec4 base_normal = texture2D(tDiffuse, normal_uv);
-        vec4 blur_normal = texture2D(tDiffuseBlur, normal_uv);
-        merge = base_normal;
-        blur = blur_normal;
+        my_normal = normalize( vec3( normalColor.r * 2.0 - 1.0, normalColor.b ,  normalColor.g * 2.0 - 1.0 ) );
       #endif
 
-      float depthFactor = 0.0001;
-      float blurFactor = 0.0;
-
-      #ifdef USE_DEPTH
-        vec4 depth = vec4(0.0);
-   
-        #ifdef USE_NORMALMAP
-          depth = texture2D(tDepth, normal_uv);
-        #else
-          depth = texture2DProj(tDepth, new_vUv);
-        #endif
-
-        depthFactor = smoothstep(minDepthThreshold, maxDepthThreshold, 1.0-(depth.r * depth.a));
-        depthFactor *= depthScale;
-        depthFactor = max(0.0001, min(1.0, depthFactor));
-
-        #ifdef USE_BLUR
-          blur = blur * min(1.0, depthFactor + depthToBlurRatioBias);
-          merge = merge * min(1.0, depthFactor + 0.5);;
-        #else
-          merge = merge * depthFactor;
-        #endif
-  
-      #endif
-
-      float reflectorRoughnessFactor = roughness;
       #ifdef USE_ROUGHNESSMAP
         vec4 reflectorTexelRoughness = texture2D( roughnessMap, vUv );
         reflectorRoughnessFactor *= reflectorTexelRoughness.g;
       #endif
-      
-      #ifdef USE_BLUR
-        blurFactor = min(1.0, mixBlur * reflectorRoughnessFactor);
-        merge = mix(merge, blur, blurFactor);
-      #endif
 
-      diffuseColor.rgb = diffuseColor.rgb * ((1.0 - min(1.0, mirror)) + merge.rgb * mixStrength);           
-      diffuseColor = sRGBToLinear(diffuseColor);
+      vec2 proj_vUv = coord.xy + coord.z * my_normal.xz * 0.01;
+      proj_vUv.x += distortionFactor;
+      proj_vUv.y += distortionFactor;
+
+      vec4 depth = texture2D(tDepth, proj_vUv);
+      depthFactor = smoothstep(minDepthThreshold, maxDepthThreshold, 1.0-(depth.r * depth.a));
+      depthFactor *= depthScale;
+      depthFactor = max(0.0001, min(1.0, depthFactor));
+
+      float lod = min(1.0, mixBlur * reflectorRoughnessFactor);
+      vec4 baseColor = texture2D(tDiffuse, proj_vUv);
+      vec4 mixedColor;
+
+      if (lod < 1./8.) {
+        vec4 one = textureBicubic(u_mipmap_7, proj_vUv, u_mipmap_res_7);
+        vec4 two = textureBicubic(u_mipmap_6, proj_vUv, u_mipmap_res_6);
+        mixedColor = mix(one, two, lod/(1./8.));
+      } else if (lod < 2./8.) {
+        vec4 one = textureBicubic(u_mipmap_6, proj_vUv, u_mipmap_res_6);
+        vec4 two = textureBicubic(u_mipmap_5, proj_vUv, u_mipmap_res_5);
+        mixedColor = mix(one, two, lod/(2./8.));
+      } else if (lod < 3./8.) {
+        vec4 one = textureBicubic(u_mipmap_5, proj_vUv, u_mipmap_res_5);
+        vec4 two = textureBicubic(u_mipmap_4, proj_vUv, u_mipmap_res_4);
+        mixedColor = mix(one, two, lod/(3./8.));
+      } else if (lod < 4./8.) {
+        vec4 one = textureBicubic(u_mipmap_4, proj_vUv, u_mipmap_res_4);
+        vec4 two = textureBicubic(u_mipmap_3, proj_vUv, u_mipmap_res_3);
+        mixedColor = mix(one, two, lod/(4./8.));
+      } else if (lod < 5./8.) {
+        vec4 one = textureBicubic(u_mipmap_3, proj_vUv, u_mipmap_res_3);
+        vec4 two = textureBicubic(u_mipmap_2, proj_vUv, u_mipmap_res_2);
+        mixedColor = mix(one, two, lod/(5./8.));
+      } else if (lod < 6./8.) {
+        vec4 one = textureBicubic(u_mipmap_2, proj_vUv, u_mipmap_res_2);
+        vec4 two = textureBicubic(u_mipmap_1, proj_vUv, u_mipmap_res_1);
+        mixedColor = mix(one, two, lod/(6./8.));
+      } else if (lod < 7./8.) {
+        vec4 one = textureBicubic(u_mipmap_1, proj_vUv, u_mipmap_res_1);
+        vec4 two = textureBicubic(u_mipmap_0, proj_vUv, u_mipmap_res_0);
+        mixedColor = mix(one, two, lod/(7./8.));
+      } else {
+        vec4 one = textureBicubic(u_mipmap_0, proj_vUv, u_mipmap_res_0);
+        mixedColor = mix(one, baseColor, lod);
+      }
       
-      if (debug == 1) {
-        diffuseColor = sRGBToLinear(vec4(vec3(depthFactor), 1.0));
-      }
-      if (debug == 2) {
-        diffuseColor = sRGBToLinear(vec4(vec3(blurFactor), 1.0));
-      }
-      if (debug == 3) {
-        diffuseColor = sRGBToLinear(texture2DProj(tDiffuse, new_vUv));
-      }
-      if (debug == 4) {
-        diffuseColor = sRGBToLinear(texture2DProj(tDiffuseBlur, new_vUv));
-      }
+      mixedColor *= min(1.0, depthFactor + depthToBlurRatioBias);
+      //float mixFactor = min(1.0, mixBlur * reflectorRoughnessFactor);
+      //mixedColor = mix(baseColor, mixedColor, mixFactor);
+
+      diffuseColor.rgb = diffuseColor.rgb * ((1.0 - min(1.0, mirror)) + mixedColor.rgb * mixStrength);     
+      diffuseColor = sRGBToLinear(diffuseColor);
+
+      // if (debug == 1) {
+      //   diffuseColor = sRGBToLinear(vec4(vec3(depthFactor), 1.0));
+      // }
+      // if (debug == 2) {
+      //   diffuseColor = sRGBToLinear(vec4(vec3(blurFactor), 1.0));
+      // }
+      // if (debug == 3) {
+      //   diffuseColor = sRGBToLinear(texture2DProj(tDiffuse, new_vUv));
+      // }
+      // if (debug == 4) {
+      //   diffuseColor = sRGBToLinear(texture2DProj(tDiffuseBlur, new_vUv));
+      // }
       `
     )
   }
@@ -173,11 +277,101 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
   set distortionMap(v: Texture | null) {
     this._distortionMap.value = v
   }
-  get tDiffuseBlur(): Texture | null {
-    return this._tDiffuseBlur.value
+  get u_mipmap_0(): Texture | null {
+    return this._u_mipmap_0.value
   }
-  set tDiffuseBlur(v: Texture | null) {
-    this._tDiffuseBlur.value = v
+  set u_mipmap_0(v: Texture | null) {
+    this._u_mipmap_0.value = v
+  }
+  get u_mipmap_1(): Texture | null {
+    return this._u_mipmap_1.value
+  }
+  set u_mipmap_1(v: Texture | null) {
+    this._u_mipmap_1.value = v
+  }
+  get u_mipmap_2(): Texture | null {
+    return this._u_mipmap_2.value
+  }
+  set u_mipmap_2(v: Texture | null) {
+    this._u_mipmap_2.value = v
+  }
+  get u_mipmap_3(): Texture | null {
+    return this._u_mipmap_3.value
+  }
+  set u_mipmap_3(v: Texture | null) {
+    this._u_mipmap_3.value = v
+  }
+  get u_mipmap_4(): Texture | null {
+    return this._u_mipmap_4.value
+  }
+  set u_mipmap_4(v: Texture | null) {
+    this._u_mipmap_4.value = v
+  }
+  get u_mipmap_5(): Texture | null {
+    return this._u_mipmap_5.value
+  }
+  set u_mipmap_5(v: Texture | null) {
+    this._u_mipmap_5.value = v
+  }
+  get u_mipmap_6(): Texture | null {
+    return this._u_mipmap_6.value
+  }
+  set u_mipmap_6(v: Texture | null) {
+    this._u_mipmap_6.value = v
+  }
+  get u_mipmap_7(): Texture | null {
+    return this._u_mipmap_7.value
+  }
+  set u_mipmap_7(v: Texture | null) {
+    this._u_mipmap_7.value = v
+  }
+  get u_mipmap_res_0(): Vector2 | null {
+    return this._u_mipmap_res_0.value
+  }
+  set u_mipmap_res_0(v: Vector2 | null) {
+    this._u_mipmap_res_0.value = v
+  }
+  get u_mipmap_res_1(): Vector2 | null {
+    return this._u_mipmap_res_1.value
+  }
+  set u_mipmap_res_1(v: Vector2 | null) {
+    this._u_mipmap_res_1.value = v
+  }
+  get u_mipmap_res_2(): Vector2 | null {
+    return this._u_mipmap_res_2.value
+  }
+  set u_mipmap_res_2(v: Vector2 | null) {
+    this._u_mipmap_res_2.value = v
+  }
+  get u_mipmap_res_3(): Vector2 | null {
+    return this._u_mipmap_res_3.value
+  }
+  set u_mipmap_res_3(v: Vector2 | null) {
+    this._u_mipmap_res_3.value = v
+  }
+  get u_mipmap_res_4(): Vector2 | null {
+    return this._u_mipmap_res_4.value
+  }
+  set u_mipmap_res_4(v: Vector2 | null) {
+    this._u_mipmap_res_4.value = v
+  }
+  get u_mipmap_res_5(): Vector2 | null {
+    return this._u_mipmap_res_5.value
+  }
+  set u_mipmap_res_5(v: Vector2 | null) {
+    this._u_mipmap_res_5.value = v
+  }
+  get u_mipmap_res_6(): Vector2 | null {
+    return this._u_mipmap_res_6.value
+  }
+  set u_mipmap_res_6(v: Vector2 | null) {
+    this._u_mipmap_res_6.value = v
+  }
+  get u_mipmap_res_7(): Vector2 | null {
+    return this._u_mipmap_res_7.value
+  }
+  set u_mipmap_res_7(v: Vector2 | null) {
+    this._u_mipmap_res_7.value = v
   }
   get textureMatrix(): Matrix4 | null {
     return this._textureMatrix.value
@@ -254,7 +448,22 @@ export type MeshReflectorMaterialImpl = {
   textureMatrix: Matrix4
   tDiffuse: Texture
   distortionMap?: Texture
-  tDiffuseBlur: Texture
+  u_mipmap_0?: Texture
+  u_mipmap_1?: Texture
+  u_mipmap_2?: Texture
+  u_mipmap_3?: Texture
+  u_mipmap_4?: Texture
+  u_mipmap_5?: Texture
+  u_mipmap_6?: Texture
+  u_mipmap_7?: Texture
+  u_mipmap_res_0?: Vector2
+  u_mipmap_res_1?: Vector2
+  u_mipmap_res_2?: Vector2
+  u_mipmap_res_3?: Vector2
+  u_mipmap_res_4?: Vector2
+  u_mipmap_res_5?: Vector2
+  u_mipmap_res_6?: Vector2
+  u_mipmap_res_7?: Vector2
   hasBlur: boolean
   minDepthThreshold: number
   maxDepthThreshold: number

@@ -38,7 +38,7 @@ export function Environment({
     files = presetsObj[preset]
     path = CUBEMAP_ROOT + '/hdri/'
   }
-  const { gl, scene: defaultScene } = useThree()
+  const { gl, scene: defaultScene } = useThree(({ gl, scene }) => ({ gl, scene }))
   const isCubeMap = Array.isArray(files)
   const loader: any = isCubeMap ? CubeTextureLoader : RGBELoader
   // @ts-expect-error

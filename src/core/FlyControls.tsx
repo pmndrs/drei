@@ -6,7 +6,7 @@ import useEffectfulState from '../helpers/useEffectfulState'
 export type FlyControls = ReactThreeFiber.Object3DNode<FlyControlsImpl, typeof FlyControlsImpl>
 
 export const FlyControls = React.forwardRef((props: FlyControls, ref) => {
-  const { camera, gl, invalidate } = useThree()
+  const { camera, gl, invalidate } = useThree(({ camera, gl, invalidate }) => ({ camera, gl, invalidate }))
   const controls = useEffectfulState<FlyControlsImpl>(
     () => new FlyControlsImpl(camera, gl.domElement),
     [camera, gl.domElement],

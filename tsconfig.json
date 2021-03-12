@@ -15,7 +15,7 @@
     "emitDeclarationOnly": true,
     "outDir": "dist",
     "resolveJsonModule": true,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "noImplicitThis": false,
     "baseUrl": "./src"
   },

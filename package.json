@@ -103,7 +103,7 @@
     "prettier": "^2.0.5",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "react-three-fiber": "^5.3.18",
+    "react-three-fiber": "^6.0.0-alpha.9",
     "rimraf": "^3.0.2",
     "rollup": "^2.26.4",
     "rollup-plugin-babel": "^4.4.0",
@@ -115,15 +115,15 @@
     "rollup-plugin-size-snapshot": "^0.12.0",
     "three": "0.125.0",
     "three-stdlib": "^1.0.0-beta.2",
-    "typescript": "^3.9.7",
+    "typescript": "^4.2.3",
     "use-asset": "^1.0.2"
   },
   "peerDependencies": {
     "react": ">=17.0",
     "react-dom": ">=17.0",
-    "react-three-fiber": ">=5.3.18",
-    "three": ">=0.125.0",
-    "three-stdlib": ">=0.0.14"
+    "react-three-fiber": ">=6.0",
+    "three": ">=0.126.0",
+    "three-stdlib": ">=1.0"
   },
   "peerDependenciesMeta": {
     "react-dom": {

@@ -31,7 +31,7 @@ export function CubeCamera({
 }: Props) {
   const ref = React.useRef<Group>()
   const [camera, setCamera] = React.useState<CubeCameraImpl>()
-  const { scene, gl } = useThree()
+  const { scene, gl } = useThree(({ gl, scene }) => ({ gl, scene }))
   const fbo = React.useMemo(
     () =>
       new WebGLCubeRenderTarget(resolution, {

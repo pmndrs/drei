@@ -36,7 +36,7 @@ export const CameraShake = React.forwardRef<ShakeController | undefined, CameraS
     },
     ref
   ) => {
-    const { camera } = useThree()
+    const camera = useThree((state) => state.camera)
     const intensityRef = React.useRef<number>(intensity)
     const [yawNoise] = React.useState(() => new SimplexNoise())
     const [pitchNoise] = React.useState(() => new SimplexNoise())

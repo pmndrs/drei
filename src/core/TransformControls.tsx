@@ -47,13 +47,25 @@ export const TransformControls = React.forwardRef(
       'showY',
       'showZ',
     ]
-    const transformProps = pick(props, transformOnlyPropNames)
-    const objectProps = omit(props, transformOnlyPropNames)
 
-    const { camera, gl, invalidate } = useThree(({ camera, gl, invalidate }) => ({ camera, gl, invalidate }))
+    const { camera, ...rest } = props
+    const transformProps = pick(rest, transformOnlyPropNames)
+    const objectProps = omit(rest, transformOnlyPropNames)
+
+    const { camera: defaultCamera, gl, invalidate } = useThree(({ camera, gl, invalidate }) => ({
+      camera,
+      gl,
+      invalidate,
+    }))
+    const explCamera = camera || defaultCamera
+
     const controls = useEffectfulState(
-      () => new TransformControlsImpl(camera, gl.domElement),
-      [camera, gl.domElement],
+      () => {
+        if (explCamera) {
+          return new TransformControlsImpl(explCamera, gl.domElement)
+        }
+      },
+      [explCamera, gl.domElement],
       ref as any
     )
 

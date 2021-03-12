@@ -3,7 +3,7 @@ import { Vector2, Vector3, Color } from 'three'
 import { ReactThreeFiber } from 'react-three-fiber'
 import { LineGeometry, LineMaterial, LineMaterialParameters, Line2 } from 'three-stdlib'
 
-type Props = {
+export type LineProps = {
   points: Array<Vector3 | [number, number, number]>
   color?: Color | string | number
   vertexColors?: Array<Color | [number, number, number]>
@@ -14,7 +14,7 @@ type Props = {
     'color' | 'vertexColors' | 'resolution' | 'args'
   >
 
-export const Line = React.forwardRef<Line2, Props>(function Line(
+export const Line = React.forwardRef<Line2, LineProps>(function Line(
   { points, color = 'black', vertexColors, lineWidth, dashed, ...rest },
   ref
 ) {
@@ -35,9 +35,9 @@ export const Line = React.forwardRef<Line2, Props>(function Line(
     return geom
   }, [points, vertexColors])
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     line2.computeLineDistances()
-  }, [line2])
+  }, [points, line2])
 
   React.useLayoutEffect(() => {
     if (dashed) {

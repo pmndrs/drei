@@ -55,6 +55,8 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <ul>
           <li><a href="#text">Text</a></li>
           <li><a href="#line">Line</a></li>
+          <li><a href="#quadraticbezierline">QuadraticBezierLine</a></li>
+          <li><a href="#cubicbezierline">CubicBezierLine</a></li>
           <li><a href="#positionalaudio">PositionalAudio</a></li>
           <li><a href="#billboard">Billboard</a></li>
           <li><a href="#gizmoHelper">GizmoHelper</a></li>
@@ -235,6 +237,19 @@ If available controls have damping enabled by default, they manage their own upd
 
 Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-scene-st), TrackballControls, FlyControls, DeviceOrientationControls, TransformControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-transformcontrols--transform-controls-story), PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st)
 
+Every control component can be used with a custom camera using the `camera` prop:
+
+```jsx
+const myCamera = useResource()
+
+return (
+  <>
+    <PerspectiveCamera ref={myCamera} position={[0, 5, 5]} />
+    <OrbitControls camera={myCamera.current} />
+  </>
+)
+```
+
 PointerLockControls additionally supports a `selector` prop, which enables the binding of `click` event handlers for control activation to other elements than `document` (e.g. a 'Click here to play' button).
 
 # Shapes
@@ -302,6 +317,47 @@ Renders a THREE.Line2.
 ```jsx
 <Line
   points={[[0, 0, 0], ...]}       // Array of points
+  color="black"                   // Default
+  lineWidth={1}                   // In pixels (default)
+  dashed={false}                  // Default
+  vertexColors={[[0, 0, 0], ...]} // Optional array of RGB values for each point
+  {...lineProps}                  // All THREE.Line2 props are valid
+  {...materialProps}              // All THREE.LineMaterial props are valid
+/>
+```
+
+#### QuadraticBezierLine
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-line--quadratic-bezier)
+
+Renders a THREE.Line2 using THREE.QuadraticBezierCurve3 for interpolation.
+
+```jsx
+<QuadraticBezierLine
+  start={[0, 0, 0]}               // Starting point
+  end={[10, 0, 10]}               // Ending point
+  mid={[5, 0, 5]}                 // Optional control point
+  color="black"                   // Default
+  lineWidth={1}                   // In pixels (default)
+  dashed={false}                  // Default
+  vertexColors={[[0, 0, 0], ...]} // Optional array of RGB values for each point
+  {...lineProps}                  // All THREE.Line2 props are valid
+  {...materialProps}              // All THREE.LineMaterial props are valid
+/>
+```
+
+#### CubicBezierLine
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-line--cubic-bezier)
+
+Renders a THREE.Line2 using THREE.CubicBezierCurve3 for interpolation.
+
+```jsx
+<CubicBezierLine
+  start={[0, 0, 0]}               // Starting point
+  end={[10, 0, 10]}               // Ending point
+  midA={[5, 0, 0]}                // First control point
+  midB={[0, 0, 5]}                // Second control point
   color="black"                   // Default
   lineWidth={1}                   // In pixels (default)
   dashed={false}                  // Default
@@ -609,7 +665,7 @@ Allows you to tie HTML content to any object of your scene. It will be projected
   prepend // Project content behind the canvas (default: false)
   center // Adds a -50%/-50% css transform (default: false) [ignored in transform mode]
   fullscreen // Aligns to the upper-left corner, fills the screen (default:false) [ignored in transform mode]
-  scaleFactor={10} // If set (default: undefined), children will be scaled by this factor, and also by distance to a PerspectiveCamera if transform is set to false.
+  distanceFactor={10} // If set (default: undefined), children will be scaled by this factor, and also by distance to a PerspectiveCamera / zoom by a OrthographicCamera.
   zIndexRange={[100, 0]} // Z-order range (default=[16777271, 0])
   portal={domnodeRef} // Reference to target container (default=undefined)
   transform // If true, applies matrix3d transformations (default=false)

@@ -5,7 +5,7 @@ import useEffectfulState from '../helpers/useEffectfulState'
 
 export type TrackballControls = Overwrite<
   ReactThreeFiber.Object3DNode<TrackballControlsImpl, typeof TrackballControlsImpl>,
-  { target?: ReactThreeFiber.Vector3 }
+  { target?: ReactThreeFiber.Vector3; camera?: THREE.Camera }
 >
 
 declare global {
@@ -17,8 +17,19 @@ declare global {
 }
 
 export const TrackballControls = React.forwardRef((props: TrackballControls, ref) => {
-  const { camera, gl, invalidate } = useThree()
-  const controls = useEffectfulState(() => new TrackballControlsImpl(camera, gl.domElement), [camera, gl], ref as any)
+  const { camera, ...rest } = props
+  const { camera: defaultCamera, gl, invalidate } = useThree()
+  const explCamera = camera || defaultCamera
+
+  const controls = useEffectfulState(
+    () => {
+      if (explCamera) {
+        return new TrackballControlsImpl(explCamera, gl.domElement)
+      }
+    },
+    [explCamera, gl],
+    ref as any
+  )
 
   useFrame(() => controls?.update())
   React.useEffect(() => {
@@ -26,5 +37,5 @@ export const TrackballControls = React.forwardRef((props: TrackballControls, ref
     return () => controls?.removeEventListener?.('change', invalidate)
   }, [controls, invalidate])
 
-  return controls ? <primitive dispose={undefined} object={controls} {...props} /> : null
+  return controls ? <primitive dispose={undefined} object={controls} {...rest} /> : null
 })

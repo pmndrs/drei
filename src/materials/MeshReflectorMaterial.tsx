@@ -198,14 +198,12 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
         depthFactor = smoothstep(minDepthThreshold, maxDepthThreshold, 1.0-(depth.r * depth.a));
         depthFactor *= depthScale;
         depthFactor = max(0.0001, min(1.0, depthFactor + depthToBlurRatioBias));
-        lod = min(1.0, lod + depthFactor/2.0);
       #endif
 
       vec4 baseColor = texture2D(tDiffuse, proj_vUv);
       vec4 mixedColor;
 
-      float _lod = lod * 8.0;
-
+      float _lod = (1.0 - pow(1.0 - lod, 4.0)) * 4.0;
       if (_lod < 1.) {
         vec4 one = textureBicubic(u_mipmap_7, proj_vUv, u_mipmap_res_7);
         vec4 two = textureBicubic(u_mipmap_6, proj_vUv, u_mipmap_res_6);
@@ -238,7 +236,7 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
         vec4 one = textureBicubic(u_mipmap_0, proj_vUv, u_mipmap_res_0);
         mixedColor = mix(one, baseColor, _lod - 7.0);
       }
-      
+
       mixedColor.rgb *= depthFactor;
       diffuseColor.rgb = diffuseColor.rgb * ((1.0 - min(1.0, mirror)) + mixedColor.rgb * mixStrength);     
       diffuseColor = sRGBToLinear(diffuseColor);

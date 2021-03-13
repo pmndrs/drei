@@ -92,7 +92,7 @@ export function Reflector({
       encoding: gl.outputEncoding,
     }
     for (let i = 0; i < MIPMAP_NUM; i++) {
-      const res = Math.max(4, Math.round(resolution / Math.pow(2, i)))
+      const res = Math.max(8, Math.round(resolution / Math.pow(2, i)))
       const renderTarget = new WebGLRenderTarget(res, res, pars)
       renderTarget.texture.generateMipmaps = false
       renderTargets.push(renderTarget)
@@ -174,10 +174,12 @@ export function Reflector({
       encoding: gl.outputEncoding,
     }
     const fbo1 = new WebGLRenderTarget(resolution, resolution, parameters)
-    fbo1.depthBuffer = true
-    fbo1.depthTexture = new DepthTexture(resolution, resolution)
-    fbo1.depthTexture.format = DepthFormat
-    fbo1.depthTexture.type = UnsignedShortType
+    if (depthScale > 0) {
+      fbo1.depthBuffer = true
+      fbo1.depthTexture = new DepthTexture(resolution, resolution)
+      fbo1.depthTexture.format = DepthFormat
+      fbo1.depthTexture.type = UnsignedShortType
+    }
 
     const mipmaps = renderTargets.reduce((acc, fbo, index) => {
       acc[`u_mipmap_${index}`] = fbo.texture
@@ -226,14 +228,14 @@ export function Reflector({
     if (!meshRef?.current) return
     meshRef.current.visible = false
     beforeRender()
-
     gl.setRenderTarget(fbo1)
+    gl.state.buffers.depth.setMask(true)
     gl.render(scene, virtualCamera)
     renderTargets.forEach((fbo) => {
       gl.setRenderTarget(fbo)
+      gl.state.buffers.depth.setMask(true)
       gl.render(scene, virtualCamera)
     })
-
     meshRef.current.visible = true
     gl.setRenderTarget(null)
   })

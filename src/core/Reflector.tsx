@@ -24,7 +24,6 @@ export type ReflectorProps = Omit<JSX.IntrinsicElements['mesh'], 'args' | 'child
   resolution?: number
   mixBlur?: number
   mixStrength?: number
-  blur?: [number, number] | number
   args?: [number, number]
   mirror: number
   minDepthThreshold?: number
@@ -58,7 +57,6 @@ export function Reflector({
   mixBlur = 0.0,
   mixStrength = 0.5,
   resolution = 256,
-  blur = [0, 0],
   args = [1, 1],
   minDepthThreshold = 0.9,
   maxDepthThreshold = 1,
@@ -71,9 +69,7 @@ export function Reflector({
   distortionMap,
   ...props
 }: ReflectorProps) {
-  blur = Array.isArray(blur) ? blur : [blur, blur]
   const { gl, scene, camera } = useThree()
-  const hasBlur = blur[0] + blur[1] > 0
   const meshRef = React.useRef<Mesh>(null!)
   const [reflectorPlane] = React.useState(() => new Plane())
   const [normal] = React.useState(() => new Vector3())
@@ -96,7 +92,7 @@ export function Reflector({
       encoding: gl.outputEncoding,
     }
     for (let i = 0; i < MIPMAP_NUM; i++) {
-      const res = Math.max(2, Math.round(resolution / Math.pow(2, i)))
+      const res = Math.max(4, Math.round(resolution / Math.pow(2, i)))
       const renderTarget = new WebGLRenderTarget(res, res, pars)
       renderTarget.texture.generateMipmaps = false
       renderTargets.push(renderTarget)
@@ -195,7 +191,6 @@ export function Reflector({
       mixBlur,
       tDiffuse: fbo1.texture,
       tDepth: fbo1.depthTexture,
-      hasBlur,
       mixStrength,
       minDepthThreshold,
       maxDepthThreshold,
@@ -205,7 +200,6 @@ export function Reflector({
       debug,
       distortion,
       distortionMap,
-      'defines-USE_BLUR': hasBlur ? '' : undefined,
       'defines-USE_DEPTH': depthScale > 0 ? '' : undefined,
       'defines-USE_DISTORTION': !!distortionMap ? '' : undefined,
       ...mipmaps,
@@ -216,7 +210,6 @@ export function Reflector({
     textureMatrix,
     resolution,
     mirror,
-    hasBlur,
     mixBlur,
     mixStrength,
     minDepthThreshold,

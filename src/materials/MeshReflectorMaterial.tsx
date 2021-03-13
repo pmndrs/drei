@@ -24,7 +24,6 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
   private _u_mipmap_res_6: UninitializedUniform<Vector2> = { value: null }
   private _u_mipmap_res_7: UninitializedUniform<Vector2> = { value: null }
   private _textureMatrix: UninitializedUniform<Matrix4> = { value: null }
-  private _hasBlur: { value: boolean } = { value: false }
   private _mirror: { value: number } = { value: 0.0 }
   private _mixBlur: { value: number } = { value: 0.0 }
   private _blurStrength: { value: number } = { value: 0.5 }
@@ -43,7 +42,6 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
       shader.defines.USE_UV = ''
     }
     shader.uniforms.debug = this._debug
-    shader.uniforms.hasBlur = this._hasBlur
     shader.uniforms.tDiffuse = this._tDiffuse
     shader.uniforms.tDepth = this._tDepth
     shader.uniforms.distortionMap = this._distortionMap
@@ -106,7 +104,6 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
         uniform float distortion;
         uniform float cameraNear;
 			  uniform float cameraFar;
-        uniform bool hasBlur;
         uniform float mixBlur;
         uniform float mirror;
         uniform float mixStrength;
@@ -170,8 +167,7 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
       '#include <emissivemap_fragment>',
       `#include <emissivemap_fragment>
     
-      float depthFactor = 0.0001;
-      float blurFactor = 0.0;
+      float depthFactor = 1.0;
       float distortionFactor = 0.0;
       vec3 my_normal = vec3(0.0);
       float reflectorRoughnessFactor = roughness;
@@ -195,67 +191,67 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
       proj_vUv.x += distortionFactor;
       proj_vUv.y += distortionFactor;
 
-      vec4 depth = texture2D(tDepth, proj_vUv);
-      depthFactor = smoothstep(minDepthThreshold, maxDepthThreshold, 1.0-(depth.r * depth.a));
-      depthFactor *= depthScale;
-      depthFactor = max(0.0001, min(1.0, depthFactor));
+      #ifdef USE_DEPTH
+        vec4 depth = texture2D(tDepth, proj_vUv);
+        depthFactor = smoothstep(minDepthThreshold, maxDepthThreshold, 1.0-(depth.r * depth.a));
+        depthFactor *= depthScale;
+        depthFactor = max(0.0001, min(1.0, depthFactor + depthToBlurRatioBias));
+      #endif
+
+      vec4 baseColor = texture2D(tDiffuse, proj_vUv);
 
       float lod = 1.0 - min(1.0, mixBlur * reflectorRoughnessFactor);
-      vec4 baseColor = texture2D(tDiffuse, proj_vUv);
       vec4 mixedColor;
-
-      if (lod < 1./8.) {
+      float _lod = lod * 8.0;
+      if (_lod < 1.) {
         vec4 one = textureBicubic(u_mipmap_7, proj_vUv, u_mipmap_res_7);
         vec4 two = textureBicubic(u_mipmap_6, proj_vUv, u_mipmap_res_6);
-        mixedColor = mix(one, two, lod/(1./8.));
-      } else if (lod < 2./8.) {
+        mixedColor = mix(one, two, _lod);
+      } else if (_lod < 2.) {
         vec4 one = textureBicubic(u_mipmap_6, proj_vUv, u_mipmap_res_6);
         vec4 two = textureBicubic(u_mipmap_5, proj_vUv, u_mipmap_res_5);
-        mixedColor = mix(one, two, lod/(2./8.));
-      } else if (lod < 3./8.) {
+        mixedColor = mix(one, two, _lod - 1.0);
+      } else if (_lod < 3.) {
         vec4 one = textureBicubic(u_mipmap_5, proj_vUv, u_mipmap_res_5);
         vec4 two = textureBicubic(u_mipmap_4, proj_vUv, u_mipmap_res_4);
-        mixedColor = mix(one, two, lod/(3./8.));
-      } else if (lod < 4./8.) {
+        mixedColor = mix(one, two, _lod - 2.0);
+      } else if (_lod < 4.) {
         vec4 one = textureBicubic(u_mipmap_4, proj_vUv, u_mipmap_res_4);
         vec4 two = textureBicubic(u_mipmap_3, proj_vUv, u_mipmap_res_3);
-        mixedColor = mix(one, two, lod/(4./8.));
-      } else if (lod < 5./8.) {
+        mixedColor = mix(one, two, _lod - 3.0);
+      } else if (_lod < 5.) {
         vec4 one = textureBicubic(u_mipmap_3, proj_vUv, u_mipmap_res_3);
         vec4 two = textureBicubic(u_mipmap_2, proj_vUv, u_mipmap_res_2);
-        mixedColor = mix(one, two, lod/(5./8.));
-      } else if (lod < 6./8.) {
+        mixedColor = mix(one, two, _lod - 4.0);
+      } else if (_lod < 6.) {
         vec4 one = textureBicubic(u_mipmap_2, proj_vUv, u_mipmap_res_2);
         vec4 two = textureBicubic(u_mipmap_1, proj_vUv, u_mipmap_res_1);
-        mixedColor = mix(one, two, lod/(6./8.));
-      } else if (lod < 7./8.) {
+        mixedColor = mix(one, two, _lod - 5.0);
+      } else if (_lod < 7.) {
         vec4 one = textureBicubic(u_mipmap_1, proj_vUv, u_mipmap_res_1);
         vec4 two = textureBicubic(u_mipmap_0, proj_vUv, u_mipmap_res_0);
-        mixedColor = mix(one, two, lod/(7./8.));
+        mixedColor = mix(one, two, _lod - 6.0);
       } else {
         vec4 one = textureBicubic(u_mipmap_0, proj_vUv, u_mipmap_res_0);
-        mixedColor = mix(one, baseColor, lod);
+        mixedColor = mix(one, baseColor, _lod - 7.0);
       }
       
-      mixedColor *= min(1.0, depthFactor + depthToBlurRatioBias);
-      //float mixFactor = min(1.0, mixBlur * reflectorRoughnessFactor);
-      //mixedColor = mix(baseColor, mixedColor, mixFactor);
-
+      mixedColor.rgb *= depthFactor;
       diffuseColor.rgb = diffuseColor.rgb * ((1.0 - min(1.0, mirror)) + mixedColor.rgb * mixStrength);     
       diffuseColor = sRGBToLinear(diffuseColor);
 
-      // if (debug == 1) {
-      //   diffuseColor = sRGBToLinear(vec4(vec3(depthFactor), 1.0));
-      // }
-      // if (debug == 2) {
-      //   diffuseColor = sRGBToLinear(vec4(vec3(blurFactor), 1.0));
-      // }
-      // if (debug == 3) {
-      //   diffuseColor = sRGBToLinear(texture2DProj(tDiffuse, new_vUv));
-      // }
-      // if (debug == 4) {
-      //   diffuseColor = sRGBToLinear(texture2DProj(tDiffuseBlur, new_vUv));
-      // }
+      if (debug == 1) {
+        diffuseColor = sRGBToLinear(vec4(vec3(depthFactor), 1.0));
+      }
+      if (debug == 2) {
+        diffuseColor = sRGBToLinear(texture2D(tDiffuse, proj_vUv));
+      }
+      if (debug == 3) {
+        diffuseColor = sRGBToLinear(texture2D(distortionMap, vUv));
+      }
+      if (debug == 4) {
+        diffuseColor = sRGBToLinear(vec4(vec3(lod), 1.0));
+      }
       `
     )
   }
@@ -379,12 +375,6 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
   set textureMatrix(v: Matrix4 | null) {
     this._textureMatrix.value = v
   }
-  get hasBlur(): boolean {
-    return this._hasBlur.value
-  }
-  set hasBlur(v: boolean) {
-    this._hasBlur.value = v
-  }
   get mirror(): number {
     return this._mirror.value
   }
@@ -464,7 +454,6 @@ export type MeshReflectorMaterialImpl = {
   u_mipmap_res_5?: Vector2
   u_mipmap_res_6?: Vector2
   u_mipmap_res_7?: Vector2
-  hasBlur: boolean
   minDepthThreshold: number
   maxDepthThreshold: number
   depthScale: number

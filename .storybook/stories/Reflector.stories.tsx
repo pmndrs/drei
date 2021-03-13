@@ -52,12 +52,12 @@ function ReflectorScene({
         args={[10, 10]}
         mirror={0.75}
         mixBlur={mixBlur || 0}
-        mixStrength={1}
+        mixStrength={2}
         rotation={[-Math.PI / 2, 0, Math.PI / 2]}
         minDepthThreshold={0.5}
         maxDepthThreshold={1.5}
         depthScale={depthScale || 0}
-        depthToBlurRatioBias={0.1}
+        depthToBlurRatioBias={0.2}
         debug={0}
         distortion={distortion || 0}
         distortionMap={distortionMap}
@@ -88,7 +88,7 @@ function ReflectorScene({
 
 export const ReflectorSt = () => (
   <React.Suspense fallback={null}>
-    <ReflectorScene mixBlur={10} depthScale={2} distortion={0.005} normalScale={0.5} />
+    <ReflectorScene mixBlur={10} depthScale={1} distortion={0.005} normalScale={0.5} />
   </React.Suspense>
 )
 ReflectorSt.storyName = 'Default'

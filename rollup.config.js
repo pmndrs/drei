@@ -5,6 +5,7 @@ import json from 'rollup-plugin-json'
 import { sizeSnapshot } from 'rollup-plugin-size-snapshot'
 import glslify from 'rollup-plugin-glslify'
 import multiInput from 'rollup-plugin-multi-input'
+import { terser } from 'rollup-plugin-terser'
 
 const root = process.platform === 'win32' ? path.resolve('/') : '/'
 const external = (id) => !id.startsWith('.') && !id.startsWith(root)
@@ -29,7 +30,7 @@ const getBabelOptions = ({ useESModules }, targets) => ({
 
 export default [
   {
-    input: ['src/**/*.ts', '!src/index.ts'],
+    input: ['src/**/*.ts', 'src/**/*.tsx', '!src/index.ts'],
     output: { dir: `dist`, format: 'esm' },
     external,
     plugins: [
@@ -54,17 +55,18 @@ export default [
     preserveModules: true,
   },
   {
-    input: ['src/**/*.ts', '!src/index.ts'],
+    input: ['src/**/*.ts', 'src/**/*.tsx', '!src/index.ts'],
     output: { dir: `dist`, format: 'cjs' },
     external,
     plugins: [
       multiInput({
-        transformOutputPath: (output) => path.basename(output, '.ts') + '.cjs.js',
+        transformOutputPath: (output) => output.replace(/\.[^/.]+$/, '.cjs.js'),
       }),
       json(),
       glslify(),
       babel(getBabelOptions({ useESModules: false })),
       resolve({ extensions }),
+      terser(),
     ],
   },
   {
@@ -77,6 +79,7 @@ export default [
       babel(getBabelOptions({ useESModules: false })),
       sizeSnapshot(),
       resolve({ extensions }),
+      terser(),
     ],
   },
 ]

@@ -10540,10 +10540,10 @@ react-textarea-autosize@^8.1.1:
     use-composed-ref "^1.0.0"
     use-latest "^1.0.0"
 
-react-three-fiber@^6.0.0-alpha.9:
-  version "6.0.0-alpha.9"
-  resolved "https://registry.yarnpkg.com/react-three-fiber/-/react-three-fiber-6.0.0-alpha.9.tgz#4951efc939530c154c3b03c7244eb7c72a88ba7f"
-  integrity sha512-x0CGcp3uBBmgnKxWrDwm/0XgpzqYFax8tExHfwvMFRbzspt0MU/Cr0id6EvnFWUOn2P3xfTKzdGvRHrYT1F53w==
+react-three-fiber@^6.0.0-alpha.10:
+  version "6.0.0-alpha.10"
+  resolved "https://registry.yarnpkg.com/react-three-fiber/-/react-three-fiber-6.0.0-alpha.10.tgz#dc22794b145fb29a245a083ae75c8ba3c721fcac"
+  integrity sha512-2RTsPscG95wfXMygdHKnQeA3ZAX34nUbxjhh56rAEt8rZCFN7sonZ8lz3hVCw8wYCRv9K31C1xXgo7UAw+8+sw==
   dependencies:
     "@babel/runtime" "^7.13.9"
     react-merge-refs "^1.1.0"

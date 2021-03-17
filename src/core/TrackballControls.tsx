@@ -1,9 +1,9 @@
 import * as React from 'react'
-import { ReactThreeFiber, useThree, useFrame, Overwrite } from 'react-three-fiber'
+import { ReactThreeFiber, useThree, useFrame } from 'react-three-fiber'
 import { TrackballControls as TrackballControlsImpl } from 'three-stdlib'
 import useEffectfulState from '../helpers/useEffectfulState'
 
-export type TrackballControls = Overwrite<
+export type TrackballControls = ReactThreeFiber.Overwrite<
   ReactThreeFiber.Object3DNode<TrackballControlsImpl, typeof TrackballControlsImpl>,
   { target?: ReactThreeFiber.Vector3; camera?: THREE.Camera }
 >

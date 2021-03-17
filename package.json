@@ -18,6 +18,12 @@
     "url": "https://github.com/pmndrs/drei/issues"
   },
   "homepage": "https://github.com/pmndrs/drei",
+  "maintainers": [
+    "Paul Henschel (https://github.com/drcmda)",
+    "Gianmarco Simone (https://github.com/gsimone)",
+    "Marco Perego (https://github.com/emmelleppi)",
+    "Josh Ellis (https://github.com/joshuaellis)"
+  ],
   "main": "index.cjs.js",
   "module": "index.js",
   "types": "index.d.ts",
@@ -104,7 +110,7 @@
     "prettier": "^2.0.5",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "react-three-fiber": "^6.0.0-alpha.9",
+    "react-three-fiber": "^6.0.0-alpha.10",
     "rimraf": "^3.0.2",
     "rollup": "^2.26.4",
     "rollup-plugin-babel": "^4.4.0",

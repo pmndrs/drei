@@ -1,9 +1,9 @@
 import * as React from 'react'
-import { ReactThreeFiber, useThree, useFrame, Overwrite } from 'react-three-fiber'
+import { ReactThreeFiber, useThree, useFrame } from 'react-three-fiber'
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import useEffectfulState from '../helpers/useEffectfulState'
 
-export type OrbitControls = Overwrite<
+export type OrbitControls = ReactThreeFiber.Overwrite<
   ReactThreeFiber.Object3DNode<OrbitControlsImpl, typeof OrbitControlsImpl>,
   {
     target?: ReactThreeFiber.Vector3

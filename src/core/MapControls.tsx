@@ -1,9 +1,9 @@
 import * as React from 'react'
-import { ReactThreeFiber, useThree, useFrame, Overwrite } from 'react-three-fiber'
+import { ReactThreeFiber, useThree, useFrame } from 'react-three-fiber'
 import { MapControls as MapControlsImpl } from 'three-stdlib'
 import useEffectfulState from '../helpers/useEffectfulState'
 
-export type MapControls = Overwrite<
+export type MapControls = ReactThreeFiber.Overwrite<
   ReactThreeFiber.Object3DNode<MapControlsImpl, typeof MapControlsImpl>,
   { target?: ReactThreeFiber.Vector3; camera?: THREE.Camera }
 >

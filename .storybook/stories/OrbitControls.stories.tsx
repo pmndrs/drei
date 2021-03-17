@@ -5,7 +5,7 @@ import { withKnobs, boolean } from '@storybook/addon-knobs'
 import { Setup } from '../Setup'
 
 import { OrbitControls, Box, useFBO, Plane, PerspectiveCamera } from '../../src'
-import { createPortal, useFrame, useResource } from 'react-three-fiber'
+import { createPortal, useFrame } from 'react-three-fiber'
 
 export function OrbitControlsStory() {
   return (
@@ -35,7 +35,7 @@ function CustomCamera() {
    * we will render our scene in a render target and use it as a map.
    */
   const fbo = useFBO(400, 400)
-  const virtualCamera = useResource<THREE.Camera>()
+  const virtualCamera = React.useRef<THREE.Camera>()
   const [virtualScene] = React.useState(() => new THREE.Scene())
 
   useFrame(({ gl }) => {

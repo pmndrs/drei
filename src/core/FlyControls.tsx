@@ -1,17 +1,12 @@
 import * as React from 'react'
 import { ReactThreeFiber, useThree, useFrame } from 'react-three-fiber'
 import { FlyControls as FlyControlsImpl } from 'three-stdlib'
-import useEffectfulState from '../helpers/useEffectfulState'
 
 export type FlyControls = ReactThreeFiber.Object3DNode<FlyControlsImpl, typeof FlyControlsImpl>
 
-export const FlyControls = React.forwardRef((props: FlyControls, ref) => {
+export const FlyControls = React.forwardRef<FlyControlsImpl, FlyControls>((props, ref) => {
   const { camera, gl, invalidate } = useThree(({ camera, gl, invalidate }) => ({ camera, gl, invalidate }))
-  const controls = useEffectfulState<FlyControlsImpl>(
-    () => new FlyControlsImpl(camera, gl.domElement),
-    [camera, gl.domElement],
-    ref as any
-  )
+  const [controls] = React.useState(() => new FlyControlsImpl(camera, gl.domElement))
 
   React.useEffect(() => {
     controls?.addEventListener?.('change', invalidate)
@@ -20,5 +15,5 @@ export const FlyControls = React.forwardRef((props: FlyControls, ref) => {
 
   useFrame((_, delta) => controls?.update(delta))
 
-  return controls ? <primitive dispose={undefined} object={controls} {...props} /> : null
+  return controls ? <primitive ref={ref} dispose={undefined} object={controls} {...props} /> : null
 })

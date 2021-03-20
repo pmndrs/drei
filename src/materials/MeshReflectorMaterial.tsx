@@ -203,7 +203,7 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
       vec4 baseColor = texture2D(tDiffuse, proj_vUv);
       vec4 mixedColor;
 
-      float _lod = (1.0 - pow(1.0 - lod, 4.0)) * 4.0;
+      float _lod = (1.0 - pow(1.0 - lod, 4.0)) * 8.0;
       if (_lod < 1.) {
         vec4 one = textureBicubic(u_mipmap_7, proj_vUv, u_mipmap_res_7);
         vec4 two = textureBicubic(u_mipmap_6, proj_vUv, u_mipmap_res_6);

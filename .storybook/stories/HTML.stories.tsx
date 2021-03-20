@@ -69,7 +69,7 @@ export const HTMLTransformSt = () => <HTMLTransformScene />
 HTMLTransformSt.storyName = 'Transform mode'
 
 function HTMLOrthographicScene() {
-  const { camera } = useThree()
+  const camera = useThree((state) => state.camera)
   const [zoomIn, setZoomIn] = React.useState(true)
 
   const initialCamera = {

@@ -18,7 +18,7 @@ function UseCameraScene() {
 
   const [hover, setHover] = React.useState<null | number>(null)
 
-  const { gl, scene, camera } = useThree()
+  const { gl, scene, camera } = useThree(({ gl, scene, camera }) => ({ gl, scene, camera }))
 
   const virtualScene = React.useMemo(() => new THREE.Scene(), [])
 

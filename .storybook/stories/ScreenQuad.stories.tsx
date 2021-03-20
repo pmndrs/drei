@@ -49,7 +49,7 @@ declare global {
 }
 
 function ScreenQuadScene() {
-  const { size } = useThree()
+  const size = useThree((state) => state.size)
   const ref = React.useRef<ColorShiftMaterialImpl>(null!)
   useFrame((state) => {
     if (ref.current.uniforms) {

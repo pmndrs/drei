@@ -10540,10 +10540,10 @@ react-textarea-autosize@^8.1.1:
     use-composed-ref "^1.0.0"
     use-latest "^1.0.0"
 
-react-three-fiber@^6.0.0-alpha.10:
-  version "6.0.0-alpha.10"
-  resolved "https://registry.yarnpkg.com/react-three-fiber/-/react-three-fiber-6.0.0-alpha.10.tgz#dc22794b145fb29a245a083ae75c8ba3c721fcac"
-  integrity sha512-2RTsPscG95wfXMygdHKnQeA3ZAX34nUbxjhh56rAEt8rZCFN7sonZ8lz3hVCw8wYCRv9K31C1xXgo7UAw+8+sw==
+react-three-fiber@^6.0.0-alpha.11:
+  version "6.0.0-alpha.11"
+  resolved "https://registry.yarnpkg.com/react-three-fiber/-/react-three-fiber-6.0.0-alpha.11.tgz#fa814fd51954a4211eb6c69ef543c03bd952a389"
+  integrity sha512-XIC1HWEDfECOnSJcEyDyK2boC0T+llnOAtJ6NQFvZkO2MphaO8Sfk0C8S+j7V8twscbBaTmsPabgix6940XgcA==
   dependencies:
     "@babel/runtime" "^7.13.9"
     react-merge-refs "^1.1.0"
@@ -11992,10 +11992,10 @@ text-table@0.2.0, text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
-three-stdlib@^1.0.0-beta.2:
-  version "1.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-1.0.0-beta.2.tgz#0bdbbfd127f794942d877ce77ef18119e17d90cf"
-  integrity sha512-hrNHvlnjt/hujCI4nRaynaQBKl5ApaQRTFhr64faFFMoJ3/med4IOYKpeykYUyk6FcQaJ1lZj+7+RVvHMYAyhg==
+three-stdlib@^1.0.1-alpha.3:
+  version "1.0.1-alpha.3"
+  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-1.0.1-alpha.3.tgz#e6d4e19bb0081f789ceeb4aab1f0ab70d0a4ecfb"
+  integrity sha512-M9QIc7Th0HGDoyhxDM7C9fubqZRWCP2YUyts2bMvWTeSqhzyYurbpvq7AlduQN0ZLsFijBOEE53pBcqCM+hXZw==
   dependencies:
     "@webgpu/glslang" "^0.0.15"
     "@webxr-input-profiles/motion-controllers" "^1.0.0"

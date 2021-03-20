@@ -231,11 +231,13 @@ export function Reflector({
     gl.setRenderTarget(fbo1)
     gl.state.buffers.depth.setMask(true)
     gl.render(scene, virtualCamera)
-    renderTargets.forEach((fbo) => {
-      gl.setRenderTarget(fbo)
-      gl.state.buffers.depth.setMask(true)
-      gl.render(scene, virtualCamera)
-    })
+    if (mixBlur !== 0) {
+      renderTargets.forEach((fbo) => {
+        gl.setRenderTarget(fbo)
+        gl.state.buffers.depth.setMask(true)
+        gl.render(scene, virtualCamera)
+      })
+    }
     meshRef.current.visible = true
     gl.setRenderTarget(null)
   })

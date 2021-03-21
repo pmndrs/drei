@@ -7,36 +7,39 @@ export type OrbitControls = ReactThreeFiber.Overwrite<
   {
     target?: ReactThreeFiber.Vector3
     camera?: THREE.Camera
+    regress?: boolean
   }
 >
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      orbitControlsImpl: OrbitControls
-    }
-  }
-}
-
 export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControls>(
   (props = { enableDamping: true }, ref) => {
-    const { camera, ...rest } = props
-    const { camera: defaultCamera, gl, invalidate } = useThree(({ camera, gl, invalidate }) => ({
+    const { camera, regress, ...rest } = props
+    const { camera: defaultCamera, gl, invalidate, performance } = useThree(({ camera, gl, invalidate }) => ({
       camera,
       gl,
       invalidate,
+      performance,
     }))
+
     const explCamera = camera || defaultCamera
+    const [controls] = React.useMemo(() => new OrbitControlsImpl(explCamera), [explCamera])
 
-    const [controls] = React.useState(() => new OrbitControlsImpl(explCamera, gl.domElement))
-
-    useFrame(() => controls?.update())
+    useFrame(() => controls.update())
 
     React.useEffect(() => {
-      controls?.addEventListener?.('change', invalidate)
-      return () => controls?.removeEventListener?.('change', invalidate)
+      const callback = () => {
+        invalidate()
+        if (regress) performance.regress()
+      }
+
+      controls.connect(gl.domElement)
+      controls.addEventListener('change', callback)
+      return () => {
+        controls.removeEventListener('change', callback)
+        controls.dispose()
+      }
     }, [controls, invalidate])
 
-    return controls ? <primitive ref={ref} dispose={undefined} object={controls} enableDamping {...rest} /> : null
+    return <primitive ref={ref} object={controls} enableDamping {...rest} />
   }
 )

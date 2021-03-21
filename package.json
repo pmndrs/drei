@@ -1,6 +1,6 @@
 {
   "name": "@react-three/drei",
-  "version": "3.0.0-beta.6",
+  "version": "0.0.0-semantic-release",
   "private": true,
   "description": "useful add-ons for react-three-fiber",
   "keywords": [
@@ -113,6 +113,7 @@
     "rollup-plugin-multi-input": "^1.1.1",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-size-snapshot": "^0.12.0",
+    "rollup-plugin-terser": "^7.0.2",
     "three": "0.125.0",
     "typescript": "^3.9.7",
     "use-asset": "^1.0.2"

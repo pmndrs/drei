@@ -53,8 +53,11 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <ul>
           <li><a href="#text">Text</a></li>
           <li><a href="#line">Line</a></li>
+          <li><a href="#quadraticbezierline">QuadraticBezierLine</a></li>
+          <li><a href="#cubicbezierline">CubicBezierLine</a></li>
           <li><a href="#positionalaudio">PositionalAudio</a></li>
           <li><a href="#billboard">Billboard</a></li>
+          <li><a href="#gizmoHelper">GizmoHelper</a></li>
           <li><a href="#environment">Environment</a></li>
           <li><a href="#effects">Effects</a></li>
           <li><a href="#useanimations">useAnimations</a></li>
@@ -232,6 +235,19 @@ If available controls have damping enabled by default, they manage their own upd
 
 Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-scene-st), TrackballControls, FlyControls, DeviceOrientationControls, TransformControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-transformcontrols--transform-controls-story), PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st)
 
+Every control component can be used with a custom camera using the `camera` prop:
+
+```jsx
+const myCamera = useResource()
+
+return (
+  <>
+    <PerspectiveCamera ref={myCamera} position={[0, 5, 5]} />
+    <OrbitControls camera={myCamera.current} />
+  </>
+)
+```
+
 PointerLockControls additionally supports a `selector` prop, which enables the binding of `click` event handlers for control activation to other elements than `document` (e.g. a 'Click here to play' button).
 
 # Shapes
@@ -308,6 +324,47 @@ Renders a THREE.Line2.
 />
 ```
 
+#### QuadraticBezierLine
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-line--quadratic-bezier)
+
+Renders a THREE.Line2 using THREE.QuadraticBezierCurve3 for interpolation.
+
+```jsx
+<QuadraticBezierLine
+  start={[0, 0, 0]}               // Starting point
+  end={[10, 0, 10]}               // Ending point
+  mid={[5, 0, 5]}                 // Optional control point
+  color="black"                   // Default
+  lineWidth={1}                   // In pixels (default)
+  dashed={false}                  // Default
+  vertexColors={[[0, 0, 0], ...]} // Optional array of RGB values for each point
+  {...lineProps}                  // All THREE.Line2 props are valid
+  {...materialProps}              // All THREE.LineMaterial props are valid
+/>
+```
+
+#### CubicBezierLine
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-line--cubic-bezier)
+
+Renders a THREE.Line2 using THREE.CubicBezierCurve3 for interpolation.
+
+```jsx
+<CubicBezierLine
+  start={[0, 0, 0]}               // Starting point
+  end={[10, 0, 10]}               // Ending point
+  midA={[5, 0, 0]}                // First control point
+  midB={[0, 0, 5]}                // Second control point
+  color="black"                   // Default
+  lineWidth={1}                   // In pixels (default)
+  dashed={false}                  // Default
+  vertexColors={[[0, 0, 0], ...]} // Optional array of RGB values for each point
+  {...lineProps}                  // All THREE.Line2 props are valid
+  {...materialProps}              // All THREE.LineMaterial props are valid
+/>
+```
+
 #### PositionalAudio
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-positionalaudio--positional-audio-scene-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
@@ -334,6 +391,24 @@ Adds a `<Plane />` that always faces the camera.
   lockY={false} // Lock the rotation on the y axis (default=false)
   lockZ={false} // Lock the rotation on the z axis (default=false)
 />
+```
+
+#### GizmoHelper
+
+Used by widgets that visualize and control camera position.
+
+Two example gizmos are included: GizmoViewport and GizmoViewcube, and `useGizmoContext` makes it easy to create your own.
+
+```jsx
+<GizmoHelper
+  alignment="bottom-right" // widget alignment within scene
+  margin={[80, 80]} // widget margins (X, Y)
+  onUpdate={/* called during camera animation  */}
+  onTarget={/* return current camera target (e.g. from orbit controls) to center animation */}
+>
+  <GizmoViewport axisColors={['red', 'green', 'blue']} labelColor="black" />
+  {/* alternative: <GizmoViewcube /> */}
+</GizmoHelper>
 ```
 
 #### Environment
@@ -586,12 +661,14 @@ Allows you to tie HTML content to any object of your scene. It will be projected
 ```jsx
 <Html
   prepend // Project content behind the canvas (default: false)
-  center // Adds a -50%/-50% css transform (default: false)
-  fullscreen // Aligns to the upper-left corner, fills the screen (default:false)
-  scaleFactor={10} // If set (default: undefined), children will be scaled by this factor, and also by distance to a PerspectiveCamera.
+  center // Adds a -50%/-50% css transform (default: false) [ignored in transform mode]
+  fullscreen // Aligns to the upper-left corner, fills the screen (default:false) [ignored in transform mode]
+  distanceFactor={10} // If set (default: undefined), children will be scaled by this factor, and also by distance to a PerspectiveCamera / zoom by a OrthographicCamera.
   zIndexRange={[100, 0]} // Z-order range (default=[16777271, 0])
   portal={domnodeRef} // Reference to target container (default=undefined)
-  calculatePosition={(el: Object3D, camera: Camera, size: { width: number; height: number }) => number[]} // Override default positioning function. May be removed in the future (default=undefined)
+  transform // If true, applies matrix3d transformations (default=false)
+  sprite // Renders as sprite, but only in transform mode (default=false)
+  calculatePosition={(el: Object3D, camera: Camera, size: { width: number; height: number }) => number[]} // Override default positioning function. May be removed in the future (default=undefined) [ignored in transform mode]
   {...groupProps} // All THREE.Group props are valid
   {...divProps} // All HTMLDivElement props are valid
 >
@@ -608,22 +685,23 @@ Easily add reflections and/or blur to a planar surface. This reflector can also 
 
 ```jsx
 <Reflector
-  blur={[0, 0]} // Blur ground reflections (width, heigt), 0 skips blur
+  args={[1, 1]} // PlaneBufferGeometry arguments
+  resolution={256} // Off-buffer resolution, lower=faster, higher=better quality
+  mirror={0.5} // Mirror environment, 0 = texture colors, 1 = pick up env colors
   mixBlur={1.0} // How much blur mixes with surface roughness
   mixStrength={0.5} // Strength of the reflections
-  resolution={256} // Off-buffer resolution, lower=faster, higher=better quality
-  args={[1, 1]} // PlaneBufferGeometry arguments
-  mirror={0.5} // Mirror environment, 0 = texture colors, 1 = pick up env colors
+  depthScale={1} // Scale the depth factor (0 = no depth, default = 0)
   minDepthThreshold={0.9} // Lower edge for the depthTexture interpolation (default = 0)
   maxDepthThreshold={1} // Upper edge for the depthTexture interpolation (default = 0)
-  depthScale={1} // Scale the depth factor (0 = no depth, default = 0)
   depthToBlurRatioBias={0.25} // Adds a bias factor to the depthTexture before calculating the blur amount [blurFactor = blurTexture * (depthTexture + bias)]. It accepts values between 0 and 1, default is 0.25. An amount > 0 of bias makes sure that the blurTexture is not too sharp because of the multiplication with the depthTexture
+  distortion={0} // Amount of distortion based on the distortionMap texture
+  distortionMap={distortionTexture} // The red channel of this texture is used as the distortion map. Default is null
   debug={0} /* Depending on the assigned value, one of the following channels is shown:
     0 = no debug
     1 = depth channel
-    2 = roughness channel
-    3 = base channel
-    4 = blur channel
+    2 = base channel
+    3 = distortion channel
+    4 = lod channel (based on the roughness)
   */
 >
   {(Material, props) => <Material {...props}>}

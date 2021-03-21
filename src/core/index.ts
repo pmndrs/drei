@@ -2,6 +2,8 @@
 export * from './Billboard'
 export * from './Cloud'
 export * from './Detailed'
+export * from './QuadraticBezierLine'
+export * from './CubicBezierLine'
 export * from './Line'
 export * from './PositionalAudio'
 export * from './Text'
@@ -22,6 +24,11 @@ export * from './OrbitControls'
 export * from './TrackballControls'
 export * from './TransformControls'
 export * from './PointerLockControls'
+
+// Gizmos
+export * from './GizmoHelper'
+export * from './GizmoViewcube'
+export * from './GizmoViewport'
 
 // Loaders
 export * from './useCubeTexture'

@@ -1,9 +1,8 @@
 import * as React from 'react'
-import { ReactThreeFiber, useThree, useFrame, Overwrite } from 'react-three-fiber'
+import { ReactThreeFiber, useThree, useFrame } from '@react-three/fiber'
 import { TrackballControls as TrackballControlsImpl } from 'three-stdlib'
-import useEffectfulState from '../helpers/useEffectfulState'
 
-export type TrackballControls = Overwrite<
+export type TrackballControls = ReactThreeFiber.Overwrite<
   ReactThreeFiber.Object3DNode<TrackballControlsImpl, typeof TrackballControlsImpl>,
   { target?: ReactThreeFiber.Vector3; camera?: THREE.Camera }
 >
@@ -16,20 +15,16 @@ declare global {
   }
 }
 
-export const TrackballControls = React.forwardRef((props: TrackballControls, ref) => {
+export const TrackballControls = React.forwardRef<TrackballControlsImpl, TrackballControls>((props, ref) => {
   const { camera, ...rest } = props
-  const { camera: defaultCamera, gl, invalidate } = useThree()
+  const { camera: defaultCamera, gl, invalidate } = useThree(({ camera, gl, invalidate }) => ({
+    camera,
+    gl,
+    invalidate,
+  }))
   const explCamera = camera || defaultCamera
 
-  const controls = useEffectfulState(
-    () => {
-      if (explCamera) {
-        return new TrackballControlsImpl(explCamera, gl.domElement)
-      }
-    },
-    [explCamera, gl],
-    ref as any
-  )
+  const [controls] = React.useState(() => new TrackballControlsImpl(explCamera, gl.domElement))
 
   useFrame(() => controls?.update())
   React.useEffect(() => {
@@ -37,5 +32,5 @@ export const TrackballControls = React.forwardRef((props: TrackballControls, ref
     return () => controls?.removeEventListener?.('change', invalidate)
   }, [controls, invalidate])
 
-  return controls ? <primitive dispose={undefined} object={controls} {...rest} /> : null
+  return controls ? <primitive ref={ref} dispose={undefined} object={controls} {...rest} /> : null
 })

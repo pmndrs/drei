@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { SVGLoader } from 'three-stdlib'
 import { Box3, Sphere, Vector3 } from 'three'
-import { useLoader, Canvas } from 'react-three-fiber'
+import { useLoader, Canvas } from '@react-three/fiber'
 
 import { MapControls } from '../../src'
 

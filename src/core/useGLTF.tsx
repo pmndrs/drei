@@ -1,6 +1,6 @@
 import { Loader } from 'three'
 import { GLTFLoader, DRACOLoader, MeshoptDecoder } from 'three-stdlib'
-import { useLoader } from 'react-three-fiber'
+import { useLoader } from '@react-three/fiber'
 
 function extensions(useDraco: boolean | string, useMeshopt: boolean) {
   return (loader: Loader) => {

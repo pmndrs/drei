@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { Canvas } from 'react-three-fiber'
+import { Canvas } from '@react-three/fiber'
 
 import { OrbitControls } from '../src'
 
@@ -12,13 +12,7 @@ export function Setup({
   ...restProps
 }) {
   return (
-    <Canvas
-      colorManagement
-      shadowMap
-      camera={{ position: cameraPosition, fov: cameraFov }}
-      pixelRatio={window.devicePixelRatio}
-      {...restProps}
-    >
+    <Canvas shadows camera={{ position: cameraPosition, fov: cameraFov }} dpr={window.devicePixelRatio} {...restProps}>
       {children}
       <ambientLight intensity={0.8} />
       <pointLight intensity={1} position={[0, 6, 0]} />

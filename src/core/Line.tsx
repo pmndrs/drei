@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Vector2, Vector3, Color } from 'three'
-import { ReactThreeFiber } from 'react-three-fiber'
+import { ReactThreeFiber } from '@react-three/fiber'
 import { LineGeometry, LineMaterial, LineMaterialParameters, Line2 } from 'three-stdlib'
 
 export type LineProps = {

@@ -9,7 +9,7 @@ import {
   RGBFormat,
 } from 'three'
 import * as React from 'react'
-import { useFrame, useThree } from 'react-three-fiber'
+import { useFrame, useThree } from '@react-three/fiber'
 
 type Props = JSX.IntrinsicElements['group'] & {
   fog?: Fog | FogExp2
@@ -31,7 +31,7 @@ export function CubeCamera({
 }: Props) {
   const ref = React.useRef<Group>()
   const [camera, setCamera] = React.useState<CubeCameraImpl>()
-  const { scene, gl } = useThree()
+  const { scene, gl } = useThree(({ gl, scene }) => ({ gl, scene }))
   const fbo = React.useMemo(
     () =>
       new WebGLCubeRenderTarget(resolution, {

@@ -6,7 +6,7 @@ type XYZ = [number, number, number]
 
 const faces = ['right', 'left', 'top', 'bottom', 'front', 'back']
 
-const makePositionVector = (xyz) => new Vector3(...xyz).multiplyScalar(0.38)
+const makePositionVector = (xyz: number[]) => new Vector3(...xyz).multiplyScalar(0.38)
 
 const corners: Vector3[] = [
   [1, 1, 1],

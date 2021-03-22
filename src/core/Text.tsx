@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Text as TextMeshImpl } from 'troika-three-text'
-import { ReactThreeFiber, useThree } from 'react-three-fiber'
+import { ReactThreeFiber, useThree } from '@react-three/fiber'
 
 type Props = JSX.IntrinsicElements['mesh'] & {
   children: React.ReactNode
@@ -32,8 +32,9 @@ type Props = JSX.IntrinsicElements['mesh'] & {
 }
 
 // eslint-disable-next-line prettier/prettier
-export const Text = React.forwardRef(({ anchorX = 'center', anchorY = 'middle', children, onSync, ...props }: Props, ref) => {
-    const { invalidate } = useThree()
+export const Text = React.forwardRef(
+  ({ anchorX = 'center', anchorY = 'middle', children, onSync, ...props }: Props, ref) => {
+    const { invalidate } = useThree(({ invalidate }) => ({ invalidate }))
     const [troikaMesh] = React.useState(() => new TextMeshImpl())
     const [nodes, text] = React.useMemo(() => {
       let n: React.ReactNode[] = []

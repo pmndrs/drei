@@ -1,38 +1,35 @@
 import * as React from 'react'
-import { ReactThreeFiber, useThree } from 'react-three-fiber'
+import { ReactThreeFiber, useThree } from '@react-three/fiber'
 import { PointerLockControls as PointerLockControlsImpl } from 'three-stdlib'
-import useEffectfulState from '../helpers/useEffectfulState'
 
 export type PointerLockControls = ReactThreeFiber.Object3DNode<PointerLockControlsImpl, typeof PointerLockControlsImpl>
 
 export type PointerLockControlsProps = PointerLockControls & { selector?: string; camera?: THREE.Camera }
 
-export const PointerLockControls = React.forwardRef(({ selector, ...props }: PointerLockControlsProps, ref) => {
-  const { camera, ...rest } = props
-  const { camera: defaultCamera, gl, invalidate } = useThree()
-  const explCamera = camera || defaultCamera
+export const PointerLockControls = React.forwardRef<PointerLockControls, PointerLockControlsProps>(
+  ({ selector, ...props }, ref) => {
+    const { camera, ...rest } = props
+    const { camera: defaultCamera, gl, invalidate } = useThree(({ camera, gl, invalidate }) => ({
+      camera,
+      gl,
+      invalidate,
+    }))
+    const explCamera = camera || defaultCamera
 
-  const controls = useEffectfulState(
-    () => {
-      if (explCamera) {
-        return new PointerLockControlsImpl(explCamera, gl.domElement)
-      }
-    },
-    [explCamera, gl.domElement],
-    ref as any
-  )
+    const [controls] = React.useState(() => new PointerLockControlsImpl(explCamera, gl.domElement))
 
-  React.useEffect(() => {
-    controls?.addEventListener?.('change', invalidate)
-    return () => controls?.removeEventListener?.('change', invalidate)
-  }, [controls, invalidate])
+    React.useEffect(() => {
+      controls?.addEventListener?.('change', invalidate)
+      return () => controls?.removeEventListener?.('change', invalidate)
+    }, [controls, invalidate])
 
-  React.useEffect(() => {
-    const handler = () => controls?.lock()
-    const element = selector ? document.querySelector(selector) : document
-    element && element.addEventListener('click', handler)
-    return () => (element ? element.removeEventListener('click', handler) : undefined)
-  }, [controls, selector])
+    React.useEffect(() => {
+      const handler = () => controls?.lock()
+      const element = selector ? document.querySelector(selector) : document
+      element && element.addEventListener('click', handler)
+      return () => (element ? element.removeEventListener('click', handler) : undefined)
+    }, [controls, selector])
 
-  return controls ? <primitive dispose={undefined} object={controls} {...rest} /> : null
-})
+    return controls ? <primitive ref={ref} dispose={undefined} object={controls} {...rest} /> : null
+  }
+)

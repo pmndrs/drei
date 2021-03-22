@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { Mesh, Shape, ExtrudeBufferGeometry } from 'three'
-import { useUpdate } from 'react-three-fiber'
 import { NamedArrayTuple } from '../helpers/ts-utils'
 
 const eps = 0.00001
@@ -38,9 +37,16 @@ export const RoundedBox = React.forwardRef<Mesh, Props>(function RoundedBox(
     }),
     [depth, radius, smoothness]
   )
-  const geomRef = useUpdate<ExtrudeBufferGeometry>((geometry) => void geometry.center(), [shape, params])
+  const geomRef = React.useRef<ExtrudeBufferGeometry>()
+
+  React.useLayoutEffect(() => {
+    if (geomRef.current) {
+      geomRef.current.center()
+    }
+  }, [shape, params])
+
   return (
-    <mesh ref={ref as React.MutableRefObject<Mesh>} {...rest}>
+    <mesh ref={ref} {...rest}>
       <extrudeBufferGeometry attach="geometry" ref={geomRef} args={[shape, params]} />
       {children}
     </mesh>

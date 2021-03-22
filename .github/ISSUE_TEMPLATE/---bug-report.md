@@ -17,7 +17,7 @@ assignees: ''
 -->
 
 - `three` version:
-- `react-three-fiber` version:
+- `@react-three/fiber` version:
 - `@react-three/drei` version:
 - `node` version:
 - `npm` (or `yarn`) version:

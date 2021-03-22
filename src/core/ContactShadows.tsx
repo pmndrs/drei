@@ -3,7 +3,7 @@
 
 import * as React from 'react'
 import * as THREE from 'three'
-import { useFrame, useThree } from 'react-three-fiber'
+import { useFrame, useThree } from '@react-three/fiber'
 import { HorizontalBlurShader, VerticalBlurShader } from 'three-stdlib'
 
 type Props = JSX.IntrinsicElements['group'] & {
@@ -17,7 +17,7 @@ type Props = JSX.IntrinsicElements['group'] & {
 
 export const ContactShadows = React.forwardRef(
   ({ opacity = 1, width = 1, height = 1, blur = 1, far = 10, resolution = 256, ...props }: Props, ref) => {
-    const { scene, gl } = useThree()
+    const { scene, gl } = useThree(({ gl, scene }) => ({ gl, scene }))
     const shadowCamera = React.useRef<THREE.OrthographicCamera>()
     const [
       renderTarget,

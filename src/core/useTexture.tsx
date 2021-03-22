@@ -1,5 +1,5 @@
 import { Texture, TextureLoader } from 'three'
-import { useLoader } from 'react-three-fiber'
+import { useLoader } from '@react-three/fiber'
 
 export function useTexture<Url extends string[] | string>(url: Url): Url extends any[] ? Texture[] : Texture {
   return useLoader(TextureLoader, url)

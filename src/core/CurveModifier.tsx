@@ -15,7 +15,7 @@ export const CurveModifier = React.forwardRef(({ children, curve }: CurveModifie
   const modifier = React.useRef<Flow>()
 
   React.useImperativeHandle(ref, () => ({
-    moveAlongCurve: (val) => {
+    moveAlongCurve: (val: number) => {
       modifier.current?.moveAlongCurve(val)
     },
   }))

@@ -1,5 +1,5 @@
 import { CubeTextureLoader, CubeTexture } from 'three'
-import { useLoader } from 'react-three-fiber'
+import { useLoader } from '@react-three/fiber'
 
 type Options = {
   path: string

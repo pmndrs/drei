@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {
   Plane,
+  Vector2,
   Vector3,
   Vector4,
   Matrix4,
@@ -16,8 +17,6 @@ import {
 } from 'three'
 import { useFrame, useThree, extend } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
-
-import { BlurPass } from '../materials/BlurPass'
 import { MeshReflectorMaterialImpl, MeshReflectorMaterial } from '../materials/MeshReflectorMaterial'
 
 export type ReflectorChildProps = MeshReflectorMaterialImpl
@@ -54,13 +53,14 @@ declare global {
 
 extend({ MeshReflectorMaterial })
 
+const MIPMAP_NUM = 8
+
 export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
   (
     {
       mixBlur = 0.0,
       mixStrength = 0.5,
       resolution = 256,
-      blur = [0, 0],
       args = [1, 1],
       minDepthThreshold = 0.9,
       maxDepthThreshold = 1,
@@ -75,8 +75,7 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
     },
     ref
   ) => {
-    blur = Array.isArray(blur) ? blur : [blur, blur]
-    const hasBlur = blur[0] + blur[1] > 0
+    const { gl, scene, camera } = useThree(({ gl, scene, camera }) => ({ gl, scene, camera }))
     const meshRef = React.useRef<Mesh>(null!)
     const [reflectorPlane] = React.useState(() => new Plane())
     const [normal] = React.useState(() => new Vector3())
@@ -90,7 +89,22 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
     const [q] = React.useState(() => new Vector4())
     const [textureMatrix] = React.useState(() => new Matrix4())
     const [virtualCamera] = React.useState(() => new PerspectiveCamera())
-    const { gl, scene, camera } = useThree(({ gl, scene, camera }) => ({ gl, scene, camera }))
+    const [renderTargets] = React.useState(() => {
+      const renderTargets: Array<WebGLRenderTarget> = []
+      const pars = {
+        minFilter: LinearFilter,
+        magFilter: LinearFilter,
+        format: RGBFormat,
+        encoding: gl.outputEncoding,
+      }
+      for (let i = 0; i < MIPMAP_NUM; i++) {
+        const res = Math.max(8, Math.round(resolution / Math.pow(2, i)))
+        const renderTarget = new WebGLRenderTarget(res, res, pars)
+        renderTarget.texture.generateMipmaps = false
+        renderTargets.push(renderTarget)
+      }
+      return renderTargets
+    })
 
     const beforeRender = React.useCallback(() => {
       reflectorWorldPosition.setFromMatrixPosition(meshRef.current.matrixWorld)
@@ -140,10 +154,25 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
       projectionMatrix.elements[6] = clipPlane.y
       projectionMatrix.elements[10] = clipPlane.z + 1.0
       projectionMatrix.elements[14] = clipPlane.w
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [
+      camera.far,
+      camera.matrixWorld,
+      camera.projectionMatrix,
+      cameraWorldPosition,
+      clipPlane,
+      lookAtPosition,
+      normal,
+      q,
+      reflectorPlane,
+      reflectorWorldPosition,
+      rotationMatrix,
+      target,
+      textureMatrix,
+      view,
+      virtualCamera,
+    ])
 
-    const [fbo1, fbo2, blurpass, reflectorProps] = React.useMemo(() => {
+    const [fbo1, reflectorProps] = React.useMemo(() => {
       const parameters = {
         minFilter: LinearFilter,
         magFilter: LinearFilter,
@@ -151,50 +180,43 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
         encoding: gl.outputEncoding,
       }
       const fbo1 = new WebGLRenderTarget(resolution, resolution, parameters)
-      fbo1.depthBuffer = true
-      fbo1.depthTexture = new DepthTexture(resolution, resolution)
-      fbo1.depthTexture.format = DepthFormat
-      fbo1.depthTexture.type = UnsignedShortType
-      const fbo2 = new WebGLRenderTarget(resolution, resolution, parameters)
-      const blurpass = new BlurPass({
-        gl,
-        resolution,
-        width: blur[0],
-        height: blur[1],
-        minDepthThreshold,
-        maxDepthThreshold,
-        depthScale,
-        depthToBlurRatioBias,
-      })
+      if (depthScale > 0) {
+        fbo1.depthBuffer = true
+        fbo1.depthTexture = new DepthTexture(resolution, resolution)
+        fbo1.depthTexture.format = DepthFormat
+        fbo1.depthTexture.type = UnsignedShortType
+      }
+
+      const mipmaps = renderTargets.reduce((acc, fbo, index) => {
+        acc[`u_mipmap_${index}`] = fbo.texture
+        acc[`u_mipmap_res_${index}`] = new Vector2(fbo.width, fbo.height)
+        return acc
+      }, {})
+
       const reflectorProps = {
         mirror,
         textureMatrix,
         mixBlur,
         tDiffuse: fbo1.texture,
         tDepth: fbo1.depthTexture,
-        tDiffuseBlur: fbo2.texture,
-        hasBlur,
         mixStrength,
         minDepthThreshold,
         maxDepthThreshold,
         depthScale,
         depthToBlurRatioBias,
-        transparent: true,
         debug,
         distortion,
         distortionMap,
-        'defines-USE_BLUR': hasBlur ? '' : undefined,
         'defines-USE_DEPTH': depthScale > 0 ? '' : undefined,
         'defines-USE_DISTORTION': !!distortionMap ? '' : undefined,
+        ...mipmaps,
       }
-      return [fbo1, fbo2, blurpass, reflectorProps]
+      return [fbo1, reflectorProps]
     }, [
       gl,
-      blur,
       textureMatrix,
       resolution,
       mirror,
-      hasBlur,
       mixBlur,
       mixStrength,
       minDepthThreshold,
@@ -204,6 +226,7 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
       debug,
       distortion,
       distortionMap,
+      renderTargets,
     ])
 
     useFrame(() => {
@@ -211,8 +234,15 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
       meshRef.current.visible = false
       beforeRender()
       gl.setRenderTarget(fbo1)
+      gl.state.buffers.depth.setMask(true)
       gl.render(scene, virtualCamera)
-      if (hasBlur) blurpass.render(gl, fbo1, fbo2)
+      if (mixBlur !== 0) {
+        renderTargets.forEach((fbo) => {
+          gl.setRenderTarget(fbo)
+          gl.state.buffers.depth.setMask(true)
+          gl.render(scene, virtualCamera)
+        })
+      }
       meshRef.current.visible = true
       gl.setRenderTarget(null)
     })

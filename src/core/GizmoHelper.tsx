@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { createPortal, useFrame, useThree } from 'react-three-fiber'
+import { createPortal, useFrame, useThree } from '@react-three/fiber'
 import { Camera, Group, Intersection, Matrix4, Object3D, Quaternion, Raycaster, Scene, Vector3 } from 'three'
 import { OrthographicCamera } from './OrthographicCamera'
 import { useCamera } from './useCamera'

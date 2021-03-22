@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ReactThreeFiber, useThree } from 'react-three-fiber'
+import { ReactThreeFiber, useThree } from '@react-three/fiber'
 import { PointerLockControls as PointerLockControlsImpl } from 'three-stdlib'
 
 export type PointerLockControls = ReactThreeFiber.Object3DNode<PointerLockControlsImpl, typeof PointerLockControlsImpl>

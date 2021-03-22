@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ReactThreeFiber, useThree, useFrame } from 'react-three-fiber'
+import { ReactThreeFiber, useThree, useFrame } from '@react-three/fiber'
 import { MapControls as MapControlsImpl } from 'three-stdlib'
 
 export type MapControls = ReactThreeFiber.Overwrite<

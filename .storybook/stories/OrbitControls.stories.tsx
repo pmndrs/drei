@@ -5,7 +5,7 @@ import { withKnobs, boolean } from '@storybook/addon-knobs'
 import { Setup } from '../Setup'
 
 import { OrbitControls, Box, useFBO, Plane, PerspectiveCamera } from '../../src'
-import { createPortal, useFrame } from 'react-three-fiber'
+import { createPortal, useFrame } from '@react-three/fiber'
 
 export function OrbitControlsStory() {
   return (

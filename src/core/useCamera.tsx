@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Raycaster, Camera, Intersection } from 'three'
-import { useThree, applyProps } from 'react-three-fiber'
+import { useThree, applyProps } from '@react-three/fiber'
 
 export function useCamera(camera: Camera | React.MutableRefObject<Camera>, props?: Partial<Raycaster>) {
   const mouse = useThree((state) => state.mouse)

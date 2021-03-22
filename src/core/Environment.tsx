@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useLoader, useThree } from 'react-three-fiber'
+import { useLoader, useThree } from '@react-three/fiber'
 import { CubeTexture, CubeTextureLoader, Texture, PMREMGenerator, Scene } from 'three'
 import { RGBELoader } from 'three-stdlib'
 import { useAsset } from 'use-asset'

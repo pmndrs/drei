@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { AudioLoader, AudioListener, PositionalAudio as PositionalAudioImpl } from 'three'
-import { useThree, useLoader } from 'react-three-fiber'
+import { useThree, useLoader } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
 
 type Props = JSX.IntrinsicElements['positionalAudio'] & {

@@ -1,6 +1,6 @@
 import { Object3D, Camera } from 'three'
 import * as React from 'react'
-import { useThree } from 'react-three-fiber'
+import { useThree } from '@react-three/fiber'
 
 type Props = {
   all?: boolean

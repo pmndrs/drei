@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useFrame, useThree, createPortal } from 'react-three-fiber'
+import { useFrame, useThree, createPortal } from '@react-three/fiber'
 import * as THREE from 'three'
 
 import { Setup } from '../Setup'

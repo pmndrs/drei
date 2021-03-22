@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { PerspectiveCamera as PerspectiveCameraImpl } from 'three'
-import { useThree } from 'react-three-fiber'
+import { useThree } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
 
 type Props = JSX.IntrinsicElements['perspectiveCamera'] & {

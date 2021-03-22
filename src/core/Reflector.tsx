@@ -14,7 +14,7 @@ import {
   UnsignedShortType,
   Texture,
 } from 'three'
-import { useFrame, useThree, extend } from 'react-three-fiber'
+import { useFrame, useThree, extend } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
 
 import { BlurPass } from '../materials/BlurPass'

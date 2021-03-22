@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { Canvas } from 'react-three-fiber'
+import { Canvas } from '@react-three/fiber'
 
 import { OrbitControls } from '../src'
 

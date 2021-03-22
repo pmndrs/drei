@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ReactThreeFiber, useThree, useFrame } from 'react-three-fiber'
+import { ReactThreeFiber, useThree, useFrame } from '@react-three/fiber'
 import { FlyControls as FlyControlsImpl } from 'three-stdlib'
 
 export type FlyControls = ReactThreeFiber.Object3DNode<FlyControlsImpl, typeof FlyControlsImpl>

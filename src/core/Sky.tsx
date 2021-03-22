@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ReactThreeFiber } from 'react-three-fiber'
+import { ReactThreeFiber } from '@react-three/fiber'
 import { Sky as SkyImpl } from 'three-stdlib'
 import { Vector3 } from 'three'
 

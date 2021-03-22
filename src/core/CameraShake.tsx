@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useFrame, useThree } from 'react-three-fiber'
+import { useFrame, useThree } from '@react-three/fiber'
 import { SimplexNoise } from 'three-stdlib'
 
 export interface ShakeController {

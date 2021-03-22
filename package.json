@@ -75,6 +75,7 @@
     "@babel/preset-env": "7.11.0",
     "@babel/preset-react": "7.10.4",
     "@babel/preset-typescript": "^7.10.4",
+    "@react-three/fiber": "^6.0.0-alpha.11",
     "@storybook/addon-actions": "^6.1.14",
     "@storybook/addon-controls": "^6.1.14",
     "@storybook/addon-knobs": "^6.1.14",
@@ -110,7 +111,6 @@
     "prettier": "^2.0.5",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "react-three-fiber": "^6.0.0-alpha.11",
     "rimraf": "^3.0.2",
     "rollup": "^2.26.4",
     "rollup-plugin-babel": "^4.4.0",
@@ -127,9 +127,9 @@
     "use-asset": "^1.0.2"
   },
   "peerDependencies": {
+    "@react-three/fiber": ">=6.0",
     "react": ">=17.0",
     "react-dom": ">=17.0",
-    "react-three-fiber": ">=6.0",
     "three": ">=0.126.0",
     "three-stdlib": ">=1.0"
   },

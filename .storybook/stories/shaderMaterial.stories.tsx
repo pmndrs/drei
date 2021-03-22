@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { extend } from 'react-three-fiber'
+import { extend } from '@react-three/fiber'
 import { Texture } from 'three'
 
 import { withKnobs, number } from '@storybook/addon-knobs'

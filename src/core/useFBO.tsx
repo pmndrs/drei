@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import * as THREE from 'three'
-import { useThree } from 'react-three-fiber'
+import { useThree } from '@react-three/fiber'
 
 type FBOSettings<T extends boolean = false> = { multisample?: T; samples?: number } & THREE.WebGLRenderTargetOptions
 

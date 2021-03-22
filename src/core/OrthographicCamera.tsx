@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { OrthographicCamera as OrthographicCameraImpl } from 'three'
-import { useThree } from 'react-three-fiber'
+import { useThree } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
 
 type Props = JSX.IntrinsicElements['orthographicCamera'] & {

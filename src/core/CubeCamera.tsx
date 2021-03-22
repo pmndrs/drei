@@ -9,7 +9,7 @@ import {
   RGBFormat,
 } from 'three'
 import * as React from 'react'
-import { useFrame, useThree } from 'react-three-fiber'
+import { useFrame, useThree } from '@react-three/fiber'
 
 type Props = JSX.IntrinsicElements['group'] & {
   fog?: Fog | FogExp2

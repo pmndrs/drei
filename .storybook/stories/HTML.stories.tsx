@@ -6,7 +6,7 @@ import { useTurntable } from '../useTurntable'
 
 import { Icosahedron, Html, OrthographicCamera } from '../../src'
 import { HtmlProps, CalculatePosition } from 'web/Html'
-import { useFrame, useThree } from 'react-three-fiber'
+import { useFrame, useThree } from '@react-three/fiber'
 
 export default {
   title: 'Misc/Html',

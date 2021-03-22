@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Object3D, Group } from 'three'
-import { useThree, ReactThreeFiber } from 'react-three-fiber'
+import { useThree, ReactThreeFiber } from '@react-three/fiber'
 import { TransformControls as TransformControlsImpl } from 'three-stdlib'
 import pick from 'lodash.pick'
 import omit from 'lodash.omit'

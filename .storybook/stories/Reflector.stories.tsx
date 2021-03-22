@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useFrame } from 'react-three-fiber'
+import { useFrame } from '@react-three/fiber'
 import { Vector3, Mesh, RepeatWrapping, Vector2 } from 'three'
 
 import { Setup } from '../Setup'

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { WebGLMultisampleRenderTarget, RGBAFormat, sRGBEncoding } from 'three'
-import { ReactThreeFiber, extend, useThree, useFrame } from 'react-three-fiber'
+import { ReactThreeFiber, extend, useThree, useFrame } from '@react-three/fiber'
 import { EffectComposer, RenderPass, ShaderPass, GammaCorrectionShader } from 'three-stdlib'
 
 import mergeRefs from 'react-merge-refs'

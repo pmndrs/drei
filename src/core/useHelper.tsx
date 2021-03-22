@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Object3D } from 'three'
-import { useThree, useFrame } from 'react-three-fiber'
+import { useThree, useFrame } from '@react-three/fiber'
 
 type Helper = Object3D & {
   update: () => void

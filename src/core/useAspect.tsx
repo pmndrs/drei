@@ -1,4 +1,4 @@
-import { useThree } from 'react-three-fiber'
+import { useThree } from '@react-three/fiber'
 
 export function useAspect(width: number, height: number, factor: number = 1): [number, number, number] {
   const v = useThree((state) => state.viewport)

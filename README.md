@@ -145,6 +145,8 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#detailed">Detailed</a></li>
           <li><a href="#preload">Preload</a></li>
           <li><a href="#meshbounds">meshBounds</a></li>
+          <li><a href="#adaptivedpr">AdaptiveDpr</a></li>
+          <li><a href="#adaptiveevents">AdaptiveEvents</a></li>
         </ul>
       </ul>
     </td>
@@ -1105,4 +1107,20 @@ A very fast, but often good-enough bounds-only raycast for meshes. You can use t
 
 ```jsx
 <mesh raycast={meshBounds} />
+```
+
+#### AdaptiveDpr
+
+Drop this component into your scene and it will cut the pixel-ratio on [regress](#) according to the canvases perrformance min/max settings. This allows you to temporarily reduce visuals for more performance, for instance when the camera moves (look into drei's controls `regress` flag). Optionally you can set the canvas to a pixelated filter, which would be even faster.
+
+```jsx
+<AdaptiveDpr pixelated />
+```
+
+#### AdaptiveEvents
+
+Drop this component into your scene and it will switch off the raycaster while the system is in regress.
+
+```jsx
+<AdaptiveEvents />
 ```

@@ -230,21 +230,21 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
     ])
 
     useFrame(({ gl }) => {
-      if (!(meshRef?.current && gl)) return
+      if (!meshRef?.current) return
       meshRef.current.visible = false
       beforeRender()
-      gl.setRenderTarget(fbo1)
-      gl.state.buffers.depth.setMask(true)
-      gl.render(scene, virtualCamera)
+      gl?.setRenderTarget?.(fbo1)
+      gl?.state.buffers.depth.setMask(true)
+      gl?.render?.(scene, virtualCamera)
       if (mixBlur !== 0) {
         renderTargets.forEach((fbo) => {
-          gl.setRenderTarget(fbo)
-          gl.state.buffers.depth.setMask(true)
-          gl.render(scene, virtualCamera)
+          gl?.setRenderTarget?.(fbo)
+          gl?.state.buffers.depth.setMask(true)
+          gl?.render?.(scene, virtualCamera)
         })
       }
       meshRef.current.visible = true
-      gl.setRenderTarget(null)
+      gl?.setRenderTarget?.(null)
     })
 
     return (

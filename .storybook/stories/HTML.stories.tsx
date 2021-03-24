@@ -125,3 +125,24 @@ export const HTMLCalculatePosition = () => (
   <HTMLScene className="html-story-label" calculatePosition={overrideCalculatePosition} />
 )
 HTMLCalculatePosition.storyName = 'Custom Calculate Position'
+
+function HTMLCheckDepthScene() {
+  return (
+    <>
+      <Icosahedron name="pink" args={[14, 14]} position={[0, 0, 0]}>
+        <meshBasicMaterial attach="material" color="hotpink" wireframe />
+        <Html position={[0, 0, 16]} className="html-story-label" checkDepth>
+          A
+        </Html>
+        <Html position={[0, 0, -16]} className="html-story-label" checkDepth>
+          B
+        </Html>
+      </Icosahedron>
+      <ambientLight intensity={0.8} />
+      <pointLight intensity={1} position={[0, 6, 0]} />
+    </>
+  )
+}
+
+export const HTMLCheckDepthSt = () => <HTMLCheckDepthScene className="html-story-block" />
+HTMLCheckDepthSt.storyName = 'Check Depth'

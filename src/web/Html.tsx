@@ -36,15 +36,23 @@ function isObjectBehindCamera(el: Object3D, camera: Camera) {
   return deltaCamObj.angleTo(camDir) > Math.PI / 2
 }
 
-function isObjectFirst(parent: Object3D, camera: Camera, raycaster: Raycaster, scene: Scene) {
-  const parentPos = v1.setFromMatrixPosition(parent.matrixWorld)
+function isObjectVisible(el: Object3D, camera: Camera, raycaster: Raycaster, scene: Scene) {
+  const elPos = v1.setFromMatrixPosition(el.matrixWorld)
 
-  parentPos.project(camera)
+  const screenPos = elPos.clone()
+  screenPos.project(camera)
 
-  raycaster.setFromCamera(parentPos, camera)
+  raycaster.setFromCamera(screenPos, camera)
   const intersects = raycaster.intersectObjects(scene.children, true)
 
-  return intersects.length && parent === intersects[0].object
+  if (intersects.length) {
+    const intersectionDistance = intersects[0].distance
+    const pointDistance = elPos.distanceTo(camera.position)
+
+    return pointDistance < intersectionDistance
+  } else {
+    return true
+  }
 }
 
 function objectScale(el: Object3D, camera: Camera) {
@@ -102,7 +110,7 @@ export interface HtmlProps
   distanceFactor?: number
   sprite?: boolean
   transform?: boolean
-  depthTest?: boolean
+  checkDepth?: boolean
   zIndexRange?: Array<number>
   calculatePosition?: CalculatePosition
 }
@@ -121,7 +129,7 @@ export const Html = React.forwardRef(
       distanceFactor,
       sprite = false,
       transform = false,
-      depthTest = false,
+      checkDepth = false,
       zIndexRange = [16777271, 0],
       calculatePosition = defaultCalculatePosition,
       ...props
@@ -217,9 +225,9 @@ export const Html = React.forwardRef(
         ) {
           const isBehindCamera = isObjectBehindCamera(group.current, camera)
 
-          if (depthTest && group.current.parent) {
-            const isFirst = isObjectFirst(group.current.parent, camera, raycaster, scene)
-            el.style.display = isFirst && !isBehindCamera ? 'block' : 'none'
+          if (checkDepth) {
+            const visible = isObjectVisible(group.current, camera, raycaster, scene)
+            el.style.display = visible && !isBehindCamera ? 'block' : 'none'
           } else {
             el.style.display = !isBehindCamera ? 'block' : 'none'
           }

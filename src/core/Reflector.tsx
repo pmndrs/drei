@@ -229,7 +229,7 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
       renderTargets,
     ])
 
-    useFrame(() => {
+    useFrame(({ gl }) => {
       if (!(meshRef?.current && gl)) return
       meshRef.current.visible = false
       beforeRender()

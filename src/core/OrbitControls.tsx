@@ -41,6 +41,8 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
       }
     }, [controls, invalidate])
 
-    return <primitive ref={ref} object={controls} enableDampening={enableDampening} {...restProps} />
+    return (
+      <primitive ref={ref} dispose={undefined} object={controls} enableDampening={enableDampening} {...restProps} />
+    )
   }
 )

@@ -239,7 +239,7 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
       if (mixBlur !== 0) {
         renderTargets.forEach((fbo) => {
           gl?.setRenderTarget?.(fbo)
-          gl?.state.buffers.depth.setMask(true)
+          gl?.state?.buffers?.depth?.setMask(true)
           gl?.render?.(scene, virtualCamera)
         })
       }

@@ -1,6 +1,16 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import { Vector3, Group, Object3D, Matrix4, Camera, PerspectiveCamera, OrthographicCamera } from 'three'
+import {
+  Vector3,
+  Group,
+  Object3D,
+  Matrix4,
+  Camera,
+  PerspectiveCamera,
+  OrthographicCamera,
+  Raycaster,
+  Scene,
+} from 'three'
 import { Assign } from 'utility-types'
 import { ReactThreeFiber, useFrame, useThree } from 'react-three-fiber'
 
@@ -24,6 +34,17 @@ function isObjectBehindCamera(el: Object3D, camera: Camera) {
   const deltaCamObj = objectPos.sub(cameraPos)
   const camDir = camera.getWorldDirection(v3)
   return deltaCamObj.angleTo(camDir) > Math.PI / 2
+}
+
+function isObjectFirst(parent: Object3D, camera: Camera, raycaster: Raycaster, scene: Scene) {
+  const parentPos = v1.setFromMatrixPosition(parent.matrixWorld)
+
+  parentPos.project(camera)
+
+  raycaster.setFromCamera(parentPos, camera)
+  const intersects = raycaster.intersectObjects(scene.children, true)
+
+  return intersects.length && parent === intersects[0].object
 }
 
 function objectScale(el: Object3D, camera: Camera) {
@@ -81,6 +102,7 @@ export interface HtmlProps
   distanceFactor?: number
   sprite?: boolean
   transform?: boolean
+  depthTest?: boolean
   zIndexRange?: Array<number>
   calculatePosition?: CalculatePosition
 }
@@ -99,13 +121,14 @@ export const Html = React.forwardRef(
       distanceFactor,
       sprite = false,
       transform = false,
+      depthTest = false,
       zIndexRange = [16777271, 0],
       calculatePosition = defaultCalculatePosition,
       ...props
     }: HtmlProps,
     ref: React.Ref<HTMLDivElement>
   ) => {
-    const { gl, scene, camera, size } = useThree()
+    const { gl, scene, camera, size, raycaster } = useThree()
     const [el] = React.useState(() => document.createElement('div'))
     const group = React.useRef<Group>(null)
     const oldZoom = React.useRef(0)
@@ -192,7 +215,15 @@ export const Html = React.forwardRef(
           Math.abs(oldPosition.current[0] - vec[0]) > eps ||
           Math.abs(oldPosition.current[1] - vec[1]) > eps
         ) {
-          el.style.display = !isObjectBehindCamera(group.current, camera) ? 'block' : 'none'
+          const isBehindCamera = isObjectBehindCamera(group.current, camera)
+
+          if (depthTest && group.current.parent) {
+            const isFirst = isObjectFirst(group.current.parent, camera, raycaster, scene)
+            el.style.display = isFirst && !isBehindCamera ? 'block' : 'none'
+          } else {
+            el.style.display = !isBehindCamera ? 'block' : 'none'
+          }
+
           el.style.zIndex = `${objectZIndex(group.current, camera, zIndexRange)}`
           if (transform) {
             const [widthHalf, heightHalf] = [size.width / 2, size.height / 2]

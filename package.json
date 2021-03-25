@@ -28,8 +28,19 @@
   "module": "index.js",
   "types": "index.d.ts",
   "sideEffects": false,
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
+    "rules": {
+      "body-max-line-length": [
+        0
+      ]
+    }
+  },
   "husky": {
     "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "pre-commit": "lint-staged"
     }
   },
@@ -76,7 +87,9 @@
     "@babel/preset-env": "7.11.0",
     "@babel/preset-react": "7.10.4",
     "@babel/preset-typescript": "^7.10.4",
-    "@react-three/fiber": "^6.0.0-alpha.11",
+    "@commitlint/cli": "^12.0.1",
+    "@commitlint/config-conventional": "^12.0.1",
+    "@react-three/fiber": "^6.0.0-alpha.14",
     "@storybook/addon-actions": "^6.1.14",
     "@storybook/addon-controls": "^6.1.14",
     "@storybook/addon-knobs": "^6.1.14",

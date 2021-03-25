@@ -3,7 +3,7 @@ import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'
 
-import { Environment, Html, useGLTF, useProgress } from '../../src'
+import { Environment, Html, useGLTF, useProgress, Loader } from '../../src'
 import { withKnobs, boolean } from '@storybook/addon-knobs'
 
 export default {
@@ -26,7 +26,7 @@ function Shoe() {
   return <primitive object={nodes['Shoe']} />
 }
 
-function Loader() {
+function CustomLoader() {
   const { progress } = useProgress()
   return (
     <Html center>
@@ -37,7 +37,7 @@ function Loader() {
 
 function LoadExtras() {
   return (
-    <React.Suspense fallback={<Loader />}>
+    <React.Suspense fallback={<CustomLoader />}>
       <Environment preset={'studio'} />
       <Shoe />
     </React.Suspense>
@@ -46,11 +46,27 @@ function LoadExtras() {
 
 function UseProgressScene() {
   return (
-    <React.Suspense fallback={<Loader />}>{boolean('Load extras', false) ? <LoadExtras /> : <Helmet />}</React.Suspense>
+    <React.Suspense fallback={<CustomLoader />}>
+      {boolean('Load extras', false) ? <LoadExtras /> : <Helmet />}
+    </React.Suspense>
   )
 }
 
 export const UseProgressSceneSt = () => <UseProgressScene />
 UseProgressSceneSt.story = {
   name: 'Default',
+}
+
+export function WithOutOfTheBoxLoader() {
+  return (
+    <React.Suspense
+      fallback={
+        <Html>
+          <Loader />
+        </Html>
+      }
+    >
+      {boolean('Load extras', false) ? <LoadExtras /> : <Helmet />}
+    </React.Suspense>
+  )
 }

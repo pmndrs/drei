@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { useProgress } from '../core/useProgress'
-import { a, useTransition } from '@react-spring/web'
 
 const styles = {
   container: {
@@ -13,6 +12,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    transition: 'opacity 300ms ease',
     zIndex: 1000,
   },
   inner: {
@@ -25,6 +25,7 @@ const styles = {
     height: 3,
     width: '100%',
     background: 'white',
+    transition: 'transform 200ms',
     transformOrigin: 'left center',
   },
   data: {
@@ -48,31 +49,49 @@ interface LoaderOptions {
   initialState: (active: boolean) => boolean
 }
 
+const defaultDataInterpolation = (p: number) => `Loading ${p.toFixed(2)}%`
+
 export function Loader({
   containerStyles,
   innerStyles,
   barStyles,
   dataStyles,
-  dataInterpolation = (p: number) => `Loading ${(p * 100).toFixed(2)}%`,
+  dataInterpolation = defaultDataInterpolation,
   initialState = (active: boolean) => active,
 }: Partial<LoaderOptions>) {
   const { active, progress } = useProgress()
-  const transition = useTransition(initialState(active), {
-    from: { opacity: 1, progress: 0 },
-    leave: { opacity: 0 },
-    update: { progress: progress / 100 },
-  })
-  return transition(
-    ({ progress, opacity }, active) =>
-      active && (
-        <a.div style={{ ...styles.container, opacity, ...containerStyles }}>
-          <div>
-            <div style={{ ...styles.inner, ...innerStyles }}>
-              <a.div style={{ ...styles.bar, scaleX: progress, ...barStyles }}></a.div>
-              <a.span style={{ ...styles.data, ...dataStyles }}>{progress.to(dataInterpolation)}</a.span>
-            </div>
-          </div>
-        </a.div>
-      )
-  )
+  const progressRef = React.useRef(0)
+  const rafRef = React.useRef(0)
+  const progressSpanRef = React.useRef<HTMLSpanElement>(null)
+  const [shown, setShown] = React.useState(initialState(active))
+
+  React.useEffect(() => {
+    let t
+    if (active !== shown) t = setTimeout(() => setShown(active), 300)
+    return () => clearTimeout(t)
+  }, [shown, active])
+
+  const updateProgress = React.useCallback(() => {
+    if (!progressSpanRef.current) return
+    progressRef.current += (progress - progressRef.current) / 2
+    if (progressRef.current > 0.95 * progress || progress === 100) progressRef.current = progress
+    progressSpanRef.current.innerText = dataInterpolation(progressRef.current)
+    if (progressRef.current < progress) rafRef.current = requestAnimationFrame(updateProgress)
+  }, [dataInterpolation, progress])
+
+  React.useEffect(() => {
+    updateProgress()
+    return () => cancelAnimationFrame(rafRef.current)
+  }, [updateProgress])
+
+  return shown ? (
+    <div style={{ ...styles.container, opacity: active ? 1 : 0, ...containerStyles }}>
+      <div>
+        <div style={{ ...styles.inner, ...innerStyles }}>
+          <div style={{ ...styles.bar, transform: `scaleX(${progress / 100})`, ...barStyles }}></div>
+          <span ref={progressSpanRef} style={{ ...styles.data, ...dataStyles }} />
+        </div>
+      </div>
+    </div>
+  ) : null
 }

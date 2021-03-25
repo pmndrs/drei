@@ -126,23 +126,31 @@ export const HTMLCalculatePosition = () => (
 )
 HTMLCalculatePosition.storyName = 'Custom Calculate Position'
 
-function HTMLCheckDepthScene() {
+function HTMLRaycastOccluderScene() {
+  const turntableRef = useTurntable()
+  const occluderRef = React.useRef()
+
   return (
     <>
-      <Icosahedron name="pink" args={[14, 14]} position={[0, 0, 0]}>
-        <meshBasicMaterial attach="material" color="hotpink" wireframe />
-        <Html position={[0, 0, 16]} className="html-story-label" checkDepth>
-          A
-        </Html>
-        <Html position={[0, 0, -16]} className="html-story-label" checkDepth>
-          B
-        </Html>
-      </Icosahedron>
+      <group ref={turntableRef}>
+        <Icosahedron ref={occluderRef} name="pink" args={[5, 5]} position={[0, 0, 0]}>
+          <meshBasicMaterial attach="material" color="hotpink" wireframe />
+          <Html position={[0, 0, -6]} className="html-story-label" occluder={turntableRef}>
+            A
+          </Html>
+        </Icosahedron>
+        <Icosahedron name="yellow" args={[5, 5]} position={[16, 0, 0]}>
+          <meshBasicMaterial attach="material" color="yellow" wireframe />
+          <Html position={[0, 0, -6]} className="html-story-label" occluder={turntableRef}>
+            B
+          </Html>
+        </Icosahedron>
+      </group>
       <ambientLight intensity={0.8} />
       <pointLight intensity={1} position={[0, 6, 0]} />
     </>
   )
 }
 
-export const HTMLCheckDepthSt = () => <HTMLCheckDepthScene className="html-story-block" />
-HTMLCheckDepthSt.storyName = 'Check Depth'
+export const HTMLRaycastOccluderSt = () => <HTMLRaycastOccluderScene className="html-story-block" />
+HTMLRaycastOccluderSt.storyName = 'Raycast occluder'

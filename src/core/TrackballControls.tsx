@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { PerspectiveCamera } from 'three'
 import { ReactThreeFiber, useThree, useFrame } from '@react-three/fiber'
 import { TrackballControls as TrackballControlsImpl } from 'three-stdlib'
 
@@ -24,7 +25,7 @@ export const TrackballControls = React.forwardRef<TrackballControlsImpl, Trackba
   }))
   const explCamera = camera || defaultCamera
 
-  const [controls] = React.useState(() => new TrackballControlsImpl(explCamera, gl.domElement))
+  const [controls] = React.useState(() => new TrackballControlsImpl(explCamera as PerspectiveCamera, gl.domElement))
 
   useFrame(() => controls?.update())
   React.useEffect(() => {

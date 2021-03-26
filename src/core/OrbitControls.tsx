@@ -8,6 +8,7 @@ export type OrbitControlsProps = ReactThreeFiber.Overwrite<
     target?: ReactThreeFiber.Vector3
     camera?: THREE.Camera
     regress?: boolean
+    enableDampening?: boolean
   }
 >
 

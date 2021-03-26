@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Object3D, Group } from 'three'
+import { Object3D, Group, Camera } from 'three'
 import { useThree, ReactThreeFiber } from '@react-three/fiber'
 import { TransformControls as TransformControlsImpl } from 'three-stdlib'
 import pick from 'lodash.pick'
@@ -30,6 +30,7 @@ type Props = TransformControls &
     showY: boolean
     showZ: boolean
     children: React.ReactElement<Object3D>
+    camera: Camera
   }
 
 export const TransformControls = React.forwardRef<TransformControlsImpl, Props>(({ children, ...props }, ref) => {

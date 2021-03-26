@@ -76,6 +76,7 @@ export function Environment({
       }
     }
     return () => {
+      useAsset.clear()
       if (scene) {
         scene.environment = oldenv
         scene.background = oldbg

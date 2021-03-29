@@ -688,7 +688,7 @@ Easily add reflections and/or blur to a planar surface. This reflector can also 
   args={[1, 1]} // PlaneBufferGeometry arguments
   resolution={256} // Off-buffer resolution, lower=faster, higher=better quality
   mirror={0.5} // Mirror environment, 0 = texture colors, 1 = pick up env colors
-  mixBlur={1.0} // How much blur mixes with surface roughness
+  mixBlur={1.0} // How much blur mixes with surface roughness (default = 0), note that this can affect performance
   mixStrength={0.5} // Strength of the reflections
   depthScale={1} // Scale the depth factor (0 = no depth, default = 0)
   minDepthThreshold={0.9} // Lower edge for the depthTexture interpolation (default = 0)

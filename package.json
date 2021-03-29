@@ -89,7 +89,7 @@
     "@babel/preset-typescript": "^7.10.4",
     "@commitlint/cli": "^12.0.1",
     "@commitlint/config-conventional": "^12.0.1",
-    "@react-three/fiber": "^6.0.0-alpha.14",
+    "@react-three/fiber": "^6.0.0-alpha.15",
     "@storybook/addon-actions": "^6.1.14",
     "@storybook/addon-controls": "^6.1.14",
     "@storybook/addon-knobs": "^6.1.14",

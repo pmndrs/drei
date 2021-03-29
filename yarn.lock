@@ -12879,13 +12879,6 @@ url@^0.11.0:
     punycode "1.3.2"
     querystring "0.2.0"
 
-use-asset@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/use-asset/-/use-asset-1.0.2.tgz#d98a506ba480d113639de60631f89907794ead84"
-  integrity sha512-ewqcm1+SmRIpIhanbP2Kdt03u7IQfxGixi3dq2AP90GK5J0fFXBeSp4hO43tx3HG5AXvh6U4hQ00x4JXr5Dhiw==
-  dependencies:
-    fast-deep-equal "^3.1.3"
-
 use-asset@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/use-asset/-/use-asset-1.0.4.tgz#506caafc29f602890593799e58b577b70293a6e2"

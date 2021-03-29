@@ -75,7 +75,7 @@
     "@babel/preset-env": "7.11.0",
     "@babel/preset-react": "7.10.4",
     "@babel/preset-typescript": "^7.10.4",
-    "@react-three/fiber": "^6.0.0-alpha.11",
+    "@react-three/fiber": "^6.0.0-alpha.15",
     "@storybook/addon-actions": "^6.1.14",
     "@storybook/addon-controls": "^6.1.14",
     "@storybook/addon-knobs": "^6.1.14",

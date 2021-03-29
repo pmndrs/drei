@@ -10,8 +10,6 @@ A growing collection of useful helpers and abstractions for [react-three-fiber](
 npm install @react-three/drei
 ```
 
-:point_right: this package is now only published under the name `@react-three/drei`. `drei` has been deprecated. :point_left:
-
 :point_right: this package is using the stand-alone `[three-stdlib](https://github.com/pmndrs/three-stdlib)` instead of `[three/examples/jsm](https://github.com/mrdoob/three.js/tree/dev/examples/jsm)`. :point_left:
 
 ### Basic usage:

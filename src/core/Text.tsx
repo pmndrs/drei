@@ -34,7 +34,7 @@ type Props = JSX.IntrinsicElements['mesh'] & {
 // eslint-disable-next-line prettier/prettier
 export const Text = React.forwardRef(
   ({ anchorX = 'center', anchorY = 'middle', children, onSync, ...props }: Props, ref) => {
-    const { invalidate } = useThree(({ invalidate }) => ({ invalidate }))
+    const invalidate = useThree(({ invalidate }) => invalidate)
     const [troikaMesh] = React.useState(() => new TextMeshImpl())
     const [nodes, text] = React.useMemo(() => {
       let n: React.ReactNode[] = []

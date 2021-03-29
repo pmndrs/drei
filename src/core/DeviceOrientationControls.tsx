@@ -11,7 +11,8 @@ export type DeviceOrientationControls = ReactThreeFiber.Object3DNode<
 
 export const DeviceOrientationControls = React.forwardRef((props: DeviceOrientationControls, ref) => {
   const { camera, ...rest } = props
-  const { camera: defaultCamera, invalidate } = useThree(({ camera, invalidate }) => ({ camera, invalidate }))
+  const defaultCamera = useThree(({ camera }) => camera)
+  const invalidate = useThree(({ invalidate }) => invalidate)
   const explCamera = camera || defaultCamera
   const [controls] = React.useState(() => new DeviceOrientationControlsImp(explCamera))
 

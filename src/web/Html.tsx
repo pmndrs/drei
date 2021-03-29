@@ -105,7 +105,11 @@ export const Html = React.forwardRef(
     }: HtmlProps,
     ref: React.Ref<HTMLDivElement>
   ) => {
-    const { gl, scene, camera, size } = useThree(({ gl, scene, camera, size }) => ({ gl, scene, camera, size }))
+    const gl = useThree(({ gl }) => gl)
+    const camera = useThree(({ camera }) => camera)
+    const scene = useThree(({ scene }) => scene)
+    const size = useThree(({ size }) => size)
+
     const [el] = React.useState(() => document.createElement('div'))
     const group = React.useRef<Group>(null)
     const oldZoom = React.useRef(0)

@@ -5,7 +5,9 @@ import { FlyControls as FlyControlsImpl } from 'three-stdlib'
 export type FlyControls = ReactThreeFiber.Object3DNode<FlyControlsImpl, typeof FlyControlsImpl>
 
 export const FlyControls = React.forwardRef<FlyControlsImpl, FlyControls>((props, ref) => {
-  const { camera, gl, invalidate } = useThree(({ camera, gl, invalidate }) => ({ camera, gl, invalidate }))
+  const invalidate = useThree(({ invalidate }) => invalidate)
+  const camera = useThree(({ camera }) => camera)
+  const gl = useThree(({ gl }) => gl)
   const [controls] = React.useState(() => new FlyControlsImpl(camera, gl.domElement))
 
   React.useEffect(() => {

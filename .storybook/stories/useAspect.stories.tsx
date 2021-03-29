@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useLoader } from 'react-three-fiber'
+import { useLoader } from '@react-three/fiber'
 import { TextureLoader, Vector3 } from 'three'
 
 import { Setup } from '../Setup'

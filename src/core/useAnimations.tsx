@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Object3D, AnimationClip, AnimationAction, AnimationMixer } from 'three'
-import { useFrame } from 'react-three-fiber'
+import { useFrame } from '@react-three/fiber'
 
 type Api = {
   ref: React.MutableRefObject<Object3D | undefined | null>

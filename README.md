@@ -12,6 +12,8 @@ npm install @react-three/drei
 
 :point_right: this package is now only published under the name `@react-three/drei`. `drei` has been deprecated. :point_left:
 
+:point_right: this package is using the stand-alone `[three-stdlib](https://github.com/pmndrs/three-stdlib)` instead of `[three/examples/jsm](https://github.com/mrdoob/three.js/tree/dev/examples/jsm)`. :point_left:
+
 ### Basic usage:
 
 ```jsx
@@ -143,6 +145,8 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#detailed">Detailed</a></li>
           <li><a href="#preload">Preload</a></li>
           <li><a href="#meshbounds">meshBounds</a></li>
+          <li><a href="#adaptivedpr">AdaptiveDpr</a></li>
+          <li><a href="#adaptiveevents">AdaptiveEvents</a></li>
         </ul>
       </ul>
     </td>
@@ -507,7 +511,7 @@ Adds a [sky](https://threejs.org/examples/webgl_shaders_sky.html) to your scene.
   sunPosition={[0, 1, 0]} // Sun position normal (defaults to inclination and azimuth if not set)
   inclination={0} // Sun elevation angle from 0 to 1 (default=0)
   azimuth={0.25} // Sun rotation around the Y axis from 0 to 1 (default=0.25)
-  {...props} // All three/examples/jsm/objects/Sky props are valid
+  {...props} // All three-stdlib/objects/Sky props are valid
 />
 ```
 
@@ -809,7 +813,6 @@ This hook calculates aspect ratios (for now only what in css would be `image-siz
 
 ```jsx
 const scale = useAspect(
-  "cover",                  // Aspect ratio: cover | ... more to come, PR's welcome ;)
   1024,                     // Pixel-width
   512,                      // Pixel-height
   1                         // Optional scaling factor
@@ -1104,4 +1107,20 @@ A very fast, but often good-enough bounds-only raycast for meshes. You can use t
 
 ```jsx
 <mesh raycast={meshBounds} />
+```
+
+#### AdaptiveDpr
+
+Drop this component into your scene and it will cut the pixel-ratio on [regress](#) according to the canvases perrformance min/max settings. This allows you to temporarily reduce visuals for more performance, for instance when the camera moves (look into drei's controls `regress` flag). Optionally you can set the canvas to a pixelated filter, which would be even faster.
+
+```jsx
+<AdaptiveDpr pixelated />
+```
+
+#### AdaptiveEvents
+
+Drop this component into your scene and it will switch off the raycaster while the system is in regress.
+
+```jsx
+<AdaptiveEvents />
 ```

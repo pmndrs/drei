@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { LOD, Object3D } from 'three'
-import { useUpdate, useFrame } from 'react-three-fiber'
+import { useFrame } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
 
 type Props = JSX.IntrinsicElements['lOD'] & {
@@ -9,13 +9,15 @@ type Props = JSX.IntrinsicElements['lOD'] & {
 }
 
 export const Detailed = React.forwardRef(({ children, distances, ...props }: Props, ref) => {
-  const lod = useUpdate<LOD>((lod) => {
+  const lodRef = React.useRef<LOD>(null!)
+  React.useLayoutEffect(() => {
+    const { current: lod } = lodRef
     lod.levels.length = 0
     lod.children.forEach((object, index) => lod.levels.push({ object, distance: distances[index] }))
-  }, [])
-  useFrame((state) => lod.current?.update(state.camera))
+  })
+  useFrame((state) => lodRef.current?.update(state.camera))
   return (
-    <lOD ref={mergeRefs([lod, ref])} {...props}>
+    <lOD ref={mergeRefs([lodRef, ref])} {...props}>
       {children}
     </lOD>
   )

@@ -1,7 +1,7 @@
 import * as React from 'react'
-import { useLoader, useThree } from 'react-three-fiber'
+import { useLoader, useThree } from '@react-three/fiber'
 import { CubeTexture, CubeTextureLoader, Texture, PMREMGenerator, Scene } from 'three'
-import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
+import { RGBELoader } from 'three-stdlib'
 import { useAsset } from 'use-asset'
 
 import { presetsObj } from '../helpers/environment-assets'
@@ -38,7 +38,8 @@ export function Environment({
     files = presetsObj[preset]
     path = CUBEMAP_ROOT + '/hdri/'
   }
-  const { gl, scene: defaultScene } = useThree()
+  const defaultScene = useThree(({ scene }) => scene)
+  const gl = useThree(({ gl }) => gl)
   const isCubeMap = Array.isArray(files)
   const loader: any = isCubeMap ? CubeTextureLoader : RGBELoader
   // @ts-expect-error

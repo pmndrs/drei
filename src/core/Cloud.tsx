@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Group, Texture } from 'three'
-import { useFrame } from 'react-three-fiber'
+import { useFrame } from '@react-three/fiber'
 import { Billboard } from './Billboard'
 import { useTexture } from './useTexture'
 import CloudImage from '../assets/cloud.base64'

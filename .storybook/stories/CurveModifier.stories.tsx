@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { useFrame, useLoader } from 'react-three-fiber'
+import { useFrame, useLoader } from '@react-three/fiber'
 
 import { Setup } from '../Setup'
 

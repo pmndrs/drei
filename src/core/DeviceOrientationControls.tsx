@@ -1,7 +1,6 @@
 import * as React from 'react'
-import { ReactThreeFiber, useThree, useFrame } from 'react-three-fiber'
-import { DeviceOrientationControls as DeviceOrientationControlsImp } from 'three/examples/jsm/controls/DeviceOrientationControls'
-import useEffectfulState from '../helpers/useEffectfulState'
+import { ReactThreeFiber, useThree, useFrame } from '@react-three/fiber'
+import { DeviceOrientationControls as DeviceOrientationControlsImp } from 'three-stdlib'
 
 export type DeviceOrientationControls = ReactThreeFiber.Object3DNode<
   DeviceOrientationControlsImp,
@@ -12,17 +11,10 @@ export type DeviceOrientationControls = ReactThreeFiber.Object3DNode<
 
 export const DeviceOrientationControls = React.forwardRef((props: DeviceOrientationControls, ref) => {
   const { camera, ...rest } = props
-  const { camera: defaultCamera, invalidate } = useThree()
+  const defaultCamera = useThree(({ camera }) => camera)
+  const invalidate = useThree(({ invalidate }) => invalidate)
   const explCamera = camera || defaultCamera
-  const controls = useEffectfulState(
-    () => {
-      if (explCamera) {
-        return new DeviceOrientationControlsImp(explCamera)
-      }
-    },
-    [explCamera],
-    ref as any
-  )
+  const [controls] = React.useState(() => new DeviceOrientationControlsImp(explCamera))
 
   React.useEffect(() => {
     controls?.addEventListener?.('change', invalidate)
@@ -37,5 +29,5 @@ export const DeviceOrientationControls = React.forwardRef((props: DeviceOrientat
     return () => current?.dispose()
   }, [controls])
 
-  return controls ? <primitive dispose={undefined} object={controls} {...rest} /> : null
+  return controls ? <primitive ref={ref} dispose={undefined} object={controls} {...rest} /> : null
 })

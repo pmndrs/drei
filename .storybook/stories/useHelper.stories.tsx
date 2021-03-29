@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { BoxHelper, CameraHelper } from 'three'
-import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper'
+import { VertexNormalsHelper } from 'three-stdlib'
 
 import { Setup } from '../Setup'
 

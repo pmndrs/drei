@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { Flow } from 'three/examples/jsm/modifiers/CurveModifier'
+import { Flow } from 'three-stdlib'
 
 export interface CurveModifierProps {
   children: React.ReactElement<JSX.IntrinsicElements['mesh']>
@@ -15,7 +15,7 @@ export const CurveModifier = React.forwardRef(({ children, curve }: CurveModifie
   const modifier = React.useRef<Flow>()
 
   React.useImperativeHandle(ref, () => ({
-    moveAlongCurve: (val) => {
+    moveAlongCurve: (val: number) => {
       modifier.current?.moveAlongCurve(val)
     },
   }))

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { TessellateModifier } from 'three/examples/jsm/modifiers/TessellateModifier'
+import { TessellateModifier } from 'three-stdlib'
 
 export function useTessellation(passes = 3, maxEdgeLength) {
   const ref = React.useRef<THREE.Mesh>()

@@ -31,5 +31,5 @@ export const QuadraticBezierLine = React.forwardRef<Line2, Props>(function Quadr
     return interpolatedV
   }, [start, end, mid, segments])
 
-  return <Line ref={ref} points={points} {...rest} />
+  return <Line ref={ref as any} points={points} {...rest} />
 })

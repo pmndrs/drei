@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { MeshStandardMaterial, MeshStandardMaterialParameters, Shader } from 'three'
-import { useFrame } from 'react-three-fiber'
+import { useFrame } from '@react-three/fiber'
 
 type WobbleMaterialType = JSX.IntrinsicElements['meshStandardMaterial'] & {
   time?: number

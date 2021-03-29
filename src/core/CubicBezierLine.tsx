@@ -26,5 +26,5 @@ export const CubicBezierLine = React.forwardRef<Line2, Props>(function CubicBezi
     return interpolatedV
   }, [start, end, midA, midB, segments])
 
-  return <Line ref={ref} points={points} {...rest} />
+  return <Line ref={ref as any} points={points} {...rest} />
 })

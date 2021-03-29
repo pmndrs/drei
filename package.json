@@ -28,8 +28,19 @@
   "module": "index.js",
   "types": "index.d.ts",
   "sideEffects": false,
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
+    "rules": {
+      "body-max-line-length": [
+        0
+      ]
+    }
+  },
   "husky": {
     "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "pre-commit": "lint-staged"
     }
   },
@@ -61,6 +72,7 @@
     "lodash.pick": "^4.4.0",
     "react-merge-refs": "^1.0.0",
     "stats.js": "^0.17.0",
+    "three-stdlib": "^1.1.0-alpha.2",
     "troika-three-text": "^0.38.1",
     "utility-types": "^3.10.0",
     "zustand": "^3.0.3"
@@ -75,7 +87,9 @@
     "@babel/preset-env": "7.11.0",
     "@babel/preset-react": "7.10.4",
     "@babel/preset-typescript": "^7.10.4",
-    "@react-three/fiber": "^6.0.0-alpha.11",
+    "@commitlint/cli": "^12.0.1",
+    "@commitlint/config-conventional": "^12.0.1",
+    "@react-three/fiber": "^6.0.0-alpha.14",
     "@storybook/addon-actions": "^6.1.14",
     "@storybook/addon-controls": "^6.1.14",
     "@storybook/addon-knobs": "^6.1.14",
@@ -122,7 +136,6 @@
     "rollup-plugin-size-snapshot": "^0.12.0",
     "rollup-plugin-terser": "^7.0.2",
     "three": "^0.126.1",
-    "three-stdlib": "^1.0.2-alpha.6",
     "typescript": "^4.2.3",
     "use-asset": "^1.0.2"
   },
@@ -130,8 +143,7 @@
     "@react-three/fiber": ">=6.0",
     "react": ">=17.0",
     "react-dom": ">=17.0",
-    "three": ">=0.126.0",
-    "three-stdlib": ">=1.0"
+    "three": ">=0.126.0"
   },
   "peerDependenciesMeta": {
     "react-dom": {

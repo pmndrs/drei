@@ -53,11 +53,10 @@ export const TransformControls = React.forwardRef<TransformControlsImpl, Props>(
   const transformProps = pick(rest, transformOnlyPropNames)
   const objectProps = omit(rest, transformOnlyPropNames)
 
-  const { camera: defaultCamera, gl, invalidate } = useThree(({ camera, gl, invalidate }) => ({
-    camera,
-    gl,
-    invalidate,
-  }))
+  const gl = useThree(({ gl }) => gl)
+  const defaultCamera = useThree(({ camera }) => camera)
+  const invalidate = useThree(({ invalidate }) => invalidate)
+
   const explCamera = camera || defaultCamera
 
   const [controls] = React.useState(() => new TransformControlsImpl(explCamera, gl.domElement))

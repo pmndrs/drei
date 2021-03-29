@@ -9,11 +9,9 @@ export type PointerLockControlsProps = PointerLockControls & { selector?: string
 export const PointerLockControls = React.forwardRef<PointerLockControls, PointerLockControlsProps>(
   ({ selector, ...props }, ref) => {
     const { camera, ...rest } = props
-    const { camera: defaultCamera, gl, invalidate } = useThree(({ camera, gl, invalidate }) => ({
-      camera,
-      gl,
-      invalidate,
-    }))
+    const gl = useThree(({ gl }) => gl)
+    const defaultCamera = useThree(({ camera }) => camera)
+    const invalidate = useThree(({ invalidate }) => invalidate)
     const explCamera = camera || defaultCamera
 
     const [controls] = React.useState(() => new PointerLockControlsImpl(explCamera, gl.domElement))

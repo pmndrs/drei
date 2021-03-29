@@ -14,14 +14,10 @@ export type OrbitControlsProps = ReactThreeFiber.Overwrite<
 
 export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsProps>(
   ({ camera, regress, enableDampening = true, ...restProps }, ref) => {
-    const { camera: defaultCamera, gl, invalidate, performance } = useThree(
-      ({ camera, gl, invalidate, performance }) => ({
-        camera,
-        gl,
-        invalidate,
-        performance,
-      })
-    )
+    const invalidate = useThree(({ invalidate }) => invalidate)
+    const defaultCamera = useThree(({ camera }) => camera)
+    const gl = useThree(({ gl }) => gl)
+    const performance = useThree(({ performance }) => performance)
 
     const explCamera = camera || defaultCamera
     const controls = React.useMemo(() => new OrbitControlsImpl(explCamera), [explCamera])

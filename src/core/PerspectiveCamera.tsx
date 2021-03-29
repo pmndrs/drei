@@ -9,7 +9,9 @@ type Props = JSX.IntrinsicElements['perspectiveCamera'] & {
 }
 
 export const PerspectiveCamera = React.forwardRef(({ makeDefault = false, ...props }: Props, ref) => {
-  const { set, camera, size } = useThree(({ set, camera, size }) => ({ set, camera, size }))
+  const set = useThree(({ set }) => set)
+  const camera = useThree(({ camera }) => camera)
+  const size = useThree(({ size }) => size)
   const cameraRef = React.useRef<PerspectiveCameraImpl>()
 
   React.useLayoutEffect(() => {

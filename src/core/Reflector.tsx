@@ -75,7 +75,9 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
     },
     ref
   ) => {
-    const { gl, scene, camera } = useThree(({ gl, scene, camera }) => ({ gl, scene, camera }))
+    const gl = useThree(({ gl }) => gl)
+    const camera = useThree(({ camera }) => camera)
+    const scene = useThree(({ scene }) => scene)
     const meshRef = React.useRef<Mesh>(null!)
     const [reflectorPlane] = React.useState(() => new Plane())
     const [normal] = React.useState(() => new Vector3())

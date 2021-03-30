@@ -18,7 +18,6 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
     const defaultCamera = useThree(({ camera }) => camera)
     const gl = useThree(({ gl }) => gl)
     const performance = useThree(({ performance }) => performance)
-
     const explCamera = camera || defaultCamera
     const controls = React.useMemo(() => new OrbitControlsImpl(explCamera), [explCamera])
 
@@ -36,7 +35,7 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
         controls.removeEventListener('change', callback)
         controls.dispose()
       }
-    }, [controls, invalidate])
+    }, [regress, controls, invalidate])
 
     return <primitive ref={ref} object={controls} enableDampening={enableDampening} {...restProps} />
   }

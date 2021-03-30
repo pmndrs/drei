@@ -12433,10 +12433,10 @@ text-table@0.2.0, text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
-three-stdlib@^1.1.0-alpha.2:
-  version "1.1.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-1.1.0-alpha.2.tgz#5ed8005c1889a3e08657df2915e5ac2188f77ba3"
-  integrity sha512-HTAXMI1xofBpAePmglMCzHxnZv4cL+T61YWdNvTu2vdmVhfft0HzeybJ+AAYb41WIcwVEtpILpwItdsNmJKHyg==
+three-stdlib@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-1.1.3.tgz#a36f62680b605f22d47b94793871aa8609cbf7fc"
+  integrity sha512-vm3NONg4BG8wyINruu6q8wH6RM/rhaD9Ce/GWyA37cUNTawanSm9Bcj1etXVYztrtVLaBxBpP95GMMst3MXDow==
   dependencies:
     "@babel/runtime" "^7.13.10"
     "@webgpu/glslang" "^0.0.15"

@@ -15,7 +15,7 @@ import {
   UnsignedShortType,
   Texture,
 } from 'three'
-import { useFrame, useThree, extend } from 'react-three-fiber'
+import { useFrame, useThree, extend } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
 import { MeshReflectorMaterialImpl, MeshReflectorMaterial } from '../materials/MeshReflectorMaterial'
 
@@ -75,7 +75,9 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
     },
     ref
   ) => {
-    const { gl, scene, camera } = useThree()
+    const gl = useThree(({ gl }) => gl)
+    const camera = useThree(({ camera }) => camera)
+    const scene = useThree(({ scene }) => scene)
     const meshRef = React.useRef<Mesh>(null!)
     const [reflectorPlane] = React.useState(() => new Plane())
     const [normal] = React.useState(() => new Vector3())

@@ -1,10 +1,8 @@
 import * as React from 'react'
 import { WebGLMultisampleRenderTarget, RGBAFormat, sRGBEncoding } from 'three'
-import { ReactThreeFiber, extend, useThree, useFrame } from 'react-three-fiber'
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass'
-import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader'
+import { ReactThreeFiber, extend, useThree, useFrame } from '@react-three/fiber'
+import { EffectComposer, RenderPass, ShaderPass, GammaCorrectionShader } from 'three-stdlib'
+
 import mergeRefs from 'react-merge-refs'
 
 extend({ EffectComposer, RenderPass, ShaderPass })
@@ -41,7 +39,10 @@ export const Effects = React.forwardRef(
     ref
   ) => {
     const composer = React.useRef<EffectComposer>()
-    const { scene, camera, gl, size } = useThree()
+    const scene = useThree(({ scene }) => scene)
+    const camera = useThree(({ camera }) => camera)
+    const gl = useThree(({ gl }) => gl)
+    const size = useThree(({ size }) => size)
     const [target] = React.useState(() => {
       if (isWebGL2Available() && multisamping > 0) {
         const t = new WebGLMultisampleRenderTarget(size.width, size.height, {

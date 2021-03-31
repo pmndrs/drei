@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { useLoader } from 'react-three-fiber'
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
+import { useLoader } from '@react-three/fiber'
+import { OBJLoader } from 'three-stdlib'
 import { withKnobs, number, boolean } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'

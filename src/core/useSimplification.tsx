@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { SimplifyModifier } from 'three/examples/jsm/modifiers/SimplifyModifier'
+import { SimplifyModifier } from 'three-stdlib'
 
 export function useSimplification(simplePercent: number) {
   const ref = React.useRef<THREE.Mesh>()

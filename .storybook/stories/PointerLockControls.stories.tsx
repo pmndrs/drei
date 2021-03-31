@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Canvas } from 'react-three-fiber'
+import { Canvas } from '@react-three/fiber'
 
 import { Setup } from '../Setup'
 

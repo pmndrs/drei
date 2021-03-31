@@ -1,45 +1,42 @@
 import * as React from 'react'
-import { ReactThreeFiber, useThree, useFrame, Overwrite } from 'react-three-fiber'
-import { OrbitControls as OrbitControlsImpl } from 'three/examples/jsm/controls/OrbitControls'
-import useEffectfulState from '../helpers/useEffectfulState'
+import { ReactThreeFiber, useThree, useFrame } from '@react-three/fiber'
+import { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 
-export type OrbitControls = Overwrite<
+export type OrbitControlsProps = ReactThreeFiber.Overwrite<
   ReactThreeFiber.Object3DNode<OrbitControlsImpl, typeof OrbitControlsImpl>,
   {
     target?: ReactThreeFiber.Vector3
     camera?: THREE.Camera
+    regress?: boolean
+    enableDampening?: boolean
   }
 >
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      orbitControlsImpl: OrbitControls
-    }
-  }
-}
+export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsProps>(
+  ({ camera, regress, enableDampening = true, ...restProps }, ref) => {
+    const invalidate = useThree(({ invalidate }) => invalidate)
+    const defaultCamera = useThree(({ camera }) => camera)
+    const gl = useThree(({ gl }) => gl)
+    const performance = useThree(({ performance }) => performance)
+    const explCamera = camera || defaultCamera
+    const controls = React.useMemo(() => new OrbitControlsImpl(explCamera), [explCamera])
 
-export const OrbitControls = React.forwardRef((props: OrbitControls = { enableDamping: true }, ref) => {
-  const { camera, ...rest } = props
-  const { camera: defaultCamera, gl, invalidate } = useThree()
-  const explCamera = camera || defaultCamera
+    useFrame(() => controls.update())
 
-  const controls = useEffectfulState<OrbitControlsImpl | undefined>(
-    () => {
-      if (explCamera) {
-        return new OrbitControlsImpl(explCamera, gl.domElement)
+    React.useEffect(() => {
+      const callback = () => {
+        invalidate()
+        if (regress) performance.regress()
       }
-    },
-    [explCamera, gl],
-    ref as any
-  )
 
-  useFrame(() => controls?.update())
+      controls.connect(gl.domElement)
+      controls.addEventListener('change', callback)
+      return () => {
+        controls.removeEventListener('change', callback)
+        controls.dispose()
+      }
+    }, [regress, controls, invalidate])
 
-  React.useEffect(() => {
-    controls?.addEventListener?.('change', invalidate)
-    return () => controls?.removeEventListener?.('change', invalidate)
-  }, [controls, invalidate])
-
-  return controls ? <primitive dispose={undefined} object={controls} enableDamping {...rest} /> : null
-})
+    return <primitive ref={ref} object={controls} enableDampening={enableDampening} {...restProps} />
+  }
+)

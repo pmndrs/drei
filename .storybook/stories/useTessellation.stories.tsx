@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { extend, useFrame } from 'react-three-fiber'
+import { extend, useFrame } from '@react-three/fiber'
 import { withKnobs, number } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'

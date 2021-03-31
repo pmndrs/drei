@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { extend, useThree, useFrame } from 'react-three-fiber'
+import { extend, useThree, useFrame } from '@react-three/fiber'
 
 import { Setup } from '../Setup'
 
@@ -49,7 +49,7 @@ declare global {
 }
 
 function ScreenQuadScene() {
-  const { size } = useThree()
+  const size = useThree((state) => state.size)
   const ref = React.useRef<ColorShiftMaterialImpl>(null!)
   useFrame((state) => {
     if (ref.current.uniforms) {

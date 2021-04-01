@@ -786,7 +786,7 @@ A hook for a quick way to add helpers to existing nodes in the scene. It handles
 const mesh = useRef()
 useHelper(mesh, BoxHelper, 'cyan')
 
-<mesh ref={ref} ... />
+<mesh ref={mesh} ... />
 ```
 
 #### useDetectGPU

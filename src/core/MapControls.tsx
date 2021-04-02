@@ -17,12 +17,10 @@ declare global {
 
 export const MapControls = React.forwardRef<MapControlsImpl, MapControls>((props = { enableDamping: true }, ref) => {
   const { camera, ...rest } = props
-  const { invalidate, domElement, defaultCamera } = useThree(({ invalidate, camera, gl }) => ({
-    invalidate,
-    defaultCamera: camera,
-    domElement: gl.domElement,
-  }))
-
+  const invalidate = useThree(({ invalidate }) => invalidate);
+  const defaultCamera = useThree(({ camera }) => camera);
+  const domElement = useThree(({ gl }) => gl.domElement);
+  
   const explCamera = camera || defaultCamera
   const [controls] = React.useState(() => new MapControlsImpl(explCamera))
 

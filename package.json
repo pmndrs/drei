@@ -72,7 +72,7 @@
     "lodash.pick": "^4.4.0",
     "react-merge-refs": "^1.0.0",
     "stats.js": "^0.17.0",
-    "three-stdlib": "^1.1.3",
+    "three-stdlib": "^1.1.4",
     "troika-three-text": "^0.38.1",
     "use-asset": "^1.0.4",
     "utility-types": "^3.10.0",

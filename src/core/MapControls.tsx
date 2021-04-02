@@ -17,17 +17,26 @@ declare global {
 
 export const MapControls = React.forwardRef<MapControlsImpl, MapControls>((props = { enableDamping: true }, ref) => {
   const { camera, ...rest } = props
-  const invalidate = useThree(({ invalidate }) => invalidate)
-  const defaultCamera = useThree(({ camera }) => camera)
-  const gl = useThree(({ gl }) => gl)
+  const { invalidate, domElement, defaultCamera } = useThree(({ invalidate, camera, gl }) => ({
+    invalidate,
+    defaultCamera: camera,
+    domElement: gl.domElement,
+  }))
+
   const explCamera = camera || defaultCamera
-  const [controls] = React.useState(() => new MapControlsImpl(explCamera, gl.domElement))
+  const [controls] = React.useState(() => new MapControlsImpl(explCamera))
+
+  React.useEffect(() => {
+    controls.connect(domElement)
+    controls.addEventListener('change', invalidate)
+
+    return () => {
+      controls.dispose()
+      controls.removeEventListener('change', invalidate)
+    }
+  }, [controls, invalidate, domElement])
 
   useFrame(() => controls?.update())
-  React.useEffect(() => {
-    controls?.addEventListener?.('change', invalidate)
-    return () => controls?.removeEventListener?.('change', invalidate)
-  }, [controls, invalidate])
 
-  return controls ? <primitive ref={ref} dispose={undefined} object={controls} enableDamping {...rest} /> : null
+  return <primitive ref={ref} dispose={undefined} object={controls} enableDamping {...rest} />
 })

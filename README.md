@@ -110,6 +110,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <ul>
           <li><a href="#usematcaptexture">useMatcapTexture</a></li>
           <li><a href="#usenormaltexture">useNormalTexture</a></li>
+          <li><a href="#stage">Stage</a></li>
         </ul>
       </ul>
     </td>
@@ -758,10 +759,10 @@ return <Stats parent={parent} />
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-center--default-story)
 
-Calculates a boundary box and centers its children accordingly.
+Calculates a boundary box and centers its children accordingly. `alignTop` makes adjusts it so that it's sits flush on y=0.
 
 ```jsx
-<Center>
+<Center alignTop>
   <mesh />
 </Center>
 ```
@@ -1063,6 +1064,22 @@ return (
   ...
 )
 
+```
+
+#### Stage
+
+Creates a "stage" with proper studio lighting, content centered and planar, shadows and ground-contact shadows.
+
+```jsx
+<Stage
+  contactShadow // Optional: creates a contactshadow underneath the content
+  shadows // Optional: lights cast shadow
+  adjustCamera // Optional: zooms the content in
+  intensity={1} // Optional: light intensity
+  environment="warehouse" // Optional: environment
+>
+  <mesh />
+</Stage>
 ```
 
 # Performance

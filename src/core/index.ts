@@ -72,6 +72,7 @@ export * from './ScreenQuad'
 // Prototyping
 export * from './useMatcapTexture'
 export * from './useNormalTexture'
+export * from './Stage'
 
 // Performance
 export * from './Detailed'

@@ -1077,6 +1077,7 @@ Creates a "stage" with proper studio lighting, content centered and planar, shad
   adjustCamera // Optional: zooms the content in
   intensity={1} // Optional: light intensity
   environment="warehouse" // Optional: environment
+  controls={controlsRef} // Optional: recalculates control target for correctness
 >
   <mesh />
 </Stage>

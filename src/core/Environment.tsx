@@ -4,7 +4,7 @@ import { CubeTexture, CubeTextureLoader, Texture, PMREMGenerator, Scene } from '
 import { RGBELoader } from 'three-stdlib'
 import { useAsset } from 'use-asset'
 
-import { presetsObj } from '../helpers/environment-assets'
+import { presetsObj, PresetsType } from '../helpers/environment-assets'
 
 function getTexture(texture: Texture | CubeTexture, gen: PMREMGenerator, isCubeMap: boolean) {
   if (isCubeMap) {
@@ -20,7 +20,7 @@ type Props = {
   background?: boolean
   files?: string | string[]
   path?: string
-  preset?: string
+  preset?: PresetsType
   scene?: Scene
 }
 

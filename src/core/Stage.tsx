@@ -3,12 +3,13 @@ import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
 import { Environment } from './Environment'
 import { ContactShadows } from './ContactShadows'
+import { PresetsType } from '../helpers/environment-assets'
 
 type Props = JSX.IntrinsicElements['group'] & {
   contactShadow?: boolean
   shadows?: boolean
   adjustCamera?: boolean
-  environment?: string
+  environment?: PresetsType
   intensity?: number
   controls?: React.MutableRefObject<{ update(): void; target: THREE.Vector3 }>
 }

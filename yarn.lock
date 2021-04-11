@@ -10427,6 +10427,11 @@ postcss@^7.0.0, postcss@^7.0.14, postcss@^7.0.26, postcss@^7.0.32, postcss@^7.0.
     source-map "^0.6.1"
     supports-color "^6.1.0"
 
+potpack@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/potpack/-/potpack-1.0.1.tgz#d1b1afd89e4c8f7762865ec30bd112ab767e2ebf"
+  integrity sha512-15vItUAbViaYrmaB/Pbw7z6qX2xENbFSTA7Ii4tgbPtasxm5v6ryKhKtL91tpWovDJzTiZqdwzhcFBCwiMVdVw==
+
 prelude-ls@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.2.1.tgz#debc6489d7a6e6b0e7611888cec880337d316396"
@@ -12433,10 +12438,10 @@ text-table@0.2.0, text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
-three-stdlib@^1.1.4:
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-1.1.4.tgz#67f602c226ff52df82a11933106e61ce163d9fd1"
-  integrity sha512-5gJbrKQm+UYZgJtISzYvXp1XfAAH6RKF9sqtd1UFCk5Y/CKZAorPdBVv4OPAockPa6BsZfVZr+6roxI8HQIm6w==
+three-stdlib@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-1.2.2.tgz#1bab8bd648d92d2d7759639f42864fc16876f46c"
+  integrity sha512-fcr84rofXVSeEqf27zBGEju6ih/lcvRRFSTjbHvDfAYKUd0r7tFLwQOUJxW6K7Y/M3pBQMRS9RWllADWuYIJGg==
   dependencies:
     "@babel/runtime" "^7.13.10"
     "@webgpu/glslang" "^0.0.15"
@@ -12446,6 +12451,7 @@ three-stdlib@^1.1.4:
     ktx-parse "^0.0.5"
     mmd-parser "^1.0.3"
     opentype.js "^1.3.3"
+    potpack "^1.0.1"
     zstddec "^0.0.2"
 
 three@^0.126.1:

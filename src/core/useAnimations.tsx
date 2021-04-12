@@ -2,21 +2,23 @@ import * as React from 'react'
 import { Object3D, AnimationClip, AnimationAction, AnimationMixer } from 'three'
 import { useFrame } from '@react-three/fiber'
 
-type Api = {
+type Api<T> = {
   ref: React.MutableRefObject<Object3D | undefined | null>
   clips: AnimationClip[]
   mixer: AnimationMixer
   names: string[]
-  actions: {
-    [key: string]: AnimationAction
-  }
+  actions: T
 }
 
-export function useAnimations(clips: AnimationClip[], root?: React.MutableRefObject<Object3D | undefined | null>) {
+export function useAnimations<
+  T = {
+    [key: string]: AnimationAction
+  }
+>(clips: AnimationClip[], root?: React.MutableRefObject<Object3D | undefined | null>) {
   const ref = React.useRef<Object3D>()
   const actualRef = root ? root : ref
   const [mixer] = React.useState(() => new AnimationMixer((undefined as unknown) as Object3D))
-  const api: Api = React.useMemo(
+  const api = React.useMemo(
     () => ({
       ref: actualRef,
       clips,
@@ -39,5 +41,5 @@ export function useAnimations(clips: AnimationClip[], root?: React.MutableRefObj
         }
       })
   }, [api, clips, mixer, root, actualRef])
-  return api
+  return api as Api<T>
 }

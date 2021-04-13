@@ -43,7 +43,6 @@ export function Stage({
   environment = 'city',
   contactShadow = true,
   intensity = 1,
-  ambience = 0.3,
   preset = 'rembrandt',
   ...props
 }: Props) {
@@ -96,7 +95,8 @@ export function Stage({
           far={radius / 2}
         />
       )}
-      <ambientLight intensity={ambience} />
+      {environment && <Environment preset={environment} />}
+      <ambientLight intensity={intensity / 3} />
       <spotLight
         position={[config.main[0] * radius, config.main[1] * radius, config.main[2] * radius]}
         intensity={intensity * 2}
@@ -106,7 +106,6 @@ export function Stage({
         position={[config.fill[0] * radius, config.fill[1] * radius, config.fill[2] * radius]}
         intensity={intensity}
       />
-      {environment && <Environment preset={environment} />}
     </group>
   )
 }

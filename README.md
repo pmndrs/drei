@@ -1076,7 +1076,6 @@ Creates a "stage" with proper studio lighting, content centered and planar, shad
   shadows // Optional: lights cast shadow (default=true)
   adjustCamera // Optional: zooms the content in (default=true)
   intensity={1} // Optional: light intensity (default=1)
-  ambience={0.3} // Optional: ambient light (default=0.3)
   environment="city" // Optional: environment (default=city)
   preset="rembrandt" // Optional: rembrandt (default) | portrait | upfront | soft
   controls={controlsRef} // Optional: recalculates control target for correctness

@@ -10,7 +10,7 @@ A growing collection of useful helpers and abstractions for [react-three-fiber](
 npm install @react-three/drei
 ```
 
-:point_right: this package is using the stand-alone `[three-stdlib](https://github.com/pmndrs/three-stdlib)` instead of `[three/examples/jsm](https://github.com/mrdoob/three.js/tree/dev/examples/jsm)`. :point_left:
+:point_right: this package is using the stand-alone [`three-stdlib`](https://github.com/pmndrs/three-stdlib) instead of [`three/examples/jsm`](https://github.com/mrdoob/three.js/tree/dev/examples/jsm). :point_left:
 
 ### Basic usage:
 
@@ -110,6 +110,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <ul>
           <li><a href="#usematcaptexture">useMatcapTexture</a></li>
           <li><a href="#usenormaltexture">useNormalTexture</a></li>
+          <li><a href="#stage">Stage</a></li>
         </ul>
       </ul>
     </td>
@@ -759,10 +760,10 @@ return <Stats parent={parent} />
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-center--default-story)
 
-Calculates a boundary box and centers its children accordingly.
+Calculates a boundary box and centers its children accordingly. `alignTop` makes adjusts it so that it's sits flush on y=0.
 
 ```jsx
-<Center>
+<Center alignTop>
   <mesh />
 </Center>
 ```
@@ -786,6 +787,8 @@ A hook for a quick way to add helpers to existing nodes in the scene. It handles
 ```jsx
 const mesh = useRef()
 useHelper(mesh, BoxHelper, 'cyan')
+
+<mesh ref={mesh} ... />
 ```
 
 #### useDetectGPU
@@ -1062,6 +1065,24 @@ return (
   ...
 )
 
+```
+
+#### Stage
+
+Creates a "stage" with proper studio lighting, content centered and planar, shadows and ground-contact shadows.
+
+```jsx
+<Stage
+  contactShadow // Optional: creates a contactshadow underneath the content (default=true)
+  shadows // Optional: lights cast shadow (default=true)
+  adjustCamera // Optional: zooms the content in (default=true)
+  intensity={1} // Optional: light intensity (default=1)
+  environment="city" // Optional: environment (default=city)
+  preset="rembrandt" // Optional: rembrandt (default) | portrait | upfront | soft
+  controls={controlsRef} // Optional: recalculates control target for correctness
+>
+  <mesh />
+</Stage>
 ```
 
 # Performance

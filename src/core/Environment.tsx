@@ -4,7 +4,7 @@ import { CubeTexture, CubeTextureLoader, Texture, PMREMGenerator, Scene } from '
 import { RGBELoader } from 'three-stdlib'
 import { useAsset } from 'use-asset'
 
-import { presetsObj } from '../helpers/environment-assets'
+import { presetsObj, PresetsType } from '../helpers/environment-assets'
 
 function getTexture(texture: Texture | CubeTexture, gen: PMREMGenerator, isCubeMap: boolean) {
   if (isCubeMap) {
@@ -14,13 +14,13 @@ function getTexture(texture: Texture | CubeTexture, gen: PMREMGenerator, isCubeM
   return gen.fromEquirectangular(texture).texture
 }
 
-const CUBEMAP_ROOT = 'https://rawcdn.githack.com/mattrossman/drei-assets/b597559ff62f85ec691df28cbea5ecb1263a2085'
+const CUBEMAP_ROOT = 'https://rawcdn.githack.com/pmndrs/drei-assets/aa3600359ba664d546d05821bcbca42013587df2'
 
 type Props = {
   background?: boolean
   files?: string | string[]
   path?: string
-  preset?: string
+  preset?: PresetsType
   scene?: Scene
 }
 

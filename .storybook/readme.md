@@ -7,6 +7,6 @@ Or, run the demo storybook on your computer:
 ```bash
 git clone https://github.com/pmndrs/drei
 cd drei
-npm install
-npm run storybook
+yarn install
+yarn run storybook
 ```

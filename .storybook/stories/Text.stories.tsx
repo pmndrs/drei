@@ -107,6 +107,11 @@ function TextShadowScene() {
       font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
       anchorX="center"
       anchorY="middle"
+      outlineOffsetX={'10%'}
+      outlineOffsetY={'10%'}
+      outlineBlur={'30%'}
+      outlineOpacity={0.3}
+      outlineColor="#EC2D2D"
     >
       LOREM IPSUM DOLOR SIT AMET, CONSECTETUR ADIPISCING ELIT, SED DO EIUSMOD TEMPOR INCIDIDUNT UT LABORE ET DOLORE
       MAGNA ALIQUA. UT ENIM AD MINIM VENIAM, QUIS NOSTRUD EXERCITATION ULLAMCO LABORIS NISI UT ALIQUIP EX EA COMMODO
@@ -115,6 +120,7 @@ function TextShadowScene() {
     </Text>
   )
 }
+
 function TextLtrScene() {
   const ref = useTurntable()
 
@@ -136,6 +142,7 @@ function TextLtrScene() {
     </Text>
   )
 }
+
 function CustomMaterialTextScene() {
   const ref = useTurntable()
   const defaultColor = '#EC2D2D'

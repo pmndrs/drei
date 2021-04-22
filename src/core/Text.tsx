@@ -15,6 +15,7 @@ type Props = JSX.IntrinsicElements['mesh'] & {
   anchorY?: number | 'top' | 'top-baseline' | 'middle' | 'bottom-baseline' | 'bottom'
   clipRect?: [number, number, number, number]
   depthOffset?: number
+  direction?: 'auto' | 'ltr' | 'rtl'
   overflowWrap?: 'normal' | 'break-word'
   whiteSpace?: 'normal' | 'overflowWrap' | 'overflowWrap'
   outlineWidth?: number | string

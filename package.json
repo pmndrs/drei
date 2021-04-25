@@ -60,7 +60,9 @@
     "typegen": "tsc --emitDeclarationOnly",
     "storybook": "start-storybook  -s ./.storybook/public -p 6006",
     "build-storybook": "build-storybook -s ./.storybook/public",
-    "copy": "copyfiles package.json readme.md LICENSE dist && json -I -f dist/package.json -e \"this.private=false; this.devDependencies=undefined; this.optionalDependencies=undefined; this.scripts=undefined; this.husky=undefined; this.prettier=undefined; this.jest=undefined; this['lint-staged']=undefined;\""
+    "copy": "copyfiles package.json readme.md LICENSE dist && json -I -f dist/package.json -e \"this.private=false; this.devDependencies=undefined; this.optionalDependencies=undefined; this.scripts=undefined; this.husky=undefined; this.prettier=undefined; this.jest=undefined; this['lint-staged']=undefined;\"",
+    "test-ssr:build-server": "NODE_ENV=development webpack --config test-ssr/webpack.js --mode=development -w",
+    "test-ssr:start": "nodemon ./test-ssr/server-build/index.js"
   },
   "dependencies": {
     "@babel/runtime": "^7.11.2",
@@ -118,11 +120,13 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.20.6",
     "eslint-plugin-react-hooks": "^4.1.0",
+    "express": "^4.17.1",
     "glslify-loader": "^2.0.0",
     "husky": "^4.2.5",
     "jest": "^26.4.1",
     "json": "^10.0.0",
     "lint-staged": "^10.2.11",
+    "nodemon": "2.0.4",
     "prettier": "^2.0.5",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -137,7 +141,9 @@
     "rollup-plugin-size-snapshot": "^0.12.0",
     "rollup-plugin-terser": "^7.0.2",
     "three": "^0.128.0",
-    "typescript": "^4.2.3"
+    "typescript": "^4.2.3",
+    "webpack-cli": "^4.6.0",
+    "webpack-node-externals": "^3.0.0"
   },
   "peerDependencies": {
     "@react-three/fiber": ">=6.0",

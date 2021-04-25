@@ -61,8 +61,8 @@
     "storybook": "start-storybook  -s ./.storybook/public -p 6006",
     "build-storybook": "build-storybook -s ./.storybook/public",
     "copy": "copyfiles package.json readme.md LICENSE dist && json -I -f dist/package.json -e \"this.private=false; this.devDependencies=undefined; this.optionalDependencies=undefined; this.scripts=undefined; this.husky=undefined; this.prettier=undefined; this.jest=undefined; this['lint-staged']=undefined;\"",
-    "test-ssr:build-server": "NODE_ENV=development webpack --config test-ssr/webpack.js --mode=development -w",
-    "test-ssr:start": "nodemon ./test-ssr/server-build/index.js"
+    "test:ssr-build": "NODE_ENV=development webpack --config __test__/ssr/webpack.js --mode=development",
+    "test:ssr-start": "yarn test:ssr-build && nodemon ./__test__/ssr/server-build/index.js"
   },
   "dependencies": {
     "@babel/runtime": "^7.11.2",

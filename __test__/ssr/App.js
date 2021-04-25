@@ -1,4 +1,4 @@
-import * as Drei from '../dist/index.cjs.js'
+import * as Drei from '../../dist/index.cjs.js'
 
 import React from 'react'
 

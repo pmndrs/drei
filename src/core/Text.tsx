@@ -56,16 +56,11 @@ export const Text = React.forwardRef(
           if (onSync) onSync(troikaMesh)
         })
     )
+    React.useEffect(() => {
+      return () => troikaMesh.dispose()
+    }, [troikaMesh])
     return (
-      <primitive
-        dispose={undefined}
-        object={troikaMesh}
-        ref={ref}
-        text={text}
-        anchorX={anchorX}
-        anchorY={anchorY}
-        {...props}
-      >
+      <primitive object={troikaMesh} ref={ref} text={text} anchorX={anchorX} anchorY={anchorY} {...props}>
         {nodes}
       </primitive>
     )

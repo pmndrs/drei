@@ -4465,6 +4465,11 @@ better-opn@^2.0.0:
   dependencies:
     open "^7.0.3"
 
+bidi-js@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/bidi-js/-/bidi-js-1.0.1.tgz#0fc5d53745b3a1d73a39157126426b7f699622ee"
+  integrity sha512-h8SbFfrrcPhi6Lm+O67ozP+q1+L4TbMItIbH/OLXq4VTGytJHWjAxCXiSu7HHp6YFh+SCCdE1h2psoJ7OSO9tQ==
+
 big.js@^5.2.2:
   version "5.2.2"
   resolved "https://registry.yarnpkg.com/big.js/-/big.js-5.2.2.tgz#65f0af382f578bcdc742bd9c281e9cb2d7768328"
@@ -12636,23 +12641,24 @@ trim-off-newlines@^1.0.0:
   resolved "https://registry.yarnpkg.com/trim-off-newlines/-/trim-off-newlines-1.0.1.tgz#9f9ba9d9efa8764c387698bcbfeb2c848f11adb3"
   integrity sha1-n5up2e+odkw4dpi8v+sshI8RrbM=
 
-troika-three-text@0.38.1:
-  version "0.38.1"
-  resolved "https://registry.yarnpkg.com/troika-three-text/-/troika-three-text-0.38.1.tgz#c0661d78485831b75008e518b4ba3f8ac2faa0c5"
-  integrity sha512-nf4zLsdFc+u1P7UDaVvODclmtmYLXnRs9w43ZC0iiPTZT+iequ7+Vmbd0s3DOYhgEzIeACDXBdX9bSW/PRjXhA==
+troika-three-text@^0.41.1:
+  version "0.41.1"
+  resolved "https://registry.yarnpkg.com/troika-three-text/-/troika-three-text-0.41.1.tgz#3dea31f110da7011bf02e8b2d4d229ac6cc66c21"
+  integrity sha512-HeZrNO5m+cKjEjtEiG2npbYtTmVGHAw8LGalvtx7jkiv35ZVnoSqjLCcldonrCIlV6AOkEDTITN8iQI49dMPKg==
   dependencies:
-    troika-three-utils "^0.38.1"
-    troika-worker-utils "^0.38.1"
+    bidi-js "^1.0.1"
+    troika-three-utils "^0.41.0"
+    troika-worker-utils "^0.41.0"
 
-troika-three-utils@^0.38.1:
-  version "0.38.1"
-  resolved "https://registry.yarnpkg.com/troika-three-utils/-/troika-three-utils-0.38.1.tgz#99c91cca4fbf215adf5782382962ca9c969b052f"
-  integrity sha512-uJM1K219B/q3q7SNnWzthSWHzE80JGNPqP4yBKPGqZ0RaXLhzTBtFuKvSQlVYYrqb/RK21iCOf13vtGyPhwM2A==
+troika-three-utils@^0.41.0:
+  version "0.41.0"
+  resolved "https://registry.yarnpkg.com/troika-three-utils/-/troika-three-utils-0.41.0.tgz#03d6c2e8c62b5f80c8314ebee6d38b3906843d92"
+  integrity sha512-QIHcvSFEQJgVpxxv/tOI0ZTYbiIw0R+6m4bDEXVBY6qYXpKSaz8iLunidrY53yjfkStmw1RYux5bjhobm7vQKQ==
 
-troika-worker-utils@^0.38.1:
-  version "0.38.1"
-  resolved "https://registry.yarnpkg.com/troika-worker-utils/-/troika-worker-utils-0.38.1.tgz#e4e928691390a315cd22877a38ffabf1a118a0a0"
-  integrity sha512-Ish/wxrTG2fzody/E7cAjluTHbM7bn5hGmqOCUr33Ig5wleTj5B6miVOlxc6tUskf1ZXhC9Z35d0zyHzWJrwww==
+troika-worker-utils@^0.41.0:
+  version "0.41.0"
+  resolved "https://registry.yarnpkg.com/troika-worker-utils/-/troika-worker-utils-0.41.0.tgz#b811a9d2d5ca707869db50e9e096d5ef3b67b2e6"
+  integrity sha512-hW+L4RRJBgDKKQkOGQKDigv/l9DYNR7E5OoT1+ZixngoawhjQQG9r5DfbCs2rOW95uzTSEopdGJ1pfp3js/ObA==
 
 ts-dedent@^2.0.0:
   version "2.0.0"

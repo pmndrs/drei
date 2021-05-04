@@ -4,7 +4,7 @@ import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'
 
-import { Billboard, OrbitControls } from '../../src'
+import { Billboard, Plane, Box, Cone, OrbitControls, Text } from '../../src'
 
 export default {
   title: 'Abstractions/Billboard',
@@ -27,51 +27,61 @@ function BillboardStory() {
 
   return (
     <>
-      <Billboard
-        position={[-4, -2, 0]}
-        args={[3, 2]}
-        material-color="red"
-        follow={follow}
-        lockX={lockX}
-        lockY={lockY}
-        lockZ={lockZ}
-      />
-      <Billboard
-        position={[-4, 2, 0]}
-        args={[3, 2]}
-        material-color="orange"
-        follow={follow}
-        lockX={lockX}
-        lockY={lockY}
-        lockZ={lockZ}
-      />
-      <Billboard
-        position={[0, 0, 0]}
-        args={[3, 2]}
-        material-color="green"
-        follow={follow}
-        lockX={lockX}
-        lockY={lockY}
-        lockZ={lockZ}
-      />
-      <Billboard
-        position={[4, -2, 0]}
-        args={[3, 2]}
-        material-color="blue"
-        follow={follow}
-        lockX={lockX}
-        lockY={lockY}
-        lockZ={lockZ}
-      />
-      <Billboard
-        position={[4, 2, 0]}
-        args={[3, 2]}
-        material-color="yellow"
-        follow={follow}
-        lockX={lockX}
-        lockY={lockY}
-        lockZ={lockZ}
-      />
+      <Billboard follow={follow} lockX={lockX} lockY={lockY} lockZ={lockZ} position={[-4, -2, 0]}>
+        <Plane args={[3, 2]} material-color="red" />
+      </Billboard>
+      <Billboard follow={follow} lockX={lockX} lockY={lockY} lockZ={lockZ} position={[-4, 2, 0]}>
+        <Plane args={[3, 2]} material-color="orange" />
+      </Billboard>
+      <Billboard follow={follow} lockX={lockX} lockY={lockY} lockZ={lockZ} position={[0, 0, 0]}>
+        <Plane args={[3, 2]} material-color="green" />
+      </Billboard>
+      <Billboard follow={follow} lockX={lockX} lockY={lockY} lockZ={lockZ} position={[4, -2, 0]}>
+        <Plane args={[3, 2]} material-color="blue" />
+      </Billboard>
+      <Billboard follow={follow} lockX={lockX} lockY={lockY} lockZ={lockZ} position={[4, 2, 0]}>
+        <Plane args={[3, 2]} material-color="yellow" />
+      </Billboard>
+
+      <OrbitControls enablePan={false} zoomSpeed={0.5} />
+    </>
+  )
+}
+
+function BillboardTextStory() {
+  const follow = boolean('follow', true)
+  const lockX = boolean('lockX', false)
+  const lockY = boolean('lockY', false)
+  const lockZ = boolean('lockZ', false)
+
+  return (
+    <>
+      <group position={[0.5, 1, 0.5]}>
+        <Billboard follow={follow} lockX={lockX} lockY={lockY} lockZ={lockZ} position={[0, 1.05, 0]}>
+          <Text fontSize={1} outlineWidth={'5%'} outlineColor="#000000" outlineOpacity={1}>
+            box
+          </Text>
+        </Billboard>
+        <Box>
+          <meshStandardMaterial color="red" />
+        </Box>
+      </group>
+      <group position={[-2.5, -3, -1]}>
+        <Billboard follow={follow} lockX={lockX} lockY={lockY} lockZ={lockZ} position={[0, 1.05, 0]}>
+          <Text fontSize={1} outlineWidth={'5%'} outlineColor="#000000" outlineOpacity={1}>
+            cone
+          </Text>
+        </Billboard>
+        <Cone>
+          <meshStandardMaterial color="green" />
+        </Cone>
+      </group>
+
+      <Billboard follow={follow} lockX={lockX} lockY={lockY} lockZ={lockZ} position={[0, 0, -5]}>
+        <Plane args={[2, 2]}>
+          <meshStandardMaterial color="#000066" />
+        </Plane>
+      </Billboard>
 
       <OrbitControls enablePan={false} zoomSpeed={0.5} />
     </>
@@ -79,4 +89,7 @@ function BillboardStory() {
 }
 
 export const BillboardSt = () => <BillboardStory />
-BillboardSt.storyName = 'Default'
+BillboardSt.storyName = 'Planes'
+
+export const BillboardTextSt = () => <BillboardTextStory />
+BillboardTextSt.storyName = 'Text'

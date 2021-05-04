@@ -57,7 +57,6 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#cubicbezierline">CubicBezierLine</a></li>
           <li><a href="#positionalaudio">PositionalAudio</a></li>
           <li><a href="#billboard">Billboard</a></li>
-          <li><a href="#billboarded">Billboarded</a></li>
           <li><a href="#gizmoHelper">GizmoHelper</a></li>
           <li><a href="#environment">Environment</a></li>
           <li><a href="#effects">Effects</a></li>
@@ -386,7 +385,7 @@ A wrapper around [THREE.PositionalAudio](https://threejs.org/docs/index.html#api
 
 #### Billboard
 
-Adds a `<Plane />` that always faces the camera.
+Adds a `<group />` that always faces the camera.
 
 ```jsx
 <Billboard
@@ -394,22 +393,9 @@ Adds a `<Plane />` that always faces the camera.
   lockX={false} // Lock the rotation on the x axis (default=false)
   lockY={false} // Lock the rotation on the y axis (default=false)
   lockZ={false} // Lock the rotation on the z axis (default=false)
-/>
-```
-
-#### Billboarded
-
-Makes its child always face the camera. Only accepts a single child component.
-
-```jsx
-<Billboarded
-  follow={true} // Follow the camera (default=true)
-  lockX={false} // Lock the rotation on the x axis (default=false)
-  lockY={false} // Lock the rotation on the y axis (default=false)
-  lockZ={false} // Lock the rotation on the z axis (default=false)
 >
   <Text fontSize={1}>I'm a billboard</Text>
-</Billboarded>
+</Billboard>
 ```
 
 #### GizmoHelper

@@ -1,6 +1,5 @@
 // Abstractions
 export * from './Billboard'
-export * from './Billboarded'
 export * from './Cloud'
 export * from './QuadraticBezierLine'
 export * from './CubicBezierLine'

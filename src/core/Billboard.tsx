@@ -1,7 +1,6 @@
 import * as React from 'react'
-import { Mesh, PlaneBufferGeometry } from 'three'
+import { Mesh } from 'three'
 import { useFrame } from '@react-three/fiber'
-import { Plane, ShapeProps } from './shapes'
 import mergeRefs from 'react-merge-refs'
 
 export type BillboardProps = {
@@ -9,8 +8,17 @@ export type BillboardProps = {
   lockX?: boolean
   lockY?: boolean
   lockZ?: boolean
-} & ShapeProps<typeof PlaneBufferGeometry>
+} & JSX.IntrinsicElements['group']
 
+/**
+ * Wraps children in a billboarded group. Sample usage:
+ *
+ * ```js
+ * <Billboard>
+ *   <Text>hi</Text>
+ * </Billboard>
+ * ```
+ */
 export const Billboard = React.forwardRef(function Billboard(
   { follow = true, lockX = false, lockY = false, lockZ = false, ...props }: BillboardProps,
   ref
@@ -31,5 +39,5 @@ export const Billboard = React.forwardRef(function Billboard(
       if (lockZ) localRef.current.rotation.z = prev.z
     }
   })
-  return <Plane ref={mergeRefs([localRef, ref])} {...props} />
+  return <group ref={mergeRefs([localRef, ref])} {...props} />
 })

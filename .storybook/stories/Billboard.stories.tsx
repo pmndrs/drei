@@ -56,16 +56,14 @@ function BillboardTextStory() {
 
   return (
     <>
-      <group position={[0.5, 1, 0.5]}>
-        <Billboard follow={follow} lockX={lockX} lockY={lockY} lockZ={lockZ} position={[0, 1.05, 0]}>
-          <Text fontSize={1} outlineWidth={'5%'} outlineColor="#000000" outlineOpacity={1}>
-            box
-          </Text>
-        </Billboard>
-        <Box>
-          <meshStandardMaterial color="red" />
-        </Box>
-      </group>
+      <Billboard follow={follow} lockX={lockX} lockY={lockY} lockZ={lockZ} position={[0.5, 2.05, 0.5]}>
+        <Text fontSize={1} outlineWidth={'5%'} outlineColor="#000000" outlineOpacity={1}>
+          box
+        </Text>
+      </Billboard>
+      <Box position={[0.5, 1, 0.5]}>
+        <meshStandardMaterial color="red" />
+      </Box>
       <group position={[-2.5, -3, -1]}>
         <Billboard follow={follow} lockX={lockX} lockY={lockY} lockZ={lockZ} position={[0, 1.05, 0]}>
           <Text fontSize={1} outlineWidth={'5%'} outlineColor="#000000" outlineOpacity={1}>

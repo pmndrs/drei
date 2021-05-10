@@ -43,7 +43,7 @@ function BillboardStory() {
         <Plane args={[3, 2]} material-color="yellow" />
       </Billboard>
 
-      <OrbitControls enablePan={false} zoomSpeed={0.5} />
+      <OrbitControls enablePan={true} zoomSpeed={0.5} />
     </>
   )
 }
@@ -83,7 +83,7 @@ function BillboardTextStory() {
         </Plane>
       </Billboard>
 
-      <OrbitControls enablePan={false} zoomSpeed={0.5} />
+      <OrbitControls enablePan={true} zoomSpeed={0.5} />
     </>
   )
 }

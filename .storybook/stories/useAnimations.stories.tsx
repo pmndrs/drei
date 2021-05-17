@@ -44,8 +44,8 @@ function AnimationController(props: AnimationControllerProps) {
   })
 
   React.useEffect(() => {
-    actions[selectedAction].reset().fadeIn(blendDuration).play()
-    return () => void actions[selectedAction].fadeOut(blendDuration)
+    actions[selectedAction]?.reset().fadeIn(blendDuration).play()
+    return () => void actions[selectedAction]?.fadeOut(blendDuration)
   }, [actions, selectedAction, blendDuration])
 
   return null

@@ -1068,6 +1068,8 @@ return (
 
 #### Stage
 
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/prototyping-stage--stage-st)
+
 Creates a "stage" with proper studio lighting, content centered and planar, shadows and ground-contact shadows.
 
 ```jsx

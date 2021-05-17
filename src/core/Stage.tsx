@@ -33,6 +33,9 @@ type Props = JSX.IntrinsicElements['group'] & {
   ambience?: number
   controls?: React.MutableRefObject<{ update(): void; target: THREE.Vector3 }>
   preset?: keyof typeof presets
+  shadowBias?: number
+  contactShadowBlur?: number
+  contactShadowOpacity?: number
 }
 
 export function Stage({
@@ -44,6 +47,9 @@ export function Stage({
   contactShadow = true,
   intensity = 1,
   preset = 'rembrandt',
+  shadowBias = 0,
+  contactShadowBlur = 2,
+  contactShadowOpacity = 0.5,
   ...props
 }: Props) {
   const config = presets[preset]
@@ -88,19 +94,21 @@ export function Stage({
       {contactShadow && (
         <ContactShadows
           rotation-x={Math.PI / 2}
-          opacity={0.5}
+          opacity={contactShadowOpacity}
           width={radius * 2}
           height={radius * 2}
-          blur={2}
+          blur={contactShadowBlur}
           far={radius / 2}
         />
       )}
       {environment && <Environment preset={environment} />}
       <ambientLight intensity={intensity / 3} />
       <spotLight
+        penumbra={1}
         position={[config.main[0] * radius, config.main[1] * radius, config.main[2] * radius]}
         intensity={intensity * 2}
         castShadow={shadows}
+        shadow-bias={shadowBias}
       />
       <pointLight
         position={[config.fill[0] * radius, config.fill[1] * radius, config.fill[2] * radius]}

@@ -13,7 +13,6 @@ let saveLastTotalLoaded = 0
 
 const useProgress = create<Data>((set) => {
   DefaultLoadingManager.onStart = (item, loaded, total) => {
-    console.log('firing DLM on start')
     set({
       active: true,
       item,
@@ -23,12 +22,10 @@ const useProgress = create<Data>((set) => {
     })
   }
   DefaultLoadingManager.onLoad = () => {
-    console.log('firing DLM on load')
     set({ active: false })
   }
   DefaultLoadingManager.onError = (item) => set((state) => ({ errors: [...state.errors, item] }))
   DefaultLoadingManager.onProgress = (item, loaded, total) => {
-    console.log('firing DLM on progress')
     if (loaded === total) {
       saveLastTotalLoaded = total
     }

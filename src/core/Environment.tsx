@@ -56,7 +56,6 @@ export function Environment({
         const gen = new PMREMGenerator(gl)
         const texture = getTexture(map, gen, isCubeMap) as Texture
         gen.dispose()
-        map.dispose()
         res(texture)
       }),
     map
@@ -67,14 +66,10 @@ export function Environment({
     const oldenv = scene ? scene.environment : defaultScene.environment
     if (scene) {
       scene.environment = texture
-      if (background) {
-        scene.background = texture
-      }
+      if (background) scene.background = texture
     } else {
       defaultScene.environment = texture
-      if (background) {
-        defaultScene.background = texture
-      }
+      if (background) defaultScene.background = texture
     }
     return () => {
       if (scene) {
@@ -84,6 +79,9 @@ export function Environment({
         defaultScene.environment = oldenv
         defaultScene.background = oldbg
       }
+      // Environment textures are volatile, better dispose and uncache them
+      useAsset.clear(map)
+      texture.dispose()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [texture, background, scene])

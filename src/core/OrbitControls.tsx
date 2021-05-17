@@ -35,6 +35,7 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
         controls.removeEventListener('change', callback)
         controls.dispose()
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [regress, controls, invalidate])
 
     return <primitive ref={ref} object={controls} enableDamping={enableDamping} {...restProps} />

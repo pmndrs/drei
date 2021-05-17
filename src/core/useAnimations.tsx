@@ -16,7 +16,7 @@ export function useAnimations<T extends AnimationClip>(
 ): Api<T> {
   const ref = React.useRef<Object3D>()
   const actualRef = root ? root : ref
-  const [mixer] = React.useState(() => new AnimationMixer((undefined as unknown) as Object3D))
+  const [mixer] = React.useState(() => new AnimationMixer(undefined as unknown as Object3D))
   const [api, setApi] = React.useState<Api<T>>({
     ref: actualRef,
     clips,

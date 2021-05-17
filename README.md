@@ -161,10 +161,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 A responsive [THREE.PerspectiveCamera](https://threejs.org/docs/index.html#api/en/cameras/PerspectiveCamera) that can set itself as the default.
 
 ```jsx
-<PerspectiveCamera
-  makeDefault // Registers it as the default camera system-wide (default=false)
-  {...props} // All THREE.PerspectiveCamera props are valid
->
+<PerspectiveCamera makeDefault {...props}>
   <mesh />
 </PerspectiveCamera>
 ```
@@ -216,13 +213,7 @@ If you have two static objects in the scene, make it `frames={2}` for instance, 
 If you have moving objects, unset the prop and use a smaller `resolution` instead.
 
 ```jsx
-<CubeCamera
-  resolution={256} // Size of the off-buffer (256 by default)
-  frames={Infinity} // How many frames it should render (Indefinitively by default)
-  fog={customFog} // Allows you to pass a Fog or FogExp2 instance for a smaller frustrum
-  near={1}
-  far={1000}
->
+<CubeCamera resolution={256} frames={Infinity} fog={customFog} near={1} far={1000}>
   {(texture) => (
     <mesh>
       <sphereGeometry />
@@ -269,12 +260,7 @@ PointerLockControls additionally supports a `selector` prop, which enables the b
 A box buffer geometry with rounded corners, done with extrusion.
 
 ```jsx
-<RoundedBox
-  args={[1, 1, 1]} // Width, Height and Depth of the box
-  radius={0.05} // Border-Radius of the box
-  smoothness={4} // Optional, number of subdivisions
-  {...meshProps} // All THREE.Mesh props are valid
->
+<RoundedBox args={[1, 1, 1]} radius={0.05} smoothness={4} {...meshProps}>
   <meshPhongMaterial attach="material" color="#f3f3f3" wireframe />
 </RoundedBox>
 ```
@@ -300,11 +286,7 @@ A triangle that fills the screen, ideal for full-screen fragment shader work (ra
 Hi-quality text rendering w/ signed distance fields (SDF) and antialiasing, using [troika-3d-text](https://github.com/protectwise/troika/tree/master/packages/troika-3d-text). All of troikas props are valid!
 
 ```jsx
-<Text
-  color="black" // default
-  anchorX="center" // default
-  anchorY="middle" // default
->
+<Text color="black" anchorX="center" anchorY="middle">
   hello world!
 </Text>
 ```
@@ -376,9 +358,9 @@ A wrapper around [THREE.PositionalAudio](https://threejs.org/docs/index.html#api
 
 ```jsx
 <PositionalAudio
-  url="/sound.mp3" // Url of the sound file
-  distance={1} // Camera distance (default=1)
-  loop // Repat play (default=true)
+  url="/sound.mp3"
+  distance={1}
+  loop
   {...props} // All THREE.PositionalAudio props are valid
 />
 ```
@@ -389,9 +371,9 @@ Adds a `<Plane />` that always faces the camera.
 
 ```jsx
 <Billboard
-  follow={true} // Follow the camera (default=true)
-  lockX={false} // Lock the rotation on the x axis (default=false)
-  lockY={false} // Lock the rotation on the y axis (default=false)
+  follow={true}
+  lockX={false}
+  lockY={false}
   lockZ={false} // Lock the rotation on the z axis (default=false)
 />
 ```
@@ -422,10 +404,10 @@ Sets up a global cubemap, which affects the default `scene.environment`, and opt
 
 ```jsx
 <Environment
-  background={false} // Whether to affect scene.background
-  files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']} // Array of cubemap files OR single equirectangular file
-  path={'/'} // Path to the above file(s)
-  preset={null} // Preset string (overrides files and path)
+  background={false}
+  files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']}
+  path={'/'}
+  preset={null}
   scene={undefined} // adds the ability to pass a custom THREE.Scene
 />
 ```
@@ -435,13 +417,8 @@ Sets up a global cubemap, which affects the default `scene.environment`, and opt
 Abstraction around threes own [EffectComposer](https://threejs.org/docs/index.html#examples/en/postprocessing/EffectComposer).
 
 ```jsx
-<Effects
-  multisamping={8} // Default, uses WebGL2 multisamping if available
-  renderIndex={1} // Default
-  disableGamma={false} // Default, would switch off the gamma-correction-pass
-  disableRenderPass={false} // Default, would remove the first scene-render-pass
->
-  {/* Generic passes go here ... */}
+<Effects multisamping={8} renderIndex={1} disableGamma={false} disableRenderPass={false}>
+  {}
   <lUTPass attachArray="passes" lut={texture3D} />
 </Effects>
 ```
@@ -456,7 +433,7 @@ A hook that abstracts [AnimationMixer](https://threejs.org/docs/index.html#api/e
 const { nodes, materials, animations } = useGLTF(url)
 const { ref, mixer, names, actions, clips } = useAnimations(animations)
 useEffect(() => {
-  actions.jump.play()
+  actions?.jump.play()
 })
 return (
   <mesh ref={ref} />
@@ -473,11 +450,7 @@ This material makes your geometry wobble and wave around. It was taken from the 
 ```jsx
 <mesh>
   <boxBufferGeometry attach="geometry" />
-  <MeshWobbleMaterial
-    attach="material"
-    factor={1} // Strength, 0 disables the effect (default=1)
-    speed={10} // Speed (default=1)
-  />
+  <MeshWobbleMaterial attach="material" factor={1} speed={10} />
 </mesh>
 ```
 
@@ -490,11 +463,7 @@ This material makes your geometry distort following simplex noise.
 ```jsx
 <mesh>
   <boxBufferGeometry attach="geometry" />
-  <MeshDistortMaterial
-    attach="material"
-    distort={1} // Strength, 0 disables the effect (default=1)
-    speed={10} // Speed (default=1)
-  />
+  <MeshDistortMaterial attach="material" distort={1} speed={10} />
 </mesh>
 ```
 
@@ -505,13 +474,7 @@ This material makes your geometry distort following simplex noise.
 Adds a [sky](https://threejs.org/examples/webgl_shaders_sky.html) to your scene.
 
 ```jsx
-<Sky
-  distance={450000} // Camera distance (default=450000)
-  sunPosition={[0, 1, 0]} // Sun position normal (defaults to inclination and azimuth if not set)
-  inclination={0} // Sun elevation angle from 0 to 1 (default=0)
-  azimuth={0.25} // Sun rotation around the Y axis from 0 to 1 (default=0.25)
-  {...props} // All three-stdlib/objects/Sky props are valid
-/>
+<Sky distance={450000} sunPosition={[0, 1, 0]} inclination={0} azimuth={0.25} {...props} />
 ```
 
 #### Stars
@@ -521,14 +484,7 @@ Adds a [sky](https://threejs.org/examples/webgl_shaders_sky.html) to your scene.
 Adds a blinking shader-based starfield to your scene.
 
 ```jsx
-<Stars
-  radius={100} // Radius of the inner sphere (default=100)
-  depth={50} // Depth of area where stars should fit (default=50)
-  count={5000} // Amount of stars (default=5000)
-  factor={4} // Size factor (default=4)
-  saturation={0} // Saturation 0-1 (default=0)
-  fade // Faded dots (default=false)
-/>
+<Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade />
 ```
 
 #### ContactShadows
@@ -538,14 +494,7 @@ Adds a blinking shader-based starfield to your scene.
 A [contact shadow](https://threejs.org/examples/?q=con#webgl_shadow_contact) implementation.
 
 ```jsx
-<ContactShadows
-  opacity={1}
-  width={1}
-  height={1}
-  blur={1} // Amount of blur (default=1)
-  far={10} // Focal distance (default=10)
-  resolution={256} // Rendertarget resolution (default=256)
-/>
+<ContactShadows opacity={1} width={1} height={1} blur={1} far={10} resolution={256} />
 ```
 
 #### softShadows
@@ -556,10 +505,10 @@ Injects [percent closer soft shadows (pcss)](https://threejs.org/examples/?q=pcs
 
 ```jsx
 softShadows({
-  frustum: 3.75, // Frustum width (default: 3.75) must be a float
-  size: 0.005, // World size (default: 0.005) must be a float
-  near: 9.5, // Near plane (default: 9.5) must be a float
-  samples: 17, // Samples (default: 17) must be a int
+  frustum: 3.75,
+  size: 0.005,
+  near: 9.5,
+  samples: 17,
   rings: 11, // Rings (default: 11) must be a int
 })
 ```
@@ -641,16 +590,10 @@ function Scene() {
 Creates a `THREE.WebGLRenderTarget` or `THREE.WebGLMultisampleRenderTarget`.
 
 ```jsx
-const target = useFBO(
-  // width: 500,  height: 500,
-  // width and height are optional and defaulted to the viewport size
-  // multiplied by the renderer pixel ratio, and recalculated whenever the
-  // viewport size changes.
-  {
-    multisample: true, // if the renderer supports webGL2, it will return a WebGLMultisampleRenderTarget
-    stencilBuffer: false, // you can pass any options supported by THREE.WebGLRenderTarget
-  }
-)
+const target = useFBO({
+  multisample: true,
+  stencilBuffer: false,
+})
 ```
 
 The rendertarget is automatically disposed when unmounted.
@@ -719,9 +662,9 @@ A cheap canvas-texture-based circular gradient.
 
 ```jsx
 <Shadow
-  color="black" // Color (default:black)
-  colorStop={0} // First gradient-stop (default:0)
-  opacity={0.5} // Alpha (default:0.5)
+  color="black"
+  colorStop={0}
+  opacity={0.5}
   fog={false} // Reacts to fog (default=false)
 />
 ```
@@ -733,11 +676,7 @@ A cheap canvas-texture-based circular gradient.
 Adds [stats](https://github.com/mrdoob/stats.js/) to document.body. It takes over the render-loop!
 
 ```jsx
-<Stats
-  showPanel={0} // Start-up panel (default=0)
-  className="stats" // Optional className to add to the stats container dom element
-  {...props} // All stats.js props are valid
-/>
+<Stats showPanel={0} className="stats" {...props} />
 ```
 
 You can choose to mount Stats to a different DOM Element - for example, for custom styling:
@@ -871,7 +810,7 @@ This hook mutates a mesh geometry using [three's Simplification modifier](https:
 👉 The simplification code is based on [this algorithm](http://www.melax.com/polychop/).
 
 ```jsx
-const meshRef = useSimplification(0.5) // the vertices will be halved
+const meshRef = useSimplification(0.5)
 
 return (
   <mesh ref={meshRef}>
@@ -887,10 +826,7 @@ return (
 This hook mutates a mesh geometry using [three's Tessellation modifier](https://threejs.org/examples/?q=tess#webgl_modifier_tessellation). It will break-up faces withe edge longer than the maxEdgeLength parameter.
 
 ```jsx
-const meshRef = useTessellation(
-  2, // passes - number of times the geometry will be subdivided
-  8 // maxEdgeLength - faces with edges longer than this number will be broken up
-)
+const meshRef = useTessellation(2, 8)
 
 return (
   <mesh ref={meshRef}>
@@ -963,13 +899,10 @@ const errors = useProgress((state) => state.errors)
 A convenience hook that uses `useLoader` and `GLTFLoader`, it defaults to CDN loaded draco binaries (`https://www.gstatic.com/draco/v1/decoders/`) which are only loaded for compressed models.
 
 ```jsx
-// Loads model, uses CDN draco when needed
 useGLTF(url)
 
-// Use local draco binaries from a custom path
 useGLTF(url, '/draco-gltf')
 
-// Preload asset (you would do this in global space, not inside a component!)
 useGLTF.preload(url)
 ```
 
@@ -984,7 +917,6 @@ useFBX(url)
 
 function SuzanneFBX() {
   let fbx = useFBX('suzanne/suzanne.fbx')
-  // wrap fbx in primitive.
   return <primitive object={fbx} dispose={null} />
 }
 ```
@@ -1073,15 +1005,7 @@ return (
 Creates a "stage" with proper studio lighting, content centered and planar, shadows and ground-contact shadows.
 
 ```jsx
-<Stage
-  contactShadow // Optional: creates a contactshadow underneath the content (default=true)
-  shadows // Optional: lights cast shadow (default=true)
-  adjustCamera // Optional: zooms the content in (default=true)
-  intensity={1} // Optional: light intensity (default=1)
-  environment="city" // Optional: environment (default=city)
-  preset="rembrandt" // Optional: rembrandt (default) | portrait | upfront | soft
-  controls={controlsRef} // Optional: recalculates control target for correctness
->
+<Stage contactShadow shadows adjustCamera intensity={1} environment="city" preset="rembrandt" controls={controlsRef}>
   <mesh />
 </Stage>
 ```
@@ -1095,10 +1019,7 @@ Creates a "stage" with proper studio lighting, content centered and planar, shad
 A wrapper around [THREE.LOD](https://threejs.org/docs/index.html#api/en/objects/LOD) (Level of detail).
 
 ```jsx
-<Detailed
-  distances={[0, 10, 20]} // Camera distances, correspends to the # of the children
-  {...props} // All THREE.LOD props are valid
->
+<Detailed distances={[0, 10, 20]} {...props}>
   <mesh geometry={highDetail} />
   <mesh geometry={mediumDetail} />
   <mesh geometry={lowDetail} />

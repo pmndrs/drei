@@ -39,15 +39,15 @@ export function useAnimations<T extends AnimationClip>(
         ),
       }))
     }
-  }, [clips, mixer, root, actualRef])
+  }, [clips, mixer, actualRef])
   React.useEffect(() => {
     const currentRoot = actualRef.current
     return () =>
       Object.values(api.actions).forEach((action) => {
         if (currentRoot) {
-          mixer.uncacheAction((action as unknown) as AnimationClip, currentRoot)
+          mixer.uncacheAction(action as AnimationClip, currentRoot)
         }
       })
-  }, [api, clips, mixer, root, actualRef])
+  }, [api, mixer, actualRef])
   return api
 }

@@ -33,6 +33,7 @@ const useProgress = create<Data>((set) => {
       saveLastTotalLoaded = total
     }
     set({
+      active: true,
       item,
       loaded,
       total,

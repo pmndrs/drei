@@ -12,7 +12,6 @@ import {
   Scene,
   Texture,
   Vector3,
-  WebGLCubeRenderTarget,
 } from 'three'
 import { OrthographicCamera } from './OrthographicCamera'
 import { useCamera } from './useCamera'
@@ -55,7 +54,7 @@ export const GizmoHelper = ({
   const gl = useThree(({ gl }) => gl)
   const scene = useThree(({ scene }) => scene)
 
-  const backgroundRef = React.useRef<null | Color | Texture | WebGLCubeRenderTarget>()
+  const backgroundRef = React.useRef<null | Color | Texture>()
   const gizmoRef = React.useRef<Group>()
   const virtualCam = React.useRef<Camera>(null!)
   const [virtualScene] = React.useState(() => new Scene())
@@ -113,6 +112,7 @@ export const GizmoHelper = ({
         scene.background = backgroundRef.current
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const beforeRender = () => {

@@ -10,7 +10,7 @@ interface LoaderOptions {
   initialState: (active: boolean) => boolean
 }
 
-const defaultDataInterpolation = (p: number) => `Loading ${p.toFixed(2)}%`
+const defaultDataInterpolation = (p: number) => `Loading ${p}%`
 
 export function Loader({
   containerStyles,

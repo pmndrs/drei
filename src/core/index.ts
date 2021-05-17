@@ -1,7 +1,6 @@
 // Abstractions
 export * from './Billboard'
 export * from './Cloud'
-export * from './Detailed'
 export * from './QuadraticBezierLine'
 export * from './CubicBezierLine'
 export * from './Line'
@@ -38,12 +37,10 @@ export * from './useProgress'
 export * from './useTexture'
 
 // Misc
-export * from './meshBounds'
 export * from './Reflector'
 export * from './Shadow'
 export * from './Stats'
 export * from './Center'
-export * from './Preload'
 export * from './useAspect'
 export * from './useCamera'
 export * from './useDetectGPU'
@@ -75,3 +72,11 @@ export * from './ScreenQuad'
 // Prototyping
 export * from './useMatcapTexture'
 export * from './useNormalTexture'
+export * from './Stage'
+
+// Performance
+export * from './Detailed'
+export * from './Preload'
+export * from './meshBounds'
+export * from './AdaptiveDpr'
+export * from './AdaptiveEvents'

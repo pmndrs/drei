@@ -15,6 +15,7 @@ type Props = JSX.IntrinsicElements['mesh'] & {
   anchorY?: number | 'top' | 'top-baseline' | 'middle' | 'bottom-baseline' | 'bottom'
   clipRect?: [number, number, number, number]
   depthOffset?: number
+  direction?: 'auto' | 'ltr' | 'rtl'
   overflowWrap?: 'normal' | 'break-word'
   whiteSpace?: 'normal' | 'overflowWrap' | 'overflowWrap'
   outlineWidth?: number | string
@@ -34,7 +35,7 @@ type Props = JSX.IntrinsicElements['mesh'] & {
 // eslint-disable-next-line prettier/prettier
 export const Text = React.forwardRef(
   ({ anchorX = 'center', anchorY = 'middle', children, onSync, ...props }: Props, ref) => {
-    const { invalidate } = useThree(({ invalidate }) => ({ invalidate }))
+    const invalidate = useThree(({ invalidate }) => invalidate)
     const [troikaMesh] = React.useState(() => new TextMeshImpl())
     const [nodes, text] = React.useMemo(() => {
       let n: React.ReactNode[] = []
@@ -55,16 +56,11 @@ export const Text = React.forwardRef(
           if (onSync) onSync(troikaMesh)
         })
     )
+    React.useEffect(() => {
+      return () => troikaMesh.dispose()
+    }, [troikaMesh])
     return (
-      <primitive
-        dispose={undefined}
-        object={troikaMesh}
-        ref={ref}
-        text={text}
-        anchorX={anchorX}
-        anchorY={anchorY}
-        {...props}
-      >
+      <primitive object={troikaMesh} ref={ref} text={text} anchorX={anchorX} anchorY={anchorY} {...props}>
         {nodes}
       </primitive>
     )

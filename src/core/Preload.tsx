@@ -9,7 +9,10 @@ type Props = {
 }
 
 export function Preload({ all, scene, camera }: Props) {
-  const { gl, scene: dScene, camera: dCamera } = useThree(({ gl, scene, camera }) => ({ gl, scene, camera }))
+  const gl = useThree(({ gl }) => gl)
+  const dCamera = useThree(({ camera }) => camera)
+  const dScene = useThree(({ scene }) => scene)
+
   // Layout effect because it must run before React commits
   React.useLayoutEffect(() => {
     const invisible: Object3D[] = []

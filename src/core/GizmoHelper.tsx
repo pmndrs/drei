@@ -1,6 +1,19 @@
 import * as React from 'react'
 import { createPortal, useFrame, useThree } from '@react-three/fiber'
-import { Camera, Group, Intersection, Matrix4, Object3D, Quaternion, Raycaster, Scene, Vector3 } from 'three'
+import {
+  Camera,
+  Color,
+  Group,
+  Intersection,
+  Matrix4,
+  Object3D,
+  Quaternion,
+  Raycaster,
+  Scene,
+  Texture,
+  Vector3,
+  WebGLCubeRenderTarget,
+} from 'three'
 import { OrthographicCamera } from './OrthographicCamera'
 import { useCamera } from './useCamera'
 
@@ -37,7 +50,12 @@ export const GizmoHelper = ({
   onTarget,
   children: GizmoHelperComponent,
 }: GizmoHelperProps): any => {
-  const { gl, camera: mainCamera, size } = useThree(({ gl, camera, size }) => ({ gl, camera, size }))
+  const size = useThree(({ size }) => size)
+  const mainCamera = useThree(({ camera }) => camera)
+  const gl = useThree(({ gl }) => gl)
+  const scene = useThree(({ scene }) => scene)
+
+  const backgroundRef = React.useRef<null | Color | Texture | WebGLCubeRenderTarget>()
   const gizmoRef = React.useRef<Group>()
   const virtualCam = React.useRef<Camera>(null!)
   const [virtualScene] = React.useState(() => new Scene())
@@ -80,6 +98,22 @@ export const GizmoHelper = ({
       animating.current = false
     }
   }
+
+  React.useEffect(() => {
+    if (scene.background) {
+      //Interchange the actual scene background with the virtual scene
+      backgroundRef.current = scene.background
+      scene.background = null
+      virtualScene.background = backgroundRef.current
+    }
+
+    return () => {
+      // reset on unmount
+      if (backgroundRef.current) {
+        scene.background = backgroundRef.current
+      }
+    }
+  }, [])
 
   const beforeRender = () => {
     // Sync gizmo with main camera orientation

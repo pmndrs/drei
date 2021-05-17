@@ -120,6 +120,30 @@ function TextShadowScene() {
     </Text>
   )
 }
+
+function TextLtrScene() {
+  const ref = useTurntable()
+
+  return (
+    <Text
+      ref={ref}
+      color={'#EC2D2D'}
+      fontSize={12}
+      maxWidth={200}
+      lineHeight={1}
+      letterSpacing={0.02}
+      textAlign={'right'}
+      direction={'auto'}
+      font="https://fonts.gstatic.com/s/scheherazade/v20/YA9Ur0yF4ETZN60keViq1kQgtA.woff"
+      anchorX="center"
+      anchorY="middle"
+    >
+      ان عدة الشهور عند الله اثنا عشر شهرا في كتاب الله يوم خلق السماوات والارض SOME LATIN TEXT HERE منها اربعة حرم ذلك
+      الدين القيم فلاتظلموا فيهن انفسكم وقاتلوا المشركين كافة كما يقاتلونكم كافة واعلموا ان الله مع المتقين
+    </Text>
+  )
+}
+
 function CustomMaterialTextScene() {
   const ref = useTurntable()
   const defaultColor = '#EC2D2D'
@@ -159,6 +183,9 @@ TextStrokeSt.storyName = 'Transparent with stroke'
 
 export const TextShadowSt = () => <TextShadowScene />
 TextShadowSt.storyName = 'Text Shadow'
+
+export const TextLtrSt = () => <TextLtrScene />
+TextLtrSt.storyName = 'Text Ltr'
 
 export const CustomMaterialTextSt = () => <CustomMaterialTextScene />
 CustomMaterialTextSt.storyName = 'Custom Material'

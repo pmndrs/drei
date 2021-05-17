@@ -1,0 +1,66 @@
+import * as React from 'react'
+import { Mesh, Vector3 } from 'three'
+
+import { Setup } from '../Setup'
+
+import { useGLTF, AdaptiveDpr, AdaptiveEvents, OrbitControls } from '../../src'
+
+export default {
+  title: 'Performance/Adaptive',
+  component: useGLTF,
+  decorators: [
+    (storyFn) => (
+      <Setup
+        cameraPosition={new Vector3(0, 0, 30)}
+        cameraFov={50}
+        shadows
+        controls={false}
+        lights={false}
+        performance={{ min: 0.2 }}
+      >
+        {storyFn()}
+      </Setup>
+    ),
+  ],
+}
+
+function Archer() {
+  const { nodes, materials } = useGLTF('/archer.glb')
+  return (
+    <group dispose={null}>
+      <group rotation={[-Math.PI / 2, 0, 0]}>
+        <group position={[0, 0, 2]}>
+          <mesh castShadow receiveShadow material={materials.material_0} geometry={(nodes.mesh_0 as Mesh).geometry} />
+          <mesh castShadow receiveShadow material={materials.material_0} geometry={(nodes.mesh_1 as Mesh).geometry} />
+          <mesh castShadow receiveShadow material={materials.material_0} geometry={(nodes.mesh_2 as Mesh).geometry} />
+        </group>
+      </group>
+    </group>
+  )
+}
+
+function AdaptiveScene() {
+  return (
+    <>
+      <React.Suspense fallback={null}>
+        <Archer />
+      </React.Suspense>
+      <directionalLight
+        intensity={0.2}
+        position={[10, 10, 5]}
+        shadow-mapSize-width={64}
+        shadow-mapSize-height={64}
+        castShadow
+        shadow-bias={-0.001}
+      />
+      <AdaptiveDpr pixelated />
+      <AdaptiveEvents />
+      <OrbitControls regress />
+    </>
+  )
+}
+
+export const AdaptiveSceneSt = () => <AdaptiveScene />
+AdaptiveSceneSt.story = {
+  name: 'Default',
+}

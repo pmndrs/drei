@@ -1,4 +1,5 @@
 import { Loader } from 'three'
+// @ts-ignore
 import { GLTFLoader, DRACOLoader, MeshoptDecoder } from 'three-stdlib'
 import { useLoader } from '@react-three/fiber'
 

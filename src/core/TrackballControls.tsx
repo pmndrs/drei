@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { PerspectiveCamera } from 'three'
 import { ReactThreeFiber, useThree, useFrame } from '@react-three/fiber'
 import { TrackballControls as TrackballControlsImpl } from 'three-stdlib'
 
@@ -17,14 +18,13 @@ declare global {
 
 export const TrackballControls = React.forwardRef<TrackballControlsImpl, TrackballControls>((props, ref) => {
   const { camera, ...rest } = props
-  const { camera: defaultCamera, gl, invalidate } = useThree(({ camera, gl, invalidate }) => ({
-    camera,
-    gl,
-    invalidate,
-  }))
+  const gl = useThree(({ gl }) => gl)
+  const defaultCamera = useThree(({ camera }) => camera)
+  const invalidate = useThree(({ invalidate }) => invalidate)
+
   const explCamera = camera || defaultCamera
 
-  const [controls] = React.useState(() => new TrackballControlsImpl(explCamera, gl.domElement))
+  const [controls] = React.useState(() => new TrackballControlsImpl(explCamera as PerspectiveCamera, gl.domElement))
 
   useFrame(() => controls?.update())
   React.useEffect(() => {

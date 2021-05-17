@@ -39,7 +39,10 @@ export const Effects = React.forwardRef(
     ref
   ) => {
     const composer = React.useRef<EffectComposer>()
-    const { scene, camera, gl, size } = useThree(({ scene, camera, gl, size }) => ({ scene, camera, gl, size }))
+    const scene = useThree(({ scene }) => scene)
+    const camera = useThree(({ camera }) => camera)
+    const gl = useThree(({ gl }) => gl)
+    const size = useThree(({ size }) => size)
     const [target] = React.useState(() => {
       if (isWebGL2Available() && multisamping > 0) {
         const t = new WebGLMultisampleRenderTarget(size.width, size.height, {

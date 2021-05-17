@@ -10,9 +10,7 @@ A growing collection of useful helpers and abstractions for [react-three-fiber](
 npm install @react-three/drei
 ```
 
-:point_right: this package is now only published under the name `@react-three/drei`. `drei` has been deprecated. :point_left:
-
-:point_right: this package is using the stand-alone `[three-stdlib](https://github.com/pmndrs/three-stdlib)` instead of `[three/examples/jsm](https://github.com/mrdoob/three.js/tree/dev/examples/jsm)`. :point_left:
+:point_right: this package is using the stand-alone [`three-stdlib`](https://github.com/pmndrs/three-stdlib) instead of [`three/examples/jsm`](https://github.com/mrdoob/three.js/tree/dev/examples/jsm). :point_left:
 
 ### Basic usage:
 
@@ -112,6 +110,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <ul>
           <li><a href="#usematcaptexture">useMatcapTexture</a></li>
           <li><a href="#usenormaltexture">useNormalTexture</a></li>
+          <li><a href="#stage">Stage</a></li>
         </ul>
       </ul>
     </td>
@@ -145,6 +144,8 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#detailed">Detailed</a></li>
           <li><a href="#preload">Preload</a></li>
           <li><a href="#meshbounds">meshBounds</a></li>
+          <li><a href="#adaptivedpr">AdaptiveDpr</a></li>
+          <li><a href="#adaptiveevents">AdaptiveEvents</a></li>
         </ul>
       </ul>
     </td>
@@ -690,7 +691,7 @@ Easily add reflections and/or blur to a planar surface. This reflector can also 
   args={[1, 1]} // PlaneBufferGeometry arguments
   resolution={256} // Off-buffer resolution, lower=faster, higher=better quality
   mirror={0.5} // Mirror environment, 0 = texture colors, 1 = pick up env colors
-  mixBlur={1.0} // How much blur mixes with surface roughness
+  mixBlur={1.0} // How much blur mixes with surface roughness (default = 0), note that this can affect performance
   mixStrength={0.5} // Strength of the reflections
   depthScale={1} // Scale the depth factor (0 = no depth, default = 0)
   minDepthThreshold={0.9} // Lower edge for the depthTexture interpolation (default = 0)
@@ -758,10 +759,10 @@ return <Stats parent={parent} />
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-center--default-story)
 
-Calculates a boundary box and centers its children accordingly.
+Calculates a boundary box and centers its children accordingly. `alignTop` makes adjusts it so that it's sits flush on y=0.
 
 ```jsx
-<Center>
+<Center alignTop>
   <mesh />
 </Center>
 ```
@@ -785,6 +786,8 @@ A hook for a quick way to add helpers to existing nodes in the scene. It handles
 ```jsx
 const mesh = useRef()
 useHelper(mesh, BoxHelper, 'cyan')
+
+<mesh ref={mesh} ... />
 ```
 
 #### useDetectGPU
@@ -1063,6 +1066,26 @@ return (
 
 ```
 
+#### Stage
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/prototyping-stage--stage-st)
+
+Creates a "stage" with proper studio lighting, content centered and planar, shadows and ground-contact shadows.
+
+```jsx
+<Stage
+  contactShadow // Optional: creates a contactshadow underneath the content (default=true)
+  shadows // Optional: lights cast shadow (default=true)
+  adjustCamera // Optional: zooms the content in (default=true)
+  intensity={1} // Optional: light intensity (default=1)
+  environment="city" // Optional: environment (default=city)
+  preset="rembrandt" // Optional: rembrandt (default) | portrait | upfront | soft
+  controls={controlsRef} // Optional: recalculates control target for correctness
+>
+  <mesh />
+</Stage>
+```
+
 # Performance
 
 #### Detailed
@@ -1105,4 +1128,20 @@ A very fast, but often good-enough bounds-only raycast for meshes. You can use t
 
 ```jsx
 <mesh raycast={meshBounds} />
+```
+
+#### AdaptiveDpr
+
+Drop this component into your scene and it will cut the pixel-ratio on [regress](#) according to the canvases perrformance min/max settings. This allows you to temporarily reduce visuals for more performance, for instance when the camera moves (look into drei's controls `regress` flag). Optionally you can set the canvas to a pixelated filter, which would be even faster.
+
+```jsx
+<AdaptiveDpr pixelated />
+```
+
+#### AdaptiveEvents
+
+Drop this component into your scene and it will switch off the raycaster while the system is in regress.
+
+```jsx
+<AdaptiveEvents />
 ```

@@ -84,6 +84,7 @@ export function Stage({
         controls.current.update()
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [radius, height, width, adjustCamera])
 
   return (

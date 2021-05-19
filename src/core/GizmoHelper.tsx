@@ -53,6 +53,7 @@ export const GizmoHelper = ({
   const mainCamera = useThree(({ camera }) => camera)
   const gl = useThree(({ gl }) => gl)
   const scene = useThree(({ scene }) => scene)
+  const invalidate = useThree(({ invalidate }) => invalidate)
 
   const backgroundRef = React.useRef<null | Color | Texture>()
   const gizmoRef = React.useRef<Group>()
@@ -64,6 +65,7 @@ export const GizmoHelper = ({
   const focusPoint = React.useRef(new Vector3(0, 0, 0))
 
   const tweenCamera = (direction: Vector3) => {
+    console.log('...')
     animating.current = true
     focusPoint.current = onTarget()
     radius.current = mainCamera.position.distanceTo(target)
@@ -77,9 +79,12 @@ export const GizmoHelper = ({
     targetPosition.copy(direction).multiplyScalar(radius.current).add(target)
     dummy.lookAt(targetPosition)
     q2.copy(dummy.quaternion)
+
+    invalidate()
   }
 
   const animateStep = (delta: number) => {
+    invalidate()
     if (!animating.current) return
 
     const step = delta * turnRate
@@ -142,7 +147,7 @@ export const GizmoHelper = ({
   const y = alignment.startsWith('top-') ? size.height / 2 - marginY : -size.height / 2 + marginY
   return createPortal(
     <Context.Provider value={gizmoHelperContext}>
-      <OrthographicCamera ref={virtualCam} makeDefault={false} position={[0, 0, 100]} />
+      <OrthographicCamera ref={virtualCam} makeDefault={false} position={[0, 0, 200]} />
       <group ref={gizmoRef} position={[x, y, 0]}>
         {GizmoHelperComponent}
       </group>

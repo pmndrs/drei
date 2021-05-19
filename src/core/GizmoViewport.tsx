@@ -7,6 +7,22 @@ type AxisProps = {
   rotation: [number, number, number]
 }
 
+type AxisHeadProps = JSX.IntrinsicElements['sprite'] & {
+  arcStyle: string
+  label?: string
+  labelColor: string
+  disabled?: boolean
+  font: string
+}
+
+type GizmoViewportProps = JSX.IntrinsicElements['group'] & {
+  axisColors?: [string, string, string]
+  labelColor?: string
+  hideNegativeAxes?: boolean
+  disabled?: boolean
+  font?: string
+}
+
 function Axis({ color, rotation }: AxisProps) {
   return (
     <group rotation={rotation}>
@@ -18,13 +34,7 @@ function Axis({ color, rotation }: AxisProps) {
   )
 }
 
-type AxisHeadProps = JSX.IntrinsicElements['sprite'] & {
-  arcStyle: string
-  label?: string
-  labelColor: string
-}
-
-function AxisHead({ arcStyle, label, labelColor, ...props }: AxisHeadProps) {
+function AxisHead({ font, disabled, arcStyle, label, labelColor, ...props }: AxisHeadProps) {
   const texture = React.useMemo(() => {
     const canvas = document.createElement('canvas')
     canvas.width = 64
@@ -38,13 +48,13 @@ function AxisHead({ arcStyle, label, labelColor, ...props }: AxisHeadProps) {
     context.fill()
 
     if (label) {
-      context.font = '24px Arial'
+      context.font = font
       context.textAlign = 'center'
       context.fillStyle = labelColor
       context.fillText(label, 32, 41)
     }
     return new CanvasTexture(canvas)
-  }, [arcStyle, label, labelColor])
+  }, [arcStyle, label, labelColor, font])
 
   const [active, setActive] = React.useState(false)
   const scale = (label ? 1 : 0.75) * (active ? 1.2 : 1)
@@ -57,43 +67,54 @@ function AxisHead({ arcStyle, label, labelColor, ...props }: AxisHeadProps) {
     e.stopPropagation()
   }
   return (
-    <sprite scale={[scale, scale, scale]} onPointerOver={handlePointerOver} onPointerOut={handlePointerOut} {...props}>
+    <sprite
+      scale={scale}
+      onPointerOver={!disabled ? handlePointerOver : undefined}
+      onPointerOut={!disabled ? handlePointerOut : undefined}
+      {...props}
+    >
       <spriteMaterial map={texture} alphaTest={0.3} opacity={label ? 1 : 0.75} toneMapped={false} />
     </sprite>
   )
 }
 
-type GizmoViewportProps = JSX.IntrinsicElements['group'] & {
-  axisColors?: [string, string, string]
-  labelColor?: string
-}
-
 export const GizmoViewport = ({
-  axisColors = ['#ff3653', '#8adb00', '#2c8fff'],
+  hideNegativeAxes,
+  disabled,
+  font = '18px Inter var, Arial, sans-serif',
+  axisColors = ['#ff3653', '#0adb50', '#2c8fdf'],
   labelColor = '#000',
   ...props
 }: GizmoViewportProps) => {
   const [colorX, colorY, colorZ] = axisColors
   const { tweenCamera, raycast } = useGizmoContext()
   const axisHeadProps = {
+    font,
+    disabled,
     labelColor,
-    onPointerDown: (e: Event) => {
-      tweenCamera(e.object.position)
-      e.stopPropagation()
-    },
     raycast,
+    onPointerDown: !disabled
+      ? (e: Event) => {
+          tweenCamera(e.object.position)
+          e.stopPropagation()
+        }
+      : undefined,
   }
   return (
-    <group scale={[40, 40, 40]} {...props}>
+    <group scale={40} {...props}>
       <Axis color={colorX} rotation={[0, 0, 0]} />
       <Axis color={colorY} rotation={[0, 0, Math.PI / 2]} />
       <Axis color={colorZ} rotation={[0, -Math.PI / 2, 0]} />
       <AxisHead arcStyle={colorX} position={[1, 0, 0]} label="X" {...axisHeadProps} />
       <AxisHead arcStyle={colorY} position={[0, 1, 0]} label="Y" {...axisHeadProps} />
       <AxisHead arcStyle={colorZ} position={[0, 0, 1]} label="Z" {...axisHeadProps} />
-      <AxisHead arcStyle={colorX} position={[-1, 0, 0]} {...axisHeadProps} />
-      <AxisHead arcStyle={colorY} position={[0, -1, 0]} {...axisHeadProps} />
-      <AxisHead arcStyle={colorZ} position={[0, 0, -1]} {...axisHeadProps} />
+      {!hideNegativeAxes && (
+        <>
+          <AxisHead arcStyle={colorX} position={[-1, 0, 0]} {...axisHeadProps} />
+          <AxisHead arcStyle={colorY} position={[0, -1, 0]} {...axisHeadProps} />
+          <AxisHead arcStyle={colorZ} position={[0, 0, -1]} {...axisHeadProps} />
+        </>
+      )}
       <ambientLight intensity={0.5} />
       <pointLight position={[10, 10, 10]} intensity={0.5} />
     </group>

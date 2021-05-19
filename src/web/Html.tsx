@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import { Vector3, Group, Object3D, Matrix4, Camera, PerspectiveCamera, OrthographicCamera } from 'three'
+import { Vector3, Group, Object3D, Matrix4, Camera, PerspectiveCamera, OrthographicCamera, Raycaster } from 'three'
 import { Assign } from 'utility-types'
 import { ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 
@@ -24,6 +24,25 @@ function isObjectBehindCamera(el: Object3D, camera: Camera) {
   const deltaCamObj = objectPos.sub(cameraPos)
   const camDir = camera.getWorldDirection(v3)
   return deltaCamObj.angleTo(camDir) > Math.PI / 2
+}
+
+function isObjectVisible(el: Object3D, camera: Camera, raycaster: Raycaster, occluder: Object3D) {
+  const elPos = v1.setFromMatrixPosition(el.matrixWorld)
+
+  const screenPos = elPos.clone()
+  screenPos.project(camera)
+
+  raycaster.setFromCamera(screenPos, camera)
+  const intersects = raycaster.intersectObject(occluder, true)
+
+  if (intersects.length) {
+    const intersectionDistance = intersects[0].distance
+    const pointDistance = elPos.distanceTo(camera.position)
+
+    return pointDistance < intersectionDistance
+  } else {
+    return true
+  }
 }
 
 function objectScale(el: Object3D, camera: Camera) {
@@ -81,7 +100,9 @@ export interface HtmlProps
   distanceFactor?: number
   sprite?: boolean
   transform?: boolean
+  checkDepth?: boolean
   zIndexRange?: Array<number>
+  occluder?: React.RefObject<Object3D>
   calculatePosition?: CalculatePosition
 }
 
@@ -99,6 +120,7 @@ export const Html = React.forwardRef(
       distanceFactor,
       sprite = false,
       transform = false,
+      occluder,
       zIndexRange = [16777271, 0],
       calculatePosition = defaultCalculatePosition,
       ...props
@@ -109,6 +131,7 @@ export const Html = React.forwardRef(
     const camera = useThree(({ camera }) => camera)
     const scene = useThree(({ scene }) => scene)
     const size = useThree(({ size }) => size)
+    const raycaster = useThree(({ raycaster }) => raycaster)
 
     const [el] = React.useState(() => document.createElement('div'))
     const group = React.useRef<Group>(null)
@@ -196,7 +219,15 @@ export const Html = React.forwardRef(
           Math.abs(oldPosition.current[0] - vec[0]) > eps ||
           Math.abs(oldPosition.current[1] - vec[1]) > eps
         ) {
-          el.style.display = !isObjectBehindCamera(group.current, camera) ? 'block' : 'none'
+          const isBehindCamera = isObjectBehindCamera(group.current, camera)
+
+          if (occluder?.current) {
+            const visible = isObjectVisible(group.current, camera, raycaster, occluder?.current)
+            el.style.display = visible && !isBehindCamera ? 'block' : 'none'
+          } else {
+            el.style.display = !isBehindCamera ? 'block' : 'none'
+          }
+
           el.style.zIndex = `${objectZIndex(group.current, camera, zIndexRange)}`
           if (transform) {
             const [widthHalf, heightHalf] = [size.width / 2, size.height / 2]

@@ -615,6 +615,7 @@ Allows you to tie HTML content to any object of your scene. It will be projected
   transform // If true, applies matrix3d transformations (default=false)
   sprite // Renders as sprite, but only in transform mode (default=false)
   calculatePosition={(el: Object3D, camera: Camera, size: { width: number; height: number }) => number[]} // Override default positioning function. May be removed in the future (default=undefined) [ignored in transform mode]
+  checkDepth // Checks visibility with raycasting (default=false)
   {...groupProps} // All THREE.Group props are valid
   {...divProps} // All HTMLDivElement props are valid
 >

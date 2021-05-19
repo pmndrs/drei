@@ -933,6 +933,17 @@ const texture = useTexture(url)
 const [texture1, texture2] = useTexture([texture1, texture2])
 ```
 
+You can also use key: url objects:
+
+
+```jsx
+const props = useTexture(  const pbr = useTextures({
+  metalnessMap: url1,
+  map: url2
+}))
+return <meshStandardMaterial {...props} />
+```
+
 #### useCubeTexture
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-cubetexture)

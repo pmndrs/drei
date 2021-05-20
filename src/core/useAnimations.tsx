@@ -17,7 +17,7 @@ export function useAnimations<T extends AnimationClip>(
   const ref = React.useRef<Object3D>()
   const actualRef = root ? root : ref
   const [mixer] = React.useState(() => new AnimationMixer(undefined as unknown as Object3D))
-  const [clipActions] = React.useState(() => ({}))
+  const lazyActions = React.useRef({})
   const [api] = React.useState<Api<T>>(() => {
     let actions = {} as { [key in T['name']]: AnimationAction | null }
     clips.forEach((clip) =>
@@ -25,7 +25,10 @@ export function useAnimations<T extends AnimationClip>(
         enumerable: true,
         get() {
           if (actualRef.current) {
-            return clipActions[clip.name] || (clipActions[clip.name] = mixer.clipAction(clip, actualRef.current))
+            return (
+              lazyActions.current[clip.name] ||
+              (lazyActions.current[clip.name] = mixer.clipAction(clip, actualRef.current))
+            )
           }
         },
       })
@@ -35,12 +38,15 @@ export function useAnimations<T extends AnimationClip>(
   useFrame((state, delta) => mixer.update(delta))
   React.useEffect(() => {
     const currentRoot = actualRef.current
-    return () =>
+    return () => {
+      // Clean up only when clips change, wipe out lazy actions and uncache clips
+      lazyActions.current = {}
       Object.values(api.actions).forEach((action) => {
         if (currentRoot) {
           mixer.uncacheAction(action as AnimationClip, currentRoot)
         }
       })
-  }, [api, mixer, actualRef])
+    }
+  }, [clips])
   return api
 }

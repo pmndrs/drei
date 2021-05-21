@@ -20,7 +20,10 @@ const getBabelOptions = ({ useESModules }, targets) => ({
     '@babel/preset-react',
     '@babel/preset-typescript',
   ],
-  plugins: [['@babel/transform-runtime', { regenerator: false, useESModules }]],
+  plugins: [
+    '@babel/plugin-proposal-nullish-coalescing-operator',
+    ['@babel/transform-runtime', { regenerator: false, useESModules }],
+  ],
 })
 
 export default [

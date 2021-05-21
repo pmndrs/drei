@@ -1029,4 +1029,6 @@ const blob = 'iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAAAXNSR0IArs4c6QAAAA
 + 'wQl6fKAOgP1v0NDzhWOPaonS+Uc7hKGg16rTLeaYbJE71ntakUrVxpDLLO+74hH0G7zHA76zCuL9'
 + 'G/zVNxwCv33vQ/bCrec9fuqtw/8HPnCpb7whAMsAAAAASUVORK5CYII='
 
-export default createImageUrl(blob, 'img/png');
+const img = createImageUrl(blob, 'img/png')
+
+export default img;

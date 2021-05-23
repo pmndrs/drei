@@ -116,12 +116,7 @@ const FaceCube = (props: StyleProps) => {
   )
 }
 
-const EdgeCube = ({
-  dimensions,
-  position,
-  color = colors.bg,
-  hoverColor = colors.hover,
-}: EdgeCubeProps): JSX.Element => {
+const EdgeCube = ({ dimensions, position, hoverColor = colors.hover }: EdgeCubeProps): JSX.Element => {
   const { tweenCamera, raycast } = useGizmoContext()
   const [hover, setHover] = React.useState<boolean>(false)
   const handlePointerOut = (e: Event) => {

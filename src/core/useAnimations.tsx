@@ -16,7 +16,8 @@ export function useAnimations<T extends AnimationClip>(
 ): Api<T> {
   const ref = React.useRef<Object3D>()
   const actualRef = root ? root : ref
-  const [mixer] = React.useState(() => new AnimationMixer(undefined as unknown as Object3D))
+  // eslint-disable-next-line prettier/prettier
+  const [mixer] = React.useState(() => new AnimationMixer((undefined as unknown) as Object3D))
   const lazyActions = React.useRef({})
   const [api] = React.useState<Api<T>>(() => {
     let actions = {} as { [key in T['name']]: AnimationAction | null }
@@ -47,6 +48,7 @@ export function useAnimations<T extends AnimationClip>(
         }
       })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clips])
   return api
 }

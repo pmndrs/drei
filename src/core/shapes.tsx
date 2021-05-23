@@ -22,12 +22,15 @@ import {
 } from 'three'
 
 export type Args<T> = T extends new (...args: any) => any ? ConstructorParameters<T> : T
-export type ShapeProps<T> = Omit<JSX.IntrinsicElements['mesh'], 'args'> & { args?: Args<T> }
+export type ShapeProps<T> = Omit<JSX.IntrinsicElements['mesh'], 'args'> & {
+  args?: Args<T>
+  children?: React.ReactNode
+}
 
 function create<T>(type: string) {
   const El: any = type + 'BufferGeometry'
-  return React.forwardRef(({ args, children, ...props }: ShapeProps<T>, ref) => (
-    <mesh ref={ref as React.MutableRefObject<Mesh>} {...props}>
+  return React.forwardRef<Mesh, ShapeProps<T>>(({ args, children, ...props }, ref) => (
+    <mesh ref={ref} {...props}>
       <El attach="geometry" args={args} />
       {children}
     </mesh>

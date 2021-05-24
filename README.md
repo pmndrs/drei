@@ -532,7 +532,18 @@ Easily add reflections and/or blur to a planar surface. This reflector can also 
 
 #### SpotLight
 
-A Volumetric spotligt.
+A Volumetric spotligt that optionally can use a depth-buffer to determine a soft-practicle diffuse-cone.
+
+```jsx
+<SpotLight
+  distance={5} // The diffuse-cone needs a fixed distance (default: 5)
+  angle={0.15} // The diffuse-cone needs a fixed angle (default: 0.15)
+  attenuation={2.5} // Diffuse-cone attenuation (default: 2.5)
+  anglePower={10} // Diffuse-cone anglePower (default: 10)
+/>
+```
+
+Optionally you can provide a depth-buffer which converts the spotlight into a soft particle.
 
 ```jsx
 function Foo() {
@@ -540,13 +551,7 @@ function Foo() {
   return (
     <>
       <DepthBuffer ref={setDepthBuffer} size={256}>
-      <SpotLight
-        depthBuffer={depthBuffer}
-        distance={5} // The diffuse-cone needs a fixed distance (default: 5)
-        angle={0.15} // The diffuse-cone needs a fixed angle (default: 0.15)
-        attenuation={2.5} // Diffuse-cone attenuation (default: 2.5)
-        anglePower={10} // Diffuse-cone anglePower (default: 10)
-      />
+      <SpotLight depthBuffer={depthBuffer} />
 ```
 
 #### softShadows

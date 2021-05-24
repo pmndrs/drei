@@ -4,7 +4,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { SpotLightMaterial } from '../materials/SpotLightMaterial'
 
 type SpotLightProps = JSX.IntrinsicElements['spotLight'] & {
-  depthBuffer: DepthTexture
+  depthBuffer?: DepthTexture
   attenuation?: number
   anglePower?: number
   color?: string | number
@@ -54,7 +54,7 @@ const SpotLight = React.forwardRef(
             uniforms-depth-value={depthBuffer}
             uniforms-cameraNear-value={camera.near}
             uniforms-cameraFar-value={camera.far}
-            uniforms-resolution-value={[size.width * dpr, size.height * dpr]}
+            uniforms-resolution-value={depthBuffer ? [size.width * dpr, size.height * dpr] : [0, 0]}
           />
         </mesh>
       </spotLight>

@@ -69,6 +69,8 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#sky">Sky</a></li>
           <li><a href="#stars">Stars</a></li>
           <li><a href="#contactshadows">ContactShadows</a></li>
+          <li><a href="#reflector">Reflector</a></li>
+          <li><a href="#reflector">SpotLight</a></li>
           <li><a href="#softshadows">softShadows</a></li>
           <li><a href="#shadermaterial">shaderMaterial</a></li>
         </ul>
@@ -78,17 +80,17 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
       <ul>
         <li><a href="#misc">Misc</a></li>
         <ul>
-          <li><a href="#usecontextbridge">useContextBridge</a></li>
-          <li><a href="#usefbo">useFBO</a></li>
           <li><a href="#html">Html</a></li>
           <li><a href="#shadow">Shadow</a></li>
           <li><a href="#stats">Stats</a></li>
           <li><a href="#center">Center</a></li>
+          <li><a href="#depthbuffer">DepthBuffer</a></li>
+          <li><a href="#usecontextbridge">useContextBridge</a></li>
+          <li><a href="#usefbo">useFBO</a></li>¸
           <li><a href="#usecamera">useCamera</a></li>
           <li><a href="#usedetectgpu">useDetectGPU</a></li>
           <li><a href="#usehelper">useHelper</a></li>
           <li><a href="#useaspect">useAspect</a></li>
-          <li><a href="#reflector">Reflector</a></li>
         </ul>
         <li><a href="#loading">Loaders</a></li>
         <ul>
@@ -497,6 +499,61 @@ A [contact shadow](https://threejs.org/examples/?q=con#webgl_shadow_contact) imp
 <ContactShadows opacity={1} width={1} height={1} blur={1} far={10} resolution={256} />
 ```
 
+#### Reflector
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-reflector--reflector-st)
+
+Easily add reflections and/or blur to a planar surface. This reflector can also blur and takes surface roughness into account for a more realistic effect.
+
+```jsx
+<Reflector
+  args={[1, 1]} // PlaneBufferGeometry arguments
+  resolution={256} // Off-buffer resolution, lower=faster, higher=better quality
+  mirror={0.5} // Mirror environment, 0 = texture colors, 1 = pick up env colors
+  mixBlur={1.0} // How much blur mixes with surface roughness (default = 0), note that this can affect performance
+  mixStrength={0.5} // Strength of the reflections
+  depthScale={1} // Scale the depth factor (0 = no depth, default = 0)
+  minDepthThreshold={0.9} // Lower edge for the depthTexture interpolation (default = 0)
+  maxDepthThreshold={1} // Upper edge for the depthTexture interpolation (default = 0)
+  depthToBlurRatioBias={0.25} // Adds a bias factor to the depthTexture before calculating the blur amount [blurFactor = blurTexture * (depthTexture + bias)]. It accepts values between 0 and 1, default is 0.25. An amount > 0 of bias makes sure that the blurTexture is not too sharp because of the multiplication with the depthTexture
+  distortion={0} // Amount of distortion based on the distortionMap texture
+  distortionMap={distortionTexture} // The red channel of this texture is used as the distortion map. Default is null
+  debug={0} /* Depending on the assigned value, one of the following channels is shown:
+    0 = no debug
+    1 = depth channel
+    2 = base channel
+    3 = distortion channel
+    4 = lod channel (based on the roughness)
+  */
+>
+  {(Material, props) => <Material {...props}>}
+</Reflector>
+```
+
+#### SpotLight
+
+A Volumetric spotligt.
+
+```jsx
+<SpotLight
+  distance={5} // The diffuse-cone needs a fixed distance (default: 5)
+  angle={0.15} // The diffuse-cone needs a fixed angle (default: 0.15)
+  attenuation={5} // Diffuse-cone attenuation (default: 5)
+  anglePower={5} // Diffuse-cone anglePower (default: 5)
+/>
+```
+
+Optionally you can provide a depth-buffer which converts the spotlight into a soft particle.
+
+```jsx
+function Foo() {
+  const [depthBuffer, setDepthBuffer] = useState()
+  return (
+    <>
+      <DepthBuffer ref={setDepthBuffer} size={256}>
+      <SpotLight depthBuffer={depthBuffer} />
+```
+
 #### softShadows
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shaders-softshadows--soft-shadows-st)
@@ -583,21 +640,6 @@ function Scene() {
 }
 ```
 
-#### useFBO
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-usefbo--use-fbo-st)
-
-Creates a `THREE.WebGLRenderTarget` or `THREE.WebGLMultisampleRenderTarget`.
-
-```jsx
-const target = useFBO({
-  multisample: true,
-  stencilBuffer: false,
-})
-```
-
-The rendertarget is automatically disposed when unmounted.
-
 #### Html
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-html--html-st) ![](https://img.shields.io/badge/-Dom only-red)
@@ -622,37 +664,6 @@ Allows you to tie HTML content to any object of your scene. It will be projected
   <h1>hello</h1>
   <p>world</p>
 </Html>
-```
-
-#### Reflector
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-reflector--reflector-st)
-
-Easily add reflections and/or blur to a planar surface. This reflector can also blur and takes surface roughness into account for a more realistic effect.
-
-```jsx
-<Reflector
-  args={[1, 1]} // PlaneBufferGeometry arguments
-  resolution={256} // Off-buffer resolution, lower=faster, higher=better quality
-  mirror={0.5} // Mirror environment, 0 = texture colors, 1 = pick up env colors
-  mixBlur={1.0} // How much blur mixes with surface roughness (default = 0), note that this can affect performance
-  mixStrength={0.5} // Strength of the reflections
-  depthScale={1} // Scale the depth factor (0 = no depth, default = 0)
-  minDepthThreshold={0.9} // Lower edge for the depthTexture interpolation (default = 0)
-  maxDepthThreshold={1} // Upper edge for the depthTexture interpolation (default = 0)
-  depthToBlurRatioBias={0.25} // Adds a bias factor to the depthTexture before calculating the blur amount [blurFactor = blurTexture * (depthTexture + bias)]. It accepts values between 0 and 1, default is 0.25. An amount > 0 of bias makes sure that the blurTexture is not too sharp because of the multiplication with the depthTexture
-  distortion={0} // Amount of distortion based on the distortionMap texture
-  distortionMap={distortionTexture} // The red channel of this texture is used as the distortion map. Default is null
-  debug={0} /* Depending on the assigned value, one of the following channels is shown:
-    0 = no debug
-    1 = depth channel
-    2 = base channel
-    3 = distortion channel
-    4 = lod channel (based on the roughness)
-  */
->
-  {(Material, props) => <Material {...props}>}
-</Reflector>
 ```
 
 #### Shadow
@@ -706,6 +717,34 @@ Calculates a boundary box and centers its children accordingly. `alignTop` makes
   <mesh />
 </Center>
 ```
+
+#### DepthBuffer
+
+Renders the scene into a depth-buffer. Often effects depend on it, in order to minimize performance impact you can use this component.
+
+```jsx
+function Foo() {
+  const [depthBuffer, setDepthBuffer] = useState()
+  return (
+    <>
+      <DepthBuffer ref={setDepthBuffer} size={256}>
+      <SomethingThatNeedsADepthBuffer depthBuffer={depthBuffer} />
+```
+
+#### useFBO
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-usefbo--use-fbo-st)
+
+Creates a `THREE.WebGLRenderTarget` or `THREE.WebGLMultisampleRenderTarget`.
+
+```jsx
+const target = useFBO({
+  multisample: true,
+  stencilBuffer: false,
+})
+```
+
+The rendertarget is automatically disposed when unmounted.
 
 #### useCamera
 
@@ -934,7 +973,6 @@ const [texture1, texture2] = useTexture([texture1, texture2])
 ```
 
 You can also use key: url objects:
-
 
 ```jsx
 const props = useTexture(  const pbr = useTextures({

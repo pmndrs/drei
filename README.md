@@ -538,8 +538,8 @@ A Volumetric spotligt.
 <SpotLight
   distance={5} // The diffuse-cone needs a fixed distance (default: 5)
   angle={0.15} // The diffuse-cone needs a fixed angle (default: 0.15)
-  attenuation={2.5} // Diffuse-cone attenuation (default: 2.5)
-  anglePower={10} // Diffuse-cone anglePower (default: 10)
+  attenuation={5} // Diffuse-cone attenuation (default: 5)
+  anglePower={5} // Diffuse-cone anglePower (default: 5)
 />
 ```
 

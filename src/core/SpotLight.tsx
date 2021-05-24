@@ -20,8 +20,8 @@ const SpotLight = React.forwardRef(
       color = 'white',
       distance = 5,
       angle = 0.15,
-      attenuation = 2.5,
-      anglePower = 10,
+      attenuation = 5,
+      anglePower = 5,
       ...props
     }: SpotLightProps,
     ref: React.ForwardedRef<SpotLightImpl>

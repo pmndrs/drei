@@ -10120,7 +10120,7 @@ rollup-plugin-glslify@^1.2.0:
     glslify "^7.0.0"
     rollup-pluginutils "^2.8.2"
 
-rollup-plugin-multi-input@^1.2.0:
+rollup-plugin-multi-input@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/rollup-plugin-multi-input/-/rollup-plugin-multi-input-1.2.0.tgz#3dded6a2bdd025b1c07e278e247c206759d958fa"
   integrity sha512-jLmVLYpIB9sFk3JmzwKFryPqZYv1Dib/GzQEy708hfD/xauwgOyKWk7qhKMQp71mbGTuF59neUst/cnveIii+A==

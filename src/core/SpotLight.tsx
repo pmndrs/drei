@@ -1,3 +1,5 @@
+// Inspired by http://john-chapman-graphics.blogspot.com/2013/01/good-enough-volumetrics-for-spotlights.html
+
 import * as React from 'react'
 import { Mesh, DepthTexture, Vector3, CylinderGeometry, Matrix4, SpotLight as SpotLightImpl } from 'three'
 import { useFrame, useThree } from '@react-three/fiber'

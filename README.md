@@ -532,7 +532,7 @@ Easily add reflections and/or blur to a planar surface. This reflector can also 
 
 #### SpotLight
 
-A Volumetric spotligt that optionally can use a depth-buffer to determine a soft-practicle diffuse-cone.
+A Volumetric spotligt.
 
 ```jsx
 <SpotLight

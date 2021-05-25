@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Mesh, Vector3 } from 'three'
+import { Mesh } from 'three'
 import { useFrame } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
 
@@ -26,15 +26,12 @@ export const Billboard = React.forwardRef(function Billboard(
   const localRef = React.useRef<Mesh>()
   useFrame(({ camera }) => {
     if (!follow || !localRef.current) return
-    const prevRotation = localRef.current.rotation.clone()
-    const prevPosition = localRef.current.position.clone()
 
-    // position in front of camera even if camera pans
-    // we translate there so our rotation always is facing forward
-    const cameraFront = new Vector3(0, 0, -1).applyQuaternion(camera.quaternion).add(camera.position)
-    localRef.current.position.copy(cameraFront)
-    localRef.current.lookAt(camera.position)
-    localRef.current.position.copy(prevPosition)
+    // save previous rotation in case we're locking an axis
+    const prevRotation = localRef.current.rotation.clone()
+
+    // always face the camera
+    localRef.current.quaternion.copy(camera.quaternion)
 
     // readjust any axis that is locked
     if (lockX) localRef.current.rotation.x = prevRotation.x

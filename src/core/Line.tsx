@@ -15,11 +15,11 @@ export type LineProps = {
   >
 
 export const Line = React.forwardRef<Line2, LineProps>(function Line(
-  { points, color = 'black', vertexColors, lineWidth, dashed, ...rest },
+  { points, color = 'black', vertexColors, lineWidth, dashed, material, ...rest },
   ref
 ) {
   const [line2] = React.useState(() => new Line2())
-  const [lineMaterial] = React.useState(() => new LineMaterial())
+  const [lineMaterial] = React.useState(() => (material ? [material] : new LineMaterial()))
   const [resolution] = React.useState(() => new Vector2(512, 512))
 
   const lineGeom = React.useMemo(() => {

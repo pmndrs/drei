@@ -5,10 +5,11 @@ import mergeRefs from 'react-merge-refs'
 
 type Props = JSX.IntrinsicElements['perspectiveCamera'] & {
   makeDefault?: boolean
+  manual?: boolean
   children?: React.ReactNode
 }
 
-export const PerspectiveCamera = React.forwardRef(({ makeDefault = false, ...props }: Props, ref) => {
+export const PerspectiveCamera = React.forwardRef(({ makeDefault, manual, ...props }: Props, ref) => {
   const set = useThree(({ set }) => set)
   const camera = useThree(({ camera }) => camera)
   const size = useThree(({ size }) => size)
@@ -16,7 +17,7 @@ export const PerspectiveCamera = React.forwardRef(({ makeDefault = false, ...pro
 
   React.useLayoutEffect(() => {
     const { current: cam } = cameraRef
-    if (cam) {
+    if (cam && !manual) {
       cam.aspect = size.width / size.height
       cam.updateProjectionMatrix()
     }
@@ -25,13 +26,8 @@ export const PerspectiveCamera = React.forwardRef(({ makeDefault = false, ...pro
   React.useLayoutEffect(() => {
     if (makeDefault && cameraRef.current) {
       const oldCam = camera
-      set(() => ({
-        camera: cameraRef.current!,
-      }))
-      return () =>
-        set(() => ({
-          camera: oldCam,
-        }))
+      set(() => ({ camera: cameraRef.current! }))
+      return () => set(() => ({ camera: oldCam }))
     }
   }, [camera, cameraRef, makeDefault, set])
 

@@ -3,7 +3,6 @@ import * as ReactDOM from 'react-dom'
 import { Vector3, Group, Object3D, Matrix4, Camera, PerspectiveCamera, OrthographicCamera, Raycaster } from 'three'
 import { Assign } from 'utility-types'
 import { ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
-import mergeRefs from 'react-merge-refs'
 
 const v1 = new Vector3()
 const v2 = new Vector3()
@@ -137,7 +136,6 @@ export const Html = React.forwardRef(
     const group = React.useRef<Group>(null!)
     const oldZoom = React.useRef(0)
     const oldPosition = React.useRef([0, 0])
-    const innerRef = React.useRef<HTMLDivElement>(null!)
     const transformOuterRef = React.useRef<HTMLDivElement>(null!)
     const transformInnerRef = React.useRef<HTMLDivElement>(null!)
     const target = portal?.current ?? gl.domElement.parentNode
@@ -199,7 +197,7 @@ export const Html = React.forwardRef(
         ReactDOM.render(
           <div ref={transformOuterRef} style={styles}>
             <div ref={transformInnerRef} style={transformInnerStyles}>
-              <div ref={mergeRefs([innerRef, ref])} className={className} children={children} />
+              <div ref={ref} className={className} children={children} />
             </div>
           </div>,
           el
@@ -242,7 +240,7 @@ export const Html = React.forwardRef(
 
           if (previouslyVisible !== visible.current) {
             if (onOcclude) onOcclude(!visible.current)
-            else innerRef.current.style.opacity = visible.current ? '1' : '0'
+            else el.style.display = visible.current ? 'block' : 'none'
           }
 
           el.style.zIndex = `${objectZIndex(group.current, camera, zIndexRange)}`

@@ -135,13 +135,13 @@ function HTMLRaycastOccluderScene() {
       <group ref={turntableRef}>
         <Icosahedron ref={occluderRef} name="pink" args={[5, 5]} position={[0, 0, 0]}>
           <meshBasicMaterial attach="material" color="hotpink" wireframe />
-          <Html position={[0, 0, -6]} className="html-story-label" occluder={turntableRef}>
+          <Html position={[0, 0, -6]} className="html-story-label" occlude={[turntableRef]}>
             A
           </Html>
         </Icosahedron>
         <Icosahedron name="yellow" args={[5, 5]} position={[16, 0, 0]}>
           <meshBasicMaterial attach="material" color="yellow" wireframe />
-          <Html position={[0, 0, -6]} className="html-story-label" occluder={turntableRef}>
+          <Html position={[0, 0, -6]} className="html-story-label" occlude={[turntableRef]}>
             B
           </Html>
         </Icosahedron>
@@ -152,5 +152,5 @@ function HTMLRaycastOccluderScene() {
   )
 }
 
-export const HTMLRaycastOccluderSt = () => <HTMLRaycastOccluderScene className="html-story-block" />
+export const HTMLRaycastOccluderSt = () => <HTMLRaycastOccluderScene />
 HTMLRaycastOccluderSt.storyName = 'Raycast occluder'

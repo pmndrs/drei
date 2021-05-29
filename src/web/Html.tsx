@@ -26,19 +26,15 @@ function isObjectBehindCamera(el: Object3D, camera: Camera) {
   return deltaCamObj.angleTo(camDir) > Math.PI / 2
 }
 
-function isObjectVisible(el: Object3D, camera: Camera, raycaster: Raycaster, occluder: Object3D) {
+function isObjectVisible(el: Object3D, camera: Camera, raycaster: Raycaster, occlude: Object3D[]) {
   const elPos = v1.setFromMatrixPosition(el.matrixWorld)
-
   const screenPos = elPos.clone()
   screenPos.project(camera)
-
   raycaster.setFromCamera(screenPos, camera)
-  const intersects = raycaster.intersectObject(occluder, true)
-
+  const intersects = raycaster.intersectObjects(occlude, true)
   if (intersects.length) {
     const intersectionDistance = intersects[0].distance
     const pointDistance = elPos.distanceTo(camera.position)
-
     return pointDistance < intersectionDistance
   } else {
     return true
@@ -100,10 +96,11 @@ export interface HtmlProps
   distanceFactor?: number
   sprite?: boolean
   transform?: boolean
-  checkDepth?: boolean
   zIndexRange?: Array<number>
-  occluder?: React.RefObject<Object3D>
+  occlude?: React.RefObject<Object3D>[] | boolean
+  onOcclude?: (visible: boolean) => null
   calculatePosition?: CalculatePosition
+  as?: string
 }
 
 export const Html = React.forwardRef(
@@ -120,9 +117,11 @@ export const Html = React.forwardRef(
       distanceFactor,
       sprite = false,
       transform = false,
-      occluder,
+      occlude,
+      onOcclude,
       zIndexRange = [16777271, 0],
       calculatePosition = defaultCalculatePosition,
+      as = 'div',
       ...props
     }: HtmlProps,
     ref: React.Ref<HTMLDivElement>
@@ -133,12 +132,12 @@ export const Html = React.forwardRef(
     const size = useThree(({ size }) => size)
     const raycaster = useThree(({ raycaster }) => raycaster)
 
-    const [el] = React.useState(() => document.createElement('div'))
-    const group = React.useRef<Group>(null)
+    const [el] = React.useState(() => document.createElement(as))
+    const group = React.useRef<Group>(null!)
     const oldZoom = React.useRef(0)
     const oldPosition = React.useRef([0, 0])
-    const transformOuterRef = React.useRef<HTMLDivElement>(null)
-    const transformInnerRef = React.useRef<HTMLDivElement>(null)
+    const transformOuterRef = React.useRef<HTMLDivElement>(null!)
+    const transformInnerRef = React.useRef<HTMLDivElement>(null!)
     const target = portal?.current ?? gl.domElement.parentNode
 
     React.useEffect(() => {
@@ -189,8 +188,8 @@ export const Html = React.forwardRef(
     }, [style, center, fullscreen, size, transform])
 
     const transformInnerStyles: React.CSSProperties = React.useMemo(
-      () => ({ position: 'absolute', pointerEvents: 'auto', ...style }),
-      [style]
+      () => ({ position: 'absolute', pointerEvents: 'auto' }),
+      []
     )
 
     React.useLayoutEffect(() => {
@@ -198,7 +197,7 @@ export const Html = React.forwardRef(
         ReactDOM.render(
           <div ref={transformOuterRef} style={styles}>
             <div ref={transformInnerRef} style={transformInnerStyles}>
-              <div ref={ref} className={className} children={children} />
+              <div ref={ref} className={className} style={style} children={children} />
             </div>
           </div>,
           el
@@ -207,6 +206,8 @@ export const Html = React.forwardRef(
         ReactDOM.render(<div ref={ref} style={styles} className={className} children={children} />, el)
       }
     })
+
+    const visible = React.useRef(true)
 
     useFrame(() => {
       if (group.current) {
@@ -219,13 +220,27 @@ export const Html = React.forwardRef(
           Math.abs(oldPosition.current[0] - vec[0]) > eps ||
           Math.abs(oldPosition.current[1] - vec[1]) > eps
         ) {
-          const isBehindCamera = isObjectBehindCamera(group.current, camera)
+          let isBehindCamera = isObjectBehindCamera(group.current, camera)
+          let raytraceTarget: null | undefined | boolean | Object3D[] = false
+          if (typeof occlude === 'boolean') {
+            if (occlude === true) {
+              raytraceTarget = [scene]
+            }
+          } else if (Array.isArray(occlude)) {
+            raytraceTarget = occlude.map((item) => item.current) as Object3D[]
+          }
 
-          if (occluder?.current) {
-            const visible = isObjectVisible(group.current, camera, raycaster, occluder?.current)
-            el.style.display = visible && !isBehindCamera ? 'block' : 'none'
+          const previouslyVisible = visible.current
+          if (raytraceTarget) {
+            const isvisible = isObjectVisible(group.current, camera, raycaster, raytraceTarget)
+            visible.current = isvisible && !isBehindCamera
           } else {
-            el.style.display = !isBehindCamera ? 'block' : 'none'
+            visible.current = !isBehindCamera
+          }
+
+          if (previouslyVisible !== visible.current) {
+            if (onOcclude) onOcclude(!visible.current)
+            else el.style.display = visible.current ? 'block' : 'none'
           }
 
           el.style.zIndex = `${objectZIndex(group.current, camera, zIndexRange)}`
@@ -263,8 +278,3 @@ export const Html = React.forwardRef(
     return <group {...props} ref={group} />
   }
 )
-
-export const HTML = React.forwardRef((props: HtmlProps, ref: React.Ref<HTMLDivElement>) => {
-  React.useEffect(() => void console.warn('The <HTML> component was renamed to <Html>'), [])
-  return <Html {...props} ref={ref} />
-})

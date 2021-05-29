@@ -648,6 +648,7 @@ Allows you to tie HTML content to any object of your scene. It will be projected
 
 ```jsx
 <Html
+  as='div' // Wrapping element (default: 'div')
   prepend // Project content behind the canvas (default: false)
   center // Adds a -50%/-50% css transform (default: false) [ignored in transform mode]
   fullscreen // Aligns to the upper-left corner, fills the screen (default:false) [ignored in transform mode]
@@ -657,13 +658,38 @@ Allows you to tie HTML content to any object of your scene. It will be projected
   transform // If true, applies matrix3d transformations (default=false)
   sprite // Renders as sprite, but only in transform mode (default=false)
   calculatePosition={(el: Object3D, camera: Camera, size: { width: number; height: number }) => number[]} // Override default positioning function. (default=undefined) [ignored in transform mode]
-  checkDepth // Checks visibility with raycasting (default=false)
+  occlude={[ref]} // Can be true or a Ref<Object3D>[], true occludes the entire scene (default: undefined)
+  onOcclude={(visible) => null} // Callback when the visibility changes (default: undefined)
   {...groupProps} // All THREE.Group props are valid
   {...divProps} // All HTMLDivElement props are valid
 >
   <h1>hello</h1>
   <p>world</p>
 </Html>
+```
+
+Html can hide behind geometry using the `occlude` prop.
+
+```jsx
+// Raytrace the entire scene
+<Html occlude />
+// Raytrace only specific elements
+<Html occlude={[ref1, ref2]} />
+```
+
+When the Html object hides it sets the opacity prop on the innermost div. If you want to animate or control the transition yourself then you can use `onOcclude`.
+
+```jsx
+const [hidden, set] = useState()
+
+<Html
+  occlude
+  onOcclude={set}
+  style={{
+    transition: 'all 0.5s',
+    opacity: hidden ? 0 : 1,
+    transform: `scale(${hidden ? 0.5 : 1})`
+  }} />
 ```
 
 #### Shadow

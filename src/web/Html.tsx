@@ -188,8 +188,8 @@ export const Html = React.forwardRef(
     }, [style, center, fullscreen, size, transform])
 
     const transformInnerStyles: React.CSSProperties = React.useMemo(
-      () => ({ position: 'absolute', pointerEvents: 'auto', ...style }),
-      [style]
+      () => ({ position: 'absolute', pointerEvents: 'auto' }),
+      []
     )
 
     React.useLayoutEffect(() => {
@@ -197,7 +197,7 @@ export const Html = React.forwardRef(
         ReactDOM.render(
           <div ref={transformOuterRef} style={styles}>
             <div ref={transformInnerRef} style={transformInnerStyles}>
-              <div ref={ref} className={className} children={children} />
+              <div ref={ref} className={className} style={style} children={children} />
             </div>
           </div>,
           el

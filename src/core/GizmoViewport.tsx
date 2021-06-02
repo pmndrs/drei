@@ -13,6 +13,7 @@ type AxisHeadProps = JSX.IntrinsicElements['sprite'] & {
   labelColor: string
   disabled?: boolean
   font: string
+  onClick?: (e: Event) => null
 }
 
 type GizmoViewportProps = JSX.IntrinsicElements['group'] & {
@@ -21,6 +22,7 @@ type GizmoViewportProps = JSX.IntrinsicElements['group'] & {
   hideNegativeAxes?: boolean
   disabled?: boolean
   font?: string
+  onClick?: (e: Event) => null
 }
 
 function Axis({ color, rotation }: AxisProps) {
@@ -34,7 +36,7 @@ function Axis({ color, rotation }: AxisProps) {
   )
 }
 
-function AxisHead({ font, disabled, arcStyle, label, labelColor, ...props }: AxisHeadProps) {
+function AxisHead({ onClick, font, disabled, arcStyle, label, labelColor, ...props }: AxisHeadProps) {
   const texture = React.useMemo(() => {
     const canvas = document.createElement('canvas')
     canvas.width = 64
@@ -59,18 +61,18 @@ function AxisHead({ font, disabled, arcStyle, label, labelColor, ...props }: Axi
   const [active, setActive] = React.useState(false)
   const scale = (label ? 1 : 0.75) * (active ? 1.2 : 1)
   const handlePointerOver = (e: Event) => {
-    setActive(true)
     e.stopPropagation()
+    setActive(true)
   }
   const handlePointerOut = (e: Event) => {
-    setActive(false)
     e.stopPropagation()
+    setActive(false)
   }
   return (
     <sprite
       scale={scale}
       onPointerOver={!disabled ? handlePointerOver : undefined}
-      onPointerOut={!disabled ? handlePointerOut : undefined}
+      onPointerOut={!disabled ? onClick || handlePointerOut : undefined}
       {...props}
     >
       <spriteMaterial map={texture} alphaTest={0.3} opacity={label ? 1 : 0.75} toneMapped={false} />
@@ -84,6 +86,7 @@ export const GizmoViewport = ({
   font = '18px Inter var, Arial, sans-serif',
   axisColors = ['#ff3653', '#0adb50', '#2c8fdf'],
   labelColor = '#000',
+  onClick,
   ...props
 }: GizmoViewportProps) => {
   const [colorX, colorY, colorZ] = axisColors
@@ -93,6 +96,7 @@ export const GizmoViewport = ({
     disabled,
     labelColor,
     raycast,
+    onClick,
     onPointerDown: !disabled
       ? (e: Event) => {
           tweenCamera(e.object.position)

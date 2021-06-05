@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { Euler } from 'three'
-import { SimplexNoise } from 'three-stdlib'
+import { OrbitControls, SimplexNoise } from 'three-stdlib'
 
 export interface ShakeController {
   getIntensity: () => number
@@ -18,6 +18,7 @@ export interface CameraShakeProps {
   yawFrequency?: number
   pitchFrequency?: number
   rollFrequency?: number
+  controls?: React.MutableRefObject<OrbitControls | null>
 }
 
 export const CameraShake = React.forwardRef<ShakeController | undefined, CameraShakeProps>(
@@ -32,6 +33,7 @@ export const CameraShake = React.forwardRef<ShakeController | undefined, CameraS
       yawFrequency = 1,
       pitchFrequency = 1,
       rollFrequency = 1,
+      controls,
     },
     ref
   ) => {
@@ -60,6 +62,15 @@ export const CameraShake = React.forwardRef<ShakeController | undefined, CameraS
       }),
       []
     )
+
+    React.useEffect(() => {
+      const currControls = controls?.current
+      const callback = () => void (initialRotation.current = camera.rotation.clone())
+
+      currControls?.addEventListener('change', callback)
+      return () => void currControls?.removeEventListener('change', callback)
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [controls])
 
     useFrame(({ clock }, delta) => {
       const shake = Math.pow(intensityRef.current, 2)

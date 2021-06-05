@@ -1,5 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
+import { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import { useFrame } from '@react-three/fiber'
 import { withKnobs, number } from '@storybook/addon-knobs'
 
@@ -57,11 +58,12 @@ function CameraShakeScene() {
 
 function CameraShakeWithOrbitScene() {
   const cfg = useShakeConfig()
+  const controlsRef = React.useRef<OrbitControlsImpl>(null)
   return (
     <>
       <React.Suspense fallback={null}>
-        <OrbitControls />
-        <CameraShake {...cfg} />
+        <OrbitControls ref={controlsRef} />
+        <CameraShake {...cfg} controls={controlsRef} />
         <Scene />
       </React.Suspense>
     </>

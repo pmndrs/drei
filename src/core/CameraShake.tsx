@@ -37,8 +37,8 @@ export const CameraShake = React.forwardRef<ShakeController | undefined, CameraS
   ) => {
     const camera = useThree((state) => state.camera)
     const intensityRef = React.useRef<number>(intensity)
-    const initialRotation = React.useRef<Euler>(camera.rotation);
-    
+    const initialRotation = React.useRef<Euler>(camera.rotation.clone())
+
     const [yawNoise] = React.useState(() => new SimplexNoise())
     const [pitchNoise] = React.useState(() => new SimplexNoise())
     const [rollNoise] = React.useState(() => new SimplexNoise())
@@ -71,7 +71,7 @@ export const CameraShake = React.forwardRef<ShakeController | undefined, CameraS
         initialRotation.current.x + pitch,
         initialRotation.current.y + yaw,
         initialRotation.current.z + roll
-      );
+      )
 
       if (decay && intensityRef.current > 0) {
         intensityRef.current -= decayRate * delta

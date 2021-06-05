@@ -1,6 +1,7 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { useFrame } from '@react-three/fiber'
+import { withKnobs, number } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
 
@@ -15,6 +16,7 @@ export default {
         {storyFn()}
       </Setup>
     ),
+    withKnobs,
   ],
 }
 
@@ -41,20 +43,20 @@ function Scene() {
   )
 }
 
-function CameraShakeScene({ cfg }) {
-  const cameraRig = React.useRef()
-
+function CameraShakeScene() {
+  const cfg = useShakeConfig()
   return (
     <>
       <React.Suspense fallback={null}>
-        <CameraShake {...cfg} ref={cameraRig} />
+        <CameraShake {...cfg} />
         <Scene />
       </React.Suspense>
     </>
   )
 }
 
-function CameraShakeWithOrbitScene({ cfg }) {
+function CameraShakeWithOrbitScene() {
+  const cfg = useShakeConfig()
   return (
     <>
       <React.Suspense fallback={null}>
@@ -66,19 +68,21 @@ function CameraShakeWithOrbitScene({ cfg }) {
   )
 }
 
-const controlsConfig = {
-  maxYaw: 0.05,
-  maxPitch: 0.05,
-  maxRoll: 0.05,
-  yawFrequency: 0.8,
-  pitchFrequency: 0.8,
-  rollFrequency: 0.8,
+function useShakeConfig() {
+  const numberConfig = { min: 0, max: 1, step: 0.05 }
+  const frequencyConfig = { min: 0, max: 10, step: 0.1 }
+  return {
+    maxYaw: number('maxYaw', 0.05, numberConfig),
+    maxPitch: number('maxPitch', 0.05, numberConfig),
+    maxRoll: number('maxRoll', 0.05, numberConfig),
+    yawFrequency: number('yawFrequency', 0.8, frequencyConfig),
+    pitchFrequency: number('pitchFrequency', 0.8, frequencyConfig),
+    rollFrequency: number('rollFrequency', 0.8, frequencyConfig),
+  }
 }
 
-export const CameraShakeSt = ({ ...args }) => <CameraShakeScene cfg={args} />
+export const CameraShakeSt = () => <CameraShakeScene />
 CameraShakeSt.storyName = 'Default'
-CameraShakeSt.args = { ...controlsConfig }
 
-export const CameraShakeWithOrbitSt = ({ ...args }) => <CameraShakeWithOrbitScene cfg={args} />
+export const CameraShakeWithOrbitSt = () => <CameraShakeWithOrbitScene />
 CameraShakeWithOrbitSt.storyName = 'With OrbitControls'
-CameraShakeWithOrbitSt.args = { ...controlsConfig }

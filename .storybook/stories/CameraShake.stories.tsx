@@ -59,7 +59,7 @@ function CameraShakeWithOrbitScene({ cfg }) {
     <>
       <React.Suspense fallback={null}>
         <OrbitControls />
-        <CameraShake {...cfg} additive />
+        <CameraShake {...cfg} />
         <Scene />
       </React.Suspense>
     </>

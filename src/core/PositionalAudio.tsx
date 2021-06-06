@@ -27,7 +27,7 @@ export const PositionalAudio = React.forwardRef(({ url, distance = 1, loop = tru
     return () => {
       camera.remove(listener)
       if (_sound) {
-        _sound.stop()
+        if (_sound.isPlaying) _sound.stop()
         _sound.disconnect()
       }
     }

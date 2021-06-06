@@ -189,9 +189,9 @@ const config = {
   pitchFrequency: 1, // Frequency of the pitch rotation
   rollFrequency: 1, // Frequency of the roll rotation
   intensity: 1, // initial intensity of the shake
-  decay: false // should the intensity decay over time
-  decayRate: 0.65 // if decay = true this is the rate at which intensity will reduce at
-  additive: false // this should be used when your scene has orbit controls
+  decay: false, // should the intensity decay over time
+  decayRate: 0.65, // if decay = true this is the rate at which intensity will reduce at
+  controls: undefined, // if using orbit controls, pass a ref here so we can update the rotation
 }
 
 <CameraShake {...config} />

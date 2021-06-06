@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { SimplexNoise } from 'three-stdlib'
+import { Euler } from 'three'
+import { OrbitControls, SimplexNoise } from 'three-stdlib'
 
 export interface ShakeController {
   getIntensity: () => number
@@ -8,7 +9,6 @@ export interface ShakeController {
 }
 
 export interface CameraShakeProps {
-  additive?: boolean
   intensity?: number
   decay?: boolean
   decayRate?: number
@@ -18,6 +18,7 @@ export interface CameraShakeProps {
   yawFrequency?: number
   pitchFrequency?: number
   rollFrequency?: number
+  controls?: React.MutableRefObject<OrbitControls | null>
 }
 
 export const CameraShake = React.forwardRef<ShakeController | undefined, CameraShakeProps>(
@@ -32,12 +33,14 @@ export const CameraShake = React.forwardRef<ShakeController | undefined, CameraS
       yawFrequency = 1,
       pitchFrequency = 1,
       rollFrequency = 1,
-      additive,
+      controls,
     },
     ref
   ) => {
     const camera = useThree((state) => state.camera)
     const intensityRef = React.useRef<number>(intensity)
+    const initialRotation = React.useRef<Euler>(camera.rotation.clone())
+
     const [yawNoise] = React.useState(() => new SimplexNoise())
     const [pitchNoise] = React.useState(() => new SimplexNoise())
     const [rollNoise] = React.useState(() => new SimplexNoise())
@@ -60,19 +63,26 @@ export const CameraShake = React.forwardRef<ShakeController | undefined, CameraS
       []
     )
 
+    React.useEffect(() => {
+      const currControls = controls?.current
+      const callback = () => void (initialRotation.current = camera.rotation.clone())
+
+      currControls?.addEventListener('change', callback)
+      return () => void currControls?.removeEventListener('change', callback)
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [controls])
+
     useFrame(({ clock }, delta) => {
       const shake = Math.pow(intensityRef.current, 2)
       const yaw = maxYaw * shake * yawNoise.noise(clock.elapsedTime * yawFrequency, 1)
       const pitch = maxPitch * shake * pitchNoise.noise(clock.elapsedTime * pitchFrequency, 1)
       const roll = maxRoll * shake * rollNoise.noise(clock.elapsedTime * rollFrequency, 1)
 
-      if (additive) {
-        camera.rotation.x += pitch
-        camera.rotation.y += yaw
-        camera.rotation.z += roll
-      } else {
-        camera.rotation.set(pitch, yaw, roll)
-      }
+      camera.rotation.set(
+        initialRotation.current.x + pitch,
+        initialRotation.current.y + yaw,
+        initialRotation.current.z + roll
+      )
 
       if (decay && intensityRef.current > 0) {
         intensityRef.current -= decayRate * delta

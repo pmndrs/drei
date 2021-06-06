@@ -9,7 +9,7 @@ type Props = JSX.IntrinsicElements['positionalAudio'] & {
   loop?: boolean
 }
 
-export const PositionalAudio = React.forwardRef(({ url, distance = 1, loop = true, ...props }: Props, ref) => {
+export const PositionalAudio = React.forwardRef(({ url, distance = 1, loop = true, autoplay, ...props }: Props, ref) => {
   const sound = React.useRef<PositionalAudioImpl>()
   const camera = useThree(({ camera }) => camera)
   const [listener] = React.useState(() => new AudioListener())
@@ -21,7 +21,7 @@ export const PositionalAudio = React.forwardRef(({ url, distance = 1, loop = tru
       _sound.setBuffer(buffer)
       _sound.setRefDistance(distance)
       _sound.setLoop(loop)
-      _sound.play()
+      if (autoplay) _sound.play()
     }
     camera.add(listener)
     return () => {
@@ -31,6 +31,6 @@ export const PositionalAudio = React.forwardRef(({ url, distance = 1, loop = tru
         _sound.disconnect()
       }
     }
-  }, [buffer, camera, distance, listener, loop])
+  }, [buffer, camera, distance, listener, loop, autoplay])
   return <positionalAudio ref={mergeRefs([sound, ref])} args={[listener]} {...props} />
 })

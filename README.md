@@ -191,7 +191,7 @@ const config = {
   intensity: 1, // initial intensity of the shake
   decay: false, // should the intensity decay over time
   decayRate: 0.65, // if decay = true this is the rate at which intensity will reduce at
-  controls: undefined, // optionally pass a ref to OrbitControls
+  controls: undefined, // if using orbit controls, pass a ref here so we can update the rotation
 }
 
 <CameraShake {...config} />

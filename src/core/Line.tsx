@@ -5,10 +5,9 @@ import { LineGeometry, LineMaterial, LineMaterialParameters, Line2 } from 'three
 
 export type LineProps = {
   points: Array<Vector3 | [number, number, number]>
-  color?: Color | string | number
   vertexColors?: Array<Color | [number, number, number]>
-  lineWidth?: number
-} & Omit<ReactThreeFiber.Object3DNode<Line2, typeof Line2>, 'args'> &
+} & LineMaterialParameters &
+  Omit<ReactThreeFiber.Object3DNode<Line2, typeof Line2>, 'args'> &
   Omit<
     ReactThreeFiber.Object3DNode<LineMaterial, [LineMaterialParameters]>,
     'color' | 'vertexColors' | 'resolution' | 'args'

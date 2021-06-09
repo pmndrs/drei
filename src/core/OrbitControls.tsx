@@ -21,7 +21,9 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
     const explCamera = camera || defaultCamera
     const controls = React.useMemo(() => new OrbitControlsImpl(explCamera), [explCamera])
 
-    useFrame(() => controls.update())
+    useFrame(() => {
+      if (controls.enabled) controls.update()
+    })
 
     React.useEffect(() => {
       const callback = () => {

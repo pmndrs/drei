@@ -34,7 +34,7 @@ function isObjectVisible(el: Object3D, camera: Camera, raycaster: Raycaster, occ
   const intersects = raycaster.intersectObjects(occlude, true)
   if (intersects.length) {
     const intersectionDistance = intersects[0].distance
-    const pointDistance = elPos.distanceTo(camera.position)
+    const pointDistance = elPos.distanceTo(raycaster.ray.origin)
     return pointDistance < intersectionDistance
   } else {
     return true

@@ -3,10 +3,10 @@ import { Loader } from 'three'
 import { GLTFLoader, DRACOLoader, MeshoptDecoder } from 'three-stdlib'
 import { useLoader } from '@react-three/fiber'
 
-function extensions(useDraco: boolean | string, useMeshopt: boolean, extendLoader?: (loader: Loader) => void) {
+function extensions(useDraco: boolean | string, useMeshopt: boolean, extendLoader?: (loader: GLTFLoader) => void) {
   return (loader: Loader) => {
     if (extendLoader) {
-      extendLoader(loader)
+      extendLoader(loader as GLTFLoader)
     }
     if (useDraco) {
       const dracoLoader = new DRACOLoader()
@@ -23,7 +23,7 @@ export function useGLTF(
   path: string,
   useDraco: boolean | string = true,
   useMeshOpt: boolean = true,
-  extendLoader?: (loader: Loader) => void
+  extendLoader?: (loader: GLTFLoader) => void
 ) {
   const gltf = useLoader(GLTFLoader, path, extensions(useDraco, useMeshOpt, extendLoader))
   return gltf
@@ -33,5 +33,5 @@ useGLTF.preload = (
   path: string,
   useDraco: boolean | string = true,
   useMeshOpt: boolean = true,
-  extendLoader?: (loader: Loader) => void
+  extendLoader?: (loader: GLTFLoader) => void
 ) => useLoader.preload(GLTFLoader, path, extensions(useDraco, useMeshOpt, extendLoader))

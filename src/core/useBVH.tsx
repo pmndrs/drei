@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Mesh, Object3D } from 'three'
+import { Mesh } from 'three'
 import { acceleratedRaycast, computeBoundsTree, disposeBoundsTree } from 'three-mesh-bvh'
 
 export interface BVHOptions {
@@ -10,13 +10,11 @@ export interface BVHOptions {
   maxLeafTris?: number
 }
 
-export function useBVH(object3D: React.MutableRefObject<Mesh | undefined>, options?: BVHOptions) {
-  const ref = React.useRef<Object3D>()
-
+export function useBVH(mesh: React.MutableRefObject<Mesh | undefined>, options?: BVHOptions) {
   React.useEffect(() => {
-    if (object3D.current) {
-      object3D.current.raycast = acceleratedRaycast
-      let geometry: any = object3D.current.geometry
+    if (mesh.current) {
+      mesh.current.raycast = acceleratedRaycast
+      let geometry: any = mesh.current.geometry
       geometry.computeBoundsTree = computeBoundsTree
       geometry.disposeBoundsTree = disposeBoundsTree
       geometry.computeBoundsTree(options)
@@ -27,7 +25,5 @@ export function useBVH(object3D: React.MutableRefObject<Mesh | undefined>, optio
         }
       }
     }
-  }, [object3D, options])
-
-  return ref
+  }, [mesh, options])
 }

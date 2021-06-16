@@ -148,6 +148,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#meshbounds">meshBounds</a></li>
           <li><a href="#adaptivedpr">AdaptiveDpr</a></li>
           <li><a href="#adaptiveevents">AdaptiveEvents</a></li>
+          <li><a href="#usebvh">useBVH</a></li>
         </ul>
       </ul>
     </td>
@@ -536,9 +537,9 @@ A Volumetric spotligt.
 
 ```jsx
 <SpotLight
-  distance={5} // The diffuse-cone needs a fixed distance (default: 5)
-  angle={0.15} // The diffuse-cone needs a fixed angle (default: 0.15)
-  attenuation={5} // Diffuse-cone attenuation (default: 5)
+  distance={5}
+  angle={0.15}
+  attenuation={5}
   anglePower={5} // Diffuse-cone anglePower (default: 5)
 />
 ```
@@ -1141,4 +1142,17 @@ Drop this component into your scene and it will switch off the raycaster while t
 
 ```jsx
 <AdaptiveEvents />
+```
+
+#### useBVH
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/performance-usebvh--default-story)
+
+A hook to speed up the default raycasting by using the [BVH Implementation by @gkjohnnson](https://github.com/gkjohnson/three-mesh-bvh).
+
+```jsx
+const mesh = useRef()
+useBVH(mesh)
+
+<mesh ref={mesh} ... />
 ```

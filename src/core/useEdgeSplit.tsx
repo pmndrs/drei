@@ -16,9 +16,7 @@ export function useEdgeSplit(cutOffAngle: number, tryKeepNormals: boolean = true
 
   React.useEffect(() => {
     if (original.current && ref.current && modifier.current) {
-      let geometry = new THREE.BufferGeometry()
-
-      geometry = original.current.clone()
+      let geometry = original.current.clone()
 
       const modifiedGeometry = modifier.current.modify(geometry, cutOffAngle, tryKeepNormals)
       modifiedGeometry.computeVertexNormals()

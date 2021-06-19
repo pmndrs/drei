@@ -20,10 +20,9 @@ export function useTessellation(passes = 3, maxEdgeLength) {
 
   React.useEffect(() => {
     if (original.current && ref.current) {
-      let geometry = original.current.clone()
-      geometry = modifier.current!.modify(geometry)
+      const modifiedGeometry = modifier.current!.modify(original.current)
 
-      ref.current.geometry = geometry
+      ref.current.geometry = modifiedGeometry
     }
   }, [maxEdgeLength, passes])
 

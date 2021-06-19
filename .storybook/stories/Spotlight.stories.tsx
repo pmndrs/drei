@@ -1,7 +1,5 @@
 import * as React from 'react'
-import { useFrame } from '@react-three/fiber'
-
-import { withKnobs, number } from '@storybook/addon-knobs'
+import { withKnobs } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
 import { DepthBuffer, Plane, SpotLight } from '../../src'

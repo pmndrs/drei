@@ -220,7 +220,7 @@ export const Html = React.forwardRef(
           Math.abs(oldPosition.current[0] - vec[0]) > eps ||
           Math.abs(oldPosition.current[1] - vec[1]) > eps
         ) {
-          let isBehindCamera = isObjectBehindCamera(group.current, camera)
+          const isBehindCamera = isObjectBehindCamera(group.current, camera)
           let raytraceTarget: null | undefined | boolean | Object3D[] = false
           if (typeof occlude === 'boolean') {
             if (occlude === true) {

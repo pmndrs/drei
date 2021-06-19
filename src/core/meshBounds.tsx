@@ -1,14 +1,14 @@
 import { Raycaster, Matrix4, Ray, Sphere, Vector3, Intersection } from 'three'
 
-let _inverseMatrix = new Matrix4()
-let _ray = new Ray()
-let _sphere = new Sphere()
-let _vA = new Vector3()
+const _inverseMatrix = new Matrix4()
+const _ray = new Ray()
+const _sphere = new Sphere()
+const _vA = new Vector3()
 
 export function meshBounds(raycaster: Raycaster, intersects: Intersection[]) {
-  let geometry = this.geometry
-  let material = this.material
-  let matrixWorld = this.matrixWorld
+  const geometry = this.geometry
+  const material = this.material
+  const matrixWorld = this.matrixWorld
   if (material === undefined) return
   // Checking boundingSphere distance to ray
   if (geometry.boundingSphere === null) geometry.computeBoundingSphere()

@@ -38,7 +38,7 @@ export const Text = React.forwardRef(
     const invalidate = useThree(({ invalidate }) => invalidate)
     const [troikaMesh] = React.useState(() => new TextMeshImpl())
     const [nodes, text] = React.useMemo(() => {
-      let n: React.ReactNode[] = []
+      const n: React.ReactNode[] = []
       let t = ''
       React.Children.forEach(children, (child) => {
         if (typeof child === 'string' || typeof child === 'number') {

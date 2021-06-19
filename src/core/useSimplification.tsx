@@ -16,9 +16,7 @@ export function useSimplification(simplePercent: number) {
 
   React.useEffect(() => {
     if (original.current && ref.current) {
-      let geometry = new THREE.BufferGeometry()
-
-      geometry = original.current.clone()
+      let geometry = original.current.clone()
 
       const count = Math.floor(geometry.attributes.position.count * simplePercent) // number of vertices to remove
       ref.current.geometry = modifier.current!.modify(geometry, count)

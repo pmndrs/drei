@@ -403,7 +403,7 @@ Two example gizmos are included: GizmoViewport and GizmoViewcube, and `useGizmoC
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-environment--environment-st)
 
-Sets up a global cubemap, which affects the default `scene.environment`, and optionally `scene.background`, unless a custom scene has been passed. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience.
+Sets up a global cubemap, which affects the default `scene.environment`, and optionally `scene.background`, unless a custom scene has been passed. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience. If you pass an array of files it will use THREE.CubeTextureLoader.
 
 ```jsx
 <Environment
@@ -413,6 +413,12 @@ Sets up a global cubemap, which affects the default `scene.environment`, and opt
   preset={null}
   scene={undefined} // adds the ability to pass a custom THREE.Scene
 />
+```
+
+If you provide a single string it will use THREE.RGBELoader.
+
+```jsx
+<Environment files="file.hdr" />
 ```
 
 #### Effects

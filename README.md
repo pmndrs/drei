@@ -86,7 +86,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#center">Center</a></li>
           <li><a href="#depthbuffer">DepthBuffer</a></li>
           <li><a href="#usecontextbridge">useContextBridge</a></li>
-          <li><a href="#usefbo">useFBO</a></li>¸
+          <li><a href="#usefbo">useFBO</a></li>
           <li><a href="#usecamera">useCamera</a></li>
           <li><a href="#usedetectgpu">useDetectGPU</a></li>
           <li><a href="#usehelper">useHelper</a></li>

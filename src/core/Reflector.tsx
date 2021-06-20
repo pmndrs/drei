@@ -210,7 +210,7 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
         distortion,
         distortionMap,
         'defines-USE_DEPTH': depthScale > 0 ? '' : undefined,
-        'defines-USE_DISTORTION': !!distortionMap ? '' : undefined,
+        'defines-USE_DISTORTION': distortionMap ? '' : undefined,
         ...mipmaps,
       }
       return [fbo1, reflectorProps]

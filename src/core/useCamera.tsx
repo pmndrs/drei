@@ -5,7 +5,7 @@ import { useThree, applyProps } from '@react-three/fiber'
 export function useCamera(camera: Camera | React.MutableRefObject<Camera>, props?: Partial<Raycaster>) {
   const mouse = useThree((state) => state.mouse)
   const [raycast] = React.useState(() => {
-    let raycaster = new Raycaster()
+    const raycaster = new Raycaster()
     /**
      * applyProps is an internal method of r3f and
      * therefore requires its first arg to be an

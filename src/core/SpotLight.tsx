@@ -32,7 +32,7 @@ const SpotLight = React.forwardRef(
     const dpr = useThree((state) => state.viewport.dpr)
     const [material] = React.useState(() => new SpotLightMaterial())
 
-    useFrame((state) => {
+    useFrame(() => {
       material.uniforms.spotPosition.value.copy(mesh.current.getWorldPosition(vec))
       mesh.current.lookAt((mesh.current.parent as any).target.position)
     })

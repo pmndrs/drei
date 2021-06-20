@@ -26,6 +26,7 @@
     "no-console": "off",
     "no-empty-pattern": "warn",
     "no-duplicate-imports": "error",
+    "prefer-const": "error",
     "import/no-unresolved": ["error", { "commonjs": true, "amd": true }],
     "import/export": "error",
     "import/named": "off",

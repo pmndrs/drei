@@ -32,7 +32,7 @@ function TorusBVH({ bvh, ...props }) {
       {...props}
       ref={mesh}
       args={[1, 0.4, 250, 50]}
-      onPointerOver={(e) => setHover(true)}
+      onPointerOver={() => setHover(true)}
       onPointerOut={() => setHover(false)}
     >
       <meshBasicMaterial color={hovered ? 0xffff00 : 0xff0000} />
@@ -79,7 +79,7 @@ const AddRaycaster = ({ grp }) => {
     dirVec.copy(origVec).multiplyScalar(-1).normalize()
 
     raycaster.set(origVec, dirVec)
-    let ray: any = raycaster
+    const ray: any = raycaster
     ray.firstHitOnly = true
     const res = raycaster.intersectObject(grp.current, true)
     const length = res.length ? res[0].distance : pointDist

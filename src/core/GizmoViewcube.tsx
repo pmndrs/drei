@@ -13,7 +13,7 @@ type GenericProps = {
   onClick?: (e: Event) => null
 }
 type FaceTypeProps = { hover: boolean; index: number } & GenericProps
-type EdgeCubeProps = { dimensions: XYZ; position: Vector3 } & Omit<GenericProps, 'font'>
+type EdgeCubeProps = { dimensions: XYZ; position: Vector3 } & Omit<GenericProps, 'font' & 'color'>
 
 const colors = { bg: '#f0f0f0', hover: '#999', text: 'black', stroke: 'black' }
 const faces = ['Right', 'Left', 'Top', 'Bottom', 'Front', 'Back']
@@ -117,13 +117,7 @@ const FaceCube = (props: GenericProps) => {
   )
 }
 
-const EdgeCube = ({
-  onClick,
-  dimensions,
-  position,
-  color = colors.bg,
-  hoverColor = colors.hover,
-}: EdgeCubeProps): JSX.Element => {
+const EdgeCube = ({ onClick, dimensions, position, hoverColor = colors.hover }: EdgeCubeProps): JSX.Element => {
   const { tweenCamera, raycast } = useGizmoContext()
   const [hover, setHover] = React.useState<boolean>(false)
   const handlePointerOut = (e: Event) => {

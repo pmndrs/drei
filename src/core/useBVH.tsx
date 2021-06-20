@@ -14,7 +14,7 @@ export function useBVH(mesh: React.MutableRefObject<Mesh | undefined>, options?:
   React.useEffect(() => {
     if (mesh.current) {
       mesh.current.raycast = acceleratedRaycast
-      let geometry: any = mesh.current.geometry
+      const geometry: any = mesh.current.geometry
       geometry.computeBoundsTree = computeBoundsTree
       geometry.disposeBoundsTree = disposeBoundsTree
       geometry.computeBoundsTree(options)

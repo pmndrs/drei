@@ -20,7 +20,7 @@ export function useAnimations<T extends AnimationClip>(
   const [mixer] = React.useState(() => new AnimationMixer((undefined as unknown) as Object3D))
   const lazyActions = React.useRef({})
   const [api] = React.useState<Api<T>>(() => {
-    let actions = {} as { [key in T['name']]: AnimationAction | null }
+    const actions = {} as { [key in T['name']]: AnimationAction | null }
     clips.forEach((clip) =>
       Object.defineProperty(actions, clip.name, {
         enumerable: true,

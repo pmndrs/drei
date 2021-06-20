@@ -409,7 +409,7 @@ Sets up a global cubemap, which affects the default `scene.environment`, and opt
 <Environment
   background={false}
   files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']}
-  path={'/'}
+  path="/"
   preset={null}
   scene={undefined} // adds the ability to pass a custom THREE.Scene
 />

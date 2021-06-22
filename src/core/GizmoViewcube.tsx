@@ -11,12 +11,13 @@ type GenericProps = {
   textColor?: string
   strokeColor?: string
   onClick?: (e: Event) => null
+  faces?: string[]
 }
 type FaceTypeProps = { hover: boolean; index: number } & GenericProps
 type EdgeCubeProps = { dimensions: XYZ; position: Vector3 } & Omit<GenericProps, 'font' & 'color'>
 
 const colors = { bg: '#f0f0f0', hover: '#999', text: 'black', stroke: 'black' }
-const faces = ['Right', 'Left', 'Top', 'Bottom', 'Front', 'Back']
+const defaultFaces = ['Right', 'Left', 'Top', 'Bottom', 'Front', 'Back']
 const makePositionVector = (xyz: number[]) => new Vector3(...xyz).multiplyScalar(0.38)
 
 const corners: Vector3[] = [
@@ -55,6 +56,7 @@ const FaceMaterial = ({
   hover,
   index,
   font = '20px Inter var, Arial, sans-serif',
+  faces = defaultFaces,
   color = colors.bg,
   hoverColor = colors.hover,
   textColor = colors.text,
@@ -134,6 +136,7 @@ const EdgeCube = ({ onClick, dimensions, position, hoverColor = colors.hover }: 
   }
   return (
     <mesh
+      scale={1.1}
       position={position}
       raycast={raycast}
       onPointerOver={handlePointerOver}

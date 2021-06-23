@@ -86,7 +86,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#center">Center</a></li>
           <li><a href="#depthbuffer">DepthBuffer</a></li>
           <li><a href="#usecontextbridge">useContextBridge</a></li>
-          <li><a href="#usefbo">useFBO</a></li>¸
+          <li><a href="#usefbo">useFBO</a></li>
           <li><a href="#usecamera">useCamera</a></li>
           <li><a href="#usedetectgpu">useDetectGPU</a></li>
           <li><a href="#usehelper">useHelper</a></li>
@@ -148,6 +148,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#meshbounds">meshBounds</a></li>
           <li><a href="#adaptivedpr">AdaptiveDpr</a></li>
           <li><a href="#adaptiveevents">AdaptiveEvents</a></li>
+          <li><a href="#usebvh">useBVH</a></li>
         </ul>
       </ul>
     </td>
@@ -189,9 +190,9 @@ const config = {
   pitchFrequency: 1, // Frequency of the pitch rotation
   rollFrequency: 1, // Frequency of the roll rotation
   intensity: 1, // initial intensity of the shake
-  decay: false // should the intensity decay over time
-  decayRate: 0.65 // if decay = true this is the rate at which intensity will reduce at
-  additive: false // this should be used when your scene has orbit controls
+  decay: false, // should the intensity decay over time
+  decayRate: 0.65, // if decay = true this is the rate at which intensity will reduce at
+  controls: undefined, // if using orbit controls, pass a ref here so we can update the rotation
 }
 
 <CameraShake {...config} />
@@ -402,16 +403,22 @@ Two example gizmos are included: GizmoViewport and GizmoViewcube, and `useGizmoC
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-environment--environment-st)
 
-Sets up a global cubemap, which affects the default `scene.environment`, and optionally `scene.background`, unless a custom scene has been passed. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience.
+Sets up a global cubemap, which affects the default `scene.environment`, and optionally `scene.background`, unless a custom scene has been passed. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience. If you pass an array of files it will use THREE.CubeTextureLoader.
 
 ```jsx
 <Environment
   background={false}
   files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']}
-  path={'/'}
+  path="/"
   preset={null}
   scene={undefined} // adds the ability to pass a custom THREE.Scene
 />
+```
+
+If you provide a single string it will use THREE.RGBELoader.
+
+```jsx
+<Environment files="file.hdr" />
 ```
 
 #### Effects
@@ -536,9 +543,9 @@ A Volumetric spotligt.
 
 ```jsx
 <SpotLight
-  distance={5} // The diffuse-cone needs a fixed distance (default: 5)
-  angle={0.15} // The diffuse-cone needs a fixed angle (default: 0.15)
-  attenuation={5} // Diffuse-cone attenuation (default: 5)
+  distance={5}
+  angle={0.15}
+  attenuation={5}
   anglePower={5} // Diffuse-cone anglePower (default: 5)
 />
 ```
@@ -648,6 +655,7 @@ Allows you to tie HTML content to any object of your scene. It will be projected
 
 ```jsx
 <Html
+  as='div' // Wrapping element (default: 'div')
   prepend // Project content behind the canvas (default: false)
   center // Adds a -50%/-50% css transform (default: false) [ignored in transform mode]
   fullscreen // Aligns to the upper-left corner, fills the screen (default:false) [ignored in transform mode]
@@ -657,13 +665,38 @@ Allows you to tie HTML content to any object of your scene. It will be projected
   transform // If true, applies matrix3d transformations (default=false)
   sprite // Renders as sprite, but only in transform mode (default=false)
   calculatePosition={(el: Object3D, camera: Camera, size: { width: number; height: number }) => number[]} // Override default positioning function. (default=undefined) [ignored in transform mode]
-  checkDepth // Checks visibility with raycasting (default=false)
+  occlude={[ref]} // Can be true or a Ref<Object3D>[], true occludes the entire scene (default: undefined)
+  onOcclude={(visible) => null} // Callback when the visibility changes (default: undefined)
   {...groupProps} // All THREE.Group props are valid
   {...divProps} // All HTMLDivElement props are valid
 >
   <h1>hello</h1>
   <p>world</p>
 </Html>
+```
+
+Html can hide behind geometry using the `occlude` prop.
+
+```jsx
+// Raytrace the entire scene
+<Html occlude />
+// Raytrace only specific elements
+<Html occlude={[ref1, ref2]} />
+```
+
+When the Html object hides it sets the opacity prop on the innermost div. If you want to animate or control the transition yourself then you can use `onOcclude`.
+
+```jsx
+const [hidden, set] = useState()
+
+<Html
+  occlude
+  onOcclude={set}
+  style={{
+    transition: 'all 0.5s',
+    opacity: hidden ? 0 : 1,
+    transform: `scale(${hidden ? 0.5 : 1})`
+  }} />
 ```
 
 #### Shadow
@@ -1115,4 +1148,17 @@ Drop this component into your scene and it will switch off the raycaster while t
 
 ```jsx
 <AdaptiveEvents />
+```
+
+#### useBVH
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/performance-usebvh--default-story)
+
+A hook to speed up the default raycasting by using the [BVH Implementation by @gkjohnnson](https://github.com/gkjohnson/three-mesh-bvh).
+
+```jsx
+const mesh = useRef()
+useBVH(mesh)
+
+<mesh ref={mesh} ... />
 ```

@@ -18,7 +18,7 @@ export const Line = React.forwardRef<Line2, LineProps>(function Line(
   ref
 ) {
   const [line2] = React.useState(() => new Line2())
-  const [lineMaterial] = React.useState(() => (material ? [material] : new LineMaterial()))
+  const [lineMaterial] = React.useState(() => (material ? material : new LineMaterial()))
   const [resolution] = React.useState(() => new Vector2(512, 512))
 
   const lineGeom = React.useMemo(() => {

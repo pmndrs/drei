@@ -806,16 +806,19 @@ useHelper(mesh, BoxHelper, 'cyan')
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/misc-usedetectgpu)
 
-This hook uses [DetectGPU by @TimvanScherpenzeel](https://github.com/TimvanScherpenzeel/detect-gpu) to determine what tier should be assigned to the user's GPU.
+This hook uses [DetectGPU by @TimvanScherpenzeel](https://github.com/TimvanScherpenzeel/detect-gpu), wrapped into suspense, to determine what tier should be assigned to the user's GPU.
 
 👉 This hook CAN be used outside the react-three-fiber `Canvas`.
 
 ```jsx
-const GPUTier = useDetectGPU()
+function App() {
+  const GPUTier = useDetectGPU()
+  // show a fallback for mobile or lowest tier GPUs
+  return (
+    {(GPUTier.tier === "0" || GPUTier.isMobile) ? <Fallback /> : <Canvas>...</Canvas>
 
-// show a fallback for mobile or lowest tier GPUs
-return (
-  {(GPUTier.tier === "0" || GPUTier.isMobile) ? <Fallback /> : <Canvas>...</Canvas>
+<Suspense fallback={null}>
+  <App />
 ```
 
 #### useAspect

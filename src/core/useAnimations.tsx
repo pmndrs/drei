@@ -12,12 +12,12 @@ type Api<T extends AnimationClip> = {
 
 export function useAnimations<T extends AnimationClip>(
   clips: T[],
-  root?: React.MutableRefObject<Object3D | undefined | null>
+  root?: React.MutableRefObject<Object3D | undefined | null> | Object3D
 ): Api<T> {
   const ref = React.useRef<Object3D>()
-  const actualRef = root ? root : ref
+  const [actualRef] = React.useState(() => (root ? (root instanceof Object3D ? { current: root } : root) : ref))
   // eslint-disable-next-line prettier/prettier
-  const [mixer] = React.useState(() => new AnimationMixer((undefined as unknown) as Object3D))
+  const [mixer] = React.useState(() => new AnimationMixer(undefined as unknown as Object3D))
   const lazyActions = React.useRef({})
   const [api] = React.useState<Api<T>>(() => {
     const actions = {} as { [key in T['name']]: AnimationAction | null }

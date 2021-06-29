@@ -448,6 +448,14 @@ return (
   <mesh ref={ref} />
 ```
 
+The hook can also take a pre-existing root (which can be a plain object3d or a reference to one):
+
+```jsx
+const { scene, animations } = useGLTF(url)
+const { actions } = useAnimations(animations, scene)
+return <primitive object={scene} />
+```
+
 # Shaders
 
 #### MeshWobbleMaterial

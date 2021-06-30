@@ -21,10 +21,7 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
     const performance = useThree(({ performance }) => performance)
     const explCamera = camera || defaultCamera
     const explDomElement = domElement || gl.domElement
-    const controls = React.useMemo(
-      () => new OrbitControlsImpl(explCamera, explDomElement),
-      [explCamera, explDomElement]
-    )
+    const controls = React.useMemo(() => new OrbitControlsImpl(explCamera), [explCamera])
 
     useFrame(() => {
       if (controls.enabled) controls.update()
@@ -36,7 +33,7 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
         if (regress) performance.regress()
       }
 
-      controls.connect(gl.domElement)
+      controls.connect(explDomElement)
       controls.addEventListener('change', callback)
       return () => {
         controls.removeEventListener('change', callback)

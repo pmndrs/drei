@@ -36,6 +36,7 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
         if (regress) performance.regress()
       }
 
+      controls.connect(gl.domElement)
       controls.addEventListener('change', callback)
       return () => {
         controls.removeEventListener('change', callback)

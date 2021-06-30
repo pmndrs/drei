@@ -7,19 +7,24 @@ export type OrbitControlsProps = ReactThreeFiber.Overwrite<
   {
     target?: ReactThreeFiber.Vector3
     camera?: THREE.Camera
+    domElement?: HTMLElement
     regress?: boolean
     enableDamping?: boolean
   }
 >
 
 export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsProps>(
-  ({ camera, regress, enableDamping = true, ...restProps }, ref) => {
+  ({ camera, regress, domElement, enableDamping = true, ...restProps }, ref) => {
     const invalidate = useThree(({ invalidate }) => invalidate)
     const defaultCamera = useThree(({ camera }) => camera)
     const gl = useThree(({ gl }) => gl)
     const performance = useThree(({ performance }) => performance)
     const explCamera = camera || defaultCamera
-    const controls = React.useMemo(() => new OrbitControlsImpl(explCamera), [explCamera])
+    const explDomElement = domElement || gl.domElement
+    const controls = React.useMemo(
+      () => new OrbitControlsImpl(explCamera, explDomElement),
+      [explCamera, explDomElement]
+    )
 
     useFrame(() => {
       if (controls.enabled) controls.update()
@@ -31,7 +36,6 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
         if (regress) performance.regress()
       }
 
-      controls.connect(gl.domElement)
       controls.addEventListener('change', callback)
       return () => {
         controls.removeEventListener('change', callback)

@@ -428,7 +428,6 @@ Abstraction around threes own [EffectComposer](https://threejs.org/docs/index.ht
 
 ```jsx
 <Effects multisamping={8} renderIndex={1} disableGamma={false} disableRenderPass={false}>
-  {}
   <lUTPass attachArray="passes" lut={texture3D} />
 </Effects>
 ```

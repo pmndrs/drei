@@ -8,6 +8,7 @@ export * from './PositionalAudio'
 export * from './Text'
 export * from './Environment'
 export * from './Effects'
+export * from './GradientTexture'
 
 // Cameras
 export * from './OrthographicCamera'

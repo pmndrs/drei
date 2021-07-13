@@ -60,6 +60,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#gizmoHelper">GizmoHelper</a></li>
           <li><a href="#environment">Environment</a></li>
           <li><a href="#effects">Effects</a></li>
+          <li><a href="#gradienttexture">GradientTexture</a></li>
           <li><a href="#useanimations">useAnimations</a></li>
         </ul>
         <li><a href="#shaders">Shaders</a></li>
@@ -430,6 +431,23 @@ Abstraction around threes own [EffectComposer](https://threejs.org/docs/index.ht
   {}
   <lUTPass attachArray="passes" lut={texture3D} />
 </Effects>
+```
+
+#### GradientTexture
+
+A declarative THREE.Texture which attaches to "map" by default. You can use this to create gradient backgrounds.
+
+```jsx
+<mesh>
+  <planeGeometry />
+  <meshBasicMaterial depthWrite={false}>
+    <GradientTexture
+      stops={[0, 1]} // As many stops as you want
+      colors={["aquamarine", "hotpink"]} // Colors need to match the number of stops
+      size={1024} // Size is optional, default = 1024
+    />
+  </meshBasicMaterial>
+</mesh>
 ```
 
 #### useAnimations

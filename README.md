@@ -443,7 +443,7 @@ A declarative THREE.Texture which attaches to "map" by default. You can use this
   <meshBasicMaterial depthWrite={false}>
     <GradientTexture
       stops={[0, 1]} // As many stops as you want
-      colors={["aquamarine", "hotpink"]} // Colors need to match the number of stops
+      colors={["aquamarine", "hotpink"]} // Colors need to match the number of stops
       size={1024} // Size is optional, default = 1024
     />
   </meshBasicMaterial>

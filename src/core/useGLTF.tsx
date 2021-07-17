@@ -19,8 +19,8 @@ function extensions(useDraco: boolean | string, useMeshopt: boolean, extendLoade
   }
 }
 
-export function useGLTF(
-  path: string | string[],
+export function useGLTF<T extends string | string[]>(
+  path: T,
   useDraco: boolean | string = true,
   useMeshOpt: boolean = true,
   extendLoader?: (loader: GLTFLoader) => void

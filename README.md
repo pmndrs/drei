@@ -182,6 +182,8 @@ A responsive [THREE.OrthographicCamera](https://threejs.org/docs/index.html#api/
 
 A component for applying a configurable camera shake effect. Currently only supports rotational camera shake. Pass a ref to recieve the `ShakeController` API.
 
+If you use shake in combination with controls make sure to set the `makeDefault` prop on your controls, in that case you do not have to pass them via the `controls` prop.
+
 ```js
 const config = {
   maxYaw: 0.1, // Max amount camera can yaw in either direction
@@ -230,6 +232,8 @@ If you have moving objects, unset the prop and use a smaller `resolution` instea
 # Controls
 
 If available controls have damping enabled by default, they manage their own updates, remove themselves on unmount, are compatible with the `invalidateFrameloop` canvas-flag. They inherit all props from their underlying [THREE controls](https://github.com/mrdoob/three.js/tree/dev/examples/jsm/controls).
+
+Some controls allow you to set `makeDefault`, similar to, for instance, PerspectiveCamera. This will set react-three-fiber's `controls` field in the root store. This can make it easier in situations where you want controls to be known and other parts of the app could respond to it. Some drei controls already take it into account, like CameraShake and Gizmo.
 
 Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-scene-st), TrackballControls, FlyControls, DeviceOrientationControls, TransformControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-transformcontrols--transform-controls-story), PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st)
 
@@ -388,6 +392,8 @@ Used by widgets that visualize and control camera position.
 
 Two example gizmos are included: GizmoViewport and GizmoViewcube, and `useGizmoContext` makes it easy to create your own.
 
+Make sure to set the `makeDefault` prop on your controls, in that case you do not have to define the onTarget prop.
+
 ```jsx
 <GizmoHelper
   alignment="bottom-right" // widget alignment within scene
@@ -442,7 +448,7 @@ A declarative THREE.Texture which attaches to "map" by default. You can use this
   <meshBasicMaterial depthWrite={false}>
     <GradientTexture
       stops={[0, 1]} // As many stops as you want
-      colors={["aquamarine", "hotpink"]} // Colors need to match the number of stops
+      colors={['aquamarine', 'hotpink']} // Colors need to match the number of stops
       size={1024} // Size is optional, default = 1024
     />
   </meshBasicMaterial>

@@ -35,6 +35,8 @@ const target = new Vector3()
 const targetPosition = new Vector3()
 const targetQuaternion = new Quaternion()
 
+type ControlsProto = { update(): void; target: THREE.Vector3 }
+
 export type GizmoHelperProps = JSX.IntrinsicElements['group'] & {
   alignment?: 'top-left' | 'top-right' | 'bottom-right' | 'bottom-left'
   margin?: [number, number]
@@ -54,7 +56,7 @@ export const GizmoHelper = ({
   const size = useThree(({ size }) => size)
   const mainCamera = useThree(({ camera }) => camera)
   // @ts-expect-error new in @react-three/fiber@7.0.5
-  const defaultControls = useThree(({ controls }) => controls)
+  const defaultControls = useThree(({ controls }) => controls) as ControlsProto
   const gl = useThree(({ gl }) => gl)
   const scene = useThree(({ scene }) => scene)
   const invalidate = useThree(({ invalidate }) => invalidate)

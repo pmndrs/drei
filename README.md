@@ -1121,6 +1121,8 @@ return (
 
 Creates a "stage" with proper studio lighting, content centered and planar, shadows and ground-contact shadows.
 
+Make sure to set the `makeDefault` prop on your controls, in that case you do not need to provide `controls` via prop.
+
 ```jsx
 <Stage contactShadow shadows adjustCamera intensity={1} environment="city" preset="rembrandt" controls={controlsRef}>
   <mesh />

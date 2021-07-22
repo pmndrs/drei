@@ -8,6 +8,13 @@ export interface ShakeController {
   setIntensity: (val: number) => void
 }
 
+type ControlsProto = {
+  update(): void
+  target: THREE.Vector3
+  addEventListener: (event: string, callback: (event: any) => void) => void
+  removeEventListener: (event: string, callback: (event: any) => void) => void
+}
+
 export interface CameraShakeProps {
   intensity?: number
   decay?: boolean
@@ -18,7 +25,9 @@ export interface CameraShakeProps {
   yawFrequency?: number
   pitchFrequency?: number
   rollFrequency?: number
-  controls?: React.MutableRefObject<OrbitControls | null>
+  // TODO: in a new major this should be the only means of consuming controls, the
+  // controls prop can then be removed!
+  controls?: React.MutableRefObject<ControlsProto | null>
 }
 
 export const CameraShake = React.forwardRef<ShakeController | undefined, CameraShakeProps>(
@@ -38,6 +47,8 @@ export const CameraShake = React.forwardRef<ShakeController | undefined, CameraS
     ref
   ) => {
     const camera = useThree((state) => state.camera)
+    // @ts-expect-error new in @react-three/fiber@7.0.5
+    const defaultControls = useThree((state) => state.controls) as ControlsProto
     const intensityRef = React.useRef<number>(intensity)
     const initialRotation = React.useRef<Euler>(camera.rotation.clone())
 
@@ -64,13 +75,13 @@ export const CameraShake = React.forwardRef<ShakeController | undefined, CameraS
     )
 
     React.useEffect(() => {
-      const currControls = controls?.current
+      const currControls = defaultControls || controls?.current
       const callback = () => void (initialRotation.current = camera.rotation.clone())
 
       currControls?.addEventListener('change', callback)
       return () => void currControls?.removeEventListener('change', callback)
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [controls])
+    }, [controls, defaultControls])
 
     useFrame(({ clock }, delta) => {
       const shake = Math.pow(intensityRef.current, 2)

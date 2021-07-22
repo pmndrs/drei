@@ -19,8 +19,8 @@ function extensions(useDraco: boolean | string, useMeshopt: boolean, extendLoade
   }
 }
 
-export function useGLTF(
-  path: string,
+export function useGLTF<T extends string | string[]>(
+  path: T,
   useDraco: boolean | string = true,
   useMeshOpt: boolean = true,
   extendLoader?: (loader: GLTFLoader) => void
@@ -30,8 +30,11 @@ export function useGLTF(
 }
 
 useGLTF.preload = (
-  path: string,
+  path: string | string[],
   useDraco: boolean | string = true,
   useMeshOpt: boolean = true,
   extendLoader?: (loader: GLTFLoader) => void
 ) => useLoader.preload(GLTFLoader, path, extensions(useDraco, useMeshOpt, extendLoader))
+
+// @ts-expect-error new in r3f 7.0.5
+useGLTF.clear = (input: string | string[]) => useLoader.clear(GLTFLoader, input)

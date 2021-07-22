@@ -24,6 +24,8 @@ const presets = {
   },
 }
 
+type ControlsProto = { update(): void; target: THREE.Vector3 }
+
 type Props = JSX.IntrinsicElements['group'] & {
   contactShadow?: boolean
   shadows?: boolean
@@ -31,7 +33,9 @@ type Props = JSX.IntrinsicElements['group'] & {
   environment?: PresetsType
   intensity?: number
   ambience?: number
-  controls?: React.MutableRefObject<{ update(): void; target: THREE.Vector3 }>
+  // TODO: in a new major state.controls should be the only means of consuming controls, the
+  // controls prop can then be removed!
+  controls?: React.MutableRefObject<ControlsProto>
   preset?: keyof typeof presets
   shadowBias?: number
   contactShadowBlur?: number
@@ -54,6 +58,8 @@ export function Stage({
 }: Props) {
   const config = presets[preset]
   const camera = useThree((state) => state.camera)
+  // @ts-expect-error new in @react-three/fiber@7.0.5
+  const defaultControls = useThree((state) => state.controls) as ControlsProto
   const outer = React.useRef<THREE.Group>(null!)
   const inner = React.useRef<THREE.Group>(null!)
   const [{ radius, width, height }, set] = React.useState({ radius: 0, width: 0, height: 0 })
@@ -79,13 +85,14 @@ export function Stage({
       camera.near = 0.1
       camera.far = Math.max(5000, radius * 4)
       camera.lookAt(0, y, 0)
-      if (controls && controls.current) {
-        controls.current.target.set(0, y, 0)
-        controls.current.update()
+      const ctrl = defaultControls || controls?.current
+      if (ctrl) {
+        ctrl.target.set(0, y, 0)
+        ctrl.update()
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [radius, height, width, adjustCamera])
+  }, [defaultControls, radius, height, width, adjustCamera])
 
   return (
     <group {...props}>

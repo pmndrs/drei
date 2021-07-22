@@ -35,11 +35,15 @@ const target = new Vector3()
 const targetPosition = new Vector3()
 const targetQuaternion = new Quaternion()
 
+type ControlsProto = { update(): void; target: THREE.Vector3 }
+
 export type GizmoHelperProps = JSX.IntrinsicElements['group'] & {
   alignment?: 'top-left' | 'top-right' | 'bottom-right' | 'bottom-left'
   margin?: [number, number]
   onUpdate: () => void // update controls during animation
-  onTarget: () => Vector3 // return the target to rotate around
+  // TODO: in a new major state.controls should be the only means of consuming controls, the
+  // onTarget prop can then be removed!
+  onTarget?: () => Vector3 // return the target to rotate around
 }
 
 export const GizmoHelper = ({
@@ -51,6 +55,8 @@ export const GizmoHelper = ({
 }: GizmoHelperProps): any => {
   const size = useThree(({ size }) => size)
   const mainCamera = useThree(({ camera }) => camera)
+  // @ts-expect-error new in @react-three/fiber@7.0.5
+  const defaultControls = useThree(({ controls }) => controls) as ControlsProto
   const gl = useThree(({ gl }) => gl)
   const scene = useThree(({ scene }) => scene)
   const invalidate = useThree(({ invalidate }) => invalidate)
@@ -65,9 +71,8 @@ export const GizmoHelper = ({
   const focusPoint = React.useRef(new Vector3(0, 0, 0))
 
   const tweenCamera = (direction: Vector3) => {
-    console.log('...')
     animating.current = true
-    focusPoint.current = onTarget()
+    if (defaultControls || onTarget) focusPoint.current = defaultControls?.target || onTarget?.()
     radius.current = mainCamera.position.distanceTo(target)
 
     // Rotate from current camera orientation
@@ -96,7 +101,8 @@ export const GizmoHelper = ({
     // animate orientation
     mainCamera.quaternion.rotateTowards(targetQuaternion, step)
     mainCamera.updateProjectionMatrix()
-    onUpdate && onUpdate()
+    if (onUpdate) onUpdate()
+    else if (defaultControls) defaultControls.update()
 
     if (q1.angleTo(q2) < 0.01) {
       animating.current = false

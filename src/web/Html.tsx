@@ -212,6 +212,7 @@ export const Html = React.forwardRef(
     useFrame(() => {
       if (group.current) {
         camera.updateMatrixWorld()
+        group.current.updateWorldMatrix(true, false)
         const vec = transform ? oldPosition.current : calculatePosition(group.current, camera, size)
 
         if (

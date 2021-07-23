@@ -187,10 +187,7 @@ export const Html = React.forwardRef(
       }
     }, [style, center, fullscreen, size, transform])
 
-    const transformInnerStyles: React.CSSProperties = React.useMemo(
-      () => ({ position: 'absolute', pointerEvents: 'auto' }),
-      []
-    )
+    const transformInnerStyles: React.CSSProperties = React.useMemo(() => ({ position: 'absolute' }), [])
 
     React.useLayoutEffect(() => {
       if (transform) {

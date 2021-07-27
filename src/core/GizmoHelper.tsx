@@ -97,6 +97,7 @@ export const GizmoHelper = ({
     // animate position by doing a slerp and then scaling the position on the unit sphere
     q1.rotateTowards(q2, step)
     mainCamera.position.set(0, 0, 1).applyQuaternion(q1).multiplyScalar(radius.current).add(focusPoint.current)
+    mainCamera.up.set(0, 1, 0).applyQuaternion(q1)
 
     // animate orientation
     mainCamera.quaternion.rotateTowards(targetQuaternion, step)

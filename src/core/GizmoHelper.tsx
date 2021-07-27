@@ -33,8 +33,8 @@ const matrix = new Matrix4()
 const [q1, q2] = [new Quaternion(), new Quaternion()]
 const target = new Vector3()
 const targetPosition = new Vector3()
-const targetQuaternion = new Quaternion()
-
+// const targetQuaternion = new Quaternion()
+//
 type ControlsProto = { update(): void; target: THREE.Vector3 }
 
 export type GizmoHelperProps = JSX.IntrinsicElements['group'] & {
@@ -76,9 +76,7 @@ export const GizmoHelper = ({
     radius.current = mainCamera.position.distanceTo(target)
 
     // Rotate from current camera orientation
-    dummy.position.copy(target)
-    dummy.lookAt(mainCamera.position)
-    q1.copy(dummy.quaternion)
+    q1.copy(mainCamera.quaternion)
 
     // To new current camera orientation
     targetPosition.copy(direction).multiplyScalar(radius.current).add(target)
@@ -89,25 +87,26 @@ export const GizmoHelper = ({
   }
 
   const animateStep = (delta: number) => {
-    invalidate()
     if (!animating.current) return
+
+    if (q1.angleTo(q2) < 0.01) {
+      animating.current = false
+      return
+    }
 
     const step = delta * turnRate
 
     // animate position by doing a slerp and then scaling the position on the unit sphere
     q1.rotateTowards(q2, step)
-    mainCamera.position.set(0, 0, 1).applyQuaternion(q1).multiplyScalar(radius.current).add(focusPoint.current)
-    mainCamera.up.set(0, 1, 0).applyQuaternion(q1)
-
     // animate orientation
-    mainCamera.quaternion.rotateTowards(targetQuaternion, step)
-    mainCamera.updateProjectionMatrix()
+    mainCamera.position.set(0, 0, 1).applyQuaternion(q1).multiplyScalar(radius.current).add(focusPoint.current)
+    mainCamera.up.set(0, 1, 0).applyQuaternion(q1).normalize()
+    mainCamera.quaternion.copy(q1)
+
     if (onUpdate) onUpdate()
     else if (defaultControls) defaultControls.update()
 
-    if (q1.angleTo(q2) < 0.01) {
-      animating.current = false
-    }
+    invalidate()
   }
 
   React.useEffect(() => {

@@ -33,8 +33,7 @@ const matrix = new Matrix4()
 const [q1, q2] = [new Quaternion(), new Quaternion()]
 const target = new Vector3()
 const targetPosition = new Vector3()
-// const targetQuaternion = new Quaternion()
-//
+
 type ControlsProto = { update(): void; target: THREE.Vector3 }
 
 export type GizmoHelperProps = JSX.IntrinsicElements['group'] & {

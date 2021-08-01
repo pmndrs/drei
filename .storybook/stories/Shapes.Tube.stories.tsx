@@ -16,7 +16,7 @@ function TubeScene() {
   // curve example from https://threejs.org/docs/#api/en/geometries/TubeGeometry
   const path = React.useMemo(() => {
     class CustomSinCurve extends THREE.Curve<THREE.Vector3> {
-      private scale
+      private scale: number
 
       constructor(scale = 1) {
         super()

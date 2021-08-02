@@ -15,21 +15,22 @@ export default {
 function TubeScene() {
   // curve example from https://threejs.org/docs/#api/en/geometries/TubeGeometry
   const path = React.useMemo(() => {
-    function CustomSinCurve(scale) {
-      THREE.Curve.call(this)
+    class CustomSinCurve extends THREE.Curve<THREE.Vector3> {
+      private scale: number
 
-      this.scale = scale === undefined ? 1 : scale
-    }
+      constructor(scale = 1) {
+        super()
 
-    CustomSinCurve.prototype = Object.create(THREE.Curve.prototype)
-    CustomSinCurve.prototype.constructor = CustomSinCurve
+        this.scale = scale
+      }
 
-    CustomSinCurve.prototype.getPoint = function (t) {
-      const tx = t * 3 - 1.5
-      const ty = Math.sin(2 * Math.PI * t)
-      const tz = 0
+      getPoint(t: number) {
+        const tx = t * 3 - 1.5
+        const ty = Math.sin(2 * Math.PI * t)
+        const tz = 0
 
-      return new THREE.Vector3(tx, ty, tz).multiplyScalar(this.scale)
+        return new THREE.Vector3(tx, ty, tz).multiplyScalar(this.scale)
+      }
     }
 
     return new CustomSinCurve(10)

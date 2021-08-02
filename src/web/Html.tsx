@@ -86,6 +86,19 @@ const getObjectCSSMatrix = ((scaleMultipliers: (n: number) => number[]) => {
   return (matrix: Matrix4, factor: number) => getCSSMatrix(matrix, scaleMultipliers(factor), 'translate(-50%,-50%)')
 })((f: number) => [1 / f, 1 / f, 1 / f, 1, -1 / f, -1 / f, -1 / f, -1, 1 / f, 1 / f, 1 / f, 1, 1, 1, 1, 1])
 
+type PointerEventsProperties =
+  | 'auto'
+  | 'none'
+  | 'visiblePainted'
+  | 'visibleFill'
+  | 'visibleStroke'
+  | 'visible'
+  | 'painted'
+  | 'fill'
+  | 'stroke'
+  | 'all'
+  | 'inherit'
+
 export interface HtmlProps
   extends Omit<Assign<React.HTMLAttributes<HTMLDivElement>, ReactThreeFiber.Object3DNode<Group, typeof Group>>, 'ref'> {
   prepend?: boolean
@@ -101,6 +114,7 @@ export interface HtmlProps
   onOcclude?: (visible: boolean) => null
   calculatePosition?: CalculatePosition
   as?: string
+  pointerEvents?: PointerEventsProperties
 }
 
 export const Html = React.forwardRef(
@@ -122,6 +136,7 @@ export const Html = React.forwardRef(
       zIndexRange = [16777271, 0],
       calculatePosition = defaultCalculatePosition,
       as = 'div',
+      pointerEvents = 'auto',
       ...props
     }: HtmlProps,
     ref: React.Ref<HTMLDivElement>
@@ -187,7 +202,10 @@ export const Html = React.forwardRef(
       }
     }, [style, center, fullscreen, size, transform])
 
-    const transformInnerStyles: React.CSSProperties = React.useMemo(() => ({ position: 'absolute' }), [])
+    const transformInnerStyles: React.CSSProperties = React.useMemo(
+      () => ({ position: 'absolute', pointerEvents }),
+      [pointerEvents]
+    )
 
     React.useLayoutEffect(() => {
       if (transform) {

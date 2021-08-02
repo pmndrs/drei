@@ -14,14 +14,18 @@ export default {
 function Simple() {
   const GPUTier = useDetectGPU()
 
-  return GPUTier ? (
-    <Text>
-      Tier {GPUTier.tier.toString()} {GPUTier.type}
-    </Text>
-  ) : (
-    <Text>Detecting GPU …</Text>
+  return (
+    GPUTier && (
+      <Text>
+        Tier {GPUTier.tier.toString()} {GPUTier.type}
+      </Text>
+    )
   )
 }
 
-export const DefaultStory = () => <Simple />
+export const DefaultStory = () => (
+  <React.Suspense fallback={<Text>Detecting GPU …</Text>}>
+    <Simple />
+  </React.Suspense>
+)
 DefaultStory.storyName = 'Default'

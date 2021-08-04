@@ -388,11 +388,13 @@ Adds a `<Plane />` that always faces the camera.
 
 #### GizmoHelper
 
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/gizmos-gizmohelper--default-story)
+
 Used by widgets that visualize and control camera position.
 
 Two example gizmos are included: GizmoViewport and GizmoViewcube, and `useGizmoContext` makes it easy to create your own.
 
-Make sure to set the `makeDefault` prop on your controls, in that case you do not have to define the onTarget prop.
+Make sure to set the `makeDefault` prop on your controls, in that case you do not have to define the onTarget and onUpdate props.
 
 ```jsx
 <GizmoHelper

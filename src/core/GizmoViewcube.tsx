@@ -96,7 +96,7 @@ const FaceCube = (props: GenericProps) => {
     e.stopPropagation()
     setHover(null)
   }
-  const handlePointerDown = (e: Event) => {
+  const handleClick = (e: Event) => {
     e.stopPropagation()
     tweenCamera(e.face.normal)
   }
@@ -109,7 +109,7 @@ const FaceCube = (props: GenericProps) => {
       raycast={raycast}
       onPointerOut={handlePointerOut}
       onPointerMove={handlePointerMove}
-      onPointerDown={props.onClick || handlePointerDown}
+      onClick={props.onClick || handleClick}
     >
       {[...Array(6)].map((_, index) => (
         <FaceMaterial key={index} index={index} hover={hover === index} {...props} />
@@ -130,18 +130,18 @@ const EdgeCube = ({ onClick, dimensions, position, hoverColor = colors.hover }: 
     e.stopPropagation()
     setHover(true)
   }
-  const handlePointerDown = (e: Event) => {
+  const handleClick = (e: Event) => {
     e.stopPropagation()
     tweenCamera(position)
   }
   return (
     <mesh
-      scale={1.1}
+      scale={1.01}
       position={position}
       raycast={raycast}
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
-      onPointerDown={onClick || handlePointerDown}
+      onClick={onClick || handleClick}
     >
       <meshBasicMaterial color={hover ? hoverColor : 'white'} transparent opacity={0.6} visible={hover} />
       <boxGeometry args={dimensions} />

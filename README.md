@@ -375,6 +375,8 @@ A wrapper around [THREE.PositionalAudio](https://threejs.org/docs/index.html#api
 
 #### Billboard
 
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-billboard--billboard-st)
+
 Adds a `<Plane />` that always faces the camera.
 
 ```jsx

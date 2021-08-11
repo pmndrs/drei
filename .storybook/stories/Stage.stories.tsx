@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { withKnobs, select, number, boolean } from '@storybook/addon-knobs'
-import { Mesh, Vector3 } from 'three'
+import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'
 

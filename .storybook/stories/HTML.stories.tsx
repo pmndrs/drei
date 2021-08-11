@@ -125,3 +125,32 @@ export const HTMLCalculatePosition = () => (
   <HTMLScene className="html-story-label" calculatePosition={overrideCalculatePosition} />
 )
 HTMLCalculatePosition.storyName = 'Custom Calculate Position'
+
+function HTMLRaycastOccluderScene() {
+  const turntableRef = useTurntable()
+  const occluderRef = React.useRef()
+
+  return (
+    <>
+      <group ref={turntableRef}>
+        <Icosahedron ref={occluderRef} name="pink" args={[5, 5]} position={[0, 0, 0]}>
+          <meshBasicMaterial attach="material" color="hotpink" wireframe />
+          <Html position={[0, 0, -6]} className="html-story-label" occlude={[turntableRef]}>
+            A
+          </Html>
+        </Icosahedron>
+        <Icosahedron name="yellow" args={[5, 5]} position={[16, 0, 0]}>
+          <meshBasicMaterial attach="material" color="yellow" wireframe />
+          <Html position={[0, 0, -6]} className="html-story-label" occlude={[turntableRef]}>
+            B
+          </Html>
+        </Icosahedron>
+      </group>
+      <ambientLight intensity={0.8} />
+      <pointLight intensity={1} position={[0, 6, 0]} />
+    </>
+  )
+}
+
+export const HTMLRaycastOccluderSt = () => <HTMLRaycastOccluderScene />
+HTMLRaycastOccluderSt.storyName = 'Raycast occluder'

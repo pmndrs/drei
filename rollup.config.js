@@ -1,8 +1,7 @@
 import path from 'path'
-import babel from 'rollup-plugin-babel'
-import resolve from 'rollup-plugin-node-resolve'
-import json from 'rollup-plugin-json'
-import { sizeSnapshot } from 'rollup-plugin-size-snapshot'
+import babel from '@rollup/plugin-babel'
+import resolve from '@rollup/plugin-node-resolve'
+import json from '@rollup/plugin-json'
 import glslify from 'rollup-plugin-glslify'
 import multiInput from 'rollup-plugin-multi-input'
 import { terser } from 'rollup-plugin-terser'
@@ -15,15 +14,14 @@ const getBabelOptions = ({ useESModules }, targets) => ({
   babelrc: false,
   extensions,
   exclude: '**/node_modules/**',
-  runtimeHelpers: true,
+  babelHelpers: 'runtime',
   presets: [
     ['@babel/preset-env', { loose: true, modules: false, targets }],
     '@babel/preset-react',
     '@babel/preset-typescript',
   ],
   plugins: [
-    '@babel/plugin-proposal-class-properties',
-    ['transform-react-remove-prop-types', { removeImport: true }],
+    '@babel/plugin-proposal-nullish-coalescing-operator',
     ['@babel/transform-runtime', { regenerator: false, useESModules }],
   ],
 })
@@ -49,7 +47,6 @@ export default [
       json(),
       glslify(),
       babel(getBabelOptions({ useESModules: true }, '>1%, not dead, not ie 11, not op_mini all')),
-      sizeSnapshot(),
       resolve({ extensions }),
     ],
     preserveModules: true,
@@ -73,13 +70,6 @@ export default [
     input: `./src/index.ts`,
     output: { file: `dist/index.cjs.js`, format: 'cjs' },
     external,
-    plugins: [
-      json(),
-      glslify(),
-      babel(getBabelOptions({ useESModules: false })),
-      sizeSnapshot(),
-      resolve({ extensions }),
-      terser(),
-    ],
+    plugins: [json(), glslify(), babel(getBabelOptions({ useESModules: false })), resolve({ extensions }), terser()],
   },
 ]

@@ -7,14 +7,12 @@
   },
   "extends": [
     "prettier",
-    "prettier/react",
-    "prettier/@typescript-eslint",
     "plugin:prettier/recommended",
     "plugin:react-hooks/recommended",
     "plugin:import/errors",
     "plugin:import/warnings"
   ],
-  "plugins": ["@typescript-eslint", "react", "prettier", "react-hooks", "import", "jest"],
+  "plugins": ["@typescript-eslint", "react", "prettier", "react-hooks", "import"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
@@ -28,6 +26,7 @@
     "no-console": "off",
     "no-empty-pattern": "warn",
     "no-duplicate-imports": "error",
+    "prefer-const": "error",
     "import/no-unresolved": ["error", { "commonjs": true, "amd": true }],
     "import/export": "error",
     "import/named": "off",
@@ -36,15 +35,14 @@
     "import/namespace": "off",
     "import/default": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
-    "no-unused-vars": ["warn"],
+    "no-unused-vars": ["off"],
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
     "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
     "@typescript-eslint/no-use-before-define": "off",
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-empty-interface": "off",
-    "@typescript-eslint/no-explicit-any": "off",
-    "jest/consistent-test-it": ["error", { "fn": "it", "withinDescribe": "it" }]
+    "@typescript-eslint/no-explicit-any": "off"
   },
   "settings": {
     "react": {

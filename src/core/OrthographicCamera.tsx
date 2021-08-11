@@ -5,10 +5,11 @@ import mergeRefs from 'react-merge-refs'
 
 type Props = JSX.IntrinsicElements['orthographicCamera'] & {
   makeDefault?: boolean
+  manual?: boolean
   children?: React.ReactNode
 }
 
-export const OrthographicCamera = React.forwardRef(({ makeDefault = false, ...props }: Props, ref) => {
+export const OrthographicCamera = React.forwardRef(({ makeDefault, manual, ...props }: Props, ref) => {
   const set = useThree(({ set }) => set)
   const camera = useThree(({ camera }) => camera)
   const size = useThree(({ size }) => size)
@@ -16,7 +17,7 @@ export const OrthographicCamera = React.forwardRef(({ makeDefault = false, ...pr
   const cameraRef = React.useRef<OrthographicCameraImpl>()
 
   React.useLayoutEffect(() => {
-    if (cameraRef.current) {
+    if (cameraRef.current && !manual) {
       cameraRef.current.updateProjectionMatrix()
     }
   }, [size, props])
@@ -24,13 +25,8 @@ export const OrthographicCamera = React.forwardRef(({ makeDefault = false, ...pr
   React.useLayoutEffect(() => {
     if (makeDefault && cameraRef.current) {
       const oldCam = camera
-      set(() => ({
-        camera: cameraRef.current!,
-      }))
-      return () =>
-        set(() => ({
-          camera: oldCam,
-        }))
+      set(() => ({ camera: cameraRef.current! }))
+      return () => set(() => ({ camera: oldCam }))
     }
   }, [camera, cameraRef, makeDefault, set])
 

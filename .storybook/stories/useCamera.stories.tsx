@@ -43,7 +43,7 @@ function UseCameraScene() {
 
   const handlePointerOut = () => setHover(null)
   const handlePointerMove = (e: THREE.Event) => setHover(Math.floor(e.faceIndex ?? 0 / 2))
-  return (createPortal(
+  return createPortal(
     <>
       <OrthographicCamera ref={virtualCam} makeDefault={false} position={[0, 0, 100]} zoom={2} />
 
@@ -58,7 +58,7 @@ function UseCameraScene() {
       <pointLight position={[10, 10, 10]} intensity={0.5} />
     </>,
     virtualScene
-  ) as unknown) as JSX.Element
+  ) as unknown as JSX.Element
 }
 
 export const UseCameraSt = () => <UseCameraScene />

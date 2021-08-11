@@ -17,20 +17,19 @@ declare global {
 
 type Props = TransformControls &
   JSX.IntrinsicElements['group'] & {
-    enabled: boolean
-    axis: string | null
-    mode: string
-    translationSnap: number | null
-    rotationSnap: number | null
+    enabled?: boolean
+    axis?: string | null
+    mode?: string
+    translationSnap?: number | null
+    rotationSnap?: number | null
     scaleSnap?: number | null
-    space: string
-    size: number
-    dragging: boolean
-    showX: boolean
-    showY: boolean
-    showZ: boolean
+    space?: string
+    size?: number
+    showX?: boolean
+    showY?: boolean
+    showZ?: boolean
     children: React.ReactElement<Object3D>
-    camera: Camera
+    camera?: Camera
   }
 
 export const TransformControls = React.forwardRef<TransformControlsImpl, Props>(({ children, ...props }, ref) => {
@@ -43,7 +42,6 @@ export const TransformControls = React.forwardRef<TransformControlsImpl, Props>(
     'scaleSnap',
     'space',
     'size',
-    'dragging',
     'showX',
     'showY',
     'showZ',

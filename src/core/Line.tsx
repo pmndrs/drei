@@ -5,10 +5,9 @@ import { LineGeometry, LineMaterial, LineMaterialParameters, Line2 } from 'three
 
 export type LineProps = {
   points: Array<Vector3 | [number, number, number]>
-  color?: Color | string | number
   vertexColors?: Array<Color | [number, number, number]>
-  lineWidth?: number
-} & Omit<ReactThreeFiber.Object3DNode<Line2, typeof Line2>, 'args'> &
+} & LineMaterialParameters &
+  Omit<ReactThreeFiber.Object3DNode<Line2, typeof Line2>, 'args'> &
   Omit<
     ReactThreeFiber.Object3DNode<LineMaterial, [LineMaterialParameters]>,
     'color' | 'vertexColors' | 'resolution' | 'args'
@@ -49,11 +48,14 @@ export const Line = React.forwardRef<Line2, LineProps>(function Line(
     lineMaterial.needsUpdate = true
   }, [dashed, lineMaterial])
 
+  React.useEffect(() => {
+    return () => lineGeom.dispose()
+  }, [lineGeom])
+
   return (
-    <primitive dispose={undefined} object={line2} ref={ref} {...rest}>
-      <primitive dispose={undefined} object={lineGeom} attach="geometry" />
+    <primitive object={line2} ref={ref} {...rest}>
+      <primitive object={lineGeom} attach="geometry" />
       <primitive
-        dispose={undefined}
         object={lineMaterial}
         attach="material"
         color={color}

@@ -1,6 +1,18 @@
 import * as React from 'react'
 import { createPortal, useFrame, useThree } from '@react-three/fiber'
-import { Camera, Group, Intersection, Matrix4, Object3D, Quaternion, Raycaster, Scene, Vector3 } from 'three'
+import {
+  Camera,
+  Color,
+  Group,
+  Intersection,
+  Matrix4,
+  Object3D,
+  Quaternion,
+  Raycaster,
+  Scene,
+  Texture,
+  Vector3,
+} from 'three'
 import { OrthographicCamera } from './OrthographicCamera'
 import { useCamera } from './useCamera'
 
@@ -21,13 +33,16 @@ const matrix = new Matrix4()
 const [q1, q2] = [new Quaternion(), new Quaternion()]
 const target = new Vector3()
 const targetPosition = new Vector3()
-const targetQuaternion = new Quaternion()
+
+type ControlsProto = { update(): void; target: THREE.Vector3 }
 
 export type GizmoHelperProps = JSX.IntrinsicElements['group'] & {
   alignment?: 'top-left' | 'top-right' | 'bottom-right' | 'bottom-left'
   margin?: [number, number]
   onUpdate: () => void // update controls during animation
-  onTarget: () => Vector3 // return the target to rotate around
+  // TODO: in a new major state.controls should be the only means of consuming controls, the
+  // onTarget prop can then be removed!
+  onTarget?: () => Vector3 // return the target to rotate around
 }
 
 export const GizmoHelper = ({
@@ -39,8 +54,13 @@ export const GizmoHelper = ({
 }: GizmoHelperProps): any => {
   const size = useThree(({ size }) => size)
   const mainCamera = useThree(({ camera }) => camera)
+  // @ts-expect-error new in @react-three/fiber@7.0.5
+  const defaultControls = useThree(({ controls }) => controls) as ControlsProto
   const gl = useThree(({ gl }) => gl)
+  const scene = useThree(({ scene }) => scene)
+  const invalidate = useThree(({ invalidate }) => invalidate)
 
+  const backgroundRef = React.useRef<null | Color | Texture>()
   const gizmoRef = React.useRef<Group>()
   const virtualCam = React.useRef<Camera>(null!)
   const [virtualScene] = React.useState(() => new Scene())
@@ -51,38 +71,59 @@ export const GizmoHelper = ({
 
   const tweenCamera = (direction: Vector3) => {
     animating.current = true
-    focusPoint.current = onTarget()
+    if (defaultControls || onTarget) focusPoint.current = defaultControls?.target || onTarget?.()
     radius.current = mainCamera.position.distanceTo(target)
 
     // Rotate from current camera orientation
-    dummy.position.copy(target)
-    dummy.lookAt(mainCamera.position)
-    q1.copy(dummy.quaternion)
+    q1.copy(mainCamera.quaternion)
 
     // To new current camera orientation
     targetPosition.copy(direction).multiplyScalar(radius.current).add(target)
     dummy.lookAt(targetPosition)
     q2.copy(dummy.quaternion)
+
+    invalidate()
   }
 
   const animateStep = (delta: number) => {
     if (!animating.current) return
 
+    if (q1.angleTo(q2) < 0.01) {
+      animating.current = false
+      return
+    }
+
     const step = delta * turnRate
 
     // animate position by doing a slerp and then scaling the position on the unit sphere
     q1.rotateTowards(q2, step)
-    mainCamera.position.set(0, 0, 1).applyQuaternion(q1).multiplyScalar(radius.current).add(focusPoint.current)
-
     // animate orientation
-    mainCamera.quaternion.rotateTowards(targetQuaternion, step)
-    mainCamera.updateProjectionMatrix()
-    onUpdate && onUpdate()
+    mainCamera.position.set(0, 0, 1).applyQuaternion(q1).multiplyScalar(radius.current).add(focusPoint.current)
+    mainCamera.up.set(0, 1, 0).applyQuaternion(q1).normalize()
+    mainCamera.quaternion.copy(q1)
 
-    if (q1.angleTo(q2) < 0.01) {
-      animating.current = false
-    }
+    if (onUpdate) onUpdate()
+    else if (defaultControls) defaultControls.update()
+
+    invalidate()
   }
+
+  React.useEffect(() => {
+    if (scene.background) {
+      //Interchange the actual scene background with the virtual scene
+      backgroundRef.current = scene.background
+      scene.background = null
+      virtualScene.background = backgroundRef.current
+    }
+
+    return () => {
+      // reset on unmount
+      if (backgroundRef.current) {
+        scene.background = backgroundRef.current
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const beforeRender = () => {
     // Sync gizmo with main camera orientation
@@ -111,7 +152,7 @@ export const GizmoHelper = ({
   const y = alignment.startsWith('top-') ? size.height / 2 - marginY : -size.height / 2 + marginY
   return createPortal(
     <Context.Provider value={gizmoHelperContext}>
-      <OrthographicCamera ref={virtualCam} makeDefault={false} position={[0, 0, 100]} />
+      <OrthographicCamera ref={virtualCam} makeDefault={false} position={[0, 0, 200]} />
       <group ref={gizmoRef} position={[x, y, 0]}>
         {GizmoHelperComponent}
       </group>

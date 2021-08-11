@@ -19,8 +19,8 @@ export type BillboardProps = {
  * </Billboard>
  * ```
  */
-export const Billboard = React.forwardRef(function Billboard(
-  { follow = true, lockX = false, lockY = false, lockZ = false, ...props }: BillboardProps,
+export const Billboard = React.forwardRef<Mesh, BillboardProps>(function Billboard(
+  { follow = true, lockX = false, lockY = false, lockZ = false, ...props },
   ref
 ) {
   const localRef = React.useRef<Mesh>()

@@ -1,21 +1,11 @@
-import * as React from 'react'
-import { Object3D, Group, Camera } from 'three'
-import { useThree, ReactThreeFiber } from '@react-three/fiber'
-import { TransformControls as TransformControlsImpl } from 'three-stdlib'
-import pick from 'lodash.pick'
+import { ReactThreeFiber, useThree } from '@react-three/fiber'
 import omit from 'lodash.omit'
+import pick from 'lodash.pick'
+import * as React from 'react'
+import * as THREE from 'three'
+import { TransformControls as TransformControlsImpl } from 'three-stdlib'
 
-export type TransformControls = ReactThreeFiber.Object3DNode<TransformControlsImpl, typeof TransformControlsImpl>
-
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      transformControlsImpl: TransformControls
-    }
-  }
-}
-
-type Props = TransformControls &
+export type TransformControlsProps = ReactThreeFiber.Object3DNode<TransformControlsImpl, typeof TransformControlsImpl> &
   JSX.IntrinsicElements['group'] & {
     enabled?: boolean
     axis?: string | null
@@ -28,51 +18,71 @@ type Props = TransformControls &
     showX?: boolean
     showY?: boolean
     showZ?: boolean
-    children: React.ReactElement<Object3D>
-    camera?: Camera
+    children: React.ReactElement<THREE.Object3D>
+    camera?: THREE.Camera
+    onChange?: (e?: THREE.Event) => void
+    onMouseDown?: (e?: THREE.Event) => void
+    onMouseUp?: (e?: THREE.Event) => void
+    onObjectChange?: (e?: THREE.Event) => void
   }
 
-export const TransformControls = React.forwardRef<TransformControlsImpl, Props>(({ children, ...props }, ref) => {
-  const transformOnlyPropNames = [
-    'enabled',
-    'axis',
-    'mode',
-    'translationSnap',
-    'rotationSnap',
-    'scaleSnap',
-    'space',
-    'size',
-    'showX',
-    'showY',
-    'showZ',
-  ]
+export const TransformControls = React.forwardRef<TransformControlsImpl, TransformControlsProps>(
+  ({ children, onChange, onMouseDown, onMouseUp, onObjectChange, ...props }, ref) => {
+    const transformOnlyPropNames = [
+      'enabled',
+      'axis',
+      'mode',
+      'translationSnap',
+      'rotationSnap',
+      'scaleSnap',
+      'space',
+      'size',
+      'showX',
+      'showY',
+      'showZ',
+    ]
 
-  const { camera, ...rest } = props
-  const transformProps = pick(rest, transformOnlyPropNames)
-  const objectProps = omit(rest, transformOnlyPropNames)
+    const { camera, ...rest } = props
+    const transformProps = pick(rest, transformOnlyPropNames)
+    const objectProps = omit(rest, transformOnlyPropNames)
 
-  const gl = useThree(({ gl }) => gl)
-  const defaultCamera = useThree(({ camera }) => camera)
-  const invalidate = useThree(({ invalidate }) => invalidate)
+    const gl = useThree(({ gl }) => gl)
+    const defaultCamera = useThree(({ camera }) => camera)
+    const invalidate = useThree(({ invalidate }) => invalidate)
 
-  const explCamera = camera || defaultCamera
+    const explCamera = camera || defaultCamera
 
-  const [controls] = React.useState(() => new TransformControlsImpl(explCamera, gl.domElement))
+    const [controls] = React.useState(() => new TransformControlsImpl(explCamera, gl.domElement))
 
-  const group = React.useRef<Group>()
-  React.useLayoutEffect(() => void controls?.attach(group.current as Object3D), [children, controls])
+    const group = React.useRef<THREE.Group>()
+    React.useLayoutEffect(() => void controls?.attach(group.current as THREE.Object3D), [children, controls])
 
-  React.useEffect(() => {
-    controls?.addEventListener?.('change', invalidate)
-    return () => controls?.removeEventListener?.('change', invalidate)
-  }, [controls, invalidate])
+    React.useEffect(() => {
+      const callback = (e: THREE.Event) => {
+        invalidate()
+        if (onChange) onChange(e)
+      }
 
-  return controls ? (
-    <>
-      <primitive ref={ref} dispose={undefined} object={controls} {...transformProps} />
-      <group ref={group} {...objectProps}>
-        {children}
-      </group>
-    </>
-  ) : null
-})
+      controls?.addEventListener?.('change', callback)
+      if (onMouseDown) controls?.addEventListener?.('mouseDown', onMouseDown)
+      if (onMouseUp) controls?.addEventListener?.('mouseUp', onMouseUp)
+      if (onObjectChange) controls?.addEventListener?.('objectChange', onObjectChange)
+
+      return () => {
+        controls?.removeEventListener?.('change', callback)
+        if (onMouseDown) controls?.removeEventListener?.('mouseDown', onMouseDown)
+        if (onMouseUp) controls?.removeEventListener?.('mouseUp', onMouseUp)
+        if (onObjectChange) controls?.removeEventListener?.('objectChange', onObjectChange)
+      }
+    }, [onChange, onMouseDown, onMouseUp, onObjectChange, controls, invalidate])
+
+    return controls ? (
+      <>
+        <primitive ref={ref} dispose={undefined} object={controls} {...transformProps} />
+        <group ref={group} {...objectProps}>
+          {children}
+        </group>
+      </>
+    ) : null
+  }
+)

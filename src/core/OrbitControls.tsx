@@ -1,6 +1,6 @@
 import { ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
-import { Event } from 'three'
+import * as THREE from 'three'
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 
 export type OrbitControlsProps = ReactThreeFiber.Overwrite<
@@ -12,9 +12,9 @@ export type OrbitControlsProps = ReactThreeFiber.Overwrite<
     regress?: boolean
     enableDamping?: boolean
     makeDefault?: boolean
-    onChange?: (e?: Event) => void
-    onStart?: (e?: Event) => void
-    onEnd?: (e?: Event) => void
+    onChange?: (e?: THREE.Event) => void
+    onStart?: (e?: THREE.Event) => void
+    onEnd?: (e?: THREE.Event) => void
   }
 >
 
@@ -35,7 +35,7 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
     })
 
     React.useEffect(() => {
-      const callback = (e) => {
+      const callback = (e: THREE.Event) => {
         invalidate()
         if (regress) performance.regress()
         if (onChange) onChange(e)
@@ -54,7 +54,7 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
         controls.dispose()
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [regress, controls, invalidate])
+    }, [onChange, onStart, onEnd, regress, controls, invalidate])
 
     React.useEffect(() => {
       if (makeDefault) {
@@ -65,6 +65,7 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
         // @ts-expect-error new in @react-three/fiber@7.0.5
         return () => set({ controls: old })
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [makeDefault, controls])
 
     return <primitive ref={ref} object={controls} enableDamping={enableDamping} {...restProps} />

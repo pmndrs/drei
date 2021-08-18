@@ -1,33 +1,42 @@
+import { ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
-import { ReactThreeFiber, useThree, useFrame } from '@react-three/fiber'
+import * as THREE from 'three'
 import { DeviceOrientationControls as DeviceOrientationControlsImp } from 'three-stdlib'
 
-export type DeviceOrientationControls = ReactThreeFiber.Object3DNode<
+export type DeviceOrientationControlsProps = ReactThreeFiber.Object3DNode<
   DeviceOrientationControlsImp,
   typeof DeviceOrientationControlsImp
 > & {
   camera?: THREE.Camera
+  onChange?: (e?: THREE.Event) => void
 }
 
-export const DeviceOrientationControls = React.forwardRef((props: DeviceOrientationControls, ref) => {
-  const { camera, ...rest } = props
-  const defaultCamera = useThree(({ camera }) => camera)
-  const invalidate = useThree(({ invalidate }) => invalidate)
-  const explCamera = camera || defaultCamera
-  const [controls] = React.useState(() => new DeviceOrientationControlsImp(explCamera))
+export const DeviceOrientationControls = React.forwardRef<DeviceOrientationControlsImp, DeviceOrientationControlsProps>(
+  (props: DeviceOrientationControlsProps, ref) => {
+    const { camera, onChange, ...rest } = props
+    const defaultCamera = useThree(({ camera }) => camera)
+    const invalidate = useThree(({ invalidate }) => invalidate)
+    const explCamera = camera || defaultCamera
+    const [controls] = React.useState(() => new DeviceOrientationControlsImp(explCamera))
 
-  React.useEffect(() => {
-    controls?.addEventListener?.('change', invalidate)
-    return () => controls?.removeEventListener?.('change', invalidate)
-  }, [controls, invalidate])
+    React.useEffect(() => {
+      const callback = (e: THREE.Event) => {
+        invalidate()
+        if (onChange) onChange(e)
+      }
 
-  useFrame(() => controls?.update())
+      controls?.addEventListener?.('change', callback)
+      return () => controls?.removeEventListener?.('change', callback)
+    }, [onChange, controls, invalidate])
 
-  React.useEffect(() => {
-    const current = controls
-    current?.connect()
-    return () => current?.dispose()
-  }, [controls])
+    useFrame(() => controls?.update())
 
-  return controls ? <primitive ref={ref} dispose={undefined} object={controls} {...rest} /> : null
-})
+    React.useEffect(() => {
+      const current = controls
+      current?.connect()
+      return () => current?.dispose()
+    }, [controls])
+
+    return controls ? <primitive ref={ref} dispose={undefined} object={controls} {...rest} /> : null
+  }
+)

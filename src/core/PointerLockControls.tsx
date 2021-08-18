@@ -1,13 +1,21 @@
-import * as React from 'react'
 import { ReactThreeFiber, useThree } from '@react-three/fiber'
+import * as React from 'react'
+import * as THREE from 'three'
 import { PointerLockControls as PointerLockControlsImpl } from 'three-stdlib'
 
-export type PointerLockControls = ReactThreeFiber.Object3DNode<PointerLockControlsImpl, typeof PointerLockControlsImpl>
+export type PointerLockControlsProps = ReactThreeFiber.Object3DNode<
+  PointerLockControlsImpl,
+  typeof PointerLockControlsImpl
+> & {
+  selector?: string
+  camera?: THREE.Camera
+  onChange?: (e?: THREE.Event) => void
+  onLock?: (e?: THREE.Event) => void
+  onUnlock?: (e?: THREE.Event) => void
+}
 
-export type PointerLockControlsProps = PointerLockControls & { selector?: string; camera?: THREE.Camera }
-
-export const PointerLockControls = React.forwardRef<PointerLockControls, PointerLockControlsProps>(
-  ({ selector, ...props }, ref) => {
+export const PointerLockControls = React.forwardRef<PointerLockControlsImpl, PointerLockControlsProps>(
+  ({ selector, onChange, onLock, onUnlock, ...props }, ref) => {
     const { camera, ...rest } = props
     const gl = useThree(({ gl }) => gl)
     const defaultCamera = useThree(({ camera }) => camera)
@@ -17,9 +25,22 @@ export const PointerLockControls = React.forwardRef<PointerLockControls, Pointer
     const [controls] = React.useState(() => new PointerLockControlsImpl(explCamera, gl.domElement))
 
     React.useEffect(() => {
-      controls?.addEventListener?.('change', invalidate)
-      return () => controls?.removeEventListener?.('change', invalidate)
-    }, [controls, invalidate])
+      const callback = (e: THREE.Event) => {
+        invalidate()
+        if (onChange) onChange(e)
+      }
+
+      controls?.addEventListener?.('change', callback)
+
+      if (onLock) controls?.addEventListener?.('lock', onLock)
+      if (onUnlock) controls?.addEventListener?.('unlock', onUnlock)
+
+      return () => {
+        controls?.removeEventListener?.('change', callback)
+        if (onLock) controls?.addEventListener?.('lock', onLock)
+        if (onUnlock) controls?.addEventListener?.('unlock', onUnlock)
+      }
+    }, [onChange, onLock, onUnlock, controls, invalidate])
 
     React.useEffect(() => {
       const handler = () => controls?.lock()

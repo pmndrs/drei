@@ -1,23 +1,23 @@
+import { ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
-import { PerspectiveCamera } from 'three'
-import { ReactThreeFiber, useThree, useFrame } from '@react-three/fiber'
+import * as THREE from 'three'
 import { TrackballControls as TrackballControlsImpl } from 'three-stdlib'
 
-export type TrackballControls = ReactThreeFiber.Overwrite<
+export type TrackballControlsProps = ReactThreeFiber.Overwrite<
   ReactThreeFiber.Object3DNode<TrackballControlsImpl, typeof TrackballControlsImpl>,
-  { target?: ReactThreeFiber.Vector3; camera?: THREE.Camera; regress?: boolean; makeDefault?: boolean }
+  {
+    target?: ReactThreeFiber.Vector3
+    camera?: THREE.Camera
+    regress?: boolean
+    makeDefault?: boolean
+    onChange?: (e?: THREE.Event) => void
+    onStart?: (e?: THREE.Event) => void
+    onEnd?: (e?: THREE.Event) => void
+  }
 >
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      trackballControlsImpl: TrackballControls
-    }
-  }
-}
-
-export const TrackballControls = React.forwardRef<TrackballControlsImpl, TrackballControls>(
-  ({ makeDefault, camera, regress, ...restProps }, ref) => {
+export const TrackballControls = React.forwardRef<TrackballControlsImpl, TrackballControlsProps>(
+  ({ makeDefault, camera, regress, onChange, onStart, onEnd, ...restProps }, ref) => {
     const invalidate = useThree(({ invalidate }) => invalidate)
     const defaultCamera = useThree(({ camera }) => camera)
     const gl = useThree(({ gl }) => gl)
@@ -26,7 +26,7 @@ export const TrackballControls = React.forwardRef<TrackballControlsImpl, Trackba
     const performance = useThree(({ performance }) => performance)
     const explCamera = camera || defaultCamera
     const controls = React.useMemo(
-      () => new TrackballControlsImpl(explCamera as PerspectiveCamera, gl.domElement),
+      () => new TrackballControlsImpl(explCamera as THREE.PerspectiveCamera, gl.domElement),
       [explCamera, gl.domElement]
     )
 
@@ -35,18 +35,24 @@ export const TrackballControls = React.forwardRef<TrackballControlsImpl, Trackba
     })
 
     React.useEffect(() => {
-      const callback = () => {
+      const callback = (e: THREE.Event) => {
         invalidate()
         if (regress) performance.regress()
+        if (onChange) onChange(e)
       }
 
       controls.addEventListener('change', callback)
+      if (onStart) controls.addEventListener('start', onStart)
+      if (onEnd) controls.addEventListener('end', onEnd)
+
       return () => {
         controls.removeEventListener('change', callback)
+        if (onStart) controls.removeEventListener('start', onStart)
+        if (onEnd) controls.removeEventListener('end', onEnd)
         controls.dispose()
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [regress, controls, invalidate])
+    }, [onChange, onStart, onEnd, regress, controls, invalidate])
 
     React.useEffect(() => {
       if (makeDefault) {
@@ -57,6 +63,7 @@ export const TrackballControls = React.forwardRef<TrackballControlsImpl, Trackba
         // @ts-expect-error new in @react-three/fiber@7.0.5
         return () => set({ controls: old })
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [makeDefault, controls])
 
     return <primitive ref={ref} object={controls} {...restProps} />

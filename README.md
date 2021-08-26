@@ -1171,7 +1171,7 @@ If you have async models you can drop it into the same suspense boundary _in con
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-meshbounds--mesh-bounds-st)
 
-A very fast, but often good-enough bounds-only raycast for meshes. You can use this if performance has precidence over pointer precision.
+A very fast, but often good-enough bounds-only raycast for meshes. You can use this if performance has precedence over pointer precision.
 
 ```jsx
 <mesh raycast={meshBounds} />

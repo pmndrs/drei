@@ -234,9 +234,14 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
     useFrame(() => {
       if (!meshRef?.current) return
       meshRef.current.visible = false
+      const currentXrEnabled = gl.xr.enabled
+      const currentShadowAutoUpdate = gl.shadowMap.autoUpdate
       beforeRender()
+      gl.xr.enabled = false
+      gl.shadowMap.autoUpdate = false
       gl.setRenderTarget(fbo1)
       gl.state.buffers.depth.setMask(true)
+      if (!gl.autoClear) gl.clear()
       gl.render(scene, virtualCamera)
       if (mixBlur !== 0) {
         renderTargets.forEach((fbo) => {
@@ -245,6 +250,8 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
           gl.render(scene, virtualCamera)
         })
       }
+      gl.xr.enabled = currentXrEnabled
+      gl.shadowMap.autoUpdate = currentShadowAutoUpdate
       meshRef.current.visible = true
       gl.setRenderTarget(null)
     })

@@ -24,6 +24,7 @@ export * from './OrbitControls'
 export * from './TrackballControls'
 export * from './TransformControls'
 export * from './PointerLockControls'
+export * from './FirstPersonControls'
 
 // Gizmos
 export * from './GizmoHelper'

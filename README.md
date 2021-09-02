@@ -1050,10 +1050,10 @@ const [texture1, texture2] = useTexture([texture1, texture2])
 You can also use key: url objects:
 
 ```jsx
-const props = useTexture(  const pbr = useTextures({
+const props = useTextures({
   metalnessMap: url1,
   map: url2
-}))
+})
 return <meshStandardMaterial {...props} />
 ```
 

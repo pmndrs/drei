@@ -1050,7 +1050,7 @@ const [texture1, texture2] = useTexture([texture1, texture2])
 You can also use key: url objects:
 
 ```jsx
-const props = useTextures({
+const props = useTexture({
   metalnessMap: url1,
   map: url2
 })

@@ -11,7 +11,14 @@ export default {
 }
 
 function TexturedMeshes() {
+  // a convenience hook that uses useLoader and TextureLoader
   const [matcap1, matcap2] = useTexture(['matcap-1.png', 'matcap-2.png'])
+
+  // you can also use key: url objects:
+  const props = useTexture({
+    map: 'matcap-1.png',
+    metalnessMap: 'matcap-2.png',
+  })
 
   return (
     <>
@@ -20,6 +27,9 @@ function TexturedMeshes() {
       </Icosahedron>
       <Icosahedron position={[2, 0, 0]}>
         <meshMatcapMaterial matcap={matcap2} attach="material" />
+      </Icosahedron>
+      <Icosahedron position={[6, 0, 0]}>
+        <meshStandardMaterial {...props} metalness={1} />
       </Icosahedron>
     </>
   )

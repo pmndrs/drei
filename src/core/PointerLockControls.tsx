@@ -45,9 +45,9 @@ export const PointerLockControls = React.forwardRef<PointerLockControlsImpl, Poi
     React.useEffect(() => {
       const handler = () => controls?.lock()
       const elements = selector ? Array.from(document.querySelectorAll(selector)) : [document]
-      elements.map((element) => element && element.addEventListener('click', handler))
+      elements.forEach((element) => element && element.addEventListener('click', handler))
       return () => {
-        elements.map((element) => (element ? element.removeEventListener('click', handler) : undefined))
+        elements.forEach((element) => (element ? element.removeEventListener('click', handler) : undefined))
       }
     }, [controls, selector])
 

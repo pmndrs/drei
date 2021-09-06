@@ -251,7 +251,7 @@ return (
 )
 ```
 
-PointerLockControls additionally supports a `selector` prop, which enables the binding of `click` event handlers for control activation to other elements than `document` (e.g. a 'Click here to play' button).
+PointerLockControls additionally supports a `selector` prop, which enables the binding of `click` event handlers for control activation to other elements than `document` (e.g. a 'Click here to play' button). All elements matching the `selector` prop will activate the controls.
 
 # Shapes
 
@@ -379,7 +379,6 @@ A wrapper around [THREE.PositionalAudio](https://threejs.org/docs/index.html#api
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-billboard--billboard-st)
 
 Adds a `<group />` that always faces the camera.
-
 
 ```jsx
 <Billboard

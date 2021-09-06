@@ -81,6 +81,18 @@ function PointerLockControlsSceneWithSelector() {
         <Icosahedrons />
         <PointerLockControls selector="#instructions" />
       </Setup>
+      <div
+        id="instructions"
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '2em',
+          background: 'white',
+        }}
+      >
+        Click here to play
+      </div>
     </>
   )
 }

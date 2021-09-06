@@ -53,9 +53,8 @@ function isObjectVisible(el: Object3D, camera: Camera, raycaster: Raycaster, occ
     const intersectionDistance = intersects[0].distance
     const pointDistance = elPos.distanceTo(raycaster.ray.origin)
     return pointDistance < intersectionDistance
-  } else {
-    return true
   }
+  return true
 }
 
 function objectScale(el: Object3D, camera: Camera) {

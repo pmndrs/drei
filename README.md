@@ -1166,12 +1166,34 @@ A wrapper around [THREE.Points](https://threejs.org/docs/index.html?q=points#api
 </Points>
 ```
 
+You can nest Points and use relative coordinates!
+
+```jsx
+<group position={[1, 2, 3]} rotation={[Math.PI / 2, 0, 0]}>
+  <Point />
+</group>
+```
+
 Points can also receive non-instanced objects, for instance annotations!
 
 ```jsx
 <Point>
   <Html>hello from the dom</Html>
 </Point>
+```
+
+You can define events on them!
+
+```jsx
+<Point onClick={...} onPointerOver={...} />
+```
+
+If you have a material that supports vertex colors (like drei/PointMaterial) you can have individual colors!
+
+```jsx
+<Points>
+  <PointMaterial />
+  <Point color="hotpink" />
 ```
 
 #### Instances
@@ -1185,8 +1207,13 @@ A wrapper around [THREE.InstancedMesh](https://threejs.org/docs/index.html?q=ins
 >
   <boxGeometry />
   <meshStandardMaterial />
-  <Instance position={[1, 2, 3]} rotation={[Math.PI / 3, 0, 0]} scale={2} color="red" onClick={onClick} ... />
-  // ...
+  <Instance
+    color="red"
+    scale={2}
+    position={[1, 2, 3]}
+    rotation={[Math.PI / 3, 0, 0]}
+    onClick={onClick} ... />
+  // As many as you want, make them conditional, mount/unmount them, lazy load them, etc ...
 </Instances>
 ```
 

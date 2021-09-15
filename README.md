@@ -68,6 +68,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <ul>
           <li><a href="#meshwobblematerial">MeshWobbleMaterial</a></li>
           <li><a href="#meshdistortmaterial">MeshDistortMaterial</a></li>
+          <li><a href="#pointmaterial">PointMaterial</a></li>
           <li><a href="#sky">Sky</a></li>
           <li><a href="#stars">Stars</a></li>
           <li><a href="#contactshadows">ContactShadows</a></li>
@@ -145,6 +146,8 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         </ul>
         <li><a href="#performance">Performance</a></li>
         <ul>
+          <li><a href="#points">Points</a></li>
+          <li><a href="#instances">Instances</a></li>
           <li><a href="#detailed">Detailed</a></li>
           <li><a href="#preload">Preload</a></li>
           <li><a href="#meshbounds">meshBounds</a></li>
@@ -236,7 +239,7 @@ If available controls have damping enabled by default, they manage their own upd
 
 Some controls allow you to set `makeDefault`, similar to, for instance, PerspectiveCamera. This will set react-three-fiber's `controls` field in the root store. This can make it easier in situations where you want controls to be known and other parts of the app could respond to it. Some drei controls already take it into account, like CameraShake and Gizmo.
 
-Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-scene-st), TrackballControls, FlyControls, DeviceOrientationControls, TransformControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-transformcontrols--transform-controls-story), PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st), FirstPersonControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-firstpersoncontrols--first-person-controls-story) 
+Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-scene-st), TrackballControls, FlyControls, DeviceOrientationControls, TransformControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-transformcontrols--transform-controls-story), PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st), FirstPersonControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-firstpersoncontrols--first-person-controls-story)
 
 Every control component can be used with a custom camera using the `camera` prop:
 
@@ -512,6 +515,16 @@ This material makes your geometry distort following simplex noise.
   <boxBufferGeometry attach="geometry" />
   <MeshDistortMaterial attach="material" distort={1} speed={10} />
 </mesh>
+```
+
+#### PointMaterial
+
+An antialiased round dot that always keeps the same size.
+
+```jsx
+<points>
+  <PointMaterial scale={20} />
+</points>
 ```
 
 #### Sky
@@ -1051,7 +1064,7 @@ You can also use key: url objects:
 ```jsx
 const props = useTexture({
   metalnessMap: url1,
-  map: url2
+  map: url2,
 })
 return <meshStandardMaterial {...props} />
 ```
@@ -1137,6 +1150,45 @@ Make sure to set the `makeDefault` prop on your controls, in that case you do no
 ```
 
 # Performance
+
+#### Points
+
+A wrapper around [THREE.Points](https://threejs.org/docs/index.html?q=points#api/en/objects/Points). This allows you to define hundreds of thousands of points in a single draw call, but declaratively!
+
+```jsx
+<Points
+  limit={1000} // Optional: max amount of items (for calculating buffer size)
+  range={1000} // Optional: draw-range
+>
+  <pointsMaterial />
+  <Point position={[1, 2, 3]} color="red" onClick={onClick} onPointerOver={onPointerOver} ... />
+  // As many as you want, make them conditional, mount/unmount them, lazy load them, etc ...
+</Points>
+```
+
+Points can also receive non-instanced objects, for instance annotations!
+
+```jsx
+<Point>
+  <Html>hello from the dom</Html>
+</Point>
+```
+
+#### Instances
+
+A wrapper around [THREE.InstancedMesh](https://threejs.org/docs/index.html?q=instan#api/en/objects/InstancedMesh). It has the same api and properties as Points.
+
+```jsx
+<Instances
+  limit={1000} // Optional: max amount of items (for calculating buffer size)
+  range={1000} // Optional: draw-range
+>
+  <boxGeometry />
+  <meshStandardMaterial />
+  <Instance position={[1, 2, 3]} rotation={[Math.PI / 3, 0, 0]} scale={2} color="red" onClick={onClick} ... />
+  // ...
+</Instances>
+```
 
 #### Detailed
 

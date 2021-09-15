@@ -3,7 +3,6 @@ import * as React from 'react'
 import { extend, useFrame } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
 import { Position } from '../helpers/Position'
-import { BufferAttribute } from 'three'
 
 type Api = {
   subscribe: (ref) => void

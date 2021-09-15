@@ -62,6 +62,7 @@ export * from './CurveModifier'
 // Shaders
 export * from './MeshDistortMaterial'
 export * from './MeshWobbleMaterial'
+export * from './PointMaterial'
 export * from './shaderMaterial'
 export * from './Sky'
 export * from './softShadows'
@@ -80,6 +81,8 @@ export * from './useNormalTexture'
 export * from './Stage'
 
 // Performance
+export * from './Points'
+export * from './Instances'
 export * from './Detailed'
 export * from './Preload'
 export * from './meshBounds'

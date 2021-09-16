@@ -14,6 +14,7 @@ type PointsProps = JSX.IntrinsicElements['points'] & {
 }
 
 const context = React.createContext<Api>(null!)
+const m = new THREE.Matrix4()
 const v = new THREE.Vector3()
 const c = new THREE.Color()
 let i
@@ -34,10 +35,9 @@ function Points({ children, range, limit = 1000, ...props }: PointsProps) {
   )
 
   useFrame(() => {
+    m.copy(ref.current.matrixWorld).invert()
     for (i = 0; i < refs.length; i++) {
-      refs[i].current.updateMatrix()
-      refs[i].current.matrixWorldNeedsUpdate = false
-      refs[i].current.getWorldPosition(v)
+      refs[i].current.getWorldPosition(v).applyMatrix4(m)
       if (v.x !== positions[i * 3] || v.y !== positions[i * 3 + 1] || v.z !== positions[i * 3 + 2]) {
         v.toArray(positions, i * 3)
         ref.current.geometry.attributes.position.needsUpdate = true
@@ -90,7 +90,7 @@ const Point = React.forwardRef(({ children, ...props }, ref) => {
   const { subscribe } = React.useContext(context)
   React.useLayoutEffect(() => subscribe(group), [])
   return (
-    <position matrixAutoUpdate={false} ref={mergeRefs([ref, group])} {...props}>
+    <position ref={mergeRefs([ref, group])} {...props}>
       {children}
     </position>
   )

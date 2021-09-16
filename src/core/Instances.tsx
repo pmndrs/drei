@@ -19,7 +19,9 @@ type InstancedMesh = Omit<THREE.InstancedMesh, 'instanceMatrix' | 'instanceColor
 }
 
 const context = React.createContext<Api>(null!)
-const m = new THREE.Matrix4()
+const m1 = new THREE.Matrix4()
+const m2 = new THREE.Matrix4()
+const m3 = new THREE.Matrix4()
 const c = new THREE.Color()
 let i
 
@@ -40,11 +42,13 @@ function Instances({ children, range, limit = 1000, ...props }: InstancesProps) 
   }, [refs, range])
 
   useFrame(() => {
+    m1.copy(ref.current.matrixWorld).invert()
     for (i = 0; i < refs.length; i++) {
-      refs[i].current.updateMatrix()
-      refs[i].current.matrixWorldNeedsUpdate = false
-      if (!refs[i].current.matrixWorld.equals(m.fromArray(matrices, i * 16))) {
-        refs[i].current.matrixWorld.toArray(matrices, i * 16)
+      // Multiply the inverse of the InstancedMesh world matrix or else
+      // <Instance> will be double-transformed if <Instances> isn't at identity
+      m2.copy(refs[i].current.matrixWorld).multiply(m1)
+      if (!m1.equals(m3.fromArray(matrices, i * 16))) {
+        m2.toArray(matrices, i * 16)
         ref.current.instanceMatrix.needsUpdate = true
       }
       if (!refs[i].current.color.equals(c.fromArray(colors, i * 3))) {
@@ -91,7 +95,7 @@ const Instance = React.forwardRef(({ children, ...props }, ref) => {
   const { subscribe } = React.useContext(context)
   React.useLayoutEffect(() => subscribe(group), [])
   return (
-    <position matrixAutoUpdate={false} ref={mergeRefs([ref, group])} {...props}>
+    <position ref={mergeRefs([ref, group])} {...props}>
       {children}
     </position>
   )

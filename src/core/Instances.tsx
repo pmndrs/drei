@@ -47,7 +47,7 @@ function Instances({ children, range, limit = 1000, ...props }: InstancesProps) 
       // Multiply the inverse of the InstancedMesh world matrix or else
       // <Instance> will be double-transformed if <Instances> isn't at identity
       m2.copy(refs[i].current.matrixWorld).multiply(m1)
-      if (!m1.equals(m3.fromArray(matrices, i * 16))) {
+      if (!m2.equals(m3.fromArray(matrices, i * 16))) {
         m2.toArray(matrices, i * 16)
         ref.current.instanceMatrix.needsUpdate = true
       }

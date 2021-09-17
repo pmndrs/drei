@@ -180,6 +180,12 @@ A responsive [THREE.PerspectiveCamera](https://threejs.org/docs/index.html#api/e
 
 A responsive [THREE.OrthographicCamera](https://threejs.org/docs/index.html#api/en/cameras/OrthographicCamera) that can set itself as the default.
 
+```jsx
+<OrthographicCamera makeDefault {...props}>
+  <mesh />
+</OrthographicCamera>
+```
+
 #### CameraShake
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/camera-camerashake--camera-shake-st)

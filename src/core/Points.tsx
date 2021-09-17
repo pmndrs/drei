@@ -13,38 +13,48 @@ type PointsProps = JSX.IntrinsicElements['points'] & {
   limit?: number
 }
 
+let i, positionRef
 const context = React.createContext<Api>(null!)
-const m = new THREE.Matrix4()
-const v = new THREE.Vector3()
-const c = new THREE.Color()
-let i
+const parentMatrix = new THREE.Matrix4()
+const position = new THREE.Vector3()
+const color = new THREE.Color()
 
 function Points({ children, range, limit = 1000, ...props }: PointsProps) {
-  const ref = React.useRef<THREE.Points>(null!)
+  const parentRef = React.useRef<THREE.Points>(null!)
   const [refs, setRefs] = React.useState<React.MutableRefObject<Position>[]>([])
-  const [[positions, colors]] = React.useState(() => {
-    const positions = [...new Array(limit * 3)].map(() => 0)
-    const colors = [...new Array(limit * 3)].map(() => 1)
-    return [new Float32Array(positions), new Float32Array(colors)]
+  const [[positions, colors]] = React.useState(() => [
+    new Float32Array(limit * 3),
+    new Float32Array([...new Array(limit * 3)].map(() => 1)),
+  ])
+
+  React.useLayoutEffect(() => {
+    parentRef.current.geometry.drawRange.count = Math.min(limit, range !== undefined ? range : limit, refs.length)
+  }, [refs, range])
+
+  React.useEffect(() => {
+    // We might be a frame too late? 🤷‍♂️
+    parentRef.current.geometry.attributes.position.needsUpdate = true
   })
 
-  React.useLayoutEffect(
-    () =>
-      void (ref.current.geometry.drawRange.count = Math.min(limit, range !== undefined ? range : limit, refs.length)),
-    [refs, range]
-  )
-
   useFrame(() => {
-    m.copy(ref.current.matrixWorld).invert()
+    parentRef.current.updateMatrix()
+    parentRef.current.updateMatrixWorld()
+    parentMatrix.copy(parentRef.current.matrixWorld).invert()
     for (i = 0; i < refs.length; i++) {
-      refs[i].current.getWorldPosition(v).applyMatrix4(m)
-      if (v.x !== positions[i * 3] || v.y !== positions[i * 3 + 1] || v.z !== positions[i * 3 + 2]) {
-        v.toArray(positions, i * 3)
-        ref.current.geometry.attributes.position.needsUpdate = true
+      positionRef = refs[i].current
+      positionRef.getWorldPosition(position).applyMatrix4(parentMatrix)
+      if (
+        position.x !== positions[i * 3] ||
+        position.y !== positions[i * 3 + 1] ||
+        position.z !== positions[i * 3 + 2]
+      ) {
+        position.toArray(positions, i * 3)
+        parentRef.current.geometry.attributes.position.needsUpdate = true
+        positionRef.matrixWorldNeedsUpdate = true
       }
-      if (!refs[i].current.color.equals(c.fromArray(colors, i * 3))) {
-        refs[i].current.color.toArray(colors, i * 3)
-        ref.current.geometry.attributes.color.needsUpdate = true
+      if (!positionRef.color.equals(color.fromArray(colors, i * 3))) {
+        positionRef.color.toArray(colors, i * 3)
+        parentRef.current.geometry.attributes.color.needsUpdate = true
       }
     }
   })
@@ -69,7 +79,7 @@ function Points({ children, range, limit = 1000, ...props }: PointsProps) {
   )
 
   return (
-    <points ref={ref} {...events} {...props}>
+    <points matrixAutoUpdate={false} ref={parentRef} {...events} {...props}>
       <bufferGeometry>
         <bufferAttribute
           attachObject={['attributes', 'position']}

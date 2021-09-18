@@ -39,7 +39,7 @@ type ControlsProto = { update(): void; target: THREE.Vector3 }
 export type GizmoHelperProps = JSX.IntrinsicElements['group'] & {
   alignment?: 'top-left' | 'top-right' | 'bottom-right' | 'bottom-left'
   margin?: [number, number]
-  onUpdate: () => void // update controls during animation
+  onUpdate?: () => void // update controls during animation
   // TODO: in a new major state.controls should be the only means of consuming controls, the
   // onTarget prop can then be removed!
   onTarget?: () => Vector3 // return the target to rotate around

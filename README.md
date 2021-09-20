@@ -563,6 +563,12 @@ A [contact shadow](https://threejs.org/examples/?q=con#webgl_shadow_contact) imp
 <ContactShadows opacity={1} width={1} height={1} blur={1} far={10} resolution={256} />
 ```
 
+Since this is a rather expensive effect you can limit the amount of frames it renders when your objects are static. For instance making it render only once:
+
+```jsx
+<ContactShadows frames={1} />
+```
+
 #### Reflector
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-reflector--reflector-st)

@@ -146,8 +146,9 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         </ul>
         <li><a href="#performance">Performance</a></li>
         <ul>
-          <li><a href="#points">Points</a></li>
           <li><a href="#instances">Instances</a></li>
+          <li><a href="#merged">Merged</a></li>
+          <li><a href="#points">Points</a></li>          
           <li><a href="#detailed">Detailed</a></li>
           <li><a href="#preload">Preload</a></li>
           <li><a href="#meshbounds">meshBounds</a></li>
@@ -1163,54 +1164,9 @@ Make sure to set the `makeDefault` prop on your controls, in that case you do no
 
 # Performance
 
-#### Points
-
-A wrapper around [THREE.Points](https://threejs.org/docs/index.html?q=points#api/en/objects/Points). This allows you to define hundreds of thousands of points in a single draw call, but declaratively!
-
-```jsx
-<Points
-  limit={1000} // Optional: max amount of items (for calculating buffer size)
-  range={1000} // Optional: draw-range
->
-  <pointsMaterial />
-  <Point position={[1, 2, 3]} color="red" onClick={onClick} onPointerOver={onPointerOver} ... />
-  // As many as you want, make them conditional, mount/unmount them, lazy load them, etc ...
-</Points>
-```
-
-You can nest Points and use relative coordinates!
-
-```jsx
-<group position={[1, 2, 3]} rotation={[Math.PI / 2, 0, 0]}>
-  <Point />
-</group>
-```
-
-Points can also receive non-instanced objects, for instance annotations!
-
-```jsx
-<Point>
-  <Html>hello from the dom</Html>
-</Point>
-```
-
-You can define events on them!
-
-```jsx
-<Point onClick={...} onPointerOver={...} />
-```
-
-If you have a material that supports vertex colors (like drei/PointMaterial) you can have individual colors!
-
-```jsx
-<Points>
-  <PointMaterial />
-  <Point color="hotpink" />
-```
-
 #### Instances
 
-A wrapper around [THREE.InstancedMesh](https://threejs.org/docs/index.html?q=instan#api/en/objects/InstancedMesh). It has the same api and properties as Points.
+A wrapper around [THREE.InstancedMesh](https://threejs.org/docs/index.html?q=instan#api/en/objects/InstancedMesh). This allows you to define hundreds of thousands of objects in a single draw call, but declaratively!
 
 ```jsx
 <Instances
@@ -1227,6 +1183,93 @@ A wrapper around [THREE.InstancedMesh](https://threejs.org/docs/index.html?q=ins
     onClick={onClick} ... />
   // As many as you want, make them conditional, mount/unmount them, lazy load them, etc ...
 </Instances>
+```
+
+You can nest Instances and use relative coordinates!
+
+```jsx
+<group position={[1, 2, 3]} rotation={[Math.PI / 2, 0, 0]}>
+  <Instance />
+</group>
+```
+
+Instances can also receive non-instanced objects, for instance annotations!
+
+```jsx
+<Instance>
+  <Html>hello from the dom</Html>
+</Instance>
+```
+
+You can define events on them!
+
+```jsx
+<Instance onClick={...} onPointerOver={...} />
+```
+
+#### Merged
+
+This creates instances for existing meshes and allows you to use them cheaply in the same scene graph. Each type will cost you exactly one draw call, no matter how many you use.
+
+```jsx
+<Merged meshes={[box, sphere]}>
+  {(Box, Sphere) => (
+    <>
+      <Box position={[-2, -2, 0]} color="red" />
+      <Box position={[-3, -3, 0]} color="tomato" />
+      <Sphere scale={0.7} position={[2, 1, 0]} color="green" />
+      <Sphere scale={0.7} position={[3, 2, 0]} color="teal" />
+    </>
+  )}
+</Merged>
+```
+
+You may also use object notation, which is good for loaded models.
+
+````jsx
+function Model({ url }) {
+  const { nodes } = useGLTF(url)
+  return (
+    <Merged meshes={nodes}>
+      {({ Screw, Filter, Pipe }) => (
+        <>
+          <Screw />
+          <Filter position={[1, 2, 3]} />
+          <Pipe position={[4, 5, 6]} />
+        </>
+      )}
+    </Merged>
+  )
+}
+
+#### Points
+
+A wrapper around [THREE.Points](https://threejs.org/docs/index.html?q=points#api/en/objects/Points). It has the same api and properties as Points.
+
+```jsx
+<Points
+  limit={1000} // Optional: max amount of items (for calculating buffer size)
+  range={1000} // Optional: draw-range
+>
+  <pointsMaterial />
+  <Point position={[1, 2, 3]} color="red" onClick={onClick} onPointerOver={onPointerOver} ... />
+  // As many as you want, make them conditional, mount/unmount them, lazy load them, etc ...
+</Points>
+````
+
+If you have a material that supports vertex colors (like drei/PointMaterial) you can have individual colors!
+
+```jsx
+<Points>
+  <PointMaterial />
+  <Point color="hotpink" />
+```
+
+Otherwise use any material you like:
+
+```jsx
+<Points>
+  <pointsMaterial vertexColors size={10} />
 ```
 
 #### Detailed

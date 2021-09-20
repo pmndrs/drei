@@ -139,7 +139,6 @@ const Instances = React.forwardRef(
           array={matrices}
           itemSize={16}
           usage={THREE.DynamicDrawUsage}
-          needsUpdate={true}
         />
         <instancedBufferAttribute
           attach="instanceColor"
@@ -147,7 +146,6 @@ const Instances = React.forwardRef(
           array={colors}
           itemSize={3}
           usage={THREE.DynamicDrawUsage}
-          needsUpdate={true}
         />
         {typeof children === 'function' ? (
           <context.Provider value={api}>{children(instance)}</context.Provider>

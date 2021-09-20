@@ -87,12 +87,14 @@ const Points = React.forwardRef(
             count={positions.length / 3}
             array={positions}
             itemSize={3}
+            usage={THREE.DynamicDrawUsage}
           />
           <bufferAttribute
             attachObject={['attributes', 'color']}
             count={colors.length / 3}
             array={colors}
             itemSize={3}
+            usage={THREE.DynamicDrawUsage}
           />
         </bufferGeometry>
         <context.Provider value={api}>{children}</context.Provider>

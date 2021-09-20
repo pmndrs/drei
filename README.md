@@ -1226,7 +1226,7 @@ This creates instances for existing meshes and allows you to use them cheaply in
 
 You may also use object notation, which is good for loaded models.
 
-````jsx
+```jsx
 function Model({ url }) {
   const { nodes } = useGLTF(url)
   return (
@@ -1241,6 +1241,7 @@ function Model({ url }) {
     </Merged>
   )
 }
+```
 
 #### Points
 

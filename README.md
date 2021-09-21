@@ -151,6 +151,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#points">Points</a></li>          
           <li><a href="#detailed">Detailed</a></li>
           <li><a href="#preload">Preload</a></li>
+          <li><a href="#bakeshadows">BakeShadows</a></li>
           <li><a href="#meshbounds">meshBounds</a></li>
           <li><a href="#adaptivedpr">AdaptiveDpr</a></li>
           <li><a href="#adaptiveevents">AdaptiveEvents</a></li>
@@ -1256,7 +1257,7 @@ A wrapper around [THREE.Points](https://threejs.org/docs/index.html?q=points#api
   <Point position={[1, 2, 3]} color="red" onClick={onClick} onPointerOver={onPointerOver} ... />
   // As many as you want, make them conditional, mount/unmount them, lazy load them, etc ...
 </Points>
-````
+```
 
 If you have a material that supports vertex colors (like drei/PointMaterial) you can have individual colors!
 
@@ -1293,13 +1294,22 @@ The WebGLRenderer will compile materials only when they hit the frustrum, which 
 
 By default gl.compile will only preload visible objects, if you supply the `all` prop, it will circumvent that. With the `scene` and `camera` props you could also use it in portals.
 
-If you have async models you can drop it into the same suspense boundary _in concurrent mode_.
-
 ```jsx
-<Canvas concurrent>
+<Canvas>
   <Suspense fallback={null}>
     <Model />
     <Preload all />
+```
+
+#### BakeShadows
+
+Sets `gl.shadowMap.autoUpdate` to `false` while mounted and requests a single `gl.shadowMap.needsUpdate = true` afterwards. This freezes all shadow maps the moment this component comes in, which makes shadows performant again (with the downside that they are now static). Mount this component in lock-step with your models, for instance by dropping it into the same suspense boundary of a model that loads.
+
+```jsx
+<Canvas>
+  <Suspense fallback={null}>
+    <Model />
+    <BakeShadows />
 ```
 
 #### meshBounds

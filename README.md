@@ -1245,7 +1245,7 @@ function Model({ url }) {
 
 #### Points
 
-A wrapper around [THREE.Points](https://threejs.org/docs/index.html?q=points#api/en/objects/Points). It has the same api and properties as Points.
+A wrapper around [THREE.Points](https://threejs.org/docs/index.html?q=points#api/en/objects/Points). It has the same api and properties as Instances.
 
 ```jsx
 <Points

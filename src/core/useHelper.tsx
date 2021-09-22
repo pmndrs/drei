@@ -28,6 +28,9 @@ export function useHelper<T>(object3D: React.MutableRefObject<Object3D | undefin
   useFrame(() => {
     if (helper.current?.update) {
       helper.current.update()
+    } else if (helper.current && object3D.current) {
+      helper.current.position.copy(object3D.current.position)
+      helper.current.quaternion.copy(object3D.current.quaternion)
     }
   })
 

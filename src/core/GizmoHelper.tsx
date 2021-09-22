@@ -39,6 +39,7 @@ type ControlsProto = { update(): void; target: THREE.Vector3 }
 export type GizmoHelperProps = JSX.IntrinsicElements['group'] & {
   alignment?: 'top-left' | 'top-right' | 'bottom-right' | 'bottom-left'
   margin?: [number, number]
+  renderPriority?: number
   onUpdate?: () => void // update controls during animation
   // TODO: in a new major state.controls should be the only means of consuming controls, the
   // onTarget prop can then be removed!
@@ -48,6 +49,7 @@ export type GizmoHelperProps = JSX.IntrinsicElements['group'] & {
 export const GizmoHelper = ({
   alignment = 'bottom-right',
   margin = [80, 80],
+  renderPriority = 1,
   onUpdate,
   onTarget,
   children: GizmoHelperComponent,
@@ -139,7 +141,7 @@ export const GizmoHelper = ({
       gl.clearDepth()
       gl.render(virtualScene, virtualCam.current)
     }
-  })
+  }, renderPriority)
 
   const gizmoHelperContext = {
     tweenCamera,

@@ -94,6 +94,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#usedetectgpu">useDetectGPU</a></li>
           <li><a href="#usehelper">useHelper</a></li>
           <li><a href="#useaspect">useAspect</a></li>
+          <li><a href="#usecursor">useCursor</a></li>
         </ul>
         <li><a href="#loading">Loaders</a></li>
         <ul>
@@ -903,6 +904,17 @@ return (
   <mesh scale={scale}>
     <planeBufferGeometry />
     <meshBasicMaterial map={imageTexture} />
+```
+
+#### useCursor
+
+A small hook that sets the css body cursor according to the hover state of a mesh, so that you can give the use visual feedback when the mouse enters a shape. Arguments 1 and 2 determine the style, the defaults are: onPointerOver = 'pointer', onPointerOut = 'auto'.
+
+```jsx
+const [hovered, set] = useState()
+useCursor(hovered, /*'pointer', 'auto'*/)
+return (
+  <mesh onPointerOver={() => set(true)} onPointerOut={() => set(false)}>
 ```
 
 # Modifiers

@@ -416,6 +416,7 @@ Make sure to set the `makeDefault` prop on your controls, in that case you do no
   margin={[80, 80]} // widget margins (X, Y)
   onUpdate={/* called during camera animation  */}
   onTarget={/* return current camera target (e.g. from orbit controls) to center animation */}
+  renderPriority={/* use renderPriority to prevent the helper from disappearing if there is another useFrame(..., 1)*/}
 >
   <GizmoViewport axisColors={['red', 'green', 'blue']} labelColor="black" />
   {/* alternative: <GizmoViewcube /> */}

@@ -64,7 +64,13 @@ const Points = React.forwardRef(
       const events = {}
       for (i = 0; i < refs.length; i++) Object.assign(events, (refs[i].current as any)?.__r3f.handlers)
       return Object.keys(events).reduce(
-        (prev, key) => ({ ...prev, [key]: (e) => (refs[e.index].current as any)?.__r3f?.handlers?.[key](e) }),
+        (prev, key) => ({
+          ...prev,
+          [key]: (event) => {
+            const object = refs[event.index].current
+            return (object as any)?.__r3f?.handlers?.[key]({ ...event, object })
+          },
+        }),
         {}
       )
     }, [refs])

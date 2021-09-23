@@ -1,6 +1,5 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { useRef, useEffect } from 'react'
 import { useThree } from '@react-three/fiber'
 
 const noReactDomError = () => {
@@ -36,15 +35,15 @@ export function CycleRaycast({
   scroll = true,
   keyCode = 9,
 }: CycleRaycastProps) {
-  const cycle = useRef(0)
+  const cycle = React.useRef(0)
   const raycaster = useThree((state) => state.raycaster)
   const get = useThree((state) => state.get)
   const gl = useThree((state) => state.gl)
 
-  useEffect(() => {
+  React.useEffect(() => {
     let hits: THREE.Intersection[] = []
     let lastEvent: PointerEvent = undefined!
-    let prev = raycaster.filter
+    const prev = raycaster.filter
     const target = portal?.current ?? gl.domElement.parentNode
 
     // Create dom status

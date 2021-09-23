@@ -14,7 +14,9 @@ function extensions(useDraco: boolean | string, useMeshopt: boolean, extendLoade
       ;(loader as GLTFLoader).setDRACOLoader(dracoLoader)
     }
     if (useMeshopt) {
-      ;(loader as GLTFLoader).setMeshoptDecoder(MeshoptDecoder)
+      ;(loader as GLTFLoader).setMeshoptDecoder(
+        typeof MeshoptDecoder === 'function' ? MeshoptDecoder() : MeshoptDecoder
+      )
     }
   }
 }

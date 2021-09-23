@@ -84,6 +84,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <li><a href="#misc">Misc</a></li>
         <ul>
           <li><a href="#html">Html</a></li>
+          <li><a href="#cycleraycast">CycleRaycast</a></li>
           <li><a href="#shadow">Shadow</a></li>
           <li><a href="#stats">Stats</a></li>
           <li><a href="#center">Center</a></li>
@@ -764,6 +765,23 @@ const [hidden, set] = useState()
     opacity: hidden ? 0 : 1,
     transform: `scale(${hidden ? 0.5 : 1})`
   }} />
+```
+
+#### CycleRaycast
+
+This component allows you to cycle through all objects underneath the cursor with optional visual feedback. This can be useful for non-trivial selection, CAD data, housing, everything that has layers. It does this by changing the raycasters filter function and then refreshing the raycaster.
+
+For this to work properly your event handler have to call `event.stopPropagation()`, for instance in `onPointerOver` or `onClick`, only one element can be selective for cycling to make sense.
+
+```jsx
+<CycleRaycast
+  preventDefault={true} // Call event.preventDefault() (default: true)
+  scroll={true} // Wheel events (default: true)
+  keyCode={9} // Keyboard events (default: 9 [Tab])
+>
+  {/* Optional: draw custom HTML status */}
+  {(objects, cycle) => objects.map((obj, i) => <span>{i === cycle ? '🔴' : '⚫️'}</span>)}
+</CycleRaycast>
 ```
 
 #### Shadow

@@ -26,7 +26,7 @@ export function useHelper<T>(object3D: React.MutableRefObject<Object3D | undefin
   }, [scene, proto, object3D, args])
 
   useFrame(() => {
-    if (helper.current) {
+    if (helper.current?.update) {
       helper.current.update()
     }
   })

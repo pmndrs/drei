@@ -73,7 +73,7 @@ const Points = React.forwardRef(
         }),
         {}
       )
-    }, [refs])
+    }, [children, refs])
 
     const api: Api = React.useMemo(
       () => ({

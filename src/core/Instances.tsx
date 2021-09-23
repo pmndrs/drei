@@ -116,7 +116,7 @@ const Instances = React.forwardRef(
         }),
         {}
       )
-    }, [instances])
+    }, [children, instances])
 
     const api = React.useMemo(
       () => ({

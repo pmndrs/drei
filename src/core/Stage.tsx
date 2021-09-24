@@ -40,6 +40,7 @@ type Props = JSX.IntrinsicElements['group'] & {
   shadowBias?: number
   contactShadowBlur?: number
   contactShadowOpacity?: number
+  contactShadowPosition?: [x: number, y: number, z: number]
 }
 
 export function Stage({
@@ -54,6 +55,7 @@ export function Stage({
   shadowBias = 0,
   contactShadowBlur = 2,
   contactShadowOpacity = 0.5,
+  contactShadowPosition = [0, 0, 0],
   ...props
 }: Props) {
   const config = presets[preset]
@@ -107,6 +109,7 @@ export function Stage({
           height={radius * 2}
           blur={contactShadowBlur}
           far={radius / 2}
+          position={contactShadowPosition}
         />
       )}
       {environment && <Environment preset={environment} />}

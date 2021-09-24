@@ -18,6 +18,7 @@ export * from './CubeCamera'
 
 // Controls
 export * from './DeviceOrientationControls'
+export * from './DragControls'
 export * from './FlyControls'
 export * from './MapControls'
 export * from './OrbitControls'

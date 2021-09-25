@@ -778,10 +778,8 @@ For this to work properly your event handler have to call `event.stopPropagation
   preventDefault={true} // Call event.preventDefault() (default: true)
   scroll={true} // Wheel events (default: true)
   keyCode={9} // Keyboard events (default: 9 [Tab])
->
-  {/* Optional: draw custom HTML status */}
-  {(objects, cycle) => objects.map((obj, i) => <span>{i === cycle ? '🔴' : '⚫️'}</span>)}
-</CycleRaycast>
+  onChanged={(objects, cycle) => console.log(objects, cycle)} // Optional onChanged event
+/>
 ```
 
 #### Shadow

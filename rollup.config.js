@@ -16,7 +16,21 @@ const getBabelOptions = ({ useESModules }, targets) => ({
   exclude: '**/node_modules/**',
   babelHelpers: 'runtime',
   presets: [
-    ['@babel/preset-env', { loose: true, modules: false, targets }],
+    [
+      '@babel/preset-env',
+      {
+        include: [
+          '@babel/plugin-proposal-optional-chaining',
+          '@babel/plugin-proposal-nullish-coalescing-operator',
+          '@babel/plugin-proposal-numeric-separator',
+          '@babel/plugin-proposal-logical-assignment-operators',
+        ],
+        bugfixes: true,
+        loose: true,
+        modules: false,
+        targets: '> 1%, not dead, not ie 11, not op_mini all',
+      },
+    ],
     '@babel/preset-react',
     '@babel/preset-typescript',
   ],

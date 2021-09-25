@@ -21,13 +21,20 @@ try {
 }
 
 export type CycleRaycastProps = {
-  onChanged?: (hits: THREE.Intersection[], cycle: number) => React.ReactElement
+  onChanged?: (hits: THREE.Intersection[], cycle: number) => null
   preventDefault?: boolean
   scroll?: boolean
   keyCode?: number
+  portal?: React.MutableRefObject<HTMLElement>
 }
 
-export function CycleRaycast({ onChanged, preventDefault = true, scroll = true, keyCode = 9 }: CycleRaycastProps) {
+export function CycleRaycast({
+  onChanged,
+  portal,
+  preventDefault = true,
+  scroll = true,
+  keyCode = 9,
+}: CycleRaycastProps) {
   const cycle = React.useRef(0)
   const raycaster = useThree((state) => state.raycaster)
   const get = useThree((state) => state.get)
@@ -37,9 +44,10 @@ export function CycleRaycast({ onChanged, preventDefault = true, scroll = true, 
     let hits: THREE.Intersection[] = []
     let lastEvent: PointerEvent = undefined!
     const prev = raycaster.filter
+    const target = portal?.current ?? gl.domElement.parentNode
 
     // Render custom status
-    const callback = () => onChanged && onChanged(hits, Math.round(cycle.current) % hits.length)
+    const renderStatus = () => target && onChanged && onChanged(hits, Math.round(cycle.current) % hits.length)
 
     // Overwrite the raycasters custom filter (this only exists in r3f)
     raycaster.filter = (intersections, state) => {
@@ -51,7 +59,7 @@ export function CycleRaycast({ onChanged, preventDefault = true, scroll = true, 
       ) {
         cycle.current = 0
         hits = clone
-        callback()
+        renderStatus()
       }
       // Run custom filter if there is one
       if (prev) clone = prev(clone, state)
@@ -69,7 +77,7 @@ export function CycleRaycast({ onChanged, preventDefault = true, scroll = true, 
       // Cancel hovered elements and fake a pointer-move
       get().events.handlers?.onPointerCancel(undefined as any)
       get().events.handlers?.onPointerMove(lastEvent)
-      callback()
+      renderStatus()
     }
 
     // Key events
@@ -95,15 +103,15 @@ export function CycleRaycast({ onChanged, preventDefault = true, scroll = true, 
 
     document.addEventListener('pointermove', moveEvent, { passive: true })
     if (scroll) document.addEventListener('wheel', wheelEvent)
-    document.addEventListener('keydown', tabEvent)
+    if (keyCode !== undefined) document.addEventListener('keydown', tabEvent)
 
     return () => {
       // Clean up
       raycaster.filter = prev
-      document.removeEventListener('keydown', tabEvent)
+      if (keyCode !== undefined) document.removeEventListener('keydown', tabEvent)
       if (scroll) document.removeEventListener('wheel', wheelEvent)
       document.removeEventListener('pointermove', moveEvent)
     }
-  }, [gl, get, raycaster, onChanged, preventDefault, scroll, keyCode])
+  }, [gl, get, raycaster, preventDefault, scroll, keyCode])
   return null
 }

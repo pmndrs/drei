@@ -21,20 +21,13 @@ try {
 }
 
 export type CycleRaycastProps = {
-  children?: (hits: THREE.Intersection[], cycle: number) => React.ReactElement
+  onChanged?: (hits: THREE.Intersection[], cycle: number) => React.ReactElement
   preventDefault?: boolean
   scroll?: boolean
   keyCode?: number
-  portal?: React.MutableRefObject<HTMLElement>
 }
 
-export function CycleRaycast({
-  children,
-  portal,
-  preventDefault = true,
-  scroll = true,
-  keyCode = 9,
-}: CycleRaycastProps) {
+export function CycleRaycast({ onChanged, preventDefault = true, scroll = true, keyCode = 9 }: CycleRaycastProps) {
   const cycle = React.useRef(0)
   const raycaster = useThree((state) => state.raycaster)
   const get = useThree((state) => state.get)
@@ -44,21 +37,9 @@ export function CycleRaycast({
     let hits: THREE.Intersection[] = []
     let lastEvent: PointerEvent = undefined!
     const prev = raycaster.filter
-    const target = portal?.current ?? gl.domElement.parentNode
-
-    // Create dom status
-    const el = document.createElement('div')
-    el.style.position = 'absolute'
-    el.style.top = '0px'
-    el.style.left = '0px'
-    el.style.pointerEvents = 'none'
-    if (target) target.appendChild(el)
 
     // Render custom status
-    const renderStatus = () =>
-      target &&
-      children &&
-      ReactDOM.render(hits.length ? children(hits, Math.round(cycle.current) % hits.length) : (null as any), el)
+    const callback = () => onChanged && onChanged(hits, Math.round(cycle.current) % hits.length)
 
     // Overwrite the raycasters custom filter (this only exists in r3f)
     raycaster.filter = (intersections, state) => {
@@ -70,7 +51,7 @@ export function CycleRaycast({
       ) {
         cycle.current = 0
         hits = clone
-        renderStatus()
+        callback()
       }
       // Run custom filter if there is one
       if (prev) clone = prev(clone, state)
@@ -88,7 +69,7 @@ export function CycleRaycast({
       // Cancel hovered elements and fake a pointer-move
       get().events.handlers?.onPointerCancel(undefined as any)
       get().events.handlers?.onPointerMove(lastEvent)
-      renderStatus()
+      callback()
     }
 
     // Key events
@@ -110,9 +91,7 @@ export function CycleRaycast({
     }
 
     // Catch last move event and position custom status
-    const moveEvent = (event: PointerEvent) => (
-      (lastEvent = event), (el.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`)
-    )
+    const moveEvent = (event: PointerEvent) => (lastEvent = event)
 
     document.addEventListener('pointermove', moveEvent, { passive: true })
     if (scroll) document.addEventListener('wheel', wheelEvent)
@@ -124,8 +103,7 @@ export function CycleRaycast({
       document.removeEventListener('keydown', tabEvent)
       if (scroll) document.removeEventListener('wheel', wheelEvent)
       document.removeEventListener('pointermove', moveEvent)
-      if (target) target.removeChild(el)
     }
-  }, [gl, get, raycaster, children, preventDefault, scroll, keyCode])
+  }, [gl, get, raycaster, onChanged, preventDefault, scroll, keyCode])
   return null
 }

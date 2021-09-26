@@ -2,24 +2,6 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
 
-const noReactDomError = () => {
-  throw new Error(`Html component requires a 'react-dom' package, please install it`)
-}
-
-let ReactDOM: typeof import('react-dom') = {
-  unmountComponentAtNode: noReactDomError as any,
-  render: noReactDomError as any,
-} as typeof import('react-dom')
-
-// workaround to not to break apps that doesn't have react-dom,
-// don't use Html component and import from the root
-// e.g. `import { OrbitControls } from '@react-three/drei'`
-try {
-  ReactDOM = require('react-dom')
-} catch {
-  // react-dom isn't installed
-}
-
 export type CycleRaycastProps = {
   onChanged?: (hits: THREE.Intersection[], cycle: number) => null
   preventDefault?: boolean

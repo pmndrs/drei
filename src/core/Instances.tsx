@@ -51,10 +51,12 @@ const Instances = React.forwardRef(
     { children, range, limit = 1000, frames = Infinity, ...props }: InstancesProps,
     ref: React.ForwardedRef<THREE.InstancedMesh>
   ) => {
-    const [[context, instance]] = React.useState<[React.Context<Api>, (props: InstanceProps) => JSX.Element]>(() => {
-      const c = React.createContext<Api>(null!)
-      const i = (props: InstanceProps) => <Instance context={c} {...props} />
-      return [c, i]
+    const [{ context, instance }] = React.useState(() => {
+      const context = React.createContext<Api>(null!)
+      return {
+        context,
+        instance: React.forwardRef((props: InstanceProps, ref) => <Instance context={context} {...props} ref={ref} />),
+      }
     })
 
     const parentRef = React.useRef<InstancedMesh>(null!)

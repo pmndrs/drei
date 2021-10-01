@@ -150,7 +150,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <ul>
           <li><a href="#instances">Instances</a></li>
           <li><a href="#merged">Merged</a></li>
-          <li><a href="#points">Points</a></li>          
+          <li><a href="#points">Points</a></li>
           <li><a href="#detailed">Detailed</a></li>
           <li><a href="#preload">Preload</a></li>
           <li><a href="#bakeshadows">BakeShadows</a></li>
@@ -695,6 +695,8 @@ Allows you to forward contexts provided above the `<Canvas />` to be consumed fr
 ```jsx
 function SceneWrapper() {
   // bridge any number of contexts
+  // Note: These contexts must be provided by something above this SceneWrapper component
+  //       You cannot render the providers for these contexts inside this component
   const ContextBridge = useContextBridge(ThemeContext, GreetingContext)
   return (
     <Canvas>

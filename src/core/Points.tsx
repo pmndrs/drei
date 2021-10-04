@@ -67,7 +67,7 @@ const Points = React.forwardRef(
         (prev, key) => ({
           ...prev,
           [key]: (event) => {
-            const object = refs[event.index].current
+            const object = refs[event.index]?.current
             return (object as any)?.__r3f?.handlers?.[key]({ ...event, object })
           },
         }),

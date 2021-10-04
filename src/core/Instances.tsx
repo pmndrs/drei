@@ -112,7 +112,7 @@ const Instances = React.forwardRef(
         (prev, key) => ({
           ...prev,
           [key]: (event) => {
-            const object = instances[event.instanceId].current
+            const object = instances[event.instanceId]?.current
             return (object as any)?.__r3f?.handlers?.[key]({ ...event, object })
           },
         }),

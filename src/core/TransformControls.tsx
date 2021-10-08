@@ -5,8 +5,13 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { TransformControls as TransformControlsImpl } from 'three-stdlib'
 
+type ControlsProto = {
+  enabled: boolean
+}
+
 export type TransformControlsProps = ReactThreeFiber.Object3DNode<TransformControlsImpl, typeof TransformControlsImpl> &
   JSX.IntrinsicElements['group'] & {
+    object?: React.MutableRefObject<THREE.Object3D>
     enabled?: boolean
     axis?: string | null
     mode?: string
@@ -27,7 +32,7 @@ export type TransformControlsProps = ReactThreeFiber.Object3DNode<TransformContr
   }
 
 export const TransformControls = React.forwardRef<TransformControlsImpl, TransformControlsProps>(
-  ({ children, onChange, onMouseDown, onMouseUp, onObjectChange, ...props }, ref) => {
+  ({ children, onChange, onMouseDown, onMouseUp, onObjectChange, object, ...props }, ref) => {
     const transformOnlyPropNames = [
       'enabled',
       'axis',
@@ -45,17 +50,27 @@ export const TransformControls = React.forwardRef<TransformControlsImpl, Transfo
     const { camera, ...rest } = props
     const transformProps = pick(rest, transformOnlyPropNames)
     const objectProps = omit(rest, transformOnlyPropNames)
-
+    // @ts-expect-error new in @react-three/fiber@7.0.5
+    const defaultControls = useThree((state) => state.controls) as ControlsProto
     const gl = useThree(({ gl }) => gl)
     const defaultCamera = useThree(({ camera }) => camera)
     const invalidate = useThree(({ invalidate }) => invalidate)
-
     const explCamera = camera || defaultCamera
-
     const [controls] = React.useState(() => new TransformControlsImpl(explCamera, gl.domElement))
-
     const group = React.useRef<THREE.Group>()
-    React.useLayoutEffect(() => void controls?.attach(group.current as THREE.Object3D), [children, controls])
+
+    React.useLayoutEffect(() => {
+      if (object && object.current) controls?.attach(object.current)
+      else controls?.attach(group.current as THREE.Object3D)
+    }, [object, children, controls])
+
+    React.useEffect(() => {
+      if (defaultControls) {
+        const callback = (event) => (defaultControls.enabled = !event.value)
+        controls.addEventListener('dragging-changed', callback)
+        return () => controls.removeEventListener('dragging-changed', callback)
+      }
+    }, [controls, defaultControls])
 
     React.useEffect(() => {
       const callback = (e: THREE.Event) => {

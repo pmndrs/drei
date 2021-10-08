@@ -11,7 +11,7 @@ type ControlsProto = {
 
 export type TransformControlsProps = ReactThreeFiber.Object3DNode<TransformControlsImpl, typeof TransformControlsImpl> &
   JSX.IntrinsicElements['group'] & {
-    object?: React.MutableRefObject<THREE.Object3D>
+    object?: THREE.Object3D | React.MutableRefObject<THREE.Object3D>
     enabled?: boolean
     axis?: string | null
     mode?: string
@@ -60,7 +60,7 @@ export const TransformControls = React.forwardRef<TransformControlsImpl, Transfo
     const group = React.useRef<THREE.Group>()
 
     React.useLayoutEffect(() => {
-      if (object && object.current) controls?.attach(object.current)
+      if (object) controls?.attach(object instanceof THREE.Object3D ? object : object.current)
       else controls?.attach(group.current as THREE.Object3D)
     }, [object, children, controls])
 

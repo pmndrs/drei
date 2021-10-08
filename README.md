@@ -287,7 +287,7 @@ You could also reference the object which might make it easier to exchange the t
 <mesh ref={mesh} />
 ```
 
-If you are using other controls, you will notice how transform-controls will now interfere with them and the other way round, you can't have two controls at the same time. In newer versions of R3F controls can be part of the state model (if you set drei/controls to `makeDefault`). If transform-controls detect default controls they will disable them automatically when the user translates, rotates or scales the gizmo.
+If you are using other controls (Orbit, Trackball, etc), you will notice how they interfere, dragging one will affect the other. Default-controls will temporarily be disabled automatically when the user is pulling on the transform gizmo.
 
 ```jsx
 <TransformControls mode="translate" />

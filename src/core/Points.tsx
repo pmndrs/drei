@@ -11,6 +11,7 @@ type Api = {
 type PointsProps = JSX.IntrinsicElements['points'] & {
   range?: number
   limit?: number
+  attributes?: JSX.IntrinsicElements['bufferAttribute'][]
 }
 
 let i, positionRef
@@ -20,7 +21,10 @@ const position = new THREE.Vector3()
 const color = new THREE.Color()
 
 const Points = React.forwardRef(
-  ({ children, range, limit = 1000, ...props }: PointsProps, ref: React.ForwardedRef<THREE.Points>) => {
+  (
+    { children, range, limit = 1000, attributes = [], ...props }: PointsProps,
+    ref: React.ForwardedRef<THREE.Points>
+  ) => {
     const parentRef = React.useRef<THREE.Points>(null!)
     const [refs, setRefs] = React.useState<React.MutableRefObject<Position>[]>([])
     const [[positions, colors]] = React.useState(() => [
@@ -102,6 +106,7 @@ const Points = React.forwardRef(
             itemSize={3}
             usage={THREE.DynamicDrawUsage}
           />
+          {attributes}
         </bufferGeometry>
         <context.Provider value={api}>{children}</context.Provider>
       </points>

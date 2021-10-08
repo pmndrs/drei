@@ -46,9 +46,9 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#controls">MapControls</a></li>
           <li><a href="#controls">DeviceOrientationControls</a></li>
           <li><a href="#controls">TrackballControls</a></li>
-          <li><a href="#controls">TransformControls</a></li>
           <li><a href="#controls">PointerLockControls</a></li>
           <li><a href="#controls">FirstPersonControls</a></li>
+          <li><a href="#transformcontrols">TransformControls</a></li>
         </ul>
         <li><a href="#abstractions">Abstractions</a></li>
         <ul>
@@ -247,9 +247,9 @@ If you have moving objects, unset the prop and use a smaller `resolution` instea
 
 If available controls have damping enabled by default, they manage their own updates, remove themselves on unmount, are compatible with the `invalidateFrameloop` canvas-flag. They inherit all props from their underlying [THREE controls](https://github.com/mrdoob/three.js/tree/dev/examples/jsm/controls).
 
-Some controls allow you to set `makeDefault`, similar to, for instance, PerspectiveCamera. This will set react-three-fiber's `controls` field in the root store. This can make it easier in situations where you want controls to be known and other parts of the app could respond to it. Some drei controls already take it into account, like CameraShake and Gizmo.
+Some controls allow you to set `makeDefault`, similar to, for instance, PerspectiveCamera. This will set react-three-fiber's `controls` field in the root store. This can make it easier in situations where you want controls to be known and other parts of the app could respond to it. Some drei controls already take it into account, like CameraShake, Gizmo and TransformControls.
 
-Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-scene-st), TrackballControls, FlyControls, DeviceOrientationControls, TransformControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-transformcontrols--transform-controls-story), PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st), FirstPersonControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-firstpersoncontrols--first-person-controls-story)
+Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-scene-st), TrackballControls, FlyControls, DeviceOrientationControls, PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st), FirstPersonControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-firstpersoncontrols--first-person-controls-story)
 
 Every control component can be used with a custom camera using the `camera` prop:
 
@@ -265,6 +265,34 @@ return (
 ```
 
 PointerLockControls additionally supports a `selector` prop, which enables the binding of `click` event handlers for control activation to other elements than `document` (e.g. a 'Click here to play' button). All elements matching the `selector` prop will activate the controls.
+
+# TransformControls
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-transformcontrols--transform-controls-story)
+
+An abstraction around [THREE.TransformControls](https://threejs.org/docs/index.html?q=transfor#examples/en/controls/TransformControls).
+
+You can wrap objects which then receive a transform gizmo.
+
+```jsx
+<TransformControls mode="translate">
+  <mesh />
+</TransformControls>
+```
+
+You could also reference the object which might make it easier to exchange the target. Now the object does not have to be part of the same sub-graph.
+
+```jsx
+<TransformControls object={mesh} mode="translate">
+<mesh ref={mesh} />
+```
+
+If you are using other controls, you will notice how transform-controls will now interfere with them and the other way round, you can't have two controls at the same time. In newer versions of R3F controls can be part of the state model (if you set drei/controls to `makeDefault`). If transform-controls detect default controls they will disable them automatically when the user translates, rotates or scales the gizmo.
+
+```jsx
+<TransformControls mode="translate" />
+<OrbitControls makeDefault />
+```
 
 # Shapes
 

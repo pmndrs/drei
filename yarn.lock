@@ -11081,10 +11081,10 @@ three-mesh-bvh@^0.5.0:
   resolved "https://registry.yarnpkg.com/three-mesh-bvh/-/three-mesh-bvh-0.5.0.tgz#3dac1812b7df682df932efaa43f68da79fc7ff73"
   integrity sha512-CvWHCltKn7oVY5ckcA0QC5GtkfwWcnOxUuazrTKvAB0OroFV2hOKj974Oh0Gi7MvNiqFYkHYgxnUSaUQzlAfgQ==
 
-three-stdlib@^2.5.2:
-  version "2.5.2"
-  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-2.5.2.tgz#bd9d65729005113990462ccabb9bf5f1effed1fe"
-  integrity sha512-A6g6F11qjhOhVtcbrmPrDgrlWH2VqsMAaXHdeG91TN1MUIMIByIxJniqLo/PHWOlbpDRP6Bes3rzEdL/0Bs7AQ==
+three-stdlib@^2.5.3:
+  version "2.5.3"
+  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-2.5.3.tgz#30d60a8c0a06d93c5207920d071dd0bfd15ffd2f"
+  integrity sha512-zTzK22uuaCoH4eUopMbn0kGD5YmQjDtzwUrDcAu3nLjWqp6FGpxMzgHikK99AOQUVcoCWJcm9DZKNrux7+PRig==
   dependencies:
     "@babel/runtime" "^7.14.6"
     "@webgpu/glslang" "^0.0.15"

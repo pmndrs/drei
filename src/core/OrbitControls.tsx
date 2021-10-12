@@ -1,4 +1,4 @@
-import { ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
+import { EventManager, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from 'three'
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
@@ -23,11 +23,12 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
     const invalidate = useThree(({ invalidate }) => invalidate)
     const defaultCamera = useThree(({ camera }) => camera)
     const gl = useThree(({ gl }) => gl)
+    const events = useThree(({ events }) => events) as EventManager<HTMLElement>
     const set = useThree(({ set }) => set)
     const get = useThree(({ get }) => get)
     const performance = useThree(({ performance }) => performance)
     const explCamera = camera || defaultCamera
-    const explDomElement = domElement || gl.domElement
+    const explDomElement = domElement || (typeof events.connected !== 'boolean' ? events.connected : gl.domElement)
     const controls = React.useMemo(() => new OrbitControlsImpl(explCamera), [explCamera])
 
     useFrame(() => {
@@ -54,7 +55,7 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
         controls.dispose()
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [onChange, onStart, onEnd, regress, controls, invalidate])
+    }, [explDomElement, onChange, onStart, onEnd, regress, controls, invalidate])
 
     React.useEffect(() => {
       if (makeDefault) {

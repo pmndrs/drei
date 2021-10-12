@@ -19,13 +19,7 @@ export type TrackballControlsProps = ReactThreeFiber.Overwrite<
 
 export const TrackballControls = React.forwardRef<TrackballControlsImpl, TrackballControlsProps>(
   ({ makeDefault, camera, domElement, regress, onChange, onStart, onEnd, ...restProps }, ref) => {
-    const invalidate = useThree(({ invalidate }) => invalidate)
-    const defaultCamera = useThree(({ camera }) => camera)
-    const gl = useThree(({ gl }) => gl)
-    const events = useThree(({ events }) => events) as EventManager<HTMLElement>
-    const set = useThree(({ set }) => set)
-    const get = useThree(({ get }) => get)
-    const performance = useThree(({ performance }) => performance)
+    const { invalidate, camera: defaultCamera, gl, events, set, get, performance, viewport } = useThree()
     const explCamera = camera || defaultCamera
     const explDomElement = domElement || (typeof events.connected !== 'boolean' ? events.connected : gl.domElement)
     const controls = React.useMemo(() => new TrackballControlsImpl(explCamera as THREE.PerspectiveCamera), [explCamera])
@@ -41,6 +35,7 @@ export const TrackballControls = React.forwardRef<TrackballControlsImpl, Trackba
         if (onChange) onChange(e)
       }
 
+      console.log(explDomElement)
       controls.connect(explDomElement)
       controls.addEventListener('change', callback)
       if (onStart) controls.addEventListener('start', onStart)
@@ -54,6 +49,10 @@ export const TrackballControls = React.forwardRef<TrackballControlsImpl, Trackba
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [explDomElement, onChange, onStart, onEnd, regress, controls, invalidate])
+
+    React.useEffect(() => {
+      controls.handleResize()
+    }, [viewport])
 
     React.useEffect(() => {
       if (makeDefault) {

@@ -62,7 +62,7 @@
     "react-merge-refs": "^1.1.0",
     "stats.js": "^0.17.0",
     "three-mesh-bvh": "^0.5.0",
-    "three-stdlib": "^2.5.2",
+    "three-stdlib": "^2.5.3",
     "troika-three-text": "^0.43.0",
     "use-asset": "^1.0.4",
     "utility-types": "^3.10.0",

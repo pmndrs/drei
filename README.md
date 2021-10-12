@@ -46,6 +46,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#controls">MapControls</a></li>
           <li><a href="#controls">DeviceOrientationControls</a></li>
           <li><a href="#controls">TrackballControls</a></li>
+          <li><a href="#controls">ArcballControls</a></li>
           <li><a href="#controls">PointerLockControls</a></li>
           <li><a href="#controls">FirstPersonControls</a></li>
           <li><a href="#transformcontrols">TransformControls</a></li>
@@ -212,7 +213,7 @@ const config = {
   controls: undefined, // if using orbit controls, pass a ref here so we can update the rotation
 }
 
-<CameraShake {...config} />
+;<CameraShake {...config} />
 ```
 
 ```ts
@@ -249,7 +250,7 @@ If available controls have damping enabled by default, they manage their own upd
 
 Some controls allow you to set `makeDefault`, similar to, for instance, PerspectiveCamera. This will set react-three-fiber's `controls` field in the root store. This can make it easier in situations where you want controls to be known and other parts of the app could respond to it. Some drei controls already take it into account, like CameraShake, Gizmo and TransformControls.
 
-Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-scene-st), TrackballControls, FlyControls, DeviceOrientationControls, PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st), FirstPersonControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-firstpersoncontrols--first-person-controls-story)
+Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-scene-st), TrackballControls, ArcballControls, FlyControls, DeviceOrientationControls, PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st), FirstPersonControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-firstpersoncontrols--first-person-controls-story)
 
 Every control component can be used with a custom camera using the `camera` prop:
 

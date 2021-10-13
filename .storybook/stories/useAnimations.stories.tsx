@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
-import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
+import { GLTF } from 'three-stdlib'
 import { withKnobs, select, number } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
@@ -44,8 +44,8 @@ function AnimationController(props: AnimationControllerProps) {
   })
 
   React.useEffect(() => {
-    actions[selectedAction].reset().fadeIn(blendDuration).play()
-    return () => void actions[selectedAction].fadeOut(blendDuration)
+    actions[selectedAction]?.reset().fadeIn(blendDuration).play()
+    return () => void actions[selectedAction]?.fadeOut(blendDuration)
   }, [actions, selectedAction, blendDuration])
 
   return null

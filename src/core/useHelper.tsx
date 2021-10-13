@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Object3D } from 'three'
-import { useThree, useFrame } from 'react-three-fiber'
+import { useThree, useFrame } from '@react-three/fiber'
 
 type Helper = Object3D & {
   update: () => void
@@ -9,7 +9,7 @@ type Helper = Object3D & {
 export function useHelper<T>(object3D: React.MutableRefObject<Object3D | undefined>, proto: T, ...args: any[]) {
   const helper = React.useRef<Helper>()
 
-  const { scene } = useThree()
+  const scene = useThree((state) => state.scene)
   React.useEffect(() => {
     if (proto && object3D.current) {
       helper.current = new (proto as any)(object3D.current, ...args)
@@ -26,7 +26,7 @@ export function useHelper<T>(object3D: React.MutableRefObject<Object3D | undefin
   }, [scene, proto, object3D, args])
 
   useFrame(() => {
-    if (helper.current) {
+    if (helper.current?.update) {
       helper.current.update()
     }
   })

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { EdgeSplitModifier } from 'three/examples/jsm/modifiers/EdgeSplitModifier'
+import { EdgeSplitModifier } from 'three-stdlib'
 
 export function useEdgeSplit(cutOffAngle: number, tryKeepNormals: boolean = true) {
   const ref = React.useRef<THREE.Mesh>()
@@ -16,11 +16,7 @@ export function useEdgeSplit(cutOffAngle: number, tryKeepNormals: boolean = true
 
   React.useEffect(() => {
     if (original.current && ref.current && modifier.current) {
-      let geometry = new THREE.BufferGeometry()
-
-      geometry = original.current.clone()
-
-      const modifiedGeometry = modifier.current.modify(geometry, cutOffAngle, tryKeepNormals)
+      const modifiedGeometry = modifier.current.modify(original.current, cutOffAngle, tryKeepNormals)
       modifiedGeometry.computeVertexNormals()
 
       ref.current.geometry = modifiedGeometry

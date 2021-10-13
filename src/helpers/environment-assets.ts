@@ -10,3 +10,5 @@ export const presetsObj = {
   park: 'rooitou_park_1k.hdr',
   lobby: 'st_fagans_interior_1k.hdr',
 }
+
+export type PresetsType = keyof typeof presetsObj

@@ -9,7 +9,7 @@ import {
   RGBFormat,
 } from 'three'
 import * as React from 'react'
-import { useFrame, useThree } from 'react-three-fiber'
+import { useFrame, useThree } from '@react-three/fiber'
 
 type Props = JSX.IntrinsicElements['group'] & {
   fog?: Fog | FogExp2
@@ -31,7 +31,8 @@ export function CubeCamera({
 }: Props) {
   const ref = React.useRef<Group>()
   const [camera, setCamera] = React.useState<CubeCameraImpl>()
-  const { scene, gl } = useThree()
+  const scene = useThree(({ scene }) => scene)
+  const gl = useThree(({ gl }) => gl)
   const fbo = React.useMemo(
     () =>
       new WebGLCubeRenderTarget(resolution, {
@@ -40,6 +41,7 @@ export function CubeCamera({
         format: RGBFormat,
         encoding: gl.outputEncoding,
       }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [resolution]
   )
   let count = 0
@@ -47,7 +49,7 @@ export function CubeCamera({
     if (camera && ref.current && (frames === Infinity || count < frames)) {
       ref.current.traverse((obj) => (obj.visible = false))
       const originalFog = scene.fog
-      scene.fog = fog ?? originalFog
+      scene.fog = fog || originalFog
       camera.update(gl, scene)
       scene.fog = originalFog
       ref.current.traverse((obj) => (obj.visible = true))

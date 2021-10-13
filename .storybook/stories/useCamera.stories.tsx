@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useFrame, useThree, createPortal } from 'react-three-fiber'
+import { useFrame, useThree, createPortal } from '@react-three/fiber'
 import * as THREE from 'three'
 
 import { Setup } from '../Setup'
@@ -18,7 +18,9 @@ function UseCameraScene() {
 
   const [hover, setHover] = React.useState<null | number>(null)
 
-  const { gl, scene, camera } = useThree()
+  const gl = useThree(({ gl }) => gl)
+  const scene = useThree(({ scene }) => scene)
+  const camera = useThree(({ camera }) => camera)
 
   const virtualScene = React.useMemo(() => new THREE.Scene(), [])
 
@@ -41,7 +43,7 @@ function UseCameraScene() {
 
   const handlePointerOut = () => setHover(null)
   const handlePointerMove = (e: THREE.Event) => setHover(Math.floor(e.faceIndex ?? 0 / 2))
-  return (createPortal(
+  return createPortal(
     <>
       <OrthographicCamera ref={virtualCam} makeDefault={false} position={[0, 0, 100]} zoom={2} />
 
@@ -56,7 +58,7 @@ function UseCameraScene() {
       <pointLight position={[10, 10, 10]} intensity={0.5} />
     </>,
     virtualScene
-  ) as unknown) as JSX.Element
+  ) as unknown as JSX.Element
 }
 
 export const UseCameraSt = () => <UseCameraScene />

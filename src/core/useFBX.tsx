@@ -1,5 +1,5 @@
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
-import { useLoader } from 'react-three-fiber'
+import { FBXLoader } from 'three-stdlib'
+import { useLoader } from '@react-three/fiber'
 import { Group } from 'three'
 
 export function useFBX(path: string): Group {
@@ -7,3 +7,5 @@ export function useFBX(path: string): Group {
 }
 
 useFBX.preload = (path: string) => useLoader.preload(FBXLoader, path)
+// @ts-expect-error new in r3f 7.0.5
+useFBX.clear = (input: string | string[]) => useLoader.clear(FBXLoader, input)

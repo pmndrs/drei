@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Text as TextMeshImpl } from 'troika-three-text'
-import { ReactThreeFiber, useThree } from 'react-three-fiber'
+import { ReactThreeFiber, useThree } from '@react-three/fiber'
 
 type Props = JSX.IntrinsicElements['mesh'] & {
   children: React.ReactNode
@@ -15,6 +15,7 @@ type Props = JSX.IntrinsicElements['mesh'] & {
   anchorY?: number | 'top' | 'top-baseline' | 'middle' | 'bottom-baseline' | 'bottom'
   clipRect?: [number, number, number, number]
   depthOffset?: number
+  direction?: 'auto' | 'ltr' | 'rtl'
   overflowWrap?: 'normal' | 'break-word'
   whiteSpace?: 'normal' | 'overflowWrap' | 'overflowWrap'
   outlineWidth?: number | string
@@ -32,11 +33,12 @@ type Props = JSX.IntrinsicElements['mesh'] & {
 }
 
 // eslint-disable-next-line prettier/prettier
-export const Text = React.forwardRef(({ anchorX = 'center', anchorY = 'middle', children, onSync, ...props }: Props, ref) => {
-    const { invalidate } = useThree()
+export const Text = React.forwardRef(
+  ({ anchorX = 'center', anchorY = 'middle', children, onSync, ...props }: Props, ref) => {
+    const invalidate = useThree(({ invalidate }) => invalidate)
     const [troikaMesh] = React.useState(() => new TextMeshImpl())
     const [nodes, text] = React.useMemo(() => {
-      let n: React.ReactNode[] = []
+      const n: React.ReactNode[] = []
       let t = ''
       React.Children.forEach(children, (child) => {
         if (typeof child === 'string' || typeof child === 'number') {
@@ -54,16 +56,11 @@ export const Text = React.forwardRef(({ anchorX = 'center', anchorY = 'middle', 
           if (onSync) onSync(troikaMesh)
         })
     )
+    React.useEffect(() => {
+      return () => troikaMesh.dispose()
+    }, [troikaMesh])
     return (
-      <primitive
-        dispose={undefined}
-        object={troikaMesh}
-        ref={ref}
-        text={text}
-        anchorX={anchorX}
-        anchorY={anchorY}
-        {...props}
-      >
+      <primitive object={troikaMesh} ref={ref} text={text} anchorX={anchorX} anchorY={anchorY} {...props}>
         {nodes}
       </primitive>
     )

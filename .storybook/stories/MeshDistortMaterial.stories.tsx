@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useFrame } from 'react-three-fiber'
+import { useFrame } from '@react-three/fiber'
 
 import { withKnobs, number } from '@storybook/addon-knobs'
 

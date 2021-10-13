@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { MeshPhysicalMaterial, MeshPhysicalMaterialParameters, Shader } from 'three'
-import { useFrame } from 'react-three-fiber'
+import { useFrame } from '@react-three/fiber'
 // eslint-disable-next-line
 // @ts-ignore
 import distort from '../helpers/glsl/distort.vert.glsl'

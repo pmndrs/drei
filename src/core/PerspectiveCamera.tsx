@@ -1,30 +1,35 @@
 import * as React from 'react'
 import { PerspectiveCamera as PerspectiveCameraImpl } from 'three'
-import { useThree, useUpdate } from 'react-three-fiber'
+import { useThree } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
 
 type Props = JSX.IntrinsicElements['perspectiveCamera'] & {
   makeDefault?: boolean
+  manual?: boolean
   children?: React.ReactNode
 }
 
-export const PerspectiveCamera = React.forwardRef(({ makeDefault = false, ...props }: Props, ref) => {
-  const { setDefaultCamera, camera, size } = useThree()
-  const cameraRef = useUpdate<PerspectiveCameraImpl>(
-    (cam) => {
+export const PerspectiveCamera = React.forwardRef(({ makeDefault, manual, ...props }: Props, ref) => {
+  const set = useThree(({ set }) => set)
+  const camera = useThree(({ camera }) => camera)
+  const size = useThree(({ size }) => size)
+  const cameraRef = React.useRef<PerspectiveCameraImpl>()
+
+  React.useLayoutEffect(() => {
+    const { current: cam } = cameraRef
+    if (cam && !manual) {
       cam.aspect = size.width / size.height
       cam.updateProjectionMatrix()
-    },
-    [size, props]
-  )
+    }
+  }, [size, props])
 
   React.useLayoutEffect(() => {
     if (makeDefault && cameraRef.current) {
       const oldCam = camera
-      setDefaultCamera(cameraRef.current)
-      return () => setDefaultCamera(oldCam)
+      set(() => ({ camera: cameraRef.current! }))
+      return () => set(() => ({ camera: oldCam }))
     }
-  }, [camera, cameraRef, makeDefault, setDefaultCamera])
+  }, [camera, cameraRef, makeDefault, set])
 
   return <perspectiveCamera ref={mergeRefs([cameraRef, ref])} {...props} />
 })

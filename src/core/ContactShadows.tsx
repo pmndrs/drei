@@ -3,9 +3,8 @@
 
 import * as React from 'react'
 import * as THREE from 'three'
-import { useFrame, useThree } from 'react-three-fiber'
-import { HorizontalBlurShader } from 'three/examples/jsm/shaders/HorizontalBlurShader'
-import { VerticalBlurShader } from 'three/examples/jsm/shaders/VerticalBlurShader'
+import { useFrame, useThree } from '@react-three/fiber'
+import { HorizontalBlurShader, VerticalBlurShader } from 'three-stdlib'
 
 type Props = JSX.IntrinsicElements['group'] & {
   opacity?: number
@@ -14,11 +13,16 @@ type Props = JSX.IntrinsicElements['group'] & {
   blur?: number
   far?: number
   resolution?: number
+  frames?: number
 }
 
 export const ContactShadows = React.forwardRef(
-  ({ opacity = 1, width = 1, height = 1, blur = 1, far = 10, resolution = 256, ...props }: Props, ref) => {
-    const { scene, gl } = useThree()
+  (
+    { frames = Infinity, opacity = 1, width = 1, height = 1, blur = 1, far = 10, resolution = 256, ...props }: Props,
+    ref
+  ) => {
+    const scene = useThree(({ scene }) => scene)
+    const gl = useThree(({ gl }) => gl)
     const shadowCamera = React.useRef<THREE.OrthographicCamera>()
     const [
       renderTarget,
@@ -55,8 +59,9 @@ export const ContactShadows = React.forwardRef(
       ]
     }, [resolution, width, height])
 
+    let count = 0
     useFrame(() => {
-      if (shadowCamera.current) {
+      if (shadowCamera.current && (frames === Infinity || count < frames)) {
         const initialBackground = scene.background
         scene.background = null
         scene.overrideMaterial = depthMaterial
@@ -75,6 +80,7 @@ export const ContactShadows = React.forwardRef(
         gl.render(blurPlane, shadowCamera.current)
         gl.setRenderTarget(null)
         scene.background = initialBackground
+        count++
       }
     })
 

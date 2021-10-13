@@ -1,22 +1,19 @@
 import * as React from 'react'
 import { Vector2, Vector3, Color } from 'three'
-import { ReactThreeFiber } from 'react-three-fiber'
-import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry'
-import { LineMaterial, LineMaterialParameters } from 'three/examples/jsm/lines/LineMaterial'
-import { Line2 } from 'three/examples/jsm/lines/Line2'
+import { ReactThreeFiber } from '@react-three/fiber'
+import { LineGeometry, LineMaterial, LineMaterialParameters, Line2 } from 'three-stdlib'
 
-type Props = {
+export type LineProps = {
   points: Array<Vector3 | [number, number, number]>
-  color?: Color | string | number
   vertexColors?: Array<Color | [number, number, number]>
-  lineWidth?: number
-} & Omit<ReactThreeFiber.Object3DNode<Line2, typeof Line2>, 'args'> &
+} & LineMaterialParameters &
+  Omit<ReactThreeFiber.Object3DNode<Line2, typeof Line2>, 'args'> &
   Omit<
     ReactThreeFiber.Object3DNode<LineMaterial, [LineMaterialParameters]>,
     'color' | 'vertexColors' | 'resolution' | 'args'
   >
 
-export const Line = React.forwardRef<Line2, Props>(function Line(
+export const Line = React.forwardRef<Line2, LineProps>(function Line(
   { points, color = 'black', vertexColors, lineWidth, dashed, ...rest },
   ref
 ) {
@@ -37,9 +34,9 @@ export const Line = React.forwardRef<Line2, Props>(function Line(
     return geom
   }, [points, vertexColors])
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     line2.computeLineDistances()
-  }, [line2])
+  }, [points, line2])
 
   React.useLayoutEffect(() => {
     if (dashed) {
@@ -51,11 +48,14 @@ export const Line = React.forwardRef<Line2, Props>(function Line(
     lineMaterial.needsUpdate = true
   }, [dashed, lineMaterial])
 
+  React.useEffect(() => {
+    return () => lineGeom.dispose()
+  }, [lineGeom])
+
   return (
-    <primitive dispose={undefined} object={line2} ref={ref} {...rest}>
-      <primitive dispose={undefined} object={lineGeom} attach="geometry" />
+    <primitive object={line2} ref={ref} {...rest}>
+      <primitive object={lineGeom} attach="geometry" />
       <primitive
-        dispose={undefined}
         object={lineMaterial}
         attach="material"
         color={color}

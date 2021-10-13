@@ -11,11 +11,11 @@ type Props = JSX.IntrinsicElements['mesh'] & {
 export const Shadow = React.forwardRef(
   ({ fog = false, colorStop = 0.0, color = 'black', opacity = 0.5, ...props }: Props, ref) => {
     const canvas = React.useMemo(() => {
-      let canvas = document.createElement('canvas')
+      const canvas = document.createElement('canvas')
       canvas.width = 128
       canvas.height = 128
-      let context = canvas.getContext('2d') as CanvasRenderingContext2D
-      let gradient = context.createRadialGradient(
+      const context = canvas.getContext('2d') as CanvasRenderingContext2D
+      const gradient = context.createRadialGradient(
         canvas.width / 2,
         canvas.height / 2,
         0,

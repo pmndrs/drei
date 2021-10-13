@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useFrame } from 'react-three-fiber'
+import { useFrame } from '@react-three/fiber'
 import { Vector3, Mesh, RepeatWrapping, Vector2 } from 'three'
 
 import { Setup } from '../Setup'
@@ -18,12 +18,12 @@ export default {
 }
 
 function ReflectorScene({
-  blur,
+  mixBlur,
   depthScale,
   distortion,
   normalScale,
 }: {
-  blur?: [number, number]
+  mixBlur?: number
   depthScale?: number
   distortion?: number
   normalScale?: number
@@ -50,10 +50,9 @@ function ReflectorScene({
         resolution={1024}
         args={[10, 10]}
         mirror={0.75}
-        mixBlur={10}
-        mixStrength={2}
+        mixBlur={mixBlur || 0}
+        mixStrength={1}
         rotation={[-Math.PI / 2, 0, Math.PI / 2]}
-        blur={blur || [0, 0]}
         minDepthThreshold={0.8}
         maxDepthThreshold={1.2}
         depthScale={depthScale || 0}
@@ -64,8 +63,8 @@ function ReflectorScene({
       >
         {(Material, props) => (
           <Material
-            color="#a0a0a0"
-            metalness={0.5}
+            color="#ddd"
+            metalness={0}
             roughnessMap={roughness}
             roughness={1}
             normalMap={normal}
@@ -88,7 +87,7 @@ function ReflectorScene({
 
 export const ReflectorSt = () => (
   <React.Suspense fallback={null}>
-    <ReflectorScene blur={[500, 500]} depthScale={2} distortion={0.3} normalScale={0.5} />
+    <ReflectorScene mixBlur={8} depthScale={1} distortion={0.005} normalScale={0.5} />
   </React.Suspense>
 )
 ReflectorSt.storyName = 'Default'
@@ -102,7 +101,7 @@ ReflectorPlain.storyName = 'Plain'
 
 export const ReflectorBlur = () => (
   <React.Suspense fallback={null}>
-    <ReflectorScene blur={[500, 500]} />
+    <ReflectorScene mixBlur={10} />
   </React.Suspense>
 )
 ReflectorBlur.storyName = 'Blur'
@@ -116,7 +115,7 @@ ReflectorDepth.storyName = 'Depth'
 
 export const ReflectorDistortion = () => (
   <React.Suspense fallback={null}>
-    <ReflectorScene distortion={1} />
+    <ReflectorScene distortion={0.1} />
   </React.Suspense>
 )
 ReflectorDistortion.storyName = 'Distortion'

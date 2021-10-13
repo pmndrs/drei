@@ -49,7 +49,7 @@ export type GizmoHelperProps = JSX.IntrinsicElements['group'] & {
 export const GizmoHelper = ({
   alignment = 'bottom-right',
   margin = [80, 80],
-  renderPriority = 1,
+  renderPriority = 0,
   onUpdate,
   onTarget,
   children: GizmoHelperComponent,

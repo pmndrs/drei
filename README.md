@@ -375,6 +375,20 @@ A triangle that fills the screen, ideal for full-screen fragment shader work (ra
 
 # Abstractions
 
+#### Image
+
+A shader-based image component
+
+```jsx
+function Foo() {
+  const ref = useRef()
+  useFrame(() => {
+    ref.current.material.zoom = ... // 1 and hight
+    ref.current.material.grayscale = ... // between 0 and 1
+  })
+  return <Image ref={ref} url="/file.jpg" />
+```
+
 #### Text
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-text--text-st)

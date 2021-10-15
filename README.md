@@ -377,7 +377,7 @@ A triangle that fills the screen, ideal for full-screen fragment shader work (ra
 
 #### Image
 
-A shader-based image component
+A shader-based image component with auto-cover (similar to css/background: cover).
 
 ```jsx
 function Foo() {

@@ -17,6 +17,7 @@ export function shaderMaterial(
       | number
       | boolean
       | Array<any>
+      | null
   },
   vertexShader: string,
   fragmentShader: string,

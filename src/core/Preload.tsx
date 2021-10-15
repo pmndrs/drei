@@ -1,4 +1,4 @@
-import { Object3D, Camera } from 'three'
+import { Object3D, Camera, WebGLCubeRenderTarget, CubeCamera, Scene } from 'three'
 import * as React from 'react'
 import { useThree } from '@react-three/fiber'
 
@@ -27,6 +27,11 @@ export function Preload({ all, scene, camera }: Props) {
     }
     // Now compile the scene
     gl.compile(scene || dScene, camera || dCamera)
+    // And for good measure, hit it with a cube camera
+    const cubeRenderTarget = new WebGLCubeRenderTarget(128)
+    const cubeCamera = new CubeCamera(0.01, 100000, cubeRenderTarget)
+    cubeCamera.update(gl, (scene || dScene) as Scene)
+    cubeRenderTarget.dispose()
     // Flips these objects back
     invisible.forEach((object) => (object.visible = false))
     // eslint-disable-next-line react-hooks/exhaustive-deps

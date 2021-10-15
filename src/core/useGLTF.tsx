@@ -10,7 +10,9 @@ function extensions(useDraco: boolean | string, useMeshopt: boolean, extendLoade
     }
     if (useDraco) {
       const dracoLoader = new DRACOLoader()
-      dracoLoader.setDecoderPath(typeof useDraco === 'string' ? useDraco : 'https://www.gstatic.com/draco/v1/decoders/')
+      dracoLoader.setDecoderPath(
+        typeof useDraco === 'string' ? useDraco : 'https://www.gstatic.com/draco/versioned/decoders/1.4.0/'
+      )
       ;(loader as GLTFLoader).setDRACOLoader(dracoLoader)
     }
     if (useMeshopt) {

@@ -9,6 +9,7 @@ export * from './Text'
 export * from './Environment'
 export * from './Effects'
 export * from './GradientTexture'
+export * from './Image'
 
 // Cameras
 export * from './OrthographicCamera'

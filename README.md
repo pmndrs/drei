@@ -50,9 +50,11 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#controls">PointerLockControls</a></li>
           <li><a href="#controls">FirstPersonControls</a></li>
           <li><a href="#transformcontrols">TransformControls</a></li>
+          <li><a href="#scrollcontrols">ScrollControls</a></li>
         </ul>
         <li><a href="#abstractions">Abstractions</a></li>
         <ul>
+          <li><a href="#image">Image</a></li>
           <li><a href="#text">Text</a></li>
           <li><a href="#line">Line</a></li>
           <li><a href="#quadraticbezierline">QuadraticBezierLine</a></li>
@@ -293,6 +295,49 @@ If you are using other controls (Orbit, Trackball, etc), you will notice how the
 ```jsx
 <TransformControls mode="translate" />
 <OrbitControls makeDefault />
+```
+
+# ScrollControls
+
+Scroll controls create a HTML scroll container in front of the canvas. Everything you drop into the `<Scroll>` container will be scrolled. You can listen and react to scroll with the `useScroll` hook which gives you useful data like the current scroll offset, delta and functions for range finding.
+
+```jsx
+<ScrollControls
+  pages={3} // Each page takes 100% of the height of the canvas
+  distance={1} // A factor that increases scroll bar travel (default: 1)
+  damping={4} // Friction, higher is faster (default: 4)
+>
+  {/* You can have components in here, they are not scrolled, but they can still
+      react to scroll by using useScroll! */}
+  <Scroll>
+    <Foo position={[0, 0, 0]} />
+    <Foo position={[0, viewport.height, 0]} />
+    <Foo position={[0, viewport.height * 1, 0]} />
+  </Scroll>
+  <Scroll html>
+    <h1>html in here (optional)</h1>
+    <h1 style={{ top: '100vh' }}>second page</h1>
+    <h1 style={{ top: '200vh' }}>third page</h1>
+  </Scroll>
+</ScrollControls>
+
+function Foo() {
+  const ref = useRef()
+  const data = useScroll()
+  useFrame(() => {
+    // data.offset = current scroll position, between 0 and 1, dampened
+    //     .delta = current delta, between 0 and 1, dampened
+    //     .range(start, range) = offset range, between 0 and 1, dampened
+    //     .visible(start, range) = offset range, between false and true
+
+    // Will be 0 when the scrollbar is up, then move to 1 until 1 / 3
+    // of the scroll distance is reached
+    const a = data.range(0, 1 / 3)
+    // Will start increasing when 1 / 3 of the scroll distance is reached,
+    // and reach 1 when it reaches 2 / 3rds.
+    const b = data.range(1 / 3, 1 / 3)
+  })
+  return <mesh ref={ref} {...props} />
 ```
 
 # Shapes

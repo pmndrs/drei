@@ -299,13 +299,14 @@ If you are using other controls (Orbit, Trackball, etc), you will notice how the
 
 # ScrollControls
 
-Scroll controls create a HTML scroll container in front of the canvas. Everything you drop into the `<Scroll>` container will be scrolled. You can listen and react to scroll with the `useScroll` hook which gives you useful data like the current scroll offset, delta and functions for range finding.
+Scroll controls create a HTML scroll container in front of the canvas. Everything you drop into the `<Scroll>` component will be affected. You can listen and react to scroll with the `useScroll` hook which gives you useful data like the current scroll offset, delta and functions for range finding.
 
 ```jsx
 <ScrollControls
   pages={3} // Each page takes 100% of the height of the canvas
   distance={1} // A factor that increases scroll bar travel (default: 1)
   damping={4} // Friction, higher is faster (default: 4)
+  horizontal={false} // Can also scroll horizontally (default: false)
 >
   {/* You can have components in here, they are not scrolled, but they can still
       react to scroll by using useScroll! */}
@@ -383,7 +384,7 @@ A shader-based image component with auto-cover (similar to css/background: cover
 function Foo() {
   const ref = useRef()
   useFrame(() => {
-    ref.current.material.zoom = ... // 1 and hight
+    ref.current.material.zoom = ... // 1 and higher
     ref.current.material.grayscale = ... // between 0 and 1
   })
   return <Image ref={ref} url="/file.jpg" />

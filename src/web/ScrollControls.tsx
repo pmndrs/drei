@@ -7,6 +7,7 @@ import mergeRefs from 'react-merge-refs'
 export type ScrollControlsProps = {
   eps?: number
   horizontal?: boolean
+  infinite?: boolean
   pages?: number
   distance?: number
   damping?: number
@@ -35,6 +36,7 @@ export function useScroll() {
 
 export function ScrollControls({
   eps = 0.00001,
+  infinite,
   horizontal,
   pages = 1,
   distance = 1,
@@ -61,6 +63,7 @@ export function ScrollControls({
       damping,
       offset: 0,
       delta: 0,
+      scroll,
       pages,
       // 0 - 1 for a range between start -> start + range
       range(start: number, range: number) {
@@ -99,6 +102,18 @@ export function ScrollControls({
       scroll.current = horizontal
         ? e.target.scrollLeft / (e.target.scrollWidth - e.target.clientWidth)
         : e.target.scrollTop / (e.target.scrollHeight - e.target.clientHeight)
+
+      if (infinite) {
+        if (scroll.current === 1) {
+          const damp = 1 - state.offset
+          e.target[horizontal ? 'scrollLeft' : 'scrollTop'] = 0
+          scroll.current = state.offset = -damp
+        } else if (scroll.current === 0) {
+          const damp = 1 + state.offset
+          e.target[horizontal ? 'scrollLeft' : 'scrollTop'] = e.target[horizontal ? 'scrollWidth' : 'scrollHeight']
+          scroll.current = state.offset = damp
+        }
+      }
     }
     el.addEventListener('scroll', onScroll, { passive: true })
 
@@ -110,7 +125,7 @@ export function ScrollControls({
       target.removeChild(el)
       el.removeEventListener('scroll', onScroll)
     }
-  }, [invalidate, distance, damping, pages, horizontal])
+  }, [infinite, state, invalidate, distance, damping, pages, horizontal])
 
   let last = 0
   useFrame((_, delta) => {

@@ -13,7 +13,7 @@ export type ImageProps = JSX.IntrinsicElements['mesh'] & {
 }
 
 type ImageMaterialType = JSX.IntrinsicElements['shaderMaterial'] & {
-  planeBounds?: number[]
+  scale?: number[]
   imageBounds?: number[]
   map: THREE.Texture
   zoom?: number
@@ -29,7 +29,7 @@ declare global {
 }
 
 const ImageMaterialImpl = shaderMaterial(
-  { planeBounds: [1, 1], imageBounds: [1, 1], map: null, zoom: 1, grayscale: 0 },
+  { scale: [1, 1], imageBounds: [1, 1], map: null, zoom: 1, grayscale: 0 },
   /* glsl */ `
   varying vec2 vUv;
   void main() {
@@ -40,20 +40,21 @@ const ImageMaterialImpl = shaderMaterial(
   /* glsl */ `
   // mostly from https://gist.github.com/statico/df64c5d167362ecf7b34fca0b1459a44
   varying vec2 vUv;
-  uniform vec2 planeBounds;
+  uniform vec2 scale;
   uniform vec2 imageBounds;
   uniform sampler2D map;
   uniform float zoom;
   uniform float grayscale;
-
   const vec3 luma = vec3(.299, 0.587, 0.114);
   vec4 toGrayscale(vec4 color, float intensity) {
     return vec4(mix(color.rgb, vec3(dot(color.rgb, luma)), intensity), color.a);
   }
-
+  vec2 aspect(vec2 size) {
+    return size / min(size.x, size.y);
+  }
   void main() {
-    vec2 s = planeBounds;
-    vec2 i = imageBounds;
+    vec2 s = aspect(scale);
+    vec2 i = aspect(imageBounds);
     float rs = s.x / s.y;
     float ri = i.x / i.y;
     vec2 new = rs < ri ? vec2(i.x * s.y / i.y, s.y) : vec2(s.x, i.y * s.x / i.x);
@@ -65,12 +66,6 @@ const ImageMaterialImpl = shaderMaterial(
 `
 )
 
-function aspect(w, h) {
-  const size = [w, h]
-  const min = Math.min(...size)
-  return [size[0] / min, size[1] / min]
-}
-
 export const Image = React.forwardRef(
   (
     { segments = 1, scale = 1, zoom = 1, grayscale = 0, url, ...props }: ImageProps,
@@ -78,21 +73,12 @@ export const Image = React.forwardRef(
   ) => {
     extend({ ImageMaterial: ImageMaterialImpl })
     const texture = useTexture(url)
-    const planeBounds = React.useMemo(
-      () => aspect(...((Array.isArray(scale) ? [scale[0], scale[1]] : [scale, scale]) as [number, number])),
-      [scale]
-    )
-    const imageBounds = React.useMemo(() => aspect(texture.image.width, texture.image.height), [texture])
+    const planeBounds = Array.isArray(scale) ? [scale[0], scale[1]] : [scale, scale]
+    const imageBounds = [texture.image.width, texture.image.height]
     return (
       <mesh ref={ref} scale={scale} {...props}>
         <planeGeometry args={[1, 1, segments, segments]} />
-        <imageMaterial
-          map={texture}
-          zoom={zoom}
-          grayscale={grayscale}
-          planeBounds={planeBounds}
-          imageBounds={imageBounds}
-        />
+        <imageMaterial map={texture} zoom={zoom} grayscale={grayscale} scale={planeBounds} imageBounds={imageBounds} />
       </mesh>
     )
   }

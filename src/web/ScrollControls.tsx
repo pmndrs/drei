@@ -117,6 +117,11 @@ export function ScrollControls({
     }
     el.addEventListener('scroll', onScroll, { passive: true })
 
+    const onWheel = (e) => {
+      e.target.scrollLeft += e.deltaY / 2
+    }
+    if (horizontal) el.addEventListener('wheel', onWheel, { passive: true })
+
     target.appendChild(el)
 
     requestAnimationFrame(() => events.connect?.(el))
@@ -124,6 +129,7 @@ export function ScrollControls({
     return () => {
       target.removeChild(el)
       el.removeEventListener('scroll', onScroll)
+      if (horizontal) el.removeEventListener('wheel', onWheel)
     }
   }, [infinite, state, invalidate, distance, damping, pages, horizontal])
 

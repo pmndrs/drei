@@ -387,6 +387,7 @@ function Foo() {
   useFrame(() => {
     ref.current.material.zoom = ... // 1 and higher
     ref.current.material.grayscale = ... // between 0 and 1
+    ref.current.material.color.set(...) // mix-in color
   })
   return <Image ref={ref} url="/file.jpg" />
 ```
@@ -1331,7 +1332,7 @@ You can define events on them!
 
 #### Merged
 
-This creates instances for existing meshes and allows you to use them cheaply in the same scene graph. Each type will cost you exactly one draw call, no matter how many you use.
+This creates instances for existing meshes and allows you to use them cheaply in the same scene graph. Each type will cost you exactly one draw call, no matter how many you use. `meshes` has to be a collection of pre-existing THREE.Mesh objects.
 
 ```jsx
 <Merged meshes={[box, sphere]}>

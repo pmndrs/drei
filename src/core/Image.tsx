@@ -1,12 +1,13 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { extend } from '@react-three/fiber'
+import { Color, extend } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
 import { useTexture } from './useTexture'
 
 export type ImageProps = JSX.IntrinsicElements['mesh'] & {
   segments?: number
   scale?: number
+  color?: Color
   zoom?: number
   grayscale?: number
   url: string
@@ -15,6 +16,7 @@ export type ImageProps = JSX.IntrinsicElements['mesh'] & {
 type ImageMaterialType = JSX.IntrinsicElements['shaderMaterial'] & {
   scale?: number[]
   imageBounds?: number[]
+  color?: Color
   map: THREE.Texture
   zoom?: number
   grayscale?: number
@@ -29,7 +31,7 @@ declare global {
 }
 
 const ImageMaterialImpl = shaderMaterial(
-  { scale: [1, 1], imageBounds: [1, 1], map: null, zoom: 1, grayscale: 0 },
+  { color: new THREE.Color('white'), scale: [1, 1], imageBounds: [1, 1], map: null, zoom: 1, grayscale: 0 },
   /* glsl */ `
   varying vec2 vUv;
   void main() {
@@ -42,6 +44,7 @@ const ImageMaterialImpl = shaderMaterial(
   varying vec2 vUv;
   uniform vec2 scale;
   uniform vec2 imageBounds;
+  uniform vec3 color;
   uniform sampler2D map;
   uniform float zoom;
   uniform float grayscale;
@@ -61,14 +64,14 @@ const ImageMaterialImpl = shaderMaterial(
     vec2 offset = (rs < ri ? vec2((new.x - s.x) / 2.0, 0.0) : vec2(0.0, (new.y - s.y) / 2.0)) / new;
     vec2 uv = vUv * s / new + offset;
     vec2 zUv = (uv - vec2(0.5, 0.5)) / zoom + vec2(0.5, 0.5);
-    gl_FragColor = toGrayscale(texture2D(map, zUv), grayscale);
+    gl_FragColor = toGrayscale(texture2D(map, zUv) * vec4(color, 1.0), grayscale);
   }
 `
 )
 
 export const Image = React.forwardRef(
   (
-    { segments = 1, scale = 1, zoom = 1, grayscale = 0, url, ...props }: ImageProps,
+    { color, segments = 1, scale = 1, zoom = 1, grayscale = 0, url, ...props }: ImageProps,
     ref: React.ForwardedRef<THREE.Mesh>
   ) => {
     extend({ ImageMaterial: ImageMaterialImpl })
@@ -78,7 +81,14 @@ export const Image = React.forwardRef(
     return (
       <mesh ref={ref} scale={scale} {...props}>
         <planeGeometry args={[1, 1, segments, segments]} />
-        <imageMaterial map={texture} zoom={zoom} grayscale={grayscale} scale={planeBounds} imageBounds={imageBounds} />
+        <imageMaterial
+          color={color}
+          map={texture}
+          zoom={zoom}
+          grayscale={grayscale}
+          scale={planeBounds}
+          imageBounds={imageBounds}
+        />
       </mesh>
     )
   }

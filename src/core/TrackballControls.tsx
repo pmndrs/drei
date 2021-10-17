@@ -35,7 +35,6 @@ export const TrackballControls = React.forwardRef<TrackballControlsImpl, Trackba
         if (onChange) onChange(e)
       }
 
-      console.log(explDomElement)
       controls.connect(explDomElement)
       controls.addEventListener('change', callback)
       if (onStart) controls.addEventListener('start', onStart)

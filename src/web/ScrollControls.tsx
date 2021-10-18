@@ -43,10 +43,7 @@ export function ScrollControls({
   damping = 4,
   children,
 }: ScrollControlsProps) {
-  const gl = useThree((state) => state.gl)
-  const invalidate = useThree((state) => state.invalidate)
-  const events = useThree((state) => state.events)
-  const raycaster = useThree((state) => state.raycaster)
+  const { gl, size, invalidate, events, raycaster } = useThree()
   const [el] = React.useState(() => document.createElement('div'))
   const [fill] = React.useState(() => document.createElement('div'))
   const [fixed] = React.useState(() => document.createElement('div'))
@@ -77,61 +74,85 @@ export function ScrollControls({
       },
     }
     return state
-  }, [eps, damping, horizontal, pages])
+  }, [eps, damping, horizontal, pages, el, fill, fixed])
 
   React.useEffect(() => {
     el.style.position = 'absolute'
     el.style.width = '100%'
     el.style.height = '100%'
     el.style[horizontal ? 'overflowX' : 'overflowY'] = 'auto'
+    el.style[horizontal ? 'overflowY' : 'overflowX'] = 'hidden'
     el.style.top = '0px'
     el.style.left = '0px'
 
     fixed.style.position = 'sticky'
     fixed.style.top = '0px'
     fixed.style.left = '0px'
+    fixed.style.width = '100%'
+    fixed.style.height = '100%'
+    fixed.style.overflow = 'hidden'
     el.appendChild(fixed)
 
     fill.style.height = horizontal ? '100%' : `${pages * distance * 100}%`
     fill.style.width = horizontal ? `${pages * distance * 100}%` : '100%'
     fill.style.pointerEvents = 'none'
     el.appendChild(fill)
+    target.appendChild(el)
+
+    // Init scroll one pixel in to allow upward/leftward scroll
+    el[horizontal ? 'scrollLeft' : 'scrollTop'] = 1
+
+    const oldTarget = events.connected
+    requestAnimationFrame(() => events.connect?.(el))
+    const oldCompute = raycaster.computeOffsets
+    raycaster.computeOffsets = ({ clientX, clientY }) => ({ offsetX: clientX, offsetY: clientY })
+
+    return () => {
+      target.removeChild(el)
+      raycaster.computeOffsets = oldCompute
+      events.connect?.(oldTarget)
+    }
+  }, [pages, distance, horizontal, el, fill, fixed, target, events, raycaster])
+
+  React.useEffect(() => {
+    const containerLength = size[horizontal ? 'width' : 'height']
+    const scrollLength = el[horizontal ? 'scrollWidth' : 'scrollHeight']
+    const scrollThreshold = scrollLength - containerLength
+
+    let current = 0
+    let disableScroll = false
 
     const onScroll = (e) => {
       invalidate()
-      scroll.current = horizontal
-        ? e.target.scrollLeft / (e.target.scrollWidth - e.target.clientWidth)
-        : e.target.scrollTop / (e.target.scrollHeight - e.target.clientHeight)
-
+      current = el[horizontal ? 'scrollLeft' : 'scrollTop']
+      scroll.current = current / scrollThreshold
       if (infinite) {
-        if (scroll.current === 1) {
-          const damp = 1 - state.offset
-          e.target[horizontal ? 'scrollLeft' : 'scrollTop'] = 0
-          scroll.current = state.offset = -damp
-        } else if (scroll.current === 0) {
-          const damp = 1 + state.offset
-          e.target[horizontal ? 'scrollLeft' : 'scrollTop'] = e.target[horizontal ? 'scrollWidth' : 'scrollHeight']
-          scroll.current = state.offset = damp
+        if (!disableScroll) {
+          if (current >= scrollThreshold) {
+            const damp = 1 - state.offset
+            el[horizontal ? 'scrollLeft' : 'scrollTop'] = 1
+            scroll.current = state.offset = -damp
+            disableScroll = true
+          } else if (current <= 0) {
+            const damp = 1 + state.offset
+            el[horizontal ? 'scrollLeft' : 'scrollTop'] = scrollLength
+            scroll.current = state.offset = damp
+            disableScroll = true
+          }
         }
+        if (disableScroll) setTimeout(() => (disableScroll = false), 40)
       }
     }
     el.addEventListener('scroll', onScroll, { passive: true })
 
-    const onWheel = (e) => {
-      e.target.scrollLeft += e.deltaY / 2
-    }
+    const onWheel = (e) => (el.scrollLeft += e.deltaY / 2)
     if (horizontal) el.addEventListener('wheel', onWheel, { passive: true })
 
-    target.appendChild(el)
-
-    requestAnimationFrame(() => events.connect?.(el))
-    raycaster.computeOffsets = ({ clientX, clientY }) => ({ offsetX: clientX, offsetY: clientY })
     return () => {
-      target.removeChild(el)
       el.removeEventListener('scroll', onScroll)
       if (horizontal) el.removeEventListener('wheel', onWheel)
     }
-  }, [infinite, state, invalidate, distance, damping, pages, horizontal])
+  }, [el, size, infinite, state, invalidate, horizontal])
 
   let last = 0
   useFrame((_, delta) => {
@@ -141,11 +162,6 @@ export function ScrollControls({
   })
   return <context.Provider value={state}>{children}</context.Provider>
 }
-
-export const Scroll = React.forwardRef(({ html, ...props }: { html?: boolean }, ref) => {
-  const El = html ? ScrollHtml : ScrollCanvas
-  return <El ref={ref} {...props} />
-})
 
 const ScrollCanvas = React.forwardRef(({ children }, ref) => {
   const group = React.useRef<THREE.Group>(null!)
@@ -186,3 +202,8 @@ const ScrollHtml = React.forwardRef(
     return null
   }
 )
+
+export const Scroll = React.forwardRef(({ html, ...props }: { html?: boolean }, ref) => {
+  const El = html ? ScrollHtml : ScrollCanvas
+  return <El ref={ref} {...props} />
+})

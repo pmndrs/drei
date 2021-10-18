@@ -24,8 +24,9 @@ export type ScrollControlsState = {
   offset: number
   delta: number
   pages: number
-  range(start: number, range: number): number
-  visible(start: number, range: number): boolean
+  range(from: number, distance: number, margin?: number): number
+  curve(from: number, distance: number, margin?: number): number
+  visible(from: number, distance: number, margin?: number): boolean
 }
 
 const context = React.createContext<ScrollControlsState>(null!)
@@ -62,14 +63,20 @@ export function ScrollControls({
       delta: 0,
       scroll,
       pages,
-      // 0 - 1 for a range between start -> start + range
-      range(start: number, range: number) {
-        const end = start + range
+      // 0-1 for a range between from -> from + distance
+      range(from: number, distance: number, margin: number = 0) {
+        const start = from - margin
+        const end = start + distance + margin * 2
         return this.offset < start ? 0 : this.offset > end ? 1 : (this.offset - start) / (end - start)
       },
-      // true/false for a range between start -> start + range
-      visible(start: number, range: number) {
-        const end = start + range
+      // 0-1-0 for a range between from -> from + distance
+      curve(from: number, distance: number, margin: number = 0) {
+        return Math.sin(this.range(from, distance, margin) * Math.PI)
+      },
+      // true/false for a range between from -> from + distance
+      visible(from: number, distance: number, margin: number = 0) {
+        const start = from - margin
+        const end = start + distance + margin * 2
         return this.offset >= start && this.offset <= end
       },
     }

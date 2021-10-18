@@ -299,7 +299,9 @@ If you are using other controls (Orbit, Trackball, etc), you will notice how the
 
 # ScrollControls
 
-Scroll controls create a HTML scroll container in front of the canvas. Everything you drop into the `<Scroll>` component will be affected. You can listen and react to scroll with the `useScroll` hook which gives you useful data like the current scroll offset, delta and functions for range finding.
+Scroll controls create a HTML scroll container in front of the canvas. Everything you drop into the `<Scroll>` component will be affected.
+
+You can listen and react to scroll with the `useScroll` hook which gives you useful data like the current scroll `offset`, `delta` and functions for range finding: `range`, `curve` and `visible`. The latter functions are especially useful if you want to react to the scroll offset, for instance if you wanted to fade things in and out if they are in or out of view.
 
 ```jsx
 <ScrollControls
@@ -328,16 +330,24 @@ function Foo() {
   const data = useScroll()
   useFrame(() => {
     // data.offset = current scroll position, between 0 and 1, dampened
-    //     .delta = current delta, between 0 and 1, dampened
-    //     .range(start, range) = offset range, between 0 and 1, dampened
-    //     .visible(start, range) = offset range, between false and true
+    // data.delta = current delta, between 0 and 1, dampened
 
-    // Will be 0 when the scrollbar is up, then move to 1 until 1 / 3
-    // of the scroll distance is reached
+    // Will be 0 when the scrollbar is at the starting position,
+    // then increase to 1 until 1 / 3 of the scroll distance is reached
     const a = data.range(0, 1 / 3)
     // Will start increasing when 1 / 3 of the scroll distance is reached,
     // and reach 1 when it reaches 2 / 3rds.
     const b = data.range(1 / 3, 1 / 3)
+        // Same as above but with a margin of 0.1 on both ends
+    const c = data.range(1 / 3, 1 / 3, 0.1)
+    // Will move between 0-1-0 for the selected range
+    const d = data.curve(1 / 3, 1 / 3)
+    // Same as above, but with a margin of 0.1 on both ends
+    const d = data.curve(1 / 3, 1 / 3, 0.1)
+    // Returns true if the offset is in range and false if it isn't
+    const e = data.visible(2 / 3, 1 / 3)
+    // The visible function can also receive a margin
+    const f = data.visible(2 / 3, 1 / 3, 0.1)
   })
   return <mesh ref={ref} {...props} />
 ```

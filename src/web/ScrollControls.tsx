@@ -74,7 +74,7 @@ export function ScrollControls({
       },
     }
     return state
-  }, [eps, damping, horizontal, pages, el, fill, fixed])
+  }, [eps, damping, horizontal, pages])
 
   React.useEffect(() => {
     el.style.position = 'absolute'
@@ -112,7 +112,7 @@ export function ScrollControls({
       raycaster.computeOffsets = oldCompute
       events.connect?.(oldTarget)
     }
-  }, [pages, distance, horizontal, el, fill, fixed, target, events, raycaster])
+  }, [pages, distance, horizontal, el, fill, fixed, target])
 
   React.useEffect(() => {
     const containerLength = size[horizontal ? 'width' : 'height']

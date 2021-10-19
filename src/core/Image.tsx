@@ -71,7 +71,7 @@ const ImageMaterialImpl = shaderMaterial(
 
 export const Image = React.forwardRef(
   (
-    { color, segments = 1, scale = 1, zoom = 1, grayscale = 0, url, ...props }: ImageProps,
+    { children, color, segments = 1, scale = 1, zoom = 1, grayscale = 0, url, ...props }: ImageProps,
     ref: React.ForwardedRef<THREE.Mesh>
   ) => {
     extend({ ImageMaterial: ImageMaterialImpl })
@@ -89,6 +89,7 @@ export const Image = React.forwardRef(
           scale={planeBounds}
           imageBounds={imageBounds}
         />
+        {children}
       </mesh>
     )
   }

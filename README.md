@@ -99,6 +99,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#usehelper">useHelper</a></li>
           <li><a href="#useaspect">useAspect</a></li>
           <li><a href="#usecursor">useCursor</a></li>
+          <li><a href="#useintersect">useIntersect</a></li>
         </ul>
         <li><a href="#loading">Loaders</a></li>
         <ul>
@@ -1034,6 +1035,15 @@ const [hovered, set] = useState()
 useCursor(hovered, /*'pointer', 'auto'*/)
 return (
   <mesh onPointerOver={() => set(true)} onPointerOut={() => set(false)}>
+```
+
+#### useIntersect
+
+A very cheap frustum check that gives you a reference you can observe in order to know if the object has entered the view or is outside of it. This relies on [THREE.Object3D.onBeforeRender](https://threejs.org/docs/index.html?q=obj#api/en/core/Object3D.onBeforeRender) so it only works on objects that are effectively rendered, like meshes, lines, sprites. It won't work on groups, object3d's, bones, etc.
+
+```jsx
+const ref = useIntersect((visible) => console.log('object is visible', visible))
+return <mesh ref={ref} />
 ```
 
 # Modifiers

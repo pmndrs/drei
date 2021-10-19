@@ -54,6 +54,7 @@ export * from './useBVH'
 export * from './useContextBridge'
 export * from './useAnimations'
 export * from './useFBO'
+export * from './useIntersect'
 
 // Modifiers
 export * from './useSimplification'

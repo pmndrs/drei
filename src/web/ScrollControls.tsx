@@ -210,7 +210,12 @@ const ScrollHtml = React.forwardRef(
   }
 )
 
-export const Scroll = React.forwardRef(({ html, ...props }: { html?: boolean }, ref) => {
+type ScrollProps = {
+  html?: boolean
+  children?: React.ReactNode
+}
+
+export const Scroll = React.forwardRef(({ html, ...props }: ScrollProps, ref) => {
   const El = html ? ScrollHtml : ScrollCanvas
   return <El ref={ref} {...props} />
 })

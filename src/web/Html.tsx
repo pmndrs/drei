@@ -1,4 +1,5 @@
 import * as React from 'react'
+import * as ReactDOM from 'react-dom'
 import { Vector3, Group, Object3D, Matrix4, Camera, PerspectiveCamera, OrthographicCamera, Raycaster } from 'three'
 import { Assign } from 'utility-types'
 import { ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
@@ -6,24 +7,6 @@ import { ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 const v1 = new Vector3()
 const v2 = new Vector3()
 const v3 = new Vector3()
-
-const noReactDomError = () => {
-  throw new Error(`Html component requires a 'react-dom' package, please install it`)
-}
-
-let ReactDOM: typeof import('react-dom') = {
-  unmountComponentAtNode: noReactDomError as any,
-  render: noReactDomError as any,
-} as typeof import('react-dom')
-
-// workaround to not to break apps that doesn't have react-dom,
-// don't use Html component and import from the root
-// e.g. `import { OrbitControls } from '@react-three/drei'`
-try {
-  ReactDOM = require('react-dom')
-} catch {
-  // react-dom isn't installed
-}
 
 function defaultCalculatePosition(el: Object3D, camera: Camera, size: { width: number; height: number }) {
   const objectPos = v1.setFromMatrixPosition(el.matrixWorld)

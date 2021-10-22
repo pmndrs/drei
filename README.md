@@ -46,12 +46,15 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#controls">MapControls</a></li>
           <li><a href="#controls">DeviceOrientationControls</a></li>
           <li><a href="#controls">TrackballControls</a></li>
-          <li><a href="#controls">TransformControls</a></li>
+          <li><a href="#controls">ArcballControls</a></li>
           <li><a href="#controls">PointerLockControls</a></li>
           <li><a href="#controls">FirstPersonControls</a></li>
+          <li><a href="#transformcontrols">TransformControls</a></li>
+          <li><a href="#scrollcontrols">ScrollControls</a></li>
         </ul>
         <li><a href="#abstractions">Abstractions</a></li>
         <ul>
+          <li><a href="#image">Image</a></li>
           <li><a href="#text">Text</a></li>
           <li><a href="#line">Line</a></li>
           <li><a href="#quadraticbezierline">QuadraticBezierLine</a></li>
@@ -84,6 +87,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <li><a href="#misc">Misc</a></li>
         <ul>
           <li><a href="#html">Html</a></li>
+          <li><a href="#cycleraycast">CycleRaycast</a></li>
           <li><a href="#shadow">Shadow</a></li>
           <li><a href="#stats">Stats</a></li>
           <li><a href="#center">Center</a></li>
@@ -94,6 +98,8 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#usedetectgpu">useDetectGPU</a></li>
           <li><a href="#usehelper">useHelper</a></li>
           <li><a href="#useaspect">useAspect</a></li>
+          <li><a href="#usecursor">useCursor</a></li>
+          <li><a href="#useintersect">useIntersect</a></li>
         </ul>
         <li><a href="#loading">Loaders</a></li>
         <ul>
@@ -146,10 +152,12 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         </ul>
         <li><a href="#performance">Performance</a></li>
         <ul>
-          <li><a href="#points">Points</a></li>
           <li><a href="#instances">Instances</a></li>
+          <li><a href="#merged">Merged</a></li>
+          <li><a href="#points">Points</a></li>
           <li><a href="#detailed">Detailed</a></li>
           <li><a href="#preload">Preload</a></li>
+          <li><a href="#bakeshadows">BakeShadows</a></li>
           <li><a href="#meshbounds">meshBounds</a></li>
           <li><a href="#adaptivedpr">AdaptiveDpr</a></li>
           <li><a href="#adaptiveevents">AdaptiveEvents</a></li>
@@ -180,6 +188,12 @@ A responsive [THREE.PerspectiveCamera](https://threejs.org/docs/index.html#api/e
 
 A responsive [THREE.OrthographicCamera](https://threejs.org/docs/index.html#api/en/cameras/OrthographicCamera) that can set itself as the default.
 
+```jsx
+<OrthographicCamera makeDefault {...props}>
+  <mesh />
+</OrthographicCamera>
+```
+
 #### CameraShake
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/camera-camerashake--camera-shake-st)
@@ -202,7 +216,7 @@ const config = {
   controls: undefined, // if using orbit controls, pass a ref here so we can update the rotation
 }
 
-<CameraShake {...config} />
+;<CameraShake {...config} />
 ```
 
 ```ts
@@ -237,9 +251,9 @@ If you have moving objects, unset the prop and use a smaller `resolution` instea
 
 If available controls have damping enabled by default, they manage their own updates, remove themselves on unmount, are compatible with the `invalidateFrameloop` canvas-flag. They inherit all props from their underlying [THREE controls](https://github.com/mrdoob/three.js/tree/dev/examples/jsm/controls).
 
-Some controls allow you to set `makeDefault`, similar to, for instance, PerspectiveCamera. This will set react-three-fiber's `controls` field in the root store. This can make it easier in situations where you want controls to be known and other parts of the app could respond to it. Some drei controls already take it into account, like CameraShake and Gizmo.
+Some controls allow you to set `makeDefault`, similar to, for instance, PerspectiveCamera. This will set react-three-fiber's `controls` field in the root store. This can make it easier in situations where you want controls to be known and other parts of the app could respond to it. Some drei controls already take it into account, like CameraShake, Gizmo and TransformControls.
 
-Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-scene-st), TrackballControls, FlyControls, DeviceOrientationControls, TransformControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-transformcontrols--transform-controls-story), PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st), FirstPersonControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-firstpersoncontrols--first-person-controls-story)
+Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-scene-st), TrackballControls, ArcballControls, FlyControls, DeviceOrientationControls, PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st), FirstPersonControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-firstpersoncontrols--first-person-controls-story)
 
 Every control component can be used with a custom camera using the `camera` prop:
 
@@ -255,6 +269,89 @@ return (
 ```
 
 PointerLockControls additionally supports a `selector` prop, which enables the binding of `click` event handlers for control activation to other elements than `document` (e.g. a 'Click here to play' button). All elements matching the `selector` prop will activate the controls.
+
+# TransformControls
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-transformcontrols--transform-controls-story)
+
+An abstraction around [THREE.TransformControls](https://threejs.org/docs/index.html?q=transfor#examples/en/controls/TransformControls).
+
+You can wrap objects which then receive a transform gizmo.
+
+```jsx
+<TransformControls mode="translate">
+  <mesh />
+</TransformControls>
+```
+
+You could also reference the object which might make it easier to exchange the target. Now the object does not have to be part of the same sub-graph. References can be plain objects or React.MutableRefObjects.
+
+```jsx
+<TransformControls object={mesh} mode="translate">
+<mesh ref={mesh} />
+```
+
+If you are using other controls (Orbit, Trackball, etc), you will notice how they interfere, dragging one will affect the other. Default-controls will temporarily be disabled automatically when the user is pulling on the transform gizmo.
+
+```jsx
+<TransformControls mode="translate" />
+<OrbitControls makeDefault />
+```
+
+# ScrollControls
+
+Scroll controls create a HTML scroll container in front of the canvas. Everything you drop into the `<Scroll>` component will be affected.
+
+You can listen and react to scroll with the `useScroll` hook which gives you useful data like the current scroll `offset`, `delta` and functions for range finding: `range`, `curve` and `visible`. The latter functions are especially useful if you want to react to the scroll offset, for instance if you wanted to fade things in and out if they are in or out of view.
+
+```jsx
+<ScrollControls
+  pages={3} // Each page takes 100% of the height of the canvas
+  distance={1} // A factor that increases scroll bar travel (default: 1)
+  damping={4} // Friction, higher is faster (default: 4)
+  horizontal={false} // Can also scroll horizontally (default: false)
+  infinite={false} // Can also scroll infinitely (default: false)
+>
+  {/* You can have components in here, they are not scrolled, but they can still
+      react to scroll by using useScroll! */}
+  <Scroll>
+    <Foo position={[0, 0, 0]} />
+    <Foo position={[0, viewport.height, 0]} />
+    <Foo position={[0, viewport.height * 1, 0]} />
+  </Scroll>
+  <Scroll html>
+    <h1>html in here (optional)</h1>
+    <h1 style={{ top: '100vh' }}>second page</h1>
+    <h1 style={{ top: '200vh' }}>third page</h1>
+  </Scroll>
+</ScrollControls>
+
+function Foo() {
+  const ref = useRef()
+  const data = useScroll()
+  useFrame(() => {
+    // data.offset = current scroll position, between 0 and 1, dampened
+    // data.delta = current delta, between 0 and 1, dampened
+
+    // Will be 0 when the scrollbar is at the starting position,
+    // then increase to 1 until 1 / 3 of the scroll distance is reached
+    const a = data.range(0, 1 / 3)
+    // Will start increasing when 1 / 3 of the scroll distance is reached,
+    // and reach 1 when it reaches 2 / 3rds.
+    const b = data.range(1 / 3, 1 / 3)
+        // Same as above but with a margin of 0.1 on both ends
+    const c = data.range(1 / 3, 1 / 3, 0.1)
+    // Will move between 0-1-0 for the selected range
+    const d = data.curve(1 / 3, 1 / 3)
+    // Same as above, but with a margin of 0.1 on both ends
+    const d = data.curve(1 / 3, 1 / 3, 0.1)
+    // Returns true if the offset is in range and false if it isn't
+    const e = data.visible(2 / 3, 1 / 3)
+    // The visible function can also receive a margin
+    const f = data.visible(2 / 3, 1 / 3, 0.1)
+  })
+  return <mesh ref={ref} {...props} />
+```
 
 # Shapes
 
@@ -290,6 +387,21 @@ A triangle that fills the screen, ideal for full-screen fragment shader work (ra
 👉 [Use as a post processing mesh](https://medium.com/@luruke/simple-postprocessing-in-three-js-91936ecadfb7)
 
 # Abstractions
+
+#### Image
+
+A shader-based image component with auto-cover (similar to css/background: cover).
+
+```jsx
+function Foo() {
+  const ref = useRef()
+  useFrame(() => {
+    ref.current.material.zoom = ... // 1 and higher
+    ref.current.material.grayscale = ... // between 0 and 1
+    ref.current.material.color.set(...) // mix-in color
+  })
+  return <Image ref={ref} url="/file.jpg" />
+```
 
 #### Text
 
@@ -410,6 +522,7 @@ Make sure to set the `makeDefault` prop on your controls, in that case you do no
   margin={[80, 80]} // widget margins (X, Y)
   onUpdate={/* called during camera animation  */}
   onTarget={/* return current camera target (e.g. from orbit controls) to center animation */}
+  renderPriority={/* use renderPriority to prevent the helper from disappearing if there is another useFrame(..., 1)*/}
 >
   <GizmoViewport axisColors={['red', 'green', 'blue']} labelColor="black" />
   {/* alternative: <GizmoViewcube /> */}
@@ -557,6 +670,12 @@ A [contact shadow](https://threejs.org/examples/?q=con#webgl_shadow_contact) imp
 <ContactShadows opacity={1} width={1} height={1} blur={1} far={10} resolution={256} />
 ```
 
+Since this is a rather expensive effect you can limit the amount of frames it renders when your objects are static. For instance making it render only once:
+
+```jsx
+<ContactShadows frames={1} />
+```
+
 #### Reflector
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-reflector--reflector-st)
@@ -678,6 +797,8 @@ Allows you to forward contexts provided above the `<Canvas />` to be consumed fr
 ```jsx
 function SceneWrapper() {
   // bridge any number of contexts
+  // Note: These contexts must be provided by something above this SceneWrapper component
+  //       You cannot render the providers for these contexts inside this component
   const ContextBridge = useContextBridge(ThemeContext, GreetingContext)
   return (
     <Canvas>
@@ -748,6 +869,21 @@ const [hidden, set] = useState()
     opacity: hidden ? 0 : 1,
     transform: `scale(${hidden ? 0.5 : 1})`
   }} />
+```
+
+#### CycleRaycast
+
+This component allows you to cycle through all objects underneath the cursor with optional visual feedback. This can be useful for non-trivial selection, CAD data, housing, everything that has layers. It does this by changing the raycasters filter function and then refreshing the raycaster.
+
+For this to work properly your event handler have to call `event.stopPropagation()`, for instance in `onPointerOver` or `onClick`, only one element can be selective for cycling to make sense.
+
+```jsx
+<CycleRaycast
+  preventDefault={true} // Call event.preventDefault() (default: true)
+  scroll={true} // Wheel events (default: true)
+  keyCode={9} // Keyboard events (default: 9 [Tab])
+  onChanged={(objects, cycle) => console.log(objects, cycle)} // Optional onChanged event
+/>
 ```
 
 #### Shadow
@@ -888,6 +1024,26 @@ return (
   <mesh scale={scale}>
     <planeBufferGeometry />
     <meshBasicMaterial map={imageTexture} />
+```
+
+#### useCursor
+
+A small hook that sets the css body cursor according to the hover state of a mesh, so that you can give the use visual feedback when the mouse enters a shape. Arguments 1 and 2 determine the style, the defaults are: onPointerOver = 'pointer', onPointerOut = 'auto'.
+
+```jsx
+const [hovered, set] = useState()
+useCursor(hovered, /*'pointer', 'auto'*/)
+return (
+  <mesh onPointerOver={() => set(true)} onPointerOut={() => set(false)}>
+```
+
+#### useIntersect
+
+A very cheap frustum check that gives you a reference you can observe in order to know if the object has entered the view or is outside of it. This relies on [THREE.Object3D.onBeforeRender](https://threejs.org/docs/index.html?q=obj#api/en/core/Object3D.onBeforeRender) so it only works on objects that are effectively rendered, like meshes, lines, sprites. It won't work on groups, object3d's, bones, etc.
+
+```jsx
+const ref = useIntersect((visible) => console.log('object is visible', visible))
+return <mesh ref={ref} />
 ```
 
 # Modifiers
@@ -1151,54 +1307,9 @@ Make sure to set the `makeDefault` prop on your controls, in that case you do no
 
 # Performance
 
-#### Points
-
-A wrapper around [THREE.Points](https://threejs.org/docs/index.html?q=points#api/en/objects/Points). This allows you to define hundreds of thousands of points in a single draw call, but declaratively!
-
-```jsx
-<Points
-  limit={1000} // Optional: max amount of items (for calculating buffer size)
-  range={1000} // Optional: draw-range
->
-  <pointsMaterial />
-  <Point position={[1, 2, 3]} color="red" onClick={onClick} onPointerOver={onPointerOver} ... />
-  // As many as you want, make them conditional, mount/unmount them, lazy load them, etc ...
-</Points>
-```
-
-You can nest Points and use relative coordinates!
-
-```jsx
-<group position={[1, 2, 3]} rotation={[Math.PI / 2, 0, 0]}>
-  <Point />
-</group>
-```
-
-Points can also receive non-instanced objects, for instance annotations!
-
-```jsx
-<Point>
-  <Html>hello from the dom</Html>
-</Point>
-```
-
-You can define events on them!
-
-```jsx
-<Point onClick={...} onPointerOver={...} />
-```
-
-If you have a material that supports vertex colors (like drei/PointMaterial) you can have individual colors!
-
-```jsx
-<Points>
-  <PointMaterial />
-  <Point color="hotpink" />
-```
-
 #### Instances
 
-A wrapper around [THREE.InstancedMesh](https://threejs.org/docs/index.html?q=instan#api/en/objects/InstancedMesh). It has the same api and properties as Points.
+A wrapper around [THREE.InstancedMesh](https://threejs.org/docs/index.html?q=instan#api/en/objects/InstancedMesh). This allows you to define hundreds of thousands of objects in a single draw call, but declaratively!
 
 ```jsx
 <Instances
@@ -1215,6 +1326,94 @@ A wrapper around [THREE.InstancedMesh](https://threejs.org/docs/index.html?q=ins
     onClick={onClick} ... />
   // As many as you want, make them conditional, mount/unmount them, lazy load them, etc ...
 </Instances>
+```
+
+You can nest Instances and use relative coordinates!
+
+```jsx
+<group position={[1, 2, 3]} rotation={[Math.PI / 2, 0, 0]}>
+  <Instance />
+</group>
+```
+
+Instances can also receive non-instanced objects, for instance annotations!
+
+```jsx
+<Instance>
+  <Html>hello from the dom</Html>
+</Instance>
+```
+
+You can define events on them!
+
+```jsx
+<Instance onClick={...} onPointerOver={...} />
+```
+
+#### Merged
+
+This creates instances for existing meshes and allows you to use them cheaply in the same scene graph. Each type will cost you exactly one draw call, no matter how many you use. `meshes` has to be a collection of pre-existing THREE.Mesh objects.
+
+```jsx
+<Merged meshes={[box, sphere]}>
+  {(Box, Sphere) => (
+    <>
+      <Box position={[-2, -2, 0]} color="red" />
+      <Box position={[-3, -3, 0]} color="tomato" />
+      <Sphere scale={0.7} position={[2, 1, 0]} color="green" />
+      <Sphere scale={0.7} position={[3, 2, 0]} color="teal" />
+    </>
+  )}
+</Merged>
+```
+
+You may also use object notation, which is good for loaded models.
+
+```jsx
+function Model({ url }) {
+  const { nodes } = useGLTF(url)
+  return (
+    <Merged meshes={nodes}>
+      {({ Screw, Filter, Pipe }) => (
+        <>
+          <Screw />
+          <Filter position={[1, 2, 3]} />
+          <Pipe position={[4, 5, 6]} />
+        </>
+      )}
+    </Merged>
+  )
+}
+```
+
+#### Points
+
+A wrapper around [THREE.Points](https://threejs.org/docs/index.html?q=points#api/en/objects/Points). It has the same api and properties as Instances.
+
+```jsx
+<Points
+  limit={1000} // Optional: max amount of items (for calculating buffer size)
+  range={1000} // Optional: draw-range
+>
+  <pointsMaterial />
+  <Point position={[1, 2, 3]} color="red" onClick={onClick} onPointerOver={onPointerOver} ... />
+  // As many as you want, make them conditional, mount/unmount them, lazy load them, etc ...
+</Points>
+```
+
+If you have a material that supports vertex colors (like drei/PointMaterial) you can have individual colors!
+
+```jsx
+<Points>
+  <PointMaterial />
+  <Point color="hotpink" />
+```
+
+Otherwise use any material you like:
+
+```jsx
+<Points>
+  <pointsMaterial vertexColors size={10} />
 ```
 
 #### Detailed
@@ -1237,13 +1436,22 @@ The WebGLRenderer will compile materials only when they hit the frustrum, which 
 
 By default gl.compile will only preload visible objects, if you supply the `all` prop, it will circumvent that. With the `scene` and `camera` props you could also use it in portals.
 
-If you have async models you can drop it into the same suspense boundary _in concurrent mode_.
-
 ```jsx
-<Canvas concurrent>
+<Canvas>
   <Suspense fallback={null}>
     <Model />
     <Preload all />
+```
+
+#### BakeShadows
+
+Sets `gl.shadowMap.autoUpdate` to `false` while mounted and requests a single `gl.shadowMap.needsUpdate = true` afterwards. This freezes all shadow maps the moment this component comes in, which makes shadows performant again (with the downside that they are now static). Mount this component in lock-step with your models, for instance by dropping it into the same suspense boundary of a model that loads.
+
+```jsx
+<Canvas>
+  <Suspense fallback={null}>
+    <Model />
+    <BakeShadows />
 ```
 
 #### meshBounds

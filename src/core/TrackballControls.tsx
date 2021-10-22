@@ -1,4 +1,4 @@
-import { ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
+import { EventManager, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from 'three'
 import { TrackballControls as TrackballControlsImpl } from 'three-stdlib'
@@ -8,6 +8,7 @@ export type TrackballControlsProps = ReactThreeFiber.Overwrite<
   {
     target?: ReactThreeFiber.Vector3
     camera?: THREE.Camera
+    domElement?: HTMLElement
     regress?: boolean
     makeDefault?: boolean
     onChange?: (e?: THREE.Event) => void
@@ -17,18 +18,11 @@ export type TrackballControlsProps = ReactThreeFiber.Overwrite<
 >
 
 export const TrackballControls = React.forwardRef<TrackballControlsImpl, TrackballControlsProps>(
-  ({ makeDefault, camera, regress, onChange, onStart, onEnd, ...restProps }, ref) => {
-    const invalidate = useThree(({ invalidate }) => invalidate)
-    const defaultCamera = useThree(({ camera }) => camera)
-    const gl = useThree(({ gl }) => gl)
-    const set = useThree(({ set }) => set)
-    const get = useThree(({ get }) => get)
-    const performance = useThree(({ performance }) => performance)
+  ({ makeDefault, camera, domElement, regress, onChange, onStart, onEnd, ...restProps }, ref) => {
+    const { invalidate, camera: defaultCamera, gl, events, set, get, performance, viewport } = useThree()
     const explCamera = camera || defaultCamera
-    const controls = React.useMemo(
-      () => new TrackballControlsImpl(explCamera as THREE.PerspectiveCamera, gl.domElement),
-      [explCamera, gl.domElement]
-    )
+    const explDomElement = domElement || (typeof events.connected !== 'boolean' ? events.connected : gl.domElement)
+    const controls = React.useMemo(() => new TrackballControlsImpl(explCamera as THREE.PerspectiveCamera), [explCamera])
 
     useFrame(() => {
       if (controls.enabled) controls.update()
@@ -41,6 +35,7 @@ export const TrackballControls = React.forwardRef<TrackballControlsImpl, Trackba
         if (onChange) onChange(e)
       }
 
+      controls.connect(explDomElement)
       controls.addEventListener('change', callback)
       if (onStart) controls.addEventListener('start', onStart)
       if (onEnd) controls.addEventListener('end', onEnd)
@@ -52,7 +47,11 @@ export const TrackballControls = React.forwardRef<TrackballControlsImpl, Trackba
         controls.dispose()
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [onChange, onStart, onEnd, regress, controls, invalidate])
+    }, [explDomElement, onChange, onStart, onEnd, regress, controls, invalidate])
+
+    React.useEffect(() => {
+      controls.handleResize()
+    }, [viewport])
 
     React.useEffect(() => {
       if (makeDefault) {

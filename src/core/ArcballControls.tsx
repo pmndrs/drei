@@ -1,16 +1,16 @@
 import { EventManager, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from 'three'
-import { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
+// @ts-ignore
+import { ArcballControls as ArcballControlsImpl } from 'three-stdlib'
 
-export type OrbitControlsProps = ReactThreeFiber.Overwrite<
-  ReactThreeFiber.Object3DNode<OrbitControlsImpl, typeof OrbitControlsImpl>,
+export type ArcballControlsProps = ReactThreeFiber.Overwrite<
+  ReactThreeFiber.Object3DNode<ArcballControlsImpl, typeof ArcballControlsImpl>,
   {
     target?: ReactThreeFiber.Vector3
     camera?: THREE.Camera
     domElement?: HTMLElement
     regress?: boolean
-    enableDamping?: boolean
     makeDefault?: boolean
     onChange?: (e?: THREE.Event) => void
     onStart?: (e?: THREE.Event) => void
@@ -18,8 +18,8 @@ export type OrbitControlsProps = ReactThreeFiber.Overwrite<
   }
 >
 
-export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsProps>(
-  ({ makeDefault, camera, regress, domElement, enableDamping = true, onChange, onStart, onEnd, ...restProps }, ref) => {
+export const ArcballControls = React.forwardRef<ArcballControlsImpl, ArcballControlsProps>(
+  ({ makeDefault, camera, regress, domElement, onChange, onStart, onEnd, ...restProps }, ref) => {
     const invalidate = useThree(({ invalidate }) => invalidate)
     const defaultCamera = useThree(({ camera }) => camera)
     const gl = useThree(({ gl }) => gl)
@@ -29,7 +29,7 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
     const performance = useThree(({ performance }) => performance)
     const explCamera = camera || defaultCamera
     const explDomElement = domElement || (typeof events.connected !== 'boolean' ? events.connected : gl.domElement)
-    const controls = React.useMemo(() => new OrbitControlsImpl(explCamera), [explCamera])
+    const controls = React.useMemo(() => new ArcballControlsImpl(explCamera), [explCamera])
 
     useFrame(() => {
       if (controls.enabled) controls.update()
@@ -69,6 +69,6 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [makeDefault, controls])
 
-    return <primitive ref={ref} object={controls} enableDamping={enableDamping} {...restProps} />
+    return <primitive ref={ref} object={controls} {...restProps} />
   }
 )

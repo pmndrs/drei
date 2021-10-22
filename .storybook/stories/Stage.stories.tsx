@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { withKnobs, select, number, boolean } from '@storybook/addon-knobs'
+import { withKnobs, select, number, boolean, object, array } from '@storybook/addon-knobs'
 import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'
@@ -30,7 +30,11 @@ function StageStory() {
   return (
     <React.Suspense fallback={null}>
       <Stage
-        contactShadow={boolean('ContactShadow', true)}
+        contactShadow={object('ContactShadow', {
+          blur: 2,
+          opacity: 0.5,
+          position: [0, 0, 0],
+        })}
         shadows={boolean('Shadow', true)}
         intensity={intensity}
         environment={envPreset as PresetsType}

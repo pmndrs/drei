@@ -121,7 +121,7 @@ const Container = ({ children }) => (
       paddingLeft: '100px',
       paddingRight: '100px',
       paddingBottom: '100px',
-      height: '100%',
+      height: 'calc(100vh - 200px)',
     }}
   >
     {children}
@@ -136,12 +136,11 @@ export const DefaultStory = () => (
 DefaultStory.decorators = [(storyFn) => <ScrollControlsSetup>{storyFn()}</ScrollControlsSetup>]
 DefaultStory.storyName = 'Default'
 
-export const InsideContainerStory = () => <DefaultStory />
-InsideContainerStory.decorators = [
-  (storyFn) => (
-    <Container>
-      <ScrollControlsSetup>{storyFn()}</ScrollControlsSetup>
-    </Container>
-  ),
-]
+export const InsideContainerStory = () => (
+  <Container>
+    <ScrollControlsSetup>
+      <DefaultStory />
+    </ScrollControlsSetup>
+  </Container>
+)
 InsideContainerStory.storyName = 'Inside a container'

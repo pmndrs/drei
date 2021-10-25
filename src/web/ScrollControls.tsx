@@ -112,7 +112,10 @@ export function ScrollControls({
     const oldTarget = events.connected
     requestAnimationFrame(() => events.connect?.(el))
     const oldCompute = raycaster.computeOffsets
-    raycaster.computeOffsets = ({ clientX, clientY }) => ({ offsetX: clientX, offsetY: clientY })
+    raycaster.computeOffsets = ({ clientX, clientY }) => ({
+      offsetX: clientX - (target as HTMLElement).offsetLeft,
+      offsetY: clientY - (target as HTMLElement).offsetTop,
+    })
 
     return () => {
       target.removeChild(el)

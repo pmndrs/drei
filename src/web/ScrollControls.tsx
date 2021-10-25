@@ -11,6 +11,7 @@ export type ScrollControlsProps = {
   pages?: number
   distance?: number
   damping?: number
+  enabled?: boolean
   children: React.ReactNode
 }
 
@@ -37,6 +38,7 @@ export function useScroll() {
 
 export function ScrollControls({
   eps = 0.00001,
+  enabled = true,
   infinite,
   horizontal,
   pages = 1,
@@ -127,9 +129,12 @@ export function ScrollControls({
     const scrollThreshold = scrollLength - containerLength
 
     let current = 0
-    let disableScroll = false
+    let disableScroll = true
+    let firstRun = true
 
     const onScroll = (e) => {
+      // Prevent first scroll because it is indirectly caused by the one pixel offset
+      if (!enabled || firstRun) return
       invalidate()
       current = el[horizontal ? 'scrollLeft' : 'scrollTop']
       scroll.current = current / scrollThreshold
@@ -151,6 +156,7 @@ export function ScrollControls({
       }
     }
     el.addEventListener('scroll', onScroll, { passive: true })
+    requestAnimationFrame(() => (firstRun = false))
 
     const onWheel = (e) => (el.scrollLeft += e.deltaY / 2)
     if (horizontal) el.addEventListener('wheel', onWheel, { passive: true })

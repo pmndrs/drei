@@ -27,7 +27,6 @@ const presets = {
 type ControlsProto = { update(): void; target: THREE.Vector3 }
 
 type Props = JSX.IntrinsicElements['group'] & {
-  contactShadow?: boolean
   shadows?: boolean
   adjustCamera?: boolean
   environment?: PresetsType
@@ -38,8 +37,13 @@ type Props = JSX.IntrinsicElements['group'] & {
   controls?: React.MutableRefObject<ControlsProto>
   preset?: keyof typeof presets
   shadowBias?: number
-  contactShadowBlur?: number
-  contactShadowOpacity?: number
+  contactShadow?:
+    | {
+        blur: number
+        opacity?: number
+        position?: [x: number, y: number, z: number]
+      }
+    | false
 }
 
 export function Stage({
@@ -48,12 +52,14 @@ export function Stage({
   shadows = true,
   adjustCamera = true,
   environment = 'city',
-  contactShadow = true,
   intensity = 1,
   preset = 'rembrandt',
   shadowBias = 0,
-  contactShadowBlur = 2,
-  contactShadowOpacity = 0.5,
+  contactShadow = {
+    blur: 2,
+    opacity: 0.5,
+    position: [0, 0, 0],
+  },
   ...props
 }: Props) {
   const config = presets[preset]
@@ -102,11 +108,10 @@ export function Stage({
       {contactShadow && (
         <ContactShadows
           rotation-x={Math.PI / 2}
-          opacity={contactShadowOpacity}
           width={radius * 2}
           height={radius * 2}
-          blur={contactShadowBlur}
           far={radius / 2}
+          {...contactShadow}
         />
       )}
       {environment && <Environment preset={environment} />}

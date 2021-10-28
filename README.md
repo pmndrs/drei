@@ -91,6 +91,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#shadow">Shadow</a></li>
           <li><a href="#stats">Stats</a></li>
           <li><a href="#center">Center</a></li>
+          <li><a href="#bounds">Bounds</a></li>
           <li><a href="#depthbuffer">DepthBuffer</a></li>
           <li><a href="#usecontextbridge">useContextBridge</a></li>
           <li><a href="#usefbo">useFBO</a></li>
@@ -936,6 +937,31 @@ Calculates a boundary box and centers its children accordingly. `alignTop` makes
 <Center alignTop>
   <mesh />
 </Center>
+```
+
+#### Bounds
+
+Calculates a boundary box and centers the camera accordingly. If you are using controls, make sure to pass them the `makeDefault` prop. `fit` fits the current view on first render. `clip` sets the cameras near/far planes.
+
+```jsx
+<Bounds fit clip damping={10} margin={1.2}>
+  <mesh />
+</Bounds>
+```
+
+The Bounds component also acts as a context provider, use the `useBounds` hook to refresh the bounds, fit the camera, clip near/far planes or focus objects. `refresh` will recalculate bounds, since this can be expensive only call it when you know the view has changed. `clip` sets the cameras near/far planes. `fit` zooms and centers the view.
+
+```jsx
+function Foo() {
+  const bounds = useBounds()
+  useEffect(() => {
+    // Calculate scene bounds
+    bounds.refresh().clip().fit()
+    // Or, focus a specific object
+    // bounds.refresh(ref.current).clip().fit()
+
+<Bounds>
+  <Foo />
 ```
 
 #### DepthBuffer

@@ -944,7 +944,7 @@ Calculates a boundary box and centers its children accordingly. `alignTop` makes
 Calculates a boundary box and centers the camera accordingly. If you are using controls, make sure to pass them the `makeDefault` prop. `fit` fits the current view on first render. `clip` sets the cameras near/far planes.
 
 ```jsx
-<Bounds fit clip damping={10} margin={1.2}>
+<Bounds fit clip damping={6} margin={1.2}>
   <mesh />
 </Bounds>
 ```

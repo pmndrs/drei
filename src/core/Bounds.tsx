@@ -29,7 +29,7 @@ type ControlsProto = {
   removeEventListener: (event: string, callback: (event: any) => void) => void
 }
 
-const isOrthographicCamera = (def: THREE.Camera): def is THREE.OrthographicCamera =>
+const isOrthographic = (def: THREE.Camera): def is THREE.OrthographicCamera =>
   def && (def as THREE.OrthographicCamera).isOrthographicCamera
 
 const context = React.createContext<BoundsApi>(null!)
@@ -39,7 +39,6 @@ export function Bounds({ children, damping = 10, fit, clip, margin = 1.2, eps = 
   // @ts-expect-error new in @react-three/fiber@7.0.5
   const controls = useThree((state) => state.controls) as ControlsProto
   const invalidate = useThree((state) => state.invalidate)
-  const isOrtho = isOrthographicCamera(camera)
 
   function equals(a, b) {
     return Math.abs(a.x - b.x) < eps && Math.abs(a.y - b.y) < eps && Math.abs(a.z - b.z) < eps
@@ -66,8 +65,10 @@ export function Bounds({ children, damping = 10, fit, clip, margin = 1.2, eps = 
       const size = box.getSize(new THREE.Vector3())
       const center = box.getCenter(new THREE.Vector3())
       const maxSize = Math.max(size.x, size.y, size.z)
-      const fitHeightDistance = isOrtho ? maxSize * 4 : maxSize / (2 * Math.atan((Math.PI * camera.fov) / 360))
-      const fitWidthDistance = isOrtho ? maxSize * 4 : fitHeightDistance / camera.aspect
+      const fitHeightDistance = isOrthographic(camera)
+        ? maxSize * 4
+        : maxSize / (2 * Math.atan((Math.PI * camera.fov) / 360))
+      const fitWidthDistance = isOrthographic(camera) ? maxSize * 4 : fitHeightDistance / camera.aspect
       const distance = margin * Math.max(fitHeightDistance, fitWidthDistance)
       return { size, center, distance }
     }
@@ -97,7 +98,7 @@ export function Bounds({ children, damping = 10, fit, clip, margin = 1.2, eps = 
         goal.camera.copy(center).sub(direction)
         goal.focus.copy(center)
 
-        if (isOrtho) {
+        if (isOrthographic(camera)) {
           current.zoom = camera.zoom
 
           let maxHeight = 0,
@@ -144,7 +145,7 @@ export function Bounds({ children, damping = 10, fit, clip, margin = 1.2, eps = 
         return this
       },
     }
-  }, [camera, controls, margin, damping, isOrtho, invalidate])
+  }, [camera, controls, margin, damping, invalidate])
 
   React.useLayoutEffect(() => {
     api.refresh()
@@ -166,7 +167,7 @@ export function Bounds({ children, damping = 10, fit, clip, margin = 1.2, eps = 
       current.zoom = THREE.MathUtils.damp(current.zoom, goal.zoom, damping, delta)
       camera.position.copy(current.camera)
 
-      if (isOrtho) {
+      if (isOrthographic(camera)) {
         camera.zoom = current.zoom
         camera.updateProjectionMatrix()
       }
@@ -179,8 +180,8 @@ export function Bounds({ children, damping = 10, fit, clip, margin = 1.2, eps = 
       }
 
       invalidate()
-      if (isOrtho && !(Math.abs(current.zoom - goal.zoom) < eps)) return
-      if (!isOrtho && !equals(current.camera, goal.camera)) return
+      if (isOrthographic(camera) && !(Math.abs(current.zoom - goal.zoom) < eps)) return
+      if (!isOrthographic(camera) && !equals(current.camera, goal.camera)) return
       if (controls && !equals(current.focus, goal.focus)) return
       current.animating = false
     }

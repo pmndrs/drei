@@ -164,17 +164,22 @@ const Instances = React.forwardRef(
 
 function Merged({ meshes, children, ...props }) {
   const isArray = Array.isArray(meshes)
-  const array = (isArray ? meshes : Object.values(meshes)).filter((obj) => !obj.isMesh)
+  // Filter out meshes from collections, which may contain non-meshes
+  if (!isArray) for (let key of Object.keys(meshes)) if (!meshes[key].isMesh) delete meshes[key]
   return (
     <Composer
-      components={array.map(({ geometry, material }) => (
+      components={(isArray ? meshes : Object.values(meshes)).map(({ geometry, material }) => (
         <Instances key={geometry.uuid} geometry={geometry} material={material} {...props} />
       ))}
     >
       {(args) =>
         isArray
           ? children(...args)
-          : children(Object.keys(meshes).reduce((acc, key, i) => ({ ...acc, [key]: args[i] }), {}))
+          : children(
+              Object.keys(meshes)
+                .filter((key) => meshes[key].isMesh)
+                .reduce((acc, key, i) => ({ ...acc, [key]: args[i] }), {})
+            )
       }
     </Composer>
   )

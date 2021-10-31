@@ -164,10 +164,11 @@ const Instances = React.forwardRef(
 
 function Merged({ meshes, children, ...props }) {
   const isArray = Array.isArray(meshes)
+  const array = (isArray ? meshes : Object.values(meshes)).filter((obj) => obj.isMesh)
   return (
     <Composer
-      components={(isArray ? meshes : Object.values(meshes)).map(({ geometry, material }) => (
-        <Instances geometry={geometry} material={material} {...props} />
+      components={array.map(({ geometry, material }) => (
+        <Instances key={geometry.uuid} geometry={geometry} material={material} {...props} />
       ))}
     >
       {(args) =>

@@ -87,6 +87,7 @@ export * from './Stage'
 // Performance
 export * from './Points'
 export * from './Instances'
+export * from './Segments'
 export * from './Detailed'
 export * from './Preload'
 export * from './BakeShadows'

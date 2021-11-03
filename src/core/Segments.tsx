@@ -88,9 +88,10 @@ const Segments = React.forwardRef<Line2, SegmentsProps>((props, forwardedRef) =>
 
 const Segment = React.forwardRef<Segment, SegmentProps>((props, forwardedRef) => {
   const { start, end, color } = props
-  const { subscribe } = React.useContext<Api>(context)
+  const api = React.useContext<Api>(context)
+  if (!api) throw 'Segment must used inside Segments component.'
   const ref = React.useRef<Segment>({ start: [0, 0, 0], end: [0, 0, 0], color: [1, 1, 1] })
-  React.useLayoutEffect(() => subscribe(forwardedRef || ref), [])
+  React.useLayoutEffect(() => api.subscribe(forwardedRef || ref), [])
   React.useLayoutEffect(() => {
     var currRef = forwardedRef || ref
     start && Object.assign((currRef as React.RefObject<Segment>).current, { start })

@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
-import { hilbert3D } from 'three-stdlib'
-import { withKnobs, number, color, boolean } from '@storybook/addon-knobs'
+import { withKnobs } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
 
@@ -12,14 +11,6 @@ export default {
   title: 'Performance/Segments',
   component: Segments,
 }
-
-const points = hilbert3D(new Vector3(0), 5).map((p) => [p.x, p.y, p.z]) as [number, number, number][]
-
-const colors = new Array(points.length).fill(0).map(() => [Math.random(), Math.random(), Math.random()]) as [
-  number,
-  number,
-  number
-][]
 
 export function BasicSegments() {
   return (
@@ -36,6 +27,7 @@ export function BasicSegments() {
     </>
   )
 }
+
 BasicSegments.storyName = 'Basic'
 
 BasicSegments.decorators = [
@@ -66,11 +58,9 @@ export function ManySegments() {
   return (
     <>
       <Segments limit={10000} lineWidth={0.1}>
-        {Array(10000)
-          .fill(0)
-          .map((_, i) => (
-            <Spinner key={i} delay={i} />
-          ))}
+        {Array.from({ length: 10000 }).map((_, i) => (
+          <Spinner key={i} delay={i} />
+        ))}
       </Segments>
       <OrbitControls />
     </>

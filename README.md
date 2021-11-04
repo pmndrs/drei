@@ -156,6 +156,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#instances">Instances</a></li>
           <li><a href="#merged">Merged</a></li>
           <li><a href="#points">Points</a></li>
+          <li><a href="#segments">Segments</a></li>
           <li><a href="#detailed">Detailed</a></li>
           <li><a href="#preload">Preload</a></li>
           <li><a href="#bakeshadows">BakeShadows</a></li>
@@ -1440,6 +1441,43 @@ Otherwise use any material you like:
 ```jsx
 <Points>
   <pointsMaterial vertexColors size={10} />
+```
+
+#### Segments
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/performance-segments--many-segments)
+
+A wrapper around [THREE.LineSegments](https://threejs.org/docs/#api/en/objects/LineSegments). This allows you to use thousands of segments under the same geometry.
+
+##### Prop based:
+
+```jsx
+<Segments
+  limit={1000}
+  lineWidth{1.0}
+>
+  <Segment start={[0,0,0]} end={[0,10,0]} color={[1,1,1]} />
+  <Segment start={[0,0,0]} end={[0,10,10]} color={[1,0,1]} />
+</Segments>
+```
+
+##### Ref based (for fast updates):
+
+```jsx
+const ref = useRef({
+  start: [0,0,0],
+  end: [10,10,10],
+  color: [1,1,1]
+})
+
+//...
+
+<Segments
+  limit={1000}
+  lineWidth{1.0}
+>
+  <Segment ref={ref} />
+</Segments>
 ```
 
 #### Detailed

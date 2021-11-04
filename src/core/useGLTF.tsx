@@ -3,13 +3,17 @@ import { Loader } from 'three'
 import { GLTFLoader, DRACOLoader, MeshoptDecoder } from 'three-stdlib'
 import { useLoader } from '@react-three/fiber'
 
+let dracoLoader: DRACOLoader | null = null
+
 function extensions(useDraco: boolean | string, useMeshopt: boolean, extendLoader?: (loader: GLTFLoader) => void) {
   return (loader: Loader) => {
     if (extendLoader) {
       extendLoader(loader as GLTFLoader)
     }
     if (useDraco) {
-      const dracoLoader = new DRACOLoader()
+      if (!dracoLoader) {
+        dracoLoader = new DRACOLoader()
+      }
       dracoLoader.setDecoderPath(
         typeof useDraco === 'string' ? useDraco : 'https://www.gstatic.com/draco/versioned/decoders/1.4.3/'
       )

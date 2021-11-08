@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Mesh, Vector3 } from 'three'
+import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 
 import { Setup } from '../Setup'
 
@@ -11,8 +12,17 @@ export default {
   decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 5)}>{storyFn()}</Setup>],
 }
 
+type GLTFResult = GLTF & {
+  nodes: {
+    Suzanne: THREE.Mesh
+  }
+  materials: {
+    ['Material.001']: THREE.MeshStandardMaterial
+  }
+}
+
 function Suzanne() {
-  const { nodes, materials } = useGLTF('suzanne.glb', true)
+  const { nodes, materials } = useGLTF('suzanne.glb', true) as GLTFResult
 
   return <mesh material={materials['Material.001']} geometry={(nodes.Suzanne as Mesh).geometry} />
 }
@@ -31,7 +41,7 @@ UseGLTFSceneSt.story = {
 }
 
 function SuzanneWithLocal() {
-  const { nodes, materials } = useGLTF('suzanne.glb', '/draco-gltf/')
+  const { nodes, materials } = useGLTF('suzanne.glb', '/draco-gltf/') as GLTFResult
 
   return (
     <group dispose={null}>

@@ -1452,29 +1452,27 @@ A wrapper around [THREE.LineSegments](https://threejs.org/docs/#api/en/objects/L
 ##### Prop based:
 
 ```jsx
-<Segments
-  limit={1000}
-  lineWidth{1.0}
->
-  <Segment start={[0,0,0]} end={[0,10,0]} color={[1,1,1]} />
-  <Segment start={[0,0,0]} end={[0,10,10]} color={[1,0,1]} />
+<Segments limit={1000} lineWidth={1.0}>
+  <Segment start={[0, 0, 0]} end={[0, 10, 0]} color="red" />
+  <Segment start={[0, 0, 0]} end={[0, 10, 10]} color={[1, 0, 1]} />
 </Segments>
 ```
 
 ##### Ref based (for fast updates):
 
 ```jsx
-const ref = useRef({
-  start: [0,0,0],
-  end: [10,10,10],
-  color: [1,1,1]
+const ref = useRef()
+
+// E.g. to change segment position each frame.
+useFrame(() => {
+  ref.current.start.set(0,0,0)
+  ref.current.end.set(10,10,0)
+  ref.current.color.setRGB(0,0,0)
 })
-
-//...
-
+// ...
 <Segments
   limit={1000}
-  lineWidth{1.0}
+  lineWidth={1.0}
 >
   <Segment ref={ref} />
 </Segments>

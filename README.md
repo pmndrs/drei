@@ -260,12 +260,12 @@ Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storyboo
 Every control component can be used with a custom camera using the `camera` prop:
 
 ```jsx
-const myCamera = useResource()
+const [camera, set] = useState()
 
 return (
   <>
-    <PerspectiveCamera ref={myCamera} position={[0, 5, 5]} />
-    <OrbitControls camera={myCamera.current} />
+    <PerspectiveCamera ref={set} position={[0, 5, 5]} />
+    <OrbitControls camera={camera} />
   </>
 )
 ```

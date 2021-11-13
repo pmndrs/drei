@@ -4,6 +4,8 @@
 [![Downloads](https://img.shields.io/npm/dt/@react-three/drei.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)
 [![Discord Shield](https://img.shields.io/discord/740090768164651008?style=flat&colorA=000000&colorB=000000&label=discord&logo=discord&logoColor=ffffff)](https://discord.gg/ZZjjNvJ)
 
+
+
 A growing collection of useful helpers and abstractions for [react-three-fiber](https://github.com/pmndrs/react-three-fiber).
 
 ```bash
@@ -301,6 +303,15 @@ If you are using other controls (Orbit, Trackball, etc), you will notice how the
 ```
 
 # ScrollControls
+
+<p align="center">
+  <a href="https://codesandbox.io/s/l4klb"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/l4klb/screenshot.png" alt="Horizintal tiles"/></a>
+  <a href="https://codesandbox.io/s/4m0d0"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/4m0d0/screenshot.png" alt="M1 scroll"/></a>
+  <a href="https://codesandbox.io/s/gsm1y"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/gsm1y/screenshot.png" alt="useIntersect"/></a>
+  <a href="https://codesandbox.io/s/x8gvs"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/x8gvs/screenshot.png" alt="Infinite scroll"/></a>
+  <a href="https://codesandbox.io/s/yjhzv"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/yjhzv/screenshot.png" alt="Vertical scroll"/></a>
+  <a href="https://codesandbox.io/s/4jr4p"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/4jr4p/screenshot.png" alt="GLTF and useScroll"/></a>
+</p>
 
 Scroll controls create a HTML scroll container in front of the canvas. Everything you drop into the `<Scroll>` component will be affected.
 

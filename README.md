@@ -722,7 +722,7 @@ Easily add reflections and/or blur to a planar surface. This reflector can also 
 
 #### SpotLight
 
-A Volumetric spotligt.
+A Volumetric spotlight.
 
 ```jsx
 <SpotLight

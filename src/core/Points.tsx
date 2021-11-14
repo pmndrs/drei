@@ -191,7 +191,7 @@ export const PointsBuffer = React.forwardRef<THREE.Points, PointsBuffersProps>(
               attachObject={['attributes', 'size']}
               count={sizes.length / stride}
               array={sizes}
-              itemSize={stride}
+              itemSize={1}
               usage={THREE.DynamicDrawUsage}
             />
           )}

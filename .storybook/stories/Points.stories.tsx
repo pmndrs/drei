@@ -51,17 +51,16 @@ const MyPointsMaterial = shaderMaterial(
 
 extend({ MyPointsMaterial })
 
-function BasicPointsBufferScene() {
-  const [positionA] = React.useState(() =>
-    Float32Array.from({ length: 10_000 * 3 }, () => MathUtils.randFloatSpread(5))
-  )
-  const [positionB] = React.useState(() =>
-    Float32Array.from({ length: 10_000 * 3 }, () => MathUtils.randFloatSpread(10))
-  )
-  const [positionFinal] = React.useState(() => positionB.slice(0))
+// @ts-ignore
+const makeBuffer = (...args) => Float32Array.from(...args)
 
-  const [color] = React.useState(() => Float32Array.from({ length: 10_000 * 3 }, () => Math.random()))
-  const [size] = React.useState(() => Float32Array.from({ length: 10_000 * 3 }, () => Math.random() * 0.2))
+function BasicPointsBufferScene() {
+  const n = 10_000
+  const [positionA] = React.useState(() => makeBuffer({ length: n * 3 }, () => MathUtils.randFloatSpread(5)))
+  const [positionB] = React.useState(() => makeBuffer({ length: n * 3 }, () => MathUtils.randFloatSpread(10)))
+  const [positionFinal] = React.useState(() => positionB.slice(0))
+  const [color] = React.useState(() => makeBuffer({ length: n * 3 }, () => Math.random()))
+  const [size] = React.useState(() => makeBuffer({ length: n }, () => Math.random() * 0.2))
 
   useFrame(({ clock }) => {
     const et = clock.getElapsedTime()

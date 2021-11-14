@@ -8,7 +8,7 @@ type Api = {
   subscribe: (ref) => void
 }
 
-type PointsProps = JSX.IntrinsicElements['points'] & {
+type PointsInstancesProps = JSX.IntrinsicElements['points'] & {
   range?: number
   limit?: number
 }
@@ -19,13 +19,17 @@ const parentMatrix = new THREE.Matrix4()
 const position = new THREE.Vector3()
 const color = new THREE.Color()
 
-const Points = React.forwardRef(
-  ({ children, range, limit = 1000, ...props }: PointsProps, ref: React.ForwardedRef<THREE.Points>) => {
+/**
+ * Instance implementation, relies on react + context to update the attributes based on the children of this component
+ */
+const PointsInstances = React.forwardRef<THREE.Points, PointsInstancesProps>(
+  ({ children, range, limit = 1000, ...props }, ref) => {
     const parentRef = React.useRef<THREE.Points>(null!)
     const [refs, setRefs] = React.useState<React.MutableRefObject<Position>[]>([])
-    const [[positions, colors]] = React.useState(() => [
+    const [[positions, colors, sizes]] = React.useState(() => [
       new Float32Array(limit * 3),
-      new Float32Array([...new Array(limit * 3)].map(() => 1)),
+      Float32Array.from({ length: limit * 3 }, () => 1),
+      Float32Array.from({ length: limit }, () => 1),
     ])
 
     React.useLayoutEffect(() => {
@@ -56,6 +60,11 @@ const Points = React.forwardRef(
         if (!positionRef.color.equals(color.fromArray(colors, i * 3))) {
           positionRef.color.toArray(colors, i * 3)
           parentRef.current.geometry.attributes.color.needsUpdate = true
+        }
+
+        if (positionRef.size !== sizes[i]) {
+          sizes.set([positionRef.size], i)
+          parentRef.current.geometry.attributes.size.needsUpdate = true
         }
       }
     })
@@ -102,6 +111,13 @@ const Points = React.forwardRef(
             itemSize={3}
             usage={THREE.DynamicDrawUsage}
           />
+          <bufferAttribute
+            attachObject={['attributes', 'size']}
+            count={sizes.length}
+            array={sizes}
+            itemSize={1}
+            usage={THREE.DynamicDrawUsage}
+          />
         </bufferGeometry>
         <context.Provider value={api}>{children}</context.Provider>
       </points>
@@ -109,7 +125,7 @@ const Points = React.forwardRef(
   }
 )
 
-const Point = React.forwardRef(({ children, ...props }, ref) => {
+export const Point = React.forwardRef(({ children, ...props }, ref) => {
   React.useMemo(() => extend({ Position }), [])
   const group = React.useRef()
   const { subscribe } = React.useContext(context)
@@ -121,4 +137,77 @@ const Point = React.forwardRef(({ children, ...props }, ref) => {
   )
 })
 
-export { Points, Point }
+/**
+ * Buffer implementation, relies on complete buffers of the correct number, leaves it to the user to update them
+ */
+type PointsBuffersProps = Omit<JSX.IntrinsicElements['points'], 'position'> & {
+  // a buffer containing all points position
+  positions: Float32Array
+  colors?: Float32Array
+  sizes?: Float32Array
+  // The size of the points in the buffer
+  stride?: 2 | 3
+}
+
+export const PointsBuffer = React.forwardRef<THREE.Points, PointsBuffersProps>(
+  ({ children, positions, colors, sizes, stride = 3, ...props }, forwardedRef) => {
+    const pointsRef = React.useRef<THREE.Points>(null!)
+
+    useFrame(() => {
+      const attr = pointsRef.current.geometry.attributes
+
+      attr.position.needsUpdate = true
+
+      if (colors) {
+        attr.color.needsUpdate = true
+      }
+
+      if (sizes) {
+        attr.size.needsUpdate = true
+      }
+    })
+
+    return (
+      <points matrixAutoUpdate={false} ref={mergeRefs([forwardedRef, pointsRef])} {...props}>
+        <bufferGeometry>
+          <bufferAttribute
+            attachObject={['attributes', 'position']}
+            count={positions.length / stride}
+            array={positions}
+            itemSize={stride}
+            usage={THREE.DynamicDrawUsage}
+          />
+          {colors && (
+            <bufferAttribute
+              attachObject={['attributes', 'color']}
+              count={colors.length / stride}
+              array={colors}
+              itemSize={stride}
+              usage={THREE.DynamicDrawUsage}
+            />
+          )}
+          {sizes && (
+            <bufferAttribute
+              attachObject={['attributes', 'size']}
+              count={sizes.length / stride}
+              array={sizes}
+              itemSize={stride}
+              usage={THREE.DynamicDrawUsage}
+            />
+          )}
+        </bufferGeometry>
+        {children}
+      </points>
+    )
+  }
+)
+
+export const Points = React.forwardRef<THREE.Points, PointsBuffersProps | PointsInstancesProps>(
+  (props, forwardedRef) => {
+    if ((props as PointsBuffersProps).positions instanceof Float32Array) {
+      return <PointsBuffer {...(props as PointsBuffersProps)} ref={forwardedRef} />
+    }
+
+    return <PointsInstances {...(props as PointsInstancesProps)} ref={forwardedRef} />
+  }
+)

@@ -3,15 +3,15 @@ import { MathUtils, Quaternion, Vector3 } from 'three'
 
 import { Setup } from '../Setup'
 
-import { PointsBuffer, shaderMaterial } from '../../src'
+import { Point, Points, shaderMaterial } from '../../src'
 import { extend, useFrame } from '@react-three/fiber'
 
 import * as buffer from 'maath/buffer'
 import * as misc from 'maath/misc'
 
 export default {
-  title: 'Performance/PointsBuffer',
-  component: PointsBuffer,
+  title: 'Performance/Points',
+  component: Points,
 }
 
 const rotationAxis = new Vector3(0, 1, 0).normalize()
@@ -77,10 +77,10 @@ function BasicPointsBufferScene() {
 
   return (
     <>
-      <PointsBuffer position={positionFinal} color={color} size={size}>
+      <Points positions={positionFinal} colors={color} sizes={size}>
         {/* @ts-ignore */}
         <myPointsMaterial />
-      </PointsBuffer>
+      </Points>
     </>
   )
 }
@@ -89,6 +89,35 @@ export function BasicPointsBuffer() {
   return <BasicPointsBufferScene />
 }
 
-BasicPointsBuffer.storyName = 'Basic'
+BasicPointsBuffer.storyName = 'Buffer'
 
 BasicPointsBuffer.decorators = [(storyFn) => <Setup cameraPosition={new Vector3(10, 10, 10)}>{storyFn()}</Setup>]
+
+function BasicPointsInstancesScene() {
+  const [points] = React.useState(() => {
+    const n = 10
+    return Array.from({ length: n * n * n }, () => {
+      return [MathUtils.randFloatSpread(4), MathUtils.randFloatSpread(4), MathUtils.randFloatSpread(4)]
+    })
+  })
+
+  return (
+    <>
+      <Points>
+        {points.map((p) => (
+          <Point position={p} color={p} size={Math.random() * 0.5 + 0.1} />
+        ))}
+        {/* @ts-ignore */}
+        <myPointsMaterial />
+      </Points>
+    </>
+  )
+}
+
+export function BasicPointsInstances() {
+  return <BasicPointsInstancesScene />
+}
+
+BasicPointsInstances.storyName = 'Instances'
+
+BasicPointsInstances.decorators = [(storyFn) => <Setup cameraPosition={new Vector3(10, 10, 10)}>{storyFn()}</Setup>]

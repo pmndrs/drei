@@ -86,6 +86,7 @@ export * from './Stage'
 
 // Performance
 export * from './Points'
+export * from './PointsBuffer'
 export * from './Instances'
 export * from './Segments'
 export * from './Detailed'

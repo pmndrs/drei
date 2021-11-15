@@ -16,7 +16,7 @@ export function useTexture<Url extends string[] | string | Record<string, string
   const gl = useThree((state) => state.gl)
   const textures = useLoader(TextureLoader, IsObject(input) ? Object.values(input) : (input as any))
 
-  // https://github.com/mrdoob/three.js/issues/2269
+  // https://github.com/mrdoob/three.js/issues/22696
   // Upload the texture to the GPU immediately instead of waiting for the first render
   useEffect(() => {
     if (init) {

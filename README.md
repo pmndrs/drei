@@ -973,10 +973,15 @@ function Foo() {
 
 #### useDepthBuffer
 
-Renders the scene into a depth-buffer. Often effects depend on it and this allows you to render a single buffer and share it, which minimizes the performance impact. The first argument is the size of the buffer, which defaults to 256 pixels. It returns the buffer's `depthTexture`.
+Renders the scene into a depth-buffer. Often effects depend on it and this allows you to render a single buffer and share it, which minimizes the performance impact. It returns the buffer's `depthTexture`.
+
+Since this is a rather expensive effect you can limit the amount of frames it renders when your objects are static. For instance making it render only once by setting `frames: 1`.
 
 ```jsx
-const depthBuffer = useDepthBuffer(/* 256 */)
+const depthBuffer = useDepthBuffer({
+  size: 256, // Size of the FBO, 256 by default
+  frames: Infinity, // How many frames it render, Infinity by default
+})
 return <SomethingThatNeedsADepthBuffer depthBuffer={depthBuffer} />
 ```
 

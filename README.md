@@ -980,7 +980,7 @@ Since this is a rather expensive effect you can limit the amount of frames it re
 ```jsx
 const depthBuffer = useDepthBuffer({
   size: 256, // Size of the FBO, 256 by default
-  frames: Infinity, // How many frames it render, Infinity by default
+  frames: Infinity, // How many frames it renders, Infinity by default
 })
 return <SomethingThatNeedsADepthBuffer depthBuffer={depthBuffer} />
 ```

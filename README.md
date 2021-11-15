@@ -1450,6 +1450,14 @@ Otherwise use any material you like:
   <pointsMaterial vertexColors size={10} />
 ```
 
+If you just want to use buffers for position, color and size, you can use the alternative API:
+
+```jsx
+<Points positions={positionsBuffer} colors={colorsBuffer} sizes={sizesBuffer}>
+  <pointsMaterial />
+</Points>
+```
+
 #### Segments
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/performance-segments--many-segments)

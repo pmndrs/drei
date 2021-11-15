@@ -21,7 +21,7 @@ export function useNormalTexture(id = 0, settings: Settings = {}): [Texture, str
   const imageName = normalsList[id] || DEFAULT_NORMAL
   const url = `${NORMAL_ROOT}/normals/${imageName}`
 
-  const normalTexture = useTexture(url) as Texture
+  const normalTexture = useTexture(url, { init: false }) as Texture
 
   React.useEffect(() => {
     if (!normalTexture) return

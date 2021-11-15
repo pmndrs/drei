@@ -5,8 +5,13 @@ import { useEffect } from 'react'
 export const IsObject = (url: any): url is Record<string, string> =>
   url === Object(url) && !Array.isArray(url) && typeof url !== 'function'
 
+type Opts = {
+  init: boolean
+}
+
 export function useTexture<Url extends string[] | string | Record<string, string>>(
-  input: Url
+  input: Url,
+  { init }: Opts = { init: true }
 ): Url extends any[] ? Texture[] : Url extends object ? { [key in keyof Url]: Texture } : Texture {
   const gl = useThree((state) => state.gl)
   const textures = useLoader(TextureLoader, IsObject(input) ? Object.values(input) : (input as any))
@@ -14,9 +19,11 @@ export function useTexture<Url extends string[] | string | Record<string, string
   // https://github.com/mrdoob/three.js/issues/2269
   // Upload the texture to the GPU immediately instead of waiting for the first render
   useEffect(() => {
-    const array = Array.isArray(textures) ? textures : [textures]
-    array.forEach(gl.initTexture)
-  }, [gl, textures])
+    if (init) {
+      const array = Array.isArray(textures) ? textures : [textures]
+      array.forEach(gl.initTexture)
+    }
+  }, [gl, textures, init])
 
   if (IsObject(input)) {
     const keys = Object.keys(input)

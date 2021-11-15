@@ -4,8 +4,6 @@
 [![Downloads](https://img.shields.io/npm/dt/@react-three/drei.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)
 [![Discord Shield](https://img.shields.io/discord/740090768164651008?style=flat&colorA=000000&colorB=000000&label=discord&logo=discord&logoColor=ffffff)](https://discord.gg/ZZjjNvJ)
 
-
-
 A growing collection of useful helpers and abstractions for [react-three-fiber](https://github.com/pmndrs/react-three-fiber).
 
 ```bash
@@ -94,7 +92,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#stats">Stats</a></li>
           <li><a href="#center">Center</a></li>
           <li><a href="#bounds">Bounds</a></li>
-          <li><a href="#depthbuffer">DepthBuffer</a></li>
+          <li><a href="#usedepthbuffer">useDepthBuffer</a></li>
           <li><a href="#usecontextbridge">useContextBridge</a></li>
           <li><a href="#usefbo">useFBO</a></li>
           <li><a href="#usecamera">useCamera</a></li>
@@ -737,11 +735,8 @@ Optionally you can provide a depth-buffer which converts the spotlight into a so
 
 ```jsx
 function Foo() {
-  const [depthBuffer, setDepthBuffer] = useState()
-  return (
-    <>
-      <DepthBuffer ref={setDepthBuffer} size={256}>
-      <SpotLight depthBuffer={depthBuffer} />
+  const depthBuffer = useDepthBuffer()
+  return <SpotLight depthBuffer={depthBuffer} />
 ```
 
 #### softShadows
@@ -976,17 +971,13 @@ function Foo() {
   <Foo />
 ```
 
-#### DepthBuffer
+#### useDepthBuffer
 
-Renders the scene into a depth-buffer. Often effects depend on it, in order to minimize performance impact you can use this component.
+Renders the scene into a depth-buffer. Often effects depend on it and this allows you to render a single buffer and share it, which minimizes the performance impact. The first argument is the size of the buffer, which defaults to 256 pixels. It returns the buffer's `depthTexture`.
 
 ```jsx
-function Foo() {
-  const [depthBuffer, setDepthBuffer] = useState()
-  return (
-    <>
-      <DepthBuffer ref={setDepthBuffer} size={256}>
-      <SomethingThatNeedsADepthBuffer depthBuffer={depthBuffer} />
+const depthBuffer = useDepthBuffer(/* 256 */)
+return <SomethingThatNeedsADepthBuffer depthBuffer={depthBuffer} />
 ```
 
 #### useFBO

@@ -3,12 +3,7 @@ import * as React from 'react'
 import { useThree, useFrame } from '@react-three/fiber'
 import { useFBO } from './useFBO'
 
-const DepthBuffer = React.forwardRef(({ size = 256 }: { size?: number }, ref) => {
-  React.useEffect(() => {
-    console.warn(
-      'DepthBuffer has been deprecated and will be removed next major. Replace it with useDepthBuffer(size)!'
-    )
-  }, [])
+function useDepthBuffer(size = 256) {
   const dpr = useThree((state) => state.viewport.dpr)
   const { width, height } = useThree((state) => state.size)
   const w = size || width * dpr
@@ -22,12 +17,12 @@ const DepthBuffer = React.forwardRef(({ size = 256 }: { size?: number }, ref) =>
   }, [w, h])
 
   const depthFBO = useFBO(w, h, depthConfig)
-  React.useImperativeHandle(ref, () => depthFBO?.depthTexture)
-  return useFrame((state) => {
+  useFrame((state) => {
     state.gl.setRenderTarget(depthFBO)
     state.gl.render(state.scene, state.camera)
     state.gl.setRenderTarget(null)
   })
-})
+  return depthFBO.depthTexture
+}
 
-export { DepthBuffer }
+export { useDepthBuffer }

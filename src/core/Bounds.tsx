@@ -77,6 +77,10 @@ export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0
       getSize,
       refresh(object?: THREE.Object3D) {
         box.setFromObject(object || ref.current)
+        if (box.isEmpty()) {
+          const max = camera.position.length() || 10
+          box.setFromCenterAndSize(new THREE.Vector3(), new THREE.Vector3(max, max, max))
+        }
         return this
       },
       clip() {

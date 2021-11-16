@@ -23,7 +23,7 @@ export function useNormalTexture(id = 0, settings: Settings = {}): [Texture, str
 
   const normalTexture = useTexture(url) as Texture
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     if (!normalTexture) return
     normalTexture.wrapS = normalTexture.wrapT = RepeatWrapping
     normalTexture.repeat = new Vector2(repeat[0], repeat[1])

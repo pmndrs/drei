@@ -956,7 +956,7 @@ Calculates a boundary box and centers the camera accordingly. If you are using c
 </Bounds>
 ```
 
-The Bounds component also acts as a context provider, use the `useBounds` hook to refresh the bounds, fit the camera, clip near/far planes or focus objects. `refresh` will recalculate bounds, since this can be expensive only call it when you know the view has changed. `clip` sets the cameras near/far planes. `fit` zooms and centers the view.
+The Bounds component also acts as a context provider, use the `useBounds` hook to refresh the bounds, fit the camera, clip near/far planes or focus objects. `refresh(object?: THREE.Object3D | THREE.Box3)` will recalculate bounds, since this can be expensive only call it when you know the view has changed. `clip` sets the cameras near/far planes. `fit` zooms and centers the view.
 
 ```jsx
 function Foo() {
@@ -964,8 +964,9 @@ function Foo() {
   useEffect(() => {
     // Calculate scene bounds
     bounds.refresh().clip().fit()
-    // Or, focus a specific object
+    // Or, focus a specific object or box3
     // bounds.refresh(ref.current).clip().fit()
+    // bounds.refresh(new THREE.Box3()).clip().fit()
 
 <Bounds>
   <Foo />

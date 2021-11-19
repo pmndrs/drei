@@ -8,7 +8,7 @@ export type BoundsApi = {
     center: THREE.Vector3
     distance: number
   }
-  refresh(object?: THREE.Object3D): any
+  refresh(object?: THREE.Object3D | THREE.Box3): any
   clip(): any
   fit(): any
 }

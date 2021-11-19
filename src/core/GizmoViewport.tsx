@@ -5,6 +5,7 @@ import { useGizmoContext } from './GizmoHelper'
 type AxisProps = {
   color: string
   rotation: [number, number, number]
+  scale?: [number, number, number]
 }
 
 type AxisHeadProps = JSX.IntrinsicElements['sprite'] & {
@@ -19,6 +20,7 @@ type AxisHeadProps = JSX.IntrinsicElements['sprite'] & {
 
 type GizmoViewportProps = JSX.IntrinsicElements['group'] & {
   axisColors?: [string, string, string]
+  axisScale?: [number, number, number]
   labels?: [string, string, string]
   axisHeadScale?: number
   labelColor?: string
@@ -29,11 +31,11 @@ type GizmoViewportProps = JSX.IntrinsicElements['group'] & {
   onClick?: (e: Event) => null
 }
 
-function Axis({ color, rotation }: AxisProps) {
+function Axis({ scale = [0.8, 0.05, 0.05], color, rotation }: AxisProps) {
   return (
     <group rotation={rotation}>
       <mesh position={[0.4, 0, 0]}>
-        <boxGeometry args={[0.8, 0.05, 0.05]} />
+        <boxGeometry args={scale} />
         <meshBasicMaterial color={color} toneMapped={false} />
       </mesh>
     </group>
@@ -100,6 +102,7 @@ export const GizmoViewport = ({
   font = '18px Inter var, Arial, sans-serif',
   axisColors = ['#ff3653', '#0adb50', '#2c8fdf'],
   axisHeadScale = 1,
+  axisScale,
   labels = ['X', 'Y', 'Z'],
   labelColor = '#000',
   onClick,
@@ -123,9 +126,9 @@ export const GizmoViewport = ({
   }
   return (
     <group scale={40} {...props}>
-      <Axis color={colorX} rotation={[0, 0, 0]} />
-      <Axis color={colorY} rotation={[0, 0, Math.PI / 2]} />
-      <Axis color={colorZ} rotation={[0, -Math.PI / 2, 0]} />
+      <Axis color={colorX} rotation={[0, 0, 0]} scale={axisScale} />
+      <Axis color={colorY} rotation={[0, 0, Math.PI / 2]} scale={axisScale} />
+      <Axis color={colorZ} rotation={[0, -Math.PI / 2, 0]} scale={axisScale} />
       {!hideAxisHeads && (
         <>
           <AxisHead arcStyle={colorX} position={[1, 0, 0]} label={labels[0]} {...axisHeadProps} />

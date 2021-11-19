@@ -11,6 +11,7 @@ type AxisHeadProps = JSX.IntrinsicElements['sprite'] & {
   arcStyle: string
   label?: string
   labelColor: string
+  axisHeadScale?: number
   disabled?: boolean
   font: string
   onClick?: (e: Event) => null
@@ -18,8 +19,11 @@ type AxisHeadProps = JSX.IntrinsicElements['sprite'] & {
 
 type GizmoViewportProps = JSX.IntrinsicElements['group'] & {
   axisColors?: [string, string, string]
+  labels?: [string, string, string]
+  axisHeadScale?: number
   labelColor?: string
   hideNegativeAxes?: boolean
+  hideAxisHeads?: boolean
   disabled?: boolean
   font?: string
   onClick?: (e: Event) => null
@@ -36,7 +40,16 @@ function Axis({ color, rotation }: AxisProps) {
   )
 }
 
-function AxisHead({ onClick, font, disabled, arcStyle, label, labelColor, ...props }: AxisHeadProps) {
+function AxisHead({
+  onClick,
+  font,
+  disabled,
+  arcStyle,
+  label,
+  labelColor,
+  axisHeadScale = 1,
+  ...props
+}: AxisHeadProps) {
   const texture = React.useMemo(() => {
     const canvas = document.createElement('canvas')
     canvas.width = 64
@@ -59,7 +72,7 @@ function AxisHead({ onClick, font, disabled, arcStyle, label, labelColor, ...pro
   }, [arcStyle, label, labelColor, font])
 
   const [active, setActive] = React.useState(false)
-  const scale = (label ? 1 : 0.75) * (active ? 1.2 : 1)
+  const scale = (label ? 1 : 0.75) * (active ? 1.2 : 1) * axisHeadScale
   const handlePointerOver = (e: Event) => {
     e.stopPropagation()
     setActive(true)
@@ -82,9 +95,12 @@ function AxisHead({ onClick, font, disabled, arcStyle, label, labelColor, ...pro
 
 export const GizmoViewport = ({
   hideNegativeAxes,
+  hideAxisHeads,
   disabled,
   font = '18px Inter var, Arial, sans-serif',
   axisColors = ['#ff3653', '#0adb50', '#2c8fdf'],
+  axisHeadScale = 1,
+  labels = ['X', 'Y', 'Z'],
   labelColor = '#000',
   onClick,
   ...props
@@ -97,6 +113,7 @@ export const GizmoViewport = ({
     labelColor,
     raycast,
     onClick,
+    axisHeadScale,
     onPointerDown: !disabled
       ? (e: Event) => {
           tweenCamera(e.object.position)
@@ -109,14 +126,18 @@ export const GizmoViewport = ({
       <Axis color={colorX} rotation={[0, 0, 0]} />
       <Axis color={colorY} rotation={[0, 0, Math.PI / 2]} />
       <Axis color={colorZ} rotation={[0, -Math.PI / 2, 0]} />
-      <AxisHead arcStyle={colorX} position={[1, 0, 0]} label="X" {...axisHeadProps} />
-      <AxisHead arcStyle={colorY} position={[0, 1, 0]} label="Y" {...axisHeadProps} />
-      <AxisHead arcStyle={colorZ} position={[0, 0, 1]} label="Z" {...axisHeadProps} />
-      {!hideNegativeAxes && (
+      {!hideAxisHeads && (
         <>
-          <AxisHead arcStyle={colorX} position={[-1, 0, 0]} {...axisHeadProps} />
-          <AxisHead arcStyle={colorY} position={[0, -1, 0]} {...axisHeadProps} />
-          <AxisHead arcStyle={colorZ} position={[0, 0, -1]} {...axisHeadProps} />
+          <AxisHead arcStyle={colorX} position={[1, 0, 0]} label={labels[0]} {...axisHeadProps} />
+          <AxisHead arcStyle={colorY} position={[0, 1, 0]} label={labels[1]} {...axisHeadProps} />
+          <AxisHead arcStyle={colorZ} position={[0, 0, 1]} label={labels[2]} {...axisHeadProps} />
+          {!hideNegativeAxes && (
+            <>
+              <AxisHead arcStyle={colorX} position={[-1, 0, 0]} {...axisHeadProps} />
+              <AxisHead arcStyle={colorY} position={[0, -1, 0]} {...axisHeadProps} />
+              <AxisHead arcStyle={colorZ} position={[0, 0, -1]} {...axisHeadProps} />
+            </>
+          )}
         </>
       )}
       <ambientLight intensity={0.5} />

@@ -34,7 +34,7 @@ const SpotLight = React.forwardRef(
 
     useFrame(() => {
       material.uniforms.spotPosition.value.copy(mesh.current.getWorldPosition(vec))
-      mesh.current.lookAt((mesh.current.parent as any).target.position)
+      mesh.current.lookAt((mesh.current.parent as any).target.getWorldPosition(vec))
     })
 
     const geom = React.useMemo(() => {

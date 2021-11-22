@@ -90,7 +90,7 @@ function AxisHead({
       onPointerOut={!disabled ? onClick || handlePointerOut : undefined}
       {...props}
     >
-      <spriteMaterial map={texture} alphaTest={0.3} opacity={label ? 1 : 0.75} toneMapped={false} />
+      <spriteMaterial map={texture} map-anisotropy={16} alphaTest={0.3} opacity={label ? 1 : 0.75} toneMapped={false} />
     </sprite>
   )
 }

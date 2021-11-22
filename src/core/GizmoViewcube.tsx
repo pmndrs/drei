@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useThree } from '@react-three/fiber'
 import { useGizmoContext } from './GizmoHelper'
 import { CanvasTexture, Event, Vector3 } from 'three'
 
@@ -63,6 +64,7 @@ const FaceMaterial = ({
   strokeColor = colors.stroke,
   opacity = 1,
 }: FaceTypeProps) => {
+  const gl = useThree((state) => state.gl)
   const texture = React.useMemo(() => {
     const canvas = document.createElement('canvas')
     canvas.width = 128
@@ -81,6 +83,7 @@ const FaceMaterial = ({
   return (
     <meshLambertMaterial
       map={texture}
+      map-anisotropy={gl.capabilities.getMaxAnisotropy() || 1}
       attachArray="material"
       color={hover ? hoverColor : 'white'}
       transparent

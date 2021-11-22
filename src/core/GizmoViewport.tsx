@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useThree } from '@react-three/fiber'
 import { CanvasTexture, Event } from 'three'
 import { useGizmoContext } from './GizmoHelper'
 
@@ -52,6 +53,7 @@ function AxisHead({
   axisHeadScale = 1,
   ...props
 }: AxisHeadProps) {
+  const gl = useThree((state) => state.gl)
   const texture = React.useMemo(() => {
     const canvas = document.createElement('canvas')
     canvas.width = 64
@@ -90,7 +92,13 @@ function AxisHead({
       onPointerOut={!disabled ? onClick || handlePointerOut : undefined}
       {...props}
     >
-      <spriteMaterial map={texture} map-anisotropy={16} alphaTest={0.3} opacity={label ? 1 : 0.75} toneMapped={false} />
+      <spriteMaterial
+        map={texture}
+        map-anisotropy={gl.capabilities.getMaxAnisotropy() || 1}
+        alphaTest={0.3}
+        opacity={label ? 1 : 0.75}
+        toneMapped={false}
+      />
     </sprite>
   )
 }

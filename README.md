@@ -278,7 +278,7 @@ If you are using other controls (Orbit, Trackball, etc), you will notice how the
 ![](https://img.shields.io/badge/-Dom only-red)
 
 <p align="center">
-  <a href="https://codesandbox.io/s/l4klb"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/l4klb/screenshot.png" alt="Horizintal tiles"/></a>
+  <a href="https://codesandbox.io/s/l4klb"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/l4klb/screenshot.png" alt="Horizontal tiles"/></a>
   <a href="https://codesandbox.io/s/4m0d0"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/4m0d0/screenshot.png" alt="M1 scroll"/></a>
   <a href="https://codesandbox.io/s/gsm1y"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/gsm1y/screenshot.png" alt="useIntersect"/></a>
   <a href="https://codesandbox.io/s/x8gvs"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/x8gvs/screenshot.png" alt="Infinite scroll"/></a>

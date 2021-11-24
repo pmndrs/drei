@@ -2,4 +2,4 @@
 . "$(dirname "$0")/_/husky.sh"
 
 npx --no-install pretty-quick --staged
-yarn eslint:ci --quiet
+npm run eslint:ci --quiet

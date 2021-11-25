@@ -64,9 +64,8 @@ export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0
   }))
   const [goal] = React.useState(() => ({ focus: new THREE.Vector3(), camera: new THREE.Vector3(), zoom: 1 }))
 
+  const [box] = React.useState(() => new THREE.Box3())
   const api: BoundsApi = React.useMemo(() => {
-    const box = new THREE.Box3()
-
     function getSize() {
       const size = box.getSize(new THREE.Vector3())
       const center = box.getCenter(new THREE.Vector3())
@@ -158,7 +157,7 @@ export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0
         return this
       },
     }
-  }, [camera, controls, margin, damping, invalidate, onFit])
+  }, [box, camera, controls, margin, damping, invalidate, onFit])
 
   React.useLayoutEffect(() => {
     api.refresh()

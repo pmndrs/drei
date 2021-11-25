@@ -4,6 +4,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 
 export type BoundsApi = {
   getSize: () => {
+    box: THREE.Box3
     size: THREE.Vector3
     center: THREE.Vector3
     distance: number
@@ -19,6 +20,7 @@ export type BoundsProps = JSX.IntrinsicElements['group'] & {
   clip?: boolean
   margin?: number
   eps?: number
+  onFit?: (data: BoundsApi) => void
 }
 
 type ControlsProto = {
@@ -35,7 +37,7 @@ const isObject3D = (def: any): def is THREE.Object3D => def && (def as THREE.Obj
 const isBox3 = (def: any): def is THREE.Box3 => def && (def as THREE.Box3).isBox3
 
 const context = React.createContext<BoundsApi>(null!)
-export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0.01 }: BoundsProps) {
+export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0.01, onFit }: BoundsProps) {
   const ref = React.useRef<THREE.Group>(null!)
   const camera = useThree((state) => state.camera)
   // @ts-expect-error new in @react-three/fiber@7.0.5
@@ -72,7 +74,7 @@ export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0
         : maxSize / (2 * Math.atan((Math.PI * camera.fov) / 360))
       const fitWidthDistance = isOrthographic(camera) ? maxSize * 4 : fitHeightDistance / camera.aspect
       const distance = margin * Math.max(fitHeightDistance, fitWidthDistance)
-      return { size, center, distance }
+      return { box, size, center, distance }
     }
 
     return {
@@ -150,6 +152,7 @@ export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0
           }
           invalidate()
         }
+        if (onFit) onFit(this.getSize())
         return this
       },
     }

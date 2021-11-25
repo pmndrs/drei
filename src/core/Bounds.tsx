@@ -2,13 +2,15 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { useFrame, useThree } from '@react-three/fiber'
 
+export type SizeProps = {
+  box: THREE.Box3
+  size: THREE.Vector3
+  center: THREE.Vector3
+  distance: number
+}
+
 export type BoundsApi = {
-  getSize: () => {
-    box: THREE.Box3
-    size: THREE.Vector3
-    center: THREE.Vector3
-    distance: number
-  }
+  getSize: () => SizeProps
   refresh(object?: THREE.Object3D | THREE.Box3): any
   clip(): any
   fit(): any
@@ -20,7 +22,7 @@ export type BoundsProps = JSX.IntrinsicElements['group'] & {
   clip?: boolean
   margin?: number
   eps?: number
-  onFit?: (data: BoundsApi) => void
+  onFit?: (data: SizeProps) => void
 }
 
 type ControlsProto = {

@@ -158,7 +158,7 @@ export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0
         return this
       },
     }
-  }, [camera, controls, margin, damping, invalidate])
+  }, [camera, controls, margin, damping, invalidate, onFit])
 
   React.useLayoutEffect(() => {
     api.refresh()

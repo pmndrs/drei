@@ -60,7 +60,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#cubicbezierline">CubicBezierLine</a></li>
           <li><a href="#positionalaudio">PositionalAudio</a></li>
           <li><a href="#billboard">Billboard</a></li>
-          <li><a href="#gizmoHelper">GizmoHelper</a></li>          
+          <li><a href="#gizmohelper">GizmoHelper</a></li>          
           <li><a href="#effects">Effects</a></li>
           <li><a href="#gradienttexture">GradientTexture</a></li>
           <li><a href="#useanimations">useAnimations</a></li>
@@ -72,6 +72,13 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#pointmaterial">PointMaterial</a></li>       
           <li><a href="#softshadows">softShadows</a></li>
           <li><a href="#shadermaterial">shaderMaterial</a></li>
+        </ul>
+        <li><a href="#modifiers">Modifiers</a></li>
+        <ul>
+          <li><a href="#curvemodifier">CurveModifier</a></li>
+          <li><a href="#useedgesplit">useEdgeSplit</a></li>
+          <li><a href="#usetessellation">useTessellation</a></li>
+          <li><a href="#usesimplification">useSimplification</a></li>
         </ul>
       </ul>
     </td>
@@ -100,32 +107,21 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#usefbx">useFBX</a></li>
           <li><a href="#usetexture">useTexture</a></li>
           <li><a href="#usecubetexture">useCubeTexture</a></li>
-        </ul>
-        <li><a href="#modifiers">Modifiers</a></li>
+        </ul>        
+        <li><a href="#performance">Performance</a></li>
         <ul>
-          <li><a href="#curvemodifier">CurveModifier</a></li>
-          <li><a href="#useedgesplit">useEdgeSplit</a></li>
-          <li><a href="#usetessellation">useTessellation</a></li>
-          <li><a href="#usesimplification">useSimplification</a></li>
-        </ul>
-        <li><a href="#staging">Staging</a></li>
-        <ul>
-          <li><a href="#center">Center</a></li>
-          <li><a href="#bounds">Bounds</a></li>
-          <li><a href="#camerashake">CameraShake</a></li>
-          <li><a href="#stage">Stage</a></li>
-          <li><a href="#backdrop">Backdrop</a></li>
-          <li><a href="#environment">Environment</a></li>
-          <li><a href="#reflector">SpotLight</a></li>
-          <li><a href="#shadow">Shadow</a></li>
-          <li><a href="#contactshadows">ContactShadows</a></li>
-          <li><a href="#reflector">Reflector</a></li>
-          <li><a href="#sky">Sky</a></li>
-          <li><a href="#stars">Stars</a></li>
-          <li><a href="#cloud">Cloud</a></li>
-          <li><a href="#usematcaptexture">useMatcapTexture</a></li>
-          <li><a href="#usenormaltexture">useNormalTexture</a></li>
-        </ul>
+          <li><a href="#instances">Instances</a></li>
+          <li><a href="#merged">Merged</a></li>
+          <li><a href="#points">Points</a></li>
+          <li><a href="#segments">Segments</a></li>
+          <li><a href="#detailed">Detailed</a></li>
+          <li><a href="#preload">Preload</a></li>
+          <li><a href="#bakeshadows">BakeShadows</a></li>
+          <li><a href="#meshbounds">meshBounds</a></li>
+          <li><a href="#adaptivedpr">AdaptiveDpr</a></li>
+          <li><a href="#adaptiveevents">AdaptiveEvents</a></li>
+          <li><a href="#usebvh">useBVH</a></li>
+        </ul>        
       </ul>
     </td>
     <td valign="top">
@@ -153,19 +149,23 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#roundedbox">RoundedBox</a></li>
           <li><a href="#screenquad">Screenquad</a></li>
         </ul>
-        <li><a href="#performance">Performance</a></li>
+        <li><a href="#staging">Staging</a></li>
         <ul>
-          <li><a href="#instances">Instances</a></li>
-          <li><a href="#merged">Merged</a></li>
-          <li><a href="#points">Points</a></li>
-          <li><a href="#segments">Segments</a></li>
-          <li><a href="#detailed">Detailed</a></li>
-          <li><a href="#preload">Preload</a></li>
-          <li><a href="#bakeshadows">BakeShadows</a></li>
-          <li><a href="#meshbounds">meshBounds</a></li>
-          <li><a href="#adaptivedpr">AdaptiveDpr</a></li>
-          <li><a href="#adaptiveevents">AdaptiveEvents</a></li>
-          <li><a href="#usebvh">useBVH</a></li>
+          <li><a href="#center">Center</a></li>
+          <li><a href="#bounds">Bounds</a></li>
+          <li><a href="#camerashake">CameraShake</a></li>
+          <li><a href="#stage">Stage</a></li>
+          <li><a href="#backdrop">Backdrop</a></li>
+          <li><a href="#environment">Environment</a></li>
+          <li><a href="#reflector">SpotLight</a></li>
+          <li><a href="#shadow">Shadow</a></li>
+          <li><a href="#contactshadows">ContactShadows</a></li>
+          <li><a href="#reflector">Reflector</a></li>
+          <li><a href="#sky">Sky</a></li>
+          <li><a href="#stars">Stars</a></li>
+          <li><a href="#cloud">Cloud</a></li>
+          <li><a href="#usematcaptexture">useMatcapTexture</a></li>
+          <li><a href="#usenormaltexture">useNormalTexture</a></li>
         </ul>
       </ul>
     </td>
@@ -643,6 +643,78 @@ extend({ ColorShiftMaterial })
 </mesh>
 ```
 
+# Modifiers
+
+#### CurveModifier
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/modifiers-curvemodifier)
+
+Given a curve will replace the children of this component with a mesh that move along said curve calling the property `moveAlongCurve` on the passed ref. Uses [three's Curve Modifier](https://threejs.org/examples/?q=curve#webgl_modifier_curve)
+
+```jsx
+const curveRef = useRef()
+
+const curve = React.useMemo(() => new THREE.CatmullRomCurve3([...handlePos], true, 'centripetal'), [handlePos])
+
+return (
+  <CurveModifier ref={curveRef} curve={curve}>
+    <mesh>
+      <boxBufferGeometry args={[10, 10]} />
+    </mesh>
+  </CurveModifier>
+)
+```
+
+#### useEdgeSplit
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/modifiers-useedgesplit)
+
+This hook mutates a mesh geometry using [three's Edge Split modifier](https://threejs.org/examples/?q=modifier#webgl_modifier_edgesplit). The first parameter is the cut-off angle, and the second parameter is a `tryKeepNormals` flag (default `true`).
+
+```jsx
+const meshRef = useEdgeSplit(Math.PI / 2)
+
+return (
+  <mesh ref={meshRef}>
+    <boxBufferGeometry args={[10, 10]} />
+  </mesh>
+)
+```
+
+#### useSimplification
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/modifiers-usesimplification)
+
+This hook mutates a mesh geometry using [three's Simplification modifier](https://threejs.org/examples/webgl_modifier_simplifier.html).
+
+👉 The simplification code is based on [this algorithm](http://www.melax.com/polychop/).
+
+```jsx
+const meshRef = useSimplification(0.5)
+
+return (
+  <mesh ref={meshRef}>
+    <octahedronBufferGeometry args={[2, 5]} />
+  </mesh>
+)
+```
+
+#### useTessellation
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/modifiers-usetessellation)
+
+This hook mutates a mesh geometry using [three's Tessellation modifier](https://threejs.org/examples/?q=tess#webgl_modifier_tessellation). It will break-up faces withe edge longer than the maxEdgeLength parameter.
+
+```jsx
+const meshRef = useTessellation(2, 8)
+
+return (
+  <mesh ref={meshRef}>
+    <octahedronBufferGeometry args={[2, 2]} />
+  </mesh>
+)
+```
+
 # Misc
 
 #### useContextBridge
@@ -877,78 +949,6 @@ const ref = useIntersect((visible) => console.log('object is visible', visible))
 return <mesh ref={ref} />
 ```
 
-# Modifiers
-
-#### CurveModifier
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/modifiers-curvemodifier)
-
-Given a curve will replace the children of this component with a mesh that move along said curve calling the property `moveAlongCurve` on the passed ref. Uses [three's Curve Modifier](https://threejs.org/examples/?q=curve#webgl_modifier_curve)
-
-```jsx
-const curveRef = useRef()
-
-const curve = React.useMemo(() => new THREE.CatmullRomCurve3([...handlePos], true, 'centripetal'), [handlePos])
-
-return (
-  <CurveModifier ref={curveRef} curve={curve}>
-    <mesh>
-      <boxBufferGeometry args={[10, 10]} />
-    </mesh>
-  </CurveModifier>
-)
-```
-
-#### useEdgeSplit
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/modifiers-useedgesplit)
-
-This hook mutates a mesh geometry using [three's Edge Split modifier](https://threejs.org/examples/?q=modifier#webgl_modifier_edgesplit). The first parameter is the cut-off angle, and the second parameter is a `tryKeepNormals` flag (default `true`).
-
-```jsx
-const meshRef = useEdgeSplit(Math.PI / 2)
-
-return (
-  <mesh ref={meshRef}>
-    <boxBufferGeometry args={[10, 10]} />
-  </mesh>
-)
-```
-
-#### useSimplification
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/modifiers-usesimplification)
-
-This hook mutates a mesh geometry using [three's Simplification modifier](https://threejs.org/examples/webgl_modifier_simplifier.html).
-
-👉 The simplification code is based on [this algorithm](http://www.melax.com/polychop/).
-
-```jsx
-const meshRef = useSimplification(0.5)
-
-return (
-  <mesh ref={meshRef}>
-    <octahedronBufferGeometry args={[2, 5]} />
-  </mesh>
-)
-```
-
-#### useTessellation
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/modifiers-usetessellation)
-
-This hook mutates a mesh geometry using [three's Tessellation modifier](https://threejs.org/examples/?q=tess#webgl_modifier_tessellation). It will break-up faces withe edge longer than the maxEdgeLength parameter.
-
-```jsx
-const meshRef = useTessellation(2, 8)
-
-return (
-  <mesh ref={meshRef}>
-    <octahedronBufferGeometry args={[2, 2]} />
-  </mesh>
-)
-```
-
 # Loading
 
 #### Loader
@@ -1064,6 +1064,237 @@ A convenience hook that uses `useLoader` and `CubeTextureLoader`
 
 ```jsx
 const envMap = useCubeTexture(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'], { path: 'cube/' })
+```
+
+# Performance
+
+#### Instances
+
+A wrapper around [THREE.InstancedMesh](https://threejs.org/docs/index.html?q=instan#api/en/objects/InstancedMesh). This allows you to define hundreds of thousands of objects in a single draw call, but declaratively!
+
+```jsx
+<Instances
+  limit={1000} // Optional: max amount of items (for calculating buffer size)
+  range={1000} // Optional: draw-range
+>
+  <boxGeometry />
+  <meshStandardMaterial />
+  <Instance
+    color="red"
+    scale={2}
+    position={[1, 2, 3]}
+    rotation={[Math.PI / 3, 0, 0]}
+    onClick={onClick} ... />
+  // As many as you want, make them conditional, mount/unmount them, lazy load them, etc ...
+</Instances>
+```
+
+You can nest Instances and use relative coordinates!
+
+```jsx
+<group position={[1, 2, 3]} rotation={[Math.PI / 2, 0, 0]}>
+  <Instance />
+</group>
+```
+
+Instances can also receive non-instanced objects, for instance annotations!
+
+```jsx
+<Instance>
+  <Html>hello from the dom</Html>
+</Instance>
+```
+
+You can define events on them!
+
+```jsx
+<Instance onClick={...} onPointerOver={...} />
+```
+
+#### Merged
+
+This creates instances for existing meshes and allows you to use them cheaply in the same scene graph. Each type will cost you exactly one draw call, no matter how many you use. `meshes` has to be a collection of pre-existing THREE.Mesh objects.
+
+```jsx
+<Merged meshes={[box, sphere]}>
+  {(Box, Sphere) => (
+    <>
+      <Box position={[-2, -2, 0]} color="red" />
+      <Box position={[-3, -3, 0]} color="tomato" />
+      <Sphere scale={0.7} position={[2, 1, 0]} color="green" />
+      <Sphere scale={0.7} position={[3, 2, 0]} color="teal" />
+    </>
+  )}
+</Merged>
+```
+
+You may also use object notation, which is good for loaded models.
+
+```jsx
+function Model({ url }) {
+  const { nodes } = useGLTF(url)
+  return (
+    <Merged meshes={nodes}>
+      {({ Screw, Filter, Pipe }) => (
+        <>
+          <Screw />
+          <Filter position={[1, 2, 3]} />
+          <Pipe position={[4, 5, 6]} />
+        </>
+      )}
+    </Merged>
+  )
+}
+```
+
+#### Points
+
+A wrapper around [THREE.Points](https://threejs.org/docs/index.html?q=points#api/en/objects/Points). It has the same api and properties as Instances.
+
+```jsx
+<Points
+  limit={1000} // Optional: max amount of items (for calculating buffer size)
+  range={1000} // Optional: draw-range
+>
+  <pointsMaterial />
+  <Point position={[1, 2, 3]} color="red" onClick={onClick} onPointerOver={onPointerOver} ... />
+  // As many as you want, make them conditional, mount/unmount them, lazy load them, etc ...
+</Points>
+```
+
+If you have a material that supports vertex colors (like drei/PointMaterial) you can have individual colors!
+
+```jsx
+<Points>
+  <PointMaterial />
+  <Point color="hotpink" />
+```
+
+Otherwise use any material you like:
+
+```jsx
+<Points>
+  <pointsMaterial vertexColors size={10} />
+```
+
+If you just want to use buffers for position, color and size, you can use the alternative API:
+
+```jsx
+<Points positions={positionsBuffer} colors={colorsBuffer} sizes={sizesBuffer}>
+  <pointsMaterial />
+</Points>
+```
+
+#### Segments
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/performance-segments--many-segments)
+
+A wrapper around [THREE.LineSegments](https://threejs.org/docs/#api/en/objects/LineSegments). This allows you to use thousands of segments under the same geometry.
+
+##### Prop based:
+
+```jsx
+<Segments limit={1000} lineWidth={1.0}>
+  <Segment start={[0, 0, 0]} end={[0, 10, 0]} color="red" />
+  <Segment start={[0, 0, 0]} end={[0, 10, 10]} color={[1, 0, 1]} />
+</Segments>
+```
+
+##### Ref based (for fast updates):
+
+```jsx
+const ref = useRef()
+
+// E.g. to change segment position each frame.
+useFrame(() => {
+  ref.current.start.set(0,0,0)
+  ref.current.end.set(10,10,0)
+  ref.current.color.setRGB(0,0,0)
+})
+// ...
+<Segments
+  limit={1000}
+  lineWidth={1.0}
+>
+  <Segment ref={ref} />
+</Segments>
+```
+
+#### Detailed
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-detailed--detailed-st)
+
+A wrapper around [THREE.LOD](https://threejs.org/docs/index.html#api/en/objects/LOD) (Level of detail).
+
+```jsx
+<Detailed distances={[0, 10, 20]} {...props}>
+  <mesh geometry={highDetail} />
+  <mesh geometry={mediumDetail} />
+  <mesh geometry={lowDetail} />
+</Detailed>
+```
+
+#### Preload
+
+The WebGLRenderer will compile materials only when they hit the frustrum, which can cause jank. This component precompiles the scene using [gl.compile](https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.compile) which makes sure that your app is responsive from the get go.
+
+By default gl.compile will only preload visible objects, if you supply the `all` prop, it will circumvent that. With the `scene` and `camera` props you could also use it in portals.
+
+```jsx
+<Canvas>
+  <Suspense fallback={null}>
+    <Model />
+    <Preload all />
+```
+
+#### BakeShadows
+
+Sets `gl.shadowMap.autoUpdate` to `false` while mounted and requests a single `gl.shadowMap.needsUpdate = true` afterwards. This freezes all shadow maps the moment this component comes in, which makes shadows performant again (with the downside that they are now static). Mount this component in lock-step with your models, for instance by dropping it into the same suspense boundary of a model that loads.
+
+```jsx
+<Canvas>
+  <Suspense fallback={null}>
+    <Model />
+    <BakeShadows />
+```
+
+#### meshBounds
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-meshbounds--mesh-bounds-st)
+
+A very fast, but often good-enough bounds-only raycast for meshes. You can use this if performance has precedence over pointer precision.
+
+```jsx
+<mesh raycast={meshBounds} />
+```
+
+#### AdaptiveDpr
+
+Drop this component into your scene and it will cut the pixel-ratio on [regress](#) according to the canvases perrformance min/max settings. This allows you to temporarily reduce visuals for more performance, for instance when the camera moves (look into drei's controls `regress` flag). Optionally you can set the canvas to a pixelated filter, which would be even faster.
+
+```jsx
+<AdaptiveDpr pixelated />
+```
+
+#### AdaptiveEvents
+
+Drop this component into your scene and it will switch off the raycaster while the system is in regress.
+
+```jsx
+<AdaptiveEvents />
+```
+
+#### useBVH
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/performance-usebvh--default-story)
+
+A hook to speed up the default raycasting by using the [BVH Implementation by @gkjohnnson](https://github.com/gkjohnson/three-mesh-bvh).
+
+```jsx
+const mesh = useRef()
+useBVH(mesh)
+
+<mesh ref={mesh} ... />
 ```
 
 # Staging
@@ -1355,236 +1586,4 @@ return (
   <meshStandardMaterial normalMap={normalMap} />
   ...
 )
-
-```
-
-# Performance
-
-#### Instances
-
-A wrapper around [THREE.InstancedMesh](https://threejs.org/docs/index.html?q=instan#api/en/objects/InstancedMesh). This allows you to define hundreds of thousands of objects in a single draw call, but declaratively!
-
-```jsx
-<Instances
-  limit={1000} // Optional: max amount of items (for calculating buffer size)
-  range={1000} // Optional: draw-range
->
-  <boxGeometry />
-  <meshStandardMaterial />
-  <Instance
-    color="red"
-    scale={2}
-    position={[1, 2, 3]}
-    rotation={[Math.PI / 3, 0, 0]}
-    onClick={onClick} ... />
-  // As many as you want, make them conditional, mount/unmount them, lazy load them, etc ...
-</Instances>
-```
-
-You can nest Instances and use relative coordinates!
-
-```jsx
-<group position={[1, 2, 3]} rotation={[Math.PI / 2, 0, 0]}>
-  <Instance />
-</group>
-```
-
-Instances can also receive non-instanced objects, for instance annotations!
-
-```jsx
-<Instance>
-  <Html>hello from the dom</Html>
-</Instance>
-```
-
-You can define events on them!
-
-```jsx
-<Instance onClick={...} onPointerOver={...} />
-```
-
-#### Merged
-
-This creates instances for existing meshes and allows you to use them cheaply in the same scene graph. Each type will cost you exactly one draw call, no matter how many you use. `meshes` has to be a collection of pre-existing THREE.Mesh objects.
-
-```jsx
-<Merged meshes={[box, sphere]}>
-  {(Box, Sphere) => (
-    <>
-      <Box position={[-2, -2, 0]} color="red" />
-      <Box position={[-3, -3, 0]} color="tomato" />
-      <Sphere scale={0.7} position={[2, 1, 0]} color="green" />
-      <Sphere scale={0.7} position={[3, 2, 0]} color="teal" />
-    </>
-  )}
-</Merged>
-```
-
-You may also use object notation, which is good for loaded models.
-
-```jsx
-function Model({ url }) {
-  const { nodes } = useGLTF(url)
-  return (
-    <Merged meshes={nodes}>
-      {({ Screw, Filter, Pipe }) => (
-        <>
-          <Screw />
-          <Filter position={[1, 2, 3]} />
-          <Pipe position={[4, 5, 6]} />
-        </>
-      )}
-    </Merged>
-  )
-}
-```
-
-#### Points
-
-A wrapper around [THREE.Points](https://threejs.org/docs/index.html?q=points#api/en/objects/Points). It has the same api and properties as Instances.
-
-```jsx
-<Points
-  limit={1000} // Optional: max amount of items (for calculating buffer size)
-  range={1000} // Optional: draw-range
->
-  <pointsMaterial />
-  <Point position={[1, 2, 3]} color="red" onClick={onClick} onPointerOver={onPointerOver} ... />
-  // As many as you want, make them conditional, mount/unmount them, lazy load them, etc ...
-</Points>
-```
-
-If you have a material that supports vertex colors (like drei/PointMaterial) you can have individual colors!
-
-```jsx
-<Points>
-  <PointMaterial />
-  <Point color="hotpink" />
-```
-
-Otherwise use any material you like:
-
-```jsx
-<Points>
-  <pointsMaterial vertexColors size={10} />
-```
-
-If you just want to use buffers for position, color and size, you can use the alternative API:
-
-```jsx
-<Points positions={positionsBuffer} colors={colorsBuffer} sizes={sizesBuffer}>
-  <pointsMaterial />
-</Points>
-```
-
-#### Segments
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/performance-segments--many-segments)
-
-A wrapper around [THREE.LineSegments](https://threejs.org/docs/#api/en/objects/LineSegments). This allows you to use thousands of segments under the same geometry.
-
-##### Prop based:
-
-```jsx
-<Segments limit={1000} lineWidth={1.0}>
-  <Segment start={[0, 0, 0]} end={[0, 10, 0]} color="red" />
-  <Segment start={[0, 0, 0]} end={[0, 10, 10]} color={[1, 0, 1]} />
-</Segments>
-```
-
-##### Ref based (for fast updates):
-
-```jsx
-const ref = useRef()
-
-// E.g. to change segment position each frame.
-useFrame(() => {
-  ref.current.start.set(0,0,0)
-  ref.current.end.set(10,10,0)
-  ref.current.color.setRGB(0,0,0)
-})
-// ...
-<Segments
-  limit={1000}
-  lineWidth={1.0}
->
-  <Segment ref={ref} />
-</Segments>
-```
-
-#### Detailed
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-detailed--detailed-st)
-
-A wrapper around [THREE.LOD](https://threejs.org/docs/index.html#api/en/objects/LOD) (Level of detail).
-
-```jsx
-<Detailed distances={[0, 10, 20]} {...props}>
-  <mesh geometry={highDetail} />
-  <mesh geometry={mediumDetail} />
-  <mesh geometry={lowDetail} />
-</Detailed>
-```
-
-#### Preload
-
-The WebGLRenderer will compile materials only when they hit the frustrum, which can cause jank. This component precompiles the scene using [gl.compile](https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.compile) which makes sure that your app is responsive from the get go.
-
-By default gl.compile will only preload visible objects, if you supply the `all` prop, it will circumvent that. With the `scene` and `camera` props you could also use it in portals.
-
-```jsx
-<Canvas>
-  <Suspense fallback={null}>
-    <Model />
-    <Preload all />
-```
-
-#### BakeShadows
-
-Sets `gl.shadowMap.autoUpdate` to `false` while mounted and requests a single `gl.shadowMap.needsUpdate = true` afterwards. This freezes all shadow maps the moment this component comes in, which makes shadows performant again (with the downside that they are now static). Mount this component in lock-step with your models, for instance by dropping it into the same suspense boundary of a model that loads.
-
-```jsx
-<Canvas>
-  <Suspense fallback={null}>
-    <Model />
-    <BakeShadows />
-```
-
-#### meshBounds
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-meshbounds--mesh-bounds-st)
-
-A very fast, but often good-enough bounds-only raycast for meshes. You can use this if performance has precedence over pointer precision.
-
-```jsx
-<mesh raycast={meshBounds} />
-```
-
-#### AdaptiveDpr
-
-Drop this component into your scene and it will cut the pixel-ratio on [regress](#) according to the canvases perrformance min/max settings. This allows you to temporarily reduce visuals for more performance, for instance when the camera moves (look into drei's controls `regress` flag). Optionally you can set the canvas to a pixelated filter, which would be even faster.
-
-```jsx
-<AdaptiveDpr pixelated />
-```
-
-#### AdaptiveEvents
-
-Drop this component into your scene and it will switch off the raycaster while the system is in regress.
-
-```jsx
-<AdaptiveEvents />
-```
-
-#### useBVH
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/performance-usebvh--default-story)
-
-A hook to speed up the default raycasting by using the [BVH Implementation by @gkjohnnson](https://github.com/gkjohnson/three-mesh-bvh).
-
-```jsx
-const mesh = useRef()
-useBVH(mesh)
-
-<mesh ref={mesh} ... />
 ```

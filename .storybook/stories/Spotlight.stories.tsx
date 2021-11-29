@@ -5,7 +5,7 @@ import { Setup } from '../Setup'
 import { DepthBuffer, Plane, SpotLight } from '../../src'
 
 export default {
-  title: 'Shaders/Spotlight',
+  title: 'Staging/Spotlight',
   component: SpotLight,
   decorators: [withKnobs, (storyFn) => <Setup lights={false}> {storyFn()}</Setup>],
 }

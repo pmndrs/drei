@@ -1,12 +1,10 @@
 // Abstractions
 export * from './Billboard'
-export * from './Cloud'
 export * from './QuadraticBezierLine'
 export * from './CubicBezierLine'
 export * from './Line'
 export * from './PositionalAudio'
 export * from './Text'
-export * from './Environment'
 export * from './Effects'
 export * from './GradientTexture'
 export * from './Image'
@@ -14,7 +12,6 @@ export * from './Image'
 // Cameras
 export * from './OrthographicCamera'
 export * from './PerspectiveCamera'
-export * from './CameraShake'
 export * from './CubeCamera'
 
 // Controls
@@ -41,11 +38,7 @@ export * from './useProgress'
 export * from './useTexture'
 
 // Misc
-export * from './Reflector'
-export * from './Shadow'
 export * from './Stats'
-export * from './Center'
-export * from './Bounds'
 export * from './DepthBuffer'
 export * from './useDepthBuffer'
 export * from './useAspect'
@@ -69,21 +62,29 @@ export * from './MeshDistortMaterial'
 export * from './MeshWobbleMaterial'
 export * from './PointMaterial'
 export * from './shaderMaterial'
-export * from './Sky'
 export * from './softShadows'
-export * from './Stars'
-export * from './ContactShadows'
-export * from './SpotLight'
 
 // Shapes
 export * from './shapes'
 export * from './RoundedBox'
 export * from './ScreenQuad'
 
-// Prototyping
+// Staging/Prototyping
+export * from './Center'
+export * from './Bounds'
+export * from './CameraShake'
+export * from './Stage'
+export * from './Backdrop'
+export * from './Shadow'
+export * from './ContactShadows'
+export * from './Reflector'
+export * from './SpotLight'
+export * from './Environment'
+export * from './Sky'
+export * from './Stars'
+export * from './Cloud'
 export * from './useMatcapTexture'
 export * from './useNormalTexture'
-export * from './Stage'
 
 // Performance
 export * from './Points'

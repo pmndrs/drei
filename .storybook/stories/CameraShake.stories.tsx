@@ -9,7 +9,7 @@ import { Setup } from '../Setup'
 import { CameraShake, OrbitControls } from '../../src'
 
 export default {
-  title: 'Camera/CameraShake',
+  title: 'Staging/CameraShake',
   component: CameraShake,
   decorators: [
     (storyFn) => (

@@ -7,7 +7,7 @@ import { useTurntable } from '../useTurntable'
 import { Box, Center, useGLTF } from '../../src'
 
 export default {
-  title: 'Misc/Center',
+  title: 'Staging/Center',
   component: Center,
   decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, -10)}>{storyFn()}</Setup>],
 }

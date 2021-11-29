@@ -7,7 +7,7 @@ import { Setup } from '../Setup'
 import { Sky, Plane } from '../../src'
 
 export default {
-  title: 'Shaders/Sky',
+  title: 'Staging/Sky',
   component: Sky,
   decorators: [withKnobs, (storyFn) => <Setup> {storyFn()}</Setup>],
 }

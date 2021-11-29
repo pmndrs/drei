@@ -6,7 +6,7 @@ import { Setup } from '../Setup'
 import { Reflector, useTexture, TorusKnot, Box } from '../../src'
 
 export default {
-  title: 'Misc/Reflector',
+  title: 'Staging/Reflector',
   component: Reflector,
   decorators: [
     (storyFn) => (

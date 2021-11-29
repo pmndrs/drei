@@ -9,7 +9,7 @@ import { Stage, Sphere } from '../../src'
 import { presetsObj, PresetsType } from '../../src/helpers/environment-assets'
 
 export default {
-  title: 'Prototyping/Stage',
+  title: 'Staging/Stage',
   component: Stage,
   decorators: [withKnobs, (storyFn) => <Setup cameraPosition={new Vector3(0, 0, 3)}>{storyFn()}</Setup>],
 }

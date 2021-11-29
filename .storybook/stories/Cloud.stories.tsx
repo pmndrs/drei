@@ -7,7 +7,7 @@ import { Setup } from '../Setup'
 import { Cloud, OrbitControls } from '../../src'
 
 export default {
-  title: 'Abstractions/Cloud',
+  title: 'Staging/Cloud',
   component: Cloud,
   decorators: [
     (storyFn) => (

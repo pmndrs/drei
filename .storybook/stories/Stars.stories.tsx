@@ -5,7 +5,7 @@ import { Setup } from '../Setup'
 import { Stars, Plane } from '../../src'
 
 export default {
-  title: 'Shaders/Stars',
+  title: 'Staging/Stars',
   component: Stars,
   decorators: [(storyFn) => <Setup> {storyFn()}</Setup>],
 }

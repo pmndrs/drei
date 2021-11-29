@@ -105,15 +105,7 @@ export function Stage({
       <group ref={outer}>
         <group ref={inner}>{children}</group>
       </group>
-      {contactShadow && (
-        <ContactShadows
-          rotation-x={Math.PI / 2}
-          width={radius * 2}
-          height={radius * 2}
-          far={radius / 2}
-          {...contactShadow}
-        />
-      )}
+      {contactShadow && <ContactShadows width={radius * 2} height={radius * 2} far={radius / 2} {...contactShadow} />}
       {environment && <Environment preset={environment} />}
       <ambientLight intensity={intensity / 3} />
       <spotLight

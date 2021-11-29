@@ -36,8 +36,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <ul>
           <li><a href="#perspectivecamera">PerspectiveCamera</a></li>
           <li><a href="#orthographiccamera">OrthographicCamera</a></li>
-          <li><a href="#cubecamera">CubeCamera</a></li>
-          <li><a href="#camerashake">CameraShake</a></li>
+          <li><a href="#cubecamera">CubeCamera</a></li>          
         </ul>
         <li><a href="#controls">Controls</a></li>
         <ul>
@@ -61,8 +60,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#cubicbezierline">CubicBezierLine</a></li>
           <li><a href="#positionalaudio">PositionalAudio</a></li>
           <li><a href="#billboard">Billboard</a></li>
-          <li><a href="#gizmoHelper">GizmoHelper</a></li>
-          <li><a href="#environment">Environment</a></li>
+          <li><a href="#gizmoHelper">GizmoHelper</a></li>          
           <li><a href="#effects">Effects</a></li>
           <li><a href="#gradienttexture">GradientTexture</a></li>
           <li><a href="#useanimations">useAnimations</a></li>
@@ -71,12 +69,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <ul>
           <li><a href="#meshwobblematerial">MeshWobbleMaterial</a></li>
           <li><a href="#meshdistortmaterial">MeshDistortMaterial</a></li>
-          <li><a href="#pointmaterial">PointMaterial</a></li>
-          <li><a href="#sky">Sky</a></li>
-          <li><a href="#stars">Stars</a></li>
-          <li><a href="#contactshadows">ContactShadows</a></li>
-          <li><a href="#reflector">Reflector</a></li>
-          <li><a href="#reflector">SpotLight</a></li>
+          <li><a href="#pointmaterial">PointMaterial</a></li>       
           <li><a href="#softshadows">softShadows</a></li>
           <li><a href="#shadermaterial">shaderMaterial</a></li>
         </ul>
@@ -88,10 +81,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <ul>
           <li><a href="#html">Html</a></li>
           <li><a href="#cycleraycast">CycleRaycast</a></li>
-          <li><a href="#shadow">Shadow</a></li>
           <li><a href="#stats">Stats</a></li>
-          <li><a href="#center">Center</a></li>
-          <li><a href="#bounds">Bounds</a></li>
           <li><a href="#usedepthbuffer">useDepthBuffer</a></li>
           <li><a href="#usecontextbridge">useContextBridge</a></li>
           <li><a href="#usefbo">useFBO</a></li>
@@ -118,11 +108,23 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#usetessellation">useTessellation</a></li>
           <li><a href="#usesimplification">useSimplification</a></li>
         </ul>
-        <li><a href="#prototyping">Prototyping</a></li>
+        <li><a href="#staging">Staging</a></li>
         <ul>
+          <li><a href="#center">Center</a></li>
+          <li><a href="#bounds">Bounds</a></li>
+          <li><a href="#camerashake">CameraShake</a></li>
+          <li><a href="#stage">Stage</a></li>
+          <li><a href="#backdrop">Backdrop</a></li>
+          <li><a href="#environment">Environment</a></li>
+          <li><a href="#reflector">SpotLight</a></li>
+          <li><a href="#shadow">Shadow</a></li>
+          <li><a href="#contactshadows">ContactShadows</a></li>
+          <li><a href="#reflector">Reflector</a></li>
+          <li><a href="#sky">Sky</a></li>
+          <li><a href="#stars">Stars</a></li>
+          <li><a href="#cloud">Cloud</a></li>
           <li><a href="#usematcaptexture">useMatcapTexture</a></li>
           <li><a href="#usenormaltexture">useNormalTexture</a></li>
-          <li><a href="#stage">Stage</a></li>
         </ul>
       </ul>
     </td>
@@ -194,38 +196,6 @@ A responsive [THREE.OrthographicCamera](https://threejs.org/docs/index.html#api/
 <OrthographicCamera makeDefault {...props}>
   <mesh />
 </OrthographicCamera>
-```
-
-#### CameraShake
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/camera-camerashake--camera-shake-st)
-
-A component for applying a configurable camera shake effect. Currently only supports rotational camera shake. Pass a ref to recieve the `ShakeController` API.
-
-If you use shake in combination with controls make sure to set the `makeDefault` prop on your controls, in that case you do not have to pass them via the `controls` prop.
-
-```js
-const config = {
-  maxYaw: 0.1, // Max amount camera can yaw in either direction
-  maxPitch: 0.1, // Max amount camera can pitch in either direction
-  maxRoll: 0.1, // Max amount camera can roll in either direction
-  yawFrequency: 1, // Frequency of the the yaw rotation
-  pitchFrequency: 1, // Frequency of the pitch rotation
-  rollFrequency: 1, // Frequency of the roll rotation
-  intensity: 1, // initial intensity of the shake
-  decay: false, // should the intensity decay over time
-  decayRate: 0.65, // if decay = true this is the rate at which intensity will reduce at
-  controls: undefined, // if using orbit controls, pass a ref here so we can update the rotation
-}
-
-;<CameraShake {...config} />
-```
-
-```ts
-interface ShakeController {
-  getIntensity: () => number
-  setIntensity: (val: number) => void
-}
 ```
 
 #### CubeCamera
@@ -529,28 +499,6 @@ Make sure to set the `makeDefault` prop on your controls, in that case you do no
 </GizmoHelper>
 ```
 
-#### Environment
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-environment--environment-st)
-
-Sets up a global cubemap, which affects the default `scene.environment`, and optionally `scene.background`, unless a custom scene has been passed. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience. If you pass an array of files it will use THREE.CubeTextureLoader.
-
-```jsx
-<Environment
-  background={false}
-  files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']}
-  path="/"
-  preset={null}
-  scene={undefined} // adds the ability to pass a custom THREE.Scene
-/>
-```
-
-If you provide a single string it will use THREE.RGBELoader.
-
-```jsx
-<Environment files="file.hdr" />
-```
-
 #### Effects
 
 Abstraction around threes own [EffectComposer](https://threejs.org/docs/index.html#examples/en/postprocessing/EffectComposer).
@@ -638,94 +586,6 @@ An antialiased round dot that always keeps the same size.
 <points>
   <PointMaterial scale={20} />
 </points>
-```
-
-#### Sky
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shaders-sky--sky-st)
-
-Adds a [sky](https://threejs.org/examples/webgl_shaders_sky.html) to your scene.
-
-```jsx
-<Sky distance={450000} sunPosition={[0, 1, 0]} inclination={0} azimuth={0.25} {...props} />
-```
-
-#### Stars
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shaders-stars--stars-st)
-
-Adds a blinking shader-based starfield to your scene.
-
-```jsx
-<Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade />
-```
-
-#### ContactShadows
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shaders-contactshadows--contact-shadow-st)
-
-A [contact shadow](https://threejs.org/examples/?q=con#webgl_shadow_contact) implementation.
-
-```jsx
-<ContactShadows opacity={1} width={1} height={1} blur={1} far={10} resolution={256} />
-```
-
-Since this is a rather expensive effect you can limit the amount of frames it renders when your objects are static. For instance making it render only once:
-
-```jsx
-<ContactShadows frames={1} />
-```
-
-#### Reflector
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-reflector--reflector-st)
-
-Easily add reflections and/or blur to a planar surface. This reflector can also blur and takes surface roughness into account for a more realistic effect.
-
-```jsx
-<Reflector
-  args={[1, 1]} // PlaneBufferGeometry arguments
-  resolution={256} // Off-buffer resolution, lower=faster, higher=better quality
-  mirror={0.5} // Mirror environment, 0 = texture colors, 1 = pick up env colors
-  mixBlur={1.0} // How much blur mixes with surface roughness (default = 0), note that this can affect performance
-  mixStrength={0.5} // Strength of the reflections
-  depthScale={1} // Scale the depth factor (0 = no depth, default = 0)
-  minDepthThreshold={0.9} // Lower edge for the depthTexture interpolation (default = 0)
-  maxDepthThreshold={1} // Upper edge for the depthTexture interpolation (default = 0)
-  depthToBlurRatioBias={0.25} // Adds a bias factor to the depthTexture before calculating the blur amount [blurFactor = blurTexture * (depthTexture + bias)]. It accepts values between 0 and 1, default is 0.25. An amount > 0 of bias makes sure that the blurTexture is not too sharp because of the multiplication with the depthTexture
-  distortion={0} // Amount of distortion based on the distortionMap texture
-  distortionMap={distortionTexture} // The red channel of this texture is used as the distortion map. Default is null
-  debug={0} /* Depending on the assigned value, one of the following channels is shown:
-    0 = no debug
-    1 = depth channel
-    2 = base channel
-    3 = distortion channel
-    4 = lod channel (based on the roughness)
-  */
->
-  {(Material, props) => <Material {...props}>}
-</Reflector>
-```
-
-#### SpotLight
-
-A Volumetric spotlight.
-
-```jsx
-<SpotLight
-  distance={5}
-  angle={0.15}
-  attenuation={5}
-  anglePower={5} // Diffuse-cone anglePower (default: 5)
-/>
-```
-
-Optionally you can provide a depth-buffer which converts the spotlight into a soft particle.
-
-```jsx
-function Foo() {
-  const depthBuffer = useDepthBuffer()
-  return <SpotLight depthBuffer={depthBuffer} />
 ```
 
 #### softShadows
@@ -883,21 +743,6 @@ For this to work properly your event handler have to call `event.stopPropagation
 />
 ```
 
-#### Shadow
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-shadow--shadow-st)
-
-A cheap canvas-texture-based circular gradient.
-
-```jsx
-<Shadow
-  color="black"
-  colorStop={0}
-  opacity={0.5}
-  fog={false} // Reacts to fog (default=false)
-/>
-```
-
 #### Stats
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-stats--default-story)
@@ -921,44 +766,6 @@ useEffect(() => {
 }, [])
 
 return <Stats parent={parent} />
-```
-
-#### Center
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-center--default-story)
-
-Calculates a boundary box and centers its children accordingly. `alignTop` makes adjusts it so that it's sits flush on y=0.
-
-```jsx
-<Center alignTop>
-  <mesh />
-</Center>
-```
-
-#### Bounds
-
-Calculates a boundary box and centers the camera accordingly. If you are using controls, make sure to pass them the `makeDefault` prop. `fit` fits the current view on first render. `clip` sets the cameras near/far planes.
-
-```jsx
-<Bounds fit clip damping={6} margin={1.2}>
-  <mesh />
-</Bounds>
-```
-
-The Bounds component also acts as a context provider, use the `useBounds` hook to refresh the bounds, fit the camera, clip near/far planes or focus objects. `refresh(object?: THREE.Object3D | THREE.Box3)` will recalculate bounds, since this can be expensive only call it when you know the view has changed. `clip` sets the cameras near/far planes. `fit` zooms and centers the view.
-
-```jsx
-function Foo() {
-  const bounds = useBounds()
-  useEffect(() => {
-    // Calculate scene bounds
-    bounds.refresh().clip().fit()
-    // Or, focus a specific object or box3
-    // bounds.refresh(ref.current).clip().fit()
-    // bounds.refresh(new THREE.Box3()).clip().fit()
-
-<Bounds>
-  <Foo />
 ```
 
 #### useDepthBuffer
@@ -1259,7 +1066,243 @@ A convenience hook that uses `useLoader` and `CubeTextureLoader`
 const envMap = useCubeTexture(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'], { path: 'cube/' })
 ```
 
-# Prototyping
+# Staging
+
+#### Center
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-center--default-story)
+
+Calculates a boundary box and centers its children accordingly. `alignTop` makes adjusts it so that it's sits flush on y=0.
+
+```jsx
+<Center alignTop>
+  <mesh />
+</Center>
+```
+
+#### Bounds
+
+Calculates a boundary box and centers the camera accordingly. If you are using controls, make sure to pass them the `makeDefault` prop. `fit` fits the current view on first render. `clip` sets the cameras near/far planes.
+
+```jsx
+<Bounds fit clip damping={6} margin={1.2}>
+  <mesh />
+</Bounds>
+```
+
+The Bounds component also acts as a context provider, use the `useBounds` hook to refresh the bounds, fit the camera, clip near/far planes or focus objects. `refresh(object?: THREE.Object3D | THREE.Box3)` will recalculate bounds, since this can be expensive only call it when you know the view has changed. `clip` sets the cameras near/far planes. `fit` zooms and centers the view.
+
+```jsx
+function Foo() {
+  const bounds = useBounds()
+  useEffect(() => {
+    // Calculate scene bounds
+    bounds.refresh().clip().fit()
+    // Or, focus a specific object or box3
+    // bounds.refresh(ref.current).clip().fit()
+    // bounds.refresh(new THREE.Box3()).clip().fit()
+
+<Bounds>
+  <Foo />
+```
+
+#### CameraShake
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/camera-camerashake--camera-shake-st)
+
+A component for applying a configurable camera shake effect. Currently only supports rotational camera shake. Pass a ref to recieve the `ShakeController` API.
+
+If you use shake in combination with controls make sure to set the `makeDefault` prop on your controls, in that case you do not have to pass them via the `controls` prop.
+
+```js
+const config = {
+  maxYaw: 0.1, // Max amount camera can yaw in either direction
+  maxPitch: 0.1, // Max amount camera can pitch in either direction
+  maxRoll: 0.1, // Max amount camera can roll in either direction
+  yawFrequency: 0.1, // Frequency of the the yaw rotation
+  pitchFrequency: 0.1, // Frequency of the pitch rotation
+  rollFrequency: 0.1, // Frequency of the roll rotation
+  intensity: 1, // initial intensity of the shake
+  decay: false, // should the intensity decay over time
+  decayRate: 0.65, // if decay = true this is the rate at which intensity will reduce at
+  controls: undefined, // if using orbit controls, pass a ref here so we can update the rotation
+}
+
+;<CameraShake {...config} />
+```
+
+```ts
+interface ShakeController {
+  getIntensity: () => number
+  setIntensity: (val: number) => void
+}
+```
+
+#### Stage
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/prototyping-stage--stage-st)
+
+Creates a "stage" with proper studio lighting, content centered and planar, shadows and ground-contact shadows.
+
+Make sure to set the `makeDefault` prop on your controls, in that case you do not need to provide `controls` via prop.
+
+```jsx
+<Stage contactShadow shadows adjustCamera intensity={1} environment="city" preset="rembrandt" controls={controlsRef}>
+  <mesh />
+</Stage>
+```
+
+#### Backdrop
+
+A curved plane, like a studio backdrop. This is for presentational purposes, to break up light and shadows more interestingly.
+
+```jsx
+<Backdrop
+  floor={0.25} // Stretches the floor segment, 0.25 by default
+  segments={20} // Mesh-resolution, 20 by default
+>
+  <meshStandardMaterial color="#353540" />
+</Backdrop>
+```
+
+#### Shadow
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-shadow--shadow-st)
+
+A cheap canvas-texture-based circular gradient.
+
+```jsx
+<Shadow
+  color="black"
+  colorStop={0}
+  opacity={0.5}
+  fog={false} // Reacts to fog (default=false)
+/>
+```
+
+#### ContactShadows
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shaders-contactshadows--contact-shadow-st)
+
+A [contact shadow](https://threejs.org/examples/?q=con#webgl_shadow_contact) implementation, facing upwards (positive Y) by default.
+
+```jsx
+<ContactShadows opacity={1} width={1} height={1} blur={1} far={10} resolution={256} />
+```
+
+Since this is a rather expensive effect you can limit the amount of frames it renders when your objects are static. For instance making it render only once:
+
+```jsx
+<ContactShadows frames={1} />
+```
+
+#### SpotLight
+
+A Volumetric spotlight.
+
+```jsx
+<SpotLight
+  distance={5}
+  angle={0.15}
+  attenuation={5}
+  anglePower={5} // Diffuse-cone anglePower (default: 5)
+/>
+```
+
+Optionally you can provide a depth-buffer which converts the spotlight into a soft particle.
+
+```jsx
+function Foo() {
+  const depthBuffer = useDepthBuffer()
+  return <SpotLight depthBuffer={depthBuffer} />
+```
+
+#### Reflector
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-reflector--reflector-st)
+
+Easily add reflections and/or blur to a planar surface. This reflector can also blur and takes surface roughness into account for a more realistic effect.
+
+```jsx
+<Reflector
+  args={[1, 1]} // PlaneBufferGeometry arguments
+  resolution={256} // Off-buffer resolution, lower=faster, higher=better quality
+  mirror={0.5} // Mirror environment, 0 = texture colors, 1 = pick up env colors
+  mixBlur={1.0} // How much blur mixes with surface roughness (default = 0), note that this can affect performance
+  mixStrength={0.5} // Strength of the reflections
+  depthScale={1} // Scale the depth factor (0 = no depth, default = 0)
+  minDepthThreshold={0.9} // Lower edge for the depthTexture interpolation (default = 0)
+  maxDepthThreshold={1} // Upper edge for the depthTexture interpolation (default = 0)
+  depthToBlurRatioBias={0.25} // Adds a bias factor to the depthTexture before calculating the blur amount [blurFactor = blurTexture * (depthTexture + bias)]. It accepts values between 0 and 1, default is 0.25. An amount > 0 of bias makes sure that the blurTexture is not too sharp because of the multiplication with the depthTexture
+  distortion={0} // Amount of distortion based on the distortionMap texture
+  distortionMap={distortionTexture} // The red channel of this texture is used as the distortion map. Default is null
+  debug={0} /* Depending on the assigned value, one of the following channels is shown:
+    0 = no debug
+    1 = depth channel
+    2 = base channel
+    3 = distortion channel
+    4 = lod channel (based on the roughness)
+  */
+>
+  {(Material, props) => <Material {...props}>}
+</Reflector>
+```
+
+#### Environment
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-environment--environment-st)
+
+Sets up a global cubemap, which affects the default `scene.environment`, and optionally `scene.background`, unless a custom scene has been passed. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience. If you pass an array of files it will use THREE.CubeTextureLoader.
+
+```jsx
+<Environment
+  background={false}
+  files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']}
+  path="/"
+  preset={null}
+  scene={undefined} // adds the ability to pass a custom THREE.Scene
+/>
+```
+
+If you provide a single string it will use THREE.RGBELoader.
+
+```jsx
+<Environment files="file.hdr" />
+```
+
+#### Sky
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shaders-sky--sky-st)
+
+Adds a [sky](https://threejs.org/examples/webgl_shaders_sky.html) to your scene.
+
+```jsx
+<Sky distance={450000} sunPosition={[0, 1, 0]} inclination={0} azimuth={0.25} {...props} />
+```
+
+#### Stars
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shaders-stars--stars-st)
+
+Adds a blinking shader-based starfield to your scene.
+
+```jsx
+<Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade />
+```
+
+#### Cloud
+
+Particle based cloud.
+
+```jsx
+<Cloud
+  opacity={0.5}
+  speed={0.4} // Rotation speed
+  width={10} // Width of the full cloud
+  depth={1.5} // Z-dir depth
+  segments={20} // Number of particles
+/>
+```
 
 #### useMatcapTexture
 
@@ -1313,20 +1356,6 @@ return (
   ...
 )
 
-```
-
-#### Stage
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/prototyping-stage--stage-st)
-
-Creates a "stage" with proper studio lighting, content centered and planar, shadows and ground-contact shadows.
-
-Make sure to set the `makeDefault` prop on your controls, in that case you do not need to provide `controls` via prop.
-
-```jsx
-<Stage contactShadow shadows adjustCamera intensity={1} environment="city" preset="rembrandt" controls={controlsRef}>
-  <mesh />
-</Stage>
 ```
 
 # Performance

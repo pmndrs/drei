@@ -7,13 +7,13 @@ import { Setup } from '../Setup'
 import { useGLTF, useMatcapTexture } from '../../src'
 
 export default {
-  title: 'Prototyping/useMatcapTexture',
+  title: 'Staging/useMatcapTexture',
   component: useMatcapTexture,
   decorators: [withKnobs, (storyFn) => <Setup cameraPosition={new Vector3(0, 0, 3)}>{storyFn()}</Setup>],
 }
 
 function Suzanne() {
-  const { nodes } = useGLTF('suzanne.glb', true)
+  const { nodes } = useGLTF('suzanne.glb', true) as any
   const [matcapTexture] = useMatcapTexture(number('texture index', 111), 1024)
 
   return (

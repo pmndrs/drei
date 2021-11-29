@@ -6,13 +6,13 @@ import { Setup } from '../Setup'
 import { useGLTF, useNormalTexture } from '../../src'
 
 export default {
-  title: 'Prototyping/useNormalTexture',
+  title: 'Staging/useNormalTexture',
   component: useNormalTexture,
   decorators: [withKnobs, (storyFn) => <Setup cameraPosition={new Vector3(0, 0, 3)}>{storyFn()}</Setup>],
 }
 
 function Suzanne() {
-  const { nodes } = useGLTF('suzanne.glb', true)
+  const { nodes } = useGLTF('suzanne.glb', true) as any
   const repeat = number('texture repeat', 8)
   const scale = number('texture scale', 4)
   const [normalTexture] = useNormalTexture(number('texture index', 3), {

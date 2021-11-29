@@ -7,7 +7,7 @@ import { Setup } from '../Setup'
 import { ContactShadows, Icosahedron, Plane } from '../../src'
 
 export default {
-  title: 'Shaders/ContactShadows',
+  title: 'Staging/ContactShadows',
   component: ContactShadows,
   decorators: [(storyFn) => <Setup> {storyFn()}</Setup>],
 }

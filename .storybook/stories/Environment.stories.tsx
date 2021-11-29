@@ -9,7 +9,7 @@ import { Environment, OrbitControls } from '../../src'
 import { presetsObj } from '../../src/helpers/environment-assets'
 
 export default {
-  title: 'Abstractions/Environment',
+  title: 'Staging/Environment',
   component: Environment,
   decorators: [
     (storyFn) => (
@@ -27,7 +27,7 @@ function EnvironmentStory() {
   return (
     <>
       <React.Suspense fallback={null}>
-        <Environment preset={preset} background={boolean('Background', true)} />
+        <Environment preset={preset as any} background={boolean('Background', true)} />
         <mesh>
           <torusKnotBufferGeometry args={[1, 0.5, 128, 32]} />
           <meshStandardMaterial metalness={1} roughness={0} />

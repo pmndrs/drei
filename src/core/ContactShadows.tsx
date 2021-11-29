@@ -85,7 +85,7 @@ export const ContactShadows = React.forwardRef(
     })
 
     return (
-      <group {...props} ref={ref as any}>
+      <group rotation-x={Math.PI / 2} {...props} ref={ref as any}>
         <mesh geometry={planeGeometry} scale={[1, -1, 1]} rotation={[-Math.PI / 2, 0, 0]}>
           <meshBasicMaterial map={renderTarget.texture} transparent opacity={opacity} />
         </mesh>

@@ -39,9 +39,9 @@ export const CameraShake = React.forwardRef<ShakeController | undefined, CameraS
       maxYaw = 0.1,
       maxPitch = 0.1,
       maxRoll = 0.1,
-      yawFrequency = 1,
-      pitchFrequency = 1,
-      rollFrequency = 1,
+      yawFrequency = 0.1,
+      pitchFrequency = 0.1,
+      rollFrequency = 0.1,
       controls,
     },
     ref

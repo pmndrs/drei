@@ -154,6 +154,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#center">Center</a></li>
           <li><a href="#bounds">Bounds</a></li>
           <li><a href="#camerashake">CameraShake</a></li>
+          <li><a href="#float">Float</a></li>
           <li><a href="#stage">Stage</a></li>
           <li><a href="#backdrop">Backdrop</a></li>
           <li><a href="#environment">Environment</a></li>
@@ -411,9 +412,9 @@ Renders a THREE.Line2 using THREE.QuadraticBezierCurve3 for interpolation.
 
 ```jsx
 <QuadraticBezierLine
-  start={[0, 0, 0]}               // Starting point
-  end={[10, 0, 10]}               // Ending point
-  mid={[5, 0, 5]}                 // Optional control point
+  start={[0, 0, 0]}               // Starting point, can be an array or a vec3
+  end={[10, 0, 10]}               // Ending point, can be an array or a vec3
+  mid={[5, 0, 5]}                 // Optional control point, can be an array or a vec3
   color="black"                   // Default
   lineWidth={1}                   // In pixels (default)
   dashed={false}                  // Default
@@ -421,6 +422,21 @@ Renders a THREE.Line2 using THREE.QuadraticBezierCurve3 for interpolation.
   {...lineProps}                  // All THREE.Line2 props are valid
   {...materialProps}              // All THREE.LineMaterial props are valid
 />
+```
+
+You can also update the line runtime.
+
+```jsx
+const ref = useRef()
+useFrame((state) => {
+  ref.current.setPoints(
+    [0, 0, 0],
+    [10, 0, 0],
+    // [5, 0, 0] // Optional: mid-point
+  )
+}, [])
+return <QuadraticBezierLine ref={ref} />
+}
 ```
 
 #### CubicBezierLine
@@ -1367,6 +1383,20 @@ interface ShakeController {
   getIntensity: () => number
   setIntensity: (val: number) => void
 }
+```
+
+#### Float
+
+This component makes its contents float or hover.
+
+```js
+<Float
+  speed={1} // Animation speed, defaults to 1
+  rotationIntensity={1} // XYZ rotation intensity, defaults to 1
+  floatIntensity={1} // Up/down float intensity, defaults to 1
+>
+  <mesh />
+</Float>
 ```
 
 #### Stage

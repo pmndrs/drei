@@ -46,6 +46,9 @@ export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0
   const controls = useThree((state) => state.controls) as ControlsProto
   const invalidate = useThree((state) => state.invalidate)
 
+  const onFitRef = React.useRef<((data: SizeProps) => void) | undefined>(onFit)
+  onFitRef.current = onFit
+
   function equals(a, b) {
     return Math.abs(a.x - b.x) < eps && Math.abs(a.y - b.y) < eps && Math.abs(a.z - b.z) < eps
   }
@@ -153,11 +156,11 @@ export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0
           }
           invalidate()
         }
-        if (onFit) onFit(this.getSize())
+        if (onFitRef.current) onFitRef.current(this.getSize())
         return this
       },
     }
-  }, [box, camera, controls, margin, damping, invalidate, onFit])
+  }, [box, camera, controls, margin, damping, invalidate])
 
   React.useLayoutEffect(() => {
     api.refresh()
@@ -170,7 +173,8 @@ export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0
       controls.addEventListener('start', callback)
       return () => controls.removeEventListener('start', callback)
     }
-  }, [api, fit, controls])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clip, fit, controls])
 
   useFrame((state, delta) => {
     if (current.animating) {

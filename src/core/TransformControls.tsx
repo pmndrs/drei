@@ -23,7 +23,7 @@ export type TransformControlsProps = ReactThreeFiber.Object3DNode<TransformContr
     showX?: boolean
     showY?: boolean
     showZ?: boolean
-    children: React.ReactElement<THREE.Object3D>
+    children?: React.ReactElement<THREE.Object3D>
     camera?: THREE.Camera
     onChange?: (e?: THREE.Event) => void
     onMouseDown?: (e?: THREE.Event) => void

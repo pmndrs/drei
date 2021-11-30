@@ -95,7 +95,7 @@ export function ScrollControls({
     el.style[horizontal ? 'overflowY' : 'overflowX'] = 'hidden'
     el.style.top = '0px'
     el.style.left = '0px'
-    
+
     for (const key in style) {
       el.style[key] = style[key]
     }

@@ -1445,10 +1445,10 @@ A cheap canvas-texture-based circular gradient.
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shaders-contactshadows--contact-shadow-st)
 
-A [contact shadow](https://threejs.org/examples/?q=con#webgl_shadow_contact) implementation, facing upwards (positive Y) by default.
+A [contact shadow](https://threejs.org/examples/?q=con#webgl_shadow_contact) implementation, facing upwards (positive Y) by default. `scale` can be a positive number or a 2D array `[x: number, y: number]`.
 
 ```jsx
-<ContactShadows opacity={1} width={1} height={1} blur={1} far={10} resolution={256} />
+<ContactShadows opacity={1} scale={10} blur={1} far={10} resolution={256} />
 ```
 
 Since this is a rather expensive effect you can limit the amount of frames it renders when your objects are static. For instance making it render only once:

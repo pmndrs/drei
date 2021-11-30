@@ -6,7 +6,7 @@ import * as THREE from 'three'
 import { useFrame, useThree } from '@react-three/fiber'
 import { HorizontalBlurShader, VerticalBlurShader } from 'three-stdlib'
 
-type Props = JSX.IntrinsicElements['group'] & {
+type Props = Omit<JSX.IntrinsicElements['group'], 'scale'> & {
   opacity?: number
   width?: number
   height?: number
@@ -14,16 +14,31 @@ type Props = JSX.IntrinsicElements['group'] & {
   far?: number
   resolution?: number
   frames?: number
+  scale?: number | [x: number, y: number]
 }
 
 export const ContactShadows = React.forwardRef(
   (
-    { frames = Infinity, opacity = 1, width = 1, height = 1, blur = 1, far = 10, resolution = 256, ...props }: Props,
+    {
+      scale,
+      frames = Infinity,
+      opacity = 1,
+      width = 1,
+      height = 1,
+      blur = 1,
+      far = 10,
+      resolution = 256,
+      ...props
+    }: Props,
     ref
   ) => {
     const scene = useThree(({ scene }) => scene)
     const gl = useThree(({ gl }) => gl)
     const shadowCamera = React.useRef<THREE.OrthographicCamera>()
+
+    width = width * (Array.isArray(scale) ? scale[0] : scale || 1)
+    height = height * (Array.isArray(scale) ? scale[1] : scale || 1)
+
     const [
       renderTarget,
       planeGeometry,
@@ -57,7 +72,7 @@ export const ContactShadows = React.forwardRef(
         verticalBlurMaterial,
         renderTargetBlur,
       ]
-    }, [resolution, width, height])
+    }, [resolution, width, height, scale])
 
     let count = 0
     useFrame(() => {

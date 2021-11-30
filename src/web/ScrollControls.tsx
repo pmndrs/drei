@@ -12,6 +12,7 @@ export type ScrollControlsProps = {
   distance?: number
   damping?: number
   enabled?: boolean
+  style?: React.CSSProperties
   children: React.ReactNode
 }
 
@@ -44,6 +45,7 @@ export function ScrollControls({
   pages = 1,
   distance = 1,
   damping = 4,
+  style = {},
   children,
 }: ScrollControlsProps) {
   const { gl, size, invalidate, events, raycaster } = useThree()
@@ -93,6 +95,10 @@ export function ScrollControls({
     el.style[horizontal ? 'overflowY' : 'overflowX'] = 'hidden'
     el.style.top = '0px'
     el.style.left = '0px'
+    
+    for (const key in style) {
+      el.style[key] = style[key]
+    }
 
     fixed.style.position = 'sticky'
     fixed.style.top = '0px'

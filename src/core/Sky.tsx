@@ -28,13 +28,13 @@ export function calcPosFromAngles(inclination: number, azimuth: number, vector: 
 export const Sky = React.forwardRef(
   (
     {
-      inclination = 0,
-      azimuth = 0.25,
-      distance = 100,
+      inclination = 0.6,
+      azimuth = 0.1,
+      distance = 1000,
       mieCoefficient = 0.005,
       mieDirectionalG = 0.8,
-      rayleigh = 1,
-      turbidity = 2,
+      rayleigh = 0.5,
+      turbidity = 10,
       sunPosition = calcPosFromAngles(inclination, azimuth),
       ...props
     }: Props,

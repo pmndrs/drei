@@ -967,262 +967,13 @@ var DracoDecoderModule = function (DracoDecoderModule) {
   }
   var cttz_i8 = allocate(
     [
-      8,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      3,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      4,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      3,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      5,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      3,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      4,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      3,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      6,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      3,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      4,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      3,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      5,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      3,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      4,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      3,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      7,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      3,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      4,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      3,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      5,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      3,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      4,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      3,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      6,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      3,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      4,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      3,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      5,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      3,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      4,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
-      3,
-      0,
-      1,
-      0,
-      2,
-      0,
-      1,
-      0,
+      8, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 5, 0, 1, 0, 2, 0,
+      1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 6, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0,
+      2, 0, 1, 0, 4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 4, 0,
+      1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 7, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 4, 0, 1, 0, 2, 0, 1, 0,
+      3, 0, 1, 0, 2, 0, 1, 0, 5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0,
+      1, 0, 6, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 5, 0, 1, 0,
+      2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
     ],
     'i8',
     ALLOC_STATIC
@@ -48739,25 +48490,22 @@ var DracoDecoderModule = function (DracoDecoderModule) {
   AttributeOctahedronTransform.prototype.__class__ = AttributeOctahedronTransform
   AttributeOctahedronTransform.__cache__ = {}
   Module['AttributeOctahedronTransform'] = AttributeOctahedronTransform
-  AttributeOctahedronTransform.prototype[
-    'InitFromAttribute'
-  ] = AttributeOctahedronTransform.prototype.InitFromAttribute = function (arg0) {
-    var self = this.ptr
-    if (arg0 && typeof arg0 === 'object') arg0 = arg0.ptr
-    return !!_emscripten_bind_AttributeOctahedronTransform_InitFromAttribute_1(self, arg0)
-  }
-  AttributeOctahedronTransform.prototype[
-    'quantization_bits'
-  ] = AttributeOctahedronTransform.prototype.quantization_bits = function () {
-    var self = this.ptr
-    return _emscripten_bind_AttributeOctahedronTransform_quantization_bits_0(self)
-  }
-  AttributeOctahedronTransform.prototype[
-    '__destroy__'
-  ] = AttributeOctahedronTransform.prototype.__destroy__ = function () {
-    var self = this.ptr
-    _emscripten_bind_AttributeOctahedronTransform___destroy___0(self)
-  }
+  AttributeOctahedronTransform.prototype['InitFromAttribute'] =
+    AttributeOctahedronTransform.prototype.InitFromAttribute = function (arg0) {
+      var self = this.ptr
+      if (arg0 && typeof arg0 === 'object') arg0 = arg0.ptr
+      return !!_emscripten_bind_AttributeOctahedronTransform_InitFromAttribute_1(self, arg0)
+    }
+  AttributeOctahedronTransform.prototype['quantization_bits'] =
+    AttributeOctahedronTransform.prototype.quantization_bits = function () {
+      var self = this.ptr
+      return _emscripten_bind_AttributeOctahedronTransform_quantization_bits_0(self)
+    }
+  AttributeOctahedronTransform.prototype['__destroy__'] = AttributeOctahedronTransform.prototype.__destroy__ =
+    function () {
+      var self = this.ptr
+      _emscripten_bind_AttributeOctahedronTransform___destroy___0(self)
+    }
   function PointAttribute() {
     this.ptr = _emscripten_bind_PointAttribute_PointAttribute_0()
     getCache(PointAttribute)[this.ptr] = this
@@ -48771,12 +48519,11 @@ var DracoDecoderModule = function (DracoDecoderModule) {
     var self = this.ptr
     return _emscripten_bind_PointAttribute_size_0(self)
   }
-  PointAttribute.prototype[
-    'GetAttributeTransformData'
-  ] = PointAttribute.prototype.GetAttributeTransformData = function () {
-    var self = this.ptr
-    return wrapPointer(_emscripten_bind_PointAttribute_GetAttributeTransformData_0(self), AttributeTransformData)
-  }
+  PointAttribute.prototype['GetAttributeTransformData'] = PointAttribute.prototype.GetAttributeTransformData =
+    function () {
+      var self = this.ptr
+      return wrapPointer(_emscripten_bind_PointAttribute_GetAttributeTransformData_0(self), AttributeTransformData)
+    }
   PointAttribute.prototype['attribute_type'] = PointAttribute.prototype.attribute_type = function () {
     var self = this.ptr
     return _emscripten_bind_PointAttribute_attribute_type_0(self)
@@ -48835,36 +48582,32 @@ var DracoDecoderModule = function (DracoDecoderModule) {
   AttributeQuantizationTransform.prototype.__class__ = AttributeQuantizationTransform
   AttributeQuantizationTransform.__cache__ = {}
   Module['AttributeQuantizationTransform'] = AttributeQuantizationTransform
-  AttributeQuantizationTransform.prototype[
-    'InitFromAttribute'
-  ] = AttributeQuantizationTransform.prototype.InitFromAttribute = function (arg0) {
-    var self = this.ptr
-    if (arg0 && typeof arg0 === 'object') arg0 = arg0.ptr
-    return !!_emscripten_bind_AttributeQuantizationTransform_InitFromAttribute_1(self, arg0)
-  }
-  AttributeQuantizationTransform.prototype[
-    'quantization_bits'
-  ] = AttributeQuantizationTransform.prototype.quantization_bits = function () {
-    var self = this.ptr
-    return _emscripten_bind_AttributeQuantizationTransform_quantization_bits_0(self)
-  }
-  AttributeQuantizationTransform.prototype[
-    'min_value'
-  ] = AttributeQuantizationTransform.prototype.min_value = function (arg0) {
-    var self = this.ptr
-    if (arg0 && typeof arg0 === 'object') arg0 = arg0.ptr
-    return _emscripten_bind_AttributeQuantizationTransform_min_value_1(self, arg0)
-  }
+  AttributeQuantizationTransform.prototype['InitFromAttribute'] =
+    AttributeQuantizationTransform.prototype.InitFromAttribute = function (arg0) {
+      var self = this.ptr
+      if (arg0 && typeof arg0 === 'object') arg0 = arg0.ptr
+      return !!_emscripten_bind_AttributeQuantizationTransform_InitFromAttribute_1(self, arg0)
+    }
+  AttributeQuantizationTransform.prototype['quantization_bits'] =
+    AttributeQuantizationTransform.prototype.quantization_bits = function () {
+      var self = this.ptr
+      return _emscripten_bind_AttributeQuantizationTransform_quantization_bits_0(self)
+    }
+  AttributeQuantizationTransform.prototype['min_value'] = AttributeQuantizationTransform.prototype.min_value =
+    function (arg0) {
+      var self = this.ptr
+      if (arg0 && typeof arg0 === 'object') arg0 = arg0.ptr
+      return _emscripten_bind_AttributeQuantizationTransform_min_value_1(self, arg0)
+    }
   AttributeQuantizationTransform.prototype['range'] = AttributeQuantizationTransform.prototype.range = function () {
     var self = this.ptr
     return _emscripten_bind_AttributeQuantizationTransform_range_0(self)
   }
-  AttributeQuantizationTransform.prototype[
-    '__destroy__'
-  ] = AttributeQuantizationTransform.prototype.__destroy__ = function () {
-    var self = this.ptr
-    _emscripten_bind_AttributeQuantizationTransform___destroy___0(self)
-  }
+  AttributeQuantizationTransform.prototype['__destroy__'] = AttributeQuantizationTransform.prototype.__destroy__ =
+    function () {
+      var self = this.ptr
+      _emscripten_bind_AttributeQuantizationTransform___destroy___0(self)
+    }
   function DracoInt8Array() {
     this.ptr = _emscripten_bind_DracoInt8Array_DracoInt8Array_0()
     getCache(DracoInt8Array)[this.ptr] = this
@@ -49323,16 +49066,13 @@ var DracoDecoderModule = function (DracoDecoderModule) {
       Module['INVALID_GEOMETRY_TYPE'] = _emscripten_enum_draco_EncodedGeometryType_INVALID_GEOMETRY_TYPE()
       Module['POINT_CLOUD'] = _emscripten_enum_draco_EncodedGeometryType_POINT_CLOUD()
       Module['TRIANGULAR_MESH'] = _emscripten_enum_draco_EncodedGeometryType_TRIANGULAR_MESH()
-      Module[
-        'ATTRIBUTE_INVALID_TRANSFORM'
-      ] = _emscripten_enum_draco_AttributeTransformType_ATTRIBUTE_INVALID_TRANSFORM()
+      Module['ATTRIBUTE_INVALID_TRANSFORM'] =
+        _emscripten_enum_draco_AttributeTransformType_ATTRIBUTE_INVALID_TRANSFORM()
       Module['ATTRIBUTE_NO_TRANSFORM'] = _emscripten_enum_draco_AttributeTransformType_ATTRIBUTE_NO_TRANSFORM()
-      Module[
-        'ATTRIBUTE_QUANTIZATION_TRANSFORM'
-      ] = _emscripten_enum_draco_AttributeTransformType_ATTRIBUTE_QUANTIZATION_TRANSFORM()
-      Module[
-        'ATTRIBUTE_OCTAHEDRON_TRANSFORM'
-      ] = _emscripten_enum_draco_AttributeTransformType_ATTRIBUTE_OCTAHEDRON_TRANSFORM()
+      Module['ATTRIBUTE_QUANTIZATION_TRANSFORM'] =
+        _emscripten_enum_draco_AttributeTransformType_ATTRIBUTE_QUANTIZATION_TRANSFORM()
+      Module['ATTRIBUTE_OCTAHEDRON_TRANSFORM'] =
+        _emscripten_enum_draco_AttributeTransformType_ATTRIBUTE_OCTAHEDRON_TRANSFORM()
       Module['INVALID'] = _emscripten_enum_draco_GeometryAttribute_Type_INVALID()
       Module['POSITION'] = _emscripten_enum_draco_GeometryAttribute_Type_POSITION()
       Module['NORMAL'] = _emscripten_enum_draco_GeometryAttribute_Type_NORMAL()

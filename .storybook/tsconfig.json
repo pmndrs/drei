@@ -1,5 +1,5 @@
 {
-    "extends": "../tsconfig",
-    "exclude": [],
-    "include": ["./stories/*"]
+  "extends": "../tsconfig",
+  "exclude": [],
+  "include": ["./stories/*"]
 }

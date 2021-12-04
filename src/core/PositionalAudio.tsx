@@ -24,7 +24,7 @@ export const PositionalAudio = React.forwardRef(
         _sound.setLoop(loop)
         if (autoplay && !_sound.isPlaying) _sound.play()
       }
-    }, [autoplay, buffer, camera, distance, loop])
+    }, [buffer, camera, distance, loop])
 
     React.useEffect(() => {
       const _sound = sound.current
@@ -36,7 +36,7 @@ export const PositionalAudio = React.forwardRef(
           if (_sound.source && (_sound.source as any)._connected) _sound.disconnect()
         }
       }
-    }, [camera, listener])
+    }, [])
     return <positionalAudio ref={mergeRefs([sound, ref])} args={[listener]} {...props} />
   }
 )

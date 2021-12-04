@@ -24,7 +24,7 @@ export function GradientTexture({ stops, colors, size = 2048, ...props }: Props)
     const texture = new THREE.Texture(canvas)
     texture.needsUpdate = true
     return texture
-  }, [colors, size, stops])
+  }, [stops])
   React.useEffect(() => () => void texture.dispose(), [texture])
   return <primitive object={texture} attach="map" {...props} />
 }

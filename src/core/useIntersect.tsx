@@ -1,11 +1,11 @@
-import { useEffect, useRef } from 'react'
+import * as React from 'react'
 import { addEffect, addAfterEffect } from '@react-three/fiber'
 
 export function useIntersect<T extends THREE.Object3D>(onChange: (visible: boolean) => void) {
-  const ref = useRef<T>(null!)
-  const check = useRef(false)
-  const temp = useRef(false)
-  useEffect(() => {
+  const ref = React.useRef<T>(null!)
+  const check = React.useRef(false)
+  const temp = React.useRef(false)
+  React.useEffect(() => {
     const obj = ref.current
     if (obj) {
       // Stamp out frustum check pre-emptively
@@ -27,6 +27,6 @@ export function useIntersect<T extends THREE.Object3D>(onChange: (visible: boole
         unsub2()
       }
     }
-  }, [onChange])
+  }, [])
   return ref
 }

@@ -51,7 +51,7 @@ export const TrackballControls = React.forwardRef<TrackballControlsImpl, Trackba
 
     React.useEffect(() => {
       controls.handleResize()
-    }, [viewport, controls])
+    }, [viewport])
 
     React.useEffect(() => {
       if (makeDefault) {

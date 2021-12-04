@@ -109,7 +109,7 @@ const Segment = React.forwardRef<Segment, SegmentProps>((props, forwardedRef) =>
   if (!api) throw 'Segment must used inside Segments component.'
   const ref = React.useRef()
   React.useMemo(() => extend({ SegmentObject }), [])
-  React.useLayoutEffect(() => api.subscribe(ref), [api])
+  React.useLayoutEffect(() => api.subscribe(ref), [])
   return <segmentObject ref={mergeRefs([ref, forwardedRef])} {...props} />
 })
 

@@ -20,7 +20,7 @@ export const OrthographicCamera = React.forwardRef(({ makeDefault, manual, ...pr
     if (cameraRef.current && !manual) {
       cameraRef.current.updateProjectionMatrix()
     }
-  }, [manual, props, size])
+  }, [size, props])
 
   React.useLayoutEffect(() => {
     if (makeDefault && cameraRef.current) {

@@ -38,7 +38,7 @@ const Instance = React.forwardRef(({ context, children, ...props }: InstanceProp
   React.useMemo(() => extend({ Position }), [])
   const group = React.useRef()
   const { subscribe } = React.useContext(context || globalContext)
-  React.useLayoutEffect(() => subscribe(group), [subscribe])
+  React.useLayoutEffect(() => subscribe(group), [])
   return (
     <position ref={mergeRefs([ref, group])} {...props}>
       {children}
@@ -72,7 +72,7 @@ const Instances = React.forwardRef(
         parentRef.current.instanceMatrix.updateRange.count =
         parentRef.current.instanceColor.updateRange.count =
           Math.min(limit, range !== undefined ? range : limit, instances.length)
-    }, [instances, limit, range])
+    }, [instances, range])
 
     React.useEffect(() => {
       // We might be a frame too late? 🤷‍♂️
@@ -118,7 +118,7 @@ const Instances = React.forwardRef(
         }),
         {}
       )
-    }, [instances])
+    }, [children, instances])
 
     const api = React.useMemo(
       () => ({

@@ -21,7 +21,7 @@ export const PerspectiveCamera = React.forwardRef(({ makeDefault, manual, ...pro
       cam.aspect = size.width / size.height
       cam.updateProjectionMatrix()
     }
-  }, [manual, props, size])
+  }, [size, props])
 
   React.useLayoutEffect(() => {
     if (makeDefault && cameraRef.current) {

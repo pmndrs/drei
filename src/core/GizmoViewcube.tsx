@@ -79,7 +79,7 @@ const FaceMaterial = ({
     context.fillStyle = textColor
     context.fillText(faces[index].toUpperCase(), 64, 76)
     return new CanvasTexture(canvas)
-  }, [index, faces, font, color, textColor, strokeColor])
+  }, [index, font, color, textColor, strokeColor])
   return (
     <meshLambertMaterial
       map={texture}

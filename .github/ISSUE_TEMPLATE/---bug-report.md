@@ -27,6 +27,7 @@ assignees: ''
 <!-- Please describe why the current behaviour is a problem -->
 
 ### Relevant code:
+
 <!-- feel free to input the code in the space below, but since we're working with 3D, it's generally better to provide a sandbox, here's a start – https://codesandbox.io/s/react-three-fiber-starter-n8iz2 -->
 
 ```js
@@ -39,4 +40,3 @@ let your = (code, tell) => `the ${story}`
 It's ok if you don't have a suggested solution, but it really helps if you could
 do a little digging to come up with some suggestion of how to improve things.
 -->
-

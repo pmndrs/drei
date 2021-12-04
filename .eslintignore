@@ -1,2 +1,2 @@
-# ignore base64 files because of Maximum call stack size exceeded error
-!.storybook
+.storybook/public/draco-gltf/
+dist/

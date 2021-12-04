@@ -16,13 +16,14 @@ export function Backdrop({ children, floor = 0.25, segments = 20, receiveShadow,
     const offset = segments / segments / 2
     const position = ref.current.attributes.position
     for (let x = 0; x < segments + 1; x++) {
-      for (let y = 0; y < segments + 1; y++)
+      for (let y = 0; y < segments + 1; y++) {
         position.setXYZ(
           i++,
           x / segments - offset + (x === 0 ? -floor : 0),
           y / segments - offset,
           easeInExpo(x / segments)
         )
+      }
     }
     position.needsUpdate = true
     ref.current.computeVertexNormals()

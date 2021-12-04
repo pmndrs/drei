@@ -1,10 +1,10 @@
-import * as React from 'react'
+import { useEffect } from 'react'
 
 export function useCursor(hovered: boolean, onPointerOver = 'pointer', onPointerOut = 'auto') {
-  React.useEffect(() => {
+  useEffect(() => {
     if (hovered) {
       document.body.style.cursor = onPointerOver
       return () => void (document.body.style.cursor = onPointerOut)
     }
-  }, [hovered])
+  }, [hovered, onPointerOver, onPointerOut])
 }

@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import * as React from 'react'
 import mergeRefs from 'react-merge-refs'
 import { extend, useFrame, ReactThreeFiber } from '@react-three/fiber'
-import { Line2, LineSegmentsGeometry, LineMaterial, LineMaterialParameters } from 'three-stdlib'
+import { Line2, LineSegmentsGeometry, LineMaterial } from 'three-stdlib'
 
 type SegmentsProps = {
   limit?: number
@@ -109,7 +109,7 @@ const Segment = React.forwardRef<Segment, SegmentProps>((props, forwardedRef) =>
   if (!api) throw 'Segment must used inside Segments component.'
   const ref = React.useRef()
   React.useMemo(() => extend({ SegmentObject }), [])
-  React.useLayoutEffect(() => api.subscribe(ref), [])
+  React.useLayoutEffect(() => api.subscribe(ref), [api])
   return <segmentObject ref={mergeRefs([ref, forwardedRef])} {...props} />
 })
 

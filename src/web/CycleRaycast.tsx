@@ -94,6 +94,6 @@ export function CycleRaycast({
       if (scroll) document.removeEventListener('wheel', wheelEvent)
       document.removeEventListener('pointermove', moveEvent)
     }
-  }, [gl, get, raycaster, preventDefault, scroll, keyCode])
+  }, [get, gl, keyCode, onChanged, portal, preventDefault, raycaster, scroll])
   return null
 }

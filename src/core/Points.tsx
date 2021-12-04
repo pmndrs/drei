@@ -34,7 +34,7 @@ const PointsInstances = React.forwardRef<THREE.Points, PointsInstancesProps>(
 
     React.useLayoutEffect(() => {
       parentRef.current.geometry.drawRange.count = Math.min(limit, range !== undefined ? range : limit, refs.length)
-    }, [refs, range])
+    }, [limit, range, refs])
 
     React.useEffect(() => {
       // We might be a frame too late? 🤷‍♂️
@@ -82,7 +82,7 @@ const PointsInstances = React.forwardRef<THREE.Points, PointsInstancesProps>(
         }),
         {}
       )
-    }, [children, refs])
+    }, [refs])
 
     const api: Api = React.useMemo(
       () => ({
@@ -129,7 +129,7 @@ export const Point = React.forwardRef(({ children, ...props }, ref) => {
   React.useMemo(() => extend({ Position }), [])
   const group = React.useRef()
   const { subscribe } = React.useContext(context)
-  React.useLayoutEffect(() => subscribe(group), [])
+  React.useLayoutEffect(() => subscribe(group), [subscribe])
   return (
     <position ref={mergeRefs([ref, group])} {...props}>
       {children}

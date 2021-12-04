@@ -85,7 +85,7 @@ export function ScrollControls({
       },
     }
     return state
-  }, [eps, damping, horizontal, pages])
+  }, [el, eps, fill, fixed, damping, horizontal, pages])
 
   React.useEffect(() => {
     el.style.position = 'absolute'
@@ -130,7 +130,7 @@ export function ScrollControls({
       raycaster.computeOffsets = oldCompute
       events.connect?.(oldTarget)
     }
-  }, [pages, distance, horizontal, el, fill, fixed, target])
+  }, [distance, el, events, fill, fixed, gl.domElement, horizontal, pages, raycaster, style, target])
 
   React.useEffect(() => {
     const containerLength = size[horizontal ? 'width' : 'height']
@@ -141,7 +141,7 @@ export function ScrollControls({
     let disableScroll = true
     let firstRun = true
 
-    const onScroll = (e) => {
+    const onScroll = () => {
       // Prevent first scroll because it is indirectly caused by the one pixel offset
       if (!enabled || firstRun) return
       invalidate()
@@ -174,7 +174,7 @@ export function ScrollControls({
       el.removeEventListener('scroll', onScroll)
       if (horizontal) el.removeEventListener('wheel', onWheel)
     }
-  }, [el, size, infinite, state, invalidate, horizontal])
+  }, [el, enabled, size, infinite, state, invalidate, horizontal])
 
   let last = 0
   useFrame((_, delta) => {

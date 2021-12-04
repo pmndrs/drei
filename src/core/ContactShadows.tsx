@@ -72,7 +72,7 @@ export const ContactShadows = React.forwardRef(
         verticalBlurMaterial,
         renderTargetBlur,
       ]
-    }, [resolution, width, height, scale])
+    }, [resolution, width, height])
 
     let count = 0
     useFrame(() => {

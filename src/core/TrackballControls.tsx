@@ -1,4 +1,4 @@
-import { EventManager, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
+import { ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from 'three'
 import { TrackballControls as TrackballControlsImpl } from 'three-stdlib'
@@ -51,7 +51,7 @@ export const TrackballControls = React.forwardRef<TrackballControlsImpl, Trackba
 
     React.useEffect(() => {
       controls.handleResize()
-    }, [viewport])
+    }, [viewport, controls])
 
     React.useEffect(() => {
       if (makeDefault) {

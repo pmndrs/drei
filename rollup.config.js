@@ -10,7 +10,7 @@ const root = process.platform === 'win32' ? path.resolve('/') : '/'
 const external = (id) => !id.startsWith('.') && !id.startsWith(root)
 const extensions = ['.js', '.jsx', '.ts', '.tsx', '.json']
 
-const getBabelOptions = ({ useESModules }, targets) => ({
+const getBabelOptions = ({ useESModules }) => ({
   babelrc: false,
   extensions,
   exclude: '**/node_modules/**',

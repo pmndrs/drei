@@ -2,7 +2,7 @@
 
 [![Version](https://img.shields.io/npm/v/@react-three/drei?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)
 [![Downloads](https://img.shields.io/npm/dt/@react-three/drei.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)
-[![Discord Shield](https://img.shields.io/discord/740090768164651008?style=flat&colorA=000000&colorB=000000&label=discord&logo=discord&logoColor=ffffff)](https://discord.gg/ZZjjNvJ)
+[![Discord Shield](https://img.shields.io/discord/740090768164651008?style=flat&colorA=000000&colorB=000000&label=discord&logo=discord&logoColor=ffffff)](https://discord.gg/poimandres)
 
 A growing collection of useful helpers and fully functional, ready-made abstractions for [react-three-fiber](https://github.com/pmndrs/react-three-fiber). If you make a component that is generic enough to be useful to others, think about making it available here through a PR!
 
@@ -36,7 +36,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <ul>
           <li><a href="#perspectivecamera">PerspectiveCamera</a></li>
           <li><a href="#orthographiccamera">OrthographicCamera</a></li>
-          <li><a href="#cubecamera">CubeCamera</a></li>          
+          <li><a href="#cubecamera">CubeCamera</a></li>
         </ul>
         <li><a href="#controls">Controls</a></li>
         <ul>
@@ -60,7 +60,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#cubicbezierline">CubicBezierLine</a></li>
           <li><a href="#positionalaudio">PositionalAudio</a></li>
           <li><a href="#billboard">Billboard</a></li>
-          <li><a href="#gizmohelper">GizmoHelper</a></li>          
+          <li><a href="#gizmohelper">GizmoHelper</a></li>
           <li><a href="#effects">Effects</a></li>
           <li><a href="#gradienttexture">GradientTexture</a></li>
           <li><a href="#useanimations">useAnimations</a></li>
@@ -69,7 +69,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <ul>
           <li><a href="#meshwobblematerial">MeshWobbleMaterial</a></li>
           <li><a href="#meshdistortmaterial">MeshDistortMaterial</a></li>
-          <li><a href="#pointmaterial">PointMaterial</a></li>       
+          <li><a href="#pointmaterial">PointMaterial</a></li>
           <li><a href="#softshadows">softShadows</a></li>
           <li><a href="#shadermaterial">shaderMaterial</a></li>
         </ul>
@@ -107,7 +107,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#usefbx">useFBX</a></li>
           <li><a href="#usetexture">useTexture</a></li>
           <li><a href="#usecubetexture">useCubeTexture</a></li>
-        </ul>        
+        </ul>
         <li><a href="#performance">Performance</a></li>
         <ul>
           <li><a href="#instances">Instances</a></li>
@@ -121,7 +121,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#adaptivedpr">AdaptiveDpr</a></li>
           <li><a href="#adaptiveevents">AdaptiveEvents</a></li>
           <li><a href="#usebvh">useBVH</a></li>
-        </ul>        
+        </ul>
       </ul>
     </td>
     <td valign="top">

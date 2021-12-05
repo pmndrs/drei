@@ -10,7 +10,7 @@ assignees: ''
 
 🛑Consider whether Github issues is the best place to ask this question.  Perhaps some of the support channels will give you better help, faster:
 
-- Discord https://discord.gg/dK4v5adR
+- Discord https://discord.gg/poimandres
 
 * Please fill out this template with all the relevant information so we can
   understand how best to support you.

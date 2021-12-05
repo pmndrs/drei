@@ -1,5 +1,5 @@
+import * as React from 'react'
 import { MathUtils } from 'three'
-import { useMemo, useEffect } from 'react'
 import { useThree } from '@react-three/fiber'
 import { a, useSpring } from '@react-spring/three'
 import { useGesture } from '@use-gesture/react'
@@ -28,21 +28,21 @@ export function PresentationControls({
   config = { mass: 1, tension: 170, friction: 26 },
 }: Props) {
   const { size, gl } = useThree()
-  const rPolar = useMemo(() => [rotation[0] + polar[0], rotation[0] + polar[1]], [rotation[0], polar[0], polar[1]]) as [
-    number,
-    number
-  ]
-  const rAzimuth = useMemo(
+  const rPolar = React.useMemo(
+    () => [rotation[0] + polar[0], rotation[0] + polar[1]],
+    [rotation[0], polar[0], polar[1]]
+  ) as [number, number]
+  const rAzimuth = React.useMemo(
     () => [rotation[1] + azimuth[0], rotation[1] + azimuth[1]],
     [rotation[1], azimuth[0], azimuth[1]]
   ) as [number, number]
-  const rInitial = useMemo(
+  const rInitial = React.useMemo(
     () => [MathUtils.clamp(rotation[0], ...rPolar), MathUtils.clamp(rotation[1], ...rAzimuth), rotation[2]],
     [rotation[0], rotation[1], rotation[2], rPolar, rAzimuth]
   )
   const [spring, api] = useSpring(() => ({ scale: 1, rotation: rInitial, config }))
-  useEffect(() => void api.start({ scale: 1, rotation: rInitial, config }), [rInitial])
-  useEffect(() => {
+  React.useEffect(() => void api.start({ scale: 1, rotation: rInitial, config }), [rInitial])
+  React.useEffect(() => {
     if (global) document.body.style.cursor = 'grab'
   }, [global])
   const bind = useGesture(

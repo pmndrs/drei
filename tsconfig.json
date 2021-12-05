@@ -6,7 +6,7 @@
     "moduleResolution": "node",
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": false,
-    "jsx": "react-jsx",
+    "jsx": "react",
     "pretty": true,
     "strict": true,
     "skipLibCheck": true,

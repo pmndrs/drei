@@ -1487,10 +1487,11 @@ Easily add reflections and/or blur to a planar surface. This reflector can also 
 ```jsx
 <Reflector
   args={[1, 1]} // PlaneBufferGeometry arguments
-  resolution={256} // Off-buffer resolution, lower=faster, higher=better quality
-  mirror={0.5} // Mirror environment, 0 = texture colors, 1 = pick up env colors
+  blur={[0, 0]} // Blur ground reflections (width, heigt), 0 skips blur
   mixBlur={1.0} // How much blur mixes with surface roughness (default = 0), note that this can affect performance
   mixStrength={0.5} // Strength of the reflections
+  resolution={256} // Off-buffer resolution, lower=faster, higher=better quality
+  mirror={0.5} // Mirror environment, 0 = texture colors, 1 = pick up env colors
   depthScale={1} // Scale the depth factor (0 = no depth, default = 0)
   minDepthThreshold={0.9} // Lower edge for the depthTexture interpolation (default = 0)
   maxDepthThreshold={1} // Upper edge for the depthTexture interpolation (default = 0)

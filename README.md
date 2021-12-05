@@ -188,6 +188,13 @@ A responsive [THREE.PerspectiveCamera](https://threejs.org/docs/index.html#api/e
 </PerspectiveCamera>
 ```
 
+You can also drive it manually, it won't be responsive and you have to calculate aspect ration yourself.
+
+
+```jsx
+<PerspectiveCamera manual aspect={...} onUpdate={(c) => c.updateProjectionMatrix()}>
+```
+
 #### OrthographicCamera
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/camera-orthographiccamera--orthographic-camera-scene-st)

@@ -331,7 +331,7 @@ function Foo() {
 
 ![](https://img.shields.io/badge/-Dom only-red)
 
-Smooth, springy semi-OrbitControls for presentational purposes. These controls do not turn the camera but will spin their contents.
+Semi-OrbitControls with spring-physics, polar zoom and snap-back, for presentational purposes. These controls do not turn the camera but will spin their contents. They will not suddenly come to rest when they reach limits like OrbitControls do, but rather smoothly anticipate stopping position.
 
 ```jsx
 <PresentationControls

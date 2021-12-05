@@ -141,7 +141,7 @@ export function ScrollControls({
     let disableScroll = true
     let firstRun = true
 
-    const onScroll = (e) => {
+    const onScroll = () => {
       // Prevent first scroll because it is indirectly caused by the one pixel offset
       if (!enabled || firstRun) return
       invalidate()

@@ -80,7 +80,7 @@ const Instances = React.forwardRef(
     })
 
     let count = 0
-    useFrame((state) => {
+    useFrame(() => {
       if (frames === Infinity || count < frames) {
         parentRef.current.updateMatrix()
         parentRef.current.updateMatrixWorld()

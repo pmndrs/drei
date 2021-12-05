@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { withKnobs, select, number, boolean, object, array } from '@storybook/addon-knobs'
+import { withKnobs, select, number, boolean, object } from '@storybook/addon-knobs'
 import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'

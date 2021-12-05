@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import * as React from 'react'
 import mergeRefs from 'react-merge-refs'
 import { extend, useFrame, ReactThreeFiber } from '@react-three/fiber'
-import { Line2, LineSegmentsGeometry, LineMaterial, LineMaterialParameters } from 'three-stdlib'
+import { Line2, LineSegmentsGeometry, LineMaterial } from 'three-stdlib'
 
 type SegmentsProps = {
   limit?: number

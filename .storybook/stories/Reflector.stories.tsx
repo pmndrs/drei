@@ -18,12 +18,12 @@ export default {
 }
 
 function ReflectorScene({
-  mixBlur,
+  blur,
   depthScale,
   distortion,
   normalScale,
 }: {
-  mixBlur?: number
+  blur?: [number, number]
   depthScale?: number
   distortion?: number
   normalScale?: number
@@ -50,9 +50,10 @@ function ReflectorScene({
         resolution={1024}
         args={[10, 10]}
         mirror={0.75}
-        mixBlur={mixBlur || 0}
-        mixStrength={1}
+        mixBlur={10}
+        mixStrength={2}
         rotation={[-Math.PI / 2, 0, Math.PI / 2]}
+        blur={blur || [0, 0]}
         minDepthThreshold={0.8}
         maxDepthThreshold={1.2}
         depthScale={depthScale || 0}
@@ -63,8 +64,8 @@ function ReflectorScene({
       >
         {(Material, props) => (
           <Material
-            color="#ddd"
-            metalness={0}
+            color="#a0a0a0"
+            metalness={0.5}
             roughnessMap={roughness}
             roughness={1}
             normalMap={normal}
@@ -87,7 +88,7 @@ function ReflectorScene({
 
 export const ReflectorSt = () => (
   <React.Suspense fallback={null}>
-    <ReflectorScene mixBlur={8} depthScale={1} distortion={0.005} normalScale={0.5} />
+    <ReflectorScene blur={[100, 500]} depthScale={2} distortion={0.3} normalScale={0.5} />
   </React.Suspense>
 )
 ReflectorSt.storyName = 'Default'
@@ -101,7 +102,7 @@ ReflectorPlain.storyName = 'Plain'
 
 export const ReflectorBlur = () => (
   <React.Suspense fallback={null}>
-    <ReflectorScene mixBlur={10} />
+    <ReflectorScene blur={[500, 500]} />
   </React.Suspense>
 )
 ReflectorBlur.storyName = 'Blur'
@@ -115,7 +116,7 @@ ReflectorDepth.storyName = 'Depth'
 
 export const ReflectorDistortion = () => (
   <React.Suspense fallback={null}>
-    <ReflectorScene distortion={0.1} />
+    <ReflectorScene distortion={1} />
   </React.Suspense>
 )
 ReflectorDistortion.storyName = 'Distortion'

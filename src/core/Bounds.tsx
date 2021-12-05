@@ -169,7 +169,7 @@ export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0
 
     if (controls) {
       // Try to prevent drag hijacking
-      const callback = (event) => (current.animating = false)
+      const callback = () => (current.animating = false)
       controls.addEventListener('start', callback)
       return () => controls.removeEventListener('start', callback)
     }

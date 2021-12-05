@@ -12,14 +12,12 @@ export default {
 }
 
 function Simple() {
-  const GPUTier = useDetectGPU()
+  const { device, fps, gpu, isMobile, tier, type } = useDetectGPU()
 
   return (
-    GPUTier && (
-      <Text>
-        Tier {GPUTier.tier.toString()} {GPUTier.type}
-      </Text>
-    )
+    <Text maxWidth={200}>
+      | device {device} fps {fps} | gpu {gpu} isMobile {isMobile?.toString()} | Tier {tier.toString()} Type {type} |
+    </Text>
   )
 }
 

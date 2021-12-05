@@ -28,7 +28,7 @@ assignees: ''
 
 ### Relevant code:
 
-<!-- feel free to input the code in the space below, but since we're working with 3D, it's generally better to provide a sandbox, here's a start – https://codesandbox.io/s/react-three-fiber-starter-n8iz2 -->
+<!-- feel free to input the code in the space below, but since we're working with 3D, it's generally better to provide a sandbox, here's a start – https://githubbox.com/pmndrs/drei/tree/master/sandboxes/bug-report-template-starter -->
 
 ```js
 let your = (code, tell) => `the ${story}`

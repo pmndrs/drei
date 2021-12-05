@@ -2577,6 +2577,51 @@
     prop-types "^15.6.1"
     react-lifecycles-compat "^3.0.4"
 
+"@react-spring/animated@~9.3.0":
+  version "9.3.1"
+  resolved "https://registry.yarnpkg.com/@react-spring/animated/-/animated-9.3.1.tgz#ffc4706121e8406efeaeacb407b42b5022943b46"
+  integrity sha512-23YaERZ++BwZ8F8PxPFqrpOwp/JZun1Pj6aHZtPAU42j5LycBRasT9XMw7Eyr7zNFhT+rl3R3wFfd4WX6Ax+UA==
+  dependencies:
+    "@react-spring/shared" "~9.3.0"
+    "@react-spring/types" "~9.3.0"
+
+"@react-spring/core@~9.3.0":
+  version "9.3.1"
+  resolved "https://registry.yarnpkg.com/@react-spring/core/-/core-9.3.1.tgz#b98e1dca1eb4871dec75fdab350327e8a5222865"
+  integrity sha512-8rmfmEHLHGtF1CUiXRn64YJqsXNxv2cGX8oNnBnsuoE33c48Zc34t2VIMB4R9q5zwIUCvDBGfiEenA8ZAPxqOQ==
+  dependencies:
+    "@react-spring/animated" "~9.3.0"
+    "@react-spring/shared" "~9.3.0"
+    "@react-spring/types" "~9.3.0"
+
+"@react-spring/rafz@~9.3.0":
+  version "9.3.1"
+  resolved "https://registry.yarnpkg.com/@react-spring/rafz/-/rafz-9.3.1.tgz#8dd6a598ffea487252b75d05d199e4aca5ea9d5e"
+  integrity sha512-fEBMCarGVl+/2kdO+g6Zig4F+3ymwmcGN8S71gb1c7Cbbxb87kviPz8EhshfIHoiLeJPGlqwcuGbxNmZbBamvA==
+
+"@react-spring/shared@~9.3.0":
+  version "9.3.1"
+  resolved "https://registry.yarnpkg.com/@react-spring/shared/-/shared-9.3.1.tgz#e7f22a4b8f5fea4491fa6a24c108db5abd19ddba"
+  integrity sha512-jhPpxzURGo6Nty90ex1lkxmZae7w/VAbnGmb/nXcYoZwSoNR+W2aAd00iXsh2ZGz6MgoJOsc495JeG3uC7Am8A==
+  dependencies:
+    "@react-spring/rafz" "~9.3.0"
+    "@react-spring/types" "~9.3.0"
+
+"@react-spring/three@^9.3.1":
+  version "9.3.1"
+  resolved "https://registry.yarnpkg.com/@react-spring/three/-/three-9.3.1.tgz#91a50851639c5a88fed8f76b4e25ff388d2b24e7"
+  integrity sha512-40iRIX2DrY+a81hIliOog6TMg/ZAtHGeZr95r0vKAsl+iX1g9Hs8XCS4wTeQIUgydZpbpShk/JL6mkcstEfBdw==
+  dependencies:
+    "@react-spring/animated" "~9.3.0"
+    "@react-spring/core" "~9.3.0"
+    "@react-spring/shared" "~9.3.0"
+    "@react-spring/types" "~9.3.0"
+
+"@react-spring/types@~9.3.0":
+  version "9.3.1"
+  resolved "https://registry.yarnpkg.com/@react-spring/types/-/types-9.3.1.tgz#20f392ecad15a1ea6c0865ffe86ca5016c05a278"
+  integrity sha512-W/YMJMX35XgGGzX0gKORBTwnvQ+1loDOFN3XlZkW5fgpEY+7VkRUpPyqPWXQr3n6lHrsLmHIGdpznqZi54ACTQ==
+
 "@react-three/fiber@^6.0.0":
   version "6.1.4"
   resolved "https://registry.yarnpkg.com/@react-three/fiber/-/fiber-6.1.4.tgz#85c102b18986a568f98da4fac01b5f77dc683276"
@@ -3744,6 +3789,18 @@
   dependencies:
     "@typescript-eslint/types" "5.4.0"
     eslint-visitor-keys "^3.0.0"
+
+"@use-gesture/core@10.2.0":
+  version "10.2.0"
+  resolved "https://registry.yarnpkg.com/@use-gesture/core/-/core-10.2.0.tgz#d8c79919e9a801f0a17708dd21898a85d953c521"
+  integrity sha512-mgEcB6T+0sCI+7ZuDV5acvm6P6sO/hz4XXupPIvW3/yPChrIXppIMCDo+PSPCyLqUTu+H8URc8M6zAJoPwUxdQ==
+
+"@use-gesture/react@^10.2.0":
+  version "10.2.0"
+  resolved "https://registry.yarnpkg.com/@use-gesture/react/-/react-10.2.0.tgz#1be45ec5697f6daeacdb25d04977c20b3d52713f"
+  integrity sha512-QrtXOCScE0WrA/9+Xi6YWtUudEhUIlqQ/+dBgt/bYwviSYuajEis69LhuxeLPEcjhVaPTpOWp+3M8YMWbf+2Iw==
+  dependencies:
+    "@use-gesture/core" "10.2.0"
 
 "@webassemblyjs/ast@1.9.0":
   version "1.9.0"

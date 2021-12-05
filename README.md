@@ -50,6 +50,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#controls">FirstPersonControls</a></li>
           <li><a href="#transformcontrols">TransformControls</a></li>
           <li><a href="#scrollcontrols">ScrollControls</a></li>
+          <li><a href="#presentationcontrols">PresentationControls</a></li>
         </ul>
         <li><a href="#abstractions">Abstractions</a></li>
         <ul>
@@ -262,6 +263,8 @@ If you are using other controls (Orbit, Trackball, etc), you will notice how the
 
 # ScrollControls
 
+![](https://img.shields.io/badge/-Dom only-red)
+
 <p align="center">
   <a href="https://codesandbox.io/s/l4klb"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/l4klb/screenshot.png" alt="Horizintal tiles"/></a>
   <a href="https://codesandbox.io/s/4m0d0"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/4m0d0/screenshot.png" alt="M1 scroll"/></a>
@@ -322,6 +325,27 @@ function Foo() {
     const f = data.visible(2 / 3, 1 / 3, 0.1)
   })
   return <mesh ref={ref} {...props} />
+```
+
+# PresentationControls
+
+![](https://img.shields.io/badge/-Dom only-red)
+
+Smooth, springy semi-OrbitControls for presentational purposes. These controls do not turn the camera but will spin their contents.
+
+```jsx
+<PresentationControls
+  global={false} // Spin globally or by dragging the model
+  snap={false} // Snap-back to center (can also be a spring config)
+  speed={1} // Speed factor
+  zoom={1} // Zoom factor when half the polar-max is reached
+  rotation={[0, 0, 0]} // Default rotation
+  polar={[0, Math.PI / 2]} // Vertical limits
+  azimuth={[-Infinity, Infinity]} // Horizontal limits
+  config = { mass: 1, tension: 170, friction: 26 } // Spring config
+>
+  <mesh />
+</PresentationControls>
 ```
 
 # Shapes
@@ -818,6 +842,8 @@ const [hidden, set] = useState()
 
 #### CycleRaycast
 
+![](https://img.shields.io/badge/-Dom only-red)
+
 This component allows you to cycle through all objects underneath the cursor with optional visual feedback. This can be useful for non-trivial selection, CAD data, housing, everything that has layers. It does this by changing the raycasters filter function and then refreshing the raycaster.
 
 For this to work properly your event handler have to call `event.stopPropagation()`, for instance in `onPointerOver` or `onClick`, only one element can be selective for cycling to make sense.
@@ -946,6 +972,8 @@ return (
 ```
 
 #### useCursor
+
+![](https://img.shields.io/badge/-Dom only-red)
 
 A small hook that sets the css body cursor according to the hover state of a mesh, so that you can give the use visual feedback when the mouse enters a shape. Arguments 1 and 2 determine the style, the defaults are: onPointerOver = 'pointer', onPointerOut = 'auto'.
 

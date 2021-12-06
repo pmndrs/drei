@@ -183,6 +183,13 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 A responsive [THREE.PerspectiveCamera](https://threejs.org/docs/index.html#api/en/cameras/PerspectiveCamera) that can set itself as the default.
 
 ```jsx
+<PerspectiveCamera makeDefault {...props} />
+<mesh />
+```
+
+You can also give it children, which will now occupy the same position as the camera and follow along as it moves.
+
+```jsx
 <PerspectiveCamera makeDefault {...props}>
   <mesh />
 </PerspectiveCamera>

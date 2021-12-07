@@ -91,6 +91,15 @@ export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0
           const max = camera.position.length() || 10
           box.setFromCenterAndSize(new THREE.Vector3(), new THREE.Vector3(max, max, max))
         }
+
+        if (controls) {
+          // Put camera on a sphere along which it should moves
+          const { distance } = getSize()
+          const direction = camera.position.clone().sub(controls.target).normalize().multiplyScalar(distance)
+          const newPos = controls.target.clone().add(direction)
+          camera.position.copy(newPos)
+        }
+
         return this
       },
       clip() {

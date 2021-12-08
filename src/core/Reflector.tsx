@@ -75,7 +75,7 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
   ) => {
     React.useEffect(() => {
       console.warn(
-        'DepthBuffer has been deprecated and will be removed next major. Replace it with <MeshReflectorMaterial />!'
+        'Reflector has been deprecated and will be removed next major. Replace it with <MeshReflectorMaterial />!'
       )
     }, [])
 

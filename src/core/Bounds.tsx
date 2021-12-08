@@ -92,7 +92,7 @@ export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0
           box.setFromCenterAndSize(new THREE.Vector3(), new THREE.Vector3(max, max, max))
         }
 
-        if (controls.constructor.name === 'OrthographicTrackballControls') {
+        if (controls?.constructor.name === 'OrthographicTrackballControls') {
           // Put camera on a sphere along which it should moves
           const { distance } = getSize()
           const direction = camera.position.clone().sub(controls.target).normalize().multiplyScalar(distance)

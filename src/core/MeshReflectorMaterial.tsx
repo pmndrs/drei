@@ -18,54 +18,48 @@ import { useFrame, useThree, extend } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
 
 import { BlurPass } from '../materials/BlurPass'
-import { MeshReflectorMaterialProps, MeshReflectorMaterial } from '../materials/MeshReflectorMaterial'
+import {
+  MeshReflectorMaterialProps,
+  MeshReflectorMaterial as MeshReflectorMaterialImpl,
+} from '../materials/MeshReflectorMaterial'
 
-export type ReflectorProps = Omit<JSX.IntrinsicElements['mesh'], 'args' | 'children'> &
-  Pick<JSX.IntrinsicElements['planeBufferGeometry'], 'args'> & {
-    resolution?: number
-    mixBlur?: number
-    mixStrength?: number
-    blur?: [number, number] | number
-    mirror: number
-    minDepthThreshold?: number
-    maxDepthThreshold?: number
-    depthScale?: number
-    depthToBlurRatioBias?: number
-    debug?: number
-    distortionMap?: Texture
-    distortion?: number
-    children?: {
-      (
-        Component: React.ElementType<JSX.IntrinsicElements['meshReflectorMaterial']>,
-        ComponentProps: MeshReflectorMaterialProps
-      ): JSX.Element | null
-    }
-  }
+export type Props = JSX.IntrinsicElements['meshStandardMaterial'] & {
+  resolution?: number
+  mixBlur?: number
+  mixStrength?: number
+  blur?: [number, number] | number
+  mirror: number
+  minDepthThreshold?: number
+  maxDepthThreshold?: number
+  depthScale?: number
+  depthToBlurRatioBias?: number
+  debug?: number
+  distortionMap?: Texture
+  distortion?: number
+}
 
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      meshReflectorMaterial: MeshReflectorMaterialProps
+      meshReflectorMaterialImpl: MeshReflectorMaterialProps
     }
   }
 }
 
-extend({ MeshReflectorMaterial })
+extend({ MeshReflectorMaterialImpl })
 
-export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
+export const MeshReflectorMaterial = React.forwardRef<MeshReflectorMaterialImpl, Props>(
   (
     {
       mixBlur = 0.0,
       mixStrength = 0.5,
       resolution = 256,
       blur = [0, 0],
-      args = [1, 1],
       minDepthThreshold = 0.9,
       maxDepthThreshold = 1,
       depthScale = 0,
       depthToBlurRatioBias = 0.25,
       mirror,
-      children,
       debug = 0,
       distortion = 1,
       distortionMap,
@@ -73,18 +67,12 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
     },
     ref
   ) => {
-    React.useEffect(() => {
-      console.warn(
-        'DepthBuffer has been deprecated and will be removed next major. Replace it with <MeshReflectorMaterial />!'
-      )
-    }, [])
-
     const gl = useThree(({ gl }) => gl)
     const camera = useThree(({ camera }) => camera)
     const scene = useThree(({ scene }) => scene)
     blur = Array.isArray(blur) ? blur : [blur, blur]
     const hasBlur = blur[0] + blur[1] > 0
-    const meshRef = React.useRef<Mesh>(null!)
+    const materialRef = React.useRef<MeshReflectorMaterialImpl>(null!)
     const [reflectorPlane] = React.useState(() => new Plane())
     const [normal] = React.useState(() => new Vector3())
     const [reflectorWorldPosition] = React.useState(() => new Vector3())
@@ -99,9 +87,13 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
     const [virtualCamera] = React.useState(() => new PerspectiveCamera())
 
     const beforeRender = React.useCallback(() => {
-      reflectorWorldPosition.setFromMatrixPosition(meshRef.current.matrixWorld)
+      // TODO: As of R3f 7-8 this should be __r3f.parent
+      const parent = (materialRef.current as any).parent || (materialRef.current as any)?.__r3f.parent
+      if (!parent) return
+
+      reflectorWorldPosition.setFromMatrixPosition(parent.matrixWorld)
       cameraWorldPosition.setFromMatrixPosition(camera.matrixWorld)
-      rotationMatrix.extractRotation(meshRef.current.matrixWorld)
+      rotationMatrix.extractRotation(parent.matrixWorld)
       normal.set(0, 0, 1)
       normal.applyMatrix4(rotationMatrix)
       view.subVectors(reflectorWorldPosition, cameraWorldPosition)
@@ -128,7 +120,7 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
       textureMatrix.set(0.5, 0.0, 0.0, 0.5, 0.0, 0.5, 0.0, 0.5, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0, 1.0)
       textureMatrix.multiply(virtualCamera.projectionMatrix)
       textureMatrix.multiply(virtualCamera.matrixWorldInverse)
-      textureMatrix.multiply(meshRef.current.matrixWorld)
+      textureMatrix.multiply(parent.matrixWorld)
       // Now update projection matrix with new clip plane, implementing code from: http://www.terathon.com/code/oblique.html
       // Paper explaining this technique: http://www.terathon.com/lengyel/Lengyel-Oblique.pdf
       reflectorPlane.setFromNormalAndCoplanarPoint(normal, reflectorWorldPosition)
@@ -213,8 +205,11 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
     ])
 
     useFrame(() => {
-      if (!meshRef?.current) return
-      meshRef.current.visible = false
+      // TODO: As of R3f 7-8 this should be __r3f.parent
+      const parent = (materialRef.current as any).parent || (materialRef.current as any)?.__r3f.parent
+      if (!parent) return
+
+      parent.visible = false
       const currentXrEnabled = gl.xr.enabled
       const currentShadowAutoUpdate = gl.shadowMap.autoUpdate
       beforeRender()
@@ -227,15 +222,12 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
       if (hasBlur) blurpass.render(gl, fbo1, fbo2)
       gl.xr.enabled = currentXrEnabled
       gl.shadowMap.autoUpdate = currentShadowAutoUpdate
-      meshRef.current.visible = true
+      parent.visible = true
       gl.setRenderTarget(null)
     })
 
     return (
-      <mesh ref={mergeRefs([meshRef, ref])} {...props}>
-        <planeBufferGeometry args={args} />
-        {children ? children('meshReflectorMaterial', reflectorProps) : <meshReflectorMaterial {...reflectorProps} />}
-      </mesh>
+      <meshReflectorMaterialImpl attach="material" ref={mergeRefs([materialRef, ref])} {...reflectorProps} {...props} />
     )
   }
 )

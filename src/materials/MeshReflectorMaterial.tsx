@@ -240,7 +240,7 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
   }
 }
 
-export type MeshReflectorMaterialImpl = {
+export type MeshReflectorMaterialProps = {
   mixBlur: number
   mixStrength: number
   mirror: number

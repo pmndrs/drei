@@ -59,7 +59,7 @@ export const MeshReflectorMaterial = React.forwardRef<MeshReflectorMaterialImpl,
       maxDepthThreshold = 1,
       depthScale = 0,
       depthToBlurRatioBias = 0.25,
-      mirror,
+      mirror = 0.5,
       debug = 0,
       distortion = 1,
       distortionMap,
@@ -227,7 +227,19 @@ export const MeshReflectorMaterial = React.forwardRef<MeshReflectorMaterialImpl,
     })
 
     return (
-      <meshReflectorMaterialImpl attach="material" ref={mergeRefs([materialRef, ref])} {...reflectorProps} {...props} />
+      <meshReflectorMaterialImpl
+        attach="material"
+        // Defines can't be updated dynamically, so we need to recreate the material
+        key={
+          'key' +
+          reflectorProps['defines-USE_BLUR'] +
+          reflectorProps['defines-USE_DEPTH'] +
+          reflectorProps['defines-USE_DISTORTION']
+        }
+        ref={mergeRefs([materialRef, ref])}
+        {...reflectorProps}
+        {...props}
+      />
     )
   }
 )

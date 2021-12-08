@@ -68,6 +68,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         </ul>
         <li><a href="#shaders">Shaders</a></li>
         <ul>
+          <li><a href="#meshreflectormaterial">MeshReflectorMaterial</a></li>
           <li><a href="#meshwobblematerial">MeshWobbleMaterial</a></li>
           <li><a href="#meshdistortmaterial">MeshDistortMaterial</a></li>
           <li><a href="#pointmaterial">PointMaterial</a></li>
@@ -159,10 +160,9 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#stage">Stage</a></li>
           <li><a href="#backdrop">Backdrop</a></li>
           <li><a href="#environment">Environment</a></li>
-          <li><a href="#reflector">SpotLight</a></li>
+          <li><a href="#spotlight">SpotLight</a></li>
           <li><a href="#shadow">Shadow</a></li>
           <li><a href="#contactshadows">ContactShadows</a></li>
-          <li><a href="#reflector">Reflector</a></li>
           <li><a href="#sky">Sky</a></li>
           <li><a href="#stars">Stars</a></li>
           <li><a href="#cloud">Cloud</a></li>
@@ -196,7 +196,6 @@ You can also give it children, which will now occupy the same position as the ca
 ```
 
 You can also drive it manually, it won't be responsive and you have to calculate aspect ration yourself.
-
 
 ```jsx
 <PerspectiveCamera manual aspect={...} onUpdate={(c) => c.updateProjectionMatrix()}>
@@ -605,6 +604,38 @@ return <primitive object={scene} />
 ```
 
 # Shaders
+
+#### MeshReflectorMaterial
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shaders-meshreflectormaterial--reflector-st)
+
+Easily add reflections and/or blur to any mesh. It takes surface roughness into account for a more realistic effect. This material extends from [THREE.MeshStandardMaterial](https://threejs.org/docs/index.html?q=meshsta#api/en/materials/MeshStandardMaterial) and accepts all its props.
+
+```jsx
+<mesh>
+  <planeGeometry />
+  <MeshReflectorMaterial
+    blur={[0, 0]} // Blur ground reflections (width, heigt), 0 skips blur
+    mixBlur={1.0} // How much blur mixes with surface roughness (default = 0), note that this can affect performance
+    mixStrength={0.5} // Strength of the reflections
+    resolution={256} // Off-buffer resolution, lower=faster, higher=better quality, slower
+    mirror={0.5} // Mirror environment, 0 = texture colors, 1 = pick up env colors
+    depthScale={1} // Scale the depth factor (0 = no depth, default = 0)
+    minDepthThreshold={0.9} // Lower edge for the depthTexture interpolation (default = 0)
+    maxDepthThreshold={1} // Upper edge for the depthTexture interpolation (default = 0)
+    depthToBlurRatioBias={0.25} // Adds a bias factor to the depthTexture before calculating the blur amount [blurFactor = blurTexture * (depthTexture + bias)]. It accepts values between 0 and 1, default is 0.25. An amount > 0 of bias makes sure that the blurTexture is not too sharp because of the multiplication with the depthTexture
+    distortion={0} // Amount of distortion based on the distortionMap texture
+    distortionMap={distortionTexture} // The red channel of this texture is used as the distortion map. Default is null
+    debug={0} /* Depending on the assigned value, one of the following channels is shown:
+      0 = no debug
+      1 = depth channel
+      2 = base channel
+      3 = distortion channel
+      4 = lod channel (based on the roughness)
+    */
+  >
+</mesh>
+```
 
 #### MeshWobbleMaterial
 
@@ -1518,38 +1549,6 @@ Optionally you can provide a depth-buffer which converts the spotlight into a so
 function Foo() {
   const depthBuffer = useDepthBuffer()
   return <SpotLight depthBuffer={depthBuffer} />
-```
-
-#### Reflector
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-reflector--reflector-st)
-
-Easily add reflections and/or blur to a planar surface. This reflector can also blur and takes surface roughness into account for a more realistic effect.
-
-```jsx
-<Reflector
-  args={[1, 1]} // PlaneBufferGeometry arguments
-  blur={[0, 0]} // Blur ground reflections (width, heigt), 0 skips blur
-  mixBlur={1.0} // How much blur mixes with surface roughness (default = 0), note that this can affect performance
-  mixStrength={0.5} // Strength of the reflections
-  resolution={256} // Off-buffer resolution, lower=faster, higher=better quality
-  mirror={0.5} // Mirror environment, 0 = texture colors, 1 = pick up env colors
-  depthScale={1} // Scale the depth factor (0 = no depth, default = 0)
-  minDepthThreshold={0.9} // Lower edge for the depthTexture interpolation (default = 0)
-  maxDepthThreshold={1} // Upper edge for the depthTexture interpolation (default = 0)
-  depthToBlurRatioBias={0.25} // Adds a bias factor to the depthTexture before calculating the blur amount [blurFactor = blurTexture * (depthTexture + bias)]. It accepts values between 0 and 1, default is 0.25. An amount > 0 of bias makes sure that the blurTexture is not too sharp because of the multiplication with the depthTexture
-  distortion={0} // Amount of distortion based on the distortionMap texture
-  distortionMap={distortionTexture} // The red channel of this texture is used as the distortion map. Default is null
-  debug={0} /* Depending on the assigned value, one of the following channels is shown:
-    0 = no debug
-    1 = depth channel
-    2 = base channel
-    3 = distortion channel
-    4 = lod channel (based on the roughness)
-  */
->
-  {(Material, props) => <Material {...props}>}
-</Reflector>
 ```
 
 #### Environment

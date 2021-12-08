@@ -3,11 +3,11 @@ import { useFrame } from '@react-three/fiber'
 import { Vector3, Mesh, RepeatWrapping, Vector2 } from 'three'
 
 import { Setup } from '../Setup'
-import { Reflector, useTexture, TorusKnot, Box } from '../../src'
+import { MeshReflectorMaterial, useTexture, TorusKnot, Box } from '../../src'
 
 export default {
-  title: 'Staging/Reflector',
-  component: Reflector,
+  title: 'Shaders/MeshReflectorMaterial',
+  component: MeshReflectorMaterial,
   decorators: [
     (storyFn) => (
       <Setup cameraFov={20} cameraPosition={new Vector3(-2, 2, 6)}>
@@ -46,34 +46,29 @@ function ReflectorScene({
 
   return (
     <>
-      <Reflector
-        resolution={1024}
-        args={[10, 10]}
-        mirror={0.75}
-        mixBlur={10}
-        mixStrength={2}
-        rotation={[-Math.PI / 2, 0, Math.PI / 2]}
-        blur={blur || [0, 0]}
-        minDepthThreshold={0.8}
-        maxDepthThreshold={1.2}
-        depthScale={depthScale || 0}
-        depthToBlurRatioBias={0.2}
-        debug={0}
-        distortion={distortion || 0}
-        distortionMap={distortionMap}
-      >
-        {(Material, props) => (
-          <Material
-            color="#a0a0a0"
-            metalness={0.5}
-            roughnessMap={roughness}
-            roughness={1}
-            normalMap={normal}
-            normalScale={_normalScale}
-            {...props}
-          />
-        )}
-      </Reflector>
+      <mesh rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
+        <planeGeometry args={[10, 10]} />
+        <MeshReflectorMaterial
+          resolution={1024}
+          mirror={0.75}
+          mixBlur={10}
+          mixStrength={2}
+          blur={blur || [0, 0]}
+          minDepthThreshold={0.8}
+          maxDepthThreshold={1.2}
+          depthScale={depthScale || 0}
+          depthToBlurRatioBias={0.2}
+          debug={0}
+          distortion={distortion || 0}
+          distortionMap={distortionMap}
+          color="#a0a0a0"
+          metalness={0.5}
+          roughnessMap={roughness}
+          roughness={1}
+          normalMap={normal}
+          normalScale={_normalScale}
+        />
+      </mesh>
 
       <Box args={[2, 3, 0.2]} position={[0, 1.6, -3]}>
         <meshPhysicalMaterial color="hotpink" />

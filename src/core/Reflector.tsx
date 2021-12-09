@@ -34,6 +34,9 @@ export type ReflectorProps = Omit<JSX.IntrinsicElements['mesh'], 'args' | 'child
     debug?: number
     distortionMap?: Texture
     distortion?: number
+    gamma?: number
+    contrast?: number
+    brightness?: number
     children?: {
       (
         Component: React.ElementType<JSX.IntrinsicElements['meshReflectorMaterial']>,
@@ -55,7 +58,7 @@ extend({ MeshReflectorMaterial })
 export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
   (
     {
-      mixBlur = 0.0,
+      mixBlur = 0,
       mixStrength = 0.5,
       resolution = 256,
       blur = [0, 0],
@@ -64,10 +67,13 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
       maxDepthThreshold = 1,
       depthScale = 0,
       depthToBlurRatioBias = 0.25,
-      mirror,
+      mirror = 0,
       children,
       debug = 0,
       distortion = 1,
+      gamma = 1,
+      contrast = 1,
+      brightness = 0,
       distortionMap,
       ...props
     },
@@ -189,6 +195,9 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
         debug,
         distortion,
         distortionMap,
+        gamma,
+        contrast,
+        brightness,
         'defines-USE_BLUR': hasBlur ? '' : undefined,
         'defines-USE_DEPTH': depthScale > 0 ? '' : undefined,
         'defines-USE_DISTORTION': distortionMap ? '' : undefined,
@@ -210,6 +219,9 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
       debug,
       distortion,
       distortionMap,
+      gamma,
+      contrast,
+      brightness,
     ])
 
     useFrame(() => {

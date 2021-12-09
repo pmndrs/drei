@@ -18,9 +18,7 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
   private _depthScale: { value: number } = { value: 0 }
   private _depthToBlurRatioBias: { value: number } = { value: 0.25 }
   private _distortion: { value: number } = { value: 1 }
-  private _gamma: { value: number } = { value: 1.0 }
-  private _contrast: { value: number } = { value: 1.0 }
-  private _brightness: { value: number } = { value: 0.0 }
+  private _mixContrast: { value: number } = { value: 1.0 }
 
   constructor(parameters = {}) {
     super(parameters)
@@ -45,9 +43,7 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
     shader.uniforms.depthScale = this._depthScale
     shader.uniforms.depthToBlurRatioBias = this._depthToBlurRatioBias
     shader.uniforms.distortion = this._distortion
-    shader.uniforms.gamma = this._gamma
-    shader.uniforms.contrast = this._contrast
-    shader.uniforms.brightness = this._brightness
+    shader.uniforms.mixContrast = this._mixContrast
     shader.vertexShader = `
         uniform mat4 textureMatrix;
         varying vec4 my_vUv;     
@@ -73,11 +69,7 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
         uniform float mixStrength;
         uniform float minDepthThreshold;
         uniform float maxDepthThreshold;
-
-        uniform float gamma;
-        uniform float contrast;
-        uniform float brightness;
-
+        uniform float mixContrast;
         uniform float depthScale;
         uniform float depthToBlurRatioBias;
         varying vec4 my_vUv;        
@@ -142,9 +134,9 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
       #endif
 
       vec4 newMerge = vec4(0.0, 0.0, 0.0, 1.0);
-      newMerge.r = (pow(merge.r,gamma) - 0.5)*contrast + brightness + 0.5;
-      newMerge.g = (pow(merge.g,gamma) - 0.5)*contrast + brightness + 0.5;
-      newMerge.b = (pow(merge.b,gamma) - 0.5)*contrast + brightness + 0.5;
+      newMerge.r = (merge.r - 0.5) * mixContrast + 0.5;
+      newMerge.g = (merge.g - 0.5) * mixContrast + 0.5;
+      newMerge.b = (merge.b - 0.5) * mixContrast + 0.5;
 
       diffuseColor.rgb = diffuseColor.rgb * ((1.0 - min(1.0, mirror)) + newMerge.rgb * mixStrength);           
       diffuseColor = sRGBToLinear(diffuseColor);
@@ -254,23 +246,11 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
   set distortion(v: number) {
     this._distortion.value = v
   }
-  get gamma(): number {
-    return this._gamma.value
+  get mixContrast(): number {
+    return this._mixContrast.value
   }
-  set gamma(v: number) {
-    this._gamma.value = v
-  }
-  get contrast(): number {
-    return this._contrast.value
-  }
-  set contrast(v: number) {
-    this._contrast.value = v
-  }
-  get brightness(): number {
-    return this._brightness.value
-  }
-  set brightness(v: number) {
-    this._brightness.value = v
+  set mixContrast(v: number) {
+    this._mixContrast.value = v
   }
 }
 
@@ -288,7 +268,5 @@ export type MeshReflectorMaterialProps = {
   depthScale: number
   depthToBlurRatioBias: number
   distortion: number
-  gamma: number
-  contrast: number
-  brightness: number
+  mixContrast: number
 } & JSX.IntrinsicElements['meshStandardMaterial']

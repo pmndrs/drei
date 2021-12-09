@@ -36,9 +36,7 @@ export type Props = JSX.IntrinsicElements['meshStandardMaterial'] & {
   debug?: number
   distortionMap?: Texture
   distortion?: number
-  gamma?: number
-  contrast?: number
-  brightness?: number
+  mixContrast?: number
 }
 
 declare global {
@@ -65,9 +63,7 @@ export const MeshReflectorMaterial = React.forwardRef<MeshReflectorMaterialImpl,
       mirror = 0,
       debug = 0,
       distortion = 1,
-      gamma = 1,
-      contrast = 1,
-      brightness = 0,
+      mixContrast = 1,
       distortionMap,
       ...props
     },
@@ -187,9 +183,7 @@ export const MeshReflectorMaterial = React.forwardRef<MeshReflectorMaterialImpl,
         debug,
         distortion,
         distortionMap,
-        gamma,
-        contrast,
-        brightness,
+        mixContrast,
         'defines-USE_BLUR': hasBlur ? '' : undefined,
         'defines-USE_DEPTH': depthScale > 0 ? '' : undefined,
         'defines-USE_DISTORTION': distortionMap ? '' : undefined,
@@ -211,9 +205,7 @@ export const MeshReflectorMaterial = React.forwardRef<MeshReflectorMaterialImpl,
       debug,
       distortion,
       distortionMap,
-      gamma,
-      contrast,
-      brightness,
+      mixContrast,
     ])
 
     useFrame(() => {

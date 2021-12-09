@@ -63,7 +63,7 @@ export function PresentationControls({
         return [y, x]
       },
     },
-    { target: global && gl.domElement }
+    { target: global ? gl.domElement : undefined }
   )
   return (
     <a.group {...bind?.()} {...(spring as any)}>

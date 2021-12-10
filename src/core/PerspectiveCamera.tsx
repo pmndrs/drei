@@ -9,7 +9,7 @@ type Props = JSX.IntrinsicElements['perspectiveCamera'] & {
   children?: React.ReactNode
 }
 
-export const PerspectiveCamera = React.forwardRef(({ makeDefault, manual, ...props }: Props, ref) => {
+export const PerspectiveCamera = React.forwardRef(({ makeDefault, ...props }: Props, ref) => {
   const set = useThree(({ set }) => set)
   const camera = useThree(({ camera }) => camera)
   const size = useThree(({ size }) => size)
@@ -17,7 +17,7 @@ export const PerspectiveCamera = React.forwardRef(({ makeDefault, manual, ...pro
 
   React.useLayoutEffect(() => {
     const { current: cam } = cameraRef
-    if (cam && !manual) {
+    if (cam && !props.manual) {
       cam.aspect = size.width / size.height
       cam.updateProjectionMatrix()
     }

@@ -147,7 +147,6 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#shapes">Dodecahedron</a></li>
           <li><a href="#shapes">Extrude</a></li>
           <li><a href="#shapes">Lathe</a></li>
-          <li><a href="#shapes">Parametric</a></li>
           <li><a href="#roundedbox">RoundedBox</a></li>
           <li><a href="#screenquad">Screenquad</a></li>
         </ul>
@@ -363,7 +362,7 @@ Semi-OrbitControls with spring-physics, polar zoom and snap-back, for presentati
 
 # Shapes
 
-[Buffer-geometry](https://threejs.org/docs/index.html#api/en/core/BufferGeometry) short-cuts for Plane, Box, Sphere, Circle, Cone, Cylinder, Tube, Torus, TorusKnot, Ring, Tetrahedron, Polyhedron, Icosahedron, Octahedron, Dodecahedron, Extrude, Lathe, Parametric.
+[Buffer-geometry](https://threejs.org/docs/index.html#api/en/core/BufferGeometry) short-cuts for Plane, Box, Sphere, Circle, Cone, Cylinder, Tube, Torus, TorusKnot, Ring, Tetrahedron, Polyhedron, Icosahedron, Octahedron, Dodecahedron, Extrude, Lathe.
 
 ```jsx
 <Plane args={[2, 2]} />

@@ -39,7 +39,6 @@ export * from './useTexture'
 
 // Misc
 export * from './Stats'
-export * from './DepthBuffer'
 export * from './useDepthBuffer'
 export * from './useAspect'
 export * from './useCamera'

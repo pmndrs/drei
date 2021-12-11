@@ -30,8 +30,6 @@ export function useFBO<T extends boolean = false>(
       target = new THREE.WebGLRenderTarget(_width, _height, targetSettings)
     }
     return target
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -40,7 +38,6 @@ export function useFBO<T extends boolean = false>(
 
   useEffect(() => {
     return () => target.dispose()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return target

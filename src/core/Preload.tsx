@@ -34,7 +34,6 @@ export function Preload({ all, scene, camera }: Props) {
     cubeRenderTarget.dispose()
     // Flips these objects back
     invisible.forEach((object) => (object.visible = false))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return null
 }

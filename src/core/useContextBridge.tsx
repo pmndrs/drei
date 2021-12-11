@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react'
 
 export function useContextBridge(...contexts: Array<React.Context<any>>) {

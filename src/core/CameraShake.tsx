@@ -80,7 +80,6 @@ export const CameraShake = React.forwardRef<ShakeController | undefined, CameraS
 
       currControls?.addEventListener('change', callback)
       return () => void currControls?.removeEventListener('change', callback)
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [controls, defaultControls])
 
     useFrame(({ clock }, delta) => {

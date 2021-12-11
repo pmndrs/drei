@@ -173,7 +173,6 @@ export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0
       controls.addEventListener('start', callback)
       return () => controls.removeEventListener('start', callback)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clip, fit, controls])
 
   useFrame((state, delta) => {

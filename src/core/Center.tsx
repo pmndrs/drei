@@ -18,7 +18,6 @@ export const Center = React.forwardRef<Group, Props>(function Center({ children,
     box3.getCenter(center)
     box3.getBoundingSphere(sphere)
     outer.current.position.set(-center.x, -center.y + (alignTop ? height / 2 : 0), -center.z)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [children])
   return (
     <group ref={ref} {...props}>

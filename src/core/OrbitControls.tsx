@@ -54,7 +54,6 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
         if (onEnd) controls.removeEventListener('end', onEnd)
         controls.dispose()
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [explDomElement, onChange, onStart, onEnd, regress, controls, invalidate])
 
     React.useEffect(() => {
@@ -66,7 +65,6 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
         // @ts-expect-error new in @react-three/fiber@7.0.5
         return () => set({ controls: old })
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [makeDefault, controls])
 
     return <primitive ref={ref} object={controls} enableDamping={enableDamping} {...restProps} />

@@ -4,7 +4,7 @@ import { useFrame } from '@react-three/fiber'
 import { Billboard } from './Billboard'
 import { Plane } from './shapes'
 import { useTexture } from './useTexture'
-import CloudImage from '../assets/cloud.base64'
+import { CloudImage } from '../assets/cloud.base64'
 
 export function Cloud({ opacity = 0.5, speed = 0.4, width = 10, depth = 1.5, segments = 20, ...props }) {
   const group = React.useRef<Group>()

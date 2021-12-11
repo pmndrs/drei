@@ -20,8 +20,8 @@ type InstanceProps = JSX.IntrinsicElements['position'] & {
 }
 
 type InstancedMesh = Omit<THREE.InstancedMesh, 'instanceMatrix' | 'instanceColor'> & {
-  instanceMatrix: THREE.BufferAttribute
-  instanceColor: THREE.BufferAttribute
+  instanceMatrix: THREE.InstancedBufferAttribute
+  instanceColor: THREE.InstancedBufferAttribute
 }
 
 let i, instanceRef

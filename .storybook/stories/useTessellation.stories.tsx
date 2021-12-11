@@ -85,7 +85,6 @@ function UseTessellationScene() {
 
       geometry.setAttribute('displacement', new THREE.BufferAttribute(displacement, 3))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [meshRef.current && meshRef.current.geometry])
 
   useFrame(({ clock }) => {

@@ -48,7 +48,6 @@ export function useAnimations<T extends AnimationClip>(
         }
       })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clips])
   return api
 }

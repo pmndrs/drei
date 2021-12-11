@@ -7,9 +7,7 @@ export function AdaptiveEvents() {
   React.useEffect(() => {
     const enabled = get().raycaster.enabled
     return () => void (get().raycaster.enabled = enabled)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   React.useEffect(() => void (get().raycaster.enabled = current === 1), [current])
   return null
 }

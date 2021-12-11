@@ -97,7 +97,6 @@ export function Stage({
         ctrl.update()
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultControls, radius, height, width, adjustCamera])
 
   return (

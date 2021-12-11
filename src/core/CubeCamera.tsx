@@ -41,7 +41,6 @@ export function CubeCamera({
         format: RGBFormat,
         encoding: gl.outputEncoding,
       }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [resolution]
   )
   let count = 0

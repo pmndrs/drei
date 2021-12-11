@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { withKnobs } from '@storybook/addon-knobs'
+import { withKnobs, number } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
-import { DepthBuffer, Plane, SpotLight } from '../../src'
+import { Plane, SpotLight, useDepthBuffer } from '../../src'
 
 export default {
   title: 'Staging/Spotlight',
@@ -11,12 +11,10 @@ export default {
 }
 
 function SpotLightScene() {
-  const [depthBuffer, setDepth] = React.useState()
+  const depthBuffer = useDepthBuffer({ size: number('size', 256) })
 
   return (
     <>
-      <DepthBuffer ref={setDepth} />
-
       <SpotLight
         penumbra={0.5}
         depthBuffer={depthBuffer}

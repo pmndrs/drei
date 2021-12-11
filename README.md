@@ -147,7 +147,6 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#shapes">Dodecahedron</a></li>
           <li><a href="#shapes">Extrude</a></li>
           <li><a href="#shapes">Lathe</a></li>
-          <li><a href="#shapes">Parametric</a></li>
           <li><a href="#roundedbox">RoundedBox</a></li>
           <li><a href="#screenquad">Screenquad</a></li>
         </ul>
@@ -279,7 +278,7 @@ If you are using other controls (Orbit, Trackball, etc), you will notice how the
 ![](https://img.shields.io/badge/-Dom only-red)
 
 <p align="center">
-  <a href="https://codesandbox.io/s/l4klb"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/l4klb/screenshot.png" alt="Horizintal tiles"/></a>
+  <a href="https://codesandbox.io/s/l4klb"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/l4klb/screenshot.png" alt="Horizontal tiles"/></a>
   <a href="https://codesandbox.io/s/4m0d0"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/4m0d0/screenshot.png" alt="M1 scroll"/></a>
   <a href="https://codesandbox.io/s/gsm1y"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/gsm1y/screenshot.png" alt="useIntersect"/></a>
   <a href="https://codesandbox.io/s/x8gvs"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/x8gvs/screenshot.png" alt="Infinite scroll"/></a>
@@ -363,7 +362,7 @@ Semi-OrbitControls with spring-physics, polar zoom and snap-back, for presentati
 
 # Shapes
 
-[Buffer-geometry](https://threejs.org/docs/index.html#api/en/core/BufferGeometry) short-cuts for Plane, Box, Sphere, Circle, Cone, Cylinder, Tube, Torus, TorusKnot, Ring, Tetrahedron, Polyhedron, Icosahedron, Octahedron, Dodecahedron, Extrude, Lathe, Parametric.
+[Buffer-geometry](https://threejs.org/docs/index.html#api/en/core/BufferGeometry) short-cuts for Plane, Box, Sphere, Circle, Cone, Cylinder, Tube, Torus, TorusKnot, Ring, Tetrahedron, Polyhedron, Icosahedron, Octahedron, Dodecahedron, Extrude, Lathe.
 
 ```jsx
 <Plane args={[2, 2]} />

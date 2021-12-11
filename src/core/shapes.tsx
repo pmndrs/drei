@@ -17,7 +17,6 @@ import {
   IcosahedronBufferGeometry,
   ExtrudeBufferGeometry,
   LatheBufferGeometry,
-  ParametricBufferGeometry,
   TorusKnotBufferGeometry,
 } from 'three'
 
@@ -54,4 +53,3 @@ export const Octahedron = create<typeof OctahedronBufferGeometry>('octahedron')
 export const Dodecahedron = create<typeof DodecahedronBufferGeometry>('dodecahedron')
 export const Extrude = create<typeof ExtrudeBufferGeometry>('extrude')
 export const Lathe = create<typeof LatheBufferGeometry>('lathe')
-export const Parametric = create<typeof ParametricBufferGeometry>('parametric')

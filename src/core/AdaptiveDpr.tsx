@@ -14,13 +14,11 @@ export function AdaptiveDpr({ pixelated }: { pixelated?: boolean }) {
       if (active) setDpr(initialDpr)
       if (pixelated && domElement) domElement.style.imageRendering = 'auto'
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   // Set adaptive pixelratio
   React.useEffect(() => {
     setDpr(current * initialDpr)
     if (pixelated && gl.domElement) gl.domElement.style.imageRendering = current === 1 ? 'auto' : 'pixelated'
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [current])
   return null
 }

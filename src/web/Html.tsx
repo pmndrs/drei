@@ -172,7 +172,6 @@ export const Html = React.forwardRef(
           ReactDOM.unmountComponentAtNode(el)
         }
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [target, transform])
 
     const styles: React.CSSProperties = React.useMemo(() => {

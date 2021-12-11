@@ -14,7 +14,6 @@ export default function useEffectfulState<T>(fn: () => T, deps: React.Dependency
     set(value)
     call(cb, value)
     return () => call(cb, null)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps)
   return state
 }

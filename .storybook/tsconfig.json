@@ -1,5 +1,5 @@
 {
   "extends": "../tsconfig",
   "exclude": [],
-  "include": ["./stories/*"]
+  "include": ["./**/*.(ts|tsx)"]
 }

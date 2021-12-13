@@ -176,7 +176,7 @@ export const Html = React.forwardRef(
       }
     }, [target, transform])
 
-    React.useEffect(() => {
+    React.useLayoutEffect(() => {
       if (wrapperClass) el.className = wrapperClass
     }, [wrapperClass])
 

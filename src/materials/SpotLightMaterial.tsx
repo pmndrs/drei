@@ -5,6 +5,7 @@ export class SpotLightMaterial extends ShaderMaterial {
     super({
       uniforms: {
         depth: { value: null },
+        opacity: { value: 1 },
         attenuation: { value: 2.5 },
         anglePower: { value: 12 },
         spotPosition: { value: new Vector3(0, 0, 0) },
@@ -21,7 +22,7 @@ export class SpotLightMaterial extends ShaderMaterial {
       varying float vViewZ;
       varying float vIntensity;
       uniform vec3 spotPosition;
-      uniform float attenuation;
+      uniform float attenuation;      
 
       void main() {
         // compute intensity
@@ -52,6 +53,7 @@ export class SpotLightMaterial extends ShaderMaterial {
       uniform float cameraFar;
       varying float vViewZ;
       varying float vIntensity;
+      uniform float opacity;
 
       float readDepth( sampler2D depthSampler, vec2 coord ) {
         float fragCoordZ = texture2D( depthSampler, coord ).x;
@@ -74,7 +76,7 @@ export class SpotLightMaterial extends ShaderMaterial {
         if (isSoft) {
           intensity	*= smoothstep(0., 1., vViewZ - d);
         }
-        gl_FragColor = vec4(lightColor, intensity);
+        gl_FragColor = vec4(lightColor, intensity * opacity);
       }`,
     })
   }

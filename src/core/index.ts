@@ -51,9 +51,6 @@ export * from './useFBO'
 export * from './useIntersect'
 
 // Modifiers
-export * from './useSimplification'
-export * from './useTessellation'
-export * from './useEdgeSplit'
 export * from './CurveModifier'
 
 // Shaders

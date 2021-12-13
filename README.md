@@ -78,9 +78,6 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <li><a href="#modifiers">Modifiers</a></li>
         <ul>
           <li><a href="#curvemodifier">CurveModifier</a></li>
-          <li><a href="#useedgesplit">useEdgeSplit</a></li>
-          <li><a href="#usetessellation">useTessellation</a></li>
-          <li><a href="#usesimplification">useSimplification</a></li>
         </ul>
       </ul>
     </td>
@@ -747,56 +744,6 @@ return (
       <boxBufferGeometry args={[10, 10]} />
     </mesh>
   </CurveModifier>
-)
-```
-
-#### useEdgeSplit
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/modifiers-useedgesplit)
-
-This hook mutates a mesh geometry using [three's Edge Split modifier](https://threejs.org/examples/?q=modifier#webgl_modifier_edgesplit). The first parameter is the cut-off angle, and the second parameter is a `tryKeepNormals` flag (default `true`).
-
-```jsx
-const meshRef = useEdgeSplit(Math.PI / 2)
-
-return (
-  <mesh ref={meshRef}>
-    <boxBufferGeometry args={[10, 10]} />
-  </mesh>
-)
-```
-
-#### useSimplification
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/modifiers-usesimplification)
-
-This hook mutates a mesh geometry using [three's Simplification modifier](https://threejs.org/examples/webgl_modifier_simplifier.html).
-
-👉 The simplification code is based on [this algorithm](http://www.melax.com/polychop/).
-
-```jsx
-const meshRef = useSimplification(0.5)
-
-return (
-  <mesh ref={meshRef}>
-    <octahedronBufferGeometry args={[2, 5]} />
-  </mesh>
-)
-```
-
-#### useTessellation
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/modifiers-usetessellation)
-
-This hook mutates a mesh geometry using [three's Tessellation modifier](https://threejs.org/examples/?q=tess#webgl_modifier_tessellation). It will break-up faces withe edge longer than the maxEdgeLength parameter.
-
-```jsx
-const meshRef = useTessellation(2, 8)
-
-return (
-  <mesh ref={meshRef}>
-    <octahedronBufferGeometry args={[2, 2]} />
-  </mesh>
 )
 ```
 

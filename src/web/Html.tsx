@@ -113,6 +113,7 @@ export interface HtmlProps
   onOcclude?: (visible: boolean) => null
   calculatePosition?: CalculatePosition
   as?: string
+  wrapperClass?: string
   pointerEvents?: PointerEventsProperties
 }
 
@@ -135,6 +136,7 @@ export const Html = React.forwardRef(
       zIndexRange = [16777271, 0],
       calculatePosition = defaultCalculatePosition,
       as = 'div',
+      wrapperClass,
       pointerEvents = 'auto',
       ...props
     }: HtmlProps,
@@ -173,6 +175,10 @@ export const Html = React.forwardRef(
         }
       }
     }, [target, transform])
+
+    React.useLayoutEffect(() => {
+      if (wrapperClass) el.className = wrapperClass
+    }, [wrapperClass])
 
     const styles: React.CSSProperties = React.useMemo(() => {
       if (transform) {

@@ -125,7 +125,8 @@
     "rollup-plugin-terser": "^7.0.2",
     "three": "^0.134.0",
     "ts-node": "^10.4.0",
-    "typescript": "^4.5.2"
+    "typescript": "^4.5.2",
+    "yarn": "^1.22.17"
   },
   "peerDependencies": {
     "@react-three/fiber": ">=6.0",

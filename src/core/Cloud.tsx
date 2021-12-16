@@ -4,11 +4,12 @@ import { useFrame } from '@react-three/fiber'
 import { Billboard } from './Billboard'
 import { Plane } from './shapes'
 import { useTexture } from './useTexture'
-import { CloudImage } from '../assets/cloud.base64'
+
+const CLOUD_URL = 'https://rawcdn.githack.com/pmndrs/drei-assets/9225a9f1fbd449d9411125c2f419b843d0308c9f/cloud.png'
 
 export function Cloud({ opacity = 0.5, speed = 0.4, width = 10, depth = 1.5, segments = 20, ...props }) {
   const group = React.useRef<Group>()
-  const texture = useTexture(CloudImage) as Texture
+  const texture = useTexture(CLOUD_URL) as Texture
   const clouds = React.useMemo(
     () =>
       [...new Array(segments)].map((_, index) => ({

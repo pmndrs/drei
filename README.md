@@ -1543,6 +1543,8 @@ Adds a blinking shader-based starfield to your scene.
 
 #### Cloud
 
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-cloud--cloud-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
+
 Particle based cloud.
 
 ```jsx

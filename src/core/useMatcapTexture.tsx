@@ -1,9 +1,8 @@
 import * as React from 'react'
 import { useTexture } from './useTexture'
 
-import { matcapList } from '../helpers/matcap-assets'
-
 import { Texture } from 'three'
+import { useAsset } from 'use-asset'
 
 function getFormatString(format: number) {
   switch (format) {
@@ -20,11 +19,20 @@ function getFormatString(format: number) {
   }
 }
 
+const LIST_URL = 'https://cdn.jsdelivr.net/gh/pmndrs/drei-assets@master/matcaps.json'
 const MATCAP_ROOT = 'https://rawcdn.githack.com/emmelleppi/matcaps/9b36ccaaf0a24881a39062d05566c9e92be4aa0d'
 
-const DEFAULT_MATCAP = matcapList[0]
-
 export function useMatcapTexture(id: number | string = 0, format = 1024): [THREE.Texture, string, number] {
+  const matcapList = useAsset<Record<string, string>, [string]>(
+    () =>
+      new Promise(async (resolve) => {
+        const matcapList = await fetch(LIST_URL).then((res) => res.json())
+        resolve(matcapList)
+      }),
+    'matcapList'
+  )
+
+  const DEFAULT_MATCAP = matcapList[0]
   const numTot = React.useMemo(() => Object.keys(matcapList).length, [])
 
   const fileHash = React.useMemo(() => {

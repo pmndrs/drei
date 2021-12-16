@@ -1,2 +1,4 @@
 .storybook/public/draco-gltf/
 dist/
+node_modules/
+storybook-static/

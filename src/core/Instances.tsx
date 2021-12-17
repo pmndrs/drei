@@ -6,6 +6,7 @@ import Composer from 'react-composer'
 import { Position } from '../helpers/Position'
 
 type Api = {
+  getParent: () => React.MutableRefObject<InstancedMesh>
   subscribe: (ref) => void
 }
 
@@ -36,11 +37,11 @@ const scale = new THREE.Vector3()
 
 const Instance = React.forwardRef(({ context, children, ...props }: InstanceProps, ref) => {
   React.useMemo(() => extend({ Position }), [])
-  const group = React.useRef()
-  const { subscribe } = React.useContext(context || globalContext)
+  const group = React.useRef<JSX.IntrinsicElements['position']>()
+  const { subscribe, getParent } = React.useContext(context || globalContext)
   React.useLayoutEffect(() => subscribe(group), [])
   return (
-    <position ref={mergeRefs([ref, group])} {...props}>
+    <position instance={getParent()} instanceKey={group} ref={mergeRefs([ref, group])} {...props}>
       {children}
     </position>
   )
@@ -105,23 +106,9 @@ const Instances = React.forwardRef(
       }
     })
 
-    const events = React.useMemo(() => {
-      const events = {}
-      for (i = 0; i < instances.length; i++) Object.assign(events, (instances[i].current as any)?.__r3f.handlers)
-      return Object.keys(events).reduce(
-        (prev, key) => ({
-          ...prev,
-          [key]: (event) => {
-            const object = instances[event.instanceId]?.current
-            return (object as any)?.__r3f?.handlers?.[key]({ ...event, object })
-          },
-        }),
-        {}
-      )
-    }, [children, instances])
-
     const api = React.useMemo(
       () => ({
+        getParent: () => parentRef,
         subscribe: (ref) => {
           setInstances((instances) => [...instances, ref])
           return () => setInstances((instances) => instances.filter((item) => item.current !== ref.current))
@@ -132,10 +119,11 @@ const Instances = React.forwardRef(
 
     return (
       <instancedMesh
+        userData={{ instances }}
         matrixAutoUpdate={false}
         ref={mergeRefs([ref, parentRef])}
         args={[null as any, null as any, 0]}
-        {...events}
+        raycast={() => null}
         {...props}
       >
         <instancedBufferAttribute

@@ -47,7 +47,7 @@ const Instance = React.forwardRef(({ context, children, ...props }: InstanceProp
   )
 })
 
-const Instances = React.forwardRef<THREE.InstancedMesh, InstancesProps>(
+const Instances = React.forwardRef<InstancedMesh, InstancesProps>(
   ({ children, range, limit = 1000, frames = Infinity, ...props }, ref) => {
     const [{ context, instance }] = React.useState(() => {
       const context = React.createContext<Api>(null!)

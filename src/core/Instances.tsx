@@ -121,7 +121,7 @@ const Instances = React.forwardRef(
       <instancedMesh
         userData={{ instances }}
         matrixAutoUpdate={false}
-        ref={mergeRefs([ref, parentRef])}
+        ref={mergeRefs([ref as any, parentRef])}
         args={[null as any, null as any, 0]}
         raycast={() => null}
         {...props}

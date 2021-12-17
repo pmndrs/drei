@@ -47,11 +47,8 @@ const Instance = React.forwardRef(({ context, children, ...props }: InstanceProp
   )
 })
 
-const Instances = React.forwardRef(
-  (
-    { children, range, limit = 1000, frames = Infinity, ...props }: InstancesProps,
-    ref: React.ForwardedRef<THREE.InstancedMesh>
-  ) => {
+const Instances = React.forwardRef<THREE.InstancedMesh, InstancesProps>(
+  ({ children, range, limit = 1000, frames = Infinity, ...props }, ref) => {
     const [{ context, instance }] = React.useState(() => {
       const context = React.createContext<Api>(null!)
       return {
@@ -121,7 +118,7 @@ const Instances = React.forwardRef(
       <instancedMesh
         userData={{ instances }}
         matrixAutoUpdate={false}
-        ref={mergeRefs([ref as any, parentRef])}
+        ref={mergeRefs([ref, parentRef])}
         args={[null as any, null as any, 0]}
         raycast={() => null}
         {...props}

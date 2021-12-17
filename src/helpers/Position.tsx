@@ -25,6 +25,12 @@ export class Position extends THREE.Group {
     this.instanceKey = { current: undefined }
   }
 
+  // This will allow the virtual instance have bounds
+  get geometry() {
+    return this.instance.current?.geometry
+  }
+
+  // And this will allow the virtual instance to receive events
   raycast(raycaster, intersects) {
     const parent = this.instance.current
     if (!parent) return

@@ -140,7 +140,7 @@ export const MeshReflectorMaterial = React.forwardRef<MeshReflectorMaterialImpl,
       projectionMatrix.elements[6] = clipPlane.y
       projectionMatrix.elements[10] = clipPlane.z + 1.0
       projectionMatrix.elements[14] = clipPlane.w
-    }, [])
+    }, [camera])
 
     const [fbo1, fbo2, blurpass, reflectorProps] = React.useMemo(() => {
       const parameters = {

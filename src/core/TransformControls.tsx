@@ -14,6 +14,7 @@ export type TransformControlsProps = ReactThreeFiber.Object3DNode<TransformContr
     object?: THREE.Object3D | React.MutableRefObject<THREE.Object3D>
     enabled?: boolean
     axis?: string | null
+    domElement?: HTMLElement
     mode?: string
     translationSnap?: number | null
     rotationSnap?: number | null
@@ -56,7 +57,7 @@ export const TransformControls = React.forwardRef<TransformControlsImpl, Transfo
     const defaultCamera = useThree(({ camera }) => camera)
     const invalidate = useThree(({ invalidate }) => invalidate)
     const explCamera = camera || defaultCamera
-    const [controls] = React.useState(() => new TransformControlsImpl(explCamera, gl.domElement))
+    const [controls] = React.useState(() => new TransformControlsImpl(explCamera, domElement || gl.domElement))
     const group = React.useRef<THREE.Group>()
 
     React.useLayoutEffect(() => {

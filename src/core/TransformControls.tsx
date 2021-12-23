@@ -33,7 +33,7 @@ export type TransformControlsProps = ReactThreeFiber.Object3DNode<TransformContr
   }
 
 export const TransformControls = React.forwardRef<TransformControlsImpl, TransformControlsProps>(
-  ({ children, onChange, onMouseDown, onMouseUp, onObjectChange, object, ...props }, ref) => {
+  ({ children, domElement, onChange, onMouseDown, onMouseUp, onObjectChange, object, ...props }, ref) => {
     const transformOnlyPropNames = [
       'enabled',
       'axis',

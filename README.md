@@ -309,7 +309,7 @@ You can listen and react to scroll with the `useScroll` hook which gives you use
   </Scroll>
 </ScrollControls>
 
-function Foo() {
+function Foo(props) {
   const ref = useRef()
   const data = useScroll()
   useFrame(() => {

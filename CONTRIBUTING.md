@@ -17,7 +17,7 @@ Be sure your commit messages follow this specification: https://www.conventional
 
 If you're adding a brand new feature, you need to make sure you add a storybook entry, here's a few tips:
 
-- Make use of @storybook/addon-knobs to show component variants & configuration
+- Make use of `@storybook/addon-controls` to show component variants & configuration
 - Keep the story simple & show the essence of the component, remember some people may be looking at using drei for the first time & it's important the stories are clear and concise.
 - Keep assets minimal (3D Models, textures) to avoid bloating the repository
 - If you think a more involved example is necessary, you can always add a codesandbox to the main README while keeping the story minimalistic

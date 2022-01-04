@@ -3,8 +3,8 @@ import { resolve } from 'path'
 export default {
   stories: ['./stories/**/*.stories.{ts,tsx}'],
   addons: [
-    '@storybook/addon-knobs',
     '@storybook/addon-controls',
+    '@storybook/addon-knobs',
     '@storybook/addon-actions',
     '@storybook/addon-storysource',
   ],

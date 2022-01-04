@@ -2,11 +2,46 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import { useFrame } from '@react-three/fiber'
-import { withKnobs, number } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
 
 import { CameraShake, OrbitControls } from '../../src'
+
+const frequencyArgType = {
+  control: {
+    max: 10,
+    min: 0,
+    step: 0.1,
+    type: 'range',
+  },
+}
+
+const numberArgType = {
+  control: {
+    max: 1,
+    min: 0,
+    step: 0.05,
+    type: 'range',
+  },
+}
+
+const args = {
+  maxPitch: 0.05,
+  maxRoll: 0.05,
+  maxYaw: 0.05,
+  pitchFrequency: 0.8,
+  rollFrequency: 0.8,
+  yawFrequency: 0.8,
+}
+
+const argTypes = {
+  maxPitch: numberArgType,
+  maxRoll: numberArgType,
+  maxYaw: numberArgType,
+  pitchFrequency: frequencyArgType,
+  rollFrequency: frequencyArgType,
+  yawFrequency: frequencyArgType,
+}
 
 export default {
   title: 'Staging/CameraShake',
@@ -17,7 +52,6 @@ export default {
         {storyFn()}
       </Setup>
     ),
-    withKnobs,
   ],
 }
 
@@ -44,47 +78,32 @@ function Scene() {
   )
 }
 
-function CameraShakeScene() {
-  const cfg = useShakeConfig()
-  return (
-    <>
-      <React.Suspense fallback={null}>
-        <CameraShake {...cfg} />
-        <Scene />
-      </React.Suspense>
-    </>
-  )
-}
+export const CameraShakeStory = ({ ...args }) => (
+  <>
+    <React.Suspense fallback={null}>
+      <CameraShake {...args} />
+      <Scene />
+    </React.Suspense>
+  </>
+)
 
-function CameraShakeWithOrbitScene() {
-  const cfg = useShakeConfig()
+CameraShakeStory.args = args
+CameraShakeStory.argTypes = argTypes
+CameraShakeStory.storyName = 'Default'
+
+export const CameraShakeWithOrbitControlsStory = ({ ...args }) => {
   const controlsRef = React.useRef<OrbitControlsImpl>(null)
   return (
     <>
       <React.Suspense fallback={null}>
         <OrbitControls ref={controlsRef} />
-        <CameraShake {...cfg} controls={controlsRef} />
+        <CameraShake {...args} controls={controlsRef} />
         <Scene />
       </React.Suspense>
     </>
   )
 }
 
-function useShakeConfig() {
-  const numberConfig = { min: 0, max: 1, step: 0.05 }
-  const frequencyConfig = { min: 0, max: 10, step: 0.1 }
-  return {
-    maxYaw: number('maxYaw', 0.05, numberConfig),
-    maxPitch: number('maxPitch', 0.05, numberConfig),
-    maxRoll: number('maxRoll', 0.05, numberConfig),
-    yawFrequency: number('yawFrequency', 0.8, frequencyConfig),
-    pitchFrequency: number('pitchFrequency', 0.8, frequencyConfig),
-    rollFrequency: number('rollFrequency', 0.8, frequencyConfig),
-  }
-}
-
-export const CameraShakeSt = () => <CameraShakeScene />
-CameraShakeSt.storyName = 'Default'
-
-export const CameraShakeWithOrbitSt = () => <CameraShakeWithOrbitScene />
-CameraShakeWithOrbitSt.storyName = 'With OrbitControls'
+CameraShakeWithOrbitControlsStory.args = args
+CameraShakeWithOrbitControlsStory.argTypes = argTypes
+CameraShakeWithOrbitControlsStory.storyName = 'With OrbitControls'

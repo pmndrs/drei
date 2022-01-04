@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
-import { withKnobs, select, boolean } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
 
@@ -17,26 +16,36 @@ export default {
         {storyFn()}
       </Setup>
     ),
-    withKnobs,
   ],
 }
 
-function EnvironmentStory() {
-  const presets = Object.keys(presetsObj)
-  const preset = select('Preset', presets, presets[0])
-  return (
-    <>
-      <React.Suspense fallback={null}>
-        <Environment preset={preset as any} background={boolean('Background', true)} />
-        <mesh>
-          <torusKnotBufferGeometry args={[1, 0.5, 128, 32]} />
-          <meshStandardMaterial metalness={1} roughness={0} />
-        </mesh>
-      </React.Suspense>
-      <OrbitControls autoRotate />
-    </>
-  )
+export const EnvironmentStory = ({ background, preset }) => (
+  <>
+    <React.Suspense fallback={null}>
+      <Environment preset={preset} background={background} />
+      <mesh>
+        <torusKnotBufferGeometry args={[1, 0.5, 128, 32]} />
+        <meshStandardMaterial metalness={1} roughness={0} />
+      </mesh>
+    </React.Suspense>
+    <OrbitControls autoRotate />
+  </>
+)
+
+const presets = Object.keys(presetsObj)
+
+EnvironmentStory.args = {
+  background: true,
+  preset: presets[0],
 }
 
-export const EnvironmentSt = () => <EnvironmentStory />
-EnvironmentSt.storyName = 'Default'
+EnvironmentStory.argTypes = {
+  preset: {
+    options: presets,
+    control: {
+      type: 'select',
+    },
+  },
+}
+
+EnvironmentStory.storyName = 'Default'

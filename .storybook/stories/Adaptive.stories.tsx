@@ -1,9 +1,12 @@
-import * as React from 'react'
-import { Mesh, Vector3 } from 'three'
+import React, { Suspense } from 'react'
+import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'
 
 import { useGLTF, AdaptiveDpr, AdaptiveEvents, OrbitControls } from '../../src'
+
+import type { Material, Mesh } from 'three'
+import type { GLTF } from 'three-stdlib'
 
 export default {
   title: 'Performance/Adaptive',
@@ -24,15 +27,24 @@ export default {
   ],
 }
 
+interface ArcherGLTF extends GLTF {
+  materials: { material_0: Material }
+  nodes: Record<'mesh_0' | 'mesh_1' | 'mesh_2', Mesh>
+}
+
 function Archer() {
-  const { nodes, materials } = useGLTF('/archer.glb')
+  const {
+    nodes: { mesh_0, mesh_1, mesh_2 },
+    materials: { material_0 },
+  } = useGLTF('/archer.glb') as ArcherGLTF
+
   return (
     <group dispose={null}>
       <group rotation={[-Math.PI / 2, 0, 0]}>
         <group position={[0, 0, 2]}>
-          <mesh castShadow receiveShadow material={materials.material_0} geometry={(nodes.mesh_0 as Mesh).geometry} />
-          <mesh castShadow receiveShadow material={materials.material_0} geometry={(nodes.mesh_1 as Mesh).geometry} />
-          <mesh castShadow receiveShadow material={materials.material_0} geometry={(nodes.mesh_2 as Mesh).geometry} />
+          <mesh castShadow receiveShadow material={material_0} geometry={mesh_0.geometry} />
+          <mesh castShadow receiveShadow material={material_0} geometry={mesh_1.geometry} />
+          <mesh castShadow receiveShadow material={material_0} geometry={mesh_2.geometry} />
         </group>
       </group>
     </group>
@@ -42,9 +54,9 @@ function Archer() {
 function AdaptiveScene() {
   return (
     <>
-      <React.Suspense fallback={null}>
+      <Suspense fallback={null}>
         <Archer />
-      </React.Suspense>
+      </Suspense>
       <directionalLight
         intensity={0.2}
         position={[10, 10, 5]}

@@ -1094,15 +1094,6 @@ const props = useTexture({
 return <meshStandardMaterial {...props} />
 ```
 
-```jsx
-useFBX(url)
-
-function SuzanneFBX() {
-  let fbx = useFBX('suzanne/suzanne.fbx')
-  return <primitive object={fbx} dispose={null} />
-}
-```
-
 #### useKTX2
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-ktx2--use-ktx-2-scene-st)

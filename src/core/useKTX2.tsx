@@ -7,12 +7,12 @@ import { IsObject } from './useTexture'
 const cdn = 'https://cdn.jsdelivr.net/gh/pmndrs/drei-assets@master'
 export function useKTX2<Url extends string[] | string | Record<string, string>>(
   input: Url,
-  basisPath?: string
+  basisPath: string = `${cdn}/basis/`
 ): Url extends any[] ? Texture[] : Url extends object ? { [key in keyof Url]: Texture } : Texture {
   const gl = useThree((state) => state.gl)
   const textures = useLoader(KTX2Loader, IsObject(input) ? Object.values(input) : (input as any), (loader: any) => {
     loader.detectSupport(gl)
-    loader.setTranscoderPath(basisPath || `${cdn}/basis/`)
+    loader.setTranscoderPath(basisPath)
   })
 
   // https://github.com/mrdoob/three.js/issues/22696
@@ -32,7 +32,7 @@ export function useKTX2<Url extends string[] | string | Record<string, string>>(
   }
 }
 
-useKTX2.preload = (url: string extends any[] ? string[] : string, basisPath: string) =>
+useKTX2.preload = (url: string extends any[] ? string[] : string, basisPath: string = `${cdn}/basis/`) =>
   useLoader.preload(KTX2Loader, url, (loader: any) => {
     loader.setTranscoderPath(basisPath || `${cdn}/basis/`)
   })

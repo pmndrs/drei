@@ -36,6 +36,7 @@ export * from './useFBX'
 export * from './useGLTF'
 export * from './useProgress'
 export * from './useTexture'
+export * from './useKTX2'
 
 // Misc
 export * from './Stats'

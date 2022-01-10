@@ -71,3 +71,38 @@ export const TransformControlsLockSt = () => {
 
 TransformControlsLockSt.storyName = 'Lock orbit controls while transforming'
 TransformControlsLockSt.decorators = [withKnobs, (storyFn) => <Setup controls={false}>{storyFn()}</Setup>]
+
+function TransformControlsPassObjectFromPropSchene({ mode, showX, showY, showZ }) {
+  const [object, set] = React.useState()
+  const [selected, setSelected] = React.useState(false)
+
+  return (
+    <>
+      <Box ref={set} onClick={() => setSelected(true)} onPointerMissed={() => setSelected(false)}>
+        <meshBasicMaterial attach="material" wireframe />
+      </Box>
+      {object && selected && (
+        <TransformControls mode={mode} showX={showX} showY={showY} showZ={showZ} object={object} />
+      )}
+    </>
+  )
+}
+export const TransformControlsPassObjectFromProp = () => {
+  const modesObj = {
+    scale: 'scale',
+    rotate: 'rotate',
+    translate: 'translate',
+  }
+  return (
+    <TransformControlsPassObjectFromPropSchene
+      mode={optionsKnob('mode', modesObj, 'translate', {
+        display: 'radio',
+      })}
+      showX={boolean('showX', true)}
+      showY={boolean('showY', true)}
+      showZ={boolean('showZ', true)}
+    />
+  )
+}
+TransformControlsPassObjectFromProp.storyName = 'Pass object from prop'
+TransformControlsPassObjectFromProp.decorators = [withKnobs, (storyFn) => <Setup controls={false}>{storyFn()}</Setup>]

@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { KTX2Loader } from 'three-stdlib'
 import { IsObject } from './useTexture'
 
+const cdn = 'https://cdn.jsdelivr.net/gh/pmndrs/drei-assets@master'
 export function useKTX2<Url extends string[] | string | Record<string, string>>(
   input: Url,
   basisPath?: string
@@ -11,7 +12,7 @@ export function useKTX2<Url extends string[] | string | Record<string, string>>(
   const gl = useThree((state) => state.gl)
   const textures = useLoader(KTX2Loader, IsObject(input) ? Object.values(input) : (input as any), (loader: any) => {
     loader.detectSupport(gl)
-    loader.setTranscoderPath(basisPath || '/basis/')
+    loader.setTranscoderPath(basisPath || `${cdn}/basis/`)
   })
 
   // https://github.com/mrdoob/three.js/issues/22696
@@ -33,7 +34,7 @@ export function useKTX2<Url extends string[] | string | Record<string, string>>(
 
 useKTX2.preload = (url: string extends any[] ? string[] : string, basisPath: string) =>
   useLoader.preload(KTX2Loader, url, (loader: any) => {
-    loader.setTranscoderPath(basisPath || '/basis/')
+    loader.setTranscoderPath(basisPath || `${cdn}/basis/`)
   })
 // @ts-expect-error new in r3f 7.0.5
 useKTX2.clear = (input: string | string[]) => useLoader.clear(KTX2Loader, input)

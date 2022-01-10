@@ -7,6 +7,7 @@ import { useGesture } from '@use-gesture/react'
 type Props = {
   snap?: boolean
   global?: boolean
+  cursor?: boolean
   speed?: number
   zoom?: number
   rotation?: [number, number, number]
@@ -19,6 +20,7 @@ type Props = {
 export function PresentationControls({
   snap,
   global,
+  cursor = true,
   children,
   speed = 1,
   rotation = [0, 0, 0],
@@ -43,15 +45,15 @@ export function PresentationControls({
   const [spring, api] = useSpring(() => ({ scale: 1, rotation: rInitial, config }))
   React.useEffect(() => void api.start({ scale: 1, rotation: rInitial, config }), [rInitial])
   React.useEffect(() => {
-    if (global) document.body.style.cursor = 'grab'
-  }, [global])
+    if (global && cursor) gl.domElement.style.cursor = 'grab'
+  }, [global, cursor, gl.domElement])
   const bind = useGesture(
     {
       onHover: ({ last }) => {
-        if (!global) document.body.style.cursor = last ? 'auto' : 'grab'
+        if (cursor && !global) gl.domElement.style.cursor = last ? 'auto' : 'grab'
       },
       onDrag: ({ down, delta: [x, y], memo: [oldY, oldX] = spring.rotation.animation.to || rInitial }) => {
-        document.body.style.cursor = down ? 'grabbing' : 'grab'
+        if (cursor) gl.domElement.style.cursor = down ? 'grabbing' : 'grab'
         x = MathUtils.clamp(oldX + (x / size.width) * Math.PI * speed, ...rAzimuth)
         y = MathUtils.clamp(oldY + (y / size.height) * Math.PI * speed, ...rPolar)
         const sConfig = snap && !down && typeof snap !== 'boolean' ? snap : config

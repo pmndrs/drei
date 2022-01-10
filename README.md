@@ -1109,14 +1109,16 @@ function SuzanneFBX() {
 
 A convenience hook that uses `useLoader` and `KTX2Loader`
 
-```jsx
+<!-- ```jsx -->
+
 const texture = useKTX2(url)
 const [texture1, texture2] = useKTX2([texture1, texture2])
+
 ```
 
 return <meshStandardMaterial map={texture} />
 
-````
+```
 
 #### useCubeTexture
 
@@ -1126,7 +1128,7 @@ A convenience hook that uses `useLoader` and `CubeTextureLoader`
 
 ```jsx
 const envMap = useCubeTexture(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'], { path: 'cube/' })
-````
+```
 
 # Performance
 

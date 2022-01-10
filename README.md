@@ -105,6 +105,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#usegltf">useGLTF</a></li>
           <li><a href="#usefbx">useFBX</a></li>
           <li><a href="#usetexture">useTexture</a></li>
+          <li><a href="#usektx2">useKTX2</a></li>
           <li><a href="#usecubetexture">useCubeTexture</a></li>
         </ul>
         <li><a href="#performance">Performance</a></li>
@@ -1091,6 +1092,19 @@ const props = useTexture({
   map: url2,
 })
 return <meshStandardMaterial {...props} />
+```
+
+#### useKTX2
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-ktx2--use-ktx-2-scene-st)
+
+A convenience hook that uses `useLoader` and `KTX2Loader`
+
+```jsx
+const texture = useKTX2(url)
+const [texture1, texture2] = useKTX2([texture1, texture2])
+
+return <meshStandardMaterial map={texture} />
 ```
 
 #### useCubeTexture

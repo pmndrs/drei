@@ -34,7 +34,7 @@ export function useKTX2<Url extends string[] | string | Record<string, string>>(
 
 useKTX2.preload = (url: string extends any[] ? string[] : string, basisPath: string = `${cdn}/basis/`) =>
   useLoader.preload(KTX2Loader, url, (loader: any) => {
-    loader.setTranscoderPath(basisPath || `${cdn}/basis/`)
+    loader.setTranscoderPath(basisPath)
   })
 // @ts-expect-error new in r3f 7.0.5
 useKTX2.clear = (input: string | string[]) => useLoader.clear(KTX2Loader, input)

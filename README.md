@@ -1109,15 +1109,11 @@ function SuzanneFBX() {
 
 A convenience hook that uses `useLoader` and `KTX2Loader`
 
-<!-- ```jsx -->
-
+```jsx
 const texture = useKTX2(url)
 const [texture1, texture2] = useKTX2([texture1, texture2])
 
-```
-
 return <meshStandardMaterial map={texture} />
-
 ```
 
 #### useCubeTexture

@@ -6,7 +6,6 @@ import {
   Matrix4,
   PerspectiveCamera,
   RGBFormat,
-  Mesh,
   LinearFilter,
   WebGLRenderTarget,
   DepthTexture,
@@ -37,6 +36,7 @@ export type Props = JSX.IntrinsicElements['meshStandardMaterial'] & {
   distortionMap?: Texture
   distortion?: number
   mixContrast?: number
+  reflectorOffset?: number
 }
 
 declare global {
@@ -65,6 +65,7 @@ export const MeshReflectorMaterial = React.forwardRef<MeshReflectorMaterialImpl,
       distortion = 1,
       mixContrast = 1,
       distortionMap,
+      reflectorOffset = 0,
       ...props
     },
     ref
@@ -98,6 +99,7 @@ export const MeshReflectorMaterial = React.forwardRef<MeshReflectorMaterialImpl,
       rotationMatrix.extractRotation(parent.matrixWorld)
       normal.set(0, 0, 1)
       normal.applyMatrix4(rotationMatrix)
+      reflectorWorldPosition.addScaledVector(normal, reflectorOffset)
       view.subVectors(reflectorWorldPosition, cameraWorldPosition)
       // Avoid rendering when reflector is facing away
       if (view.dot(normal) > 0) return
@@ -140,7 +142,7 @@ export const MeshReflectorMaterial = React.forwardRef<MeshReflectorMaterialImpl,
       projectionMatrix.elements[6] = clipPlane.y
       projectionMatrix.elements[10] = clipPlane.z + 1.0
       projectionMatrix.elements[14] = clipPlane.w
-    }, [camera])
+    }, [camera, reflectorOffset])
 
     const [fbo1, fbo2, blurpass, reflectorProps] = React.useMemo(() => {
       const parameters = {

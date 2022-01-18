@@ -88,6 +88,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <ul>
           <li><a href="#html">Html</a></li>
           <li><a href="#cycleraycast">CycleRaycast</a></li>
+          <li><a href="#select">Select</a></li>
           <li><a href="#stats">Stats</a></li>
           <li><a href="#usedepthbuffer">useDepthBuffer</a></li>
           <li><a href="#usecontextbridge">useContextBridge</a></li>
@@ -867,6 +868,20 @@ For this to work properly your event handler have to call `event.stopPropagation
   keyCode={9} // Keyboard events (default: 9 [Tab])
   onChanged={(objects, cycle) => console.log(objects, cycle)} // Optional onChanged event
 />
+```
+
+#### Select
+
+This component allows you to select/unselect objects by clicking on them. It keeps track of the currently selected objects and can select multiple objects (with the shift key). Nested components can request the current selection (which is always an array) with the `useSelect` hook.
+
+```jsx
+<Select multiple onChange={console.log}>
+  <Foo />
+  <Bar />
+</Select>
+
+function Foo() {
+  const selected = useSelect()
 ```
 
 #### Stats

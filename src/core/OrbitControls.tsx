@@ -1,24 +1,28 @@
 import { EventManager, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
-import * as THREE from 'three'
+import { forwardRef, useEffect, useMemo } from 'react'
+import type { Camera, Event } from 'three'
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 
-export type OrbitControlsProps = ReactThreeFiber.Overwrite<
-  ReactThreeFiber.Object3DNode<OrbitControlsImpl, typeof OrbitControlsImpl>,
-  {
-    target?: ReactThreeFiber.Vector3
-    camera?: THREE.Camera
-    domElement?: HTMLElement
-    regress?: boolean
-    enableDamping?: boolean
-    makeDefault?: boolean
-    onChange?: (e?: THREE.Event) => void
-    onStart?: (e?: THREE.Event) => void
-    onEnd?: (e?: THREE.Event) => void
-  }
+export type OrbitControlsProps = Omit<
+  ReactThreeFiber.Overwrite<
+    ReactThreeFiber.Object3DNode<OrbitControlsImpl, typeof OrbitControlsImpl>,
+    {
+      camera?: Camera
+      domElement?: HTMLElement
+      enableDamping?: boolean
+      makeDefault?: boolean
+      onChange?: (e?: Event) => void
+      onEnd?: (e?: Event) => void
+      onStart?: (e?: Event) => void
+      regress?: boolean
+      target?: ReactThreeFiber.Vector3
+    }
+  >,
+  'ref'
 >
 
-export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsProps>(
+export const OrbitControls = forwardRef<OrbitControlsImpl, OrbitControlsProps>(
   ({ makeDefault, camera, regress, domElement, enableDamping = true, onChange, onStart, onEnd, ...restProps }, ref) => {
     const invalidate = useThree(({ invalidate }) => invalidate)
     const defaultCamera = useThree(({ camera }) => camera)
@@ -29,14 +33,14 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
     const performance = useThree(({ performance }) => performance)
     const explCamera = camera || defaultCamera
     const explDomElement = domElement || (typeof events.connected !== 'boolean' ? events.connected : gl.domElement)
-    const controls = React.useMemo(() => new OrbitControlsImpl(explCamera), [explCamera])
+    const controls = useMemo(() => new OrbitControlsImpl(explCamera, explDomElement), [explCamera, explDomElement])
 
     useFrame(() => {
       if (controls.enabled) controls.update()
     })
 
-    React.useEffect(() => {
-      const callback = (e: THREE.Event) => {
+    useEffect(() => {
+      const callback = (e: Event) => {
         invalidate()
         if (regress) performance.regress()
         if (onChange) onChange(e)
@@ -56,7 +60,11 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
       }
     }, [explDomElement, onChange, onStart, onEnd, regress, controls, invalidate])
 
-    React.useEffect(() => {
+    useEffect(() => {
+      Object.assign(controls, restProps)
+    }, [restProps])
+
+    useEffect(() => {
       if (makeDefault) {
         // @ts-expect-error new in @react-three/fiber@7.0.5
         const old = get().controls

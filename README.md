@@ -64,6 +64,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#gizmohelper">GizmoHelper</a></li>
           <li><a href="#effects">Effects</a></li>
           <li><a href="#gradienttexture">GradientTexture</a></li>
+          <li><a href="#edges">Edges</a></li>
           <li><a href="#useanimations">useAnimations</a></li>
         </ul>
         <li><a href="#shaders">Shaders</a></li>
@@ -574,6 +575,22 @@ A declarative THREE.Texture which attaches to "map" by default. You can use this
       size={1024} // Size is optional, default = 1024
     />
   </meshBasicMaterial>
+</mesh>
+```
+
+#### Edges
+
+Abstracts [THREE.EdgesGeometry](https://threejs.org/docs/index.html?q=EdgesGeometry#api/en/geometries/EdgesGeometry). It pulls the geometry automatically from its parent, optionally you can ungroup it and give it a `geometry` prop. You can give it children, for instance a custom material.
+
+```jsx
+<mesh>
+  <boxGeometry />
+  <meshBasicMaterial />
+  <Edges
+    scale={1.1}
+    threshold={15} // Display edges only when the angle between two faces exceeds this value (default=15 degrees)
+    color="white"
+  />
 </mesh>
 ```
 

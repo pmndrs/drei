@@ -41,7 +41,6 @@ export * from './useKTX2'
 
 // Misc
 export * from './Stats'
-export * from './Select'
 export * from './useDepthBuffer'
 export * from './useAspect'
 export * from './useCamera'

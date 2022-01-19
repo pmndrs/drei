@@ -79,9 +79,9 @@ export const Stars = React.forwardRef(
     return (
       <points ref={ref as React.MutableRefObject<Points>}>
         <bufferGeometry attach="geometry">
-          <bufferAttribute attachObject={['attributes', 'position']} args={[position, 3]} />
-          <bufferAttribute attachObject={['attributes', 'color']} args={[color, 3]} />
-          <bufferAttribute attachObject={['attributes', 'size']} args={[size, 1]} />
+          <bufferAttribute attach="attributes-position" args={[position, 3]} />
+          <bufferAttribute attach="attributes-color" args={[color, 3]} />
+          <bufferAttribute attach="attributes-size" args={[size, 1]} />
         </bufferGeometry>
         <primitive
           dispose={undefined}

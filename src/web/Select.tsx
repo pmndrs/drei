@@ -23,7 +23,6 @@ export function Select({
   backgroundColor = 'rgba(75, 160, 255, 0.1)',
   ...props
 }: Props) {
-  // @ts-expect-error new in @react-three/fiber@7.0.5
   const { camera, raycaster, gl, controls, size, get } = useThree()
   const [hovered, hover] = React.useState(false)
   const [active, dispatch] = React.useReducer(

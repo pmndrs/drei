@@ -872,10 +872,12 @@ For this to work properly your event handler have to call `event.stopPropagation
 
 #### Select
 
-This component allows you to select/unselect objects by clicking on them. It keeps track of the currently selected objects and can select multiple objects (with the shift key). Nested components can request the current selection (which is always an array) with the `useSelect` hook.
+![](https://img.shields.io/badge/-Dom only-red)
+
+This component allows you to select/unselect objects by clicking on them. It keeps track of the currently selected objects and can select multiple objects (with the shift key). Nested components can request the current selection (which is always an array) with the `useSelect` hook. With the `box` prop it will let you shift-box-select objects by holding and draging the cursor over multiple objects.
 
 ```jsx
-<Select multiple onChange={console.log}>
+<Select box multiple onChange={console.log}>
   <Foo />
   <Bar />
 </Select>

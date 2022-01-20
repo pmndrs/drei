@@ -694,7 +694,7 @@ An antialiased round dot that always keeps the same size.
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shaders-softshadows--soft-shadows-st)
 
-Injects [percent closer soft shadows (pcss)](https://threejs.org/examples/?q=pcss#webgl_shadowmap_pcss) into threes shader chunk.
+Injects [percent closer soft shadows (pcss)](https://threejs.org/examples/#webgl_shadowmap_pcss) into threes shader chunk.
 
 ```jsx
 softShadows({
@@ -751,7 +751,7 @@ extend({ ColorShiftMaterial })
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/modifiers-curvemodifier)
 
-Given a curve will replace the children of this component with a mesh that move along said curve calling the property `moveAlongCurve` on the passed ref. Uses [three's Curve Modifier](https://threejs.org/examples/?q=curve#webgl_modifier_curve)
+Given a curve will replace the children of this component with a mesh that move along said curve calling the property `moveAlongCurve` on the passed ref. Uses [three's Curve Modifier](https://threejs.org/examples/#webgl_modifier_curve)
 
 ```jsx
 const curveRef = useRef()
@@ -1515,7 +1515,7 @@ A cheap canvas-texture-based circular gradient.
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shaders-contactshadows--contact-shadow-st)
 
-A [contact shadow](https://threejs.org/examples/?q=con#webgl_shadow_contact) implementation, facing upwards (positive Y) by default. `scale` can be a positive number or a 2D array `[x: number, y: number]`.
+A [contact shadow](https://threejs.org/examples/#webgl_shadow_contact) implementation, facing upwards (positive Y) by default. `scale` can be a positive number or a 2D array `[x: number, y: number]`.
 
 ```jsx
 <ContactShadows opacity={1} scale={10} blur={1} far={10} resolution={256} />
@@ -1574,7 +1574,7 @@ If you provide a single string it will use THREE.RGBELoader.
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shaders-sky--sky-st)
 
-Adds a [sky](https://threejs.org/examples/webgl_shaders_sky.html) to your scene.
+Adds a [sky](https://threejs.org/examples/#webgl_shaders_sky) to your scene.
 
 ```jsx
 <Sky distance={450000} sunPosition={[0, 1, 0]} inclination={0} azimuth={0.25} {...props} />

@@ -12,6 +12,7 @@ export type OrbitControlsProps = ReactThreeFiber.Overwrite<
     regress?: boolean
     enableDamping?: boolean
     makeDefault?: boolean
+    reverseOrbit?:boolean
     onChange?: (e?: THREE.Event) => void
     onStart?: (e?: THREE.Event) => void
     onEnd?: (e?: THREE.Event) => void
@@ -19,7 +20,7 @@ export type OrbitControlsProps = ReactThreeFiber.Overwrite<
 >
 
 export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsProps>(
-  ({ makeDefault, camera, regress, domElement, enableDamping = true, onChange, onStart, onEnd, ...restProps }, ref) => {
+  ({ makeDefault, camera, regress, domElement, enableDamping = true, reverseOrbit=false, onChange, onStart, onEnd, ...restProps }, ref) => {
     const invalidate = useThree(({ invalidate }) => invalidate)
     const defaultCamera = useThree(({ camera }) => camera)
     const gl = useThree(({ gl }) => gl)

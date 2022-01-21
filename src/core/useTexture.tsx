@@ -29,5 +29,4 @@ export function useTexture<Url extends string[] | string | Record<string, string
 }
 
 useTexture.preload = (url: string extends any[] ? string[] : string) => useLoader.preload(TextureLoader, url)
-// @ts-expect-error new in r3f 7.0.5
 useTexture.clear = (input: string | string[]) => useLoader.clear(TextureLoader, input)

@@ -30,7 +30,7 @@ export function CubeCamera({
   ...props
 }: Props) {
   const ref = React.useRef<Group>()
-  const [camera, setCamera] = React.useState<CubeCameraImpl>()
+  const [camera, setCamera] = React.useState<CubeCameraImpl | null>(null)
   const scene = useThree(({ scene }) => scene)
   const gl = useThree(({ gl }) => gl)
   const fbo = React.useMemo(

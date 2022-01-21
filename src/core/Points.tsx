@@ -98,21 +98,21 @@ const PointsInstances = React.forwardRef<THREE.Points, PointsInstancesProps>(
       <points matrixAutoUpdate={false} ref={mergeRefs([ref, parentRef])} {...events} {...props}>
         <bufferGeometry>
           <bufferAttribute
-            attachObject={['attributes', 'position']}
+            attach="attributes-position"
             count={positions.length / 3}
             array={positions}
             itemSize={3}
             usage={THREE.DynamicDrawUsage}
           />
           <bufferAttribute
-            attachObject={['attributes', 'color']}
+            attach="attributes-color"
             count={colors.length / 3}
             array={colors}
             itemSize={3}
             usage={THREE.DynamicDrawUsage}
           />
           <bufferAttribute
-            attachObject={['attributes', 'size']}
+            attach="attributes-size"
             count={sizes.length}
             array={sizes}
             itemSize={1}
@@ -171,7 +171,7 @@ export const PointsBuffer = React.forwardRef<THREE.Points, PointsBuffersProps>(
       <points matrixAutoUpdate={false} ref={mergeRefs([forwardedRef, pointsRef])} {...props}>
         <bufferGeometry>
           <bufferAttribute
-            attachObject={['attributes', 'position']}
+            attach="attributes-position"
             count={positions.length / stride}
             array={positions}
             itemSize={stride}
@@ -179,7 +179,7 @@ export const PointsBuffer = React.forwardRef<THREE.Points, PointsBuffersProps>(
           />
           {colors && (
             <bufferAttribute
-              attachObject={['attributes', 'color']}
+              attach="attributes-color"
               count={colors.length / stride}
               array={colors}
               itemSize={3}
@@ -188,7 +188,7 @@ export const PointsBuffer = React.forwardRef<THREE.Points, PointsBuffersProps>(
           )}
           {sizes && (
             <bufferAttribute
-              attachObject={['attributes', 'size']}
+              attach="attributes-size"
               count={sizes.length / stride}
               array={sizes}
               itemSize={1}

@@ -58,11 +58,8 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
 
     React.useEffect(() => {
       if (makeDefault) {
-        // @ts-expect-error new in @react-three/fiber@7.0.5
         const old = get().controls
-        // @ts-expect-error new in @react-three/fiber@7.0.5
         set({ controls })
-        // @ts-expect-error new in @react-three/fiber@7.0.5
         return () => set({ controls: old })
       }
     }, [makeDefault, controls])

@@ -12,6 +12,7 @@ type Props = JSX.IntrinsicElements['group'] & {
   border?: string
   backgroundColor?: string
   onChange?: (selected: THREE.Object3D[]) => void
+  filter?: (selected: THREE.Object3D[]) => THREE.Object3D[]
 }
 
 export function Select({
@@ -21,6 +22,7 @@ export function Select({
   onChange,
   border = '1px solid #55aaff',
   backgroundColor = 'rgba(75, 160, 255, 0.1)',
+  filter: customFilter = (item) => item,
   ...props
 }: Props) {
   // @ts-expect-error new in @react-three/fiber@7.0.5
@@ -39,7 +41,7 @@ export function Select({
   React.useEffect(() => void onChange?.(active), [active])
   const onClick = React.useCallback((e) => {
     e.stopPropagation()
-    dispatch({ object: e.object, shift: multiple && e.shiftKey })
+    dispatch({ object: customFilter([e.object])[0], shift: multiple && e.shiftKey })
   }, [])
   const onPointerMissed = React.useCallback((e) => !hovered && dispatch({}), [hovered])
 
@@ -123,7 +125,7 @@ export function Select({
           .filter((o) => o.isMesh)
         if (!shallow(allSelected, previous)) {
           previous = allSelected
-          dispatch({ object: allSelected })
+          dispatch({ object: customFilter(allSelected) })
         }
       }
     }

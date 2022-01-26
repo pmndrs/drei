@@ -531,7 +531,7 @@ Adds a `<group />` that always faces the camera.
 
 #### GizmoHelper
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/gizmos-gizmohelper--default-story)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/gizmos-gizmohelper--gizmo-helper-story)
 
 Used by widgets that visualize and control camera position.
 
@@ -1387,7 +1387,7 @@ useBVH(mesh)
 
 #### Center
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-center--default-story)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-center--default-story)
 
 Calculates a boundary box and centers its children accordingly. `alignTop` makes adjusts it so that it's sits flush on y=0.
 
@@ -1425,7 +1425,7 @@ function Foo() {
 
 #### CameraShake
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/camera-camerashake--camera-shake-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-camerashake--camera-shake-story)
 
 A component for applying a configurable camera shake effect. Currently only supports rotational camera shake. Pass a ref to recieve the `ShakeController` API.
 
@@ -1471,7 +1471,7 @@ This component makes its contents float or hover.
 
 #### Stage
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/prototyping-stage--stage-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-stage--stage-st)
 
 Creates a "stage" with proper studio lighting, content centered and planar, shadows and ground-contact shadows.
 
@@ -1513,7 +1513,7 @@ A cheap canvas-texture-based circular gradient.
 
 #### ContactShadows
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shaders-contactshadows--contact-shadow-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-contactshadows--contact-shadow-st)
 
 A [contact shadow](https://threejs.org/examples/?q=con#webgl_shadow_contact) implementation, facing upwards (positive Y) by default. `scale` can be a positive number or a 2D array `[x: number, y: number]`.
 
@@ -1550,7 +1550,7 @@ function Foo() {
 
 #### Environment
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-environment--environment-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-environment--environment-story)
 
 Sets up a global cubemap, which affects the default `scene.environment`, and optionally `scene.background`, unless a custom scene has been passed. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience. If you pass an array of files it will use THREE.CubeTextureLoader.
 
@@ -1572,7 +1572,7 @@ If you provide a single string it will use THREE.RGBELoader.
 
 #### Sky
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shaders-sky--sky-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-sky--sky-st)
 
 Adds a [sky](https://threejs.org/examples/webgl_shaders_sky.html) to your scene.
 
@@ -1582,7 +1582,7 @@ Adds a [sky](https://threejs.org/examples/webgl_shaders_sky.html) to your scene.
 
 #### Stars
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shaders-stars--stars-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-stars--stars-st)
 
 Adds a blinking shader-based starfield to your scene.
 
@@ -1608,7 +1608,7 @@ Particle based cloud.
 
 #### useMatcapTexture
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/prototyping-usematcaptexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-usematcaptexture--use-matcap-texture-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
 Loads matcap textures from this repository: https://github.com/emmelleppi/matcaps
 
@@ -1637,7 +1637,7 @@ const [matcap] = useMatcapTexture('3E2335_D36A1B_8E4A2E_2842A5')
 
 #### useNormalTexture
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/prototyping-usenormaltexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-usenormaltexture--use-normal-texture-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
 Loads normal textures from this repository: https://github.com/emmelleppi/normal-maps
 

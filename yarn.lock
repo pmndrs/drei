@@ -12865,15 +12865,15 @@ text-table@0.2.0, text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
-three-mesh-bvh@^0.5.2:
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/three-mesh-bvh/-/three-mesh-bvh-0.5.2.tgz#6d435330e4aa686dcdbf70330c8eb5dd42b12737"
-  integrity sha512-DAKWujkp8xpSBqGiIsZbZC1utxAbYBg0SShQk9LdOG/xWWl1/OLK76eXDGfov47trl3L7PUTHi0hhRvZdVro1Q==
+three-mesh-bvh@^0.5.4:
+  version "0.5.4"
+  resolved "https://registry.npmjs.org/three-mesh-bvh/-/three-mesh-bvh-0.5.4.tgz#f4c8d751f420c60c35f880393bb00553ce1b298c"
+  integrity sha512-Hq3zpjqBxx2sp/K2Fw7cZ1yEoIVbMc4hOv3VRtmCjHapDKkZpDh8w3OcktbCwn+vBNPt9Ii8D0nDTeqt+73Dwg==
 
-three-stdlib@^2.7.2:
-  version "2.7.2"
-  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-2.7.2.tgz#801a530e93f82dfdd8e2b0856cd4ef5fd73e9247"
-  integrity sha512-6jtdJVZOcA+6xE+/YnuOZ8eCuhQhDi4eZ6XKFGYiUDEVTrAFTehScqhWxdchaPGNEEAqSCuXGwSd14m397xr7w==
+three-stdlib@^2.8.2:
+  version "2.8.2"
+  resolved "https://registry.npmjs.org/three-stdlib/-/three-stdlib-2.8.2.tgz#b04e8cf09a931aac942307f673813426ce0e70bd"
+  integrity sha512-B91eN9CFwqg/D7g3TOhth994dLoh6dQYtj5pRTVxHk0v02vdC7lutGkmKYryDh1YBg7x2bTdxvMxbfOT4RtF9Q==
   dependencies:
     "@babel/runtime" "^7.16.7"
     "@webgpu/glslang" "^0.0.15"

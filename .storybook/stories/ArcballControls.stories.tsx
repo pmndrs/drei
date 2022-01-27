@@ -3,43 +3,41 @@ import React, { useRef, useState } from 'react'
 import { Scene } from 'three'
 
 import { Setup } from '../Setup'
-import { Box, OrbitControls, PerspectiveCamera, Plane, useFBO } from '../../src'
+import { ArcballControls, Box, PerspectiveCamera, Plane, useFBO } from '../../src'
 
-import type { Camera } from 'three'
-import type { OrbitControlsProps } from '../../src'
+import type { OrthographicCamera, PerspectiveCamera as PerspectiveCameraType } from 'three'
+import type { ArcballControlsProps } from '../../src'
 
 const args = {
-  enableDamping: true,
   enablePan: true,
   enableRotate: true,
   enableZoom: true,
-  reverseOrbit: false,
 }
 
-export const OrbitControlsStory = (props: OrbitControlsProps) => (
+export const ArcballControlsStory = (props: ArcballControlsProps) => (
   <>
-    <OrbitControls {...props} />
+    <ArcballControls {...props} />
     <Box>
       <meshBasicMaterial attach="material" wireframe />
     </Box>
   </>
 )
 
-OrbitControlsStory.args = args
-OrbitControlsStory.storyName = 'Default'
+ArcballControlsStory.args = args
+ArcballControlsStory.storyName = 'Default'
 
 export default {
-  title: 'Controls/OrbitControls',
-  component: OrbitControls,
+  title: 'Controls/ArcballControls',
+  component: ArcballControls,
   decorators: [(storyFn) => <Setup controls={false}>{storyFn()}</Setup>],
 }
 
-const CustomCamera = (props: OrbitControlsProps) => {
+const CustomCamera = (props: ArcballControlsProps) => {
   /**
    * we will render our scene in a render target and use it as a map.
    */
   const fbo = useFBO(400, 400)
-  const virtualCamera = useRef<Camera>()
+  const virtualCamera = useRef<OrthographicCamera | PerspectiveCameraType>()
   const [virtualScene] = useState(() => new Scene())
 
   useFrame(({ gl }) => {
@@ -65,9 +63,8 @@ const CustomCamera = (props: OrbitControlsProps) => {
 
           <PerspectiveCamera name="FBO Camera" ref={virtualCamera} position={[0, 0, 5]} />
 
-          <OrbitControls camera={virtualCamera.current} {...props} />
+          <ArcballControls camera={virtualCamera.current} {...props} />
 
-          {/* @ts-ignore */}
           <color attach="background" args={['hotpink']} />
         </>,
         virtualScene
@@ -76,7 +73,7 @@ const CustomCamera = (props: OrbitControlsProps) => {
   )
 }
 
-export const CustomCameraStory = (props: OrbitControlsProps) => <CustomCamera {...props} />
+export const CustomCameraStory = (props: ArcballControlsProps) => <CustomCamera {...props} />
 
 CustomCameraStory.args = args
 CustomCameraStory.storyName = 'Custom Camera'

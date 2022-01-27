@@ -6,7 +6,7 @@ import {
   CubeCamera as CubeCameraImpl,
   WebGLCubeRenderTarget,
   LinearFilter,
-  RGBFormat,
+  RGBAFormat,
 } from 'three'
 import * as React from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
@@ -38,7 +38,7 @@ export function CubeCamera({
       new WebGLCubeRenderTarget(resolution, {
         minFilter: LinearFilter,
         magFilter: LinearFilter,
-        format: RGBFormat,
+        format: RGBAFormat,
         encoding: gl.outputEncoding,
       }),
     [resolution]

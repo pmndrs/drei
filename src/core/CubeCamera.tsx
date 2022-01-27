@@ -1,13 +1,4 @@
-import {
-  Fog,
-  FogExp2,
-  Group,
-  Texture,
-  CubeCamera as CubeCameraImpl,
-  WebGLCubeRenderTarget,
-  LinearFilter,
-  RGBAFormat,
-} from 'three'
+import { Fog, FogExp2, Group, Texture, CubeCamera as CubeCameraImpl, WebGLCubeRenderTarget, LinearFilter } from 'three'
 import * as React from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 
@@ -38,7 +29,6 @@ export function CubeCamera({
       new WebGLCubeRenderTarget(resolution, {
         minFilter: LinearFilter,
         magFilter: LinearFilter,
-        format: RGBAFormat,
         encoding: gl.outputEncoding,
       }),
     [resolution]

@@ -154,7 +154,6 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
       const parameters = {
         minFilter: LinearFilter,
         magFilter: LinearFilter,
-        format: RGBFormat,
         encoding: gl.outputEncoding,
       }
       const fbo1 = new WebGLRenderTarget(resolution, resolution, parameters)

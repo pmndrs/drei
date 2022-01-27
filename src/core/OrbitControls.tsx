@@ -33,7 +33,7 @@ export const OrbitControls = forwardRef<OrbitControlsImpl, OrbitControlsProps>(
     const performance = useThree(({ performance }) => performance)
     const explCamera = camera || defaultCamera
     const explDomElement = domElement || (typeof events.connected !== 'boolean' ? events.connected : gl.domElement)
-    const controls = useMemo(() => new OrbitControlsImpl(explCamera, explDomElement), [explCamera, explDomElement])
+    const controls = useMemo(() => new OrbitControlsImpl(explCamera), [explCamera])
 
     useFrame(() => {
       if (controls.enabled) controls.update()
@@ -59,10 +59,6 @@ export const OrbitControls = forwardRef<OrbitControlsImpl, OrbitControlsProps>(
         controls.dispose()
       }
     }, [explDomElement, onChange, onStart, onEnd, regress, controls, invalidate])
-
-    useEffect(() => {
-      Object.assign(controls, restProps)
-    }, [restProps])
 
     useEffect(() => {
       if (makeDefault) {

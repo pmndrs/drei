@@ -33,7 +33,7 @@ export const ArcballControls = forwardRef<ArcballControlsImpl, ArcballControlsPr
     const performance = useThree(({ performance }) => performance)
     const explCamera = camera || defaultCamera
     const explDomElement = domElement || (typeof events.connected !== 'boolean' ? events.connected : gl.domElement)
-    const controls = useMemo(() => new ArcballControlsImpl(explCamera, explDomElement), [explCamera, explDomElement])
+    const controls = useMemo(() => new ArcballControlsImpl(explCamera), [explCamera])
 
     useFrame(() => {
       if (controls.enabled) controls.update()
@@ -59,10 +59,6 @@ export const ArcballControls = forwardRef<ArcballControlsImpl, ArcballControlsPr
         controls.dispose()
       }
     }, [explDomElement, onChange, onStart, onEnd, regress, controls, invalidate])
-
-    useEffect(() => {
-      Object.assign(controls, restProps)
-    }, [restProps])
 
     useEffect(() => {
       if (makeDefault) {

@@ -249,6 +249,10 @@ PointerLockControls additionally supports a `selector` prop, which enables the b
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-transformcontrols--transform-controls-story)
 
+<p align="center">
+  <a href="https://codesandbox.io/s/btsbj"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/btsbj/screenshot.png" alt="Tranform controls"/></a>
+</p>
+
 An abstraction around [THREE.TransformControls](https://threejs.org/docs/index.html?q=transfor#examples/en/controls/TransformControls).
 
 You can wrap objects which then receive a transform gizmo.
@@ -343,6 +347,11 @@ function Foo(props) {
 
 ![](https://img.shields.io/badge/-Dom only-red)
 
+<p align="center">
+  <a href="https://codesandbox.io/s/kheke"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/kheke/screenshot.png" alt="Journey stage 1"/></a>
+  <a href="https://codesandbox.io/s/qyz5r"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/qyz5r/screenshot.png" alt="Watch"/></a>
+</p>
+
 Semi-OrbitControls with spring-physics, polar zoom and snap-back, for presentational purposes. These controls do not turn the camera but will spin their contents. They will not suddenly come to rest when they reach limits like OrbitControls do, but rather smoothly anticipate stopping position.
 
 ```jsx
@@ -398,6 +407,13 @@ A triangle that fills the screen, ideal for full-screen fragment shader work (ra
 
 #### Image
 
+<p align="center">
+  <a href="https://codesandbox.io/s/l4klb"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/l4klb/screenshot.png" alt="Horizontal tiles"/></a>
+  <a href="https://codesandbox.io/s/gsm1y"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/gsm1y/screenshot.png" alt="useIntersect"/></a>
+  <a href="https://codesandbox.io/s/x8gvs"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/x8gvs/screenshot.png" alt="Infinite scroll"/></a>
+  <a href="https://codesandbox.io/s/yjhzv"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/yjhzv/screenshot.png" alt="Vertical scroll"/></a>
+</p>
+
 A shader-based image component with auto-cover (similar to css/background: cover).
 
 ```jsx
@@ -414,6 +430,10 @@ function Foo() {
 #### Text
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-text--text-st)
+
+<p align="center">
+  <a href="https://codesandbox.io/s/yup2o"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/yup2o/screenshot.png" alt="Demo"/></a>
+</p>
 
 Hi-quality text rendering w/ signed distance fields (SDF) and antialiasing, using [troika-3d-text](https://github.com/protectwise/troika/tree/master/packages/troika-3d-text). All of troikas props are valid!
 
@@ -444,6 +464,10 @@ Renders a THREE.Line2.
 #### QuadraticBezierLine
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-line--quadratic-bezier)
+
+<p align="center">
+  <a href="https://codesandbox.io/s/2ij9u"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/2ij9u/screenshot.png" alt="Demo"/></a>
+</p>
 
 Renders a THREE.Line2 using THREE.QuadraticBezierCurve3 for interpolation.
 
@@ -498,6 +522,10 @@ Renders a THREE.Line2 using THREE.CubicBezierCurve3 for interpolation.
 ```
 
 #### PositionalAudio
+
+<p align="center">
+  <a href="https://codesandbox.io/s/gkfhr"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/gkfhr/screenshot.png" alt="Demo"/></a>
+</p>
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-positionalaudio--positional-audio-scene-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
@@ -581,6 +609,10 @@ A declarative THREE.Texture which attaches to "map" by default. You can use this
 
 #### Edges
 
+<p align="center">
+  <a href="https://codesandbox.io/s/ny3p4"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/ny3p4/screenshot.png" alt="Demo"/></a>
+</p>
+
 Abstracts [THREE.EdgesGeometry](https://threejs.org/docs/index.html?q=EdgesGeometry#api/en/geometries/EdgesGeometry). It pulls the geometry automatically from its parent, optionally you can ungroup it and give it a `geometry` prop. You can give it children, for instance a custom material.
 
 ```jsx
@@ -598,6 +630,10 @@ Abstracts [THREE.EdgesGeometry](https://threejs.org/docs/index.html?q=EdgesGeome
 #### useAnimations
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-useanimations--use-animations-st)
+
+<p align="center">
+  <a href="https://codesandbox.io/s/pecl6"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/pecl6/screenshot.png" alt="Demo"/></a>
+</p>
 
 A hook that abstracts [AnimationMixer](https://threejs.org/docs/index.html#api/en/animation/AnimationMixer).
 
@@ -624,6 +660,12 @@ return <primitive object={scene} />
 #### MeshReflectorMaterial
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shaders-meshreflectormaterial--reflector-st)
+
+<p align="center">
+  <a href="https://codesandbox.io/s/lx2h8"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/lx2h8/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/l900i"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/l900i/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/l900i"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/l900i/screenshot.png" alt="Demo"/></a>
+</p>
 
 Easily add reflections and/or blur to any mesh. It takes surface roughness into account for a more realistic effect. This material extends from [THREE.MeshStandardMaterial](https://threejs.org/docs/index.html?q=meshsta#api/en/materials/MeshStandardMaterial) and accepts all its props.
 
@@ -694,6 +736,10 @@ An antialiased round dot that always keeps the same size.
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shaders-softshadows--soft-shadows-st)
 
+<p align="center">
+  <a href="https://codesandbox.io/s/dh2jc"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/dh2jc/screenshot.png" alt="Demo"/></a>
+</p>
+
 Injects [percent closer soft shadows (pcss)](https://threejs.org/examples/?q=pcss#webgl_shadowmap_pcss) into threes shader chunk.
 
 ```jsx
@@ -709,6 +755,10 @@ softShadows({
 #### shaderMaterial
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shaders-shadermaterial--shader-material-story)
+
+<p align="center">
+  <a href="https://codesandbox.io/s/ni6v4"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/ni6v4/screenshot.png" alt="Demo"/></a>
+</p>
 
 Creates a THREE.ShaderMaterial for you with easier handling of uniforms, which are also automatically declared as setter/getters on the object.
 
@@ -804,6 +854,12 @@ function Scene() {
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-html--html-st) ![](https://img.shields.io/badge/-Dom only-red)
 
+<p align="center">
+  <a href="https://codesandbox.io/s/qyz5r"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/qyz5r/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/9keg6"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/9keg6/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/6oei7"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/6oei7/screenshot.png" alt="Demo"/></a>
+</p>
+
 Allows you to tie HTML content to any object of your scene. It will be projected to the objects whereabouts automatically.
 
 ```jsx
@@ -857,6 +913,10 @@ const [hidden, set] = useState()
 
 ![](https://img.shields.io/badge/-Dom only-red)
 
+<p align="center">
+  <a href="https://codesandbox.io/s/ls503"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/ls503/screenshot.png" alt="Demo"/></a>
+</p>
+
 This component allows you to cycle through all objects underneath the cursor with optional visual feedback. This can be useful for non-trivial selection, CAD data, housing, everything that has layers. It does this by changing the raycasters filter function and then refreshing the raycaster.
 
 For this to work properly your event handler have to call `event.stopPropagation()`, for instance in `onPointerOver` or `onClick`, only one element can be selective for cycling to make sense.
@@ -873,6 +933,10 @@ For this to work properly your event handler have to call `event.stopPropagation
 #### Select
 
 ![](https://img.shields.io/badge/-Dom only-red)
+
+<p align="center">
+  <a href="https://codesandbox.io/s/ny3p4"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/ny3p4/screenshot.png" alt="Demo"/></a>
+</p>
 
 This component allows you to select/unselect objects by clicking on them. It keeps track of the currently selected objects and can select multiple objects (with the shift key). Nested components can request the current selection (which is always an array) with the `useSelect` hook. With the `box` prop it will let you shift-box-select objects by holding and draging the cursor over multiple objects. Optionally you can filter the selected items as well as define in which shape they are stored by defining the `filter` prop.
 
@@ -943,6 +1007,10 @@ The rendertarget is automatically disposed when unmounted.
 #### useCamera
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-usecamera--use-camera-st)
+
+<p align="center">
+  <a href="https://codesandbox.io/s/py4db"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/py4db/screenshot.png" alt="Demo"/></a>
+</p>
 
 A hook for the rare case when you are using non-default cameras for heads-up-displays or portals, and you need events/raytracing to function properly (raycasting uses the default camera otherwise).
 
@@ -1015,6 +1083,10 @@ return (
 
 #### useIntersect
 
+<p align="center">
+  <a href="https://codesandbox.io/s/gsm1y"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/gsm1y/screenshot.png" alt="Demo"/></a>
+</p>
+
 A very cheap frustum check that gives you a reference you can observe in order to know if the object has entered the view or is outside of it. This relies on [THREE.Object3D.onBeforeRender](https://threejs.org/docs/index.html?q=obj#api/en/core/Object3D.onBeforeRender) so it only works on objects that are effectively rendered, like meshes, lines, sprites. It won't work on groups, object3d's, bones, etc.
 
 ```jsx
@@ -1027,6 +1099,10 @@ return <mesh ref={ref} />
 #### Loader
 
 ![](https://img.shields.io/badge/-Dom only-red)
+
+<p align="center">
+  <a href="https://codesandbox.io/s/0buje"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/0buje/screenshot.png" alt="Demo"/></a>
+</p>
 
 A quick and easy loading overlay component that you can drop on top of your canvas. It's intended to "hide" the whole app, so if you have multiple suspense wrappers in your application, you should use multiple loaders. It will show an animated loadingbar and a percentage.
 
@@ -1156,6 +1232,11 @@ const envMap = useCubeTexture(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png',
 
 #### Instances
 
+<p align="center">
+  <a href="https://codesandbox.io/s/h8o2d"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/h8o2d/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/i6t0j"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/i6t0j/screenshot.png" alt="Demo"/></a>
+</p>
+
 A wrapper around [THREE.InstancedMesh](https://threejs.org/docs/index.html?q=instan#api/en/objects/InstancedMesh). This allows you to define hundreds of thousands of objects in a single draw call, but declaratively!
 
 ```jsx
@@ -1198,6 +1279,10 @@ You can define events on them!
 ```
 
 #### Merged
+
+<p align="center">
+  <a href="https://codesandbox.io/s/l900i"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/l900i/screenshot.png" alt="Demo"/></a>
+</p>
 
 This creates instances for existing meshes and allows you to use them cheaply in the same scene graph. Each type will cost you exactly one draw call, no matter how many you use. `meshes` has to be a collection of pre-existing THREE.Mesh objects.
 
@@ -1310,6 +1395,10 @@ useFrame(() => {
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-detailed--detailed-st)
 
+<p align="center">
+  <a href="https://codesandbox.io/s/12nmp"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/12nmp/screenshot.png" alt="Demo"/></a>
+</p>
+
 A wrapper around [THREE.LOD](https://threejs.org/docs/index.html#api/en/objects/LOD) (Level of detail).
 
 ```jsx
@@ -1399,6 +1488,10 @@ Calculates a boundary box and centers its children accordingly. `alignTop` makes
 
 #### Bounds
 
+<p align="center">
+  <a href="https://codesandbox.io/s/rz2g0"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/rz2g0/screenshot.png" alt="Demo"/></a>
+</p>
+
 Calculates a boundary box and centers the camera accordingly. If you are using controls, make sure to pass them the `makeDefault` prop. `fit` fits the current view on first render. `clip` sets the cameras near/far planes.
 
 ```jsx
@@ -1426,6 +1519,11 @@ function Foo() {
 #### CameraShake
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-camerashake--camera-shake-story)
+
+<p align="center">
+  <a href="https://codesandbox.io/s/t4l0f"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/t4l0f/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/0ycwe"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/0ycwe/screenshot.png" alt="Demo"/></a>
+</p>
 
 A component for applying a configurable camera shake effect. Currently only supports rotational camera shake. Pass a ref to recieve the `ShakeController` API.
 
@@ -1457,6 +1555,10 @@ interface ShakeController {
 
 #### Float
 
+<p align="center">
+  <a href="https://codesandbox.io/s/2ij9u"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/2ij9u/screenshot.png" alt="Demo"/></a>
+</p>
+
 This component makes its contents float or hover.
 
 ```js
@@ -1484,6 +1586,10 @@ Make sure to set the `makeDefault` prop on your controls, in that case you do no
 ```
 
 #### Backdrop
+
+<p align="center">
+  <a href="https://codesandbox.io/s/8yfnd"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/8yfnd/screenshot.png" alt="Demo"/></a>
+</p>
 
 A curved plane, like a studio backdrop. This is for presentational purposes, to break up light and shadows more interestingly.
 
@@ -1515,6 +1621,10 @@ A cheap canvas-texture-based circular gradient.
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-contactshadows--contact-shadow-st)
 
+<p align="center">
+  <a href="https://codesandbox.io/s/qxjoj"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/qxjoj/screenshot.png" alt="Demo"/></a>
+</p>
+
 A [contact shadow](https://threejs.org/examples/?q=con#webgl_shadow_contact) implementation, facing upwards (positive Y) by default. `scale` can be a positive number or a 2D array `[x: number, y: number]`.
 
 ```jsx
@@ -1528,6 +1638,11 @@ Since this is a rather expensive effect you can limit the amount of frames it re
 ```
 
 #### SpotLight
+
+<p align="center">
+  <a href="https://codesandbox.io/s/tx1pq"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/tx1pq/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/wdzv4"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/wdzv4/screenshot.png" alt="Demo"/></a>
+</p>
 
 A Volumetric spotlight.
 
@@ -1552,6 +1667,10 @@ function Foo() {
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-environment--environment-story)
 
+<p align="center">
+  <a href="https://codesandbox.io/s/t4l0f"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/t4l0f/screenshot.png" alt="Demo"/></a>
+</p>
+
 Sets up a global cubemap, which affects the default `scene.environment`, and optionally `scene.background`, unless a custom scene has been passed. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience. If you pass an array of files it will use THREE.CubeTextureLoader.
 
 ```jsx
@@ -1574,6 +1693,10 @@ If you provide a single string it will use THREE.RGBELoader.
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-sky--sky-st)
 
+<p align="center">
+  <a href="https://codesandbox.io/s/vkgi6"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/vkgi6/screenshot.png" alt="Demo"/></a>
+</p>
+
 Adds a [sky](https://threejs.org/examples/webgl_shaders_sky.html) to your scene.
 
 ```jsx
@@ -1593,6 +1716,10 @@ Adds a blinking shader-based starfield to your scene.
 #### Cloud
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-cloud--cloud-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
+
+<p align="center">
+  <a href="https://codesandbox.io/s/mbfzf"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/mbfzf/screenshot.png" alt="Demo"/></a>
+</p>
 
 Particle based cloud.
 

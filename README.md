@@ -664,7 +664,6 @@ return <primitive object={scene} />
 <p>
   <a href="https://codesandbox.io/s/lx2h8"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/lx2h8/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/l900i"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/l900i/screenshot.png" alt="Demo"/></a>
-  <a href="https://codesandbox.io/s/l900i"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/l900i/screenshot.png" alt="Demo"/></a>
 </p>
 
 Easily add reflections and/or blur to any mesh. It takes surface roughness into account for a more realistic effect. This material extends from [THREE.MeshStandardMaterial](https://threejs.org/docs/index.html?q=meshsta#api/en/materials/MeshStandardMaterial) and accepts all its props.

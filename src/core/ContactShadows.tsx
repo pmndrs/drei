@@ -12,6 +12,7 @@ type Props = Omit<JSX.IntrinsicElements['group'], 'scale'> & {
   height?: number
   blur?: number
   far?: number
+  smooth?: boolean
   resolution?: number
   frames?: number
   scale?: number | [x: number, y: number]
@@ -28,13 +29,14 @@ export const ContactShadows = React.forwardRef(
       blur = 1,
       far = 10,
       resolution = 256,
+      smooth = true,
       ...props
     }: Props,
     ref
   ) => {
     const scene = useThree(({ scene }) => scene)
     const gl = useThree(({ gl }) => gl)
-    const shadowCamera = React.useRef<THREE.OrthographicCamera>()
+    const shadowCamera = React.useRef<THREE.OrthographicCamera>(null!)
 
     width = width * (Array.isArray(scale) ? scale[0] : scale || 1)
     height = height * (Array.isArray(scale) ? scale[1] : scale || 1)
@@ -74,6 +76,26 @@ export const ContactShadows = React.forwardRef(
       ]
     }, [resolution, width, height, scale])
 
+    const blurShadows = React.useCallback((blur) => {
+      blurPlane.visible = true
+
+      blurPlane.material = horizontalBlurMaterial
+      horizontalBlurMaterial.uniforms.tDiffuse.value = renderTarget.texture
+      horizontalBlurMaterial.uniforms.h.value = (blur * 1) / 256
+
+      gl.setRenderTarget(renderTargetBlur)
+      gl.render(blurPlane, shadowCamera.current)
+
+      blurPlane.material = verticalBlurMaterial
+      verticalBlurMaterial.uniforms.tDiffuse.value = renderTargetBlur.texture
+      verticalBlurMaterial.uniforms.v.value = (blur * 1) / 256
+
+      gl.setRenderTarget(renderTarget)
+      gl.render(blurPlane, shadowCamera.current)
+
+      blurPlane.visible = false
+    }, [])
+
     let count = 0
     useFrame(() => {
       if (shadowCamera.current && (frames === Infinity || count < frames)) {
@@ -83,16 +105,10 @@ export const ContactShadows = React.forwardRef(
         gl.setRenderTarget(renderTarget)
         gl.render(scene, shadowCamera.current)
         scene.overrideMaterial = null
-        blurPlane.material = horizontalBlurMaterial
-        ;(blurPlane.material as any).uniforms.tDiffuse.value = renderTarget.texture
-        horizontalBlurMaterial.uniforms.h.value = blur / 256
-        gl.setRenderTarget(renderTargetBlur)
-        gl.render(blurPlane, shadowCamera.current)
-        blurPlane.material = verticalBlurMaterial
-        ;(blurPlane.material as any).uniforms.tDiffuse.value = renderTargetBlur.texture
-        verticalBlurMaterial.uniforms.v.value = blur / 256
-        gl.setRenderTarget(renderTarget)
-        gl.render(blurPlane, shadowCamera.current)
+
+        blurShadows(blur)
+        if (smooth) blurShadows(blur * 0.4)
+
         gl.setRenderTarget(null)
         scene.background = initialBackground
         count++

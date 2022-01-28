@@ -249,7 +249,7 @@ PointerLockControls additionally supports a `selector` prop, which enables the b
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-transformcontrols--transform-controls-story)
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/btsbj"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/btsbj/screenshot.png" alt="Tranform controls"/></a>
 </p>
 
@@ -281,7 +281,7 @@ If you are using other controls (Orbit, Trackball, etc), you will notice how the
 
 ![](https://img.shields.io/badge/-Dom only-red)
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/l4klb"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/l4klb/screenshot.png" alt="Horizontal tiles"/></a>
   <a href="https://codesandbox.io/s/4m0d0"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/4m0d0/screenshot.png" alt="M1 scroll"/></a>
   <a href="https://codesandbox.io/s/gsm1y"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/gsm1y/screenshot.png" alt="useIntersect"/></a>
@@ -347,7 +347,7 @@ function Foo(props) {
 
 ![](https://img.shields.io/badge/-Dom only-red)
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/kheke"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/kheke/screenshot.png" alt="Journey stage 1"/></a>
   <a href="https://codesandbox.io/s/qyz5r"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/qyz5r/screenshot.png" alt="Watch"/></a>
 </p>
@@ -407,7 +407,7 @@ A triangle that fills the screen, ideal for full-screen fragment shader work (ra
 
 #### Image
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/l4klb"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/l4klb/screenshot.png" alt="Horizontal tiles"/></a>
   <a href="https://codesandbox.io/s/gsm1y"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/gsm1y/screenshot.png" alt="useIntersect"/></a>
   <a href="https://codesandbox.io/s/x8gvs"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/x8gvs/screenshot.png" alt="Infinite scroll"/></a>
@@ -431,7 +431,7 @@ function Foo() {
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-text--text-st)
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/yup2o"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/yup2o/screenshot.png" alt="Demo"/></a>
 </p>
 
@@ -465,7 +465,7 @@ Renders a THREE.Line2.
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-line--quadratic-bezier)
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/2ij9u"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/2ij9u/screenshot.png" alt="Demo"/></a>
 </p>
 
@@ -523,7 +523,7 @@ Renders a THREE.Line2 using THREE.CubicBezierCurve3 for interpolation.
 
 #### PositionalAudio
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/gkfhr"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/gkfhr/screenshot.png" alt="Demo"/></a>
 </p>
 
@@ -609,7 +609,7 @@ A declarative THREE.Texture which attaches to "map" by default. You can use this
 
 #### Edges
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/ny3p4"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/ny3p4/screenshot.png" alt="Demo"/></a>
 </p>
 
@@ -631,7 +631,7 @@ Abstracts [THREE.EdgesGeometry](https://threejs.org/docs/index.html?q=EdgesGeome
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-useanimations--use-animations-st)
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/pecl6"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/pecl6/screenshot.png" alt="Demo"/></a>
 </p>
 
@@ -661,7 +661,7 @@ return <primitive object={scene} />
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shaders-meshreflectormaterial--reflector-st)
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/lx2h8"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/lx2h8/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/l900i"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/l900i/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/l900i"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/l900i/screenshot.png" alt="Demo"/></a>
@@ -736,7 +736,7 @@ An antialiased round dot that always keeps the same size.
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shaders-softshadows--soft-shadows-st)
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/dh2jc"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/dh2jc/screenshot.png" alt="Demo"/></a>
 </p>
 
@@ -756,7 +756,7 @@ softShadows({
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shaders-shadermaterial--shader-material-story)
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/ni6v4"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/ni6v4/screenshot.png" alt="Demo"/></a>
 </p>
 
@@ -854,7 +854,7 @@ function Scene() {
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-html--html-st) ![](https://img.shields.io/badge/-Dom only-red)
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/qyz5r"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/qyz5r/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/9keg6"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/9keg6/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/6oei7"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/6oei7/screenshot.png" alt="Demo"/></a>
@@ -913,7 +913,7 @@ const [hidden, set] = useState()
 
 ![](https://img.shields.io/badge/-Dom only-red)
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/ls503"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/ls503/screenshot.png" alt="Demo"/></a>
 </p>
 
@@ -934,7 +934,7 @@ For this to work properly your event handler have to call `event.stopPropagation
 
 ![](https://img.shields.io/badge/-Dom only-red)
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/ny3p4"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/ny3p4/screenshot.png" alt="Demo"/></a>
 </p>
 
@@ -1008,7 +1008,7 @@ The rendertarget is automatically disposed when unmounted.
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-usecamera--use-camera-st)
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/py4db"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/py4db/screenshot.png" alt="Demo"/></a>
 </p>
 
@@ -1083,7 +1083,7 @@ return (
 
 #### useIntersect
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/gsm1y"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/gsm1y/screenshot.png" alt="Demo"/></a>
 </p>
 
@@ -1100,7 +1100,7 @@ return <mesh ref={ref} />
 
 ![](https://img.shields.io/badge/-Dom only-red)
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/0buje"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/0buje/screenshot.png" alt="Demo"/></a>
 </p>
 
@@ -1232,7 +1232,7 @@ const envMap = useCubeTexture(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png',
 
 #### Instances
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/h8o2d"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/h8o2d/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/i6t0j"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/i6t0j/screenshot.png" alt="Demo"/></a>
 </p>
@@ -1280,7 +1280,7 @@ You can define events on them!
 
 #### Merged
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/l900i"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/l900i/screenshot.png" alt="Demo"/></a>
 </p>
 
@@ -1395,7 +1395,7 @@ useFrame(() => {
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-detailed--detailed-st)
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/12nmp"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/12nmp/screenshot.png" alt="Demo"/></a>
 </p>
 
@@ -1488,7 +1488,7 @@ Calculates a boundary box and centers its children accordingly. `alignTop` makes
 
 #### Bounds
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/rz2g0"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/rz2g0/screenshot.png" alt="Demo"/></a>
 </p>
 
@@ -1520,7 +1520,7 @@ function Foo() {
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-camerashake--camera-shake-story)
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/t4l0f"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/t4l0f/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/0ycwe"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/0ycwe/screenshot.png" alt="Demo"/></a>
 </p>
@@ -1555,7 +1555,7 @@ interface ShakeController {
 
 #### Float
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/2ij9u"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/2ij9u/screenshot.png" alt="Demo"/></a>
 </p>
 
@@ -1587,7 +1587,7 @@ Make sure to set the `makeDefault` prop on your controls, in that case you do no
 
 #### Backdrop
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/8yfnd"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/8yfnd/screenshot.png" alt="Demo"/></a>
 </p>
 
@@ -1621,7 +1621,7 @@ A cheap canvas-texture-based circular gradient.
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-contactshadows--contact-shadow-st)
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/qxjoj"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/qxjoj/screenshot.png" alt="Demo"/></a>
 </p>
 
@@ -1639,7 +1639,7 @@ Since this is a rather expensive effect you can limit the amount of frames it re
 
 #### SpotLight
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/tx1pq"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/tx1pq/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/wdzv4"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/wdzv4/screenshot.png" alt="Demo"/></a>
 </p>
@@ -1667,7 +1667,7 @@ function Foo() {
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-environment--environment-story)
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/t4l0f"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/t4l0f/screenshot.png" alt="Demo"/></a>
 </p>
 
@@ -1693,7 +1693,7 @@ If you provide a single string it will use THREE.RGBELoader.
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-sky--sky-st)
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/vkgi6"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/vkgi6/screenshot.png" alt="Demo"/></a>
 </p>
 
@@ -1717,7 +1717,7 @@ Adds a blinking shader-based starfield to your scene.
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-cloud--cloud-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
-<p align="center">
+<p>
   <a href="https://codesandbox.io/s/mbfzf"><img width="16%" src="https://codesandbox.io/api/v1/sandboxes/mbfzf/screenshot.png" alt="Demo"/></a>
 </p>
 

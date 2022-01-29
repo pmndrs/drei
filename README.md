@@ -592,12 +592,16 @@ Abstraction around threes own [EffectComposer](https://threejs.org/docs/index.ht
 
 #### GradientTexture
 
+<p>
+  <a href="https://codesandbox.io/s/l03yb"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/l03yb/screenshot.png" alt="Demo"/></a>
+</p>
+
 A declarative THREE.Texture which attaches to "map" by default. You can use this to create gradient backgrounds.
 
 ```jsx
 <mesh>
   <planeGeometry />
-  <meshBasicMaterial depthWrite={false}>
+  <meshBasicMaterial>
     <GradientTexture
       stops={[0, 1]} // As many stops as you want
       colors={['aquamarine', 'hotpink']} // Colors need to match the number of stops
@@ -711,6 +715,10 @@ This material makes your geometry wobble and wave around. It was taken from the 
 #### MeshDistortMaterial
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shaders-meshdistortmaterial--mesh-distort-material-st)
+
+<p>
+  <a href="https://codesandbox.io/s/l03yb"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/l03yb/screenshot.png" alt="Demo"/></a>
+</p>
 
 This material makes your geometry distort following simplex noise.
 

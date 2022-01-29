@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import { Vector3, Mesh, RepeatWrapping, Vector2 } from 'three'
 
 import { Setup } from '../Setup'
-import { MeshReflectorMaterial, useTexture, TorusKnot, Box } from '../../src'
+import { MeshReflectorMaterial, useTexture, TorusKnot, Box, Environment } from '../../src'
 
 export default {
   title: 'Shaders/MeshReflectorMaterial',
@@ -22,11 +22,13 @@ function ReflectorScene({
   depthScale,
   distortion,
   normalScale,
+  reflectorOffset,
 }: {
   blur?: [number, number]
   depthScale?: number
   distortion?: number
   normalScale?: number
+  reflectorOffset?: number
 }) {
   const roughness = useTexture('roughness_floor.jpeg')
   const normal = useTexture('NORM.jpg')
@@ -67,6 +69,7 @@ function ReflectorScene({
           roughness={1}
           normalMap={normal}
           normalScale={_normalScale}
+          reflectorOffset={reflectorOffset}
         />
       </mesh>
 
@@ -77,6 +80,7 @@ function ReflectorScene({
         <meshPhysicalMaterial color="hotpink" />
       </TorusKnot>
       <spotLight intensity={1} position={[10, 6, 10]} penumbra={1} angle={0.3} />
+      <Environment preset="city" />
     </>
   )
 }
@@ -122,3 +126,10 @@ export const ReflectorNormalMap = () => (
   </React.Suspense>
 )
 ReflectorNormalMap.storyName = 'NormalMap'
+
+export const ReflectorOffset = () => (
+  <React.Suspense fallback={null}>
+    <ReflectorScene reflectorOffset={1} />
+  </React.Suspense>
+)
+ReflectorOffset.storyName = 'ReflectorOffset'

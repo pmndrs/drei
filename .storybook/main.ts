@@ -12,6 +12,9 @@ export default {
   typescript: {
     check: true,
   },
+  features: {
+    postcss: false,
+  },
   webpackFinal: (config) => {
     config.module.rules.push({
       test: /\.(glsl|vs|fs|vert|frag)$/,

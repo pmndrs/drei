@@ -1,10 +1,11 @@
 import * as React from 'react'
 import { withKnobs, optionsKnob, boolean } from '@storybook/addon-knobs'
-import { TransformControls as TransformControlsImpl } from 'three-stdlib'
+import { Object3D } from 'three'
+import { TransformControls as TransformControlsImpl, OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 
 import { Setup } from '../Setup'
 
-import { Box, OrbitControls, TransformControls } from '../../src'
+import { Box, OrbitControls, Select, TransformControls } from '../../src'
 
 export function TransformControlsStory() {
   return (
@@ -25,8 +26,34 @@ export default {
   component: TransformControls,
 }
 
+export function TransformControlsSelectObjectStory() {
+  const [selected, setSelected] = React.useState<Object3D[]>([])
+  const active = selected[0]
+
+  return (
+    <Setup controls={false}>
+      <OrbitControls makeDefault />
+      {active && <TransformControls object={active} />}
+      <Select box onChange={setSelected}>
+        <group>
+          <Box position={[-1, 0, 0]}>
+            <meshBasicMaterial attach="material" wireframe color="orange" />
+          </Box>
+        </group>
+        <group>
+          <Box position={[0, 0, 0]}>
+            <meshBasicMaterial attach="material" wireframe color="green" />
+          </Box>
+        </group>
+      </Select>
+    </Setup>
+  )
+}
+
+TransformControlsSelectObjectStory.storyName = 'With <Select />'
+
 function TransformControlsLockScene({ mode, showX, showY, showZ }) {
-  const orbitControls = React.useRef<OrbitControls>(null!)
+  const orbitControls = React.useRef<OrbitControlsImpl>(null!)
   const transformControls = React.useRef<TransformControlsImpl>(null!)
 
   React.useEffect(() => {

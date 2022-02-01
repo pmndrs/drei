@@ -57,12 +57,22 @@ export const TransformControls = React.forwardRef<TransformControlsImpl, Transfo
     const defaultCamera = useThree(({ camera }) => camera)
     const invalidate = useThree(({ invalidate }) => invalidate)
     const explCamera = camera || defaultCamera
-    const controls = React.useMemo(() => new TransformControlsImpl(explCamera, domElement || gl.domElement), [explCamera, domElement, gl.domElement])
+    const controls = React.useMemo(
+      () => new TransformControlsImpl(explCamera, domElement || gl.domElement),
+      [explCamera, domElement, gl.domElement]
+    )
     const group = React.useRef<THREE.Group>()
 
     React.useLayoutEffect(() => {
-      if (object) controls?.attach(object instanceof THREE.Object3D ? object : object.current)
-      else controls?.attach(group.current as THREE.Object3D)
+      if (object) {
+        controls.attach(object instanceof THREE.Object3D ? object : object.current)
+      } else if (group.current instanceof THREE.Object3D) {
+        controls.attach(group.current)
+      }
+
+      return () => {
+        controls.detach()
+      }
     }, [object, children, controls])
 
     React.useEffect(() => {

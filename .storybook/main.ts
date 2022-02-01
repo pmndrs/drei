@@ -1,6 +1,7 @@
 import { resolve } from 'path'
 
 export default {
+  staticDirs: ['./public'],
   stories: ['./stories/**/*.stories.{ts,tsx}'],
   addons: [
     '@storybook/addon-controls',

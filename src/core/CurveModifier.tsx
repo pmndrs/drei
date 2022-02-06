@@ -1,5 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
+import { createPortal } from '@react-three/fiber'
 import { Flow } from 'three-stdlib'
 
 export interface CurveModifierProps {
@@ -10,9 +11,20 @@ export interface CurveModifierProps {
 export type CurveModifierRef = Pick<Flow, 'moveAlongCurve'>
 
 export const CurveModifier = React.forwardRef(({ children, curve }: CurveModifierProps, ref) => {
-  const [object3D, setObj] = React.useState<THREE.Object3D | undefined>()
-  const original = React.useRef<THREE.Mesh>()
+  const [scene] = React.useState(() => new THREE.Scene())
+  const [obj, set] = React.useState<THREE.Object3D>()
   const modifier = React.useRef<Flow>()
+
+  React.useEffect(() => {
+    modifier.current = new Flow(
+      scene.children[0] as THREE.Mesh<THREE.BufferGeometry, THREE.Material | THREE.Material[]>
+    )
+    set(modifier.current.object3D)
+  }, [children])
+
+  React.useEffect(() => {
+    if (curve) modifier.current?.updateCurve(0, curve)
+  }, [curve])
 
   React.useImperativeHandle(ref, () => ({
     moveAlongCurve: (val: number) => {
@@ -20,24 +32,10 @@ export const CurveModifier = React.forwardRef(({ children, curve }: CurveModifie
     },
   }))
 
-  React.useEffect(() => {
-    if (!modifier.current && original.current && ref) {
-      modifier.current = new Flow(original.current)
-      setObj(modifier.current.object3D)
-    }
-  }, [children, ref])
-
-  React.useEffect(() => {
-    if (original.current && curve) {
-      modifier.current?.updateCurve(0, curve)
-    }
-  }, [curve])
-
-  return object3D ? (
-    <primitive object={object3D} />
-  ) : (
-    React.cloneElement(React.Children.only(children), {
-      ref: original,
-    })
+  return (
+    <>
+      {createPortal(children, scene)}
+      {obj && <primitive object={obj} />}
+    </>
   )
 })

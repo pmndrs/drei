@@ -4022,11 +4022,6 @@
   resolved "https://registry.yarnpkg.com/@webgpu/glslang/-/glslang-0.0.15.tgz#f5ccaf6015241e6175f4b90906b053f88483d1f2"
   integrity sha512-niT+Prh3Aff8Uf1MVBVUsaNjFj9rJAKDXuoHIKiQbB+6IUP/3J3JIhBNyZ7lDhytvXxw6ppgnwKZdDJ08UMj4Q==
 
-"@webxr-input-profiles/motion-controllers@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@webxr-input-profiles/motion-controllers/-/motion-controllers-1.0.0.tgz#0a84533288af39d85bfe1987721035925d69be47"
-  integrity sha512-Ppxde+G1/QZbU8ShCQg+eq5VtlcL/FPkerF1dkDOLlIml0LJD1tFqnCZYR0SrHzYleIQ2siRnOx7xbFLaCpExQ==
-
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@xtuc/ieee754/-/ieee754-1.2.0.tgz#eef014a3145ae477a1cbc00cd1e552336dceb790"
@@ -12870,14 +12865,13 @@ three-mesh-bvh@^0.5.4:
   resolved "https://registry.npmjs.org/three-mesh-bvh/-/three-mesh-bvh-0.5.4.tgz#f4c8d751f420c60c35f880393bb00553ce1b298c"
   integrity sha512-Hq3zpjqBxx2sp/K2Fw7cZ1yEoIVbMc4hOv3VRtmCjHapDKkZpDh8w3OcktbCwn+vBNPt9Ii8D0nDTeqt+73Dwg==
 
-three-stdlib@^2.8.2:
-  version "2.8.2"
-  resolved "https://registry.npmjs.org/three-stdlib/-/three-stdlib-2.8.2.tgz#b04e8cf09a931aac942307f673813426ce0e70bd"
-  integrity sha512-B91eN9CFwqg/D7g3TOhth994dLoh6dQYtj5pRTVxHk0v02vdC7lutGkmKYryDh1YBg7x2bTdxvMxbfOT4RtF9Q==
+three-stdlib@^2.8.6:
+  version "2.8.6"
+  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-2.8.6.tgz#80aab4ea175acb2f5c32d7488bb26e0a0955be9f"
+  integrity sha512-0emGIVrJG3SGmDyU/mdd4fPOwkXrDCCCwSugHiQBkN5AruAtSTS85Y7zjvexQsQaDYb5RGlJsDefH41nM9uG4Q==
   dependencies:
     "@babel/runtime" "^7.16.7"
     "@webgpu/glslang" "^0.0.15"
-    "@webxr-input-profiles/motion-controllers" "^1.0.0"
     chevrotain "^9.0.2"
     draco3d "^1.4.1"
     fflate "^0.6.9"

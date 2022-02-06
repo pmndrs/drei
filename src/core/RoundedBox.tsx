@@ -18,10 +18,11 @@ type Props = {
   args?: NamedArrayTuple<(width?: number, height?: number, depth?: number) => void>
   radius?: number
   smoothness?: number
+  steps?: number
 } & Omit<JSX.IntrinsicElements['mesh'], 'args'>
 
 export const RoundedBox = React.forwardRef<Mesh, Props>(function RoundedBox(
-  { args: [width = 1, height = 1, depth = 1] = [], radius = 0.05, smoothness = 4, children, ...rest },
+  { args: [width = 1, height = 1, depth = 1] = [], radius = 0.05, steps = 1, smoothness = 4, children, ...rest },
   ref
 ) {
   const shape = React.useMemo(() => createShape(width, height, radius), [width, height, radius])
@@ -30,7 +31,7 @@ export const RoundedBox = React.forwardRef<Mesh, Props>(function RoundedBox(
       depth: depth - radius * 2,
       bevelEnabled: true,
       bevelSegments: smoothness * 2,
-      steps: 1,
+      steps,
       bevelSize: radius - eps,
       bevelThickness: radius,
       curveSegments: smoothness,

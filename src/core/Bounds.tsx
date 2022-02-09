@@ -93,7 +93,7 @@ export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0
         }
 
         if (controls?.constructor.name === 'OrthographicTrackballControls') {
-          // Put camera on a sphere along which it should moves
+          // Put camera on a sphere along which it should move
           const { distance } = getSize()
           const direction = camera.position.clone().sub(controls.target).normalize().multiplyScalar(distance)
           const newPos = controls.target.clone().add(direction)
@@ -109,6 +109,25 @@ export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0
         camera.far = distance * 100
         camera.updateProjectionMatrix()
         if (controls) controls.update()
+        return this
+      },
+      to({ position, lookAt }: { position: [number, number, number]; lookAt?: [number, number, number] }) {
+        current.camera.copy(camera.position)
+        const { center } = getSize()
+        goal.camera.set(...position)
+
+        if (lookAt) {
+          goal.focus.set(...lookAt)
+        } else {
+          goal.focus.copy(center)
+        }
+
+        if (damping) {
+          current.animating = true
+        } else {
+          camera.position.set(...position)
+        }
+
         return this
       },
       fit() {

@@ -5,7 +5,6 @@ import {
   Vector4,
   Matrix4,
   PerspectiveCamera,
-  RGBFormat,
   LinearFilter,
   WebGLRenderTarget,
   DepthTexture,

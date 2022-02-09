@@ -10,6 +10,7 @@ import {
   DepthTexture,
   DepthFormat,
   UnsignedShortType,
+  LinearEncoding,
   Texture,
 } from 'three'
 import { useFrame, useThree, extend } from '@react-three/fiber'
@@ -171,6 +172,7 @@ export const MeshReflectorMaterial = React.forwardRef<MeshReflectorMaterialImpl,
         mixBlur,
         tDiffuse: fbo1.texture,
         tDepth: fbo1.depthTexture,
+        'tDepth-encoding': LinearEncoding,
         tDiffuseBlur: fbo2.texture,
         hasBlur,
         mixStrength,

@@ -139,19 +139,18 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
       newMerge.b = (merge.b - 0.5) * mixContrast + 0.5;
 
       diffuseColor.rgb = diffuseColor.rgb * ((1.0 - min(1.0, mirror)) + newMerge.rgb * mixStrength);           
-      diffuseColor = sRGBToLinear(diffuseColor);
       
       if (debug == 1) {
-        diffuseColor = sRGBToLinear(vec4(vec3(depthFactor), 1.0));
+        diffuseColor = vec4(vec3(depthFactor), 1.0);
       }
       if (debug == 2) {
-        diffuseColor = sRGBToLinear(vec4(vec3(blurFactor), 1.0));
+        diffuseColor = vec4(vec3(blurFactor), 1.0);
       }
       if (debug == 3) {
-        diffuseColor = sRGBToLinear(texture2DProj(tDiffuse, new_vUv));
+        diffuseColor = texture2DProj(tDiffuse, new_vUv);
       }
       if (debug == 4) {
-        diffuseColor = sRGBToLinear(texture2DProj(tDiffuseBlur, new_vUv));
+        diffuseColor = texture2DProj(tDiffuseBlur, new_vUv);
       }
       `
     )

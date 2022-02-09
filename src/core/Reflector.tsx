@@ -12,7 +12,6 @@ import {
   DepthFormat,
   UnsignedShortType,
   Texture,
-  LinearEncoding,
 } from 'three'
 import { useFrame, useThree, extend } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
@@ -177,11 +176,8 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
         textureMatrix,
         mixBlur,
         tDiffuse: fbo1.texture,
-        'tDiffuse-encoding': LinearEncoding,
         tDepth: fbo1.depthTexture,
-        'tDepth-encoding': LinearEncoding,
         tDiffuseBlur: fbo2.texture,
-        'tDiffuseBlur-encoding': LinearEncoding,
         hasBlur,
         mixStrength,
         minDepthThreshold,
@@ -192,7 +188,6 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
         debug,
         distortion,
         distortionMap,
-        'distortionMap-encoding': LinearEncoding,
         mixContrast,
         'defines-USE_BLUR': hasBlur ? '' : undefined,
         'defines-USE_DEPTH': depthScale > 0 ? '' : undefined,

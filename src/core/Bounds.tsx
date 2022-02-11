@@ -111,13 +111,13 @@ export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0
         if (controls) controls.update()
         return this
       },
-      to({ position, lookAt }: { position: [number, number, number]; lookAt?: [number, number, number] }) {
+      to({ position, target }: { position: [number, number, number]; target?: [number, number, number] }) {
         current.camera.copy(camera.position)
         const { center } = getSize()
         goal.camera.set(...position)
 
-        if (lookAt) {
-          goal.focus.set(...lookAt)
+        if (target) {
+          goal.focus.set(...target)
         } else {
           goal.focus.copy(center)
         }

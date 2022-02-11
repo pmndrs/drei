@@ -1,25 +1,29 @@
 import { EventManager, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
-import * as THREE from 'three'
-// @ts-ignore
+import { forwardRef, useEffect, useMemo } from 'react'
 import { ArcballControls as ArcballControlsImpl } from 'three-stdlib'
 
-export type ArcballControlsProps = ReactThreeFiber.Overwrite<
-  ReactThreeFiber.Object3DNode<ArcballControlsImpl, typeof ArcballControlsImpl>,
-  {
-    target?: ReactThreeFiber.Vector3
-    camera?: THREE.Camera
-    domElement?: HTMLElement
-    regress?: boolean
-    makeDefault?: boolean
-    onChange?: (e?: THREE.Event) => void
-    onStart?: (e?: THREE.Event) => void
-    onEnd?: (e?: THREE.Event) => void
-  }
+import type { Event, OrthographicCamera, PerspectiveCamera } from 'three'
+
+export type ArcballControlsProps = Omit<
+  ReactThreeFiber.Overwrite<
+    ReactThreeFiber.Object3DNode<ArcballControlsImpl, typeof ArcballControlsImpl>,
+    {
+      target?: ReactThreeFiber.Vector3
+      camera?: OrthographicCamera | PerspectiveCamera
+      domElement?: HTMLElement
+      regress?: boolean
+      makeDefault?: boolean
+      onChange?: (e?: Event) => void
+      onStart?: (e?: Event) => void
+      onEnd?: (e?: Event) => void
+    }
+  >,
+  'ref'
 >
 
-export const ArcballControls = React.forwardRef<ArcballControlsImpl, ArcballControlsProps>(
-  ({ makeDefault, camera, regress, domElement, onChange, onStart, onEnd, ...restProps }, ref) => {
+export const ArcballControls = forwardRef<ArcballControlsImpl, ArcballControlsProps>(
+  ({ camera, makeDefault, regress, domElement, onChange, onStart, onEnd, ...restProps }, ref) => {
     const invalidate = useThree(({ invalidate }) => invalidate)
     const defaultCamera = useThree(({ camera }) => camera)
     const gl = useThree(({ gl }) => gl)
@@ -29,14 +33,14 @@ export const ArcballControls = React.forwardRef<ArcballControlsImpl, ArcballCont
     const performance = useThree(({ performance }) => performance)
     const explCamera = camera || defaultCamera
     const explDomElement = domElement || (typeof events.connected !== 'boolean' ? events.connected : gl.domElement)
-    const controls = React.useMemo(() => new ArcballControlsImpl(explCamera), [explCamera])
+    const controls = useMemo(() => new ArcballControlsImpl(explCamera), [explCamera])
 
     useFrame(() => {
       if (controls.enabled) controls.update()
     })
 
-    React.useEffect(() => {
-      const callback = (e: THREE.Event) => {
+    useEffect(() => {
+      const callback = (e: Event) => {
         invalidate()
         if (regress) performance.regress()
         if (onChange) onChange(e)
@@ -56,7 +60,7 @@ export const ArcballControls = React.forwardRef<ArcballControlsImpl, ArcballCont
       }
     }, [explDomElement, onChange, onStart, onEnd, regress, controls, invalidate])
 
-    React.useEffect(() => {
+    useEffect(() => {
       if (makeDefault) {
         const old = get().controls
         set({ controls })

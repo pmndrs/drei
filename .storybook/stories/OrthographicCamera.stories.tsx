@@ -1,11 +1,19 @@
 import * as React from 'react'
 import { Canvas } from '@react-three/fiber'
 
-import { Icosahedron, OrthographicCamera, OrbitControls } from '../../src'
+import { Icosahedron, OrthographicCamera, OrbitControls, useHelper } from '../../src'
 
 export default {
   title: 'Camera/OrthographicCamera',
   component: OrthographicCameraScene,
+  args: {
+    showHelper: false,
+  },
+  argTypes: {
+    showHelper: {
+      type: 'boolean',
+    },
+  },
 }
 
 const NUM = 3
@@ -15,7 +23,7 @@ interface Positions {
   position: [number, number, number]
 }
 
-function OrthographicCameraScene() {
+function OrthographicCameraScene({ showHelper }: { showHelper: boolean }) {
   const positions = React.useMemo(() => {
     const pos: Positions[] = []
     const half = (NUM - 1) / 2
@@ -34,7 +42,7 @@ function OrthographicCameraScene() {
 
   return (
     <Canvas>
-      <OrthographicCamera makeDefault position={[0, 0, 10]} zoom={40} />
+      <OrthographicCamera makeDefault position={[0, 0, 10]} zoom={40} helper={showHelper} />
       <group position={[0, 0, -10]}>
         {positions.map(({ id, position }) => (
           <Icosahedron key={id} position={position} args={[1, 1]}>
@@ -47,7 +55,7 @@ function OrthographicCameraScene() {
   )
 }
 
-export const OrthographicCameraSceneSt = () => <OrthographicCameraScene />
+export const OrthographicCameraSceneSt = (args: { showHelper: boolean }) => <OrthographicCameraScene {...args} />
 OrthographicCameraSceneSt.story = {
   name: 'Default',
 }

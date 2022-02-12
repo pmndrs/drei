@@ -6,6 +6,14 @@ import { Icosahedron, PerspectiveCamera, OrbitControls } from '../../src'
 export default {
   title: 'Camera/PerspectiveCamera',
   component: PerspectiveCameraScene,
+  args: {
+    showHelper: false,
+  },
+  argTypes: {
+    showHelper: {
+      type: 'boolean',
+    },
+  },
 }
 
 const NUM = 3
@@ -15,7 +23,7 @@ interface Positions {
   position: [number, number, number]
 }
 
-function PerspectiveCameraScene() {
+function PerspectiveCameraScene({ showHelper }: { showHelper: boolean }) {
   const positions = React.useMemo(() => {
     const pos: Positions[] = []
     const half = (NUM - 1) / 2
@@ -34,7 +42,7 @@ function PerspectiveCameraScene() {
 
   return (
     <Canvas>
-      <PerspectiveCamera makeDefault position={[0, 0, 10]} />
+      <PerspectiveCamera makeDefault position={[0, 0, 10]} helper={showHelper} />
       <group position={[0, 0, -10]}>
         {positions.map(({ id, position }) => (
           <Icosahedron key={id} position={position} args={[1, 1]}>
@@ -47,7 +55,7 @@ function PerspectiveCameraScene() {
   )
 }
 
-export const PerspectiveCameraSceneSt = () => <PerspectiveCameraScene />
+export const PerspectiveCameraSceneSt = (args: { showHelper: boolean }) => <PerspectiveCameraScene {...args} />
 PerspectiveCameraSceneSt.story = {
   name: 'Default',
 }

@@ -1,19 +1,23 @@
 import * as React from 'react'
-import { PerspectiveCamera as PerspectiveCameraImpl } from 'three'
+import { CameraHelper, PerspectiveCamera as PerspectiveCameraImpl } from 'three'
 import { useThree } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
+import { useHelper } from './useHelper'
 
 type Props = JSX.IntrinsicElements['perspectiveCamera'] & {
   makeDefault?: boolean
   manual?: boolean
   children?: React.ReactNode
+  helper?: boolean
 }
 
-export const PerspectiveCamera = React.forwardRef(({ makeDefault, ...props }: Props, ref) => {
+export const PerspectiveCamera = React.forwardRef(({ makeDefault, helper, ...props }: Props, ref) => {
   const set = useThree(({ set }) => set)
   const camera = useThree(({ camera }) => camera)
   const size = useThree(({ size }) => size)
   const cameraRef = React.useRef<PerspectiveCameraImpl>()
+
+  useHelper(helper && cameraRef, CameraHelper)
 
   React.useLayoutEffect(() => {
     const { current: cam } = cameraRef

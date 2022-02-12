@@ -38,7 +38,8 @@ export class Position extends THREE.Group {
     _mesh.geometry = parent.geometry
     const matrixWorld = parent.matrixWorld
     let instanceId = parent.userData.instances.indexOf(this.instanceKey)
-    if (instanceId === -1) return
+    // If the instance wasn't found or exceeds the parents draw range, bail out
+    if (instanceId === -1 || instanceId > parent.count) return
     // calculate the world matrix for each instance
     parent.getMatrixAt(instanceId, _instanceLocalMatrix)
     _instanceWorldMatrix.multiplyMatrices(matrixWorld, _instanceLocalMatrix)

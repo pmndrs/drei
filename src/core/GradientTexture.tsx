@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import * as React from 'react'
+import { useThree } from '@react-three/fiber'
 
 type Props = {
   stops: Array<number>
@@ -8,7 +9,8 @@ type Props = {
   size?: number
 } & JSX.IntrinsicElements['texture']
 
-export function GradientTexture({ stops, colors, size = 2048, ...props }: Props) {
+export function GradientTexture({ stops, colors, size = 1024, ...props }: Props) {
+  const gl = useThree((state) => state.gl)
   const texture = React.useMemo(() => {
     const canvas = document.createElement('canvas')
     const context = canvas.getContext('2d')!
@@ -26,5 +28,5 @@ export function GradientTexture({ stops, colors, size = 2048, ...props }: Props)
     return texture
   }, [stops])
   React.useEffect(() => () => void texture.dispose(), [texture])
-  return <primitive object={texture} attach="map" {...props} />
+  return <primitive object={texture} attach="map" encoding={gl.outputEncoding} {...props} />
 }

@@ -12,6 +12,7 @@ export default {
   typescript: {
     check: true,
   },
+  // https://github.com/storybookjs/storybook/blob/next/MIGRATION.md#deprecated-implicit-postcss-loader
   features: {
     postcss: false,
   },

@@ -1,10 +1,22 @@
 import * as React from 'react'
 import { useFrame } from '@react-three/fiber'
 
-import { withKnobs, number } from '@storybook/addon-knobs'
+import { withKnobs, number, optionsKnob } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
 import { MeshDistortMaterial, Icosahedron } from '../../src'
+
+import {
+  MeshBasicMaterial,
+  MeshPhysicalMaterial,
+  MeshNormalMaterial,
+  MeshToonMaterial,
+  MeshStandardMaterial,
+  MeshPhongMaterial,
+  MeshLambertMaterial,
+  MeshMatcapMaterial,
+  MeshDepthMaterial,
+} from 'three'
 
 export default {
   title: 'Shaders/MeshDistortMaterial',
@@ -13,6 +25,36 @@ export default {
 }
 
 function MeshDistortMaterialScene() {
+  const options = React.useMemo(
+    () => ({
+      MeshBasicMaterial,
+      MeshPhysicalMaterial,
+      MeshNormalMaterial,
+      MeshToonMaterial,
+      MeshStandardMaterial,
+      MeshPhongMaterial,
+      MeshLambertMaterial,
+      MeshMatcapMaterial,
+      MeshDepthMaterial,
+    }),
+    []
+  )
+  const base = optionsKnob(
+    'Base Material',
+    {
+      MeshPhysicalMaterial: 'MeshPhysicalMaterial',
+      MeshBasicMaterial: 'MeshBasicMaterial',
+      MeshMatcapMaterial: 'MeshMatcapMaterial',
+      MeshNormalMaterial: 'MeshNormalMaterial',
+      MeshStandardMaterial: 'MeshStandardMaterial',
+      MeshPhongMaterial: 'MeshPhongMaterial',
+      MeshToonMaterial: 'MeshToonMaterial',
+      MeshLambertMaterial: 'MeshLambertMaterial',
+    },
+    'MeshStandardMaterial',
+    { display: 'select' }
+  )
+
   return (
     <Icosahedron args={[1, 4]}>
       <MeshDistortMaterial
@@ -21,6 +63,7 @@ function MeshDistortMaterialScene() {
         speed={number('Speed', 1, { range: true, max: 10, step: 0.1 })}
         distort={number('Distort', 0.6, { range: true, min: 0, max: 1, step: 0.1 })}
         radius={number('Radius', 1, { range: true, min: 0, max: 1, step: 0.1 })}
+        baseMaterial={options[base]}
       />
     </Icosahedron>
   )

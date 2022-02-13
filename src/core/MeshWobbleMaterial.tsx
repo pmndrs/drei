@@ -1,14 +1,25 @@
 import * as React from 'react'
-import { MeshStandardMaterial, MeshStandardMaterialParameters, Shader } from 'three'
+import { Material, MeshStandardMaterial } from 'three'
 import { useFrame } from '@react-three/fiber'
+import CustomShaderMaterial from 'three-custom-shader-material/vanilla'
+// @ts-ignore
+import recalcNormal from '../helpers/glsl/recalculateNormals.glsl'
 
-type WobbleMaterialType = JSX.IntrinsicElements['meshStandardMaterial'] & {
-  time?: number
-  factor?: number
-  speed?: number
-}
+type WobbleMaterialType = JSX.IntrinsicElements['meshStandardMaterial'] &
+  JSX.IntrinsicElements['meshStandardMaterial'] &
+  JSX.IntrinsicElements['meshPhysicalMaterial'] &
+  JSX.IntrinsicElements['meshLambertMaterial'] &
+  JSX.IntrinsicElements['meshPhongMaterial'] &
+  JSX.IntrinsicElements['meshToonMaterial'] &
+  JSX.IntrinsicElements['meshDepthMaterial'] &
+  JSX.IntrinsicElements['meshNormalMaterial'] & {
+    time?: number
+    factor?: number
+    speed?: number
+  }
 
 type Props = WobbleMaterialType & {
+  baseMaterial?: typeof Material
   speed?: number
   factor?: number
 }
@@ -21,60 +32,66 @@ declare global {
   }
 }
 
-interface Uniform<T> {
-  value: T
-}
+class WobbleMaterialImpl extends CustomShaderMaterial {
+  constructor(baseMaterial: typeof Material, parameters: any = {}) {
+    const vertexShader = `
+    uniform float time;
+    uniform float factor;
 
-class WobbleMaterialImpl extends MeshStandardMaterial {
-  _time: Uniform<number>
-  _factor: Uniform<number>
+    vec3 displace(vec3 p) {
+      float theta = sin( time + p.y ) / 2.0 * factor;
+      float c = cos( theta );
+      float s = sin( theta );
+      mat3 m = mat3( c, 0, s, 0, 1, 0, -s, 0, c );
+      return vec3(p) * m;
+    }
 
-  constructor(parameters: MeshStandardMaterialParameters = {}) {
-    super(parameters)
-    this.setValues(parameters)
-    this._time = { value: 0 }
-    this._factor = { value: 1 }
-  }
+    ${recalcNormal}
 
-  onBeforeCompile(shader: Shader) {
-    shader.uniforms.time = this._time
-    shader.uniforms.factor = this._factor
+    void main() { 
+      csm_Position = displace(position);
+      csm_Normal = recalcNormals(csm_Position);
+    }  
 
-    shader.vertexShader = `
-      uniform float time;
-      uniform float factor;
-      ${shader.vertexShader}
     `
-    shader.vertexShader = shader.vertexShader.replace(
-      '#include <begin_vertex>',
-      `float theta = sin( time + position.y ) / 2.0 * factor;
-        float c = cos( theta );
-        float s = sin( theta );
-        mat3 m = mat3( c, 0, s, 0, 1, 0, -s, 0, c );
-        vec3 transformed = vec3( position ) * m;
-        vNormal = vNormal * m;`
+
+    super(
+      baseMaterial,
+      undefined,
+      vertexShader,
+      {
+        time: {
+          value: 0,
+        },
+        factor: {
+          value: 0,
+        },
+      },
+      parameters
     )
   }
 
   get time() {
-    return this._time.value
+    return this.uniforms.time.value
   }
 
   set time(v) {
-    this._time.value = v
+    this.uniforms.time.value = v
   }
 
   get factor() {
-    return this._factor.value
+    return this.uniforms.factor.value
   }
 
   set factor(v) {
-    this._factor.value = v
+    this.uniforms.factor.value = v
   }
 }
 
-export const MeshWobbleMaterial = React.forwardRef(({ speed = 1, ...props }: Props, ref) => {
-  const [material] = React.useState(() => new WobbleMaterialImpl())
-  useFrame((state) => material && (material.time = state.clock.getElapsedTime() * speed))
-  return <primitive dispose={undefined} object={material} ref={ref} attach="material" {...props} />
-})
+export const MeshWobbleMaterial = React.forwardRef(
+  ({ baseMaterial = MeshStandardMaterial, speed = 1, ...props }: Props, ref) => {
+    const material = React.useMemo(() => new WobbleMaterialImpl(baseMaterial), [baseMaterial])
+    useFrame((state) => material && (material.time = state.clock.getElapsedTime() * speed))
+    return <primitive dispose={undefined} object={material} ref={ref} attach="material" {...props} />
+  }
+)

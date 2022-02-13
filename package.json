@@ -64,6 +64,7 @@
     "react-composer": "^5.0.2",
     "react-merge-refs": "^1.1.0",
     "stats.js": "^0.17.0",
+    "three-custom-shader-material": "^3.2.1",
     "three-mesh-bvh": "^0.5.4",
     "three-stdlib": "^2.8.2",
     "troika-three-text": "^0.44.0",

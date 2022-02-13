@@ -709,7 +709,7 @@ This material makes your geometry wobble and wave around. It was taken from the 
 ```jsx
 <mesh>
   <boxBufferGeometry attach="geometry" />
-  <MeshWobbleMaterial attach="material" factor={1} speed={10} />
+  <MeshWobbleMaterial attach="material" factor={1} speed={10} baseMaterial={THREE.MeshPhongMaterial} />
 </mesh>
 ```
 
@@ -726,7 +726,7 @@ This material makes your geometry distort following simplex noise.
 ```jsx
 <mesh>
   <boxBufferGeometry attach="geometry" />
-  <MeshDistortMaterial attach="material" distort={1} speed={10} />
+  <MeshDistortMaterial attach="material" distort={1} speed={10} baseMaterial={THREE.MeshPhongMaterial} />
 </mesh>
 ```
 

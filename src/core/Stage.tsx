@@ -29,7 +29,7 @@ type ControlsProto = { update(): void; target: THREE.Vector3 }
 type Props = JSX.IntrinsicElements['group'] & {
   shadows?: boolean
   adjustCamera?: boolean
-  environment?: PresetsType
+  environment?: PresetsType | null
   intensity?: number
   ambience?: number
   // TODO: in a new major state.controls should be the only means of consuming controls, the

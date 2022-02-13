@@ -706,10 +706,12 @@ Easily add reflections and/or blur to any mesh. It takes surface roughness into 
 
 This material makes your geometry wobble and wave around. It was taken from the [threejs-examples](https://threejs.org/examples/#webgl_materials_modified) and adapted into a self-contained material.
 
+The `from` prop describes the base material used, you can also pass any props that apply to the base material.
+
 ```jsx
 <mesh>
   <boxBufferGeometry attach="geometry" />
-  <MeshWobbleMaterial attach="material" factor={1} speed={10} baseMaterial={THREE.MeshPhongMaterial} />
+  <MeshWobbleMaterial attach="material" factor={1} speed={10} from={THREE.MeshPhongMaterial} />
 </mesh>
 ```
 
@@ -721,12 +723,12 @@ This material makes your geometry wobble and wave around. It was taken from the 
   <a href="https://codesandbox.io/s/l03yb"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/l03yb/screenshot.png" alt="Demo"/></a>
 </p>
 
-This material makes your geometry distort following simplex noise.
+This material makes your geometry distort following simplex noise. The `from` prop describes the base material used, you can also pass any props that apply to the base material.
 
 ```jsx
 <mesh>
   <boxBufferGeometry attach="geometry" />
-  <MeshDistortMaterial attach="material" distort={1} speed={10} baseMaterial={THREE.MeshPhongMaterial} />
+  <MeshDistortMaterial attach="material" distort={1} speed={10} from={THREE.MeshPhongMaterial} />
 </mesh>
 ```
 

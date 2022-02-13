@@ -19,7 +19,7 @@ type WobbleMaterialType = JSX.IntrinsicElements['meshStandardMaterial'] &
   }
 
 type Props = WobbleMaterialType & {
-  baseMaterial?: typeof Material
+  from?: typeof Material
   speed?: number
   factor?: number
 }
@@ -89,8 +89,8 @@ class WobbleMaterialImpl extends CustomShaderMaterial {
 }
 
 export const MeshWobbleMaterial = React.forwardRef(
-  ({ baseMaterial = MeshStandardMaterial, speed = 1, ...props }: Props, ref) => {
-    const material = React.useMemo(() => new WobbleMaterialImpl(baseMaterial), [baseMaterial])
+  ({ from = MeshStandardMaterial, speed = 1, ...props }: Props, ref) => {
+    const material = React.useMemo(() => new WobbleMaterialImpl(from), [from])
     useFrame((state) => material && (material.time = state.clock.getElapsedTime() * speed))
     return <primitive dispose={undefined} object={material} ref={ref} attach="material" {...props} />
   }

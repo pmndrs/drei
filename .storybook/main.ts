@@ -1,6 +1,7 @@
 import { resolve } from 'path'
 
 export default {
+  staticDirs: ['./public'],
   stories: ['./stories/**/*.stories.{ts,tsx}'],
   addons: [
     '@storybook/addon-controls',
@@ -10,6 +11,10 @@ export default {
   ],
   typescript: {
     check: true,
+  },
+  // https://github.com/storybookjs/storybook/blob/next/MIGRATION.md#deprecated-implicit-postcss-loader
+  features: {
+    postcss: false,
   },
   webpackFinal: (config) => {
     config.module.rules.push({

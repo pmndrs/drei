@@ -1287,7 +1287,7 @@ You can define events on them!
 <Instance onClick={...} onPointerOver={...} />
 ```
 
-Note: While creating instances declaratively keeps all the power of components with reduced draw calls, it comes at the cost of CPU overhead. For cases like foliage where you want no CPU overhead with thousands of intances you should use THREE.InstancedMesh such as in this [example](https://codesandbox.io/s/grass-shader-5xho4?file=/src/Grass.js).
+👉 Note: While creating instances declaratively keeps all the power of components with reduced draw calls, it comes at the cost of CPU overhead. For cases like foliage where you want no CPU overhead with thousands of intances you should use THREE.InstancedMesh such as in this [example](https://codesandbox.io/s/grass-shader-5xho4?file=/src/Grass.js).
 
 #### Merged
 
@@ -1736,6 +1736,8 @@ Adds a blinking shader-based starfield to your scene.
 
 Particle based cloud.
 
+👉 Note: `<Cloud />` component is not meant to be used in production environments as it relies on third-party CDN.
+
 ```jsx
 <Cloud
   opacity={0.5}
@@ -1753,6 +1755,8 @@ Particle based cloud.
 Loads matcap textures from this repository: https://github.com/emmelleppi/matcaps
 
 (It is a fork of this repository: https://github.com/nidorx/matcaps)
+
+👉 Note: `useMatcapTexture` hook is not meant to be used in production environments as it relies on third-party CDN.
 
 ```jsx
 const [matcap, url] = useMatcapTexture(
@@ -1780,6 +1784,8 @@ const [matcap] = useMatcapTexture('3E2335_D36A1B_8E4A2E_2842A5')
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-usenormaltexture--use-normal-texture-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
 Loads normal textures from this repository: https://github.com/emmelleppi/normal-maps
+
+👉 Note: `useNormalTexture` hook is not meant to be used in production environments as it relies on third-party CDN.
 
 ```jsx
 const [normalMap, url] = useNormalTexture(

@@ -1684,6 +1684,8 @@ function Foo() {
 
 Sets up a global cubemap, which affects the default `scene.environment`, and optionally `scene.background`, unless a custom scene has been passed. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience. If you pass an array of files it will use THREE.CubeTextureLoader.
 
+👉 Note: `preset` property is not meant to be used in production environments. Consider using `files` property together with local files or a CDN of your choice instead.
+
 ```jsx
 <Environment
   background={false}

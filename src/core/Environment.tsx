@@ -30,8 +30,6 @@ export function Environment({
     }
     files = presetsObj[preset]
     path = CUBEMAP_ROOT
-
-    console.log('hello env', preset, files, path)
   }
   const defaultScene = useThree(({ scene }) => scene)
   const isCubeMap = Array.isArray(files)

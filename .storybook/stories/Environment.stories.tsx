@@ -19,7 +19,7 @@ export default {
   ],
 }
 
-export const EnvironmentStory = ({ background, preset }) => (
+export const EnvironmentStory = ({ background, preset = 'sunset' }) => (
   <>
     <React.Suspense fallback={null}>
       <Environment preset={preset} background={background} />

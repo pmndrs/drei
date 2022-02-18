@@ -52,7 +52,7 @@ export const Text = React.forwardRef(
       return [n, t]
     }, [children])
 
-    suspend(() => new Promise((res) => preloadFont({ font, characters: children }, res)), ['troika-text', font, text])
+    suspend(() => new Promise((res) => preloadFont({ font, characters: text }, res)), ['troika-text', font, text])
 
     React.useLayoutEffect(
       () =>

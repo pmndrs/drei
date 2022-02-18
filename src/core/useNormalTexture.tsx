@@ -1,8 +1,7 @@
 import * as React from 'react'
 import { useTexture } from './useTexture'
 import { RepeatWrapping, Texture, Vector2 } from 'three'
-
-import { useAsset } from 'use-asset'
+import { suspend } from 'suspend-react'
 
 const NORMAL_ROOT = 'https://rawcdn.githack.com/pmndrs/drei-assets/7a3104997e1576f83472829815b00880d88b32fb'
 const LIST_URL = 'https://cdn.jsdelivr.net/gh/pmndrs/drei-assets@master/normals/normals.json'
@@ -16,14 +15,10 @@ type Settings = {
 export function useNormalTexture(id = 0, settings: Settings = {}): [Texture, string, number] {
   const { repeat = [1, 1], anisotropy = 1, offset = [0, 0] } = settings
 
-  const normalsList = useAsset<Record<string, string>, [string]>(
-    () =>
-      new Promise(async (resolve) => {
-        const normalsList = await fetch(LIST_URL).then((res) => res.json())
-        resolve(normalsList)
-      }),
-    'normalsList'
-  )
+  const normalsList = suspend(() => fetch(LIST_URL).then((res) => res.json()), ['normalsList']) as Record<
+    string,
+    string
+  >
   const numTot = React.useMemo(() => Object.keys(normalsList).length, [])
   const DEFAULT_NORMAL = normalsList[0]
 

@@ -1,5 +1,4 @@
 import { getGPUTier, GetGPUTier, TierResult } from 'detect-gpu'
-import { useAsset } from 'use-asset'
+import { suspend } from 'suspend-react'
 
-export const useDetectGPU = (props?: GetGPUTier) =>
-  useAsset<TierResult, [string]>(() => getGPUTier(props), 'useDetectGPU')
+export const useDetectGPU = (props?: GetGPUTier) => suspend(() => getGPUTier(props), ['useDetectGPU'])

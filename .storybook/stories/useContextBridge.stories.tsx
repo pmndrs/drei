@@ -44,9 +44,11 @@ function Scene() {
         onClick={() => greeting.setName(theme.colors.blue)}
       />
 
-      <Text fontSize={0.3} position-z={2}>
-        {greeting.name ? `Hello ${greeting.name}!` : 'Click a color'}
-      </Text>
+      <React.Suspense fallback={null}>
+        <Text fontSize={0.3} position-z={2}>
+          {greeting.name ? `Hello ${greeting.name}!` : 'Click a color'}
+        </Text>
+      </React.Suspense>
     </>
   )
 }

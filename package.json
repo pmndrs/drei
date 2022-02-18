@@ -49,8 +49,8 @@
     "test": "npm run eslint:ci && npm run prettier",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false --strict --jsx react",
     "typegen": "tsc --emitDeclarationOnly",
-    "storybook": "start-storybook  -s ./.storybook/public -p 6006",
-    "build-storybook": "build-storybook -s ./.storybook/public",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook",
     "copy": "copyfiles package.json README.md LICENSE dist && json -I -f dist/package.json -e \"this.private=false; this.devDependencies=undefined; this.optionalDependencies=undefined; this.scripts=undefined; this.husky=undefined; this.prettier=undefined; this.jest=undefined; this['lint-staged']=undefined;\""
   },
   "dependencies": {
@@ -64,10 +64,10 @@
     "react-composer": "^5.0.2",
     "react-merge-refs": "^1.1.0",
     "stats.js": "^0.17.0",
+    "suspend-react": "^0.0.8",
     "three-mesh-bvh": "^0.5.4",
     "three-stdlib": "^2.8.6",
-    "troika-three-text": "^0.44.0",
-    "use-asset": "^1.0.4",
+    "troika-three-text": "^0.45.0",
     "utility-types": "^3.10.0",
     "zustand": "^3.5.13"
   },

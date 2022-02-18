@@ -13,7 +13,6 @@ export default {
 
 function Simple() {
   const { device, fps, gpu, isMobile, tier, type } = useDetectGPU()
-
   return (
     <Text maxWidth={200}>
       | device {device} fps {fps} | gpu {gpu} isMobile {isMobile?.toString()} | Tier {tier.toString()} Type {type} |
@@ -22,7 +21,7 @@ function Simple() {
 }
 
 export const DefaultStory = () => (
-  <React.Suspense fallback={<Text>Detecting GPU …</Text>}>
+  <React.Suspense fallback={null}>
     <Simple />
   </React.Suspense>
 )

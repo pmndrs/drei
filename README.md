@@ -429,13 +429,13 @@ function Foo() {
 
 #### Text
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-text--text-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-text--text-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
 <p>
   <a href="https://codesandbox.io/s/yup2o"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/yup2o/screenshot.png" alt="Demo"/></a>
 </p>
 
-Hi-quality text rendering w/ signed distance fields (SDF) and antialiasing, using [troika-3d-text](https://github.com/protectwise/troika/tree/master/packages/troika-3d-text). All of troikas props are valid!
+Hi-quality text rendering w/ signed distance fields (SDF) and antialiasing, using [troika-3d-text](https://github.com/protectwise/troika/tree/master/packages/troika-3d-text). All of troikas props are valid! Text is suspense-based!
 
 ```jsx
 <Text color="black" anchorX="center" anchorY="middle">
@@ -1035,6 +1035,7 @@ A hook for a quick way to add helpers to existing nodes in the scene. It handles
 ```jsx
 const mesh = useRef()
 useHelper(mesh, BoxHelper, 'cyan')
+useHelper(condition && mesh, BoxHelper, 'red') // you can passe false instead of the object ref to hide the helper
 
 <mesh ref={mesh} ... />
 ```
@@ -1285,6 +1286,8 @@ You can define events on them!
 ```jsx
 <Instance onClick={...} onPointerOver={...} />
 ```
+
+👉 Note: While creating instances declaratively keeps all the power of components with reduced draw calls, it comes at the cost of CPU overhead. For cases like foliage where you want no CPU overhead with thousands of intances you should use THREE.InstancedMesh such as in this [example](https://codesandbox.io/s/grass-shader-5xho4?file=/src/Grass.js).
 
 #### Merged
 
@@ -1681,6 +1684,8 @@ function Foo() {
 
 Sets up a global cubemap, which affects the default `scene.environment`, and optionally `scene.background`, unless a custom scene has been passed. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience. If you pass an array of files it will use THREE.CubeTextureLoader.
 
+👉 Note: `preset` property is not meant to be used in production environments. Consider using `files` property together with local files or a CDN of your choice instead.
+
 ```jsx
 <Environment
   background={false}
@@ -1731,6 +1736,8 @@ Adds a blinking shader-based starfield to your scene.
 
 Particle based cloud.
 
+👉 Note: `<Cloud />` component is not meant to be used in production environments as it relies on third-party CDN.
+
 ```jsx
 <Cloud
   opacity={0.5}
@@ -1748,6 +1755,8 @@ Particle based cloud.
 Loads matcap textures from this repository: https://github.com/emmelleppi/matcaps
 
 (It is a fork of this repository: https://github.com/nidorx/matcaps)
+
+👉 Note: `useMatcapTexture` hook is not meant to be used in production environments as it relies on third-party CDN.
 
 ```jsx
 const [matcap, url] = useMatcapTexture(
@@ -1775,6 +1784,8 @@ const [matcap] = useMatcapTexture('3E2335_D36A1B_8E4A2E_2842A5')
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-usenormaltexture--use-normal-texture-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
 Loads normal textures from this repository: https://github.com/emmelleppi/normal-maps
+
+👉 Note: `useNormalTexture` hook is not meant to be used in production environments as it relies on third-party CDN.
 
 ```jsx
 const [normalMap, url] = useNormalTexture(

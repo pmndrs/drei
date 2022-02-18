@@ -5,7 +5,7 @@ import { RGBELoader } from 'three-stdlib'
 
 import { presetsObj, PresetsType } from '../helpers/environment-assets'
 
-const CUBEMAP_ROOT = 'https://rawcdn.githack.com/pmndrs/drei-assets/aa3600359ba664d546d05821bcbca42013587df2'
+const CUBEMAP_ROOT = 'https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/hdris/'
 
 type Props = {
   background?: boolean
@@ -29,7 +29,7 @@ export function Environment({
       throw new Error('Preset must be one of: ' + Object.keys(presetsObj).join(', '))
     }
     files = presetsObj[preset]
-    path = CUBEMAP_ROOT + '/hdri/'
+    path = CUBEMAP_ROOT
   }
   const defaultScene = useThree(({ scene }) => scene)
   const isCubeMap = Array.isArray(files)

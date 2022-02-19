@@ -52,6 +52,8 @@ export class ConvolutionMaterial extends ShaderMaterial {
           gl_FragColor = sum * 0.25 ;
 
           #include <dithering_fragment>
+          #include <tonemapping_fragment>
+          #include <encodings_fragment>
         }`,
       vertexShader: `uniform vec2 texelSize;
         uniform vec2 halfTexelSize;

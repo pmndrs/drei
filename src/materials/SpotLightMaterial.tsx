@@ -77,6 +77,9 @@ export class SpotLightMaterial extends ShaderMaterial {
           intensity	*= smoothstep(0., 1., vViewZ - d);
         }
         gl_FragColor = vec4(lightColor, intensity * opacity);
+
+        #include <tonemapping_fragment>
+	      #include <encodings_fragment>
       }`,
     })
   }

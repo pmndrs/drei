@@ -3,7 +3,6 @@ import { Matrix4, MeshStandardMaterial, Texture } from 'three'
 type UninitializedUniform<Value> = { value: Value | null }
 
 export class MeshReflectorMaterial extends MeshStandardMaterial {
-  private _debug: { value: number } = { value: 0 }
   private _tDepth: UninitializedUniform<Texture> = { value: null }
   private _distortionMap: UninitializedUniform<Texture> = { value: null }
   private _tDiffuse: UninitializedUniform<Texture> = { value: null }
@@ -28,7 +27,6 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
     if (!shader.defines?.USE_UV) {
       shader.defines.USE_UV = ''
     }
-    shader.uniforms.debug = this._debug
     shader.uniforms.hasBlur = this._hasBlur
     shader.uniforms.tDiffuse = this._tDiffuse
     shader.uniforms.tDepth = this._tDepth
@@ -55,7 +53,6 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
         gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );`
     )
     shader.fragmentShader = `
-        uniform int debug;
         uniform sampler2D tDiffuse;
         uniform sampler2D tDiffuseBlur;
         uniform sampler2D tDepth;
@@ -138,20 +135,7 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
       newMerge.g = (merge.g - 0.5) * mixContrast + 0.5;
       newMerge.b = (merge.b - 0.5) * mixContrast + 0.5;
 
-      diffuseColor.rgb = diffuseColor.rgb * ((1.0 - min(1.0, mirror)) + newMerge.rgb * mixStrength);           
-      
-      if (debug == 1) {
-        diffuseColor = vec4(vec3(depthFactor), 1.0);
-      }
-      if (debug == 2) {
-        diffuseColor = vec4(vec3(blurFactor), 1.0);
-      }
-      if (debug == 3) {
-        diffuseColor = texture2DProj(tDiffuse, new_vUv);
-      }
-      if (debug == 4) {
-        diffuseColor = texture2DProj(tDiffuseBlur, new_vUv);
-      }
+      diffuseColor.rgb = diffuseColor.rgb * ((1.0 - min(1.0, mirror)) + newMerge.rgb * mixStrength);
       `
     )
   }
@@ -226,12 +210,6 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
   }
   set depthScale(v: number) {
     this._depthScale.value = v
-  }
-  get debug(): number {
-    return this._debug.value
-  }
-  set debug(v: number) {
-    this._debug.value = v
   }
   get depthToBlurRatioBias(): number {
     return this._depthToBlurRatioBias.value

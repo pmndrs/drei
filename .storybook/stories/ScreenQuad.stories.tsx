@@ -29,6 +29,9 @@ const ColorShiftMaterial = shaderMaterial(
     float pct = abs(sin(time));
     color = mix(colorA, colorB, pct);
     gl_FragColor = vec4(color,1.0);
+
+    #include <tonemapping_fragment>
+    #include <encodings_fragment>
   }
   `
 )

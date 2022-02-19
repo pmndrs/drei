@@ -65,6 +65,9 @@ const ImageMaterialImpl = shaderMaterial(
     vec2 uv = vUv * s / new + offset;
     vec2 zUv = (uv - vec2(0.5, 0.5)) / zoom + vec2(0.5, 0.5);
     gl_FragColor = toGrayscale(texture2D(map, zUv) * vec4(color, 1.0), grayscale);
+    
+    #include <tonemapping_fragment>
+    #include <encodings_fragment>
   }
 `
 )

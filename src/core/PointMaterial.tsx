@@ -26,10 +26,10 @@ export class PointMaterialImpl extends THREE.ShaderMaterial {
         float r = dot(cxy, cxy);
         float delta = fwidth(r);
         vec3 color = vColor;
-        #ifdef TONE_MAPPING
-          color = toneMapping(color);
-        #endif
-        gl_FragColor = linearToOutputTexel(vec4(color, 1.0 - smoothstep(1.0 - delta, 1.0 + delta, r)));
+        gl_FragColor = vec4(color, 1.0 - smoothstep(1.0 - delta, 1.0 + delta, r));
+
+        #include <tonemapping_fragment>
+	      #include <encodings_fragment>
       }`,
       vertexColors: true,
     })

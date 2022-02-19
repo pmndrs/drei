@@ -6,11 +6,13 @@ import { Falsey } from 'utility-types'
 type Helper = Object3D & {
   update: () => void
 }
+type Constructor = new (...args: any[]) => any
+type Rest<T> = T extends [infer _, ...infer R] ? R : never
 
-export function useHelper<T>(
+export function useHelper<T extends Constructor>(
   object3D: React.MutableRefObject<Object3D | undefined> | Falsey | undefined,
   helperConstructor: T,
-  ...args: any[]
+  ...args: Rest<ConstructorParameters<T>>
 ) {
   const helper = React.useRef<Helper>()
 

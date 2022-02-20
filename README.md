@@ -1489,7 +1489,7 @@ useBVH(mesh)
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-center--default-story)
 
-Calculates a boundary box and centers its children accordingly. `alignTop` makes adjusts it so that it's sits flush on y=0.
+Calculates a boundary box and centers its children accordingly. `alignTop` adjusts it so that it sits flush on y=0.
 
 ```jsx
 <Center alignTop>

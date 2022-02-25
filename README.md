@@ -732,7 +732,7 @@ This material makes your geometry distort following simplex noise.
 
 #### PointMaterial
 
-An antialiased round dot that always keeps the same size.
+Antialiased round dots. It takes the same props as regular THREE.PointsMaterial
 
 ```jsx
 <points>
@@ -1338,25 +1338,10 @@ A wrapper around [THREE.Points](https://threejs.org/docs/index.html?q=points#api
   limit={1000} // Optional: max amount of items (for calculating buffer size)
   range={1000} // Optional: draw-range
 >
-  <pointsMaterial />
+  <pointsMaterial vertexColors />
   <Point position={[1, 2, 3]} color="red" onClick={onClick} onPointerOver={onPointerOver} ... />
   // As many as you want, make them conditional, mount/unmount them, lazy load them, etc ...
 </Points>
-```
-
-If you have a material that supports vertex colors (like drei/PointMaterial) you can have individual colors!
-
-```jsx
-<Points>
-  <PointMaterial />
-  <Point color="hotpink" />
-```
-
-Otherwise use any material you like:
-
-```jsx
-<Points>
-  <pointsMaterial vertexColors size={10} />
 ```
 
 If you just want to use buffers for position, color and size, you can use the alternative API:

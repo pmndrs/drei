@@ -140,7 +140,7 @@ export const Point = React.forwardRef(({ children, ...props }, ref) => {
 /**
  * Buffer implementation, relies on complete buffers of the correct number, leaves it to the user to update them
  */
-type PointsBuffersProps = Omit<JSX.IntrinsicElements['points'], 'position'> & {
+type PointsBuffersProps = JSX.IntrinsicElements['points'] & {
   // a buffer containing all points position
   positions: Float32Array
   colors?: Float32Array
@@ -155,20 +155,13 @@ export const PointsBuffer = React.forwardRef<THREE.Points, PointsBuffersProps>(
 
     useFrame(() => {
       const attr = pointsRef.current.geometry.attributes
-
       attr.position.needsUpdate = true
-
-      if (colors) {
-        attr.color.needsUpdate = true
-      }
-
-      if (sizes) {
-        attr.size.needsUpdate = true
-      }
+      if (colors) attr.color.needsUpdate = true
+      if (sizes) attr.size.needsUpdate = true
     })
 
     return (
-      <points matrixAutoUpdate={false} ref={mergeRefs([forwardedRef, pointsRef])} {...props}>
+      <points ref={mergeRefs([forwardedRef, pointsRef])} {...props}>
         <bufferGeometry>
           <bufferAttribute
             attachObject={['attributes', 'position']}
@@ -206,8 +199,6 @@ export const Points = React.forwardRef<THREE.Points, PointsBuffersProps | Points
   (props, forwardedRef) => {
     if ((props as PointsBuffersProps).positions instanceof Float32Array) {
       return <PointsBuffer {...(props as PointsBuffersProps)} ref={forwardedRef} />
-    }
-
-    return <PointsInstances {...(props as PointsInstancesProps)} ref={forwardedRef} />
+    } else return <PointsInstances {...(props as PointsInstancesProps)} ref={forwardedRef} />
   }
 )

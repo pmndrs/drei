@@ -3,6 +3,8 @@ import * as React from 'react'
 import { applyProps, ReactThreeFiber } from '@react-three/fiber'
 
 // credits for the box-projecting shader code go to codercat (https://codercat.tk)
+// and @0beqz https://gist.github.com/0beqz/8d51b4ae16d68021a09fb504af708fca
+
 const worldposReplace = /* glsl */ `
 #if defined( USE_ENVMAP ) || defined( DISTANCE ) || defined ( USE_SHADOWMAP )
   vec4 worldPosition = modelMatrix * vec4( transformed, 1.0 );

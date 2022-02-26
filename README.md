@@ -1122,7 +1122,7 @@ const projection = useBoxProjectedEnv(
   {(texture) => (
     <mesh>
       <planeGeometry />
-      <meshStandardMaterial envMap={texture} {...spread} />
+      <meshStandardMaterial envMap={texture} {...projection} />
     </mesh>
   )}
 </CubeCamera>

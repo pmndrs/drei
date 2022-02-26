@@ -51,6 +51,7 @@ export * from './useContextBridge'
 export * from './useAnimations'
 export * from './useFBO'
 export * from './useIntersect'
+export * from './useBoxProjectedEnv'
 
 // Modifiers
 export * from './CurveModifier'

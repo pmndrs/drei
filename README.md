@@ -99,6 +99,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#useaspect">useAspect</a></li>
           <li><a href="#usecursor">useCursor</a></li>
           <li><a href="#useintersect">useIntersect</a></li>
+          <li><a href="#useboxprojectedenv">useBoxProjectedEnv</a></li>
         </ul>
         <li><a href="#loading">Loaders</a></li>
         <ul>
@@ -1101,6 +1102,30 @@ A very cheap frustum check that gives you a reference you can observe in order t
 ```jsx
 const ref = useIntersect((visible) => console.log('object is visible', visible))
 return <mesh ref={ref} />
+```
+
+#### useBoxProjectedEnv
+
+<p>
+  <a href="https://codesandbox.io/s/s006f"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/s006f/screenshot.png" alt="Demo"/></a>
+</p>
+
+The cheapest possible way of getting reflections in threejs. This will box-project the current environment map onto a plane. It returns an object that you need to spread over its material. The spread object contains a ref, onBeforeCompile and customProgramCacheKey. If you combine it with drei/CubeCamera you can "film" a single frame of the environment and feed it to the material, thereby getting real reflections. Align it with the position and scale properties.
+
+```jsx
+const projection = useBoxProjectedEnv(
+  [0, 0, 0], // Position
+  [1, 1, 1] // Scale
+)
+
+<CubeCamera frames={1}>
+  {(texture) => (
+    <mesh>
+      <planeGeometry />
+      <meshStandardMaterial envMap={texture} {...spread} />
+    </mesh>
+  )}
+</CubeCamera>
 ```
 
 # Loading

@@ -5,7 +5,6 @@ import {
   Vector4,
   Matrix4,
   PerspectiveCamera,
-  RGBFormat,
   LinearFilter,
   WebGLRenderTarget,
   DepthTexture,
@@ -32,7 +31,6 @@ export type Props = JSX.IntrinsicElements['meshStandardMaterial'] & {
   maxDepthThreshold?: number
   depthScale?: number
   depthToBlurRatioBias?: number
-  debug?: number
   distortionMap?: Texture
   distortion?: number
   mixContrast?: number
@@ -61,7 +59,6 @@ export const MeshReflectorMaterial = React.forwardRef<MeshReflectorMaterialImpl,
       depthScale = 0,
       depthToBlurRatioBias = 0.25,
       mirror = 0,
-      debug = 0,
       distortion = 1,
       mixContrast = 1,
       distortionMap,
@@ -180,7 +177,6 @@ export const MeshReflectorMaterial = React.forwardRef<MeshReflectorMaterialImpl,
         depthScale,
         depthToBlurRatioBias,
         transparent: true,
-        debug,
         distortion,
         distortionMap,
         mixContrast,
@@ -202,7 +198,6 @@ export const MeshReflectorMaterial = React.forwardRef<MeshReflectorMaterialImpl,
       maxDepthThreshold,
       depthScale,
       depthToBlurRatioBias,
-      debug,
       distortion,
       distortionMap,
       mixContrast,

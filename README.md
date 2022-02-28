@@ -99,6 +99,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#useaspect">useAspect</a></li>
           <li><a href="#usecursor">useCursor</a></li>
           <li><a href="#useintersect">useIntersect</a></li>
+          <li><a href="#useboxprojectedenv">useBoxProjectedEnv</a></li>
         </ul>
         <li><a href="#loading">Loaders</a></li>
         <ul>
@@ -243,7 +244,7 @@ Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storyboo
 
 All controls react to the default camera. If you have a `<PerspectiveCamera makeDefault />` in your scene, they will control it. If you need to inject an imperative camera or one that isn't the default, use the `camera` prop: `<OrbitControls camera={MyCamera} />`.
 
-PointerLockControls additionally supports a `selector` prop, which enables the binding of `click` event handlers for control activation to other elements than `document` (e.g. a 'Click here to play' button). All elements matching the `selector` prop will activate the controls.
+PointerLockControls additionally supports a `selector` prop, which enables the binding of `click` event handlers for control activation to other elements than `document` (e.g. a 'Click here to play' button). All elements matching the `selector` prop will activate the controls. It will also center raycast events by default, so regular onPointerOver/etc events on meshes will continue to work.
 
 # TransformControls
 
@@ -429,13 +430,13 @@ function Foo() {
 
 #### Text
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-text--text-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-text--text-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
 <p>
   <a href="https://codesandbox.io/s/yup2o"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/yup2o/screenshot.png" alt="Demo"/></a>
 </p>
 
-Hi-quality text rendering w/ signed distance fields (SDF) and antialiasing, using [troika-3d-text](https://github.com/protectwise/troika/tree/master/packages/troika-3d-text). All of troikas props are valid!
+Hi-quality text rendering w/ signed distance fields (SDF) and antialiasing, using [troika-3d-text](https://github.com/protectwise/troika/tree/master/packages/troika-3d-text). All of troikas props are valid! Text is suspense-based!
 
 ```jsx
 <Text color="black" anchorX="center" anchorY="middle">
@@ -734,7 +735,7 @@ This material makes your geometry distort following simplex noise. The `from` pr
 
 #### PointMaterial
 
-An antialiased round dot that always keeps the same size.
+Antialiased round dots. It takes the same props as regular THREE.PointsMaterial
 
 ```jsx
 <points>
@@ -1037,6 +1038,7 @@ A hook for a quick way to add helpers to existing nodes in the scene. It handles
 ```jsx
 const mesh = useRef()
 useHelper(mesh, BoxHelper, 'cyan')
+useHelper(condition && mesh, BoxHelper, 'red') // you can passe false instead of the object ref to hide the helper
 
 <mesh ref={mesh} ... />
 ```
@@ -1102,6 +1104,30 @@ A very cheap frustum check that gives you a reference you can observe in order t
 ```jsx
 const ref = useIntersect((visible) => console.log('object is visible', visible))
 return <mesh ref={ref} />
+```
+
+#### useBoxProjectedEnv
+
+<p>
+  <a href="https://codesandbox.io/s/s006f"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/s006f/screenshot.png" alt="Demo"/></a>
+</p>
+
+The cheapest possible way of getting reflections in threejs. This will box-project the current environment map onto a plane. It returns an object that you need to spread over its material. The spread object contains a ref, onBeforeCompile and customProgramCacheKey. If you combine it with drei/CubeCamera you can "film" a single frame of the environment and feed it to the material, thereby getting realistic reflections at no cost. Align it with the position and scale properties.
+
+```jsx
+const projection = useBoxProjectedEnv(
+  [0, 0, 0], // Position
+  [1, 1, 1] // Scale
+)
+
+<CubeCamera frames={1}>
+  {(texture) => (
+    <mesh>
+      <planeGeometry />
+      <meshStandardMaterial envMap={texture} {...projection} />
+    </mesh>
+  )}
+</CubeCamera>
 ```
 
 # Loading
@@ -1288,6 +1314,8 @@ You can define events on them!
 <Instance onClick={...} onPointerOver={...} />
 ```
 
+👉 Note: While creating instances declaratively keeps all the power of components with reduced draw calls, it comes at the cost of CPU overhead. For cases like foliage where you want no CPU overhead with thousands of intances you should use THREE.InstancedMesh such as in this [example](https://codesandbox.io/s/grass-shader-5xho4?file=/src/Grass.js).
+
 #### Merged
 
 <p>
@@ -1337,25 +1365,10 @@ A wrapper around [THREE.Points](https://threejs.org/docs/index.html?q=points#api
   limit={1000} // Optional: max amount of items (for calculating buffer size)
   range={1000} // Optional: draw-range
 >
-  <pointsMaterial />
+  <pointsMaterial vertexColors />
   <Point position={[1, 2, 3]} color="red" onClick={onClick} onPointerOver={onPointerOver} ... />
   // As many as you want, make them conditional, mount/unmount them, lazy load them, etc ...
 </Points>
-```
-
-If you have a material that supports vertex colors (like drei/PointMaterial) you can have individual colors!
-
-```jsx
-<Points>
-  <PointMaterial />
-  <Point color="hotpink" />
-```
-
-Otherwise use any material you like:
-
-```jsx
-<Points>
-  <pointsMaterial vertexColors size={10} />
 ```
 
 If you just want to use buffers for position, color and size, you can use the alternative API:
@@ -1455,7 +1468,7 @@ A very fast, but often good-enough bounds-only raycast for meshes. You can use t
 
 #### AdaptiveDpr
 
-Drop this component into your scene and it will cut the pixel-ratio on [regress](#) according to the canvases perrformance min/max settings. This allows you to temporarily reduce visuals for more performance, for instance when the camera moves (look into drei's controls `regress` flag). Optionally you can set the canvas to a pixelated filter, which would be even faster.
+Drop this component into your scene and it will cut the pixel-ratio on regress according to the canvas's performance min/max settings. This allows you to temporarily reduce visual quality in exchange for more performance, for instance when the camera moves (look into drei's controls regress flag). Optionally, you can set the canvas to a pixelated filter, which would be even faster.
 
 ```jsx
 <AdaptiveDpr pixelated />
@@ -1488,7 +1501,7 @@ useBVH(mesh)
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-center--default-story)
 
-Calculates a boundary box and centers its children accordingly. `alignTop` makes adjusts it so that it's sits flush on y=0.
+Calculates a boundary box and centers its children accordingly. `alignTop` adjusts it so that it sits flush on y=0.
 
 ```jsx
 <Center alignTop>
@@ -1683,6 +1696,8 @@ function Foo() {
 
 Sets up a global cubemap, which affects the default `scene.environment`, and optionally `scene.background`, unless a custom scene has been passed. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience. If you pass an array of files it will use THREE.CubeTextureLoader.
 
+👉 Note: `preset` property is not meant to be used in production environments. Consider using `files` property together with local files or a CDN of your choice instead.
+
 ```jsx
 <Environment
   background={false}
@@ -1733,6 +1748,8 @@ Adds a blinking shader-based starfield to your scene.
 
 Particle based cloud.
 
+👉 Note: `<Cloud />` component is not meant to be used in production environments as it relies on third-party CDN.
+
 ```jsx
 <Cloud
   opacity={0.5}
@@ -1750,6 +1767,8 @@ Particle based cloud.
 Loads matcap textures from this repository: https://github.com/emmelleppi/matcaps
 
 (It is a fork of this repository: https://github.com/nidorx/matcaps)
+
+👉 Note: `useMatcapTexture` hook is not meant to be used in production environments as it relies on third-party CDN.
 
 ```jsx
 const [matcap, url] = useMatcapTexture(
@@ -1777,6 +1796,8 @@ const [matcap] = useMatcapTexture('3E2335_D36A1B_8E4A2E_2842A5')
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-usenormaltexture--use-normal-texture-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
 Loads normal textures from this repository: https://github.com/emmelleppi/normal-maps
+
+👉 Note: `useNormalTexture` hook is not meant to be used in production environments as it relies on third-party CDN.
 
 ```jsx
 const [normalMap, url] = useNormalTexture(

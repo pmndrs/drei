@@ -7,9 +7,17 @@ import { useTexture } from './useTexture'
 
 const CLOUD_URL = 'https://rawcdn.githack.com/pmndrs/drei-assets/9225a9f1fbd449d9411125c2f419b843d0308c9f/cloud.png'
 
-export function Cloud({ opacity = 0.5, speed = 0.4, width = 10, depth = 1.5, segments = 20, ...props }) {
+export function Cloud({
+  opacity = 0.5,
+  speed = 0.4,
+  width = 10,
+  depth = 1.5,
+  segments = 20,
+  texture = CLOUD_URL,
+  ...props
+}) {
   const group = React.useRef<Group>()
-  const texture = useTexture(CLOUD_URL) as Texture
+  const cloudTexture = useTexture(texture) as Texture
   const clouds = React.useMemo(
     () =>
       [...new Array(segments)].map((_, index) => ({
@@ -36,7 +44,7 @@ export function Cloud({ opacity = 0.5, speed = 0.4, width = 10, depth = 1.5, seg
           <Billboard key={index} position={[x, y, -index * depth]}>
             <Plane scale={scale} rotation={[0, 0, 0]}>
               <meshStandardMaterial
-                map={texture}
+                map={cloudTexture}
                 transparent
                 opacity={(scale / 6) * density * opacity}
                 depthTest={false}

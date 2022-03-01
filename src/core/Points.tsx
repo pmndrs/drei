@@ -47,25 +47,13 @@ const PointsInstances = React.forwardRef<THREE.Points, PointsInstancesProps>(
       parentMatrix.copy(parentRef.current.matrixWorld).invert()
       for (i = 0; i < refs.length; i++) {
         positionRef = refs[i].current
-        positionRef.getWorldPosition(position).applyMatrix4(parentMatrix)
-        if (
-          position.x !== positions[i * 3] ||
-          position.y !== positions[i * 3 + 1] ||
-          position.z !== positions[i * 3 + 2]
-        ) {
-          position.toArray(positions, i * 3)
-          parentRef.current.geometry.attributes.position.needsUpdate = true
-          positionRef.matrixWorldNeedsUpdate = true
-        }
-        if (!positionRef.color.equals(color.fromArray(colors, i * 3))) {
-          positionRef.color.toArray(colors, i * 3)
-          parentRef.current.geometry.attributes.color.needsUpdate = true
-        }
-
-        if (positionRef.size !== sizes[i]) {
-          sizes.set([positionRef.size], i)
-          parentRef.current.geometry.attributes.size.needsUpdate = true
-        }
+        position.toArray(positions, i * 3)
+        parentRef.current.geometry.attributes.position.needsUpdate = true
+        positionRef.matrixWorldNeedsUpdate = true
+        positionRef.color.toArray(colors, i * 3)
+        parentRef.current.geometry.attributes.color.needsUpdate = true
+        sizes.set([positionRef.size], i)
+        parentRef.current.geometry.attributes.size.needsUpdate = true
       }
     })
 

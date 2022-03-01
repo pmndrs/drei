@@ -89,15 +89,10 @@ const Instances = React.forwardRef<InstancedMesh, InstancesProps>(
           // Instances will be double-transformed if <Instances> isn't at identity
           instanceRef.matrixWorld.decompose(translation, rotation, scale)
           instanceMatrix.compose(translation, rotation, scale).premultiply(parentMatrix)
-          if (!instanceMatrix.equals(tempMatrix.fromArray(matrices, i * 16))) {
-            instanceMatrix.toArray(matrices, i * 16)
-            parentRef.current.instanceMatrix.needsUpdate = true
-          }
-
-          if (!instanceRef.color.equals(color.fromArray(colors, i * 3))) {
-            instanceRef.color.toArray(colors, i * 3)
-            parentRef.current.instanceColor.needsUpdate = true
-          }
+          instanceMatrix.toArray(matrices, i * 16)
+          parentRef.current.instanceMatrix.needsUpdate = true
+          instanceRef.color.toArray(colors, i * 3)
+          parentRef.current.instanceColor.needsUpdate = true
         }
         count++
       }

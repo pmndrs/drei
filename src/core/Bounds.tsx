@@ -109,6 +109,7 @@ export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0
         camera.far = distance * 100
         camera.updateProjectionMatrix()
         if (controls) controls.update()
+        invalidate()
         return this
       },
       fit() {
@@ -163,9 +164,9 @@ export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0
             controls.target.copy(goal.focus)
             controls.update()
           }
-          invalidate()
         }
         if (onFitRef.current) onFitRef.current(this.getSize())
+        invalidate()
         return this
       },
     }

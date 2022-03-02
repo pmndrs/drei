@@ -137,7 +137,8 @@ export const GizmoHelper = ({
     }
   }, renderPriority)
 
-  const gizmoHelperContext = React.useMemo(() => ({ tweenCamera, raycast: useCamera(virtualCam) }), [tweenCamera])
+  const raycast = useCamera(virtualCam)
+  const gizmoHelperContext = React.useMemo(() => ({ tweenCamera, raycast }), [tweenCamera])
 
   // Position gizmo component within scene
   const [marginX, marginY] = margin

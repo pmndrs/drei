@@ -101,10 +101,11 @@ export const ContactShadows = React.forwardRef(
       if (shadowCamera.current && (frames === Infinity || count < frames)) {
         const initialBackground = scene.background
         scene.background = null
+        const initialOverrideMaterial = scene.overrideMaterial
         scene.overrideMaterial = depthMaterial
         gl.setRenderTarget(renderTarget)
         gl.render(scene, shadowCamera.current)
-        scene.overrideMaterial = null
+        scene.overrideMaterial = initialOverrideMaterial
 
         blurShadows(blur)
         if (smooth) blurShadows(blur * 0.4)

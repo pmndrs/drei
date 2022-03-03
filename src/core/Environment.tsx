@@ -1,6 +1,16 @@
 import * as React from 'react'
-import { useLoader, useThree } from '@react-three/fiber'
-import { FloatType, EquirectangularReflectionMapping, CubeTextureLoader, Texture, Scene, Loader } from 'three'
+import { useLoader, useThree, createPortal } from '@react-three/fiber'
+import {
+  WebGLCubeRenderTarget,
+  LinearFilter,
+  FloatType,
+  EquirectangularReflectionMapping,
+  CubeTextureLoader,
+  Texture,
+  Scene,
+  Loader,
+  CubeCamera,
+} from 'three'
 import { RGBELoader } from 'three-stdlib'
 
 import { presetsObj, PresetsType } from '../helpers/environment-assets'
@@ -8,6 +18,10 @@ import { presetsObj, PresetsType } from '../helpers/environment-assets'
 const CUBEMAP_ROOT = 'https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/hdris/'
 
 type Props = {
+  children?: React.ReactNode
+  near?: number
+  far?: number
+  resolution?: number
   background?: boolean
   files?: string | string[]
   path?: string
@@ -16,7 +30,59 @@ type Props = {
   extensions?: (loader: Loader) => void
 }
 
-export function Environment({
+export function Environment(props: Props) {
+  return props.children ? <EnvironmentPortal {...props} /> : <EnvironmentMap {...props} />
+}
+
+export function EnvironmentPortal({
+  children,
+  near = 1,
+  far = 1000,
+  resolution = 256,
+  background = false,
+  scene,
+}: Props) {
+  const gl = useThree((state) => state.gl)
+  const defaultScene = useThree((state) => state.scene)
+  const camera = React.useRef<CubeCamera>(null!)
+  const [virtualScene] = React.useState(() => new Scene())
+  const fbo = React.useMemo(
+    () =>
+      new WebGLCubeRenderTarget(resolution, {
+        minFilter: LinearFilter,
+        magFilter: LinearFilter,
+        encoding: gl.outputEncoding,
+      }),
+    [resolution]
+  )
+
+  React.useLayoutEffect(() => {
+    camera.current.update(gl, virtualScene)
+    const oldbg = scene ? scene.background : defaultScene.background
+    const oldenv = scene ? scene.environment : defaultScene.environment
+    const target = scene || defaultScene
+    target.environment = fbo.texture
+    if (background) target.background = fbo.texture
+    return () => {
+      target.environment = oldenv
+      target.background = oldbg
+    }
+  }, [children, scene])
+
+  return (
+    <>
+      {createPortal(
+        <group>
+          {children}
+          <cubeCamera ref={camera} args={[near, far, fbo]} />
+        </group>,
+        virtualScene
+      )}
+    </>
+  )
+}
+
+export function EnvironmentMap({
   background = false,
   files = ['/px.png', '/nx.png', '/py.png', '/ny.png', '/pz.png', '/nz.png'],
   path = '',
@@ -31,7 +97,8 @@ export function Environment({
     files = presetsObj[preset]
     path = CUBEMAP_ROOT
   }
-  const defaultScene = useThree(({ scene }) => scene)
+
+  const defaultScene = useThree((state) => state.scene)
   const isCubeMap = Array.isArray(files)
   const loader = isCubeMap ? CubeTextureLoader : RGBELoader
   // @ts-expect-error
@@ -47,25 +114,15 @@ export function Environment({
   React.useLayoutEffect(() => {
     const oldbg = scene ? scene.background : defaultScene.background
     const oldenv = scene ? scene.environment : defaultScene.environment
-    if (scene) {
-      scene.environment = texture
-      if (background) scene.background = texture
-    } else {
-      defaultScene.environment = texture
-      if (background) defaultScene.background = texture
-    }
+    const target = scene || defaultScene
+    target.environment = texture
+    if (background) target.background = texture
     return () => {
-      if (scene) {
-        scene.environment = oldenv
-        scene.background = oldbg
-      } else {
-        defaultScene.environment = oldenv
-        defaultScene.background = oldbg
-      }
+      target.environment = oldenv
+      target.background = oldbg
       // Environment textures are volatile, better dispose and uncache them
       texture.dispose()
     }
   }, [texture, background, scene])
-
   return null
 }

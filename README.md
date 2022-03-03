@@ -436,10 +436,18 @@ function Foo() {
   <a href="https://codesandbox.io/s/yup2o"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/yup2o/screenshot.png" alt="Demo"/></a>
 </p>
 
-Hi-quality text rendering w/ signed distance fields (SDF) and antialiasing, using [troika-3d-text](https://github.com/protectwise/troika/tree/master/packages/troika-3d-text). All of troikas props are valid! Text is suspense-based!
+Hi-quality text rendering w/ signed distance fields (SDF) and antialiasing, using [troika-3d-text](https://github.com/protectwise/troika/tree/master/packages/troika-3d-text). All of troikas props are valid!
 
 ```jsx
 <Text color="black" anchorX="center" anchorY="middle">
+  hello world!
+</Text>
+```
+
+Text will suspend while loading the font data, but in order to completely avoid FOUC you can pass the characters it needs to render.
+
+```jsx
+<Text font={fontUrl} characters="abcdefghijklmnopqrstuvwxyz0123456789!">
   hello world!
 </Text>
 ```
@@ -1710,6 +1718,17 @@ If you provide a single string it will use THREE.RGBELoader.
 
 ```jsx
 <Environment files="file.hdr" />
+```
+
+If you provide children you can even render a custom environment. It will render the contents into an off-buffer and film a single frame with a cube camera (whose props you can configure: near=1, fear=1000, resolution=256).
+
+```jsx
+<Environment background>
+  <mesh scale={100}>
+    <sphereGeometry args={[1, 64, 64]} />
+    <meshBasicMaterial map={texture} side={THREE.BackSide} />
+  </mesh>
+</Environment>
 ```
 
 #### Sky

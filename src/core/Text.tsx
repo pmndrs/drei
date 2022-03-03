@@ -5,6 +5,7 @@ import { suspend } from 'suspend-react'
 
 type Props = JSX.IntrinsicElements['mesh'] & {
   children: React.ReactNode
+  characters?: string
   color?: ReactThreeFiber.Color
   fontSize?: number
   maxWidth?: number
@@ -35,7 +36,7 @@ type Props = JSX.IntrinsicElements['mesh'] & {
 
 // eslint-disable-next-line prettier/prettier
 export const Text = React.forwardRef(
-  ({ anchorX = 'center', anchorY = 'middle', font, children, onSync, ...props }: Props, ref) => {
+  ({ anchorX = 'center', anchorY = 'middle', font, children, characters, onSync, ...props }: Props, ref) => {
     const invalidate = useThree(({ invalidate }) => invalidate)
     const [troikaMesh] = React.useState(() => new TextMeshImpl())
 
@@ -52,7 +53,7 @@ export const Text = React.forwardRef(
       return [n, t]
     }, [children])
 
-    suspend(() => new Promise((res) => preloadFont({ font, characters: text }, res)), ['troika-text', font, text])
+    suspend(() => new Promise((res) => preloadFont({ font, characters }, res)), ['troika-text', font, characters])
 
     React.useLayoutEffect(
       () =>

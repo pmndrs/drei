@@ -48,11 +48,7 @@ export function EnvironmentPortal({
   const camera = React.useRef<CubeCamera>(null!)
   const [virtualScene] = React.useState(() => new Scene())
   const fbo = React.useMemo(() => {
-    const fbo = new WebGLCubeRenderTarget(resolution, {
-      minFilter: LinearFilter,
-      magFilter: LinearFilter,
-      encoding: gl.outputEncoding,
-    })
+    const fbo = new WebGLCubeRenderTarget(resolution)
     fbo.texture.type = HalfFloatType
     return fbo
   }, [resolution])

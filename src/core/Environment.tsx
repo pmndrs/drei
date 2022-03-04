@@ -10,6 +10,7 @@ import {
   Scene,
   Loader,
   CubeCamera,
+  HalfFloatType,
 } from 'three'
 import { RGBELoader } from 'three-stdlib'
 
@@ -46,15 +47,15 @@ export function EnvironmentPortal({
   const defaultScene = useThree((state) => state.scene)
   const camera = React.useRef<CubeCamera>(null!)
   const [virtualScene] = React.useState(() => new Scene())
-  const fbo = React.useMemo(
-    () =>
-      new WebGLCubeRenderTarget(resolution, {
-        minFilter: LinearFilter,
-        magFilter: LinearFilter,
-        encoding: gl.outputEncoding,
-      }),
-    [resolution]
-  )
+  const fbo = React.useMemo(() => {
+    const fbo = new WebGLCubeRenderTarget(resolution, {
+      minFilter: LinearFilter,
+      magFilter: LinearFilter,
+      encoding: gl.outputEncoding,
+    })
+    fbo.texture.type = HalfFloatType
+    return fbo
+  }, [resolution])
 
   React.useLayoutEffect(() => {
     camera.current.update(gl, virtualScene)

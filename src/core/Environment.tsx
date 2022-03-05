@@ -19,7 +19,7 @@ import { presetsObj, PresetsType } from '../helpers/environment-assets'
 const CUBEMAP_ROOT = 'https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/hdris/'
 
 type Props = {
-  children?: React.ReactNode | ((scene: THREE.Scene) => React.ReactNode)
+  children?: React.ReactNode
   near?: number
   far?: number
   resolution?: number
@@ -46,6 +46,11 @@ export function EnvironmentPortal({
   resolution = 256,
   background = false,
   scene,
+
+  files = ['/px.png', '/nx.png', '/py.png', '/ny.png', '/pz.png', '/nz.png'],
+  path = '',
+  preset = undefined,
+  extensions,
 }: Props) {
   const gl = useThree((state) => state.gl)
   const defaultScene = useThree((state) => state.scene)
@@ -73,10 +78,20 @@ export function EnvironmentPortal({
   return (
     <>
       {createPortal(
-        <group>
-          {typeof children === 'function' ? children(virtualScene) : children}
+        <>
+          {children}
           <cubeCamera ref={camera} args={[near, far, fbo]} />
-        </group>,
+          {(files || preset) && (
+            <EnvironmentMap
+              background
+              files={files}
+              preset={preset}
+              path={path}
+              extensions={extensions}
+              scene={virtualScene}
+            />
+          )}
+        </>,
         virtualScene
       )}
     </>

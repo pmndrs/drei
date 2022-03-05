@@ -1711,7 +1711,7 @@ Sets up a global cubemap, which affects the default `scene.environment`, and opt
   files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']}
   path="/"
   preset={null}
-  scene={undefined} // adds the ability to pass a custom THREE.Scene
+  scene={undefined} // adds the ability to pass a custom THREE.Scene, can also be a ref
 />
 ```
 
@@ -1730,6 +1730,17 @@ If you provide children you can even render a custom environment. It will render
     <meshBasicMaterial map={texture} side={THREE.BackSide} />
   </mesh>
 </Environment>
+```
+
+You can even mix a generic HDRI environment into a custom one using render-props, which allows you to feed the portalled scene into the generic HDRI environment.
+
+```jsx
+return (
+  <Environment background near={1} far={1000} resolution={256}>
+    {scene => (
+      <>
+        ...
+        <Environment background preset="park" scene={scene} />
 ```
 
 #### Sky

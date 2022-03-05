@@ -1732,15 +1732,12 @@ If you provide children you can even render a custom environment. It will render
 </Environment>
 ```
 
-You can even mix a generic HDRI environment into a custom one using render-props, which allows you to feed the portalled scene into the generic HDRI environment.
+You can even mix a generic HDRI environment into a custom one with either the `preset` or the `files` prop.
 
 ```jsx
 return (
-  <Environment background near={1} far={1000} resolution={256}>
-    {scene => (
-      <>
-        ...
-        <Environment background preset="park" scene={scene} />
+  <Environment background near={1} far={1000} resolution={256} preset="warehouse">
+    <mesh />
 ```
 
 #### Sky

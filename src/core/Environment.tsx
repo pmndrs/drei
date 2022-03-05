@@ -19,7 +19,7 @@ import { presetsObj, PresetsType } from '../helpers/environment-assets'
 const CUBEMAP_ROOT = 'https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/hdris/'
 
 type Props = {
-  children?: React.ReactNode
+  children?: React.ReactNode | ((scene: THREE.Scene) => React.ReactNode)
   near?: number
   far?: number
   resolution?: number
@@ -27,9 +27,13 @@ type Props = {
   files?: string | string[]
   path?: string
   preset?: PresetsType
-  scene?: Scene
+  scene?: Scene | React.MutableRefObject<THREE.Scene>
   extensions?: (loader: Loader) => void
 }
+
+const isRef = (obj: any): obj is React.MutableRefObject<THREE.Scene> => obj.current && obj.current.isScene
+const resolveScene = (scene: THREE.Scene | React.MutableRefObject<THREE.Scene>) =>
+  isRef(scene) ? scene.current : scene
 
 export function Environment(props: Props) {
   return props.children ? <EnvironmentPortal {...props} /> : <EnvironmentMap {...props} />
@@ -55,9 +59,9 @@ export function EnvironmentPortal({
 
   React.useLayoutEffect(() => {
     camera.current.update(gl, virtualScene)
-    const oldbg = scene ? scene.background : defaultScene.background
-    const oldenv = scene ? scene.environment : defaultScene.environment
-    const target = scene || defaultScene
+    const target = resolveScene(scene || defaultScene)
+    const oldbg = target.background
+    const oldenv = target.environment
     target.environment = fbo.texture
     if (background) target.background = fbo.texture
     return () => {
@@ -70,7 +74,7 @@ export function EnvironmentPortal({
     <>
       {createPortal(
         <group>
-          {children}
+          {typeof children === 'function' ? children(virtualScene) : children}
           <cubeCamera ref={camera} args={[near, far, fbo]} />
         </group>,
         virtualScene
@@ -109,11 +113,13 @@ export function EnvironmentMap({
   texture.mapping = EquirectangularReflectionMapping
 
   React.useLayoutEffect(() => {
-    const oldbg = scene ? scene.background : defaultScene.background
-    const oldenv = scene ? scene.environment : defaultScene.environment
-    const target = scene || defaultScene
+    const target = resolveScene(scene || defaultScene)
+    const oldbg = target.background
+    const oldenv = target.environment
+
     target.environment = texture
     if (background) target.background = texture
+
     return () => {
       target.environment = oldenv
       target.background = oldbg

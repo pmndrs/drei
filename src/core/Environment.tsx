@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useLoader, useThree, createPortal } from '@react-three/fiber'
+import { useLoader, useThree, createPortal, useFrame } from '@react-three/fiber'
 import {
   WebGLCubeRenderTarget,
   LinearFilter,
@@ -20,6 +20,7 @@ const CUBEMAP_ROOT = 'https://market-assets.fra1.cdn.digitaloceanspaces.com/mark
 
 type Props = {
   children?: React.ReactNode
+  frames?: number
   near?: number
   far?: number
   resolution?: number
@@ -44,6 +45,7 @@ export function EnvironmentPortal({
   near = 1,
   far = 1000,
   resolution = 256,
+  frames = 1,
   background = false,
   scene,
 
@@ -63,7 +65,7 @@ export function EnvironmentPortal({
   }, [resolution])
 
   React.useLayoutEffect(() => {
-    camera.current.update(gl, virtualScene)
+    if (frames === 1) camera.current.update(gl, virtualScene)
     const target = resolveScene(scene || defaultScene)
     const oldbg = target.background
     const oldenv = target.environment
@@ -74,6 +76,14 @@ export function EnvironmentPortal({
       target.background = oldbg
     }
   }, [children, scene])
+
+  let count = 1
+  useFrame(() => {
+    if (frames === Infinity || count < frames) {
+      camera.current.update(gl, virtualScene)
+      count++
+    }
+  })
 
   return (
     <>

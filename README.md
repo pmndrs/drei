@@ -1741,6 +1741,16 @@ return (
     <mesh />
 ```
 
+Declarative environment content can also animate with the `frames` prop, the envmap can be live. Give it a low resolution and this will happen at very little cost
+
+```jsx
+return (
+  <Environment frames={Infinity} resolution={256}>
+    <Float>
+      <mesh />
+    </Float>
+```
+
 #### Sky
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-sky--sky-st)

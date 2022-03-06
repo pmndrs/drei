@@ -49,8 +49,8 @@ export function EnvironmentPortal({
   background = false,
   scene,
 
-  files = ['/px.png', '/nx.png', '/py.png', '/ny.png', '/pz.png', '/nz.png'],
-  path = '',
+  files,
+  path,
   preset = undefined,
   extensions,
 }: Props) {

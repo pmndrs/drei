@@ -2,7 +2,6 @@ import * as React from 'react'
 import { useLoader, useThree, createPortal, useFrame } from '@react-three/fiber'
 import {
   WebGLCubeRenderTarget,
-  LinearFilter,
   FloatType,
   EquirectangularReflectionMapping,
   CubeTextureLoader,
@@ -13,7 +12,6 @@ import {
   HalfFloatType,
 } from 'three'
 import { RGBELoader } from 'three-stdlib'
-
 import { presetsObj, PresetsType } from '../helpers/environment-assets'
 
 const CUBEMAP_ROOT = 'https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/hdris/'
@@ -24,7 +22,7 @@ type Props = {
   near?: number
   far?: number
   resolution?: number
-  background?: boolean
+  background?: boolean | 'only'
   files?: string | string[]
   path?: string
   preset?: PresetsType
@@ -48,7 +46,6 @@ export function EnvironmentPortal({
   frames = 1,
   background = false,
   scene,
-
   files,
   path,
   preset = undefined,
@@ -69,7 +66,7 @@ export function EnvironmentPortal({
     const target = resolveScene(scene || defaultScene)
     const oldbg = target.background
     const oldenv = target.environment
-    target.environment = fbo.texture
+    if (background !== 'only') target.environment = fbo.texture
     if (background) target.background = fbo.texture
     return () => {
       target.environment = oldenv
@@ -117,9 +114,7 @@ export function EnvironmentMap({
   extensions,
 }: Props) {
   if (preset) {
-    if (!(preset in presetsObj)) {
-      throw new Error('Preset must be one of: ' + Object.keys(presetsObj).join(', '))
-    }
+    if (!(preset in presetsObj)) throw new Error('Preset must be one of: ' + Object.keys(presetsObj).join(', '))
     files = presetsObj[preset]
     path = CUBEMAP_ROOT
   }
@@ -142,7 +137,7 @@ export function EnvironmentMap({
     const oldbg = target.background
     const oldenv = target.environment
 
-    target.environment = texture
+    if (background !== 'only') target.environment = texture
     if (background) target.background = texture
 
     return () => {

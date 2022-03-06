@@ -13047,24 +13047,25 @@ trim@0.0.1:
   resolved "https://registry.yarnpkg.com/trim/-/trim-0.0.1.tgz#5858547f6b290757ee95cccc666fb50084c460dd"
   integrity sha1-WFhUf2spB1fulczMZm+1AITEYN0=
 
-troika-three-text@^0.45.0:
-  version "0.45.0"
-  resolved "https://registry.npmjs.org/troika-three-text/-/troika-three-text-0.45.0.tgz#d3e4f1f0637d3dea5735e9887a77d9a010b1c041"
-  integrity sha512-s/MhDYJm0+aiQU8fjO1TXl1UZESY52GMJgzyMB0HHnh2iADy+WY00oVgNsW6lU7XmC2g8MU81nV5egCDAS4/Pg==
+troika-three-text@^0.46.1:
+  version "0.46.1"
+  resolved "https://registry.npmjs.org/troika-three-text/-/troika-three-text-0.46.1.tgz#44c5bda31279c8b885ab2523ab8e54c584ea4564"
+  integrity sha512-j4smxjq4+NMJeshdoGYNqCjnvibH74pPm5kxaKZlGZl8mh9kDviAf/gsafwn6ylxsmnp2RqLWJlqzZrs9ARxiQ==
   dependencies:
     bidi-js "^1.0.2"
-    troika-three-utils "^0.45.0"
-    troika-worker-utils "^0.45.0"
+    troika-three-utils "^0.46.0"
+    troika-worker-utils "^0.46.0"
+    webgl-sdf-generator "1.1.1"
 
-troika-three-utils@^0.45.0:
-  version "0.45.0"
-  resolved "https://registry.npmjs.org/troika-three-utils/-/troika-three-utils-0.45.0.tgz#d624e4d2427275fd2750d542766635be37042920"
-  integrity sha512-VJqEx8aww2El/zSbbnmjdhaAOQ4LM0CVJmKh385Vi/CzruhMmWEaunMRI/J1vh4MbbGo+dREu73FkMkr/PXypA==
+troika-three-utils@^0.46.0:
+  version "0.46.0"
+  resolved "https://registry.npmjs.org/troika-three-utils/-/troika-three-utils-0.46.0.tgz#6d97a9bf08f2260285edf2bb0be6328dd3d50eec"
+  integrity sha512-llHyrXAcwzr0bpg80GxsIp73N7FuImm4WCrKDJkAqcAsWmE5pfP9+Qzw+oMWK1P/AdHQ79eOrOl9NjyW4aOw0w==
 
-troika-worker-utils@^0.45.0:
-  version "0.45.0"
-  resolved "https://registry.npmjs.org/troika-worker-utils/-/troika-worker-utils-0.45.0.tgz#94a7b5c7f6f54c81f229eafae2224259e182c010"
-  integrity sha512-pEO8u7+29dG5SbmGUg0wqXPEe+r+Hd0ibKf75tjH2aoR7ZPlRwUzRTvPURDlDNFF4KysDLvMCdHnyslG9IG5Hw==
+troika-worker-utils@^0.46.0:
+  version "0.46.0"
+  resolved "https://registry.npmjs.org/troika-worker-utils/-/troika-worker-utils-0.46.0.tgz#1b698090af78b51a27e03881c90237a2e648d6c4"
+  integrity sha512-bzOx5f2ZBxkFhXtIvDJlLn2AI3bzCkGVbCndl/2dL5QZrwHEKl45OEIilCxYQQWJG1rEbOD9O80tMjoYjw19OA==
 
 trough@^1.0.0:
   version "1.0.5"
@@ -13656,6 +13657,11 @@ webgl-constants@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/webgl-constants/-/webgl-constants-1.1.1.tgz#f9633ee87fea56647a60b9ce735cbdfb891c6855"
   integrity sha512-LkBXKjU5r9vAW7Gcu3T5u+5cvSvh5WwINdr0C+9jpzVB41cjQAP5ePArDtk/WHYdVj0GefCgM73BA7FlIiNtdg==
+
+webgl-sdf-generator@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.npmjs.org/webgl-sdf-generator/-/webgl-sdf-generator-1.1.1.tgz#3e1b422b3d87cd3cc77f2602c9db63bc0f6accbd"
+  integrity sha512-9Z0JcMTFxeE+b2x1LJTdnaT8rT8aEp7MVxkNwoycNmJWwPdzoXzMh0BjJSh/AEFP+KPYZUli814h8bJZFIZ2jA==
 
 webidl-conversions@^3.0.0:
   version "3.0.1"

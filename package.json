@@ -67,7 +67,7 @@
     "suspend-react": "^0.0.8",
     "three-mesh-bvh": "^0.5.4",
     "three-stdlib": "^2.8.7",
-    "troika-three-text": "^0.45.0",
+    "troika-three-text": "^0.46.1",
     "utility-types": "^3.10.0",
     "zustand": "^3.5.13"
   },

@@ -13047,10 +13047,10 @@ trim@0.0.1:
   resolved "https://registry.yarnpkg.com/trim/-/trim-0.0.1.tgz#5858547f6b290757ee95cccc666fb50084c460dd"
   integrity sha1-WFhUf2spB1fulczMZm+1AITEYN0=
 
-troika-three-text@^0.46.1:
-  version "0.46.1"
-  resolved "https://registry.npmjs.org/troika-three-text/-/troika-three-text-0.46.1.tgz#44c5bda31279c8b885ab2523ab8e54c584ea4564"
-  integrity sha512-j4smxjq4+NMJeshdoGYNqCjnvibH74pPm5kxaKZlGZl8mh9kDviAf/gsafwn6ylxsmnp2RqLWJlqzZrs9ARxiQ==
+troika-three-text@^0.46.2:
+  version "0.46.2"
+  resolved "https://registry.npmjs.org/troika-three-text/-/troika-three-text-0.46.2.tgz#8d860e79ad9abd31e9a3addf59c7e90fca0b15e5"
+  integrity sha512-x7GKVFshQ0YTXdb4iQKA6hoNKC5XT8AdcZW9T6QZEHJX69TXE5o5et39c8jZZeZzCqCZrk8ouOQBi6Aa0E2Atg==
   dependencies:
     bidi-js "^1.0.2"
     troika-three-utils "^0.46.0"

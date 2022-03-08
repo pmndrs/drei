@@ -33,9 +33,11 @@ export const Lightformer = React.forwardRef(
     // Apply emissive power
     const ref = React.useRef<THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>>(null!)
     React.useLayoutEffect(() => {
-      applyProps(ref.current.material as any, { color })
-      ref.current.material.color.multiplyScalar(intensity)
-    }, [color, intensity])
+      if (!children && !props.material) {
+        applyProps(ref.current.material as any, { color })
+        ref.current.material.color.multiplyScalar(intensity)
+      }
+    }, [color, intensity, children, props.material])
 
     // Target light
     React.useLayoutEffect(() => {
@@ -56,7 +58,11 @@ export const Lightformer = React.forwardRef(
         ) : (
           <Form args={args} />
         )}
-        {children ? children : <meshBasicMaterial toneMapped={toneMapped} map={map} side={THREE.DoubleSide} />}
+        {children ? (
+          children
+        ) : !props.material ? (
+          <meshBasicMaterial toneMapped={toneMapped} map={map} side={THREE.DoubleSide} />
+        ) : null}
       </mesh>
     )
   }

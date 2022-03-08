@@ -25,6 +25,7 @@ export const Lightformer = React.forwardRef(
       intensity = 1,
       scale = 1,
       target,
+      children,
       ...props
     }: LightProps,
     forwardRef
@@ -55,7 +56,7 @@ export const Lightformer = React.forwardRef(
         ) : (
           <Form args={args} />
         )}
-        <meshBasicMaterial toneMapped={toneMapped} map={map} side={THREE.DoubleSide} />
+        {children ? children : <meshBasicMaterial toneMapped={toneMapped} map={map} side={THREE.DoubleSide} />}
       </mesh>
     )
   }

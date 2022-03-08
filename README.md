@@ -1710,7 +1710,7 @@ Sets up a global cubemap, which affects the default `scene.environment`, and opt
 
 ```jsx
 <Environment
-  background={false}
+  background={false} // can be true, false or "only" (which only sets the background) (default: false)
   files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']}
   path="/"
   preset={null}
@@ -1722,6 +1722,12 @@ If you provide a single string it will use THREE.RGBELoader.
 
 ```jsx
 <Environment files="file.hdr" />
+```
+
+If you already have a cube texture you can pass it directly:
+
+```jsx
+<CubeCamera>{(texture) => <Environment map={texture} />}</CubeCamera>
 ```
 
 If you provide children you can even render a custom environment. It will render the contents into an off-buffer and film a single frame with a cube camera (whose props you can configure: near=1, far=1000, resolution=256).

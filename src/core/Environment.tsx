@@ -23,6 +23,7 @@ type Props = {
   far?: number
   resolution?: number
   background?: boolean | 'only'
+  map?: THREE.Texture
   files?: string | string[]
   path?: string
   preset?: PresetsType
@@ -35,7 +36,31 @@ const resolveScene = (scene: THREE.Scene | React.MutableRefObject<THREE.Scene>) 
   isRef(scene) ? scene.current : scene
 
 export function Environment(props: Props) {
-  return props.children ? <EnvironmentPortal {...props} /> : <EnvironmentMap {...props} />
+  return props.map ? (
+    <EnvironmentMap {...props} />
+  ) : props.children ? (
+    <EnvironmentPortal {...props} />
+  ) : (
+    <EnvironmentCube {...props} />
+  )
+}
+
+export function EnvironmentMap({ scene, background = false, map }: Props) {
+  const defaultScene = useThree((state) => state.scene)
+  React.useLayoutEffect(() => {
+    if (map) {
+      const target = resolveScene(scene || defaultScene)
+      const oldbg = target.background
+      const oldenv = target.environment
+      if (background !== 'only') target.environment = map
+      if (background) target.background = map
+      return () => {
+        if (background !== 'only') target.environment = oldenv
+        if (background) target.background = oldbg
+      }
+    }
+  }, [scene, map])
+  return null
 }
 
 export function EnvironmentPortal({
@@ -69,8 +94,8 @@ export function EnvironmentPortal({
     if (background !== 'only') target.environment = fbo.texture
     if (background) target.background = fbo.texture
     return () => {
-      target.environment = oldenv
-      target.background = oldbg
+      if (background !== 'only') target.environment = oldenv
+      if (background) target.background = oldbg
     }
   }, [children, scene])
 
@@ -105,7 +130,7 @@ export function EnvironmentPortal({
   )
 }
 
-export function EnvironmentMap({
+export function EnvironmentCube({
   background = false,
   files = ['/px.png', '/nx.png', '/py.png', '/ny.png', '/pz.png', '/nz.png'],
   path = '',
@@ -141,8 +166,8 @@ export function EnvironmentMap({
     if (background) target.background = texture
 
     return () => {
-      target.environment = oldenv
-      target.background = oldbg
+      if (background !== 'only') target.environment = oldenv
+      if (background) target.background = oldbg
       // Environment textures are volatile, better dispose and uncache them
       texture.dispose()
     }

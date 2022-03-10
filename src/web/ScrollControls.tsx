@@ -3,6 +3,7 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { context as fiberContext, useFrame, useThree } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
+import useMeasure from 'react-use-measure'
 
 export type ScrollControlsProps = {
   eps?: number
@@ -197,21 +198,22 @@ const ScrollCanvas = React.forwardRef(({ children }, ref) => {
 })
 
 const ScrollHtml = React.forwardRef(
-  ({ children, style, ...props }: { children?: React.ReactNode; style?: React.StyleHTMLAttributes<any> }, ref) => {
+  ({ children, style, ...props }: { children?: React.ReactNode; style?: React.StyleHTMLAttributes<any> }, innerRef) => {
     const state = useScroll()
     const group = React.useRef<HTMLDivElement>(null!)
     const { width, height } = useThree((state) => state.size)
     const fiberState = React.useContext(fiberContext)
+    const [ref, bounds] = useMeasure()
     useFrame(() => {
       if (state.delta > state.eps) {
         group.current.style.transform = `translate3d(${
-          state.horizontal ? -width * (state.pages - 1) * state.offset : 0
-        }px,${state.horizontal ? 0 : height * (state.pages - 1) * -state.offset}px,0)`
+          state.horizontal ? -width * ((bounds.height || 0) / height - 1) * state.offset : 0
+        }px,${state.horizontal ? 0 : height * ((bounds.height || 0) / height - 1) * -state.offset}px,0)`
       }
     })
     ReactDOM.render(
       <div
-        ref={mergeRefs([ref, group])}
+        ref={mergeRefs([ref, group, innerRef])}
         style={{ ...style, position: 'absolute', top: 0, left: 0, willChange: 'transform' }}
         {...props}
       >

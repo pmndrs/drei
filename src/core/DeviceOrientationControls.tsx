@@ -14,8 +14,8 @@ export type DeviceOrientationControlsProps = ReactThreeFiber.Object3DNode<
 export const DeviceOrientationControls = React.forwardRef<DeviceOrientationControlsImp, DeviceOrientationControlsProps>(
   (props: DeviceOrientationControlsProps, ref) => {
     const { camera, onChange, ...rest } = props
-    const defaultCamera = useThree(({ camera }) => camera)
-    const invalidate = useThree(({ invalidate }) => invalidate)
+    const defaultCamera = useThree((state) => state.camera)
+    const invalidate = useThree((state) => state.invalidate)
     const explCamera = camera || defaultCamera
     const [controls] = React.useState(() => new DeviceOrientationControlsImp(explCamera))
 
@@ -24,7 +24,6 @@ export const DeviceOrientationControls = React.forwardRef<DeviceOrientationContr
         invalidate()
         if (onChange) onChange(e)
       }
-
       controls?.addEventListener?.('change', callback)
       return () => controls?.removeEventListener?.('change', callback)
     }, [onChange, controls, invalidate])

@@ -30,36 +30,40 @@ export const PointerLockControls = React.forwardRef<PointerLockControlsImpl, Poi
 
     React.useEffect(() => {
       if (enabled) {
-        const callback = (e: THREE.Event) => {
-          invalidate()
-          if (onChange) onChange(e)
-        }
-
         controls.connect(explDomElement)
-        controls.addEventListener('change', callback)
-
-        if (onLock) controls.addEventListener('lock', onLock)
-        if (onUnlock) controls.addEventListener('unlock', onUnlock)
-
         // Force events to be centered while PLC is active
         const oldComputeOffsets = raycaster.computeOffsets
         raycaster.computeOffsets = (e) => ({ offsetX: e.target.width / 2, offsetY: e.target.height / 2 })
-
-        // Enforce previous interaction
-        const handler = () => controls.lock()
-        const elements = selector ? Array.from(document.querySelectorAll(selector)) : [document]
-        elements.forEach((element) => element && element.addEventListener('click', handler))
-
         return () => {
           controls.disconnect()
-          controls.removeEventListener('change', callback)
-          if (onLock) controls.addEventListener('lock', onLock)
-          if (onUnlock) controls.addEventListener('unlock', onUnlock)
-          elements.forEach((element) => (element ? element.removeEventListener('click', handler) : undefined))
           raycaster.computeOffsets = oldComputeOffsets
         }
       }
-    }, [enabled, onChange, onLock, onUnlock, controls, invalidate, selector])
+    }, [enabled, controls])
+
+    React.useEffect(() => {
+      const callback = (e: THREE.Event) => {
+        invalidate()
+        if (onChange) onChange(e)
+      }
+
+      controls.addEventListener('change', callback)
+
+      if (onLock) controls.addEventListener('lock', onLock)
+      if (onUnlock) controls.addEventListener('unlock', onUnlock)
+
+      // Enforce previous interaction
+      const handler = () => controls.lock()
+      const elements = selector ? Array.from(document.querySelectorAll(selector)) : [document]
+      elements.forEach((element) => element && element.addEventListener('click', handler))
+
+      return () => {
+        controls.removeEventListener('change', callback)
+        if (onLock) controls.addEventListener('lock', onLock)
+        if (onUnlock) controls.addEventListener('unlock', onUnlock)
+        elements.forEach((element) => (element ? element.removeEventListener('click', handler) : undefined))
+      }
+    }, [onChange, onLock, onUnlock, selector])
 
     return <primitive ref={ref} object={controls} {...rest} />
   }

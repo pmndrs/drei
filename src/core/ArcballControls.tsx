@@ -24,13 +24,13 @@ export type ArcballControlsProps = Omit<
 
 export const ArcballControls = forwardRef<ArcballControlsImpl, ArcballControlsProps>(
   ({ camera, makeDefault, regress, domElement, onChange, onStart, onEnd, ...restProps }, ref) => {
-    const invalidate = useThree(({ invalidate }) => invalidate)
-    const defaultCamera = useThree(({ camera }) => camera)
-    const gl = useThree(({ gl }) => gl)
-    const events = useThree(({ events }) => events) as EventManager<HTMLElement>
-    const set = useThree(({ set }) => set)
-    const get = useThree(({ get }) => get)
-    const performance = useThree(({ performance }) => performance)
+    const invalidate = useThree((state) => state.invalidate)
+    const defaultCamera = useThree((state) => state.camera)
+    const gl = useThree((state) => state.gl)
+    const events = useThree((state) => state.events) as EventManager<HTMLElement>
+    const set = useThree((state) => state.set)
+    const get = useThree((state) => state.get)
+    const performance = useThree((state) => state.performance)
     const explCamera = camera || defaultCamera
     const explDomElement = domElement || (typeof events.connected !== 'boolean' ? events.connected : gl.domElement)
     const controls = useMemo(() => new ArcballControlsImpl(explCamera), [explCamera])
@@ -40,15 +40,18 @@ export const ArcballControls = forwardRef<ArcballControlsImpl, ArcballControlsPr
     })
 
     useEffect(() => {
+      controls.connect(explDomElement)
+      return () => void controls.dispose()
+    }, [explDomElement, regress, controls, invalidate])
+
+    useEffect(() => {
       const callback = (e: Event) => {
         invalidate()
         if (regress) performance.regress()
         if (onChange) onChange(e)
       }
 
-      controls.connect(explDomElement)
       controls.addEventListener('change', callback)
-
       if (onStart) controls.addEventListener('start', onStart)
       if (onEnd) controls.addEventListener('end', onEnd)
 
@@ -56,9 +59,8 @@ export const ArcballControls = forwardRef<ArcballControlsImpl, ArcballControlsPr
         controls.removeEventListener('change', callback)
         if (onStart) controls.removeEventListener('start', onStart)
         if (onEnd) controls.removeEventListener('end', onEnd)
-        controls.dispose()
       }
-    }, [explDomElement, onChange, onStart, onEnd, regress, controls, invalidate])
+    }, [onChange, onStart, onEnd])
 
     useEffect(() => {
       if (makeDefault) {

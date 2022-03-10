@@ -53,9 +53,9 @@ export const TransformControls = React.forwardRef<TransformControlsImpl, Transfo
     const objectProps = omit(rest, transformOnlyPropNames)
     // @ts-expect-error new in @react-three/fiber@7.0.5
     const defaultControls = useThree((state) => state.controls) as ControlsProto
-    const gl = useThree(({ gl }) => gl)
-    const defaultCamera = useThree(({ camera }) => camera)
-    const invalidate = useThree(({ invalidate }) => invalidate)
+    const gl = useThree((state) => state.gl)
+    const defaultCamera = useThree((state) => state.camera)
+    const invalidate = useThree((state) => state.invalidate)
     const explCamera = camera || defaultCamera
     const controls = React.useMemo(
       () => new TransformControlsImpl(explCamera, domElement || gl.domElement),
@@ -70,9 +70,7 @@ export const TransformControls = React.forwardRef<TransformControlsImpl, Transfo
         controls.attach(group.current)
       }
 
-      return () => {
-        controls.detach()
-      }
+      return () => void controls.detach()
     }, [object, children, controls])
 
     React.useEffect(() => {

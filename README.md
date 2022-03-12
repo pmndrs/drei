@@ -1011,7 +1011,7 @@ return <SomethingThatNeedsADepthBuffer depthBuffer={depthBuffer} />
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-usefbo--use-fbo-st)
 
-Creates a `THREE.WebGLRenderTarget` or `THREE.WebGLMultisampleRenderTarget`.
+Creates a `THREE.WebGLRenderTarget`.
 
 ```jsx
 const target = useFBO({

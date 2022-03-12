@@ -11,7 +11,7 @@ export function useFBO<T extends boolean = false>(
   width?: number | FBOSettings<T>,
   height?: number,
   settings?: FBOSettings<T>
-): T extends true ? THREE.WebGLRenderTarget | THREE.WebGLMultisampleRenderTarget : THREE.WebGLRenderTarget {
+): THREE.WebGLRenderTarget {
   const gl = useThree(({ gl }) => gl)
   const size = useThree(({ size }) => size)
 
@@ -22,13 +22,8 @@ export function useFBO<T extends boolean = false>(
 
   const target = useMemo(() => {
     const { multisample, samples, ...targetSettings } = _settings
-    let target
-    if (multisample && gl.capabilities.isWebGL2) {
-      target = new THREE.WebGLMultisampleRenderTarget(_width, _height, targetSettings)
-      if (samples) target.samples = samples
-    } else {
-      target = new THREE.WebGLRenderTarget(_width, _height, targetSettings)
-    }
+    const target = new THREE.WebGLRenderTarget(_width, _height, targetSettings)
+    if (multisample && gl.capabilities.isWebGL2 && samples) target.samples = samples
     return target
   }, [])
 

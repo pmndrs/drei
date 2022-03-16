@@ -1522,10 +1522,10 @@ Calculates a boundary box and centers its children accordingly. `alignTop` adjus
   <a href="https://codesandbox.io/s/rz2g0"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/rz2g0/screenshot.png" alt="Demo"/></a>
 </p>
 
-Calculates a boundary box and centers the camera accordingly. If you are using controls, make sure to pass them the `makeDefault` prop. `fit` fits the current view on first render. `clip` sets the cameras near/far planes.
+Calculates a boundary box and centers the camera accordingly. If you are using controls, make sure to pass them the `makeDefault` prop. `fit` fits the current view on first render. `clip` sets the cameras near/far planes. `observe` will optionally use r3f's resize-observer to refresh bounds on resize.
 
 ```jsx
-<Bounds fit clip damping={6} margin={1.2}>
+<Bounds fit clip observe damping={6} margin={1.2}>
   <mesh />
 </Bounds>
 ```

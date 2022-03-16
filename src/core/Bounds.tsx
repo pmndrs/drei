@@ -20,6 +20,7 @@ export type BoundsProps = JSX.IntrinsicElements['group'] & {
   damping?: number
   fit?: boolean
   clip?: boolean
+  observe?: boolean
   margin?: number
   eps?: number
   onFit?: (data: SizeProps) => void
@@ -39,12 +40,10 @@ const isObject3D = (def: any): def is THREE.Object3D => def && (def as THREE.Obj
 const isBox3 = (def: any): def is THREE.Box3 => def && (def as THREE.Box3).isBox3
 
 const context = React.createContext<BoundsApi>(null!)
-export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0.01, onFit }: BoundsProps) {
+export function Bounds({ children, damping = 6, fit, clip, observe, margin = 1.2, eps = 0.01, onFit }: BoundsProps) {
   const ref = React.useRef<THREE.Group>(null!)
-  const camera = useThree((state) => state.camera)
   // @ts-expect-error new in @react-three/fiber@7.0.5
-  const controls = useThree((state) => state.controls) as ControlsProto
-  const invalidate = useThree((state) => state.invalidate)
+  const { camera, invalidate, size, controls } = useThree()
 
   const onFitRef = React.useRef<((data: SizeProps) => void) | undefined>(onFit)
   onFitRef.current = onFit
@@ -176,17 +175,23 @@ export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0
   }, [box, camera, controls, margin, damping, invalidate])
 
   React.useLayoutEffect(() => {
-    api.refresh()
-    if (fit) api.fit()
-    if (clip) api.clip()
-
     if (controls) {
       // Try to prevent drag hijacking
       const callback = () => (current.animating = false)
       controls.addEventListener('start', callback)
       return () => controls.removeEventListener('start', callback)
     }
-  }, [clip, fit, controls])
+  }, [controls])
+
+  // Scale pointer on window resize
+  const count = React.useRef(0)
+  React.useEffect(() => {
+    if (observe || count.current++ === 0) {
+      api.refresh()
+      if (fit) api.fit()
+      if (clip) api.clip()
+    }
+  }, [size, clip, fit, observe])
 
   useFrame((state, delta) => {
     if (current.animating) {

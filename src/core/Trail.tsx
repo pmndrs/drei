@@ -21,10 +21,10 @@ const shiftLeft = (collection, steps = 1) => {
 }
 
 export function useTrail(target: React.MutableRefObject<Object3D>, length: number = 1, decay: number = 1) {
-  const points = React.useRef<Float32Array>(Float32Array.from({ length: length * 3 }, () => 0))
+  const points = React.useRef<Float32Array>(Float32Array.from({ length: length * 1000 * 3 }, () => 0))
 
   React.useLayoutEffect(() => {
-    points.current = Float32Array.from({ length: length * 3 }, () => 0)
+    points.current = Float32Array.from({ length: length * 1000 * 3 }, () => 0)
   }, [length])
 
   useFrame(() => {
@@ -32,8 +32,11 @@ export function useTrail(target: React.MutableRefObject<Object3D>, length: numbe
 
     const n = target.current.position.clone()
 
-    shiftLeft(points.current, 3)
-    points.current.set(n.toArray(), points.current.length - 3)
+    const steps = 100 * decay
+    for (let i = 0; i < steps; i++) {
+      shiftLeft(points.current, 3)
+      points.current.set(n.toArray(), points.current.length - 3)
+    }
   })
 
   return points

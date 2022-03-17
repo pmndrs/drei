@@ -17,8 +17,11 @@ function TrailScene() {
   useFrame(({ clock }) => {
     if (sphere.current) {
       const t = clock.getElapsedTime()
-      sphere.current.position.x = Math.cos(t * 3) * 2
-      sphere.current.position.y = Math.sin(t * 3) * 2
+
+      const speed = Math.sin(t * 2) * 0.5 + 1 * 4
+
+      sphere.current.position.x = Math.cos(t * speed) * 2
+      sphere.current.position.y = Math.sin(t * speed) * 2
     }
   })
 
@@ -26,7 +29,7 @@ function TrailScene() {
     <>
       <Trail
         width={1}
-        length={20}
+        length={0.04}
         color={'#ffe656'}
         attenuation={(t: number) => {
           return t * t

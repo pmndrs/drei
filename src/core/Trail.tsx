@@ -1,6 +1,6 @@
 import { useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
-import { ColorRepresentation, Group, Mesh, Object3D, SkinnedMesh, Vector2, Vector3 } from 'three'
+import { ColorRepresentation, Group, Object3D, Vector2, Vector3 } from 'three'
 
 // @ts-ignore
 import { MeshLine, MeshLineMaterial } from 'three.meshline'
@@ -14,26 +14,26 @@ interface TrailProps {
   target?: React.MutableRefObject<Object3D>
 }
 
+const shiftLeft = (collection, steps = 1) => {
+  collection.set(collection.subarray(steps))
+  collection.fill(-Infinity, -steps)
+  return collection
+}
+
 export function useTrail(target: React.MutableRefObject<Object3D>, length: number = 1, decay: number = 1) {
-  const points = React.useRef<Vector3[]>([])
+  const points = React.useRef<Float32Array>(Float32Array.from({ length: length * 3 }, () => 0))
 
   React.useLayoutEffect(() => {
-    points.current = []
-    for (let i = 0; i < length * 1000; i++) {
-      points.current.push(new Vector3(i, i, i))
-    }
+    points.current = Float32Array.from({ length: length * 3 }, () => 0)
   }, [length])
 
-  useFrame((_, dt) => {
+  useFrame(() => {
     if (!target.current) return
 
-    const steps = 100 * decay
-    for (let i = 0; i < steps; i++) {
-      const n = target.current.position.clone()
+    const n = target.current.position.clone()
 
-      points.current.shift()
-      points.current.push(n)
-    }
+    shiftLeft(points.current, 3)
+    points.current.set(n.toArray(), points.current.length - 3)
   })
 
   return points
@@ -89,7 +89,7 @@ export const Trail = React.forwardRef<MeshLine, React.PropsWithChildren<TrailPro
       mat.uniforms.resolution.value.set(size.width, size.height)
     }, [size])
 
-    useFrame((_, dt) => {
+    useFrame(() => {
       geo.setPoints(points.current, attenuation)
     })
 

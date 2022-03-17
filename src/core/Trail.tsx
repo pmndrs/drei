@@ -3,7 +3,7 @@ import * as React from 'react'
 import { ColorRepresentation, Group, Object3D, Vector2, Vector3 } from 'three'
 
 // @ts-ignore
-import { MeshLine, MeshLineMaterial } from 'three.meshline'
+import { MeshLine, MeshLineMaterial } from 'meshline'
 
 interface TrailProps {
   width?: number
@@ -67,7 +67,7 @@ export const Trail = React.forwardRef<MeshLine, React.PropsWithChildren<TrailPro
       const m = new MeshLineMaterial({
         lineWidth: 0.1 * width,
         color: color,
-        sizeAttenuation: true,
+        sizeAttenuation: 1,
         resolution: new Vector2(size.width, size.height),
       })
 

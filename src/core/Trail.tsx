@@ -33,7 +33,7 @@ const defaults: Partial<Settings> = {
   interval: 1,
 }
 
-const shiftLeft = (collection, steps = 1) => {
+const shiftLeft = (collection: Float32Array, steps = 1): Float32Array => {
   collection.set(collection.subarray(steps))
   collection.fill(-Infinity, -steps)
   return collection

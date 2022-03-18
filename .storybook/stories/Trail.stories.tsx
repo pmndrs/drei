@@ -52,7 +52,7 @@ function UseTrailScene() {
     sphere.position.y = Math.cos(t) * 3
   })
 
-  const trailPositions = useTrail(sphere, 3)
+  const trailPositions = useTrail(sphere, { length: 3 })
   const n = 3000
 
   const [o] = React.useState(() => new Object3D())

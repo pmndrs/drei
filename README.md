@@ -65,6 +65,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#effects">Effects</a></li>
           <li><a href="#gradienttexture">GradientTexture</a></li>
           <li><a href="#edges">Edges</a></li>
+          <li><a href="#trail">Trail</a></li>
           <li><a href="#useanimations">useAnimations</a></li>
         </ul>
         <li><a href="#shaders">Shaders</a></li>
@@ -100,6 +101,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#usecursor">useCursor</a></li>
           <li><a href="#useintersect">useIntersect</a></li>
           <li><a href="#useboxprojectedenv">useBoxProjectedEnv</a></li>
+          <li><a href="#useTrail">useTrail</a></li>
         </ul>
         <li><a href="#loading">Loaders</a></li>
         <ul>
@@ -641,6 +643,36 @@ Abstracts [THREE.EdgesGeometry](https://threejs.org/docs/index.html?q=EdgesGeome
 </mesh>
 ```
 
+#### Trail
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-trail--use-trail-st)
+
+A declarative, `three.MeshLine` based Trails implementation. You can attach it to any mesh and it will give it a beautiful trail.
+
+Props defined bellow with their default values.
+
+```jsx
+<Trail
+  width={0.2} // Width of the line
+  color={'hotpink'} // Color of the line
+  length={1} // Length of the line
+  decay={1} // How fast the line fades away
+  target={undefined} // Optional target. This object will produce the trail.
+  attenuation={(width) => width} // A function to define the width in each point along it.
+>
+  {/* If `target` is not defined, Trail will use the first `Object3D` child as the target. */}
+  <mesh>
+    <sphereGeometry />
+    <meshBasicMaterial />
+  </mesh>
+
+  {/* You can optionally define a custom meshLineMaterial to use. */}
+  {/* <meshLineMaterial color={"red"} /> */}
+</Trail>
+```
+
+👉 Inspired by [TheSpite's Codevember 2021 #9](https://spite.github.io/codevember-2021/9/)
+
 #### useAnimations
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-useanimations--use-animations-st)
@@ -1135,6 +1167,27 @@ const projection = useBoxProjectedEnv(
     </mesh>
   )}
 </CubeCamera>
+```
+
+#### useTrail
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-trail--use-trail-st)
+
+A hook to obtain an array of points that make up a [Trail](#trail). You can use this array to drive your own `MeshLine` or make a trail out of anything you please.
+
+Note: The hook returns a ref (`MutableRefObject<Vector3[]>`) this means updates to it will not trigger a re-draw, thus keeping this cheap.
+
+```js
+const points = useTrail(
+  target, // Required target object. This object will produce the trail.
+  length, // Length of the line
+  decay // How fast the line fades away
+)
+
+// To use...
+useFrame(() => {
+  meshLineRef.current.position.setPoints(points.current)
+})
 ```
 
 # Loading

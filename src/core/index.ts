@@ -9,6 +9,7 @@ export * from './Effects'
 export * from './GradientTexture'
 export * from './Image'
 export * from './Edges'
+export * from './Trail'
 
 // Cameras
 export * from './OrthographicCamera'

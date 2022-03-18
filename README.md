@@ -645,14 +645,16 @@ Abstracts [THREE.EdgesGeometry](https://threejs.org/docs/index.html?q=EdgesGeome
 
 #### Trail
 
-A declarative, `three.MeshLine` based Trails implementation inspired [TheSpite's Codevember 2021 #9](https://spite.github.io/codevember-2021/9/). You can attach it to any mesh and it will give it a beautiful trail.
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-trail--use-trail-st)
+
+A declarative, `three.MeshLine` based Trails implementation. You can attach it to any mesh and it will give it a beautiful trail.
 
 Props defined bellow with their default values.
 
 ```jsx
 <Trail
   width={0.2} // Width of the line
-  color={'purple'} // Color of the line
+  color={'hotpink'} // Color of the line
   length={1} // Length of the line
   decay={1} // How fast the line fades away
   target={undefined} // Optional target. This object will produce the trail.
@@ -668,6 +670,8 @@ Props defined bellow with their default values.
   {/* <meshLineMaterial color={"red"} /> */}
 </Trail>
 ```
+
+👉 Inspired by [TheSpite's Codevember 2021 #9](https://spite.github.io/codevember-2021/9/)
 
 #### useAnimations
 
@@ -1166,6 +1170,8 @@ const projection = useBoxProjectedEnv(
 ```
 
 #### useTrail
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-trail--use-trail-st)
 
 A hook to obtain an array of points that make up a [Trail](#trail). You can use this array to drive your own `MeshLine` or make a trail out of anything you please.
 

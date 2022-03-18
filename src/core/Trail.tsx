@@ -20,17 +20,20 @@ const shiftLeft = (collection, steps = 1) => {
   return collection
 }
 
-export function useTrail(target: React.MutableRefObject<Object3D>, length: number = 1, decay: number = 1) {
-  const points = React.useRef<Float32Array>(Float32Array.from({ length: length * 1000 * 3 }, () => 0))
+export function useTrail(target: Object3D, length: number = 1, decay: number = 1) {
+  const points = React.useRef<Float32Array>()
 
   React.useLayoutEffect(() => {
-    points.current = Float32Array.from({ length: length * 1000 * 3 }, () => 0)
-  }, [length])
+    if (target) {
+      points.current = Float32Array.from({ length: length * 1000 * 3 }, (_, i) => target.position.getComponent(i % 3))
+    }
+  }, [length, target])
 
   useFrame(() => {
-    if (!target.current) return
+    if (!target) return
+    if (!points.current) return
 
-    const n = target.current.position.clone()
+    const n = target.position
 
     const steps = 100 * decay
     for (let i = 0; i < steps; i++) {
@@ -43,22 +46,23 @@ export function useTrail(target: React.MutableRefObject<Object3D>, length: numbe
 }
 
 export const Trail = React.forwardRef<MeshLine, React.PropsWithChildren<TrailProps>>(
-  ({ width = 0.2, color = 'purple', length = 1, decay = 1, attenuation, target, children }, forwardRef) => {
+  ({ width = 0.2, color = 'hotpink', length = 1, decay = 1, attenuation, target, children }, forwardRef) => {
     const size = useThree((s) => s.size)
 
     const ref = React.useRef<Group>(null!)
-    const anchor = React.useRef<Object3D>(null!)
+    const [anchor, setAnchor] = React.useState<Object3D>(null!)
 
     const points = useTrail(anchor, length, decay)
 
-    React.useLayoutEffect(() => {
+    React.useEffect(() => {
       const t =
         target?.current ||
         ref.current.children.find((o) => {
           return o instanceof Object3D
         })
+
       if (t) {
-        anchor.current = t
+        setAnchor(t)
       }
     }, [points, target])
 

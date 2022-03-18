@@ -658,6 +658,9 @@ Props defined bellow with their default values.
   color={'hotpink'} // Color of the line
   length={1} // Length of the line
   decay={1} // How fast the line fades away
+  local={false} // Wether to use the target's world or local positions
+  stride={0} // Min distance between previous and current point
+  interval={1} // Number of frames to wait before next calculation
   target={undefined} // Optional target. This object will produce the trail.
   attenuation={(width) => width} // A function to define the width in each point along it.
 >
@@ -1207,8 +1210,13 @@ Note: The hook returns a ref (`MutableRefObject<Vector3[]>`) this means updates 
 ```js
 const points = useTrail(
   target, // Required target object. This object will produce the trail.
-  length, // Length of the line
-  decay // How fast the line fades away
+  {
+    length, // Length of the line
+    decay, // How fast the line fades away
+    local, // Wether to use the target's world or local positions
+    stride, // Min distance between previous and current point
+    interval // Number of frames to wait before next calculation
+  }
 )
 
 // To use...

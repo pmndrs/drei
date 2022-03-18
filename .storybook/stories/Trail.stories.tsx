@@ -52,25 +52,25 @@ function UseTrailScene() {
     sphere.position.y = Math.cos(t) * 3
   })
 
-  const trailPositions = useTrail(sphere, { length: 3 })
-  const n = 3000
+  const trailPositions = useTrail(sphere, { length: 1, interval: 6 })
+  const n = 1000
 
   const [o] = React.useState(() => new Object3D())
   function updateInstances() {
     if (!instancesRef.current) return
 
-    for (let i = 0; i < n; i += 300) {
+    for (let i = 0; i < n; i += 1) {
       const x = trailPositions.current.slice(i * 3, i * 3 + 3)
       // @ts-ignore
       o.position.set(...x)
 
-      o.scale.setScalar((i / n) * 0.5)
+      o.scale.setScalar(i / n)
       o.updateMatrixWorld()
 
       instancesRef.current.setMatrixAt(i, o.matrixWorld)
     }
 
-    instancesRef.current.count = trailPositions.current.length / 3
+    instancesRef.current.count = n
     instancesRef.current.instanceMatrix.needsUpdate = true
   }
 

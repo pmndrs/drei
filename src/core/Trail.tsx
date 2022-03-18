@@ -93,7 +93,7 @@ export const Trail = React.forwardRef<MeshLine, React.PropsWithChildren<TrailPro
     ...props,
   } as Settings
 
-  const { color, attenuation, target } = props
+  const { color = 'hotpink', attenuation, target } = props
 
   const size = useThree((s) => s.size)
 

@@ -20,8 +20,9 @@ const shiftLeft = (collection, steps = 1) => {
   return collection
 }
 
-export function useTrail(target: Object3D, length: number = 1, decay: number = 1) {
+export function useTrail(target: Object3D, length: number = 1, decay: number = 1, local = false) {
   const points = React.useRef<Float32Array>()
+  const [worldPosition] = React.useState(() => new Vector3())
 
   React.useLayoutEffect(() => {
     if (target) {
@@ -33,12 +34,18 @@ export function useTrail(target: Object3D, length: number = 1, decay: number = 1
     if (!target) return
     if (!points.current) return
 
-    const n = target.position
+    let newPosition: Vector3
+    if (local) {
+      newPosition = target.position
+    } else {
+      target.getWorldPosition(worldPosition)
+      newPosition = worldPosition
+    }
 
     const steps = 100 * decay
     for (let i = 0; i < steps; i++) {
       shiftLeft(points.current, 3)
-      points.current.set(n.toArray(), points.current.length - 3)
+      points.current.set(newPosition.toArray(), points.current.length - 3)
     }
   })
 

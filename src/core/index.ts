@@ -10,6 +10,7 @@ export * from './GradientTexture'
 export * from './Image'
 export * from './Edges'
 export * from './Trail'
+export * from './Clone'
 
 // Cameras
 export * from './OrthographicCamera'

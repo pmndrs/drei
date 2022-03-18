@@ -66,6 +66,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#gradienttexture">GradientTexture</a></li>
           <li><a href="#edges">Edges</a></li>
           <li><a href="#trail">Trail</a></li>
+          <li><a href="#clone">Clone</a></li>
           <li><a href="#useanimations">useAnimations</a></li>
         </ul>
         <li><a href="#shaders">Shaders</a></li>
@@ -672,6 +673,32 @@ Props defined bellow with their default values.
 ```
 
 👉 Inspired by [TheSpite's Codevember 2021 #9](https://spite.github.io/codevember-2021/9/)
+
+#### Clone
+
+Declarative abstraction around THREE.Object3D.clone. This is useful when you want to create a shallow copy of an existing fragment (and Object3D, Groups, etc) into your scene, for instance a group from a loaded GLTF. This clone is now re-usable, but it will still refer to the original geometries and materials. You can also deeply clone, down to geometries and materials using the `deep` prop.
+
+```jsx
+<Clone object={nodes.table} />
+```
+
+You can dynamically insert objects, these will apply to anything that isn't a group or a plain object3d (meshes, lines, etc):
+
+```jsx
+const { nodes } = useGLTF(url)
+return (
+  <Clone object={nodes.table}>
+    <meshStandardMaterial color="green" />
+  </Clone>
+```
+
+Or make inserts conditional:
+
+```jsx
+<Clone object={nodes.table}>
+  {(object) => (object.name === 'table' ? <meshStandardMaterial color="green" /> : null)}
+</Clone>
+```
 
 #### useAnimations
 

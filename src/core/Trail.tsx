@@ -15,6 +15,11 @@ interface TrailProps {
   local?: boolean
   attenuation?: (width: number) => number
   target?: React.MutableRefObject<Object3D>
+
+  // Min distance between previous and current points
+  stride?: number
+  // Number of frames to wait before next calculation
+  interval?: number
 }
 
 const shiftLeft = (collection, steps = 1) => {
@@ -23,7 +28,14 @@ const shiftLeft = (collection, steps = 1) => {
   return collection
 }
 
-export function useTrail(target: Object3D, length: number = 1, decay: number = 1, local = false) {
+export function useTrail(
+  target: Object3D,
+  length: number = 1,
+  decay: number = 1,
+  local = false,
+  stride = 0,
+  interval = 1
+) {
   const points = React.useRef<Float32Array>()
   const [worldPosition] = React.useState(() => new Vector3())
 
@@ -33,23 +45,33 @@ export function useTrail(target: Object3D, length: number = 1, decay: number = 1
     }
   }, [length, target])
 
+  const prevPosition = React.useRef(new Vector3())
+  const frameCount = React.useRef(0)
+
   useFrame(() => {
     if (!target) return
     if (!points.current) return
+    if (frameCount.current === 0) {
+      let newPosition: Vector3
+      if (local) {
+        newPosition = target.position
+      } else {
+        target.getWorldPosition(worldPosition)
+        newPosition = worldPosition
+      }
 
-    let newPosition: Vector3
-    if (local) {
-      newPosition = target.position
-    } else {
-      target.getWorldPosition(worldPosition)
-      newPosition = worldPosition
+      const steps = 100 * decay
+      for (let i = 0; i < steps; i++) {
+        if (newPosition.distanceTo(prevPosition.current) < stride) continue
+
+        shiftLeft(points.current, 3)
+        points.current.set(newPosition.toArray(), points.current.length - 3)
+      }
+      prevPosition.current.copy(newPosition)
     }
 
-    const steps = 100 * decay
-    for (let i = 0; i < steps; i++) {
-      shiftLeft(points.current, 3)
-      points.current.set(newPosition.toArray(), points.current.length - 3)
-    }
+    frameCount.current++
+    frameCount.current = frameCount.current % interval
   })
 
   return points
@@ -57,7 +79,18 @@ export function useTrail(target: Object3D, length: number = 1, decay: number = 1
 
 export const Trail = React.forwardRef<MeshLine, React.PropsWithChildren<TrailProps>>(
   (
-    { width = 0.2, color = 'hotpink', length = 1, decay = 1, attenuation, local = false, target, children },
+    {
+      width = 0.2,
+      color = 'hotpink',
+      length = 1,
+      decay = 1,
+      attenuation,
+      local = false,
+      stride = 0,
+      interval = 1,
+      target,
+      children,
+    },
     forwardRef
   ) => {
     const size = useThree((s) => s.size)
@@ -65,7 +98,7 @@ export const Trail = React.forwardRef<MeshLine, React.PropsWithChildren<TrailPro
     const ref = React.useRef<Group>(null!)
     const [anchor, setAnchor] = React.useState<Object3D>(null!)
 
-    const points = useTrail(anchor, length, decay, local)
+    const points = useTrail(anchor, length, decay, local, stride, interval)
 
     React.useEffect(() => {
       const t =

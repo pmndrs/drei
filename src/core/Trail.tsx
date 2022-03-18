@@ -1,8 +1,22 @@
 import { useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
-import { Color, ColorRepresentation, Group, Object3D, Vector2, Vector3 } from 'three'
+import { ColorRepresentation, Group, Object3D, Vector2, Vector3 } from 'three'
 
 import { MeshLine, MeshLineMaterial } from 'meshline'
+
+type Settings = {
+  width: number
+  length: number
+  decay: number
+  /**
+   * Wether to use the target's world or local positions
+   */
+  local: boolean
+  // Min distance between previous and current points
+  stride: number
+  // Number of frames to wait before next calculation
+  interval: number
+}
 
 type TrailProps = {
   color?: ColorRepresentation
@@ -17,20 +31,6 @@ const defaults: Partial<Settings> = {
   local: false,
   stride: 0,
   interval: 1,
-}
-
-type Settings = {
-  width: number
-  length: number
-  decay: number
-  /**
-   * Wether to use the target's world or local positions
-   */
-  local: boolean
-  // Min distance between previous and current points
-  stride: number
-  // Number of frames to wait before next calculation
-  interval: number
 }
 
 const shiftLeft = (collection, steps = 1) => {

@@ -2,7 +2,6 @@ import { useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import { ColorRepresentation, Group, Object3D, Vector2, Vector3 } from 'three'
 
-// @ts-ignore
 import { MeshLine, MeshLineMaterial } from 'meshline'
 
 interface TrailProps {
@@ -89,18 +88,22 @@ export const Trail = React.forwardRef<MeshLine, React.PropsWithChildren<TrailPro
         resolution: new Vector2(size.width, size.height),
       })
 
+      // Get and apply first <meshLineMaterial /> from children
+      let matOverride: React.ReactElement | undefined
       if (Array.isArray(children)) {
-        const matOverride = children.find(
-          (child: React.ReactNode) =>
-            // @ts-ignore
-            typeof child.type === 'string' && child.type === 'meshLineMaterial'
-        )
-
-        // @ts-ignore
-        if (typeof matOverride?.props === 'object') {
-          // @ts-ignore
-          m.setValues(matOverride.props)
+        matOverride = children.find((child: React.ReactNode) => {
+          const c = child as React.ReactElement
+          return typeof c.type === 'string' && c.type === 'meshLineMaterial'
+        }) as React.ReactElement | undefined
+      } else {
+        const c = children as React.ReactElement
+        if (typeof c.type === 'string' && c.type === 'meshLineMaterial') {
+          matOverride = c
         }
+      }
+
+      if (typeof matOverride?.props === 'object') {
+        m.setValues(matOverride.props)
       }
 
       return m

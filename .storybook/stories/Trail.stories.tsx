@@ -4,12 +4,12 @@ import { Setup } from '../Setup'
 
 import { Sphere, Trail, useTrail } from '../../src'
 import { useFrame } from '@react-three/fiber'
-import { InstancedMesh, Mesh, Object3D } from 'three'
+import { InstancedMesh, Mesh, Object3D, Vector3 } from 'three'
 
 export default {
   title: 'Misc/Trail',
   component: Trail,
-  decorators: [(storyFn) => <Setup cameraPosition={[0, 0, 5]}> {storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 5)}> {storyFn()}</Setup>],
 }
 
 function TrailScene() {

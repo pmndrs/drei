@@ -10,6 +10,10 @@ interface TrailProps {
   color?: ColorRepresentation
   length?: number
   decay?: number
+  /**
+   * Wether to use the target's world or local positions
+   */
+  local?: boolean
   attenuation?: (width: number) => number
   target?: React.MutableRefObject<Object3D>
 }
@@ -53,13 +57,16 @@ export function useTrail(target: Object3D, length: number = 1, decay: number = 1
 }
 
 export const Trail = React.forwardRef<MeshLine, React.PropsWithChildren<TrailProps>>(
-  ({ width = 0.2, color = 'hotpink', length = 1, decay = 1, attenuation, target, children }, forwardRef) => {
+  (
+    { width = 0.2, color = 'hotpink', length = 1, decay = 1, attenuation, local = false, target, children },
+    forwardRef
+  ) => {
     const size = useThree((s) => s.size)
 
     const ref = React.useRef<Group>(null!)
     const [anchor, setAnchor] = React.useState<Object3D>(null!)
 
-    const points = useTrail(anchor, length, decay)
+    const points = useTrail(anchor, length, decay, local)
 
     React.useEffect(() => {
       const t =
@@ -104,6 +111,7 @@ export const Trail = React.forwardRef<MeshLine, React.PropsWithChildren<TrailPro
     }, [size])
 
     useFrame(() => {
+      if (!points.current) return
       geo.setPoints(points.current, attenuation)
     })
 

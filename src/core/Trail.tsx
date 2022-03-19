@@ -125,15 +125,17 @@ export const Trail = React.forwardRef<MeshLine, React.PropsWithChildren<TrailPro
 
     // Get and apply first <meshLineMaterial /> from children
     let matOverride: React.ReactElement | undefined
-    if (Array.isArray(children)) {
-      matOverride = children.find((child: React.ReactNode) => {
-        const c = child as React.ReactElement
-        return typeof c.type === 'string' && c.type === 'meshLineMaterial'
-      }) as React.ReactElement | undefined
-    } else {
-      const c = children as React.ReactElement
-      if (typeof c.type === 'string' && c.type === 'meshLineMaterial') {
-        matOverride = c
+    if (children) {
+      if (Array.isArray(children)) {
+        matOverride = children.find((child: React.ReactNode) => {
+          const c = child as React.ReactElement
+          return typeof c.type === 'string' && c.type === 'meshLineMaterial'
+        }) as React.ReactElement | undefined
+      } else {
+        const c = children as React.ReactElement
+        if (typeof c.type === 'string' && c.type === 'meshLineMaterial') {
+          matOverride = c
+        }
       }
     }
 

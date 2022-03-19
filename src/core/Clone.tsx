@@ -2,7 +2,7 @@ import * as React from 'react'
 import pick from 'lodash.pick'
 
 type Props = Omit<JSX.IntrinsicElements['group'], 'children'> & {
-  object: THREE.Object3D
+  object: THREE.Object3D | THREE.Object3D[]
   children?: React.ReactNode | ((object: THREE.Object3D) => React.ReactNode)
   deep?: boolean
   keys?: string[]
@@ -42,6 +42,25 @@ export function Clone({
   ],
   ...props
 }: Props) {
+  // Deal with arrayed clones
+  if (Array.isArray(object)) {
+    return (
+      <>
+        {object.map((o, i) => (
+          <Clone
+            key={o.uuid}
+            object={o}
+            deep={deep}
+            castShadow={castShadow}
+            receiveShadow={receiveShadow}
+            keys={keys}
+            children={children}
+          />
+        ))}
+      </>
+    )
+  }
+  // Singleton clones
   const spread = pick(object, keys)
   return (
     <group {...props}>

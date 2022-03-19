@@ -709,6 +709,12 @@ Or make inserts conditional:
 </Clone>
 ```
 
+Clones can also take multiple objects:
+
+```jsx
+<Clone object={[nodes.foo, nodes.bar]} />
+```
+
 #### useAnimations
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-useanimations--use-animations-st)

@@ -6,11 +6,15 @@ type Props = Omit<JSX.IntrinsicElements['group'], 'children'> & {
   children?: React.ReactNode | ((object: THREE.Object3D) => React.ReactNode)
   deep?: boolean
   keys?: string[]
+  castShadow?: boolean
+  receiveShadow?: boolean
 }
 
 export function Clone({
   object,
   deep = false,
+  castShadow,
+  receiveShadow,
   children,
   keys = [
     'near',
@@ -37,7 +41,7 @@ export function Clone({
     'userData',
   ],
   ...props
-}) {
+}: Props) {
   const spread = pick(object, keys)
   return (
     <group {...props}>
@@ -48,10 +52,13 @@ export function Clone({
             if (spread.geometry) spread.geometry = spread.geometry.clone()
             if (spread.material) spread.material = spread.material.clone()
           }
-          let Element = child.type[0].toLowerCase() + child.type.slice(1)
+          let Element: string | typeof Clone = child.type[0].toLowerCase() + child.type.slice(1)
           if (Element === 'group' || Element === 'object3D') {
             Element = Clone
-            spread.object = child
+            spread = { object: child, castShadow, receiveShadow, deep, keys }
+          } else if (Element === 'mesh') {
+            if (castShadow) spread.castShadow = true
+            if (receiveShadow) spread.receiveShadow = true
           }
           return (
             <Element key={child.uuid} {...spread}>

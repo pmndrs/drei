@@ -105,17 +105,12 @@ function UseTrailFloat() {
           return t * t
         }}
         target={ref}
-      >
-        <Float speed={5} floatIntensity={10} ref={ref}>
-          <Sphere args={[0.1, 32, 32]} position-x={0}>
-            <meshNormalMaterial />
-          </Sphere>
-        </Float>
-      </Trail>
-
-      <Html>
-        <Stats />
-      </Html>
+      />
+      <Float speed={5} floatIntensity={10} ref={ref}>
+        <Sphere args={[0.1, 32, 32]} position-x={0}>
+          <meshNormalMaterial />
+        </Sphere>
+      </Float>
     </>
   )
 }

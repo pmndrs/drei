@@ -4,7 +4,7 @@ import pick from 'lodash.pick'
 type Props = Omit<JSX.IntrinsicElements['group'], 'children'> & {
   object: THREE.Object3D | THREE.Object3D[]
   children?: React.ReactNode | ((object: THREE.Object3D) => React.ReactNode)
-  deep?: boolean
+  deep?: boolean | 'materialsOnly' | 'geometriesOnly'
   keys?: string[]
   castShadow?: boolean
   receiveShadow?: boolean
@@ -72,8 +72,8 @@ export const Clone = React.forwardRef(
           {object?.children.map((child) => {
             let spread = pick(child, keys)
             if (deep) {
-              if (spread.geometry) spread.geometry = spread.geometry.clone()
-              if (spread.material) spread.material = spread.material.clone()
+              if (spread.geometry && deep !== 'materialsOnly') spread.geometry = spread.geometry.clone()
+              if (spread.material && deep !== 'geometriesOnly') spread.material = spread.material.clone()
             }
             let Element: string | typeof Clone = child.type[0].toLowerCase() + child.type.slice(1)
             if (Element === 'group' || Element === 'object3D') {

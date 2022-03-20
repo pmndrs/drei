@@ -683,10 +683,10 @@ Declarative abstraction around THREE.Object3D.clone. This is useful when you wan
 
 ```jsx
 <Clone
-  //castShadow?: boolean
-  //receiveShadow?: boolean
-  //deep?: boolean
-  //keys?: string[]
+  // castShadow?: boolean
+  // receiveShadow?: boolean
+  // deep?: boolean | 'materialsOnly' | 'geometriesOnly'
+  // keys?: string[]
   object={nodes.table}
 />
 ```

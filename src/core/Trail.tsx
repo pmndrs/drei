@@ -50,7 +50,7 @@ export function useTrail(target: Object3D, settings: Partial<Settings>) {
 
   React.useLayoutEffect(() => {
     if (target) {
-      points.current = Float32Array.from({ length: length * 1000 * 3 }, (_, i) => target.position.getComponent(i % 3))
+      points.current = Float32Array.from({ length: length * 10 * 3 }, (_, i) => target.position.getComponent(i % 3))
     }
   }, [length, target])
 
@@ -69,7 +69,7 @@ export function useTrail(target: Object3D, settings: Partial<Settings>) {
         newPosition = worldPosition
       }
 
-      const steps = 100 * decay
+      const steps = 1 * decay
       for (let i = 0; i < steps; i++) {
         if (newPosition.distanceTo(prevPosition.current) < stride) continue
 

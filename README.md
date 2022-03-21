@@ -697,7 +697,7 @@ Declarative abstraction around THREE.Object3D.clone. This is useful when you wan
   castShadow?: boolean
   /** Short access receiveShadow, applied to every mesh within */
   receiveShadow?: boolean
-  />
+/>
 ```
 
 You create a shallow clone by passing a pre-existing object to the `object` prop.

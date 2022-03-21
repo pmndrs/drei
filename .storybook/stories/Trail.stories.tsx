@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import { Setup } from '../Setup'
 
-import { Sphere, Trail, useTrail } from '../../src'
+import { Sphere, Trail, useTrail, Html, Stats, Float } from '../../src'
 import { useFrame } from '@react-three/fiber'
 import { InstancedMesh, Mesh, Object3D, Vector3 } from 'three'
 
@@ -52,7 +52,7 @@ function UseTrailScene() {
     sphere.position.y = Math.cos(t) * 3
   })
 
-  const trailPositions = useTrail(sphere, { length: 1, interval: 6 })
+  const trailPositions = useTrail(sphere, { length: 5, decay: 5, interval: 6 })
   const n = 1000
 
   const [o] = React.useState(() => new Object3D())
@@ -64,7 +64,7 @@ function UseTrailScene() {
       // @ts-ignore
       o.position.set(...x)
 
-      o.scale.setScalar(i / n)
+      o.scale.setScalar((i * 10) / n)
       o.updateMatrixWorld()
 
       instancesRef.current.setMatrixAt(i, o.matrixWorld)
@@ -92,3 +92,28 @@ function UseTrailScene() {
 
 export const UseTrailSt = () => <UseTrailScene />
 UseTrailSt.storyName = 'useTrail with Instances'
+
+function UseTrailFloat() {
+  const ref = React.useRef(null!)
+  return (
+    <>
+      <Trail
+        width={1}
+        length={4}
+        color={'#F8D628'}
+        attenuation={(t: number) => {
+          return t * t
+        }}
+        target={ref}
+      />
+      <Float speed={5} floatIntensity={10} ref={ref}>
+        <Sphere args={[0.1, 32, 32]} position-x={0}>
+          <meshNormalMaterial />
+        </Sphere>
+      </Float>
+    </>
+  )
+}
+
+export const TrailFloat = () => <UseTrailFloat />
+TrailFloat.storyName = 'Trail on Float components'

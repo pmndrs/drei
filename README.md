@@ -679,16 +679,29 @@ Props defined bellow with their default values.
 
 #### Clone
 
+```ts
+<Clone
+  /** Any pre-existing THREE.Object3D (groups, meshes, ...), or an array of objects */
+  object: THREE.Object3D | THREE.Object3D[]
+  /** Children will be placed within the object, or within the group that holds arrayed objects */
+  children?: React.ReactNode
+  /** Can clone materials and/or geometries deeply (default: false) */
+  deep?: boolean | 'materialsOnly' | 'geometriesOnly'
+  /** The property keys it will shallow-clone (material, geometry, visible, ...) */
+  keys?: string[]
+  /** Can either spread over props or fill in JSX children, applies to every mesh within */
+  inject?: MeshProps | React.ReactNode | ((object: THREE.Object3D) => React.ReactNode)
+  /** Short access castShadow, applied to every mesh within */
+  castShadow?: boolean
+  /** Short access receiveShadow, applied to every mesh within */
+  receiveShadow?: boolean
+  />
+```
+
 Declarative abstraction around THREE.Object3D.clone. This is useful when you want to create a shallow copy of an existing fragment (and Object3D, Groups, etc) into your scene, for instance a group from a loaded GLTF. This clone is now re-usable, but it will still refer to the original geometries and materials. You can also deeply clone, down to geometries and materials using the `deep` prop.
 
 ```jsx
-<Clone
-  // castShadow?: boolean
-  // receiveShadow?: boolean
-  // deep?: boolean | 'materialsOnly' | 'geometriesOnly'
-  // keys?: string[]
-  object={nodes.table}
-/>
+<Clone object={nodes.table} />
 ```
 
 You can dynamically insert objects, these will apply to anything that isn't a group or a plain object3d (meshes, lines, etc):
@@ -696,17 +709,15 @@ You can dynamically insert objects, these will apply to anything that isn't a gr
 ```jsx
 const { nodes } = useGLTF(url)
 return (
-  <Clone object={nodes.table}>
-    <meshStandardMaterial color="green" />
-  </Clone>
+  <Clone object={nodes.table} inject={<meshStandardMaterial color="green" />} />
 ```
 
 Or make inserts conditional:
 
 ```jsx
-<Clone object={nodes.table}>
+<Clone object={nodes.table} inject={
   {(object) => (object.name === 'table' ? <meshStandardMaterial color="green" /> : null)}
-</Clone>
+} />
 ```
 
 Clones can also take multiple objects:

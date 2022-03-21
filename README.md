@@ -679,6 +679,8 @@ Props defined bellow with their default values.
 
 #### Clone
 
+Declarative abstraction around THREE.Object3D.clone. This is useful when you want to create a shallow copy of an existing fragment (and Object3D, Groups, etc) into your scene, for instance a group from a loaded GLTF. This clone is now re-usable, but it will still refer to the original geometries and materials.
+
 ```ts
 <Clone
   /** Any pre-existing THREE.Object3D (groups, meshes, ...), or an array of objects */
@@ -698,18 +700,24 @@ Props defined bellow with their default values.
   />
 ```
 
-Declarative abstraction around THREE.Object3D.clone. This is useful when you want to create a shallow copy of an existing fragment (and Object3D, Groups, etc) into your scene, for instance a group from a loaded GLTF. This clone is now re-usable, but it will still refer to the original geometries and materials. You can also deeply clone, down to geometries and materials using the `deep` prop.
+You create a shallow clone by passing a pre-existing object to the `object` prop.
 
 ```jsx
-<Clone object={nodes.table} />
+const { nodes } = useGLTF(url)
+return (
+  <Clone object={nodes.table} />
+```
+
+Or, multiple objects:
+
+```jsx
+<Clone object={[nodes.foo, nodes.bar]} />
 ```
 
 You can dynamically insert objects, these will apply to anything that isn't a group or a plain object3d (meshes, lines, etc):
 
 ```jsx
-const { nodes } = useGLTF(url)
-return (
-  <Clone object={nodes.table} inject={<meshStandardMaterial color="green" />} />
+<Clone object={nodes.table} inject={<meshStandardMaterial color="green" />} />
 ```
 
 Or make inserts conditional:
@@ -718,12 +726,6 @@ Or make inserts conditional:
 <Clone object={nodes.table} inject={
   {(object) => (object.name === 'table' ? <meshStandardMaterial color="green" /> : null)}
 } />
-```
-
-Clones can also take multiple objects:
-
-```jsx
-<Clone object={[nodes.foo, nodes.bar]} />
 ```
 
 #### useAnimations

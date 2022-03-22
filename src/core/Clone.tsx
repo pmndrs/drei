@@ -70,10 +70,11 @@ export const Clone = React.forwardRef(
     }
     // Singleton clones
     const spread = pick(object, keys)
+    const Root = object.type[0].toLowerCase() + object.type.slice(1)
     return (
       <group {...props} ref={forwardRef}>
-        <group {...spread}>
-          {object?.children.map((child) => {
+        <Root {...spread}>
+          {(object?.children).map((child) => {
             let spread = pick(child, keys)
             if (deep) {
               if (spread.geometry && deep !== 'materialsOnly') spread.geometry = spread.geometry.clone()
@@ -98,7 +99,7 @@ export const Clone = React.forwardRef(
             return <Element key={child.uuid} {...spread} />
           })}
           {children}
-        </group>
+        </Root>
       </group>
     )
   }

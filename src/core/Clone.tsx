@@ -88,7 +88,7 @@ export const Clone = React.forwardRef(
       )
     }
     // Singleton clones
-    const spread = createSpread(object, config)
+    const { children: injectChildren, ...spread } = createSpread(object, config)
     const Element = object.type[0].toLowerCase() + object.type.slice(1)
     return (
       <Element {...spread} {...props} ref={forwardRef}>
@@ -104,6 +104,7 @@ export const Clone = React.forwardRef(
           return <Element key={child.uuid} {...spread} />
         })}
         {children}
+        {injectChildren}
       </Element>
     )
   }

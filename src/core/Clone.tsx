@@ -91,22 +91,20 @@ export const Clone = React.forwardRef(
     const spread = createSpread(object, config)
     const Element = object.type[0].toLowerCase() + object.type.slice(1)
     return (
-      <group {...props} ref={forwardRef}>
-        <Element {...spread}>
-          {(object?.children).map((child) => {
-            let spread: any = {}
-            let Element: string | typeof Clone = child.type[0].toLowerCase() + child.type.slice(1)
-            if (Element === 'group' || Element === 'object3D') {
-              Element = Clone
-              spread = { object: child, ...config }
-            } else {
-              spread = createSpread(child, config)
-            }
-            return <Element key={child.uuid} {...spread} />
-          })}
-          {children}
-        </Element>
-      </group>
+      <Element {...spread} {...props} ref={forwardRef}>
+        {(object?.children).map((child) => {
+          let spread: any = {}
+          let Element: string | typeof Clone = child.type[0].toLowerCase() + child.type.slice(1)
+          if (Element === 'group' || Element === 'object3D') {
+            Element = Clone
+            spread = { object: child, ...config }
+          } else {
+            spread = createSpread(child, config)
+          }
+          return <Element key={child.uuid} {...spread} />
+        })}
+        {children}
+      </Element>
     )
   }
 )

@@ -19,87 +19,93 @@ type Props = Omit<JSX.IntrinsicElements['group'], 'children'> & {
   receiveShadow?: boolean
 }
 
+function createSpread(
+  child: THREE.Object3D,
+  {
+    keys = [
+      'near',
+      'far',
+      'color',
+      'distance',
+      'decay',
+      'penumbra',
+      'angle',
+      'intensity',
+      'skeleton',
+      'visible',
+      'castShadow',
+      'receiveShadow',
+      'morphTargetDictionary',
+      'morphTargetInfluences',
+      'name',
+      'geometry',
+      'material',
+      'position',
+      'rotation',
+      'scale',
+      'up',
+      'userData',
+    ],
+    deep,
+    inject,
+    castShadow,
+    receiveShadow,
+  }: Partial<Props>
+) {
+  let spread = pick(child, keys)
+  if (deep) {
+    if (spread.geometry && deep !== 'materialsOnly') spread.geometry = spread.geometry.clone()
+    if (spread.material && deep !== 'geometriesOnly') spread.material = spread.material.clone()
+  }
+  if (inject) {
+    if (typeof inject === 'function') spread = { ...spread, children: inject(child) }
+    else if (React.isValidElement(inject)) spread = { ...spread, children: inject }
+    else spread = { ...spread, ...(inject as any) }
+  }
+
+  if (child.type === 'Mesh') {
+    if (castShadow) spread.castShadow = true
+    if (receiveShadow) spread.receiveShadow = true
+  }
+  return spread
+}
+
 export const Clone = React.forwardRef(
   (
-    {
-      object,
-      children,
-      deep,
-      castShadow,
-      receiveShadow,
-      inject,
-      keys = [
-        'near',
-        'far',
-        'color',
-        'distance',
-        'decay',
-        'penumbra',
-        'angle',
-        'intensity',
-        'skeleton',
-        'visible',
-        'castShadow',
-        'receiveShadow',
-        'morphTargetDictionary',
-        'morphTargetInfluences',
-        'name',
-        'geometry',
-        'material',
-        'position',
-        'rotation',
-        'scale',
-        'up',
-        'userData',
-      ],
-      ...props
-    }: Props,
+    { object, children, deep, castShadow, receiveShadow, inject, keys, ...props }: Props,
     forwardRef: React.Ref<THREE.Group>
   ) => {
+    const config = { keys, deep, inject, castShadow, receiveShadow }
     // Deal with arrayed clones
     if (Array.isArray(object)) {
-      const spread = { deep, keys, inject, castShadow, receiveShadow }
       return (
         <group {...props} ref={forwardRef}>
           {object.map((o) => (
-            <Clone key={o.uuid} object={o} {...spread} />
+            <Clone key={o.uuid} object={o} {...config} />
           ))}
           {children}
         </group>
       )
     }
     // Singleton clones
-    const spread = pick(object, keys)
-    const Root = object.type[0].toLowerCase() + object.type.slice(1)
+    const spread = createSpread(object, config)
+    const Element = object.type[0].toLowerCase() + object.type.slice(1)
     return (
       <group {...props} ref={forwardRef}>
-        <Root {...spread}>
+        <Element {...spread}>
           {(object?.children).map((child) => {
-            let spread = pick(child, keys)
-            if (deep) {
-              if (spread.geometry && deep !== 'materialsOnly') spread.geometry = spread.geometry.clone()
-              if (spread.material && deep !== 'geometriesOnly') spread.material = spread.material.clone()
-            }
+            let spread: any = {}
             let Element: string | typeof Clone = child.type[0].toLowerCase() + child.type.slice(1)
             if (Element === 'group' || Element === 'object3D') {
               Element = Clone
-              spread = { object: child, deep, keys, inject, castShadow, receiveShadow }
+              spread = { object: child, ...config }
             } else {
-              if (inject) {
-                if (typeof inject === 'function') spread = { ...spread, children: inject(child) }
-                else if (React.isValidElement(inject)) spread = { ...spread, children: inject }
-                else spread = { ...spread, ...(inject as any) }
-              }
-
-              if (Element === 'mesh') {
-                if (castShadow) spread.castShadow = true
-                if (receiveShadow) spread.receiveShadow = true
-              }
+              spread = createSpread(child, config)
             }
             return <Element key={child.uuid} {...spread} />
           })}
           {children}
-        </Root>
+        </Element>
       </group>
     )
   }

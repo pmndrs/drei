@@ -66,6 +66,8 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#gradienttexture">GradientTexture</a></li>
           <li><a href="#edges">Edges</a></li>
           <li><a href="#trail">Trail</a></li>
+          <li><a href="#sampler">Sampler</a></li>
+          <li><a href="#computed-attribute">Computed Attribute</a></li>
           <li><a href="#clone">Clone</a></li>
           <li><a href="#useanimations">useAnimations</a></li>
         </ul>
@@ -676,6 +678,18 @@ Props defined bellow with their default values.
 ```
 
 👉 Inspired by [TheSpite's Codevember 2021 #9](https://spite.github.io/codevember-2021/9/)
+
+#### Sampler
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-trail--use-trail-st)
+
+**STUB**
+
+#### ComputedAttribute
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-trail--use-trail-st)
+
+**STUB**
 
 #### Clone
 

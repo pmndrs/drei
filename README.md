@@ -683,25 +683,20 @@ Props defined bellow with their default values.
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-sampler--sampler-st)
 
+<p>
+  <a href="https://codesandbox.io/s/ehflx3">
+    <img width="60%" src="https://codesandbox.io/api/v1/sandboxes/ehflx3/screenshot.png" alt="Demo"/>
+  </a> <br />
+  <small>– Demo by <a href="https://twitter.com/CantBeFaraz">@CantBeFaraz</a></small>
+</p>
+<p>
+  <small>– <a href="https://codesandbox.io/s/k6rcp2">Simple Demo</a> by <a href="https://twitter.com/gsimone">@gsimone</a></small>
+</p>
+
 Declarative abstraction around MeshSurfaceSampler & InstancedMesh.
 It samples points from the passed mesh and transforms an InstancedMesh's matrix to distribute instances on the points.
 
-<table>
-  <tr>
-    <td>
-      <p>
-        <a href="https://codesandbox.io/s/ehflx3"><img width="40%" src="https://codesandbox.io/api/v1/sandboxes/ehflx3/screenshot.png" alt="Demo"/></a> <br />
-        <small>– Demo by <a href="https://twitter.com/CantBeFaraz">@CantBeFaraz</a></small>
-      </p>
-    </td>
-    <td>
-      <p>
-        <a href="https://codesandbox.io/s/xpj8wm"><img width="40%" src="https://codesandbox.io/api/v1/sandboxes/xpj8wm/screenshot.png" alt="Demo"/></a> <br />
-        <small>– Demo by <a href="https://twitter.com/gsimone">@gsimone</a></small>
-      </p>
-    </td>
-  </tr>
-</table>
+Check the demos & code for more.
 
 You can either pass a Mesh and InstancedMesh as children:
 

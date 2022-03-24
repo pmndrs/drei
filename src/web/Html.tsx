@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { Vector3, Group, Object3D, Matrix4, Camera, PerspectiveCamera, OrthographicCamera, Raycaster } from 'three'
 import { Assign } from 'utility-types'
 import { ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
@@ -149,8 +149,7 @@ export const Html = React.forwardRef(
     const raycaster = useThree(({ raycaster }) => raycaster)
 
     const [el] = React.useState(() => document.createElement(as))
-    // @ts-expect-error React 18 types aren't available yet
-    const root = React.useMemo(() => ReactDOM.createRoot(el), [el])
+    const root = React.useMemo(() => createRoot(el), [el])
     const group = React.useRef<Group>(null!)
     const oldZoom = React.useRef(0)
     const oldPosition = React.useRef([0, 0])
@@ -220,11 +219,10 @@ export const Html = React.forwardRef(
             <div ref={transformInnerRef} style={transformInnerStyles}>
               <div ref={ref} className={className} style={style} children={children} />
             </div>
-          </div>,
-          el
+          </div>
         )
       } else {
-        root.render(<div ref={ref} style={styles} className={className} children={children} />, el)
+        root.render(<div ref={ref} style={styles} className={className} children={children} />)
       }
     })
 

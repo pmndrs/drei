@@ -67,7 +67,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#edges">Edges</a></li>
           <li><a href="#trail">Trail</a></li>
           <li><a href="#sampler">Sampler</a></li>
-          <li><a href="#computed-attribute">Computed Attribute</a></li>
+          <li><a href="#computedattribute">Computed Attribute</a></li>
           <li><a href="#clone">Clone</a></li>
           <li><a href="#useanimations">useAnimations</a></li>
         </ul>

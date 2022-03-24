@@ -66,6 +66,8 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#gradienttexture">GradientTexture</a></li>
           <li><a href="#edges">Edges</a></li>
           <li><a href="#trail">Trail</a></li>
+          <li><a href="#sampler">Sampler</a></li>
+          <li><a href="#computedattribute">Computed Attribute</a></li>
           <li><a href="#clone">Clone</a></li>
           <li><a href="#useanimations">useAnimations</a></li>
         </ul>
@@ -676,6 +678,78 @@ Props defined bellow with their default values.
 ```
 
 👉 Inspired by [TheSpite's Codevember 2021 #9](https://spite.github.io/codevember-2021/9/)
+
+#### Sampler
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-sampler--sampler-st)
+
+<p>
+  <a href="https://codesandbox.io/s/ehflx3">
+    <img width="20%" src="https://codesandbox.io/api/v1/sandboxes/ehflx3/screenshot.png" alt="Demo"/>
+  </a> <br />
+  <small>– <a href="https://codesandbox.io/s/ehflx3">Complex Demo</a> by <a href="https://twitter.com/CantBeFaraz">@CantBeFaraz</a></small> <br />
+  <small>– <a href="https://codesandbox.io/s/k6rcp2">Simple Demo</a> by <a href="https://twitter.com/ggsimm">@ggsimm</a></small>
+</p>
+
+Declarative abstraction around MeshSurfaceSampler & InstancedMesh.
+It samples points from the passed mesh and transforms an InstancedMesh's matrix to distribute instances on the points.
+
+Check the demos & code for more.
+
+You can either pass a Mesh and InstancedMesh as children:
+
+```tsx
+// This simple example scatters 1000 spheres on the surface of the sphere mesh.
+<Sampler
+  weight={"normal"} // the name of the attribute to be used as sampling weight
+  transform={transformPoint} // a function that transforms each instance given a sample. See the examples for more.
+>
+  <mesh>
+    <sphereGeometry args={[2]} />
+  </mesh>
+
+  <instancedMesh args={[null, null, 1_000]}>
+    <sphereGeometry args={[0.1]}>
+  </instancedMesh>
+</Sampler>
+```
+
+or use refs when you can't compose declaratively:
+
+```tsx
+const { nodes } = useGLTF('my/mesh/url')
+const mesh = useRef(nodes)
+const instances = useRef()
+
+return <>
+  <instancedMesh args={[null, null, 1_000]}>
+    <sphereGeometry args={[0.1]}>
+  </instancedMesh>
+
+  <Sampler mesh={mesh} instances={instances}>
+</>
+```
+
+#### ComputedAttribute
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-sampler--sampler-weight-st)
+
+Create and attach an attribute declaratively.
+
+```tsx
+<sphereGeometry>
+  <ComputedAttribute
+    // attribute will be added to the geometry with this name
+    name="my-attribute-name"
+    compute={(geometry) => {
+      // ...someLogic;
+      return new THREE.BufferAttribute([1, 2, 3], 1)
+    }}
+    // you can pass any BufferAttribute prop to this component, eg.
+    usage={THREE.StaticReadUsage}
+  />
+</sphereGeometry>
+```
 
 #### Clone
 

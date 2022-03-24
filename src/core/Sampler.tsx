@@ -3,6 +3,7 @@ import * as React from 'react'
 import { MeshSurfaceSampler } from 'three/examples/jsm/math/MeshSurfaceSampler'
 
 import { Color, Group, InstancedMesh, Mesh, Object3D, Vector3 } from 'three'
+import { GroupProps } from '@react-three/fiber'
 
 type SamplePayload = {
   /**
@@ -68,7 +69,14 @@ type Props = {
   transform?: TransformFn
 }
 
-export const Sampler: React.FC<Props> = ({ children, weight, transform, instances, mesh, ...props }) => {
+export const Sampler = ({
+  children,
+  weight,
+  transform,
+  instances,
+  mesh,
+  ...props
+}: React.PropsWithChildren<Props & GroupProps>) => {
   const group = React.useRef<Group>(null!)
   const instancedRef = React.useRef<InstancedMesh>(null!)
   const meshToSampleRef = React.useRef<Mesh>(null!)

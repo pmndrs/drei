@@ -714,17 +714,14 @@ You can either pass a Mesh and InstancedMesh as children:
 </Sampler>
 ```
 
-or use refs:
+or use refs when you can't compose declaratively:
 
 ```tsx
-const mesh = useRef()
+const { nodes } = useGLTF('my/mesh/url')
+const mesh = useRef(nodes)
 const instances = useRef()
 
 return <>
-  <mesh>
-    <sphereGeometry args={[2]} />
-  </mesh>
-
   <instancedMesh args={[null, null, 1_000]}>
     <sphereGeometry args={[0.1]}>
   </instancedMesh>

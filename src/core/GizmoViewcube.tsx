@@ -20,7 +20,6 @@ type EdgeCubeProps = { dimensions: XYZ; position: Vector3 } & Omit<GenericProps,
 const colors = { bg: '#f0f0f0', hover: '#999', text: 'black', stroke: 'black' }
 const defaultFaces = ['Right', 'Left', 'Top', 'Bottom', 'Front', 'Back']
 const makePositionVector = (xyz: number[]) => new Vector3(...xyz).multiplyScalar(0.38)
-const STABLE_ARRAY = []
 
 const corners: Vector3[] = [
   [1, 1, 1],
@@ -114,7 +113,6 @@ const FaceCube = (props: GenericProps) => {
       onPointerOut={handlePointerOut}
       onPointerMove={handlePointerMove}
       onClick={props.onClick || handleClick}
-      material={STABLE_ARRAY}
     >
       {[...Array(6)].map((_, index) => (
         <FaceMaterial key={index} index={index} hover={hover === index} {...props} />

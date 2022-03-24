@@ -686,22 +686,17 @@ Props defined bellow with their default values.
 Declarative abstraction around MeshSurfaceSampler & InstancedMesh.
 It samples points from the passed mesh and transforms an InstancedMesh's matrix to distribute instances on the points.
 
-<p>
-  <a href="https://codesandbox.io/s/ehflx3"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/ehflx3/screenshot.png" alt="Demo"/></a> <br />
-  <small>– Demo by <a href="https://twitter.com/CantBeFaraz">@CantBeFaraz</a></small>
-</p>
-
 <table>
   <tr>
     <td>
       <p>
-        <a href="https://codesandbox.io/s/ehflx3"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/ehflx3/screenshot.png" alt="Demo"/></a> <br />
+        <a href="https://codesandbox.io/s/ehflx3"><img width="40%" src="https://codesandbox.io/api/v1/sandboxes/ehflx3/screenshot.png" alt="Demo"/></a> <br />
         <small>– Demo by <a href="https://twitter.com/CantBeFaraz">@CantBeFaraz</a></small>
       </p>
     </td>
     <td>
       <p>
-        <a href="https://codesandbox.io/s/xpj8wm"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/xpj8wm/screenshot.png" alt="Demo"/></a> <br />
+        <a href="https://codesandbox.io/s/xpj8wm"><img width="40%" src="https://codesandbox.io/api/v1/sandboxes/xpj8wm/screenshot.png" alt="Demo"/></a> <br />
         <small>– Demo by <a href="https://twitter.com/gsimone">@gsimone</a></small>
       </p>
     </td>

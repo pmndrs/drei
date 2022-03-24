@@ -736,7 +736,7 @@ return <>
 
 Create and attach an attribute declaratively.
 
-```ts
+```tsx
 <sphereGeometry>
   <ComputedAttribute
     // attribute will be added to the geometry with this name

@@ -681,15 +681,84 @@ Props defined bellow with their default values.
 
 #### Sampler
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-trail--use-trail-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-sampler--sampler-st)
 
-**STUB**
+Declarative abstraction around MeshSurfaceSampler & InstancedMesh.
+It samples points from the passed mesh and transforms an InstancedMesh's matrix to distribute instances on the points.
+
+<p>
+  <a href="https://codesandbox.io/s/ehflx3"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/ehflx3/screenshot.png" alt="Demo"/></a> <br />
+  <small>– Demo by <a href="https://twitter.com/CantBeFaraz">@CantBeFaraz</a></small>
+</p>
+
+<table>
+  <tr>
+    <td>
+      <p>
+        <a href="https://codesandbox.io/s/ehflx3"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/ehflx3/screenshot.png" alt="Demo"/></a> <br />
+        <small>– Demo by <a href="https://twitter.com/CantBeFaraz">@CantBeFaraz</a></small>
+      </p>
+    <td>
+      <p>
+        <a href="https://codesandbox.io/s/xpj8wm"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/xpj8wm/screenshot.png" alt="Demo"/></a> <br />
+        <small>– Demo by <a href="https://twitter.com/gsimone">@gsimone</a></small>
+      </p>
+
+You can either pass a Mesh and InstancedMesh as children:
+
+```tsx
+// This simple example scatters 1000 spheres on the surface of the sphere mesh.
+<Sampler>
+  <mesh>
+    <sphereGeometry args={[2]} />
+  </mesh>
+
+  <instancedMesh args={[null, null, 1_000]}>
+    <sphereGeometry args={[0.1]}>
+  </instancedMesh>
+</Sampler>
+```
+
+or use refs:
+
+```tsx
+
+const mesh = useRef()
+const instances = useRef()
+
+return <>
+  <mesh>
+    <sphereGeometry args={[2]} />
+  </mesh>
+
+  <instancedMesh args={[null, null, 1_000]}>
+    <sphereGeometry args={[0.1]}>
+  </instancedMesh>
+
+  <Sampler mesh={mesh} instances={instances}>
+</>
+```
 
 #### ComputedAttribute
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-trail--use-trail-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-sampler--sampler-weight-st)
 
-**STUB**
+Create and attach an attribute declaratively.
+
+```ts
+<sphereGeometry>
+  <ComputedAttribute
+    // attribute will be added to the geometry with this name
+    name="my-attribute-name"
+    compute={(geometry) => {
+      // ...someLogic;
+      return new THREE.BufferAttribute([1, 2, 3], 1)
+    }}
+    // you can pass any BufferAttribute prop to this component, eg.
+    usage={THREE.StaticReadUsage}
+  />
+</sphereGeometry>
+```
 
 #### Clone
 

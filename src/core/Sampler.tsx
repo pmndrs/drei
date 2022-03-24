@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { MeshSurfaceSampler } from 'three/examples/jsm/math/MeshSurfaceSampler'
+import { MeshSurfaceSampler } from 'three-stdlib/math/MeshSurfaceSampler'
 
 import { Color, Group, InstancedMesh, Mesh, Object3D, Vector3 } from 'three'
 import { GroupProps } from '@react-three/fiber'

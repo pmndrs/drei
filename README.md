@@ -700,7 +700,10 @@ You can either pass a Mesh and InstancedMesh as children:
 
 ```tsx
 // This simple example scatters 1000 spheres on the surface of the sphere mesh.
-<Sampler>
+<Sampler
+  weight={"normal"} // the name of the attribute to be used as sampling weight
+  transform={transformPoint} // a function that transforms each instance given a sample. See the examples for more.
+>
   <mesh>
     <sphereGeometry args={[2]} />
   </mesh>
@@ -714,7 +717,6 @@ You can either pass a Mesh and InstancedMesh as children:
 or use refs:
 
 ```tsx
-
 const mesh = useRef()
 const instances = useRef()
 

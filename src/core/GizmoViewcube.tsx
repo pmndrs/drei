@@ -84,7 +84,7 @@ const FaceMaterial = ({
     <meshLambertMaterial
       map={texture}
       map-anisotropy={gl.capabilities.getMaxAnisotropy() || 1}
-      attach="material"
+      attach={`material-${index}`}
       color={hover ? hoverColor : 'white'}
       transparent
       opacity={opacity}

@@ -78,9 +78,9 @@ export const Sampler: React.FC<Props> = ({ children, weight, transform, instance
       instances?.current ?? (group.current!.children.find((c) => c.hasOwnProperty('instanceMatrix')) as InstancedMesh)
 
     meshToSampleRef.current = mesh?.current ?? (group.current!.children.find((c) => c.type === 'Mesh') as Mesh)
-  }, [])
+  }, [children, mesh?.current, instances?.current])
 
-  const doSampling = () => {
+  React.useEffect(() => {
     if (typeof meshToSampleRef.current === 'undefined') return
     if (typeof instancedRef.current === 'undefined') return
 
@@ -124,11 +124,7 @@ export const Sampler: React.FC<Props> = ({ children, weight, transform, instance
     }
 
     instancedRef.current.instanceMatrix.needsUpdate = true
-  }
-
-  React.useEffect(() => {
-    doSampling()
-  }, [])
+  }, [children, mesh?.current, instances?.current])
 
   return (
     <group ref={group} {...props}>

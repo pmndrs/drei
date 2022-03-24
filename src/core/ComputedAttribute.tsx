@@ -17,8 +17,10 @@ export const ComputedAttribute: React.FC<Props> = ({ compute, name, ...props }) 
 
   React.useLayoutEffect(() => {
     if (primitive.current) {
-      // @ts-expect-error parent doesnt'e exist on BufferAttribute
-      const attr = compute(primitive.current.parent as BufferGeometry)
+      // @ts-expect-error brittle
+      const parent = (primitive.current.parent as BufferGeometry) ?? primitive.current.__r3f.parent
+
+      const attr = compute(parent)
       primitive.current.copy(attr)
     }
   }, [compute])

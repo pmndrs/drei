@@ -698,11 +698,15 @@ It samples points from the passed mesh and transforms an InstancedMesh's matrix 
         <a href="https://codesandbox.io/s/ehflx3"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/ehflx3/screenshot.png" alt="Demo"/></a> <br />
         <small>– Demo by <a href="https://twitter.com/CantBeFaraz">@CantBeFaraz</a></small>
       </p>
+    </td>
     <td>
       <p>
         <a href="https://codesandbox.io/s/xpj8wm"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/xpj8wm/screenshot.png" alt="Demo"/></a> <br />
         <small>– Demo by <a href="https://twitter.com/gsimone">@gsimone</a></small>
       </p>
+    </td>
+  </tr>
+</table>
 
 You can either pass a Mesh and InstancedMesh as children:
 

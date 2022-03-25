@@ -1,5 +1,5 @@
 import * as React from 'react'
-import pick from 'lodash.pick'
+import { pick } from 'lodash-es'
 import { MeshProps } from '@react-three/fiber'
 
 type Props = Omit<JSX.IntrinsicElements['group'], 'children'> & {

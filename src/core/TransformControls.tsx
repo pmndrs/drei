@@ -1,6 +1,5 @@
 import { ReactThreeFiber, useThree } from '@react-three/fiber'
-import omit from 'lodash.omit'
-import pick from 'lodash.pick'
+import { omit, pick } from 'lodash-es'
 import * as React from 'react'
 import * as THREE from 'three'
 import { TransformControls as TransformControlsImpl } from 'three-stdlib'

@@ -59,7 +59,7 @@
     "@use-gesture/react": "^10.2.0",
     "detect-gpu": "^4.0.14",
     "glsl-noise": "^0.0.0",
-    "lodash-es": "latest",
+    "lodash-es": "^4.17.21",
     "meshline": "^2.0.4",
     "react-composer": "^5.0.2",
     "react-merge-refs": "^1.1.0",

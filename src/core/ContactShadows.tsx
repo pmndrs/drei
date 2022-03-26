@@ -4,7 +4,7 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { useFrame, useThree } from '@react-three/fiber'
-import { VerticalBlurShader, HorizontalBlurShader } from 'three-stdlib'
+import { HorizontalBlurShader, VerticalBlurShader } from 'three-stdlib'
 
 type Props = Omit<JSX.IntrinsicElements['group'], 'scale'> & {
   opacity?: number
@@ -68,7 +68,9 @@ export const ContactShadows = React.forwardRef(
         }
         shader.fragmentShader = shader.fragmentShader.replace(
           `void main() {`, //
-          `uniform vec3 ucolor;\nvoid main() {`
+          `uniform vec3 ucolor;
+           void main() {
+          `
         )
         shader.fragmentShader = shader.fragmentShader.replace(
           'vec4( vec3( 1.0 - fragCoordZ ), opacity );',

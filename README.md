@@ -2012,8 +2012,6 @@ Particle based cloud.
   width={10} // Width of the full cloud
   depth={1.5} // Z-dir depth
   segments={20} // Number of particles
-  depthTest={true} // whether to enable depth test
-  color={'#ffffff'} // Color of cloud
 />
 ```
 

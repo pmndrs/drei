@@ -21,7 +21,7 @@ export const TrackballControls = React.forwardRef<TrackballControlsImpl, Trackba
   ({ makeDefault, camera, domElement, regress, onChange, onStart, onEnd, ...restProps }, ref) => {
     const { invalidate, camera: defaultCamera, gl, events, set, get, performance, viewport } = useThree()
     const explCamera = camera || defaultCamera
-    const explDomElement = domElement || (typeof events.connected !== 'boolean' ? events.connected : gl.domElement)
+    const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
     const controls = React.useMemo(() => new TrackballControlsImpl(explCamera as THREE.PerspectiveCamera), [explCamera])
 
     useFrame(() => {

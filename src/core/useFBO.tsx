@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import * as React from 'react'
 import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
 
@@ -11,32 +11,32 @@ export function useFBO<T extends boolean = false>(
   width?: number | FBOSettings<T>,
   height?: number,
   settings?: FBOSettings<T>
-): T extends true ? THREE.WebGLRenderTarget | THREE.WebGLMultisampleRenderTarget : THREE.WebGLRenderTarget {
-  const gl = useThree(({ gl }) => gl)
-  const size = useThree(({ size }) => size)
-
-  const dpr = useMemo(() => gl.getPixelRatio(), [gl])
+): THREE.WebGLRenderTarget {
+  const { gl, size } = useThree()
+  const dpr = React.useMemo(() => gl.getPixelRatio(), [gl])
   const _width = typeof width === 'number' ? width : size.width * dpr
   const _height = typeof height === 'number' ? height : size.height * dpr
   const _settings = (typeof width === 'number' ? settings : (width as FBOSettings)) || {}
+  const { samples, ...targetSettings } = _settings
 
-  const target = useMemo(() => {
-    const { multisample, samples, ...targetSettings } = _settings
+  const target = React.useMemo(() => {
     let target
-    if (multisample && gl.capabilities.isWebGL2) {
-      target = new THREE.WebGLMultisampleRenderTarget(_width, _height, targetSettings)
-      if (samples) target.samples = samples
-    } else {
-      target = new THREE.WebGLRenderTarget(_width, _height, targetSettings)
-    }
+    target = new THREE.WebGLRenderTarget(_width, _height, {
+      minFilter: THREE.LinearFilter,
+      magFilter: THREE.LinearFilter,
+      encoding: gl.outputEncoding,
+      type: THREE.HalfFloatType,
+      ...targetSettings,
+    })
     return target
   }, [])
 
-  useEffect(() => {
+  React.useLayoutEffect(() => {
     target.setSize(_width, _height)
-  }, [target, _width, _height])
+    if (samples) target.samples = samples
+  }, [samples, target, _width, _height])
 
-  useEffect(() => {
+  React.useEffect(() => {
     return () => target.dispose()
   }, [])
 

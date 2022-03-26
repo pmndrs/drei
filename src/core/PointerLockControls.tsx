@@ -7,6 +7,7 @@ export type PointerLockControlsProps = ReactThreeFiber.Object3DNode<
   PointerLockControlsImpl,
   typeof PointerLockControlsImpl
 > & {
+  domElement?: HTMLElement
   selector?: string
   enabled?: boolean
   camera?: THREE.Camera
@@ -16,7 +17,7 @@ export type PointerLockControlsProps = ReactThreeFiber.Object3DNode<
 }
 
 export const PointerLockControls = React.forwardRef<PointerLockControlsImpl, PointerLockControlsProps>(
-  ({ selector, onChange, onLock, onUnlock, enabled = true, ...props }, ref) => {
+  ({ domElement, selector, onChange, onLock, onUnlock, enabled = true, ...props }, ref) => {
     const { camera, ...rest } = props
     const gl = useThree(({ gl }) => gl)
     const defaultCamera = useThree((state) => state.camera)
@@ -24,7 +25,7 @@ export const PointerLockControls = React.forwardRef<PointerLockControlsImpl, Poi
     const raycaster = useThree((state) => state.raycaster)
     const events = useThree((state) => state.events) as EventManager<HTMLElement>
     const explCamera = camera || defaultCamera
-    const explDomElement = gl.domElement || (typeof events.connected !== 'boolean' ? events.connected : gl.domElement)
+    const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
 
     const [controls] = React.useState(() => new PointerLockControlsImpl(explCamera))
 

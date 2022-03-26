@@ -117,7 +117,7 @@ export function ScrollControls({
     // Init scroll one pixel in to allow upward/leftward scroll
     el[horizontal ? 'scrollLeft' : 'scrollTop'] = 1
 
-    const oldTarget = typeof events.connected !== 'boolean' ? events.connected : gl.domElement
+    const oldTarget = (events.connected || gl.domElement) as HTMLElement
     requestAnimationFrame(() => events.connect?.(el))
     const oldCompute = raycaster.computeOffsets
     raycaster.computeOffsets = ({ clientX, clientY }) => ({

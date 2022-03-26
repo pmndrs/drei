@@ -15,7 +15,7 @@ export function Cloud({
   segments = 20,
   texture = CLOUD_URL,
   color = "#ffffff",
-  depthTest = true
+  depthTest = true,
   ...props
 }) {
   const group = React.useRef<Group>()

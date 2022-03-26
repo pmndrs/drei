@@ -14,6 +14,8 @@ export function Cloud({
   depth = 1.5,
   segments = 20,
   texture = CLOUD_URL,
+  color = "#ffffff",
+  depthTest = true
   ...props
 }) {
   const group = React.useRef<Group>()
@@ -47,7 +49,8 @@ export function Cloud({
                 map={cloudTexture}
                 transparent
                 opacity={(scale / 6) * density * opacity}
-                depthTest={false}
+                depthTest={depthTest}
+                color={color}
               />
             </Plane>
           </Billboard>

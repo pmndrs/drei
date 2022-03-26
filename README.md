@@ -1849,7 +1849,7 @@ A cheap canvas-texture-based circular gradient.
 A [contact shadow](https://threejs.org/examples/?q=con#webgl_shadow_contact) implementation, facing upwards (positive Y) by default. `scale` can be a positive number or a 2D array `[x: number, y: number]`.
 
 ```jsx
-<ContactShadows opacity={1} scale={10} blur={1} far={10} resolution={256} />
+<ContactShadows opacity={1} scale={10} blur={1} far={10} resolution={256} color="#000000" />
 ```
 
 Since this is a rather expensive effect you can limit the amount of frames it renders when your objects are static. For instance making it render only once:
@@ -2012,6 +2012,8 @@ Particle based cloud.
   width={10} // Width of the full cloud
   depth={1.5} // Z-dir depth
   segments={20} // Number of particles
+  depthTest={true} // whether to enable depth test
+  color={'#ffffff'} // Color of cloud
 />
 ```
 

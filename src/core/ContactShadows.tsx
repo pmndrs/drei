@@ -71,12 +71,8 @@ export const ContactShadows = React.forwardRef(
           `uniform vec3 ucolor;\nvoid main() {`
         )
         shader.fragmentShader = shader.fragmentShader.replace(
-          '1.0 - fragCoordZ ), opacity );',
-          '0.0 ), ( 1.0 - fragCoordZ ) * 1.0 );'
-        )
-        shader.fragmentShader = shader.fragmentShader.replace(
-          `gl_FragColor = vec4( vec3( 0.0 ), ( 1.0 - fragCoordZ ) * 1.0 );`,
-          `gl_FragColor = vec4( ucolor, ( 1.0 - fragCoordZ ) * 1.0 );`
+          'vec4( vec3( 1.0 - fragCoordZ ), opacity );',
+          'vec4( ucolor, ( 1.0 - fragCoordZ ) * 1.0 );'
         )
       }
 

@@ -28,6 +28,7 @@ export function useFBO<T extends boolean = false>(
       type: THREE.HalfFloatType,
       ...targetSettings,
     })
+    target.samples = samples
     return target
   }, [])
 

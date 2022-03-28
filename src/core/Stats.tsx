@@ -16,7 +16,7 @@ export function Stats({ showPanel = 0, className, parent }: Props): null {
       const node = (parent && parent.current) || document.body
       stats.showPanel(showPanel)
       node?.appendChild(stats.dom)
-      if (className) stats.dom.classList.add(className)
+      if (className) stats.dom.classList.add(...className.split(' ').filter((cls) => cls))
       const begin = addEffect(() => stats.begin())
       const end = addAfterEffect(() => stats.end())
       return () => {

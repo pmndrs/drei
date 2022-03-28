@@ -174,7 +174,7 @@ export function ScrollControls({
       el.removeEventListener('scroll', onScroll)
       if (horizontal) el.removeEventListener('wheel', onWheel)
     }
-  }, [el, size, infinite, state, invalidate, horizontal])
+  }, [el, size, infinite, state, invalidate, horizontal, enabled])
 
   let last = 0
   useFrame((_, delta) => {

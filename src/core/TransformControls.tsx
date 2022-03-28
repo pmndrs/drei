@@ -54,12 +54,14 @@ export const TransformControls = React.forwardRef<TransformControlsImpl, Transfo
     // @ts-expect-error new in @react-three/fiber@7.0.5
     const defaultControls = useThree((state) => state.controls) as ControlsProto
     const gl = useThree((state) => state.gl)
+    const events = useThree((state) => state.events)
     const defaultCamera = useThree((state) => state.camera)
     const invalidate = useThree((state) => state.invalidate)
     const explCamera = camera || defaultCamera
+    const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
     const controls = React.useMemo(
-      () => new TransformControlsImpl(explCamera, domElement || gl.domElement),
-      [explCamera, domElement, gl.domElement]
+      () => new TransformControlsImpl(explCamera, explDomElement),
+      [explCamera, explDomElement]
     )
     const group = React.useRef<THREE.Group>()
 

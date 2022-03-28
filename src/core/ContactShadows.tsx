@@ -16,6 +16,7 @@ type Props = Omit<JSX.IntrinsicElements['group'], 'scale'> & {
   resolution?: number
   frames?: number
   scale?: number | [x: number, y: number]
+  color?: THREE.ColorRepresentation
 }
 
 export const ContactShadows = React.forwardRef(
@@ -30,6 +31,7 @@ export const ContactShadows = React.forwardRef(
       far = 10,
       resolution = 256,
       smooth = true,
+      color = '#000000',
       ...props
     }: Props,
     ref
@@ -57,11 +59,25 @@ export const ContactShadows = React.forwardRef(
       const blurPlane = new THREE.Mesh(planeGeometry)
       const depthMaterial = new THREE.MeshDepthMaterial()
       depthMaterial.depthTest = depthMaterial.depthWrite = false
-      depthMaterial.onBeforeCompile = (shader) =>
-        (shader.fragmentShader = shader.fragmentShader.replace(
-          '1.0 - fragCoordZ ), opacity );',
-          '0.0 ), ( 1.0 - fragCoordZ ) * 1.0 );'
-        ))
+      depthMaterial.onBeforeCompile = (shader) => {
+        shader.uniforms = {
+          ...shader.uniforms,
+          ucolor: {
+            value: new THREE.Color(color).convertSRGBToLinear(),
+          },
+        }
+        shader.fragmentShader = shader.fragmentShader.replace(
+          `void main() {`, //
+          `uniform vec3 ucolor;
+           void main() {
+          `
+        )
+        shader.fragmentShader = shader.fragmentShader.replace(
+          'vec4( vec3( 1.0 - fragCoordZ ), opacity );',
+          'vec4( ucolor, ( 1.0 - fragCoordZ ) * 1.0 );'
+        )
+      }
+
       const horizontalBlurMaterial = new THREE.ShaderMaterial(HorizontalBlurShader)
       const verticalBlurMaterial = new THREE.ShaderMaterial(VerticalBlurShader)
       verticalBlurMaterial.depthTest = horizontalBlurMaterial.depthTest = false

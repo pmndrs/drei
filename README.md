@@ -65,6 +65,10 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#effects">Effects</a></li>
           <li><a href="#gradienttexture">GradientTexture</a></li>
           <li><a href="#edges">Edges</a></li>
+          <li><a href="#trail">Trail</a></li>
+          <li><a href="#sampler">Sampler</a></li>
+          <li><a href="#computedattribute">Computed Attribute</a></li>
+          <li><a href="#clone">Clone</a></li>
           <li><a href="#useanimations">useAnimations</a></li>
         </ul>
         <li><a href="#shaders">Shaders</a></li>
@@ -100,6 +104,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#usecursor">useCursor</a></li>
           <li><a href="#useintersect">useIntersect</a></li>
           <li><a href="#useboxprojectedenv">useBoxProjectedEnv</a></li>
+          <li><a href="#useTrail">useTrail</a></li>
         </ul>
         <li><a href="#loading">Loaders</a></li>
         <ul>
@@ -641,6 +646,166 @@ Abstracts [THREE.EdgesGeometry](https://threejs.org/docs/index.html?q=EdgesGeome
 </mesh>
 ```
 
+#### Trail
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-trail--use-trail-st)
+
+A declarative, `three.MeshLine` based Trails implementation. You can attach it to any mesh and it will give it a beautiful trail.
+
+Props defined bellow with their default values.
+
+```jsx
+<Trail
+  width={0.2} // Width of the line
+  color={'hotpink'} // Color of the line
+  length={1} // Length of the line
+  decay={1} // How fast the line fades away
+  local={false} // Wether to use the target's world or local positions
+  stride={0} // Min distance between previous and current point
+  interval={1} // Number of frames to wait before next calculation
+  target={undefined} // Optional target. This object will produce the trail.
+  attenuation={(width) => width} // A function to define the width in each point along it.
+>
+  {/* If `target` is not defined, Trail will use the first `Object3D` child as the target. */}
+  <mesh>
+    <sphereGeometry />
+    <meshBasicMaterial />
+  </mesh>
+
+  {/* You can optionally define a custom meshLineMaterial to use. */}
+  {/* <meshLineMaterial color={"red"} /> */}
+</Trail>
+```
+
+👉 Inspired by [TheSpite's Codevember 2021 #9](https://spite.github.io/codevember-2021/9/)
+
+#### Sampler
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-sampler--sampler-st)
+
+<p>
+  <a href="https://codesandbox.io/s/ehflx3">
+    <img width="20%" src="https://codesandbox.io/api/v1/sandboxes/ehflx3/screenshot.png" alt="Demo"/>
+  </a> <br />
+  <small>– <a href="https://codesandbox.io/s/ehflx3">Complex Demo</a> by <a href="https://twitter.com/CantBeFaraz">@CantBeFaraz</a></small> <br />
+  <small>– <a href="https://codesandbox.io/s/k6rcp2">Simple Demo</a> by <a href="https://twitter.com/ggsimm">@ggsimm</a></small>
+</p>
+
+Declarative abstraction around MeshSurfaceSampler & InstancedMesh.
+It samples points from the passed mesh and transforms an InstancedMesh's matrix to distribute instances on the points.
+
+Check the demos & code for more.
+
+You can either pass a Mesh and InstancedMesh as children:
+
+```tsx
+// This simple example scatters 1000 spheres on the surface of the sphere mesh.
+<Sampler
+  weight={"normal"} // the name of the attribute to be used as sampling weight
+  transform={transformPoint} // a function that transforms each instance given a sample. See the examples for more.
+>
+  <mesh>
+    <sphereGeometry args={[2]} />
+  </mesh>
+
+  <instancedMesh args={[null, null, 1_000]}>
+    <sphereGeometry args={[0.1]}>
+  </instancedMesh>
+</Sampler>
+```
+
+or use refs when you can't compose declaratively:
+
+```tsx
+const { nodes } = useGLTF('my/mesh/url')
+const mesh = useRef(nodes)
+const instances = useRef()
+
+return <>
+  <instancedMesh args={[null, null, 1_000]}>
+    <sphereGeometry args={[0.1]}>
+  </instancedMesh>
+
+  <Sampler mesh={mesh} instances={instances}>
+</>
+```
+
+#### ComputedAttribute
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-sampler--sampler-weight-st)
+
+Create and attach an attribute declaratively.
+
+```tsx
+<sphereGeometry>
+  <ComputedAttribute
+    // attribute will be added to the geometry with this name
+    name="my-attribute-name"
+    compute={(geometry) => {
+      // ...someLogic;
+      return new THREE.BufferAttribute([1, 2, 3], 1)
+    }}
+    // you can pass any BufferAttribute prop to this component, eg.
+    usage={THREE.StaticReadUsage}
+  />
+</sphereGeometry>
+```
+
+#### Clone
+
+<p>
+  <a href="https://codesandbox.io/s/42glz0"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/42glz0/screenshot.png" alt="Demo"/></a>
+</p>
+
+Declarative abstraction around THREE.Object3D.clone. This is useful when you want to create a shallow copy of an existing fragment (and Object3D, Groups, etc) into your scene, for instance a group from a loaded GLTF. This clone is now re-usable, but it will still refer to the original geometries and materials.
+
+```ts
+<Clone
+  /** Any pre-existing THREE.Object3D (groups, meshes, ...), or an array of objects */
+  object: THREE.Object3D | THREE.Object3D[]
+  /** Children will be placed within the object, or within the group that holds arrayed objects */
+  children?: React.ReactNode
+  /** Can clone materials and/or geometries deeply (default: false) */
+  deep?: boolean | 'materialsOnly' | 'geometriesOnly'
+  /** The property keys it will shallow-clone (material, geometry, visible, ...) */
+  keys?: string[]
+  /** Can either spread over props or fill in JSX children, applies to every mesh within */
+  inject?: MeshProps | React.ReactNode | ((object: THREE.Object3D) => React.ReactNode)
+  /** Short access castShadow, applied to every mesh within */
+  castShadow?: boolean
+  /** Short access receiveShadow, applied to every mesh within */
+  receiveShadow?: boolean
+/>
+```
+
+You create a shallow clone by passing a pre-existing object to the `object` prop.
+
+```jsx
+const { nodes } = useGLTF(url)
+return (
+  <Clone object={nodes.table} />
+```
+
+Or, multiple objects:
+
+```jsx
+<Clone object={[nodes.foo, nodes.bar]} />
+```
+
+You can dynamically insert objects, these will apply to anything that isn't a group or a plain object3d (meshes, lines, etc):
+
+```jsx
+<Clone object={nodes.table} inject={<meshStandardMaterial color="green" />} />
+```
+
+Or make inserts conditional:
+
+```jsx
+<Clone object={nodes.table} inject={
+  {(object) => (object.name === 'table' ? <meshStandardMaterial color="green" /> : null)}
+} />
+```
+
 #### useAnimations
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-useanimations--use-animations-st)
@@ -1137,6 +1302,32 @@ const projection = useBoxProjectedEnv(
 </CubeCamera>
 ```
 
+#### useTrail
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-trail--use-trail-st)
+
+A hook to obtain an array of points that make up a [Trail](#trail). You can use this array to drive your own `MeshLine` or make a trail out of anything you please.
+
+Note: The hook returns a ref (`MutableRefObject<Vector3[]>`) this means updates to it will not trigger a re-draw, thus keeping this cheap.
+
+```js
+const points = useTrail(
+  target, // Required target object. This object will produce the trail.
+  {
+    length, // Length of the line
+    decay, // How fast the line fades away
+    local, // Wether to use the target's world or local positions
+    stride, // Min distance between previous and current point
+    interval, // Number of frames to wait before next calculation
+  }
+)
+
+// To use...
+useFrame(() => {
+  meshLineRef.current.position.setPoints(points.current)
+})
+```
+
 # Loading
 
 #### Loader
@@ -1522,10 +1713,10 @@ Calculates a boundary box and centers its children accordingly. `alignTop` adjus
   <a href="https://codesandbox.io/s/rz2g0"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/rz2g0/screenshot.png" alt="Demo"/></a>
 </p>
 
-Calculates a boundary box and centers the camera accordingly. If you are using controls, make sure to pass them the `makeDefault` prop. `fit` fits the current view on first render. `clip` sets the cameras near/far planes.
+Calculates a boundary box and centers the camera accordingly. If you are using controls, make sure to pass them the `makeDefault` prop. `fit` fits the current view on first render. `clip` sets the cameras near/far planes. `observe` will optionally use r3f's resize-observer to refresh bounds on resize.
 
 ```jsx
-<Bounds fit clip damping={6} margin={1.2}>
+<Bounds fit clip observe damping={6} margin={1.2}>
   <mesh />
 </Bounds>
 ```
@@ -1658,7 +1849,7 @@ A cheap canvas-texture-based circular gradient.
 A [contact shadow](https://threejs.org/examples/?q=con#webgl_shadow_contact) implementation, facing upwards (positive Y) by default. `scale` can be a positive number or a 2D array `[x: number, y: number]`.
 
 ```jsx
-<ContactShadows opacity={1} scale={10} blur={1} far={10} resolution={256} />
+<ContactShadows opacity={1} scale={10} blur={1} far={10} resolution={256} color="#000000" />
 ```
 
 Since this is a rather expensive effect you can limit the amount of frames it renders when your objects are static. For instance making it render only once:

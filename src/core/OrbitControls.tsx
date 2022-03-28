@@ -31,7 +31,7 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
     const get = useThree((state) => state.get)
     const performance = useThree((state) => state.performance)
     const explCamera = camera || defaultCamera
-    const explDomElement = domElement || (typeof events.connected !== 'boolean' ? events.connected : gl.domElement)
+    const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
     const controls = React.useMemo(() => new OrbitControlsImpl(explCamera), [explCamera])
 
     useFrame(() => {

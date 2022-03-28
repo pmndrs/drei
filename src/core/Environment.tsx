@@ -10,6 +10,7 @@ import {
   Loader,
   CubeCamera,
   HalfFloatType,
+  CubeReflectionMapping,
 } from 'three'
 import { RGBELoader } from 'three-stdlib'
 import { presetsObj, PresetsType } from '../helpers/environment-assets'
@@ -155,7 +156,7 @@ export function EnvironmentCube({
     if (extensions) extensions(loader)
   })
   const texture: Texture = isCubeMap ? loaderResult[0] : loaderResult
-  texture.mapping = EquirectangularReflectionMapping
+  texture.mapping = isCubeMap ? CubeReflectionMapping : EquirectangularReflectionMapping
 
   React.useLayoutEffect(() => {
     const target = resolveScene(scene || defaultScene)

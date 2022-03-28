@@ -49,3 +49,26 @@ EnvironmentStory.argTypes = {
 }
 
 EnvironmentStory.storyName = 'Default'
+
+export const EnvironmentFilesStory = ({ background }) => (
+  <>
+    <React.Suspense fallback={null}>
+      <Environment
+        background={background}
+        path={`cube/`}
+        files={[`px.png`, `nx.png`, `py.png`, `ny.png`, `pz.png`, `nz.png`]}
+      />
+      <mesh>
+        <torusKnotBufferGeometry args={[1, 0.5, 128, 32]} />
+        <meshStandardMaterial metalness={1} roughness={0} />
+      </mesh>
+    </React.Suspense>
+    <OrbitControls autoRotate />
+  </>
+)
+
+EnvironmentFilesStory.args = {
+  background: true,
+}
+
+EnvironmentFilesStory.storyName = 'Files'

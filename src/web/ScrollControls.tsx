@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import * as ReactDOM from 'react-dom'
+import * as ReactDOM from 'react-dom/client'
 import { context as fiberContext, useFrame, useThree } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
 
@@ -202,6 +202,7 @@ const ScrollHtml = React.forwardRef(
     const group = React.useRef<HTMLDivElement>(null!)
     const { width, height } = useThree((state) => state.size)
     const fiberState = React.useContext(fiberContext)
+    const root = React.useMemo(() => ReactDOM.createRoot(state.fixed), [state.fixed])
     useFrame(() => {
       if (state.delta > state.eps) {
         group.current.style.transform = `translate3d(${
@@ -209,7 +210,7 @@ const ScrollHtml = React.forwardRef(
         }px,${state.horizontal ? 0 : height * (state.pages - 1) * -state.offset}px,0)`
       }
     })
-    ReactDOM.render(
+    root.render(
       <div
         ref={mergeRefs([ref, group])}
         style={{ ...style, position: 'absolute', top: 0, left: 0, willChange: 'transform' }}
@@ -218,8 +219,7 @@ const ScrollHtml = React.forwardRef(
         <context.Provider value={state}>
           <fiberContext.Provider value={fiberState}>{children}</fiberContext.Provider>
         </context.Provider>
-      </div>,
-      state.fixed
+      </div>
     )
     return null
   }

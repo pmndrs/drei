@@ -6,7 +6,7 @@ import { useTexture } from './useTexture'
 
 export type ImageProps = JSX.IntrinsicElements['mesh'] & {
   segments?: number
-  scale?: number
+  scale?: number | [number, number]
   color?: Color
   zoom?: number
   grayscale?: number

@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import * as React from 'react'
+import { PrimitiveProps } from '@react-three/fiber'
 
 type PointMaterialType = JSX.IntrinsicElements['pointsMaterial']
 
@@ -30,7 +31,9 @@ export class PointMaterialImpl extends THREE.PointsMaterial {
   }
 }
 
-export const PointMaterial = React.forwardRef((props, ref) => {
-  const [material] = React.useState(() => new PointMaterialImpl(null))
-  return <primitive object={material} ref={ref} attach="material" {...props} />
-})
+export const PointMaterial = React.forwardRef<PointMaterialImpl, Omit<PrimitiveProps, 'object' | 'attach'>>(
+  (props, ref) => {
+    const [material] = React.useState(() => new PointMaterialImpl(null))
+    return <primitive {...props} object={material} ref={ref} attach="material" />
+  }
+)

@@ -6,10 +6,11 @@ import { useTexture } from './useTexture'
 
 export type ImageProps = JSX.IntrinsicElements['mesh'] & {
   segments?: number
-  scale?: number
+  scale?: number | [number, number]
   color?: Color
   zoom?: number
   grayscale?: number
+  toneMapped?: boolean
   url: string
 }
 
@@ -65,13 +66,16 @@ const ImageMaterialImpl = shaderMaterial(
     vec2 uv = vUv * s / new + offset;
     vec2 zUv = (uv - vec2(0.5, 0.5)) / zoom + vec2(0.5, 0.5);
     gl_FragColor = toGrayscale(texture2D(map, zUv) * vec4(color, 1.0), grayscale);
+    
+    #include <tonemapping_fragment>
+    #include <encodings_fragment>
   }
 `
 )
 
 export const Image = React.forwardRef(
   (
-    { children, color, segments = 1, scale = 1, zoom = 1, grayscale = 0, url, ...props }: ImageProps,
+    { children, color, segments = 1, scale = 1, zoom = 1, grayscale = 0, url, toneMapped, ...props }: ImageProps,
     ref: React.ForwardedRef<THREE.Mesh>
   ) => {
     extend({ ImageMaterial: ImageMaterialImpl })
@@ -88,6 +92,7 @@ export const Image = React.forwardRef(
           grayscale={grayscale}
           scale={planeBounds}
           imageBounds={imageBounds}
+          toneMapped={toneMapped}
         />
         {children}
       </mesh>

@@ -65,6 +65,10 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#effects">Effects</a></li>
           <li><a href="#gradienttexture">GradientTexture</a></li>
           <li><a href="#edges">Edges</a></li>
+          <li><a href="#trail">Trail</a></li>
+          <li><a href="#sampler">Sampler</a></li>
+          <li><a href="#computedattribute">Computed Attribute</a></li>
+          <li><a href="#clone">Clone</a></li>
           <li><a href="#useanimations">useAnimations</a></li>
         </ul>
         <li><a href="#shaders">Shaders</a></li>
@@ -99,6 +103,8 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#useaspect">useAspect</a></li>
           <li><a href="#usecursor">useCursor</a></li>
           <li><a href="#useintersect">useIntersect</a></li>
+          <li><a href="#useboxprojectedenv">useBoxProjectedEnv</a></li>
+          <li><a href="#useTrail">useTrail</a></li>
         </ul>
         <li><a href="#loading">Loaders</a></li>
         <ul>
@@ -159,6 +165,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#stage">Stage</a></li>
           <li><a href="#backdrop">Backdrop</a></li>
           <li><a href="#environment">Environment</a></li>
+          <li><a href="#lightformer">Lightformer</a></li>
           <li><a href="#spotlight">SpotLight</a></li>
           <li><a href="#shadow">Shadow</a></li>
           <li><a href="#contactshadows">ContactShadows</a></li>
@@ -243,7 +250,7 @@ Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storyboo
 
 All controls react to the default camera. If you have a `<PerspectiveCamera makeDefault />` in your scene, they will control it. If you need to inject an imperative camera or one that isn't the default, use the `camera` prop: `<OrbitControls camera={MyCamera} />`.
 
-PointerLockControls additionally supports a `selector` prop, which enables the binding of `click` event handlers for control activation to other elements than `document` (e.g. a 'Click here to play' button). All elements matching the `selector` prop will activate the controls.
+PointerLockControls additionally supports a `selector` prop, which enables the binding of `click` event handlers for control activation to other elements than `document` (e.g. a 'Click here to play' button). All elements matching the `selector` prop will activate the controls. It will also center raycast events by default, so regular onPointerOver/etc events on meshes will continue to work.
 
 # TransformControls
 
@@ -364,7 +371,7 @@ Semi-OrbitControls with spring-physics, polar zoom and snap-back, for presentati
   rotation={[0, 0, 0]} // Default rotation
   polar={[0, Math.PI / 2]} // Vertical limits
   azimuth={[-Infinity, Infinity]} // Horizontal limits
-  config = { mass: 1, tension: 170, friction: 26 } // Spring config
+  config={{ mass: 1, tension: 170, friction: 26 }} // Spring config
 >
   <mesh />
 </PresentationControls>
@@ -439,6 +446,14 @@ Hi-quality text rendering w/ signed distance fields (SDF) and antialiasing, usin
 
 ```jsx
 <Text color="black" anchorX="center" anchorY="middle">
+  hello world!
+</Text>
+```
+
+Text will suspend while loading the font data, but in order to completely avoid FOUC you can pass the characters it needs to render.
+
+```jsx
+<Text font={fontUrl} characters="abcdefghijklmnopqrstuvwxyz0123456789!">
   hello world!
 </Text>
 ```
@@ -631,6 +646,166 @@ Abstracts [THREE.EdgesGeometry](https://threejs.org/docs/#api/en/geometries/Edge
 </mesh>
 ```
 
+#### Trail
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-trail--use-trail-st)
+
+A declarative, `three.MeshLine` based Trails implementation. You can attach it to any mesh and it will give it a beautiful trail.
+
+Props defined bellow with their default values.
+
+```jsx
+<Trail
+  width={0.2} // Width of the line
+  color={'hotpink'} // Color of the line
+  length={1} // Length of the line
+  decay={1} // How fast the line fades away
+  local={false} // Wether to use the target's world or local positions
+  stride={0} // Min distance between previous and current point
+  interval={1} // Number of frames to wait before next calculation
+  target={undefined} // Optional target. This object will produce the trail.
+  attenuation={(width) => width} // A function to define the width in each point along it.
+>
+  {/* If `target` is not defined, Trail will use the first `Object3D` child as the target. */}
+  <mesh>
+    <sphereGeometry />
+    <meshBasicMaterial />
+  </mesh>
+
+  {/* You can optionally define a custom meshLineMaterial to use. */}
+  {/* <meshLineMaterial color={"red"} /> */}
+</Trail>
+```
+
+👉 Inspired by [TheSpite's Codevember 2021 #9](https://spite.github.io/codevember-2021/9/)
+
+#### Sampler
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-sampler--sampler-st)
+
+<p>
+  <a href="https://codesandbox.io/s/ehflx3">
+    <img width="20%" src="https://codesandbox.io/api/v1/sandboxes/ehflx3/screenshot.png" alt="Demo"/>
+  </a> <br />
+  <small>– <a href="https://codesandbox.io/s/ehflx3">Complex Demo</a> by <a href="https://twitter.com/CantBeFaraz">@CantBeFaraz</a></small> <br />
+  <small>– <a href="https://codesandbox.io/s/k6rcp2">Simple Demo</a> by <a href="https://twitter.com/ggsimm">@ggsimm</a></small>
+</p>
+
+Declarative abstraction around MeshSurfaceSampler & InstancedMesh.
+It samples points from the passed mesh and transforms an InstancedMesh's matrix to distribute instances on the points.
+
+Check the demos & code for more.
+
+You can either pass a Mesh and InstancedMesh as children:
+
+```tsx
+// This simple example scatters 1000 spheres on the surface of the sphere mesh.
+<Sampler
+  weight={"normal"} // the name of the attribute to be used as sampling weight
+  transform={transformPoint} // a function that transforms each instance given a sample. See the examples for more.
+>
+  <mesh>
+    <sphereGeometry args={[2]} />
+  </mesh>
+
+  <instancedMesh args={[null, null, 1_000]}>
+    <sphereGeometry args={[0.1]}>
+  </instancedMesh>
+</Sampler>
+```
+
+or use refs when you can't compose declaratively:
+
+```tsx
+const { nodes } = useGLTF('my/mesh/url')
+const mesh = useRef(nodes)
+const instances = useRef()
+
+return <>
+  <instancedMesh args={[null, null, 1_000]}>
+    <sphereGeometry args={[0.1]}>
+  </instancedMesh>
+
+  <Sampler mesh={mesh} instances={instances}>
+</>
+```
+
+#### ComputedAttribute
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-sampler--sampler-weight-st)
+
+Create and attach an attribute declaratively.
+
+```tsx
+<sphereGeometry>
+  <ComputedAttribute
+    // attribute will be added to the geometry with this name
+    name="my-attribute-name"
+    compute={(geometry) => {
+      // ...someLogic;
+      return new THREE.BufferAttribute([1, 2, 3], 1)
+    }}
+    // you can pass any BufferAttribute prop to this component, eg.
+    usage={THREE.StaticReadUsage}
+  />
+</sphereGeometry>
+```
+
+#### Clone
+
+<p>
+  <a href="https://codesandbox.io/s/42glz0"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/42glz0/screenshot.png" alt="Demo"/></a>
+</p>
+
+Declarative abstraction around THREE.Object3D.clone. This is useful when you want to create a shallow copy of an existing fragment (and Object3D, Groups, etc) into your scene, for instance a group from a loaded GLTF. This clone is now re-usable, but it will still refer to the original geometries and materials.
+
+```ts
+<Clone
+  /** Any pre-existing THREE.Object3D (groups, meshes, ...), or an array of objects */
+  object: THREE.Object3D | THREE.Object3D[]
+  /** Children will be placed within the object, or within the group that holds arrayed objects */
+  children?: React.ReactNode
+  /** Can clone materials and/or geometries deeply (default: false) */
+  deep?: boolean | 'materialsOnly' | 'geometriesOnly'
+  /** The property keys it will shallow-clone (material, geometry, visible, ...) */
+  keys?: string[]
+  /** Can either spread over props or fill in JSX children, applies to every mesh within */
+  inject?: MeshProps | React.ReactNode | ((object: THREE.Object3D) => React.ReactNode)
+  /** Short access castShadow, applied to every mesh within */
+  castShadow?: boolean
+  /** Short access receiveShadow, applied to every mesh within */
+  receiveShadow?: boolean
+/>
+```
+
+You create a shallow clone by passing a pre-existing object to the `object` prop.
+
+```jsx
+const { nodes } = useGLTF(url)
+return (
+  <Clone object={nodes.table} />
+```
+
+Or, multiple objects:
+
+```jsx
+<Clone object={[nodes.foo, nodes.bar]} />
+```
+
+You can dynamically insert objects, these will apply to anything that isn't a group or a plain object3d (meshes, lines, etc):
+
+```jsx
+<Clone object={nodes.table} inject={<meshStandardMaterial color="green" />} />
+```
+
+Or make inserts conditional:
+
+```jsx
+<Clone object={nodes.table} inject={
+  {(object) => (object.name === 'table' ? <meshStandardMaterial color="green" /> : null)}
+} />
+```
+
 #### useAnimations
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-useanimations--use-animations-st)
@@ -732,7 +907,7 @@ This material makes your geometry distort following simplex noise.
 
 #### PointMaterial
 
-An antialiased round dot that always keeps the same size.
+Antialiased round dots. It takes the same props as regular THREE.PointsMaterial
 
 ```jsx
 <points>
@@ -1001,7 +1176,7 @@ return <SomethingThatNeedsADepthBuffer depthBuffer={depthBuffer} />
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-usefbo--use-fbo-st)
 
-Creates a `THREE.WebGLRenderTarget` or `THREE.WebGLMultisampleRenderTarget`.
+Creates a `THREE.WebGLRenderTarget`.
 
 ```jsx
 const target = useFBO({
@@ -1101,6 +1276,56 @@ A very cheap frustum check that gives you a reference you can observe in order t
 ```jsx
 const ref = useIntersect((visible) => console.log('object is visible', visible))
 return <mesh ref={ref} />
+```
+
+#### useBoxProjectedEnv
+
+<p>
+  <a href="https://codesandbox.io/s/s006f"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/s006f/screenshot.png" alt="Demo"/></a>
+</p>
+
+The cheapest possible way of getting reflections in threejs. This will box-project the current environment map onto a plane. It returns an object that you need to spread over its material. The spread object contains a ref, onBeforeCompile and customProgramCacheKey. If you combine it with drei/CubeCamera you can "film" a single frame of the environment and feed it to the material, thereby getting realistic reflections at no cost. Align it with the position and scale properties.
+
+```jsx
+const projection = useBoxProjectedEnv(
+  [0, 0, 0], // Position
+  [1, 1, 1] // Scale
+)
+
+<CubeCamera frames={1}>
+  {(texture) => (
+    <mesh>
+      <planeGeometry />
+      <meshStandardMaterial envMap={texture} {...projection} />
+    </mesh>
+  )}
+</CubeCamera>
+```
+
+#### useTrail
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-trail--use-trail-st)
+
+A hook to obtain an array of points that make up a [Trail](#trail). You can use this array to drive your own `MeshLine` or make a trail out of anything you please.
+
+Note: The hook returns a ref (`MutableRefObject<Vector3[]>`) this means updates to it will not trigger a re-draw, thus keeping this cheap.
+
+```js
+const points = useTrail(
+  target, // Required target object. This object will produce the trail.
+  {
+    length, // Length of the line
+    decay, // How fast the line fades away
+    local, // Wether to use the target's world or local positions
+    stride, // Min distance between previous and current point
+    interval, // Number of frames to wait before next calculation
+  }
+)
+
+// To use...
+useFrame(() => {
+  meshLineRef.current.position.setPoints(points.current)
+})
 ```
 
 # Loading
@@ -1338,25 +1563,10 @@ A wrapper around [THREE.Points](https://threejs.org/docs/#api/en/objects/Points)
   limit={1000} // Optional: max amount of items (for calculating buffer size)
   range={1000} // Optional: draw-range
 >
-  <pointsMaterial />
+  <pointsMaterial vertexColors />
   <Point position={[1, 2, 3]} color="red" onClick={onClick} onPointerOver={onPointerOver} ... />
   // As many as you want, make them conditional, mount/unmount them, lazy load them, etc ...
 </Points>
-```
-
-If you have a material that supports vertex colors (like drei/PointMaterial) you can have individual colors!
-
-```jsx
-<Points>
-  <PointMaterial />
-  <Point color="hotpink" />
-```
-
-Otherwise use any material you like:
-
-```jsx
-<Points>
-  <pointsMaterial vertexColors size={10} />
 ```
 
 If you just want to use buffers for position, color and size, you can use the alternative API:
@@ -1456,7 +1666,7 @@ A very fast, but often good-enough bounds-only raycast for meshes. You can use t
 
 #### AdaptiveDpr
 
-Drop this component into your scene and it will cut the pixel-ratio on [regress](#) according to the canvases perrformance min/max settings. This allows you to temporarily reduce visuals for more performance, for instance when the camera moves (look into drei's controls `regress` flag). Optionally you can set the canvas to a pixelated filter, which would be even faster.
+Drop this component into your scene and it will cut the pixel-ratio on regress according to the canvas's performance min/max settings. This allows you to temporarily reduce visual quality in exchange for more performance, for instance when the camera moves (look into drei's controls regress flag). Optionally, you can set the canvas to a pixelated filter, which would be even faster.
 
 ```jsx
 <AdaptiveDpr pixelated />
@@ -1489,7 +1699,7 @@ useBVH(mesh)
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-center--default-story)
 
-Calculates a boundary box and centers its children accordingly. `alignTop` makes adjusts it so that it's sits flush on y=0.
+Calculates a boundary box and centers its children accordingly. `alignTop` adjusts it so that it sits flush on y=0.
 
 ```jsx
 <Center alignTop>
@@ -1506,7 +1716,7 @@ Calculates a boundary box and centers its children accordingly. `alignTop` makes
 Calculates a boundary box and centers the camera accordingly. If you are using controls, make sure to pass them the `makeDefault` prop. `fit` fits the current view on first render. `clip` sets the cameras near/far planes.
 
 ```jsx
-<Bounds fit clip damping={6} margin={1.2}>
+<Bounds fit clip observe damping={6} margin={1.2}>
   <mesh />
 </Bounds>
 ```
@@ -1639,7 +1849,7 @@ A cheap canvas-texture-based circular gradient.
 A [contact shadow](https://threejs.org/examples/#webgl_shadow_contact) implementation, facing upwards (positive Y) by default. `scale` can be a positive number or a 2D array `[x: number, y: number]`.
 
 ```jsx
-<ContactShadows opacity={1} scale={10} blur={1} far={10} resolution={256} />
+<ContactShadows opacity={1} scale={10} blur={1} far={10} resolution={256} color="#000000" />
 ```
 
 Since this is a rather expensive effect you can limit the amount of frames it renders when your objects are static. For instance making it render only once:
@@ -1680,6 +1890,9 @@ function Foo() {
 
 <p>
   <a href="https://codesandbox.io/s/t4l0f"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/t4l0f/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/mih0lx"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/mih0lx/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/e662p3"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/e662p3/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/lwo219"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/lwo219/screenshot.png" alt="Demo"/></a>
 </p>
 
 Sets up a global cubemap, which affects the default `scene.environment`, and optionally `scene.background`, unless a custom scene has been passed. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience. If you pass an array of files it will use THREE.CubeTextureLoader.
@@ -1688,11 +1901,11 @@ Sets up a global cubemap, which affects the default `scene.environment`, and opt
 
 ```jsx
 <Environment
-  background={false}
+  background={false} // can be true, false or "only" (which only sets the background) (default: false)
   files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']}
   path="/"
   preset={null}
-  scene={undefined} // adds the ability to pass a custom THREE.Scene
+  scene={undefined} // adds the ability to pass a custom THREE.Scene, can also be a ref
 />
 ```
 
@@ -1700,6 +1913,60 @@ If you provide a single string it will use THREE.RGBELoader.
 
 ```jsx
 <Environment files="file.hdr" />
+```
+
+If you already have a cube texture you can pass it directly:
+
+```jsx
+<CubeCamera>{(texture) => <Environment map={texture} />}</CubeCamera>
+```
+
+If you provide children you can even render a custom environment. It will render the contents into an off-buffer and film a single frame with a cube camera (whose props you can configure: near=1, far=1000, resolution=256).
+
+```jsx
+<Environment background near={1} far={1000} resolution={256}>
+  <mesh scale={100}>
+    <sphereGeometry args={[1, 64, 64]} />
+    <meshBasicMaterial map={texture} side={THREE.BackSide} />
+  </mesh>
+</Environment>
+```
+
+You can even mix a generic HDRI environment into a custom one with either the `preset` or the `files` prop.
+
+```jsx
+return (
+  <Environment background near={1} far={1000} resolution={256} preset="warehouse">
+    <mesh />
+```
+
+Declarative environment content can also animate with the `frames` prop, the envmap can be live. Give it a low resolution and this will happen at very little cost
+
+```jsx
+return (
+  <Environment frames={Infinity} resolution={256}>
+    <Float>
+      <mesh />
+    </Float>
+```
+
+#### Lightformer
+
+<p>
+  <a href="https://codesandbox.io/s/lwo219"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/lwo219/screenshot.png" alt="Demo"/></a>
+</p>
+
+This component draws flat rectangles, circles or rings, mimicking the look of a light-former. You can set the output `intensity`, which will effect emissiveness once you put it into an HDRI `<Environment>`, where it mostly belong. It will act like a real light without the expense, you can have as many as you want.
+
+```jsx
+<Environment>
+  <Lightformer
+    form="rect" // circle | ring | rect (optional, default = rect)
+    intensity={1} // power level (optional = 1)
+    color="white" // (optional = white)
+    scale={[10, 5]} // Scale it any way you prefer (optional = [1, 1])
+    target={[0, 0, 0]} // Target position (optional = undefined)
+  />
 ```
 
 #### Sky

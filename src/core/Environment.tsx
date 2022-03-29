@@ -1,22 +1,137 @@
 import * as React from 'react'
-import { useLoader, useThree } from '@react-three/fiber'
-import { FloatType, EquirectangularReflectionMapping, CubeTextureLoader, Texture, Scene, Loader } from 'three'
+import { useLoader, useThree, createPortal, useFrame } from '@react-three/fiber'
+import {
+  WebGLCubeRenderTarget,
+  FloatType,
+  EquirectangularReflectionMapping,
+  CubeTextureLoader,
+  Texture,
+  Scene,
+  Loader,
+  CubeCamera,
+  HalfFloatType,
+  CubeReflectionMapping,
+} from 'three'
 import { RGBELoader } from 'three-stdlib'
-
 import { presetsObj, PresetsType } from '../helpers/environment-assets'
 
 const CUBEMAP_ROOT = 'https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/hdris/'
 
 type Props = {
-  background?: boolean
+  children?: React.ReactNode
+  frames?: number
+  near?: number
+  far?: number
+  resolution?: number
+  background?: boolean | 'only'
+  map?: THREE.Texture
   files?: string | string[]
   path?: string
   preset?: PresetsType
-  scene?: Scene
+  scene?: Scene | React.MutableRefObject<THREE.Scene>
   extensions?: (loader: Loader) => void
 }
 
-export function Environment({
+const isRef = (obj: any): obj is React.MutableRefObject<THREE.Scene> => obj.current && obj.current.isScene
+const resolveScene = (scene: THREE.Scene | React.MutableRefObject<THREE.Scene>) =>
+  isRef(scene) ? scene.current : scene
+
+export function Environment(props: Props) {
+  return props.map ? (
+    <EnvironmentMap {...props} />
+  ) : props.children ? (
+    <EnvironmentPortal {...props} />
+  ) : (
+    <EnvironmentCube {...props} />
+  )
+}
+
+export function EnvironmentMap({ scene, background = false, map }: Props) {
+  const defaultScene = useThree((state) => state.scene)
+  React.useLayoutEffect(() => {
+    if (map) {
+      const target = resolveScene(scene || defaultScene)
+      const oldbg = target.background
+      const oldenv = target.environment
+      if (background !== 'only') target.environment = map
+      if (background) target.background = map
+      return () => {
+        if (background !== 'only') target.environment = oldenv
+        if (background) target.background = oldbg
+      }
+    }
+  }, [scene, map])
+  return null
+}
+
+export function EnvironmentPortal({
+  children,
+  near = 1,
+  far = 1000,
+  resolution = 256,
+  frames = 1,
+  background = false,
+  scene,
+  files,
+  path,
+  preset = undefined,
+  extensions,
+}: Props) {
+  const gl = useThree((state) => state.gl)
+  const defaultScene = useThree((state) => state.scene)
+  const camera = React.useRef<CubeCamera>(null!)
+  const [virtualScene] = React.useState(() => new Scene())
+  const fbo = React.useMemo(() => {
+    const fbo = new WebGLCubeRenderTarget(resolution)
+    fbo.texture.type = HalfFloatType
+    return fbo
+  }, [resolution])
+
+  React.useLayoutEffect(() => {
+    if (frames === 1) camera.current.update(gl, virtualScene)
+    const target = resolveScene(scene || defaultScene)
+    const oldbg = target.background
+    const oldenv = target.environment
+    if (background !== 'only') target.environment = fbo.texture
+    if (background) target.background = fbo.texture
+    return () => {
+      if (background !== 'only') target.environment = oldenv
+      if (background) target.background = oldbg
+    }
+  }, [children, scene])
+
+  let count = 1
+  useFrame(() => {
+    if (frames === Infinity || count < frames) {
+      camera.current.update(gl, virtualScene)
+      count++
+    }
+  })
+
+  return (
+    <>
+      {createPortal(
+        <>
+          {children}
+          <cubeCamera ref={camera} args={[near, far, fbo]} />
+          {(files || preset) && (
+            <EnvironmentMap
+              background
+              files={files}
+              preset={preset}
+              path={path}
+              extensions={extensions}
+              scene={virtualScene}
+            />
+          )}
+        </>,
+        virtualScene
+      )}
+    </>
+  )
+}
+
+export function EnvironmentCube({
   background = false,
   files = ['/px.png', '/nx.png', '/py.png', '/ny.png', '/pz.png', '/nz.png'],
   path = '',
@@ -25,13 +140,12 @@ export function Environment({
   extensions,
 }: Props) {
   if (preset) {
-    if (!(preset in presetsObj)) {
-      throw new Error('Preset must be one of: ' + Object.keys(presetsObj).join(', '))
-    }
+    if (!(preset in presetsObj)) throw new Error('Preset must be one of: ' + Object.keys(presetsObj).join(', '))
     files = presetsObj[preset]
     path = CUBEMAP_ROOT
   }
-  const defaultScene = useThree(({ scene }) => scene)
+
+  const defaultScene = useThree((state) => state.scene)
   const isCubeMap = Array.isArray(files)
   const loader = isCubeMap ? CubeTextureLoader : RGBELoader
   // @ts-expect-error
@@ -42,30 +156,18 @@ export function Environment({
     if (extensions) extensions(loader)
   })
   const texture: Texture = isCubeMap ? loaderResult[0] : loaderResult
-  texture.mapping = EquirectangularReflectionMapping
+  texture.mapping = isCubeMap ? CubeReflectionMapping : EquirectangularReflectionMapping
 
   React.useLayoutEffect(() => {
-    const oldbg = scene ? scene.background : defaultScene.background
-    const oldenv = scene ? scene.environment : defaultScene.environment
-    if (scene) {
-      scene.environment = texture
-      if (background) scene.background = texture
-    } else {
-      defaultScene.environment = texture
-      if (background) defaultScene.background = texture
-    }
+    const target = resolveScene(scene || defaultScene)
+    const oldbg = target.background
+    const oldenv = target.environment
+    if (background !== 'only') target.environment = texture
+    if (background) target.background = texture
     return () => {
-      if (scene) {
-        scene.environment = oldenv
-        scene.background = oldbg
-      } else {
-        defaultScene.environment = oldenv
-        defaultScene.background = oldbg
-      }
-      // Environment textures are volatile, better dispose and uncache them
-      texture.dispose()
+      if (background !== 'only') target.environment = oldenv
+      if (background) target.background = oldbg
     }
   }, [texture, background, scene])
-
   return null
 }

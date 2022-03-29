@@ -1,9 +1,8 @@
 import * as THREE from 'three'
 import * as React from 'react'
+import { PrimitiveProps } from '@react-three/fiber'
 
-type PointMaterialType = JSX.IntrinsicElements['shaderMaterial'] & {
-  scale?: number
-}
+type PointMaterialType = JSX.IntrinsicElements['pointsMaterial']
 
 declare global {
   namespace JSX {
@@ -13,38 +12,28 @@ declare global {
   }
 }
 
-export class PointMaterialImpl extends THREE.ShaderMaterial {
-  constructor() {
-    super({
-      transparent: true,
-      uniforms: { size: { value: 1 } },
-      vertexShader: THREE.ShaderLib.points.vertexShader,
-      fragmentShader: `
-      varying vec3 vColor;
-      void main() {
-        vec2 cxy = 2.0 * gl_PointCoord - 1.0;
-        float r = dot(cxy, cxy);
-        float delta = fwidth(r);
-        vec3 color = vColor;
-        #ifdef TONE_MAPPING
-          color = toneMapping(color);
-        #endif
-        gl_FragColor = linearToOutputTexel(vec4(color, 1.0 - smoothstep(1.0 - delta, 1.0 + delta, r)));
-      }`,
-      vertexColors: true,
-    })
-  }
-
-  get scale() {
-    return this.uniforms.size.value
-  }
-
-  set scale(v) {
-    this.uniforms.size.value = v
+export class PointMaterialImpl extends THREE.PointsMaterial {
+  constructor(props) {
+    super(props)
+    this.onBeforeCompile = (shader) => {
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <output_fragment>',
+        `
+        #include <output_fragment>
+      vec2 cxy = 2.0 * gl_PointCoord - 1.0;
+      float r = dot(cxy, cxy);
+      float delta = fwidth(r);     
+      float mask = 1.0 - smoothstep(1.0 - delta, 1.0 + delta, r);
+      gl_FragColor = vec4(gl_FragColor.rgb, mask * gl_FragColor.a );
+      `
+      )
+    }
   }
 }
 
-export const PointMaterial = React.forwardRef((props, ref) => {
-  const [material] = React.useState(() => new PointMaterialImpl())
-  return <primitive object={material} ref={ref} attach="material" {...props} />
-})
+export const PointMaterial = React.forwardRef<PointMaterialImpl, Omit<PrimitiveProps, 'object' | 'attach'>>(
+  (props, ref) => {
+    const [material] = React.useState(() => new PointMaterialImpl(null))
+    return <primitive {...props} object={material} ref={ref} attach="material" />
+  }
+)

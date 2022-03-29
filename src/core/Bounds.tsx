@@ -185,7 +185,7 @@ export function Bounds({ children, damping = 6, fit, clip, observe, margin = 1.2
 
   // Scale pointer on window resize
   const count = React.useRef(0)
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     if (observe || count.current++ === 0) {
       api.refresh()
       if (fit) api.fit()

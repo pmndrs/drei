@@ -162,15 +162,11 @@ export function EnvironmentCube({
     const target = resolveScene(scene || defaultScene)
     const oldbg = target.background
     const oldenv = target.environment
-
     if (background !== 'only') target.environment = texture
     if (background) target.background = texture
-
     return () => {
       if (background !== 'only') target.environment = oldenv
       if (background) target.background = oldbg
-      // Environment textures are volatile, better dispose and uncache them
-      texture.dispose()
     }
   }, [texture, background, scene])
   return null

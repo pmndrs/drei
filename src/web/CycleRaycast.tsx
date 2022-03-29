@@ -18,40 +18,42 @@ export function CycleRaycast({
   keyCode = 9,
 }: CycleRaycastProps) {
   const cycle = React.useRef(0)
-  const raycaster = useThree((state) => state.raycaster)
+  const setEvents = useThree((state) => state.setEvents)
   const get = useThree((state) => state.get)
   const gl = useThree((state) => state.gl)
 
   React.useEffect(() => {
     let hits: THREE.Intersection[] = []
     let lastEvent: PointerEvent = undefined!
-    const prev = raycaster.filter
+    const prev = get().events.filter
     const target = portal?.current ?? gl.domElement.parentNode
 
     // Render custom status
     const renderStatus = () => target && onChanged && onChanged(hits, Math.round(cycle.current) % hits.length)
 
     // Overwrite the raycasters custom filter (this only exists in r3f)
-    raycaster.filter = (intersections, state) => {
-      // Reset cycle when the intersections change
-      let clone = [...intersections]
-      if (
-        clone.length !== hits.length ||
-        !hits.every((hit) => clone.map((e) => e.object.uuid).includes(hit.object.uuid))
-      ) {
-        cycle.current = 0
-        hits = clone
-        renderStatus()
-      }
-      // Run custom filter if there is one
-      if (prev) clone = prev(clone, state)
-      // Cycle through the actual raycast intersects
-      for (let i = 0; i < Math.round(cycle.current) % clone.length; i++) {
-        const first = clone.shift() as THREE.Intersection
-        clone = [...clone, first]
-      }
-      return clone
-    }
+    setEvents({
+      filter: (intersections, state) => {
+        // Reset cycle when the intersections change
+        let clone = [...intersections]
+        if (
+          clone.length !== hits.length ||
+          !hits.every((hit) => clone.map((e) => e.object.uuid).includes(hit.object.uuid))
+        ) {
+          cycle.current = 0
+          hits = clone
+          renderStatus()
+        }
+        // Run custom filter if there is one
+        if (prev) clone = prev(clone, state)
+        // Cycle through the actual raycast intersects
+        for (let i = 0; i < Math.round(cycle.current) % clone.length; i++) {
+          const first = clone.shift() as THREE.Intersection
+          clone = [...clone, first]
+        }
+        return clone
+      },
+    })
 
     // Cycle, refresh events and render status
     const refresh = (fn) => {
@@ -89,11 +91,11 @@ export function CycleRaycast({
 
     return () => {
       // Clean up
-      raycaster.filter = prev
+      setEvents({ filter: prev })
       if (keyCode !== undefined) document.removeEventListener('keydown', tabEvent)
       if (scroll) document.removeEventListener('wheel', wheelEvent)
       document.removeEventListener('pointermove', moveEvent)
     }
-  }, [gl, get, raycaster, preventDefault, scroll, keyCode])
+  }, [gl, get, setEvents, preventDefault, scroll, keyCode])
   return null
 }

@@ -25,7 +25,7 @@ export function Select({
   filter: customFilter = (item) => item,
   ...props
 }: Props) {
-  const { camera, raycaster, gl, controls, size, get } = useThree()
+  const { setEvents, camera, raycaster, gl, controls, size, get } = useThree()
   const [hovered, hover] = React.useState(false)
   const [active, dispatch] = React.useReducer(
     (state, { object, shift }: { object?: THREE.Object3D | THREE.Object3D[]; shift?: boolean }): THREE.Object3D[] => {
@@ -60,22 +60,20 @@ export function Select({
     const pointTopLeft = new THREE.Vector2()
     const pointBottomRight = new THREE.Vector2()
 
-    const oldRaycasterEnabled = raycaster.enabled
+    const oldRaycasterEnabled = get().events.enabled
     const oldControlsEnabled = (controls as any)?.enabled
 
     let isDown = false
 
     function prepareRay(event, vec) {
-      // https://github.com/pmndrs/react-three-fiber/pull/782
-      // Events trigger outside of canvas when moved
-      const { offsetX, offsetY } = raycaster.computeOffsets?.(event, get()) ?? event
+      const { offsetX, offsetY } = event
       const { width, height } = size
       vec.set((offsetX / width) * 2 - 1, -(offsetY / height) * 2 + 1)
     }
 
     function onSelectStart(event) {
       if (controls) (controls as any).enabled = false
-      raycaster.enabled = false
+      setEvents({ enabled: false })
       isDown = true
       gl.domElement.parentElement?.appendChild(element)
       element.style.left = `${event.clientX}px`
@@ -100,7 +98,7 @@ export function Select({
     function onSelectOver() {
       if (isDown) {
         if (controls) (controls as any).enabled = oldControlsEnabled
-        raycaster.enabled = oldRaycasterEnabled
+        setEvents({ enabled: oldRaycasterEnabled })
         isDown = false
         element.parentElement?.removeChild(element)
       }

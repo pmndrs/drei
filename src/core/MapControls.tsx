@@ -1,4 +1,4 @@
-import { ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
+import { EventManager, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from 'three'
 import { MapControls as MapControlsImpl } from 'three-stdlib'
@@ -11,21 +11,24 @@ export type MapControlsProps = ReactThreeFiber.Overwrite<
     onChange?: (e?: THREE.Event) => void
     onStart?: (e?: THREE.Event) => void
     onEnd?: (e?: THREE.Event) => void
+    domElement?: HTMLElement
   }
 >
 
 export const MapControls = React.forwardRef<MapControlsImpl, MapControlsProps>(
   (props = { enableDamping: true }, ref) => {
-    const { camera, onChange, onStart, onEnd, ...rest } = props
-    const invalidate = useThree(({ invalidate }) => invalidate)
-    const defaultCamera = useThree(({ camera }) => camera)
-    const domElement = useThree(({ gl }) => gl.domElement)
+    const { domElement, camera, onChange, onStart, onEnd, ...rest } = props
+    const invalidate = useThree((state) => state.invalidate)
+    const defaultCamera = useThree((state) => state.camera)
+    const gl = useThree((state) => state.gl)
+    const events = useThree((state) => state.events) as EventManager<HTMLElement>
+    const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
 
     const explCamera = camera || defaultCamera
     const controls = React.useMemo(() => new MapControlsImpl(explCamera), [explCamera])
 
     React.useEffect(() => {
-      controls.connect(domElement)
+      controls.connect(explDomElement)
       const callback = (e: THREE.Event) => {
         invalidate()
         if (onChange) onChange(e)
@@ -41,7 +44,7 @@ export const MapControls = React.forwardRef<MapControlsImpl, MapControlsProps>(
         if (onStart) controls.removeEventListener('start', onStart)
         if (onEnd) controls.removeEventListener('end', onEnd)
       }
-    }, [onChange, onStart, onEnd, controls, invalidate, domElement])
+    }, [onChange, onStart, onEnd, controls, invalidate, explDomElement])
 
     useFrame(() => controls.update())
 

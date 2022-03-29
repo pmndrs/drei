@@ -1,8 +1,9 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
-import { context as fiberContext, useFrame, useThree } from '@react-three/fiber'
+import { context as fiberContext, RootState, useFrame, useThree } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
+import { DomEvent } from '@react-three/fiber/dist/declarations/src/core/events'
 
 export type ScrollControlsProps = {
   eps?: number
@@ -48,7 +49,7 @@ export function ScrollControls({
   style = {},
   children,
 }: ScrollControlsProps) {
-  const { gl, size, invalidate, events, raycaster } = useThree()
+  const { get, setEvents, gl, size, invalidate, events, raycaster } = useThree()
   const [el] = React.useState(() => document.createElement('div'))
   const [fill] = React.useState(() => document.createElement('div'))
   const [fixed] = React.useState(() => document.createElement('div'))
@@ -119,15 +120,19 @@ export function ScrollControls({
 
     const oldTarget = (events.connected || gl.domElement) as HTMLElement
     requestAnimationFrame(() => events.connect?.(el))
-    const oldCompute = raycaster.computeOffsets
-    raycaster.computeOffsets = ({ clientX, clientY }) => ({
-      offsetX: clientX - (target as HTMLElement).offsetLeft,
-      offsetY: clientY - (target as HTMLElement).offsetTop,
+    const oldCompute = get().events.compute
+    setEvents({
+      compute(event: DomEvent, state: RootState) {
+        const offsetX = event.clientX - (event.target as HTMLElement).offsetLeft
+        const offsetY = event.clientX - (event.target as HTMLElement).offsetLeft
+        state.pointer.set((offsetX / state.size.width) * 2 - 1, -(offsetY / state.size.height) * 2 + 1)
+        state.raycaster.setFromCamera(state.pointer, state.camera)
+      },
     })
 
     return () => {
       target.removeChild(el)
-      raycaster.computeOffsets = oldCompute
+      setEvents({ compute: oldCompute })
       events.connect?.(oldTarget)
     }
   }, [pages, distance, horizontal, el, fill, fixed, target])

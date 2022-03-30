@@ -4,13 +4,13 @@
 [![Downloads](https://img.shields.io/npm/dt/@react-three/drei.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)
 [![Discord Shield](https://img.shields.io/discord/740090768164651008?style=flat&colorA=000000&colorB=000000&label=discord&logo=discord&logoColor=ffffff)](https://discord.gg/poimandres)
 
-A growing collection of useful helpers and fully functional, ready-made abstractions for [react-three-fiber](https://github.com/pmndrs/react-three-fiber). If you make a component that is generic enough to be useful to others, think about making it available here through a PR!
+A growing collection of useful helpers and fully functional, ready-made abstractions for [@react-three/fiber](https://github.com/pmndrs/react-three-fiber). If you make a component that is generic enough to be useful to others, think about making it available here through a PR!
 
 ```bash
 npm install @react-three/drei
 ```
 
-:point_right: this package is using the stand-alone [`three-stdlib`](https://github.com/pmndrs/three-stdlib) instead of [`three/examples/jsm`](https://github.com/mrdoob/three.js/tree/dev/examples/jsm). :point_left:
+:point_right: this package is using the stand-alone [`three-stdlib`](https://github.com/pmndrs/three-stdlib) instead of [`three/examples/jsm`](https://github.com/mrdoob/three.js/tree/master/examples/jsm). :point_left:
 
 ### Basic usage:
 
@@ -186,7 +186,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/camera-perspectivecamera--perspective-camera-scene-st)
 
-A responsive [THREE.PerspectiveCamera](https://threejs.org/docs/index.html#api/en/cameras/PerspectiveCamera) that can set itself as the default.
+A responsive [THREE.PerspectiveCamera](https://threejs.org/docs/#api/en/cameras/PerspectiveCamera) that can set itself as the default.
 
 ```jsx
 <PerspectiveCamera makeDefault {...props} />
@@ -211,7 +211,7 @@ You can also drive it manually, it won't be responsive and you have to calculate
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/camera-orthographiccamera--orthographic-camera-scene-st)
 
-A responsive [THREE.OrthographicCamera](https://threejs.org/docs/index.html#api/en/cameras/OrthographicCamera) that can set itself as the default.
+A responsive [THREE.OrthographicCamera](https://threejs.org/docs/#api/en/cameras/OrthographicCamera) that can set itself as the default.
 
 ```jsx
 <OrthographicCamera makeDefault {...props}>
@@ -223,7 +223,7 @@ A responsive [THREE.OrthographicCamera](https://threejs.org/docs/index.html#api/
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/camera-cubecamera--default-story)
 
-A [THREE.CubeCamera](https://threejs.org/docs/index.html#api/en/cameras/CubeCamera) that returns its texture as a render-prop. It makes children invisible while rendering to the internal buffer so that they are not included in the reflection.
+A [THREE.CubeCamera](https://threejs.org/docs/#api/en/cameras/CubeCamera) that returns its texture as a render-prop. It makes children invisible while rendering to the internal buffer so that they are not included in the reflection.
 
 Using the `frames` prop you can control if this camera renders indefinitively or statically (a given number of times).
 If you have two static objects in the scene, make it `frames={2}` for instance, so that both objects get to "see" one another in the reflections, which takes multiple renders.
@@ -242,9 +242,9 @@ If you have moving objects, unset the prop and use a smaller `resolution` instea
 
 # Controls
 
-If available controls have damping enabled by default, they manage their own updates, remove themselves on unmount, are compatible with the `invalidateFrameloop` canvas-flag. They inherit all props from their underlying [THREE controls](https://github.com/mrdoob/three.js/tree/dev/examples/jsm/controls).
+If available controls have damping enabled by default, they manage their own updates, remove themselves on unmount, are compatible with the `invalidateFrameloop` canvas-flag. They inherit all props from their underlying [THREE controls](https://github.com/mrdoob/three.js/tree/master/examples/jsm/controls).
 
-Some controls allow you to set `makeDefault`, similar to, for instance, PerspectiveCamera. This will set react-three-fiber's `controls` field in the root store. This can make it easier in situations where you want controls to be known and other parts of the app could respond to it. Some drei controls already take it into account, like CameraShake, Gizmo and TransformControls.
+Some controls allow you to set `makeDefault`, similar to, for instance, PerspectiveCamera. This will set @react-three/fiber's `controls` field in the root store. This can make it easier in situations where you want controls to be known and other parts of the app could respond to it. Some drei controls already take it into account, like CameraShake, Gizmo and TransformControls.
 
 Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-scene-st), TrackballControls, ArcballControls, FlyControls, DeviceOrientationControls, PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st), FirstPersonControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-firstpersoncontrols--first-person-controls-story)
 
@@ -260,7 +260,7 @@ PointerLockControls additionally supports a `selector` prop, which enables the b
   <a href="https://codesandbox.io/s/btsbj"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/btsbj/screenshot.png" alt="Tranform controls"/></a>
 </p>
 
-An abstraction around [THREE.TransformControls](https://threejs.org/docs/index.html?q=transfor#examples/en/controls/TransformControls).
+An abstraction around [THREE.TransformControls](https://threejs.org/docs/#examples/en/controls/TransformControls).
 
 You can wrap objects which then receive a transform gizmo.
 
@@ -379,12 +379,12 @@ Semi-OrbitControls with spring-physics, polar zoom and snap-back, for presentati
 
 # Shapes
 
-[Buffer-geometry](https://threejs.org/docs/index.html#api/en/core/BufferGeometry) short-cuts for Plane, Box, Sphere, Circle, Cone, Cylinder, Tube, Torus, TorusKnot, Ring, Tetrahedron, Polyhedron, Icosahedron, Octahedron, Dodecahedron, Extrude, Lathe.
+[Buffer-geometry](https://threejs.org/docs/#api/en/core/BufferGeometry) short-cuts for Plane, Box, Sphere, Circle, Cone, Cylinder, Tube, Torus, TorusKnot, Ring, Tetrahedron, Polyhedron, Icosahedron, Octahedron, Dodecahedron, Extrude, Lathe.
 
 ```jsx
 <Plane args={[2, 2]} />
 <Sphere>
-  <meshBasicMaterial attach="material" color="hotpink" />
+  <meshBasicMaterial color="hotpink" />
 </Sphere>
 ```
 
@@ -394,7 +394,7 @@ A box buffer geometry with rounded corners, done with extrusion.
 
 ```jsx
 <RoundedBox args={[1, 1, 1]} radius={0.05} smoothness={4} {...meshProps}>
-  <meshPhongMaterial attach="material" color="#f3f3f3" wireframe />
+  <meshPhongMaterial color="#f3f3f3" wireframe />
 </RoundedBox>
 ```
 
@@ -442,7 +442,7 @@ function Foo() {
   <a href="https://codesandbox.io/s/yup2o"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/yup2o/screenshot.png" alt="Demo"/></a>
 </p>
 
-Hi-quality text rendering w/ signed distance fields (SDF) and antialiasing, using [troika-3d-text](https://github.com/protectwise/troika/tree/master/packages/troika-3d-text). All of troikas props are valid!
+Hi-quality text rendering w/ signed distance fields (SDF) and antialiasing, using [troika-3d-text](https://github.com/protectwise/troika/tree/master/packages/troika-3d-text). All of troikas props are valid! Text is suspense-based!
 
 ```jsx
 <Text color="black" anchorX="center" anchorY="middle">
@@ -544,7 +544,7 @@ Renders a THREE.Line2 using THREE.CubicBezierCurve3 for interpolation.
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-positionalaudio--positional-audio-scene-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
-A wrapper around [THREE.PositionalAudio](https://threejs.org/docs/index.html#api/en/audio/PositionalAudio). Add this to groups or meshes to tie them to a sound that plays when the camera comes near.
+A wrapper around [THREE.PositionalAudio](https://threejs.org/docs/#api/en/audio/PositionalAudio). Add this to groups or meshes to tie them to a sound that plays when the camera comes near.
 
 ```jsx
 <PositionalAudio
@@ -597,11 +597,11 @@ Make sure to set the `makeDefault` prop on your controls, in that case you do no
 
 #### Effects
 
-Abstraction around threes own [EffectComposer](https://threejs.org/docs/index.html#examples/en/postprocessing/EffectComposer).
+Abstraction around threes own [EffectComposer](https://threejs.org/docs/#examples/en/postprocessing/EffectComposer).
 
 ```jsx
 <Effects multisamping={8} renderIndex={1} disableGamma={false} disableRenderPass={false}>
-  <lUTPass attachArray="passes" lut={texture3D} />
+  <lUTPass attach="passes" lut={texture3D} />
 </Effects>
 ```
 
@@ -632,7 +632,7 @@ A declarative THREE.Texture which attaches to "map" by default. You can use this
   <a href="https://codesandbox.io/s/ny3p4"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/ny3p4/screenshot.png" alt="Demo"/></a>
 </p>
 
-Abstracts [THREE.EdgesGeometry](https://threejs.org/docs/index.html?q=EdgesGeometry#api/en/geometries/EdgesGeometry). It pulls the geometry automatically from its parent, optionally you can ungroup it and give it a `geometry` prop. You can give it children, for instance a custom material.
+Abstracts [THREE.EdgesGeometry](https://threejs.org/docs/#api/en/geometries/EdgesGeometry). It pulls the geometry automatically from its parent, optionally you can ungroup it and give it a `geometry` prop. You can give it children, for instance a custom material.
 
 ```jsx
 <mesh>
@@ -814,7 +814,7 @@ Or make inserts conditional:
   <a href="https://codesandbox.io/s/pecl6"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/pecl6/screenshot.png" alt="Demo"/></a>
 </p>
 
-A hook that abstracts [AnimationMixer](https://threejs.org/docs/index.html#api/en/animation/AnimationMixer).
+A hook that abstracts [AnimationMixer](https://threejs.org/docs/#api/en/animation/AnimationMixer).
 
 ```jsx
 const { nodes, materials, animations } = useGLTF(url)
@@ -845,7 +845,7 @@ return <primitive object={scene} />
   <a href="https://codesandbox.io/s/l900i"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/l900i/screenshot.png" alt="Demo"/></a>
 </p>
 
-Easily add reflections and/or blur to any mesh. It takes surface roughness into account for a more realistic effect. This material extends from [THREE.MeshStandardMaterial](https://threejs.org/docs/index.html?q=meshsta#api/en/materials/MeshStandardMaterial) and accepts all its props.
+Easily add reflections and/or blur to any mesh. It takes surface roughness into account for a more realistic effect. This material extends from [THREE.MeshStandardMaterial](https://threejs.org/docs/#api/en/materials/MeshStandardMaterial) and accepts all its props.
 
 ```jsx
 <mesh>
@@ -883,8 +883,8 @@ This material makes your geometry wobble and wave around. It was taken from the 
 
 ```jsx
 <mesh>
-  <boxBufferGeometry attach="geometry" />
-  <MeshWobbleMaterial attach="material" factor={1} speed={10} />
+  <boxGeometry />
+  <MeshWobbleMaterial factor={1} speed={10} />
 </mesh>
 ```
 
@@ -900,8 +900,8 @@ This material makes your geometry distort following simplex noise.
 
 ```jsx
 <mesh>
-  <boxBufferGeometry attach="geometry" />
-  <MeshDistortMaterial attach="material" distort={1} speed={10} />
+  <boxGeometry />
+  <MeshDistortMaterial distort={1} speed={10} />
 </mesh>
 ```
 
@@ -923,7 +923,7 @@ Antialiased round dots. It takes the same props as regular THREE.PointsMaterial
   <a href="https://codesandbox.io/s/dh2jc"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/dh2jc/screenshot.png" alt="Demo"/></a>
 </p>
 
-Injects [percent closer soft shadows (pcss)](https://threejs.org/examples/?q=pcss#webgl_shadowmap_pcss) into threes shader chunk.
+Injects [percent closer soft shadows (pcss)](https://threejs.org/examples/#webgl_shadowmap_pcss) into threes shader chunk.
 
 ```jsx
 softShadows({
@@ -946,7 +946,7 @@ softShadows({
 Creates a THREE.ShaderMaterial for you with easier handling of uniforms, which are also automatically declared as setter/getters on the object.
 
 ```jsx
-import { extend } from 'react-three-fiber'
+import { extend } from '@react-three/fiber'
 import glsl from 'babel-plugin-glsl/macro'
 
 const ColorShiftMaterial = shaderMaterial(
@@ -974,7 +974,7 @@ extend({ ColorShiftMaterial })
 
 // in your component
 <mesh>
-  <colorShiftMaterial attach="material" color="hotpink" time={1} />
+  <colorShiftMaterial color="hotpink" time={1} />
 </mesh>
 ```
 
@@ -984,7 +984,7 @@ extend({ ColorShiftMaterial })
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/modifiers-curvemodifier)
 
-Given a curve will replace the children of this component with a mesh that move along said curve calling the property `moveAlongCurve` on the passed ref. Uses [three's Curve Modifier](https://threejs.org/examples/?q=curve#webgl_modifier_curve)
+Given a curve will replace the children of this component with a mesh that move along said curve calling the property `moveAlongCurve` on the passed ref. Uses [three's Curve Modifier](https://threejs.org/examples/#webgl_modifier_curve)
 
 ```jsx
 const curveRef = useRef()
@@ -994,7 +994,7 @@ const curve = React.useMemo(() => new THREE.CatmullRomCurve3([...handlePos], tru
 return (
   <CurveModifier ref={curveRef} curve={curve}>
     <mesh>
-      <boxBufferGeometry args={[10, 10]} />
+      <boxGeometry args={[10, 10]} />
     </mesh>
   </CurveModifier>
 )
@@ -1221,7 +1221,7 @@ useHelper(condition && mesh, BoxHelper, 'red') // you can passe false instead of
 
 This hook uses [DetectGPU by @TimvanScherpenzeel](https://github.com/TimvanScherpenzeel/detect-gpu), wrapped into suspense, to determine what tier should be assigned to the user's GPU.
 
-👉 This hook CAN be used outside the react-three-fiber `Canvas`.
+👉 This hook CAN be used outside the @react-three/fiber `Canvas`.
 
 ```jsx
 function App() {
@@ -1248,7 +1248,7 @@ const scale = useAspect(
 )
 return (
   <mesh scale={scale}>
-    <planeBufferGeometry />
+    <planeGeometry />
     <meshBasicMaterial map={imageTexture} />
 ```
 
@@ -1271,7 +1271,7 @@ return (
   <a href="https://codesandbox.io/s/gsm1y"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/gsm1y/screenshot.png" alt="Demo"/></a>
 </p>
 
-A very cheap frustum check that gives you a reference you can observe in order to know if the object has entered the view or is outside of it. This relies on [THREE.Object3D.onBeforeRender](https://threejs.org/docs/index.html?q=obj#api/en/core/Object3D.onBeforeRender) so it only works on objects that are effectively rendered, like meshes, lines, sprites. It won't work on groups, object3d's, bones, etc.
+A very cheap frustum check that gives you a reference you can observe in order to know if the object has entered the view or is outside of it. This relies on [THREE.Object3D.onBeforeRender](https://threejs.org/docs/#api/en/core/Object3D.onBeforeRender) so it only works on objects that are effectively rendered, like meshes, lines, sprites. It won't work on groups, object3d's, bones, etc.
 
 ```jsx
 const ref = useIntersect((visible) => console.log('object is visible', visible))
@@ -1471,7 +1471,7 @@ const envMap = useCubeTexture(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png',
   <a href="https://codesandbox.io/s/i6t0j"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/i6t0j/screenshot.png" alt="Demo"/></a>
 </p>
 
-A wrapper around [THREE.InstancedMesh](https://threejs.org/docs/index.html?q=instan#api/en/objects/InstancedMesh). This allows you to define hundreds of thousands of objects in a single draw call, but declaratively!
+A wrapper around [THREE.InstancedMesh](https://threejs.org/docs/#api/en/objects/InstancedMesh). This allows you to define hundreds of thousands of objects in a single draw call, but declaratively!
 
 ```jsx
 <Instances
@@ -1556,7 +1556,7 @@ function Model({ url }) {
 
 #### Points
 
-A wrapper around [THREE.Points](https://threejs.org/docs/index.html?q=points#api/en/objects/Points). It has the same api and properties as Instances.
+A wrapper around [THREE.Points](https://threejs.org/docs/#api/en/objects/Points). It has the same api and properties as Instances.
 
 ```jsx
 <Points
@@ -1620,7 +1620,7 @@ useFrame(() => {
   <a href="https://codesandbox.io/s/12nmp"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/12nmp/screenshot.png" alt="Demo"/></a>
 </p>
 
-A wrapper around [THREE.LOD](https://threejs.org/docs/index.html#api/en/objects/LOD) (Level of detail).
+A wrapper around [THREE.LOD](https://threejs.org/docs/#api/en/objects/LOD) (Level of detail).
 
 ```jsx
 <Detailed distances={[0, 10, 20]} {...props}>
@@ -1632,7 +1632,7 @@ A wrapper around [THREE.LOD](https://threejs.org/docs/index.html#api/en/objects/
 
 #### Preload
 
-The WebGLRenderer will compile materials only when they hit the frustrum, which can cause jank. This component precompiles the scene using [gl.compile](https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.compile) which makes sure that your app is responsive from the get go.
+The WebGLRenderer will compile materials only when they hit the frustrum, which can cause jank. This component precompiles the scene using [gl.compile](https://threejs.org/docs/#api/en/renderers/WebGLRenderer.compile) which makes sure that your app is responsive from the get go.
 
 By default gl.compile will only preload visible objects, if you supply the `all` prop, it will circumvent that. With the `scene` and `camera` props you could also use it in portals.
 
@@ -1713,7 +1713,7 @@ Calculates a boundary box and centers its children accordingly. `alignTop` adjus
   <a href="https://codesandbox.io/s/rz2g0"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/rz2g0/screenshot.png" alt="Demo"/></a>
 </p>
 
-Calculates a boundary box and centers the camera accordingly. If you are using controls, make sure to pass them the `makeDefault` prop. `fit` fits the current view on first render. `clip` sets the cameras near/far planes. `observe` will optionally use r3f's resize-observer to refresh bounds on resize.
+Calculates a boundary box and centers the camera accordingly. If you are using controls, make sure to pass them the `makeDefault` prop. `fit` fits the current view on first render. `clip` sets the cameras near/far planes.
 
 ```jsx
 <Bounds fit clip observe damping={6} margin={1.2}>
@@ -1846,7 +1846,7 @@ A cheap canvas-texture-based circular gradient.
   <a href="https://codesandbox.io/s/qxjoj"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/qxjoj/screenshot.png" alt="Demo"/></a>
 </p>
 
-A [contact shadow](https://threejs.org/examples/?q=con#webgl_shadow_contact) implementation, facing upwards (positive Y) by default. `scale` can be a positive number or a 2D array `[x: number, y: number]`.
+A [contact shadow](https://threejs.org/examples/#webgl_shadow_contact) implementation, facing upwards (positive Y) by default. `scale` can be a positive number or a 2D array `[x: number, y: number]`.
 
 ```jsx
 <ContactShadows opacity={1} scale={10} blur={1} far={10} resolution={256} color="#000000" />
@@ -1977,7 +1977,7 @@ This component draws flat rectangles, circles or rings, mimicking the look of a 
   <a href="https://codesandbox.io/s/vkgi6"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/vkgi6/screenshot.png" alt="Demo"/></a>
 </p>
 
-Adds a [sky](https://threejs.org/examples/webgl_shaders_sky.html) to your scene.
+Adds a [sky](https://threejs.org/examples/#webgl_shaders_sky) to your scene.
 
 ```jsx
 <Sky distance={450000} sunPosition={[0, 1, 0]} inclination={0} azimuth={0.25} {...props} />

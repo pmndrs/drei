@@ -30,5 +30,5 @@ export const ComputedAttribute = ({
     }
   }, [compute])
 
-  return <primitive ref={primitive} object={bufferAttribute} attachObject={['attributes', name]} {...props} />
+  return <primitive ref={primitive} object={bufferAttribute} attach={`attributes-${name}`} {...props} />
 }

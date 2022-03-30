@@ -36,5 +36,5 @@ useKTX2.preload = (url: string extends any[] ? string[] : string, basisPath: str
   useLoader.preload(KTX2Loader, url, (loader: any) => {
     loader.setTranscoderPath(basisPath)
   })
-// @ts-expect-error new in r3f 7.0.5
+
 useKTX2.clear = (input: string | string[]) => useLoader.clear(KTX2Loader, input)

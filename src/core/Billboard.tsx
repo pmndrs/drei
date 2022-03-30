@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Mesh } from 'three'
+import { Group } from 'three'
 import { useFrame } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
 
@@ -19,11 +19,11 @@ export type BillboardProps = {
  * </Billboard>
  * ```
  */
-export const Billboard = React.forwardRef<Mesh, BillboardProps>(function Billboard(
+export const Billboard = React.forwardRef<Group, BillboardProps>(function Billboard(
   { follow = true, lockX = false, lockY = false, lockZ = false, ...props },
   ref
 ) {
-  const localRef = React.useRef<Mesh>()
+  const localRef = React.useRef<Group>()
   useFrame(({ camera }) => {
     if (!follow || !localRef.current) return
 

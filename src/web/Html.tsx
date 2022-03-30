@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as ReactDOM from 'react-dom'
+import * as ReactDOM from 'react-dom/client'
 import { Vector3, Group, Object3D, Matrix4, Camera, PerspectiveCamera, OrthographicCamera, Raycaster } from 'three'
 import { Assign } from 'utility-types'
 import { ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
@@ -149,6 +149,7 @@ export const Html = React.forwardRef(
     const raycaster = useThree(({ raycaster }) => raycaster)
 
     const [el] = React.useState(() => document.createElement(as))
+    const root = React.useMemo(() => ReactDOM.createRoot(el), [el])
     const group = React.useRef<Group>(null!)
     const oldZoom = React.useRef(0)
     const oldPosition = React.useRef([0, 0])
@@ -171,7 +172,7 @@ export const Html = React.forwardRef(
         }
         return () => {
           if (target) target.removeChild(el)
-          ReactDOM.unmountComponentAtNode(el)
+          root.unmount()
         }
       }
     }, [target, transform])
@@ -213,16 +214,15 @@ export const Html = React.forwardRef(
 
     React.useLayoutEffect(() => {
       if (transform) {
-        ReactDOM.render(
+        root.render(
           <div ref={transformOuterRef} style={styles}>
             <div ref={transformInnerRef} style={transformInnerStyles}>
               <div ref={ref} className={className} style={style} children={children} />
             </div>
-          </div>,
-          el
+          </div>
         )
       } else {
-        ReactDOM.render(<div ref={ref} style={styles} className={className} children={children} />, el)
+        root.render(<div ref={ref} style={styles} className={className} children={children} />)
       }
     })
 

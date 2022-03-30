@@ -7,5 +7,4 @@ export function useFBX(path: string): Group {
 }
 
 useFBX.preload = (path: string) => useLoader.preload(FBXLoader, path)
-// @ts-expect-error new in r3f 7.0.5
 useFBX.clear = (input: string | string[]) => useLoader.clear(FBXLoader, input)

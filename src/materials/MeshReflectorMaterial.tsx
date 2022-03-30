@@ -44,7 +44,7 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
     shader.uniforms.mixContrast = this._mixContrast
     shader.vertexShader = `
         uniform mat4 textureMatrix;
-        varying vec4 my_vUv;     
+        varying vec4 my_vUv;
       ${shader.vertexShader}`
     shader.vertexShader = shader.vertexShader.replace(
       '#include <project_vertex>',
@@ -69,12 +69,12 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
         uniform float mixContrast;
         uniform float depthScale;
         uniform float depthToBlurRatioBias;
-        varying vec4 my_vUv;        
+        varying vec4 my_vUv;
         ${shader.fragmentShader}`
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <emissivemap_fragment>',
       `#include <emissivemap_fragment>
-    
+
       float distortionFactor = 0.0;
       #ifdef USE_DISTORTION
         distortionFactor = texture2D(distortionMap, vUv).r * distortion;
@@ -86,9 +86,9 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
 
       vec4 base = texture2DProj(tDiffuse, new_vUv);
       vec4 blur = texture2DProj(tDiffuseBlur, new_vUv);
-      
+
       vec4 merge = base;
-      
+
       #ifdef USE_NORMALMAP
         vec2 normal_uv = vec2(0.0);
         vec4 normalColor = texture2D(normalMap, vUv * normalScale);
@@ -116,7 +116,7 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
         #else
           merge = merge * depthFactor;
         #endif
-  
+
       #endif
 
       float reflectorRoughnessFactor = roughness;
@@ -124,7 +124,7 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
         vec4 reflectorTexelRoughness = texture2D( roughnessMap, vUv );
         reflectorRoughnessFactor *= reflectorTexelRoughness.g;
       #endif
-      
+
       #ifdef USE_BLUR
         blurFactor = min(1.0, mixBlur * reflectorRoughnessFactor);
         merge = mix(merge, blur, blurFactor);

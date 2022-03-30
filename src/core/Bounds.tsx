@@ -42,8 +42,8 @@ const isBox3 = (def: any): def is THREE.Box3 => def && (def as THREE.Box3).isBox
 const context = React.createContext<BoundsApi>(null!)
 export function Bounds({ children, damping = 6, fit, clip, observe, margin = 1.2, eps = 0.01, onFit }: BoundsProps) {
   const ref = React.useRef<THREE.Group>(null!)
-  // @ts-expect-error new in @react-three/fiber@7.0.5
-  const { camera, invalidate, size, controls } = useThree()
+  const { camera, invalidate, size, controls: controlsImpl } = useThree()
+  const controls = controlsImpl as unknown as ControlsProto
 
   const onFitRef = React.useRef<((data: SizeProps) => void) | undefined>(onFit)
   onFitRef.current = onFit

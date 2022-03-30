@@ -1090,7 +1090,7 @@
     pirates "^4.0.5"
     source-map-support "^0.5.16"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.10.2", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.5", "@babel/runtime@^7.14.8", "@babel/runtime@^7.16.7", "@babel/runtime@^7.17.2", "@babel/runtime@^7.3.1", "@babel/runtime@^7.4.4", "@babel/runtime@^7.5.0", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.6", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.10.2", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.5", "@babel/runtime@^7.14.8", "@babel/runtime@^7.16.7", "@babel/runtime@^7.17.8", "@babel/runtime@^7.3.1", "@babel/runtime@^7.4.4", "@babel/runtime@^7.5.0", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.6", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7":
   version "7.17.8"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.17.8.tgz#3e56e4aff81befa55ac3ac6a0967349fd1c5bca2"
   integrity sha512-dQpEpK0O9o6lj6oPu0gRDbbnk+4LeHlNcBpspf6Olzt3GIX4P1lWF1gS+pHLDFlaJvbR6q7jCfQ08zA4QJBnmA==
@@ -1818,17 +1818,17 @@
   resolved "https://registry.yarnpkg.com/@react-spring/types/-/types-9.4.4.tgz#97c69881788e624d7cc68d4385fdaa9b5fd20642"
   integrity sha512-KpxKt/D//q/t/6FBcde/RE36LKp8PpWu7kFEMLwpzMGl9RpcexunmYOQJWwmJWtkQjgE1YRr7DzBMryz6La1cQ==
 
-"@react-three/fiber@^8.0.0-beta.9":
-  version "8.0.0-beta.9"
-  resolved "https://registry.yarnpkg.com/@react-three/fiber/-/fiber-8.0.0-beta.9.tgz#631da0e6999e4553a6f7baa390bea0188498d698"
-  integrity sha512-nfhZNlb89Azb+3c1A+zcnhc/JwCa49lT3256giYIq8mZFOn89SjdIQriGOIO0JDvzpaLjHqQNAYkOTsoBF+WJw==
+"@react-three/fiber@^8.0.2":
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/@react-three/fiber/-/fiber-8.0.2.tgz#677c780f4955ce2f2e4c372844a6ce6fed0ccbae"
+  integrity sha512-4ZyXlzsMXh1R2xixfjcv0wYjjibhpc2M+rPdZBdOAoVNmg9jlYFjJX1QEb/kK3Xbrglu9vQTl8bm8dFaTXTbcQ==
   dependencies:
-    "@babel/runtime" "^7.17.2"
+    "@babel/runtime" "^7.17.8"
     "@types/react-reconciler" "^0.26.4"
     react-merge-refs "^1.1.0"
-    react-reconciler "^0.27.0-rc.2"
+    react-reconciler "^0.27.0"
     react-use-measure "^2.1.1"
-    scheduler "^0.21.0-rc.2"
+    scheduler "^0.21.0"
     suspend-react "^0.0.8"
     zustand "^3.7.1"
 
@@ -9978,7 +9978,7 @@ react-popper@^2.2.4:
     react-fast-compare "^3.0.1"
     warning "^4.0.2"
 
-react-reconciler@^0.27.0-rc.2:
+react-reconciler@^0.27.0:
   version "0.27.0"
   resolved "https://registry.yarnpkg.com/react-reconciler/-/react-reconciler-0.27.0.tgz#360124fdf2d76447c7491ee5f0e04503ed9acf5b"
   integrity sha512-HmMDKciQjYmBRGuuhIaKA1ba/7a+UsM5FzOZsMO2JYHt9Jh8reCb7j1eDC95NOyUlKM9KRyvdx0flBuDvYSBoA==
@@ -10518,7 +10518,7 @@ saxes@^5.0.1:
   dependencies:
     xmlchars "^2.2.0"
 
-scheduler@^0.21.0, scheduler@^0.21.0-rc.2:
+scheduler@^0.21.0:
   version "0.21.0"
   resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.21.0.tgz#6fd2532ff5a6d877b6edb12f00d8ab7e8f308820"
   integrity sha512-1r87x5fz9MXqswA2ERLo0EbOAU74DpIUO090gIasYTqlVoJeMcl+Z1Rg7WHz+qtPujhS/hGIt9kxZOYBV3faRQ==
@@ -11320,10 +11320,10 @@ three-mesh-bvh@^0.5.7:
   resolved "https://registry.yarnpkg.com/three-mesh-bvh/-/three-mesh-bvh-0.5.8.tgz#d8882625c0d5b07e86e0c2ad3cff2091e3650af8"
   integrity sha512-aw1hGGKP91WC98vDh+M7yGczwnmmtbcCwDjsh7hls076S91GuSfWbCoym3GK64uR0BhySlV5mEitCKQu3o7srg==
 
-three-stdlib@^2.8.9:
-  version "2.8.11"
-  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-2.8.11.tgz#b1b111a2d92558153a356cda8bc10d981f23c176"
-  integrity sha512-hGBvh8PIh3ZvrIbqrUUYobtbQInjnWtv/Pc9Ed4Xom2e+okGIT7ewzbFCEYV2SQ+G1A4PgB/EoXCfxsimQwtEQ==
+three-stdlib@^2.8.12:
+  version "2.8.12"
+  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-2.8.12.tgz#28ffd240b76c2d08e6370538af91339de42a7175"
+  integrity sha512-Y0pl6mQKWM5rkdOYrx4PDFwMYEEx34z4bPwKALOqEtpjaZkWhiPpu7FKtipLiVdTd+Sw8Opty4q0QmJLZ2+Y4A==
   dependencies:
     "@babel/runtime" "^7.16.7"
     "@webgpu/glslang" "^0.0.15"

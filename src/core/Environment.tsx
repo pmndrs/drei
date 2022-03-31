@@ -115,14 +115,7 @@ export function EnvironmentPortal({
           {children}
           <cubeCamera ref={camera} args={[near, far, fbo]} />
           {(files || preset) && (
-            <EnvironmentMap
-              background
-              files={files}
-              preset={preset}
-              path={path}
-              extensions={extensions}
-              scene={virtualScene}
-            />
+            <EnvironmentMap background files={files} preset={preset} path={path} extensions={extensions} />
           )}
         </>,
         virtualScene

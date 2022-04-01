@@ -1711,6 +1711,7 @@ Calculates a boundary box and centers its children accordingly. `alignTop` adjus
 
 <p>
   <a href="https://codesandbox.io/s/rz2g0"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/rz2g0/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/42glz0"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/42glz0/screenshot.png" alt="Demo"/></a>
 </p>
 
 Calculates a boundary box and centers the camera accordingly. If you are using controls, make sure to pass them the `makeDefault` prop. `fit` fits the current view on first render. `clip` sets the cameras near/far planes.

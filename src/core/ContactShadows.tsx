@@ -90,9 +90,9 @@ export const ContactShadows = React.forwardRef(
         verticalBlurMaterial,
         renderTargetBlur,
       ]
-    }, [resolution, width, height, scale])
+    }, [resolution, width, height, scale, color])
 
-    const blurShadows = React.useCallback((blur) => {
+    const blurShadows = (blur) => {
       blurPlane.visible = true
 
       blurPlane.material = horizontalBlurMaterial
@@ -110,7 +110,7 @@ export const ContactShadows = React.forwardRef(
       gl.render(blurPlane, shadowCamera.current)
 
       blurPlane.visible = false
-    }, [])
+    }
 
     let count = 0
     useFrame(() => {

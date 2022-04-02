@@ -23,7 +23,7 @@ function SkyScene() {
         sunPosition={[number('Pos X', 0), number('Pos Y', 0), number('Pos Z', 0)]}
       />
       <Plane rotation-x={Math.PI / 2} args={[100, 100, 4, 4]}>
-        <meshBasicMaterial color="black" wireframe attach="material" />
+        <meshBasicMaterial color="black" wireframe />
       </Plane>
       <axesHelper />
     </>
@@ -46,7 +46,7 @@ function SkyScene2() {
         azimuth={number('Azimuth', 0.25, { range: true, max: 1, step: 0.01 })}
       />
       <Plane rotation-x={Math.PI / 2} args={[100, 100, 4, 4]}>
-        <meshBasicMaterial color="black" wireframe attach="material" />
+        <meshBasicMaterial color="black" wireframe />
       </Plane>
       <axesHelper />
     </>
@@ -75,7 +75,7 @@ function SkyScene3() {
         azimuth={number('Azimuth', 0.25, { range: true, max: 1, step: 0.01 })}
       />
       <Plane rotation-x={Math.PI / 2} args={[100, 100, 4, 4]}>
-        <meshBasicMaterial color="black" wireframe attach="material" />
+        <meshBasicMaterial color="black" wireframe />
       </Plane>
       <axesHelper />
     </>

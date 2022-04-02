@@ -81,13 +81,12 @@ export const Stars = React.forwardRef(
 
     return (
       <points ref={ref as React.MutableRefObject<Points>}>
-        <bufferGeometry attach="geometry">
+        <bufferGeometry>
           <bufferAttribute attach="attributes-position" args={[position, 3]} />
           <bufferAttribute attach="attributes-color" args={[color, 3]} />
           <bufferAttribute attach="attributes-size" args={[size, 1]} />
         </bufferGeometry>
         <primitive
-          dispose={undefined}
           ref={material}
           object={starfieldMaterial}
           attach="material"

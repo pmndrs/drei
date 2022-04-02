@@ -49,9 +49,9 @@ function UseCameraScene() {
 
       <mesh ref={ref} raycast={useCamera(virtualCam)} onPointerOut={handlePointerOut} onPointerMove={handlePointerMove}>
         {[...Array(6)].map((_, index) => (
-          <meshLambertMaterial attachArray="material" key={index} color="hotpink" wireframe={hover !== index} />
+          <meshLambertMaterial key={index} color="hotpink" wireframe={hover !== index} />
         ))}
-        <boxBufferGeometry attach="geometry" args={[60, 60, 60]} />
+        <boxGeometry args={[60, 60, 60]} />
       </mesh>
 
       <ambientLight intensity={0.5} />

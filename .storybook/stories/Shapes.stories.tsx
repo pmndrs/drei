@@ -28,7 +28,7 @@ function Story({ comp, args }: { comp: string; args?: any }) {
 
   return (
     <Comp ref={ref} args={args}>
-      <meshPhongMaterial attach="material" color="#f3f3f3" wireframe />
+      <meshPhongMaterial color="#f3f3f3" wireframe />
     </Comp>
   )
 }

@@ -23,7 +23,6 @@ function Suzanne() {
   return (
     <mesh geometry={(nodes.Suzanne as Mesh).geometry}>
       <meshStandardMaterial
-        attach="material"
         color="darkmagenta"
         roughness={0.9}
         metalness={0.1}

@@ -16,7 +16,6 @@ function MeshWobbleMaterialScene() {
   return (
     <Torus args={[1, 0.25, 16, 100]}>
       <MeshWobbleMaterial
-        attach="material"
         color="#f25042"
         speed={number('Speed', 1, { range: true, max: 10, step: 0.1 })}
         factor={number('Factor', 0.6, { range: true, min: 0, max: 1, step: 0.1 })}
@@ -38,7 +37,7 @@ function MeshWobbleMaterialRefScene() {
 
   return (
     <Torus args={[1, 0.25, 16, 100]}>
-      <MeshWobbleMaterial attach="material" color="#f25042" ref={material} />
+      <MeshWobbleMaterial color="#f25042" ref={material} />
     </Torus>
   )
 }

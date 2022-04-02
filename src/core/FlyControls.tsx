@@ -29,5 +29,5 @@ export const FlyControls = React.forwardRef<FlyControlsImpl, FlyControlsProps>((
 
   useFrame((_, delta) => controls?.update(delta))
 
-  return controls ? <primitive ref={ref} dispose={undefined} object={controls} {...rest} /> : null
+  return controls ? <primitive ref={ref} object={controls} {...rest} /> : null
 })

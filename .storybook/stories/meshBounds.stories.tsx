@@ -24,8 +24,8 @@ function MeshBounds(props) {
       onPointerOver={() => setHover(true)}
       onPointerOut={() => setHover(false)}
     >
-      <boxBufferGeometry attach="geometry" args={[1, 1, 1]} />
-      <meshStandardMaterial attach="material" color="hotpink" wireframe={!hovered} />
+      <boxGeometry args={[1, 1, 1]} />
+      <meshStandardMaterial color="hotpink" wireframe={!hovered} />
     </mesh>
   )
 }

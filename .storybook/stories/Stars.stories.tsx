@@ -15,7 +15,7 @@ function StarsScene() {
     <>
       <Stars />
       <Plane rotation-x={Math.PI / 2} args={[100, 100, 4, 4]}>
-        <meshBasicMaterial color="black" wireframe attach="material" />
+        <meshBasicMaterial color="black" wireframe />
       </Plane>
       <axesHelper />
     </>

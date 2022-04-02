@@ -20,7 +20,7 @@ export const OrbitControlsStory = (props: OrbitControlsProps) => (
   <>
     <OrbitControls {...props} />
     <Box>
-      <meshBasicMaterial attach="material" wireframe />
+      <meshBasicMaterial wireframe />
     </Box>
   </>
 )
@@ -60,11 +60,10 @@ const CustomCamera = (props: OrbitControlsProps) => {
       {createPortal(
         <>
           <Box>
-            <meshBasicMaterial attach="material" wireframe />
+            <meshBasicMaterial wireframe />
           </Box>
 
           <PerspectiveCamera name="FBO Camera" ref={virtualCamera} position={[0, 0, 5]} />
-
           <OrbitControls camera={virtualCamera.current} {...props} />
 
           {/* @ts-ignore */}

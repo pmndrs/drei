@@ -62,7 +62,7 @@ function ScreenQuadScene() {
 
   return (
     <ScreenQuad>
-      <colorShiftMaterial ref={ref} attach="material" time={0} resolution={[size.width, size.height]} />
+      <colorShiftMaterial ref={ref} time={0} resolution={[size.width, size.height]} />
     </ScreenQuad>
   )
 }

@@ -40,7 +40,7 @@ function TubeScene() {
 
   return (
     <Tube ref={ref} args={[path]}>
-      <meshPhongMaterial attach="material" color="#f3f3f3" wireframe />
+      <meshPhongMaterial color="#f3f3f3" wireframe />
     </Tube>
   )
 }

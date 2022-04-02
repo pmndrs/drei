@@ -46,7 +46,7 @@ function ExtrudeScene() {
   return (
     <>
       <Extrude ref={ref} args={[shape, extrudeSettings]}>
-        <meshPhongMaterial attach="material" color="#f3f3f3" wireframe />
+        <meshPhongMaterial color="#f3f3f3" wireframe />
       </Extrude>
     </>
   )

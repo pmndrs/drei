@@ -12,7 +12,7 @@ export function TransformControlsStory() {
     <Setup>
       <TransformControls>
         <Box>
-          <meshBasicMaterial attach="material" wireframe />
+          <meshBasicMaterial wireframe />
         </Box>
       </TransformControls>
     </Setup>
@@ -37,12 +37,12 @@ export function TransformControlsSelectObjectStory() {
       <Select box onChange={setSelected}>
         <group>
           <Box position={[-1, 0, 0]}>
-            <meshBasicMaterial attach="material" wireframe color="orange" />
+            <meshBasicMaterial wireframe color="orange" />
           </Box>
         </group>
         <group>
           <Box position={[0, 0, 0]}>
-            <meshBasicMaterial attach="material" wireframe color="green" />
+            <meshBasicMaterial wireframe color="green" />
           </Box>
         </group>
       </Select>
@@ -69,7 +69,7 @@ function TransformControlsLockScene({ mode, showX, showY, showZ }) {
     <>
       <TransformControls ref={transformControls} mode={mode} showX={showX} showY={showY} showZ={showZ}>
         <Box>
-          <meshBasicMaterial attach="material" wireframe />
+          <meshBasicMaterial wireframe />
         </Box>
       </TransformControls>
       <OrbitControls ref={orbitControls} />

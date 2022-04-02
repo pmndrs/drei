@@ -176,7 +176,6 @@ function CustomMaterialTextScene() {
         anchorY="middle"
       >
         <meshBasicMaterial
-          attach="material"
           side={DoubleSide}
           color={colorKnob('Color', defaultColor)}
           transparent

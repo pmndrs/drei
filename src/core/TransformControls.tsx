@@ -104,7 +104,7 @@ export const TransformControls = React.forwardRef<TransformControlsImpl, Transfo
 
     return controls ? (
       <>
-        <primitive ref={ref} dispose={undefined} object={controls} {...transformProps} />
+        <primitive ref={ref} object={controls} {...transformProps} />
         <group ref={group} {...objectProps}>
           {children}
         </group>

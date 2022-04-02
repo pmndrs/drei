@@ -18,7 +18,7 @@ function Suzanne() {
 
   return (
     <mesh geometry={(nodes.Suzanne as Mesh).geometry}>
-      <meshMatcapMaterial attach="material" matcap={matcapTexture} />
+      <meshMatcapMaterial matcap={matcapTexture} />
     </mesh>
   )
 }

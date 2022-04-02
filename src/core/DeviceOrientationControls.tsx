@@ -36,6 +36,6 @@ export const DeviceOrientationControls = React.forwardRef<DeviceOrientationContr
       return () => current?.dispose()
     }, [controls])
 
-    return controls ? <primitive ref={ref} dispose={undefined} object={controls} {...rest} /> : null
+    return controls ? <primitive ref={ref} object={controls} {...rest} /> : null
   }
 )

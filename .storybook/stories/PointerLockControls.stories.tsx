@@ -39,7 +39,7 @@ function Icosahedrons() {
     <group>
       {positions.map(({ id, position }) => (
         <Icosahedron key={id} args={[1, 1]} position={position}>
-          <meshBasicMaterial attach="material" color="white" wireframe />
+          <meshBasicMaterial color="white" wireframe />
         </Icosahedron>
       ))}
     </group>

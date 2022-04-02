@@ -41,14 +41,14 @@ function SoftShadowsScene() {
       <pointLight position={[0, -10, 0]} intensity={1.5} />
 
       <Sphere ref={sphere} castShadow receiveShadow args={[1, 24, 24]}>
-        <meshPhongMaterial color="royalblue" attach="material" />
+        <meshPhongMaterial color="royalblue" />
       </Sphere>
 
       <Plane receiveShadow rotation-x={-Math.PI / 2} position={[0, -0.5, 0]} args={[10, 10, 4, 4]}>
-        <shadowMaterial attach="material" opacity={0.5} />
+        <shadowMaterial opacity={0.5} />
       </Plane>
       <Plane rotation-x={-Math.PI / 2} position={[0, -0.5, 0]} args={[10, 10, 4, 4]}>
-        <meshBasicMaterial attach="material" opacity={0.5} />
+        <meshBasicMaterial opacity={0.5} />
       </Plane>
     </>
   )

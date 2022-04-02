@@ -38,7 +38,7 @@ function OrthographicCameraScene() {
       <group position={[0, 0, -10]}>
         {positions.map(({ id, position }) => (
           <Icosahedron key={id} position={position} args={[1, 1]}>
-            <meshBasicMaterial attach="material" color="white" wireframe />
+            <meshBasicMaterial color="white" wireframe />
           </Icosahedron>
         ))}
       </group>

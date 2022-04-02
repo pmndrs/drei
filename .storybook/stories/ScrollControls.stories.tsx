@@ -50,7 +50,7 @@ function Suzanne(props) {
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
       >
-        <meshStandardMaterial attach="material" color={hovered ? 'green' : 'blue'} />
+        <meshStandardMaterial color={hovered ? 'green' : 'blue'} />
       </mesh>
     </group>
   )

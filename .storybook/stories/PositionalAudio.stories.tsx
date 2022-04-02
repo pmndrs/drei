@@ -39,8 +39,8 @@ function PositionalAudioScene() {
         <group position={[0, 0, 5]}>
           {args.map(({ position, url }, index) => (
             <mesh key={`0${index}`} position={position}>
-              <sphereBufferGeometry attach="geometry" />
-              <meshBasicMaterial wireframe attach="material" color="hotpink" />
+              <sphereGeometry />
+              <meshBasicMaterial wireframe color="hotpink" />
               <PositionalAudio url={url} />
             </mesh>
           ))}

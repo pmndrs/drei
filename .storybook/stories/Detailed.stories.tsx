@@ -22,13 +22,13 @@ function DetailedScene() {
     <>
       <Detailed distances={[0, 50, 150]}>
         <Icosahedron args={[10, 3]}>
-          <meshBasicMaterial attach="material" color="hotpink" wireframe />
+          <meshBasicMaterial color="hotpink" wireframe />
         </Icosahedron>
         <Icosahedron args={[10, 2]}>
-          <meshBasicMaterial attach="material" color="lightgreen" wireframe />
+          <meshBasicMaterial color="lightgreen" wireframe />
         </Icosahedron>
         <Icosahedron args={[10, 1]}>
-          <meshBasicMaterial attach="material" color="lightblue" wireframe />
+          <meshBasicMaterial color="lightblue" wireframe />
         </Icosahedron>
       </Detailed>
       <OrbitControls enablePan={false} enableRotate={false} zoomSpeed={0.5} />

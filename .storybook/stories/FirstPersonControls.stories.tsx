@@ -8,7 +8,7 @@ export const FirstPersonControlsStory = ({ ...args }) => (
   <>
     <FirstPersonControls {...args} />
     <Box>
-      <meshBasicMaterial attach="material" wireframe />
+      <meshBasicMaterial wireframe />
     </Box>
   </>
 )

@@ -23,10 +23,10 @@ function TexturedMeshes() {
   return (
     <>
       <Icosahedron position={[-2, 0, 0]}>
-        <meshMatcapMaterial matcap={matcap1} attach="material" />
+        <meshMatcapMaterial matcap={matcap1} />
       </Icosahedron>
       <Icosahedron position={[2, 0, 0]}>
-        <meshMatcapMaterial matcap={matcap2} attach="material" />
+        <meshMatcapMaterial matcap={matcap2} />
       </Icosahedron>
       <Icosahedron position={[6, 0, 0]}>
         <meshStandardMaterial {...props} metalness={1} />

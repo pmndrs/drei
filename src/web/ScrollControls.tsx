@@ -124,7 +124,7 @@ export function ScrollControls({
     setEvents({
       compute(event: DomEvent, state: RootState) {
         const offsetX = event.clientX - (event.target as HTMLElement).offsetLeft
-        const offsetY = event.clientX - (event.target as HTMLElement).offsetLeft
+        const offsetY = event.clientY - (event.target as HTMLElement).offsetTop
         state.pointer.set((offsetX / state.size.width) * 2 - 1, -(offsetY / state.size.height) * 2 + 1)
         state.raycaster.setFromCamera(state.pointer, state.camera)
       },

@@ -130,6 +130,10 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#adaptiveevents">AdaptiveEvents</a></li>
           <li><a href="#usebvh">useBVH</a></li>
         </ul>
+        <li><a href="#portals">Portals</a></li>        
+        <ul>
+          <li><a href="#view">View</a></li>
+        </ul>
       </ul>
     </td>
     <td valign="top">
@@ -1695,6 +1699,41 @@ const mesh = useRef()
 useBVH(mesh)
 
 <mesh ref={mesh} ... />
+```
+
+# Portals
+
+#### View
+
+Views use gl.scissor to cut the viewport into segments. You tie a view to a tracking div which then controls the position and bounds of the viewport. This allows you to have multiple views with a single, performant canvas. These views will follow their tracking elements, scroll along, resize, etc.
+
+It is advisable to re-connect the event system to a parent that contains both the canvas and the html content. This ensures that both are accessible/selectable and even allows you to mount controls or other deeper integrations into your view.
+
+```tsx
+<View
+  /** The tracking element, the view will be cut according to its whereabouts */
+  track: React.MutableRefObject<HTMLElement>
+  /** Views take over the render loop, optional render index (1 by default) */
+  index?: number
+  /** If you know your view is always at the same place set this to 1 to avoid needless getBoundingClientRect overhead. The default is Infinity, which is best for css animations */
+  frames?: number
+  /** The scene to render, if you leave this undefined it will render the default scene */
+  children?: React.ReactNode
+/>
+```
+
+```jsx
+const main = useRef()
+const div = useRef()
+return (
+  <main ref={main}>
+    <h1>Html content here</h1>
+    <div ref={div} style={{ width: 200, height: 200 }} />
+    <Canvas onCreated={(state) => state.events.connect(main.current)}>
+      <View track={div}>
+        <mesh />
+        <OrbitControls />
+      </View>
 ```
 
 # Staging

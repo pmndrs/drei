@@ -22,14 +22,14 @@ type Props = Omit<JSX.IntrinsicElements['group'], 'scale'> & {
 export const ContactShadows = React.forwardRef(
   (
     {
-      scale,
+      scale = 10,
       frames = Infinity,
       opacity = 1,
       width = 1,
       height = 1,
       blur = 1,
       far = 10,
-      resolution = 256,
+      resolution = 512,
       smooth = true,
       color = '#000000',
       ...props

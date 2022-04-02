@@ -92,25 +92,28 @@ export const ContactShadows = React.forwardRef(
       ]
     }, [resolution, width, height, scale])
 
-    const blurShadows = React.useCallback((blur) => {
-      blurPlane.visible = true
+    const blurShadows = React.useCallback(
+      (blur) => {
+        blurPlane.visible = true
 
-      blurPlane.material = horizontalBlurMaterial
-      horizontalBlurMaterial.uniforms.tDiffuse.value = renderTarget.texture
-      horizontalBlurMaterial.uniforms.h.value = (blur * 1) / 256
+        blurPlane.material = horizontalBlurMaterial
+        horizontalBlurMaterial.uniforms.tDiffuse.value = renderTarget.texture
+        horizontalBlurMaterial.uniforms.h.value = (blur * 1) / 256
 
-      gl.setRenderTarget(renderTargetBlur)
-      gl.render(blurPlane, shadowCamera.current)
+        gl.setRenderTarget(renderTargetBlur)
+        gl.render(blurPlane, shadowCamera.current)
 
-      blurPlane.material = verticalBlurMaterial
-      verticalBlurMaterial.uniforms.tDiffuse.value = renderTargetBlur.texture
-      verticalBlurMaterial.uniforms.v.value = (blur * 1) / 256
+        blurPlane.material = verticalBlurMaterial
+        verticalBlurMaterial.uniforms.tDiffuse.value = renderTargetBlur.texture
+        verticalBlurMaterial.uniforms.v.value = (blur * 1) / 256
 
-      gl.setRenderTarget(renderTarget)
-      gl.render(blurPlane, shadowCamera.current)
+        gl.setRenderTarget(renderTarget)
+        gl.render(blurPlane, shadowCamera.current)
 
-      blurPlane.visible = false
-    }, [])
+        blurPlane.visible = false
+      },
+      [renderTarget, blurPlane, horizontalBlurMaterial, verticalBlurMaterial, renderTargetBlur]
+    )
 
     let count = 0
     useFrame(() => {

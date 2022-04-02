@@ -13,11 +13,11 @@ export default {
 }
 
 function Simple() {
-  const scale = useAspect('cover', 1920, 1080, 1)
+  const scale = useAspect(1920, 1080, 1)
 
   return (
     <Plane scale={scale} rotation-x={Math.PI / 2} args={[1, 1, 4, 4]}>
-      <meshPhongMaterial attach="material" wireframe />
+      <meshPhongMaterial wireframe />
     </Plane>
   )
 }
@@ -36,7 +36,7 @@ function WithTexture() {
 
   return (
     <Plane scale={scale} rotation-x={Math.PI / 2}>
-      <meshPhongMaterial attach="material" map={map} color="grey" />
+      <meshPhongMaterial map={map} color="grey" />
     </Plane>
   )
 }

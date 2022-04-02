@@ -20,7 +20,7 @@ const SimpleExample = () => {
   return (
     <Center position={[5, 5, 10]}>
       <Box args={[10, 10, 10]}>
-        <meshNormalMaterial attach="material" wireframe />
+        <meshNormalMaterial wireframe />
       </Box>
       <primitive ref={ref} object={scene} scale={[0.01, 0.01, 0.01]} />
     </Center>

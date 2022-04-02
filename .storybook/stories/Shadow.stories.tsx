@@ -26,12 +26,12 @@ function ShadowScene() {
   return (
     <>
       <Icosahedron ref={mesh} args={[1, 2]} position-y={2}>
-        <meshBasicMaterial attach="material" color="lightblue" wireframe />
+        <meshBasicMaterial color="lightblue" wireframe />
       </Icosahedron>
       <Shadow ref={shadow} scale={[2, 2, 2]} position-y={0.1} rotation-x={-Math.PI / 2} />
 
       <Plane args={[4, 4]} rotation={[-Math.PI / 2, 0, 0]}>
-        <meshBasicMaterial attach="material" color="white" />
+        <meshBasicMaterial color="white" />
       </Plane>
     </>
   )

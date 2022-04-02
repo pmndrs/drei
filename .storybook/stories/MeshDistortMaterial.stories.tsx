@@ -16,7 +16,6 @@ function MeshDistortMaterialScene() {
   return (
     <Icosahedron args={[1, 4]}>
       <MeshDistortMaterial
-        attach="material"
         color="#f25042"
         speed={number('Speed', 1, { range: true, max: 10, step: 0.1 })}
         distort={number('Distort', 0.6, { range: true, min: 0, max: 1, step: 0.1 })}
@@ -38,7 +37,7 @@ function MeshDistortMaterialRefScene() {
 
   return (
     <Icosahedron args={[1, 4]}>
-      <MeshDistortMaterial attach="material" color="#f25042" ref={material} />
+      <MeshDistortMaterial color="#f25042" ref={material} />
     </Icosahedron>
   )
 }

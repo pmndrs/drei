@@ -63,7 +63,7 @@ function CurveModifierScene() {
             ]}
             ref={geomRef}
           />
-          <meshNormalMaterial attach="material" />
+          <meshNormalMaterial />
         </mesh>
       </CurveModifier>
       <primitive object={line} />

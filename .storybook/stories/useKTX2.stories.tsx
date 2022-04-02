@@ -17,10 +17,10 @@ function TexturedMeshes() {
   return (
     <>
       <Box position={[-2, 0, 0]}>
-        <meshBasicMaterial map={compressed} attach="material" />
+        <meshBasicMaterial map={compressed} />
       </Box>
       <Box position={[2, 0, 0]}>
-        <meshBasicMaterial map={compressed_etc} attach="material" />
+        <meshBasicMaterial map={compressed_etc} />
       </Box>
     </>
   )

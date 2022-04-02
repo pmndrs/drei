@@ -39,19 +39,17 @@ export const Effects = React.forwardRef(
     ref
   ) => {
     const composer = React.useRef<EffectComposer>()
-    const scene = useThree(({ scene }) => scene)
-    const camera = useThree(({ camera }) => camera)
-    const gl = useThree(({ gl }) => gl)
-    const size = useThree(({ size }) => size)
+    const scene = useThree((state) => state.scene)
+    const camera = useThree((state) => state.camera)
+    const gl = useThree((state) => state.gl)
+    const size = useThree((state) => state.size)
     const [target] = React.useState(() => {
-      if (isWebGL2Available() && multisamping > 0) {
-        const t = new WebGLRenderTarget(size.width, size.height, {
-          format: RGBAFormat,
-          encoding: sRGBEncoding,
-        })
-        t.samples = 8
-        return t
-      }
+      const t = new WebGLRenderTarget(size.width, size.height, {
+        format: RGBAFormat,
+        encoding: gl.outputEncoding,
+      })
+      t.samples = multisamping
+      return t
     })
 
     React.useEffect(() => {
@@ -61,11 +59,16 @@ export const Effects = React.forwardRef(
 
     useFrame(() => composer.current?.render(), renderIndex)
 
+    const passes: React.ReactNode[] = []
+    if (!disableRenderPass) passes.push(<renderPass key="renderpass" args={[scene, camera]} />)
+    if (!disableGamma) passes.push(<shaderPass key="gammapass" args={[GammaCorrectionShader]} />)
+    React.Children.forEach(children, (el: any, index) =>
+      passes.push(React.cloneElement(el, { key: index, attach: `passes-${index}` }))
+    )
+
     return (
       <effectComposer ref={mergeRefs([ref, composer])} args={[gl, target]} {...props}>
-        {!disableRenderPass && <renderPass attach="passes" args={[scene, camera]} />}
-        {!disableGamma && <shaderPass attach="passes" args={[GammaCorrectionShader]} />}
-        {children}
+        {passes}
       </effectComposer>
     )
   }

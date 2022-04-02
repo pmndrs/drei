@@ -73,11 +73,7 @@ function ShaderMaterialScene() {
 
   return (
     <Box args={[5, 5, 5]}>
-      <myMaterial
-        repeats={number('repeats', 2, { range: true, min: 1, max: 10, step: 1 })}
-        map={map}
-        attach="material"
-      />
+      <myMaterial repeats={number('repeats', 2, { range: true, min: 1, max: 10, step: 1 })} map={map} />
     </Box>
   )
 }

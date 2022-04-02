@@ -41,7 +41,7 @@ function StageStory() {
         preset={presetKnob}
       >
         <Sphere args={[1, 24, 24]}>
-          <meshPhongMaterial color="royalblue" attach="material" />
+          <meshPhongMaterial color="royalblue" />
         </Sphere>
       </Stage>
     </React.Suspense>

@@ -597,11 +597,15 @@ Make sure to set the `makeDefault` prop on your controls, in that case you do no
 
 #### Effects
 
-Abstraction around threes own [EffectComposer](https://threejs.org/docs/#examples/en/postprocessing/EffectComposer).
+Abstraction around threes own [EffectComposer](https://threejs.org/docs/#examples/en/postprocessing/EffectComposer). By default it will prepend a render-pass and a gammacorrection-pass. Children are cloned, `attach` is given to them automatically. You can only use passes or effects in there.
 
 ```jsx
+import { SSAOPass } from "three-stdlib"
+
+extend({ SSAOPass })
+
 <Effects multisamping={8} renderIndex={1} disableGamma={false} disableRenderPass={false}>
-  <lUTPass attach="passes" lut={texture3D} />
+  <sSAOPass args={[scene, camera, 100, 100]} kernelRadius={1.2} kernelSize={0} />
 </Effects>
 ```
 
@@ -1414,7 +1418,7 @@ useFBX(url)
 
 function SuzanneFBX() {
   let fbx = useFBX('suzanne/suzanne.fbx')
-  return <primitive object={fbx} dispose={null} />
+  return <primitive object={fbx} />
 }
 ```
 

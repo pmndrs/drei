@@ -76,5 +76,5 @@ class WobbleMaterialImpl extends MeshStandardMaterial {
 export const MeshWobbleMaterial = React.forwardRef(({ speed = 1, ...props }: Props, ref) => {
   const [material] = React.useState(() => new WobbleMaterialImpl())
   useFrame((state) => material && (material.time = state.clock.getElapsedTime() * speed))
-  return <primitive dispose={undefined} object={material} ref={ref} attach="material" {...props} />
+  return <primitive object={material} ref={ref} attach="material" {...props} />
 })

@@ -31,8 +31,8 @@ export const Shadow = React.forwardRef(
     }, [color, colorStop])
     return (
       <mesh ref={ref as React.MutableRefObject<Mesh>} {...props}>
-        <planeBufferGeometry attach="geometry" args={[1, 1]} />
-        <meshBasicMaterial attach="material" transparent opacity={opacity} fog={fog}>
+        <planeGeometry />
+        <meshBasicMaterial transparent opacity={opacity} fog={fog}>
           <canvasTexture attach="map" args={[canvas]} />
         </meshBasicMaterial>
       </mesh>

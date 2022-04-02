@@ -48,7 +48,7 @@ export const RoundedBox = React.forwardRef<Mesh, Props>(function RoundedBox(
 
   return (
     <mesh ref={ref} {...rest}>
-      <extrudeBufferGeometry attach="geometry" ref={geomRef} args={[shape, params]} />
+      <extrudeGeometry ref={geomRef} args={[shape, params]} />
       {children}
     </mesh>
   )

@@ -1706,6 +1706,7 @@ useBVH(mesh)
 #### View
 
 <p>
+  <a href="https://codesandbox.io/s/v5i9wl"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/v5i9wl/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/bp6tmc"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/bp6tmc/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/1wmlew"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/1wmlew/screenshot.png" alt="Demo"/></a>
 </p>

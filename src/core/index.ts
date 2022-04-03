@@ -102,3 +102,5 @@ export * from './BakeShadows'
 export * from './meshBounds'
 export * from './AdaptiveDpr'
 export * from './AdaptiveEvents'
+
+// Portals

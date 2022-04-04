@@ -26,7 +26,7 @@ export const TrackballControls = React.forwardRef<TrackballControlsImpl, Trackba
 
     useFrame(() => {
       if (controls.enabled) controls.update()
-    })
+    }, -1)
 
     React.useEffect(() => {
       controls.connect(explDomElement)

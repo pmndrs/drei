@@ -16,7 +16,7 @@ export const FirstPersonControls = React.forwardRef<FirstPersonControlImpl, Firs
 
     useFrame((_, delta) => {
       controls.update(delta)
-    })
+    }, -1)
 
     return controls ? <primitive ref={ref} object={controls} {...props} /> : null
   }

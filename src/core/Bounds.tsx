@@ -36,7 +36,6 @@ type ControlsProto = {
 
 const isOrthographic = (def: THREE.Camera): def is THREE.OrthographicCamera =>
   def && (def as THREE.OrthographicCamera).isOrthographicCamera
-const isObject3D = (def: any): def is THREE.Object3D => def && (def as THREE.Object3D).isObject3D
 const isBox3 = (def: any): def is THREE.Box3 => def && (def as THREE.Box3).isBox3
 
 const context = React.createContext<BoundsApi>(null!)
@@ -191,7 +190,7 @@ export function Bounds({ children, damping = 6, fit, clip, observe, margin = 1.2
       if (fit) api.fit()
       if (clip) api.clip()
     }
-  }, [size, clip, fit, observe])
+  }, [size, clip, fit, observe, camera, controls])
 
   useFrame((state, delta) => {
     if (current.animating) {

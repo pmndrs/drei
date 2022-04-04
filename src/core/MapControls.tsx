@@ -46,7 +46,7 @@ export const MapControls = React.forwardRef<MapControlsImpl, MapControlsProps>(
       }
     }, [onChange, onStart, onEnd, controls, invalidate, explDomElement])
 
-    useFrame(() => controls.update())
+    useFrame(() => controls.update(), -1)
 
     return <primitive ref={ref} object={controls} enableDamping {...rest} />
   }

@@ -28,7 +28,7 @@ export const DeviceOrientationControls = React.forwardRef<DeviceOrientationContr
       return () => controls?.removeEventListener?.('change', callback)
     }, [onChange, controls, invalidate])
 
-    useFrame(() => controls?.update())
+    useFrame(() => controls?.update(), -1)
 
     React.useEffect(() => {
       const current = controls

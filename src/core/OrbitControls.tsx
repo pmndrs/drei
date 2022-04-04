@@ -36,7 +36,7 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
 
     useFrame(() => {
       if (controls.enabled) controls.update()
-    })
+    }, -1)
 
     React.useEffect(() => {
       controls.connect(explDomElement)

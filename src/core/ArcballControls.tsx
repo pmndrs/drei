@@ -37,7 +37,7 @@ export const ArcballControls = forwardRef<ArcballControlsImpl, ArcballControlsPr
 
     useFrame(() => {
       if (controls.enabled) controls.update()
-    })
+    }, -1)
 
     useEffect(() => {
       controls.connect(explDomElement)

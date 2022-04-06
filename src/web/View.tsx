@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { createPortal, useFrame, useThree } from '@react-three/fiber'
+import { createPortal, useFrame, useThree, Size } from '@react-three/fiber'
 
 const isOrthographicCamera = (def: any): def is THREE.OrthographicCamera =>
   def && (def as THREE.OrthographicCamera).isOrthographicCamera
@@ -13,6 +13,7 @@ export type ContainerProps = {
   frames: number
   rect: React.MutableRefObject<DOMRect>
   track: React.MutableRefObject<HTMLElement>
+  canvasSize: Size
 }
 
 export type ViewProps = {
@@ -26,7 +27,7 @@ export type ViewProps = {
   children?: React.ReactNode
 }
 
-function Container({ scene, index, children, frames, rect, track }: ContainerProps) {
+function Container({ canvasSize, scene, index, children, frames, rect, track }: ContainerProps) {
   const get = useThree((state) => state.get)
   const camera = useThree((state) => state.camera)
   const virtualScene = useThree((state) => state.scene)
@@ -41,8 +42,8 @@ function Container({ scene, index, children, frames, rect, track }: ContainerPro
 
     if (rect.current) {
       const { left, right, top, bottom, width, height } = rect.current
-      const isOffscreen = bottom < 0 || top > state.size.height || right < 0 || left > state.size.width
-      const positiveYUpBottom = state.size.height - bottom
+      const isOffscreen = bottom < 0 || top > canvasSize.height || right < 0 || left > canvasSize.width
+      const positiveYUpBottom = canvasSize.height - bottom
       const aspect = width / height
 
       if (isOrthographicCamera(camera)) {
@@ -88,8 +89,9 @@ function Container({ scene, index, children, frames, rect, track }: ContainerPro
 }
 
 export const View = ({ track, index = 1, frames = Infinity, children }: ViewProps) => {
+  const [ready, toggle] = React.useReducer(() => true, false)
   const rect = React.useRef<DOMRect>(null!)
-  const scene = useThree((state) => state.scene)
+  const { size, scene } = useThree()
   const [virtualScene] = React.useState(() => new THREE.Scene())
 
   const compute = React.useCallback(
@@ -106,11 +108,21 @@ export const View = ({ track, index = 1, frames = Infinity, children }: ViewProp
     [rect]
   )
 
-  return createPortal(
-    <Container frames={frames} scene={scene} track={track} rect={rect} index={index}>
-      {children}
-    </Container>,
-    virtualScene,
-    { events: { compute, priority: index } }
+  React.useEffect(() => {
+    // We need the tracking elements bounds beforehand in order to inject it into the portal
+    rect.current = track.current?.getBoundingClientRect()
+    // And now we can proceed
+    toggle()
+  }, [])
+
+  return (
+    ready &&
+    createPortal(
+      <Container canvasSize={size} frames={frames} scene={scene} track={track} rect={rect} index={index}>
+        {children}
+      </Container>,
+      virtualScene,
+      { events: { compute, priority: index }, size: { width: rect.current.width, height: rect.current.height } }
+    )
   )
 }

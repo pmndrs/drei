@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Group, Texture } from 'three'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber'
 import { Billboard } from './Billboard'
 import { Plane } from './shapes'
 import { useTexture } from './useTexture'
@@ -14,10 +14,11 @@ export function Cloud({
   depth = 1.5,
   segments = 20,
   texture = CLOUD_URL,
-  color = "#ffffff",
+  color = '#ffffff',
   depthTest = true,
   ...props
 }) {
+  const gl = useThree((state) => state.gl)
   const group = React.useRef<Group>()
   const cloudTexture = useTexture(texture) as Texture
   const clouds = React.useMemo(
@@ -47,6 +48,7 @@ export function Cloud({
             <Plane scale={scale} rotation={[0, 0, 0]}>
               <meshStandardMaterial
                 map={cloudTexture}
+                map-encoding={gl.outputEncoding}
                 transparent
                 opacity={(scale / 6) * density * opacity}
                 depthTest={depthTest}

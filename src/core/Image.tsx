@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { Color, extend } from '@react-three/fiber'
+import { Color, extend, useThree } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
 import { useTexture } from './useTexture'
 
@@ -79,6 +79,7 @@ export const Image = React.forwardRef(
     ref: React.ForwardedRef<THREE.Mesh>
   ) => {
     extend({ ImageMaterial: ImageMaterialImpl })
+    const gl = useThree((state) => state.gl)
     const texture = useTexture(url)
     const planeBounds = Array.isArray(scale) ? [scale[0], scale[1]] : [scale, scale]
     const imageBounds = [texture.image.width, texture.image.height]
@@ -88,6 +89,7 @@ export const Image = React.forwardRef(
         <imageMaterial
           color={color}
           map={texture}
+          map-encoding={gl.outputEncoding}
           zoom={zoom}
           grayscale={grayscale}
           scale={planeBounds}

@@ -36,8 +36,8 @@ export const ContactShadows = React.forwardRef(
     }: Props,
     ref
   ) => {
-    const scene = useThree(({ scene }) => scene)
-    const gl = useThree(({ gl }) => gl)
+    const scene = useThree((state) => state.scene)
+    const gl = useThree((state) => state.gl)
     const shadowCamera = React.useRef<THREE.OrthographicCamera>(null!)
 
     width = width * (Array.isArray(scale) ? scale[0] : scale || 1)
@@ -135,7 +135,12 @@ export const ContactShadows = React.forwardRef(
     return (
       <group rotation-x={Math.PI / 2} {...props} ref={ref as any}>
         <mesh geometry={planeGeometry} scale={[1, -1, 1]} rotation={[-Math.PI / 2, 0, 0]}>
-          <meshBasicMaterial map={renderTarget.texture} transparent opacity={opacity} />
+          <meshBasicMaterial
+            map={renderTarget.texture}
+            map-encoding={gl.outputEncoding}
+            transparent
+            opacity={opacity}
+          />
         </mesh>
         <orthographicCamera ref={shadowCamera} args={[-width / 2, width / 2, height / 2, -height / 2, 0, far]} />
       </group>

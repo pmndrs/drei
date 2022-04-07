@@ -77,19 +77,17 @@ function Container({ canvasSize, scene, index, children, frames, rect, track }: 
     }
   }, index)
 
-  const [ready, toggle] = React.useReducer(() => true, false)
   React.useEffect(() => {
+    // Connect the event layer to the tracking element
     const old = get().events.connected
     setEvents({ connected: track.current })
-    toggle()
     return () => setEvents({ connected: old })
   }, [])
 
-  return <>{ready && children}</>
+  return <>{children}</>
 }
 
 export const View = ({ track, index = 1, frames = Infinity, children }: ViewProps) => {
-  const [ready, toggle] = React.useReducer(() => true, false)
   const rect = React.useRef<DOMRect>(null!)
   const { size, scene } = useThree()
   const [virtualScene] = React.useState(() => new THREE.Scene())
@@ -97,7 +95,6 @@ export const View = ({ track, index = 1, frames = Infinity, children }: ViewProp
   const compute = React.useCallback(
     (event, state) => {
       if (track.current && event.target === track.current) {
-        if (!rect.current) return
         const { width, height, left, top } = rect.current
         const x = event.clientX - left
         const y = event.clientY - top
@@ -108,6 +105,7 @@ export const View = ({ track, index = 1, frames = Infinity, children }: ViewProp
     [rect]
   )
 
+  const [ready, toggle] = React.useReducer(() => true, false)
   React.useEffect(() => {
     // We need the tracking elements bounds beforehand in order to inject it into the portal
     rect.current = track.current?.getBoundingClientRect()

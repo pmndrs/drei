@@ -138,48 +138,51 @@ export function ScrollControls({
   }, [pages, distance, horizontal, el, fill, fixed, target])
 
   React.useEffect(() => {
-    const containerLength = size[horizontal ? 'width' : 'height']
-    const scrollLength = el[horizontal ? 'scrollWidth' : 'scrollHeight']
-    const scrollThreshold = scrollLength - containerLength
+    if (events.connected === el) {
+      const containerLength = size[horizontal ? 'width' : 'height']
+      const scrollLength = el[horizontal ? 'scrollWidth' : 'scrollHeight']
+      const scrollThreshold = scrollLength - containerLength
 
-    let current = 0
-    let disableScroll = true
-    let firstRun = true
+      let current = 0
+      let disableScroll = true
+      let firstRun = true
 
-    const onScroll = () => {
-      // Prevent first scroll because it is indirectly caused by the one pixel offset
-      if (!enabled || firstRun) return
-      invalidate()
-      current = el[horizontal ? 'scrollLeft' : 'scrollTop']
-      scroll.current = current / scrollThreshold
-      if (infinite) {
-        if (!disableScroll) {
-          if (current >= scrollThreshold) {
-            const damp = 1 - state.offset
-            el[horizontal ? 'scrollLeft' : 'scrollTop'] = 1
-            scroll.current = state.offset = -damp
-            disableScroll = true
-          } else if (current <= 0) {
-            const damp = 1 + state.offset
-            el[horizontal ? 'scrollLeft' : 'scrollTop'] = scrollLength
-            scroll.current = state.offset = damp
-            disableScroll = true
+      const onScroll = () => {
+        // Prevent first scroll because it is indirectly caused by the one pixel offset
+        if (!enabled || firstRun) return
+        invalidate()
+        current = el[horizontal ? 'scrollLeft' : 'scrollTop']
+        scroll.current = current / scrollThreshold
+
+        if (infinite) {
+          if (!disableScroll) {
+            if (current >= scrollThreshold) {
+              const damp = 1 - state.offset
+              el[horizontal ? 'scrollLeft' : 'scrollTop'] = 1
+              scroll.current = state.offset = -damp
+              disableScroll = true
+            } else if (current <= 0) {
+              const damp = 1 + state.offset
+              el[horizontal ? 'scrollLeft' : 'scrollTop'] = scrollLength
+              scroll.current = state.offset = damp
+              disableScroll = true
+            }
           }
+          if (disableScroll) setTimeout(() => (disableScroll = false), 40)
         }
-        if (disableScroll) setTimeout(() => (disableScroll = false), 40)
+      }
+      el.addEventListener('scroll', onScroll, { passive: true })
+      requestAnimationFrame(() => (firstRun = false))
+
+      const onWheel = (e) => (el.scrollLeft += e.deltaY / 2)
+      if (horizontal) el.addEventListener('wheel', onWheel, { passive: true })
+
+      return () => {
+        el.removeEventListener('scroll', onScroll)
+        if (horizontal) el.removeEventListener('wheel', onWheel)
       }
     }
-    el.addEventListener('scroll', onScroll, { passive: true })
-    requestAnimationFrame(() => (firstRun = false))
-
-    const onWheel = (e) => (el.scrollLeft += e.deltaY / 2)
-    if (horizontal) el.addEventListener('wheel', onWheel, { passive: true })
-
-    return () => {
-      el.removeEventListener('scroll', onScroll)
-      if (horizontal) el.removeEventListener('wheel', onWheel)
-    }
-  }, [el, size, infinite, state, invalidate, horizontal, enabled])
+  }, [el, events, size, infinite, state, invalidate, horizontal, enabled])
 
   let last = 0
   useFrame((_, delta) => {

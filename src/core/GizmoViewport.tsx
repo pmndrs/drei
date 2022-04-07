@@ -94,6 +94,7 @@ function AxisHead({
     >
       <spriteMaterial
         map={texture}
+        map-encoding={gl.outputEncoding}
         map-anisotropy={gl.capabilities.getMaxAnisotropy() || 1}
         alphaTest={0.3}
         opacity={label ? 1 : 0.75}

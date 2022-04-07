@@ -144,8 +144,6 @@ export function EnvironmentCube({
   // @ts-expect-error
   const loaderResult: Texture | Texture[] = useLoader(loader, isCubeMap ? [files] : files, (loader) => {
     loader.setPath(path)
-    // @ts-expect-error
-    loader.setDataType?.(FloatType)
     if (extensions) extensions(loader)
   })
   const texture: Texture = isCubeMap ? loaderResult[0] : loaderResult

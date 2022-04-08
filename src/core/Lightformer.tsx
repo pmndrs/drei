@@ -30,7 +30,6 @@ export const Lightformer = React.forwardRef(
     }: LightProps,
     forwardRef
   ) => {
-    const gl = useThree((state) => state.gl)
     // Apply emissive power
     const ref = React.useRef<THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>>(null!)
     React.useLayoutEffect(() => {
@@ -62,12 +61,7 @@ export const Lightformer = React.forwardRef(
         {children ? (
           children
         ) : !props.material ? (
-          <meshBasicMaterial
-            toneMapped={toneMapped}
-            map={map}
-            map-encoding={gl.outputEncoding}
-            side={THREE.DoubleSide}
-          />
+          <meshBasicMaterial toneMapped={toneMapped} map={map} side={THREE.DoubleSide} />
         ) : null}
       </mesh>
     )

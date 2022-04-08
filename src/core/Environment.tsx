@@ -36,16 +36,6 @@ const isRef = (obj: any): obj is React.MutableRefObject<THREE.Scene> => obj.curr
 const resolveScene = (scene: THREE.Scene | React.MutableRefObject<THREE.Scene>) =>
   isRef(scene) ? scene.current : scene
 
-export function Environment(props: Props) {
-  return props.map ? (
-    <EnvironmentMap {...props} />
-  ) : props.children ? (
-    <EnvironmentPortal {...props} />
-  ) : (
-    <EnvironmentCube {...props} />
-  )
-}
-
 export function EnvironmentMap({ scene, background = false, map }: Props) {
   const defaultScene = useThree((state) => state.scene)
   React.useLayoutEffect(() => {
@@ -60,68 +50,8 @@ export function EnvironmentMap({ scene, background = false, map }: Props) {
         if (background) target.background = oldbg
       }
     }
-  }, [scene, map])
+  }, [defaultScene, scene, map, background])
   return null
-}
-
-export function EnvironmentPortal({
-  children,
-  near = 1,
-  far = 1000,
-  resolution = 256,
-  frames = 1,
-  background = false,
-  scene,
-  files,
-  path,
-  preset = undefined,
-  extensions,
-}: Props) {
-  const gl = useThree((state) => state.gl)
-  const defaultScene = useThree((state) => state.scene)
-  const camera = React.useRef<CubeCamera>(null!)
-  const [virtualScene] = React.useState(() => new Scene())
-  const fbo = React.useMemo(() => {
-    const fbo = new WebGLCubeRenderTarget(resolution)
-    fbo.texture.type = HalfFloatType
-    return fbo
-  }, [resolution])
-
-  React.useLayoutEffect(() => {
-    if (frames === 1) camera.current.update(gl, virtualScene)
-    const target = resolveScene(scene || defaultScene)
-    const oldbg = target.background
-    const oldenv = target.environment
-    if (background !== 'only') target.environment = fbo.texture
-    if (background) target.background = fbo.texture
-    return () => {
-      if (background !== 'only') target.environment = oldenv
-      if (background) target.background = oldbg
-    }
-  }, [children, scene])
-
-  let count = 1
-  useFrame(() => {
-    if (frames === Infinity || count < frames) {
-      camera.current.update(gl, virtualScene)
-      count++
-    }
-  })
-
-  return (
-    <>
-      {createPortal(
-        <>
-          {children}
-          <cubeCamera ref={camera} args={[near, far, fbo]} />
-          {(files || preset) && (
-            <EnvironmentMap background files={files} preset={preset} path={path} extensions={extensions} />
-          )}
-        </>,
-        virtualScene
-      )}
-    </>
-  )
 }
 
 export function EnvironmentCube({
@@ -159,6 +89,79 @@ export function EnvironmentCube({
       if (background !== 'only') target.environment = oldenv
       if (background) target.background = oldbg
     }
-  }, [texture, background, scene])
+  }, [texture, background, scene, defaultScene])
   return null
+}
+
+export function EnvironmentPortal({
+  children,
+  near = 1,
+  far = 1000,
+  resolution = 256,
+  frames = 1,
+  map,
+  background = false,
+  scene,
+  files,
+  path,
+  preset = undefined,
+  extensions,
+}: Props) {
+  const gl = useThree((state) => state.gl)
+  const defaultScene = useThree((state) => state.scene)
+  const camera = React.useRef<CubeCamera>(null!)
+  const [virtualScene] = React.useState(() => new Scene())
+  const fbo = React.useMemo(() => {
+    const fbo = new WebGLCubeRenderTarget(resolution)
+    fbo.texture.type = HalfFloatType
+    return fbo
+  }, [resolution])
+
+  React.useLayoutEffect(() => {
+    if (frames === 1) camera.current.update(gl, virtualScene)
+    const target = resolveScene(scene || defaultScene)
+    const oldbg = target.background
+    const oldenv = target.environment
+    if (background !== 'only') target.environment = fbo.texture
+    if (background) target.background = fbo.texture
+    return () => {
+      if (background !== 'only') target.environment = oldenv
+      if (background) target.background = oldbg
+    }
+  }, [children, virtualScene, fbo.texture, scene, defaultScene, background, frames, gl])
+
+  let count = 1
+  useFrame(() => {
+    if (frames === Infinity || count < frames) {
+      camera.current.update(gl, virtualScene)
+      count++
+    }
+  })
+
+  return (
+    <>
+      {createPortal(
+        <>
+          {children}
+          <cubeCamera ref={camera} args={[near, far, fbo]} />
+          {files || preset ? (
+            <EnvironmentCube background files={files} preset={preset} path={path} extensions={extensions} />
+          ) : map ? (
+            <EnvironmentMap background map={map} extensions={extensions} />
+          ) : null}
+        </>,
+        virtualScene
+      )}
+    </>
+  )
+}
+
+export function Environment(props: Props) {
+  return props.map ? (
+    <EnvironmentMap {...props} />
+  ) : props.children ? (
+    <EnvironmentPortal {...props} />
+  ) : (
+    <EnvironmentCube {...props} />
+  )
 }

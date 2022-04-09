@@ -2040,7 +2040,7 @@ Adds a [sky](https://threejs.org/examples/#webgl_shaders_sky) to your scene.
 Adds a blinking shader-based starfield to your scene.
 
 ```jsx
-<Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade />
+<Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
 ```
 
 #### Cloud

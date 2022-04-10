@@ -24,7 +24,7 @@ export const ParticlesStory = ({ random, size, amount, ...props }) => {
 
   return (
     <>
-      <Particles {...props} size={random ? sizes : size} amount={amount} />
+      <Particles {...props} size={random ? sizes : size} count={amount} />
       <OrbitControls />
       <axesHelper />
       <PerspectiveCamera position={[2, 2, 2]} makeDefault />
@@ -36,7 +36,7 @@ ParticlesStory.args = {
   size: 5,
   opacity: 1,
   amount: 100,
-  speed: 1,
+  speed: 0.3,
   random: true,
 }
 

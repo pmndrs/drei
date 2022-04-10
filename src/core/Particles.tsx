@@ -11,7 +11,7 @@ import fragShader from '../helpers/glsl/Particles.frag.glsl'
 import vertShader from '../helpers/glsl/Particles.vert.glsl'
 
 interface Props {
-  amount?: number
+  count?: number
   speed?: number
   opacity?: number
   color?: THREE.ColorRepresentation
@@ -41,22 +41,25 @@ declare global {
 }
 
 export const Particles = React.forwardRef<THREE.Points, Props & PointsProps>(
-  ({ amount = 100, speed = 1, opacity = 1, pixelRatio, size = 1, color, ...props }, forwardRef) => {
+  ({ count = 100, speed = 1, opacity = 1, pixelRatio, scale = [1, 1, 1], size = 1, color, ...props }, forwardRef) => {
     const matRef = React.useRef<any>()
-    const positions = React.useMemo(
-      () => new Float32Array(Array.from({ length: amount * 3 }, () => Math.random())),
-      [length]
+    const positions = Float32Array.from(
+      Array.from({ length: count }, () => [
+        THREE.MathUtils.randFloatSpread(scale[0]),
+        THREE.MathUtils.randFloatSpread(scale[1]),
+        THREE.MathUtils.randFloatSpread(scale[2]),
+      ]).flat()
     )
     const sizes = React.useMemo(() => {
       if (size) {
         if (size.constructor === Float32Array) {
           return size as Float32Array
         } else {
-          return new Float32Array(Array.from({ length: amount }, () => size as number))
+          return new Float32Array(Array.from({ length: count }, () => size as number))
         }
       }
-      return new Float32Array(Array.from({ length: amount }, () => 1))
-    }, [size, length])
+      return new Float32Array(Array.from({ length: count }, () => 1))
+    }, [size, count])
 
     useFrame(({ clock }) => (matRef.current.uniforms.time.value = clock.elapsedTime))
 

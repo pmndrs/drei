@@ -196,7 +196,6 @@ function EnvironmentGround(props: Props) {
   const isCubeMap = isCubeTexture(texture)
 
   const defines = React.useMemo(() => {
-    console.log(texture.image)
     const cubeSize = 1024 / 4
     const _lodMax = Math.floor(Math.log2(cubeSize))
     const _cubeSize = Math.pow(2, _lodMax)

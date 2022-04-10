@@ -36,14 +36,14 @@ vec3 project() {
   camPos.y -= height;
 
   float intersection = sphereIntersect(camPos, p, vec3(0.), radius);
-  if(intersection > 0.){
+  if(intersection > 0.) {
     vec3 h = vec3(0.0,-height,0.0);
     float intersection2 = diskIntersect(camPos, p, h, vec3(0.0,-1.0,0.0), radius);
     p = (camPos + min(intersection, intersection2) * p) / radius;
   }
-  else
+  else {
     p = vec3(0.0,1.0,0.0);
-
+  }
   return p;
 }
 

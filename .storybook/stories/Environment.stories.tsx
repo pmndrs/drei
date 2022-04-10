@@ -3,7 +3,7 @@ import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'
 
-import { Environment, OrbitControls } from '../../src'
+import { Environment, ContactShadows, PerspectiveCamera, OrbitControls } from '../../src'
 
 import { presetsObj } from '../../src/helpers/environment-assets'
 
@@ -72,3 +72,51 @@ EnvironmentFilesStory.args = {
 }
 
 EnvironmentFilesStory.storyName = 'Files'
+
+export const EnvironmentGroundStory = ({ preset, height, radius }) => (
+  <>
+    <React.Suspense fallback={null}>
+      <Environment ground={{ height, radius }} preset={preset} />
+      <mesh position={[0, 5, 0]}>
+        <boxGeometry args={[10, 10, 10]} />
+        <meshStandardMaterial metalness={1} roughness={0} />
+      </mesh>
+      <ContactShadows resolution={1024} position={[0, 0, 0]} scale={100} blur={2} opacity={1} far={10} />
+    </React.Suspense>
+    <OrbitControls autoRotate />
+    <PerspectiveCamera position={[40, 40, 40]} makeDefault />
+  </>
+)
+
+EnvironmentGroundStory.args = {
+  height: 15,
+  radius: 60,
+  preset: 'park',
+}
+
+EnvironmentGroundStory.argTypes = {
+  preset: {
+    options: presets,
+    control: {
+      type: 'select',
+    },
+  },
+  height: {
+    control: {
+      type: 'range',
+      min: 0,
+      max: 50,
+      step: 0.1,
+    },
+  },
+  radius: {
+    control: {
+      type: 'range',
+      min: 0,
+      max: 200,
+      step: 1,
+    },
+  },
+}
+
+EnvironmentGroundStory.storyName = 'Ground'

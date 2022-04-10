@@ -5,9 +5,6 @@ import { shaderMaterial } from '.'
 
 // eslint-disable-next-line
 // @ts-ignore
-import curlNoiseShader from '../helpers/glsl/CurlNoise.glsl'
-// eslint-disable-next-line
-// @ts-ignore
 import fragShader from '../helpers/glsl/Particles.frag.glsl'
 // eslint-disable-next-line
 // @ts-ignore
@@ -30,10 +27,7 @@ const ParticleMaterial = shaderMaterial(
     opacity: 1,
     pixelRatio: 2,
   },
-  `
-    ${curlNoiseShader}
-    ${vertShader}
-  `,
+  vertShader,
   fragShader
 )
 extend({ ParticleMaterial })

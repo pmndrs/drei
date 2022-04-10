@@ -6,9 +6,9 @@ attribute float size;
 void main() {
   vec4 modelPosition = modelMatrix * vec4(position, 1.0);
   
-  modelPosition.y += sin(time + modelPosition.x * 100.0) * speed * 0.2;
-  modelPosition.z += cos(time + modelPosition.x * 100.0) * speed * 0.2;
-  modelPosition.x += cos(time + modelPosition.x * 100.0) * speed * 0.2;
+  modelPosition.y += sin((time * speed) + modelPosition.x * 100.0) * 0.2;
+  modelPosition.z += cos((time * speed) + modelPosition.x * 100.0) * 0.2;
+  modelPosition.x += cos((time * speed) + modelPosition.x * 100.0) * 0.2;
 
   vec4 viewPosition = viewMatrix * modelPosition;
   vec4 projectionPostion = projectionMatrix * viewPosition;

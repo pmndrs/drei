@@ -17,35 +17,51 @@ export default {
   ],
 }
 
-export const ParticlesStory = (props) => (
-  <>
-    <Particles {...props} color="cyan" />
-    <OrbitControls />
-    <axesHelper />
-    <PerspectiveCamera position={[2, 2, 2]} makeDefault />
-  </>
-)
+export const ParticlesStory = ({ random, size, amount, ...props }) => {
+  const sizes = React.useMemo(() => {
+    return new Float32Array(Array.from({ length: amount }, () => Math.random() * size))
+  }, [size, amount])
+
+  return (
+    <>
+      <Particles {...props} size={random ? sizes : size} amount={amount} />
+      <OrbitControls />
+      <axesHelper />
+      <PerspectiveCamera position={[2, 2, 2]} makeDefault />
+    </>
+  )
+}
 
 ParticlesStory.args = {
-  radius: 1,
   size: 5,
   opacity: 1,
+  amount: 100,
+  speed: 1,
+  random: true,
 }
 
 ParticlesStory.argTypes = {
-  radius: {
+  amount: {
     control: {
       type: 'range',
       min: 0,
-      max: 50,
-      step: 0.1,
+      max: 500,
+      step: 1,
     },
   },
   size: {
     control: {
       type: 'range',
       min: 0,
-      max: 50,
+      max: 10,
+      step: 1,
+    },
+  },
+  speed: {
+    control: {
+      type: 'range',
+      min: 0,
+      max: 20,
       step: 0.1,
     },
   },

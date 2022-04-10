@@ -1,11 +1,19 @@
+uniform float pixelRatio;
+uniform float speed;
 uniform float time;
-uniform float radius;
-uniform float size;
+attribute float size;  
 
 void main() {
-  vec3 n = curlNoise(position + time * 0.005);
-  vec3 p = n * radius;
+  vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+  
+  modelPosition.y += sin(time + modelPosition.x * 100.0) * speed * 0.2;
+  modelPosition.z += cos(time + modelPosition.x * 100.0) * speed * 0.2;
+  modelPosition.x += cos(time + modelPosition.x * 100.0) * speed * 0.2;
 
-  gl_PointSize = size * 10.;
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.);
+  vec4 viewPosition = viewMatrix * modelPosition;
+  vec4 projectionPostion = projectionMatrix * viewPosition;
+
+  gl_Position = projectionPostion;
+  gl_PointSize = size * 25. * pixelRatio;
+  gl_PointSize *= (1.0 / - viewPosition.z);
 }

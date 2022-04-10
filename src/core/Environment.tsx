@@ -1,8 +1,7 @@
 import * as React from 'react'
-import { useLoader, useThree, createPortal, useFrame, extend } from '@react-three/fiber'
+import { useLoader, useThree, createPortal, useFrame } from '@react-three/fiber'
 import {
   WebGLCubeRenderTarget,
-  FloatType,
   EquirectangularReflectionMapping,
   CubeTextureLoader,
   Texture,
@@ -12,11 +11,6 @@ import {
   HalfFloatType,
   CubeReflectionMapping,
   BackSide,
-  ShaderMaterial,
-  RGBAFormat,
-  sRGBEncoding,
-  UnsignedByteType,
-  MeshBasicMaterial,
   CubeTexture,
 } from 'three'
 import { RGBELoader } from 'three-stdlib'
@@ -50,6 +44,7 @@ type Props = {
     | {
         radius?: number
         height?: number
+        scale?: number
       }
 }
 
@@ -196,7 +191,7 @@ function EnvironmentGround(props: Props) {
   const isCubeMap = isCubeTexture(texture)
 
   const defines = React.useMemo(() => {
-    const cubeSize = 1024 / 4
+    const cubeSize = texture?.image?.width / 4 ?? 256
     const _lodMax = Math.floor(Math.log2(cubeSize))
     const _cubeSize = Math.pow(2, _lodMax)
     const width = 3 * Math.max(_cubeSize, 16 * 7)
@@ -226,6 +221,7 @@ function EnvironmentGround(props: Props) {
 
   const height = (props.ground as any)?.height
   const radius = (props.ground as any)?.radius
+  const scale = (props.ground as any)?.scale ?? 1000
 
   React.useEffect(() => void (height && (mat.current.uniforms.height.value = height)), [height])
   React.useEffect(() => void (radius && (mat.current.uniforms.radius.value = radius)), [radius])
@@ -234,7 +230,7 @@ function EnvironmentGround(props: Props) {
   return (
     <>
       <EnvironmentMap {...props} map={texture} />
-      <Icosahedron args={[1000, 16]}>
+      <Icosahedron scale={scale} args={[1, 16]}>
         <shaderMaterial
           ref={mat}
           side={BackSide} //

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useLoader, useThree, createPortal, useFrame } from '@react-three/fiber'
+import { useLoader, useThree, createPortal, useFrame, extend } from '@react-three/fiber'
 import {
   WebGLCubeRenderTarget,
   FloatType,
@@ -11,9 +11,24 @@ import {
   CubeCamera,
   HalfFloatType,
   CubeReflectionMapping,
+  BackSide,
+  ShaderMaterial,
+  RGBAFormat,
+  sRGBEncoding,
+  UnsignedByteType,
+  MeshBasicMaterial,
+  CubeTexture,
 } from 'three'
 import { RGBELoader } from 'three-stdlib'
 import { presetsObj, PresetsType } from '../helpers/environment-assets'
+import { Icosahedron } from '.'
+
+// eslint-disable-next-line
+// @ts-ignore
+import vertexShader from '../helpers/glsl/GroundProjection.vert.glsl'
+// eslint-disable-next-line
+// @ts-ignore
+import fragmentShader from '../helpers/glsl/GroundProjection.frag.glsl'
 
 const CUBEMAP_ROOT = 'https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/hdris/'
 
@@ -30,8 +45,15 @@ type Props = {
   preset?: PresetsType
   scene?: Scene | React.MutableRefObject<THREE.Scene>
   extensions?: (loader: Loader) => void
+  ground?:
+    | boolean
+    | {
+        radius?: number
+        height?: number
+      }
 }
 
+const isCubeTexture = (def: any): def is CubeTexture => def && (def as CubeTexture).isCubeTexture
 const isRef = (obj: any): obj is React.MutableRefObject<THREE.Scene> => obj.current && obj.current.isScene
 const resolveScene = (scene: THREE.Scene | React.MutableRefObject<THREE.Scene>) =>
   isRef(scene) ? scene.current : scene
@@ -54,31 +76,42 @@ export function EnvironmentMap({ scene, background = false, map }: Props) {
   return null
 }
 
-export function EnvironmentCube({
-  background = false,
+function useEnvironment({
   files = ['/px.png', '/nx.png', '/py.png', '/ny.png', '/pz.png', '/nz.png'],
   path = '',
   preset = undefined,
-  scene,
   extensions,
-}: Props) {
+}: Partial<Props>) {
   if (preset) {
     if (!(preset in presetsObj)) throw new Error('Preset must be one of: ' + Object.keys(presetsObj).join(', '))
     files = presetsObj[preset]
     path = CUBEMAP_ROOT
   }
 
-  const defaultScene = useThree((state) => state.scene)
   const isCubeMap = Array.isArray(files)
   const loader = isCubeMap ? CubeTextureLoader : RGBELoader
-  // @ts-expect-error
-  const loaderResult: Texture | Texture[] = useLoader(loader, isCubeMap ? [files] : files, (loader) => {
-    loader.setPath(path)
-    if (extensions) extensions(loader)
-  })
-  const texture: Texture = isCubeMap ? loaderResult[0] : loaderResult
+  const loaderResult: Texture | Texture[] = useLoader(
+    // @ts-expect-error
+    loader,
+    isCubeMap ? [files] : files,
+    (loader) => {
+      loader.setPath(path)
+      if (extensions) extensions(loader)
+    }
+  )
+  const texture: Texture | CubeTexture = isCubeMap
+    ? // @ts-ignore
+      loaderResult[0]
+    : loaderResult
   texture.mapping = isCubeMap ? CubeReflectionMapping : EquirectangularReflectionMapping
 
+  return texture
+}
+
+export function EnvironmentCube({ background = false, scene, ...rest }: Props) {
+  const texture = useEnvironment(rest)
+
+  const defaultScene = useThree((state) => state.scene)
   React.useLayoutEffect(() => {
     const target = resolveScene(scene || defaultScene)
     const oldbg = target.background
@@ -143,6 +176,7 @@ export function EnvironmentPortal({
       {createPortal(
         <>
           {children}
+          {/* @ts-ignore */}
           <cubeCamera ref={camera} args={[near, far, fbo]} />
           {files || preset ? (
             <EnvironmentCube background files={files} preset={preset} path={path} extensions={extensions} />
@@ -156,8 +190,68 @@ export function EnvironmentPortal({
   )
 }
 
+function EnvironmentGround(props: Props) {
+  const textureDefault = useEnvironment(props)
+  const texture = props.map || textureDefault
+  const isCubeMap = isCubeTexture(texture)
+
+  const defines = React.useMemo(() => {
+    console.log(texture.image)
+    const cubeSize = 1024 / 4
+    const _lodMax = Math.floor(Math.log2(cubeSize))
+    const _cubeSize = Math.pow(2, _lodMax)
+    const width = 3 * Math.max(_cubeSize, 16 * 7)
+    const height = 4 * _cubeSize
+
+    return [
+      isCubeMap ? `#define ENVMAP_TYPE_CUBE` : '',
+      `#define CUBEUV_TEXEL_WIDTH ${1.0 / width}`,
+      `#define CUBEUV_TEXEL_HEIGHT ${1.0 / height}`,
+      `#define CUBEUV_MAX_MIP ${_lodMax}.0`,
+      ``,
+    ]
+  }, [])
+
+  const fragment = React.useMemo(() => defines.join('\n') + fragmentShader, [defines])
+
+  const uniforms = React.useMemo(
+    () => ({
+      cubemap: { value: null },
+      height: { value: 15 },
+      radius: { value: 60 },
+    }),
+    []
+  )
+
+  const mat = React.useRef<any>(null!)
+
+  const height = (props.ground as any)?.height
+  const radius = (props.ground as any)?.radius
+
+  React.useEffect(() => void (height && (mat.current.uniforms.height.value = height)), [height])
+  React.useEffect(() => void (radius && (mat.current.uniforms.radius.value = radius)), [radius])
+  React.useEffect(() => void (mat.current.uniforms.cubemap.value = texture), [texture])
+
+  return (
+    <>
+      <EnvironmentMap {...props} map={texture} />
+      <Icosahedron args={[1000, 16]}>
+        <shaderMaterial
+          ref={mat}
+          side={BackSide} //
+          vertexShader={vertexShader}
+          fragmentShader={fragment}
+          uniforms={uniforms}
+        />
+      </Icosahedron>
+    </>
+  )
+}
+
 export function Environment(props: Props) {
-  return props.map ? (
+  return props.ground ? (
+    <EnvironmentGround {...props} />
+  ) : props.map ? (
     <EnvironmentMap {...props} />
   ) : props.children ? (
     <EnvironmentPortal {...props} />

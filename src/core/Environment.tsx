@@ -71,7 +71,7 @@ export function EnvironmentMap({ scene, background = false, map }: Props) {
   return null
 }
 
-function useEnvironment({
+export function useEnvironment({
   files = ['/px.png', '/nx.png', '/py.png', '/ny.png', '/pz.png', '/nz.png'],
   path = '',
   preset = undefined,
@@ -191,7 +191,8 @@ function EnvironmentGround(props: Props) {
   const isCubeMap = isCubeTexture(texture)
 
   const defines = React.useMemo(() => {
-    const cubeSize = texture?.image?.width / 4 ?? 256
+    const w = (isCubeMap ? texture.image[0]?.width : texture.image.width) ?? 1024
+    const cubeSize = w / 4
     const _lodMax = Math.floor(Math.log2(cubeSize))
     const _cubeSize = Math.pow(2, _lodMax)
     const width = 3 * Math.max(_cubeSize, 16 * 7)

@@ -1,12 +1,24 @@
 import React from 'react'
 import { BufferGeometry, CatmullRomCurve3, LineBasicMaterial, LineLoop, Vector3 } from 'three'
-import { FontLoader, TextGeometry } from 'three-stdlib'
+import { FontLoader, TextGeometry, TextGeometryParameters } from 'three-stdlib'
 import { extend, useFrame, useLoader } from '@react-three/fiber'
 
 import { Setup } from '../Setup'
 import { CurveModifier, CurveModifierRef } from '../../src'
 
-extend({ TextGeometry })
+extend({ StdText: TextGeometry })
+
+type TextGeometryImpl = JSX.IntrinsicElements['extrudeGeometry'] & {
+  args: [string, TextGeometryParameters]
+}
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      stdText: TextGeometryImpl
+    }
+  }
+}
 
 export default {
   title: 'Modifiers/CurveModifier',
@@ -52,18 +64,26 @@ function CurveModifierScene() {
     <>
       <CurveModifier ref={curveRef} curve={curve}>
         <mesh>
-          <textGeometry
+          <stdText
+            attach="geometry"
             args={[
+              // @ts-ignore
               'hello @react-three/drei',
               {
                 font,
-                size: 1,
-                height: 1,
+                size: 2,
+                height: 0.05,
+                curveSegments: 12,
+                bevelEnabled: true,
+                bevelThickness: 0.02,
+                bevelSize: 0.01,
+                bevelOffset: 0,
+                bevelSegments: 5,
               },
             ]}
             ref={geomRef}
           />
-          <meshNormalMaterial />
+          <meshNormalMaterial attach="material" />
         </mesh>
       </CurveModifier>
       <primitive object={line} />

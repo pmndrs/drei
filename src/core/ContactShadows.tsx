@@ -17,6 +17,7 @@ type Props = Omit<JSX.IntrinsicElements['group'], 'scale'> & {
   frames?: number
   scale?: number | [x: number, y: number]
   color?: THREE.ColorRepresentation
+  depthWrite?: boolean
 }
 
 export const ContactShadows = React.forwardRef(
@@ -32,6 +33,8 @@ export const ContactShadows = React.forwardRef(
       resolution = 512,
       smooth = true,
       color = '#000000',
+      depthWrite = false,
+      renderOrder,
       ...props
     }: Props,
     ref
@@ -134,12 +137,13 @@ export const ContactShadows = React.forwardRef(
 
     return (
       <group rotation-x={Math.PI / 2} {...props} ref={ref as any}>
-        <mesh geometry={planeGeometry} scale={[1, -1, 1]} rotation={[-Math.PI / 2, 0, 0]}>
+        <mesh renderOrder={renderOrder} geometry={planeGeometry} scale={[1, -1, 1]} rotation={[-Math.PI / 2, 0, 0]}>
           <meshBasicMaterial
             map={renderTarget.texture}
             map-encoding={gl.outputEncoding}
             transparent
             opacity={opacity}
+            depthWrite={depthWrite}
           />
         </mesh>
         <orthographicCamera ref={shadowCamera} args={[-width / 2, width / 2, height / 2, -height / 2, 0, far]} />

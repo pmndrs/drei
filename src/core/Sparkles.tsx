@@ -5,10 +5,10 @@ import { shaderMaterial } from '.'
 
 // eslint-disable-next-line
 // @ts-ignore
-import fragShader from '../helpers/glsl/Sparkless.frag.glsl'
+import fragShader from '../helpers/glsl/Sparkles.frag.glsl'
 // eslint-disable-next-line
 // @ts-ignore
-import vertShader from '../helpers/glsl/Sparkless.vert.glsl'
+import vertShader from '../helpers/glsl/Sparkles.vert.glsl'
 
 interface Props {
   /** Number of particles (default: 100) */
@@ -81,7 +81,7 @@ function usePropAsIsOrAsAttribute<T extends any>(
   }, [prop])
 }
 
-export const Sparkless = React.forwardRef<THREE.Points, Props & PointsProps>(
+export const Sparkles = React.forwardRef<THREE.Points, Props & PointsProps>(
   ({ noise = 1, count = 100, speed = 1, opacity = 1, scale = 1, size, color, ...props }, forwardRef) => {
     const matRef = React.useRef<any>()
     const dpr = useThree((state) => state.viewport.dpr)

@@ -175,6 +175,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#contactshadows">ContactShadows</a></li>
           <li><a href="#sky">Sky</a></li>
           <li><a href="#stars">Stars</a></li>
+          <li><a href="#sparkles">Sparkles</a></li>
           <li><a href="#cloud">Cloud</a></li>
           <li><a href="#usematcaptexture">useMatcapTexture</a></li>
           <li><a href="#usenormaltexture">useNormalTexture</a></li>
@@ -2063,28 +2064,6 @@ Adds a blinking shader-based starfield to your scene.
 <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
 ```
 
-#### Cloud
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-cloud--cloud-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
-
-<p>
-  <a href="https://codesandbox.io/s/mbfzf"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/mbfzf/screenshot.png" alt="Demo"/></a>
-</p>
-
-Particle based cloud.
-
-👉 Note: `<Cloud />` component is not meant to be used in production environments as it relies on third-party CDN.
-
-```jsx
-<Cloud
-  opacity={0.5}
-  speed={0.4} // Rotation speed
-  width={10} // Width of the full cloud
-  depth={1.5} // Z-dir depth
-  segments={20} // Number of particles
-/>
-```
-
 #### Sparkles
 
 <p>
@@ -2109,6 +2088,28 @@ Floating, glowing particles.
   scale?: number | [number, number, number] | THREE.Vector3
   /** Movement factor (default: 1) */
   noise?: number | [number, number, number] | THREE.Vector3 | Float32Array
+/>
+```
+
+#### Cloud
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-cloud--cloud-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
+
+<p>
+  <a href="https://codesandbox.io/s/mbfzf"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/mbfzf/screenshot.png" alt="Demo"/></a>
+</p>
+
+Particle based cloud.
+
+👉 Note: `<Cloud />` component is not meant to be used in production environments as it relies on third-party CDN.
+
+```jsx
+<Cloud
+  opacity={0.5}
+  speed={0.4} // Rotation speed
+  width={10} // Width of the full cloud
+  depth={1.5} // Z-dir depth
+  segments={20} // Number of particles
 />
 ```
 

@@ -27,20 +27,12 @@ interface Props {
   noise?: number | [number, number, number] | THREE.Vector3 | Float32Array
 }
 
-const SparklesMaterial = shaderMaterial(
-  {
-    time: 0,
-    pixelRatio: 1,
-  },
-  vertShader,
-  fragShader
-)
-extend({ SparklesMaterial })
+const SparklesMaterial = shaderMaterial({ time: 0, pixelRatio: 1 }, vertShader, fragShader)
 
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      particleMaterial: Node<any, any>
+      sparklesMaterial: Node<any, any>
     }
   }
 }
@@ -83,6 +75,7 @@ function usePropAsIsOrAsAttribute<T extends any>(
 
 export const Sparkles = React.forwardRef<THREE.Points, Props & PointsProps>(
   ({ noise = 1, count = 100, speed = 1, opacity = 1, scale = 1, size, color, ...props }, forwardRef) => {
+    React.useMemo(() => extend({ SparklesMaterial }), [])
     const matRef = React.useRef<any>()
     const dpr = useThree((state) => state.viewport.dpr)
     const positions = React.useMemo(
@@ -115,7 +108,7 @@ export const Sparkles = React.forwardRef<THREE.Points, Props & PointsProps>(
           <bufferAttribute attach="attributes-color" args={[colors, 3]} />
           <bufferAttribute attach="attributes-noise" args={[noises, 3]} />
         </bufferGeometry>
-        <particleMaterial ref={matRef} transparent pixelRatio={dpr} depthWrite={false} />
+        <sparklesMaterial ref={matRef} transparent pixelRatio={dpr} depthWrite={false} />
       </points>
     )
   }

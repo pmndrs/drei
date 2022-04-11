@@ -12,10 +12,9 @@ export function useFBO<T extends boolean = false>(
   height?: number,
   settings?: FBOSettings<T>
 ): THREE.WebGLRenderTarget {
-  const { gl, size } = useThree()
-  const dpr = React.useMemo(() => gl.getPixelRatio(), [gl])
-  const _width = typeof width === 'number' ? width : size.width * dpr
-  const _height = typeof height === 'number' ? height : size.height * dpr
+  const { gl, size, viewport } = useThree()
+  const _width = typeof width === 'number' ? width : size.width * viewport.dpr
+  const _height = typeof height === 'number' ? height : size.height * viewport.dpr
   const _settings = (typeof width === 'number' ? settings : (width as FBOSettings)) || {}
   const { samples, ...targetSettings } = _settings
 

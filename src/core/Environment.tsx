@@ -234,10 +234,11 @@ function EnvironmentGround(props: Props) {
       <Icosahedron scale={scale} args={[1, 16]}>
         <shaderMaterial
           ref={mat}
-          side={BackSide} //
+          side={BackSide}
           vertexShader={vertexShader}
           fragmentShader={fragment}
           uniforms={uniforms}
+          depthTest={false}
         />
       </Icosahedron>
     </>

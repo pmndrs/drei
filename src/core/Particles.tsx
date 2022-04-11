@@ -17,7 +17,7 @@ interface Props {
   color?: THREE.ColorRepresentation | Float32Array
   pixelRatio?: number
   size?: number | Float32Array
-  scale?: [number, number, number]
+  scale?: number | [number, number, number] | THREE.Vector3
   noise?: number | [number, number, number] | THREE.Vector3 | Float32Array
 }
 
@@ -83,7 +83,7 @@ export const Particles = React.forwardRef<THREE.Points, Props & PointsProps>(
   ) => {
     const matRef = React.useRef<any>()
     const positions = Float32Array.from(
-      Array.from({ length: count }, () => scale.map(THREE.MathUtils.randFloatSpread)).flat()
+      Array.from({ length: count }, () => normalizeVector(scale).map(THREE.MathUtils.randFloatSpread)).flat()
     )
 
     const sizes = usePropAsIsOrAsAttribute<number>(count, size, () => Math.random())

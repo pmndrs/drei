@@ -21,7 +21,7 @@ export const Setup = ({
   lights = true,
   ...restProps
 }: Props) => (
-  <Canvas shadows camera={{ position: cameraPosition, fov: cameraFov }} dpr={window.devicePixelRatio} {...restProps}>
+  <Canvas shadows camera={{ position: cameraPosition, fov: cameraFov }} {...restProps}>
     {children}
     {lights && (
       <>

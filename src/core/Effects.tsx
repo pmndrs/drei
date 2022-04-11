@@ -39,23 +39,17 @@ export const Effects = React.forwardRef(
     ref
   ) => {
     const composer = React.useRef<EffectComposer>()
-    const scene = useThree((state) => state.scene)
-    const camera = useThree((state) => state.camera)
-    const gl = useThree((state) => state.gl)
-    const size = useThree((state) => state.size)
+    const { scene, camera, gl, size, viewport } = useThree()
     const [target] = React.useState(() => {
-      const t = new WebGLRenderTarget(size.width, size.height, {
-        format: RGBAFormat,
-        encoding: gl.outputEncoding,
-      })
+      const t = new WebGLRenderTarget(size.width, size.height, { format: RGBAFormat, encoding: gl.outputEncoding })
       t.samples = multisamping
       return t
     })
 
     React.useEffect(() => {
       composer.current?.setSize(size.width, size.height)
-      composer.current?.setPixelRatio(gl.getPixelRatio())
-    }, [gl, size])
+      composer.current?.setPixelRatio(viewport.dpr)
+    }, [gl, size, viewport.dpr])
 
     useFrame(() => composer.current?.render(), renderIndex)
 

@@ -1,35 +1,41 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { PointsProps, useFrame, extend, Node } from '@react-three/fiber'
+import { PointsProps, useThree, useFrame, extend, Node } from '@react-three/fiber'
 import { shaderMaterial } from '.'
 
 // eslint-disable-next-line
 // @ts-ignore
-import fragShader from '../helpers/glsl/Particles.frag.glsl'
+import fragShader from '../helpers/glsl/Sparkless.frag.glsl'
 // eslint-disable-next-line
 // @ts-ignore
-import vertShader from '../helpers/glsl/Particles.vert.glsl'
+import vertShader from '../helpers/glsl/Sparkless.vert.glsl'
 
 interface Props {
+  /** Number of particles (default: 100) */
   count?: number
+  /** Speed of particles (default: 1) */
   speed?: number | Float32Array
+  /** Opacity of particles (default: 1) */
   opacity?: number | Float32Array
+  /** Color of particles (default: 100) */
   color?: THREE.ColorRepresentation | Float32Array
-  pixelRatio?: number
+  /** Size of particles (default: randomized between 0 and 1) */
   size?: number | Float32Array
+  /** The space the particles occupy (default: 1) */
   scale?: number | [number, number, number] | THREE.Vector3
+  /** Movement factor (default: 1) */
   noise?: number | [number, number, number] | THREE.Vector3 | Float32Array
 }
 
-const ParticleMaterial = shaderMaterial(
+const SparklesMaterial = shaderMaterial(
   {
     time: 0,
-    pixelRatio: 2,
+    pixelRatio: 1,
   },
   vertShader,
   fragShader
 )
-extend({ ParticleMaterial })
+extend({ SparklesMaterial })
 
 declare global {
   namespace JSX {
@@ -48,7 +54,6 @@ const isVector = (v: any): v is THREE.Vector2 | THREE.Vector3 | THREE.Vector4 =>
 const normalizeVector = (v: any): number[] => {
   if (Array.isArray(v)) return v
   else if (isVector(v)) return v.toArray()
-
   return [v, v, v] as number[]
 }
 
@@ -76,17 +81,19 @@ function usePropAsIsOrAsAttribute<T extends any>(
   }, [prop])
 }
 
-export const Particles = React.forwardRef<THREE.Points, Props & PointsProps>(
-  (
-    { noise = 1, count = 100, speed = 1, opacity = 1, pixelRatio, scale = [1, 1, 1], size, color, ...props },
-    forwardRef
-  ) => {
+export const Sparkless = React.forwardRef<THREE.Points, Props & PointsProps>(
+  ({ noise = 1, count = 100, speed = 1, opacity = 1, scale = 1, size, color, ...props }, forwardRef) => {
     const matRef = React.useRef<any>()
-    const positions = Float32Array.from(
-      Array.from({ length: count }, () => normalizeVector(scale).map(THREE.MathUtils.randFloatSpread)).flat()
+    const dpr = useThree((state) => state.viewport.dpr)
+    const positions = React.useMemo(
+      () =>
+        Float32Array.from(
+          Array.from({ length: count }, () => normalizeVector(scale).map(THREE.MathUtils.randFloatSpread)).flat()
+        ),
+      [count, scale]
     )
 
-    const sizes = usePropAsIsOrAsAttribute<number>(count, size, () => Math.random())
+    const sizes = usePropAsIsOrAsAttribute<number>(count, size, Math.random)
     const opacities = usePropAsIsOrAsAttribute<number>(count, opacity)
     const speeds = usePropAsIsOrAsAttribute<number>(count, speed)
     const noises = usePropAsIsOrAsAttribute<typeof noise>(count * 3, noise)
@@ -96,12 +103,7 @@ export const Particles = React.forwardRef<THREE.Points, Props & PointsProps>(
       () => 1
     )
 
-    useFrame(({ clock }) => (matRef.current.uniforms.time.value = clock.elapsedTime))
-
-    React.useEffect(
-      () => void (matRef.current.uniforms.pixelRatio.value = pixelRatio ?? window.devicePixelRatio),
-      [pixelRatio]
-    )
+    useFrame((state) => (matRef.current.uniforms.time.value = state.clock.elapsedTime))
 
     return (
       <points key={`particle-${count}-${JSON.stringify(scale)}`} {...props} ref={forwardRef}>
@@ -113,7 +115,7 @@ export const Particles = React.forwardRef<THREE.Points, Props & PointsProps>(
           <bufferAttribute attach="attributes-color" args={[colors, 3]} />
           <bufferAttribute attach="attributes-noise" args={[noises, 3]} />
         </bufferGeometry>
-        <particleMaterial ref={matRef} transparent pixelRatio={pixelRatio} depthWrite={false} />
+        <particleMaterial ref={matRef} transparent pixelRatio={dpr} depthWrite={false} />
       </points>
     )
   }

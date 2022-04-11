@@ -3,7 +3,7 @@ import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'
 
-import { Particles, Environment, ContactShadows, PerspectiveCamera, OrbitControls } from '../../src'
+import { Particles, PerspectiveCamera, OrbitControls } from '../../src'
 
 export default {
   title: 'Staging/Particles',
@@ -24,7 +24,7 @@ export const ParticlesStory = ({ random, size, amount, ...props }) => {
 
   return (
     <>
-      <Particles {...props} size={random ? sizes : size} count={amount} />
+      <Particles {...props} size={random ? sizes : size} color="orange" count={amount} />
       <OrbitControls />
       <axesHelper />
       <PerspectiveCamera position={[2, 2, 2]} makeDefault />
@@ -37,6 +37,7 @@ ParticlesStory.args = {
   opacity: 1,
   amount: 100,
   speed: 0.3,
+  noise: 1,
   random: true,
 }
 
@@ -47,6 +48,14 @@ ParticlesStory.argTypes = {
       min: 0,
       max: 500,
       step: 1,
+    },
+  },
+  noise: {
+    control: {
+      type: 'range',
+      min: 0,
+      max: 1,
+      step: 0.01,
     },
   },
   size: {

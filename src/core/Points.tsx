@@ -47,6 +47,7 @@ const PointsInstances = React.forwardRef<THREE.Points, PointsInstancesProps>(
       parentMatrix.copy(parentRef.current.matrixWorld).invert()
       for (i = 0; i < refs.length; i++) {
         positionRef = refs[i].current
+        positionRef.getWorldPosition(position).applyMatrix4(parentMatrix)
         position.toArray(positions, i * 3)
         parentRef.current.geometry.attributes.position.needsUpdate = true
         positionRef.matrixWorldNeedsUpdate = true

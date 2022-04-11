@@ -97,7 +97,6 @@ function BasicPointsInstancesScene() {
       return [MathUtils.randFloatSpread(4), MathUtils.randFloatSpread(4), MathUtils.randFloatSpread(4)]
     })
   })
-
   return (
     <>
       <Points>

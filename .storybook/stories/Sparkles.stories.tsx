@@ -3,11 +3,11 @@ import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'
 
-import { Particles, PerspectiveCamera, OrbitControls } from '../../src'
+import { Sparkles, PerspectiveCamera, OrbitControls } from '../../src'
 
 export default {
-  title: 'Staging/Particles',
-  component: Particles,
+  title: 'Staging/Sparkles',
+  component: Sparkles,
   decorators: [
     (storyFn) => (
       <Setup cameraPosition={new Vector3(1, 1, 1)} controls={false}>
@@ -17,14 +17,14 @@ export default {
   ],
 }
 
-export const ParticlesStory = ({ random, size, amount, ...props }) => {
+export const SparklesStory = ({ random, size, amount, ...props }) => {
   const sizes = React.useMemo(() => {
     return new Float32Array(Array.from({ length: amount }, () => Math.random() * size))
   }, [size, amount])
 
   return (
     <>
-      <Particles {...props} size={random ? sizes : size} color="orange" count={amount} />
+      <Sparkles {...props} size={random ? sizes : size} color="orange" count={amount} />
       <OrbitControls />
       <axesHelper />
       <PerspectiveCamera position={[2, 2, 2]} makeDefault />
@@ -32,7 +32,7 @@ export const ParticlesStory = ({ random, size, amount, ...props }) => {
   )
 }
 
-ParticlesStory.args = {
+SparklesStory.args = {
   size: 5,
   opacity: 1,
   amount: 100,
@@ -41,7 +41,7 @@ ParticlesStory.args = {
   random: true,
 }
 
-ParticlesStory.argTypes = {
+SparklesStory.argTypes = {
   amount: {
     control: {
       type: 'range',
@@ -84,4 +84,4 @@ ParticlesStory.argTypes = {
   },
 }
 
-ParticlesStory.storyName = 'Basic'
+SparklesStory.storyName = 'Basic'

@@ -20,10 +20,12 @@ declare global {
   }
 }
 
+const cameraPosition = new Vector3(0, 10, 20)
+
 export default {
   title: 'Modifiers/CurveModifier',
   component: CurveModifier,
-  decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup cameraPosition={cameraPosition}>{storyFn()}</Setup>],
 }
 
 function CurveModifierScene() {

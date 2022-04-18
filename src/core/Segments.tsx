@@ -14,19 +14,14 @@ type Api = {
   subscribe: (ref: React.RefObject<SegmentObject>) => void
 }
 
-type Segment = {
+type SegmentRef = React.RefObject<SegmentObject>
+type SegmentProps = Omit<JSX.IntrinsicElements['segmentObject'], 'start' | 'end' | 'color'> & {
   start: ReactThreeFiber.Vector3
   end: ReactThreeFiber.Vector3
   color?: ReactThreeFiber.Color
 }
 
-type SegmentRef = React.RefObject<Segment>
-type SegmentProps = Omit<JSX.IntrinsicElements['segmentObject'], 'start' | 'end' | 'color'> & Segment
-
 const context = React.createContext<Api>(null!)
-
-const arrColor = (color: Segment['color']) => (color instanceof THREE.Color ? color.toArray() : color)
-const arrPos = (pos: Segment['start']) => (pos instanceof THREE.Vector3 ? pos.toArray() : pos)
 
 const Segments = React.forwardRef<Line2, SegmentsProps>((props, forwardedRef) => {
   React.useMemo(() => extend({ SegmentObject }), [])
@@ -55,14 +50,22 @@ const Segments = React.forwardRef<Line2, SegmentsProps>((props, forwardedRef) =>
   useFrame(() => {
     for (let i = 0; i < limit; i++) {
       const segment = segments[i]?.current
-      const segmentStart = segment ? arrPos(segment.start) : [0, 0, 0]
-      const segmentEnd = segment ? arrPos(segment.end) : [0, 0, 0]
-      const segmentColor = segment ? arrColor(segment.color) : [1, 1, 1]
-      for (var j = 0; j < 3; j++) {
-        positions[i * 6 + j] = segmentStart[j]
-        positions[i * 6 + j + 3] = segmentEnd[j]
-        colors[i * 6 + j] = segmentColor?.[j]
-        colors[i * 6 + j + 3] = segmentColor?.[j]
+      if (segment) {
+        positions[i * 6 + 0] = segment.start.x
+        positions[i * 6 + 1] = segment.start.y
+        positions[i * 6 + 2] = segment.start.z
+
+        positions[i * 6 + 3] = segment.end.x
+        positions[i * 6 + 4] = segment.end.y
+        positions[i * 6 + 5] = segment.end.z
+
+        colors[i * 6 + 0] = segment.color.r
+        colors[i * 6 + 1] = segment.color.g
+        colors[i * 6 + 2] = segment.color.b
+
+        colors[i * 6 + 3] = segment.color.r
+        colors[i * 6 + 4] = segment.color.g
+        colors[i * 6 + 5] = segment.color.b
       }
     }
     geometry.setColors(colors)
@@ -105,12 +108,15 @@ export class SegmentObject {
   }
 }
 
-const Segment = React.forwardRef<SegmentObject, SegmentProps>((props, forwardedRef) => {
+const normPos = (pos: SegmentProps['start']): SegmentObject['start'] =>
+  pos instanceof THREE.Vector3 ? pos : new THREE.Vector3(...(typeof pos === 'number' ? [pos, pos, pos] : pos))
+
+const Segment = React.forwardRef<SegmentObject, SegmentProps>(({ color, start, end }, forwardedRef) => {
   const api = React.useContext<Api>(context)
   if (!api) throw 'Segment must used inside Segments component.'
   const ref = React.useRef<SegmentObject>(null)
   React.useLayoutEffect(() => api.subscribe(ref), [])
-  return <segmentObject ref={mergeRefs([ref, forwardedRef])} {...props} />
+  return <segmentObject ref={mergeRefs([ref, forwardedRef])} color={color} start={normPos(start)} end={normPos(end)} />
 })
 
 export { Segments, Segment }

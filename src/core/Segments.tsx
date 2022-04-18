@@ -29,6 +29,8 @@ const arrColor = (color: Segment['color']) => (color instanceof THREE.Color ? co
 const arrPos = (pos: Segment['start']) => (pos instanceof THREE.Vector3 ? pos.toArray() : pos)
 
 const Segments = React.forwardRef<Line2, SegmentsProps>((props, forwardedRef) => {
+  React.useMemo(() => extend({ SegmentObject }), [])
+
   const { limit = 1000, lineWidth = 1.0, children, ...rest } = props
   const [segments, setSegments] = React.useState<Array<SegmentRef>>([])
 
@@ -107,7 +109,6 @@ const Segment = React.forwardRef<SegmentObject, SegmentProps>((props, forwardedR
   const api = React.useContext<Api>(context)
   if (!api) throw 'Segment must used inside Segments component.'
   const ref = React.useRef<SegmentObject>(null)
-  React.useMemo(() => extend({ SegmentObject }), [])
   React.useLayoutEffect(() => api.subscribe(ref), [])
   return <segmentObject ref={mergeRefs([ref, forwardedRef])} {...props} />
 })

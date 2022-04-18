@@ -49,6 +49,7 @@ function AnimatedSegments() {
       const z = Math.cos((i * time) / 1000)
       r.start.set(x, y, z)
       r.end.set(x + Math.sin(time + i), y + Math.cos(time + i), z)
+      r.color.setRGB(x / 10, y / 10, z)
     })
   })
   return (

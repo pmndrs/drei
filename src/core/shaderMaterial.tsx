@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { nanoid } from 'nanoid'
 
 export function shaderMaterial(
   uniforms: {
@@ -23,7 +24,8 @@ export function shaderMaterial(
   fragmentShader: string,
   onInit?: (material?: THREE.ShaderMaterial) => void
 ) {
-  return class extends THREE.ShaderMaterial {
+  const material = class extends THREE.ShaderMaterial {
+    public key: string = ''
     constructor() {
       const entries = Object.entries(uniforms)
       // Create unforms and shaders
@@ -45,7 +47,10 @@ export function shaderMaterial(
           set: (v) => (this.uniforms[name].value = v),
         })
       )
+
       if (onInit) onInit(this)
     }
-  }
+  } as unknown as typeof THREE.ShaderMaterial & { key: string }
+  material.key = nanoid()
+  return material
 }

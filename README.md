@@ -609,7 +609,7 @@ import { SSAOPass } from "three-stdlib"
 
 extend({ SSAOPass })
 
-<Effects multisamping={8} renderIndex={1} disableGamma={false} disableRenderPass={false}>
+<Effects multisamping={8} renderIndex={1} disableGamma={false} disableRenderPass={false} disableRender={false}>
   <sSAOPass args={[scene, camera, 100, 100]} kernelRadius={1.2} kernelSize={0} />
 </Effects>
 ```
@@ -985,6 +985,17 @@ extend({ ColorShiftMaterial })
 <mesh>
   <colorShiftMaterial color="hotpink" time={1} />
 </mesh>
+```
+
+`shaderMaterial` attaches a unique `key` property to the prototype class. If you wire it to Reacts own `key` property, you can enable hot-reload.
+
+```jsx
+import { ColorShiftMaterial } from './ColorShiftMaterial'
+
+extend({ ColorShiftMaterial })
+
+// in your component
+<colorShiftMaterial key={ColorShiftMaterial.key} color="hotpink" time={1} />
 ```
 
 # Modifiers

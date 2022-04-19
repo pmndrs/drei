@@ -2,16 +2,14 @@ import * as React from 'react'
 import { RGBAFormat, sRGBEncoding, WebGLRenderTarget } from 'three'
 import { ReactThreeFiber, extend, useThree, useFrame } from '@react-three/fiber'
 import { EffectComposer, RenderPass, ShaderPass, GammaCorrectionShader } from 'three-stdlib'
-
 import mergeRefs from 'react-merge-refs'
-
-extend({ EffectComposer, RenderPass, ShaderPass })
 
 type Props = ReactThreeFiber.Node<EffectComposer, typeof EffectComposer> & {
   multisamping?: number
   renderIndex?: number
   disableGamma?: boolean
   disableRenderPass?: boolean
+  disableRender?: boolean
 }
 
 declare global {
@@ -35,9 +33,10 @@ export const isWebGL2Available = () => {
 
 export const Effects = React.forwardRef(
   (
-    { children, multisamping = 8, renderIndex = 1, disableGamma = false, disableRenderPass = false, ...props }: Props,
+    { children, multisamping = 8, renderIndex = 1, disableRender, disableGamma, disableRenderPass, ...props }: Props,
     ref
   ) => {
+    React.useMemo(() => extend({ EffectComposer, RenderPass, ShaderPass }), [])
     const composer = React.useRef<EffectComposer>()
     const { scene, camera, gl, size, viewport } = useThree()
     const [target] = React.useState(() => {
@@ -51,13 +50,17 @@ export const Effects = React.forwardRef(
       composer.current?.setPixelRatio(viewport.dpr)
     }, [gl, size, viewport.dpr])
 
-    useFrame(() => composer.current?.render(), renderIndex)
+    useFrame(() => {
+      if (!disableRender) composer.current?.render()
+    }, renderIndex)
 
     const passes: React.ReactNode[] = []
-    if (!disableRenderPass) passes.push(<renderPass key="renderpass" args={[scene, camera]} />)
-    if (!disableGamma) passes.push(<shaderPass key="gammapass" args={[GammaCorrectionShader]} />)
-    React.Children.forEach(children, (el: any, index) =>
-      passes.push(React.cloneElement(el, { key: index, attach: `passes-${index}` }))
+    if (!disableRenderPass)
+      passes.push(<renderPass key="renderpass" attach={`passes-${passes.length}`} args={[scene, camera]} />)
+    if (!disableGamma)
+      passes.push(<shaderPass attach={`passes-${passes.length}`} key="gammapass" args={[GammaCorrectionShader]} />)
+    React.Children.forEach(children, (el: any) =>
+      passes.push(React.cloneElement(el, { key: passes.length, attach: `passes-${passes.length}` }))
     )
 
     return (

@@ -238,7 +238,6 @@ function EnvironmentGround(props: Props) {
           vertexShader={vertexShader}
           fragmentShader={fragment}
           uniforms={uniforms}
-          depthTest={false}
         />
       </Icosahedron>
     </>

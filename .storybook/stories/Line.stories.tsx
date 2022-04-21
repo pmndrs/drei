@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
-import { hilbert3D } from 'three-stdlib'
+import { GeometryUtils } from 'three-stdlib/utils/GeometryUtils'
 import { withKnobs, number, color, boolean } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
@@ -12,7 +12,7 @@ export default {
   component: Line,
 }
 
-const points = hilbert3D(new Vector3(0), 5).map((p) => [p.x, p.y, p.z]) as [number, number, number][]
+const points = GeometryUtils.hilbert3D(new Vector3(0), 5).map((p) => [p.x, p.y, p.z]) as [number, number, number][]
 
 const colors = new Array(points.length).fill(0).map(() => [Math.random(), Math.random(), Math.random()]) as [
   number,

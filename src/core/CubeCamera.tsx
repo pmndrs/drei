@@ -25,7 +25,7 @@ export function CubeCamera({
   fog,
   frames = Infinity,
   resolution = 256,
-  near = 1,
+  near = 0.1,
   far = 1000,
   ...props
 }: Props) {
@@ -35,6 +35,7 @@ export function CubeCamera({
   const gl = useThree(({ gl }) => gl)
   const fbo = React.useMemo(() => {
     const fbo = new WebGLCubeRenderTarget(resolution)
+    fbo.texture.encoding = gl.outputEncoding
     fbo.texture.type = HalfFloatType
     return fbo
   }, [resolution])

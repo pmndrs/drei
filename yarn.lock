@@ -2920,10 +2920,10 @@
   resolved "https://registry.yarnpkg.com/@types/tapable/-/tapable-1.0.8.tgz#b94a4391c85666c7b73299fd3ad79d4faa435310"
   integrity sha512-ipixuVrh2OdNmauvtT51o3d8z12p6LtFW9in7U79der/kwejjdNchQC5UMn5u/KxNoM7VHHOs/l8KS8uHxhODQ==
 
-"@types/three@^0.138.0":
-  version "0.138.0"
-  resolved "https://registry.yarnpkg.com/@types/three/-/three-0.138.0.tgz#ec9f1d1fd8dffea2e0572f9d815ff5a35cf4dc6b"
-  integrity sha512-D8AoV7h2kbCfrv/DcebHOFh1WDwyus3HdooBkAwcBikXArdqnsQ38PQ85JCunnvun160oA9jz53GszF3zch3tg==
+"@types/three@^0.139.0":
+  version "0.139.0"
+  resolved "https://registry.yarnpkg.com/@types/three/-/three-0.139.0.tgz#69af1f0c52f8eea390f513e05478af1dd7f49e6f"
+  integrity sha512-4V/jZhyq7Mv05coUzxL3bz8AuBOSi/1F0RY7ujisHTV0Amy/fnYJ+s7TSJ1/hXjZukSkpuFRgV+wvWUEMbsMbQ==
 
 "@types/uglify-js@*":
   version "3.13.1"
@@ -11332,10 +11332,10 @@ three-mesh-bvh@^0.5.7:
   resolved "https://registry.yarnpkg.com/three-mesh-bvh/-/three-mesh-bvh-0.5.8.tgz#d8882625c0d5b07e86e0c2ad3cff2091e3650af8"
   integrity sha512-aw1hGGKP91WC98vDh+M7yGczwnmmtbcCwDjsh7hls076S91GuSfWbCoym3GK64uR0BhySlV5mEitCKQu3o7srg==
 
-three-stdlib@^2.8.12:
-  version "2.8.12"
-  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-2.8.12.tgz#28ffd240b76c2d08e6370538af91339de42a7175"
-  integrity sha512-Y0pl6mQKWM5rkdOYrx4PDFwMYEEx34z4bPwKALOqEtpjaZkWhiPpu7FKtipLiVdTd+Sw8Opty4q0QmJLZ2+Y4A==
+three-stdlib@^2.9.1:
+  version "2.9.1"
+  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-2.9.1.tgz#300abf6cf12ab388e515fd8572217288dffe4736"
+  integrity sha512-e+Hyd47ssVTy2UzUfmaccB7m30qITVMdvGs/QypeGdJa3uwhw1zR9jO/ce61S65Omiy/oGDMWG8dJIZxyQ7u8w==
   dependencies:
     "@babel/runtime" "^7.16.7"
     "@webgpu/glslang" "^0.0.15"
@@ -11348,10 +11348,10 @@ three-stdlib@^2.8.12:
     potpack "^1.0.1"
     zstddec "^0.0.2"
 
-three@^0.138.3:
-  version "0.138.3"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.138.3.tgz#7be5153d79dcbf9e9baad82e7faf8c29edda4ed0"
-  integrity sha512-4t1cKC8gimNyJChJbaklg8W/qj3PpsLJUIFm5LIuAy/hVxxNm1ru2FGTSfbTSsuHmC/7ipsyuGKqrSAKLNtkzg==
+three@^0.139.2:
+  version "0.139.2"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.139.2.tgz#b110799a15736df673b9293e31653a4ac73648dd"
+  integrity sha512-gV7q7QY8rogu7HLFZR9cWnOQAUedUhu2WXAnpr2kdXZP9YDKsG/0ychwQvWkZN5PlNw9mv5MoCTin6zNTXoONg==
 
 throat@^5.0.0:
   version "5.0.0"

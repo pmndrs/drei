@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
+import { useFrame } from '@react-three/fiber'
 import { withKnobs } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
 
-import { Segment, Segments, OrbitControls } from '../../src'
-import { useFrame } from '@react-three/fiber'
+import { Segment, Segments, OrbitControls, SegmentObject } from '../../src'
 
 export default {
   title: 'Performance/Segments',
@@ -39,28 +39,32 @@ BasicSegments.decorators = [
   ),
 ]
 
-function Spinner({ delay }) {
-  const ref = React.useRef()
-  const x = Math.sin((delay / 5000) * Math.PI) * 10
-  const y = Math.cos((delay / 5000) * Math.PI) * 10
-
+function AnimatedSegments() {
+  const ref = React.useRef<SegmentObject[]>([])
   useFrame(({ clock }) => {
-    const time = clock.elapsedTime
-    const z = Math.cos((delay * time) / 1000)
-    ref.current.start.set(x, y, z)
-    ref.current.end.set(x + Math.sin(time + delay), y + Math.cos(time + delay), z)
+    ref.current.forEach((r, i) => {
+      const time = clock.elapsedTime
+      const x = Math.sin((i / 5000) * Math.PI) * 10
+      const y = Math.cos((i / 5000) * Math.PI) * 10
+      const z = Math.cos((i * time) / 1000)
+      r.start.set(x, y, z)
+      r.end.set(x + Math.sin(time + i), y + Math.cos(time + i), z)
+      r.color.setRGB(x / 10, y / 10, z)
+    })
   })
-  return <Segment ref={ref} color="orange" />
+  return (
+    <Segments limit={10000} lineWidth={0.1}>
+      {Array.from({ length: 10000 }).map((_, i) => (
+        <Segment key={i} ref={(r) => (ref.current[i] = r)} color="orange" start={[0, 0, 0]} end={[0, 0, 0]} />
+      ))}
+    </Segments>
+  )
 }
 
 export function ManySegments() {
   return (
     <>
-      <Segments limit={10000} lineWidth={0.1}>
-        {Array.from({ length: 10000 }).map((_, i) => (
-          <Spinner key={i} delay={i} />
-        ))}
-      </Segments>
+      <AnimatedSegments />
       <OrbitControls />
     </>
   )

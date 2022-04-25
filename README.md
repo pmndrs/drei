@@ -70,6 +70,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#computedattribute">Computed Attribute</a></li>
           <li><a href="#clone">Clone</a></li>
           <li><a href="#useanimations">useAnimations</a></li>
+          <li><a href="#marchingcubes">MarchingCubes</a></li>
         </ul>
         <li><a href="#shaders">Shaders</a></li>
         <ul>
@@ -841,6 +842,20 @@ The hook can also take a pre-existing root (which can be a plain object3d or a r
 const { scene, animations } = useGLTF(url)
 const { actions } = useAnimations(animations, scene)
 return <primitive object={scene} />
+```
+
+#### MarchingCubes
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-marchingcubes--marching-cubes-story)
+
+An abstraction for threes [MarchingCubes](https://threejs.org/examples/#webgl_marchingcubes)
+
+```jsx
+<MarchingCubes resolution={50} maxPolyCount={20000} enableUvs={false} enableColors={true}>
+  <MarchingCube strength={0.5} subtract={12} color={new Color('#f0f')} position={[0.5, 0.5, 0.5]} />
+
+  <MarchingPlane planeType="y" strength={0.5} subtract={12} />
+</MarchingCubes>
 ```
 
 # Shaders

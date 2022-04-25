@@ -13,6 +13,7 @@ export * from './Trail'
 export * from './Sampler'
 export * from './ComputedAttribute'
 export * from './Clone'
+export * from './MarchingCubes'
 
 // Cameras
 export * from './OrthographicCamera'

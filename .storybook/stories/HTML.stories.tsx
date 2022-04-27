@@ -20,6 +20,7 @@ function HTMLScene({
   ...htmlProps
 }: HtmlProps & { color?: string; children?: React.ReactNode }) {
   const ref = useTurntable()
+
   return (
     <group ref={ref}>
       <Icosahedron args={[2, 2]} position={[3, 6, 4]}>
@@ -43,6 +44,52 @@ function HTMLScene({
 
 export const HTMLSt = () => <HTMLScene distanceFactor={30} className="html-story-block" />
 HTMLSt.storyName = 'Default'
+
+function HTMLSceneTransformBug({
+  children = null,
+  color = 'hotpink',
+  ...htmlProps
+}: HtmlProps & { color?: string; children?: React.ReactNode }) {
+  const ref = useTurntable()
+
+  const [flag, setFlag] = React.useState(true)
+
+  React.useEffect(() => {
+    const intervalID = setInterval(() => {
+      setFlag((value) => !value)
+    }, 1000)
+    return () => clearInterval(intervalID)
+  }, [])
+
+  return (
+    <group ref={ref}>
+      <Icosahedron args={[2, 2]} position={[3, 6, 4]}>
+        <meshBasicMaterial color={color} wireframe />
+        <Html transform={flag} {...htmlProps}>
+          First
+        </Html>
+      </Icosahedron>
+
+      <Icosahedron args={[2, 2]} position={[10, 0, 10]}>
+        <meshBasicMaterial color={color} wireframe />
+        <Html transform={flag} {...htmlProps}>
+          Second
+        </Html>
+      </Icosahedron>
+
+      <Icosahedron args={[2, 2]} position={[-20, 0, -20]}>
+        <meshBasicMaterial color={color} wireframe />
+        <Html transform={flag} {...htmlProps}>
+          Third
+        </Html>
+      </Icosahedron>
+      {children}
+    </group>
+  )
+}
+
+export const HTMLTransformBugSt = () => <HTMLSceneTransformBug distanceFactor={30} className="html-story-block" />
+HTMLTransformBugSt.storyName = 'Transform Bug #875'
 
 function HTMLTransformScene() {
   return (

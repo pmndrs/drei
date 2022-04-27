@@ -149,13 +149,19 @@ export const Html = React.forwardRef(
     const raycaster = useThree(({ raycaster }) => raycaster)
 
     const [el] = React.useState(() => document.createElement(as))
-    const root = React.useMemo(() => ReactDOM.createRoot(el), [el])
+    const root = React.useRef<ReactDOM.Root>()
     const group = React.useRef<Group>(null!)
     const oldZoom = React.useRef(0)
     const oldPosition = React.useRef([0, 0])
     const transformOuterRef = React.useRef<HTMLDivElement>(null!)
     const transformInnerRef = React.useRef<HTMLDivElement>(null!)
     const target = portal?.current ?? gl.domElement.parentNode
+
+    React.useEffect(() => {
+      root.current = ReactDOM.createRoot(el)
+
+      return () => root.current?.unmount()
+    })
 
     React.useEffect(() => {
       if (group.current) {
@@ -170,14 +176,14 @@ export const Html = React.forwardRef(
           if (prepend) target.prepend(el)
           else target.appendChild(el)
         }
+
         return () => {
           if (target) target.removeChild(el)
-          root.unmount()
         }
       }
     }, [target, transform])
 
-    React.useLayoutEffect(() => {
+    React.useEffect(() => {
       if (wrapperClass) el.className = wrapperClass
     }, [wrapperClass])
 
@@ -212,9 +218,9 @@ export const Html = React.forwardRef(
       [pointerEvents]
     )
 
-    React.useLayoutEffect(() => {
+    React.useEffect(() => {
       if (transform) {
-        root.render(
+        root.current?.render(
           <div ref={transformOuterRef} style={styles}>
             <div ref={transformInnerRef} style={transformInnerStyles}>
               <div ref={ref} className={className} style={style} children={children} />
@@ -222,7 +228,7 @@ export const Html = React.forwardRef(
           </div>
         )
       } else {
-        root.render(<div ref={ref} style={styles} className={className} children={children} />)
+        root.current?.render(<div ref={ref} style={styles} className={className} children={children} />)
       }
     })
 

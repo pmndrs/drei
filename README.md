@@ -604,6 +604,8 @@ Make sure to set the `makeDefault` prop on your controls, in that case you do no
 
 Abstraction around threes own [EffectComposer](https://threejs.org/docs/#examples/en/postprocessing/EffectComposer). By default it will prepend a render-pass and a gammacorrection-pass. Children are cloned, `attach` is given to them automatically. You can only use passes or effects in there.
 
+By default it creates a render target with HalfFloatType, RGBAFormat and gl.outputEncoding. You can change all of this to your liking, inspect the types.
+
 ```jsx
 import { SSAOPass } from "three-stdlib"
 

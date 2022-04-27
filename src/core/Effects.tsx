@@ -1,11 +1,13 @@
 import * as React from 'react'
-import { RGBAFormat, sRGBEncoding, WebGLRenderTarget } from 'three'
+import { RGBAFormat, HalfFloatType, WebGLRenderTarget } from 'three'
 import { ReactThreeFiber, extend, useThree, useFrame } from '@react-three/fiber'
 import { EffectComposer, RenderPass, ShaderPass, GammaCorrectionShader } from 'three-stdlib'
 import mergeRefs from 'react-merge-refs'
 
 type Props = ReactThreeFiber.Node<EffectComposer, typeof EffectComposer> & {
   multisamping?: number
+  encoding?: number
+  type?: number
   renderIndex?: number
   disableGamma?: boolean
   disableRenderPass?: boolean
@@ -33,14 +35,28 @@ export const isWebGL2Available = () => {
 
 export const Effects = React.forwardRef(
   (
-    { children, multisamping = 8, renderIndex = 1, disableRender, disableGamma, disableRenderPass, ...props }: Props,
+    {
+      children,
+      multisamping = 8,
+      renderIndex = 1,
+      disableRender,
+      disableGamma,
+      disableRenderPass,
+      encoding,
+      type,
+      ...props
+    }: Props,
     ref
   ) => {
     React.useMemo(() => extend({ EffectComposer, RenderPass, ShaderPass }), [])
     const composer = React.useRef<EffectComposer>()
     const { scene, camera, gl, size, viewport } = useThree()
     const [target] = React.useState(() => {
-      const t = new WebGLRenderTarget(size.width, size.height, { format: RGBAFormat, encoding: gl.outputEncoding })
+      const t = new WebGLRenderTarget(size.width, size.height, {
+        type: type || HalfFloatType,
+        format: RGBAFormat,
+        encoding: encoding || gl.outputEncoding,
+      })
       t.samples = multisamping
       return t
     })

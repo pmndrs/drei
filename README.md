@@ -440,10 +440,13 @@ function Foo() {
 }
 ```
 
-Applying transparency, make sure to set the transparent to true for the opacity to work.
+To make the material transparent:
 
 ```jsx
-<Image url="/file.jpg" opacity={0.5} transparent />
+<Image url="/file.jpg" 
+  transparent
+  opacity={0.5} 
+/>
 ```
 
 #### Text

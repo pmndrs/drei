@@ -4,9 +4,6 @@ import { Color, extend, useThree } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
 import { useTexture } from './useTexture'
 
-type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never }
-type XOR<T, U> = T | U extends Object ? (Without<T, U> & U) | (Without<U, T> & T) : T | U
-
 export type ImageProps = JSX.IntrinsicElements['mesh'] & {
   segments?: number
   scale?: number | [number, number]

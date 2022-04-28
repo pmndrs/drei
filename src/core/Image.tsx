@@ -12,6 +12,8 @@ export type ImageProps = JSX.IntrinsicElements['mesh'] & {
   grayscale?: number
   toneMapped?: boolean
   url: string
+  transparent?: boolean
+  opacity?: number
 }
 
 type ImageMaterialType = JSX.IntrinsicElements['shaderMaterial'] & {
@@ -75,7 +77,19 @@ const ImageMaterialImpl = shaderMaterial(
 
 export const Image = React.forwardRef(
   (
-    { children, color, segments = 1, scale = 1, zoom = 1, grayscale = 0, url, toneMapped, ...props }: ImageProps,
+    {
+      children,
+      color,
+      segments = 1,
+      scale = 1,
+      zoom = 1,
+      grayscale = 0,
+      opacity = 1,
+      url,
+      toneMapped,
+      transparent,
+      ...props
+    }: ImageProps,
     ref: React.ForwardedRef<THREE.Mesh>
   ) => {
     extend({ ImageMaterial: ImageMaterialImpl })
@@ -92,9 +106,11 @@ export const Image = React.forwardRef(
           map-encoding={gl.outputEncoding}
           zoom={zoom}
           grayscale={grayscale}
+          opacity={opacity}
           scale={planeBounds}
           imageBounds={imageBounds}
           toneMapped={toneMapped}
+          transparent={transparent}
         />
         {children}
       </mesh>

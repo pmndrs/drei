@@ -34,7 +34,7 @@ declare global {
 }
 
 const ImageMaterialImpl = shaderMaterial(
-  { color: new THREE.Color('white'), scale: [1, 1], imageBounds: [1, 1], map: null, zoom: 1, grayscale: 0 },
+  { color: new THREE.Color('white'), scale: [1, 1], imageBounds: [1, 1], map: null, zoom: 1, grayscale: 0, opacity: 1 },
   /* glsl */ `
   varying vec2 vUv;
   void main() {
@@ -51,6 +51,7 @@ const ImageMaterialImpl = shaderMaterial(
   uniform sampler2D map;
   uniform float zoom;
   uniform float grayscale;
+  uniform float opacity;
   const vec3 luma = vec3(.299, 0.587, 0.114);
   vec4 toGrayscale(vec4 color, float intensity) {
     return vec4(mix(color.rgb, vec3(dot(color.rgb, luma)), intensity), color.a);
@@ -67,7 +68,7 @@ const ImageMaterialImpl = shaderMaterial(
     vec2 offset = (rs < ri ? vec2((new.x - s.x) / 2.0, 0.0) : vec2(0.0, (new.y - s.y) / 2.0)) / new;
     vec2 uv = vUv * s / new + offset;
     vec2 zUv = (uv - vec2(0.5, 0.5)) / zoom + vec2(0.5, 0.5);
-    gl_FragColor = toGrayscale(texture2D(map, zUv) * vec4(color, 1.0), grayscale);
+    gl_FragColor = toGrayscale(texture2D(map, zUv) * vec4(color, opacity), grayscale);
     
     #include <tonemapping_fragment>
     #include <encodings_fragment>

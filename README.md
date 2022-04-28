@@ -435,10 +435,15 @@ function Foo() {
     ref.current.material.zoom = ... // 1 and higher
     ref.current.material.grayscale = ... // between 0 and 1
     ref.current.material.color.set(...) // mix-in color
-    ref.current.material.transparent = ... // boolean, set this to true when applying opacity
-    ref.current.material.opacity = ... // between 0 and 1
   })
   return <Image ref={ref} url="/file.jpg" />
+}
+```
+
+Applying transparency, make sure to set the transparent to true for the opacity to work.
+
+```jsx
+<Image url="/file.jpg" opacity={0.5} transparent />
 ```
 
 #### Text

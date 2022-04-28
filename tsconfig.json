@@ -17,7 +17,8 @@
     "resolveJsonModule": true,
     "noImplicitAny": false,
     "noImplicitThis": false,
-    "baseUrl": "./src"
+    "baseUrl": "./src",
+    "strictNullChecks": true
   },
   "include": ["./src", "custom.d.ts"],
   "exclude": ["./node_modules/**/*"]

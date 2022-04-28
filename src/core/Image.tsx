@@ -4,6 +4,9 @@ import { Color, extend, useThree } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
 import { useTexture } from './useTexture'
 
+type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never }
+type XOR<T, U> = T | U extends Object ? (Without<T, U> & U) | (Without<U, T> & T) : T | U
+
 export type ImageProps = JSX.IntrinsicElements['mesh'] & {
   segments?: number
   scale?: number | [number, number]
@@ -11,10 +14,9 @@ export type ImageProps = JSX.IntrinsicElements['mesh'] & {
   zoom?: number
   grayscale?: number
   toneMapped?: boolean
-  url: string
   transparent?: boolean
   opacity?: number
-}
+} & ({ texture: THREE.Texture; url?: never } | { texture?: never; url: string }) // {texture: THREE.Texture} XOR {url: string}
 
 type ImageMaterialType = JSX.IntrinsicElements['shaderMaterial'] & {
   scale?: number[]
@@ -76,7 +78,7 @@ const ImageMaterialImpl = shaderMaterial(
 `
 )
 
-export const Image = React.forwardRef(
+const ImageWithUrl = React.forwardRef(
   (
     {
       children,
@@ -95,7 +97,7 @@ export const Image = React.forwardRef(
   ) => {
     extend({ ImageMaterial: ImageMaterialImpl })
     const gl = useThree((state) => state.gl)
-    const texture = useTexture(url)
+    const texture = useTexture(url!)
     const planeBounds = Array.isArray(scale) ? [scale[0], scale[1]] : [scale, scale]
     const imageBounds = [texture.image.width, texture.image.height]
     return (
@@ -118,3 +120,51 @@ export const Image = React.forwardRef(
     )
   }
 )
+
+const ImageWithTexture = React.forwardRef(
+  (
+    {
+      children,
+      color,
+      segments = 1,
+      scale = 1,
+      zoom = 1,
+      grayscale = 0,
+      opacity = 1,
+      texture,
+      toneMapped,
+      transparent,
+      ...props
+    }: ImageProps,
+    ref: React.ForwardedRef<THREE.Mesh>
+  ) => {
+    extend({ ImageMaterial: ImageMaterialImpl })
+    const gl = useThree((state) => state.gl)
+    const planeBounds = Array.isArray(scale) ? [scale[0], scale[1]] : [scale, scale]
+    const imageBounds = [texture!.image.width, texture!.image.height]
+    return (
+      <mesh ref={ref} scale={scale} {...props}>
+        <planeGeometry args={[1, 1, segments, segments]} />
+        <imageMaterial
+          color={color}
+          map={texture!}
+          map-encoding={gl.outputEncoding}
+          zoom={zoom}
+          grayscale={grayscale}
+          opacity={opacity}
+          scale={planeBounds}
+          imageBounds={imageBounds}
+          toneMapped={toneMapped}
+          transparent={transparent}
+        />
+        {children}
+      </mesh>
+    )
+  }
+)
+
+export const Image = React.forwardRef<THREE.Mesh, ImageProps>((props, ref) => {
+  if (props.url) return <ImageWithUrl {...props} ref={ref} />
+  else if (props.texture) return <ImageWithTexture {...props} ref={ref} />
+  else throw new Error('<Image /> requires a url or texture')
+})

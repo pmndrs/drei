@@ -47,7 +47,7 @@ export const TrackballControls = React.forwardRef<TrackballControlsImpl, Trackba
         if (onEnd) controls.removeEventListener('end', onEnd)
         controls.removeEventListener('change', callback)
       }
-    }, [onChange, onStart, onEnd])
+    }, [onChange, onStart, onEnd, controls, invalidate])
 
     React.useEffect(() => {
       controls.handleResize()

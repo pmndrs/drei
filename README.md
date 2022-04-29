@@ -437,6 +437,16 @@ function Foo() {
     ref.current.material.color.set(...) // mix-in color
   })
   return <Image ref={ref} url="/file.jpg" />
+}
+```
+
+To make the material transparent:
+
+```jsx
+<Image url="/file.jpg" 
+  transparent
+  opacity={0.5} 
+/>
 ```
 
 #### Text

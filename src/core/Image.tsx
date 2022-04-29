@@ -11,8 +11,9 @@ export type ImageProps = JSX.IntrinsicElements['mesh'] & {
   zoom?: number
   grayscale?: number
   toneMapped?: boolean
-  url: string
-}
+  transparent?: boolean
+  opacity?: number
+} & ({ texture: THREE.Texture; url?: never } | { texture?: never; url: string }) // {texture: THREE.Texture} XOR {url: string}
 
 type ImageMaterialType = JSX.IntrinsicElements['shaderMaterial'] & {
   scale?: number[]
@@ -32,7 +33,7 @@ declare global {
 }
 
 const ImageMaterialImpl = shaderMaterial(
-  { color: new THREE.Color('white'), scale: [1, 1], imageBounds: [1, 1], map: null, zoom: 1, grayscale: 0 },
+  { color: new THREE.Color('white'), scale: [1, 1], imageBounds: [1, 1], map: null, zoom: 1, grayscale: 0, opacity: 1 },
   /* glsl */ `
   varying vec2 vUv;
   void main() {
@@ -49,6 +50,7 @@ const ImageMaterialImpl = shaderMaterial(
   uniform sampler2D map;
   uniform float zoom;
   uniform float grayscale;
+  uniform float opacity;
   const vec3 luma = vec3(.299, 0.587, 0.114);
   vec4 toGrayscale(vec4 color, float intensity) {
     return vec4(mix(color.rgb, vec3(dot(color.rgb, luma)), intensity), color.a);
@@ -65,7 +67,7 @@ const ImageMaterialImpl = shaderMaterial(
     vec2 offset = (rs < ri ? vec2((new.x - s.x) / 2.0, 0.0) : vec2(0.0, (new.y - s.y) / 2.0)) / new;
     vec2 uv = vUv * s / new + offset;
     vec2 zUv = (uv - vec2(0.5, 0.5)) / zoom + vec2(0.5, 0.5);
-    gl_FragColor = toGrayscale(texture2D(map, zUv) * vec4(color, 1.0), grayscale);
+    gl_FragColor = toGrayscale(texture2D(map, zUv) * vec4(color, opacity), grayscale);
     
     #include <tonemapping_fragment>
     #include <encodings_fragment>
@@ -73,31 +75,61 @@ const ImageMaterialImpl = shaderMaterial(
 `
 )
 
-export const Image = React.forwardRef(
+const ImageBase = React.forwardRef(
   (
-    { children, color, segments = 1, scale = 1, zoom = 1, grayscale = 0, url, toneMapped, ...props }: ImageProps,
+    {
+      children,
+      color,
+      segments = 1,
+      scale = 1,
+      zoom = 1,
+      grayscale = 0,
+      opacity = 1,
+      texture,
+      toneMapped,
+      transparent,
+      ...props
+    }: Omit<ImageProps, 'url'>,
     ref: React.ForwardedRef<THREE.Mesh>
   ) => {
     extend({ ImageMaterial: ImageMaterialImpl })
     const gl = useThree((state) => state.gl)
-    const texture = useTexture(url)
     const planeBounds = Array.isArray(scale) ? [scale[0], scale[1]] : [scale, scale]
-    const imageBounds = [texture.image.width, texture.image.height]
+    const imageBounds = [texture!.image.width, texture!.image.height]
     return (
       <mesh ref={ref} scale={scale} {...props}>
         <planeGeometry args={[1, 1, segments, segments]} />
         <imageMaterial
           color={color}
-          map={texture}
+          map={texture!}
           map-encoding={gl.outputEncoding}
           zoom={zoom}
           grayscale={grayscale}
+          opacity={opacity}
           scale={planeBounds}
           imageBounds={imageBounds}
           toneMapped={toneMapped}
+          transparent={transparent}
         />
         {children}
       </mesh>
     )
   }
 )
+
+const ImageWithUrl = React.forwardRef(({ url, ...props }: ImageProps, ref: React.ForwardedRef<THREE.Mesh>) => {
+  const texture = useTexture(url!)
+  return <ImageBase {...props} texture={texture} ref={ref} />
+})
+
+const ImageWithTexture = React.forwardRef(
+  ({ url: _url, ...props }: ImageProps, ref: React.ForwardedRef<THREE.Mesh>) => {
+    return <ImageBase {...props} ref={ref} />
+  }
+)
+
+export const Image = React.forwardRef<THREE.Mesh, ImageProps>((props, ref) => {
+  if (props.url) return <ImageWithUrl {...props} ref={ref} />
+  else if (props.texture) return <ImageWithTexture {...props} ref={ref} />
+  else throw new Error('<Image /> requires a url or texture')
+})

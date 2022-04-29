@@ -75,50 +75,7 @@ const ImageMaterialImpl = shaderMaterial(
 `
 )
 
-const ImageWithUrl = React.forwardRef(
-  (
-    {
-      children,
-      color,
-      segments = 1,
-      scale = 1,
-      zoom = 1,
-      grayscale = 0,
-      opacity = 1,
-      url,
-      toneMapped,
-      transparent,
-      ...props
-    }: ImageProps,
-    ref: React.ForwardedRef<THREE.Mesh>
-  ) => {
-    extend({ ImageMaterial: ImageMaterialImpl })
-    const gl = useThree((state) => state.gl)
-    const texture = useTexture(url!)
-    const planeBounds = Array.isArray(scale) ? [scale[0], scale[1]] : [scale, scale]
-    const imageBounds = [texture.image.width, texture.image.height]
-    return (
-      <mesh ref={ref} scale={scale} {...props}>
-        <planeGeometry args={[1, 1, segments, segments]} />
-        <imageMaterial
-          color={color}
-          map={texture}
-          map-encoding={gl.outputEncoding}
-          zoom={zoom}
-          grayscale={grayscale}
-          opacity={opacity}
-          scale={planeBounds}
-          imageBounds={imageBounds}
-          toneMapped={toneMapped}
-          transparent={transparent}
-        />
-        {children}
-      </mesh>
-    )
-  }
-)
-
-const ImageWithTexture = React.forwardRef(
+const ImageBase = React.forwardRef(
   (
     {
       children,
@@ -132,7 +89,7 @@ const ImageWithTexture = React.forwardRef(
       toneMapped,
       transparent,
       ...props
-    }: ImageProps,
+    }: Omit<ImageProps, 'url'>,
     ref: React.ForwardedRef<THREE.Mesh>
   ) => {
     extend({ ImageMaterial: ImageMaterialImpl })
@@ -157,6 +114,17 @@ const ImageWithTexture = React.forwardRef(
         {children}
       </mesh>
     )
+  }
+)
+
+const ImageWithUrl = React.forwardRef(({ url, ...props }: ImageProps, ref: React.ForwardedRef<THREE.Mesh>) => {
+  const texture = useTexture(url!)
+  return <ImageBase {...props} texture={texture} ref={ref} />
+})
+
+const ImageWithTexture = React.forwardRef(
+  ({ url: _url, ...props }: ImageProps, ref: React.ForwardedRef<THREE.Mesh>) => {
+    return <ImageBase {...props} ref={ref} />
   }
 )
 

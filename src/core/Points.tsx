@@ -42,9 +42,7 @@ const PointsInstances = React.forwardRef<THREE.Points, PointsInstancesProps>(
       parentRef.current.updateMatrixWorld()
       parentMatrix.copy(parentRef.current.matrixWorld).invert()
 
-      if (refs.length) {
-        parentRef.current.geometry.drawRange.count = Math.min(limit, range !== undefined ? range : limit, refs.length)
-      }
+      parentRef.current.geometry.drawRange.count = Math.min(limit, range !== undefined ? range : limit, refs.length)
 
       for (i = 0; i < refs.length; i++) {
         positionRef = refs[i].current

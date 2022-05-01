@@ -78,12 +78,10 @@ const Instances = React.forwardRef<InstancedMesh, InstancesProps>(
         parentRef.current.updateMatrixWorld()
         parentMatrix.copy(parentRef.current.matrixWorld).invert()
 
-        if (instances.length) {
-          updateRange = Math.min(limit, range !== undefined ? range : limit, instances.length)
-          parentRef.current.count = updateRange
-          parentRef.current.instanceMatrix.updateRange.count = updateRange * 16
-          parentRef.current.instanceColor.updateRange.count = updateRange * 3
-        }
+        updateRange = Math.min(limit, range !== undefined ? range : limit, instances.length)
+        parentRef.current.count = updateRange
+        parentRef.current.instanceMatrix.updateRange.count = updateRange * 16
+        parentRef.current.instanceColor.updateRange.count = updateRange * 3
 
         for (i = 0; i < instances.length; i++) {
           instanceRef = instances[i].current

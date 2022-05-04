@@ -133,6 +133,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <li><a href="#portals">Portals</a></li>        
         <ul>
           <li><a href="#view">View</a></li>
+          <li><a href="#rendertexture">RenderTexture</a></li>
         </ul>
       </ul>
     </td>
@@ -443,10 +444,7 @@ function Foo() {
 To make the material transparent:
 
 ```jsx
-<Image url="/file.jpg" 
-  transparent
-  opacity={0.5} 
-/>
+<Image url="/file.jpg" transparent opacity={0.5} />
 ```
 
 #### Text
@@ -1764,6 +1762,37 @@ return (
         <mesh />
         <OrbitControls />
       </View>
+```
+
+#### RenderTexture
+
+<p>
+  <a href="https://codesandbox.io/s/0z8i2c"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/0z8i2c/screenshot.png" alt="Demo"/></a>  
+</p>
+
+This component allows you to render a live scene into a texture which you can then apply to a material. The contents of it run inside a portal and are separate from the rest of the canvas, therefore you can have events in there, events, environment maps, etc.
+
+```tsx
+<RenderTexture
+  /** Optional width of the texture, defaults to viewport bounds */
+  width?: number
+  /** Optional height of the texture, defaults to viewport bounds */
+  height?: number
+  /** Optional event priority, defaults to 0 */
+  priority?: number
+  /** Optional frame count, defaults to Infinity. If you set it to 1, it would only render a single frame, etc */
+  frames?: number
+  /** Children will be rendered into a portal */
+  children: React.ReactNode
+/>
+```
+
+```jsx
+<mesh>
+  <planeGeometry />
+  <meshStandardMaterial>
+    <RenderTexture attach="map" encoding={THREE.sRGBEncoding}>
+      <mesh />
 ```
 
 # Staging

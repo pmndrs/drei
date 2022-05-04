@@ -105,3 +105,4 @@ export * from './AdaptiveDpr'
 export * from './AdaptiveEvents'
 
 // Portals
+export * from './RenderTexture'

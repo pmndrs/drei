@@ -1793,7 +1793,7 @@ This component allows you to render a live scene into a texture which you can th
 <mesh>
   <planeGeometry />
   <meshStandardMaterial>
-    <RenderTexture attach="map" encoding={THREE.sRGBEncoding}>
+    <RenderTexture attach="map">
       <mesh />
 ```
 

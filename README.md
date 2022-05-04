@@ -1778,8 +1778,10 @@ This component allows you to render a live scene into a texture which you can th
   width?: number
   /** Optional height of the texture, defaults to viewport bounds */
   height?: number
+  /** Optional render priority, defaults to 0 */
+  renderPriority?: number
   /** Optional event priority, defaults to 0 */
-  priority?: number
+  eventPriority?: number
   /** Optional frame count, defaults to Infinity. If you set it to 1, it would only render a single frame, etc */
   frames?: number
   /** Children will be rendered into a portal */

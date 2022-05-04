@@ -1770,7 +1770,7 @@ return (
   <a href="https://codesandbox.io/s/0z8i2c"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/0z8i2c/screenshot.png" alt="Demo"/></a>  
 </p>
 
-This component allows you to render a live scene into a texture which you can then apply to a material. The contents of it run inside a portal and are separate from the rest of the canvas, therefore you can have events in there, events, environment maps, etc.
+This component allows you to render a live scene into a texture which you can then apply to a material. The contents of it run inside a portal and are separate from the rest of the canvas, therefore you can have events in there, environment maps, etc.
 
 ```tsx
 <RenderTexture

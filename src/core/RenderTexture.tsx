@@ -36,9 +36,12 @@ export const RenderTexture = React.forwardRef(
         parent = parent.__r3f.parent
       }
       if (!parent) return false
+      // First we call the previous state-onion-layers compute, this is what makes it possible to nest portals
       if (!previous.raycaster.camera) previous.events.compute(event, previous, previous.previousRoot?.getState())
+      // We run a quick check against the parent, if it isn't hit there's no need to raycast at all
       const [intersection] = previous.raycaster.intersectObject(parent)
       if (!intersection) return false
+      // We take that hits uv coords, set up this layers raycaster, et voilà, we have raycasting on arbitrary surfaces
       const uv = intersection.uv
       state.raycaster.setFromCamera(state.pointer.set(uv.x * 2 - 1, uv.y * 2 - 1), state.camera)
     }, [])

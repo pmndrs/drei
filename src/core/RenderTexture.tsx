@@ -63,6 +63,9 @@ export const RenderTexture = React.forwardRef(
   }
 )
 
+// The container component has to be separate, it can not be inlined because "useFrame(state" when run inside createPortal will return
+// the portals own state which includes user-land overrides (custom cameras etc), but if it is executed in <RenderTexture>'s render function
+// it would return the default state.
 function Container({
   frames,
   renderPriority,

@@ -19,8 +19,8 @@ export const Float = React.forwardRef<THREE.Group, FloatProps>(
       speed = 1,
       rotationIntensity = 1,
       floatIntensity = 1,
-      minPosition = -1 * floatIntensity,
-      maxPosition = floatIntensity,
+      minPosition = -0.1 * floatIntensity,
+      maxPosition = 0.1 * floatIntensity,
       ...props
     },
     forwardRef

@@ -1,6 +1,6 @@
 import React, { forwardRef, Suspense, useRef } from 'react'
 import * as THREE from 'three'
-import { withKnobs, number } from '@storybook/addon-knobs'
+import { withKnobs, number, array } from '@storybook/addon-knobs'
 import { useFrame } from '@react-three/fiber'
 
 import { Setup } from '../Setup'
@@ -21,11 +21,10 @@ function FloatScene() {
       <Suspense fallback={null}>
         <Float
           position={[0, 1.1, 0]}
-          minPosition={0}
-          maxPosition={number('Max Position', 4)}
+          floatingRange={[number('Min Floating Range', 0), number('Max Floating Range', 1)]}
           rotation={[Math.PI / 3.5, 0, 0]}
           rotationIntensity={number('Rotation Intensity', 4)}
-          floatIntensity={number('Float Intensity', 20)}
+          floatIntensity={number('Float Intensity', 2)}
           speed={number('Speed', 5)}
         >
           <mesh ref={cube}>

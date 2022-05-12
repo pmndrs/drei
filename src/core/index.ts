@@ -56,6 +56,7 @@ export * from './useAnimations'
 export * from './useFBO'
 export * from './useIntersect'
 export * from './useBoxProjectedEnv'
+export * from './BBoxOffset'
 
 // Modifiers
 export * from './CurveModifier'

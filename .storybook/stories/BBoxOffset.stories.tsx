@@ -54,7 +54,7 @@ function BBoxOffsetScene({ anchor, drawBoundingBox }: { anchor: Anchor; drawBoun
 }
 
 const Template = ({ drawBoundingBox, anchorX, anchorY, anchorZ, ...args }) => (
-  <BBoxOffsetScene drawBoundingBox={drawBoundingBox} anchor={[anchorX, anchorX, anchorZ]} {...args} />
+  <BBoxOffsetScene drawBoundingBox={drawBoundingBox} anchor={[anchorX, anchorY, anchorZ]} {...args} />
 )
 
 export const BBoxOffsetWithHtml = Template.bind({})

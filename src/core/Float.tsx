@@ -14,15 +14,7 @@ export type FloatProps = JSX.IntrinsicElements['group'] & {
 
 export const Float = React.forwardRef<THREE.Group, FloatProps>(
   (
-    {
-      children,
-      speed = 1,
-      rotationIntensity = 1,
-      floatIntensity = 1,
-      minPosition = -0.1 * floatIntensity,
-      maxPosition = 0.1 * floatIntensity,
-      ...props
-    },
+    { children, speed = 1, rotationIntensity = 1, floatIntensity = 1, minPosition = -0.1, maxPosition = 0.1, ...props },
     forwardRef
   ) => {
     const ref = React.useRef<THREE.Group>(null!)
@@ -32,15 +24,9 @@ export const Float = React.forwardRef<THREE.Group, FloatProps>(
       ref.current.rotation.x = (Math.cos((t / 4) * speed) / 8) * rotationIntensity
       ref.current.rotation.y = (Math.sin((t / 4) * speed) / 8) * rotationIntensity
       ref.current.rotation.z = (Math.sin((t / 4) * speed) / 20) * rotationIntensity
-      let yPosition = (Math.sin((t / 4) * speed) / 10) * floatIntensity
-      yPosition = THREE.MathUtils.mapLinear(
-        yPosition,
-        -0.1 * floatIntensity,
-        floatIntensity * 0.1,
-        minPosition,
-        maxPosition
-      )
-      ref.current.position.y = yPosition
+      let yPosition = Math.sin((t / 4) * speed) / 10
+      yPosition = THREE.MathUtils.mapLinear(yPosition, -0.1, 0.1, minPosition, maxPosition)
+      ref.current.position.y = yPosition * floatIntensity
     })
     return (
       <group {...props}>

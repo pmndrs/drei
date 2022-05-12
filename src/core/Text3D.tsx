@@ -81,7 +81,7 @@ const Text3DSuspend = React.forwardRef<THREE.Mesh, React.PropsWithChildren<Text3
       return json
     }, [font])
 
-    return <Text3DBase ref={ref} {...props} font={_font as any} loader={loader} />
+    return <Text3DBase ref={ref} {...props} font={_font as FontData} loader={loader} />
   }
 )
 

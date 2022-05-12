@@ -3,7 +3,7 @@ import * as THREE from 'three'
 
 import { Setup } from '../Setup'
 
-import { Icosahedron, Html, BBoxOffset, OrbitControls, useHelper } from '../../src'
+import { Icosahedron, Sphere, Html, BBoxOffset, OrbitControls, useHelper } from '../../src'
 import { BoxHelper } from 'three'
 
 export default {
@@ -27,7 +27,15 @@ export default {
 
 type Anchor = THREE.Vector3 | [number, number, number]
 
-function BBoxOffsetScene({ anchor, drawBoundingBox }: { anchor: Anchor; drawBoundingBox: boolean }) {
+function BBoxOffsetScene({
+  anchor,
+  drawBoundingBox,
+  children,
+}: {
+  anchor: Anchor
+  drawBoundingBox: boolean
+  children?: React.ReactChild
+}) {
   const ref = React.useRef()
 
   useHelper(drawBoundingBox && ref, BoxHelper, 'cyan')
@@ -37,17 +45,7 @@ function BBoxOffsetScene({ anchor, drawBoundingBox }: { anchor: Anchor; drawBoun
       <OrbitControls autoRotate />
       <Icosahedron ref={ref}>
         <meshBasicMaterial color="hotpink" wireframe />
-        <BBoxOffset anchor={anchor}>
-          <Html
-            style={{
-              color: 'white',
-              whiteSpace: 'nowrap',
-            }}
-            center
-          >
-            Html element
-          </Html>
-        </BBoxOffset>
+        <BBoxOffset anchor={anchor}>{children}</BBoxOffset>
       </Icosahedron>
     </>
   )
@@ -57,11 +55,44 @@ const Template = ({ drawBoundingBox, anchorX, anchorY, anchorZ, ...args }) => (
   <BBoxOffsetScene drawBoundingBox={drawBoundingBox} anchor={[anchorX, anchorY, anchorZ]} {...args} />
 )
 
+function HtmlComp() {
+  return (
+    <Html
+      style={{
+        color: 'white',
+        whiteSpace: 'nowrap',
+      }}
+      center
+    >
+      Html element
+    </Html>
+  )
+}
+
 export const BBoxOffsetWithHtml = Template.bind({})
 BBoxOffsetWithHtml.args = {
   drawBoundingBox: true,
   anchorX: 0.5,
   anchorY: 0.5,
   anchorZ: 0.5,
+  children: <HtmlComp />,
 }
 BBoxOffsetWithHtml.storyName = 'With Html component'
+
+function MeshComp() {
+  return (
+    <Sphere>
+      <meshBasicMaterial color="lime" />
+    </Sphere>
+  )
+}
+
+export const BBoxOffsetWithMesh = Template.bind({})
+BBoxOffsetWithMesh.args = {
+  drawBoundingBox: true,
+  anchorX: 0.5,
+  anchorY: 0.5,
+  anchorZ: 0.5,
+  children: <MeshComp />,
+}
+BBoxOffsetWithMesh.storyName = 'With other mesh'

@@ -49,17 +49,9 @@ const getTextFromChildren = (children) => {
   return label
 }
 
-export const Text3D = React.forwardRef<THREE.Mesh, React.PropsWithChildren<Text3DProps>>(
-  ({ font, size = 1, height = 0.2, bevelThickness = 0.1, bevelSize = 0.01, children, ...props }, ref) => {
-    const loader = React.useMemo(() => new FontLoader(), [])
-    const _font = suspend(async () => {
-      if (typeof font === 'string') {
-        const json = await (await fetch(font)).json()
-        return loader.parse(json)
-      } else {
-        return loader.parse(font)
-      }
-    }, [font])
+const Text3DBase = React.forwardRef<THREE.Mesh, React.PropsWithChildren<Text3DProps & { loader: FontLoader }>>(
+  ({ font, loader, size = 1, height = 0.2, bevelThickness = 0.1, bevelSize = 0.01, children, ...props }, ref) => {
+    const _font = React.useMemo(() => loader.parse(font as FontData), [font])
 
     return (
       <mesh ref={ref}>
@@ -81,3 +73,24 @@ export const Text3D = React.forwardRef<THREE.Mesh, React.PropsWithChildren<Text3
     )
   }
 )
+
+const Text3DSuspend = React.forwardRef<THREE.Mesh, React.PropsWithChildren<Text3DProps & { loader: FontLoader }>>(
+  ({ font, loader, ...props }, ref) => {
+    const _font = suspend(async () => {
+      const json = await (await fetch(font as string)).json()
+      return json
+    }, [font])
+
+    return <Text3DBase ref={ref} {...props} font={_font as any} loader={loader} />
+  }
+)
+
+export const Text3D = React.forwardRef<THREE.Mesh, React.PropsWithChildren<Text3DProps>>((props, ref) => {
+  const loader = React.useMemo(() => new FontLoader(), [])
+
+  if (typeof props.font === 'string') {
+    return <Text3DSuspend ref={ref} {...props} loader={loader} />
+  } else {
+    return <Text3DBase ref={ref} {...props} loader={loader} />
+  }
+})

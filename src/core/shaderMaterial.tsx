@@ -1,5 +1,4 @@
 import * as THREE from 'three'
-import { nanoid } from 'nanoid'
 
 export function shaderMaterial(
   uniforms: {
@@ -51,6 +50,6 @@ export function shaderMaterial(
       if (onInit) onInit(this)
     }
   } as unknown as typeof THREE.ShaderMaterial & { key: string }
-  material.key = nanoid()
+  material.key = THREE.MathUtils.generateUUID()
   return material
 }

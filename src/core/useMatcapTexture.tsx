@@ -21,7 +21,11 @@ function getFormatString(format: number) {
 const LIST_URL = 'https://cdn.jsdelivr.net/gh/pmndrs/drei-assets@master/matcaps.json'
 const MATCAP_ROOT = 'https://rawcdn.githack.com/emmelleppi/matcaps/9b36ccaaf0a24881a39062d05566c9e92be4aa0d'
 
-export function useMatcapTexture(id: number | string = 0, format = 1024): [THREE.Texture, string, number] {
+export function useMatcapTexture(
+  id: number | string = 0,
+  format = 1024,
+  onLoad?: (texture: Texture | Texture[]) => void
+): [THREE.Texture, string, number] {
   const matcapList = suspend(() => fetch(LIST_URL).then((res) => res.json()), ['matcapList']) as Record<string, string>
 
   const DEFAULT_MATCAP = matcapList[0]
@@ -39,7 +43,7 @@ export function useMatcapTexture(id: number | string = 0, format = 1024): [THREE
   const fileName = `${fileHash || DEFAULT_MATCAP}${getFormatString(format)}.png`
   const url = `${MATCAP_ROOT}/${format}/${fileName}`
 
-  const matcapTexture = useTexture(url) as Texture
+  const matcapTexture = useTexture(url, onLoad) as Texture
 
   return [matcapTexture, url, numTot]
 }

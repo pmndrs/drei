@@ -1469,6 +1469,19 @@ const props = useTexture({
 return <meshStandardMaterial {...props} />
 ```
 
+Use the `onLoad` callback to set propeties on loaded textures.
+
+```jsx
+const texture = useTexture(url, (texture) => {
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping
+})
+
+const [texture1, texture2] = useTexture([texture1, texture2], ([texture1, texture2]) => {
+  texture1.wrapS = texture1.wrapT = THREE.RepeatWrapping
+  texture2.wrapS = texture2.wrapT = THREE.RepeatWrapping
+})
+```
+
 #### useKTX2
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-ktx2--use-ktx-2-scene-st)

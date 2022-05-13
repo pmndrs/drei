@@ -12,7 +12,11 @@ type Settings = {
   offset?: number[]
 }
 
-export function useNormalTexture(id = 0, settings: Settings = {}): [Texture, string, number] {
+export function useNormalTexture(
+  id = 0,
+  settings: Settings = {},
+  onLoad?: (texture: Texture | Texture[]) => void
+): [Texture, string, number] {
   const { repeat = [1, 1], anisotropy = 1, offset = [0, 0] } = settings
 
   const normalsList = suspend(() => fetch(LIST_URL).then((res) => res.json()), ['normalsList']) as Record<
@@ -25,7 +29,7 @@ export function useNormalTexture(id = 0, settings: Settings = {}): [Texture, str
   const imageName = normalsList[id] || DEFAULT_NORMAL
   const url = `${NORMAL_ROOT}/normals/${imageName}`
 
-  const normalTexture = useTexture(url) as Texture
+  const normalTexture = useTexture(url, onLoad) as Texture
 
   React.useLayoutEffect(() => {
     if (!normalTexture) return

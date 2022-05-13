@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { extend, Node } from '@react-three/fiber'
+import { extend, MeshProps, Node } from '@react-three/fiber'
 import { useMemo } from 'react'
 import { useEffect } from 'react'
 import { suspend } from 'suspend-react'
@@ -35,7 +35,8 @@ declare type FontData = {
 
 type Text3DProps = {
   font: FontData | string
-} & Omit<TextGeometryParameters, 'font'>
+} & Omit<TextGeometryParameters, 'font'> &
+  MeshProps
 
 const types = ['string', 'number']
 const getTextFromChildren = (children) => {
@@ -63,6 +64,7 @@ const Text3DBase = React.forwardRef<THREE.Mesh, React.PropsWithChildren<Text3DPr
       bevelOffset = 0,
       curveSegments = 8,
       children,
+      ...props
     },
     ref
   ) => {
@@ -92,7 +94,7 @@ const Text3DBase = React.forwardRef<THREE.Mesh, React.PropsWithChildren<Text3DPr
     const args = React.useMemo(() => [txt, opts], [txt, opts])
 
     return (
-      <mesh ref={ref}>
+      <mesh {...props} ref={ref}>
         <renamedTextGeometry args={args} />
         {children}
       </mesh>
@@ -107,7 +109,7 @@ const Text3DSuspend = React.forwardRef<THREE.Mesh, React.PropsWithChildren<Text3
       return json
     }, [font])
 
-    return <Text3DBase ref={ref} {...props} font={_font as FontData} loader={loader} />
+    return <Text3DBase {...props} ref={ref} font={_font as FontData} loader={loader} />
   }
 )
 
@@ -115,8 +117,8 @@ export const Text3D = React.forwardRef<THREE.Mesh, React.PropsWithChildren<Text3
   const loader = React.useMemo(() => new FontLoader(), [])
 
   if (typeof props.font === 'string') {
-    return <Text3DSuspend ref={ref} {...props} loader={loader} />
+    return <Text3DSuspend {...props} ref={ref} loader={loader} />
   } else {
-    return <Text3DBase ref={ref} {...props} loader={loader} />
+    return <Text3DBase {...props} ref={ref} loader={loader} />
   }
 })

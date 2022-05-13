@@ -1,14 +1,17 @@
 import * as React from 'react'
-import { Box3, Vector3, Object3D } from 'three'
+import * as THREE from 'three'
 import { useFrame, GroupProps } from '@react-three/fiber'
 
+const boundingBox = new THREE.Box3()
+const boundingBoxSize = new THREE.Vector3()
+
 export interface BBOffsetProps extends GroupProps {
-  anchor: Vector3 | [number, number, number]
+  anchor: THREE.Vector3 | [number, number, number]
 }
 
 export const BBoxOffset = ({ anchor, ...props }: BBOffsetProps) => {
-  const ref = React.useRef<Object3D>(null!)
-  const [parentRef, setParentRef] = React.useState<Object3D | null>(null)
+  const ref = React.useRef<THREE.Object3D>(null!)
+  const [parentRef, setParentRef] = React.useState<THREE.Object3D | null>(null)
 
   // Reattach group created by this component to the parent's parent,
   // so it becomes a sibling of its initial parent.
@@ -19,11 +22,6 @@ export const BBoxOffset = ({ anchor, ...props }: BBOffsetProps) => {
       ref.current.parent.parent.add(ref.current)
     }
   }, [])
-
-  // Do not create objects in loop.
-  // https://docs.pmnd.rs/react-three-fiber/advanced/pitfalls#don't-re-create-objects-in-loops
-  const boundingBox = new Box3()
-  const boundingBoxSize = new Vector3()
 
   useFrame(() => {
     if (parentRef) {

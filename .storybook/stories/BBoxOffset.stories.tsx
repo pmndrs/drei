@@ -19,9 +19,9 @@ export default {
   ],
   argTypes: {
     drawBoundingBox: { control: 'boolean' },
-    anchorX: { control: { type: 'range', min: 0, max: 2, step: 0.1 } },
-    anchorY: { control: { type: 'range', min: 0, max: 2, step: 0.1 } },
-    anchorZ: { control: { type: 'range', min: 0, max: 2, step: 0.1 } },
+    anchorX: { control: { type: 'range', min: -1, max: 1, step: 0.1 } },
+    anchorY: { control: { type: 'range', min: -1, max: 1, step: 0.1 } },
+    anchorZ: { control: { type: 'range', min: -1, max: 1, step: 0.1 } },
     children: { table: { disable: true } },
   },
 }
@@ -73,9 +73,9 @@ function HtmlComp() {
 export const BBoxOffsetWithHtml = Template.bind({})
 BBoxOffsetWithHtml.args = {
   drawBoundingBox: true,
-  anchorX: 0.5,
-  anchorY: 0.5,
-  anchorZ: 0.5,
+  anchorX: 1,
+  anchorY: 1,
+  anchorZ: 1,
   children: <HtmlComp />,
 }
 BBoxOffsetWithHtml.storyName = 'With Html component'
@@ -91,9 +91,9 @@ function MeshComp() {
 export const BBoxOffsetWithMesh = Template.bind({})
 BBoxOffsetWithMesh.args = {
   drawBoundingBox: true,
-  anchorX: 0.5,
-  anchorY: 0.5,
-  anchorZ: 0.5,
+  anchorX: 1,
+  anchorY: 1,
+  anchorZ: 1,
   children: <MeshComp />,
 }
 BBoxOffsetWithMesh.storyName = 'With other mesh'

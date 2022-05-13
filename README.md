@@ -56,6 +56,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <ul>
           <li><a href="#image">Image</a></li>
           <li><a href="#text">Text</a></li>
+          <li><a href="#text3d">Text3D</a></li>
           <li><a href="#line">Line</a></li>
           <li><a href="#quadraticbezierline">QuadraticBezierLine</a></li>
           <li><a href="#cubicbezierline">CubicBezierLine</a></li>
@@ -470,6 +471,23 @@ Text will suspend while loading the font data, but in order to completely avoid 
   hello world!
 </Text>
 ```
+
+#### Text3D
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-text3d--text-3-d-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
+
+Render 3D text using ThreeJS's `TextGeometry`.
+
+Text3D will suspend while loading the font data, you can also load the font yourself before passing it in. Text3D requires fonts in JSON format generated through (typeface.json)[http://gero3.github.io/facetype.js/] either as a path to a JSON files or a JSON object.
+
+```jsx
+<Text3D font={fontUrl} {...textOptions}>
+  Hello world!
+  <meshNormalMaterial />
+</Text3D>
+```
+
+You can use any material. `textOptions` are options you'd pass to the `TextGeometry` constructor. Find more information about available options [here](https://threejs.org/docs/index.html?q=textg#examples/en/geometries/TextGeometry).
 
 #### Line
 

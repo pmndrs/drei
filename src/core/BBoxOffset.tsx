@@ -29,9 +29,9 @@ export const BBoxOffset = ({ anchor, ...props }: BBOffsetProps) => {
       boundingBox.getSize(boundingBoxSize)
 
       ref.current.position.set(
-        boundingBoxSize.x * anchor[0],
-        boundingBoxSize.y * anchor[1],
-        boundingBoxSize.z * anchor[2]
+        parentRef.position.x + boundingBoxSize.x * anchor[0],
+        parentRef.position.y + boundingBoxSize.y * anchor[1],
+        parentRef.position.z + boundingBoxSize.z * anchor[2]
       )
     }
   })

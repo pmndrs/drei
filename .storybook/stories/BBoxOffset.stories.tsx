@@ -22,6 +22,7 @@ export default {
     anchorX: { control: { type: 'range', min: 0, max: 2, step: 0.1 } },
     anchorY: { control: { type: 'range', min: 0, max: 2, step: 0.1 } },
     anchorZ: { control: { type: 'range', min: 0, max: 2, step: 0.1 } },
+    children: { table: { disable: true } },
   },
 }
 
@@ -81,7 +82,7 @@ BBoxOffsetWithHtml.storyName = 'With Html component'
 
 function MeshComp() {
   return (
-    <Sphere>
+    <Sphere args={[0.25]}>
       <meshBasicMaterial color="lime" />
     </Sphere>
   )

@@ -1,10 +1,10 @@
-import { extend, Node } from '@react-three/fiber'
 import * as React from 'react'
-import { suspend } from 'suspend-react'
 import * as THREE from 'three'
+import { extend, Node } from '@react-three/fiber'
+import { useMemo } from 'react'
+import { useEffect } from 'react'
+import { suspend } from 'suspend-react'
 import { TextGeometry, FontLoader, TextGeometryParameters } from 'three-stdlib'
-
-extend({ RenamedTextGeometry: TextGeometry })
 
 declare global {
   namespace JSX {
@@ -37,12 +37,13 @@ type Text3DProps = {
   font: FontData | string
 } & Omit<TextGeometryParameters, 'font'>
 
+const types = ['string', 'number']
 const getTextFromChildren = (children) => {
   let label = ''
 
   React.Children.map(children, (child) => {
-    if (typeof child === 'string') {
-      label = child
+    if (types.includes(typeof child)) {
+      label += child + ''
     }
   })
 
@@ -50,24 +51,49 @@ const getTextFromChildren = (children) => {
 }
 
 const Text3DBase = React.forwardRef<THREE.Mesh, React.PropsWithChildren<Text3DProps & { loader: FontLoader }>>(
-  ({ font, loader, size = 1, height = 0.2, bevelThickness = 0.1, bevelSize = 0.01, children, ...props }, ref) => {
+  (
+    {
+      font,
+      loader,
+      size = 1,
+      height = 0.2,
+      bevelThickness = 0.1,
+      bevelSize = 0.01,
+      bevelEnabled = false,
+      bevelOffset = 0,
+      curveSegments = 8,
+      children,
+    },
+    ref
+  ) => {
+    React.useMemo(() => {
+      extend({ RenamedTextGeometry: TextGeometry })
+    }, [])
+
     const _font = React.useMemo(() => loader.parse(font as FontData), [font])
+    const opts = useMemo(() => {
+      return {
+        font: _font,
+        size,
+        height,
+        bevelThickness,
+        bevelSize,
+        bevelEnabled,
+        bevelOffset,
+        curveSegments,
+      }
+    }, [_font, size, height, bevelThickness, bevelSize, bevelEnabled, bevelOffset, curveSegments])
+
+    /**
+     * We need the `children` in the deps because we
+     * need to be able to do `<Text3d>{state}</Text3d>`.
+     */
+    const txt = useMemo(() => getTextFromChildren(children), [children])
+    const args = React.useMemo(() => [txt, opts], [txt, opts])
 
     return (
       <mesh ref={ref}>
-        <renamedTextGeometry
-          args={[
-            getTextFromChildren(children),
-            {
-              font: _font,
-              size,
-              height,
-              bevelThickness,
-              bevelSize,
-              ...props,
-            },
-          ]}
-        />
+        <renamedTextGeometry args={args} />
         {children}
       </mesh>
     )

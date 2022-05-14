@@ -8,7 +8,7 @@ export type FloatProps = JSX.IntrinsicElements['group'] & {
   rotationIntensity?: number
   floatIntensity?: number
   children?: React.ReactNode
-  floatingRange?: [number | undefined | null, number | undefined | null]
+  floatingRange?: [number?, number?]
 }
 
 export const Float = React.forwardRef<THREE.Group, FloatProps>(

@@ -13,7 +13,7 @@ export type FloatProps = JSX.IntrinsicElements['group'] & {
 
 export const Float = React.forwardRef<THREE.Group, FloatProps>(
   (
-    { children, speed = 1, rotationIntensity = 1, floatIntensity = 1, floatingRange = [-1, 1], ...props },
+    { children, speed = 1, rotationIntensity = 1, floatIntensity = 1, floatingRange = [-0.1, 0.1], ...props },
     forwardRef
   ) => {
     const ref = React.useRef<THREE.Group>(null!)

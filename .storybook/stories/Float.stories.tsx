@@ -21,7 +21,7 @@ function FloatScene() {
       <Suspense fallback={null}>
         <Float
           position={[0, 1.1, 0]}
-          floatingRange={[number('Min Floating Range', 0), number('Max Floating Range', 1)]}
+          floatingRange={[number('Min Floating Range', undefined), number('Max Floating Range', 1)]}
           rotation={[Math.PI / 3.5, 0, 0]}
           rotationIntensity={number('Rotation Intensity', 4)}
           floatIntensity={number('Float Intensity', 2)}

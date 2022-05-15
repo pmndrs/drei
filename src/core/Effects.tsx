@@ -12,6 +12,9 @@ type Props = ReactThreeFiber.Node<EffectComposer, typeof EffectComposer> & {
   disableGamma?: boolean
   disableRenderPass?: boolean
   disableRender?: boolean
+  depthBuffer?: boolean
+  stencilBuffer?: boolean
+  anisotropy?: number
 }
 
 declare global {
@@ -42,6 +45,9 @@ export const Effects = React.forwardRef(
       disableRender,
       disableGamma,
       disableRenderPass,
+      depthBuffer = true,
+      stencilBuffer = false,
+      anisotropy = 1,
       encoding,
       type,
       ...props
@@ -56,6 +62,9 @@ export const Effects = React.forwardRef(
         type: type || HalfFloatType,
         format: RGBAFormat,
         encoding: encoding || gl.outputEncoding,
+        depthBuffer,
+        stencilBuffer,
+        anisotropy,
       })
       t.samples = multisamping
       return t

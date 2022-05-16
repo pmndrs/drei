@@ -1366,7 +1366,7 @@ useFrame(() => {
 A component using AABB (Axis-aligned bounding boxes) to offset children position by specified multipliers (`anchor` property) on each axis. You can use this component to change children positioning in regard of the parent's bounding box, eg. pinning [Html](#html) component to one of the parent's corners. Multipliers determine the offset value based on the `AABB`'s size:
 
 ```
-positionOffset = boundingBoxSize * anchor
+childrenAnchor = boundingBoxPosition + (boundingBoxSize * anchor / 2)
 ```
 
 ```jsx
@@ -1382,7 +1382,7 @@ For instance, one could want the Html component to be pinned to `positive x`, `p
 
 ```jsx
 <Box>
-  <BBAnchor anchor={[0.5, 0.5, 0.5]}>
+  <BBAnchor anchor={[1, 1, 1]}>
     <Html center>
       <span>Hello world!</span>
     </Html>

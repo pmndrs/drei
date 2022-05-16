@@ -57,6 +57,7 @@ export * from './useAnimations'
 export * from './useFBO'
 export * from './useIntersect'
 export * from './useBoxProjectedEnv'
+export * from './BBAnchor'
 
 // Modifiers
 export * from './CurveModifier'

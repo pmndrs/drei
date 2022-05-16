@@ -107,3 +107,4 @@ export * from './AdaptiveEvents'
 
 // Portals
 export * from './RenderTexture'
+export * from './Mask'

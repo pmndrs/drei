@@ -105,7 +105,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#useintersect">useIntersect</a></li>
           <li><a href="#useboxprojectedenv">useBoxProjectedEnv</a></li>
           <li><a href="#useTrail">useTrail</a></li>
-          <li><a href="#BBoxOffset">BBoxOffset</a></li>
+          <li><a href="#BBAnchor">BBAnchor</a></li>
         </ul>
         <li><a href="#loading">Loaders</a></li>
         <ul>
@@ -1359,9 +1359,9 @@ useFrame(() => {
 })
 ```
 
-#### BBoxOffset
+#### BBAnchor
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-bboxoffset--b-box-offset-with-html)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-BBAnchor--b-box-offset-with-html)
 
 A component using AABB (Axis-aligned bounding boxes) to offset children position by specified multipliers (`anchor` property) on each axis. You can use this component to change children positioning in regard of the parent's bounding box, eg. pinning [Html](#html) component to one of the parent's corners. Multipliers determine the offset value based on the `AABB`'s size:
 
@@ -1370,23 +1370,23 @@ positionOffset = boundingBoxSize * anchor
 ```
 
 ```jsx
-<BBoxOffset
+<BBAnchor
   anchor // THREE.Vector3 or [number, number, number]
   {...groupProps} // All THREE.Group props are valid
 >
   {children}
-</BBoxOffset>
+</BBAnchor>
 ```
 
 For instance, one could want the Html component to be pinned to `positive x`, `positive y`, and `positive z` corner of a [Box](#shapes) object:
 
 ```jsx
 <Box>
-  <BBoxOffset anchor={[0.5, 0.5, 0.5]}>
+  <BBAnchor anchor={[0.5, 0.5, 0.5]}>
     <Html center>
       <span>Hello world!</span>
     </Html>
-  </BBoxOffset>
+  </BBAnchor>
 </Box>
 ```
 

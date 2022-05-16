@@ -5,11 +5,11 @@ import { useFrame, GroupProps } from '@react-three/fiber'
 const boundingBox = new THREE.Box3()
 const boundingBoxSize = new THREE.Vector3()
 
-export interface BBOffsetProps extends GroupProps {
+export interface BBAnchorProps extends GroupProps {
   anchor: THREE.Vector3 | [number, number, number]
 }
 
-export const BBoxOffset = ({ anchor, ...props }: BBOffsetProps) => {
+export const BBAnchor = ({ anchor, ...props }: BBAnchorProps) => {
   const ref = React.useRef<THREE.Object3D>(null!)
   const parentRef = React.useRef<THREE.Object3D | null>(null)
 

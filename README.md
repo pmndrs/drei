@@ -1861,11 +1861,11 @@ First you need to define a mask, give it the shape that you want.
 Now refer to it with the `useMask` hook and the same id, your content will now be masked out by the geometry defined above.
 
 ```jsx
-const spread = useMask(1)
+const stencil = useMask(1)
 return (
   <mesh>
     <torusKnotGeoometry />
-    <meshStandardMaterial {...spread} />
+    <meshStandardMaterial {...stencil} />
 ```
 
 You can build compound masks with multiple shapes by re-using an id.

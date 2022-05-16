@@ -135,6 +135,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <ul>
           <li><a href="#view">View</a></li>
           <li><a href="#rendertexture">RenderTexture</a></li>
+          <li><a href="#mask">Mask</a></li>
         </ul>
       </ul>
     </td>
@@ -1826,6 +1827,69 @@ This component allows you to render a live scene into a texture which you can th
   <meshStandardMaterial>
     <RenderTexture attach="map">
       <mesh />
+```
+
+#### Mask
+
+<p>
+  <a href="https://codesandbox.io/s/z3f2mw"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/z3f2mw/screenshot.png" alt="Demo"/></a>
+</p>
+
+Masks use the scencil buffer to cut out areas of the screen. This is usually cheaper as it doesn't require double renders or createPortal.
+
+```tsx
+<Mask
+  /** Each mask must have an id, you can have compound masks referring to the same id */
+  id: number
+  /** If colors of the masks own material will leak through, default: false */
+  colorWrite?: boolean
+  /** If depth  of the masks own material will leak through, default: false */
+  depthWrite?: boolean
+  /** children must define a geometry, a render-prop function is allowed which may override the default material */
+  children: (spread: MaskSpread) => React.ReactNode | React.ReactNode
+/>
+```
+
+First you need to define a mask, give it the shape that you want.
+
+```jsx
+<Mask id={1}>
+  <planeGeometry />
+</Mask>
+```
+
+Now refer to it with the `useMask` hook and the same id, your content will now be masked out by the geometry defined above.
+
+```jsx
+const spread = useMask(1)
+return (
+  <mesh>
+    <torusKnotGeoometry />
+    <meshStandardMaterial {...spread} />
+```
+
+You can build compound masks with multiple shapes by re-using an id.
+
+```jsx
+<Mask position={[-1, 0, 0]} id={1}>
+  <planeGeometry />
+</Mask>
+<Mask position={[1, 0, 0]} id={1}>
+  <circleGeometry />
+</Mask>
+```
+
+You can override the material of a mask by using a render prop.
+
+```jsx
+<Mask id={1}>
+  {(spread) => (
+    <>
+      <planeGeometry args={[2, 2, 128, 128]} />
+      <MeshDistortMaterial distort={0.5} radius={1} speed={10} {...spread} />
+    </>
+  )}
+</Mask>
 ```
 
 # Staging

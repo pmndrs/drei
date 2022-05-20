@@ -35,7 +35,7 @@ export function Mask({ id = 1, children, colorWrite = false, depthWrite = false,
       stencilZFail: THREE.ReplaceStencilOp,
       stencilZPass: THREE.ReplaceStencilOp,
     }),
-    [colorWrite, depthWrite]
+    [id, colorWrite, depthWrite]
   )
   return (
     <mesh renderOrder={-id} {...props}>

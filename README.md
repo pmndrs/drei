@@ -1864,7 +1864,8 @@ This component allows you to render a live scene into a texture which you can th
 #### Mask
 
 <p>
-  <a href="https://codesandbox.io/s/z3f2mw"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/z3f2mw/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/7n2yru"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/7n2yru/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/z3f2mw"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/z3f2mw/screenshot.png" alt="Demo"/></a>  
 </p>
 
 Masks use the scencil buffer to cut out areas of the screen. This is usually cheaper as it doesn't require double renders or createPortal.

@@ -1924,6 +1924,12 @@ You can override the material of a mask by using a render prop.
 </Mask>
 ```
 
+Invert masks individually by providing a 2nd boolean argument to the `useMask` hook.
+
+```jsx
+const stencil = useMask(1, true)
+```
+
 # Staging
 
 #### Center

@@ -1951,7 +1951,7 @@ Calculates a boundary box and centers its children accordingly. `alignTop` adjus
   <a href="https://codesandbox.io/s/42glz0"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/42glz0/screenshot.png" alt="Demo"/></a>
 </p>
 
-Calculates a boundary box and centers the camera accordingly. If you are using controls, make sure to pass them the `makeDefault` prop. `fit` fits the current view on first render. `clip` sets the cameras near/far planes.
+Calculates a boundary box and centers the camera accordingly. If you are using camera controls, make sure to pass them the `makeDefault` prop. `fit` fits the current view on first render. `clip` sets the cameras near/far planes. `observe` will trigger on window resize.
 
 ```jsx
 <Bounds fit clip observe damping={6} margin={1.2}>
@@ -1959,7 +1959,7 @@ Calculates a boundary box and centers the camera accordingly. If you are using c
 </Bounds>
 ```
 
-The Bounds component also acts as a context provider, use the `useBounds` hook to refresh the bounds, fit the camera, clip near/far planes or focus objects. `refresh(object?: THREE.Object3D | THREE.Box3)` will recalculate bounds, since this can be expensive only call it when you know the view has changed. `clip` sets the cameras near/far planes. `fit` zooms and centers the view.
+The Bounds component also acts as a context provider, use the `useBounds` hook to refresh the bounds, fit the camera, clip near/far planes or focus objects. `refresh(object?: THREE.Object3D | THREE.Box3)` will recalculate bounds. Since this can be expensive only call it when you know the view has changed. `clip` sets the cameras near/far planes. `fit` zooms and centers the view.
 
 ```jsx
 function Foo() {

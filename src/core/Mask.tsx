@@ -45,13 +45,13 @@ export function Mask({ id = 1, children, colorWrite = false, depthWrite = false,
   )
 }
 
-export function useMask(id: number) {
+export function useMask(id: number, inverse: boolean = false) {
   return {
     stencilWrite: true,
     stencilRef: id,
-    stencilFunc: THREE.EqualStencilFunc,
+    stencilFunc: inverse ? THREE.NotEqualStencilFunc : THREE.EqualStencilFunc,
     stencilFail: THREE.KeepStencilOp,
     stencilZFail: THREE.KeepStencilOp,
-    stencilZPass: THREE.ReplaceStencilOp,
+    stencilZPass: THREE.KeepStencilOp,
   }
 }

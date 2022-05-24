@@ -73,7 +73,7 @@ export const PointerLockControls = React.forwardRef<PointerLockControlsImpl, Poi
         if (onUnlock) controls.addEventListener('unlock', onUnlock)
         elements.forEach((element) => (element ? element.removeEventListener('click', handler) : undefined))
       }
-    }, [onChange, onLock, onUnlock, selector])
+    }, [onChange, onLock, onUnlock, selector, controls, invalidate])
 
     return <primitive ref={ref} object={controls} {...rest} />
   }

@@ -10,7 +10,7 @@ type Constructor = new (...args: any[]) => any
 type Rest<T> = T extends [infer _, ...infer R] ? R : never
 
 export function useHelper<T extends Constructor>(
-  object3D: React.MutableRefObject<Object3D | undefined> | Falsey | undefined,
+  object3D: React.MutableRefObject<Object3D | null | undefined> | Falsey | undefined,
   helperConstructor: T,
   ...args: Rest<ConstructorParameters<T>>
 ) {

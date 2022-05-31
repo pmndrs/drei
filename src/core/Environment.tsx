@@ -12,6 +12,8 @@ import {
   CubeReflectionMapping,
   BackSide,
   CubeTexture,
+  sRGBEncoding,
+  LinearEncoding,
 } from 'three'
 import { RGBELoader } from 'three-stdlib'
 import { presetsObj, PresetsType } from '../helpers/environment-assets'
@@ -99,6 +101,7 @@ export function useEnvironment({
       loaderResult[0]
     : loaderResult
   texture.mapping = isCubeMap ? CubeReflectionMapping : EquirectangularReflectionMapping
+  texture.encoding = isCubeMap ? sRGBEncoding : LinearEncoding
 
   return texture
 }

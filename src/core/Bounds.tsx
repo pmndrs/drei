@@ -82,8 +82,9 @@ export function Bounds({ children, damping = 6, fit, clip, observe, margin = 1.2
     return {
       getSize,
       refresh(object?: THREE.Object3D | THREE.Box3) {
-        if (isBox3(object)) box.copy(object)
-        else {
+        if (isBox3(object)) {
+          box.copy(object)
+        } else {
           const target = object || ref.current
           target.updateWorldMatrix(true, true)
           box.setFromObject(target)

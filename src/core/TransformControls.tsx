@@ -4,6 +4,7 @@ import pick from 'lodash.pick'
 import * as React from 'react'
 import * as THREE from 'three'
 import { TransformControls as TransformControlsImpl } from 'three-stdlib'
+import { Manipulator3D as BaseManipulator3D, ManipulatorMesh } from 'manipulator3d'
 
 type ControlsProto = {
   enabled: boolean
@@ -32,7 +33,15 @@ export type TransformControlsProps = ReactThreeFiber.Object3DNode<TransformContr
     onObjectChange?: (e?: THREE.Event) => void
   }
 
-export const TransformControls = React.forwardRef<TransformControlsImpl, TransformControlsProps>(
+export const TransformControls = React.forwardRef<TransformControlsImpl, TransformControlsProps>((props, ref) => {
+  const { mode } = props
+  if (mode === 'all') {
+    return <MultiTransformControls ref={ref as any} {...props} />
+  }
+  return <SingleTransformControls ref={ref as any} {...props} />
+})
+
+const SingleTransformControls = React.forwardRef<TransformControlsImpl, TransformControlsProps>(
   ({ children, domElement, onChange, onMouseDown, onMouseUp, onObjectChange, object, ...props }, ref) => {
     const transformOnlyPropNames = [
       'enabled',
@@ -112,3 +121,114 @@ export const TransformControls = React.forwardRef<TransformControlsImpl, Transfo
     ) : null
   }
 )
+
+const MultiTransformControls = React.forwardRef<TransformControlsImpl, TransformControlsProps>(
+  ({ children, domElement, onChange, onMouseDown, onMouseUp, onObjectChange, object, ...props }, ref) => {
+    const transformOnlyPropNames = [
+      'enabled',
+      'axis',
+      'mode',
+      'translationSnap',
+      'rotationSnap',
+      'scaleSnap',
+      'space',
+      'size',
+      'showX',
+      'showY',
+      'showZ',
+    ]
+
+    const { camera, ...rest } = props
+    const { enabled = true } = props
+    const transformProps = pick(rest, transformOnlyPropNames)
+    const objectProps = omit(rest, transformOnlyPropNames)
+    const gl = useThree((state) => state.gl)
+    const scene = useThree((state) => state.scene)
+    const events = useThree((state) => state.events)
+    const defaultCamera = useThree((state) => state.camera)
+    const explCamera = camera || defaultCamera
+    const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
+    const controls = React.useMemo(
+      () =>
+        new Manipulator3D({
+          scene,
+          camera: explCamera,
+          domElement: explDomElement,
+        }),
+      [scene, explCamera, explDomElement]
+    )
+
+    const group = React.useRef<THREE.Group>()
+
+    React.useLayoutEffect(() => {
+      controls.setActive(enabled)
+    }, [controls, enabled])
+
+    React.useLayoutEffect(() => {
+      const active = controls.isActive()
+      controls.setActive(true) // Must be active to attach
+      if (object) {
+        controls.attach(object instanceof THREE.Object3D ? object : object.current)
+      } else if (group.current instanceof THREE.Object3D) {
+        controls.attach(group.current)
+      }
+      controls.setActive(active)
+      return () => void controls.detach()
+    }, [object, children, controls])
+
+    return controls ? (
+      <>
+        <primitive ref={ref} object={controls} {...transformProps} />
+        <group ref={group} {...objectProps}>
+          {children}
+        </group>
+      </>
+    ) : null
+  }
+)
+
+class Manipulator3D extends ManipulatorMesh {
+  private manipulator
+
+  constructor({ scene, camera, domElement }) {
+    const manipulator = new BaseManipulator3D(
+      scene,
+      camera,
+      {
+        domElement,
+      },
+      true
+    )
+    super(manipulator.data)
+    manipulator.mesh = this
+    this.manipulator = manipulator
+  }
+
+  addEventListener(eventName, callback) {
+    this.on(eventName, callback)
+  }
+  on(eventName, callback) {
+    this.manipulator.on(eventName, callback)
+  }
+
+  removeEventListener(eventName, callback) {
+    this.off(eventName, callback)
+  }
+  off(eventName, callback) {
+    this.manipulator.off(eventName, callback)
+  }
+
+  setActive(active) {
+    this.manipulator.setActive(active)
+  }
+  isActive() {
+    return this.manipulator.isActive()
+  }
+
+  attach(object) {
+    this.manipulator.attach(object)
+  }
+  detach() {
+    this.manipulator.detach()
+  }
+}

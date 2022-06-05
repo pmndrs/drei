@@ -8348,6 +8348,12 @@ makeerror@1.0.12:
   dependencies:
     tmpl "1.0.5"
 
+"manipulator3d@git+https://github.com/Glavin001/manipulator3d.git#8458c5c4ff9daac6f5830fa8545766f15c4d0167":
+  version "0.0.1"
+  resolved "git+https://github.com/Glavin001/manipulator3d.git#8458c5c4ff9daac6f5830fa8545766f15c4d0167"
+  dependencies:
+    three "^0.138.2"
+
 map-cache@^0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/map-cache/-/map-cache-0.2.2.tgz#c32abd0bd6525d9b051645bb4f26ac5dc98a0dbf"
@@ -11335,6 +11341,11 @@ three-stdlib@^2.10.1:
     opentype.js "^1.3.3"
     potpack "^1.0.1"
     zstddec "^0.0.2"
+
+three@^0.138.2:
+  version "0.138.3"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.138.3.tgz#7be5153d79dcbf9e9baad82e7faf8c29edda4ed0"
+  integrity sha512-4t1cKC8gimNyJChJbaklg8W/qj3PpsLJUIFm5LIuAy/hVxxNm1ru2FGTSfbTSsuHmC/7ipsyuGKqrSAKLNtkzg==
 
 three@^0.139.2:
   version "0.139.2"

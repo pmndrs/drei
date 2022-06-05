@@ -26,6 +26,27 @@ export default {
   component: TransformControls,
 }
 
+const modesObj = {
+  scale: 'scale',
+  rotate: 'rotate',
+  translate: 'translate',
+  all: 'all',
+}
+
+export function TransformControlsAllModesStory() {
+  return (
+    <Setup>
+      <TransformControls mode="all">
+        <Box>
+          <meshBasicMaterial wireframe />
+        </Box>
+      </TransformControls>
+    </Setup>
+  )
+}
+
+TransformControlsAllModesStory.storyName = 'All modes active'
+
 export function TransformControlsSelectObjectStory() {
   const [selected, setSelected] = React.useState<Object3D[]>([])
   const active = selected[0]
@@ -33,7 +54,14 @@ export function TransformControlsSelectObjectStory() {
   return (
     <Setup controls={false}>
       <OrbitControls makeDefault />
-      {active && <TransformControls object={active} />}
+      {active && (
+        <TransformControls
+          object={active}
+          mode={optionsKnob('mode', modesObj, 'translate', {
+            display: 'radio',
+          })}
+        />
+      )}
       <Select box onChange={setSelected}>
         <group>
           <Box position={[-1, 0, 0]}>
@@ -78,12 +106,6 @@ function TransformControlsLockScene({ mode, showX, showY, showZ }) {
 }
 
 export const TransformControlsLockSt = () => {
-  const modesObj = {
-    scale: 'scale',
-    rotate: 'rotate',
-    translate: 'translate',
-  }
-
   return (
     <TransformControlsLockScene
       mode={optionsKnob('mode', modesObj, 'translate', {

@@ -84,9 +84,10 @@ export const Effects = React.forwardRef(
       passes.push(<renderPass key="renderpass" attach={`passes-${passes.length}`} args={[scene, camera]} />)
     if (!disableGamma)
       passes.push(<shaderPass attach={`passes-${passes.length}`} key="gammapass" args={[GammaCorrectionShader]} />)
-    React.Children.forEach(children, (el: any) =>
-      passes.push(React.cloneElement(el, { key: passes.length, attach: `passes-${passes.length}` }))
-    )
+
+    React.Children.forEach(children, (el: any) => {
+      el && passes.push(React.cloneElement(el, { key: passes.length, attach: `passes-${passes.length}` }))
+    })
 
     return (
       <effectComposer ref={mergeRefs([ref, composer])} args={[gl, target]} {...props}>

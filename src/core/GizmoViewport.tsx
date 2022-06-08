@@ -43,7 +43,7 @@ function Axis({ scale = [0.8, 0.05, 0.05], color, rotation }: AxisProps) {
   )
 }
 
-function AxisHead({
+export function AxisHead({
   onClick,
   font,
   disabled,

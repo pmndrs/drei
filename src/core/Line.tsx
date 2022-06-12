@@ -34,7 +34,7 @@ export const Line = React.forwardRef<Line2, LineProps>(function Line(
     return geom
   }, [points, vertexColors])
 
-  React.useLayoutEffect(() => {
+  React.useEffect(() => {
     line2.computeLineDistances()
   }, [points, line2])
 

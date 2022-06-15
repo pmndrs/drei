@@ -149,7 +149,7 @@ export const Html = React.forwardRef(
     const raycaster = useThree(({ raycaster }) => raycaster)
 
     const [el] = React.useState(() => document.createElement(as))
-    const root = React.useMemo(() => ReactDOM.createRoot(el), [el])
+    const root = React.useRef<ReactDOM.Root>()
     const group = React.useRef<Group>(null!)
     const oldZoom = React.useRef(0)
     const oldPosition = React.useRef([0, 0])
@@ -159,6 +159,7 @@ export const Html = React.forwardRef(
 
     React.useEffect(() => {
       if (group.current) {
+        const currentRoot = (root.current = ReactDOM.createRoot(el))
         scene.updateMatrixWorld()
         if (transform) {
           el.style.cssText = `position:absolute;top:0;left:0;pointer-events:none;overflow:hidden;`
@@ -172,7 +173,8 @@ export const Html = React.forwardRef(
         }
         return () => {
           if (target) target.removeChild(el)
-          root.unmount()
+          console.log('why?')
+          currentRoot.unmount()
         }
       }
     }, [target, transform])
@@ -214,7 +216,7 @@ export const Html = React.forwardRef(
 
     React.useLayoutEffect(() => {
       if (transform) {
-        root.render(
+        root.current?.render(
           <div ref={transformOuterRef} style={styles}>
             <div ref={transformInnerRef} style={transformInnerStyles}>
               <div ref={ref} className={className} style={style} children={children} />
@@ -222,7 +224,7 @@ export const Html = React.forwardRef(
           </div>
         )
       } else {
-        root.render(<div ref={ref} style={styles} className={className} children={children} />)
+        root.current?.render(<div ref={ref} style={styles} className={className} children={children} />)
       }
     })
 

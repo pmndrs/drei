@@ -173,7 +173,6 @@ export const Html = React.forwardRef(
         }
         return () => {
           if (target) target.removeChild(el)
-          console.log('why?')
           currentRoot.unmount()
         }
       }

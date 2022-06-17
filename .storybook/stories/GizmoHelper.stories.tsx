@@ -15,7 +15,7 @@ export default {
   ],
 }
 
-const alignment = ['top-left', 'top-right', 'bottom-right', 'bottom-left']
+const alignment = ['top-left', 'top-right', 'bottom-right', 'bottom-left', 'bottom-center', 'center-right']
 const controls = ['OrbitControls', 'TrackballControls']
 const faces = ['Right', 'Left', 'Top', 'Bottom', 'Front', 'Back']
 const gizmos = ['GizmoViewcube', 'GizmoViewport']

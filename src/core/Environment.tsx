@@ -14,6 +14,7 @@ import {
   CubeTexture,
   sRGBEncoding,
   LinearEncoding,
+  TextureEncoding,
 } from 'three'
 import { RGBELoader } from 'three-stdlib'
 import { presetsObj, PresetsType } from '../helpers/environment-assets'
@@ -48,6 +49,7 @@ type Props = {
         height?: number
         scale?: number
       }
+  encoding?: TextureEncoding
 }
 
 const isCubeTexture = (def: any): def is CubeTexture => def && (def as CubeTexture).isCubeTexture
@@ -77,6 +79,7 @@ export function useEnvironment({
   files = ['/px.png', '/nx.png', '/py.png', '/ny.png', '/pz.png', '/nz.png'],
   path = '',
   preset = undefined,
+  encoding = undefined,
   extensions,
 }: Partial<Props>) {
   if (preset) {
@@ -101,7 +104,7 @@ export function useEnvironment({
       loaderResult[0]
     : loaderResult
   texture.mapping = isCubeMap ? CubeReflectionMapping : EquirectangularReflectionMapping
-  texture.encoding = isCubeMap ? sRGBEncoding : LinearEncoding
+  texture.encoding = encoding ?? isCubeMap ? sRGBEncoding : LinearEncoding
 
   return texture
 }

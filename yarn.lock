@@ -8348,9 +8348,10 @@ makeerror@1.0.12:
   dependencies:
     tmpl "1.0.5"
 
-"manipulator3d@git+https://github.com/Glavin001/manipulator3d.git#8458c5c4ff9daac6f5830fa8545766f15c4d0167":
-  version "0.0.1"
-  resolved "git+https://github.com/Glavin001/manipulator3d.git#8458c5c4ff9daac6f5830fa8545766f15c4d0167"
+manipulator3d@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/manipulator3d/-/manipulator3d-0.0.5.tgz#9164a8f8613f26da7e9f3de7f58c6c0ad07c1482"
+  integrity sha512-3ugX82OMc8twAECewvvIdQPj44gU/wciwQN8YMId4nyWtXx5J2rHLe6Aoxik/5YfCb/FUCUXc9jOkOPL4GwAyg==
   dependencies:
     three "^0.138.2"
 

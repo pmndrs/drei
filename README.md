@@ -2152,6 +2152,7 @@ Sets up a global cubemap, which affects the default `scene.environment`, and opt
   path="/"
   preset={null}
   scene={undefined} // adds the ability to pass a custom THREE.Scene, can also be a ref
+  encoding={undefined} // adds the ability to pass a custom THREE.TextureEncoding (default: THREE.sRGBEncoding for an array of files and THREE.LinearEncoding for a single texture)
 />
 ```
 

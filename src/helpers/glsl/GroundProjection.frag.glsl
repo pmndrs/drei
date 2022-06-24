@@ -10,13 +10,16 @@ uniform float height;
 #else
   uniform sampler2D cubemap;
 #endif
-  
-// From: https://www.iquilezles.org/www/articles/intersectors/intersectors.htm
-float diskIntersect( in vec3 ro, in vec3 rd, vec3 c, vec3 n, float r ) {
-    vec3  o = ro - c;
-    float t = -dot(n, o)/dot(rd,n);
-    vec3  q = o + rd * t;
-    return (dot(q, q) < r * r) ? t : 1e6;
+
+// From: https://www.shadertoy.com/view/4tsBD7
+float diskIntersectWithBackFaceCulling( in vec3 ro, in vec3 rd, vec3 c, vec3 n, float r )
+{
+    float d = dot(rd,n);
+    if( d>0.0 ) return 1e6;
+	vec3  o = ro - c;
+    float t = -dot(n,o)/d;
+    vec3  q = o + rd*t;
+    return (dot(q,q)<r*r) ? t : 1e6;
 }
 
 // From: https://www.iquilezles.org/www/articles/intersectors/intersectors.htm
@@ -38,7 +41,7 @@ vec3 project() {
   float intersection = sphereIntersect(camPos, p, vec3(0.), radius);
   if(intersection > 0.) {
     vec3 h = vec3(0.0,-height,0.0);
-    float intersection2 = diskIntersect(camPos, p, h, vec3(0.0,-1.0,0.0), radius);
+    float intersection2 = diskIntersectWithBackFaceCulling(camPos, p, h, vec3(0.0,1.0,0.0), radius);
     p = (camPos + min(intersection, intersection2) * p) / radius;
   }
   else {

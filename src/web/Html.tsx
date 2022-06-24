@@ -157,7 +157,7 @@ export const Html = React.forwardRef(
     const transformInnerRef = React.useRef<HTMLDivElement>(null!)
     const target = portal?.current ?? gl.domElement.parentNode
 
-    React.useEffect(() => {
+    React.useLayoutEffect(() => {
       if (group.current) {
         const currentRoot = (root.current = ReactDOM.createRoot(el))
         scene.updateMatrixWorld()

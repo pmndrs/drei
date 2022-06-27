@@ -946,11 +946,15 @@ This material makes your geometry distort following simplex noise.
 
 #### PointMaterial
 
-Antialiased round dots. It takes the same props as regular THREE.PointsMaterial
+<p>
+  <a href="https://codesandbox.io/s/eq7sc"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/eq7sc/screenshot.png" alt="Demo"/></a>
+</p>
+
+Antialiased round dots. It takes the same props as regular [THREE.PointsMaterial](https://threejs.org/docs/index.html?q=PointsMaterial#api/en/materials/PointsMaterial) on which it is based.
 
 ```jsx
 <points>
-  <PointMaterial scale={20} />
+  <PointMaterial transparent vertexColors size={15} sizeAttenuation={false} depthWrite={false} />
 </points>
 ```
 

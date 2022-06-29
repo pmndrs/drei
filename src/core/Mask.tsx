@@ -20,7 +20,7 @@ type Props = Omit<JSX.IntrinsicElements['mesh'], 'children'> & {
   /** If depth  of the masks own material will leak through, default: false */
   depthWrite?: boolean
   /** children must define a geometry, a render-prop function is allowed which may override the default material */
-  children: (spread: MaskSpread) => React.ReactNode | React.ReactNode
+  children: ((spread: MaskSpread) => React.ReactNode) | React.ReactNode
 }
 
 export function Mask({ id = 1, children, colorWrite = false, depthWrite = false, ...props }: Props) {

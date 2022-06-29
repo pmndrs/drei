@@ -8,6 +8,7 @@ export type MapControlsProps = ReactThreeFiber.Overwrite<
   {
     target?: ReactThreeFiber.Vector3
     camera?: THREE.Camera
+    makeDefault?: boolean
     onChange?: (e?: THREE.Event) => void
     onStart?: (e?: THREE.Event) => void
     onEnd?: (e?: THREE.Event) => void
@@ -17,11 +18,13 @@ export type MapControlsProps = ReactThreeFiber.Overwrite<
 
 export const MapControls = React.forwardRef<MapControlsImpl, MapControlsProps>(
   (props = { enableDamping: true }, ref) => {
-    const { domElement, camera, onChange, onStart, onEnd, ...rest } = props
+    const { domElement, camera, makeDefault, onChange, onStart, onEnd, ...rest } = props
     const invalidate = useThree((state) => state.invalidate)
     const defaultCamera = useThree((state) => state.camera)
     const gl = useThree((state) => state.gl)
     const events = useThree((state) => state.events) as EventManager<HTMLElement>
+    const set = useThree((state) => state.set)
+    const get = useThree((state) => state.get)
     const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
 
     const explCamera = camera || defaultCamera
@@ -45,6 +48,14 @@ export const MapControls = React.forwardRef<MapControlsImpl, MapControlsProps>(
         if (onEnd) controls.removeEventListener('end', onEnd)
       }
     }, [onChange, onStart, onEnd, controls, invalidate, explDomElement])
+
+    React.useEffect(() => {
+      if (makeDefault) {
+        const old = get().controls
+        set({ controls })
+        return () => set({ controls: old })
+      }
+    }, [makeDefault, controls])
 
     useFrame(() => controls.update(), -1)
 

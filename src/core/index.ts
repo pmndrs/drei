@@ -2,6 +2,7 @@
 export * from './Billboard'
 export * from './QuadraticBezierLine'
 export * from './CubicBezierLine'
+export * from './CatmullRomLine'
 export * from './Line'
 export * from './PositionalAudio'
 export * from './Text'

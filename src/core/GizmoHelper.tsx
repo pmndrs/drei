@@ -37,7 +37,7 @@ const targetPosition = new Vector3()
 type ControlsProto = { update(): void; target: THREE.Vector3 }
 
 export type GizmoHelperProps = JSX.IntrinsicElements['group'] & {
-  alignment?: 'top-left' | 'top-right' | 'bottom-right' | 'bottom-left' | 'bottom-center'
+  alignment?: 'top-left' | 'top-right' | 'bottom-right' | 'bottom-left' | 'bottom-center' | 'center-right' | 'center-left' | 'center-center' | 'top-center'
   margin?: [number, number]
   renderPriority?: number
   autoClear?: boolean

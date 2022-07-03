@@ -35,6 +35,7 @@ declare type FontData = {
 
 type Text3DProps = {
   font: FontData | string
+  bevelSegments: number
 } & Omit<TextGeometryParameters, 'font'> &
   MeshProps
 
@@ -62,6 +63,7 @@ const Text3DBase = React.forwardRef<THREE.Mesh, React.PropsWithChildren<Text3DPr
       bevelSize = 0.01,
       bevelEnabled = false,
       bevelOffset = 0,
+      bevelSegments = 4,
       curveSegments = 8,
       children,
       ...props
@@ -81,6 +83,7 @@ const Text3DBase = React.forwardRef<THREE.Mesh, React.PropsWithChildren<Text3DPr
         bevelThickness,
         bevelSize,
         bevelEnabled,
+        bevelSegments,
         bevelOffset,
         curveSegments,
       }

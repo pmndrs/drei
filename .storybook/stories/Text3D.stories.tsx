@@ -5,7 +5,7 @@ import { withKnobs, number, color as colorKnob } from '@storybook/addon-knobs'
 import { Setup } from '../Setup'
 import { useTurntable } from '../useTurntable'
 
-import { Text, Text3D, Float, Center } from '../../src'
+import { Text, Text3D, Float, Center, Edges } from '../../src'
 import { useEffect } from 'react'
 
 export default {

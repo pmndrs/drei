@@ -65,24 +65,24 @@ const Instances = React.forwardRef<InstancedMesh, InstancesProps>(
       return [mArray, new Float32Array([...new Array(limit * 3)].map(() => 1))]
     })
 
-    React.useLayoutEffect(() => {
-      parentRef.current.count =
-        parentRef.current.instanceMatrix.updateRange.count =
-        parentRef.current.instanceColor.updateRange.count =
-          Math.min(limit, range !== undefined ? range : limit, instances.length)
-    }, [instances, range])
-
     React.useEffect(() => {
       // We might be a frame too late? 🤷‍♂️
       parentRef.current.instanceMatrix.needsUpdate = true
     })
 
     let count = 0
+    let updateRange = 0
     useFrame(() => {
       if (frames === Infinity || count < frames) {
         parentRef.current.updateMatrix()
         parentRef.current.updateMatrixWorld()
         parentMatrix.copy(parentRef.current.matrixWorld).invert()
+
+        updateRange = Math.min(limit, range !== undefined ? range : limit, instances.length)
+        parentRef.current.count = updateRange
+        parentRef.current.instanceMatrix.updateRange.count = updateRange * 16
+        parentRef.current.instanceColor.updateRange.count = updateRange * 3
+
         for (i = 0; i < instances.length; i++) {
           instanceRef = instances[i].current
           // Multiply the inverse of the InstancedMesh world matrix or else

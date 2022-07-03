@@ -8,9 +8,17 @@ import { Setup } from '../Setup'
 import { Box, OrbitControls, Select, TransformControls } from '../../src'
 
 export function TransformControlsStory() {
+  const ref = React.useRef<TransformControlsImpl>(null!)
+
+  React.useEffect(() => {
+    const cb = (e: KeyboardEvent) => e.key === 'Escape' && ref.current.reset()
+    document.addEventListener('keydown', cb)
+    return () => document.removeEventListener('keydown', cb)
+  })
+
   return (
     <Setup>
-      <TransformControls>
+      <TransformControls ref={ref}>
         <Box>
           <meshBasicMaterial wireframe />
         </Box>

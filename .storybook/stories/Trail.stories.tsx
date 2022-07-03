@@ -116,4 +116,4 @@ function UseTrailFloat() {
 }
 
 export const TrailFloat = () => <UseTrailFloat />
-TrailFloat.storyName = 'Trail on Float components'
+TrailFloat.storyName = 'Trail with Ref target'

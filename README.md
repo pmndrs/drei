@@ -56,6 +56,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <ul>
           <li><a href="#image">Image</a></li>
           <li><a href="#text">Text</a></li>
+          <li><a href="#text3d">Text3D</a></li>
           <li><a href="#line">Line</a></li>
           <li><a href="#quadraticbezierline">QuadraticBezierLine</a></li>
           <li><a href="#cubicbezierline">CubicBezierLine</a></li>
@@ -106,6 +107,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#useintersect">useIntersect</a></li>
           <li><a href="#useboxprojectedenv">useBoxProjectedEnv</a></li>
           <li><a href="#useTrail">useTrail</a></li>
+          <li><a href="#BBAnchor">BBAnchor</a></li>
         </ul>
         <li><a href="#loading">Loaders</a></li>
         <ul>
@@ -134,6 +136,8 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <li><a href="#portals">Portals</a></li>        
         <ul>
           <li><a href="#view">View</a></li>
+          <li><a href="#rendertexture">RenderTexture</a></li>
+          <li><a href="#mask">Mask</a></li>
         </ul>
       </ul>
     </td>
@@ -438,6 +442,13 @@ function Foo() {
     ref.current.material.color.set(...) // mix-in color
   })
   return <Image ref={ref} url="/file.jpg" />
+}
+```
+
+To make the material transparent:
+
+```jsx
+<Image url="/file.jpg" transparent opacity={0.5} />
 ```
 
 #### Text
@@ -463,6 +474,23 @@ Text will suspend while loading the font data, but in order to completely avoid 
   hello world!
 </Text>
 ```
+
+#### Text3D
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-text3d--text-3-d-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
+
+Render 3D text using ThreeJS's `TextGeometry`.
+
+Text3D will suspend while loading the font data, you can also load the font yourself before passing it in. Text3D requires fonts in JSON format generated through (typeface.json)[http://gero3.github.io/facetype.js/] either as a path to a JSON files or a JSON object.
+
+```jsx
+<Text3D font={fontUrl} {...textOptions}>
+  Hello world!
+  <meshNormalMaterial />
+</Text3D>
+```
+
+You can use any material. `textOptions` are options you'd pass to the `TextGeometry` constructor. Find more information about available options [here](https://threejs.org/docs/index.html?q=textg#examples/en/geometries/TextGeometry).
 
 #### Line
 
@@ -604,6 +632,8 @@ Make sure to set the `makeDefault` prop on your controls, in that case you do no
 #### Effects
 
 Abstraction around threes own [EffectComposer](https://threejs.org/docs/#examples/en/postprocessing/EffectComposer). By default it will prepend a render-pass and a gammacorrection-pass. Children are cloned, `attach` is given to them automatically. You can only use passes or effects in there.
+
+By default it creates a render target with HalfFloatType, RGBAFormat and gl.outputEncoding. You can change all of this to your liking, inspect the types.
 
 ```jsx
 import { SSAOPass } from "three-stdlib"
@@ -931,11 +961,15 @@ This material makes your geometry distort following simplex noise.
 
 #### PointMaterial
 
-Antialiased round dots. It takes the same props as regular THREE.PointsMaterial
+<p>
+  <a href="https://codesandbox.io/s/eq7sc"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/eq7sc/screenshot.png" alt="Demo"/></a>
+</p>
+
+Antialiased round dots. It takes the same props as regular [THREE.PointsMaterial](https://threejs.org/docs/index.html?q=PointsMaterial#api/en/materials/PointsMaterial) on which it is based.
 
 ```jsx
 <points>
-  <PointMaterial scale={20} />
+  <PointMaterial transparent vertexColors size={15} sizeAttenuation={false} depthWrite={false} />
 </points>
 ```
 
@@ -1195,6 +1229,10 @@ return <Stats parent={parent} />
 
 #### useDepthBuffer
 
+<p>
+  <a href="https://codesandbox.io/s/tx1pq"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/tx1pq/screenshot.png" alt="Demo"/></a>
+</p>
+
 Renders the scene into a depth-buffer. Often effects depend on it and this allows you to render a single buffer and share it, which minimizes the performance impact. It returns the buffer's `depthTexture`.
 
 Since this is a rather expensive effect you can limit the amount of frames it renders when your objects are static. For instance making it render only once by setting `frames: 1`.
@@ -1363,6 +1401,37 @@ useFrame(() => {
 })
 ```
 
+#### BBAnchor
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-bbanchor--bb-anchor-with-html)
+
+A component using AABB (Axis-aligned bounding boxes) to offset children position by specified multipliers (`anchor` property) on each axis. You can use this component to change children positioning in regard of the parent's bounding box, eg. pinning [Html](#html) component to one of the parent's corners. Multipliers determine the offset value based on the `AABB`'s size:
+
+```
+childrenAnchor = boundingBoxPosition + (boundingBoxSize * anchor / 2)
+```
+
+```jsx
+<BBAnchor
+  anchor // THREE.Vector3 or [number, number, number]
+  {...groupProps} // All THREE.Group props are valid
+>
+  {children}
+</BBAnchor>
+```
+
+For instance, one could want the Html component to be pinned to `positive x`, `positive y`, and `positive z` corner of a [Box](#shapes) object:
+
+```jsx
+<Box>
+  <BBAnchor anchor={[1, 1, 1]}>
+    <Html center>
+      <span>Hello world!</span>
+    </Html>
+  </BBAnchor>
+</Box>
+```
+
 # Loading
 
 #### Loader
@@ -1472,6 +1541,19 @@ const props = useTexture({
   map: url2,
 })
 return <meshStandardMaterial {...props} />
+```
+
+Use the `onLoad` callback to set propeties on loaded textures.
+
+```jsx
+const texture = useTexture(url, (texture) => {
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping
+})
+
+const [texture1, texture2] = useTexture([texture1, texture2], ([texture1, texture2]) => {
+  texture1.wrapS = texture1.wrapT = THREE.RepeatWrapping
+  texture2.wrapS = texture2.wrapT = THREE.RepeatWrapping
+})
 ```
 
 #### useKTX2
@@ -1769,6 +1851,109 @@ return (
       </View>
 ```
 
+#### RenderTexture
+
+<p>
+  <a href="https://codesandbox.io/s/0z8i2c"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/0z8i2c/screenshot.png" alt="Demo"/></a>  
+</p>
+
+This component allows you to render a live scene into a texture which you can then apply to a material. The contents of it run inside a portal and are separate from the rest of the canvas, therefore you can have events in there, environment maps, etc.
+
+```tsx
+<RenderTexture
+  /** Optional width of the texture, defaults to viewport bounds */
+  width?: number
+  /** Optional height of the texture, defaults to viewport bounds */
+  height?: number
+  /** Optional render priority, defaults to 0 */
+  renderPriority?: number
+  /** Optional event priority, defaults to 0 */
+  eventPriority?: number
+  /** Optional frame count, defaults to Infinity. If you set it to 1, it would only render a single frame, etc */
+  frames?: number
+  /** Children will be rendered into a portal */
+  children: React.ReactNode
+/>
+```
+
+```jsx
+<mesh>
+  <planeGeometry />
+  <meshStandardMaterial>
+    <RenderTexture attach="map">
+      <mesh />
+```
+
+#### Mask
+
+<p>
+  <a href="https://codesandbox.io/s/7n2yru"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/7n2yru/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/z3f2mw"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/z3f2mw/screenshot.png" alt="Demo"/></a>  
+</p>
+
+Masks use the scencil buffer to cut out areas of the screen. This is usually cheaper as it doesn't require double renders or createPortal.
+
+```tsx
+<Mask
+  /** Each mask must have an id, you can have compound masks referring to the same id */
+  id: number
+  /** If colors of the masks own material will leak through, default: false */
+  colorWrite?: boolean
+  /** If depth  of the masks own material will leak through, default: false */
+  depthWrite?: boolean
+  /** children must define a geometry, a render-prop function is allowed which may override the default material */
+  children: (spread: MaskSpread) => React.ReactNode | React.ReactNode
+/>
+```
+
+First you need to define a mask, give it the shape that you want.
+
+```jsx
+<Mask id={1}>
+  <planeGeometry />
+</Mask>
+```
+
+Now refer to it with the `useMask` hook and the same id, your content will now be masked out by the geometry defined above.
+
+```jsx
+const stencil = useMask(1)
+return (
+  <mesh>
+    <torusKnotGeoometry />
+    <meshStandardMaterial {...stencil} />
+```
+
+You can build compound masks with multiple shapes by re-using an id.
+
+```jsx
+<Mask position={[-1, 0, 0]} id={1}>
+  <planeGeometry />
+</Mask>
+<Mask position={[1, 0, 0]} id={1}>
+  <circleGeometry />
+</Mask>
+```
+
+You can override the material of a mask by using a render prop.
+
+```jsx
+<Mask id={1}>
+  {(spread) => (
+    <>
+      <planeGeometry args={[2, 2, 128, 128]} />
+      <MeshDistortMaterial distort={0.5} radius={1} speed={10} {...spread} />
+    </>
+  )}
+</Mask>
+```
+
+Invert masks individually by providing a 2nd boolean argument to the `useMask` hook.
+
+```jsx
+const stencil = useMask(1, true)
+```
+
 # Staging
 
 #### Center
@@ -1790,7 +1975,7 @@ Calculates a boundary box and centers its children accordingly. `alignTop` adjus
   <a href="https://codesandbox.io/s/42glz0"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/42glz0/screenshot.png" alt="Demo"/></a>
 </p>
 
-Calculates a boundary box and centers the camera accordingly. If you are using controls, make sure to pass them the `makeDefault` prop. `fit` fits the current view on first render. `clip` sets the cameras near/far planes.
+Calculates a boundary box and centers the camera accordingly. If you are using camera controls, make sure to pass them the `makeDefault` prop. `fit` fits the current view on first render. `clip` sets the cameras near/far planes. `observe` will trigger on window resize.
 
 ```jsx
 <Bounds fit clip observe damping={6} margin={1.2}>
@@ -1798,7 +1983,7 @@ Calculates a boundary box and centers the camera accordingly. If you are using c
 </Bounds>
 ```
 
-The Bounds component also acts as a context provider, use the `useBounds` hook to refresh the bounds, fit the camera, clip near/far planes or focus objects. `refresh(object?: THREE.Object3D | THREE.Box3)` will recalculate bounds, since this can be expensive only call it when you know the view has changed. `clip` sets the cameras near/far planes. `fit` zooms and centers the view.
+The Bounds component also acts as a context provider, use the `useBounds` hook to refresh the bounds, fit the camera, clip near/far planes or focus objects. `refresh(object?: THREE.Object3D | THREE.Box3)` will recalculate bounds. Since this can be expensive only call it when you know the view has changed. `clip` sets the cameras near/far planes. `fit` zooms and centers the view.
 
 ```jsx
 function Foo() {
@@ -1863,7 +2048,8 @@ This component makes its contents float or hover.
 <Float
   speed={1} // Animation speed, defaults to 1
   rotationIntensity={1} // XYZ rotation intensity, defaults to 1
-  floatIntensity={1} // Up/down float intensity, defaults to 1
+  floatIntensity={1} // Up/down float intensity, works like a multiplier with floatingRange,defaults to 1
+  floatingRange={[1, 10]} // Range of y-axis values the object will float within, defaults to [-0.1,0.1]
 >
   <mesh />
 </Float>
@@ -1985,6 +2171,7 @@ Sets up a global cubemap, which affects the default `scene.environment`, and opt
   path="/"
   preset={null}
   scene={undefined} // adds the ability to pass a custom THREE.Scene, can also be a ref
+  encoding={undefined} // adds the ability to pass a custom THREE.TextureEncoding (default: THREE.sRGBEncoding for an array of files and THREE.LinearEncoding for a single texture)
 />
 ```
 

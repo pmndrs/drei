@@ -5,6 +5,7 @@ export * from './CubicBezierLine'
 export * from './Line'
 export * from './PositionalAudio'
 export * from './Text'
+export * from './Text3D'
 export * from './Effects'
 export * from './GradientTexture'
 export * from './Image'
@@ -57,6 +58,7 @@ export * from './useAnimations'
 export * from './useFBO'
 export * from './useIntersect'
 export * from './useBoxProjectedEnv'
+export * from './BBAnchor'
 
 // Modifiers
 export * from './CurveModifier'
@@ -106,3 +108,5 @@ export * from './AdaptiveDpr'
 export * from './AdaptiveEvents'
 
 // Portals
+export * from './RenderTexture'
+export * from './Mask'

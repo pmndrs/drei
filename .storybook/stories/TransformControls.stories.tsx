@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { withKnobs, optionsKnob, boolean } from '@storybook/addon-knobs'
+import { actions } from '@storybook/addon-actions'
 import { Object3D } from 'three'
 import { TransformControls as TransformControlsImpl, OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 
@@ -7,10 +8,12 @@ import { Setup } from '../Setup'
 
 import { Box, OrbitControls, Select, TransformControls, TransformControlMode } from '../../src'
 
+const eventHandlers = actions('onChange', 'onMouseDown', 'onMouseUp', 'onObjectChange')
+
 export function TransformControlsStory() {
   return (
     <Setup>
-      <TransformControls>
+      <TransformControls {...eventHandlers}>
         <Box>
           <meshBasicMaterial wireframe />
         </Box>
@@ -46,7 +49,7 @@ function selectMultipleModesKnob(): TransformControlMode {
 export function TransformControlsAllModesStory() {
   return (
     <Setup>
-      <TransformControls mode={['translate', 'rotate', 'scale']}>
+      <TransformControls mode={['translate', 'rotate', 'scale']} {...eventHandlers}>
         <Box>
           <meshBasicMaterial wireframe />
         </Box>
@@ -64,7 +67,7 @@ export function TransformControlsSelectObjectStory() {
   return (
     <Setup controls={false}>
       <OrbitControls makeDefault />
-      {active && <TransformControls object={active} mode={selectMultipleModesKnob()} />}
+      {active && <TransformControls object={active} mode={selectMultipleModesKnob()} {...eventHandlers} />}
       <Select box onChange={setSelected}>
         <group>
           <Box position={[-1, 0, 0]}>
@@ -98,7 +101,14 @@ function TransformControlsLockScene({ mode, showX, showY, showZ }) {
 
   return (
     <>
-      <TransformControls ref={transformControls} mode={mode} showX={showX} showY={showY} showZ={showZ}>
+      <TransformControls
+        ref={transformControls}
+        mode={mode}
+        showX={showX}
+        showY={showY}
+        showZ={showZ}
+        {...eventHandlers}
+      >
         <Box>
           <meshBasicMaterial wireframe />
         </Box>

@@ -15,6 +15,9 @@ type Modes = typeof modes[number]
 type MultipleModes = [Modes, Modes?, Modes?]
 export type TransformControlMode = string | MultipleModes
 
+const _changeEvent = { type: 'change' }
+const _objectChangeEvent = { type: 'objectChange' }
+
 export type TransformControlsProps = ReactThreeFiber.Object3DNode<TransformControlsImpl, typeof TransformControlsImpl> &
   JSX.IntrinsicElements['group'] & {
     object?: THREE.Object3D | React.MutableRefObject<THREE.Object3D>
@@ -151,6 +154,7 @@ const MultiTransformControls = React.forwardRef<TransformControlsImpl, Transform
     const scene = useThree((state) => state.scene)
     const events = useThree((state) => state.events)
     const defaultCamera = useThree((state) => state.camera)
+    const invalidate = useThree((state) => state.invalidate)
     const explCamera = camera || defaultCamera
     const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
     const controls = React.useMemo(
@@ -186,6 +190,21 @@ const MultiTransformControls = React.forwardRef<TransformControlsImpl, Transform
       controls.useRotate(activeModes.rotate).useScale(activeModes.scale).useTranslate(activeModes.translate)
     }, [controls, activeModes.rotate, activeModes.scale, activeModes.translate])
 
+    React.useEffect(() => {
+      const callback = (e: THREE.Event) => {
+        invalidate()
+        if (onChange) onChange(e)
+      }
+
+      controls?.addEventListener?.('change', callback)
+      if (onObjectChange) controls?.addEventListener?.('objectChange', onObjectChange)
+
+      return () => {
+        controls?.removeEventListener?.('change', callback)
+        if (onObjectChange) controls?.removeEventListener?.('objectChange', onObjectChange)
+      }
+    }, [onChange, onMouseDown, onMouseUp, onObjectChange, controls, invalidate])
+
     return controls ? (
       <>
         <primitive ref={ref} object={controls} {...transformProps} />
@@ -208,6 +227,7 @@ function getActiveModes(activeMode: TransformControlMode): Record<Modes, boolean
 
 class Manipulator3D extends ManipulatorMesh {
   private manipulator
+  private eventDispatcher: THREE.EventDispatcher
 
   constructor({ scene, camera, domElement }) {
     const manipulator = new BaseManipulator3D(
@@ -221,20 +241,29 @@ class Manipulator3D extends ManipulatorMesh {
     super(manipulator.data)
     manipulator.mesh = this
     this.manipulator = manipulator
+    this.eventDispatcher = new THREE.EventDispatcher()
   }
 
   addEventListener(eventName, callback) {
-    this.on(eventName, callback)
+    this.eventDispatcher.addEventListener(eventName, callback)
   }
   on(eventName, callback) {
     this.manipulator.on(eventName, callback)
   }
 
   removeEventListener(eventName, callback) {
-    this.off(eventName, callback)
+    this.eventDispatcher.removeEventListener(eventName, callback)
   }
   off(eventName, callback) {
     this.manipulator.off(eventName, callback)
+  }
+
+  dispatchEvent(event: THREE.Event) {
+    this.eventDispatcher.dispatchEvent.bind(this)(event)
+  }
+
+  get _listeners() {
+    return (this.eventDispatcher as any)._listeners
   }
 
   setActive(active) {
@@ -246,9 +275,17 @@ class Manipulator3D extends ManipulatorMesh {
 
   attach(object) {
     this.manipulator.attach(object)
+
+    this.on('translate', this.handleChange)
+    this.on('rotate', this.handleChange)
+    this.on('scale', this.handleChange)
   }
   detach() {
     this.manipulator.detach()
+
+    this.off('translate', this.handleChange)
+    this.off('rotate', this.handleChange)
+    this.off('scale', this.handleChange)
   }
 
   useTranslate(active) {
@@ -262,5 +299,10 @@ class Manipulator3D extends ManipulatorMesh {
   useScale(active) {
     this.manipulator.useScale(active)
     return this
+  }
+
+  handleChange = () => {
+    this.dispatchEvent(_changeEvent)
+    this.dispatchEvent(_objectChangeEvent)
   }
 }

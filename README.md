@@ -269,12 +269,20 @@ PointerLockControls additionally supports a `selector` prop, which enables the b
   <a href="https://codesandbox.io/s/btsbj"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/btsbj/screenshot.png" alt="Tranform controls"/></a>
 </p>
 
-An abstraction around [THREE.TransformControls](https://threejs.org/docs/#examples/en/controls/TransformControls).
+An abstraction around [THREE.TransformControls](https://threejs.org/docs/#examples/en/controls/TransformControls) or [manipulator3d](https://github.com/sketchpunklabs/manipulator3d).
 
 You can wrap objects which then receive a transform gizmo.
 
 ```jsx
 <TransformControls mode="translate">
+  <mesh />
+</TransformControls>
+```
+
+Or enable multiple modes at once:
+
+```jsx
+<TransformControls mode={['translate', 'rotation', 'scale']}>
   <mesh />
 </TransformControls>
 ```

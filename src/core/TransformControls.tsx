@@ -10,13 +10,18 @@ type ControlsProto = {
   enabled: boolean
 }
 
+const modes = ['translate', 'rotate', 'scale'] as const
+type Modes = typeof modes[number]
+type MultipleModes = [Modes, Modes?, Modes?]
+export type TransformControlMode = string | MultipleModes
+
 export type TransformControlsProps = ReactThreeFiber.Object3DNode<TransformControlsImpl, typeof TransformControlsImpl> &
   JSX.IntrinsicElements['group'] & {
     object?: THREE.Object3D | React.MutableRefObject<THREE.Object3D>
     enabled?: boolean
     axis?: string | null
     domElement?: HTMLElement
-    mode?: string
+    mode?: TransformControlMode
     translationSnap?: number | null
     rotationSnap?: number | null
     scaleSnap?: number | null
@@ -35,7 +40,7 @@ export type TransformControlsProps = ReactThreeFiber.Object3DNode<TransformContr
 
 export const TransformControls = React.forwardRef<TransformControlsImpl, TransformControlsProps>((props, ref) => {
   const { mode } = props
-  if (mode === 'all') {
+  if (Array.isArray(mode)) {
     return <MultiTransformControls ref={ref as any} {...props} />
   }
   return <SingleTransformControls ref={ref as any} {...props} />
@@ -176,6 +181,11 @@ const MultiTransformControls = React.forwardRef<TransformControlsImpl, Transform
       return () => void controls.detach()
     }, [object, children, controls])
 
+    const activeModes = getActiveModes(transformProps.mode)
+    React.useEffect(() => {
+      controls.useRotate(activeModes.rotate).useScale(activeModes.scale).useTranslate(activeModes.translate)
+    }, [controls, activeModes.rotate, activeModes.scale, activeModes.translate])
+
     return controls ? (
       <>
         <primitive ref={ref} object={controls} {...transformProps} />
@@ -186,6 +196,15 @@ const MultiTransformControls = React.forwardRef<TransformControlsImpl, Transform
     ) : null
   }
 )
+
+function getActiveModes(activeMode: TransformControlMode): Record<Modes, boolean> {
+  return Object.fromEntries<boolean>(
+    modes.map((mode) => {
+      const active = activeMode === mode || activeMode.includes(mode)
+      return [mode, active]
+    })
+  ) as Record<Modes, boolean>
+}
 
 class Manipulator3D extends ManipulatorMesh {
   private manipulator
@@ -230,5 +249,18 @@ class Manipulator3D extends ManipulatorMesh {
   }
   detach() {
     this.manipulator.detach()
+  }
+
+  useTranslate(active) {
+    this.manipulator.useTranslate(active)
+    return this
+  }
+  useRotate(active) {
+    this.manipulator.useRotate(active)
+    return this
+  }
+  useScale(active) {
+    this.manipulator.useScale(active)
+    return this
   }
 }

@@ -5,7 +5,7 @@ import { TransformControls as TransformControlsImpl, OrbitControls as OrbitContr
 
 import { Setup } from '../Setup'
 
-import { Box, OrbitControls, Select, TransformControls } from '../../src'
+import { Box, OrbitControls, Select, TransformControls, TransformControlMode } from '../../src'
 
 export function TransformControlsStory() {
   return (
@@ -30,13 +30,23 @@ const modesObj = {
   scale: 'scale',
   rotate: 'rotate',
   translate: 'translate',
-  all: 'all',
+}
+const modes = ['translate', 'rotate', 'scale'] as const
+
+function selectSingleModeKnob(): string {
+  return optionsKnob('mode', modesObj, 'translate', {
+    display: 'radio',
+  })
+}
+
+function selectMultipleModesKnob(): TransformControlMode {
+  return modes.map((mode) => (boolean(mode, true) ? mode : null)).filter(Boolean) as TransformControlMode
 }
 
 export function TransformControlsAllModesStory() {
   return (
     <Setup>
-      <TransformControls mode="all">
+      <TransformControls mode={['translate', 'rotate', 'scale']}>
         <Box>
           <meshBasicMaterial wireframe />
         </Box>
@@ -54,14 +64,7 @@ export function TransformControlsSelectObjectStory() {
   return (
     <Setup controls={false}>
       <OrbitControls makeDefault />
-      {active && (
-        <TransformControls
-          object={active}
-          mode={optionsKnob('mode', modesObj, 'translate', {
-            display: 'radio',
-          })}
-        />
-      )}
+      {active && <TransformControls object={active} mode={selectMultipleModesKnob()} />}
       <Select box onChange={setSelected}>
         <group>
           <Box position={[-1, 0, 0]}>
@@ -108,9 +111,7 @@ function TransformControlsLockScene({ mode, showX, showY, showZ }) {
 export const TransformControlsLockSt = () => {
   return (
     <TransformControlsLockScene
-      mode={optionsKnob('mode', modesObj, 'translate', {
-        display: 'radio',
-      })}
+      mode={selectSingleModeKnob()}
       showX={boolean('showX', true)}
       showY={boolean('showY', true)}
       showZ={boolean('showZ', true)}

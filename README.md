@@ -60,6 +60,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#line">Line</a></li>
           <li><a href="#quadraticbezierline">QuadraticBezierLine</a></li>
           <li><a href="#cubicbezierline">CubicBezierLine</a></li>
+          <li><a href="#catmullromline">CatmullRomLine</a></li>
           <li><a href="#positionalaudio">PositionalAudio</a></li>
           <li><a href="#billboard">Billboard</a></li>
           <li><a href="#gizmohelper">GizmoHelper</a></li>
@@ -71,6 +72,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#computedattribute">Computed Attribute</a></li>
           <li><a href="#clone">Clone</a></li>
           <li><a href="#useanimations">useAnimations</a></li>
+          <li><a href="#marchingcubes">MarchingCubes</a></li>
         </ul>
         <li><a href="#shaders">Shaders</a></li>
         <ul>
@@ -577,6 +579,27 @@ Renders a THREE.Line2 using THREE.CubicBezierCurve3 for interpolation.
 />
 ```
 
+#### CatmullRomLine
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-line--catmull-rom)
+
+Renders a THREE.Line2 using THREE.CatmullRomCurve3 for interpolation.
+
+```jsx
+<CatmullRomLine
+  points={[[0, 0, 0], ...]}       // Array of Points
+  closed={false}                  // Default
+  curveType="centripetal"         // One of "centripetal" (default), "chordal", or "catmullrom"
+  tension={0.5}                   // Default (only applies to "catmullrom" curveType)
+  color="black"                   // Default
+  lineWidth={1}                   // In pixels (default)
+  dashed={false}                  // Default
+  vertexColors={[[0, 0, 0], ...]} // Optional array of RGB values for each point
+  {...lineProps}                  // All THREE.Line2 props are valid
+  {...materialProps}              // All THREE.LineMaterial props are valid
+/>
+```
+
 #### PositionalAudio
 
 <p>
@@ -881,6 +904,20 @@ const { actions } = useAnimations(animations, scene)
 return <primitive object={scene} />
 ```
 
+#### MarchingCubes
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-marchingcubes--marching-cubes-story)
+
+An abstraction for threes [MarchingCubes](https://threejs.org/examples/#webgl_marchingcubes)
+
+```jsx
+<MarchingCubes resolution={50} maxPolyCount={20000} enableUvs={false} enableColors={true}>
+  <MarchingCube strength={0.5} subtract={12} color={new Color('#f0f')} position={[0.5, 0.5, 0.5]} />
+
+  <MarchingPlane planeType="y" strength={0.5} subtract={12} />
+</MarchingCubes>
+```
+
 # Shaders
 
 #### MeshReflectorMaterial
@@ -954,11 +991,15 @@ This material makes your geometry distort following simplex noise.
 
 #### PointMaterial
 
-Antialiased round dots. It takes the same props as regular THREE.PointsMaterial
+<p>
+  <a href="https://codesandbox.io/s/eq7sc"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/eq7sc/screenshot.png" alt="Demo"/></a>
+</p>
+
+Antialiased round dots. It takes the same props as regular [THREE.PointsMaterial](https://threejs.org/docs/index.html?q=PointsMaterial#api/en/materials/PointsMaterial) on which it is based.
 
 ```jsx
 <points>
-  <PointMaterial scale={20} />
+  <PointMaterial transparent vertexColors size={15} sizeAttenuation={false} depthWrite={false} />
 </points>
 ```
 
@@ -1217,6 +1258,10 @@ return <Stats parent={parent} />
 ```
 
 #### useDepthBuffer
+
+<p>
+  <a href="https://codesandbox.io/s/tx1pq"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/tx1pq/screenshot.png" alt="Demo"/></a>
+</p>
 
 Renders the scene into a depth-buffer. Often effects depend on it and this allows you to render a single buffer and share it, which minimizes the performance impact. It returns the buffer's `depthTexture`.
 
@@ -2156,6 +2201,7 @@ Sets up a global cubemap, which affects the default `scene.environment`, and opt
   path="/"
   preset={null}
   scene={undefined} // adds the ability to pass a custom THREE.Scene, can also be a ref
+  encoding={undefined} // adds the ability to pass a custom THREE.TextureEncoding (default: THREE.sRGBEncoding for an array of files and THREE.LinearEncoding for a single texture)
 />
 ```
 

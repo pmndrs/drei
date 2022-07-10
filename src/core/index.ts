@@ -2,6 +2,7 @@
 export * from './Billboard'
 export * from './QuadraticBezierLine'
 export * from './CubicBezierLine'
+export * from './CatmullRomLine'
 export * from './Line'
 export * from './PositionalAudio'
 export * from './Text'
@@ -14,6 +15,7 @@ export * from './Trail'
 export * from './Sampler'
 export * from './ComputedAttribute'
 export * from './Clone'
+export * from './MarchingCubes'
 
 // Cameras
 export * from './OrthographicCamera'

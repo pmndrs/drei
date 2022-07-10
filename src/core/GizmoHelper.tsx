@@ -37,7 +37,7 @@ const targetPosition = new Vector3()
 type ControlsProto = { update(): void; target: THREE.Vector3 }
 
 export type GizmoHelperProps = JSX.IntrinsicElements['group'] & {
-  alignment?: 'top-left' | 'top-right' | 'bottom-right' | 'bottom-left'
+  alignment?: 'top-left' | 'top-right' | 'bottom-right' | 'bottom-left' | 'bottom-center' | 'center-right' | 'center-left' | 'center-center' | 'top-center'
   margin?: [number, number]
   renderPriority?: number
   autoClear?: boolean
@@ -72,6 +72,7 @@ export const GizmoHelper = ({
   const animating = React.useRef(false)
   const radius = React.useRef(0)
   const focusPoint = React.useRef(new Vector3(0, 0, 0))
+  const defaultUp = React.useRef(new Vector3(0, 0, 0))
 
   const tweenCamera = React.useCallback(
     (direction: Vector3) => {
@@ -86,6 +87,8 @@ export const GizmoHelper = ({
       targetPosition.copy(direction).multiplyScalar(radius.current).add(target)
       dummy.lookAt(targetPosition)
       q2.copy(dummy.quaternion)
+
+      defaultUp.current.copy(mainCamera.up)
 
       invalidate()
     },
@@ -112,6 +115,7 @@ export const GizmoHelper = ({
       if (animating.current) {
         if (q1.angleTo(q2) < 0.01) {
           animating.current = false
+          mainCamera.up.copy(defaultUp.current)
         } else {
           const step = delta * turnRate
           // animate position by doing a slerp and then scaling the position on the unit sphere
@@ -142,8 +146,17 @@ export const GizmoHelper = ({
 
   // Position gizmo component within scene
   const [marginX, marginY] = margin
-  const x = alignment.endsWith('-left') ? -size.width / 2 + marginX : size.width / 2 - marginX
-  const y = alignment.startsWith('top-') ? size.height / 2 - marginY : -size.height / 2 + marginY
+
+  const x = alignment.endsWith('-center')
+    ? 0
+    : alignment.endsWith('-left')
+    ? -size.width / 2 + marginX
+    : size.width / 2 - marginX
+  const y = alignment.startsWith('center-')
+    ? 0
+    : alignment.startsWith('top-')
+    ? size.height / 2 - marginY
+    : -size.height / 2 + marginY
   return createPortal(
     <Context.Provider value={gizmoHelperContext}>
       <OrthographicCamera ref={virtualCam} position={[0, 0, 200]} />

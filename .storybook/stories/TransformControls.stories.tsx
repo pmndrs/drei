@@ -11,9 +11,17 @@ import { Box, OrbitControls, Select, TransformControls, TransformControlMode } f
 const eventHandlers = actions('onChange', 'onMouseDown', 'onMouseUp', 'onObjectChange')
 
 export function TransformControlsStory() {
+  const ref = React.useRef<TransformControlsImpl>(null!)
+
+  React.useEffect(() => {
+    const cb = (e: KeyboardEvent) => e.key === 'Escape' && ref.current.reset()
+    document.addEventListener('keydown', cb)
+    return () => document.removeEventListener('keydown', cb)
+  })
+
   return (
     <Setup>
-      <TransformControls {...eventHandlers}>
+      <TransformControls ref={ref} {...eventHandlers}>
         <Box>
           <meshBasicMaterial wireframe />
         </Box>

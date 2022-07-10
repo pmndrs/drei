@@ -37,7 +37,16 @@ const targetPosition = new Vector3()
 type ControlsProto = { update(): void; target: THREE.Vector3 }
 
 export type GizmoHelperProps = JSX.IntrinsicElements['group'] & {
-  alignment?: 'top-left' | 'top-right' | 'bottom-right' | 'bottom-left' | 'bottom-center' | 'center-right' | 'center-left' | 'center-center' | 'top-center'
+  alignment?:
+    | 'top-left'
+    | 'top-right'
+    | 'bottom-right'
+    | 'bottom-left'
+    | 'bottom-center'
+    | 'center-right'
+    | 'center-left'
+    | 'center-center'
+    | 'top-center'
   margin?: [number, number]
   renderPriority?: number
   autoClear?: boolean
@@ -74,6 +83,10 @@ export const GizmoHelper = ({
   const focusPoint = React.useRef(new Vector3(0, 0, 0))
   const defaultUp = React.useRef(new Vector3(0, 0, 0))
 
+  React.useEffect(() => {
+    defaultUp.current.copy(mainCamera.up)
+  }, [mainCamera])
+
   const tweenCamera = React.useCallback(
     (direction: Vector3) => {
       animating.current = true
@@ -87,8 +100,6 @@ export const GizmoHelper = ({
       targetPosition.copy(direction).multiplyScalar(radius.current).add(target)
       dummy.lookAt(targetPosition)
       q2.copy(dummy.quaternion)
-
-      defaultUp.current.copy(mainCamera.up)
 
       invalidate()
     },

@@ -96,6 +96,7 @@ export * from './Cloud'
 export * from './Sparkles'
 export * from './useMatcapTexture'
 export * from './useNormalTexture'
+export * from './Layer'
 
 // Performance
 export * from './Points'

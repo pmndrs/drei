@@ -2,7 +2,6 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { extend, MeshProps, Node } from '@react-three/fiber'
 import { useMemo } from 'react'
-import { useEffect } from 'react'
 import { suspend } from 'suspend-react'
 import { TextGeometry, FontLoader, TextGeometryParameters } from 'three-stdlib'
 
@@ -42,14 +41,14 @@ type Text3DProps = {
 const types = ['string', 'number']
 const getTextFromChildren = (children) => {
   let label = ''
+  const rest: React.ReactNode[] = []
 
-  React.Children.map(children, (child) => {
-    if (types.includes(typeof child)) {
-      label += child + ''
-    }
+  React.Children.forEach(children, (child) => {
+    if (types.includes(typeof child)) label += child + ''
+    else rest.push(child)
   })
 
-  return label
+  return [label, ...rest]
 }
 
 const Text3DBase = React.forwardRef<THREE.Mesh, React.PropsWithChildren<Text3DProps & { loader: FontLoader }>>(
@@ -93,13 +92,13 @@ const Text3DBase = React.forwardRef<THREE.Mesh, React.PropsWithChildren<Text3DPr
      * We need the `children` in the deps because we
      * need to be able to do `<Text3d>{state}</Text3d>`.
      */
-    const txt = useMemo(() => getTextFromChildren(children), [children])
-    const args = React.useMemo(() => [txt, opts], [txt, opts])
+    const [label, ...rest] = useMemo(() => getTextFromChildren(children), [children])
+    const args = React.useMemo(() => [label, opts], [label, opts])
 
     return (
       <mesh {...props} ref={ref}>
         <renamedTextGeometry args={args} />
-        {children}
+        {rest}
       </mesh>
     )
   }

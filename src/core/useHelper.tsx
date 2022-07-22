@@ -39,7 +39,7 @@ export function useHelper<T extends Constructor>(
         scene.remove(helper.current)
       }
     }
-  }, [scene, helperConstructor, object3D, args])
+  }, [scene, helperConstructor, object3D, ...args])
 
   useFrame(() => {
     if (helper.current?.update) {

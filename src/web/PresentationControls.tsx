@@ -3,9 +3,10 @@ import { MathUtils } from 'three'
 import { useThree } from '@react-three/fiber'
 import { a, useSpring } from '@react-spring/three'
 import { useGesture } from '@use-gesture/react'
+import { SpringConfig } from '@react-spring/core'
 
 type Props = {
-  snap?: boolean
+  snap?: Boolean | SpringConfig
   global?: boolean
   cursor?: boolean
   speed?: number

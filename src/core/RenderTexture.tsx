@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { Canvas, createPortal, useFrame, useThree } from '@react-three/fiber'
+import { createPortal, useFrame, useThree } from '@react-three/fiber'
 import { useFBO } from './useFBO'
 
 type Props = THREE.Texture & {
@@ -8,6 +8,8 @@ type Props = THREE.Texture & {
   width?: number
   /** Optional height of the texture, defaults to viewport bounds */
   height?: number
+  /** Optional fbo samples */
+  samples?: number
   /** Optional render priority, defaults to 0 */
   renderPriority?: number
   /** Optional event priority, defaults to 0 */
@@ -20,11 +22,11 @@ type Props = THREE.Texture & {
 
 export const RenderTexture = React.forwardRef(
   (
-    { children, width, height, renderPriority = 0, eventPriority = 0, frames = Infinity, ...props }: Props,
+    { children, width, height, samples = 8, renderPriority = 0, eventPriority = 0, frames = Infinity, ...props }: Props,
     forwardRef
   ) => {
     const { size, viewport } = useThree()
-    const fbo = useFBO((width || size.width) * viewport.dpr, (height || size.height) * viewport.dpr, { samples: 8 })
+    const fbo = useFBO((width || size.width) * viewport.dpr, (height || size.height) * viewport.dpr, { samples })
     const [vScene] = React.useState(() => new THREE.Scene())
 
     const compute = React.useCallback((event, state, previous) => {

@@ -10,6 +10,7 @@ type Props = {
   factor?: number
   saturation?: number
   fade?: boolean
+  speed?: number
 }
 
 class StarfieldMaterial extends ShaderMaterial {
@@ -37,6 +38,9 @@ class StarfieldMaterial extends ShaderMaterial {
           opacity = 1.0 / (1.0 + exp(16.0 * (d - 0.25)));
         }
         gl_FragColor = vec4(vColor, opacity);
+
+        #include <tonemapping_fragment>
+	      #include <encodings_fragment>
       }`,
     })
   }
@@ -55,7 +59,7 @@ const genStar = (r: number) => {
 }
 
 export const Stars = React.forwardRef(
-  ({ radius = 100, depth = 50, count = 5000, saturation = 0, factor = 4, fade = false }: Props, ref) => {
+  ({ radius = 100, depth = 50, count = 5000, saturation = 0, factor = 4, fade = false, speed = 1 }: Props, ref) => {
     const material = React.useRef<StarfieldMaterial>()
     const [position, color, size] = React.useMemo(() => {
       const positions: any[] = []
@@ -72,19 +76,20 @@ export const Stars = React.forwardRef(
       }
       return [new Float32Array(positions), new Float32Array(colors), new Float32Array(sizes)]
     }, [count, depth, factor, radius, saturation])
-    useFrame((state) => material.current && (material.current.uniforms.time.value = state.clock.getElapsedTime()))
+    useFrame(
+      (state) => material.current && (material.current.uniforms.time.value = state.clock.getElapsedTime() * speed)
+    )
 
     const [starfieldMaterial] = React.useState(() => new StarfieldMaterial())
 
     return (
       <points ref={ref as React.MutableRefObject<Points>}>
-        <bufferGeometry attach="geometry">
-          <bufferAttribute attachObject={['attributes', 'position']} args={[position, 3]} />
-          <bufferAttribute attachObject={['attributes', 'color']} args={[color, 3]} />
-          <bufferAttribute attachObject={['attributes', 'size']} args={[size, 1]} />
+        <bufferGeometry>
+          <bufferAttribute attach="attributes-position" args={[position, 3]} />
+          <bufferAttribute attach="attributes-color" args={[color, 3]} />
+          <bufferAttribute attach="attributes-size" args={[size, 1]} />
         </bufferGeometry>
         <primitive
-          dispose={undefined}
           ref={material}
           object={starfieldMaterial}
           attach="material"

@@ -29,7 +29,7 @@ type ControlsProto = { update(): void; target: THREE.Vector3 }
 type Props = JSX.IntrinsicElements['group'] & {
   shadows?: boolean
   adjustCamera?: boolean
-  environment?: PresetsType
+  environment?: PresetsType | null
   intensity?: number
   ambience?: number
   // TODO: in a new major state.controls should be the only means of consuming controls, the
@@ -104,7 +104,7 @@ export function Stage({
       <group ref={outer}>
         <group ref={inner}>{children}</group>
       </group>
-      {contactShadow && <ContactShadows width={radius * 2} height={radius * 2} far={radius / 2} {...contactShadow} />}
+      {contactShadow && <ContactShadows scale={radius * 2} far={radius / 2} {...contactShadow} />}
       {environment && <Environment preset={environment} />}
       <ambientLight intensity={intensity / 3} />
       <spotLight

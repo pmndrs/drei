@@ -63,10 +63,10 @@ function YBotModel(props: JSX.IntrinsicElements['group']) {
         <group rotation={[Math.PI / 2, 0, 0]} scale={[0.01, 0.01, 0.01]}>
           <primitive object={nodes.mixamorigHips} />
           <skinnedMesh geometry={nodes.YB_Body.geometry} skeleton={nodes.YB_Body.skeleton}>
-            <meshMatcapMaterial attach="material" matcap={matcapBody} skinning={true} />
+            <meshMatcapMaterial matcap={matcapBody} skinning />
           </skinnedMesh>
           <skinnedMesh geometry={nodes.YB_Joints.geometry} skeleton={nodes.YB_Joints.skeleton}>
-            <meshMatcapMaterial attach="material" matcap={matcapJoints} skinning={true} />
+            <meshMatcapMaterial matcap={matcapJoints} skinning />
           </skinnedMesh>
         </group>
       </group>

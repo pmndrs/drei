@@ -1,4 +1,13 @@
-import { Fog, FogExp2, Group, Texture, CubeCamera as CubeCameraImpl, WebGLCubeRenderTarget, LinearFilter } from 'three'
+import {
+  HalfFloatType,
+  Fog,
+  FogExp2,
+  Group,
+  Texture,
+  CubeCamera as CubeCameraImpl,
+  WebGLCubeRenderTarget,
+  LinearFilter,
+} from 'three'
 import * as React from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 
@@ -16,23 +25,20 @@ export function CubeCamera({
   fog,
   frames = Infinity,
   resolution = 256,
-  near = 1,
+  near = 0.1,
   far = 1000,
   ...props
 }: Props) {
   const ref = React.useRef<Group>()
-  const [camera, setCamera] = React.useState<CubeCameraImpl>()
+  const [camera, setCamera] = React.useState<CubeCameraImpl | null>(null)
   const scene = useThree(({ scene }) => scene)
   const gl = useThree(({ gl }) => gl)
-  const fbo = React.useMemo(
-    () =>
-      new WebGLCubeRenderTarget(resolution, {
-        minFilter: LinearFilter,
-        magFilter: LinearFilter,
-        encoding: gl.outputEncoding,
-      }),
-    [resolution]
-  )
+  const fbo = React.useMemo(() => {
+    const fbo = new WebGLCubeRenderTarget(resolution)
+    fbo.texture.encoding = gl.outputEncoding
+    fbo.texture.type = HalfFloatType
+    return fbo
+  }, [resolution])
   let count = 0
   useFrame(() => {
     if (camera && ref.current && (frames === Infinity || count < frames)) {

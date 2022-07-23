@@ -29,6 +29,9 @@ const ColorShiftMaterial = shaderMaterial(
     float pct = abs(sin(time));
     color = mix(colorA, colorB, pct);
     gl_FragColor = vec4(color,1.0);
+
+    #include <tonemapping_fragment>
+    #include <encodings_fragment>
   }
   `
 )
@@ -59,7 +62,7 @@ function ScreenQuadScene() {
 
   return (
     <ScreenQuad>
-      <colorShiftMaterial ref={ref} attach="material" time={0} resolution={[size.width, size.height]} />
+      <colorShiftMaterial ref={ref} time={0} resolution={[size.width, size.height]} />
     </ScreenQuad>
   )
 }

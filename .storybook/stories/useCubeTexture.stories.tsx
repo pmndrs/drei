@@ -16,7 +16,7 @@ function TexturedMeshes() {
   return (
     <>
       <Icosahedron args={[3, 4]}>
-        <meshStandardMaterial envMap={envMap} attach="material" roughness={0} metalness={0.9} color="#010101" />
+        <meshStandardMaterial envMap={envMap} roughness={0} metalness={0.9} color="#010101" />
       </Icosahedron>
     </>
   )

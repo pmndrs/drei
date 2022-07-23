@@ -32,10 +32,6 @@ const PointsInstances = React.forwardRef<THREE.Points, PointsInstancesProps>(
       Float32Array.from({ length: limit }, () => 1),
     ])
 
-    React.useLayoutEffect(() => {
-      parentRef.current.geometry.drawRange.count = Math.min(limit, range !== undefined ? range : limit, refs.length)
-    }, [refs, range])
-
     React.useEffect(() => {
       // We might be a frame too late? 🤷‍♂️
       parentRef.current.geometry.attributes.position.needsUpdate = true
@@ -45,27 +41,19 @@ const PointsInstances = React.forwardRef<THREE.Points, PointsInstancesProps>(
       parentRef.current.updateMatrix()
       parentRef.current.updateMatrixWorld()
       parentMatrix.copy(parentRef.current.matrixWorld).invert()
+
+      parentRef.current.geometry.drawRange.count = Math.min(limit, range !== undefined ? range : limit, refs.length)
+
       for (i = 0; i < refs.length; i++) {
         positionRef = refs[i].current
         positionRef.getWorldPosition(position).applyMatrix4(parentMatrix)
-        if (
-          position.x !== positions[i * 3] ||
-          position.y !== positions[i * 3 + 1] ||
-          position.z !== positions[i * 3 + 2]
-        ) {
-          position.toArray(positions, i * 3)
-          parentRef.current.geometry.attributes.position.needsUpdate = true
-          positionRef.matrixWorldNeedsUpdate = true
-        }
-        if (!positionRef.color.equals(color.fromArray(colors, i * 3))) {
-          positionRef.color.toArray(colors, i * 3)
-          parentRef.current.geometry.attributes.color.needsUpdate = true
-        }
-
-        if (positionRef.size !== sizes[i]) {
-          sizes.set([positionRef.size], i)
-          parentRef.current.geometry.attributes.size.needsUpdate = true
-        }
+        position.toArray(positions, i * 3)
+        parentRef.current.geometry.attributes.position.needsUpdate = true
+        positionRef.matrixWorldNeedsUpdate = true
+        positionRef.color.toArray(colors, i * 3)
+        parentRef.current.geometry.attributes.color.needsUpdate = true
+        sizes.set([positionRef.size], i)
+        parentRef.current.geometry.attributes.size.needsUpdate = true
       }
     })
 
@@ -98,21 +86,21 @@ const PointsInstances = React.forwardRef<THREE.Points, PointsInstancesProps>(
       <points matrixAutoUpdate={false} ref={mergeRefs([ref, parentRef])} {...events} {...props}>
         <bufferGeometry>
           <bufferAttribute
-            attachObject={['attributes', 'position']}
+            attach="attributes-position"
             count={positions.length / 3}
             array={positions}
             itemSize={3}
             usage={THREE.DynamicDrawUsage}
           />
           <bufferAttribute
-            attachObject={['attributes', 'color']}
+            attach="attributes-color"
             count={colors.length / 3}
             array={colors}
             itemSize={3}
             usage={THREE.DynamicDrawUsage}
           />
           <bufferAttribute
-            attachObject={['attributes', 'size']}
+            attach="attributes-size"
             count={sizes.length}
             array={sizes}
             itemSize={1}
@@ -140,7 +128,7 @@ export const Point = React.forwardRef(({ children, ...props }, ref) => {
 /**
  * Buffer implementation, relies on complete buffers of the correct number, leaves it to the user to update them
  */
-type PointsBuffersProps = Omit<JSX.IntrinsicElements['points'], 'position'> & {
+type PointsBuffersProps = JSX.IntrinsicElements['points'] & {
   // a buffer containing all points position
   positions: Float32Array
   colors?: Float32Array
@@ -155,23 +143,16 @@ export const PointsBuffer = React.forwardRef<THREE.Points, PointsBuffersProps>(
 
     useFrame(() => {
       const attr = pointsRef.current.geometry.attributes
-
       attr.position.needsUpdate = true
-
-      if (colors) {
-        attr.color.needsUpdate = true
-      }
-
-      if (sizes) {
-        attr.size.needsUpdate = true
-      }
+      if (colors) attr.color.needsUpdate = true
+      if (sizes) attr.size.needsUpdate = true
     })
 
     return (
-      <points matrixAutoUpdate={false} ref={mergeRefs([forwardedRef, pointsRef])} {...props}>
+      <points ref={mergeRefs([forwardedRef, pointsRef])} {...props}>
         <bufferGeometry>
           <bufferAttribute
-            attachObject={['attributes', 'position']}
+            attach="attributes-position"
             count={positions.length / stride}
             array={positions}
             itemSize={stride}
@@ -179,7 +160,7 @@ export const PointsBuffer = React.forwardRef<THREE.Points, PointsBuffersProps>(
           />
           {colors && (
             <bufferAttribute
-              attachObject={['attributes', 'color']}
+              attach="attributes-color"
               count={colors.length / stride}
               array={colors}
               itemSize={3}
@@ -188,7 +169,7 @@ export const PointsBuffer = React.forwardRef<THREE.Points, PointsBuffersProps>(
           )}
           {sizes && (
             <bufferAttribute
-              attachObject={['attributes', 'size']}
+              attach="attributes-size"
               count={sizes.length / stride}
               array={sizes}
               itemSize={1}
@@ -206,8 +187,6 @@ export const Points = React.forwardRef<THREE.Points, PointsBuffersProps | Points
   (props, forwardedRef) => {
     if ((props as PointsBuffersProps).positions instanceof Float32Array) {
       return <PointsBuffer {...(props as PointsBuffersProps)} ref={forwardedRef} />
-    }
-
-    return <PointsInstances {...(props as PointsInstancesProps)} ref={forwardedRef} />
+    } else return <PointsInstances {...(props as PointsInstancesProps)} ref={forwardedRef} />
   }
 )

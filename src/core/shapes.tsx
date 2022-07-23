@@ -18,6 +18,7 @@ import {
   ExtrudeBufferGeometry,
   LatheBufferGeometry,
   TorusKnotBufferGeometry,
+  CapsuleBufferGeometry,
 } from 'three'
 
 export type Args<T> = T extends new (...args: any) => any ? ConstructorParameters<T> : T
@@ -53,3 +54,4 @@ export const Octahedron = create<typeof OctahedronBufferGeometry>('octahedron')
 export const Dodecahedron = create<typeof DodecahedronBufferGeometry>('dodecahedron')
 export const Extrude = create<typeof ExtrudeBufferGeometry>('extrude')
 export const Lathe = create<typeof LatheBufferGeometry>('lathe')
+export const Capsule = create<typeof CapsuleBufferGeometry>('capsule')

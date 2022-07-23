@@ -6,7 +6,7 @@ import { LineGeometry, LineMaterial, LineMaterialParameters, Line2 } from 'three
 export type LineProps = {
   points: Array<Vector3 | [number, number, number]>
   vertexColors?: Array<Color | [number, number, number]>
-} & LineMaterialParameters &
+} & Omit<LineMaterialParameters, 'vertexColors'> &
   Omit<ReactThreeFiber.Object3DNode<Line2, typeof Line2>, 'args'> &
   Omit<
     ReactThreeFiber.Object3DNode<LineMaterial, [LineMaterialParameters]>,

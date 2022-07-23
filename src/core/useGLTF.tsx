@@ -44,5 +44,4 @@ useGLTF.preload = (
   extendLoader?: (loader: GLTFLoader) => void
 ) => useLoader.preload(GLTFLoader, path, extensions(useDraco, useMeshOpt, extendLoader))
 
-// @ts-expect-error new in r3f 7.0.5
 useGLTF.clear = (input: string | string[]) => useLoader.clear(GLTFLoader, input)

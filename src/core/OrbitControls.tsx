@@ -1,6 +1,5 @@
 import { EventManager, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
-import { forwardRef, useEffect, useMemo } from 'react'
 import type { Camera, Event } from 'three'
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 
@@ -22,51 +21,49 @@ export type OrbitControlsProps = Omit<
   'ref'
 >
 
-export const OrbitControls = forwardRef<OrbitControlsImpl, OrbitControlsProps>(
+export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsProps>(
   ({ makeDefault, camera, regress, domElement, enableDamping = true, onChange, onStart, onEnd, ...restProps }, ref) => {
-    const invalidate = useThree(({ invalidate }) => invalidate)
-    const defaultCamera = useThree(({ camera }) => camera)
-    const gl = useThree(({ gl }) => gl)
-    const events = useThree(({ events }) => events) as EventManager<HTMLElement>
-    const set = useThree(({ set }) => set)
-    const get = useThree(({ get }) => get)
-    const performance = useThree(({ performance }) => performance)
+    const invalidate = useThree((state) => state.invalidate)
+    const defaultCamera = useThree((state) => state.camera)
+    const gl = useThree((state) => state.gl)
+    const events = useThree((state) => state.events) as EventManager<HTMLElement>
+    const set = useThree((state) => state.set)
+    const get = useThree((state) => state.get)
+    const performance = useThree((state) => state.performance)
     const explCamera = camera || defaultCamera
-    const explDomElement = domElement || (typeof events.connected !== 'boolean' ? events.connected : gl.domElement)
-    const controls = useMemo(() => new OrbitControlsImpl(explCamera), [explCamera])
+    const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
+    const controls = React.useMemo(() => new OrbitControlsImpl(explCamera), [explCamera])
 
     useFrame(() => {
       if (controls.enabled) controls.update()
-    })
+    }, -1)
 
-    useEffect(() => {
+    React.useEffect(() => {
+      controls.connect(explDomElement)
+      return () => void controls.dispose()
+    }, [explDomElement, regress, controls, invalidate])
+
+    React.useEffect(() => {
       const callback = (e: Event) => {
         invalidate()
         if (regress) performance.regress()
         if (onChange) onChange(e)
       }
-
-      controls.connect(explDomElement)
       controls.addEventListener('change', callback)
-
       if (onStart) controls.addEventListener('start', onStart)
       if (onEnd) controls.addEventListener('end', onEnd)
 
       return () => {
-        controls.removeEventListener('change', callback)
         if (onStart) controls.removeEventListener('start', onStart)
         if (onEnd) controls.removeEventListener('end', onEnd)
-        controls.dispose()
+        controls.removeEventListener('change', callback)
       }
-    }, [explDomElement, onChange, onStart, onEnd, regress, controls, invalidate])
+    }, [onChange, onStart, onEnd, controls, invalidate])
 
-    useEffect(() => {
+    React.useEffect(() => {
       if (makeDefault) {
-        // @ts-expect-error new in @react-three/fiber@7.0.5
         const old = get().controls
-        // @ts-expect-error new in @react-three/fiber@7.0.5
         set({ controls })
-        // @ts-expect-error new in @react-three/fiber@7.0.5
         return () => set({ controls: old })
       }
     }, [makeDefault, controls])

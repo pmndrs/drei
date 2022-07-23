@@ -21,12 +21,17 @@ export const TrackballControls = React.forwardRef<TrackballControlsImpl, Trackba
   ({ makeDefault, camera, domElement, regress, onChange, onStart, onEnd, ...restProps }, ref) => {
     const { invalidate, camera: defaultCamera, gl, events, set, get, performance, viewport } = useThree()
     const explCamera = camera || defaultCamera
-    const explDomElement = domElement || (typeof events.connected !== 'boolean' ? events.connected : gl.domElement)
+    const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
     const controls = React.useMemo(() => new TrackballControlsImpl(explCamera as THREE.PerspectiveCamera), [explCamera])
 
     useFrame(() => {
       if (controls.enabled) controls.update()
-    })
+    }, -1)
+
+    React.useEffect(() => {
+      controls.connect(explDomElement)
+      return () => void controls.dispose()
+    }, [explDomElement, regress, controls, invalidate])
 
     React.useEffect(() => {
       const callback = (e: THREE.Event) => {
@@ -34,19 +39,15 @@ export const TrackballControls = React.forwardRef<TrackballControlsImpl, Trackba
         if (regress) performance.regress()
         if (onChange) onChange(e)
       }
-
-      controls.connect(explDomElement)
       controls.addEventListener('change', callback)
       if (onStart) controls.addEventListener('start', onStart)
       if (onEnd) controls.addEventListener('end', onEnd)
-
       return () => {
-        controls.removeEventListener('change', callback)
         if (onStart) controls.removeEventListener('start', onStart)
         if (onEnd) controls.removeEventListener('end', onEnd)
-        controls.dispose()
+        controls.removeEventListener('change', callback)
       }
-    }, [explDomElement, onChange, onStart, onEnd, regress, controls, invalidate])
+    }, [onChange, onStart, onEnd, controls, invalidate])
 
     React.useEffect(() => {
       controls.handleResize()
@@ -54,11 +55,8 @@ export const TrackballControls = React.forwardRef<TrackballControlsImpl, Trackba
 
     React.useEffect(() => {
       if (makeDefault) {
-        // @ts-expect-error new in @react-three/fiber@7.0.5
         const old = get().controls
-        // @ts-expect-error new in @react-three/fiber@7.0.5
         set({ controls })
-        // @ts-expect-error new in @react-three/fiber@7.0.5
         return () => set({ controls: old })
       }
     }, [makeDefault, controls])

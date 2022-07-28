@@ -47,21 +47,28 @@ export type ViewProps = {
   children?: React.ReactNode
 }
 
-function computeContainerPosition(canvasSize: LegacyCanvasSize | CanvasSize, trackRect: DOMRect): any {
+function computeContainerPosition(
+  canvasSize: LegacyCanvasSize | CanvasSize,
+  trackRect: DOMRect
+): {
+  position: CanvasSize & { bottom: number, right: number }
+  isOffscreen: boolean
+} {
   const { right, top, left: trackLeft, bottom: trackBottom, width, height } = trackRect
-
+  const isOffscreen = trackRect.bottom < 0 || top > canvasSize.height || right < 0 || trackRect.left > canvasSize.width
+  
   if (isNonLegacyCanvasSize(canvasSize)) {
     const canvasBottom = canvasSize.top + canvasSize.height
     const bottom = canvasBottom - trackBottom
     const left = trackLeft - canvasSize.left
 
-    return { left, right, top, bottom, width, height }
+    return { position: { width, height, left, top, bottom, right }, isOffscreen }
   }
 
   // Fall back on old behavior if r3f < 8.1.0
   const bottom = canvasSize.height - trackBottom
 
-  return { left: trackLeft, right, top, bottom, width, height }
+  return { position: { width, height, top, left: trackLeft, bottom, right }, isOffscreen }
 }
 
 function Container({ canvasSize, scene, index, children, frames, rect, track }: ContainerProps) {
@@ -78,8 +85,10 @@ function Container({ canvasSize, scene, index, children, frames, rect, track }: 
     }
 
     if (rect.current) {
-      const { left, right, top, bottom, width, height } = computeContainerPosition(canvasSize, rect.current)
-      const isOffscreen = bottom < 0 || top > canvasSize.height || right < 0 || left > canvasSize.width
+      const {
+        position: { left, bottom, width, height },
+        isOffscreen,
+      } = computeContainerPosition(canvasSize, rect.current)
 
       const aspect = width / height
 

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useLoader, useThree, createPortal, useFrame } from '@react-three/fiber'
+import { useLoader, useThree, createPortal, useFrame, extend, Object3DNode } from '@react-three/fiber'
 import {
   WebGLCubeRenderTarget,
   EquirectangularReflectionMapping,
@@ -10,22 +10,13 @@ import {
   CubeCamera,
   HalfFloatType,
   CubeReflectionMapping,
-  BackSide,
   CubeTexture,
   sRGBEncoding,
   LinearEncoding,
   TextureEncoding,
 } from 'three'
-import { RGBELoader } from 'three-stdlib'
+import { RGBELoader, GroundProjectedEnv as GroundProjectedEnvImpl } from 'three-stdlib'
 import { presetsObj, PresetsType } from '../helpers/environment-assets'
-import { Icosahedron } from '.'
-
-// eslint-disable-next-line
-// @ts-ignore
-import vertexShader from '../helpers/glsl/GroundProjection.vert.glsl'
-// eslint-disable-next-line
-// @ts-ignore
-import fragmentShader from '../helpers/glsl/GroundProjection.frag.glsl'
 
 const CUBEMAP_ROOT = 'https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/hdris/'
 
@@ -52,7 +43,6 @@ type Props = {
   encoding?: TextureEncoding
 }
 
-const isCubeTexture = (def: any): def is CubeTexture => def && (def as CubeTexture).isCubeTexture
 const isRef = (obj: any): obj is React.MutableRefObject<THREE.Scene> => obj.current && obj.current.isScene
 const resolveScene = (scene: THREE.Scene | React.MutableRefObject<THREE.Scene>) =>
   isRef(scene) ? scene.current : scene
@@ -191,61 +181,31 @@ export function EnvironmentPortal({
   )
 }
 
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      groundProjectedEnvImpl: Object3DNode<GroundProjectedEnvImpl, typeof GroundProjectedEnvImpl>
+    }
+  }
+}
+
 function EnvironmentGround(props: Props) {
   const textureDefault = useEnvironment(props)
   const texture = props.map || textureDefault
-  const isCubeMap = isCubeTexture(texture)
 
-  const defines = React.useMemo(() => {
-    const w = (isCubeMap ? texture.image[0]?.width : texture.image.width) ?? 1024
-    const cubeSize = w / 4
-    const _lodMax = Math.floor(Math.log2(cubeSize))
-    const _cubeSize = Math.pow(2, _lodMax)
-    const width = 3 * Math.max(_cubeSize, 16 * 7)
-    const height = 4 * _cubeSize
-
-    return [
-      isCubeMap ? `#define ENVMAP_TYPE_CUBE` : '',
-      `#define CUBEUV_TEXEL_WIDTH ${1.0 / width}`,
-      `#define CUBEUV_TEXEL_HEIGHT ${1.0 / height}`,
-      `#define CUBEUV_MAX_MIP ${_lodMax}.0`,
-      ``,
-    ]
+  React.useMemo(() => {
+    extend({ GroundProjectedEnvImpl })
   }, [])
 
-  const fragment = React.useMemo(() => defines.join('\n') + fragmentShader, [defines])
-
-  const uniforms = React.useMemo(
-    () => ({
-      cubemap: { value: null },
-      height: { value: 15 },
-      radius: { value: 60 },
-    }),
-    []
-  )
-
-  const mat = React.useRef<any>(null!)
-
+  const args = React.useMemo<[CubeTexture | Texture]>(() => [texture], [texture])
   const height = (props.ground as any)?.height
   const radius = (props.ground as any)?.radius
   const scale = (props.ground as any)?.scale ?? 1000
 
-  React.useEffect(() => void (height && (mat.current.uniforms.height.value = height)), [height])
-  React.useEffect(() => void (radius && (mat.current.uniforms.radius.value = radius)), [radius])
-  React.useEffect(() => void (mat.current.uniforms.cubemap.value = texture), [texture])
-
   return (
     <>
       <EnvironmentMap {...props} map={texture} />
-      <Icosahedron scale={scale} args={[1, 16]}>
-        <shaderMaterial
-          ref={mat}
-          side={BackSide}
-          vertexShader={vertexShader}
-          fragmentShader={fragment}
-          uniforms={uniforms}
-        />
-      </Icosahedron>
+      <groundProjectedEnvImpl args={args} scale={scale} height={height} radius={radius} />
     </>
   )
 }

@@ -2182,7 +2182,7 @@ type RandomizedLightProps = JSX.IntrinsicElements['group'] & {
 <RandomizedLight castShadow amount={8} frames={100} position={[5, 5, -10]} />
 ```
 
-### AccumulativeShadows
+###  AccumulativeShadows
 
 <p>
   <a href="https://codesandbox.io/s/hxcc1x"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/hxcc1x/screenshot.png" alt="Demo"/></a>

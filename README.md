@@ -2147,11 +2147,12 @@ Since this is a rather expensive effect you can limit the amount of frames it re
 
 ### RandomizedLight
 
-A randomized light that internally runs multiple lights and jiggles them. See below, you would normally pair it with `AccumulativeShadows`.
+A randomized light that internally runs multiple lights and jiggles them. See below, you would normally pair it with `AccumulativeShadows`. This component is context aware, paired with AccumulativeShadows it will take the number of frames from its parent.
 
 ```tsx
 type RandomizedLightProps = JSX.IntrinsicElements['group'] & {
-  /** How many frames it will jiggle the lights, 1 */
+  /** How many frames it will jiggle the lights, 1.
+   *  Frames is context aware, if a provider like AccumulativeShadows exists, frames will be taken from there!  */
   frames?: number
   /** Light position, [0, 0, 0] */
   position?: [x: number, y: number, z: number]
@@ -2215,7 +2216,7 @@ type AccumulativeShadowsProps = JSX.IntrinsicElements['group'] & {
 
 ```jsx
 <AccumulativeShadows temporal frames={100} temporal scale={10}>
-  <RandomizedLight castShadow amount={8} frames={100} position={[5, 5, -10]} />
+  <RandomizedLight castShadow amount={8} position={[5, 5, -10]} />
 </AccumulativeShadows>
 ```
 

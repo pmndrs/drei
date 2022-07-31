@@ -229,7 +229,7 @@ export function AccumulativeShadows({
   color = 'black',
   resolution = 1024,
   ...props
-}) {
+}: AccumulativeShadowsProps) {
   const gl = useThree((state) => state.gl)
   const scene = useThree((state) => state.scene)
   const defaultCamera = useThree((state) => state.camera)
@@ -244,10 +244,40 @@ export function AccumulativeShadows({
     }
   }, [])
 
-  if (blend === undefined) blend = frames === Infinity ? 100 : frames
+  const blendFrames = blend === undefined ? (frames === Infinity ? 100 : frames) : frames
+  const material = React.useMemo(() => {
+    const mat: THREE.MeshBasicMaterial & { uniforms: { [key: string]: any } } = Object.assign(
+      new THREE.MeshBasicMaterial({
+        opacity,
+        transparent: true,
+        dithering: true,
+        depthWrite: false,
+        map: plm.progressiveLightMap2.texture,
+      }),
+      { uniforms: { ucolor: { value: new THREE.Color(color) }, alphaTest: { value: alphaTest } } }
+    )
+
+    mat.onBeforeCompile = (shader) => {
+      mat.uniforms = shader.uniforms = { ...shader.uniforms, ...mat.uniforms }
+      shader.fragmentShader = shader.fragmentShader.replace(
+        `void main() {`,
+        `uniform vec3 ucolor;
+           uniform float alphaTest;
+           void main() {`
+      )
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <dithering_fragment>',
+        `#include <dithering_fragment>
+           gl_FragColor = vec4(ucolor * gl_FragColor.r * 2.0, max(0.0, (1.0 - gl_FragColor.r / alphaTest)) * opacity);`
+      )
+    }
+    return mat
+  }, [color, opacity, alphaTest])
 
   React.useLayoutEffect(() => {
     plm.clear()
+    material.opacity = 0
+    ;(material as any).uniforms.alphaTest.value = 0
   })
 
   function prepare() {
@@ -272,8 +302,10 @@ export function AccumulativeShadows({
 
   React.useEffect(() => {
     if (!temporal) {
+      material.opacity = opacity
+      material.uniforms.alphaTest.value = alphaTest
       const intensities = prepare()
-      for (let i = 0; i < blend; i++) plm.update(defaultCamera, blend)
+      for (let i = 0; i < blendFrames; i++) plm.update(defaultCamera, blendFrames)
       finish(intensities)
     }
   })
@@ -281,41 +313,17 @@ export function AccumulativeShadows({
   let count = 0
   useFrame(() => {
     if (temporal && count < frames) {
+      material.opacity = Math.min(opacity, material.opacity + opacity / blendFrames)
+      material.uniforms.alphaTest.value = Math.min(
+        alphaTest,
+        material.uniforms.alphaTest.value + alphaTest / blendFrames
+      )
       const intensities = prepare()
-      plm.update(defaultCamera, blend)
+      plm.update(defaultCamera, blendFrames)
       finish(intensities)
       count++
     }
   })
-
-  const material = React.useMemo(() => {
-    const mat = new THREE.MeshBasicMaterial({
-      opacity,
-      transparent: true,
-      dithering: true,
-      depthWrite: false,
-      map: plm.progressiveLightMap2.texture,
-    })
-    mat.onBeforeCompile = (shader) => {
-      shader.uniforms = {
-        ...shader.uniforms,
-        ucolor: { value: new THREE.Color(color) },
-        alphaTest: { value: alphaTest },
-      }
-      shader.fragmentShader = shader.fragmentShader.replace(
-        `void main() {`,
-        `uniform vec3 ucolor;
-         uniform float alphaTest;
-         void main() {`
-      )
-      shader.fragmentShader = shader.fragmentShader.replace(
-        '#include <dithering_fragment>',
-        `#include <dithering_fragment>
-         gl_FragColor = vec4(ucolor * gl_FragColor.r * 2.0, max(0.0, (1.0 - gl_FragColor.r / alphaTest)) * opacity);`
-      )
-    }
-    return mat
-  }, [color, opacity, alphaTest])
 
   return (
     <group {...props}>

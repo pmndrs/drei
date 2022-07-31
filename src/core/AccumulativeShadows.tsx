@@ -7,7 +7,6 @@ import mergeRefs from 'react-merge-refs'
 class ProgressiveLightMap {
   renderer: THREE.WebGLRenderer
   res: number
-  lightMap: any
   scene: THREE.Scene
   buffer1Active: boolean
   progressiveLightMap1: THREE.WebGLRenderTarget
@@ -18,7 +17,6 @@ class ProgressiveLightMap {
   constructor(renderer: THREE.WebGLRenderer, scene: THREE.Scene, res: number = 1024) {
     this.renderer = renderer
     this.res = res
-    this.lightMap = []
     this.scene = scene
     this.scene.background = null
     this.buffer1Active = false
@@ -67,22 +65,12 @@ class ProgressiveLightMap {
     this.renderer.clear()
   }
 
-  /**
-   * Sets these objects' materials' lightmaps and modifies their uv2's.
-   * @param {Object3D} objects An array of objects and lights to set up your lightmap.
-   */
-  addObjectToLightMap(object) {
+  configureObject(object) {
     const uv2 = object.geometry.getAttribute('uv').clone()
     object.geometry.setAttribute('uv2', uv2)
     object.geometry.getAttribute('uv2').needsUpdate = true
-    this.lightMap = { basicMat: object.material, object: object }
   }
 
-  /**
-   * This function renders each mesh one at a time into their respective surface maps
-   * @param {Camera} camera Standard Rendering Camera
-   * @param {number} blendWindow When >1, samples will accumulate over time.
-   */
   update(camera, blendWindow = 100) {
     // Set each object's material to the UV Unwrapped Surface Mapping Version
     this.uniforms.averagingWindow = { value: blendWindow }
@@ -238,10 +226,7 @@ export function AccumulativeShadows({
 
   const [plm] = React.useState(() => new ProgressiveLightMap(gl, scene, resolution))
   React.useLayoutEffect(() => {
-    plm.addObjectToLightMap(gPlane.current)
-    return () => {
-      plm.lightMap = null
-    }
+    plm.configureObject(gPlane.current)
   }, [])
 
   const blendFrames = blend === undefined ? (frames === Infinity ? 100 : frames) : frames
@@ -277,27 +262,24 @@ export function AccumulativeShadows({
   React.useLayoutEffect(() => {
     plm.clear()
     material.opacity = 0
-    ;(material as any).uniforms.alphaTest.value = 0
+    material.uniforms.alphaTest.value = 0
   })
 
   function prepare() {
     gLights.current.visible = true
-    const intensities: number[] = []
+    const intensities: { object: THREE.Light; intensity: number }[] = []
     scene.traverse((object) => {
       if (isLight(object)) {
-        intensities.push(object.intensity)
+        intensities.push({ object, intensity: object.intensity })
         object.intensity = 0
       }
     })
     return intensities
   }
 
-  function finish(intensities: number[]) {
+  function finish(intensities: { object: THREE.Light; intensity: number }[]) {
     gLights.current.visible = false
-    let count = 0
-    scene.traverse((object) => {
-      if (isLight(object)) object.intensity = intensities[count++]
-    })
+    intensities.forEach(({ object, intensity }) => (object.intensity = intensity))
   }
 
   React.useEffect(() => {

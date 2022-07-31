@@ -2188,7 +2188,7 @@ type RandomizedLightProps = JSX.IntrinsicElements['group'] & {
   <a href="https://codesandbox.io/s/hxcc1x"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/hxcc1x/screenshot.png" alt="Demo"/></a>
 </p>
 
-A planar, Y-up oriented shadow-catcher that can accumulate into soft shadows. It can be temporal, it will accumulate over time, or instance, which might expensive depending on how many frames you render.
+A planar, Y-up oriented shadow-catcher that can accumulate into soft shadows and has zero performance impact after all frames have accumulated. It can be temporal, it will accumulate over time, or instance, which might expensive depending on how many frames you render.
 
 You must pair it with lightsources (and scene objects!) that cast shadows, which go into the children slot. Best use it with the `RandomizedLight` component, which jiggles a set of lights around, creating realistic raycast-like shadows and ambient occlusion.
 

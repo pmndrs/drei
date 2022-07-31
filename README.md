@@ -179,6 +179,8 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#spotlight">SpotLight</a></li>
           <li><a href="#shadow">Shadow</a></li>
           <li><a href="#contactshadows">ContactShadows</a></li>
+          <li><a href="#randomizedlight">RandomizedLight</a></li>
+          <li><a href="#accumulativeshadows">AccumulativeShadows</a></li>
           <li><a href="#sky">Sky</a></li>
           <li><a href="#stars">Stars</a></li>
           <li><a href="#sparkles">Sparkles</a></li>
@@ -2141,6 +2143,81 @@ Since this is a rather expensive effect you can limit the amount of frames it re
 
 ```jsx
 <ContactShadows frames={1} />
+```
+
+### RandomizedLight
+
+A randomized light that internally runs multiple lights and jiggles them. See below, you would normally pair it with `AccumulativeShadows`. This component is context aware, paired with AccumulativeShadows it will take the number of frames from its parent.
+
+```tsx
+type RandomizedLightProps = JSX.IntrinsicElements['group'] & {
+  /** How many frames it will jiggle the lights, 1.
+   *  Frames is context aware, if a provider like AccumulativeShadows exists, frames will be taken from there!  */
+  frames?: number
+  /** Light position, [0, 0, 0] */
+  position?: [x: number, y: number, z: number]
+  /** Radius of the jiggle, higher values make softer light, 5 */
+  radius?: number
+  /** Amount of lights, 8 */
+  amount?: number
+  /** Light intensity, 1 */
+  intensity?: number
+  /** Ambient occlusion, lower values mean less AO, hight more, you can mix AO and directional light, 0.5 */
+  ambient?: number
+  /** If the lights cast shadows, this is true by default */
+  castShadow?: boolean
+  /** Default shadow bias, 0 */
+  bias?: number
+  /** Default map size, 512 */
+  mapSize?: number
+  /** Default size of the shadow camera, 10 */
+  size?: number
+  /** Default shadow camera near, 0.5 */
+  near?: number
+  /** Default shadow camera far, 500 */
+  far?: number
+}
+```
+
+```jsx
+<RandomizedLight castShadow amount={8} frames={100} position={[5, 5, -10]} />
+```
+
+###  AccumulativeShadows
+
+<p>
+  <a href="https://codesandbox.io/s/hxcc1x"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/hxcc1x/screenshot.png" alt="Demo"/></a>
+</p>
+
+A planar, Y-up oriented shadow-catcher that can accumulate into soft shadows and has zero performance impact after all frames have accumulated. It can be temporal, it will accumulate over time, or instantaneous, which might expensive depending on how many frames you render.
+
+You must pair it with lightsources (and scene objects!) that cast shadows, which go into the children slot. Best use it with the `RandomizedLight` component, which jiggles a set of lights around, creating realistic raycast-like shadows and ambient occlusion.
+
+```tsx
+type AccumulativeShadowsProps = JSX.IntrinsicElements['group'] & {
+  /** How many frames it can render, more yields cleaner results but takes more time, 40 */
+  frames?: number
+  /** If frames === Infinity blend controls the refresh ratio, 100 */
+  blend?: number
+  /** Scale of the plane,  */
+  scale?: number
+  /** Temporal accumulates shadows over time which is more performant but has a visual regression over instant results, false  */
+  temporal?: false
+  /** Opacity of the plane, 1 */
+  opacity?: number
+  /** Discards alpha pixels, 0.65 */
+  alphaTest?: number
+  /** Shadow color, black */
+  color?: string
+  /** Buffer resolution, 1024 */
+  resolution?: number
+}
+```
+
+```jsx
+<AccumulativeShadows temporal frames={100} temporal scale={10}>
+  <RandomizedLight castShadow amount={8} position={[5, 5, -10]} />
+</AccumulativeShadows>
 ```
 
 #### SpotLight

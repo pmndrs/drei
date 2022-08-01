@@ -999,8 +999,6 @@ Antialiased round dots. It takes the same props as regular [THREE.PointsMaterial
 
 #### softShadows
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shaders-softshadows--soft-shadows-st)
-
 <p>
   <a href="https://codesandbox.io/s/dh2jc"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/dh2jc/screenshot.png" alt="Demo"/></a>
 </p>
@@ -2215,7 +2213,7 @@ type AccumulativeShadowsProps = JSX.IntrinsicElements['group'] & {
 ```
 
 ```jsx
-<AccumulativeShadows temporal frames={100} temporal scale={10}>
+<AccumulativeShadows temporal frames={100} scale={10}>
   <RandomizedLight castShadow amount={8} position={[5, 5, -10]} />
 </AccumulativeShadows>
 ```

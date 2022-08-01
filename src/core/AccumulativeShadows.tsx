@@ -327,6 +327,7 @@ export const RandomizedLight = React.forwardRef(
         if (!parent) actualCount.current++
       }
     })
+    console.log(size, near, far)
     return (
       <group ref={mergeRefs([gLights, forwardRef])} {...props}>
         {Array.from({ length: amount }, (_, index) => (

@@ -27,15 +27,7 @@ function AccumulativeShadowScene() {
         scale={14}
         position={[0, -0.5, 0]}
       >
-        <RandomizedLight
-          castShadow
-          frames={100}
-          amount={8}
-          radius={2}
-          ambient={0.5}
-          bias={0.001}
-          position={[5, 5, -10]}
-        />
+        <RandomizedLight amount={8} radius={4} ambient={0.5} bias={0.001} position={[5, 5, -10]} />
       </AccumulativeShadows>
       <OrbitControls autoRotate={true} />
       <Environment preset="city" />

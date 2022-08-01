@@ -4,7 +4,7 @@ import { Mesh } from 'three'
 
 import { Setup } from '../Setup'
 
-import { ContactShadows, Icosahedron, Plane } from '../../src'
+import { ContactShadows, Sphere, Plane } from '../../src'
 
 export default {
   title: 'Staging/ContactShadows',
@@ -20,16 +20,16 @@ function ContactShadowScene({ colorized }: any) {
 
   return (
     <>
-      <Icosahedron ref={mesh} args={[1, 2]} position-y={2}>
-        <meshBasicMaterial color="lightblue" />
-      </Icosahedron>
+      <Sphere ref={mesh} args={[1, 32, 32]} position-y={2}>
+        <meshBasicMaterial color="#2A8AFF" />
+      </Sphere>
       <ContactShadows
         position={[0, 0, 0]}
         scale={10}
         far={3}
         blur={3}
         rotation={[Math.PI / 2, 0, 0]}
-        color={colorized ? 'lightblue' : 'black'}
+        color={colorized ? '#2A8AFF' : 'black'}
       />
       <Plane args={[10, 10]} position={[0, -0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <meshBasicMaterial color="white" />

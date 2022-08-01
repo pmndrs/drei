@@ -65,9 +65,7 @@ export const ContactShadows = React.forwardRef(
       depthMaterial.onBeforeCompile = (shader) => {
         shader.uniforms = {
           ...shader.uniforms,
-          ucolor: {
-            value: new THREE.Color(color).convertSRGBToLinear(),
-          },
+          ucolor: { value: new THREE.Color(color) },
         }
         shader.fragmentShader = shader.fragmentShader.replace(
           `void main() {`, //

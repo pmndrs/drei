@@ -250,7 +250,7 @@ export const RandomizedLight = React.forwardRef(
           }
         }
       }
-    }, [radius, ambient, length])
+    }, [radius, ambient, length, ...position])
 
     const api: AccumulativeLightContext = React.useMemo(() => ({ update }), [update])
     React.useImperativeHandle(forwardRef, () => api, [api])

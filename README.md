@@ -2238,7 +2238,7 @@ interface AccumulativeContext {
 
 ```jsx
 <AccumulativeShadows temporal frames={100} scale={10}>
-  <RandomizedLight castShadow amount={8} position={[5, 5, -10]} />
+  <RandomizedLight amount={8} position={[5, 5, -10]} />
 </AccumulativeShadows>
 ```
 

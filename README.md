@@ -2177,6 +2177,15 @@ type RandomizedLightProps = JSX.IntrinsicElements['group'] & {
 }
 ```
 
+It exposes its api via reference, where `update` will jiggle the lights.
+
+```jsx
+interface AccumulativeLightContext {
+  /** Jiggles the lights */
+  update: () => void;
+}
+```
+
 ```jsx
 <RandomizedLight castShadow amount={8} frames={100} position={[5, 5, -10]} />
 ```
@@ -2209,6 +2218,21 @@ type AccumulativeShadowsProps = JSX.IntrinsicElements['group'] & {
   color?: string
   /** Buffer resolution, 1024 */
   resolution?: number
+  /** Children should be randomized lights shining from different angles to emulate raycasting */
+  children?: React.ReactNode
+}
+```
+
+It exposes its api via reference. Mostly `setLights` is interesting for internal
+
+```tsx
+interface AccumulativeContext {
+  /** Resets the buffers, starting from scratch */
+  reset: () => void
+  /** Updates the lightmap for a number of frames accumulartively */
+  update: (frames?: number) => void
+  /** Allows children to subscribe. AccumulativeShadows will call child.update() in its own update function */
+  setLights: React.Dispatch<React.SetStateAction<AccumulativeLightContext[]>>
 }
 ```
 

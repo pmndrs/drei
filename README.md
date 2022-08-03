@@ -2177,7 +2177,11 @@ type RandomizedLightProps = JSX.IntrinsicElements['group'] & {
 }
 ```
 
-It exposes its api via reference, where `update` will jiggle the lights.
+```jsx
+<RandomizedLight castShadow amount={8} frames={100} position={[5, 5, -10]} />
+```
+
+#### Refernce api
 
 ```jsx
 interface AccumulativeLightContext {
@@ -2186,17 +2190,13 @@ interface AccumulativeLightContext {
 }
 ```
 
-```jsx
-<RandomizedLight castShadow amount={8} frames={100} position={[5, 5, -10]} />
-```
-
 ###  AccumulativeShadows
 
 <p>
   <a href="https://codesandbox.io/s/hxcc1x"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/hxcc1x/screenshot.png" alt="Demo"/></a>
 </p>
 
-A planar, Y-up oriented shadow-catcher that can accumulate into soft shadows and has zero performance impact after all frames have accumulated. It can be temporal, it will accumulate over time, or instantaneous, which might expensive depending on how many frames you render.
+A planar, Y-up oriented shadow-catcher that can accumulate into soft shadows and has zero performance impact after all frames have accumulated. It can be temporal, it will accumulate over time, or instantaneous, which might be expensive depending on how many frames you render.
 
 You must pair it with lightsources (and scene objects!) that cast shadows, which go into the children slot. Best use it with the `RandomizedLight` component, which jiggles a set of lights around, creating realistic raycast-like shadows and ambient occlusion.
 
@@ -2223,7 +2223,13 @@ type AccumulativeShadowsProps = JSX.IntrinsicElements['group'] & {
 }
 ```
 
-It exposes its api via reference. Mostly `setLights` is interesting for internal
+```jsx
+<AccumulativeShadows temporal frames={100} scale={10}>
+  <RandomizedLight amount={8} position={[5, 5, -10]} />
+</AccumulativeShadows>
+```
+
+##### Reference api
 
 ```tsx
 interface AccumulativeContext {
@@ -2234,12 +2240,6 @@ interface AccumulativeContext {
   /** Allows children to subscribe. AccumulativeShadows will call child.update() in its own update function */
   setLights: React.Dispatch<React.SetStateAction<AccumulativeLightContext[]>>
 }
-```
-
-```jsx
-<AccumulativeShadows temporal frames={100} scale={10}>
-  <RandomizedLight castShadow amount={8} position={[5, 5, -10]} />
-</AccumulativeShadows>
 ```
 
 #### SpotLight

@@ -6,6 +6,10 @@ function isLight(object: any): object is THREE.Light {
   return object.isLight
 }
 
+function isMesh(object: any): object is THREE.Mesh {
+  return object.isMesh
+}
+
 type AccumulativeShadowsProps = JSX.IntrinsicElements['group'] & {
   /** How many frames it can render, more yields cleaner results but takes more time, 40 */
   frames?: number
@@ -26,12 +30,15 @@ type AccumulativeShadowsProps = JSX.IntrinsicElements['group'] & {
 }
 
 interface AccumulativeContext {
+  lights: Map<any, any>
+  temporal: boolean
+  frames: number
+  blend: number
+  count: number
   /** Resets the buffers, starting from scratch */
   reset: () => void
   /** Updates the lightmap for a number of frames accumulartively */
   update: (frames?: number) => void
-  /** Allows children to subscribe. AccumulativeShadows will call child.update() in its own update function */
-  setLights: React.Dispatch<React.SetStateAction<AccumulativeLightContext[]>>
 }
 
 interface AccumulativeLightContext {
@@ -45,10 +52,10 @@ export const AccumulativeShadows = React.forwardRef(
   (
     {
       children,
-      blend,
+      temporal,
       frames = 40,
+      blend = 20,
       scale = 10,
-      temporal = false,
       opacity = 1,
       alphaTest = 0.65,
       color = 'black',
@@ -59,20 +66,16 @@ export const AccumulativeShadows = React.forwardRef(
   ) => {
     const gl = useThree((state) => state.gl)
     const scene = useThree((state) => state.scene)
-    const defaultCamera = useThree((state) => state.camera)
+    const camera = useThree((state) => state.camera)
     const gPlane = React.useRef<THREE.Mesh>(null!)
     const gLights = React.useRef<THREE.Group>(null!)
-    const count = React.useRef(0)
 
     const [plm] = React.useState(() => new ProgressiveLightMap(gl, scene, resolution))
     React.useLayoutEffect(() => {
-      plm.configureObject(gPlane.current)
+      plm.configure(gPlane.current)
     }, [])
 
-    // Actual number of frames to render, it must be at least 2 due to the ping/ponging in the lightmap
-    if (frames <= 1) frames = 2
-    let blendFrames = blend === undefined ? (frames === Infinity ? 100 : frames) : frames
-
+    //const [lights, setLights] = React.useState<AccumulativeLightContext[]>([])
     const material = React.useMemo(() => {
       const mat: THREE.MeshBasicMaterial & { uniforms: { [key: string]: any } } = Object.assign(
         new THREE.MeshBasicMaterial({
@@ -102,66 +105,67 @@ export const AccumulativeShadows = React.forwardRef(
       return mat
     }, [color])
 
-    const [lights, setLights] = React.useState<AccumulativeLightContext[]>([])
+    const api = React.useMemo<AccumulativeContext>(
+      () => ({
+        lights: new Map(),
+        temporal: !!temporal,
+        frames: Math.max(2, frames),
+        blend: Math.max(2, frames === Infinity ? blend : frames),
+        count: 0,
+        reset: () => {
+          // Clear buffers, reset opacities, set frame count to 0
+          plm.clear()
+          material.opacity = 0
+          material.uniforms.alphaTest.value = 0
+          api.count = 0
+        },
+        update: (frames = 1) => {
+          // Adapt the opacity-blend ratio to the number of frames
+          if (!api.temporal) {
+            material.opacity = opacity
+            material.uniforms.alphaTest.value = alphaTest
+          } else {
+            material.opacity = Math.min(opacity, material.opacity + opacity / api.blend)
+            material.uniforms.alphaTest.value = Math.min(
+              alphaTest,
+              material.uniforms.alphaTest.value + alphaTest / api.blend
+            )
+          }
 
-    function update(frames = 1) {
-      // Adapt the opacity-blend ratio to the number of frames
-      if (!temporal) {
-        material.opacity = opacity
-        material.uniforms.alphaTest.value = alphaTest
-      } else {
-        material.opacity = Math.min(opacity, material.opacity + opacity / blendFrames)
-        material.uniforms.alphaTest.value = Math.min(
-          alphaTest,
-          material.uniforms.alphaTest.value + alphaTest / blendFrames
-        )
-      }
+          // Switch accumulative lights on
+          gLights.current.visible = true
+          // Collect scene lights and meshes
+          plm.prepare()
 
-      // Switch accumulative lights on
-      gLights.current.visible = true
-      // Switch off all other scene lights off, collect their intensities
-      const intensities: { object: THREE.Light; intensity: number }[] = []
-      scene.traverse((object) => {
-        if (isLight(object)) {
-          intensities.push({ object, intensity: object.intensity })
-          object.intensity = 0
-        }
-      })
-      // Update the lightmap and the accumulative lights
-      for (let i = 0; i < frames; i++) {
-        plm.update(defaultCamera, blendFrames)
-        if (lights) lights.forEach((light) => light.update())
-      }
-      // Switch lights off
-      gLights.current.visible = false
-      // Switch scene lights on and restore their intensities
-      intensities.forEach(({ object, intensity }) => (object.intensity = intensity))
-    }
-
-    function reset() {
-      if (frames !== Infinity) {
-        plm.clear()
-        material.opacity = 0
-        material.uniforms.alphaTest.value = 0
-        count.current = 0
-        update()
-      }
-    }
-
-    // Expose api, allow children to set itself as the main light source
-    const api: AccumulativeContext = React.useMemo(() => ({ reset, update, setLights }), [])
-    React.useImperativeHandle(forwardRef, () => api, [api])
-
-    useFrame(() => {
-      if (temporal && count.current < frames) {
-        update()
-        count.current++
-      }
-    })
+          // Update the lightmap and the accumulative lights
+          for (let i = 0; i < frames; i++) {
+            api.lights.forEach((light) => light.update())
+            plm.update(camera, api.blend)
+          }
+          // Switch lights off
+          gLights.current.visible = false
+          // Restore lights and meshes
+          plm.finish()
+        },
+      }),
+      [plm, material, camera, scene, temporal, frames, blend, opacity, alphaTest]
+    )
 
     React.useLayoutEffect(() => {
-      reset()
-      if (!temporal) update(blendFrames)
+      // Reset internals, buffers, ...
+      api.reset()
+      // Update lightmap
+      if (!api.temporal && api.frames !== Infinity) api.update(api.blend)
+    })
+
+    // Expose api, allow children to set itself as the main light source
+    React.useImperativeHandle(forwardRef, () => api, [])
+
+    useFrame(() => {
+      if ((api.temporal || api.frames === Infinity) && api.count < api.frames) {
+        api.update()
+        api.count++
+      }
     })
 
     return (
@@ -255,8 +259,9 @@ export const RandomizedLight = React.forwardRef(
     const api: AccumulativeLightContext = React.useMemo(() => ({ update }), [update])
     React.useImperativeHandle(forwardRef, () => api, [api])
     React.useLayoutEffect(() => {
-      if (parent) parent.setLights((state) => [...state, api])
-      return () => parent.setLights((state) => state.filter((a) => a !== api))
+      const group = gLights.current
+      if (parent) parent.lights.set(group.uuid, api)
+      return () => void parent.lights.delete(group.uuid)
     }, [parent, api])
 
     return (
@@ -277,16 +282,30 @@ export const RandomizedLight = React.forwardRef(
   }
 )
 
+class UVMaterial extends THREE.ShaderMaterial {
+  constructor() {
+    super({
+      vertexShader: 'void main() { gl_Position = vec4((uv - 0.5) * 2.0, 1.0, 1.0); }',
+      fragmentShader: 'void main() { discard; }',
+    })
+  }
+}
+
 // Based on "Progressive Light Map Accumulator", by [zalo](https://github.com/zalo/)
 class ProgressiveLightMap {
   renderer: THREE.WebGLRenderer
   res: number
   scene: THREE.Scene
+  object: THREE.Mesh | null
   buffer1Active: boolean
   progressiveLightMap1: THREE.WebGLRenderTarget
   progressiveLightMap2: THREE.WebGLRenderTarget
-  uvMat: THREE.MeshPhongMaterial
-  uniforms: { [key: string]: any }
+  uvMat: UVMaterial
+  targetMat: THREE.MeshPhongMaterial
+  previousShadowMap: { value: THREE.Texture }
+  averagingWindow: { value: number }
+  lights: { object: THREE.Light; intensity: number }[]
+  meshes: { object: THREE.Mesh; material: THREE.Material | THREE.Material[] }[]
 
   constructor(renderer: THREE.WebGLRenderer, scene: THREE.Scene, res: number = 1024) {
     this.renderer = renderer
@@ -294,6 +313,9 @@ class ProgressiveLightMap {
     this.scene = scene
     this.scene.background = null
     this.buffer1Active = false
+    this.lights = []
+    this.meshes = []
+    this.object = null
 
     // Create the Progressive LightMap Texture
     const format = /(Android|iPad|iPhone|iPod)/g.test(navigator.userAgent) ? THREE.HalfFloatType : THREE.FloatType
@@ -301,14 +323,16 @@ class ProgressiveLightMap {
     this.progressiveLightMap2 = new THREE.WebGLRenderTarget(this.res, this.res, { type: format })
 
     // Inject some spicy new logic into a standard phong material
-    this.uvMat = new THREE.MeshPhongMaterial({ shininess: 0, specular: new THREE.Color('black') })
-    this.uniforms = {}
-    this.uvMat.onBeforeCompile = (shader) => {
+    this.uvMat = new UVMaterial()
+    this.targetMat = new THREE.MeshPhongMaterial({ shininess: 0 })
+    this.previousShadowMap = { value: this.progressiveLightMap1.texture }
+    this.averagingWindow = { value: 100 }
+    this.targetMat.onBeforeCompile = (shader) => {
       // Vertex Shader: Set Vertex Positions to the Unwrapped UV Positions
       shader.vertexShader =
-        '#define USE_LIGHTMAP\n' +
+        'varying vec2 vUv;\n' +
         shader.vertexShader.slice(0, -1) +
-        '	gl_Position = vec4((uv2 - 0.5) * 2.0, 1.0, 1.0); }'
+        'vUv = uv; gl_Position = vec4((uv - 0.5) * 2.0, 1.0, 1.0); }'
 
       // Fragment Shader: Set Pixels to average in the Previous frame's Shadows
       const bodyStart = shader.fragmentShader.indexOf('void main() {')
@@ -317,18 +341,17 @@ class ProgressiveLightMap {
         '#include <clipping_planes_pars_fragment>\n#include <shadowmask_pars_fragment>\n'
       )
       shader.fragmentShader =
-        'varying vec2 vUv2;\n' +
+        'varying vec2 vUv;\n' +
         shader.fragmentShader.slice(0, bodyStart) +
         '	uniform sampler2D previousShadowMap;\n	uniform float averagingWindow;\n' +
         shader.fragmentShader.slice(bodyStart - 1, -1) +
-        `\nvec3 texelOld = texture2D(previousShadowMap, vUv2).rgb;
+        `\nvec3 texelOld = texture2D(previousShadowMap, vUv).rgb;
         gl_FragColor.rgb = mix(texelOld, gl_FragColor.rgb, 1.0/averagingWindow);
       }`
 
       // Set the Previous Frame's Texture Buffer and Averaging Window
-      shader.uniforms.previousShadowMap = { value: this.progressiveLightMap1.texture }
-      shader.uniforms.averagingWindow = { value: 100 }
-      this.uniforms = shader.uniforms
+      shader.uniforms.previousShadowMap = this.previousShadowMap
+      shader.uniforms.averagingWindow = this.averagingWindow
     }
   }
 
@@ -337,30 +360,46 @@ class ProgressiveLightMap {
     this.renderer.clear()
     this.renderer.setRenderTarget(this.progressiveLightMap2)
     this.renderer.clear()
+
+    this.lights = []
+    this.meshes = []
+    this.scene.traverse((object) => {
+      if (isMesh(object)) {
+        this.meshes.push({ object, material: object.material })
+      } else if (isLight(object)) {
+        this.lights.push({ object, intensity: object.intensity })
+      }
+    })
   }
 
-  configureObject(object) {
-    const uv2 = object.geometry.getAttribute('uv').clone()
-    object.geometry.setAttribute('uv2', uv2)
-    object.geometry.getAttribute('uv2').needsUpdate = true
+  prepare() {
+    this.lights.forEach((light) => (light.object.intensity = 0))
+    this.meshes.forEach((mesh) => (mesh.object.material = this.uvMat))
+  }
+
+  finish() {
+    this.lights.forEach((light) => (light.object.intensity = light.intensity))
+    this.meshes.forEach((mesh) => (mesh.object.material = mesh.material))
+  }
+
+  configure(object) {
+    this.object = object
   }
 
   update(camera, blendWindow = 100) {
-    // Set each object's material to the UV Unwrapped Surface Mapping Version
-    this.uniforms.averagingWindow = { value: blendWindow }
-    this.scene.overrideMaterial = this.uvMat
+    if (!this.object) return
 
+    // Set each object's material to the UV Unwrapped Surface Mapping Version
+    this.averagingWindow.value = blendWindow
+    this.object.material = this.targetMat
     // Ping-pong two surface buffers for reading/writing
     const activeMap = this.buffer1Active ? this.progressiveLightMap1 : this.progressiveLightMap2
     const inactiveMap = this.buffer1Active ? this.progressiveLightMap2 : this.progressiveLightMap1
-
     // Render the object's surface maps
     this.renderer.setRenderTarget(activeMap)
-    this.uniforms.previousShadowMap = { value: inactiveMap.texture }
+    this.previousShadowMap.value = inactiveMap.texture
     this.buffer1Active = !this.buffer1Active
     this.renderer.render(this.scene, camera)
-
-    this.scene.overrideMaterial = null
     this.renderer.setRenderTarget(null)
   }
 }

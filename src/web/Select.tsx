@@ -37,12 +37,35 @@ export function Select({
     },
     []
   )
-  React.useEffect(() => void onChange?.(active), [active])
+  const [isPointerDown, setDown] = React.useState(false)
+  const [dragging, setDragging] = React.useState(false)
+  const onPointerMove = React.useCallback(() => {
+    setDragging(isPointerDown)
+  }, [isPointerDown])
+  const onPointerDown = React.useCallback((e) => {
+    if (!e.shiftKey) {
+      setDown(true)
+    }
+  }, [])
+  const onPointerUp = React.useCallback(
+    (e) => {
+      if (!dragging) {
+        onClick(e)
+      }
+      setDown(false)
+    },
+    [dragging]
+  )
+  React.useEffect(() => {
+    void onChange?.(active)
+  }, [active])
   const onClick = React.useCallback((e) => {
     e.stopPropagation()
     dispatch({ object: customFilter([e.object])[0], shift: multiple && e.shiftKey })
   }, [])
-  const onPointerMissed = React.useCallback((e) => !hovered && dispatch({}), [hovered])
+  const onPointerMissed = React.useCallback(() => {
+    !hovered && !dragging && dispatch({})
+  }, [hovered, dragging])
 
   const ref = React.useRef<THREE.Group>(null!)
   React.useEffect(() => {
@@ -141,11 +164,12 @@ export function Select({
       document.removeEventListener('pointerup', pointerUp)
     }
   }, [size, raycaster, camera, controls, gl])
-
   return (
     <group
       ref={ref}
-      onClick={onClick}
+      onPointerMove={onPointerMove}
+      onPointerDown={onPointerDown}
+      onPointerUp={onPointerUp}
       onPointerOver={() => hover(true)}
       onPointerOut={() => hover(false)}
       onPointerMissed={onPointerMissed}

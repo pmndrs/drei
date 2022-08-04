@@ -26,18 +26,14 @@ function extensions(useDraco: boolean | string, useMeshopt: boolean, extendLoade
     }
   }
 }
-type GLTFfix<U> = new () => LoaderResult<U>
+
 export function useGLTF<T extends string | string[], U extends GLTF>(
   path: T,
   useDraco: boolean | string = true,
   useMeshOpt: boolean = true,
   extendLoader?: (loader: GLTFLoader) => void
 ) {
-  const gltf = useLoader<U, T>(
-    GLTFLoader as unknown as GLTFfix<U>,
-    path,
-    extensions(useDraco, useMeshOpt, extendLoader)
-  )
+  const gltf = useLoader<U, T>(GLTFLoader, path, extensions(useDraco, useMeshOpt, extendLoader))
   return gltf
 }
 

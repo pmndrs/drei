@@ -27,13 +27,13 @@ function extensions(useDraco: boolean | string, useMeshopt: boolean, extendLoade
   }
 }
 
-export function useGLTF<T extends string | string[], U extends GLTF>(
+export function useGLTF<T extends string | string[]>(
   path: T,
   useDraco: boolean | string = true,
   useMeshOpt: boolean = true,
   extendLoader?: (loader: GLTFLoader) => void
 ) {
-  const gltf = useLoader<U, T>(GLTFLoader, path, extensions(useDraco, useMeshOpt, extendLoader))
+  const gltf = useLoader<GLTF, T>(GLTFLoader, path, extensions(useDraco, useMeshOpt, extendLoader))
   return gltf
 }
 

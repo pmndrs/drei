@@ -6,8 +6,8 @@ function isLight(object: any): object is THREE.Light {
   return object.isLight
 }
 
-function isMesh(object: any): object is THREE.Mesh {
-  return object.isMesh
+function isGeometry(object: any): object is THREE.Mesh {
+  return !!object.geometry
 }
 
 type AccumulativeShadowsProps = JSX.IntrinsicElements['group'] & {
@@ -364,7 +364,7 @@ class ProgressiveLightMap {
     this.lights = []
     this.meshes = []
     this.scene.traverse((object) => {
-      if (isMesh(object)) {
+      if (isGeometry(object)) {
         this.meshes.push({ object, material: object.material })
       } else if (isLight(object)) {
         this.lights.push({ object, intensity: object.intensity })

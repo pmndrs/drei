@@ -50,7 +50,7 @@ function DecalScene() {
     dummy.lookAt(p.add(normal))
   }, [])
 
-  const bufferAttribute = useSurfaceSampler(ref, null!, transform, 50)
+  const bufferAttribute = useSurfaceSampler(ref, 50, transform)
 
   return (
     <>

@@ -1461,7 +1461,7 @@ useFrame(() => {
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-decal--decal-st)
 
-A hook to obtain the result of the [`<Sampler />`](#sampler) as a buffer. Useful for driving anything other than `InstanceedMesh` via the Sampler.
+A hook to obtain the result of the [`<Sampler />`](#sampler) as a buffer. Useful for driving anything other than `InstancedMesh` via the Sampler.
 
 ```js
 const buffer = useSurfaceSampler(

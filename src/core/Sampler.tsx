@@ -147,7 +147,7 @@ export function useSurfaceSampler(
   return buffer
 }
 
-export const Sampler = ({
+export function Sampler({
   children,
   weight,
   transform,
@@ -155,7 +155,7 @@ export const Sampler = ({
   mesh,
   count = 16,
   ...props
-}: React.PropsWithChildren<Props & GroupProps>) => {
+}: React.PropsWithChildren<Props & GroupProps>) {
   const group = React.useRef<Group>(null!)
   const instancedRef = React.useRef<InstancedMesh>(null!)
   const meshToSampleRef = React.useRef<Mesh>(null!)

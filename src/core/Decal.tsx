@@ -20,7 +20,14 @@ function setProp(value: any, targetProp: any) {
   }
 }
 
-function _Decal({ debug, mesh, children, position, rotation, scale }: React.PropsWithChildren<Partial<DecalProps>>) {
+export function Decal({
+  debug,
+  mesh,
+  children,
+  position,
+  rotation,
+  scale,
+}: React.PropsWithChildren<Partial<DecalProps>>) {
   const ref = React.useRef<THREE.Mesh>(null!)
 
   const [[p, r, s]] = React.useState<[THREE.Vector3, THREE.Euler, THREE.Vector3]>(() => {
@@ -64,5 +71,3 @@ function _Decal({ debug, mesh, children, position, rotation, scale }: React.Prop
     </mesh>
   )
 }
-
-export const Decal = React.memo(_Decal)

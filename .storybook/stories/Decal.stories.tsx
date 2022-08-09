@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { Setup } from '../Setup'
-import { Sampler, Decal, useTexture, useSurfaceSampler, PerspectiveCamera, Environment } from '../../src'
+import { Sampler, Decal, useTexture, useSurfaceSampler, PerspectiveCamera, OrbitControls } from '../../src'
 import { Euler, InstancedBufferAttribute, Matrix4, Mesh, Quaternion, Vector3 } from 'three'
 
 function LoopOverInstancedBufferAttribute({ children, buffer }: { buffer?: InstancedBufferAttribute; children: any }) {
@@ -54,7 +54,10 @@ function DecalScene() {
 
   return (
     <>
+      <OrbitControls makeDefault autoRotate autoRotateSpeed={0.75} />
       <PerspectiveCamera makeDefault position={[6, 6, 6]} />
+
+      <directionalLight position={[1, -1, 1]} />
 
       <mesh ref={ref}>
         <sphereGeometry args={[3, 32, 32]} />
@@ -63,7 +66,7 @@ function DecalScene() {
 
       <LoopOverInstancedBufferAttribute buffer={bufferAttribute}>
         {({ ...props }) => (
-          <Decal debug mesh={ref} {...props}>
+          <Decal mesh={ref} {...props}>
             <meshPhysicalMaterial
               roughness={0.2}
               transparent

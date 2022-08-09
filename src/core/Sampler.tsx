@@ -79,10 +79,10 @@ export interface useSurfaceSamplerProps {
 
 export function useSurfaceSampler(
   mesh: React.MutableRefObject<Mesh>,
-  instanceMesh?: React.MutableRefObject<InstancedMesh> | null,
-  transform?: TransformFn,
   count: number = 16,
-  weight?: string
+  transform?: TransformFn,
+  weight?: string,
+  instanceMesh?: React.MutableRefObject<InstancedMesh> | null
 ) {
   const [buffer, setBuffer] = React.useState<InstancedBufferAttribute>(() => {
     const arr = Array.from({ length: count }, () => [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]).flat()
@@ -167,7 +167,7 @@ export const Sampler = ({
     meshToSampleRef.current = mesh?.current ?? (group.current!.children.find((c) => c.type === 'Mesh') as Mesh)
   }, [children, mesh?.current, instances?.current])
 
-  useSurfaceSampler(meshToSampleRef, instancedRef, transform, count, weight)
+  useSurfaceSampler(meshToSampleRef, count, transform, weight, instancedRef)
 
   return (
     <group ref={group} {...props}>

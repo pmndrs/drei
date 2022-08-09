@@ -768,6 +768,7 @@ You can either pass a Mesh and InstancedMesh as children:
 <Sampler
   weight={"normal"} // the name of the attribute to be used as sampling weight
   transform={transformPoint} // a function that transforms each instance given a sample. See the examples for more.
+  count={16} // Number of samples
 >
   <mesh>
     <sphereGeometry args={[2]} />

@@ -73,6 +73,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#clone">Clone</a></li>
           <li><a href="#useanimations">useAnimations</a></li>
           <li><a href="#marchingcubes">MarchingCubes</a></li>
+          <li><a href="#decal">Decal</a></li>
         </ul>
         <li><a href="#shaders">Shaders</a></li>
         <ul>
@@ -912,6 +913,37 @@ An abstraction for threes [MarchingCubes](https://threejs.org/examples/#webgl_ma
 
   <MarchingPlane planeType="y" strength={0.5} subtract={12} />
 </MarchingCubes>
+```
+
+#### Decal
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/misc-decal--decal-st)
+
+Abstraction around Three's `DecalGeometry`. It will use the its parent `mesh` as the decal surface by default.
+
+```js
+<mesh>
+  <sphereGeometry />
+  <meshBasicMaterial />
+
+  <Decal
+    debug={undefined} // Makes "bounding box" of the decal visible
+    position={[0, 0, 0]} // Position of the decal
+    rotation={[0, 0, 0]} // Rotation of the decal
+    scale={[1, 1, 1]} // Scale of the decal
+  >
+    // Include your decal material here
+    <meshBasicMaterial alpaMap={map} />
+  </Decal>
+</mesh>
+```
+
+If declarative composition is not possible, use the `mesh` prop to define the surface the decal must attach to.
+
+```js
+<Decal mesh={ref}>
+  <meshBasicMaterial alpaMap={map} />
+</Decal>
 ```
 
 # Shaders

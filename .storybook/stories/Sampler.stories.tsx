@@ -15,13 +15,13 @@ export default {
 function SamplerScene() {
   return (
     <>
-      <Sampler>
+      <Sampler count={500}>
         <mesh>
           <torusKnotGeometry />
           <meshNormalMaterial />
         </mesh>
 
-        <instancedMesh args={[null, null, 1_000]}>
+        <instancedMesh args={[null!, null!, 1_000]}>
           <sphereGeometry args={[0.1, 32, 32]} />
           <meshNormalMaterial />
         </instancedMesh>
@@ -39,14 +39,14 @@ function RefAPIScene() {
 
   return (
     <>
-      <Sampler mesh={meshRef} instances={instancesRef} />
+      <Sampler count={500} mesh={meshRef} instances={instancesRef} />
 
       <mesh ref={meshRef}>
         <torusKnotGeometry />
         <meshNormalMaterial />
       </mesh>
 
-      <instancedMesh ref={instancesRef} args={[null, null, 1_000]}>
+      <instancedMesh ref={instancesRef} args={[null!, null!, 1_000]}>
         <sphereGeometry args={[0.1, 32, 32]} />
         <meshNormalMaterial />
       </instancedMesh>
@@ -60,13 +60,13 @@ RefAPISt.storyName = 'Using Refs'
 function TransformSamplerScene() {
   return (
     <>
-      <Sampler transform={transformInstances}>
+      <Sampler count={500} transform={transformInstances}>
         <mesh>
           <torusKnotGeometry />
           <meshNormalMaterial />
         </mesh>
 
-        <instancedMesh args={[null, null, 1_000]}>
+        <instancedMesh args={[null!, null!, 1_000]}>
           <sphereGeometry args={[0.1, 32, 32]} />
           <meshNormalMaterial />
         </instancedMesh>
@@ -81,7 +81,7 @@ SamplerTransformSt.storyName = 'With transform'
 function SamplerWeightScene() {
   return (
     <>
-      <Sampler weight="upness" transform={transformInstances}>
+      <Sampler count={500} weight="upness" transform={transformInstances}>
         <mesh>
           <torusKnotGeometry>
             <ComputedAttribute name="upness" compute={computeUpness} />
@@ -89,7 +89,7 @@ function SamplerWeightScene() {
           <meshNormalMaterial />
         </mesh>
 
-        <instancedMesh args={[null, null, 1_000]}>
+        <instancedMesh args={[null!, null!, 1_000]}>
           <sphereGeometry args={[0.1, 32, 32, Math.PI / 2]} />
           <meshNormalMaterial />
         </instancedMesh>

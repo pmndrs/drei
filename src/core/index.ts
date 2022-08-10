@@ -16,6 +16,7 @@ export * from './Sampler'
 export * from './ComputedAttribute'
 export * from './Clone'
 export * from './MarchingCubes'
+export * from './Decal'
 
 // Cameras
 export * from './OrthographicCamera'

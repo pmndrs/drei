@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import { MeshSurfaceSampler } from 'three-stdlib'
 
-import { Color, Group, InstancedMesh, Mesh, Object3D, Vector3 } from 'three'
+import { Color, Group, InstancedBufferAttribute, InstancedMesh, Mesh, Object3D, Vector3 } from 'three'
 import { GroupProps } from '@react-three/fiber'
 
 type SamplePayload = {
@@ -67,32 +67,32 @@ type Props = {
    * There is no need to update the dummy's matrix
    */
   transform?: TransformFn
+
+  count?: number
 }
 
-export const Sampler = ({
-  children,
-  weight,
-  transform,
-  instances,
-  mesh,
-  ...props
-}: React.PropsWithChildren<Props & GroupProps>) => {
-  const group = React.useRef<Group>(null!)
-  const instancedRef = React.useRef<InstancedMesh>(null!)
-  const meshToSampleRef = React.useRef<Mesh>(null!)
+export interface useSurfaceSamplerProps {
+  transform?: TransformFn
+  weight?: string
+  count?: number
+}
+
+export function useSurfaceSampler(
+  mesh: React.MutableRefObject<Mesh>,
+  count: number = 16,
+  transform?: TransformFn,
+  weight?: string,
+  instanceMesh?: React.MutableRefObject<InstancedMesh> | null
+) {
+  const [buffer, setBuffer] = React.useState<InstancedBufferAttribute>(() => {
+    const arr = Array.from({ length: count }, () => [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]).flat()
+    return new InstancedBufferAttribute(Float32Array.from(arr), 16)
+  })
 
   React.useEffect(() => {
-    instancedRef.current =
-      instances?.current ?? (group.current!.children.find((c) => c.hasOwnProperty('instanceMatrix')) as InstancedMesh)
+    if (typeof mesh.current === 'undefined') return
 
-    meshToSampleRef.current = mesh?.current ?? (group.current!.children.find((c) => c.type === 'Mesh') as Mesh)
-  }, [children, mesh?.current, instances?.current])
-
-  React.useEffect(() => {
-    if (typeof meshToSampleRef.current === 'undefined') return
-    if (typeof instancedRef.current === 'undefined') return
-
-    const sampler = new MeshSurfaceSampler(meshToSampleRef.current as Mesh)
+    const sampler = new MeshSurfaceSampler(mesh.current)
 
     if (weight) {
       sampler.setWeightAttribute(weight)
@@ -106,16 +106,16 @@ export const Sampler = ({
 
     const dummy = new Object3D()
 
-    meshToSampleRef.current.updateMatrixWorld(true)
+    mesh.current.updateMatrixWorld(true)
 
-    for (let i = 0; i < instancedRef.current.count; i++) {
+    for (let i = 0; i < count; i++) {
       sampler.sample(position, normal, color)
 
       if (typeof transform === 'function') {
         transform(
           {
             dummy,
-            sampledMesh: meshToSampleRef.current!,
+            sampledMesh: mesh.current,
             position,
             normal,
             color,
@@ -128,11 +128,46 @@ export const Sampler = ({
 
       dummy.updateMatrix()
 
-      instancedRef.current.setMatrixAt(i, dummy.matrix)
+      if (instanceMesh?.current) {
+        instanceMesh.current.setMatrixAt(i, dummy.matrix)
+      }
+
+      dummy.matrix.toArray(buffer.array, i * 16)
     }
 
-    instancedRef.current.instanceMatrix.needsUpdate = true
+    if (instanceMesh?.current) {
+      instanceMesh.current.instanceMatrix.needsUpdate = true
+    }
+
+    buffer.needsUpdate = true
+
+    setBuffer(buffer.clone())
+  }, [mesh, instanceMesh, weight, count, transform])
+
+  return buffer
+}
+
+export function Sampler({
+  children,
+  weight,
+  transform,
+  instances,
+  mesh,
+  count = 16,
+  ...props
+}: React.PropsWithChildren<Props & GroupProps>) {
+  const group = React.useRef<Group>(null!)
+  const instancedRef = React.useRef<InstancedMesh>(null!)
+  const meshToSampleRef = React.useRef<Mesh>(null!)
+
+  React.useEffect(() => {
+    instancedRef.current =
+      instances?.current ?? (group.current!.children.find((c) => c.hasOwnProperty('instanceMatrix')) as InstancedMesh)
+
+    meshToSampleRef.current = mesh?.current ?? (group.current!.children.find((c) => c.type === 'Mesh') as Mesh)
   }, [children, mesh?.current, instances?.current])
+
+  useSurfaceSampler(meshToSampleRef, count, transform, weight, instancedRef)
 
   return (
     <group ref={group} {...props}>

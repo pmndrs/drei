@@ -108,6 +108,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#useintersect">useIntersect</a></li>
           <li><a href="#useboxprojectedenv">useBoxProjectedEnv</a></li>
           <li><a href="#useTrail">useTrail</a></li>
+          <li><a href="#useSurfaceSampler">useSurfaceSampler</a></li>
           <li><a href="#BBAnchor">BBAnchor</a></li>
         </ul>
         <li><a href="#loading">Loaders</a></li>
@@ -767,6 +768,7 @@ You can either pass a Mesh and InstancedMesh as children:
 <Sampler
   weight={"normal"} // the name of the attribute to be used as sampling weight
   transform={transformPoint} // a function that transforms each instance given a sample. See the examples for more.
+  count={16} // Number of samples
 >
   <mesh>
     <sphereGeometry args={[2]} />
@@ -1421,6 +1423,22 @@ const points = useTrail(
 useFrame(() => {
   meshLineRef.current.position.setPoints(points.current)
 })
+```
+
+#### useSurfaceSampler
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-decal--decal-st)
+
+A hook to obtain the result of the [`<Sampler />`](#sampler) as a buffer. Useful for driving anything other than `InstancedMesh` via the Sampler.
+
+```js
+const buffer = useSurfaceSampler(
+  mesh, // Mesh to sample
+  count, // [Optional] Number of samples (default: 16)
+  transform, // [Optional] Transformation function. Same as in `<Sampler />`
+  weight, // [Optional] Same as in `<Sampler />`
+  instancedMesh // [Optional] Instanced mesh to scatter
+)
 ```
 
 #### BBAnchor

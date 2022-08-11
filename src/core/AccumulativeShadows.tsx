@@ -15,6 +15,8 @@ type AccumulativeShadowsProps = JSX.IntrinsicElements['group'] & {
   frames?: number
   /** If frames === Infinity blend controls the refresh ratio, 100 */
   blend?: number
+  /** Can limit the amount of frames rendered if frames === Infinity, usually to get some performance back once a movable scene has settled, Infinity */
+  limit?: number
   /** Scale of the plane,  */
   scale?: number
   /** Temporal accumulates shadows over time which is more performant but has a visual regression over instant results, false  */
@@ -54,6 +56,7 @@ export const AccumulativeShadows = React.forwardRef(
       children,
       temporal,
       frames = 40,
+      limit = Infinity,
       blend = 20,
       scale = 10,
       opacity = 1,
@@ -162,7 +165,7 @@ export const AccumulativeShadows = React.forwardRef(
     React.useImperativeHandle(forwardRef, () => api, [])
 
     useFrame(() => {
-      if ((api.temporal || api.frames === Infinity) && api.count < api.frames) {
+      if ((api.temporal || api.frames === Infinity) && api.count < api.frames && api.count < limit) {
         api.update()
         api.count++
       }

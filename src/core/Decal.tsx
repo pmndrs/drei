@@ -1,23 +1,21 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import * as FIBER from '@react-three/fiber'
+import { applyProps } from '@react-three/fiber'
 import { DecalGeometry } from 'three-stdlib'
 
 interface DecalProps {
   debug: boolean
   mesh: React.MutableRefObject<THREE.Mesh>
   position: FIBER.Vector3
-  rotation: FIBER.Euler
+  rotation: FIBER.Euler | number
   scale: FIBER.Vector3
 }
 
-function setProp(value: any, targetProp: any) {
-  if (Array.isArray(value)) {
-    if (targetProp.fromArray) targetProp.fromArray(value)
-    else targetProp.set(...value)
-  } else {
-    targetProp.copy(value)
-  }
+type DecalState = {
+  position: THREE.Vector3
+  rotation: THREE.Euler
+  scale: THREE.Vector3
 }
 
 export function Decal({
@@ -29,40 +27,57 @@ export function Decal({
   scale,
 }: React.PropsWithChildren<Partial<DecalProps>>) {
   const ref = React.useRef<THREE.Mesh>(null!)
-
-  const [[p, r, s]] = React.useState<[THREE.Vector3, THREE.Euler, THREE.Vector3]>(() => {
-    return [new THREE.Vector3(), new THREE.Euler(), new THREE.Vector3(1, 1, 1)]
-  })
+  const helper = React.useRef<THREE.Mesh>(null!)
 
   React.useLayoutEffect(() => {
     const parent = mesh?.current || ref.current.parent
+    const target = ref.current
     if (!(parent instanceof THREE.Mesh)) {
       throw new Error('Decal must have a Mesh as parent or specify its "mesh" prop')
     }
 
-    if (parent) {
-      setProp(position, p)
-      setProp(rotation, r)
-      setProp(scale, s)
-
-      ref.current.geometry = new DecalGeometry(parent, p, r, s)
+    const state = {
+      position: new THREE.Vector3(),
+      rotation: new THREE.Euler(),
+      scale: new THREE.Vector3(1, 1, 1),
     }
-  }, [mesh, position, scale, rotation, p, r, s])
+
+    if (parent) {
+      applyProps(state as any, { position, scale })
+
+      // Zero out the parents matrix world for this operation
+      const matrixWorld = parent.matrixWorld.clone()
+      parent.matrixWorld.identity()
+
+      if (!rotation || typeof rotation === 'number') {
+        const o = new THREE.Object3D()
+
+        o.position.copy(state.position)
+        o.lookAt(parent.position)
+        if (typeof rotation === 'number') o.rotateZ(rotation)
+        applyProps(state as any, { rotation: o.rotation })
+      } else {
+        applyProps(state as any, { rotation })
+      }
+
+      target.geometry = new DecalGeometry(parent, state.position, state.rotation, state.scale)
+      console.log(target.geometry.attributes.position.array)
+      if (helper.current) applyProps(helper.current as any, state)
+      // Reset parents matix-world
+      parent.matrixWorld = matrixWorld
+
+      return () => {
+        target.geometry.dispose()
+      }
+    }
+  }, [mesh, position, scale, rotation])
 
   return (
     <mesh ref={ref}>
-      {children || (
-        <meshNormalMaterial
-          transparent={true}
-          depthTest={true}
-          depthWrite={false}
-          polygonOffset={true}
-          polygonOffsetFactor={-4}
-        />
-      )}
+      {children || <meshNormalMaterial polygonOffset polygonOffsetFactor={-4} />}
 
       {debug && (
-        <mesh position={position} rotation={rotation} scale={scale}>
+        <mesh ref={helper}>
           <boxGeometry />
           <meshNormalMaterial wireframe />
           <axesHelper />

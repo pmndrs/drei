@@ -13,18 +13,20 @@ export const PerspectiveCamera = React.forwardRef(({ makeDefault, ...props }: Pr
   const set = useThree(({ set }) => set)
   const camera = useThree(({ camera }) => camera)
   const size = useThree(({ size }) => size)
-  const cameraRef = React.useRef<PerspectiveCameraImpl>()
+  const cameraRef = React.useRef<PerspectiveCameraImpl>(null!)
 
   React.useLayoutEffect(() => {
-    const { current: cam } = cameraRef
-    if (cam && !props.manual) {
-      cam.aspect = size.width / size.height
-      cam.updateProjectionMatrix()
+    if (!props.manual) {
+      cameraRef.current.aspect = size.width / size.height
     }
   }, [size, props])
 
   React.useLayoutEffect(() => {
-    if (makeDefault && cameraRef.current) {
+    cameraRef.current.updateProjectionMatrix()
+  })
+
+  React.useLayoutEffect(() => {
+    if (makeDefault) {
       const oldCam = camera
       set(() => ({ camera: cameraRef.current! }))
       return () => set(() => ({ camera: oldCam }))

@@ -61,7 +61,6 @@ export function Decal({
       }
 
       target.geometry = new DecalGeometry(parent, state.position, state.rotation, state.scale)
-      console.log(target.geometry.attributes.position.array)
       if (helper.current) applyProps(helper.current as any, state)
       // Reset parents matix-world
       parent.matrixWorld = matrixWorld

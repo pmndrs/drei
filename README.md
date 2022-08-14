@@ -919,7 +919,13 @@ An abstraction for threes [MarchingCubes](https://threejs.org/examples/#webgl_ma
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/misc-decal--decal-st)
 
+<p>
+  <a href="https://codesandbox.io/s/ymb5d9"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/ymb5d9/screenshot.png" alt="Demo"/></a>
+</p>
+
 Abstraction around Three's `DecalGeometry`. It will use the its parent `mesh` as the decal surface by default.
+
+The decal box has to intersect the surface, otherwise it will not be visible. if you do not specifiy a rotation it will look at the parents center point. You can also pass a single number as the rotation which allows you to spin it.
 
 ```js
 <mesh>
@@ -929,8 +935,8 @@ Abstraction around Three's `DecalGeometry`. It will use the its parent `mesh` as
   <Decal
     debug={undefined} // Makes "bounding box" of the decal visible
     position={[0, 0, 0]} // Position of the decal
-    rotation={[0, 0, 0]} // Rotation of the decal
-    scale={[1, 1, 1]} // Scale of the decal
+    rotation={[0, 0, 0]} // Rotation of the decal (can be a vector or a degree in radians)
+    scale={1} // Scale of the decal
   >
     // Include your decal material here
     <meshBasicMaterial alpaMap={map} />
@@ -2256,6 +2262,8 @@ type AccumulativeShadowsProps = JSX.IntrinsicElements['group'] & {
   frames?: number
   /** If frames === Infinity blend controls the refresh ratio, 100 */
   blend?: number
+  /** Can limit the amount of frames rendered if frames === Infinity, usually to get some performance back once a movable scene has settled, Infinity */
+  limit?: number
   /** Scale of the plane,  */
   scale?: number
   /** Temporal accumulates shadows over time which is more performant but has a visual regression over instant results, false  */

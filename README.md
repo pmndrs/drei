@@ -932,26 +932,36 @@ The decal box has to intersect the surface, otherwise it will not be visible. if
 <mesh>
   <sphereGeometry />
   <meshBasicMaterial />
-
   <Decal
-    debug={undefined} // Makes "bounding box" of the decal visible
+    debug // Makes "bounding box" of the decal visible
     position={[0, 0, 0]} // Position of the decal
     rotation={[0, 0, 0]} // Rotation of the decal (can be a vector or a degree in radians)
     scale={1} // Scale of the decal
   >
-    // Include your decal material here
-    <meshBasicMaterial alpaMap={map} />
+    <meshBasicMaterial map={texture} />
   </Decal>
 </mesh>
 ```
+
+If you do not specifiy a material it will create a transparent meshStandardMaterial with a polygonOffsetFactor of -10 and all rest-props will be spread over it.
+
+```jsx
+<mesh>
+  <sphereGeometry />
+  <meshBasicMaterial />
+  <Decal map={texture} roughness={0.5} />
+</mesh>
+```
+
+````
 
 If declarative composition is not possible, use the `mesh` prop to define the surface the decal must attach to.
 
 ```js
 <Decal mesh={ref}>
-  <meshBasicMaterial alpaMap={map} />
+  <meshBasicMaterial map={texture} />
 </Decal>
-```
+````
 
 # Shaders
 

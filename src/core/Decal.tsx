@@ -4,12 +4,14 @@ import * as FIBER from '@react-three/fiber'
 import { applyProps } from '@react-three/fiber'
 import { DecalGeometry } from 'three-stdlib'
 
-interface DecalProps {
-  debug: boolean
-  mesh: React.MutableRefObject<THREE.Mesh>
-  position: FIBER.Vector3
-  rotation: FIBER.Euler | number
-  scale: FIBER.Vector3
+type DecalProps = Omit<JSX.IntrinsicElements['meshStandardMaterial'], 'children'> & {
+  debug?: boolean
+  mesh?: React.MutableRefObject<THREE.Mesh>
+  position?: FIBER.Vector3
+  rotation?: FIBER.Euler | number
+  scale?: FIBER.Vector3
+  map?: THREE.Texture
+  children?: React.ReactNode
 }
 
 type DecalState = {
@@ -18,14 +20,7 @@ type DecalState = {
   scale: THREE.Vector3
 }
 
-export function Decal({
-  debug,
-  mesh,
-  children,
-  position,
-  rotation,
-  scale,
-}: React.PropsWithChildren<Partial<DecalProps>>) {
+export function Decal({ debug, mesh, children, position, rotation, scale, ...props }: DecalProps) {
   const ref = React.useRef<THREE.Mesh>(null!)
   const helper = React.useRef<THREE.Mesh>(null!)
 
@@ -73,7 +68,7 @@ export function Decal({
 
   return (
     <mesh ref={ref}>
-      {children || <meshNormalMaterial polygonOffset polygonOffsetFactor={-4} />}
+      {children || <meshStandardMaterial transparent polygonOffset polygonOffsetFactor={-10} {...props} />}
 
       {debug && (
         <mesh ref={helper}>

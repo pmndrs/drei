@@ -953,15 +953,13 @@ If you do not specifiy a material it will create a transparent meshStandardMater
 </mesh>
 ```
 
-````
-
 If declarative composition is not possible, use the `mesh` prop to define the surface the decal must attach to.
 
 ```js
 <Decal mesh={ref}>
   <meshBasicMaterial map={texture} />
 </Decal>
-````
+```
 
 # Shaders
 

@@ -921,6 +921,7 @@ An abstraction for threes [MarchingCubes](https://threejs.org/examples/#webgl_ma
 
 <p>
   <a href="https://codesandbox.io/s/ymb5d9"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/ymb5d9/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/xncid1"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/xncid1/screenshot.png" alt="Demo"/></a>
 </p>
 
 Abstraction around Three's `DecalGeometry`. It will use the its parent `mesh` as the decal surface by default.

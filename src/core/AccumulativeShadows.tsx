@@ -102,7 +102,9 @@ export const AccumulativeShadows = React.forwardRef(
         shader.fragmentShader = shader.fragmentShader.replace(
           '#include <dithering_fragment>',
           `#include <dithering_fragment>
-           gl_FragColor = vec4(ucolor * gl_FragColor.r * 2.0, max(0.0, (1.0 - gl_FragColor.r / alphaTest)) * opacity);`
+           gl_FragColor = vec4(ucolor * gl_FragColor.r * 2.0, max(0.0, (1.0 - gl_FragColor.r / alphaTest)) * opacity);
+           #include <tonemapping_fragment>
+           #include <encodings_fragment>`
         )
       }
       return mat

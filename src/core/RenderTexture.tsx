@@ -45,6 +45,7 @@ export const RenderTexture = React.forwardRef(
       if (!intersection) return false
       // We take that hits uv coords, set up this layers raycaster, et voilà, we have raycasting on arbitrary surfaces
       const uv = intersection.uv
+      if (!uv) return false
       state.raycaster.setFromCamera(state.pointer.set(uv.x * 2 - 1, uv.y * 2 - 1), state.camera)
     }, [])
 

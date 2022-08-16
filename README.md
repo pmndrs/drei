@@ -2282,6 +2282,8 @@ type AccumulativeShadowsProps = JSX.IntrinsicElements['group'] & {
   alphaTest?: number
   /** Shadow color, black */
   color?: string
+  /** Colorblend, how much colors turn to black, 0 is black, 2 */
+  colorBlend?: number
   /** Buffer resolution, 1024 */
   resolution?: number
   /** Children should be randomized lights shining from different angles to emulate raycasting */

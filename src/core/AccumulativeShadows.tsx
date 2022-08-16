@@ -27,6 +27,8 @@ type AccumulativeShadowsProps = JSX.IntrinsicElements['group'] & {
   alphaTest?: number
   /** Shadow color, black */
   color?: string
+  /** Colorblend, how much colors turn to black, 0 is black, 2 */
+  colorBlend?: number
   /** Buffer resolution, 1024 */
   resolution?: number
   /** Texture encoding */
@@ -66,6 +68,7 @@ export const AccumulativeShadows = React.forwardRef(
       opacity = 1,
       alphaTest = 0.65,
       color = 'black',
+      colorBlend = 2,
       resolution = 1024,
       encoding,
       toneMapped = true,
@@ -94,7 +97,13 @@ export const AccumulativeShadows = React.forwardRef(
           depthWrite: false,
           map: plm.progressiveLightMap2.texture,
         }),
-        { uniforms: { ucolor: { value: new THREE.Color(color) }, alphaTest: { value: 0 } } }
+        {
+          uniforms: {
+            ucolor: { value: new THREE.Color(color) },
+            ucolorBlend: { value: colorBlend },
+            alphaTest: { value: 0 },
+          },
+        }
       )
 
       mat.onBeforeCompile = (shader) => {
@@ -102,19 +111,20 @@ export const AccumulativeShadows = React.forwardRef(
         shader.fragmentShader = shader.fragmentShader.replace(
           `void main() {`,
           `uniform vec3 ucolor;
+           uniform float ucolorBlend;
            uniform float alphaTest;
            void main() {`
         )
         shader.fragmentShader = shader.fragmentShader.replace(
           '#include <dithering_fragment>',
           `#include <dithering_fragment>
-           gl_FragColor = vec4(ucolor * gl_FragColor.r * 2.0, max(0.0, (1.0 - gl_FragColor.r / alphaTest)) * opacity);
+           gl_FragColor = vec4(ucolor * gl_FragColor.r * ucolorBlend, max(0.0, (1.0 - gl_FragColor.r / alphaTest)) * opacity);
            #include <tonemapping_fragment>
            #include <encodings_fragment>`
         )
       }
       return mat
-    }, [color])
+    }, [color, colorBlend])
 
     const api = React.useMemo<AccumulativeContext>(
       () => ({

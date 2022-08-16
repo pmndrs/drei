@@ -29,6 +29,10 @@ type AccumulativeShadowsProps = JSX.IntrinsicElements['group'] & {
   color?: string
   /** Buffer resolution, 1024 */
   resolution?: number
+  /** Texture encoding */
+  encoding?: THREE.TextureEncoding
+  /** Texture tonemapping */
+  toneMapped?: boolean
 }
 
 interface AccumulativeContext {
@@ -63,6 +67,8 @@ export const AccumulativeShadows = React.forwardRef(
       alphaTest = 0.65,
       color = 'black',
       resolution = 1024,
+      encoding,
+      toneMapped = true,
       ...props
     }: AccumulativeShadowsProps,
     forwardRef: React.ForwardedRef<AccumulativeContext>
@@ -178,7 +184,15 @@ export const AccumulativeShadows = React.forwardRef(
         <group traverse={() => null} ref={gLights}>
           <accumulativeContext.Provider value={api}>{children}</accumulativeContext.Provider>
         </group>
-        <mesh receiveShadow ref={gPlane} material={material} scale={scale} rotation={[-Math.PI / 2, 0, 0]}>
+        <mesh
+          receiveShadow
+          ref={gPlane}
+          material={material}
+          material-encoding={encoding || gl.outputEncoding}
+          material-toneMapped={toneMapped}
+          scale={scale}
+          rotation={[-Math.PI / 2, 0, 0]}
+        >
           <planeGeometry />
         </mesh>
       </group>

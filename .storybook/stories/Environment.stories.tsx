@@ -24,7 +24,7 @@ export const EnvironmentStory = ({ background, preset }) => (
     <React.Suspense fallback={null}>
       <Environment preset={preset} background={background} />
       <mesh>
-        <torusKnotBufferGeometry args={[1, 0.5, 128, 32]} />
+        <torusKnotGeometry args={[1, 0.5, 128, 32]} />
         <meshStandardMaterial metalness={1} roughness={0} />
       </mesh>
     </React.Suspense>
@@ -59,7 +59,7 @@ export const EnvironmentFilesStory = ({ background }) => (
         files={[`px.png`, `nx.png`, `py.png`, `ny.png`, `pz.png`, `nz.png`]}
       />
       <mesh>
-        <torusKnotBufferGeometry args={[1, 0.5, 128, 32]} />
+        <torusKnotGeometry args={[1, 0.5, 128, 32]} />
         <meshStandardMaterial metalness={1} roughness={0} />
       </mesh>
     </React.Suspense>

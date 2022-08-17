@@ -58,7 +58,7 @@ export const ContactShadows = React.forwardRef(
       const renderTarget = new THREE.WebGLRenderTarget(resolution, resolution)
       const renderTargetBlur = new THREE.WebGLRenderTarget(resolution, resolution)
       renderTargetBlur.texture.generateMipmaps = renderTarget.texture.generateMipmaps = false
-      const planeGeometry = new THREE.PlaneBufferGeometry(width, height).rotateX(Math.PI / 2)
+      const planeGeometry = new THREE.PlaneGeometry(width, height).rotateX(Math.PI / 2)
       const blurPlane = new THREE.Mesh(planeGeometry)
       const depthMaterial = new THREE.MeshDepthMaterial()
       depthMaterial.depthTest = depthMaterial.depthWrite = false

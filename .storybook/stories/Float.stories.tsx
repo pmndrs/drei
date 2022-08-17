@@ -28,7 +28,7 @@ function FloatScene() {
           speed={number('Speed', 5)}
         >
           <mesh ref={cube}>
-            <boxBufferGeometry args={[2, 2, 2]} />
+            <boxGeometry args={[2, 2, 2]} />
             <meshStandardMaterial wireframe color="white" />
           </mesh>
         </Float>
@@ -36,7 +36,7 @@ function FloatScene() {
 
       {/* ground plane */}
       <mesh position={[0, -6, 0]} rotation={[Math.PI / -2, 0, 0]}>
-        <planeBufferGeometry args={[200, 200, 75, 75]} />
+        <planeGeometry args={[200, 200, 75, 75]} />
         <meshBasicMaterial wireframe color="red" side={THREE.DoubleSide} />
       </mesh>
     </>

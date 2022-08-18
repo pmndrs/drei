@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { Group } from 'three'
 import { useFrame } from '@react-three/fiber'
-import mergeRefs from 'react-merge-refs'
 
 export type BillboardProps = {
   follow?: boolean
@@ -23,20 +22,21 @@ export const Billboard = React.forwardRef<Group, BillboardProps>(function Billbo
   { follow = true, lockX = false, lockY = false, lockZ = false, ...props },
   ref
 ) {
-  const localRef = React.useRef<Group>()
+  const billboard = React.useRef<Group>(null!)
+  React.useImperativeHandle(ref, () => billboard.current)
   useFrame(({ camera }) => {
-    if (!follow || !localRef.current) return
+    if (!follow) return
 
     // save previous rotation in case we're locking an axis
-    const prevRotation = localRef.current.rotation.clone()
+    const prevRotation = billboard.current.rotation.clone()
 
     // always face the camera
-    localRef.current.quaternion.copy(camera.quaternion)
+    billboard.current.quaternion.copy(camera.quaternion)
 
     // readjust any axis that is locked
-    if (lockX) localRef.current.rotation.x = prevRotation.x
-    if (lockY) localRef.current.rotation.y = prevRotation.y
-    if (lockZ) localRef.current.rotation.z = prevRotation.z
+    if (lockX) billboard.current.rotation.x = prevRotation.x
+    if (lockY) billboard.current.rotation.y = prevRotation.y
+    if (lockZ) billboard.current.rotation.z = prevRotation.z
   })
-  return <group ref={mergeRefs([localRef, ref])} {...props} />
+  return <group ref={billboard} {...props} />
 })

@@ -2,7 +2,6 @@ import * as React from 'react'
 import { RGBAFormat, HalfFloatType, WebGLRenderTarget } from 'three'
 import { ReactThreeFiber, extend, useThree, useFrame } from '@react-three/fiber'
 import { EffectComposer, RenderPass, ShaderPass, GammaCorrectionShader } from 'three-stdlib'
-import mergeRefs from 'react-merge-refs'
 
 type Props = ReactThreeFiber.Node<EffectComposer, typeof EffectComposer> & {
   multisamping?: number
@@ -55,7 +54,8 @@ export const Effects = React.forwardRef(
     ref
   ) => {
     React.useMemo(() => extend({ EffectComposer, RenderPass, ShaderPass }), [])
-    const composer = React.useRef<EffectComposer>()
+    const composer = React.useRef<EffectComposer>(null!)
+    React.useImperativeHandle(ref, () => composer.current)
     const { scene, camera, gl, size, viewport } = useThree()
     const [target] = React.useState(() => {
       const t = new WebGLRenderTarget(size.width, size.height, {
@@ -71,12 +71,12 @@ export const Effects = React.forwardRef(
     })
 
     React.useEffect(() => {
-      composer.current?.setSize(size.width, size.height)
-      composer.current?.setPixelRatio(viewport.dpr)
+      composer.current.setSize(size.width, size.height)
+      composer.current.setPixelRatio(viewport.dpr)
     }, [gl, size, viewport.dpr])
 
     useFrame(() => {
-      if (!disableRender) composer.current?.render()
+      if (!disableRender) composer.current.render()
     }, renderIndex)
 
     const passes: React.ReactNode[] = []
@@ -90,7 +90,7 @@ export const Effects = React.forwardRef(
     })
 
     return (
-      <effectComposer ref={mergeRefs([ref, composer])} args={[gl, target]} {...props}>
+      <effectComposer ref={composer} args={[gl, target]} {...props}>
         {passes}
       </effectComposer>
     )

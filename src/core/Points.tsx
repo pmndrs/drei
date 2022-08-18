@@ -1,7 +1,6 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { extend, useFrame } from '@react-three/fiber'
-import mergeRefs from 'react-merge-refs'
 import { Position } from '../helpers/Position'
 
 type Api = {
@@ -25,6 +24,7 @@ const color = new THREE.Color()
 const PointsInstances = React.forwardRef<THREE.Points, PointsInstancesProps>(
   ({ children, range, limit = 1000, ...props }, ref) => {
     const parentRef = React.useRef<THREE.Points>(null!)
+    React.useImperativeHandle(ref, () => parentRef.current)
     const [refs, setRefs] = React.useState<React.MutableRefObject<Position>[]>([])
     const [[positions, colors, sizes]] = React.useState(() => [
       new Float32Array(limit * 3),
@@ -83,7 +83,7 @@ const PointsInstances = React.forwardRef<THREE.Points, PointsInstancesProps>(
     )
 
     return (
-      <points matrixAutoUpdate={false} ref={mergeRefs([ref, parentRef])} {...events} {...props}>
+      <points matrixAutoUpdate={false} ref={parentRef} {...events} {...props}>
         <bufferGeometry>
           <bufferAttribute
             attach="attributes-position"
@@ -113,17 +113,20 @@ const PointsInstances = React.forwardRef<THREE.Points, PointsInstancesProps>(
   }
 )
 
-export const Point = React.forwardRef(({ children, ...props }, ref) => {
-  React.useMemo(() => extend({ Position }), [])
-  const group = React.useRef()
-  const { subscribe } = React.useContext(context)
-  React.useLayoutEffect(() => subscribe(group), [])
-  return (
-    <position ref={mergeRefs([ref, group])} {...props}>
-      {children}
-    </position>
-  )
-})
+export const Point = React.forwardRef<Position, Partial<JSX.IntrinsicElements['position']>>(
+  ({ children, ...props }, ref) => {
+    React.useMemo(() => extend({ Position }), [])
+    const group = React.useRef<Position>(null!)
+    React.useImperativeHandle(ref, () => group.current)
+    const { subscribe } = React.useContext(context)
+    React.useLayoutEffect(() => subscribe(group), [])
+    return (
+      <position ref={group} {...props}>
+        {children}
+      </position>
+    )
+  }
+)
 
 /**
  * Buffer implementation, relies on complete buffers of the correct number, leaves it to the user to update them
@@ -138,8 +141,9 @@ type PointsBuffersProps = JSX.IntrinsicElements['points'] & {
 }
 
 export const PointsBuffer = React.forwardRef<THREE.Points, PointsBuffersProps>(
-  ({ children, positions, colors, sizes, stride = 3, ...props }, forwardedRef) => {
+  ({ children, positions, colors, sizes, stride = 3, ...props }, ref) => {
     const pointsRef = React.useRef<THREE.Points>(null!)
+    React.useImperativeHandle(ref, () => pointsRef.current)
 
     useFrame(() => {
       const attr = pointsRef.current.geometry.attributes
@@ -149,7 +153,7 @@ export const PointsBuffer = React.forwardRef<THREE.Points, PointsBuffersProps>(
     })
 
     return (
-      <points ref={mergeRefs([forwardedRef, pointsRef])} {...props}>
+      <points ref={pointsRef} {...props}>
         <bufferGeometry>
           <bufferAttribute
             attach="attributes-position"

@@ -14,7 +14,6 @@ import {
   HalfFloatType,
 } from 'three'
 import { useFrame, useThree, extend } from '@react-three/fiber'
-import mergeRefs from 'react-merge-refs'
 
 import { BlurPass } from '../materials/BlurPass'
 import {
@@ -74,6 +73,7 @@ export const MeshReflectorMaterial = React.forwardRef<MeshReflectorMaterialImpl,
     blur = Array.isArray(blur) ? blur : [blur, blur]
     const hasBlur = blur[0] + blur[1] > 0
     const materialRef = React.useRef<MeshReflectorMaterialImpl>(null!)
+    React.useImperativeHandle(ref, () => materialRef.current)
     const [reflectorPlane] = React.useState(() => new Plane())
     const [normal] = React.useState(() => new Vector3())
     const [reflectorWorldPosition] = React.useState(() => new Vector3())
@@ -236,7 +236,7 @@ export const MeshReflectorMaterial = React.forwardRef<MeshReflectorMaterialImpl,
           reflectorProps['defines-USE_DEPTH'] +
           reflectorProps['defines-USE_DISTORTION']
         }
-        ref={mergeRefs([materialRef, ref])}
+        ref={materialRef}
         {...reflectorProps}
         {...props}
       />

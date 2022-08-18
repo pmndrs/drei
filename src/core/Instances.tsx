@@ -1,7 +1,6 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { extend, useFrame } from '@react-three/fiber'
-import mergeRefs from 'react-merge-refs'
 import Composer from 'react-composer'
 import { Position } from '../helpers/Position'
 
@@ -35,13 +34,14 @@ const translation = new THREE.Vector3()
 const rotation = new THREE.Quaternion()
 const scale = new THREE.Vector3()
 
-const Instance = React.forwardRef(({ context, children, ...props }: InstanceProps, ref) => {
+const Instance = React.forwardRef<Position, InstanceProps>(({ context, children, ...props }, ref) => {
   React.useMemo(() => extend({ Position }), [])
-  const group = React.useRef<JSX.IntrinsicElements['position']>()
+  const group = React.useRef<Position>(null!)
+  React.useImperativeHandle(ref, () => group.current)
   const { subscribe, getParent } = React.useContext(context || globalContext)
   React.useLayoutEffect(() => subscribe(group), [])
   return (
-    <position instance={getParent()} instanceKey={group} ref={mergeRefs([ref, group])} {...props}>
+    <position instance={getParent()} instanceKey={group} ref={group} {...props}>
       {children}
     </position>
   )
@@ -58,6 +58,7 @@ const Instances = React.forwardRef<InstancedMesh, InstancesProps>(
     })
 
     const parentRef = React.useRef<InstancedMesh>(null!)
+    React.useImperativeHandle(ref, () => parentRef.current)
     const [instances, setInstances] = React.useState<React.MutableRefObject<Position>[]>([])
     const [[matrices, colors]] = React.useState(() => {
       const mArray = new Float32Array(limit * 16)
@@ -113,7 +114,7 @@ const Instances = React.forwardRef<InstancedMesh, InstancesProps>(
       <instancedMesh
         userData={{ instances }}
         matrixAutoUpdate={false}
-        ref={mergeRefs([ref, parentRef])}
+        ref={parentRef}
         args={[null as any, null as any, 0]}
         raycast={() => null}
         {...props}

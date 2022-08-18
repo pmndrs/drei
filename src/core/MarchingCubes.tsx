@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { Color, Group, MeshStandardMaterial } from 'three'
-import mergeRefs from 'react-merge-refs'
 import { MarchingCubes as MarchingCubesImpl } from 'three-stdlib'
 import { useFrame } from '@react-three/fiber'
 
@@ -30,6 +29,7 @@ export const MarchingCubes = React.forwardRef(
     ref
   ) => {
     const marchingCubesRef = React.useRef<MarchingCubesImpl>(null!)
+    React.useImperativeHandle(ref, () => marchingCubesRef.current)
     const marchingCubes = React.useMemo(
       () => new MarchingCubesImpl(resolution, new MeshStandardMaterial(), enableUvs, enableColors, maxPolyCount),
       [resolution, maxPolyCount, enableUvs, enableColors]
@@ -48,7 +48,7 @@ export const MarchingCubes = React.forwardRef(
 
     return (
       <>
-        <primitive object={marchingCubes} ref={mergeRefs([marchingCubesRef, ref])} {...props}>
+        <primitive object={marchingCubes} ref={marchingCubesRef} {...props}>
           <globalContext.Provider value={api}>{children}</globalContext.Provider>
         </primitive>
       </>
@@ -66,11 +66,10 @@ export const MarchingCube = React.forwardRef(
   ({ strength = 0.5, subtract = 12, color = new Color('#fff'), ...props }: MarchingCubeProps, ref) => {
     const { getParent } = React.useContext(globalContext)
     const parentRef = React.useMemo(() => getParent(), [getParent])
-    const cubeRef = React.useRef<Group>()
+    const cubeRef = React.useRef<Group>(null!)
+    React.useImperativeHandle(ref, () => cubeRef.current)
 
     useFrame(() => {
-      if (!parentRef.current || !cubeRef.current) return
-
       parentRef.current.addBall(
         cubeRef.current.position.x,
         cubeRef.current.position.y,
@@ -81,7 +80,7 @@ export const MarchingCube = React.forwardRef(
       )
     })
 
-    return <group ref={mergeRefs([ref, cubeRef])} {...props} />
+    return <group ref={cubeRef} {...props} />
   }
 )
 
@@ -95,16 +94,16 @@ export const MarchingPlane = React.forwardRef(
   ({ planeType: _planeType = 'x', strength = 0.5, subtract = 12, ...props }: MarchingPlaneProps, ref) => {
     const { getParent } = React.useContext(globalContext)
     const parentRef = React.useMemo(() => getParent(), [getParent])
-    const wallRef = React.useRef<Group>()
+    const wallRef = React.useRef<Group>(null!)
+    React.useImperativeHandle(ref, () => wallRef.current)
     const planeType = React.useMemo(
       () => (_planeType === 'x' ? 'addPlaneX' : _planeType === 'y' ? 'addPlaneY' : 'addPlaneZ'),
       [_planeType]
     )
 
     useFrame(() => {
-      if (!parentRef.current || !wallRef.current) return
       parentRef.current[planeType](strength, subtract)
     })
-    return <group ref={mergeRefs([ref, wallRef])} {...props} />
+    return <group ref={wallRef} {...props} />
   }
 )

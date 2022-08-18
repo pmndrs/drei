@@ -1,6 +1,5 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import mergeRefs from 'react-merge-refs'
 import { extend, useFrame, ReactThreeFiber } from '@react-three/fiber'
 import { Line2, LineSegmentsGeometry, LineMaterial } from 'three-stdlib'
 
@@ -111,12 +110,13 @@ export class SegmentObject {
 const normPos = (pos: SegmentProps['start']): SegmentObject['start'] =>
   pos instanceof THREE.Vector3 ? pos : new THREE.Vector3(...(typeof pos === 'number' ? [pos, pos, pos] : pos))
 
-const Segment = React.forwardRef<SegmentObject, SegmentProps>(({ color, start, end }, forwardedRef) => {
+const Segment = React.forwardRef<SegmentObject, SegmentProps>(({ color, start, end }, ref) => {
   const api = React.useContext<Api>(context)
   if (!api) throw 'Segment must used inside Segments component.'
-  const ref = React.useRef<SegmentObject>(null)
-  React.useLayoutEffect(() => api.subscribe(ref), [])
-  return <segmentObject ref={mergeRefs([ref, forwardedRef])} color={color} start={normPos(start)} end={normPos(end)} />
+  const segment = React.useRef<SegmentObject>(null!)
+  React.useImperativeHandle(ref, () => segment.current)
+  React.useLayoutEffect(() => api.subscribe(segment), [])
+  return <segmentObject ref={segment} color={color} start={normPos(start)} end={normPos(end)} />
 })
 
 export { Segments, Segment }

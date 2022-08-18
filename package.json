@@ -63,7 +63,6 @@
     "lodash.pick": "^4.4.0",
     "meshline": "^2.0.4",
     "react-composer": "^5.0.3",
-    "react-merge-refs": "^1.1.0",
     "stats.js": "^0.17.0",
     "suspend-react": "^0.0.8",
     "three-mesh-bvh": "^0.5.10",

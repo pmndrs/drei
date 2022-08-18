@@ -2,7 +2,6 @@ import * as THREE from 'three'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
 import { context as fiberContext, RootState, useFrame, useThree } from '@react-three/fiber'
-import mergeRefs from 'react-merge-refs'
 import { DomEvent } from '@react-three/fiber/dist/declarations/src/core/events'
 
 export type ScrollControlsProps = {
@@ -195,19 +194,21 @@ export function ScrollControls({
 
 const ScrollCanvas = React.forwardRef(({ children }, ref) => {
   const group = React.useRef<THREE.Group>(null!)
+  React.useImperativeHandle(ref, () => group.current)
   const state = useScroll()
   const { width, height } = useThree((state) => state.viewport)
   useFrame(() => {
     group.current.position.x = state.horizontal ? -width * (state.pages - 1) * state.offset : 0
     group.current.position.y = state.horizontal ? 0 : height * (state.pages - 1) * state.offset
   })
-  return <group ref={mergeRefs([ref, group])}>{children}</group>
+  return <group ref={group}>{children}</group>
 })
 
 const ScrollHtml = React.forwardRef(
   ({ children, style, ...props }: { children?: React.ReactNode; style?: React.StyleHTMLAttributes<any> }, ref) => {
     const state = useScroll()
     const group = React.useRef<HTMLDivElement>(null!)
+    React.useImperativeHandle(ref, () => group.current)
     const { width, height } = useThree((state) => state.size)
     const fiberState = React.useContext(fiberContext)
     const root = React.useMemo(() => ReactDOM.createRoot(state.fixed), [state.fixed])
@@ -219,11 +220,7 @@ const ScrollHtml = React.forwardRef(
       }
     })
     root.render(
-      <div
-        ref={mergeRefs([ref, group])}
-        style={{ ...style, position: 'absolute', top: 0, left: 0, willChange: 'transform' }}
-        {...props}
-      >
+      <div ref={group} style={{ ...style, position: 'absolute', top: 0, left: 0, willChange: 'transform' }} {...props}>
         <context.Provider value={state}>
           <fiberContext.Provider value={fiberState}>{children}</fiberContext.Provider>
         </context.Provider>

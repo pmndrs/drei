@@ -14,7 +14,6 @@ import {
   Texture,
 } from 'three'
 import { useFrame, useThree, extend } from '@react-three/fiber'
-import mergeRefs from 'react-merge-refs'
 
 import { BlurPass } from '../materials/BlurPass'
 import { MeshReflectorMaterialProps, MeshReflectorMaterial } from '../materials/MeshReflectorMaterial'
@@ -86,6 +85,7 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
     blur = Array.isArray(blur) ? blur : [blur, blur]
     const hasBlur = blur[0] + blur[1] > 0
     const meshRef = React.useRef<Mesh>(null!)
+    React.useImperativeHandle(ref, () => meshRef.current)
     const [reflectorPlane] = React.useState(() => new Plane())
     const [normal] = React.useState(() => new Vector3())
     const [reflectorWorldPosition] = React.useState(() => new Vector3())
@@ -233,7 +233,7 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
     })
 
     return (
-      <mesh ref={mergeRefs([meshRef, ref])} {...props}>
+      <mesh ref={meshRef} {...props}>
         <planeGeometry args={args} />
         {children ? children('meshReflectorMaterial', reflectorProps) : <meshReflectorMaterial {...reflectorProps} />}
       </mesh>

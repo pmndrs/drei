@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { PerspectiveCamera as PerspectiveCameraImpl } from 'three'
 import { useThree } from '@react-three/fiber'
-import mergeRefs from 'react-merge-refs'
 
 type Props = JSX.IntrinsicElements['perspectiveCamera'] & {
   makeDefault?: boolean
@@ -14,6 +13,7 @@ export const PerspectiveCamera = React.forwardRef(({ makeDefault, ...props }: Pr
   const camera = useThree(({ camera }) => camera)
   const size = useThree(({ size }) => size)
   const cameraRef = React.useRef<PerspectiveCameraImpl>(null!)
+  React.useImperativeHandle(ref, () => cameraRef.current)
 
   React.useLayoutEffect(() => {
     if (!props.manual) {
@@ -35,5 +35,5 @@ export const PerspectiveCamera = React.forwardRef(({ makeDefault, ...props }: Pr
     // that must exchange the default, and clean up after itself on unmount.
   }, [cameraRef, makeDefault, set])
 
-  return <perspectiveCamera ref={mergeRefs([cameraRef, ref])} {...props} />
+  return <perspectiveCamera ref={cameraRef} {...props} />
 })

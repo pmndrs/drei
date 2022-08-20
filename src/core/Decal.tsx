@@ -20,6 +20,14 @@ type DecalState = {
   scale: THREE.Vector3
 }
 
+function vecToArray(vec: FIBER.Vector3 | FIBER.Euler | number = [0, 0, 0]) {
+  if (vec instanceof THREE.Vector3 || vec instanceof THREE.Euler) {
+    return [vec.x, vec.y, vec.z]
+  } else {
+    return [vec, vec, vec]
+  }
+}
+
 export function Decal({ debug, mesh, children, position, rotation, scale, ...props }: DecalProps) {
   const ref = React.useRef<THREE.Mesh>(null!)
   const helper = React.useRef<THREE.Mesh>(null!)
@@ -64,7 +72,7 @@ export function Decal({ debug, mesh, children, position, rotation, scale, ...pro
         target.geometry.dispose()
       }
     }
-  }, [mesh, position, scale, rotation])
+  }, [mesh, ...vecToArray(position), ...vecToArray(scale), ...vecToArray(rotation)])
 
   return (
     <mesh ref={ref}>

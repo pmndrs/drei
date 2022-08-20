@@ -252,7 +252,7 @@ export const RandomizedLight = React.forwardRef(
   (
     {
       castShadow = true,
-      bias = 0,
+      bias = 0.001,
       mapSize = 512,
       size = 5,
       near = 0.5,

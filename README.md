@@ -2301,6 +2301,8 @@ type AccumulativeShadowsProps = JSX.IntrinsicElements['group'] & {
 
 ```tsx
 interface AccumulativeContext {
+  /** Returns the plane geometry onto which the shadow is cast */
+  getMesh: () => THREE.Mesh<THREE.PlaneGeometry, SoftShadowMaterialProps & THREE.ShaderMaterial>
   /** Resets the buffers, starting from scratch */
   reset: () => void
   /** Updates the lightmap for a number of frames accumulartively */

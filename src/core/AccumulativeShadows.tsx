@@ -37,12 +37,13 @@ type AccumulativeShadowsProps = JSX.IntrinsicElements['group'] & {
 }
 
 interface AccumulativeContext {
-  mesh: React.MutableRefObject<THREE.Mesh<THREE.PlaneGeometry, SoftShadowMaterialProps & THREE.ShaderMaterial>>
   lights: Map<any, any>
   temporal: boolean
   frames: number
   blend: number
   count: number
+  /** Returns the plane geometry onto which the shadow is cast */
+  getMesh: () => THREE.Mesh<THREE.PlaneGeometry, SoftShadowMaterialProps & THREE.ShaderMaterial>
   /** Resets the buffers, starting from scratch */
   reset: () => void
   /** Updates the lightmap for a number of frames accumulartively */
@@ -138,12 +139,12 @@ export const AccumulativeShadows = React.forwardRef(
 
     const api = React.useMemo<AccumulativeContext>(
       () => ({
-        mesh: gPlane,
         lights: new Map(),
         temporal: !!temporal,
         frames: Math.max(2, frames),
         blend: Math.max(2, frames === Infinity ? blend : frames),
         count: 0,
+        getMesh: () => gPlane.current,
         reset: () => {
           // Clear buffers, reset opacities, set frame count to 0
           plm.clear()

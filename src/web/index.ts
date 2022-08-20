@@ -5,6 +5,7 @@ export { Loader } from './Loader'
 export * from './ScrollControls'
 export * from './PresentationControls'
 export * from './Select'
+export * from './configureEvents'
 export * from '../core'
 
 // Portal

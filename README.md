@@ -111,6 +111,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#useTrail">useTrail</a></li>
           <li><a href="#useSurfaceSampler">useSurfaceSampler</a></li>
           <li><a href="#BBAnchor">BBAnchor</a></li>
+          <li><a href="#configureevents">configureEvents</a></li>
         </ul>
         <li><a href="#loading">Loaders</a></li>
         <ul>
@@ -1516,6 +1517,29 @@ For instance, one could want the Html component to be pinned to `positive x`, `p
     </Html>
   </BBAnchor>
 </Box>
+```
+
+#### configureEvents
+
+![](https://img.shields.io/badge/-Dom only-red)
+
+A small helper that ties events to a different target (the default is the canvas itself). This is useful whenever you combine HTML and the canvas. If both need to receive events they have to share the same parent, and the canvas has to register its events there.
+
+This function also allows you exchange the event prefix. By default fiber reads from event.offsetX(/Y), but in some situations it may be useful to use "client", especially if hovering HTML content resets your canvas pointer events to the upper/left of the viewport.
+
+```tsx
+type EventOptions = {
+  target?: HTMLElement
+  prefix?: 'offset' | 'client' | 'page' | 'layer' | 'screen'
+}
+
+export function configureEvents(_options: EventOptions): (state: RootState) => void
+```
+
+It is a curried function, you would typically drop this into onCreated.
+
+```jsx
+<Canvas onCreated={configureEvents({ target: document.getElementById('root'), prefix: 'client' })}>
 ```
 
 # Loading

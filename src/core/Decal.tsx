@@ -20,8 +20,14 @@ type DecalState = {
   scale: THREE.Vector3
 }
 
-function vecToArray(vec: FIBER.Vector3 | FIBER.Euler | number = [0, 0, 0]) {
-  if (vec instanceof THREE.Vector3 || vec instanceof THREE.Euler) {
+function isArray(vec: any): vec is number[] {
+  return Array.isArray(vec)
+}
+
+function vecToArray(vec: number[] | FIBER.Vector3 | FIBER.Euler | number = [0, 0, 0]) {
+  if (isArray(vec)) {
+    return vec
+  } else if (vec instanceof THREE.Vector3 || vec instanceof THREE.Euler) {
     return [vec.x, vec.y, vec.z]
   } else {
     return [vec, vec, vec]

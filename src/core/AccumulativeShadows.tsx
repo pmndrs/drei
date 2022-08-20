@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { useFrame, useThree } from '@react-three/fiber'
+import { extend, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
+import { shaderMaterial } from './shaderMaterial'
 
 function isLight(object: any): object is THREE.Light {
   return object.isLight
@@ -31,13 +32,12 @@ type AccumulativeShadowsProps = JSX.IntrinsicElements['group'] & {
   colorBlend?: number
   /** Buffer resolution, 1024 */
   resolution?: number
-  /** Texture encoding */
-  encoding?: THREE.TextureEncoding
   /** Texture tonemapping */
   toneMapped?: boolean
 }
 
 interface AccumulativeContext {
+  mesh: React.MutableRefObject<THREE.Mesh<THREE.PlaneGeometry, SoftShadowMaterialProps & THREE.ShaderMaterial>>
   lights: Map<any, any>
   temporal: boolean
   frames: number
@@ -54,7 +54,55 @@ interface AccumulativeLightContext {
   update: () => void
 }
 
+type SoftShadowMaterialProps = {
+  map: THREE.Texture
+  color?: ReactThreeFiber.Color
+  alphaTest?: number
+  blend?: number
+}
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      softShadowMaterial: JSX.IntrinsicElements['shaderMaterial'] & SoftShadowMaterialProps
+    }
+  }
+}
+
 export const accumulativeContext = React.createContext<AccumulativeContext>(null as unknown as AccumulativeContext)
+
+const SoftShadowMaterial = shaderMaterial(
+  {
+    color: new THREE.Color(),
+    blend: 2.0,
+    alphaTest: 0.75,
+    opacity: 0,
+    map: null,
+  },
+  `varying vec2 vUv;
+   void main() {
+     gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.);
+     vUv = uv;
+   }`,
+  `varying vec2 vUv;
+   uniform sampler2D map;
+   uniform vec3 color;
+   uniform float opacity;
+   uniform float alphaTest;
+   uniform float blend;
+   void main() {
+     vec4 sampledDiffuseColor = texture2D(map, vUv);
+     gl_FragColor = vec4(color * sampledDiffuseColor.r * blend, max(0.0, (1.0 - (sampledDiffuseColor.r + sampledDiffuseColor.g + sampledDiffuseColor.b) / alphaTest)) * opacity);
+     #include <tonemapping_fragment>
+     #include <encodings_fragment>
+   }`
+)
+
+const DiscardMaterial = shaderMaterial(
+  {},
+  'void main() { gl_Position = vec4((uv - 0.5) * 2.0, 1.0, 1.0); }',
+  'void main() { discard; }'
+)
 
 export const AccumulativeShadows = React.forwardRef(
   (
@@ -66,20 +114,21 @@ export const AccumulativeShadows = React.forwardRef(
       blend = 20,
       scale = 10,
       opacity = 1,
-      alphaTest = 0.65,
+      alphaTest = 0.75,
       color = 'black',
       colorBlend = 2,
       resolution = 1024,
-      encoding,
       toneMapped = true,
       ...props
     }: AccumulativeShadowsProps,
     forwardRef: React.ForwardedRef<AccumulativeContext>
   ) => {
+    extend({ SoftShadowMaterial })
+
     const gl = useThree((state) => state.gl)
     const scene = useThree((state) => state.scene)
     const camera = useThree((state) => state.camera)
-    const gPlane = React.useRef<THREE.Mesh>(null!)
+    const gPlane = React.useRef<THREE.Mesh<THREE.PlaneGeometry, SoftShadowMaterialProps & THREE.ShaderMaterial>>(null!)
     const gLights = React.useRef<THREE.Group>(null!)
 
     const [plm] = React.useState(() => new ProgressiveLightMap(gl, scene, resolution))
@@ -87,47 +136,9 @@ export const AccumulativeShadows = React.forwardRef(
       plm.configure(gPlane.current)
     }, [])
 
-    //const [lights, setLights] = React.useState<AccumulativeLightContext[]>([])
-    const material = React.useMemo(() => {
-      const mat: THREE.MeshBasicMaterial & { uniforms: { [key: string]: any } } = Object.assign(
-        new THREE.MeshBasicMaterial({
-          opacity: 0,
-          transparent: true,
-          dithering: true,
-          depthWrite: false,
-          map: plm.progressiveLightMap2.texture,
-        }),
-        {
-          uniforms: {
-            ucolor: { value: new THREE.Color(color) },
-            ucolorBlend: { value: colorBlend },
-            alphaTest: { value: 0 },
-          },
-        }
-      )
-
-      mat.onBeforeCompile = (shader) => {
-        mat.uniforms = shader.uniforms = { ...shader.uniforms, ...mat.uniforms }
-        shader.fragmentShader = shader.fragmentShader.replace(
-          `void main() {`,
-          `uniform vec3 ucolor;
-           uniform float ucolorBlend;
-           uniform float alphaTest;
-           void main() {`
-        )
-        shader.fragmentShader = shader.fragmentShader.replace(
-          '#include <dithering_fragment>',
-          `#include <dithering_fragment>
-           gl_FragColor = vec4(ucolor * gl_FragColor.r * ucolorBlend, max(0.0, (1.0 - gl_FragColor.r / alphaTest)) * opacity);
-           #include <tonemapping_fragment>
-           #include <encodings_fragment>`
-        )
-      }
-      return mat
-    }, [color, colorBlend])
-
     const api = React.useMemo<AccumulativeContext>(
       () => ({
+        mesh: gPlane,
         lights: new Map(),
         temporal: !!temporal,
         frames: Math.max(2, frames),
@@ -136,21 +147,20 @@ export const AccumulativeShadows = React.forwardRef(
         reset: () => {
           // Clear buffers, reset opacities, set frame count to 0
           plm.clear()
+          const material = gPlane.current.material
           material.opacity = 0
-          material.uniforms.alphaTest.value = 0
+          material.alphaTest = 0
           api.count = 0
         },
         update: (frames = 1) => {
           // Adapt the opacity-blend ratio to the number of frames
+          const material = gPlane.current.material
           if (!api.temporal) {
             material.opacity = opacity
-            material.uniforms.alphaTest.value = alphaTest
+            material.alphaTest = alphaTest
           } else {
             material.opacity = Math.min(opacity, material.opacity + opacity / api.blend)
-            material.uniforms.alphaTest.value = Math.min(
-              alphaTest,
-              material.uniforms.alphaTest.value + alphaTest / api.blend
-            )
+            material.alphaTest = Math.min(alphaTest, material.alphaTest + alphaTest / api.blend)
           }
 
           // Switch accumulative lights on
@@ -169,7 +179,7 @@ export const AccumulativeShadows = React.forwardRef(
           plm.finish()
         },
       }),
-      [plm, material, camera, scene, temporal, frames, blend, opacity, alphaTest]
+      [plm, camera, scene, temporal, frames, blend, opacity, alphaTest]
     )
 
     React.useLayoutEffect(() => {
@@ -180,7 +190,7 @@ export const AccumulativeShadows = React.forwardRef(
     })
 
     // Expose api, allow children to set itself as the main light source
-    React.useImperativeHandle(forwardRef, () => api, [])
+    React.useImperativeHandle(forwardRef, () => api, [api])
 
     useFrame(() => {
       if ((api.temporal || api.frames === Infinity) && api.count < api.frames && api.count < limit) {
@@ -194,16 +204,16 @@ export const AccumulativeShadows = React.forwardRef(
         <group traverse={() => null} ref={gLights}>
           <accumulativeContext.Provider value={api}>{children}</accumulativeContext.Provider>
         </group>
-        <mesh
-          receiveShadow
-          ref={gPlane}
-          material={material}
-          material-encoding={encoding || gl.outputEncoding}
-          material-toneMapped={toneMapped}
-          scale={scale}
-          rotation={[-Math.PI / 2, 0, 0]}
-        >
+        <mesh receiveShadow ref={gPlane} scale={scale} rotation={[-Math.PI / 2, 0, 0]}>
           <planeGeometry />
+          <softShadowMaterial
+            transparent
+            depthWrite={false}
+            toneMapped={toneMapped}
+            color={color}
+            blend={colorBlend}
+            map={plm.progressiveLightMap2.texture}
+          />
         </mesh>
       </group>
     )
@@ -311,15 +321,6 @@ export const RandomizedLight = React.forwardRef(
   }
 )
 
-class UVMaterial extends THREE.ShaderMaterial {
-  constructor() {
-    super({
-      vertexShader: 'void main() { gl_Position = vec4((uv - 0.5) * 2.0, 1.0, 1.0); }',
-      fragmentShader: 'void main() { discard; }',
-    })
-  }
-}
-
 // Based on "Progressive Light Map Accumulator", by [zalo](https://github.com/zalo/)
 class ProgressiveLightMap {
   renderer: THREE.WebGLRenderer
@@ -329,7 +330,7 @@ class ProgressiveLightMap {
   buffer1Active: boolean
   progressiveLightMap1: THREE.WebGLRenderTarget
   progressiveLightMap2: THREE.WebGLRenderTarget
-  uvMat: UVMaterial
+  discardMat: THREE.ShaderMaterial
   targetMat: THREE.MeshPhongMaterial
   previousShadowMap: { value: THREE.Texture }
   averagingWindow: { value: number }
@@ -348,11 +349,17 @@ class ProgressiveLightMap {
 
     // Create the Progressive LightMap Texture
     const format = /(Android|iPad|iPhone|iPod)/g.test(navigator.userAgent) ? THREE.HalfFloatType : THREE.FloatType
-    this.progressiveLightMap1 = new THREE.WebGLRenderTarget(this.res, this.res, { type: format })
-    this.progressiveLightMap2 = new THREE.WebGLRenderTarget(this.res, this.res, { type: format })
+    this.progressiveLightMap1 = new THREE.WebGLRenderTarget(this.res, this.res, {
+      type: format,
+      encoding: renderer.outputEncoding,
+    })
+    this.progressiveLightMap2 = new THREE.WebGLRenderTarget(this.res, this.res, {
+      type: format,
+      encoding: renderer.outputEncoding,
+    })
 
     // Inject some spicy new logic into a standard phong material
-    this.uvMat = new UVMaterial()
+    this.discardMat = new DiscardMaterial()
     this.targetMat = new THREE.MeshPhongMaterial({ shininess: 0 })
     this.previousShadowMap = { value: this.progressiveLightMap1.texture }
     this.averagingWindow = { value: 100 }
@@ -403,7 +410,7 @@ class ProgressiveLightMap {
 
   prepare() {
     this.lights.forEach((light) => (light.object.intensity = 0))
-    this.meshes.forEach((mesh) => (mesh.object.material = this.uvMat))
+    this.meshes.forEach((mesh) => (mesh.object.material = this.discardMat))
   }
 
   finish() {

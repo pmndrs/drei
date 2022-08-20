@@ -14,12 +14,6 @@ type DecalProps = Omit<JSX.IntrinsicElements['meshStandardMaterial'], 'children'
   children?: React.ReactNode
 }
 
-type DecalState = {
-  position: THREE.Vector3
-  rotation: THREE.Euler
-  scale: THREE.Vector3
-}
-
 function isArray(vec: any): vec is number[] {
   return Array.isArray(vec)
 }

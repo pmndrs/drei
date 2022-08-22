@@ -69,7 +69,7 @@ const Text3DBase = React.forwardRef<THREE.Mesh, React.PropsWithChildren<Text3DPr
   ) => {
     React.useMemo(() => extend({ RenamedTextGeometry: TextGeometry }), [])
 
-    const _font = React.useMemo(() => loader.parse(font as FontData), [font])
+    const _font = React.useMemo(() => loader.parse(font as FontData), [loader, font])
     const opts = useMemo(() => {
       return {
         font: _font,

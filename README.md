@@ -506,7 +506,7 @@ You can align the text using the `<Center>` component.
 ```jsx
 <Center top left>
   <Text3D>hello</Text3D>
-</Center>>
+</Center>
 ```
 
 It adds two properties that do not exist in the priginal `TextGeometry`, `lineHeight` and `letterSpacing`. The former a factor that is `1` by default, the latter is in threejs units and `0` by default.

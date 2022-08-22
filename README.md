@@ -484,6 +484,10 @@ Text will suspend while loading the font data, but in order to completely avoid 
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-text3d--text-3-d-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
+<p>
+  <a href="https://codesandbox.io/s/x6obrb"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/x6obrb/screenshot.png" alt="Demo"/></a>
+</p>
+
 Render 3D text using ThreeJS's `TextGeometry`.
 
 Text3D will suspend while loading the font data, you can also load the font yourself before passing it in. Text3D requires fonts in JSON format generated through (typeface.json)[http://gero3.github.io/facetype.js], either as a path to a JSON file or a JSON object. If you face display issues try checking "Reverse font direction" in the typeface tool.

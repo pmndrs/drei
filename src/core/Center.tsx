@@ -2,25 +2,33 @@ import { Box3, Vector3, Sphere, Group } from 'three'
 import * as React from 'react'
 
 type Props = JSX.IntrinsicElements['group'] & {
-  alignTop?: boolean
+  top?: boolean
+  right?: boolean
+  bottom?: boolean
+  left?: boolean
 }
 
-export const Center = React.forwardRef<Group, Props>(function Center({ children, alignTop, ...props }, ref) {
+export const Center = React.forwardRef<Group, Props>(function Center(
+  { children, left, right, top, bottom, ...props },
+  fRef
+) {
   const outer = React.useRef<Group>(null!)
   const inner = React.useRef<Group>(null!)
   React.useLayoutEffect(() => {
-    outer.current.position.set(0, 0, 0)
-    outer.current.updateWorldMatrix(true, true)
+    outer.current.matrixWorld.identity()
     const box3 = new Box3().setFromObject(inner.current)
     const center = new Vector3()
     const sphere = new Sphere()
     const height = box3.max.y - box3.min.y
+    const width = box3.max.x - box3.min.x
     box3.getCenter(center)
     box3.getBoundingSphere(sphere)
-    outer.current.position.set(-center.x, -center.y + (alignTop ? height / 2 : 0), -center.z)
+    const vAlign = top ? height / 2 : bottom ? -height / 2 : 0
+    const hAlign = left ? -width / 2 : right ? width / 2 : 0
+    outer.current.position.set(-center.x + hAlign, -center.y + vAlign, -center.z)
   }, [children])
   return (
-    <group ref={ref} {...props}>
+    <group ref={fRef} {...props}>
       <group ref={outer}>
         <group ref={inner}>{children}</group>
       </group>

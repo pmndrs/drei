@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { extend, MeshProps, Node } from '@react-three/fiber'
 import { useMemo } from 'react'
 import { suspend } from 'suspend-react'
-import { TextGeometry, FontLoader, TextGeometryParameters } from 'three-stdlib'
+import { TextGeometry, TextGeometryParameters, FontLoader } from 'three-stdlib'
 
 declare global {
   namespace JSX {
@@ -42,12 +42,10 @@ const types = ['string', 'number']
 const getTextFromChildren = (children) => {
   let label = ''
   const rest: React.ReactNode[] = []
-
   React.Children.forEach(children, (child) => {
     if (types.includes(typeof child)) label += child + ''
     else rest.push(child)
   })
-
   return [label, ...rest]
 }
 
@@ -69,9 +67,7 @@ const Text3DBase = React.forwardRef<THREE.Mesh, React.PropsWithChildren<Text3DPr
     },
     ref
   ) => {
-    React.useMemo(() => {
-      extend({ RenamedTextGeometry: TextGeometry })
-    }, [])
+    React.useMemo(() => extend({ RenamedTextGeometry: TextGeometry }), [])
 
     const _font = React.useMemo(() => loader.parse(font as FontData), [font])
     const opts = useMemo(() => {
@@ -110,17 +106,19 @@ const Text3DSuspend = React.forwardRef<THREE.Mesh, React.PropsWithChildren<Text3
       const json = await (await fetch(font as string)).json()
       return json
     }, [font])
-
     return <Text3DBase {...props} ref={ref} font={_font as FontData} loader={loader} />
   }
 )
 
-export const Text3D = React.forwardRef<THREE.Mesh, React.PropsWithChildren<Text3DProps>>((props, ref) => {
-  const loader = React.useMemo(() => new FontLoader(), [])
-
-  if (typeof props.font === 'string') {
-    return <Text3DSuspend {...props} ref={ref} loader={loader} />
-  } else {
-    return <Text3DBase {...props} ref={ref} loader={loader} />
-  }
+export const Text3D = React.forwardRef<
+  THREE.Mesh,
+  React.PropsWithChildren<Text3DProps & { letterSpacing?: number; lineHeight?: number }>
+>(({ letterSpacing = 0, lineHeight = 1, ...props }, ref) => {
+  const loader = React.useMemo(() => {
+    const loader = new FontLoader()
+    ;(loader as any).setOptions?.({ lineHeight, letterSpacing })
+    return loader
+  }, [lineHeight, letterSpacing])
+  const El = typeof props.font === 'string' ? Text3DSuspend : Text3DBase
+  return <El {...props} ref={ref} loader={loader} />
 })

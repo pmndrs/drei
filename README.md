@@ -486,7 +486,7 @@ Text will suspend while loading the font data, but in order to completely avoid 
 
 Render 3D text using ThreeJS's `TextGeometry`.
 
-Text3D will suspend while loading the font data, you can also load the font yourself before passing it in. Text3D requires fonts in JSON format generated through (typeface.json)[http://gero3.github.io/facetype.js/] either as a path to a JSON files or a JSON object.
+Text3D will suspend while loading the font data, you can also load the font yourself before passing it in. Text3D requires fonts in JSON format generated through (typeface.json)[http://gero3.github.io/facetype.js/] either as a path to a JSON file or a JSON object.
 
 ```jsx
 <Text3D font={fontUrl} {...textOptions}>
@@ -496,6 +496,20 @@ Text3D will suspend while loading the font data, you can also load the font your
 ```
 
 You can use any material. `textOptions` are options you'd pass to the `TextGeometry` constructor. Find more information about available options [here](https://threejs.org/docs/index.html?q=textg#examples/en/geometries/TextGeometry).
+
+You can align the text using the `<Center>` component.
+
+```jsx
+<Center top left>
+  <Text3D>hello</Text3D>
+</Center>>
+```
+
+It adds two properties that do not exist in the priginal `TextGeometry`, `lineHeight` and `letterSpacing`. The former a factor that is `1` by default, the latter is in threejs units and `0` by default.
+
+```jsx
+<Text3D lineHeight={0.5} letterSpacing={-0.025}>{`hello\nworld`}</Text3D>
+```
 
 #### Line
 
@@ -2046,10 +2060,19 @@ const stencil = useMask(1, true)
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-center--default-story)
 
-Calculates a boundary box and centers its children accordingly. `alignTop` adjusts it so that it sits flush on y=0.
+Calculates a boundary box and centers its children accordingly.
+
+```tsx
+type Props = JSX.IntrinsicElements['group'] & {
+  top?: boolean
+  right?: boolean
+  bottom?: boolean
+  left?: boolean
+}
+```
 
 ```jsx
-<Center alignTop>
+<Center top left>
   <mesh />
 </Center>
 ```

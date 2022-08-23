@@ -363,6 +363,7 @@ function Foo(props) {
     const f = data.visible(2 / 3, 1 / 3, 0.1)
   })
   return <mesh ref={ref} {...props} />
+}
 ```
 
 # PresentationControls

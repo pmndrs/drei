@@ -6,6 +6,7 @@ import { LineGeometry, LineMaterial, LineMaterialParameters, Line2 } from 'three
 export type LineProps = {
   points: Array<Vector3 | [number, number, number]>
   vertexColors?: Array<Color | [number, number, number]>
+  lineWidth?: number
 } & Omit<LineMaterialParameters, 'vertexColors'> &
   Omit<ReactThreeFiber.Object3DNode<Line2, typeof Line2>, 'args'> &
   Omit<
@@ -14,7 +15,7 @@ export type LineProps = {
   >
 
 export const Line = React.forwardRef<Line2, LineProps>(function Line(
-  { points, color = 'black', vertexColors, lineWidth, dashed, ...rest },
+  { points, color = 'black', vertexColors, linewidth, lineWidth, dashed, ...rest },
   ref
 ) {
   const [line2] = React.useState(() => new Line2())
@@ -61,7 +62,7 @@ export const Line = React.forwardRef<Line2, LineProps>(function Line(
         color={color}
         vertexColors={Boolean(vertexColors)}
         resolution={resolution}
-        linewidth={lineWidth}
+        linewidth={linewidth ?? lineWidth}
         dashed={dashed}
         {...rest}
       />

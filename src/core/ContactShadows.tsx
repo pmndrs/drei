@@ -78,7 +78,6 @@ export const ContactShadows = React.forwardRef(
           // Colorize the shadow, multiply by the falloff so that the center can remain darker
           'vec4( ucolor * fragCoordZ * 2.0, ( 1.0 - fragCoordZ ) * 1.0 );'
         )
-        console.log(shader.fragmentShader)
       }
 
       const horizontalBlurMaterial = new THREE.ShaderMaterial(HorizontalBlurShader)

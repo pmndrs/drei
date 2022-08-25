@@ -29,7 +29,7 @@ export const Center = React.forwardRef<Group, Props>(function Center(
     const vAlign = top ? height / 2 : bottom ? -height / 2 : 0
     const hAlign = left ? -width / 2 : right ? width / 2 : 0
     outer.current.position.set(-center.x + hAlign, -center.y + vAlign, -center.z)
-    if (typeof onCentered !== 'undefined') {
+    if (typeof onCentered !== 'undefined' && width > 1 && height > 1) {
       onCentered({
         boundingBox: box3,
         center: box3.getCenter(center),

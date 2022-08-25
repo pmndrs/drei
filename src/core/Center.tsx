@@ -1,15 +1,18 @@
 import { Box3, Vector3, Sphere, Group } from 'three'
 import * as React from 'react'
 
+type OnCenteredFunction = (bounds: object) => void
+
 type Props = JSX.IntrinsicElements['group'] & {
   top?: boolean
   right?: boolean
   bottom?: boolean
   left?: boolean
+  onCentered?: OnCenteredFunction
 }
 
 export const Center = React.forwardRef<Group, Props>(function Center(
-  { children, left, right, top, bottom, ...props },
+  { children, left, right, top, bottom, onCentered, ...props },
   fRef
 ) {
   const outer = React.useRef<Group>(null!)
@@ -26,6 +29,9 @@ export const Center = React.forwardRef<Group, Props>(function Center(
     const vAlign = top ? height / 2 : bottom ? -height / 2 : 0
     const hAlign = left ? -width / 2 : right ? width / 2 : 0
     outer.current.position.set(-center.x + hAlign, -center.y + vAlign, -center.z)
+    if (typeof onCentered !== 'undefined') {
+      onCentered(box3)
+    }
   }, [children])
   return (
     <group ref={fRef} {...props}>

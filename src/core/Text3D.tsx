@@ -34,7 +34,7 @@ declare type FontData = {
 
 type Text3DProps = {
   font: FontData | string
-  bevelSegments: number
+  bevelSegments?: number
 } & Omit<TextGeometryParameters, 'font'> &
   MeshProps
 

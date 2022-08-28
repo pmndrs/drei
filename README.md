@@ -1954,10 +1954,10 @@ A simple example for regulating the resolution. It starts out with 1.5, if the s
 
 ```jsx
 function App() {
-  const [dpr, set] = useState(1.5)
+  const [dpr, setDpr] = useState(1.5)
   return (
     <Canvas dpr={dpr}>
-      <PerformanceMonitor onIncline={() => set(2)} onDecline={() => set(1)} >
+      <PerformanceMonitor onIncline={() => setDpr(2)} onDecline={() => setDpr(1)} >
 ```
 
 You can also use the `onChange` callback to get notified when the average changes in whichever direction. This allows you to make gradual changes. It gives you a factor between 0 and 1, which is increased by incline and decreased by decline. The factor is initially 0.5 by default.
@@ -1968,13 +1968,13 @@ import round from 'lodash/round'
 const [dpr, set] = useState(1)
 return (
  <Canvas dpr={dpr}>
-  <PerformanceMonitor onChange={({ factor }) => set(round(0.5 + 1.5 * factor, 1))} >
+  <PerformanceMonitor onChange={({ factor }) => setDpr(round(0.5 + 1.5 * factor, 1))} >
 ```
 
 If you still experience flip flops despite the bounds you can define a limit of `flipflops`. If it is met `onFallback` will be triggered which typically sets a lowest possible baseline for the app. After the fallback has been called PerformanceMonitor will shut down.
 
 ```jsx
-<PerformanceMonitor flipflops={3} onFallback={() => ...}>
+<PerformanceMonitor flipflops={3} onFallback={() => setDpr(1)}>
 ```
 
 PerformanceMonitor can also have children, if you wrap your an in it you get to use `usePerformanceMonitor` which allows individual components down the nested tree to respond to performance changes.

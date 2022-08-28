@@ -1917,6 +1917,10 @@ useBVH(mesh)
 
 #### PerformanceMonitor
 
+This component will collect the average fps (frames per second) over time. If after a couple of iterations the averages are below or above a threshold it will trigger onIncline and onDecline callbacks that allow you to respond. Typically you would reduce the quality of your scene, the resolution, effects, the amount of stuff to render, or, increase it if you have enough framerate to fill.
+
+Since this would normally cause ping-ponging between the two callbacks you define upper and lower framerate bounds, as long as you stay within that margin nothing will trigger. Ideally your app should find its way into that margin by gradually altering quality.
+
 ```tsx
 type PerformanceMonitorProps = {
   /** How much time in milliseconds to collect an average fps, 250 */
@@ -1946,18 +1950,31 @@ type PerformanceMonitorProps = {
 }
 ```
 
-This component will collect the average fps (frames per second) over time. If after a couple of iterations the averages are below or above a threshold it will trigger onIncline and onDecline callbacks that allow you to respond. Typically you would reduce the quality of your scene, the resolution, effects, the amount of stuff to render, or, increase it if you have enough framerate to fill.
+All callbacks give you the following data:
 
-Since this would normally cause ping-ponging between the two callbacks you define upper and lower framerate bounds, as long as you stay within that margin nothing will trigger. Ideally your app should find its way into that margin by gradually altering quality.
+```tsx
+type PerformanceMonitorApi = {
+  /** Current fps */
+  fps: number
+  /** Current performance factor, between 0 and 1 */
+  factor: number
+  /** Current highest fps, you can use this to determine device refresh rate */
+  refreshrate: number
+  /** Fps samples taken over time  */
+  frames: number[]
+  /** Averages of frames taken over n iterations   */
+  averages: number[]
+}
+```
 
 A simple example for regulating the resolution. It starts out with 1.5, if the system falls below the bounds it goes to 1, if it's fast enough it goes to 2.
 
 ```jsx
 function App() {
-  const [dpr, set] = useState(1.5)
+  const [dpr, setDpr] = useState(1.5)
   return (
     <Canvas dpr={dpr}>
-      <PerformanceMonitor onIncline={() => set(2)} onDecline={() => set(1)} >
+      <PerformanceMonitor onIncline={() => setDpr(2)} onDecline={() => setDpr(1)} >
 ```
 
 You can also use the `onChange` callback to get notified when the average changes in whichever direction. This allows you to make gradual changes. It gives you a factor between 0 and 1, which is increased by incline and decreased by decline. The factor is initially 0.5 by default.
@@ -1968,23 +1985,23 @@ import round from 'lodash/round'
 const [dpr, set] = useState(1)
 return (
  <Canvas dpr={dpr}>
-  <PerformanceMonitor onChange={({ factor }) => set(round(0.5 + 1.5 * factor, 1))} >
+  <PerformanceMonitor onChange={({ factor }) => setDpr(round(0.5 + 1.5 * factor, 1))} >
 ```
 
 If you still experience flip flops despite the bounds you can define a limit of `flipflops`. If it is met `onFallback` will be triggered which typically sets a lowest possible baseline for the app. After the fallback has been called PerformanceMonitor will shut down.
 
 ```jsx
-<PerformanceMonitor flipflops={3} onFallback={() => ...}>
+<PerformanceMonitor flipflops={3} onFallback={() => setDpr(1)}>
 ```
 
-PerformanceMonitor can also have children, if you wrap your an in it you get to use `usePerformanceMonitor` which allows individual components down the nested tree to respond to performance changes.
+PerformanceMonitor can also have children, if you wrap your app in it you get to use `usePerformanceMonitor` which allows individual components down the nested tree to respond to performance changes on their own.
 
 ```jsx
 ;<PerformanceMonitor>
-  <Scene />
+  <Effects />
 </PerformanceMonitor>
 
-function Scene() {
+function Effects() {
   usePerformanceMonitor({ onIncline, onDecline, onFallback, onChange })
   // ...
 }

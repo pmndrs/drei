@@ -1977,14 +1977,14 @@ If you still experience flip flops despite the bounds you can define a limit of 
 <PerformanceMonitor flipflops={3} onFallback={() => setDpr(1)}>
 ```
 
-PerformanceMonitor can also have children, if you wrap your an in it you get to use `usePerformanceMonitor` which allows individual components down the nested tree to respond to performance changes.
+PerformanceMonitor can also have children, if you wrap your app in it you get to use `usePerformanceMonitor` which allows individual components down the nested tree to respond to performance changes on their own.
 
 ```jsx
 ;<PerformanceMonitor>
-  <Scene />
+  <Effects />
 </PerformanceMonitor>
 
-function Scene() {
+function Effects() {
   usePerformanceMonitor({ onIncline, onDecline, onFallback, onChange })
   // ...
 }

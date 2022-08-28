@@ -144,7 +144,7 @@ export function PerformanceMonitor({
   return <context.Provider value={api}>{children}</context.Provider>
 }
 
-export function usePerformanceMonitor({ onIncline, onDecline, onChange, onFallback }) {
+export function usePerformanceMonitor({ onIncline, onDecline, onChange, onFallback }: PerformanceMonitorHookApi) {
   const api = useContext(context)
   const ref = useRef({ onIncline, onDecline, onChange, onFallback })
   useLayoutEffect(() => {

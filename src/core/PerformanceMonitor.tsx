@@ -10,14 +10,19 @@ type PerformanceMonitorHookApi = {
 }
 
 type PerformanceMonitorApi = {
+  /** Current fps */
   fps: number
-  index: number
+  /** Current performance factor, between 0 and 1 */
   factor: number
-  flipped: number
+  /** Current highest fps, you can use this to determine device refresh rate */
   refreshrate: number
-  fallback: boolean
+  /** Fps samples taken over time  */
   frames: number[]
+  /** Averages of frames taken over n iterations   */
   averages: number[]
+  index: number
+  flipped: number
+  fallback: boolean
   subscriptions: Map<Symbol, PerformanceMonitorHookApi>
   subscribe: (ref: React.MutableRefObject<PerformanceMonitorHookApi>) => () => void
 }
@@ -30,7 +35,7 @@ type PerformanceMonitorProps = {
   /** The percentage of iterations that are matched against the lower and upper bounds, 0.75 */
   threshold?: number
   /** A function that receive the max device refreshrate to determine lower and upper bounds which create a margin where neither incline nor decline should happen, (refreshrate) => (refreshrate > 90 ? [50, 90] : [50, 60]) */
-  bounds: (refreshrate: number) => [lower: number, upper: number]
+  bounds?: (refreshrate: number) => [lower: number, upper: number]
   /** How many times it can inline or decline before onFallback is called, Infinity */
   flipflops?: number
   /** The factor increases and decreases between 0-1, this prop sets the starting value, 0.5 */

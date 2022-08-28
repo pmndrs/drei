@@ -23,8 +23,8 @@ type PerformanceMonitorApi = {
   index: number
   flipped: number
   fallback: boolean
-  subscriptions: Map<Symbol, PerformanceMonitorHookApi>
-  subscribe: (ref: React.MutableRefObject<PerformanceMonitorHookApi>) => () => void
+  subscriptions: Map<Symbol, Partial<PerformanceMonitorHookApi>>
+  subscribe: (ref: React.MutableRefObject<Partial<PerformanceMonitorHookApi>>) => () => void
 }
 
 type PerformanceMonitorProps = {
@@ -144,7 +144,12 @@ export function PerformanceMonitor({
   return <context.Provider value={api}>{children}</context.Provider>
 }
 
-export function usePerformanceMonitor({ onIncline, onDecline, onChange, onFallback }: PerformanceMonitorHookApi) {
+export function usePerformanceMonitor({
+  onIncline,
+  onDecline,
+  onChange,
+  onFallback,
+}: Partial<PerformanceMonitorHookApi>) {
   const api = useContext(context)
   const ref = useRef({ onIncline, onDecline, onChange, onFallback })
   useLayoutEffect(() => {

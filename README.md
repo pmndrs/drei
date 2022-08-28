@@ -1917,6 +1917,10 @@ useBVH(mesh)
 
 #### PerformanceMonitor
 
+This component will collect the average fps (frames per second) over time. If after a couple of iterations the averages are below or above a threshold it will trigger onIncline and onDecline callbacks that allow you to respond. Typically you would reduce the quality of your scene, the resolution, effects, the amount of stuff to render, or, increase it if you have enough framerate to fill.
+
+Since this would normally cause ping-ponging between the two callbacks you define upper and lower framerate bounds, as long as you stay within that margin nothing will trigger. Ideally your app should find its way into that margin by gradually altering quality.
+
 ```tsx
 type PerformanceMonitorProps = {
   /** How much time in milliseconds to collect an average fps, 250 */
@@ -1946,9 +1950,22 @@ type PerformanceMonitorProps = {
 }
 ```
 
-This component will collect the average fps (frames per second) over time. If after a couple of iterations the averages are below or above a threshold it will trigger onIncline and onDecline callbacks that allow you to respond. Typically you would reduce the quality of your scene, the resolution, effects, the amount of stuff to render, or, increase it if you have enough framerate to fill.
+All callbacks give you the following data:
 
-Since this would normally cause ping-ponging between the two callbacks you define upper and lower framerate bounds, as long as you stay within that margin nothing will trigger. Ideally your app should find its way into that margin by gradually altering quality.
+```tsx
+type PerformanceMonitorApi = {
+  /** Current fps */
+  fps: number
+  /** Current performance factor, between 0 and 1 */
+  factor: number
+  /** Current highest fps, you can use this to determine device refresh rate */
+  refreshrate: number
+  /** Fps samples taken over time  */
+  frames: number[]
+  /** Averages of frames taken over n iterations   */
+  averages: number[]
+}
+```
 
 A simple example for regulating the resolution. It starts out with 1.5, if the system falls below the bounds it goes to 1, if it's fast enough it goes to 2.
 

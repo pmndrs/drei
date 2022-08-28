@@ -9,7 +9,7 @@ type PerformanceMonitorHookApi = {
   onFallback: (api: PerformanceMonitorApi) => void
 }
 
-type PerformanceMonitorApi = {
+export type PerformanceMonitorApi = {
   /** Current fps */
   fps: number
   /** Current performance factor, between 0 and 1 */

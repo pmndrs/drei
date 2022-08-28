@@ -135,6 +135,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#adaptivedpr">AdaptiveDpr</a></li>
           <li><a href="#adaptiveevents">AdaptiveEvents</a></li>
           <li><a href="#usebvh">useBVH</a></li>
+          <li><a href="#performancemonitor">PerformanceMonitor</a></li>          
         </ul>
         <li><a href="#portals">Portals</a></li>        
         <ul>
@@ -1912,6 +1913,81 @@ const mesh = useRef()
 useBVH(mesh)
 
 <mesh ref={mesh} ... />
+```
+
+#### PerformanceMonitor
+
+```tsx
+type PerformanceMonitorProps = {
+  /** How much time in milliseconds to collect an average fps, 250 */
+  ms?: number
+  /** How many interations of averages to collect, 10 */
+  iterations?: number
+  /** The percentage of iterations that are matched against the lower and upper bounds, 0.75 */
+  threshold?: number
+  /** A function that receive the max device refreshrate to determine lower and upper bounds which create a margin where neither incline nor decline should happen, (refreshrate) => (refreshrate > 90 ? [50, 90] : [50, 60]) */
+  bounds: (refreshrate: number) => [lower: number, upper: number]
+  /** How many times it can inline or decline before onFallback is called, Infinity */
+  flipflops?: number
+  /** The factor increases and decreases between 0-1, this prop sets the initial value, 0.5 */
+  factor?: number
+  /** The step that gets added or subtracted to or from the factor on each incline/decline, 0.1 */
+  step?: number
+  /** When performance is higher than the upper bound (good!) */
+  onIncline?: (api: PerformanceMonitorApi) => void
+  /** When performance is lower than the upper bound (bad!) */
+  onDecline?: (api: PerformanceMonitorApi) => void
+  /** Incline and decline will change the factor, this will trigger when that happened */
+  onChange?: (api: PerformanceMonitorApi) => void
+  /** Called after when the number of flipflops is reached, it indicates instability, use the function to set a fixed baseline */
+  onFallback?: (api: PerformanceMonitorApi) => void
+  /** Children may use the usePerformanceMonitor hook */
+  children?: React.ReactNode
+}
+```
+
+This component will collect the average fps (frames per second) over time. If after a couple of iterations the averages are below or above a threshold it will trigger onIncline and onDecline callbacks that allow you to respond. Typically you would reduce the quality of your scene, the resolution, effects, the amount of stuff to render, or, increase it if you have enough framerate to fill.
+
+Since this would normally cause ping-ponging between the two callbacks you define upper and lower framerate bounds, as long as you stay within that margin nothing will trigger. Ideally your app should find its way into that margin by gradually altering quality.
+
+A simple example for regulating the resolution. It starts out with 1.5, if the system falls below the bounds it goes to 1, if it's fast enough it goes to 2.
+
+```jsx
+function App() {
+  const [dpr, set] = useState(1.5)
+  return (
+    <Canvas dpr={dpr}>
+      <PerformanceMonitor onIncline={() => set(2)} onDecline={() => set(1)} >
+```
+
+You can also use the `onChange` callback to get notified when the average changes in whichever direction. This allows you to make gradual changes. It gives you a factor between 0 and 1, which is increased by incline and decreased by decline. The factor is initially 0.5 by default.
+
+```jsx
+import round from 'lodash/round'
+
+const [dpr, set] = useState(1)
+return (
+ <Canvas dpr={dpr}>
+  <PerformanceMonitor onChange={({ factor }) => set(round(0.5 + 1.5 * factor, 1))} >
+```
+
+If you still experience flip flops despite the bounds you can define a limit of `flipflops`. If it is met `onFallback` will be triggered which typically sets a lowest possible baseline for the app. After the fallback has been called PerformanceMonitor will shut down.
+
+```jsx
+<PerformanceMonitor flipflops={3} onFallback={() => ...}>
+```
+
+PerformanceMonitor can also have children, if you wrap your an in it you get to use `usePerformanceMonitor` which allows individual components down the nested tree to respond to performance changes.
+
+```jsx
+;<PerformanceMonitor>
+  <Scene />
+</PerformanceMonitor>
+
+function Scene() {
+  usePerformanceMonitor({ onIncline, onDecline, onFallback, onChange })
+  // ...
+}
 ```
 
 # Portals

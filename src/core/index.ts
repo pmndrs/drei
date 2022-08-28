@@ -109,6 +109,7 @@ export * from './BakeShadows'
 export * from './meshBounds'
 export * from './AdaptiveDpr'
 export * from './AdaptiveEvents'
+export * from './PerformanceMonitor'
 
 // Portals
 export * from './RenderTexture'

@@ -1,7 +1,7 @@
 import { Box3, Vector3, Sphere, Group } from 'three'
 import * as React from 'react'
 
-type OnCenterCallbackProps = {
+export type OnCenterCallbackProps = {
   /** The next parent above <Center> */
   parent: THREE.Object3D
   /** The outmost container group of the <Center> component */
@@ -17,7 +17,7 @@ type OnCenterCallbackProps = {
   depthAlignment: number
 }
 
-type Props = JSX.IntrinsicElements['group'] & {
+export type Props = JSX.IntrinsicElements['group'] & {
   top?: boolean
   right?: boolean
   bottom?: boolean

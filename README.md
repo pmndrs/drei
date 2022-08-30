@@ -2157,6 +2157,10 @@ const stencil = useMask(1, true)
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-center--default-story)
 
+<p>
+  <a href="https://codesandbox.io/s/x6obrb"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/x6obrb/screenshot.png" alt="Demo"/></a>
+</p>
+
 Calculates a boundary box and centers its children accordingly.
 
 ```tsx
@@ -2165,6 +2169,27 @@ type Props = JSX.IntrinsicElements['group'] & {
   right?: boolean
   bottom?: boolean
   left?: boolean
+  front?: boolean
+  back?: boolean
+  onCentered?: (props: OnCenterCallbackProps) => void
+}
+```
+
+```tsx
+type OnCenterCallbackProps = {
+  /** The next parent above <Center> */
+  parent: THREE.Object3D
+  /** The outmost container group of the <Center> component */
+  container: THREE.Object3D
+  width: number
+  height: number
+  depth: number
+  boundingBox: THREE.Box3
+  boundingSphere: THREE.Sphere
+  center: THREE.Vector3
+  verticalAlignment: number
+  horizontalAlignment: number
+  depthAlignment: number
 }
 ```
 
@@ -2172,6 +2197,17 @@ type Props = JSX.IntrinsicElements['group'] & {
 <Center top left>
   <mesh />
 </Center>
+```
+
+Optionally you can define `onCentered` which calls you back when contents have been measured. This would allow you to easily scale to fit. The following for instance fits a model to screen height.
+
+```jsx
+function ScaledModel() {
+  const viewport = useThree((state) => state.viewport)
+  return (
+    <Center onCentered={({ container, height }) => container.scale.setScalar(viewport.height / height)}>
+      <Model />
+    </Center>
 ```
 
 #### Bounds

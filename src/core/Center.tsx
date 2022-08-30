@@ -24,11 +24,14 @@ export type Props = JSX.IntrinsicElements['group'] & {
   left?: boolean
   front?: boolean
   back?: boolean
+  /** See https://threejs.org/docs/index.html?q=box3#api/en/math/Box3.setFromObject */
+  precise?: boolean
+  /** Callback, fires in the useLayoutEffect phase, after measurement */
   onCentered?: (props: OnCenterCallbackProps) => void
 }
 
 export const Center = React.forwardRef<Group, Props>(function Center(
-  { children, left, right, top, bottom, front, back, onCentered, ...props },
+  { children, left, right, top, bottom, front, back, onCentered, precise = true, ...props },
   fRef
 ) {
   const ref = React.useRef<Group>(null!)
@@ -36,7 +39,7 @@ export const Center = React.forwardRef<Group, Props>(function Center(
   const inner = React.useRef<Group>(null!)
   React.useLayoutEffect(() => {
     outer.current.matrixWorld.identity()
-    const box3 = new Box3().setFromObject(inner.current)
+    const box3 = new Box3().setFromObject(inner.current, precise)
     const center = new Vector3()
     const sphere = new Sphere()
     const width = box3.max.x - box3.min.x
@@ -48,6 +51,7 @@ export const Center = React.forwardRef<Group, Props>(function Center(
     const hAlign = left ? -width / 2 : right ? width / 2 : 0
     const dAlign = front ? depth / 2 : back ? -depth / 2 : 0
     outer.current.position.set(-center.x + hAlign, -center.y + vAlign, -center.z + dAlign)
+
     if (typeof onCentered !== 'undefined') {
       onCentered({
         parent: ref.current.parent!,

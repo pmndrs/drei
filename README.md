@@ -2164,13 +2164,16 @@ const stencil = useMask(1, true)
 Calculates a boundary box and centers its children accordingly.
 
 ```tsx
-type Props = JSX.IntrinsicElements['group'] & {
+export type Props = JSX.IntrinsicElements['group'] & {
   top?: boolean
   right?: boolean
   bottom?: boolean
   left?: boolean
   front?: boolean
   back?: boolean
+  /** Precision, defaults to true, see https://threejs.org/docs/index.html?q=box3#api/en/math/Box3.setFromObject */
+  precise?: boolean
+  /** Callback, fires in the useLayoutEffect phase, after measurement */
   onCentered?: (props: OnCenterCallbackProps) => void
 }
 ```

@@ -2159,6 +2159,7 @@ const stencil = useMask(1, true)
 
 <p>
   <a href="https://codesandbox.io/s/x6obrb"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/x6obrb/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/v8s9ij"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/v8s9ij/screenshot.png" alt="Demo"/></a>
 </p>
 
 Calculates a boundary box and centers its children accordingly.

@@ -1,20 +1,37 @@
 import { Box3, Vector3, Sphere, Group } from 'three'
 import * as React from 'react'
 
-type OnCenteredFunction = (bounds: object) => void
+type OnCenterCallbackProps = {
+  /** The next parent above <Center> */
+  parent: THREE.Object3D
+  /** The outmost container group of the <Center> component */
+  container: THREE.Object3D
+  width: number
+  height: number
+  depth: number
+  boundingBox: THREE.Box3
+  boundingSphere: THREE.Sphere
+  center: THREE.Vector3
+  verticalAlignment: number
+  horizontalAlignment: number
+  depthAlignment: number
+}
 
 type Props = JSX.IntrinsicElements['group'] & {
   top?: boolean
   right?: boolean
   bottom?: boolean
   left?: boolean
-  onCentered?: OnCenteredFunction
+  front?: boolean
+  back?: boolean
+  onCentered?: (props: OnCenterCallbackProps) => void
 }
 
 export const Center = React.forwardRef<Group, Props>(function Center(
-  { children, left, right, top, bottom, onCentered, ...props },
+  { children, left, right, top, bottom, front, back, onCentered, ...props },
   fRef
 ) {
+  const ref = React.useRef<Group>(null!)
   const outer = React.useRef<Group>(null!)
   const inner = React.useRef<Group>(null!)
   React.useLayoutEffect(() => {
@@ -22,27 +39,36 @@ export const Center = React.forwardRef<Group, Props>(function Center(
     const box3 = new Box3().setFromObject(inner.current)
     const center = new Vector3()
     const sphere = new Sphere()
-    const height = box3.max.y - box3.min.y
     const width = box3.max.x - box3.min.x
+    const height = box3.max.y - box3.min.y
+    const depth = box3.max.z - box3.min.z
     box3.getCenter(center)
     box3.getBoundingSphere(sphere)
     const vAlign = top ? height / 2 : bottom ? -height / 2 : 0
     const hAlign = left ? -width / 2 : right ? width / 2 : 0
-    outer.current.position.set(-center.x + hAlign, -center.y + vAlign, -center.z)
-    if (typeof onCentered !== 'undefined' && width > 1 && height > 1) {
+    const dAlign = front ? depth / 2 : back ? -depth / 2 : 0
+    outer.current.position.set(-center.x + hAlign, -center.y + vAlign, -center.z + dAlign)
+    if (typeof onCentered !== 'undefined') {
       onCentered({
-        boundingBox: box3,
-        center: box3.getCenter(center),
-        boundingSphere: box3.getBoundingSphere(sphere),
+        parent: ref.current.parent!,
+        container: ref.current,
         width,
         height,
+        depth,
+        boundingBox: box3,
+        boundingSphere: sphere,
+        center: center,
         verticalAlignment: vAlign,
         horizontalAlignment: hAlign,
+        depthAlignment: dAlign,
       })
     }
   }, [children])
+
+  React.useImperativeHandle(fRef, () => ref.current, [])
+
   return (
-    <group ref={fRef} {...props}>
+    <group ref={ref} {...props}>
       <group ref={outer}>
         <group ref={inner}>{children}</group>
       </group>

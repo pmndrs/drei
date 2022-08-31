@@ -4,10 +4,19 @@ import pick from 'lodash.pick'
 import * as React from 'react'
 import * as THREE from 'three'
 import { TransformControls as TransformControlsImpl } from 'three-stdlib'
+import { Manipulator3D as BaseManipulator3D, ManipulatorMesh } from 'manipulator3d'
 
 type ControlsProto = {
   enabled: boolean
 }
+
+const modes = ['translate', 'rotate', 'scale'] as const
+type Modes = typeof modes[number]
+type MultipleModes = [Modes, Modes?, Modes?]
+export type TransformControlMode = string | MultipleModes
+
+const _changeEvent = { type: 'change' }
+const _objectChangeEvent = { type: 'objectChange' }
 
 export type TransformControlsProps = ReactThreeFiber.Object3DNode<TransformControlsImpl, typeof TransformControlsImpl> &
   JSX.IntrinsicElements['group'] & {
@@ -15,7 +24,7 @@ export type TransformControlsProps = ReactThreeFiber.Object3DNode<TransformContr
     enabled?: boolean
     axis?: string | null
     domElement?: HTMLElement
-    mode?: string
+    mode?: TransformControlMode
     translationSnap?: number | null
     rotationSnap?: number | null
     scaleSnap?: number | null
@@ -32,7 +41,15 @@ export type TransformControlsProps = ReactThreeFiber.Object3DNode<TransformContr
     onObjectChange?: (e?: THREE.Event) => void
   }
 
-export const TransformControls = React.forwardRef<TransformControlsImpl, TransformControlsProps>(
+export const TransformControls = React.forwardRef<TransformControlsImpl, TransformControlsProps>((props, ref) => {
+  const { mode } = props
+  if (Array.isArray(mode)) {
+    return <MultiTransformControls ref={ref as any} {...props} />
+  }
+  return <SingleTransformControls ref={ref as any} {...props} />
+})
+
+const SingleTransformControls = React.forwardRef<TransformControlsImpl, TransformControlsProps>(
   ({ children, domElement, onChange, onMouseDown, onMouseUp, onObjectChange, object, ...props }, ref) => {
     const transformOnlyPropNames = [
       'enabled',
@@ -112,3 +129,180 @@ export const TransformControls = React.forwardRef<TransformControlsImpl, Transfo
     ) : null
   }
 )
+
+const MultiTransformControls = React.forwardRef<TransformControlsImpl, TransformControlsProps>(
+  ({ children, domElement, onChange, onMouseDown, onMouseUp, onObjectChange, object, ...props }, ref) => {
+    const transformOnlyPropNames = [
+      'enabled',
+      'axis',
+      'mode',
+      'translationSnap',
+      'rotationSnap',
+      'scaleSnap',
+      'space',
+      'size',
+      'showX',
+      'showY',
+      'showZ',
+    ]
+
+    const { camera, ...rest } = props
+    const { enabled = true } = props
+    const transformProps = pick(rest, transformOnlyPropNames)
+    const objectProps = omit(rest, transformOnlyPropNames)
+    const gl = useThree((state) => state.gl)
+    const scene = useThree((state) => state.scene)
+    const events = useThree((state) => state.events)
+    const defaultCamera = useThree((state) => state.camera)
+    const invalidate = useThree((state) => state.invalidate)
+    const explCamera = camera || defaultCamera
+    const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
+    const controls = React.useMemo(
+      () =>
+        new Manipulator3D({
+          scene,
+          camera: explCamera,
+          domElement: explDomElement,
+        }),
+      [scene, explCamera, explDomElement]
+    )
+
+    const group = React.useRef<THREE.Group>()
+
+    React.useLayoutEffect(() => {
+      controls.setActive(enabled)
+    }, [controls, enabled])
+
+    React.useLayoutEffect(() => {
+      const active = controls.isActive()
+      controls.setActive(true) // Must be active to attach
+      if (object) {
+        controls.attach(object instanceof THREE.Object3D ? object : object.current)
+      } else if (group.current instanceof THREE.Object3D) {
+        controls.attach(group.current)
+      }
+      controls.setActive(active)
+      return () => void controls.detach()
+    }, [object, children, controls])
+
+    const activeModes = getActiveModes(transformProps.mode)
+    React.useEffect(() => {
+      controls.useRotate(activeModes.rotate).useScale(activeModes.scale).useTranslate(activeModes.translate)
+    }, [controls, activeModes.rotate, activeModes.scale, activeModes.translate])
+
+    React.useEffect(() => {
+      const callback = (e: THREE.Event) => {
+        invalidate()
+        if (onChange) onChange(e)
+      }
+
+      controls?.addEventListener?.('change', callback)
+      if (onObjectChange) controls?.addEventListener?.('objectChange', onObjectChange)
+
+      return () => {
+        controls?.removeEventListener?.('change', callback)
+        if (onObjectChange) controls?.removeEventListener?.('objectChange', onObjectChange)
+      }
+    }, [onChange, onMouseDown, onMouseUp, onObjectChange, controls, invalidate])
+
+    return controls ? (
+      <>
+        <primitive ref={ref} object={controls} {...transformProps} />
+        <group ref={group} {...objectProps}>
+          {children}
+        </group>
+      </>
+    ) : null
+  }
+)
+
+function getActiveModes(activeMode: TransformControlMode): Record<Modes, boolean> {
+  return Object.fromEntries<boolean>(
+    modes.map((mode) => {
+      const active = activeMode === mode || activeMode.includes(mode)
+      return [mode, active]
+    })
+  ) as Record<Modes, boolean>
+}
+
+class Manipulator3D extends ManipulatorMesh {
+  private manipulator
+  private eventDispatcher: THREE.EventDispatcher
+
+  constructor({ scene, camera, domElement }) {
+    const manipulator = new BaseManipulator3D(
+      scene,
+      camera,
+      {
+        domElement,
+      },
+      true
+    )
+    super(manipulator.data)
+    manipulator.mesh = this
+    this.manipulator = manipulator
+    this.eventDispatcher = new THREE.EventDispatcher()
+  }
+
+  addEventListener(eventName, callback) {
+    this.eventDispatcher.addEventListener(eventName, callback)
+  }
+  on(eventName, callback) {
+    this.manipulator.on(eventName, callback)
+  }
+
+  removeEventListener(eventName, callback) {
+    this.eventDispatcher.removeEventListener(eventName, callback)
+  }
+  off(eventName, callback) {
+    this.manipulator.off(eventName, callback)
+  }
+
+  dispatchEvent(event: THREE.Event) {
+    this.eventDispatcher.dispatchEvent.bind(this)(event)
+  }
+
+  get _listeners() {
+    return (this.eventDispatcher as any)._listeners
+  }
+
+  setActive(active) {
+    this.manipulator.setActive(active)
+  }
+  isActive() {
+    return this.manipulator.isActive()
+  }
+
+  attach(object) {
+    this.manipulator.attach(object)
+
+    this.on('translate', this.handleChange)
+    this.on('rotate', this.handleChange)
+    this.on('scale', this.handleChange)
+  }
+  detach() {
+    this.manipulator.detach()
+
+    this.off('translate', this.handleChange)
+    this.off('rotate', this.handleChange)
+    this.off('scale', this.handleChange)
+  }
+
+  useTranslate(active) {
+    this.manipulator.useTranslate(active)
+    return this
+  }
+  useRotate(active) {
+    this.manipulator.useRotate(active)
+    return this
+  }
+  useScale(active) {
+    this.manipulator.useScale(active)
+    return this
+  }
+
+  handleChange = () => {
+    this.dispatchEvent(_changeEvent)
+    this.dispatchEvent(_objectChangeEvent)
+  }
+}

@@ -1,11 +1,14 @@
 import * as React from 'react'
 import { withKnobs, optionsKnob, boolean } from '@storybook/addon-knobs'
+import { actions } from '@storybook/addon-actions'
 import { Object3D } from 'three'
 import { TransformControls as TransformControlsImpl, OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 
 import { Setup } from '../Setup'
 
-import { Box, OrbitControls, Select, TransformControls } from '../../src'
+import { Box, OrbitControls, Select, TransformControls, TransformControlMode } from '../../src'
+
+const eventHandlers = actions('onChange', 'onMouseDown', 'onMouseUp', 'onObjectChange')
 
 export function TransformControlsStory() {
   const ref = React.useRef<TransformControlsImpl>(null!)
@@ -18,7 +21,7 @@ export function TransformControlsStory() {
 
   return (
     <Setup>
-      <TransformControls ref={ref}>
+      <TransformControls ref={ref} {...eventHandlers}>
         <Box>
           <meshBasicMaterial wireframe />
         </Box>
@@ -34,6 +37,37 @@ export default {
   component: TransformControls,
 }
 
+const modesObj = {
+  scale: 'scale',
+  rotate: 'rotate',
+  translate: 'translate',
+}
+const modes = ['translate', 'rotate', 'scale'] as const
+
+function selectSingleModeKnob(): string {
+  return optionsKnob('mode', modesObj, 'translate', {
+    display: 'radio',
+  })
+}
+
+function selectMultipleModesKnob(): TransformControlMode {
+  return modes.map((mode) => (boolean(mode, true) ? mode : null)).filter(Boolean) as TransformControlMode
+}
+
+export function TransformControlsAllModesStory() {
+  return (
+    <Setup>
+      <TransformControls mode={['translate', 'rotate', 'scale']} {...eventHandlers}>
+        <Box>
+          <meshBasicMaterial wireframe />
+        </Box>
+      </TransformControls>
+    </Setup>
+  )
+}
+
+TransformControlsAllModesStory.storyName = 'All modes active'
+
 export function TransformControlsSelectObjectStory() {
   const [selected, setSelected] = React.useState<Object3D[]>([])
   const active = selected[0]
@@ -41,7 +75,7 @@ export function TransformControlsSelectObjectStory() {
   return (
     <Setup controls={false}>
       <OrbitControls makeDefault />
-      {active && <TransformControls object={active} />}
+      {active && <TransformControls object={active} mode={selectMultipleModesKnob()} {...eventHandlers} />}
       <Select box onChange={setSelected}>
         <group>
           <Box position={[-1, 0, 0]}>
@@ -75,7 +109,14 @@ function TransformControlsLockScene({ mode, showX, showY, showZ }) {
 
   return (
     <>
-      <TransformControls ref={transformControls} mode={mode} showX={showX} showY={showY} showZ={showZ}>
+      <TransformControls
+        ref={transformControls}
+        mode={mode}
+        showX={showX}
+        showY={showY}
+        showZ={showZ}
+        {...eventHandlers}
+      >
         <Box>
           <meshBasicMaterial wireframe />
         </Box>
@@ -86,17 +127,9 @@ function TransformControlsLockScene({ mode, showX, showY, showZ }) {
 }
 
 export const TransformControlsLockSt = () => {
-  const modesObj = {
-    scale: 'scale',
-    rotate: 'rotate',
-    translate: 'translate',
-  }
-
   return (
     <TransformControlsLockScene
-      mode={optionsKnob('mode', modesObj, 'translate', {
-        display: 'radio',
-      })}
+      mode={selectSingleModeKnob()}
       showX={boolean('showX', true)}
       showY={boolean('showY', true)}
       showZ={boolean('showZ', true)}

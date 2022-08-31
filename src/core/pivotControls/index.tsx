@@ -1,14 +1,42 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { extend, useFrame } from '@react-three/fiber'
+import { Size, extend, useFrame } from '@react-three/fiber'
 import { MeshLine, MeshLineMaterial } from 'meshline'
 
 import { AxisArrow } from './AxisArrow'
 import { PlaneSlider } from './PlaneSlider'
 import { AxisRotator } from './AxisRotator'
-import { calculateScaleFactor } from '../../helpers/CameraHelper'
 
-extend({ MeshLine, MeshLineMaterial })
+const tV0 = new THREE.Vector3()
+const tV1 = new THREE.Vector3()
+const tV2 = new THREE.Vector3()
+
+const getPoint2 = (point3: THREE.Vector3, camera: THREE.Camera, size: Size) => {
+  const widthHalf = size.width / 2
+  const heightHalf = size.height / 2
+  camera.updateMatrixWorld(false)
+  const vector = point3.project(camera)
+  vector.x = vector.x * widthHalf + widthHalf
+  vector.y = -(vector.y * heightHalf) + heightHalf
+  return vector
+}
+
+const getPoint3 = (point2: THREE.Vector3, camera: THREE.Camera, size: Size, zValue: number = 1) => {
+  const vector = tV0.set((point2.x / size.width) * 2 - 1, -(point2.y / size.height) * 2 + 1, zValue)
+  vector.unproject(camera)
+  return vector
+}
+
+export const calculateScaleFactor = (point3: THREE.Vector3, radiusPx: number, camera: THREE.Camera, size: Size) => {
+  const point2 = getPoint2(tV2.copy(point3), camera, size)
+  let scale = 0
+  for (let i = 0; i < 2; ++i) {
+    const point2off = tV1.copy(point2).setComponent(i, point2.getComponent(i) + radiusPx)
+    const point3off = getPoint3(point2off, camera, size, point2off.z)
+    scale = Math.max(scale, point3.distanceTo(point3off))
+  }
+  return scale
+}
 
 const mL0 = new THREE.Matrix4()
 const mW0 = new THREE.Matrix4()
@@ -37,25 +65,14 @@ type PivotContext = {
   axisColors: [string | number, string | number, string | number]
   hoveredColor: string | number
   opacity: number
-  axisLength: number
-  axisWidth: number
-  pixelValues: boolean
+  scale: number
+  lineWidth: number
+  fixed: boolean
   depthTest: boolean
   userData?: any
 }
 
-export const context = React.createContext<PivotContext>({
-  onDragStart: () => void {},
-  onDrag: (mdW: THREE.Matrix4) => void {},
-  onDragEnd: () => void {},
-  axisColors: ['#ff2060', '#20df80', '#2080ff'],
-  hoveredColor: '#ffff40',
-  opacity: 1,
-  axisLength: 1,
-  axisWidth: 5,
-  pixelValues: false,
-  depthTest: false,
-})
+export const context = React.createContext<PivotContext>(null!)
 
 type PivotControlsProps = {
   matrix?: THREE.Matrix4
@@ -67,9 +84,9 @@ type PivotControlsProps = {
   activeAxes?: [boolean, boolean, boolean]
   offset?: [number, number, number]
   rotation?: [number, number, number]
-  axisLength?: number
-  axisWidth?: number
-  pixelValues?: boolean
+  scale?: number
+  lineWidth?: number
+  fixed?: boolean
   depthTest?: boolean
   axisColors?: [string | number, string | number, string | number]
   hoveredColor?: string | number
@@ -89,9 +106,9 @@ export const PivotControls: React.FC<PivotControlsProps> = ({
   activeAxes = [true, true, true],
   offset = [0, 0, 0],
   rotation = [0, 0, 0],
-  axisLength = 1,
-  axisWidth = 5,
-  pixelValues = false,
+  scale = 1,
+  lineWidth = 4,
+  fixed = false,
   depthTest = true,
   axisColors = ['#ff2060', '#20df80', '#2080ff'],
   hoveredColor = '#ffff40',
@@ -100,6 +117,8 @@ export const PivotControls: React.FC<PivotControlsProps> = ({
   userData,
   children,
 }) => {
+  extend({ MeshLine, MeshLineMaterial })
+
   const parentRef = React.useRef<THREE.Group>(null!)
   const ref = React.useRef<THREE.Group>(null!)
   const gizmoRef = React.useRef<THREE.Group>(null!)
@@ -160,9 +179,9 @@ export const PivotControls: React.FC<PivotControlsProps> = ({
       axisColors,
       hoveredColor,
       opacity,
-      axisLength,
-      axisWidth,
-      pixelValues,
+      scale,
+      lineWidth,
+      fixed,
       depthTest,
       userData,
     }),
@@ -171,9 +190,9 @@ export const PivotControls: React.FC<PivotControlsProps> = ({
       onDrag_,
       onDragEnd_,
       depthTest,
-      axisLength,
-      axisWidth,
-      pixelValues,
+      scale,
+      lineWidth,
+      fixed,
       ...axisColors,
       hoveredColor,
       opacity,
@@ -183,12 +202,11 @@ export const PivotControls: React.FC<PivotControlsProps> = ({
 
   const vec = new THREE.Vector3()
   useFrame((state) => {
-    if (pixelValues) {
-      const sf = calculateScaleFactor(gizmoRef.current.getWorldPosition(vec), axisLength, state.camera, state.size)
+    if (fixed) {
+      const sf = calculateScaleFactor(gizmoRef.current.getWorldPosition(vec), scale, state.camera, state.size)
       if (gizmoRef.current) {
-        const newScale = [sf, sf, sf] as [number, number, number]
-        if (newScale.some((s, i) => s !== gizmoRef.current?.scale.getComponent(i))) {
-          gizmoRef.current.scale.set(...newScale)
+        if (gizmoRef.current?.scale.x !== sf || gizmoRef.current?.scale.y !== sf || gizmoRef.current?.scale.z !== sf) {
+          gizmoRef.current.scale.setScalar(sf)
           state.invalidate()
         }
       }

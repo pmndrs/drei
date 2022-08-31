@@ -43,9 +43,9 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
 }) => {
   const {
     depthTest,
-    axisLength,
-    axisWidth,
-    pixelValues,
+    scale,
+    lineWidth,
+    fixed,
     axisColors,
     hoveredColor,
     opacity,
@@ -56,7 +56,6 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
   } = React.useContext(context)
 
   const camControls = useThree((state) => state.controls as any)
-  const size = useThree((state) => state.size)
   const divRef = React.useRef<HTMLDivElement>(null!)
   const objRef = React.useRef<THREE.Group>(null!)
   const clickInfo = React.useRef<{
@@ -139,9 +138,7 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
     return new THREE.Matrix4().makeBasis(dir1N, dir2N, dir1N.clone().cross(dir2N))
   }, [dir1, dir2])
 
-  const resolution = React.useMemo(() => new THREE.Vector2(size.width, size.height), [size.width, size.height])
-
-  const r = pixelValues ? 0.65 : axisLength * 0.65
+  const r = fixed ? 0.65 : scale * 0.65
 
   const arc = React.useMemo(() => {
     const segments = 32
@@ -170,12 +167,11 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
         transparent
         depthTest={depthTest}
         points={arc}
-        lineWidth={axisWidth / 1.2}
+        lineWidth={lineWidth}
         color={(isHovered ? hoveredColor : axisColors[axis]) as any}
         opacity={opacity}
         polygonOffset
         polygonOffsetFactor={-10}
-        resolution={resolution}
         userData={userData}
       />
     </group>

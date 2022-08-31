@@ -15,9 +15,9 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
 }) => {
   const {
     depthTest,
-    axisLength,
-    axisWidth,
-    pixelValues,
+    scale,
+    lineWidth,
+    fixed,
     axisColors,
     hoveredColor,
     opacity,
@@ -28,7 +28,6 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
   } = React.useContext(context)
 
   const camControls = useThree((state) => state.controls as any)
-  const size = useThree((state) => state.size)
   const objRef = React.useRef<THREE.Group>(null!)
   const clickInfo = React.useRef<{ clickPoint: THREE.Vector3; plane: THREE.Plane } | null>(null)
   const [isHovered, setIsHovered] = React.useState(false)
@@ -89,35 +88,31 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
     return new THREE.Matrix4().makeBasis(dir1N, dir2N, dir1N.clone().cross(dir2N))
   }, [dir1, dir2])
 
-  const resolution = React.useMemo(() => new THREE.Vector2(size.width, size.height), [size.width, size.height])
-
-  const pos1 = pixelValues ? 1 / 7 : axisLength / 7
-  const pos2 = pixelValues ? 0.1 : axisLength * 0.1
-  const scale = pixelValues ? 0.225 : axisLength * 0.225
+  const pos1 = fixed ? 1 / 7 : scale / 7
+  const length = fixed ? 0.225 : scale * 0.225
   const color = isHovered ? hoveredColor : axisColors[axis]
 
   const points = React.useMemo(
     () => [
       new THREE.Vector3(0, 0, 0),
-      new THREE.Vector3(0, scale, 0),
-      new THREE.Vector3(scale, scale, 0),
-      new THREE.Vector3(scale, 0, 0),
+      new THREE.Vector3(0, length, 0),
+      new THREE.Vector3(length, length, 0),
+      new THREE.Vector3(length, 0, 0),
       new THREE.Vector3(0, 0, 0),
     ],
-    [scale]
+    [length]
   )
 
   return (
     <group ref={objRef} matrix={matrixL} matrixAutoUpdate={false}>
-      <group position={[pos1, pos1, 0]}>
+      <group position={[pos1 * 1.7, pos1 * 1.7, 0]}>
         <mesh
           visible={true}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
           onPointerOut={onPointerOut}
-          position={[pos2, pos2, 0]}
-          scale={scale}
+          scale={length}
           userData={userData}
         >
           <planeGeometry />
@@ -131,16 +126,15 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
           />
         </mesh>
         <Line
-          position={[-scale / 10, -scale / 10, 0]}
+          position={[-length / 2, -length / 2, 0]}
           transparent
           depthTest={depthTest}
           points={points}
-          lineWidth={axisWidth / 1.2}
+          lineWidth={lineWidth}
           color={color as any}
           opacity={opacity}
           polygonOffset
-          polygonOffsetFactor={-10}
-          resolution={resolution}
+          polygonOffsetFactor={-20}
           userData={userData}
         />
       </group>

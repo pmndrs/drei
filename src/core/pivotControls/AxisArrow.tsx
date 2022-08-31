@@ -37,9 +37,9 @@ const offsetMatrix = new THREE.Matrix4()
 export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> = ({ direction, axis }) => {
   const {
     depthTest,
-    axisLength,
-    axisWidth,
-    pixelValues,
+    scale,
+    lineWidth,
+    fixed,
     axisColors,
     hoveredColor,
     opacity,
@@ -50,7 +50,6 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
   } = React.useContext(context)
 
   const camControls = useThree((state) => state.controls as any)
-  const size = useThree((state) => state.size)
   const objRef = React.useRef<THREE.Group>(null!)
   const clickInfo = React.useRef<{ clickPoint: THREE.Vector3; dir: THREE.Vector3 } | null>(null)
   const [isHovered, setIsHovered] = React.useState(false)
@@ -101,9 +100,9 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
   }, [])
 
   const { cylinderLength, coneWidth, coneLength, matrixL } = React.useMemo(() => {
-    const coneWidth_ = pixelValues ? axisWidth / axisLength : axisLength / 20
-    const coneLength_ = pixelValues ? 0.2 : axisLength / 5
-    const cylinderLength_ = pixelValues ? 1 - coneLength_ : axisLength - coneLength_
+    const coneWidth_ = fixed ? (lineWidth / scale) * 1.2 : scale / 20
+    const coneLength_ = fixed ? 0.2 : scale / 5
+    const cylinderLength_ = fixed ? 1 - coneLength_ : scale - coneLength_
     const quaternion = new THREE.Quaternion().setFromUnitVectors(upV, direction.clone().normalize())
     const matrixL_ = new THREE.Matrix4().makeRotationFromQuaternion(quaternion)
 
@@ -113,9 +112,7 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
       coneLength: coneLength_,
       matrixL: matrixL_,
     }
-  }, [direction, axisLength, axisWidth, pixelValues])
-
-  const resolution = React.useMemo(() => new THREE.Vector2(size.width, size.height), [size.width, size.height])
+  }, [direction, scale, lineWidth, fixed])
 
   const color_ = isHovered ? hoveredColor : axisColors[axis]
 
@@ -133,12 +130,11 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
           transparent
           depthTest={depthTest}
           points={[0, 0, 0, 0, cylinderLength, 0] as any}
-          lineWidth={axisWidth}
+          lineWidth={lineWidth}
           color={color_ as any}
           opacity={opacity}
           polygonOffset
           polygonOffsetFactor={-10}
-          resolution={resolution}
           userData={userData}
         />
         <mesh position={[0, cylinderLength + coneLength / 2.0, 0]} renderOrder={500} userData={userData}>

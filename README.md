@@ -51,6 +51,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#transformcontrols">TransformControls</a></li>
           <li><a href="#scrollcontrols">ScrollControls</a></li>
           <li><a href="#presentationcontrols">PresentationControls</a></li>
+          <li><a href="#pivotcontrols">PivotControls</a></li>
         </ul>
         <li><a href="#abstractions">Abstractions</a></li>
         <ul>
@@ -391,6 +392,20 @@ Semi-OrbitControls with spring-physics, polar zoom and snap-back, for presentati
 >
   <mesh />
 </PresentationControls>
+```
+
+# PivotControls
+
+![](https://img.shields.io/badge/-Dom only-red)
+
+<p>
+  <a href="https://codesandbox.io/s/om2ff8"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/om2ff8/screenshot.png" alt="demo"/></a>
+</p>
+
+TBD
+
+```jsx
+// TBD
 ```
 
 # Shapes

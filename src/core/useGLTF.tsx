@@ -1,6 +1,6 @@
 import { Loader } from 'three'
 // @ts-ignore
-import { GLTFLoader, DRACOLoader, MeshoptDecoder } from 'three-stdlib'
+import { GLTFLoader, DRACOLoader, MeshoptDecoder, GLTF } from 'three-stdlib'
 import { useLoader } from '@react-three/fiber'
 
 let dracoLoader: DRACOLoader | null = null
@@ -33,7 +33,7 @@ export function useGLTF<T extends string | string[]>(
   useMeshOpt: boolean = true,
   extendLoader?: (loader: GLTFLoader) => void
 ) {
-  const gltf = useLoader(GLTFLoader, path, extensions(useDraco, useMeshOpt, extendLoader))
+  const gltf = useLoader<GLTF, T>(GLTFLoader, path, extensions(useDraco, useMeshOpt, extendLoader))
   return gltf
 }
 

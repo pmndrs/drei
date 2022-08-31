@@ -134,7 +134,7 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
           color={color as any}
           opacity={opacity}
           polygonOffset
-          polygonOffsetFactor={-20}
+          polygonOffsetFactor={-10}
           userData={userData}
         />
       </group>

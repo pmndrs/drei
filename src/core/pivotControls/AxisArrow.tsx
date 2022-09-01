@@ -100,7 +100,7 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
   }, [])
 
   const { cylinderLength, coneWidth, coneLength, matrixL } = React.useMemo(() => {
-    const coneWidth_ = fixed ? (lineWidth / scale) * 1.2 : scale / 20
+    const coneWidth_ = fixed ? (lineWidth / scale) * 1.6 : scale / 20
     const coneLength_ = fixed ? 0.2 : scale / 5
     const cylinderLength_ = fixed ? 1 - coneLength_ : scale - coneLength_
     const quaternion = new THREE.Quaternion().setFromUnitVectors(upV, direction.clone().normalize())
@@ -134,6 +134,7 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
           color={color_ as any}
           opacity={opacity}
           polygonOffset
+          renderOrder={1}
           polygonOffsetFactor={-10}
           userData={userData}
         />

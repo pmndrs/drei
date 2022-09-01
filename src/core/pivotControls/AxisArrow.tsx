@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
 import { Line } from '../Line'
-import { context } from '.'
+import { context } from './context'
 
 const vec1 = new THREE.Vector3()
 const vec2 = new THREE.Vector3()
@@ -100,18 +100,12 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
   }, [])
 
   const { cylinderLength, coneWidth, coneLength, matrixL } = React.useMemo(() => {
-    const coneWidth_ = fixed ? (lineWidth / scale) * 1.6 : scale / 20
-    const coneLength_ = fixed ? 0.2 : scale / 5
-    const cylinderLength_ = fixed ? 1 - coneLength_ : scale - coneLength_
+    const coneWidth = fixed ? (lineWidth / scale) * 1.6 : scale / 20
+    const coneLength = fixed ? 0.2 : scale / 5
+    const cylinderLength = fixed ? 1 - coneLength : scale - coneLength
     const quaternion = new THREE.Quaternion().setFromUnitVectors(upV, direction.clone().normalize())
-    const matrixL_ = new THREE.Matrix4().makeRotationFromQuaternion(quaternion)
-
-    return {
-      cylinderLength: cylinderLength_,
-      coneWidth: coneWidth_,
-      coneLength: coneLength_,
-      matrixL: matrixL_,
-    }
+    const matrixL = new THREE.Matrix4().makeRotationFromQuaternion(quaternion)
+    return { cylinderLength, coneWidth, coneLength, matrixL }
   }, [direction, scale, lineWidth, fixed])
 
   const color_ = isHovered ? hoveredColor : axisColors[axis]

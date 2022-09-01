@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
 import { Line } from '../Line'
-import { context } from '.'
+import { context } from './context'
 
 const ray = new THREE.Ray()
 const intersection = new THREE.Vector3()

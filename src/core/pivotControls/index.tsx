@@ -6,6 +6,7 @@ import { MeshLine, MeshLineMaterial } from 'meshline'
 import { AxisArrow } from './AxisArrow'
 import { PlaneSlider } from './PlaneSlider'
 import { AxisRotator } from './AxisRotator'
+import { context } from './context'
 
 const tV0 = new THREE.Vector3()
 const tV1 = new THREE.Vector3()
@@ -58,22 +59,6 @@ const xDir = new THREE.Vector3(1, 0, 0)
 const yDir = new THREE.Vector3(0, 1, 0)
 const zDir = new THREE.Vector3(0, 0, 1)
 
-type PivotContext = {
-  onDragStart: () => void
-  onDrag: (mdW: THREE.Matrix4) => void
-  onDragEnd: () => void
-  axisColors: [string | number, string | number, string | number]
-  hoveredColor: string | number
-  opacity: number
-  scale: number
-  lineWidth: number
-  fixed: boolean
-  depthTest: boolean
-  userData?: any
-}
-
-export const context = React.createContext<PivotContext>(null!)
-
 type PivotControlsProps = {
   matrix?: THREE.Matrix4
   onDragStart?: () => void
@@ -124,29 +109,6 @@ export const PivotControls: React.FC<PivotControlsProps> = ({
   const gizmoRef = React.useRef<THREE.Group>(null!)
   const childrenRef = React.useRef<THREE.Group>(null!)
 
-  const onDragStart_ = React.useCallback(() => {
-    mL0.copy(ref.current.matrix)
-    mW0.copy(ref.current.matrixWorld)
-    onDragStart && onDragStart()
-  }, [onDragStart])
-
-  const onDrag_ = React.useCallback(
-    (mdW: THREE.Matrix4) => {
-      mP.copy(parentRef.current.matrixWorld)
-      mPInv.copy(mP).invert()
-      // After applying the delta
-      mW.copy(mW0).premultiply(mdW)
-      mL.copy(mW).premultiply(mPInv)
-      mL0Inv.copy(mL0).invert()
-      mdL.copy(mL).multiply(mL0Inv)
-      if (autoTransform) ref.current.matrix.copy(mL)
-      onDrag && onDrag(mL, mdL, mW, mdW)
-    },
-    [onDrag, autoTransform]
-  )
-
-  const onDragEnd_ = React.useCallback(() => onDragEnd && onDragEnd(), [onDragEnd])
-
   React.useLayoutEffect(() => {
     if (!anchor) return
     childrenRef.current.updateWorldMatrix(true, true)
@@ -173,9 +135,23 @@ export const PivotControls: React.FC<PivotControlsProps> = ({
 
   const config = React.useMemo(
     () => ({
-      onDragStart: onDragStart_,
-      onDrag: onDrag_,
-      onDragEnd: onDragEnd_,
+      onDragStart: () => {
+        mL0.copy(ref.current.matrix)
+        mW0.copy(ref.current.matrixWorld)
+        onDragStart && onDragStart()
+      },
+      onDrag: (mdW: THREE.Matrix4) => {
+        mP.copy(parentRef.current.matrixWorld)
+        mPInv.copy(mP).invert()
+        // After applying the delta
+        mW.copy(mW0).premultiply(mdW)
+        mL.copy(mW).premultiply(mPInv)
+        mL0Inv.copy(mL0).invert()
+        mdL.copy(mL).multiply(mL0Inv)
+        if (autoTransform) ref.current.matrix.copy(mL)
+        onDrag && onDrag(mL, mdL, mW, mdW)
+      },
+      onDragEnd: () => onDragEnd && onDragEnd(),
       axisColors,
       hoveredColor,
       opacity,
@@ -185,19 +161,7 @@ export const PivotControls: React.FC<PivotControlsProps> = ({
       depthTest,
       userData,
     }),
-    [
-      onDragStart_,
-      onDrag_,
-      onDragEnd_,
-      depthTest,
-      scale,
-      lineWidth,
-      fixed,
-      ...axisColors,
-      hoveredColor,
-      opacity,
-      userData,
-    ]
+    [depthTest, scale, lineWidth, fixed, ...axisColors, hoveredColor, opacity, userData]
   )
 
   const vec = new THREE.Vector3()

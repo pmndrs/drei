@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
 import { Line } from '../Line'
 import { Html } from '../../web/Html'
-import { context } from '.'
+import { context } from './context'
 
 const clickDir = new THREE.Vector3()
 const intersectionDir = new THREE.Vector3()

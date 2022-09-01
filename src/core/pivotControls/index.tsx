@@ -60,25 +60,40 @@ const yDir = new THREE.Vector3(0, 1, 0)
 const zDir = new THREE.Vector3(0, 0, 1)
 
 type PivotControlsProps = {
-  matrix?: THREE.Matrix4
-  onDragStart?: () => void
-  onDrag?: (l: THREE.Matrix4, deltaL: THREE.Matrix4, w: THREE.Matrix4, deltaW: THREE.Matrix4) => void
-  onDragEnd?: () => void
-  autoTransform?: boolean
-  anchor?: [number, number, number]
-  activeAxes?: [boolean, boolean, boolean]
-  offset?: [number, number, number]
-  rotation?: [number, number, number]
+  /** Scale of the gizmo, 1 */
   scale?: number
+  /** Width of the gizmo lines, this is a THREE.Line2 prop, 2.5 */
   lineWidth?: number
+  /** If fixed is true is remains constant in size, scale is now in pixels, false */
   fixed?: boolean
-  depthTest?: boolean
+  /** Pivot does not act as a group, it won't shift contents but can offset in position */
+  offset?: [number, number, number]
+  /** Starting rotation */
+  rotation?: [number, number, number]
+  /** Starting matrix */
+  matrix?: THREE.Matrix4
+  /** BBAnchor, each axis can be between -1/0/+1 */
+  anchor?: [number, number, number]
+  /** If autoTransform is true, automatically apply the local transform on drag, true */
+  autoTransform?: boolean
+  /** Allows you to switch individual axes off */
+  activeAxes?: [boolean, boolean, boolean]
+  /** RGB colors */
   axisColors?: [string | number, string | number, string | number]
+  /** Color of the hovered item */
   hoveredColor?: string | number
+  /** Drag start event */
+  onDragStart?: () => void
+  /** Drag event */
+  onDrag?: (l: THREE.Matrix4, deltaL: THREE.Matrix4, w: THREE.Matrix4, deltaW: THREE.Matrix4) => void
+  /** Drag end event */
+  onDragEnd?: () => void
+  /** Set this to false if you want the gizmo to be visible through faces */
+  depthTest?: boolean
   opacity?: number
   visible?: boolean
-  userData?: any
-  children?: any
+  userData?: { [key: string]: any }
+  children?: React.ReactNode
 }
 
 export const PivotControls: React.FC<PivotControlsProps> = ({

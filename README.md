@@ -49,8 +49,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#controls">PointerLockControls</a></li>
           <li><a href="#controls">FirstPersonControls</a></li>          
           <li><a href="#scrollcontrols">ScrollControls</a></li>
-          <li><a href="#presentationcontrols">PresentationControls</a></li>
-          <li><a href="#pivotcontrols">PivotControls</a></li>
+          <li><a href="#presentationcontrols">PresentationControls</a></li>          
         </ul>
         <li><a href="#gizmos">Gizmos</a></li>
         <ul>
@@ -399,10 +398,51 @@ Make sure to set the `makeDefault` prop on your controls, in that case you do no
   <a href="https://codesandbox.io/s/om2ff8"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/om2ff8/screenshot.png" alt="demo"/></a>
 </p>
 
-TBD
+Controls for rotating and translating objects. These controls will stick to the object the transform and by offsetting or anchoring it forms a pivot.
+
+```tsx
+type PivotControlsProps = {
+  /** Scale of the gizmo, 1 */
+  scale?: number
+  /** Width of the gizmo lines, this is a THREE.Line2 prop, 2.5 */
+  lineWidth?: number
+  /** If fixed is true is remains constant in size, scale is now in pixels, false */
+  fixed?: boolean
+  /** Pivot does not act as a group, it won't shift contents but can offset in position */
+  offset?: [number, number, number]
+  /** Starting rotation */
+  rotation?: [number, number, number]
+  /** Starting matrix */
+  matrix?: THREE.Matrix4
+  /** Anchor point, like BBAnchor, each axis can be between -1/0/+1 */
+  anchor?: [number, number, number]
+  /** If autoTransform is true, automatically apply the local transform on drag, true */
+  autoTransform?: boolean
+  /** Allows you to switch individual axes off */
+  activeAxes?: [boolean, boolean, boolean]
+  /** RGB colors */
+  axisColors?: [string | number, string | number, string | number]
+  /** Color of the hovered item */
+  hoveredColor?: string | number
+  /** Drag start event */
+  onDragStart?: () => void
+  /** Drag event */
+  onDrag?: (l: THREE.Matrix4, deltaL: THREE.Matrix4, w: THREE.Matrix4, deltaW: THREE.Matrix4) => void
+  /** Drag end event */
+  onDragEnd?: () => void
+  /** Set this to false if you want the gizmo to be visible through faces */
+  depthTest?: boolean
+  opacity?: number
+  visible?: boolean
+  userData?: { [key: string]: any }
+  children?: React.ReactNode
+}
+```
 
 ```jsx
-// TBD
+<PivotControls>
+  <mesh />
+</PivotControls>
 ```
 
 #### TransformControls

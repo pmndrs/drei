@@ -9,7 +9,7 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
 export default {
-  title: 'Misc/useHelper',
+  title: 'Gizmos/useHelper',
   component: useHelper,
   decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
   args: {

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { useThree } from '@react-three/fiber'
+import { ThreeEvent, useThree } from '@react-three/fiber'
 import { Line } from '../Line'
 import { context } from './context'
 
@@ -27,13 +27,14 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
     userData,
   } = React.useContext(context)
 
-  const camControls = useThree((state) => state.controls as any)
+  // @ts-expect-error new in @react-three/fiber@7.0.5
+  const camControls = useThree((state) => state.controls) as { enabled: boolean }
   const objRef = React.useRef<THREE.Group>(null!)
   const clickInfo = React.useRef<{ clickPoint: THREE.Vector3; plane: THREE.Plane } | null>(null)
   const [isHovered, setIsHovered] = React.useState(false)
 
   const onPointerDown = React.useCallback(
-    (e: any) => {
+    (e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation()
       const clickPoint = e.point.clone()
       const origin = new THREE.Vector3().setFromMatrixPosition(objRef.current.matrixWorld)
@@ -42,13 +43,14 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
       clickInfo.current = { clickPoint, plane }
       onDragStart()
       camControls && (camControls.enabled = false)
+      // @ts-ignore
       e.target.setPointerCapture(e.pointerId)
     },
     [camControls, onDragStart]
   )
 
   const onPointerMove = React.useCallback(
-    (e: any) => {
+    (e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation()
       if (!isHovered) setIsHovered(true)
 
@@ -67,17 +69,18 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
   )
 
   const onPointerUp = React.useCallback(
-    (e: any) => {
+    (e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation()
       clickInfo.current = null
       onDragEnd()
       camControls && (camControls.enabled = true)
+      // @ts-ignore
       e.target.releasePointerCapture(e.pointerId)
     },
     [camControls, onDragEnd]
   )
 
-  const onPointerOut = React.useCallback((e: any) => {
+  const onPointerOut = React.useCallback((e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation()
     setIsHovered(false)
   }, [])

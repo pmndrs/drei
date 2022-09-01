@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { useThree } from '@react-three/fiber'
+import { ThreeEvent, useThree } from '@react-three/fiber'
 import { Line } from '../Line'
 import { context } from './context'
 
@@ -49,13 +49,14 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
     userData,
   } = React.useContext(context)
 
-  const camControls = useThree((state) => state.controls as any)
+  // @ts-expect-error new in @react-three/fiber@7.0.5
+  const camControls = useThree((state) => state.controls) as { enabled: boolean }
   const objRef = React.useRef<THREE.Group>(null!)
   const clickInfo = React.useRef<{ clickPoint: THREE.Vector3; dir: THREE.Vector3 } | null>(null)
   const [isHovered, setIsHovered] = React.useState(false)
 
   const onPointerDown = React.useCallback(
-    (e: any) => {
+    (e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation()
       const rotation = new THREE.Matrix4().extractRotation(objRef.current.matrixWorld)
       const clickPoint = e.point.clone()
@@ -63,13 +64,14 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
       clickInfo.current = { clickPoint, dir }
       onDragStart()
       camControls && (camControls.enabled = false)
+      // @ts-ignore - setPointerCapture is not in the type definition
       e.target.setPointerCapture(e.pointerId)
     },
     [direction, camControls, onDragStart]
   )
 
   const onPointerMove = React.useCallback(
-    (e: any) => {
+    (e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation()
       if (!isHovered) setIsHovered(true)
 
@@ -84,17 +86,18 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
   )
 
   const onPointerUp = React.useCallback(
-    (e: any) => {
+    (e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation()
       clickInfo.current = null
       onDragEnd()
       camControls && (camControls.enabled = true)
+      // @ts-ignore - releasePointerCapture & PointerEvent#pointerId is not in the type definition
       e.target.releasePointerCapture(e.pointerId)
     },
     [camControls, onDragEnd]
   )
 
-  const onPointerOut = React.useCallback((e: any) => {
+  const onPointerOut = React.useCallback((e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation()
     setIsHovered(false)
   }, [])

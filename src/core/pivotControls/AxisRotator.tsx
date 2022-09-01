@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { useThree } from '@react-three/fiber'
+import { ThreeEvent, useThree } from '@react-three/fiber'
 import { Line } from '../Line'
 import { Html } from '../../web/Html'
 import { context } from './context'
@@ -55,7 +55,8 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
     userData,
   } = React.useContext(context)
 
-  const camControls = useThree((state) => state.controls as any)
+  // @ts-expect-error new in @react-three/fiber@7.0.5
+  const camControls = useThree((state) => state.controls) as { enabled: boolean }
   const divRef = React.useRef<HTMLDivElement>(null!)
   const objRef = React.useRef<THREE.Group>(null!)
   const clickInfo = React.useRef<{
@@ -69,7 +70,7 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
   const [isHovered, setIsHovered] = React.useState(false)
 
   const onPointerDown = React.useCallback(
-    (e: any) => {
+    (e: ThreeEvent<PointerEvent>) => {
       divRef.current.innerText = '0º'
       divRef.current.style.display = 'block'
       e.stopPropagation()
@@ -82,13 +83,14 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
       clickInfo.current = { clickPoint, origin, e1, e2, normal, plane }
       onDragStart()
       camControls && (camControls.enabled = false)
+      // @ts-ignore
       e.target.setPointerCapture(e.pointerId)
     },
     [camControls, onDragStart]
   )
 
   const onPointerMove = React.useCallback(
-    (e: any) => {
+    (e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation()
       if (!isHovered) setIsHovered(true)
       if (clickInfo.current) {
@@ -100,6 +102,7 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
         let angle = calculateAngle(clickPoint, intersection, origin, e1, e2)
         let degrees = toDegrees(angle)
 
+        // @ts-ignore
         if (e.shiftKey) {
           degrees = Math.round(degrees / 10) * 10
           angle = toRadians(degrees)
@@ -116,12 +119,13 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
   )
 
   const onPointerUp = React.useCallback(
-    (e: any) => {
+    (e: ThreeEvent<PointerEvent>) => {
       divRef.current.style.display = 'none'
       e.stopPropagation()
       clickInfo.current = null
       onDragEnd()
       camControls && (camControls.enabled = true)
+      // @ts-ignore
       e.target.releasePointerCapture(e.pointerId)
     },
     [camControls, onDragEnd]

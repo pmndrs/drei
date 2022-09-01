@@ -42,6 +42,7 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
   axis,
 }) => {
   const {
+    annotationsClass,
     depthTest,
     scale,
     lineWidth,
@@ -165,7 +166,18 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
       matrixAutoUpdate={false}
     >
       <Html position={[r, r, 0]}>
-        <div className="label" ref={divRef} />
+        <div
+          style={{
+            display: 'none',
+            background: '#151520',
+            color: 'white',
+            padding: '6px 8px',
+            borderRadius: 7,
+            whiteSpace: 'nowrap',
+          }}
+          className={annotationsClass}
+          ref={divRef}
+        />
       </Html>
       <Line
         transparent

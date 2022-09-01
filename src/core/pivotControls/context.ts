@@ -13,6 +13,7 @@ export type PivotContext = {
   fixed: boolean
   depthTest: boolean
   userData?: any
+  annotationsClass?: string
 }
 
 export const context = React.createContext<PivotContext>(null!)

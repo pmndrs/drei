@@ -82,6 +82,8 @@ type PivotControlsProps = {
   axisColors?: [string | number, string | number, string | number]
   /** Color of the hovered item */
   hoveredColor?: string | number
+  /** CSS Classname applied to the HTML annotations */
+  annotationsClass?: string
   /** Drag start event */
   onDragStart?: () => void
   /** Drag event */

@@ -398,7 +398,7 @@ Make sure to set the `makeDefault` prop on your controls, in that case you do no
   <a href="https://codesandbox.io/s/om2ff8"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/om2ff8/screenshot.png" alt="demo"/></a>
 </p>
 
-Controls for rotating and translating objects. These controls will stick to the object the transform and by offsetting or anchoring it forms a pivot.
+Controls for rotating and translating objects. These controls will stick to the object the transform and by offsetting or anchoring it forms a pivot. This control has HTLM annotations for some transforms and supports `[tab]` for rounded values while dragging.
 
 ```tsx
 type PivotControlsProps = {
@@ -424,6 +424,8 @@ type PivotControlsProps = {
   axisColors?: [string | number, string | number, string | number]
   /** Color of the hovered item */
   hoveredColor?: string | number
+  /** CSS Classname applied to the HTML annotations */
+  annotationsClass?: string
   /** Drag start event */
   onDragStart?: () => void
   /** Drag event */

@@ -447,6 +447,18 @@ type PivotControlsProps = {
 </PivotControls>
 ```
 
+You can use Pivot as a controlled component, switch `autoTransform` off in that case and now you are responsible for applying the matrix transform yourself. You can also leave `autoTransform` on and apply the matrix to foreign objects, in that case Pivot will be able to control objects that are not parented within.
+
+```jsx
+const matrix = new THREE.Matrix4()
+return (
+  <PivotControls
+    ref={ref}
+    matrix={matrix}
+    autoTransform={false}
+    onDrag={({ matrix: matrix_ }) => matrix.copy(matrix_)}
+```
+
 #### TransformControls
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-transformcontrols--transform-controls-story)

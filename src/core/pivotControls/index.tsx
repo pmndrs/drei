@@ -182,7 +182,19 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
         depthTest,
         userData,
       }),
-      [depthTest, scale, lineWidth, fixed, ...axisColors, hoveredColor, opacity, userData]
+      [
+        onDragStart,
+        onDrag,
+        onDragEnd,
+        depthTest,
+        scale,
+        lineWidth,
+        fixed,
+        ...axisColors,
+        hoveredColor,
+        opacity,
+        userData,
+      ]
     )
 
     const vec = new THREE.Vector3()

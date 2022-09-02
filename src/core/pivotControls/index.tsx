@@ -98,120 +98,131 @@ type PivotControlsProps = {
   children?: React.ReactNode
 }
 
-export const PivotControls: React.FC<PivotControlsProps> = ({
-  matrix,
-  onDragStart,
-  onDrag,
-  onDragEnd,
-  autoTransform = true,
-  anchor,
-  activeAxes = [true, true, true],
-  offset = [0, 0, 0],
-  rotation = [0, 0, 0],
-  scale = 1,
-  lineWidth = 4,
-  fixed = false,
-  depthTest = true,
-  axisColors = ['#ff2060', '#20df80', '#2080ff'],
-  hoveredColor = '#ffff40',
-  opacity = 1,
-  visible = true,
-  userData,
-  children,
-}) => {
-  extend({ MeshLine, MeshLineMaterial })
-
-  const parentRef = React.useRef<THREE.Group>(null!)
-  const ref = React.useRef<THREE.Group>(null!)
-  const gizmoRef = React.useRef<THREE.Group>(null!)
-  const childrenRef = React.useRef<THREE.Group>(null!)
-
-  React.useLayoutEffect(() => {
-    if (!anchor) return
-    childrenRef.current.updateWorldMatrix(true, true)
-
-    mPInv.copy(childrenRef.current.matrixWorld).invert()
-    bb.makeEmpty()
-    childrenRef.current.traverse((obj: any) => {
-      if (!obj.geometry) return
-      if (!obj.geometry.boundingBox) obj.geometry.computeBoundingBox()
-      mL.copy(obj.matrixWorld).premultiply(mPInv)
-      bbObj.copy(obj.geometry.boundingBox)
-      bbObj.applyMatrix4(mL)
-      bb.union(bbObj)
-    })
-    vCenter.copy(bb.max).add(bb.min).multiplyScalar(0.5)
-    vSize.copy(bb.max).sub(bb.min).multiplyScalar(0.5)
-    vAnchorOffset
-      .copy(vSize)
-      .multiply(new THREE.Vector3(...anchor))
-      .add(vCenter)
-    vPosition.set(...offset).add(vAnchorOffset)
-    gizmoRef.current.position.copy(vPosition)
-  })
-
-  const config = React.useMemo(
-    () => ({
-      onDragStart: () => {
-        mL0.copy(ref.current.matrix)
-        mW0.copy(ref.current.matrixWorld)
-        onDragStart && onDragStart()
-      },
-      onDrag: (mdW: THREE.Matrix4) => {
-        mP.copy(parentRef.current.matrixWorld)
-        mPInv.copy(mP).invert()
-        // After applying the delta
-        mW.copy(mW0).premultiply(mdW)
-        mL.copy(mW).premultiply(mPInv)
-        mL0Inv.copy(mL0).invert()
-        mdL.copy(mL).multiply(mL0Inv)
-        if (autoTransform) ref.current.matrix.copy(mL)
-        onDrag && onDrag(mL, mdL, mW, mdW)
-      },
-      onDragEnd: () => onDragEnd && onDragEnd(),
-      axisColors,
-      hoveredColor,
-      opacity,
-      scale,
-      lineWidth,
-      fixed,
-      depthTest,
+export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
+  (
+    {
+      matrix,
+      onDragStart,
+      onDrag,
+      onDragEnd,
+      autoTransform = true,
+      anchor,
+      activeAxes = [true, true, true],
+      offset = [0, 0, 0],
+      rotation = [0, 0, 0],
+      scale = 1,
+      lineWidth = 4,
+      fixed = false,
+      depthTest = true,
+      axisColors = ['#ff2060', '#20df80', '#2080ff'],
+      hoveredColor = '#ffff40',
+      opacity = 1,
+      visible = true,
       userData,
-    }),
-    [depthTest, scale, lineWidth, fixed, ...axisColors, hoveredColor, opacity, userData]
-  )
+      children,
+    },
+    fRef
+  ) => {
+    extend({ MeshLine, MeshLineMaterial })
 
-  const vec = new THREE.Vector3()
-  useFrame((state) => {
-    if (fixed) {
-      const sf = calculateScaleFactor(gizmoRef.current.getWorldPosition(vec), scale, state.camera, state.size)
-      if (gizmoRef.current) {
-        if (gizmoRef.current?.scale.x !== sf || gizmoRef.current?.scale.y !== sf || gizmoRef.current?.scale.z !== sf) {
-          gizmoRef.current.scale.setScalar(sf)
-          state.invalidate()
+    const parentRef = React.useRef<THREE.Group>(null!)
+    const ref = React.useRef<THREE.Group>(null!)
+    const gizmoRef = React.useRef<THREE.Group>(null!)
+    const childrenRef = React.useRef<THREE.Group>(null!)
+
+    React.useLayoutEffect(() => {
+      if (!anchor) return
+      childrenRef.current.updateWorldMatrix(true, true)
+
+      mPInv.copy(childrenRef.current.matrixWorld).invert()
+      bb.makeEmpty()
+      childrenRef.current.traverse((obj: any) => {
+        if (!obj.geometry) return
+        if (!obj.geometry.boundingBox) obj.geometry.computeBoundingBox()
+        mL.copy(obj.matrixWorld).premultiply(mPInv)
+        bbObj.copy(obj.geometry.boundingBox)
+        bbObj.applyMatrix4(mL)
+        bb.union(bbObj)
+      })
+      vCenter.copy(bb.max).add(bb.min).multiplyScalar(0.5)
+      vSize.copy(bb.max).sub(bb.min).multiplyScalar(0.5)
+      vAnchorOffset
+        .copy(vSize)
+        .multiply(new THREE.Vector3(...anchor))
+        .add(vCenter)
+      vPosition.set(...offset).add(vAnchorOffset)
+      gizmoRef.current.position.copy(vPosition)
+    })
+
+    const config = React.useMemo(
+      () => ({
+        onDragStart: () => {
+          mL0.copy(ref.current.matrix)
+          mW0.copy(ref.current.matrixWorld)
+          onDragStart && onDragStart()
+        },
+        onDrag: (mdW: THREE.Matrix4) => {
+          mP.copy(parentRef.current.matrixWorld)
+          mPInv.copy(mP).invert()
+          // After applying the delta
+          mW.copy(mW0).premultiply(mdW)
+          mL.copy(mW).premultiply(mPInv)
+          mL0Inv.copy(mL0).invert()
+          mdL.copy(mL).multiply(mL0Inv)
+          if (autoTransform) ref.current.matrix.copy(mL)
+          onDrag && onDrag(mL, mdL, mW, mdW)
+        },
+        onDragEnd: () => onDragEnd && onDragEnd(),
+        axisColors,
+        hoveredColor,
+        opacity,
+        scale,
+        lineWidth,
+        fixed,
+        depthTest,
+        userData,
+      }),
+      [depthTest, scale, lineWidth, fixed, ...axisColors, hoveredColor, opacity, userData]
+    )
+
+    const vec = new THREE.Vector3()
+    useFrame((state) => {
+      if (fixed) {
+        const sf = calculateScaleFactor(gizmoRef.current.getWorldPosition(vec), scale, state.camera, state.size)
+        if (gizmoRef.current) {
+          if (
+            gizmoRef.current?.scale.x !== sf ||
+            gizmoRef.current?.scale.y !== sf ||
+            gizmoRef.current?.scale.z !== sf
+          ) {
+            gizmoRef.current.scale.setScalar(sf)
+            state.invalidate()
+          }
         }
       }
-    }
-  })
+    })
 
-  return (
-    <context.Provider value={config}>
-      <group ref={parentRef}>
-        <group ref={ref} matrix={matrix} matrixAutoUpdate={false}>
-          <group visible={visible} ref={gizmoRef} position={offset} rotation={rotation}>
-            {activeAxes[0] && <AxisArrow axis={0} direction={xDir} />}
-            {activeAxes[1] && <AxisArrow axis={1} direction={yDir} />}
-            {activeAxes[2] && <AxisArrow axis={2} direction={zDir} />}
-            {activeAxes[0] && activeAxes[1] && <PlaneSlider axis={2} dir1={xDir} dir2={yDir} />}
-            {activeAxes[0] && activeAxes[2] && <PlaneSlider axis={1} dir1={zDir} dir2={xDir} />}
-            {activeAxes[2] && activeAxes[1] && <PlaneSlider axis={0} dir1={yDir} dir2={zDir} />}
-            {activeAxes[0] && activeAxes[1] && <AxisRotator axis={2} dir1={xDir} dir2={yDir} />}
-            {activeAxes[0] && activeAxes[2] && <AxisRotator axis={1} dir1={zDir} dir2={xDir} />}
-            {activeAxes[2] && activeAxes[1] && <AxisRotator axis={0} dir1={yDir} dir2={zDir} />}
+    React.useImperativeHandle(fRef, () => ref.current, [])
+
+    return (
+      <context.Provider value={config}>
+        <group ref={parentRef}>
+          <group ref={ref} matrix={matrix} matrixAutoUpdate={false}>
+            <group visible={visible} ref={gizmoRef} position={offset} rotation={rotation}>
+              {activeAxes[0] && <AxisArrow axis={0} direction={xDir} />}
+              {activeAxes[1] && <AxisArrow axis={1} direction={yDir} />}
+              {activeAxes[2] && <AxisArrow axis={2} direction={zDir} />}
+              {activeAxes[0] && activeAxes[1] && <PlaneSlider axis={2} dir1={xDir} dir2={yDir} />}
+              {activeAxes[0] && activeAxes[2] && <PlaneSlider axis={1} dir1={zDir} dir2={xDir} />}
+              {activeAxes[2] && activeAxes[1] && <PlaneSlider axis={0} dir1={yDir} dir2={zDir} />}
+              {activeAxes[0] && activeAxes[1] && <AxisRotator axis={2} dir1={xDir} dir2={yDir} />}
+              {activeAxes[0] && activeAxes[2] && <AxisRotator axis={1} dir1={zDir} dir2={xDir} />}
+              {activeAxes[2] && activeAxes[1] && <AxisRotator axis={0} dir1={yDir} dir2={zDir} />}
+            </group>
+            <group ref={childrenRef}>{children}</group>
           </group>
-          <group ref={childrenRef}>{children}</group>
         </group>
-      </group>
-    </context.Provider>
-  )
-}
+      </context.Provider>
+    )
+  }
+)

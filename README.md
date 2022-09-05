@@ -47,23 +47,24 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#controls">TrackballControls</a></li>
           <li><a href="#controls">ArcballControls</a></li>
           <li><a href="#controls">PointerLockControls</a></li>
-          <li><a href="#controls">FirstPersonControls</a></li>
-          <li><a href="#transformcontrols">TransformControls</a></li>
+          <li><a href="#controls">FirstPersonControls</a></li>          
           <li><a href="#scrollcontrols">ScrollControls</a></li>
-          <li><a href="#presentationcontrols">PresentationControls</a></li>
+          <li><a href="#presentationcontrols">PresentationControls</a></li>          
+        </ul>
+        <li><a href="#gizmos">Gizmos</a></li>
+        <ul>
+          <li><a href="#gizmohelper">GizmoHelper</a></li>
+          <li><a href="#pivotcontrols">PivotControls</a></li>
+          <li><a href="#transformcontrols">TransformControls</a></li>
+          <li><a href="#usehelper">useHelper</a></li>
         </ul>
         <li><a href="#abstractions">Abstractions</a></li>
         <ul>
           <li><a href="#image">Image</a></li>
           <li><a href="#text">Text</a></li>
-          <li><a href="#text3d">Text3D</a></li>
-          <li><a href="#line">Line</a></li>
-          <li><a href="#quadraticbezierline">QuadraticBezierLine</a></li>
-          <li><a href="#cubicbezierline">CubicBezierLine</a></li>
-          <li><a href="#catmullromline">CatmullRomLine</a></li>
+          <li><a href="#text3d">Text3D</a></li>          
           <li><a href="#positionalaudio">PositionalAudio</a></li>
           <li><a href="#billboard">Billboard</a></li>
-          <li><a href="#gizmohelper">GizmoHelper</a></li>
           <li><a href="#effects">Effects</a></li>
           <li><a href="#gradienttexture">GradientTexture</a></li>
           <li><a href="#edges">Edges</a></li>
@@ -102,15 +103,13 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#usecontextbridge">useContextBridge</a></li>
           <li><a href="#usefbo">useFBO</a></li>
           <li><a href="#usecamera">useCamera</a></li>
-          <li><a href="#usedetectgpu">useDetectGPU</a></li>
-          <li><a href="#usehelper">useHelper</a></li>
+          <li><a href="#usedetectgpu">useDetectGPU</a></li>          
           <li><a href="#useaspect">useAspect</a></li>
           <li><a href="#usecursor">useCursor</a></li>
           <li><a href="#useintersect">useIntersect</a></li>
           <li><a href="#useboxprojectedenv">useBoxProjectedEnv</a></li>
           <li><a href="#useTrail">useTrail</a></li>
           <li><a href="#useSurfaceSampler">useSurfaceSampler</a></li>
-          <li><a href="#BBAnchor">BBAnchor</a></li>
         </ul>
         <li><a href="#loading">Loaders</a></li>
         <ul>
@@ -168,10 +167,15 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#shapes">Lathe</a></li>
           <li><a href="#roundedbox">RoundedBox</a></li>
           <li><a href="#screenquad">Screenquad</a></li>
+          <li><a href="#line">Line</a></li>
+          <li><a href="#quadraticbezierline">QuadraticBezierLine</a></li>
+          <li><a href="#cubicbezierline">CubicBezierLine</a></li>
+          <li><a href="#catmullromline">CatmullRomLine</a></li>
         </ul>
         <li><a href="#staging">Staging</a></li>
         <ul>
           <li><a href="#center">Center</a></li>
+          <li><a href="#BBAnchor">BBAnchor</a></li>        
           <li><a href="#bounds">Bounds</a></li>
           <li><a href="#camerashake">CameraShake</a></li>
           <li><a href="#float">Float</a></li>
@@ -268,39 +272,7 @@ All controls react to the default camera. If you have a `<PerspectiveCamera make
 
 PointerLockControls additionally supports a `selector` prop, which enables the binding of `click` event handlers for control activation to other elements than `document` (e.g. a 'Click here to play' button). All elements matching the `selector` prop will activate the controls. It will also center raycast events by default, so regular onPointerOver/etc events on meshes will continue to work.
 
-# TransformControls
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-transformcontrols--transform-controls-story)
-
-<p>
-  <a href="https://codesandbox.io/s/btsbj"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/btsbj/screenshot.png" alt="Tranform controls"/></a>
-</p>
-
-An abstraction around [THREE.TransformControls](https://threejs.org/docs/#examples/en/controls/TransformControls).
-
-You can wrap objects which then receive a transform gizmo.
-
-```jsx
-<TransformControls mode="translate">
-  <mesh />
-</TransformControls>
-```
-
-You could also reference the object which might make it easier to exchange the target. Now the object does not have to be part of the same sub-graph. References can be plain objects or React.MutableRefObjects.
-
-```jsx
-<TransformControls object={mesh} mode="translate">
-<mesh ref={mesh} />
-```
-
-If you are using other controls (Orbit, Trackball, etc), you will notice how they interfere, dragging one will affect the other. Default-controls will temporarily be disabled automatically when the user is pulling on the transform gizmo.
-
-```jsx
-<TransformControls mode="translate" />
-<OrbitControls makeDefault />
-```
-
-# ScrollControls
+#### ScrollControls
 
 ![](https://img.shields.io/badge/-Dom only-red)
 
@@ -366,7 +338,7 @@ function Foo(props) {
   return <mesh ref={ref} {...props} />
 ```
 
-# PresentationControls
+#### PresentationControls
 
 ![](https://img.shields.io/badge/-Dom only-red)
 
@@ -391,6 +363,146 @@ Semi-OrbitControls with spring-physics, polar zoom and snap-back, for presentati
 >
   <mesh />
 </PresentationControls>
+```
+
+# Gizmos
+
+#### GizmoHelper
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/gizmos-gizmohelper--gizmo-helper-story)
+
+Used by widgets that visualize and control camera position.
+
+Two example gizmos are included: GizmoViewport and GizmoViewcube, and `useGizmoContext` makes it easy to create your own.
+
+Make sure to set the `makeDefault` prop on your controls, in that case you do not have to define the onTarget and onUpdate props.
+
+```jsx
+<GizmoHelper
+  alignment="bottom-right" // widget alignment within scene
+  margin={[80, 80]} // widget margins (X, Y)
+  onUpdate={/* called during camera animation  */}
+  onTarget={/* return current camera target (e.g. from orbit controls) to center animation */}
+  renderPriority={/* use renderPriority to prevent the helper from disappearing if there is another useFrame(..., 1)*/}
+>
+  <GizmoViewport axisColors={['red', 'green', 'blue']} labelColor="black" />
+  {/* alternative: <GizmoViewcube /> */}
+</GizmoHelper>
+```
+
+#### PivotControls
+
+![](https://img.shields.io/badge/-Dom only-red)
+
+<p>
+  <a href="https://codesandbox.io/s/om2ff8"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/om2ff8/screenshot.png" alt="demo"/></a>
+</p>
+
+Controls for rotating and translating objects. These controls will stick to the object the transform and by offsetting or anchoring it forms a pivot. This control has HTLM annotations for some transforms and supports `[tab]` for rounded values while dragging.
+
+```tsx
+type PivotControlsProps = {
+  /** Scale of the gizmo, 1 */
+  scale?: number
+  /** Width of the gizmo lines, this is a THREE.Line2 prop, 2.5 */
+  lineWidth?: number
+  /** If fixed is true is remains constant in size, scale is now in pixels, false */
+  fixed?: boolean
+  /** Pivot does not act as a group, it won't shift contents but can offset in position */
+  offset?: [number, number, number]
+  /** Starting rotation */
+  rotation?: [number, number, number]
+  /** Starting matrix */
+  matrix?: THREE.Matrix4
+  /** Anchor point, like BBAnchor, each axis can be between -1/0/+1 */
+  anchor?: [number, number, number]
+  /** If autoTransform is true, automatically apply the local transform on drag, true */
+  autoTransform?: boolean
+  /** Allows you to switch individual axes off */
+  activeAxes?: [boolean, boolean, boolean]
+  /** RGB colors */
+  axisColors?: [string | number, string | number, string | number]
+  /** Color of the hovered item */
+  hoveredColor?: string | number
+  /** CSS Classname applied to the HTML annotations */
+  annotationsClass?: string
+  /** Drag start event */
+  onDragStart?: () => void
+  /** Drag event */
+  onDrag?: (l: THREE.Matrix4, deltaL: THREE.Matrix4, w: THREE.Matrix4, deltaW: THREE.Matrix4) => void
+  /** Drag end event */
+  onDragEnd?: () => void
+  /** Set this to false if you want the gizmo to be visible through faces */
+  depthTest?: boolean
+  opacity?: number
+  visible?: boolean
+  userData?: { [key: string]: any }
+  children?: React.ReactNode
+}
+```
+
+```jsx
+<PivotControls>
+  <mesh />
+</PivotControls>
+```
+
+You can use Pivot as a controlled component, switch `autoTransform` off in that case and now you are responsible for applying the matrix transform yourself. You can also leave `autoTransform` on and apply the matrix to foreign objects, in that case Pivot will be able to control objects that are not parented within.
+
+```jsx
+const matrix = new THREE.Matrix4()
+return (
+  <PivotControls
+    ref={ref}
+    matrix={matrix}
+    autoTransform={false}
+    onDrag={({ matrix: matrix_ }) => matrix.copy(matrix_)}
+```
+
+#### TransformControls
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-transformcontrols--transform-controls-story)
+
+<p>
+  <a href="https://codesandbox.io/s/btsbj"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/btsbj/screenshot.png" alt="Tranform controls"/></a>
+</p>
+
+An abstraction around [THREE.TransformControls](https://threejs.org/docs/#examples/en/controls/TransformControls).
+
+You can wrap objects which then receive a transform gizmo.
+
+```jsx
+<TransformControls mode="translate">
+  <mesh />
+</TransformControls>
+```
+
+You could also reference the object which might make it easier to exchange the target. Now the object does not have to be part of the same sub-graph. References can be plain objects or React.MutableRefObjects.
+
+```jsx
+<TransformControls object={mesh} mode="translate">
+<mesh ref={mesh} />
+```
+
+If you are using other controls (Orbit, Trackball, etc), you will notice how they interfere, dragging one will affect the other. Default-controls will temporarily be disabled automatically when the user is pulling on the transform gizmo.
+
+```jsx
+<TransformControls mode="translate" />
+<OrbitControls makeDefault />
+```
+
+#### useHelper
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-usehelper--default-story)
+
+A hook for a quick way to add helpers to existing nodes in the scene. It handles removal of the helper on unmount and auto-updates it by default.
+
+```jsx
+const mesh = useRef()
+useHelper(mesh, BoxHelper, 'cyan')
+useHelper(condition && mesh, BoxHelper, 'red') // you can passe false instead of the object ref to hide the helper
+
+<mesh ref={mesh} ... />
 ```
 
 # Shapes
@@ -425,96 +537,6 @@ A box buffer geometry with rounded corners, done with extrusion.
 A triangle that fills the screen, ideal for full-screen fragment shader work (raymarching, postprocessing).
 👉 [Why a triangle?](https://www.cginternals.com/en/blog/2018-01-10-screen-aligned-quads-and-triangles.html)
 👉 [Use as a post processing mesh](https://medium.com/@luruke/simple-postprocessing-in-three-js-91936ecadfb7)
-
-# Abstractions
-
-#### Image
-
-<p>
-  <a href="https://codesandbox.io/s/l4klb"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/l4klb/screenshot.png" alt="Horizontal tiles"/></a>
-  <a href="https://codesandbox.io/s/gsm1y"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/gsm1y/screenshot.png" alt="useIntersect"/></a>
-  <a href="https://codesandbox.io/s/x8gvs"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/x8gvs/screenshot.png" alt="Infinite scroll"/></a>
-  <a href="https://codesandbox.io/s/yjhzv"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/yjhzv/screenshot.png" alt="Vertical scroll"/></a>
-</p>
-
-A shader-based image component with auto-cover (similar to css/background: cover).
-
-```jsx
-function Foo() {
-  const ref = useRef()
-  useFrame(() => {
-    ref.current.material.zoom = ... // 1 and higher
-    ref.current.material.grayscale = ... // between 0 and 1
-    ref.current.material.color.set(...) // mix-in color
-  })
-  return <Image ref={ref} url="/file.jpg" />
-}
-```
-
-To make the material transparent:
-
-```jsx
-<Image url="/file.jpg" transparent opacity={0.5} />
-```
-
-#### Text
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-text--text-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
-
-<p>
-  <a href="https://codesandbox.io/s/yup2o"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/yup2o/screenshot.png" alt="Demo"/></a>
-</p>
-
-Hi-quality text rendering w/ signed distance fields (SDF) and antialiasing, using [troika-3d-text](https://github.com/protectwise/troika/tree/master/packages/troika-3d-text). All of troikas props are valid! Text is suspense-based!
-
-```jsx
-<Text color="black" anchorX="center" anchorY="middle">
-  hello world!
-</Text>
-```
-
-Text will suspend while loading the font data, but in order to completely avoid FOUC you can pass the characters it needs to render.
-
-```jsx
-<Text font={fontUrl} characters="abcdefghijklmnopqrstuvwxyz0123456789!">
-  hello world!
-</Text>
-```
-
-#### Text3D
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-text3d--text-3-d-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
-
-<p>
-  <a href="https://codesandbox.io/s/x6obrb"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/x6obrb/screenshot.png" alt="Demo"/></a>
-</p>
-
-Render 3D text using ThreeJS's `TextGeometry`.
-
-Text3D will suspend while loading the font data. Text3D requires fonts in JSON format generated through (typeface.json)[http://gero3.github.io/facetype.js], either as a path to a JSON file or a JSON object. If you face display issues try checking "Reverse font direction" in the typeface tool.
-
-```jsx
-<Text3D font={fontUrl} {...textOptions}>
-  Hello world!
-  <meshNormalMaterial />
-</Text3D>
-```
-
-You can use any material. `textOptions` are options you'd pass to the `TextGeometry` constructor. Find more information about available options [here](https://threejs.org/docs/index.html?q=textg#examples/en/geometries/TextGeometry).
-
-You can align the text using the `<Center>` component.
-
-```jsx
-<Center top left>
-  <Text3D>hello</Text3D>
-</Center>
-```
-
-It adds two properties that do not exist in the priginal `TextGeometry`, `lineHeight` and `letterSpacing`. The former a factor that is `1` by default, the latter is in threejs units and `0` by default.
-
-```jsx
-<Text3D lineHeight={0.5} letterSpacing={-0.025}>{`hello\nworld`}</Text3D>
-```
 
 #### Line
 
@@ -615,6 +637,112 @@ Renders a THREE.Line2 using THREE.CatmullRomCurve3 for interpolation.
 />
 ```
 
+# Abstractions
+
+#### Image
+
+<p>
+  <a href="https://codesandbox.io/s/l4klb"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/l4klb/screenshot.png" alt="Horizontal tiles"/></a>
+  <a href="https://codesandbox.io/s/gsm1y"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/gsm1y/screenshot.png" alt="useIntersect"/></a>
+  <a href="https://codesandbox.io/s/x8gvs"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/x8gvs/screenshot.png" alt="Infinite scroll"/></a>
+  <a href="https://codesandbox.io/s/yjhzv"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/yjhzv/screenshot.png" alt="Vertical scroll"/></a>
+</p>
+
+A shader-based image component with auto-cover (similar to css/background: cover).
+
+```jsx
+function Foo() {
+  const ref = useRef()
+  useFrame(() => {
+    ref.current.material.zoom = ... // 1 and higher
+    ref.current.material.grayscale = ... // between 0 and 1
+    ref.current.material.color.set(...) // mix-in color
+  })
+  return <Image ref={ref} url="/file.jpg" />
+}
+```
+
+To make the material transparent:
+
+```jsx
+<Image url="/file.jpg" transparent opacity={0.5} />
+```
+
+#### Text
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-text--text-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
+
+<p>
+  <a href="https://codesandbox.io/s/yup2o"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/yup2o/screenshot.png" alt="Demo"/></a>
+</p>
+
+Hi-quality text rendering w/ signed distance fields (SDF) and antialiasing, using [troika-3d-text](https://github.com/protectwise/troika/tree/master/packages/troika-3d-text). All of troikas props are valid! Text is suspense-based!
+
+```jsx
+<Text color="black" anchorX="center" anchorY="middle">
+  hello world!
+</Text>
+```
+
+Text will suspend while loading the font data, but in order to completely avoid FOUC you can pass the characters it needs to render.
+
+```jsx
+<Text font={fontUrl} characters="abcdefghijklmnopqrstuvwxyz0123456789!">
+  hello world!
+</Text>
+```
+
+#### Text3D
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-text3d--text-3-d-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
+
+<p>
+  <a href="https://codesandbox.io/s/x6obrb"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/x6obrb/screenshot.png" alt="Demo"/></a>
+</p>
+
+Render 3D text using ThreeJS's `TextGeometry`.
+
+Text3D will suspend while loading the font data. Text3D requires fonts in JSON format generated through (typeface.json)[http://gero3.github.io/facetype.js], either as a path to a JSON file or a JSON object. If you face display issues try checking "Reverse font direction" in the typeface tool.
+
+```jsx
+<Text3D font={fontUrl} {...textOptions}>
+  Hello world!
+  <meshNormalMaterial />
+</Text3D>
+```
+
+You can use any material. `textOptions` are options you'd pass to the `TextGeometry` constructor. Find more information about available options [here](https://threejs.org/docs/index.html?q=textg#examples/en/geometries/TextGeometry).
+
+You can align the text using the `<Center>` component.
+
+```jsx
+<Center top left>
+  <Text3D>hello</Text3D>
+</Center>
+```
+
+It adds two properties that do not exist in the priginal `TextGeometry`, `lineHeight` and `letterSpacing`. The former a factor that is `1` by default, the latter is in threejs units and `0` by default.
+
+```jsx
+<Text3D lineHeight={0.5} letterSpacing={-0.025}>{`hello\nworld`}</Text3D>
+```
+
+#### Effects
+
+Abstraction around threes own [EffectComposer](https://threejs.org/docs/#examples/en/postprocessing/EffectComposer). By default it will prepend a render-pass and a gammacorrection-pass. Children are cloned, `attach` is given to them automatically. You can only use passes or effects in there.
+
+By default it creates a render target with HalfFloatType, RGBAFormat and gl.outputEncoding. You can change all of this to your liking, inspect the types.
+
+```jsx
+import { SSAOPass } from "three-stdlib"
+
+extend({ SSAOPass })
+
+<Effects multisamping={8} renderIndex={1} disableGamma={false} disableRenderPass={false} disableRender={false}>
+  <sSAOPass args={[scene, camera, 100, 100]} kernelRadius={1.2} kernelSize={0} />
+</Effects>
+```
+
 #### PositionalAudio
 
 <p>
@@ -649,45 +777,6 @@ Adds a `<group />` that always faces the camera.
 >
   <Text fontSize={1}>I'm a billboard</Text>
 </Billboard>
-```
-
-#### GizmoHelper
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/gizmos-gizmohelper--gizmo-helper-story)
-
-Used by widgets that visualize and control camera position.
-
-Two example gizmos are included: GizmoViewport and GizmoViewcube, and `useGizmoContext` makes it easy to create your own.
-
-Make sure to set the `makeDefault` prop on your controls, in that case you do not have to define the onTarget and onUpdate props.
-
-```jsx
-<GizmoHelper
-  alignment="bottom-right" // widget alignment within scene
-  margin={[80, 80]} // widget margins (X, Y)
-  onUpdate={/* called during camera animation  */}
-  onTarget={/* return current camera target (e.g. from orbit controls) to center animation */}
-  renderPriority={/* use renderPriority to prevent the helper from disappearing if there is another useFrame(..., 1)*/}
->
-  <GizmoViewport axisColors={['red', 'green', 'blue']} labelColor="black" />
-  {/* alternative: <GizmoViewcube /> */}
-</GizmoHelper>
-```
-
-#### Effects
-
-Abstraction around threes own [EffectComposer](https://threejs.org/docs/#examples/en/postprocessing/EffectComposer). By default it will prepend a render-pass and a gammacorrection-pass. Children are cloned, `attach` is given to them automatically. You can only use passes or effects in there.
-
-By default it creates a render target with HalfFloatType, RGBAFormat and gl.outputEncoding. You can change all of this to your liking, inspect the types.
-
-```jsx
-import { SSAOPass } from "three-stdlib"
-
-extend({ SSAOPass })
-
-<Effects multisamping={8} renderIndex={1} disableGamma={false} disableRenderPass={false} disableRender={false}>
-  <sSAOPass args={[scene, camera, 100, 100]} kernelRadius={1.2} kernelSize={0} />
-</Effects>
 ```
 
 #### GradientTexture
@@ -1363,20 +1452,6 @@ A hook for the rare case when you are using non-default cameras for heads-up-dis
 <mesh raycast={useCamera(customCamera)} />
 ```
 
-#### useHelper
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-usehelper--default-story)
-
-A hook for a quick way to add helpers to existing nodes in the scene. It handles removal of the helper on unmount and auto-updates it by default.
-
-```jsx
-const mesh = useRef()
-useHelper(mesh, BoxHelper, 'cyan')
-useHelper(condition && mesh, BoxHelper, 'red') // you can passe false instead of the object ref to hide the helper
-
-<mesh ref={mesh} ... />
-```
-
 #### useDetectGPU
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/misc-usedetectgpu)
@@ -1504,37 +1579,6 @@ const buffer = useSurfaceSampler(
   weight, // [Optional] Same as in `<Sampler />`
   instancedMesh // [Optional] Instanced mesh to scatter
 )
-```
-
-#### BBAnchor
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-bbanchor--bb-anchor-with-html)
-
-A component using AABB (Axis-aligned bounding boxes) to offset children position by specified multipliers (`anchor` property) on each axis. You can use this component to change children positioning in regard of the parent's bounding box, eg. pinning [Html](#html) component to one of the parent's corners. Multipliers determine the offset value based on the `AABB`'s size:
-
-```
-childrenAnchor = boundingBoxPosition + (boundingBoxSize * anchor / 2)
-```
-
-```jsx
-<BBAnchor
-  anchor // THREE.Vector3 or [number, number, number]
-  {...groupProps} // All THREE.Group props are valid
->
-  {children}
-</BBAnchor>
-```
-
-For instance, one could want the Html component to be pinned to `positive x`, `positive y`, and `positive z` corner of a [Box](#shapes) object:
-
-```jsx
-<Box>
-  <BBAnchor anchor={[1, 1, 1]}>
-    <Html center>
-      <span>Hello world!</span>
-    </Html>
-  </BBAnchor>
-</Box>
 ```
 
 # Loading
@@ -2212,6 +2256,37 @@ function ScaledModel() {
     <Center onCentered={({ container, height }) => container.scale.setScalar(viewport.height / height)}>
       <Model />
     </Center>
+```
+
+#### BBAnchor
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-bbanchor--bb-anchor-with-html)
+
+A component using AABB (Axis-aligned bounding boxes) to offset children position by specified multipliers (`anchor` property) on each axis. You can use this component to change children positioning in regard of the parent's bounding box, eg. pinning [Html](#html) component to one of the parent's corners. Multipliers determine the offset value based on the `AABB`'s size:
+
+```
+childrenAnchor = boundingBoxPosition + (boundingBoxSize * anchor / 2)
+```
+
+```jsx
+<BBAnchor
+  anchor // THREE.Vector3 or [number, number, number]
+  {...groupProps} // All THREE.Group props are valid
+>
+  {children}
+</BBAnchor>
+```
+
+For instance, one could want the Html component to be pinned to `positive x`, `positive y`, and `positive z` corner of a [Box](#shapes) object:
+
+```jsx
+<Box>
+  <BBAnchor anchor={[1, 1, 1]}>
+    <Html center>
+      <span>Hello world!</span>
+    </Html>
+  </BBAnchor>
+</Box>
 ```
 
 #### Bounds

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Vector2, Vector3, Color } from 'three'
-import { ReactThreeFiber } from '@react-three/fiber'
+import { ReactThreeFiber, useThree } from '@react-three/fiber'
 import { LineGeometry, LineMaterial, LineMaterialParameters, Line2 } from 'three-stdlib'
 
 export type LineProps = {
@@ -11,16 +11,16 @@ export type LineProps = {
   Omit<ReactThreeFiber.Object3DNode<Line2, typeof Line2>, 'args'> &
   Omit<
     ReactThreeFiber.Object3DNode<LineMaterial, [LineMaterialParameters]>,
-    'color' | 'vertexColors' | 'resolution' | 'args'
+    'color' | 'vertexColors' | 'args'
   >
 
 export const Line = React.forwardRef<Line2, LineProps>(function Line(
   { points, color = 'black', vertexColors, linewidth, lineWidth, dashed, ...rest },
   ref
 ) {
+  const size = useThree((state) => state.size)
   const [line2] = React.useState(() => new Line2())
   const [lineMaterial] = React.useState(() => new LineMaterial())
-  const [resolution] = React.useState(() => new Vector2(512, 512))
 
   const lineGeom = React.useMemo(() => {
     const geom = new LineGeometry()
@@ -61,7 +61,7 @@ export const Line = React.forwardRef<Line2, LineProps>(function Line(
         attach="material"
         color={color}
         vertexColors={Boolean(vertexColors)}
-        resolution={resolution}
+        resolution={[size.width, size.height]}
         linewidth={linewidth ?? lineWidth}
         dashed={dashed}
         {...rest}

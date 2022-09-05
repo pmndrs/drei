@@ -7,7 +7,7 @@ import { Icosahedron, Sphere, Html, BBAnchor, OrbitControls, useHelper } from '.
 import { BoxHelper } from 'three'
 
 export default {
-  title: 'Misc/BBAnchor',
+  title: 'Staging/BBAnchor',
   component: BBAnchor,
   decorators: [
     (storyFn) => (

@@ -8,7 +8,7 @@ import { Setup } from '../Setup'
 import { Line, OrbitControls, QuadraticBezierLine, CubicBezierLine, CatmullRomLine } from '../../src'
 
 export default {
-  title: 'Abstractions/Line',
+  title: 'Shapes/Line',
   component: Line,
 }
 

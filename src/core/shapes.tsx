@@ -28,7 +28,7 @@ export type ShapeProps<T> = Omit<JSX.IntrinsicElements['mesh'], 'args'> & {
 }
 
 function create<T>(type: string) {
-  const El: any = type + 'BufferGeometry'
+  const El: any = type + 'Geometry'
   return React.forwardRef(({ args, children, ...props }: ShapeProps<T>, ref) => (
     <mesh ref={ref as React.MutableRefObject<Mesh>} {...props}>
       <El attach="geometry" args={args} />

@@ -190,6 +190,16 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
         polygonOffsetFactor={-10}
         userData={userData}
       />
+      <Line
+        points={arc}
+        lineWidth={lineWidth * 6}
+        userData={userData}
+        visible={false}
+        depthTest={false}
+        depthWrite={false}
+        fog={false}
+        toneMapped={false}
+      />
     </group>
   )
 }

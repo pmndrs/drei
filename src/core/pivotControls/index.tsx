@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { Size, extend, useFrame } from '@react-three/fiber'
+import { Size, extend, useFrame, useThree } from '@react-three/fiber'
 import { MeshLine, MeshLineMaterial } from 'meshline'
 
 import { AxisArrow } from './AxisArrow'
@@ -138,6 +138,7 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
   ) => {
     extend({ MeshLine, MeshLineMaterial })
 
+    const invalidate = useThree((state) => state.invalidate)
     const parentRef = React.useRef<THREE.Group>(null!)
     const ref = React.useRef<THREE.Group>(null!)
     const gizmoRef = React.useRef<THREE.Group>(null!)
@@ -165,6 +166,7 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
         .add(vCenter)
       vPosition.set(...offset).add(vAnchorOffset)
       gizmoRef.current.position.copy(vPosition)
+      invalidate()
     })
 
     const config = React.useMemo(
@@ -173,6 +175,7 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
           mL0.copy(ref.current.matrix)
           mW0.copy(ref.current.matrixWorld)
           onDragStart && onDragStart()
+          invalidate()
         },
         onDrag: (mdW: THREE.Matrix4) => {
           mP.copy(parentRef.current.matrixWorld)
@@ -184,8 +187,12 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
           mdL.copy(mL).multiply(mL0Inv)
           if (autoTransform) ref.current.matrix.copy(mL)
           onDrag && onDrag(mL, mdL, mW, mdW)
+          invalidate()
         },
-        onDragEnd: () => onDragEnd && onDragEnd(),
+        onDragEnd: () => {
+          if (onDragEnd) onDragEnd()
+          invalidate()
+        },
         rotationLimits,
         axisColors,
         hoveredColor,

@@ -127,8 +127,14 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
         onPointerUp={onPointerUp}
         onPointerOut={onPointerOut}
       >
+        {/* The invisible mesh being raycast */}
+        <mesh visible={false} position={[0, (cylinderLength + coneLength) / 2.0, 0]} userData={userData}>
+          <cylinderGeometry args={[coneWidth * 4, coneWidth * 4, cylinderLength + coneLength, 8, 1]} />
+        </mesh>
+        {/* The visible mesh */}
         <Line
           transparent
+          raycast={() => null}
           depthTest={depthTest}
           points={[0, 0, 0, 0, cylinderLength, 0] as any}
           lineWidth={lineWidth}
@@ -137,13 +143,7 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
           polygonOffset
           renderOrder={1}
           polygonOffsetFactor={-10}
-          userData={userData}
         />
-        {/* The invisible mesh being raycast */}
-        <mesh visible={false} position={[0, (cylinderLength + coneLength) / 2.0, 0]} userData={userData}>
-          <cylinderGeometry args={[coneWidth * 4, coneWidth * 4, cylinderLength + coneLength, 8, 1]} />
-        </mesh>
-        {/* The visible mesh */}
         <mesh raycast={() => null} position={[0, cylinderLength + coneLength / 2.0, 0]} renderOrder={500}>
           <coneGeometry args={[coneWidth, coneLength, 24, 1]} />
           <meshBasicMaterial

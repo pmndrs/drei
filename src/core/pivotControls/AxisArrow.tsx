@@ -146,6 +146,10 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
             polygonOffsetFactor={-10}
           />
         </mesh>
+        <mesh position={[0, (cylinderLength + coneLength) / 2.0, 0]} rotation={[Math.PI, 0, 0]} userData={userData}>
+          <coneGeometry args={[coneWidth * 6, cylinderLength + coneLength, 8, 1]} />
+          <meshBasicMaterial visible={false} depthTest={false} depthWrite={false} fog={false} toneMapped={false} />
+        </mesh>
       </group>
     </group>
   )

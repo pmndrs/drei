@@ -31,7 +31,7 @@ type Props = JSX.IntrinsicElements['mesh'] & {
   strokeOpacity?: number
   fillOpacity?: number
   debugSDF?: boolean
-  onSync?: (troika: TextMeshImpl) => void
+  onSync?: (troika: any) => void
 }
 
 // eslint-disable-next-line prettier/prettier

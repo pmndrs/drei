@@ -2079,14 +2079,14 @@ It is advisable to re-connect the event system to a parent that contains both th
 ```
 
 ```jsx
-const main = useRef()
-const div = useRef()
+const container = useRef()
+const tracking = useRef()
 return (
-  <main ref={main}>
+  <main ref={container}>
     <h1>Html content here</h1>
-    <div ref={div} style={{ width: 200, height: 200 }} />
-    <Canvas onCreated={(state) => state.events.connect(main.current)}>
-      <View track={div}>
+    <div ref={tracking} style={{ width: 200, height: 200 }} />
+    <Canvas eventSource={container}>
+      <View track={tracking}>
         <mesh />
         <OrbitControls />
       </View>

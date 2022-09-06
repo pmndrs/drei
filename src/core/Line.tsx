@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Vector2, Vector3, Color } from 'three'
+import { Vector2, Vector3, Color, ColorRepresentation } from 'three'
 import { ReactThreeFiber, useThree } from '@react-three/fiber'
 import { LineGeometry, LineMaterial, LineMaterialParameters, Line2 } from 'three-stdlib'
 
@@ -7,12 +7,11 @@ export type LineProps = {
   points: Array<Vector3 | [number, number, number]>
   vertexColors?: Array<Color | [number, number, number]>
   lineWidth?: number
-} & Omit<LineMaterialParameters, 'vertexColors'> &
+} & Omit<LineMaterialParameters, 'vertexColors' | 'color'> &
   Omit<ReactThreeFiber.Object3DNode<Line2, typeof Line2>, 'args'> &
-  Omit<
-    ReactThreeFiber.Object3DNode<LineMaterial, [LineMaterialParameters]>,
-    'color' | 'vertexColors' | 'args'
-  >
+  Omit<ReactThreeFiber.Object3DNode<LineMaterial, [LineMaterialParameters]>, 'color' | 'vertexColors' | 'args'> & {
+    color?: ColorRepresentation
+  }
 
 export const Line = React.forwardRef<Line2, LineProps>(function Line(
   { points, color = 'black', vertexColors, linewidth, lineWidth, dashed, ...rest },

@@ -17,6 +17,10 @@ export const calculateOffset = (
   const e2 = normal.dot(clickPoint) - normal.dot(rayStart)
   const e3 = normal.dot(rayDir)
 
+  if (e3 === 0) {
+    return -e2 / e1
+  }
+
   vec1
     .copy(rayDir)
     .multiplyScalar(e1 / e3)

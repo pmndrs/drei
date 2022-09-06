@@ -70,6 +70,7 @@ type PivotControlsProps = {
   offset?: [number, number, number]
   /** Starting rotation */
   rotation?: [number, number, number]
+
   /** Starting matrix */
   matrix?: THREE.Matrix4
   /** BBAnchor, each axis can be between -1/0/+1 */
@@ -78,6 +79,14 @@ type PivotControlsProps = {
   autoTransform?: boolean
   /** Allows you to switch individual axes off */
   activeAxes?: [boolean, boolean, boolean]
+
+  disableAxes?: boolean
+  disableSliders?: boolean
+  disableRotations?: boolean
+
+  /** Limits */
+  rotationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
+
   /** RGB colors */
   axisColors?: [string | number, string | number, string | number]
   /** Color of the hovered item */
@@ -107,12 +116,16 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
       onDragEnd,
       autoTransform = true,
       anchor,
+      disableAxes = false,
+      disableSliders = false,
+      disableRotations = false,
       activeAxes = [true, true, true],
       offset = [0, 0, 0],
       rotation = [0, 0, 0],
       scale = 1,
       lineWidth = 4,
       fixed = false,
+      rotationLimits,
       depthTest = true,
       axisColors = ['#ff2060', '#20df80', '#2080ff'],
       hoveredColor = '#ffff40',
@@ -173,6 +186,7 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
           onDrag && onDrag(mL, mdL, mW, mdW)
         },
         onDragEnd: () => onDragEnd && onDragEnd(),
+        rotationLimits,
         axisColors,
         hoveredColor,
         opacity,
@@ -186,6 +200,7 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
         onDragStart,
         onDrag,
         onDragEnd,
+        rotationLimits,
         depthTest,
         scale,
         lineWidth,
@@ -194,6 +209,7 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
         hoveredColor,
         opacity,
         userData,
+        autoTransform,
       ]
     )
 
@@ -221,15 +237,15 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
         <group ref={parentRef}>
           <group ref={ref} matrix={matrix} matrixAutoUpdate={false}>
             <group visible={visible} ref={gizmoRef} position={offset} rotation={rotation}>
-              {activeAxes[0] && <AxisArrow axis={0} direction={xDir} />}
-              {activeAxes[1] && <AxisArrow axis={1} direction={yDir} />}
-              {activeAxes[2] && <AxisArrow axis={2} direction={zDir} />}
-              {activeAxes[0] && activeAxes[1] && <PlaneSlider axis={2} dir1={xDir} dir2={yDir} />}
-              {activeAxes[0] && activeAxes[2] && <PlaneSlider axis={1} dir1={zDir} dir2={xDir} />}
-              {activeAxes[2] && activeAxes[1] && <PlaneSlider axis={0} dir1={yDir} dir2={zDir} />}
-              {activeAxes[0] && activeAxes[1] && <AxisRotator axis={2} dir1={xDir} dir2={yDir} />}
-              {activeAxes[0] && activeAxes[2] && <AxisRotator axis={1} dir1={zDir} dir2={xDir} />}
-              {activeAxes[2] && activeAxes[1] && <AxisRotator axis={0} dir1={yDir} dir2={zDir} />}
+              {!disableAxes && activeAxes[0] && <AxisArrow axis={0} direction={xDir} />}
+              {!disableAxes && activeAxes[1] && <AxisArrow axis={1} direction={yDir} />}
+              {!disableAxes && activeAxes[2] && <AxisArrow axis={2} direction={zDir} />}
+              {!disableSliders && activeAxes[0] && activeAxes[1] && <PlaneSlider axis={2} dir1={xDir} dir2={yDir} />}
+              {!disableSliders && activeAxes[0] && activeAxes[2] && <PlaneSlider axis={1} dir1={zDir} dir2={xDir} />}
+              {!disableSliders && activeAxes[2] && activeAxes[1] && <PlaneSlider axis={0} dir1={yDir} dir2={zDir} />}
+              {!disableRotations && activeAxes[0] && activeAxes[1] && <AxisRotator axis={2} dir1={xDir} dir2={yDir} />}
+              {!disableRotations && activeAxes[0] && activeAxes[2] && <AxisRotator axis={1} dir1={zDir} dir2={xDir} />}
+              {!disableRotations && activeAxes[2] && activeAxes[1] && <AxisRotator axis={0} dir1={yDir} dir2={zDir} />}
             </group>
             <group ref={childrenRef}>{children}</group>
           </group>

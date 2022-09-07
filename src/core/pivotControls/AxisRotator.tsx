@@ -216,7 +216,7 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
         />
       </Html>
       {/* The invisible mesh being raycast */}
-      <Line points={arc} lineWidth={lineWidth * 4} visible={false} userData={userData} />
+      <Line points={arc} lineWidth={lineWidth * 5} visible={false} userData={userData} />
       {/* The visible mesh */}
       <Line
         transparent

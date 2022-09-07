@@ -129,7 +129,7 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
       >
         {/* The invisible mesh being raycast */}
         <mesh visible={false} position={[0, (cylinderLength + coneLength) / 2.0, 0]} userData={userData}>
-          <cylinderGeometry args={[coneWidth * 4, coneWidth * 4, cylinderLength + coneLength, 8, 1]} />
+          <cylinderGeometry args={[coneWidth * 4, coneWidth, cylinderLength + coneLength, 8, 1]} />
         </mesh>
         {/* The visible mesh */}
         <Line

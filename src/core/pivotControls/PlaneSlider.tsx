@@ -108,16 +108,19 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
 
   return (
     <group ref={objRef} matrix={matrixL} matrixAutoUpdate={false}>
-      <group position={[pos1 * 1.7, pos1 * 1.7, 0]}>
-        <mesh
-          visible={true}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onPointerOut={onPointerOut}
-          scale={length}
-          userData={userData}
-        >
+      <group
+        position={[pos1 * 1.7, pos1 * 1.7, 0]}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerOut={onPointerOut}
+      >
+        {/* The invisible mesh being raycast */}
+        <mesh visible={false} scale={length * 1.2} renderOrder={500} userData={userData}>
+          <boxGeometry args={[1, 1, 0.3]} />
+        </mesh>
+        {/* The visible mesh */}
+        <mesh raycast={() => null} scale={length} userData={userData}>
           <planeGeometry />
           <meshBasicMaterial
             transparent
@@ -129,6 +132,7 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
           />
         </mesh>
         <Line
+          raycast={() => null}
           position={[-length / 2, -length / 2, 0]}
           transparent
           depthTest={depthTest}

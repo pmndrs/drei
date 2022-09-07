@@ -71,6 +71,14 @@ export function Stage({
   const outer = React.useRef<THREE.Group>(null!)
   const inner = React.useRef<THREE.Group>(null!)
   const [{ radius, width, height }, set] = React.useState({ radius: 0, width: 0, height: 0 })
+  const [environmentPreset, setEnvironmentPreset] = React.useState<PresetsType | null>(environment)
+  const [, startTransition] = React.useTransition()
+
+  React.useEffect(() => {
+    startTransition(() => {
+      setEnvironmentPreset(environment)
+    })
+  }, [environment])
 
   React.useLayoutEffect(() => {
     outer.current.position.set(0, 0, 0)
@@ -107,11 +115,7 @@ export function Stage({
         <group ref={inner}>{children}</group>
       </group>
       {contactShadow && <ContactShadows scale={radius * 2} far={radius / 2} {...contactShadow} />}
-      {environment && (
-        <React.Suspense fallback={fallback}>
-          <Environment preset={environment} />
-        </React.Suspense>
-      )}
+      {environmentPreset && <Environment preset={environmentPreset} />}
       <ambientLight intensity={intensity / 3} />
       <spotLight
         penumbra={1}

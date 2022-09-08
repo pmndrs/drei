@@ -3,16 +3,13 @@ import { useEffect } from 'react'
 import { useThree } from '@react-three/fiber'
 import { suspend, preload, clear } from 'suspend-react'
 
-type VideoTextureProps = {
+interface VideoTextureProps extends HTMLVideoElement {
   unsuspend?: 'canplay' | 'canplaythrough'
-  muted?: boolean
-  loop?: boolean
   start?: boolean
-  crossOrigin?: string
 }
 
-export function useVideoTexture(src: string, props: VideoTextureProps) {
-  const { unsuspend, start, crossOrigin, muted, loop } = {
+export function useVideoTexture(src: string, props: Partial<VideoTextureProps>) {
+  const { unsuspend, start, crossOrigin, muted, loop, ...rest } = {
     unsuspend: 'canplay',
     crossOrigin: 'Anonymous',
     muted: true,
@@ -29,6 +26,7 @@ export function useVideoTexture(src: string, props: VideoTextureProps) {
           crossOrigin,
           loop,
           muted,
+          ...rest,
         })
         const texture = new THREE.VideoTexture(video)
         texture.encoding = gl.outputEncoding

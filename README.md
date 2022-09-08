@@ -119,6 +119,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#usetexture">useTexture</a></li>
           <li><a href="#usektx2">useKTX2</a></li>
           <li><a href="#usecubetexture">useCubeTexture</a></li>
+          <li><a href="#usevideotexture">useVideoTexture</a></li>          
         </ul>
         <li><a href="#performance">Performance</a></li>
         <ul>
@@ -1725,6 +1726,41 @@ A convenience hook that uses `useLoader` and `CubeTextureLoader`
 
 ```jsx
 const envMap = useCubeTexture(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'], { path: 'cube/' })
+```
+
+#### useVideoTexture
+
+<p>
+  <a href="https://codesandbox.io/s/39hg8"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/39hg8/screenshot.png" alt="Demo"/></a>
+</p>
+
+A convenience hook that returns a `THREE.VideoTexture` and integrates loading into suspense. By default it falls back until the `canplay` event. Then it starts playing the video, which, if the video is muted, is allowed in the browser without user interaction.
+
+```tsx
+type VideoTextureProps = {
+  unsuspend?: 'canplay' | 'canplaythrough'
+  muted?: boolean
+  loop?: boolean
+  start?: boolean
+  crossOrigin?: string
+}
+
+export function useVideoTexture(src: string, props: VideoTextureProps) {
+  const { unsuspend, start, crossOrigin, muted, loop } = {
+    unsuspend: 'canplay',
+    crossOrigin: 'Anonymous',
+    muted: true,
+    loop: true,
+    start: true
+    ...props,
+  }
+```
+
+```jsx
+const texture = useVideoTexture("/video.mp4")
+return (
+  <mesh>
+    <meshBasicMaterial map={texture} toneMapped={false} />
 ```
 
 # Performance

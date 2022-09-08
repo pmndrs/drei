@@ -40,7 +40,6 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         </ul>
         <li><a href="#controls">Controls</a></li>
         <ul>
-          <li><a href="#controls">Controls</a></li>
           <li><a href="#controls">FlyControls</a></li>
           <li><a href="#controls">MapControls</a></li>
           <li><a href="#controls">DeviceOrientationControls</a></li>

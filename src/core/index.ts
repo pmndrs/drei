@@ -44,9 +44,10 @@ export * from './GizmoViewport'
 export * from './useCubeTexture'
 export * from './useFBX'
 export * from './useGLTF'
+export * from './useKTX2'
 export * from './useProgress'
 export * from './useTexture'
-export * from './useKTX2'
+export * from './useVideoTexture'
 
 // Misc
 export * from './Stats'

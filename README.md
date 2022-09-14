@@ -245,12 +245,31 @@ A responsive [THREE.OrthographicCamera](https://threejs.org/docs/#api/en/cameras
 
 A [THREE.CubeCamera](https://threejs.org/docs/#api/en/cameras/CubeCamera) that returns its texture as a render-prop. It makes children invisible while rendering to the internal buffer so that they are not included in the reflection.
 
+```tsx
+type Props = JSX.IntrinsicElements['group'] & {
+  /** Number of frames to render, Infinity */
+  frames?: number
+  /** Resolution of the FBO, 256 */
+  resolution?: number
+  /** Camera near, 0.1 */
+  near?: number
+  /** Camera far, 1000 */
+  far?: number
+  /** Custom environment map that is temporarily set as the scenes background */
+  envMap?: THREE.Texture
+  /** Custom fog that is temporarily set as the scenes fog */
+  fog?: Fog | FogExp2
+  /** The contents of CubeCamera will be hidden when filming the cube */
+  children: (tex: Texture) => React.ReactNode
+}
+```
+
 Using the `frames` prop you can control if this camera renders indefinitively or statically (a given number of times).
 If you have two static objects in the scene, make it `frames={2}` for instance, so that both objects get to "see" one another in the reflections, which takes multiple renders.
 If you have moving objects, unset the prop and use a smaller `resolution` instead.
 
 ```jsx
-<CubeCamera resolution={256} frames={Infinity} fog={customFog} near={1} far={1000}>
+<CubeCamera>
   {(texture) => (
     <mesh>
       <sphereGeometry />

@@ -1,0 +1,118 @@
+// Author: N8Programs
+// https://github.com/N8python/diamonds
+
+import * as THREE from 'three'
+import { shaderMaterial } from '../core/shaderMaterial'
+import { MeshBVHUniformStruct, shaderStructs, shaderIntersectFunction } from 'three-mesh-bvh'
+
+export const MeshRefractionMaterial = shaderMaterial(
+  {
+    envMap: null,
+    bounces: 3,
+    ior: 2.4,
+    correctMips: true,
+    aberrationStrength: 0.01,
+    fresnel: 0,
+    bvh: new MeshBVHUniformStruct(),
+    color: new THREE.Color('white'),
+    resolution: new THREE.Vector2(),
+  },
+  /*glsl*/ `
+  varying vec3 vWorldPosition;  
+  varying vec3 vNormal;
+  varying mat4 projectionMatrixInv;
+  varying mat4 viewMatrixInv;
+  varying vec3 viewDirection;
+
+  void main() {
+    projectionMatrixInv = inverse(projectionMatrix);
+    viewMatrixInv = inverse(viewMatrix);
+    vWorldPosition = (modelMatrix * vec4(position, 1.0)).xyz;    
+    vNormal = (viewMatrixInv * vec4(normalMatrix * normal, 0.0)).xyz;
+    viewDirection = normalize(vWorldPosition - cameraPosition);
+    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
+  }`,
+  /*glsl*/ `
+  precision highp isampler2D;
+  precision highp usampler2D;
+  varying vec3 vWorldPosition;
+  varying vec3 vNormal;
+  uniform samplerCube envMap;
+  uniform float bounces;
+  ${shaderStructs}
+  ${shaderIntersectFunction}
+  uniform BVH bvh;
+  uniform float ior;
+  uniform vec3 color;
+  uniform bool correctMips;
+  uniform vec2 resolution;
+  uniform float fresnel;
+  uniform mat4 modelMatrix;
+
+  uniform float aberrationStrength;
+  varying mat4 projectionMatrixInv;
+  varying mat4 viewMatrixInv;
+  varying vec3 viewDirection;  
+  
+  float fresnelFunc(vec3 viewDirection, vec3 worldNormal) {
+    return pow( 1.0 + dot( viewDirection, worldNormal), 10.0 );
+  }
+
+  vec3 totalInternalReflection(vec3 ro, vec3 rd, vec3 normal, float ior, mat4 modelMatrixInverse) {
+    vec3 rayOrigin = ro;
+    vec3 rayDirection = rd;
+    rayDirection = refract(rayDirection, normal, 1.0 / ior);
+    rayOrigin = vWorldPosition + rayDirection * 0.001;
+    rayOrigin = (modelMatrixInverse * vec4(rayOrigin, 1.0)).xyz;
+    rayDirection = normalize((modelMatrixInverse * vec4(rayDirection, 0.0)).xyz);
+    for(float i = 0.0; i < bounces; i++) {
+      uvec4 faceIndices = uvec4( 0u );
+      vec3 faceNormal = vec3( 0.0, 0.0, 1.0 );
+      vec3 barycoord = vec3( 0.0 );
+      float side = 1.0;
+      float dist = 0.0;
+      bvhIntersectFirstHit( bvh, rayOrigin, rayDirection, faceIndices, faceNormal, barycoord, side, dist );
+      vec3 hitPos = rayOrigin + rayDirection * max(dist - 0.001, 0.0);
+      // faceNormal *= side;
+      vec3 tempDir = refract(rayDirection, faceNormal, ior);
+      if (length(tempDir) != 0.0) {
+        rayDirection = tempDir;
+        break;
+      }
+      rayDirection = reflect(rayDirection, faceNormal);
+      rayOrigin = hitPos + rayDirection * 0.01;
+    }
+    rayDirection = normalize((modelMatrix * vec4(rayDirection, 0.0)).xyz);
+    return rayDirection;
+  }
+
+  void main() {
+    mat4 modelMatrixInverse = inverse(modelMatrix);
+    vec2 uv = gl_FragCoord.xy / resolution;
+    vec3 directionCamPerfect = (projectionMatrixInv * vec4(uv * 2.0 - 1.0, 0.0, 1.0)).xyz;
+    directionCamPerfect = (viewMatrixInv * vec4(directionCamPerfect, 0.0)).xyz;
+    directionCamPerfect = normalize(directionCamPerfect);
+    vec3 normal = vNormal;
+    vec3 rayOrigin = cameraPosition;
+    vec3 rayDirection = normalize(vWorldPosition - cameraPosition);
+    vec3 finalColor;
+    #ifdef CHROMATIC_ABERRATIONS
+      vec3 rayDirectionR = totalInternalReflection(rayOrigin, rayDirection, normal, max(ior * (1.0 - aberrationStrength), 1.0), modelMatrixInverse);
+      vec3 rayDirectionG = totalInternalReflection(rayOrigin, rayDirection, normal, max(ior, 1.0), modelMatrixInverse);
+      vec3 rayDirectionB = totalInternalReflection(rayOrigin, rayDirection, normal, max(ior * (1.0 + aberrationStrength), 1.0), modelMatrixInverse);
+      float finalColorR = textureGrad(envMap, rayDirectionR, dFdx(correctMips ? directionCamPerfect: rayDirection), dFdy(correctMips ? directionCamPerfect: rayDirection)).r;
+      float finalColorG = textureGrad(envMap, rayDirectionG, dFdx(correctMips ? directionCamPerfect: rayDirection), dFdy(correctMips ? directionCamPerfect: rayDirection)).g;
+      float finalColorB = textureGrad(envMap, rayDirectionB, dFdx(correctMips ? directionCamPerfect: rayDirection), dFdy(correctMips ? directionCamPerfect: rayDirection)).b;
+      finalColor = vec3(finalColorR, finalColorG, finalColorB) * color;
+    #else
+      rayDirection = totalInternalReflection(rayOrigin, rayDirection, normal, max(ior, 1.0), modelMatrixInverse);
+      finalColor = textureGrad(envMap, rayDirection, dFdx(correctMips ? directionCamPerfect: rayDirection), dFdy(correctMips ? directionCamPerfect: rayDirection)).rgb;
+      finalColor *= color;
+    #endif
+    float nFresnel = fresnelFunc(viewDirection, normal * (1.0 - fresnel));
+    gl_FragColor = vec4(mix(finalColor, vec3(1.0), nFresnel), 1.0);
+    
+    #include <tonemapping_fragment>
+    #include <encodings_fragment>
+  }`
+)

@@ -80,6 +80,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#meshreflectormaterial">MeshReflectorMaterial</a></li>
           <li><a href="#meshwobblematerial">MeshWobbleMaterial</a></li>
           <li><a href="#meshdistortmaterial">MeshDistortMaterial</a></li>
+          <li><a href="#meshrefractionmaterial">MeshRefractionMaterial</a></li>
           <li><a href="#pointmaterial">PointMaterial</a></li>
           <li><a href="#softshadows">softShadows</a></li>
           <li><a href="#shadermaterial">shaderMaterial</a></li>
@@ -1156,6 +1157,24 @@ This material makes your geometry distort following simplex noise.
   <boxGeometry />
   <MeshDistortMaterial distort={1} speed={10} />
 </mesh>
+```
+
+#### MeshRefractionMaterial
+
+<p>
+  <a href="https://codesandbox.io/s/zqrreo"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/zqrreo/screenshot.png" alt="Demo"/></a>
+</p>
+
+A convincing Glass/Diamond refraction material. Best pair it with a cube-camera!
+
+```jsx
+<CubeCamera>
+  {(texture) => (
+    <mesh geometry={diamondGeometry} {...props}>
+      <RefractionMaterial envMap={texture} toneMapped={false} />
+    </mesh>
+  )}
+</CubeCamera>
 ```
 
 #### PointMaterial

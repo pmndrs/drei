@@ -39,7 +39,7 @@ export function MeshRefractionMaterial({
   aberrationStrength = 0,
   ...props
 }: MeshRefractionMaterialProps) {
-  extend({ MeshRefractionMaterial_ })
+  extend({ MeshRefractionMaterial: MeshRefractionMaterial_ })
 
   const material = useRef()
   const { size } = useThree()

@@ -11,12 +11,8 @@ const decomposeIntoBasis = (e1: THREE.Vector3, e2: THREE.Vector3, offset: THREE.
       : Math.abs(e1.y) >= Math.abs(e1.x) && Math.abs(e1.y) >= Math.abs(e1.z)
       ? 1
       : 2
-  const i2 =
-    Math.abs(e2.x) >= Math.abs(e2.y) && Math.abs(e2.x) >= Math.abs(e2.z)
-      ? 0
-      : Math.abs(e2.y) >= Math.abs(e2.x) && Math.abs(e2.y) >= Math.abs(e2.z)
-      ? 1
-      : 2
+  const e2DegrowthOrder = [0, 1, 2].sort((a, b) => Math.abs(e2.getComponent(b)) - Math.abs(e2.getComponent(a)))
+  const i2 = i1 === e2DegrowthOrder[0] ? e2DegrowthOrder[1] : e2DegrowthOrder[0]
   const a1 = e1.getComponent(i1)
   const a2 = e1.getComponent(i2)
   const b1 = e2.getComponent(i1)

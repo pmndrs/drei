@@ -2,6 +2,7 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { ThreeEvent, useThree } from '@react-three/fiber'
 import { Line } from '../Line'
+import { Html } from '../../web/Html'
 import { context } from './context'
 
 const decomposeIntoBasis = (e1: THREE.Vector3, e2: THREE.Vector3, offset: THREE.Vector3) => {
@@ -38,6 +39,7 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
   const {
     translation,
     translationLimits,
+    annotationsClass,
     depthTest,
     scale,
     lineWidth,
@@ -53,6 +55,7 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
 
   // @ts-expect-error new in @react-three/fiber@7.0.5
   const camControls = useThree((state) => state.controls) as { enabled: boolean }
+  const divRef = React.useRef<HTMLDivElement>(null!)
   const objRef = React.useRef<THREE.Group>(null!)
   const clickInfo = React.useRef<{
     clickPoint: THREE.Vector3
@@ -66,6 +69,10 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
 
   const onPointerDown = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
+      divRef.current.innerText = `${translation.current[(axis + 1) % 3].toFixed(2)}, ${translation.current[
+        (axis + 2) % 3
+      ].toFixed(2)}`
+      divRef.current.style.display = 'block'
       e.stopPropagation()
       const clickPoint = e.point.clone()
       const origin = new THREE.Vector3().setFromMatrixPosition(objRef.current.matrixWorld)
@@ -116,6 +123,9 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
         }
         translation.current[(axis + 1) % 3] = offsetX0.current + offsetX
         translation.current[(axis + 2) % 3] = offsetY0.current + offsetY
+        divRef.current.innerText = `${translation.current[(axis + 1) % 3].toFixed(2)}, ${translation.current[
+          (axis + 2) % 3
+        ].toFixed(2)}`
         offsetMatrix.makeTranslation(
           offsetX * e1.x + offsetY * e2.x,
           offsetX * e1.y + offsetY * e2.y,
@@ -129,6 +139,7 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
 
   const onPointerUp = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
+      divRef.current.style.display = 'none'
       e.stopPropagation()
       clickInfo.current = null
       onDragEnd()
@@ -167,6 +178,20 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
 
   return (
     <group ref={objRef} matrix={matrixL} matrixAutoUpdate={false}>
+      <Html position={[0, 0, 0]}>
+        <div
+          style={{
+            display: 'none',
+            background: '#151520',
+            color: 'white',
+            padding: '6px 8px',
+            borderRadius: 7,
+            whiteSpace: 'nowrap',
+          }}
+          className={annotationsClass}
+          ref={divRef}
+        />
+      </Html>
       <group position={[pos1 * 1.7, pos1 * 1.7, 0]}>
         <mesh
           visible={true}

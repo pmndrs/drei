@@ -2,6 +2,7 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { ThreeEvent, useThree } from '@react-three/fiber'
 import { Line } from '../Line'
+import { Html } from '../../web/Html'
 import { context } from './context'
 
 const vec1 = new THREE.Vector3()
@@ -42,6 +43,7 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
   const {
     translation,
     translationLimits,
+    annotationsClass,
     depthTest,
     scale,
     lineWidth,
@@ -57,6 +59,7 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
 
   // @ts-expect-error new in @react-three/fiber@7.0.5
   const camControls = useThree((state) => state.controls) as { enabled: boolean }
+  const divRef = React.useRef<HTMLDivElement>(null!)
   const objRef = React.useRef<THREE.Group>(null!)
   const clickInfo = React.useRef<{ clickPoint: THREE.Vector3; dir: THREE.Vector3 } | null>(null)
   const offset0 = React.useRef<number>(0)
@@ -64,6 +67,8 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
 
   const onPointerDown = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
+      divRef.current.innerText = `${translation.current[axis].toFixed(2)}`
+      divRef.current.style.display = 'block'
       e.stopPropagation()
       const rotation = new THREE.Matrix4().extractRotation(objRef.current.matrixWorld)
       const clickPoint = e.point.clone()
@@ -95,6 +100,7 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
           offset = Math.min(offset, max - offset0.current)
         }
         translation.current[axis] = offset0.current + offset
+        divRef.current.innerText = `${translation.current[axis].toFixed(2)}`
         offsetMatrix.makeTranslation(dir.x * offset, dir.y * offset, dir.z * offset)
         onDrag(offsetMatrix)
       }
@@ -104,6 +110,7 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
 
   const onPointerUp = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
+      divRef.current.style.display = 'none'
       e.stopPropagation()
       clickInfo.current = null
       onDragEnd()
@@ -140,6 +147,20 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
         onPointerUp={onPointerUp}
         onPointerOut={onPointerOut}
       >
+        <Html position={[0, -coneLength, 0]}>
+          <div
+            style={{
+              display: 'none',
+              background: '#151520',
+              color: 'white',
+              padding: '6px 8px',
+              borderRadius: 7,
+              whiteSpace: 'nowrap',
+            }}
+            className={annotationsClass}
+            ref={divRef}
+          />
+        </Html>
         {/* The invisible mesh being raycast */}
         <mesh visible={false} position={[0, (cylinderLength + coneLength) / 2.0, 0]} userData={userData}>
           <cylinderGeometry args={[coneWidth * 1.4, coneWidth * 1.4, cylinderLength + coneLength, 8, 1]} />

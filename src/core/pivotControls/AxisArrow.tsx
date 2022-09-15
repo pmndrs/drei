@@ -50,6 +50,7 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
     fixed,
     axisColors,
     hoveredColor,
+    displayValues,
     opacity,
     onDragStart,
     onDrag,
@@ -67,8 +68,10 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
 
   const onPointerDown = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
-      divRef.current.innerText = `${translation.current[axis].toFixed(2)}`
-      divRef.current.style.display = 'block'
+      if (displayValues) {
+        divRef.current.innerText = `${translation.current[axis].toFixed(2)}`
+        divRef.current.style.display = 'block'
+      }
       e.stopPropagation()
       const rotation = new THREE.Matrix4().extractRotation(objRef.current.matrixWorld)
       const clickPoint = e.point.clone()
@@ -100,7 +103,9 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
           offset = Math.min(offset, max - offset0.current)
         }
         translation.current[axis] = offset0.current + offset
-        divRef.current.innerText = `${translation.current[axis].toFixed(2)}`
+        if (displayValues) {
+          divRef.current.innerText = `${translation.current[axis].toFixed(2)}`
+        }
         offsetMatrix.makeTranslation(dir.x * offset, dir.y * offset, dir.z * offset)
         onDrag(offsetMatrix)
       }
@@ -110,7 +115,9 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
 
   const onPointerUp = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
-      divRef.current.style.display = 'none'
+      if (displayValues) {
+        divRef.current.style.display = 'none'
+      }
       e.stopPropagation()
       clickInfo.current = null
       onDragEnd()

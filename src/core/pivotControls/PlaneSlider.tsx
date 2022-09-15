@@ -46,6 +46,7 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
     fixed,
     axisColors,
     hoveredColor,
+    displayValues,
     opacity,
     onDragStart,
     onDrag,
@@ -69,10 +70,12 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
 
   const onPointerDown = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
-      divRef.current.innerText = `${translation.current[(axis + 1) % 3].toFixed(2)}, ${translation.current[
-        (axis + 2) % 3
-      ].toFixed(2)}`
-      divRef.current.style.display = 'block'
+      if (displayValues) {
+        divRef.current.innerText = `${translation.current[(axis + 1) % 3].toFixed(2)}, ${translation.current[
+          (axis + 2) % 3
+        ].toFixed(2)}`
+        divRef.current.style.display = 'block'
+      }
       e.stopPropagation()
       const clickPoint = e.point.clone()
       const origin = new THREE.Vector3().setFromMatrixPosition(objRef.current.matrixWorld)
@@ -123,9 +126,11 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
         }
         translation.current[(axis + 1) % 3] = offsetX0.current + offsetX
         translation.current[(axis + 2) % 3] = offsetY0.current + offsetY
-        divRef.current.innerText = `${translation.current[(axis + 1) % 3].toFixed(2)}, ${translation.current[
-          (axis + 2) % 3
-        ].toFixed(2)}`
+        if (displayValues) {
+          divRef.current.innerText = `${translation.current[(axis + 1) % 3].toFixed(2)}, ${translation.current[
+            (axis + 2) % 3
+          ].toFixed(2)}`
+        }
         offsetMatrix.makeTranslation(
           offsetX * e1.x + offsetY * e2.x,
           offsetX * e1.y + offsetY * e2.y,
@@ -139,7 +144,9 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
 
   const onPointerUp = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
-      divRef.current.style.display = 'none'
+      if (displayValues) {
+        divRef.current.style.display = 'none'
+      }
       e.stopPropagation()
       clickInfo.current = null
       onDragEnd()

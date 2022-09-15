@@ -14,6 +14,7 @@ export type PivotContext = {
   scale: number
   lineWidth: number
   fixed: boolean
+  displayValues: boolean
   depthTest: boolean
   userData?: { [key: string]: any }
   annotationsClass?: string

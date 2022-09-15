@@ -85,6 +85,7 @@ type PivotControlsProps = {
   disableRotations?: boolean
 
   /** Limits */
+  translationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
   rotationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
 
   /** RGB colors */
@@ -101,6 +102,7 @@ type PivotControlsProps = {
   onDragEnd?: () => void
   /** Set this to false if you want the gizmo to be visible through faces */
   depthTest?: boolean
+  displayValues?: boolean
   opacity?: number
   visible?: boolean
   userData?: { [key: string]: any }
@@ -125,10 +127,12 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
       scale = 1,
       lineWidth = 4,
       fixed = false,
+      translationLimits,
       rotationLimits,
       depthTest = true,
       axisColors = ['#ff2060', '#20df80', '#2080ff'],
       hoveredColor = '#ffff40',
+      displayValues = true,
       opacity = 1,
       visible = true,
       userData,
@@ -143,6 +147,7 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
     const ref = React.useRef<THREE.Group>(null!)
     const gizmoRef = React.useRef<THREE.Group>(null!)
     const childrenRef = React.useRef<THREE.Group>(null!)
+    const translation = React.useRef<[number, number, number]>([0, 0, 0])
 
     React.useLayoutEffect(() => {
       if (!anchor) return
@@ -193,6 +198,8 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
           if (onDragEnd) onDragEnd()
           invalidate()
         },
+        translation,
+        translationLimits,
         rotationLimits,
         axisColors,
         hoveredColor,
@@ -200,6 +207,7 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
         scale,
         lineWidth,
         fixed,
+        displayValues,
         depthTest,
         userData,
       }),
@@ -207,6 +215,8 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
         onDragStart,
         onDrag,
         onDragEnd,
+        translation,
+        translationLimits,
         rotationLimits,
         depthTest,
         scale,
@@ -215,6 +225,7 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
         ...axisColors,
         hoveredColor,
         opacity,
+        displayValues,
         userData,
         autoTransform,
       ]

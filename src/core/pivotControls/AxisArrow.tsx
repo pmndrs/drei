@@ -2,6 +2,7 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { ThreeEvent, useThree } from '@react-three/fiber'
 import { Line } from '../Line'
+import { Html } from '../../web/Html'
 import { context } from './context'
 
 const vec1 = new THREE.Vector3()
@@ -40,12 +41,16 @@ const offsetMatrix = new THREE.Matrix4()
 
 export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> = ({ direction, axis }) => {
   const {
+    translation,
+    translationLimits,
+    annotationsClass,
     depthTest,
     scale,
     lineWidth,
     fixed,
     axisColors,
     hoveredColor,
+    displayValues,
     opacity,
     onDragStart,
     onDrag,
@@ -55,23 +60,30 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
 
   // @ts-expect-error new in @react-three/fiber@7.0.5
   const camControls = useThree((state) => state.controls) as { enabled: boolean }
+  const divRef = React.useRef<HTMLDivElement>(null!)
   const objRef = React.useRef<THREE.Group>(null!)
   const clickInfo = React.useRef<{ clickPoint: THREE.Vector3; dir: THREE.Vector3 } | null>(null)
+  const offset0 = React.useRef<number>(0)
   const [isHovered, setIsHovered] = React.useState(false)
 
   const onPointerDown = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
+      if (displayValues) {
+        divRef.current.innerText = `${translation.current[axis].toFixed(2)}`
+        divRef.current.style.display = 'block'
+      }
       e.stopPropagation()
       const rotation = new THREE.Matrix4().extractRotation(objRef.current.matrixWorld)
       const clickPoint = e.point.clone()
       const dir = direction.clone().applyMatrix4(rotation).normalize()
       clickInfo.current = { clickPoint, dir }
+      offset0.current = translation.current[axis]
       onDragStart()
       camControls && (camControls.enabled = false)
       // @ts-ignore - setPointerCapture is not in the type definition
       e.target.setPointerCapture(e.pointerId)
     },
-    [direction, camControls, onDragStart]
+    [direction, camControls, onDragStart, translation, axis]
   )
 
   const onPointerMove = React.useCallback(
@@ -81,16 +93,31 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
 
       if (clickInfo.current) {
         const { clickPoint, dir } = clickInfo.current
-        const offset = calculateOffset(clickPoint, dir, e.ray.origin, e.ray.direction)
+        const [min, max] = translationLimits?.[axis] || [undefined, undefined]
+
+        let offset = calculateOffset(clickPoint, dir, e.ray.origin, e.ray.direction)
+        if (min !== undefined) {
+          offset = Math.max(offset, min - offset0.current)
+        }
+        if (max !== undefined) {
+          offset = Math.min(offset, max - offset0.current)
+        }
+        translation.current[axis] = offset0.current + offset
+        if (displayValues) {
+          divRef.current.innerText = `${translation.current[axis].toFixed(2)}`
+        }
         offsetMatrix.makeTranslation(dir.x * offset, dir.y * offset, dir.z * offset)
         onDrag(offsetMatrix)
       }
     },
-    [onDrag, isHovered]
+    [onDrag, isHovered, translation, translationLimits, axis]
   )
 
   const onPointerUp = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
+      if (displayValues) {
+        divRef.current.style.display = 'none'
+      }
       e.stopPropagation()
       clickInfo.current = null
       onDragEnd()
@@ -127,6 +154,20 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
         onPointerUp={onPointerUp}
         onPointerOut={onPointerOut}
       >
+        <Html position={[0, -coneLength, 0]}>
+          <div
+            style={{
+              display: 'none',
+              background: '#151520',
+              color: 'white',
+              padding: '6px 8px',
+              borderRadius: 7,
+              whiteSpace: 'nowrap',
+            }}
+            className={annotationsClass}
+            ref={divRef}
+          />
+        </Html>
         {/* The invisible mesh being raycast */}
         <mesh visible={false} position={[0, (cylinderLength + coneLength) / 2.0, 0]} userData={userData}>
           <cylinderGeometry args={[coneWidth * 1.4, coneWidth * 1.4, cylinderLength + coneLength, 8, 1]} />

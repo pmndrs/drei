@@ -136,14 +136,17 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
           deltaAngle = toRadians(degrees)
         }
 
-        if (min !== undefined && max !== undefined) {
+        if (min !== undefined && max !== undefined && max - min < 2 * Math.PI) {
           deltaAngle = minimizeAngle(deltaAngle)
           deltaAngle = deltaAngle > Math.PI ? deltaAngle - 2 * Math.PI : deltaAngle
           deltaAngle = clamp(deltaAngle, min - angle0.current, max - angle0.current)
           angle.current = angle0.current + deltaAngle
-          degrees = toDegrees(angle.current)
+        } else {
+          angle.current = minimizeAngle(angle0.current + deltaAngle)
+          angle.current = angle.current > Math.PI ? angle.current - 2 * Math.PI : angle.current
         }
 
+        degrees = toDegrees(angle.current)
         divRef.current.innerText = `${degrees.toFixed(0)} º`
         rotMatrix.makeRotationAxis(normal, deltaAngle)
         posNew.copy(origin).applyMatrix4(rotMatrix).sub(origin).negate()

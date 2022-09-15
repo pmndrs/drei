@@ -5,6 +5,8 @@ export type PivotContext = {
   onDragStart: () => void
   onDrag: (mdW: THREE.Matrix4) => void
   onDragEnd: () => void
+  translation: { current: [number, number, number] }
+  translationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
   rotationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
   axisColors: [string | number, string | number, string | number]
   hoveredColor: string | number

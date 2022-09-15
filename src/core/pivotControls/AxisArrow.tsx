@@ -40,6 +40,8 @@ const offsetMatrix = new THREE.Matrix4()
 
 export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> = ({ direction, axis }) => {
   const {
+    translation,
+    translationLimits,
     depthTest,
     scale,
     lineWidth,
@@ -57,6 +59,7 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
   const camControls = useThree((state) => state.controls) as { enabled: boolean }
   const objRef = React.useRef<THREE.Group>(null!)
   const clickInfo = React.useRef<{ clickPoint: THREE.Vector3; dir: THREE.Vector3 } | null>(null)
+  const offset0 = React.useRef<number>(0)
   const [isHovered, setIsHovered] = React.useState(false)
 
   const onPointerDown = React.useCallback(
@@ -66,12 +69,13 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
       const clickPoint = e.point.clone()
       const dir = direction.clone().applyMatrix4(rotation).normalize()
       clickInfo.current = { clickPoint, dir }
+      offset0.current = translation.current[axis]
       onDragStart()
       camControls && (camControls.enabled = false)
       // @ts-ignore - setPointerCapture is not in the type definition
       e.target.setPointerCapture(e.pointerId)
     },
-    [direction, camControls, onDragStart]
+    [direction, camControls, onDragStart, translation, axis]
   )
 
   const onPointerMove = React.useCallback(
@@ -81,12 +85,21 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
 
       if (clickInfo.current) {
         const { clickPoint, dir } = clickInfo.current
-        const offset = calculateOffset(clickPoint, dir, e.ray.origin, e.ray.direction)
+        const [min, max] = translationLimits?.[axis] || [undefined, undefined]
+
+        let offset = calculateOffset(clickPoint, dir, e.ray.origin, e.ray.direction)
+        if (min !== undefined) {
+          offset = Math.max(offset, min - offset0.current)
+        }
+        if (max !== undefined) {
+          offset = Math.min(offset, max - offset0.current)
+        }
+        translation.current[axis] = offset0.current + offset
         offsetMatrix.makeTranslation(dir.x * offset, dir.y * offset, dir.z * offset)
         onDrag(offsetMatrix)
       }
     },
-    [onDrag, isHovered]
+    [onDrag, isHovered, translation, translationLimits, axis]
   )
 
   const onPointerUp = React.useCallback(

@@ -1165,16 +1165,46 @@ This material makes your geometry distort following simplex noise.
   <a href="https://codesandbox.io/s/zqrreo"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/zqrreo/screenshot.png" alt="Demo"/></a>
 </p>
 
-A convincing Glass/Diamond refraction material. Best pair it with a cube-camera!
+A convincing Glass/Diamond refraction material.
+
+```tsx
+type MeshRefractionMaterialProps = JSX.IntrinsicElements['shaderMaterial'] & {
+  /** Environment map */
+  envMap: THREE.CubeTexture | THREE.Texture
+  /** Number of ray-cast bounces, it can be expensive to have too many, 2 */
+  bounces?: number
+  /** Refraction index, 2.4 */
+  ior?: number
+  /** Fresnel (strip light), 0 */
+  fresnel?: number
+  /** RGB shift intensity, can be expensive, 0 */
+  aberrationStrength?: number
+  /** Color, white */
+  color?: ReactThreeFiber.Color
+  /** If this is on it uses fewer ray casts for the RGB shift sacrificing physical accuracy, true */
+  fastChroma?: boolean
+}
+```
+
+If you want it to reflect other objects in the scene you best pair it with a cube-camera.
 
 ```jsx
 <CubeCamera>
   {(texture) => (
     <mesh geometry={diamondGeometry} {...props}>
-      <RefractionMaterial envMap={texture} toneMapped={false} />
+      <RefractionMaterial envMap={texture} />
     </mesh>
   )}
 </CubeCamera>
+```
+
+Otherwise just pass it an environment map.
+
+```jsx
+const texture = useLoader(RGBELoader, "/textures/royal_esplanade_1k.hdr")
+return (
+  <mesh geometry={diamondGeometry} {...props}>
+    <RefractionMaterial envMap={texture} />
 ```
 
 #### PointMaterial

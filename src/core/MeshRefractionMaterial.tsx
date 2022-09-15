@@ -1,7 +1,3 @@
-// Original by N8Programs
-// https://twitter.com/N8Programs/status/1569865007042646018
-// https://github.com/N8python/diamonds
-
 import * as THREE from 'three'
 import * as React from 'react'
 import { useLayoutEffect, useMemo, useRef } from 'react'
@@ -18,27 +14,28 @@ declare global {
 }
 
 type MeshRefractionMaterialProps = JSX.IntrinsicElements['shaderMaterial'] & {
+  /** Environment map */
+  envMap: THREE.CubeTexture | THREE.Texture
+  /** Number of ray-cast bounces, it can be expensive to have too many, 2 */
   bounces?: number
+  /** Refraction index, 2.4 */
   ior?: number
+  /** Fresnel (strip light), 0 */
   fresnel?: number
+  /** RGB shift intensity, can be expensive, 0 */
   aberrationStrength?: number
+  /** Color, white */
   color?: ReactThreeFiber.Color
-  resolution?: ReactThreeFiber.Vector2
-  envMap?: THREE.CubeTexture | THREE.Texture
-  frames?: number
-  near?: number
-  far?: number
+  /** If this is on it uses fewer ray casts for the RGB shift sacrificing physical accuracy, true */
+  fastChroma?: boolean
 }
 
 const isCubeTexture = (def: THREE.CubeTexture | THREE.Texture): def is THREE.CubeTexture =>
   def && (def as THREE.CubeTexture).isCubeTexture
 
 export function MeshRefractionMaterial({
-  frames = 1,
-  resolution = 256,
-  near = 0.1,
-  far = 1000,
   aberrationStrength = 0,
+  fastChroma = true,
   envMap,
   ...props
 }: MeshRefractionMaterialProps) {
@@ -49,26 +46,28 @@ export function MeshRefractionMaterial({
 
   const defines = useMemo(() => {
     const temp = {} as { [key: string]: string }
-    if (envMap) {
-      const isCubeMap = isCubeTexture(envMap)
-      const w = (isCubeMap ? envMap.image[0]?.width : envMap.image.width) ?? 1024
-      const cubeSize = w / 4
-      const _lodMax = Math.floor(Math.log2(cubeSize))
-      const _cubeSize = Math.pow(2, _lodMax)
-      const width = 3 * Math.max(_cubeSize, 16 * 7)
-      const height = 4 * _cubeSize
-
-      if (isCubeMap) temp.ENVMAP_TYPE_CUBEM = ''
-      temp.CUBEUV_TEXEL_WIDTH = `${1.0 / width}`
-      temp.CUBEUV_TEXEL_HEIGHT = `${1.0 / height}`
-      temp.CUBEUV_MAX_MIP = `${_lodMax}.0`
-    }
+    // Sampler2D and SamplerCube need different defines
+    const isCubeMap = isCubeTexture(envMap)
+    const w = (isCubeMap ? envMap.image[0]?.width : envMap.image.width) ?? 1024
+    const cubeSize = w / 4
+    const _lodMax = Math.floor(Math.log2(cubeSize))
+    const _cubeSize = Math.pow(2, _lodMax)
+    const width = 3 * Math.max(_cubeSize, 16 * 7)
+    const height = 4 * _cubeSize
+    if (isCubeMap) temp.ENVMAP_TYPE_CUBEM = ''
+    temp.CUBEUV_TEXEL_WIDTH = `${1.0 / width}`
+    temp.CUBEUV_TEXEL_HEIGHT = `${1.0 / height}`
+    temp.CUBEUV_MAX_MIP = `${_lodMax}.0`
+    // Add defines from chromatic aberration
     if (aberrationStrength > 0) temp.CHROMATIC_ABERRATIONS = ''
+    if (fastChroma) temp.FAST_CHROMA = ''
     return temp
-  }, [aberrationStrength])
+  }, [aberrationStrength, fastChroma])
 
   useLayoutEffect(() => {
+    // Get the geometry of this materials parent
     const geometry = (material.current as any)?.__r3f?.parent?.geometry
+    // Update the BVH
     if (geometry)
       (material.current as any).bvh.updateFrom(
         new MeshBVH(geometry.toNonIndexed(), { lazyGeneration: false, strategy: SAH })
@@ -78,7 +77,7 @@ export function MeshRefractionMaterial({
   return (
     <meshRefractionMaterial
       // @ts-ignore
-      key={JSON.stringify(!!aberrationStrength)}
+      key={JSON.stringify(defines)}
       // @ts-ignore
       defines={defines}
       ref={material}

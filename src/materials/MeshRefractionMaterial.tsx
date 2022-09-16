@@ -18,12 +18,16 @@ export const MeshRefractionMaterial = shaderMaterial(
     resolution: new THREE.Vector2(),
   },
   /*glsl*/ `
+  #ifndef USE_COLOR
+    uniform vec3 color;
+  #endif
   varying vec3 vWorldPosition;  
   varying vec3 vNormal;
   varying mat4 projectionMatrixInv;
   varying mat4 viewMatrixInv;
   varying vec3 viewDirection;
   varying mat4 vInstanceMatrix;
+  varying vec3 vColor;
   
   void main() {        
     vec4 transformedNormal = vec4(normal, 0.0);
@@ -34,6 +38,11 @@ export const MeshRefractionMaterial = shaderMaterial(
       transformedPosition = instanceMatrix * transformedPosition;
     #else
       vInstanceMatrix = mat4(1.0);
+    #endif
+
+    vColor = color;
+    #ifdef USE_INSTANCING_COLOR
+      vColor *= instanceColor.rgb;
     #endif
   
     projectionMatrixInv = inverse(projectionMatrix);
@@ -62,7 +71,6 @@ export const MeshRefractionMaterial = shaderMaterial(
   ${shaderIntersectFunction}
   uniform BVH bvh;
   uniform float ior;
-  uniform vec3 color;
   uniform bool correctMips;
   uniform vec2 resolution;
   uniform float fresnel;
@@ -73,6 +81,7 @@ export const MeshRefractionMaterial = shaderMaterial(
   varying mat4 viewMatrixInv;
   varying vec3 viewDirection;  
   varying mat4 vInstanceMatrix;
+  varying vec3 vColor;
   
   float fresnelFunc(vec3 viewDirection, vec3 worldNormal) {
     return pow( 1.0 + dot( viewDirection, worldNormal), 10.0 );
@@ -142,11 +151,11 @@ export const MeshRefractionMaterial = shaderMaterial(
       float finalColorR = textureGradient(envMap, rayDirectionR, directionCamPerfect).r;
       float finalColorG = textureGradient(envMap, rayDirectionG, directionCamPerfect).g;
       float finalColorB = textureGradient(envMap, rayDirectionB, directionCamPerfect).b;
-      finalColor = vec3(finalColorR, finalColorG, finalColorB) * color;
+      finalColor = vec3(finalColorR, finalColorG, finalColorB) * vColor;
     #else
       rayDirection = totalInternalReflection(rayOrigin, rayDirection, normal, max(ior, 1.0), modelMatrixInverse);
       finalColor = textureGradient(envMap, rayDirection, directionCamPerfect).rgb;    
-      finalColor *= color;
+      finalColor *= vColor;
     #endif
     float nFresnel = fresnelFunc(viewDirection, normal) * fresnel;
     gl_FragColor = vec4(mix(finalColor, vec3(1.0), nFresnel), 1.0);      

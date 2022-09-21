@@ -1,9 +1,16 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { extend, useFrame } from '@react-three/fiber'
+import { ReactThreeFiber, extend, useFrame } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
 import Composer from 'react-composer'
-import { Position } from '../helpers/Position'
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      positionMesh: ReactThreeFiber.Object3DNode<PositionMesh, typeof PositionMesh>
+    }
+  }
+}
 
 type Api = {
   getParent: () => React.MutableRefObject<InstancedMesh>
@@ -16,7 +23,7 @@ type InstancesProps = JSX.IntrinsicElements['instancedMesh'] & {
   frames?: number
 }
 
-type InstanceProps = JSX.IntrinsicElements['position'] & {
+type InstanceProps = JSX.IntrinsicElements['positionMesh'] & {
   context?: React.Context<Api>
 }
 
@@ -25,25 +32,73 @@ type InstancedMesh = Omit<THREE.InstancedMesh, 'instanceMatrix' | 'instanceColor
   instanceColor: THREE.InstancedBufferAttribute
 }
 
+const _instanceLocalMatrix = /*@__PURE__*/ new THREE.Matrix4()
+const _instanceWorldMatrix = /*@__PURE__*/ new THREE.Matrix4()
+const _instanceIntersects: THREE.Intersection[] = /*@__PURE__*/ []
+const _mesh = /*@__PURE__*/ new THREE.Mesh()
+
+class PositionMesh extends THREE.Group {
+  color: THREE.Color
+  instance: React.MutableRefObject<THREE.InstancedMesh | undefined>
+  instanceKey: React.MutableRefObject<JSX.IntrinsicElements['positionMesh'] | undefined>
+  constructor() {
+    super()
+    this.color = new THREE.Color('white')
+    this.instance = { current: undefined }
+    this.instanceKey = { current: undefined }
+  }
+
+  // This will allow the virtual instance have bounds
+  get geometry() {
+    return this.instance.current?.geometry
+  }
+
+  // And this will allow the virtual instance to receive events
+  raycast(raycaster: THREE.Raycaster, intersects: THREE.Intersection[]) {
+    const parent = this.instance.current
+    if (!parent) return
+    if (!parent.geometry || !parent.material) return
+    _mesh.geometry = parent.geometry
+    const matrixWorld = parent.matrixWorld
+    let instanceId = parent.userData.instances.indexOf(this.instanceKey)
+    // If the instance wasn't found or exceeds the parents draw range, bail out
+    if (instanceId === -1 || instanceId > parent.count) return
+    // calculate the world matrix for each instance
+    parent.getMatrixAt(instanceId, _instanceLocalMatrix)
+    _instanceWorldMatrix.multiplyMatrices(matrixWorld, _instanceLocalMatrix)
+    // the mesh represents this single instance
+    _mesh.matrixWorld = _instanceWorldMatrix
+    _mesh.raycast(raycaster, _instanceIntersects)
+    // process the result of raycast
+    for (let i = 0, l = _instanceIntersects.length; i < l; i++) {
+      const intersect = _instanceIntersects[i]
+      intersect.instanceId = instanceId
+      intersect.object = this
+      intersects.push(intersect)
+    }
+    _instanceIntersects.length = 0
+  }
+}
+
 let i, instanceRef
-const globalContext = React.createContext<Api>(null!)
-const parentMatrix = new THREE.Matrix4()
-const instanceMatrix = new THREE.Matrix4()
-const tempMatrix = new THREE.Matrix4()
-const color = new THREE.Color()
-const translation = new THREE.Vector3()
-const rotation = new THREE.Quaternion()
-const scale = new THREE.Vector3()
+const globalContext = /*@__PURE__*/ React.createContext<Api>(null!)
+const parentMatrix = /*@__PURE__*/ new THREE.Matrix4()
+const instanceMatrix = /*@__PURE__*/ new THREE.Matrix4()
+const tempMatrix = /*@__PURE__*/ new THREE.Matrix4()
+const color = /*@__PURE__*/ new THREE.Color()
+const translation = /*@__PURE__*/ new THREE.Vector3()
+const rotation = /*@__PURE__*/ new THREE.Quaternion()
+const scale = /*@__PURE__*/ new THREE.Vector3()
 
 const Instance = React.forwardRef(({ context, children, ...props }: InstanceProps, ref) => {
-  React.useMemo(() => extend({ Position }), [])
-  const group = React.useRef<JSX.IntrinsicElements['position']>()
+  React.useMemo(() => extend({ PositionMesh }), [])
+  const group = React.useRef<JSX.IntrinsicElements['positionMesh']>()
   const { subscribe, getParent } = React.useContext(context || globalContext)
   React.useLayoutEffect(() => subscribe(group), [])
   return (
-    <position instance={getParent()} instanceKey={group} ref={mergeRefs([ref, group])} {...props}>
+    <positionMesh instance={getParent()} instanceKey={group} ref={mergeRefs([ref, group])} {...props}>
       {children}
-    </position>
+    </positionMesh>
   )
 })
 
@@ -58,7 +113,7 @@ const Instances = React.forwardRef<InstancedMesh, InstancesProps>(
     })
 
     const parentRef = React.useRef<InstancedMesh>(null!)
-    const [instances, setInstances] = React.useState<React.MutableRefObject<Position>[]>([])
+    const [instances, setInstances] = React.useState<React.MutableRefObject<PositionMesh>[]>([])
     const [[matrices, colors]] = React.useState(() => {
       const mArray = new Float32Array(limit * 16)
       for (i = 0; i < limit; i++) tempMatrix.identity().toArray(mArray, i * 16)

@@ -1,10 +1,18 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { extend, useFrame } from '@react-three/fiber'
+import { ReactThreeFiber, extend, useFrame } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
-import { Position } from '../helpers/Position'
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      positionPoint: ReactThreeFiber.Object3DNode<PositionPoint, typeof PositionPoint>
+    }
+  }
+}
 
 type Api = {
+  getParent: () => React.MutableRefObject<THREE.Points>
   subscribe: (ref) => void
 }
 
@@ -13,11 +21,69 @@ type PointsInstancesProps = JSX.IntrinsicElements['points'] & {
   limit?: number
 }
 
+const _inverseMatrix = /*@__PURE__*/ new THREE.Matrix4()
+const _ray = /*@__PURE__*/ new THREE.Ray()
+const _sphere = /*@__PURE__*/ new THREE.Sphere()
+const _position = /*@__PURE__*/ new THREE.Vector3()
+
+export class PositionPoint extends THREE.Group {
+  size: number
+  color: THREE.Color
+  instance: React.MutableRefObject<THREE.Points | undefined>
+  instanceKey: React.MutableRefObject<JSX.IntrinsicElements['positionPoint'] | undefined>
+  constructor() {
+    super()
+    this.size = 0
+    this.color = new THREE.Color('white')
+    this.instance = { current: undefined }
+    this.instanceKey = { current: undefined }
+  }
+
+  // This will allow the virtual instance have bounds
+  get geometry() {
+    return this.instance.current?.geometry
+  }
+
+  raycast(raycaster: THREE.Raycaster, intersects: THREE.Intersection[]) {
+    const parent = this.instance.current
+    if (!parent || !parent.geometry) return
+    const instanceId = parent.userData.instances.indexOf(this.instanceKey)
+    // If the instance wasn't found or exceeds the parents draw range, bail out
+    if (instanceId === -1 || instanceId > parent.geometry.drawRange.count) return
+
+    const threshold = raycaster.params.Points?.threshold ?? 1
+    _sphere.set(this.getWorldPosition(_position), threshold)
+    if (raycaster.ray.intersectsSphere(_sphere) === false) return
+
+    _inverseMatrix.copy(parent.matrixWorld).invert()
+    _ray.copy(raycaster.ray).applyMatrix4(_inverseMatrix)
+
+    const localThreshold = threshold / ((this.scale.x + this.scale.y + this.scale.z) / 3)
+    const localThresholdSq = localThreshold * localThreshold
+    const rayPointDistanceSq = _ray.distanceSqToPoint(_position)
+
+    if (rayPointDistanceSq < localThresholdSq) {
+      const intersectPoint = new THREE.Vector3()
+      _ray.closestPointToPoint(_position, intersectPoint)
+      intersectPoint.applyMatrix4(this.matrixWorld)
+      const distance = raycaster.ray.origin.distanceTo(intersectPoint)
+      if (distance < raycaster.near || distance > raycaster.far) return
+      intersects.push({
+        distance: distance,
+        distanceToRay: Math.sqrt(rayPointDistanceSq),
+        point: intersectPoint,
+        index: instanceId,
+        face: null,
+        object: this,
+      })
+    }
+  }
+}
+
 let i, positionRef
-const context = React.createContext<Api>(null!)
-const parentMatrix = new THREE.Matrix4()
-const position = new THREE.Vector3()
-const color = new THREE.Color()
+const context = /*@__PURE__*/ React.createContext<Api>(null!)
+const parentMatrix = /*@__PURE__*/ new THREE.Matrix4()
+const position = /*@__PURE__*/ new THREE.Vector3()
 
 /**
  * Instance implementation, relies on react + context to update the attributes based on the children of this component
@@ -25,7 +91,7 @@ const color = new THREE.Color()
 const PointsInstances = React.forwardRef<THREE.Points, PointsInstancesProps>(
   ({ children, range, limit = 1000, ...props }, ref) => {
     const parentRef = React.useRef<THREE.Points>(null!)
-    const [refs, setRefs] = React.useState<React.MutableRefObject<Position>[]>([])
+    const [refs, setRefs] = React.useState<React.MutableRefObject<PositionPoint>[]>([])
     const [[positions, colors, sizes]] = React.useState(() => [
       new Float32Array(limit * 3),
       Float32Array.from({ length: limit * 3 }, () => 1),
@@ -52,28 +118,15 @@ const PointsInstances = React.forwardRef<THREE.Points, PointsInstancesProps>(
         positionRef.matrixWorldNeedsUpdate = true
         positionRef.color.toArray(colors, i * 3)
         parentRef.current.geometry.attributes.color.needsUpdate = true
+        console.log(positionRef.size)
         sizes.set([positionRef.size], i)
         parentRef.current.geometry.attributes.size.needsUpdate = true
       }
     })
 
-    const events = React.useMemo(() => {
-      const events = {}
-      for (i = 0; i < refs.length; i++) Object.assign(events, (refs[i].current as any)?.__r3f.handlers)
-      return Object.keys(events).reduce(
-        (prev, key) => ({
-          ...prev,
-          [key]: (event) => {
-            const object = refs[event.index]?.current
-            return (object as any)?.__r3f?.handlers?.[key]({ ...event, object })
-          },
-        }),
-        {}
-      )
-    }, [children, refs])
-
     const api: Api = React.useMemo(
       () => ({
+        getParent: () => parentRef,
         subscribe: (ref) => {
           setRefs((refs) => [...refs, ref])
           return () => setRefs((refs) => refs.filter((item) => item.current !== ref.current))
@@ -83,7 +136,13 @@ const PointsInstances = React.forwardRef<THREE.Points, PointsInstancesProps>(
     )
 
     return (
-      <points matrixAutoUpdate={false} ref={mergeRefs([ref, parentRef])} {...events} {...props}>
+      <points
+        userData={{ instances: refs }}
+        matrixAutoUpdate={false}
+        ref={mergeRefs([ref, parentRef])}
+        raycast={() => null}
+        {...props}
+      >
         <bufferGeometry>
           <bufferAttribute
             attach="attributes-position"
@@ -113,15 +172,15 @@ const PointsInstances = React.forwardRef<THREE.Points, PointsInstancesProps>(
   }
 )
 
-export const Point = React.forwardRef(({ children, ...props }, ref) => {
-  React.useMemo(() => extend({ Position }), [])
+export const Point = React.forwardRef(({ children, ...props }: JSX.IntrinsicElements['positionPoint'], ref) => {
+  React.useMemo(() => extend({ PositionPoint }), [])
   const group = React.useRef()
-  const { subscribe } = React.useContext(context)
+  const { subscribe, getParent } = React.useContext(context)
   React.useLayoutEffect(() => subscribe(group), [])
   return (
-    <position ref={mergeRefs([ref, group])} {...props}>
+    <positionPoint instance={getParent()} instanceKey={group} ref={mergeRefs([ref, group])} {...props}>
       {children}
-    </position>
+    </positionPoint>
   )
 })
 

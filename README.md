@@ -48,7 +48,8 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#controls">PointerLockControls</a></li>
           <li><a href="#controls">FirstPersonControls</a></li>          
           <li><a href="#scrollcontrols">ScrollControls</a></li>
-          <li><a href="#presentationcontrols">PresentationControls</a></li>          
+          <li><a href="#presentationcontrols">PresentationControls</a></li>
+          <li><a href="#keyboardcontrols">KeyboardControls</a></li>
         </ul>
         <li><a href="#gizmos">Gizmos</a></li>
         <ul>
@@ -383,6 +384,79 @@ Semi-OrbitControls with spring-physics, polar zoom and snap-back, for presentati
 >
   <mesh />
 </PresentationControls>
+```
+
+#### KeyboardControls
+
+![](https://img.shields.io/badge/-Dom only-red)
+
+A rudimentary keyboard controller which distributes your defined data-model to the `useKeyboard` hook. It's a rather simple way to get started with keyboard input.
+
+```tsx
+type KeyboardControlsState = { [key: string]: boolean }
+
+type KeyboardControlsEntry = {
+  /** Name of the action */
+  name: string
+  /** The keys that define it, you can use either event.key, or event.code */
+  keys: string[]
+  /** If the event receives the keyup event, true by default */
+  up?: boolean
+}
+
+type KeyboardControlsProps = {
+  /** A map of named keys */
+  map: KeyboardControlsEntry[]
+  /** All children will be able to useKeyboardControls */
+  children: React.ReactNode
+  /** Optional onchange event */
+  onChange: (name: string, pressed: boolean, state: KeyboardControlsState) => void
+  /** Optional event source */
+  domElement?: HTMLElement
+}
+```
+
+You start by wrapping your app, or scene, into `<KeyboardControls>`.
+
+```jsx
+function App() {
+  return (
+    <KeyboardControls
+      map={[
+        { name: 'forward', keys: ['ArrowUp', 'w', 'W'] },
+        { name: 'backward', keys: ['ArrowDown', 's', 'S'] },
+        { name: 'leftward', keys: ['ArrowLeft', 'a', 'A'] },
+        { name: 'rightward', keys: ['ArrowRight', 'd', 'D'] },
+        { name: 'jump', keys: ['Space'] },
+      ]}>
+      <App />
+    </KeyboardControls>
+```
+
+You can either respond to input reactively, it uses zustand (width the `subscribeWithSelector` middleware) so all the rules apply:
+
+```jsx
+function Foo() {
+  const pressed = useKeyboardControls(state => foward)
+```
+
+Or transiently, either by `subscribe`, which is a function which returns a function to unsubscribe, so you can pair it with useEffect for cleanup, or `get`, which fetches fresh state non-reactively.
+
+```jsx
+function Foo() {
+  const [sub, get] = useKeyboardControls()
+
+  useEffect(() => {
+    return sub(state => state.forward, pressed = {
+      console.log('forward', pressed)
+    })
+  }, [])
+
+  useFrame(() => {
+    // Fetch fresh data from store
+    const pressed = get().backward
+  })
+}
 ```
 
 # Gizmos

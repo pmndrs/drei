@@ -4,6 +4,7 @@ export { useCursor } from './useCursor'
 export { Loader } from './Loader'
 export * from './ScrollControls'
 export * from './PresentationControls'
+export * from './KeyboardControls'
 export * from './Select'
 export * from '../core'
 

@@ -2198,7 +2198,7 @@ function App() {
       <PerformanceMonitor onIncline={() => setDpr(2)} onDecline={() => setDpr(1)} >
 ```
 
-You can also use the `onChange` callback to get notified when the average changes in whichever direction. This allows you to make gradual changes. It gives you a factor between 0 and 1, which is increased by incline and decreased by decline. The factor is initially 0.5 by default.
+You can also use the `onChange` callback to get notified when the average changes in whichever direction. This allows you to make gradual changes. It gives you a factor between 0 and 1, which is increased by incline and decreased by decline. The factor is initially 0.5 by default. If your app starts with lowest defaults and gradually increases quality set the factor to 0. If it starts with highest defaults and decreases quality, set it to 1. If it starts in the middle and can either increase or decrease, set it to 0.5.
 
 ```jsx
 import round from 'lodash/round'

@@ -27,6 +27,7 @@ const presets = {
 type ControlsProto = { update(): void; target: THREE.Vector3 }
 
 type Props = JSX.IntrinsicElements['group'] & {
+  fallback?: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal | null
   shadows?: boolean
   adjustCamera?: boolean
   environment?: PresetsType | null
@@ -55,6 +56,7 @@ export function Stage({
   intensity = 1,
   preset = 'rembrandt',
   shadowBias = 0,
+  fallback = null,
   contactShadow = {
     blur: 2,
     opacity: 0.5,
@@ -69,6 +71,14 @@ export function Stage({
   const outer = React.useRef<THREE.Group>(null!)
   const inner = React.useRef<THREE.Group>(null!)
   const [{ radius, width, height }, set] = React.useState({ radius: 0, width: 0, height: 0 })
+  const [environmentPreset, setEnvironmentPreset] = React.useState<PresetsType | null>(environment)
+  const [, startTransition] = React.useTransition()
+
+  React.useEffect(() => {
+    startTransition(() => {
+      setEnvironmentPreset(environment)
+    })
+  }, [environment])
 
   React.useLayoutEffect(() => {
     outer.current.position.set(0, 0, 0)
@@ -105,7 +115,7 @@ export function Stage({
         <group ref={inner}>{children}</group>
       </group>
       {contactShadow && <ContactShadows scale={radius * 2} far={radius / 2} {...contactShadow} />}
-      {environment && <Environment preset={environment} />}
+      {environmentPreset && <Environment preset={environmentPreset} />}
       <ambientLight intensity={intensity / 3} />
       <spotLight
         penumbra={1}

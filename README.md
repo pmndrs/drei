@@ -492,7 +492,7 @@ Make sure to set the `makeDefault` prop on your controls, in that case you do no
   <a href="https://codesandbox.io/s/om2ff8"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/om2ff8/screenshot.png" alt="demo"/></a>
 </p>
 
-Controls for rotating and translating objects. These controls will stick to the object the transform and by offsetting or anchoring it forms a pivot. This control has HTLM annotations for some transforms and supports `[tab]` for rounded values while dragging.
+Controls for rotating and translating objects. These controls will stick to the object the transform and by offsetting or anchoring it forms a pivot. This control has HTML annotations for some transforms and supports `[tab]` for rounded values while dragging.
 
 ```tsx
 type PivotControlsProps = {
@@ -574,7 +574,7 @@ You can wrap objects which then receive a transform gizmo.
 You could also reference the object which might make it easier to exchange the target. Now the object does not have to be part of the same sub-graph. References can be plain objects or React.MutableRefObjects.
 
 ```jsx
-<TransformControls object={mesh} mode="translate">
+<TransformControls object={mesh} mode="translate" />
 <mesh ref={mesh} />
 ```
 

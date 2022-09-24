@@ -447,7 +447,7 @@ function Foo() {
   const [sub, get] = useKeyboardControls()
 
   useEffect(() => {
-    return sub(state => state.forward, pressed = {
+    return sub(state => state.forward, pressed => {
       console.log('forward', pressed)
     })
   }, [])

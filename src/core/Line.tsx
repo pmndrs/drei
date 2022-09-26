@@ -4,7 +4,7 @@ import { ReactThreeFiber, useThree } from '@react-three/fiber'
 import { LineGeometry, LineMaterial, LineMaterialParameters, Line2 } from 'three-stdlib'
 
 export type LineProps = {
-  points: Array<Vector3 | [number, number, number]>
+  points: Array<Vector3 | Vector2 | [number, number, number] | [number, number]>
   vertexColors?: Array<Color | [number, number, number]>
   lineWidth?: number
 } & Omit<LineMaterialParameters, 'vertexColors' | 'color'> &
@@ -23,7 +23,15 @@ export const Line = React.forwardRef<Line2, LineProps>(function Line(
 
   const lineGeom = React.useMemo(() => {
     const geom = new LineGeometry()
-    const pValues = points.map((p) => (p instanceof Vector3 ? p.toArray() : p))
+    const pValues = points.map((p) =>
+      p instanceof Vector3
+        ? [p.x, p.y, p.z]
+        : p instanceof Vector2
+        ? [p.x, p.y, 0]
+        : p.length === 3
+        ? [p[0], p[1], p[2]]
+        : [p[0], p[1], 0]
+    )
     geom.setPositions(pValues.flat())
 
     if (vertexColors) {

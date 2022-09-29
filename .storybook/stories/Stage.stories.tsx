@@ -29,6 +29,7 @@ function StageStory() {
 
   return (
     <React.Suspense fallback={null}>
+      <color attach="background" args={['white']} />
       <Stage
         contactShadow={object('ContactShadow', {
           blur: 2,

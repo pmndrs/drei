@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import * as React from 'react'
 
 export type PivotContext = {
-  onDragStart: () => void
+  onDragStart: (component: 'Arrow' | 'Slider' | 'Rotator') => void
   onDrag: (mdW: THREE.Matrix4) => void
   onDragEnd: () => void
   translation: { current: [number, number, number] }

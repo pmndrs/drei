@@ -86,7 +86,7 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
       clickInfo.current = { clickPoint, e1, e2, plane }
       offsetX0.current = translation.current[(axis + 1) % 3]
       offsetY0.current = translation.current[(axis + 2) % 3]
-      onDragStart()
+      onDragStart('Slider')
       camControls && (camControls.enabled = false)
       // @ts-ignore
       e.target.setPointerCapture(e.pointerId)

@@ -95,7 +95,7 @@ type PivotControlsProps = {
   /** CSS Classname applied to the HTML annotations */
   annotationsClass?: string
   /** Drag start event */
-  onDragStart?: () => void
+  onDragStart?: (component: 'Arrow' | 'Slider' | 'Rotator') => void
   /** Drag event */
   onDrag?: (l: THREE.Matrix4, deltaL: THREE.Matrix4, w: THREE.Matrix4, deltaW: THREE.Matrix4) => void
   /** Drag end event */
@@ -176,10 +176,10 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
 
     const config = React.useMemo(
       () => ({
-        onDragStart: () => {
+        onDragStart: (component: 'Arrow' | 'Slider' | 'Rotator') => {
           mL0.copy(ref.current.matrix)
           mW0.copy(ref.current.matrixWorld)
-          onDragStart && onDragStart()
+          onDragStart && onDragStart(component)
           invalidate()
         },
         onDrag: (mdW: THREE.Matrix4) => {

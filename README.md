@@ -643,7 +643,7 @@ Renders a THREE.Line2.
 
 ```jsx
 <Line
-  points={[[0, 0, 0], ...]}       // Array of points, Array<Vector3 | Vector2 | [number, number, number] | [number, number]>
+  points={[[0, 0, 0], ...]}       // Array of points, Array<Vector3 | Vector2 | [number, number, number] | [number, number] | number>
   color="black"                   // Default
   lineWidth={1}                   // In pixels (default)
   dashed={false}                  // Default

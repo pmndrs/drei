@@ -118,7 +118,6 @@ const PointsInstances = React.forwardRef<THREE.Points, PointsInstancesProps>(
         positionRef.matrixWorldNeedsUpdate = true
         positionRef.color.toArray(colors, i * 3)
         parentRef.current.geometry.attributes.color.needsUpdate = true
-        console.log(positionRef.size)
         sizes.set([positionRef.size], i)
         parentRef.current.geometry.attributes.size.needsUpdate = true
       }

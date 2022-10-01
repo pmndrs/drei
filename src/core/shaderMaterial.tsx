@@ -25,7 +25,7 @@ export function shaderMaterial(
 ) {
   const material = class extends THREE.ShaderMaterial {
     public key: string = ''
-    constructor() {
+    constructor(parameters = {}) {
       const entries = Object.entries(uniforms)
       // Create unforms and shaders
       super({
@@ -38,6 +38,7 @@ export function shaderMaterial(
         }, {}),
         vertexShader,
         fragmentShader,
+        ...parameters,
       })
       // Create getter/setters
       entries.forEach(([name]) =>

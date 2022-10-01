@@ -1,5 +1,6 @@
+import * as THREE from 'three'
 import * as React from 'react'
-import { Color, Group, MeshStandardMaterial } from 'three'
+import { Color, Group } from 'three'
 import mergeRefs from 'react-merge-refs'
 import { MarchingCubes as MarchingCubesImpl } from 'three-stdlib'
 import { useFrame } from '@react-three/fiber'
@@ -31,16 +32,10 @@ export const MarchingCubes = React.forwardRef(
   ) => {
     const marchingCubesRef = React.useRef<MarchingCubesImpl>(null!)
     const marchingCubes = React.useMemo(
-      () => new MarchingCubesImpl(resolution, new MeshStandardMaterial(), enableUvs, enableColors, maxPolyCount),
+      () => new MarchingCubesImpl(resolution, null as unknown as THREE.Material, enableUvs, enableColors, maxPolyCount),
       [resolution, maxPolyCount, enableUvs, enableColors]
     )
-
-    const api = React.useMemo(
-      () => ({
-        getParent: () => marchingCubesRef,
-      }),
-      []
-    )
+    const api = React.useMemo(() => ({ getParent: () => marchingCubesRef }), [])
 
     useFrame(() => {
       marchingCubes.reset()
@@ -63,24 +58,16 @@ type MarchingCubeProps = {
 } & JSX.IntrinsicElements['group']
 
 export const MarchingCube = React.forwardRef(
-  ({ strength = 0.5, subtract = 12, color = new Color('#fff'), ...props }: MarchingCubeProps, ref) => {
+  ({ strength = 0.5, subtract = 12, color, ...props }: MarchingCubeProps, ref) => {
     const { getParent } = React.useContext(globalContext)
     const parentRef = React.useMemo(() => getParent(), [getParent])
     const cubeRef = React.useRef<Group>()
-
-    useFrame(() => {
+    const vec = new THREE.Vector3()
+    useFrame((state) => {
       if (!parentRef.current || !cubeRef.current) return
-
-      parentRef.current.addBall(
-        cubeRef.current.position.x,
-        cubeRef.current.position.y,
-        cubeRef.current.position.z,
-        strength,
-        subtract,
-        color
-      )
+      cubeRef.current.getWorldPosition(vec)
+      parentRef.current.addBall(0.5 + vec.x * 0.5, 0.5 + vec.y * 0.5, 0.5 + vec.z * 0.5, strength, subtract, color)
     })
-
     return <group ref={mergeRefs([ref, cubeRef])} {...props} />
   }
 )

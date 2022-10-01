@@ -20,20 +20,21 @@ export const Line = React.forwardRef<Line2, LineProps>(function Line(
   const size = useThree((state) => state.size)
   const [line2] = React.useState(() => new Line2())
   const [lineMaterial] = React.useState(() => new LineMaterial())
-
   const lineGeom = React.useMemo(() => {
     const geom = new LineGeometry()
-    const pValues = points.map((p) =>
-      p instanceof Vector3
+    const pValues = points.map((p) => {
+      const isArray = Array.isArray(p)
+      return p instanceof Vector3
         ? [p.x, p.y, p.z]
         : p instanceof Vector2
         ? [p.x, p.y, 0]
-        : Array.isArray(p) && p.length === 3
+        : isArray && p.length === 3
         ? [p[0], p[1], p[2]]
-        : Array.isArray(p) && p.length === 2
+        : isArray && p.length === 2
         ? [p[0], p[1], 0]
         : p
-    )
+    })
+
     geom.setPositions(pValues.flat())
 
     if (vertexColors) {

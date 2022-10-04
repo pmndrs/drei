@@ -1,8 +1,8 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { ThreeEvent, useThree } from '@react-three/fiber'
-import { Line } from '../Line'
-import { Html } from '../../web/Html'
+import { Line } from '../../core/Line'
+import { Html } from '../Html'
 import { context } from './context'
 
 const vec1 = new THREE.Vector3()

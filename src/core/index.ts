@@ -35,7 +35,6 @@ export * from './PointerLockControls'
 export * from './FirstPersonControls'
 
 // Gizmos
-export * from './pivotControls'
 export * from './GizmoHelper'
 export * from './GizmoViewcube'
 export * from './GizmoViewport'

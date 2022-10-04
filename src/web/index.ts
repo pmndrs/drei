@@ -10,3 +10,6 @@ export * from '../core'
 
 // Portal
 export * from './View'
+
+// Gizmos
+export * from './pivotControls'

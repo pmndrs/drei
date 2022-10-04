@@ -114,13 +114,15 @@ export const View = ({ track, index = 1, frames = Infinity, children }: ViewProp
   }, [])
 
   return (
-    ready &&
-    createPortal(
-      <Container canvasSize={size} frames={frames} scene={scene} track={track} rect={rect} index={index}>
-        {children}
-      </Container>,
-      virtualScene,
-      { events: { compute, priority: index }, size: { width: rect.current.width, height: rect.current.height } }
-    )
+    <>
+      {ready &&
+        createPortal(
+          <Container canvasSize={size} frames={frames} scene={scene} track={track} rect={rect} index={index}>
+            {children}
+          </Container>,
+          virtualScene,
+          { events: { compute, priority: index }, size: { width: rect.current.width, height: rect.current.height } }
+        )}
+    </>
   )
 }

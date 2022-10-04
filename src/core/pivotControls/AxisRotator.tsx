@@ -110,12 +110,12 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
       const normal = new THREE.Vector3().setFromMatrixColumn(objRef.current.matrixWorld, 2).normalize()
       const plane = new THREE.Plane().setFromNormalAndCoplanarPoint(normal, origin)
       clickInfo.current = { clickPoint, origin, e1, e2, normal, plane }
-      onDragStart('Rotator')
+      onDragStart({ component: 'Rotator', axis, origin, directions: [e1, e2, normal] })
       camControls && (camControls.enabled = false)
       // @ts-ignore
       e.target.setPointerCapture(e.pointerId)
     },
-    [camControls, onDragStart]
+    [camControls, onDragStart, axis]
   )
 
   const onPointerMove = React.useCallback(

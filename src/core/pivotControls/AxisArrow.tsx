@@ -75,10 +75,11 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
       e.stopPropagation()
       const rotation = new THREE.Matrix4().extractRotation(objRef.current.matrixWorld)
       const clickPoint = e.point.clone()
+      const origin = new THREE.Vector3().setFromMatrixPosition(objRef.current.matrixWorld)
       const dir = direction.clone().applyMatrix4(rotation).normalize()
       clickInfo.current = { clickPoint, dir }
       offset0.current = translation.current[axis]
-      onDragStart('Arrow')
+      onDragStart({ component: 'Arrow', axis, origin, directions: [dir] })
       camControls && (camControls.enabled = false)
       // @ts-ignore - setPointerCapture is not in the type definition
       e.target.setPointerCapture(e.pointerId)

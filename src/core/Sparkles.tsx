@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { PointsProps, useThree, useFrame, extend, Node } from '@react-three/fiber'
-import { shaderMaterial } from '.'
+import { shaderMaterial } from './shaderMaterial'
 
 // eslint-disable-next-line
 // @ts-ignore

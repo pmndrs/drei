@@ -3,7 +3,7 @@ import * as React from 'react'
 import { createPortal, useFrame, useThree } from '@react-three/fiber'
 import { useFBO } from './useFBO'
 
-type Props = THREE.Texture & {
+type Props = JSX.IntrinsicElements['texture'] & {
   /** Optional width of the texture, defaults to viewport bounds */
   width?: number
   /** Optional height of the texture, defaults to viewport bounds */

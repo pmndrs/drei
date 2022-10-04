@@ -6,7 +6,7 @@ import * as THREE from 'three'
 import { useFrame, useThree } from '@react-three/fiber'
 import { HorizontalBlurShader, VerticalBlurShader } from 'three-stdlib'
 
-type Props = Omit<JSX.IntrinsicElements['group'], 'scale'> & {
+export type ContactShadowsProps = Omit<JSX.IntrinsicElements['group'], 'scale'> & {
   opacity?: number
   width?: number
   height?: number
@@ -36,7 +36,7 @@ export const ContactShadows = React.forwardRef(
       depthWrite = false,
       renderOrder,
       ...props
-    }: Props,
+    }: ContactShadowsProps,
     ref
   ) => {
     const scene = useThree((state) => state.scene)

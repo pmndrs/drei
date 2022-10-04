@@ -5,7 +5,7 @@ import mergeRefs from 'react-merge-refs'
 import { Line, LineProps } from './Line'
 import { Object3DNode } from '@react-three/fiber'
 
-type Props = Omit<LineProps, 'points' | 'ref'> & {
+export type QuadraticBezierLineProps = Omit<LineProps, 'points' | 'ref'> & {
   start: Vector3 | [number, number, number]
   end: Vector3 | [number, number, number]
   mid?: Vector3 | [number, number, number]
@@ -21,7 +21,7 @@ type Line2Props = Object3DNode<Line2, typeof Line2> & {
 }
 
 const v = new Vector3()
-export const QuadraticBezierLine = React.forwardRef<Line2Props, Props>(function QuadraticBezierLine(
+export const QuadraticBezierLine = React.forwardRef<Line2Props, QuadraticBezierLineProps>(function QuadraticBezierLine(
   { start = [0, 0, 0], end = [0, 0, 0], mid, segments = 20, ...rest },
   forwardref
 ) {

@@ -3,7 +3,7 @@ import { CubicBezierCurve3, Vector3 } from 'three'
 import { Line2 } from 'three/examples/jsm/lines/Line2'
 import { Line, LineProps } from './Line'
 
-type Props = Omit<LineProps, 'points' | 'ref'> & {
+export type CubicBezierLineProps = Omit<LineProps, 'points' | 'ref'> & {
   start: Vector3 | [number, number, number]
   end: Vector3 | [number, number, number]
   midA: Vector3 | [number, number, number]
@@ -11,7 +11,7 @@ type Props = Omit<LineProps, 'points' | 'ref'> & {
   segments?: number
 }
 
-export const CubicBezierLine = React.forwardRef<Line2, Props>(function CubicBezierLine(
+export const CubicBezierLine = React.forwardRef<Line2, CubicBezierLineProps>(function CubicBezierLine(
   { start, end, midA, midB, segments = 20, ...rest },
   ref
 ) {

@@ -5,6 +5,8 @@ import { ArcballControls as ArcballControlsImpl } from 'three-stdlib'
 
 import type { Event, OrthographicCamera, PerspectiveCamera } from 'three'
 
+export { ArcballControlsImpl }
+
 export type ArcballControlsProps = Omit<
   ReactThreeFiber.Overwrite<
     ReactThreeFiber.Object3DNode<ArcballControlsImpl, typeof ArcballControlsImpl>,

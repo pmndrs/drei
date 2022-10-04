@@ -2,6 +2,8 @@ import * as React from 'react'
 import { EventManager, Object3DNode, useFrame, useThree } from '@react-three/fiber'
 import { FirstPersonControls as FirstPersonControlImpl } from 'three-stdlib'
 
+export { FirstPersonControlImpl }
+
 export type FirstPersonControlsProps = Object3DNode<FirstPersonControlImpl, typeof FirstPersonControlImpl> & {
   domElement?: HTMLElement
 }

@@ -3,7 +3,7 @@ import * as React from 'react'
 import { createPortal, useFrame, useThree } from '@react-three/fiber'
 import { useFBO } from './useFBO'
 
-type Props = JSX.IntrinsicElements['texture'] & {
+export type RenderTextureProps = JSX.IntrinsicElements['texture'] & {
   /** Optional width of the texture, defaults to viewport bounds */
   width?: number
   /** Optional height of the texture, defaults to viewport bounds */
@@ -20,9 +20,9 @@ type Props = JSX.IntrinsicElements['texture'] & {
   children: React.ReactNode
 }
 
-export const RenderTexture = React.forwardRef(
+export const RenderTexture = React.forwardRef<THREE.Texture, RenderTextureProps>(
   (
-    { children, width, height, samples = 8, renderPriority = 0, eventPriority = 0, frames = Infinity, ...props }: Props,
+    { children, width, height, samples = 8, renderPriority = 0, eventPriority = 0, frames = Infinity, ...props },
     forwardRef
   ) => {
     const { size, viewport } = useThree()

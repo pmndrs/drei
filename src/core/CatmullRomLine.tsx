@@ -3,14 +3,14 @@ import { CatmullRomCurve3, Color, Vector3 } from 'three'
 import { Line2 } from 'three/examples/jsm/lines/Line2'
 import { Line, LineProps } from './Line'
 
-type Props = Omit<LineProps, 'ref'> & {
+export type CatmullRomLineProps = Omit<LineProps, 'ref'> & {
   closed?: boolean
   curveType?: 'centripetal' | 'chordal' | 'catmullrom'
   tension?: number
   segments?: number
 }
 
-export const CatmullRomLine = React.forwardRef<Line2, Props>(function CatmullRomLine(
+export const CatmullRomLine = React.forwardRef<Line2, CatmullRomLineProps>(function CatmullRomLine(
   { points, closed = false, curveType = 'centripetal', tension = 0.5, segments = 20, vertexColors, ...rest },
   ref
 ) {

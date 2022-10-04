@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Mesh, Color, DoubleSide } from 'three'
 
-type Props = JSX.IntrinsicElements['mesh'] & {
+export type ShadowProps = JSX.IntrinsicElements['mesh'] & {
   colorStop?: number
   fog?: boolean
   color?: Color | number | string
@@ -9,9 +9,9 @@ type Props = JSX.IntrinsicElements['mesh'] & {
   depthWrite?: boolean
 }
 
-export const Shadow = React.forwardRef(
+export const Shadow = React.forwardRef<Mesh, ShadowProps>(
   (
-    { fog = false, renderOrder, depthWrite = false, colorStop = 0.0, color = 'black', opacity = 0.5, ...props }: Props,
+    { fog = false, renderOrder, depthWrite = false, colorStop = 0.0, color = 'black', opacity = 0.5, ...props },
     ref
   ) => {
     const canvas = React.useMemo(() => {
@@ -34,7 +34,7 @@ export const Shadow = React.forwardRef(
       return canvas
     }, [color, colorStop])
     return (
-      <mesh renderOrder={renderOrder} ref={ref as React.MutableRefObject<Mesh>} rotation-x={-Math.PI / 2} {...props}>
+      <mesh renderOrder={renderOrder} ref={ref} rotation-x={-Math.PI / 2} {...props}>
         <planeGeometry />
         <meshBasicMaterial transparent opacity={opacity} fog={fog} depthWrite={depthWrite} side={DoubleSide}>
           <canvasTexture attach="map" args={[canvas]} />

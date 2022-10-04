@@ -3,6 +3,8 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { MapControls as MapControlsImpl } from 'three-stdlib'
 
+export { MapControlsImpl }
+
 export type MapControlsProps = ReactThreeFiber.Overwrite<
   ReactThreeFiber.Object3DNode<MapControlsImpl, typeof MapControlsImpl>,
   {

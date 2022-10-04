@@ -37,7 +37,7 @@ type TransformPayload = SamplePayload & {
   sampledMesh: Mesh
 }
 
-type Props = {
+export type SamplerProps = {
   /**
    * The mesh that will be used to sample.
    * Does not need to be in the scene graph.
@@ -155,7 +155,7 @@ export function Sampler({
   mesh,
   count = 16,
   ...props
-}: React.PropsWithChildren<Props & GroupProps>) {
+}: React.PropsWithChildren<SamplerProps & GroupProps>) {
   const group = React.useRef<Group>(null!)
   const instancedRef = React.useRef<InstancedMesh>(null!)
   const meshToSampleRef = React.useRef<Mesh>(null!)

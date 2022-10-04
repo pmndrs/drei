@@ -26,7 +26,7 @@ const presets = {
 
 type ControlsProto = { update(): void; target: THREE.Vector3 }
 
-type Props = JSX.IntrinsicElements['group'] & {
+export type StageProps = JSX.IntrinsicElements['group'] & {
   shadows?: boolean
   adjustCamera?: boolean
   environment?: PresetsType | null
@@ -61,7 +61,7 @@ export function Stage({
     position: [0, 0, 0],
   },
   ...props
-}: Props) {
+}: StageProps) {
   const config = presets[preset]
   const camera = useThree((state) => state.camera)
   // @ts-expect-error new in @react-three/fiber@7.0.5

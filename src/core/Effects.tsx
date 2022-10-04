@@ -4,7 +4,7 @@ import { ReactThreeFiber, extend, useThree, useFrame } from '@react-three/fiber'
 import { EffectComposer, RenderPass, ShaderPass, GammaCorrectionShader } from 'three-stdlib'
 import mergeRefs from 'react-merge-refs'
 
-type Props = ReactThreeFiber.Node<EffectComposer, typeof EffectComposer> & {
+export type EffectsProps = ReactThreeFiber.Node<EffectComposer, typeof EffectComposer> & {
   multisamping?: number
   encoding?: number
   type?: number
@@ -36,7 +36,7 @@ export const isWebGL2Available = () => {
   }
 }
 
-export const Effects = React.forwardRef(
+export const Effects = React.forwardRef<EffectComposer, EffectsProps>(
   (
     {
       children,
@@ -51,7 +51,7 @@ export const Effects = React.forwardRef(
       encoding,
       type,
       ...props
-    }: Props,
+    },
     ref
   ) => {
     React.useMemo(() => extend({ EffectComposer, RenderPass, ShaderPass }), [])

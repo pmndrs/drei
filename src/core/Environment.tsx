@@ -20,7 +20,9 @@ import { presetsObj, PresetsType } from '../helpers/environment-assets'
 
 const CUBEMAP_ROOT = 'https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/hdris/'
 
-type Props = {
+export { GroundProjectedEnvImpl }
+
+export interface EnvironmentProps {
   children?: React.ReactNode
   frames?: number
   near?: number
@@ -47,7 +49,7 @@ const isRef = (obj: any): obj is React.MutableRefObject<THREE.Scene> => obj.curr
 const resolveScene = (scene: THREE.Scene | React.MutableRefObject<THREE.Scene>) =>
   isRef(scene) ? scene.current : scene
 
-export function EnvironmentMap({ scene, background = false, map }: Props) {
+export function EnvironmentMap({ scene, background = false, map }: EnvironmentProps) {
   const defaultScene = useThree((state) => state.scene)
   React.useLayoutEffect(() => {
     if (map) {
@@ -71,7 +73,7 @@ export function useEnvironment({
   preset = undefined,
   encoding = undefined,
   extensions,
-}: Partial<Props>) {
+}: Partial<EnvironmentProps>) {
   if (preset) {
     if (!(preset in presetsObj)) throw new Error('Preset must be one of: ' + Object.keys(presetsObj).join(', '))
     files = presetsObj[preset]
@@ -99,7 +101,7 @@ export function useEnvironment({
   return texture
 }
 
-export function EnvironmentCube({ background = false, scene, ...rest }: Props) {
+export function EnvironmentCube({ background = false, scene, ...rest }: EnvironmentProps) {
   const texture = useEnvironment(rest)
 
   const defaultScene = useThree((state) => state.scene)
@@ -130,7 +132,7 @@ export function EnvironmentPortal({
   path,
   preset = undefined,
   extensions,
-}: Props) {
+}: EnvironmentProps) {
   const gl = useThree((state) => state.gl)
   const defaultScene = useThree((state) => state.scene)
   const camera = React.useRef<CubeCamera>(null!)
@@ -189,7 +191,7 @@ declare global {
   }
 }
 
-function EnvironmentGround(props: Props) {
+function EnvironmentGround(props: EnvironmentProps) {
   const textureDefault = useEnvironment(props)
   const texture = props.map || textureDefault
 
@@ -210,7 +212,7 @@ function EnvironmentGround(props: Props) {
   )
 }
 
-export function Environment(props: Props) {
+export function Environment(props: EnvironmentProps) {
   return props.ground ? (
     <EnvironmentGround {...props} />
   ) : props.map ? (

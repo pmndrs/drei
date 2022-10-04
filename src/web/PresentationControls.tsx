@@ -5,7 +5,7 @@ import { a, useSpring } from '@react-spring/three'
 import { useGesture } from '@use-gesture/react'
 import { SpringConfig } from '@react-spring/core'
 
-type Props = {
+export type PresentationControlsProps = {
   snap?: Boolean | SpringConfig
   global?: boolean
   cursor?: boolean
@@ -29,7 +29,7 @@ export function PresentationControls({
   polar = [0, Math.PI / 2],
   azimuth = [-Infinity, Infinity],
   config = { mass: 1, tension: 170, friction: 26 },
-}: Props) {
+}: PresentationControlsProps) {
   const { size, gl } = useThree()
   const rPolar = React.useMemo(
     () => [rotation[0] + polar[0], rotation[0] + polar[1]],

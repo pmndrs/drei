@@ -5,6 +5,8 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { TransformControls as TransformControlsImpl } from 'three-stdlib'
 
+export { TransformControlsImpl }
+
 type ControlsProto = {
   enabled: boolean
 }

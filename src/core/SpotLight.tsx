@@ -5,7 +5,9 @@ import { Mesh, DepthTexture, Vector3, CylinderGeometry, Matrix4, SpotLight as Sp
 import { useFrame, useThree } from '@react-three/fiber'
 import { SpotLightMaterial } from '../materials/SpotLightMaterial'
 
-type SpotLightProps = JSX.IntrinsicElements['spotLight'] & {
+export { SpotLightImpl }
+
+export type SpotLightProps = JSX.IntrinsicElements['spotLight'] & {
   depthBuffer?: DepthTexture
   attenuation?: number
   anglePower?: number

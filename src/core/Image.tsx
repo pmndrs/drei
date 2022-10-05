@@ -4,7 +4,7 @@ import { Color, extend, useThree } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
 import { useTexture } from './useTexture'
 
-export type ImageProps = JSX.IntrinsicElements['mesh'] & {
+export type ImageProps = Omit<JSX.IntrinsicElements['mesh'], 'scale'> & {
   segments?: number
   scale?: number | [number, number]
   color?: Color

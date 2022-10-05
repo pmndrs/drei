@@ -21,7 +21,7 @@ type Props = {
   steps?: number
 } & Omit<JSX.IntrinsicElements['mesh'], 'args'>
 
-export const RoundedBox = React.forwardRef<THREE.Mesh<THREE.ExtrudeGeometry>, Props>(function RoundedBox(
+export const RoundedBox = React.forwardRef<THREE.Object3D, Props>(function RoundedBox(
   { args: [width = 1, height = 1, depth = 1] = [], radius = 0.05, steps = 1, smoothness = 4, children, ...rest },
   ref
 ) {

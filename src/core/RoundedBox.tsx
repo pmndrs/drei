@@ -1,11 +1,11 @@
 import * as React from 'react'
-import { Mesh, Shape, ExtrudeGeometry } from 'three'
+import * as THREE from 'three'
 import { NamedArrayTuple } from '../helpers/ts-utils'
 
 const eps = 0.00001
 
 function createShape(width: number, height: number, radius0: number) {
-  const shape = new Shape()
+  const shape = new THREE.Shape()
   const radius = radius0 - eps
   shape.absarc(eps, eps, eps, -Math.PI / 2, -Math.PI, true)
   shape.absarc(eps, height - radius * 2, eps, Math.PI, Math.PI / 2, true)
@@ -21,7 +21,7 @@ type Props = {
   steps?: number
 } & Omit<JSX.IntrinsicElements['mesh'], 'args'>
 
-export const RoundedBox = React.forwardRef<Mesh, Props>(function RoundedBox(
+export const RoundedBox = React.forwardRef<THREE.Mesh<THREE.ExtrudeGeometry>, Props>(function RoundedBox(
   { args: [width = 1, height = 1, depth = 1] = [], radius = 0.05, steps = 1, smoothness = 4, children, ...rest },
   ref
 ) {
@@ -38,7 +38,7 @@ export const RoundedBox = React.forwardRef<Mesh, Props>(function RoundedBox(
     }),
     [depth, radius, smoothness]
   )
-  const geomRef = React.useRef<ExtrudeGeometry>()
+  const geomRef = React.useRef<THREE.ExtrudeGeometry>()
 
   React.useLayoutEffect(() => {
     if (geomRef.current) {

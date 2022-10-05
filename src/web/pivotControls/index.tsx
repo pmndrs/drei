@@ -6,7 +6,7 @@ import { MeshLine, MeshLineMaterial } from 'meshline'
 import { AxisArrow } from './AxisArrow'
 import { PlaneSlider } from './PlaneSlider'
 import { AxisRotator } from './AxisRotator'
-import { context } from './context'
+import { context, OnDragStartProps } from './context'
 
 const tV0 = new THREE.Vector3()
 const tV1 = new THREE.Vector3()
@@ -95,7 +95,7 @@ type PivotControlsProps = {
   /** CSS Classname applied to the HTML annotations */
   annotationsClass?: string
   /** Drag start event */
-  onDragStart?: () => void
+  onDragStart?: (props: OnDragStartProps) => void
   /** Drag event */
   onDrag?: (l: THREE.Matrix4, deltaL: THREE.Matrix4, w: THREE.Matrix4, deltaW: THREE.Matrix4) => void
   /** Drag end event */
@@ -176,10 +176,10 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
 
     const config = React.useMemo(
       () => ({
-        onDragStart: () => {
+        onDragStart: (props: OnDragStartProps) => {
           mL0.copy(ref.current.matrix)
           mW0.copy(ref.current.matrixWorld)
-          onDragStart && onDragStart()
+          onDragStart && onDragStart(props)
           invalidate()
         },
         onDrag: (mdW: THREE.Matrix4) => {

@@ -19,7 +19,7 @@ type KeyboardControlsProps = {
   /** All children will be able to useKeyboardControls */
   children: React.ReactNode
   /** Optional onchange event */
-  onChange: (name: string, pressed: boolean, state: KeyboardControlsState) => void
+  onChange?: (name: string, pressed: boolean, state: KeyboardControlsState) => void
   /** Optional event source */
   domElement?: HTMLElement
 }

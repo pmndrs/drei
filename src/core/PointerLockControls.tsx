@@ -15,17 +15,19 @@ export type PointerLockControlsProps = ReactThreeFiber.Object3DNode<
   onChange?: (e?: THREE.Event) => void
   onLock?: (e?: THREE.Event) => void
   onUnlock?: (e?: THREE.Event) => void
+  makeDefault?: boolean
 }
 
 export const PointerLockControls = React.forwardRef<PointerLockControlsImpl, PointerLockControlsProps>(
-  ({ domElement, selector, onChange, onLock, onUnlock, enabled = true, ...props }, ref) => {
+  ({ domElement, selector, onChange, onLock, onUnlock, enabled = true, makeDefault, ...props }, ref) => {
     const { camera, ...rest } = props
-    const get = useThree((state) => state.get)
     const setEvents = useThree((state) => state.setEvents)
     const gl = useThree((state) => state.gl)
     const defaultCamera = useThree((state) => state.camera)
     const invalidate = useThree((state) => state.invalidate)
     const events = useThree((state) => state.events) as EventManager<HTMLElement>
+    const get = useThree((state) => state.get)
+    const set = useThree((state) => state.set)
     const explCamera = camera || defaultCamera
     const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
 
@@ -74,6 +76,14 @@ export const PointerLockControls = React.forwardRef<PointerLockControlsImpl, Poi
         elements.forEach((element) => (element ? element.removeEventListener('click', handler) : undefined))
       }
     }, [onChange, onLock, onUnlock, selector, controls, invalidate])
+
+    React.useEffect(() => {
+      if (makeDefault) {
+        const old = get().controls
+        set({ controls })
+        return () => set({ controls: old })
+      }
+    }, [makeDefault, controls])
 
     return <primitive ref={ref} object={controls} {...rest} />
   }

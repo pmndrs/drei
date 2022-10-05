@@ -30,10 +30,11 @@ export type TransformControlsProps = ReactThreeFiber.Object3DNode<TransformContr
     onMouseDown?: (e?: THREE.Event) => void
     onMouseUp?: (e?: THREE.Event) => void
     onObjectChange?: (e?: THREE.Event) => void
+    makeDefault?: boolean
   }
 
 export const TransformControls = React.forwardRef<TransformControlsImpl, TransformControlsProps>(
-  ({ children, domElement, onChange, onMouseDown, onMouseUp, onObjectChange, object, ...props }, ref) => {
+  ({ children, domElement, onChange, onMouseDown, onMouseUp, onObjectChange, object, makeDefault, ...props }, ref) => {
     const transformOnlyPropNames = [
       'enabled',
       'axis',
@@ -57,6 +58,8 @@ export const TransformControls = React.forwardRef<TransformControlsImpl, Transfo
     const events = useThree((state) => state.events)
     const defaultCamera = useThree((state) => state.camera)
     const invalidate = useThree((state) => state.invalidate)
+    const get = useThree((state) => state.get)
+    const set = useThree((state) => state.set)
     const explCamera = camera || defaultCamera
     const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
     const controls = React.useMemo(
@@ -101,6 +104,14 @@ export const TransformControls = React.forwardRef<TransformControlsImpl, Transfo
         if (onObjectChange) controls?.removeEventListener?.('objectChange', onObjectChange)
       }
     }, [onChange, onMouseDown, onMouseUp, onObjectChange, controls, invalidate])
+
+    React.useEffect(() => {
+      if (makeDefault) {
+        const old = get().controls
+        set({ controls })
+        return () => set({ controls: old })
+      }
+    }, [makeDefault, controls])
 
     return controls ? (
       <>

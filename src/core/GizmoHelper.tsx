@@ -15,6 +15,7 @@ import {
 } from 'three'
 import { OrthographicCamera } from './OrthographicCamera'
 import { useCamera } from './useCamera'
+import { OrbitControls as OrbitControlsType } from 'three-stdlib'
 
 type GizmoHelperContext = {
   tweenCamera: (direction: Vector3) => void
@@ -54,6 +55,10 @@ export type GizmoHelperProps = JSX.IntrinsicElements['group'] & {
   // TODO: in a new major state.controls should be the only means of consuming controls, the
   // onTarget prop can then be removed!
   onTarget?: () => Vector3 // return the target to rotate around
+}
+
+const isOrbitControls = (controls: ControlsProto): controls is OrbitControlsType => {
+  return 'minPolarAngle' in (controls as OrbitControlsType)
 }
 
 export const GizmoHelper = ({
@@ -126,7 +131,13 @@ export const GizmoHelper = ({
       if (animating.current) {
         if (q1.angleTo(q2) < 0.01) {
           animating.current = false
-          mainCamera.up.copy(defaultUp.current)
+
+          // Orbit controls uses UP vector as the orbit axes,
+          // so we need to reset it after the animation is done
+          // moving it around for the controls to work correctly
+          if (isOrbitControls(defaultControls)) {
+            mainCamera.up.copy(defaultUp.current)
+          }
         } else {
           const step = delta * turnRate
           // animate position by doing a slerp and then scaling the position on the unit sphere

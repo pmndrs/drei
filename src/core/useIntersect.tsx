@@ -6,7 +6,7 @@ export function useIntersect<T extends THREE.Object3D>(onChange: (visible: boole
   const check = React.useRef(false)
   const temp = React.useRef(false)
   const callback = React.useRef(onChange)
-  React.useEffect(() => void (callback.current = onChange), [onChange])
+  React.useLayoutEffect(() => void (callback.current = onChange), [onChange])
   React.useEffect(() => {
     const obj = ref.current
     if (obj) {

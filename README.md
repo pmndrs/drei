@@ -2755,6 +2755,39 @@ function Foo() {
   return <SpotLight depthBuffer={depthBuffer} />
 ```
 
+#### SpotLightShadows
+
+A shadow caster that can help cast shadows of different patterns (textures) onto the scene.
+
+```jsx
+<SpotLight>
+  <SpotLightShadows
+    distance={0.4} // Distance between the shadow caster and light
+    alphaTest={0.5} // Sets the alpha value to be used when running an alpha test. See Material.alphaTest
+    scale={1} //  Scale of the shadow caster plane
+    map={undefined} // Texture - Pattern of the shadow
+    shader={undefined} // Optional shader to run. Lets you add effects to the shadow map. See bellow
+    width={512} // Width of the shadow map. The higher the more expnsive
+    height={512} // Height of the shadow map. The higher the more expnsive
+  />
+</SpotLight>
+```
+
+An optinal `shader` prop lets you run a custom shader to modify/add effects to your shadow texture. The shader privides the following uniforms and varyings.
+
+| Type                | Name         | Notes                                  |
+| ------------------- | ------------ | -------------------------------------- |
+| `varying vec2`      | `vUv`        | UVs of the shadow casting plane        |
+| `uniform sampler2D` | `uShadowMap` | The texture provided to the `map` prop |
+| `uniform float`     | `uTime`      | Current time                           |
+
+Treat the output of the shader like an alpha map where `1` is opaque and `0` is transparent.
+
+```glsl
+gl_FragColor = vec4(vec3(1.), 1.); // Opaque
+gl_FragColor = vec4(vec3(0.), 1.); // Transparnet
+```
+
 #### Environment
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-environment--environment-story)

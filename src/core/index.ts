@@ -17,6 +17,7 @@ export * from './ComputedAttribute'
 export * from './Clone'
 export * from './MarchingCubes'
 export * from './Decal'
+export * from './Svg'
 
 // Cameras
 export * from './OrthographicCamera'

@@ -1170,7 +1170,7 @@ If declarative composition is not possible, use the `mesh` prop to define the su
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-svg--svg-st)
 
-Wrapper around the [svg loader](https://threejs.org/examples/?q=sv#webgl_loader_svg) demo.
+Wrapper around the `three` [svg loader](https://threejs.org/examples/?q=sv#webgl_loader_svg) demo.
 
 Accepts an SVG url or svg raw data.
 

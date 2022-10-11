@@ -14,10 +14,10 @@ export interface SvgProps extends Object3DProps {
 }
 
 export const Svg = forwardRef<Object3D, SvgProps>(function R3FSvg(
-  { src: url, skipFill, skipStrokes, strokesWireframe, fillWireframe },
+  { src, skipFill, skipStrokes, strokesWireframe, fillWireframe, ...props },
   ref
 ) {
-  const svg = useLoader(SVGLoader, !url.startsWith('<svg') ? url : `data:image/svg+xml;utf8,${url}`)
+  const svg = useLoader(SVGLoader, !src.startsWith('<svg') ? src : `data:image/svg+xml;utf8,${src}`)
 
   const shapeGroups = useMemo(
     () => (skipFill ? [] : svg.paths.map((path) => SVGLoader.createShapes(path))),
@@ -75,16 +75,8 @@ export const Svg = forwardRef<Object3D, SvgProps>(function R3FSvg(
   )
 
   return (
-    <object3D ref={ref}>
+    <object3D ref={ref} {...props}>
       <object3D scale={[1, -1, 1]}>
-        {shapeGroups.map((shapes, x) =>
-          shapes.map((shape, y) => (
-            <mesh key={`${x}.${y}`} material={fillMaterials[x]}>
-              <shapeGeometry args={[shape]} />
-            </mesh>
-          ))
-        )}
-
         {strokeGeometryGroups.map((geometries, i) =>
           geometries.map((geometry, x) =>
             !geometry ? (
@@ -93,6 +85,14 @@ export const Svg = forwardRef<Object3D, SvgProps>(function R3FSvg(
               <mesh key={`${i}.${x}`} geometry={geometry} material={strokeMaterials[i]} />
             )
           )
+        )}
+
+        {shapeGroups.map((shapes, x) =>
+          shapes.map((shape, y) => (
+            <mesh key={`${x}.${y}`} material={fillMaterials[x]}>
+              <shapeGeometry args={[shape]} />
+            </mesh>
+          ))
         )}
       </object3D>
     </object3D>

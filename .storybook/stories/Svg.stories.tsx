@@ -11,6 +11,10 @@ export default {
   decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 200)}>{storyFn()}</Setup>],
   args: {
     src: 'https://threejs.org/examples/models/svg/tiger.svg',
+    skipFill: false,
+    skipStrokes: false,
+    strokesWireframe: false,
+    fillWireframe: false,
   },
 } as ComponentMeta<typeof Svg>
 

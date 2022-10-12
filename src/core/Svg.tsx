@@ -1,7 +1,7 @@
 import { Object3DProps, useLoader } from '@react-three/fiber'
 import * as React from 'react'
 import { forwardRef, Fragment, useEffect, useMemo } from 'react'
-import { DoubleSide, Object3D } from 'three'
+import { Color, DoubleSide, Object3D } from 'three'
 import { SVGLoader } from 'three-stdlib'
 
 export interface SvgProps extends Object3DProps {
@@ -24,7 +24,7 @@ export const Svg = forwardRef<Object3D, SvgProps>(function R3FSvg(
       skipStrokes
         ? []
         : svg.paths.map((path) =>
-            !path.userData?.style.stroke || path.userData.style.stroke === 'none'
+            path.userData?.style.stroke === undefined || path.userData.style.stroke === 'none'
               ? null
               : path.subPaths.map((subPath) => SVGLoader.pointsToStroke(subPath.getPoints(), path.userData!.style))
           ),
@@ -40,7 +40,8 @@ export const Svg = forwardRef<Object3D, SvgProps>(function R3FSvg(
       <object3D scale={[1, -1, 1]}>
         {svg.paths.map((path, p) => (
           <Fragment key={p}>
-            {path.userData?.style.fill &&
+            {!skipFill &&
+              path.userData?.style.fill !== undefined &&
               path.userData.style.fill !== 'none' &&
               SVGLoader.createShapes(path).map((shape, s) => (
                 <mesh key={s}>
@@ -55,9 +56,10 @@ export const Svg = forwardRef<Object3D, SvgProps>(function R3FSvg(
                   />
                 </mesh>
               ))}
-            {path.userData?.style.stroke &&
+            {!skipStrokes &&
+              path.userData?.style.stroke &&
               path.userData.style.stroke !== 'none' &&
-              path.subPaths.map((subPath, s) => (
+              path.subPaths.map((_subPath, s) => (
                 <mesh key={s} geometry={strokeGeometries[p]![s]}>
                   <meshBasicMaterial
                     color={path.userData!.style.stroke}

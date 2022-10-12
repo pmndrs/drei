@@ -74,7 +74,6 @@ export default {
 export const SvgSt: FC<{ svg: string } & ComponentProps<typeof Svg>> = ({ svg, ...props }) => {
   const [_, updateArgs] = useArgs()
   useEffect(() => {
-    console.log(svg)
     updateArgs({ src: `${url}/${svg || svgRecord.Tiger}` })
   }, [svg])
   return (

@@ -1,7 +1,7 @@
 import { Object3DProps, useLoader } from '@react-three/fiber'
 import * as React from 'react'
-import { forwardRef, Fragment, useMemo } from 'react'
-import { Color, DoubleSide, MeshBasicMaterial, Object3D } from 'three'
+import { forwardRef, Fragment, useEffect, useMemo } from 'react'
+import { DoubleSide, Object3D } from 'three'
 import { SVGLoader } from 'three-stdlib'
 
 export interface SvgProps extends Object3DProps {
@@ -19,81 +19,58 @@ export const Svg = forwardRef<Object3D, SvgProps>(function R3FSvg(
 ) {
   const svg = useLoader(SVGLoader, !src.startsWith('<svg') ? src : `data:image/svg+xml;utf8,${src}`)
 
-  const shapeGroups = useMemo(
-    () => (skipFill ? [] : svg.paths.map((path) => SVGLoader.createShapes(path))),
-    [svg, skipFill]
-  )
-
-  const fillMaterials = useMemo(
-    () =>
-      skipFill
-        ? []
-        : svg.paths.map(
-            (path) =>
-              new MeshBasicMaterial({
-                color: new Color()
-                  .setStyle(path.userData!.style.fill === 'none' ? '#000000' : path.userData!.style.fill)
-                  .convertSRGBToLinear(),
-                opacity: path.userData!.style.fillOpacity,
-                transparent: true,
-                side: DoubleSide,
-                depthWrite: false,
-                wireframe: fillWireframe,
-              })
-          ),
-    [svg, skipFill, fillWireframe]
-  )
-
-  const strokeMaterials = useMemo(
+  const strokeGeometries = useMemo(
     () =>
       skipStrokes
         ? []
-        : svg.paths.map(
-            (path) =>
-              new MeshBasicMaterial({
-                color: new Color()
-                  .setStyle(path.userData!.style.stroke === 'none' ? '#000000' : path.userData!.style.stroke)
-                  .convertSRGBToLinear(),
-                opacity: path.userData!.style.strokeOpacity,
-                transparent: true,
-                side: DoubleSide,
-                depthWrite: false,
-                wireframe: strokesWireframe,
-              })
+        : svg.paths.map((path) =>
+            !path.userData?.style.stroke || path.userData.style.stroke === 'none'
+              ? null
+              : path.subPaths.map((subPath) => SVGLoader.pointsToStroke(subPath.getPoints(), path.userData!.style))
           ),
-    [svg, skipStrokes, strokesWireframe]
-  )
-
-  const strokeGeometryGroups = useMemo(
-    () =>
-      svg.paths.map((path) =>
-        skipStrokes
-          ? []
-          : path.subPaths.map((subPath) => SVGLoader.pointsToStroke(subPath.getPoints(), path.userData!.style))
-      ),
     [svg, skipStrokes]
   )
+
+  useEffect(() => {
+    return () => strokeGeometries.forEach((group) => group && group.map((g) => g.dispose()))
+  }, [strokeGeometries])
 
   return (
     <object3D ref={ref} {...props}>
       <object3D scale={[1, -1, 1]}>
-        {strokeGeometryGroups.map((geometries, i) =>
-          geometries.map((geometry, x) =>
-            !geometry ? (
-              <Fragment key={`${i}.${x}`} />
-            ) : (
-              <mesh key={`${i}.${x}`} geometry={geometry} material={strokeMaterials[i]} />
-            )
-          )
-        )}
-
-        {shapeGroups.map((shapes, x) =>
-          shapes.map((shape, y) => (
-            <mesh key={`${x}.${y}`} material={fillMaterials[x]}>
-              <shapeGeometry args={[shape]} />
-            </mesh>
-          ))
-        )}
+        {svg.paths.map((path, p) => (
+          <Fragment key={p}>
+            {path.userData?.style.fill &&
+              path.userData.style.fill !== 'none' &&
+              SVGLoader.createShapes(path).map((shape, s) => (
+                <mesh key={s}>
+                  <shapeGeometry args={[shape]} />
+                  <meshBasicMaterial
+                    color={path.userData!.style.fill}
+                    opacity={path.userData!.style.fillOpacity}
+                    transparent={true}
+                    side={DoubleSide}
+                    depthWrite={false}
+                    wireframe={fillWireframe}
+                  />
+                </mesh>
+              ))}
+            {path.userData?.style.stroke &&
+              path.userData.style.stroke !== 'none' &&
+              path.subPaths.map((subPath, s) => (
+                <mesh key={s} geometry={strokeGeometries[p]![s]}>
+                  <meshBasicMaterial
+                    color={path.userData!.style.stroke}
+                    opacity={path.userData!.style.strokeOpacity}
+                    transparent={true}
+                    side={DoubleSide}
+                    depthWrite={false}
+                    wireframe={strokesWireframe}
+                  />
+                </mesh>
+              ))}
+          </Fragment>
+        ))}
       </object3D>
     </object3D>
   )

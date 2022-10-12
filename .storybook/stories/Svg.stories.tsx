@@ -3,7 +3,7 @@ import { useArgs } from '@storybook/client-api'
 import { ComponentMeta } from '@storybook/react'
 import * as React from 'react'
 import { ComponentProps, FC, Suspense } from 'react'
-import { NoToneMapping, Vector3 } from 'three'
+import { MathUtils, NoToneMapping, Vector3 } from 'three'
 import { Svg } from '../../src'
 import { Setup } from '../Setup'
 
@@ -80,7 +80,7 @@ export const SvgSt: FC<{ svg: string } & ComponentProps<typeof Svg>> = ({ svg, .
   return (
     <Suspense fallback={null}>
       <Svg {...props} position={[-70, 70, 0]} scale={0.25} />
-      <axesHelper />
+      <gridHelper args={[160, 10]} rotation={[MathUtils.DEG2RAD * 90, 0, 0]} />
     </Suspense>
   )
 }

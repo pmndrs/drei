@@ -57,7 +57,7 @@ export const Svg = forwardRef<Object3D, SvgProps>(function R3FSvg(
                 </mesh>
               ))}
             {!skipStrokes &&
-              path.userData?.style.stroke &&
+              path.userData?.style.stroke !== undefined &&
               path.userData.style.stroke !== 'none' &&
               path.subPaths.map((_subPath, s) => (
                 <mesh key={s} geometry={strokeGeometries[p]![s]}>

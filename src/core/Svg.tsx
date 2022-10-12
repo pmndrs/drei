@@ -1,7 +1,7 @@
 import { Object3DProps, useLoader } from '@react-three/fiber'
 import * as React from 'react'
 import { forwardRef, Fragment, useEffect, useMemo } from 'react'
-import { Color, DoubleSide, Object3D } from 'three'
+import { DoubleSide, Object3D } from 'three'
 import { SVGLoader } from 'three-stdlib'
 
 export interface SvgProps extends Object3DProps {

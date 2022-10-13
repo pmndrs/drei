@@ -372,6 +372,7 @@ Semi-OrbitControls with spring-physics, polar zoom and snap-back, for presentati
 
 ```jsx
 <PresentationControls
+  enabled={true} // the controls can be disabled by setting this to false
   global={false} // Spin globally or by dragging the model
   cursor={true} // Whether to toggle cursor style on drag
   snap={false} // Snap-back to center (can also be a spring config)

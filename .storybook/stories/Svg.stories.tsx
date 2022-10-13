@@ -4,7 +4,7 @@ import { ComponentMeta } from '@storybook/react'
 import * as React from 'react'
 import { ComponentProps, FC, Suspense } from 'react'
 import { MathUtils, NoToneMapping, Vector3 } from 'three'
-import { Svg } from '../../src'
+import { Svg, SvgProps } from '../../src'
 import { Setup } from '../Setup'
 
 const svgRecord = {
@@ -38,6 +38,21 @@ const svgRecord = {
 
 const url = 'https://threejs.org/examples'
 
+interface SvgStoryProps extends SvgProps {
+  svg: string
+  fillWireframe: boolean
+  strokesWireframe: boolean
+}
+
+const args: SvgStoryProps = {
+  src: `${url}/${svgRecord.Tiger}`,
+  svg: svgRecord.Tiger,
+  skipFill: false,
+  skipStrokes: false,
+  fillWireframe: false,
+  strokesWireframe: false,
+}
+
 export default {
   title: 'Abstractions/Svg',
   component: Svg,
@@ -53,14 +68,7 @@ export default {
       </Setup>
     ),
   ],
-  args: {
-    src: `${url}/${svgRecord.Tiger}`,
-    svg: svgRecord.Tiger,
-    skipFill: false,
-    skipStrokes: false,
-    strokesWireframe: false,
-    fillWireframe: false,
-  },
+  args,
   argTypes: {
     svg: {
       options: svgRecord,
@@ -69,16 +77,22 @@ export default {
       },
     },
   },
-} as ComponentMeta<typeof Svg>
+}
 
-export const SvgSt: FC<{ svg: string } & ComponentProps<typeof Svg>> = ({ svg, ...props }) => {
+export const SvgSt: FC<SvgStoryProps> = ({ svg, fillWireframe, strokesWireframe, ...props }) => {
   const [_, updateArgs] = useArgs()
   useEffect(() => {
     updateArgs({ src: `${url}/${svg || svgRecord.Tiger}` })
   }, [svg])
   return (
     <Suspense fallback={null}>
-      <Svg {...props} position={[-70, 70, 0]} scale={0.25} />
+      <Svg
+        {...props}
+        position={[-70, 70, 0]}
+        scale={0.25}
+        fillMaterial={{ wireframe: fillWireframe }}
+        strokeMaterial={{ wireframe: strokesWireframe }}
+      />
       <gridHelper args={[160, 10]} rotation={[MathUtils.DEG2RAD * 90, 0, 0]} />
     </Suspense>
   )

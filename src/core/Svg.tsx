@@ -1,20 +1,22 @@
-import { Object3DProps, useLoader } from '@react-three/fiber'
+import { MeshBasicMaterialProps, Object3DProps, useLoader } from '@react-three/fiber'
 import * as React from 'react'
 import { forwardRef, Fragment, useEffect, useMemo } from 'react'
 import { DoubleSide, Object3D } from 'three'
 import { SVGLoader } from 'three-stdlib'
 
-export interface SvgProps extends Object3DProps {
+export interface SvgProps extends Omit<Object3DProps, 'ref'> {
   /** src can be a URL or SVG data */
   src: string
   skipFill?: boolean
   skipStrokes?: boolean
   strokesWireframe?: boolean
   fillWireframe?: boolean
+  fillMaterial?: MeshBasicMaterialProps
+  strokeMaterial?: MeshBasicMaterialProps
 }
 
 export const Svg = forwardRef<Object3D, SvgProps>(function R3FSvg(
-  { src, skipFill, skipStrokes, strokesWireframe, fillWireframe, ...props },
+  { src, skipFill, skipStrokes, strokesWireframe, fillWireframe, fillMaterial, strokeMaterial, ...props },
   ref
 ) {
   const svg = useLoader(SVGLoader, !src.startsWith('<svg') ? src : `data:image/svg+xml;utf8,${src}`)
@@ -53,6 +55,7 @@ export const Svg = forwardRef<Object3D, SvgProps>(function R3FSvg(
                     side={DoubleSide}
                     depthWrite={false}
                     wireframe={fillWireframe}
+                    {...fillMaterial}
                   />
                 </mesh>
               ))}
@@ -68,6 +71,7 @@ export const Svg = forwardRef<Object3D, SvgProps>(function R3FSvg(
                     side={DoubleSide}
                     depthWrite={false}
                     wireframe={strokesWireframe}
+                    {...strokeMaterial}
                   />
                 </mesh>
               ))}

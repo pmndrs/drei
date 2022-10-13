@@ -9,14 +9,12 @@ export interface SvgProps extends Omit<Object3DProps, 'ref'> {
   src: string
   skipFill?: boolean
   skipStrokes?: boolean
-  strokesWireframe?: boolean
-  fillWireframe?: boolean
   fillMaterial?: MeshBasicMaterialProps
   strokeMaterial?: MeshBasicMaterialProps
 }
 
 export const Svg = forwardRef<Object3D, SvgProps>(function R3FSvg(
-  { src, skipFill, skipStrokes, strokesWireframe, fillWireframe, fillMaterial, strokeMaterial, ...props },
+  { src, skipFill, skipStrokes, fillMaterial, strokeMaterial, ...props },
   ref
 ) {
   const svg = useLoader(SVGLoader, !src.startsWith('<svg') ? src : `data:image/svg+xml;utf8,${src}`)
@@ -54,7 +52,6 @@ export const Svg = forwardRef<Object3D, SvgProps>(function R3FSvg(
                     transparent={true}
                     side={DoubleSide}
                     depthWrite={false}
-                    wireframe={fillWireframe}
                     {...fillMaterial}
                   />
                 </mesh>
@@ -70,7 +67,6 @@ export const Svg = forwardRef<Object3D, SvgProps>(function R3FSvg(
                     transparent={true}
                     side={DoubleSide}
                     depthWrite={false}
-                    wireframe={strokesWireframe}
                     {...strokeMaterial}
                   />
                 </mesh>

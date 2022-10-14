@@ -433,11 +433,11 @@ function App() {
     </KeyboardControls>
 ```
 
-You can either respond to input reactively, it uses zustand (width the `subscribeWithSelector` middleware) so all the rules apply:
+You can either respond to input reactively, it uses zustand (with the `subscribeWithSelector` middleware) so all the rules apply:
 
 ```jsx
 function Foo() {
-  const pressed = useKeyboardControls(state => foward)
+  const pressed = useKeyboardControls(state => forward)
 ```
 
 Or transiently, either by `subscribe`, which is a function which returns a function to unsubscribe, so you can pair it with useEffect for cleanup, or `get`, which fetches fresh state non-reactively.

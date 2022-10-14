@@ -49,6 +49,8 @@ export function PresentationControls({
   React.useEffect(() => void api.start({ scale: 1, rotation: rInitial, config }), [rInitial])
   React.useEffect(() => {
     if (global && cursor && enabled) gl.domElement.style.cursor = 'grab'
+
+    return () => void (gl.domElement.style.cursor = 'default')
   }, [global, cursor, gl.domElement, enabled])
   const bind = useGesture(
     {

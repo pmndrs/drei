@@ -2399,6 +2399,12 @@ export type Props = JSX.IntrinsicElements['group'] & {
   left?: boolean
   front?: boolean
   back?: boolean
+  /** Disable x-axis centering */
+  disableX?: boolean
+  /** Disable y-axis centering */
+  disableY?: boolean
+  /** Disable z-axis centering */
+  disableZ?: boolean
   /** Precision, defaults to true, see https://threejs.org/docs/index.html?q=box3#api/en/math/Box3.setFromObject */
   precise?: boolean
   /** Callback, fires in the useLayoutEffect phase, after measurement */

@@ -14,14 +14,14 @@ function createShape(width: number, height: number, radius0: number) {
   return shape
 }
 
-type Props = {
+export type RoundedBoxProps = {
   args?: NamedArrayTuple<(width?: number, height?: number, depth?: number) => void>
   radius?: number
   smoothness?: number
   steps?: number
 } & Omit<JSX.IntrinsicElements['mesh'], 'args'>
 
-export const RoundedBox = React.forwardRef<Mesh, Props>(function RoundedBox(
+export const RoundedBox = React.forwardRef<Mesh, RoundedBoxProps>(function RoundedBox(
   { args: [width = 1, height = 1, depth = 1] = [], radius = 0.05, steps = 1, smoothness = 4, children, ...rest },
   ref
 ) {

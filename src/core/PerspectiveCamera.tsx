@@ -3,13 +3,13 @@ import { PerspectiveCamera as PerspectiveCameraImpl } from 'three'
 import { useThree } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
 
-type Props = JSX.IntrinsicElements['perspectiveCamera'] & {
+export type PerspectiveCameraProps = JSX.IntrinsicElements['perspectiveCamera'] & {
   makeDefault?: boolean
   manual?: boolean
   children?: React.ReactNode
 }
 
-export const PerspectiveCamera = React.forwardRef(({ makeDefault, ...props }: Props, ref) => {
+export const PerspectiveCamera = React.forwardRef(({ makeDefault, ...props }: PerspectiveCameraProps, ref) => {
   const set = useThree(({ set }) => set)
   const camera = useThree(({ camera }) => camera)
   const size = useThree(({ size }) => size)

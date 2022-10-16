@@ -3,13 +3,13 @@ import { OrthographicCamera as OrthographicCameraImpl } from 'three'
 import { useThree } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
 
-type Props = JSX.IntrinsicElements['orthographicCamera'] & {
+export type OrthographicCameraProps = JSX.IntrinsicElements['orthographicCamera'] & {
   makeDefault?: boolean
   manual?: boolean
   children?: React.ReactNode
 }
 
-export const OrthographicCamera = React.forwardRef(({ makeDefault, ...props }: Props, ref) => {
+export const OrthographicCamera = React.forwardRef(({ makeDefault, ...props }: OrthographicCameraProps, ref) => {
   const set = useThree(({ set }) => set)
   const camera = useThree(({ camera }) => camera)
   const size = useThree(({ size }) => size)

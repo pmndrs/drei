@@ -3,7 +3,9 @@ import { Text as TextMeshImpl, preloadFont } from 'troika-three-text'
 import { ReactThreeFiber, useThree } from '@react-three/fiber'
 import { suspend } from 'suspend-react'
 
-type Props = JSX.IntrinsicElements['mesh'] & {
+export { TextMeshImpl }
+
+export type TextProps = JSX.IntrinsicElements['mesh'] & {
   children: React.ReactNode
   characters?: string
   color?: ReactThreeFiber.Color
@@ -35,8 +37,8 @@ type Props = JSX.IntrinsicElements['mesh'] & {
 }
 
 // eslint-disable-next-line prettier/prettier
-export const Text = React.forwardRef(
-  ({ anchorX = 'center', anchorY = 'middle', font, children, characters, onSync, ...props }: Props, ref) => {
+export const Text = React.forwardRef<TextMeshImpl, TextProps>(
+  ({ anchorX = 'center', anchorY = 'middle', font, children, characters, onSync, ...props }, ref) => {
     const invalidate = useThree(({ invalidate }) => invalidate)
     const [troikaMesh] = React.useState(() => new TextMeshImpl())
 

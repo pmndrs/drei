@@ -2,7 +2,7 @@ import { HalfFloatType, Fog, FogExp2, Group, Texture, CubeCamera as CubeCameraIm
 import * as React from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 
-type Props = JSX.IntrinsicElements['group'] & {
+export type CubeCameraProps = JSX.IntrinsicElements['group'] & {
   /** Number of frames to render, Infinity */
   frames?: number
   /** Resolution of the FBO, 256 */
@@ -28,7 +28,7 @@ export function CubeCamera({
   far = 1000,
   envMap,
   ...props
-}: Props) {
+}: CubeCameraProps) {
   const ref = React.useRef<Group>()
   const [camera, setCamera] = React.useState<CubeCameraImpl | null>(null)
   const scene = useThree(({ scene }) => scene)

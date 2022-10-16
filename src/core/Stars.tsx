@@ -3,7 +3,7 @@ import * as React from 'react'
 import { ReactThreeFiber, useFrame } from '@react-three/fiber'
 import { Points, Vector3, Spherical, Color, AdditiveBlending, ShaderMaterial } from 'three'
 
-type Props = {
+export type StarsProps = {
   radius?: number
   depth?: number
   count?: number
@@ -58,8 +58,8 @@ const genStar = (r: number) => {
   return new Vector3().setFromSpherical(new Spherical(r, Math.acos(1 - Math.random() * 2), Math.random() * 2 * Math.PI))
 }
 
-export const Stars = React.forwardRef(
-  ({ radius = 100, depth = 50, count = 5000, saturation = 0, factor = 4, fade = false, speed = 1 }: Props, ref) => {
+export const Stars = React.forwardRef<Points, StarsProps>(
+  ({ radius = 100, depth = 50, count = 5000, saturation = 0, factor = 4, fade = false, speed = 1 }, ref) => {
     const material = React.useRef<StarfieldMaterial>()
     const [position, color, size] = React.useMemo(() => {
       const positions: any[] = []
@@ -83,7 +83,7 @@ export const Stars = React.forwardRef(
     const [starfieldMaterial] = React.useState(() => new StarfieldMaterial())
 
     return (
-      <points ref={ref as React.MutableRefObject<Points>}>
+      <points ref={ref}>
         <bufferGeometry>
           <bufferAttribute attach="attributes-position" args={[position, 3]} />
           <bufferAttribute attach="attributes-color" args={[color, 3]} />

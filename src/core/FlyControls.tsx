@@ -3,6 +3,8 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { FlyControls as FlyControlsImpl } from 'three-stdlib'
 
+export { FlyControlsImpl }
+
 export type FlyControlsProps = ReactThreeFiber.Object3DNode<FlyControlsImpl, typeof FlyControlsImpl> & {
   onChange?: (e?: THREE.Event) => void
   domElement?: HTMLElement

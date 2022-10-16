@@ -11,6 +11,8 @@ type Api = {
 
 const globalContext = React.createContext<Api>(null!)
 
+export { MarchingCubesImpl }
+
 export type MarchingCubesProps = {
   resolution?: number
   maxPolyCount?: number

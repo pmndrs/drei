@@ -3,6 +3,8 @@ import * as React from 'react'
 import type { Camera, Event } from 'three'
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 
+export { OrbitControlsImpl }
+
 export type OrbitControlsProps = Omit<
   ReactThreeFiber.Overwrite<
     ReactThreeFiber.Object3DNode<OrbitControlsImpl, typeof OrbitControlsImpl>,

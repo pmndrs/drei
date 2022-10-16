@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 
-type Props = {
+export type SoftShadowsProps = {
   frustum?: number
   size?: number
   near?: number
@@ -14,7 +14,7 @@ const pcss = ({
   near = 9.5,
   samples = 17,
   rings = 11,
-}: Props = {}) => `#define LIGHT_WORLD_SIZE ${size}
+}: SoftShadowsProps = {}) => `#define LIGHT_WORLD_SIZE ${size}
 #define LIGHT_FRUSTUM_WIDTH ${frustum}
 #define LIGHT_SIZE_UV (LIGHT_WORLD_SIZE / LIGHT_FRUSTUM_WIDTH)
 #define NEAR_PLANE ${near}
@@ -83,7 +83,7 @@ float PCSS(sampler2D shadowMap, vec4 coords) {
 }`
 
 let deployed = false
-export const softShadows = (props?: Props) => {
+export const softShadows = (props?: SoftShadowsProps) => {
   // Avoid adding the effect twice, which may happen in HMR scenarios
   if (!deployed) {
     deployed = true

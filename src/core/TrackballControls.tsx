@@ -3,6 +3,8 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { TrackballControls as TrackballControlsImpl } from 'three-stdlib'
 
+export { TrackballControlsImpl }
+
 export type TrackballControlsProps = ReactThreeFiber.Overwrite<
   ReactThreeFiber.Object3DNode<TrackballControlsImpl, typeof TrackballControlsImpl>,
   {

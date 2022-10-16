@@ -3,12 +3,12 @@ import { LOD, Object3D } from 'three'
 import { useFrame } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
 
-type Props = JSX.IntrinsicElements['lOD'] & {
+export type DetailedProps = JSX.IntrinsicElements['lOD'] & {
   children: React.ReactElement<Object3D>[]
   distances: number[]
 }
 
-export const Detailed = React.forwardRef(({ children, distances, ...props }: Props, ref) => {
+export const Detailed = React.forwardRef<LOD, DetailedProps>(({ children, distances, ...props }, ref) => {
   const lodRef = React.useRef<LOD>(null!)
   React.useLayoutEffect(() => {
     const { current: lod } = lodRef

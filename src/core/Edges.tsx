@@ -2,12 +2,12 @@ import { ReactThreeFiber } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from 'three'
 
-type Props = JSX.IntrinsicElements['lineSegments'] & {
+export type EdgesProps = JSX.IntrinsicElements['lineSegments'] & {
   threshold?: number
   color?: ReactThreeFiber.Color
 }
 
-export function Edges({ userData, children, geometry, threshold = 15, color = 'black', ...props }: Props) {
+export function Edges({ userData, children, geometry, threshold = 15, color = 'black', ...props }: EdgesProps) {
   const ref = React.useRef<THREE.LineSegments>(null!)
   React.useLayoutEffect(() => {
     const parent = ref.current.parent as THREE.Mesh

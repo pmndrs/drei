@@ -6,7 +6,7 @@ import shallow from 'zustand/shallow'
 
 const context = React.createContext<THREE.Object3D[]>([])
 
-type Props = JSX.IntrinsicElements['group'] & {
+export type SelectProps = JSX.IntrinsicElements['group'] & {
   multiple?: boolean
   box?: boolean
   border?: string
@@ -24,7 +24,7 @@ export function Select({
   backgroundColor = 'rgba(75, 160, 255, 0.1)',
   filter: customFilter = (item) => item,
   ...props
-}: Props) {
+}: SelectProps) {
   const { setEvents, camera, raycaster, gl, controls, size, get } = useThree()
   const [hovered, hover] = React.useState(false)
   const [active, dispatch] = React.useReducer(

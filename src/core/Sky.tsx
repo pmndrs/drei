@@ -3,7 +3,9 @@ import { ReactThreeFiber } from '@react-three/fiber'
 import { Sky as SkyImpl } from 'three-stdlib'
 import { Vector3 } from 'three'
 
-type Props = {
+export { SkyImpl }
+
+export type SkyProps = {
   distance?: number
   sunPosition?: ReactThreeFiber.Vector3
   inclination?: number
@@ -37,7 +39,7 @@ export const Sky = React.forwardRef(
       turbidity = 10,
       sunPosition = calcPosFromAngles(inclination, azimuth),
       ...props
-    }: Props,
+    }: SkyProps,
     ref
   ) => {
     const scale = React.useMemo(() => new Vector3().setScalar(distance), [distance])

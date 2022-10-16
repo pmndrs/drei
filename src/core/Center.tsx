@@ -24,6 +24,12 @@ type CenterProps = JSX.IntrinsicElements['group'] & {
   left?: boolean
   front?: boolean
   back?: boolean
+  /** Disable x-axis centering */
+  disableX?: boolean
+  /** Disable y-axis centering */
+  disableY?: boolean
+  /** Disable z-axis centering */
+  disableZ?: boolean
   /** See https://threejs.org/docs/index.html?q=box3#api/en/math/Box3.setFromObject */
   precise?: boolean
   /** Callback, fires in the useLayoutEffect phase, after measurement */
@@ -31,7 +37,21 @@ type CenterProps = JSX.IntrinsicElements['group'] & {
 }
 
 export const Center = React.forwardRef<Group, CenterProps>(function Center(
-  { children, left, right, top, bottom, front, back, onCentered, precise = true, ...props },
+  {
+    children,
+    disableX,
+    disableY,
+    disableZ,
+    left,
+    right,
+    top,
+    bottom,
+    front,
+    back,
+    onCentered,
+    precise = true,
+    ...props
+  },
   fRef
 ) {
   const ref = React.useRef<Group>(null!)
@@ -50,7 +70,11 @@ export const Center = React.forwardRef<Group, CenterProps>(function Center(
     const vAlign = top ? height / 2 : bottom ? -height / 2 : 0
     const hAlign = left ? -width / 2 : right ? width / 2 : 0
     const dAlign = front ? depth / 2 : back ? -depth / 2 : 0
-    outer.current.position.set(-center.x + hAlign, -center.y + vAlign, -center.z + dAlign)
+    outer.current.position.set(
+      disableX ? 0 : -center.x + hAlign,
+      disableY ? 0 : -center.y + vAlign,
+      disableZ ? 0 : -center.z + dAlign
+    )
 
     if (typeof onCentered !== 'undefined') {
       onCentered({

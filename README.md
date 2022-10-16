@@ -224,7 +224,7 @@ You can also give it children, which will now occupy the same position as the ca
 </PerspectiveCamera>
 ```
 
-You can also drive it manually, it won't be responsive and you have to calculate aspect ration yourself.
+You can also drive it manually, it won't be responsive and you have to calculate aspect ratio yourself.
 
 ```jsx
 <PerspectiveCamera manual aspect={...} onUpdate={(c) => c.updateProjectionMatrix()}>
@@ -373,6 +373,7 @@ Semi-OrbitControls with spring-physics, polar zoom and snap-back, for presentati
 
 ```jsx
 <PresentationControls
+  enabled={true} // the controls can be disabled by setting this to false
   global={false} // Spin globally or by dragging the model
   cursor={true} // Whether to toggle cursor style on drag
   snap={false} // Snap-back to center (can also be a spring config)
@@ -434,11 +435,11 @@ function App() {
     </KeyboardControls>
 ```
 
-You can either respond to input reactively, it uses zustand (width the `subscribeWithSelector` middleware) so all the rules apply:
+You can either respond to input reactively, it uses zustand (with the `subscribeWithSelector` middleware) so all the rules apply:
 
 ```jsx
 function Foo() {
-  const pressed = useKeyboardControls(state => foward)
+  const pressed = useKeyboardControls(state => forward)
 ```
 
 Or transiently, either by `subscribe`, which is a function which returns a function to unsubscribe, so you can pair it with useEffect for cleanup, or `get`, which fetches fresh state non-reactively.
@@ -2411,6 +2412,12 @@ export type Props = JSX.IntrinsicElements['group'] & {
   left?: boolean
   front?: boolean
   back?: boolean
+  /** Disable x-axis centering */
+  disableX?: boolean
+  /** Disable y-axis centering */
+  disableY?: boolean
+  /** Disable z-axis centering */
+  disableZ?: boolean
   /** Precision, defaults to true, see https://threejs.org/docs/index.html?q=box3#api/en/math/Box3.setFromObject */
   precise?: boolean
   /** Callback, fires in the useLayoutEffect phase, after measurement */

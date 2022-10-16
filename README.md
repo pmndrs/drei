@@ -223,7 +223,7 @@ You can also give it children, which will now occupy the same position as the ca
 </PerspectiveCamera>
 ```
 
-You can also drive it manually, it won't be responsive and you have to calculate aspect ration yourself.
+You can also drive it manually, it won't be responsive and you have to calculate aspect ratio yourself.
 
 ```jsx
 <PerspectiveCamera manual aspect={...} onUpdate={(c) => c.updateProjectionMatrix()}>

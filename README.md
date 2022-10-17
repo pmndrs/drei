@@ -75,6 +75,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#useanimations">useAnimations</a></li>
           <li><a href="#marchingcubes">MarchingCubes</a></li>
           <li><a href="#decal">Decal</a></li>
+          <li><a href="#svg">Svg</a></li>
         </ul>
         <li><a href="#shaders">Shaders</a></li>
         <ul>
@@ -1164,6 +1165,18 @@ If declarative composition is not possible, use the `mesh` prop to define the su
 <Decal mesh={ref}>
   <meshBasicMaterial map={texture} />
 </Decal>
+```
+
+#### Svg
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-svg--svg-st)
+
+Wrapper around the `three` [svg loader](https://threejs.org/examples/?q=sv#webgl_loader_svg) demo.
+
+Accepts an SVG url or svg raw data.
+
+```js
+<Svg src={urlOrRawSvgString} />
 ```
 
 # Shaders

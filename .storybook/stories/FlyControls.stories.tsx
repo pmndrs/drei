@@ -8,7 +8,7 @@ export const FlyControlsStory = ({ ...args }) => (
   <>
     <FlyControls {...args} />
     <Box>
-      <meshBasicMaterial attach="material" wireframe />
+      <meshBasicMaterial wireframe />
     </Box>
   </>
 )

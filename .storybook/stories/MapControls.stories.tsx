@@ -12,8 +12,8 @@ export default {
 
 const Cell = ({ color, shape, fillOpacity }) => (
   <mesh>
-    <meshBasicMaterial attach="material" color={color} opacity={fillOpacity} depthWrite={false} transparent />
-    <shapeBufferGeometry attach="geometry" args={[shape]} />
+    <meshBasicMaterial color={color} opacity={fillOpacity} depthWrite={false} transparent />
+    <shapeGeometry args={[shape]} />
   </mesh>
 )
 

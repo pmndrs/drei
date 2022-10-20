@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { useThree } from '@react-three/fiber'
-import { CanvasTexture, Event } from 'three'
+import { useThree, ThreeEvent } from '@react-three/fiber'
+import { CanvasTexture } from 'three'
 import { useGizmoContext } from './GizmoHelper'
 
 type AxisProps = {
@@ -16,7 +16,7 @@ type AxisHeadProps = JSX.IntrinsicElements['sprite'] & {
   axisHeadScale?: number
   disabled?: boolean
   font: string
-  onClick?: (e: Event) => null
+  onClick?: (e: ThreeEvent<MouseEvent>) => null
 }
 
 type GizmoViewportProps = JSX.IntrinsicElements['group'] & {
@@ -29,7 +29,7 @@ type GizmoViewportProps = JSX.IntrinsicElements['group'] & {
   hideAxisHeads?: boolean
   disabled?: boolean
   font?: string
-  onClick?: (e: Event) => null
+  onClick?: (e: ThreeEvent<MouseEvent>) => null
 }
 
 function Axis({ scale = [0.8, 0.05, 0.05], color, rotation }: AxisProps) {
@@ -77,11 +77,11 @@ function AxisHead({
 
   const [active, setActive] = React.useState(false)
   const scale = (label ? 1 : 0.75) * (active ? 1.2 : 1) * axisHeadScale
-  const handlePointerOver = (e: Event) => {
+  const handlePointerOver = (e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation()
     setActive(true)
   }
-  const handlePointerOut = (e: Event) => {
+  const handlePointerOut = (e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation()
     setActive(false)
   }
@@ -94,6 +94,7 @@ function AxisHead({
     >
       <spriteMaterial
         map={texture}
+        map-encoding={gl.outputEncoding}
         map-anisotropy={gl.capabilities.getMaxAnisotropy() || 1}
         alphaTest={0.3}
         opacity={label ? 1 : 0.75}
@@ -108,7 +109,7 @@ export const GizmoViewport = ({
   hideAxisHeads,
   disabled,
   font = '18px Inter var, Arial, sans-serif',
-  axisColors = ['#ff3653', '#0adb50', '#2c8fdf'],
+  axisColors = ['#ff2060', '#20df80', '#2080ff'],
   axisHeadScale = 1,
   axisScale,
   labels = ['X', 'Y', 'Z'],
@@ -126,7 +127,7 @@ export const GizmoViewport = ({
     onClick,
     axisHeadScale,
     onPointerDown: !disabled
-      ? (e: Event) => {
+      ? (e: ThreeEvent<PointerEvent>) => {
           tweenCamera(e.object.position)
           e.stopPropagation()
         }

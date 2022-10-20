@@ -1,15 +1,19 @@
 import * as React from 'react'
-import { Mesh, Color } from 'three'
+import { Mesh, Color, DoubleSide } from 'three'
 
 type Props = JSX.IntrinsicElements['mesh'] & {
   colorStop?: number
   fog?: boolean
   color?: Color | number | string
   opacity?: number
+  depthWrite?: boolean
 }
 
 export const Shadow = React.forwardRef(
-  ({ fog = false, colorStop = 0.0, color = 'black', opacity = 0.5, ...props }: Props, ref) => {
+  (
+    { fog = false, renderOrder, depthWrite = false, colorStop = 0.0, color = 'black', opacity = 0.5, ...props }: Props,
+    ref
+  ) => {
     const canvas = React.useMemo(() => {
       const canvas = document.createElement('canvas')
       canvas.width = 128
@@ -30,9 +34,9 @@ export const Shadow = React.forwardRef(
       return canvas
     }, [color, colorStop])
     return (
-      <mesh ref={ref as React.MutableRefObject<Mesh>} {...props}>
-        <planeBufferGeometry attach="geometry" args={[1, 1]} />
-        <meshBasicMaterial attach="material" transparent opacity={opacity} fog={fog}>
+      <mesh renderOrder={renderOrder} ref={ref as React.MutableRefObject<Mesh>} rotation-x={-Math.PI / 2} {...props}>
+        <planeGeometry />
+        <meshBasicMaterial transparent opacity={opacity} fog={fog} depthWrite={depthWrite} side={DoubleSide}>
           <canvasTexture attach="map" args={[canvas]} />
         </meshBasicMaterial>
       </mesh>

@@ -20,6 +20,7 @@ export type BoundsProps = JSX.IntrinsicElements['group'] & {
   damping?: number
   fit?: boolean
   clip?: boolean
+  observe?: boolean
   margin?: number
   eps?: number
   onFit?: (data: SizeProps) => void
@@ -35,16 +36,13 @@ type ControlsProto = {
 
 const isOrthographic = (def: THREE.Camera): def is THREE.OrthographicCamera =>
   def && (def as THREE.OrthographicCamera).isOrthographicCamera
-const isObject3D = (def: any): def is THREE.Object3D => def && (def as THREE.Object3D).isObject3D
 const isBox3 = (def: any): def is THREE.Box3 => def && (def as THREE.Box3).isBox3
 
 const context = React.createContext<BoundsApi>(null!)
-export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0.01, onFit }: BoundsProps) {
+export function Bounds({ children, damping = 6, fit, clip, observe, margin = 1.2, eps = 0.01, onFit }: BoundsProps) {
   const ref = React.useRef<THREE.Group>(null!)
-  const camera = useThree((state) => state.camera)
-  // @ts-expect-error new in @react-three/fiber@7.0.5
-  const controls = useThree((state) => state.controls) as ControlsProto
-  const invalidate = useThree((state) => state.invalidate)
+  const { camera, invalidate, size, controls: controlsImpl } = useThree()
+  const controls = controlsImpl as unknown as ControlsProto
 
   const onFitRef = React.useRef<((data: SizeProps) => void) | undefined>(onFit)
   onFitRef.current = onFit
@@ -84,9 +82,12 @@ export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0
     return {
       getSize,
       refresh(object?: THREE.Object3D | THREE.Box3) {
-        if (isObject3D(object)) box.setFromObject(object)
-        else if (isBox3(object)) box.copy(object)
-        else if (ref.current) box.setFromObject(ref.current)
+        if (isBox3(object)) box.copy(object)
+        else {
+          const target = object || ref.current
+          target.updateWorldMatrix(true, true)
+          box.setFromObject(target)
+        }
         if (box.isEmpty()) {
           const max = camera.position.length() || 10
           box.setFromCenterAndSize(new THREE.Vector3(), new THREE.Vector3(max, max, max))
@@ -109,6 +110,7 @@ export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0
         camera.far = distance * 100
         camera.updateProjectionMatrix()
         if (controls) controls.update()
+        invalidate()
         return this
       },
       fit() {
@@ -163,26 +165,32 @@ export function Bounds({ children, damping = 6, fit, clip, margin = 1.2, eps = 0
             controls.target.copy(goal.focus)
             controls.update()
           }
-          invalidate()
         }
         if (onFitRef.current) onFitRef.current(this.getSize())
+        invalidate()
         return this
       },
     }
   }, [box, camera, controls, margin, damping, invalidate])
 
   React.useLayoutEffect(() => {
-    api.refresh()
-    if (fit) api.fit()
-    if (clip) api.clip()
-
     if (controls) {
       // Try to prevent drag hijacking
       const callback = () => (current.animating = false)
       controls.addEventListener('start', callback)
       return () => controls.removeEventListener('start', callback)
     }
-  }, [clip, fit, controls])
+  }, [controls])
+
+  // Scale pointer on window resize
+  const count = React.useRef(0)
+  React.useLayoutEffect(() => {
+    if (observe || count.current++ === 0) {
+      api.refresh()
+      if (fit) api.fit()
+      if (clip) api.clip()
+    }
+  }, [size, clip, fit, observe, camera, controls])
 
   useFrame((state, delta) => {
     if (current.animating) {

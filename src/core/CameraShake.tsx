@@ -25,9 +25,6 @@ export interface CameraShakeProps {
   yawFrequency?: number
   pitchFrequency?: number
   rollFrequency?: number
-  // TODO: in a new major this should be the only means of consuming controls, the
-  // controls prop can then be removed!
-  controls?: React.MutableRefObject<ControlsProto | null>
 }
 
 export const CameraShake = React.forwardRef<ShakeController | undefined, CameraShakeProps>(
@@ -42,16 +39,13 @@ export const CameraShake = React.forwardRef<ShakeController | undefined, CameraS
       yawFrequency = 0.1,
       pitchFrequency = 0.1,
       rollFrequency = 0.1,
-      controls,
     },
     ref
   ) => {
     const camera = useThree((state) => state.camera)
-    // @ts-expect-error new in @react-three/fiber@7.0.5
-    const defaultControls = useThree((state) => state.controls) as ControlsProto
+    const defaultControls = useThree((state) => state.controls) as unknown as ControlsProto
     const intensityRef = React.useRef<number>(intensity)
     const initialRotation = React.useRef<Euler>(camera.rotation.clone())
-
     const [yawNoise] = React.useState(() => new SimplexNoise())
     const [pitchNoise] = React.useState(() => new SimplexNoise())
     const [rollNoise] = React.useState(() => new SimplexNoise())
@@ -75,18 +69,19 @@ export const CameraShake = React.forwardRef<ShakeController | undefined, CameraS
     )
 
     React.useEffect(() => {
-      const currControls = defaultControls || controls?.current
-      const callback = () => void (initialRotation.current = camera.rotation.clone())
+      if (defaultControls) {
+        const callback = () => void (initialRotation.current = camera.rotation.clone())
+        defaultControls.addEventListener('change', callback)
+        callback()
+        return () => void defaultControls.removeEventListener('change', callback)
+      }
+    }, [camera, defaultControls])
 
-      currControls?.addEventListener('change', callback)
-      return () => void currControls?.removeEventListener('change', callback)
-    }, [controls, defaultControls])
-
-    useFrame(({ clock }, delta) => {
+    useFrame((state, delta) => {
       const shake = Math.pow(intensityRef.current, 2)
-      const yaw = maxYaw * shake * yawNoise.noise(clock.elapsedTime * yawFrequency, 1)
-      const pitch = maxPitch * shake * pitchNoise.noise(clock.elapsedTime * pitchFrequency, 1)
-      const roll = maxRoll * shake * rollNoise.noise(clock.elapsedTime * rollFrequency, 1)
+      const yaw = maxYaw * shake * yawNoise.noise(state.clock.elapsedTime * yawFrequency, 1)
+      const pitch = maxPitch * shake * pitchNoise.noise(state.clock.elapsedTime * pitchFrequency, 1)
+      const roll = maxRoll * shake * rollNoise.noise(state.clock.elapsedTime * rollFrequency, 1)
 
       camera.rotation.set(
         initialRotation.current.x + pitch,

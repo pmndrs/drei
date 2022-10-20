@@ -18,7 +18,7 @@ export const ArcballControlsStory = (props: ArcballControlsProps) => (
   <>
     <ArcballControls {...props} />
     <Box>
-      <meshBasicMaterial attach="material" wireframe />
+      <meshBasicMaterial wireframe />
     </Box>
   </>
 )
@@ -58,7 +58,7 @@ const CustomCamera = (props: ArcballControlsProps) => {
       {createPortal(
         <>
           <Box>
-            <meshBasicMaterial attach="material" wireframe />
+            <meshBasicMaterial wireframe />
           </Box>
 
           <PerspectiveCamera name="FBO Camera" ref={virtualCamera} position={[0, 0, 5]} />

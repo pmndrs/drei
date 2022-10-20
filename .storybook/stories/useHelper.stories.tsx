@@ -9,7 +9,7 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
 export default {
-  title: 'Misc/useHelper',
+  title: 'Gizmos/useHelper',
   component: useHelper,
   decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
   args: {
@@ -29,7 +29,7 @@ type StoryProps = {
 const Scene: React.FC<StoryProps> = ({ showHelper }) => {
   const mesh = React.useRef()
   useHelper(showHelper && mesh, BoxHelper, 'royalblue')
-  useHelper(showHelper && mesh, VertexNormalsHelper, 1, 'red')
+  useHelper(showHelper && mesh, VertexNormalsHelper, 1, 0xff0000)
 
   return (
     <Sphere ref={mesh}>
@@ -43,7 +43,7 @@ DefaultStory.storyName = 'Default'
 
 const CameraScene: React.FC<StoryProps> = ({ showHelper }) => {
   const camera = React.useRef<THREE.PerspectiveCamera>()
-  useHelper(showHelper && camera, CameraHelper, 1, 'hotpink')
+  useHelper(showHelper && camera, CameraHelper)
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime()

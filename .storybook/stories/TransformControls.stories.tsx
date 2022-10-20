@@ -8,11 +8,19 @@ import { Setup } from '../Setup'
 import { Box, OrbitControls, Select, TransformControls } from '../../src'
 
 export function TransformControlsStory() {
+  const ref = React.useRef<TransformControlsImpl>(null!)
+
+  React.useEffect(() => {
+    const cb = (e: KeyboardEvent) => e.key === 'Escape' && ref.current.reset()
+    document.addEventListener('keydown', cb)
+    return () => document.removeEventListener('keydown', cb)
+  })
+
   return (
     <Setup>
-      <TransformControls>
+      <TransformControls ref={ref}>
         <Box>
-          <meshBasicMaterial attach="material" wireframe />
+          <meshBasicMaterial wireframe />
         </Box>
       </TransformControls>
     </Setup>
@@ -22,7 +30,7 @@ export function TransformControlsStory() {
 TransformControlsStory.storyName = 'Default'
 
 export default {
-  title: 'Controls/TransformControls',
+  title: 'Gizmos/TransformControls',
   component: TransformControls,
 }
 
@@ -37,12 +45,12 @@ export function TransformControlsSelectObjectStory() {
       <Select box onChange={setSelected}>
         <group>
           <Box position={[-1, 0, 0]}>
-            <meshBasicMaterial attach="material" wireframe color="orange" />
+            <meshBasicMaterial wireframe color="orange" />
           </Box>
         </group>
         <group>
           <Box position={[0, 0, 0]}>
-            <meshBasicMaterial attach="material" wireframe color="green" />
+            <meshBasicMaterial wireframe color="green" />
           </Box>
         </group>
       </Select>
@@ -69,7 +77,7 @@ function TransformControlsLockScene({ mode, showX, showY, showZ }) {
     <>
       <TransformControls ref={transformControls} mode={mode} showX={showX} showY={showY} showZ={showZ}>
         <Box>
-          <meshBasicMaterial attach="material" wireframe />
+          <meshBasicMaterial wireframe />
         </Box>
       </TransformControls>
       <OrbitControls ref={orbitControls} />

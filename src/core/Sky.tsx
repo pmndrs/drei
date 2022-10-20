@@ -45,7 +45,6 @@ export const Sky = React.forwardRef(
 
     return (
       <primitive
-        dispose={undefined}
         object={sky}
         ref={ref}
         material-uniforms-mieCoefficient-value={mieCoefficient}

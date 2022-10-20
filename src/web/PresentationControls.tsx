@@ -3,9 +3,10 @@ import { MathUtils } from 'three'
 import { useThree } from '@react-three/fiber'
 import { a, useSpring } from '@react-spring/three'
 import { useGesture } from '@use-gesture/react'
+import { SpringConfig } from '@react-spring/core'
 
-type Props = {
-  snap?: boolean
+export type PresentationControlProps = {
+  snap?: Boolean | SpringConfig
   global?: boolean
   cursor?: boolean
   speed?: number
@@ -14,10 +15,12 @@ type Props = {
   polar?: [number, number]
   azimuth?: [number, number]
   config?: any
+  enabled?: boolean
   children?: React.ReactNode
 }
 
 export function PresentationControls({
+  enabled = true,
   snap,
   global,
   cursor = true,
@@ -28,7 +31,7 @@ export function PresentationControls({
   polar = [0, Math.PI / 2],
   azimuth = [-Infinity, Infinity],
   config = { mass: 1, tension: 170, friction: 26 },
-}: Props) {
+}: PresentationControlProps) {
   const { size, gl } = useThree()
   const rPolar = React.useMemo(
     () => [rotation[0] + polar[0], rotation[0] + polar[1]],
@@ -45,14 +48,17 @@ export function PresentationControls({
   const [spring, api] = useSpring(() => ({ scale: 1, rotation: rInitial, config }))
   React.useEffect(() => void api.start({ scale: 1, rotation: rInitial, config }), [rInitial])
   React.useEffect(() => {
-    if (global && cursor) gl.domElement.style.cursor = 'grab'
-  }, [global, cursor, gl.domElement])
+    if (global && cursor && enabled) gl.domElement.style.cursor = 'grab'
+
+    return () => void (gl.domElement.style.cursor = 'default')
+  }, [global, cursor, gl.domElement, enabled])
   const bind = useGesture(
     {
       onHover: ({ last }) => {
-        if (cursor && !global) gl.domElement.style.cursor = last ? 'auto' : 'grab'
+        if (cursor && !global && enabled) gl.domElement.style.cursor = last ? 'auto' : 'grab'
       },
       onDrag: ({ down, delta: [x, y], memo: [oldY, oldX] = spring.rotation.animation.to || rInitial }) => {
+        if (!enabled) return [y, x]
         if (cursor) gl.domElement.style.cursor = down ? 'grabbing' : 'grab'
         x = MathUtils.clamp(oldX + (x / size.width) * Math.PI * speed, ...rAzimuth)
         y = MathUtils.clamp(oldY + (y / size.height) * Math.PI * speed, ...rPolar)

@@ -29,6 +29,7 @@ function StageStory() {
 
   return (
     <React.Suspense fallback={null}>
+      <color attach="background" args={['white']} />
       <Stage
         contactShadow={object('ContactShadow', {
           blur: 2,
@@ -40,8 +41,8 @@ function StageStory() {
         environment={envPreset as PresetsType}
         preset={presetKnob}
       >
-        <Sphere args={[1, 24, 24]}>
-          <meshPhongMaterial color="royalblue" attach="material" />
+        <Sphere args={[1, 64, 64]}>
+          <meshStandardMaterial roughness={0} color="royalblue" />
         </Sphere>
       </Stage>
     </React.Suspense>

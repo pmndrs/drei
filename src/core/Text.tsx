@@ -1,9 +1,11 @@
 import * as React from 'react'
-import { Text as TextMeshImpl } from 'troika-three-text'
+import { Text as TextMeshImpl, preloadFont } from 'troika-three-text'
 import { ReactThreeFiber, useThree } from '@react-three/fiber'
+import { suspend } from 'suspend-react'
 
 type Props = JSX.IntrinsicElements['mesh'] & {
   children: React.ReactNode
+  characters?: string
   color?: ReactThreeFiber.Color
   fontSize?: number
   maxWidth?: number
@@ -29,14 +31,15 @@ type Props = JSX.IntrinsicElements['mesh'] & {
   strokeOpacity?: number
   fillOpacity?: number
   debugSDF?: boolean
-  onSync?: (troika: TextMeshImpl) => void
+  onSync?: (troika: any) => void
 }
 
 // eslint-disable-next-line prettier/prettier
 export const Text = React.forwardRef(
-  ({ anchorX = 'center', anchorY = 'middle', children, onSync, ...props }: Props, ref) => {
+  ({ anchorX = 'center', anchorY = 'middle', font, children, characters, onSync, ...props }: Props, ref) => {
     const invalidate = useThree(({ invalidate }) => invalidate)
     const [troikaMesh] = React.useState(() => new TextMeshImpl())
+
     const [nodes, text] = React.useMemo(() => {
       const n: React.ReactNode[] = []
       let t = ''
@@ -49,6 +52,9 @@ export const Text = React.forwardRef(
       })
       return [n, t]
     }, [children])
+
+    suspend(() => new Promise((res) => preloadFont({ font, characters }, res)), ['troika-text', font, characters])
+
     React.useLayoutEffect(
       () =>
         void troikaMesh.sync(() => {
@@ -56,11 +62,13 @@ export const Text = React.forwardRef(
           if (onSync) onSync(troikaMesh)
         })
     )
+
     React.useEffect(() => {
       return () => troikaMesh.dispose()
     }, [troikaMesh])
+
     return (
-      <primitive object={troikaMesh} ref={ref} text={text} anchorX={anchorX} anchorY={anchorY} {...props}>
+      <primitive object={troikaMesh} ref={ref} font={font} text={text} anchorX={anchorX} anchorY={anchorY} {...props}>
         {nodes}
       </primitive>
     )

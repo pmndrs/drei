@@ -23,8 +23,9 @@ export function shaderMaterial(
   fragmentShader: string,
   onInit?: (material?: THREE.ShaderMaterial) => void
 ) {
-  return class extends THREE.ShaderMaterial {
-    constructor() {
+  const material = class extends THREE.ShaderMaterial {
+    public key: string = ''
+    constructor(parameters = {}) {
       const entries = Object.entries(uniforms)
       // Create unforms and shaders
       super({
@@ -37,6 +38,7 @@ export function shaderMaterial(
         }, {}),
         vertexShader,
         fragmentShader,
+        ...parameters,
       })
       // Create getter/setters
       entries.forEach(([name]) =>
@@ -45,7 +47,10 @@ export function shaderMaterial(
           set: (v) => (this.uniforms[name].value = v),
         })
       )
+
       if (onInit) onInit(this)
     }
-  }
+  } as unknown as typeof THREE.ShaderMaterial & { key: string }
+  material.key = THREE.MathUtils.generateUUID()
+  return material
 }

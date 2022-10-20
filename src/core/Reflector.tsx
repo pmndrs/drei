@@ -20,7 +20,7 @@ import { BlurPass } from '../materials/BlurPass'
 import { MeshReflectorMaterialProps, MeshReflectorMaterial } from '../materials/MeshReflectorMaterial'
 
 export type ReflectorProps = Omit<JSX.IntrinsicElements['mesh'], 'args' | 'children'> &
-  Pick<JSX.IntrinsicElements['planeBufferGeometry'], 'args'> & {
+  Pick<JSX.IntrinsicElements['planeGeometry'], 'args'> & {
     resolution?: number
     mixBlur?: number
     mixStrength?: number
@@ -234,7 +234,7 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
 
     return (
       <mesh ref={mergeRefs([meshRef, ref])} {...props}>
-        <planeBufferGeometry args={args} />
+        <planeGeometry args={args} />
         {children ? children('meshReflectorMaterial', reflectorProps) : <meshReflectorMaterial {...reflectorProps} />}
       </mesh>
     )

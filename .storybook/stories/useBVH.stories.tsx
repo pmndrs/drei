@@ -93,15 +93,15 @@ const AddRaycaster = ({ grp }) => {
   return (
     <group ref={objRef}>
       <mesh ref={origMesh}>
-        <sphereBufferGeometry args={[0.1, 20, 20]} />
+        <sphereGeometry args={[0.1, 20, 20]} />
         <meshBasicMaterial color={0xffffff} />
       </mesh>
       <mesh ref={hitMesh}>
-        <sphereBufferGeometry args={[0.1, 20, 20]} />
+        <sphereGeometry args={[0.1, 20, 20]} />
         <meshBasicMaterial color={0xffffff} />
       </mesh>
       <mesh ref={cylinderMesh}>
-        <cylinderBufferGeometry args={[0.01, 0.01]} />
+        <cylinderGeometry args={[0.01, 0.01]} />
         <meshBasicMaterial color={0xffffff} transparent opacity={0.25} />
       </mesh>
     </group>

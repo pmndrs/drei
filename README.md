@@ -209,6 +209,21 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/camera-perspectivecamera--perspective-camera-scene-st)
 
+```tsx
+type Props = Omit<JSX.IntrinsicElements['perspectiveCamera'], 'children'> & {
+  /** Registers the camera as the system default, fiber will start rendering with it */
+  makeDefault?: boolean
+  /** Making it manual will stop responsiveness and you have to calculate aspect ratio yourself. */
+  manual?: boolean
+  /** The contents will either follow the camera, or be hidden when filming if you pass a function */
+  children?: React.ReactNode | ((texture: THREE.Texture) => React.ReactNode)
+  /** Number of frames to render, 0 */
+  frames?: number
+  /** Resolution of the FBO, 256 */
+  resolution?: number
+}
+```
+
 A responsive [THREE.PerspectiveCamera](https://threejs.org/docs/#api/en/cameras/PerspectiveCamera) that can set itself as the default.
 
 ```jsx
@@ -230,6 +245,18 @@ You can also drive it manually, it won't be responsive and you have to calculate
 <PerspectiveCamera manual aspect={...} onUpdate={(c) => c.updateProjectionMatrix()}>
 ```
 
+You can use the PerspectiveCamera to film contents into a RenderTarget, similar to CubeCamera. As a child you must provide a render-function which receives the texture as its first argument. The result of that function will _not follow the camera_, instead it will be set invisible while the the FBO renders so as to avoid issues where the meshes that receive the texture are interrering.
+
+```jsx
+<PerspectiveCamera position={[0, 0, 10]}>
+  {(texture) => (
+    <mesh geometry={plane}>
+      <meshBasicMaterial map={texture} />
+    </mesh>
+  )}
+</PerspectiveCamera>
+```
+
 #### OrthographicCamera
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/camera-orthographiccamera--orthographic-camera-scene-st)
@@ -239,6 +266,18 @@ A responsive [THREE.OrthographicCamera](https://threejs.org/docs/#api/en/cameras
 ```jsx
 <OrthographicCamera makeDefault {...props}>
   <mesh />
+</OrthographicCamera>
+```
+
+You can use the OrthographicCamera to film contents into a RenderTarget, it has the same API as OrthographicCamera.
+
+```jsx
+<OrthographicCamera position={[0, 0, 10]}>
+  {(texture) => (
+    <mesh geometry={plane}>
+      <meshBasicMaterial map={texture} />
+    </mesh>
+  )}
 </OrthographicCamera>
 ```
 

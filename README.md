@@ -221,6 +221,8 @@ type Props = Omit<JSX.IntrinsicElements['perspectiveCamera'], 'children'> & {
   frames?: number
   /** Resolution of the FBO, 256 */
   resolution?: number
+  /** Optional environment map for functional use */
+  envMap?: THREE.Texture
 }
 ```
 

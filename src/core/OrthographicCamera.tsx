@@ -18,10 +18,12 @@ type Props = Omit<JSX.IntrinsicElements['orthographicCamera'], 'children'> & {
   frames?: number
   /** Resolution of the FBO, 256 */
   resolution?: number
+  /** Optional environment map for functional use */
+  envMap?: THREE.Texture
 }
 
 export const OrthographicCamera = React.forwardRef(
-  ({ resolution = 256, frames = Infinity, children, makeDefault, ...props }: Props, ref) => {
+  ({ envMap, resolution = 256, frames = Infinity, children, makeDefault, ...props }: Props, ref) => {
     const set = useThree(({ set }) => set)
     const camera = useThree(({ camera }) => camera)
     const size = useThree(({ size }) => size)
@@ -50,14 +52,19 @@ export const OrthographicCamera = React.forwardRef(
     }, [cameraRef, makeDefault, set])
 
     let count = 0
+    let oldEnvMap: THREE.Color | THREE.Texture | null = null
     const functional = isFunction(children)
     useFrame((state) => {
       if (functional && (frames === Infinity || count < frames)) {
         groupRef.current.visible = false
         state.gl.setRenderTarget(fbo)
+        oldEnvMap = state.scene.background
+        if (envMap) state.scene.background = envMap
         state.gl.render(state.scene, cameraRef.current)
+        state.scene.background = oldEnvMap
         state.gl.setRenderTarget(null)
         groupRef.current.visible = true
+        count++
       }
     })
 

@@ -100,6 +100,7 @@ export const Text3D = React.forwardRef<
       bevelThickness,
       bevelSize,
       bevelEnabled,
+      bevelSegments,
       bevelOffset,
       curveSegments,
       letterSpacing,

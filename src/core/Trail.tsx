@@ -1,4 +1,4 @@
-import { useFrame, useThree } from '@react-three/fiber'
+import { createPortal, useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import { ColorRepresentation, Group, Object3D, Vector2, Vector3 } from 'three'
 // @ts-ignore
@@ -98,6 +98,7 @@ export const Trail = React.forwardRef<MeshLine, React.PropsWithChildren<TrailPro
   const { color = 'hotpink', attenuation, target } = props
 
   const size = useThree((s) => s.size)
+  const scene = useThree((s) => s.scene)
 
   const ref = React.useRef<Group>(null!)
   const [anchor, setAnchor] = React.useState<Object3D>(null!)
@@ -159,7 +160,7 @@ export const Trail = React.forwardRef<MeshLine, React.PropsWithChildren<TrailPro
 
   return (
     <group>
-      <mesh ref={forwardRef} geometry={geo} material={mat} />
+      {createPortal(<mesh ref={forwardRef} geometry={geo} material={mat} />, scene)}
       <group ref={ref}>{children}</group>
     </group>
   )

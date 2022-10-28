@@ -342,7 +342,6 @@ class ProgressiveLightMap {
     this.renderer = renderer
     this.res = res
     this.scene = scene
-    this.scene.background = null
     this.buffer1Active = false
     this.lights = []
     this.meshes = []
@@ -433,10 +432,13 @@ class ProgressiveLightMap {
     const activeMap = this.buffer1Active ? this.progressiveLightMap1 : this.progressiveLightMap2
     const inactiveMap = this.buffer1Active ? this.progressiveLightMap2 : this.progressiveLightMap1
     // Render the object's surface maps
+    const oldBg = this.scene.background
+    this.scene.background = null
     this.renderer.setRenderTarget(activeMap)
     this.previousShadowMap.value = inactiveMap.texture
     this.buffer1Active = !this.buffer1Active
     this.renderer.render(this.scene, camera)
     this.renderer.setRenderTarget(null)
+    this.scene.background = oldBg
   }
 }

@@ -2,9 +2,9 @@ import * as React from 'react'
 import create, { GetState, StateSelector, Subscribe, UseBoundStore } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
 
-type KeyboardControlsState = { [key: string]: boolean }
+type KeyboardControlsState<T extends string = string> = { [K in T]: boolean }
 
-type KeyboardControlsEntry = {
+export type KeyboardControlsEntry = {
   /** Name of the action */
   name: string
   /** The keys that define it, you can use either event.key, or event.code */
@@ -24,10 +24,10 @@ type KeyboardControlsProps = {
   domElement?: HTMLElement
 }
 
-type KeyboardControlsApi = [
-  Subscribe<KeyboardControlsState>,
-  GetState<KeyboardControlsState>,
-  UseBoundStore<KeyboardControlsState>
+type KeyboardControlsApi<T extends string = string> = [
+  Subscribe<KeyboardControlsState<T>>,
+  GetState<KeyboardControlsState<T>>,
+  UseBoundStore<KeyboardControlsState<T>>
 ]
 
 const context = /*@__PURE__*/ React.createContext<KeyboardControlsApi>(null!)
@@ -90,8 +90,17 @@ export function KeyboardControls({ map, children, onChange, domElement }: Keyboa
   return <context.Provider value={api} children={children} />
 }
 
-export function useKeyboardControls(sel?: StateSelector<KeyboardControlsState, any>) {
-  const [sub, get, store] = React.useContext(context)
+export function useKeyboardControls<T extends string = string, U = any>(): [
+  Subscribe<KeyboardControlsState<T>>,
+  GetState<KeyboardControlsState<T>>
+]
+export function useKeyboardControls<T extends string = string, U = any>(
+  sel: StateSelector<KeyboardControlsState<T>, U>
+): U
+export function useKeyboardControls<T extends string = string, U = any>(
+  sel?: StateSelector<KeyboardControlsState<T>, U>
+): U | [Subscribe<KeyboardControlsState<T>>, GetState<KeyboardControlsState<T>>] {
+  const [sub, get, store] = React.useContext<KeyboardControlsApi<T>>(context)
   if (sel) return store(sel)
   else return [sub, get]
 }

@@ -353,7 +353,7 @@ Scroll controls create a HTML scroll container in front of the canvas. Everythin
 You can listen and react to scroll with the `useScroll` hook which gives you useful data like the current scroll `offset`, `delta` and functions for range finding: `range`, `curve` and `visible`. The latter functions are especially useful if you want to react to the scroll offset, for instance if you wanted to fade things in and out if they are in or out of view.
 
 ```jsx
-<ScrollControls
+;<ScrollControls
   pages={3} // Each page takes 100% of the height of the canvas
   distance={1} // A factor that increases scroll bar travel (default: 1)
   damping={4} // Friction, higher is faster (default: 4)
@@ -387,18 +387,19 @@ function Foo(props) {
     // Will start increasing when 1 / 3 of the scroll distance is reached,
     // and reach 1 when it reaches 2 / 3rds.
     const b = data.range(1 / 3, 1 / 3)
-        // Same as above but with a margin of 0.1 on both ends
+    // Same as above but with a margin of 0.1 on both ends
     const c = data.range(1 / 3, 1 / 3, 0.1)
     // Will move between 0-1-0 for the selected range
     const d = data.curve(1 / 3, 1 / 3)
     // Same as above, but with a margin of 0.1 on both ends
-    const d = data.curve(1 / 3, 1 / 3, 0.1)
+    const e = data.curve(1 / 3, 1 / 3, 0.1)
     // Returns true if the offset is in range and false if it isn't
-    const e = data.visible(2 / 3, 1 / 3)
+    const f = data.visible(2 / 3, 1 / 3)
     // The visible function can also receive a margin
-    const f = data.visible(2 / 3, 1 / 3, 0.1)
+    const g = data.visible(2 / 3, 1 / 3, 0.1)
   })
   return <mesh ref={ref} {...props} />
+}
 ```
 
 #### PresentationControls
@@ -2405,7 +2406,7 @@ Now refer to it with the `useMask` hook and the same id, your content will now b
 const stencil = useMask(1)
 return (
   <mesh>
-    <torusKnotGeoometry />
+    <torusKnotGeometry />
     <meshStandardMaterial {...stencil} />
 ```
 

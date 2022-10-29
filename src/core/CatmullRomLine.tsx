@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { CatmullRomCurve3, Color, Vector3 } from 'three'
-import { Line2 } from 'three/examples/jsm/lines/Line2'
+import { Line2 } from 'three-stdlib'
 import { Line, LineProps } from './Line'
 
 type Props = Omit<LineProps, 'ref'> & {

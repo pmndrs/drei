@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { CubicBezierCurve3, Vector3 } from 'three'
-import { Line2 } from 'three/examples/jsm/lines/Line2'
+import { Line2 } from 'three-stdlib'
 import { Line, LineProps } from './Line'
 
 type Props = Omit<LineProps, 'points' | 'ref'> & {

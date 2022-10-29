@@ -2406,7 +2406,7 @@ Now refer to it with the `useMask` hook and the same id, your content will now b
 const stencil = useMask(1)
 return (
   <mesh>
-    <torusKnotGeoometry />
+    <torusKnotGeometry />
     <meshStandardMaterial {...stencil} />
 ```
 

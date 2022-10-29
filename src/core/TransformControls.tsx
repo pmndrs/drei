@@ -15,11 +15,11 @@ export type TransformControlsProps = ReactThreeFiber.Object3DNode<TransformContr
     enabled?: boolean
     axis?: string | null
     domElement?: HTMLElement
-    mode?: string
+    mode?: 'translate' | 'rotate' | 'scale'
     translationSnap?: number | null
     rotationSnap?: number | null
     scaleSnap?: number | null
-    space?: string
+    space?: 'world' | 'local'
     size?: number
     showX?: boolean
     showY?: boolean

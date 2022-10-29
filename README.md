@@ -392,13 +392,14 @@ function Foo(props) {
     // Will move between 0-1-0 for the selected range
     const d = data.curve(1 / 3, 1 / 3)
     // Same as above, but with a margin of 0.1 on both ends
-    const d = data.curve(1 / 3, 1 / 3, 0.1)
+    const e = data.curve(1 / 3, 1 / 3, 0.1)
     // Returns true if the offset is in range and false if it isn't
-    const e = data.visible(2 / 3, 1 / 3)
+    const f = data.visible(2 / 3, 1 / 3)
     // The visible function can also receive a margin
-    const f = data.visible(2 / 3, 1 / 3, 0.1)
+    const g = data.visible(2 / 3, 1 / 3, 0.1)
   })
   return <mesh ref={ref} {...props} />
+}
 ```
 
 #### PresentationControls

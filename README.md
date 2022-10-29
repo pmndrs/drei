@@ -436,11 +436,11 @@ Semi-OrbitControls with spring-physics, polar zoom and snap-back, for presentati
 A rudimentary keyboard controller which distributes your defined data-model to the `useKeyboard` hook. It's a rather simple way to get started with keyboard input.
 
 ```tsx
-type KeyboardControlsState = { [key: string]: boolean }
+type KeyboardControlsState<T extends string = string> = { [K in T]: boolean }
 
-type KeyboardControlsEntry = {
+type KeyboardControlsEntry<T extends string = string> = {
   /** Name of the action */
-  name: string
+  name: T
   /** The keys that define it, you can use either event.key, or event.code */
   keys: string[]
   /** If the event receives the keyup event, true by default */
@@ -461,33 +461,40 @@ type KeyboardControlsProps = {
 
 You start by wrapping your app, or scene, into `<KeyboardControls>`.
 
-```jsx
+```tsx
+enum Controls {
+  forward = 'forward',
+  back = 'back',
+  left = 'left',
+  right = 'right',
+  jump = 'jump',
+}
 function App() {
+  const map = useMemo<KeyboardControlsEntry<Controls>>(()=>[
+    { name: Controls.forward, keys: ['ArrowUp', 'w', 'W'] },
+    { name: Controls.back, keys: ['ArrowDown', 's', 'S'] },
+    { name: Controls.left, keys: ['ArrowLeft', 'a', 'A'] },
+    { name: Controls.right, keys: ['ArrowRight', 'd', 'D'] },
+    { name: Controls.jump, keys: ['Space'] },
+  ], [])
   return (
-    <KeyboardControls
-      map={[
-        { name: 'forward', keys: ['ArrowUp', 'w', 'W'] },
-        { name: 'backward', keys: ['ArrowDown', 's', 'S'] },
-        { name: 'leftward', keys: ['ArrowLeft', 'a', 'A'] },
-        { name: 'rightward', keys: ['ArrowRight', 'd', 'D'] },
-        { name: 'jump', keys: ['Space'] },
-      ]}>
+    <KeyboardControls map={map}>
       <App />
     </KeyboardControls>
 ```
 
 You can either respond to input reactively, it uses zustand (with the `subscribeWithSelector` middleware) so all the rules apply:
 
-```jsx
+```tsx
 function Foo() {
-  const pressed = useKeyboardControls(state => forward)
+  const forwardPressed = useKeyboardControls<Controls>(state => state.forward)
 ```
 
 Or transiently, either by `subscribe`, which is a function which returns a function to unsubscribe, so you can pair it with useEffect for cleanup, or `get`, which fetches fresh state non-reactively.
 
-```jsx
+```tsx
 function Foo() {
-  const [sub, get] = useKeyboardControls()
+  const [sub, get] = useKeyboardControls<Controls>()
 
   useEffect(() => {
     return sub(
@@ -500,7 +507,7 @@ function Foo() {
 
   useFrame(() => {
     // Fetch fresh data from store
-    const pressed = get().backward
+    const pressed = get().back
   })
 }
 ```

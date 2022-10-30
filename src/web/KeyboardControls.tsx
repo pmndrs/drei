@@ -90,16 +90,16 @@ export function KeyboardControls({ map, children, onChange, domElement }: Keyboa
   return <context.Provider value={api} children={children} />
 }
 
-export function useKeyboardControls<T extends string = string, U = any>(): [
+type Selector<T extends string = string> = (state: KeyboardControlsState<T>) => boolean
+
+export function useKeyboardControls<T extends string = string>(): [
   Subscribe<KeyboardControlsState<T>>,
   GetState<KeyboardControlsState<T>>
 ]
-export function useKeyboardControls<T extends string = string, U = any>(
-  sel: StateSelector<KeyboardControlsState<T>, U>
-): U
-export function useKeyboardControls<T extends string = string, U = any>(
-  sel?: StateSelector<KeyboardControlsState<T>, U>
-): U | [Subscribe<KeyboardControlsState<T>>, GetState<KeyboardControlsState<T>>] {
+export function useKeyboardControls<T extends string = string>(sel: Selector<T>): ReturnType<Selector<T>>
+export function useKeyboardControls<T extends string = string>(
+  sel?: Selector<T>
+): ReturnType<Selector<T>> | [Subscribe<KeyboardControlsState<T>>, GetState<KeyboardControlsState<T>>] {
   const [sub, get, store] = React.useContext<KeyboardControlsApi<T>>(context)
   if (sel) return store(sel)
   else return [sub, get]

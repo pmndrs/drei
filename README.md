@@ -471,7 +471,7 @@ enum Controls {
   jump = 'jump',
 }
 function App() {
-  const map = useMemo<KeyboardControlsEntry<Controls>>(()=>[
+  const map = React.useMemo<KeyboardControlsEntry<Controls>[]>(()=>[
     { name: Controls.forward, keys: ['ArrowUp', 'w', 'W'] },
     { name: Controls.back, keys: ['ArrowDown', 's', 'S'] },
     { name: Controls.left, keys: ['ArrowLeft', 'a', 'A'] },

@@ -36,7 +36,9 @@ const _instanceLocalMatrix = /*@__PURE__*/ new THREE.Matrix4()
 const _instanceWorldMatrix = /*@__PURE__*/ new THREE.Matrix4()
 const _instanceIntersects: THREE.Intersection[] = /*@__PURE__*/ []
 const _mesh = /*@__PURE__*/ new THREE.Mesh()
-
+_mesh.material = {
+  side: THREE.FrontSide,
+}
 class PositionMesh extends THREE.Group {
   color: THREE.Color
   instance: React.MutableRefObject<THREE.InstancedMesh | undefined>
@@ -68,6 +70,8 @@ class PositionMesh extends THREE.Group {
     _instanceWorldMatrix.multiplyMatrices(matrixWorld, _instanceLocalMatrix)
     // the mesh represents this single instance
     _mesh.matrixWorld = _instanceWorldMatrix
+    // raycast side according to instance material
+    _mesh.material.side = parent.material.side
     _mesh.raycast(raycaster, _instanceIntersects)
     // process the result of raycast
     for (let i = 0, l = _instanceIntersects.length; i < l; i++) {

@@ -1032,7 +1032,7 @@ You can either pass a Mesh and InstancedMesh as children:
   </mesh>
 
   <instancedMesh args={[null, null, 1_000]}>
-    <sphereGeometry args={[0.1]}>
+    <sphereGeometry args={[0.1]}/>
   </instancedMesh>
 </Sampler>
 ```

@@ -3,9 +3,9 @@ import { Group } from 'three'
 import mergeRefs from 'react-merge-refs'
 import { useFrame } from '@react-three/fiber'
 
-type ScreenSpaceProps = JSX.IntrinsicElements['group'] & {
+export type ScreenSpaceProps = {
   depth?: number
-}
+} & JSX.IntrinsicElements['group']
 
 export const ScreenSpace = React.forwardRef<Group, ScreenSpaceProps>(({ children, depth = -1, ...rest }, ref) => {
   const localRef = React.useRef<Group>(null)

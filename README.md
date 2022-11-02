@@ -65,6 +65,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#text3d">Text3D</a></li>          
           <li><a href="#positionalaudio">PositionalAudio</a></li>
           <li><a href="#billboard">Billboard</a></li>
+          <li><a href="#screenspace">Billboard</a></li>
           <li><a href="#effects">Effects</a></li>
           <li><a href="#gradienttexture">GradientTexture</a></li>
           <li><a href="#edges">Edges</a></li>
@@ -925,6 +926,22 @@ Adds a `<group />` that always faces the camera.
 >
   <Text fontSize={1}>I'm a billboard</Text>
 </Billboard>
+```
+
+#### ScreenSpace
+
+<p>
+  <a href="https://codesandbox.io/s/nifty-shape-nt1h8b"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/nifty-shape-nt1h8b/screenshot.png" alt="Demo"/></a>
+</p>
+
+Adds a `<group />` that aligns objects to screen space.
+
+```jsx
+<ScreenSpace
+  depth={1} // Distance from camera
+>
+  <Box>I'm in screen space</Box>
+</ScreenSpace>
 ```
 
 #### GradientTexture

@@ -65,7 +65,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#text3d">Text3D</a></li>          
           <li><a href="#positionalaudio">PositionalAudio</a></li>
           <li><a href="#billboard">Billboard</a></li>
-          <li><a href="#screenspace">Billboard</a></li>
+          <li><a href="#screenspace">ScreenSpace</a></li>
           <li><a href="#effects">Effects</a></li>
           <li><a href="#gradienttexture">GradientTexture</a></li>
           <li><a href="#edges">Edges</a></li>

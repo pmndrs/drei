@@ -930,9 +930,7 @@ Adds a `<group />` that always faces the camera.
 
 #### ScreenSpace
 
-<p>
-  <a href="https://codesandbox.io/s/nifty-shape-nt1h8b"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/nifty-shape-nt1h8b/screenshot.png" alt="Demo"/></a>
-</p>
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-screenspace--screen-space-story)
 
 Adds a `<group />` that aligns objects to screen space.
 

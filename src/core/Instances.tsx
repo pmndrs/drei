@@ -36,6 +36,7 @@ const _instanceLocalMatrix = /*@__PURE__*/ new THREE.Matrix4()
 const _instanceWorldMatrix = /*@__PURE__*/ new THREE.Matrix4()
 const _instanceIntersects: THREE.Intersection[] = /*@__PURE__*/ []
 const _mesh = /*@__PURE__*/ new THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>()
+
 class PositionMesh extends THREE.Group {
   color: THREE.Color
   instance: React.MutableRefObject<THREE.InstancedMesh | undefined>

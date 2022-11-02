@@ -25,7 +25,7 @@ export const ScreenSpaceStory = ({ depth }) => (
       <Box args={[0.1, 0.1, 0.1]} position={[0.5, 0.1, 0]}>
         <meshPhysicalMaterial color={'blue'} />
         <Html center sprite>
-          <div>Hi i'm in screen space</div>
+          <div style={{ color: 'hotpink' }}>Hi i'm in screen space</div>
         </Html>
       </Box>
     </ScreenSpace>

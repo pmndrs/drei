@@ -133,6 +133,7 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
       axisColors = ['#ff2060', '#20df80', '#2080ff'],
       hoveredColor = '#ffff40',
       displayValues = true,
+      annotationsClass,
       opacity = 1,
       visible = true,
       userData,
@@ -210,6 +211,7 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
         displayValues,
         depthTest,
         userData,
+        annotationsClass,
       }),
       [
         onDragStart,
@@ -228,6 +230,7 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
         displayValues,
         userData,
         autoTransform,
+        annotationsClass,
       ]
     )
 

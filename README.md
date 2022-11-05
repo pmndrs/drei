@@ -434,6 +434,10 @@ Semi-OrbitControls with spring-physics, polar zoom and snap-back, for presentati
 
 ![](https://img.shields.io/badge/-Dom only-red)
 
+<p>
+  <a href="https://codesandbox.io/s/vkgi6"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/vkgi6/screenshot.png" alt="demo"/></a>
+</p>
+
 A rudimentary keyboard controller which distributes your defined data-model to the `useKeyboard` hook. It's a rather simple way to get started with keyboard input.
 
 ```tsx

@@ -4,7 +4,7 @@ import { useThree } from '@react-three/fiber'
 import { suspend, preload, clear } from 'suspend-react'
 
 interface VideoTextureProps extends HTMLVideoElement {
-  unsuspend?: 'canplay' | 'canplaythrough'
+  unsuspend?: 'canplay' | 'canplaythrough' | 'loadedmetadata'
   start?: boolean
 }
 

@@ -77,7 +77,6 @@ const atlases = Object.create(null)
  * @param {getTextRenderInfo~callback} callback
  */
 function getTextRenderInfo(args, callback) {
-  hasRequested = true
   args = Object.assign({}, args)
   const totalStart = now()
 

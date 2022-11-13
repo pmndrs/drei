@@ -1,6 +1,7 @@
 import { Color, DoubleSide, FrontSide, Matrix4, Mesh, MeshBasicMaterial, PlaneGeometry, Vector3, Vector2 } from 'three'
 import { GlyphsGeometry } from './GlyphsGeometry.js'
 import { createTextDerivedMaterial } from './TextDerivedMaterial.js'
+import { getTextRenderInfo } from './TextBuilder.js'
 
 const defaultMaterial = /*#__PURE__*/ new MeshBasicMaterial({
   color: 0xffffff,

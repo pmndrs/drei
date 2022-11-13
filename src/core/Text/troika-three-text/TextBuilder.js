@@ -78,7 +78,7 @@ const atlases = Object.create(null)
  */
 function getTextRenderInfo(args, callback) {
   hasRequested = true
-  args = assign({}, args)
+  args = Object.assign({}, args)
   const totalStart = now()
 
   // Apply default font here to avoid a 'null' atlas, and convert relative
@@ -346,16 +346,6 @@ function initContextLossHandling(atlas) {
 export function preloadFont({ font, characters, sdfGlyphSize }, callback) {
   const text = Array.isArray(characters) ? characters.join('\n') : '' + characters
   getTextRenderInfo({ font, sdfGlyphSize, text }, callback)
-}
-
-// Local assign impl so we don't have to import troika-core
-function assign(toObj, fromObj) {
-  for (const key in fromObj) {
-    if (fromObj.hasOwnProperty(key)) {
-      toObj[key] = fromObj[key]
-    }
-  }
-  return toObj
 }
 
 // Utility for making URLs absolute

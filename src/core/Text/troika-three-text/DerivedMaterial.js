@@ -274,14 +274,24 @@ export function createDerivedMaterial(baseMaterial, options) {
 }
 
 function upgradeShaders({ vertexShader, fragmentShader }, options, key) {
-  let { vertexDefs, vertexMainIntro, vertexMainOutro, fragmentDefs, fragmentMainIntro, fragmentMainOutro } = options
-
-  vertexDefs = vertexDefs || ''
-  vertexMainIntro = vertexMainIntro || ''
-  vertexMainOutro = vertexMainOutro || ''
-  fragmentDefs = fragmentDefs || ''
-  fragmentMainIntro = fragmentMainIntro || ''
-  fragmentMainOutro = fragmentMainOutro || ''
+  let {
+    vertexDefs = '',
+    vertexMainIntro = '',
+    // eslint-disable-next-line prefer-const
+    vertexMainOutro = '',
+    // eslint-disable-next-line prefer-const
+    vertexTransform,
+    fragmentDefs = '',
+    // eslint-disable-next-line prefer-const
+    fragmentMainIntro = '',
+    fragmentMainOutro = '',
+    // eslint-disable-next-line prefer-const
+    fragmentColorTransform,
+    // eslint-disable-next-line prefer-const
+    customRewriter,
+    // eslint-disable-next-line prefer-const
+    timeUniform,
+  } = options
 
   // Expand includes if needed
   if (vertexTransform || customRewriter) {

@@ -32,6 +32,7 @@ export function useHelper<T extends Constructor>(
      */
     if (!object3D && helper.current) {
       scene.remove(helper.current)
+      helper.current = null
     }
 
     return () => {

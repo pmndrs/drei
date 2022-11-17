@@ -11333,10 +11333,10 @@ three-mesh-bvh@^0.5.15:
   resolved "https://registry.yarnpkg.com/three-mesh-bvh/-/three-mesh-bvh-0.5.15.tgz#bcf681d784d8988618344a5e11e7ded7e76ee86a"
   integrity sha512-jxE5iGjcoEMiyxUs7hMeZL6jBXBz9973ilqhXPhKlA1f7eitjIxRTtu7UWVQy+PhxXTsknmPzWmN5c+uAa/anA==
 
-three-stdlib@^2.17.3:
-  version "2.17.3"
-  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-2.17.3.tgz#f92d322810d81379a51344b21e0a2e941b84cb8f"
-  integrity sha512-k2VwPXi75ySy0fxPIeUk3mLkj3/j+sCFK4g9Kp5J7w0PUh6qrCdhah7L6+On6fW5mBdVtML4Q5yEyN1R0Cfvqw==
+three-stdlib@^2.18.0:
+  version "2.18.0"
+  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-2.18.0.tgz#eff73a144777b54959e5c91be2385e149891e0a9"
+  integrity sha512-N6gVSb73qq5EDLPNcFlbkrq/YUcW+/SBGCZNwlUUR+0OazaLmyJIL7r7PjRgmAjqcTx4rrbe1Yw5FQtLFqB+hQ==
   dependencies:
     "@babel/runtime" "^7.16.7"
     "@types/offscreencanvas" "^2019.6.4"

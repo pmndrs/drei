@@ -95,6 +95,7 @@ export const Stars = React.forwardRef(
           attach="material"
           blending={AdditiveBlending}
           uniforms-fade-value={fade}
+          depthWrite={false}
           transparent
           vertexColors
         />

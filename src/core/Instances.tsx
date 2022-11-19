@@ -35,7 +35,7 @@ type InstancedMesh = Omit<THREE.InstancedMesh, 'instanceMatrix' | 'instanceColor
 const _instanceLocalMatrix = /*@__PURE__*/ new THREE.Matrix4()
 const _instanceWorldMatrix = /*@__PURE__*/ new THREE.Matrix4()
 const _instanceIntersects: THREE.Intersection[] = /*@__PURE__*/ []
-const _mesh = /*@__PURE__*/ new THREE.Mesh()
+const _mesh = /*@__PURE__*/ new THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>()
 
 class PositionMesh extends THREE.Group {
   color: THREE.Color
@@ -68,6 +68,9 @@ class PositionMesh extends THREE.Group {
     _instanceWorldMatrix.multiplyMatrices(matrixWorld, _instanceLocalMatrix)
     // the mesh represents this single instance
     _mesh.matrixWorld = _instanceWorldMatrix
+    // raycast side according to instance material
+    if (parent.material instanceof THREE.Material) _mesh.material.side = parent.material.side
+    else _mesh.material.side = parent.material[0].side
     _mesh.raycast(raycaster, _instanceIntersects)
     // process the result of raycast
     for (let i = 0, l = _instanceIntersects.length; i < l; i++) {

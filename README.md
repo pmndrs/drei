@@ -1027,7 +1027,7 @@ You can either pass a Mesh and InstancedMesh as children:
 ```tsx
 // This simple example scatters 1000 spheres on the surface of the sphere mesh.
 <Sampler
-  weight={"normal"} // the name of the attribute to be used as sampling weight
+  weight={'normal'} // the name of the attribute to be used as sampling weight
   transform={transformPoint} // a function that transforms each instance given a sample. See the examples for more.
   count={16} // Number of samples
 >
@@ -1036,7 +1036,7 @@ You can either pass a Mesh and InstancedMesh as children:
   </mesh>
 
   <instancedMesh args={[null, null, 1_000]}>
-    <sphereGeometry args={[0.1]}/>
+    <sphereGeometry args={[0.1]} />
   </instancedMesh>
 </Sampler>
 ```
@@ -1950,7 +1950,7 @@ A convenience hook that returns a `THREE.VideoTexture` and integrates loading in
 
 ```tsx
 type VideoTextureProps = {
-  unsuspend?: 'canplay' | 'canplaythrough'
+  unsuspend?: 'canplay' | 'canplaythrough' | 'loadedmetadata'
   muted?: boolean
   loop?: boolean
   start?: boolean

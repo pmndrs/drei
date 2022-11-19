@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import { Setup } from '../Setup'
 
-import { Sphere, Trail, useTrail, Html, Stats, Float } from '../../src'
+import { Sphere, Trail, useTrail, Html, Stats, Float, PerspectiveCamera } from '../../src'
 import { useFrame } from '@react-three/fiber'
 import { InstancedMesh, Mesh, Object3D, Vector3 } from 'three'
 
@@ -13,28 +13,36 @@ export default {
 }
 
 function TrailScene() {
+  const group = React.useRef<Mesh>(null!)
   const sphere = React.useRef<Mesh>(null!)
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime()
 
-    sphere.current.position.x = Math.sin(t) * 3
-    sphere.current.position.y = Math.cos(t) * 3
+    group.current.rotation.z = t
+
+    sphere.current.position.x = Math.sin(t * 2) * 2
+    sphere.current.position.z = Math.cos(t * 2) * 2
   })
 
   return (
     <>
-      <Trail
-        width={1}
-        length={4}
-        color={'#F8D628'}
-        attenuation={(t: number) => {
-          return t * t
-        }}
-      >
-        <Sphere ref={sphere} args={[0.1, 32, 32]} position-x={0} position-y={3}>
-          <meshNormalMaterial />
-        </Sphere>
-      </Trail>
+      <group ref={group}>
+        <Trail
+          width={1}
+          length={4}
+          color={'#F8D628'}
+          attenuation={(t: number) => {
+            return t * t
+          }}
+        >
+          <Sphere ref={sphere} args={[0.1, 32, 32]} position-y={3}>
+            <meshNormalMaterial />
+          </Sphere>
+        </Trail>
+      </group>
+
+      <PerspectiveCamera makeDefault position={[5, 5, 5]} />
+      <axesHelper />
     </>
   )
 }
@@ -60,7 +68,7 @@ function UseTrailScene() {
     if (!instancesRef.current) return
 
     for (let i = 0; i < n; i += 1) {
-      const x = trailPositions.current.slice(i * 3, i * 3 + 3)
+      const x = trailPositions.current?.slice(i * 3, i * 3 + 3)
       // @ts-ignore
       o.position.set(...x)
 
@@ -82,7 +90,7 @@ function UseTrailScene() {
         <meshNormalMaterial />
       </Sphere>
 
-      <instancedMesh ref={instancesRef} args={[null, null, n]}>
+      <instancedMesh ref={instancesRef} args={[null!, null!, n]}>
         <boxGeometry args={[0.1, 0.1, 0.1]} />
         <meshNormalMaterial />
       </instancedMesh>

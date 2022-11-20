@@ -2639,7 +2639,7 @@ This component makes its contents float or hover.
   <a href="https://codesandbox.io/s/57iefg"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/57iefg/screenshot.png" alt="Demo"/></a>
 </p>
 
-Creates a "stage" with proper studio lighting, content centered and planar, model-shadows and ground-shadows. Make sure to set `makeDefault` on your controls when `adjustCamera` is true!
+Creates a "stage" with proper studio lighting, 0/0/0 top-centred, model-shadows, ground-shadows and optional zoom to fit. Make sure to set `makeDefault` on your controls when `adjustCamera` is true!
 
 ```tsx
 type StageShadows = Partial<AccumulativeShadowsProps> &
@@ -2658,7 +2658,7 @@ type StageProps = JSX.IntrinsicElements['group'] & {
   preset?: 'rembrandt' | 'portrait' | 'upfront' | 'soft'
   /** Controls the ground shadows, default: "contact" */
   shadows?: boolean | 'contact' | 'accumulative' | StageShadows
-  /** Optionally wraps and thereby centers the models using <Bounds>, can also be a margin, default: true */
+  /** Optional zoom-to-fit using <Bounds>, can also be a margin, default: true */
   adjustCamera?: boolean | number
   /** The default environment, default: "city" */
   environment?: PresetsType | null

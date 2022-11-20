@@ -28,8 +28,11 @@ const presets = {
 type StageShadows = Partial<AccumulativeShadowsProps> &
   Partial<ContactShadowsProps> & {
     type: 'contact' | 'accumulative'
+    /** Shadow plane offset, default: 0 */
     offset?: number
+    /** Shadow bias, default: -0.0001 */
     bias?: number
+    /** Shadow map size, default: 1024 */
     size?: number
   }
 

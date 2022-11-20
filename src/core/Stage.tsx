@@ -92,6 +92,7 @@ export function Stage({
       <Bounds fit={!!adjustCamera} clip={!!adjustCamera} margin={Number(adjustCamera)} observe {...props}>
         <Refit radius={radius} adjustCamera={adjustCamera} />
         <Center
+          position={[0, shadowOffset / 2, 0]}
           onCentered={({ width, height, depth, boundingSphere, ...data }) =>
             set({ radius: boundingSphere.radius, width, height, depth })
           }
@@ -99,7 +100,7 @@ export function Stage({
           {children}
         </Center>
       </Bounds>
-      <group position={[0, -height / 2 - shadowOffset, 0]}>
+      <group position={[0, -height / 2 - shadowOffset / 2, 0]}>
         {contactShadow && (
           <ContactShadows scale={radius * 4} far={radius} blur={2} {...(shadowSpread as ContactShadowsProps)} />
         )}

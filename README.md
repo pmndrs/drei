@@ -2648,9 +2648,9 @@ type StageShadows = Partial<AccumulativeShadowsProps> &
 type StageProps = JSX.IntrinsicElements['group'] & {
   /** Lighting setup, default: "rembrandt" */
   preset?: keyof typeof presets
-  /** Controls the ground shadows, default: "accumulative" */
+  /** Controls the ground shadows, default: "contact" */
   shadows?: boolean | 'contact' | 'accumulative' | StageShadows
-  /** Optionally wraps and thereby centers the models using <Bounds>, can also be a margin, default: false */
+  /** Optionally wraps and thereby centers the models using <Bounds>, can also be a margin, default: true */
   adjustCamera?: boolean | number
   /** The default environment, default: "city" */
   environment?: PresetsType | null
@@ -2659,10 +2659,22 @@ type StageProps = JSX.IntrinsicElements['group'] & {
 }
 ```
 
+By default it gives you contact shadows and auto-centering.
+
 ```jsx
 <Stage>
   <mesh />
 </Stage>
+```
+
+For a little more realistic results enable accumulative shadows, which requires that the canvas, and models, can handle shadows.
+
+```jsx
+<Canvas shadows>
+  <Stage shadows="accumulative">
+    <mesh castShadows />
+  </Stage>
+</Canvas>
 ```
 
 #### Backdrop

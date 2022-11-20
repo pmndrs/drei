@@ -28,6 +28,7 @@ const presets = {
 type StageShadows = Partial<AccumulativeShadowsProps> &
   Partial<ContactShadowsProps> & {
     type: 'contact' | 'accumulative'
+    offset?: number
     bias?: number
     size?: number
   }
@@ -35,9 +36,9 @@ type StageShadows = Partial<AccumulativeShadowsProps> &
 type StageProps = JSX.IntrinsicElements['group'] & {
   /** Lighting setup, default: "rembrandt" */
   preset?: keyof typeof presets
-  /** Controls the ground shadows, default: "accumulative" */
+  /** Controls the ground shadows, default: "contact" */
   shadows?: boolean | 'contact' | 'accumulative' | StageShadows
-  /** Optionally wraps and thereby centers the models using <Bounds>, can also be a margin, default: false */
+  /** Optionally wraps and thereby centers the models using <Bounds>, can also be a margin, default: true */
   adjustCamera?: boolean | number
   /** The default environment, default: "city" */
   environment?: PresetsType | null
@@ -55,9 +56,9 @@ function Refit({ radius, adjustCamera }) {
 
 export function Stage({
   children,
-  adjustCamera,
+  adjustCamera = true,
   intensity = 0.5,
-  shadows = 'accumulative',
+  shadows = 'contact',
   environment = 'city',
   preset = 'rembrandt',
   ...props
@@ -66,10 +67,10 @@ export function Stage({
   const [{ radius, height }, set] = React.useState({ radius: 0, width: 0, height: 0, depth: 0 })
   const shadowBias = (shadows as StageShadows)?.bias ?? -0.0001
   const shadowSize = (shadows as StageShadows)?.size ?? 1024
+  const shadowOffset = (shadows as StageShadows)?.offset ?? 0
   const contactShadow = shadows === 'contact' || (shadows as StageShadows)?.type === 'contact'
   const accumulativeShadow = shadows === 'accumulative' || (shadows as StageShadows)?.type === 'accumulative'
   const shadowSpread = { ...(typeof shadows === 'object' ? shadows : {}) }
-  console.log(height)
   return (
     <>
       <ambientLight intensity={intensity / 3} />
@@ -95,7 +96,7 @@ export function Stage({
           {children}
         </Center>
       </Bounds>
-      <group position={[0, -height / 2, 0]}>
+      <group position={[0, -height / 2 - shadowOffset, 0]}>
         {contactShadow && (
           <ContactShadows scale={radius * 4} far={radius} blur={2} {...(shadowSpread as ContactShadowsProps)} />
         )}

@@ -3,9 +3,7 @@ import { withKnobs, select, number, boolean, object } from '@storybook/addon-kno
 import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'
-
 import { Stage, Sphere } from '../../src'
-
 import { presetsObj, PresetsType } from '../../src/helpers/environment-assets'
 
 export default {
@@ -30,17 +28,7 @@ function StageStory() {
   return (
     <React.Suspense fallback={null}>
       <color attach="background" args={['white']} />
-      <Stage
-        contactShadow={object('ContactShadow', {
-          blur: 2,
-          opacity: 0.5,
-          position: [0, 0, 0],
-        })}
-        shadows={boolean('Shadow', true)}
-        intensity={intensity}
-        environment={envPreset as PresetsType}
-        preset={presetKnob}
-      >
+      <Stage intensity={intensity} environment={envPreset as PresetsType} preset={presetKnob}>
         <Sphere args={[1, 64, 64]}>
           <meshStandardMaterial roughness={0} color="royalblue" />
         </Sphere>

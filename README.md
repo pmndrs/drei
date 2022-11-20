@@ -2635,12 +2635,32 @@ This component makes its contents float or hover.
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-stage--stage-st)
 
-Creates a "stage" with proper studio lighting, content centered and planar, shadows and ground-contact shadows.
+Creates a "stage" with proper studio lighting, content centered and planar, model-shadows and ground-shadows. Make sure to set `makeDefault` on your controls when `adjustCamera` is true!
 
-Make sure to set the `makeDefault` prop on your controls, in that case you do not need to provide `controls` via prop.
+```tsx
+type StageShadows = Partial<AccumulativeShadowsProps> &
+  Partial<ContactShadowsProps> & {
+    type: 'contact' | 'accumulative'
+    bias?: number
+    size?: number
+  }
+
+type StageProps = JSX.IntrinsicElements['group'] & {
+  /** Lighting setup, default: "rembrandt" */
+  preset?: keyof typeof presets
+  /** Controls the ground shadows, default: "accumulative" */
+  shadows?: boolean | 'contact' | 'accumulative' | StageShadows
+  /** Optionally wraps and thereby centers the models using <Bounds>, can also be a margin, default: false */
+  adjustCamera?: boolean | number
+  /** The default environment, default: "city" */
+  environment?: PresetsType | null
+  /** The lighting intensity, default: 0.5 */
+  intensity?: number
+}
+```
 
 ```jsx
-<Stage contactShadow shadows adjustCamera intensity={1} environment="city" preset="rembrandt" controls={controlsRef}>
+<Stage>
   <mesh />
 </Stage>
 ```

@@ -11,7 +11,7 @@ function isGeometry(object: any): object is THREE.Mesh {
   return !!object.geometry
 }
 
-type AccumulativeShadowsProps = JSX.IntrinsicElements['group'] & {
+export type AccumulativeShadowsProps = {
   /** How many frames it can render, more yields cleaner results but takes more time, 40 */
   frames?: number
   /** If frames === Infinity blend controls the refresh ratio, 100 */
@@ -121,7 +121,7 @@ export const AccumulativeShadows = React.forwardRef(
       resolution = 1024,
       toneMapped = true,
       ...props
-    }: AccumulativeShadowsProps,
+    }: JSX.IntrinsicElements['group'] & AccumulativeShadowsProps,
     forwardRef: React.ForwardedRef<AccumulativeContext>
   ) => {
     extend({ SoftShadowMaterial })

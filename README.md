@@ -2655,7 +2655,7 @@ type StageShadows = Partial<AccumulativeShadowsProps> &
 
 type StageProps = JSX.IntrinsicElements['group'] & {
   /** Lighting setup, default: "rembrandt" */
-  preset?: keyof typeof presets
+  preset?: 'rembrandt' | 'portrait' | 'upfront' | 'soft'
   /** Controls the ground shadows, default: "contact" */
   shadows?: boolean | 'contact' | 'accumulative' | StageShadows
   /** Optionally wraps and thereby centers the models using <Bounds>, can also be a margin, default: true */

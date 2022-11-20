@@ -2635,13 +2635,21 @@ This component makes its contents float or hover.
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-stage--stage-st)
 
+<p>
+  <a href="https://codesandbox.io/s/57iefg"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/57iefg/screenshot.png" alt="Demo"/></a>
+</p>
+
 Creates a "stage" with proper studio lighting, content centered and planar, model-shadows and ground-shadows. Make sure to set `makeDefault` on your controls when `adjustCamera` is true!
 
 ```tsx
 type StageShadows = Partial<AccumulativeShadowsProps> &
   Partial<ContactShadowsProps> & {
     type: 'contact' | 'accumulative'
+    /** Shadow plane offset, default: 0 */
+    offset?: number
+    /** Shadow bias, default: -0.0001 */
     bias?: number
+    /** Shadow map size, default: 1024 */
     size?: number
   }
 

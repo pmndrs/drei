@@ -2312,7 +2312,13 @@ function Effects() {
 
 Views use gl.scissor to cut the viewport into segments. You tie a view to a tracking div which then controls the position and bounds of the viewport. This allows you to have multiple views with a single, performant canvas. These views will follow their tracking elements, scroll along, resize, etc.
 
-It is advisable to re-connect the event system to a parent that contains both the canvas and the html content. This ensures that both are accessible/selectable and even allows you to mount controls or other deeper integrations into your view.
+It is advisable to re-connect the event system to a parent that contains both the canvas and the html content.
+This ensures that both are accessible/selectable and even allows you to mount controls or other deeper
+integrations into your view.
+
+> Note that `@react-three/fiber` newer than `^8.1.0` is required for `View` to work correctly if the
+> canvas/react three fiber root is not fullscreen. A warning will be logged if drei is used with older
+> versions of `@react-three/fiber`.
 
 ```tsx
 <View
@@ -2558,8 +2564,7 @@ Calculates a boundary box and centers the camera accordingly. If you are using c
   <mesh />
 </Bounds>
 ```
-
-The Bounds component also acts as a context provider, use the `useBounds` hook to refresh the bounds, fit the camera, clip near/far planes or focus objects. `refresh(object?: THREE.Object3D | THREE.Box3)` will recalculate bounds. Since this can be expensive only call it when you know the view has changed. `clip` sets the cameras near/far planes. `fit` zooms and centers the view.
+The Bounds component also acts as a context provider, use the `useBounds` hook to refresh the bounds, fit the camera, clip near/far planes, go to camera orientations or focus objects. `refresh(object?: THREE.Object3D | THREE.Box3)` will recalculate bounds, since this can be expensive only call it when you know the view has changed. `clip` sets the cameras near/far planes. `to` sets a position and target for the camera. `fit` zooms and centers the view.
 
 ```jsx
 function Foo() {
@@ -2567,10 +2572,13 @@ function Foo() {
   useEffect(() => {
     // Calculate scene bounds
     bounds.refresh().clip().fit()
+
     // Or, focus a specific object or box3
     // bounds.refresh(ref.current).clip().fit()
     // bounds.refresh(new THREE.Box3()).clip().fit()
 
+    // Or, send the camera to a specific orientatin
+    // bounds.to({position: [0, 10, 10], target: {[5, 5, 0]}})
 <Bounds>
   <Foo />
 ```

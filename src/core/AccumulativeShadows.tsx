@@ -221,7 +221,7 @@ export const AccumulativeShadows = React.forwardRef(
   }
 )
 
-type RandomizedLightProps = JSX.IntrinsicElements['group'] & {
+export type RandomizedLightProps = {
   /** How many frames it will jiggle the lights, 1.
    *  Frames is context aware, if a provider like AccumulativeShadows exists, frames will be taken from there!  */
   frames?: number
@@ -265,7 +265,7 @@ export const RandomizedLight = React.forwardRef(
       intensity = 1,
       ambient = 0.5,
       ...props
-    }: RandomizedLightProps,
+    }: JSX.IntrinsicElements['group'] & RandomizedLightProps,
     forwardRef: React.ForwardedRef<AccumulativeLightContext>
   ) => {
     const gLights = React.useRef<THREE.Group>(null!)

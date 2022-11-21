@@ -1,8 +1,13 @@
 import * as React from 'react'
-import { Environment } from './Environment'
+import { EnvironmentProps, Environment } from './Environment'
 import { ContactShadowsProps, ContactShadows } from './ContactShadows'
 import { Center } from './Center'
-import { AccumulativeShadowsProps, AccumulativeShadows, RandomizedLight } from './AccumulativeShadows'
+import {
+  AccumulativeShadowsProps,
+  RandomizedLightProps,
+  AccumulativeShadows,
+  RandomizedLight,
+} from './AccumulativeShadows'
 import { useBounds, Bounds } from './Bounds'
 import { PresetsType } from '../helpers/environment-assets'
 
@@ -26,25 +31,33 @@ const presets = {
 }
 
 type StageShadows = Partial<AccumulativeShadowsProps> &
+  Partial<RandomizedLightProps> &
   Partial<ContactShadowsProps> & {
     type: 'contact' | 'accumulative'
     /** Shadow plane offset, default: 0 */
     offset?: number
     /** Shadow bias, default: -0.0001 */
     bias?: number
+    /** Shadow normal bias, default: 0 */
+    normalBias?: number
     /** Shadow map size, default: 1024 */
     size?: number
   }
 
-type StageProps = JSX.IntrinsicElements['group'] & {
+type StageProps = {
   /** Lighting setup, default: "rembrandt" */
-  preset?: 'rembrandt' | 'portrait' | 'upfront' | 'soft'
+  preset?:
+    | 'rembrandt'
+    | 'portrait'
+    | 'upfront'
+    | 'soft'
+    | { main: [x: number, y: number, z: number]; fill: [x: number, y: number, z: number] }
   /** Controls the ground shadows, default: "contact" */
   shadows?: boolean | 'contact' | 'accumulative' | StageShadows
   /** Optionally wraps and thereby centers the models using <Bounds>, can also be a margin, default: true */
   adjustCamera?: boolean | number
   /** The default environment, default: "city" */
-  environment?: PresetsType | null
+  environment?: PresetsType | Partial<EnvironmentProps>
   /** The lighting intensity, default: 0.5 */
   intensity?: number
 }
@@ -65,15 +78,18 @@ export function Stage({
   environment = 'city',
   preset = 'rembrandt',
   ...props
-}: StageProps) {
-  const config = presets[preset]
+}: JSX.IntrinsicElements['group'] & StageProps) {
+  const config = typeof preset === 'string' ? presets[preset] : preset
   const [{ radius, height }, set] = React.useState({ radius: 0, width: 0, height: 0, depth: 0 })
   const shadowBias = (shadows as StageShadows)?.bias ?? -0.0001
+  const normalBias = (shadows as StageShadows)?.normalBias ?? 0
   const shadowSize = (shadows as StageShadows)?.size ?? 1024
   const shadowOffset = (shadows as StageShadows)?.offset ?? 0
   const contactShadow = shadows === 'contact' || (shadows as StageShadows)?.type === 'contact'
   const accumulativeShadow = shadows === 'accumulative' || (shadows as StageShadows)?.type === 'accumulative'
   const shadowSpread = { ...(typeof shadows === 'object' ? shadows : {}) }
+  const environmentProps = !environment ? null : typeof environment === 'string' ? { preset: environment } : environment
+
   return (
     <>
       <ambientLight intensity={intensity / 3} />
@@ -83,6 +99,7 @@ export function Stage({
         intensity={intensity * 2}
         castShadow={!!shadows}
         shadow-bias={shadowBias}
+        shadow-normalBias={normalBias}
         shadow-mapSize={shadowSize}
       />
       <pointLight
@@ -114,10 +131,10 @@ export function Stage({
             {...(shadowSpread as AccumulativeShadowsProps)}
           >
             <RandomizedLight
-              amount={8}
-              radius={radius}
-              ambient={0.5}
-              intensity={1}
+              amount={(shadowSpread as RandomizedLightProps).amount ?? 8}
+              radius={(shadowSpread as RandomizedLightProps).radius ?? radius}
+              ambient={(shadowSpread as RandomizedLightProps).ambient ?? 0.5}
+              intensity={(shadowSpread as RandomizedLightProps).intensity ?? 1}
               position={[config.main[0] * radius, config.main[1] * radius, config.main[2] * radius]}
               size={radius * 4}
               bias={-shadowBias}
@@ -126,7 +143,7 @@ export function Stage({
           </AccumulativeShadows>
         )}
       </group>
-      {environment && <Environment preset={environment} />}
+      {environment && <Environment {...environmentProps} />}
     </>
   )
 }

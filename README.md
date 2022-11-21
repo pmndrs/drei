@@ -2312,7 +2312,13 @@ function Effects() {
 
 Views use gl.scissor to cut the viewport into segments. You tie a view to a tracking div which then controls the position and bounds of the viewport. This allows you to have multiple views with a single, performant canvas. These views will follow their tracking elements, scroll along, resize, etc.
 
-It is advisable to re-connect the event system to a parent that contains both the canvas and the html content. This ensures that both are accessible/selectable and even allows you to mount controls or other deeper integrations into your view.
+It is advisable to re-connect the event system to a parent that contains both the canvas and the html content.
+This ensures that both are accessible/selectable and even allows you to mount controls or other deeper
+integrations into your view.
+
+> Note that `@react-three/fiber` newer than `^8.1.0` is required for `View` to work correctly if the
+> canvas/react three fiber root is not fullscreen. A warning will be logged if drei is used with older
+> versions of `@react-three/fiber`.
 
 ```tsx
 <View

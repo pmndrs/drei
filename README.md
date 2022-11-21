@@ -122,7 +122,8 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#usetexture">useTexture</a></li>
           <li><a href="#usektx2">useKTX2</a></li>
           <li><a href="#usecubetexture">useCubeTexture</a></li>
-          <li><a href="#usevideotexture">useVideoTexture</a></li>          
+          <li><a href="#usevideotexture">useVideoTexture</a></li>
+          <li><a href="#usetrailtexture">useTrailTexture</a></li>          
         </ul>
         <li><a href="#performance">Performance</a></li>
         <ul>
@@ -1975,6 +1976,35 @@ return (
     <meshBasicMaterial map={texture} toneMapped={false} />
 ```
 
+#### useTrailTexture
+
+<p>
+  <a href="https://codesandbox.io/s/fj1qlg"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/fj1qlg/screenshot.png" alt="Demo"/></a>
+</p>
+
+This hook returns a `THREE.Texture` with a pointer trail which can be used in shaders to control displacement among other things.
+
+```tsx
+type TrailConfig = {
+  size?: number // texture size (default: 64x64)
+  maxAge?: number // max age (ms) of trail points (default: 750)
+  radius?: number // trail radius (default: 0.3)
+  intensity?: number // canvas trail opacity (default: 0.2)
+  interpolate?: number // add points in between slow pointer events (default: 0)
+  smoothing?: number // moving average of pointer force (default: 0)
+  minForce?: number // minimum pointer force (default: 0.3)
+  blend?: CanvasRenderingContext2D['globalCompositeOperation'] // (default: 'screen')
+  ease?: (t: number) => number // default: easeCircOut
+}
+```
+
+```jsx
+const { texture, onMove } = useTrailTexture(config: TrailConfig)
+return (
+  <mesh onPointerMove={onMove}>
+    <shaderMaterial displacementMap={texture} />
+```
+
 # Performance
 
 #### Instances
@@ -2564,6 +2594,7 @@ Calculates a boundary box and centers the camera accordingly. If you are using c
   <mesh />
 </Bounds>
 ```
+
 The Bounds component also acts as a context provider, use the `useBounds` hook to refresh the bounds, fit the camera, clip near/far planes, go to camera orientations or focus objects. `refresh(object?: THREE.Object3D | THREE.Box3)` will recalculate bounds, since this can be expensive only call it when you know the view has changed. `clip` sets the cameras near/far planes. `to` sets a position and target for the camera. `fit` zooms and centers the view.
 
 ```jsx

@@ -32,11 +32,17 @@ export function useHelper<T extends Constructor>(
      */
     if (!object3D && helper.current) {
       scene.remove(helper.current)
+      if(helper.current?.dispose) {
+        helper.current.dispose()
+      }
     }
 
     return () => {
       if (helper.current) {
         scene.remove(helper.current)
+        if(helper.current?.dispose) {
+          helper.current.dispose()
+        }
       }
     }
   }, [scene, helperConstructor, object3D, ...args])

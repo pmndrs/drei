@@ -23,17 +23,17 @@ function HTMLScene({
   return (
     <group ref={ref}>
       <Icosahedron args={[2, 2]} position={[3, 6, 4]}>
-        <meshBasicMaterial attach="material" color={color} wireframe />
+        <meshBasicMaterial color={color} wireframe />
         <Html {...htmlProps}>First</Html>
       </Icosahedron>
 
       <Icosahedron args={[2, 2]} position={[10, 0, 10]}>
-        <meshBasicMaterial attach="material" color={color} wireframe />
+        <meshBasicMaterial color={color} wireframe />
         <Html {...htmlProps}>Second</Html>
       </Icosahedron>
 
       <Icosahedron args={[2, 2]} position={[-20, 0, -20]}>
-        <meshBasicMaterial attach="material" color={color} wireframe />
+        <meshBasicMaterial color={color} wireframe />
         <Html {...htmlProps}>Third</Html>
       </Icosahedron>
       {children}
@@ -92,7 +92,7 @@ function HTMLOrthographicScene() {
       <OrthographicCamera makeDefault={true} applyMatrix4={undefined} {...initialCamera} />
 
       <Icosahedron args={[200, 5]} position={[0, 0, 0]}>
-        <meshBasicMaterial attach="material" color="hotpink" wireframe />
+        <meshBasicMaterial color="hotpink" wireframe />
         {
           // for smoother text use css will-change: transform
           <Html className="html-story-label" distanceFactor={1}>
@@ -134,13 +134,13 @@ function HTMLRaycastOccluderScene() {
     <>
       <group ref={turntableRef}>
         <Icosahedron ref={occluderRef} name="pink" args={[5, 5]} position={[0, 0, 0]}>
-          <meshBasicMaterial attach="material" color="hotpink" wireframe />
+          <meshBasicMaterial color="hotpink" wireframe />
           <Html position={[0, 0, -6]} className="html-story-label" occlude={[turntableRef]}>
             A
           </Html>
         </Icosahedron>
         <Icosahedron name="yellow" args={[5, 5]} position={[16, 0, 0]}>
-          <meshBasicMaterial attach="material" color="yellow" wireframe />
+          <meshBasicMaterial color="yellow" wireframe />
           <Html position={[0, 0, -6]} className="html-story-label" occlude={[turntableRef]}>
             B
           </Html>

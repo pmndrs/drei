@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as ReactDOM from 'react-dom'
+import * as ReactDOM from 'react-dom/client'
 import { Vector3, Group, Object3D, Matrix4, Camera, PerspectiveCamera, OrthographicCamera, Raycaster } from 'three'
 import { Assign } from 'utility-types'
 import { ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
@@ -142,22 +142,21 @@ export const Html = React.forwardRef(
     }: HtmlProps,
     ref: React.Ref<HTMLDivElement>
   ) => {
-    const gl = useThree(({ gl }) => gl)
-    const camera = useThree(({ camera }) => camera)
-    const scene = useThree(({ scene }) => scene)
-    const size = useThree(({ size }) => size)
-    const raycaster = useThree(({ raycaster }) => raycaster)
+    const { gl, camera, scene, size, raycaster, events } = useThree()
 
     const [el] = React.useState(() => document.createElement(as))
+    const root = React.useRef<ReactDOM.Root>()
     const group = React.useRef<Group>(null!)
     const oldZoom = React.useRef(0)
     const oldPosition = React.useRef([0, 0])
     const transformOuterRef = React.useRef<HTMLDivElement>(null!)
     const transformInnerRef = React.useRef<HTMLDivElement>(null!)
-    const target = portal?.current ?? gl.domElement.parentNode
+    // Append to the connected element, which makes HTML work with views
+    const target = (portal?.current || events.connected || gl.domElement.parentNode) as HTMLElement
 
-    React.useEffect(() => {
+    React.useLayoutEffect(() => {
       if (group.current) {
+        const currentRoot = (root.current = ReactDOM.createRoot(el))
         scene.updateMatrixWorld()
         if (transform) {
           el.style.cssText = `position:absolute;top:0;left:0;pointer-events:none;overflow:hidden;`
@@ -171,7 +170,7 @@ export const Html = React.forwardRef(
         }
         return () => {
           if (target) target.removeChild(el)
-          ReactDOM.unmountComponentAtNode(el)
+          currentRoot.unmount()
         }
       }
     }, [target, transform])
@@ -213,16 +212,15 @@ export const Html = React.forwardRef(
 
     React.useLayoutEffect(() => {
       if (transform) {
-        ReactDOM.render(
+        root.current?.render(
           <div ref={transformOuterRef} style={styles}>
             <div ref={transformInnerRef} style={transformInnerStyles}>
               <div ref={ref} className={className} style={style} children={children} />
             </div>
-          </div>,
-          el
+          </div>
         )
       } else {
-        ReactDOM.render(<div ref={ref} style={styles} className={className} children={children} />, el)
+        root.current?.render(<div ref={ref} style={styles} className={className} children={children} />)
       }
     })
 

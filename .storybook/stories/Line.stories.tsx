@@ -1,18 +1,18 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
-import { hilbert3D } from 'three-stdlib'
-import { withKnobs, number, color, boolean } from '@storybook/addon-knobs'
+import { GeometryUtils } from 'three-stdlib/utils/GeometryUtils'
+import { withKnobs, number, color, boolean, select } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
 
-import { Line, OrbitControls, QuadraticBezierLine, CubicBezierLine } from '../../src'
+import { Line, OrbitControls, QuadraticBezierLine, CubicBezierLine, CatmullRomLine } from '../../src'
 
 export default {
-  title: 'Abstractions/Line',
+  title: 'Shapes/Line',
   component: Line,
 }
 
-const points = hilbert3D(new Vector3(0), 5).map((p) => [p.x, p.y, p.z]) as [number, number, number][]
+const points = GeometryUtils.hilbert3D(new Vector3(0), 5).map((p) => [p.x, p.y, p.z]) as [number, number, number][]
 
 const colors = new Array(points.length).fill(0).map(() => [Math.random(), Math.random(), Math.random()]) as [
   number,
@@ -90,6 +90,42 @@ export function CubicBezier() {
 CubicBezier.storyName = 'CubicBezier'
 
 CubicBezier.decorators = [
+  withKnobs,
+  (storyFn) => (
+    <Setup controls={false} cameraPosition={new Vector3(0, 0, 17)}>
+      {storyFn()}
+    </Setup>
+  ),
+]
+
+const catPoints = [
+  [0, 0, 0] as [number, number, number],
+  [-8, 6, -5] as [number, number, number],
+  [-2, 3, 7] as [number, number, number],
+  [6, 4.5, 3] as [number, number, number],
+  [0.5, 8, -1] as [number, number, number],
+]
+
+export function CatmullRom() {
+  return (
+    <>
+      <CatmullRomLine
+        points={catPoints}
+        closed={boolean('closed', false)}
+        curveType={select('curveType', ['centripetal', 'chordal', 'catmullrom'], 'centripetal')}
+        tension={number('tension', 0.5, { range: true, min: 0, max: 1, step: 0.01 })}
+        segments={number('segments', 20)}
+        color={color('color', 'red')}
+        lineWidth={number('lineWidth', 3)}
+        dashed={boolean('dashed', true)}
+      />
+      <OrbitControls zoomSpeed={0.5} />
+    </>
+  )
+}
+CatmullRom.storyName = 'CatmullRom'
+
+CatmullRom.decorators = [
   withKnobs,
   (storyFn) => (
     <Setup controls={false} cameraPosition={new Vector3(0, 0, 17)}>

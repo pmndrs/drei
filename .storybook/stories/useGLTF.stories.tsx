@@ -22,7 +22,7 @@ type GLTFResult = GLTF & {
 }
 
 function Suzanne() {
-  const { nodes, materials } = useGLTF('suzanne.glb', true) as GLTFResult
+  const { nodes, materials } = useGLTF('suzanne.glb', true) as unknown as GLTFResult
 
   return <mesh material={materials['Material.001']} geometry={(nodes.Suzanne as Mesh).geometry} />
 }
@@ -41,7 +41,7 @@ UseGLTFSceneSt.story = {
 }
 
 function SuzanneWithLocal() {
-  const { nodes, materials } = useGLTF('suzanne.glb', '/draco-gltf/') as GLTFResult
+  const { nodes, materials } = useGLTF('suzanne.glb', '/draco-gltf/') as unknown as GLTFResult
 
   return (
     <group dispose={null}>

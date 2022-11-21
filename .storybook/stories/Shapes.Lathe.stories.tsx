@@ -26,7 +26,7 @@ function LatheScene() {
 
   return (
     <Lathe ref={ref} args={[points]}>
-      <meshPhongMaterial attach="material" color="#f3f3f3" wireframe />
+      <meshPhongMaterial color="#f3f3f3" wireframe />
     </Lathe>
   )
 }

@@ -21,7 +21,7 @@ export const Setup = ({
   lights = true,
   ...restProps
 }: Props) => (
-  <Canvas shadows camera={{ position: cameraPosition, fov: cameraFov }} dpr={window.devicePixelRatio} {...restProps}>
+  <Canvas shadows camera={{ position: cameraPosition, fov: cameraFov }} {...restProps}>
     {children}
     {lights && (
       <>
@@ -29,6 +29,6 @@ export const Setup = ({
         <pointLight intensity={1} position={[0, 6, 0]} />
       </>
     )}
-    {controls && <OrbitControls />}
+    {controls && <OrbitControls makeDefault />}
   </Canvas>
 )

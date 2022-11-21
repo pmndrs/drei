@@ -3,7 +3,7 @@ import { Raycaster, Camera, Intersection } from 'three'
 import { useThree, applyProps } from '@react-three/fiber'
 
 export function useCamera(camera: Camera | React.MutableRefObject<Camera>, props?: Partial<Raycaster>) {
-  const mouse = useThree((state) => state.mouse)
+  const pointer = useThree((state) => state.pointer)
   const [raycast] = React.useState(() => {
     const raycaster = new Raycaster()
     /**
@@ -15,7 +15,7 @@ export function useCamera(camera: Camera | React.MutableRefObject<Camera>, props
     // @ts-expect-error
     if (props) applyProps(raycaster, props, {})
     return function (_: Raycaster, intersects: Intersection[]): void {
-      raycaster.setFromCamera(mouse, camera instanceof Camera ? camera : camera.current)
+      raycaster.setFromCamera(pointer, camera instanceof Camera ? camera : camera.current)
       const rc = this.constructor.prototype.raycast.bind(this)
       if (rc) rc(raycaster, intersects)
     }

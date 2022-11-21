@@ -3,8 +3,8 @@ import { MathUtils, Quaternion, Vector3 } from 'three'
 
 import { Setup } from '../Setup'
 
-import { Point, Points, shaderMaterial } from '../../src'
-import { extend, useFrame } from '@react-three/fiber'
+import { Point, Points, PointMaterial, shaderMaterial } from '../../src'
+import { extend, useFrame, useThree } from '@react-three/fiber'
 
 import * as buffer from 'maath/buffer'
 import * as misc from 'maath/misc'
@@ -28,15 +28,10 @@ const MyPointsMaterial = shaderMaterial(
     varying vec3 vColor;
 
     void main() {
-
       vColor = color;
-
       vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-
       gl_PointSize = size * ( 300.0 / -mvPosition.z );
-
       gl_Position = projectionMatrix * mvPosition;
-
     }
 
   `,
@@ -45,6 +40,9 @@ const MyPointsMaterial = shaderMaterial(
 
     void main() {
       gl_FragColor = vec4( vColor, 1.0 );
+
+      #include <tonemapping_fragment>
+      #include <encodings_fragment>
     }
   `
 )
@@ -89,8 +87,21 @@ export function BasicPointsBuffer() {
 }
 
 BasicPointsBuffer.storyName = 'Buffer'
-
 BasicPointsBuffer.decorators = [(storyFn) => <Setup cameraPosition={new Vector3(10, 10, 10)}>{storyFn()}</Setup>]
+
+function PointEvent({ color, ...props }) {
+  const [hovered, setHover] = React.useState(false)
+  const [clicked, setClick] = React.useState(false)
+  return (
+    <Point
+      {...props}
+      color={clicked ? 'hotpink' : hovered ? 'red' : color}
+      onPointerOver={(e) => (e.stopPropagation(), setHover(true))}
+      onPointerOut={(e) => setHover(false)}
+      onClick={(e) => (e.stopPropagation(), setClick((state) => !state))}
+    />
+  )
+}
 
 function BasicPointsInstancesScene() {
   const [points] = React.useState(() => {
@@ -99,12 +110,25 @@ function BasicPointsInstancesScene() {
       return [MathUtils.randFloatSpread(4), MathUtils.randFloatSpread(4), MathUtils.randFloatSpread(4)]
     })
   })
-
+  const raycaster = useThree((state) => state.raycaster)
+  React.useEffect(() => {
+    if (raycaster.params.Points) {
+      const old = raycaster.params.Points.threshold
+      raycaster.params.Points.threshold = 0.05
+      return () => {
+        if (raycaster.params.Points) raycaster.params.Points.threshold = old
+      }
+    }
+  }, [])
   return (
     <>
       <Points>
         {points.map((p) => (
-          <Point position={p} color={p} size={Math.random() * 0.5 + 0.1} />
+          <PointEvent
+            position={p as [number, number, number]}
+            color={p as [number, number, number]}
+            size={Math.random() * 0.5 + 0.1}
+          />
         ))}
         {/* @ts-ignore */}
         <myPointsMaterial />
@@ -118,5 +142,45 @@ export function BasicPointsInstances() {
 }
 
 BasicPointsInstances.storyName = 'Instances'
-
 BasicPointsInstances.decorators = [(storyFn) => <Setup cameraPosition={new Vector3(10, 10, 10)}>{storyFn()}</Setup>]
+
+function BasicPointsInstancesSelectionScene() {
+  const [points] = React.useState(() =>
+    Array.from({ length: 100 }, (i) => [
+      MathUtils.randFloatSpread(10),
+      MathUtils.randFloatSpread(10),
+      MathUtils.randFloatSpread(10),
+    ])
+  )
+
+  const raycaster = useThree((state) => state.raycaster)
+  React.useEffect(() => {
+    if (raycaster.params.Points) {
+      const old = raycaster.params.Points.threshold
+      raycaster.params.Points.threshold = 0.175
+      return () => {
+        if (raycaster.params.Points) raycaster.params.Points.threshold = old
+      }
+    }
+  }, [])
+
+  return (
+    <>
+      <Points limit={points.length} range={points.length}>
+        <PointMaterial transparent vertexColors size={15} sizeAttenuation={false} depthWrite={false} />
+        {points.map((position, i) => (
+          <PointEvent key={i} color="orange" position={position} />
+        ))}
+      </Points>
+    </>
+  )
+}
+
+export function BasicPointsInstancesSelection() {
+  return <BasicPointsInstancesSelectionScene />
+}
+
+BasicPointsInstancesSelection.storyName = 'Selection'
+BasicPointsInstancesSelection.decorators = [
+  (storyFn) => <Setup cameraPosition={new Vector3(10, 10, 10)}>{storyFn()}</Setup>,
+]

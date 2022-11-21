@@ -1,7 +1,7 @@
 import * as React from 'react'
-import { useThree } from '@react-three/fiber'
+import { useThree, ThreeEvent } from '@react-three/fiber'
 import { useGizmoContext } from './GizmoHelper'
-import { CanvasTexture, Event, Vector3 } from 'three'
+import { CanvasTexture, Vector3 } from 'three'
 
 type XYZ = [number, number, number]
 type GenericProps = {
@@ -11,7 +11,7 @@ type GenericProps = {
   hoverColor?: string
   textColor?: string
   strokeColor?: string
-  onClick?: (e: Event) => null
+  onClick?: (e: ThreeEvent<MouseEvent>) => null
   faces?: string[]
 }
 type FaceTypeProps = { hover: boolean; index: number } & GenericProps
@@ -83,8 +83,9 @@ const FaceMaterial = ({
   return (
     <meshLambertMaterial
       map={texture}
+      map-encoding={gl.outputEncoding}
       map-anisotropy={gl.capabilities.getMaxAnisotropy() || 1}
-      attachArray="material"
+      attach={`material-${index}`}
       color={hover ? hoverColor : 'white'}
       transparent
       opacity={opacity}
@@ -95,17 +96,17 @@ const FaceMaterial = ({
 const FaceCube = (props: GenericProps) => {
   const { tweenCamera, raycast } = useGizmoContext()
   const [hover, setHover] = React.useState<number | null>(null)
-  const handlePointerOut = (e: Event) => {
+  const handlePointerOut = (e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation()
     setHover(null)
   }
-  const handleClick = (e: Event) => {
+  const handleClick = (e: ThreeEvent<MouseEvent>) => {
     e.stopPropagation()
-    tweenCamera(e.face.normal)
+    tweenCamera(e.face!.normal)
   }
-  const handlePointerMove = (e: Event) => {
+  const handlePointerMove = (e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation()
-    setHover(Math.floor(e.faceIndex / 2))
+    setHover(Math.floor(e.faceIndex! / 2))
   }
   return (
     <mesh
@@ -125,15 +126,15 @@ const FaceCube = (props: GenericProps) => {
 const EdgeCube = ({ onClick, dimensions, position, hoverColor = colors.hover }: EdgeCubeProps): JSX.Element => {
   const { tweenCamera, raycast } = useGizmoContext()
   const [hover, setHover] = React.useState<boolean>(false)
-  const handlePointerOut = (e: Event) => {
+  const handlePointerOut = (e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation()
     setHover(false)
   }
-  const handlePointerOver = (e: Event) => {
+  const handlePointerOver = (e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation()
     setHover(true)
   }
-  const handleClick = (e: Event) => {
+  const handleClick = (e: ThreeEvent<MouseEvent>) => {
     e.stopPropagation()
     tweenCamera(position)
   }

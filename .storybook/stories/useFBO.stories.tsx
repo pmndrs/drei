@@ -19,7 +19,7 @@ function SpinningThing() {
   })
   return (
     <TorusKnot ref={mesh} args={[1, 0.4, 100, 64]}>
-      <meshNormalMaterial attach="material" />
+      <meshNormalMaterial />
     </TorusKnot>
   )
 }
@@ -45,7 +45,7 @@ function UseFBOScene({ color = 'orange', ...props }) {
       <PerspectiveCamera ref={cam} position={[0, 0, 3]} />
       {createPortal(<SpinningThing />, scene)}
       <Box args={[3, 3, 3]}>
-        <meshStandardMaterial attach="material" map={target.texture} />
+        <meshStandardMaterial map={target.texture} />
       </Box>
     </>
   )

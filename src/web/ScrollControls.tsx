@@ -1,8 +1,9 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import * as ReactDOM from 'react-dom'
-import { context as fiberContext, useFrame, useThree } from '@react-three/fiber'
+import * as ReactDOM from 'react-dom/client'
+import { context as fiberContext, RootState, useFrame, useThree } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
+import { DomEvent } from '@react-three/fiber/dist/declarations/src/core/events'
 
 export type ScrollControlsProps = {
   eps?: number
@@ -48,7 +49,7 @@ export function ScrollControls({
   style = {},
   children,
 }: ScrollControlsProps) {
-  const { gl, size, invalidate, events, raycaster } = useThree()
+  const { get, setEvents, gl, size, invalidate, events } = useThree()
   const [el] = React.useState(() => document.createElement('div'))
   const [fill] = React.useState(() => document.createElement('div'))
   const [fixed] = React.useState(() => document.createElement('div'))
@@ -117,64 +118,71 @@ export function ScrollControls({
     // Init scroll one pixel in to allow upward/leftward scroll
     el[horizontal ? 'scrollLeft' : 'scrollTop'] = 1
 
-    const oldTarget = typeof events.connected !== 'boolean' ? events.connected : gl.domElement
+    const oldTarget = (events.connected || gl.domElement) as HTMLElement
     requestAnimationFrame(() => events.connect?.(el))
-    const oldCompute = raycaster.computeOffsets
-    raycaster.computeOffsets = ({ clientX, clientY }) => ({
-      offsetX: clientX - (target as HTMLElement).offsetLeft,
-      offsetY: clientY - (target as HTMLElement).offsetTop,
+    const oldCompute = get().events.compute
+    setEvents({
+      compute(event: DomEvent, state: RootState) {
+        const offsetX = event.clientX - (target as HTMLElement).offsetLeft
+        const offsetY = event.clientY - (target as HTMLElement).offsetTop
+        state.pointer.set((offsetX / state.size.width) * 2 - 1, -(offsetY / state.size.height) * 2 + 1)
+        state.raycaster.setFromCamera(state.pointer, state.camera)
+      },
     })
 
     return () => {
       target.removeChild(el)
-      raycaster.computeOffsets = oldCompute
+      setEvents({ compute: oldCompute })
       events.connect?.(oldTarget)
     }
   }, [pages, distance, horizontal, el, fill, fixed, target])
 
   React.useEffect(() => {
-    const containerLength = size[horizontal ? 'width' : 'height']
-    const scrollLength = el[horizontal ? 'scrollWidth' : 'scrollHeight']
-    const scrollThreshold = scrollLength - containerLength
+    if (events.connected === el) {
+      const containerLength = size[horizontal ? 'width' : 'height']
+      const scrollLength = el[horizontal ? 'scrollWidth' : 'scrollHeight']
+      const scrollThreshold = scrollLength - containerLength
 
-    let current = 0
-    let disableScroll = true
-    let firstRun = true
+      let current = 0
+      let disableScroll = true
+      let firstRun = true
 
-    const onScroll = () => {
-      // Prevent first scroll because it is indirectly caused by the one pixel offset
-      if (!enabled || firstRun) return
-      invalidate()
-      current = el[horizontal ? 'scrollLeft' : 'scrollTop']
-      scroll.current = current / scrollThreshold
-      if (infinite) {
-        if (!disableScroll) {
-          if (current >= scrollThreshold) {
-            const damp = 1 - state.offset
-            el[horizontal ? 'scrollLeft' : 'scrollTop'] = 1
-            scroll.current = state.offset = -damp
-            disableScroll = true
-          } else if (current <= 0) {
-            const damp = 1 + state.offset
-            el[horizontal ? 'scrollLeft' : 'scrollTop'] = scrollLength
-            scroll.current = state.offset = damp
-            disableScroll = true
+      const onScroll = () => {
+        // Prevent first scroll because it is indirectly caused by the one pixel offset
+        if (!enabled || firstRun) return
+        invalidate()
+        current = el[horizontal ? 'scrollLeft' : 'scrollTop']
+        scroll.current = current / scrollThreshold
+
+        if (infinite) {
+          if (!disableScroll) {
+            if (current >= scrollThreshold) {
+              const damp = 1 - state.offset
+              el[horizontal ? 'scrollLeft' : 'scrollTop'] = 1
+              scroll.current = state.offset = -damp
+              disableScroll = true
+            } else if (current <= 0) {
+              const damp = 1 + state.offset
+              el[horizontal ? 'scrollLeft' : 'scrollTop'] = scrollLength
+              scroll.current = state.offset = damp
+              disableScroll = true
+            }
           }
+          if (disableScroll) setTimeout(() => (disableScroll = false), 40)
         }
-        if (disableScroll) setTimeout(() => (disableScroll = false), 40)
+      }
+      el.addEventListener('scroll', onScroll, { passive: true })
+      requestAnimationFrame(() => (firstRun = false))
+
+      const onWheel = (e) => (el.scrollLeft += e.deltaY / 2)
+      if (horizontal) el.addEventListener('wheel', onWheel, { passive: true })
+
+      return () => {
+        el.removeEventListener('scroll', onScroll)
+        if (horizontal) el.removeEventListener('wheel', onWheel)
       }
     }
-    el.addEventListener('scroll', onScroll, { passive: true })
-    requestAnimationFrame(() => (firstRun = false))
-
-    const onWheel = (e) => (el.scrollLeft += e.deltaY / 2)
-    if (horizontal) el.addEventListener('wheel', onWheel, { passive: true })
-
-    return () => {
-      el.removeEventListener('scroll', onScroll)
-      if (horizontal) el.removeEventListener('wheel', onWheel)
-    }
-  }, [el, size, infinite, state, invalidate, horizontal])
+  }, [el, events, size, infinite, state, invalidate, horizontal, enabled])
 
   let last = 0
   useFrame((_, delta) => {
@@ -202,6 +210,7 @@ const ScrollHtml = React.forwardRef(
     const group = React.useRef<HTMLDivElement>(null!)
     const { width, height } = useThree((state) => state.size)
     const fiberState = React.useContext(fiberContext)
+    const root = React.useMemo(() => ReactDOM.createRoot(state.fixed), [state.fixed])
     useFrame(() => {
       if (state.delta > state.eps) {
         group.current.style.transform = `translate3d(${
@@ -209,7 +218,7 @@ const ScrollHtml = React.forwardRef(
         }px,${state.horizontal ? 0 : height * (state.pages - 1) * -state.offset}px,0)`
       }
     })
-    ReactDOM.render(
+    root.render(
       <div
         ref={mergeRefs([ref, group])}
         style={{ ...style, position: 'absolute', top: 0, left: 0, willChange: 'transform' }}
@@ -218,8 +227,7 @@ const ScrollHtml = React.forwardRef(
         <context.Provider value={state}>
           <fiberContext.Provider value={fiberState}>{children}</fiberContext.Provider>
         </context.Provider>
-      </div>,
-      state.fixed
+      </div>
     )
     return null
   }

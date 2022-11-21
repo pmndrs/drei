@@ -1,8 +1,7 @@
 import * as React from 'react'
 import { useTexture } from './useTexture'
-
 import { Texture } from 'three'
-import { useAsset } from 'use-asset'
+import { suspend } from 'suspend-react'
 
 function getFormatString(format: number) {
   switch (format) {
@@ -22,15 +21,12 @@ function getFormatString(format: number) {
 const LIST_URL = 'https://cdn.jsdelivr.net/gh/pmndrs/drei-assets@master/matcaps.json'
 const MATCAP_ROOT = 'https://rawcdn.githack.com/emmelleppi/matcaps/9b36ccaaf0a24881a39062d05566c9e92be4aa0d'
 
-export function useMatcapTexture(id: number | string = 0, format = 1024): [THREE.Texture, string, number] {
-  const matcapList = useAsset<Record<string, string>, [string]>(
-    () =>
-      new Promise(async (resolve) => {
-        const matcapList = await fetch(LIST_URL).then((res) => res.json())
-        resolve(matcapList)
-      }),
-    'matcapList'
-  )
+export function useMatcapTexture(
+  id: number | string = 0,
+  format = 1024,
+  onLoad?: (texture: Texture | Texture[]) => void
+): [THREE.Texture, string, number] {
+  const matcapList = suspend(() => fetch(LIST_URL).then((res) => res.json()), ['matcapList']) as Record<string, string>
 
   const DEFAULT_MATCAP = matcapList[0]
   const numTot = React.useMemo(() => Object.keys(matcapList).length, [])
@@ -47,7 +43,7 @@ export function useMatcapTexture(id: number | string = 0, format = 1024): [THREE
   const fileName = `${fileHash || DEFAULT_MATCAP}${getFormatString(format)}.png`
   const url = `${MATCAP_ROOT}/${format}/${fileName}`
 
-  const matcapTexture = useTexture(url) as Texture
+  const matcapTexture = useTexture(url, onLoad) as Texture
 
   return [matcapTexture, url, numTot]
 }

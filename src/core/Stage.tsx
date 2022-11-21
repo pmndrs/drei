@@ -1,8 +1,9 @@
 import * as React from 'react'
-import * as THREE from 'three'
-import { useThree } from '@react-three/fiber'
 import { Environment } from './Environment'
-import { ContactShadows } from './ContactShadows'
+import { ContactShadowsProps, ContactShadows } from './ContactShadows'
+import { Center } from './Center'
+import { AccumulativeShadowsProps, AccumulativeShadows, RandomizedLight } from './AccumulativeShadows'
+import { useBounds, Bounds } from './Bounds'
 import { PresetsType } from '../helpers/environment-assets'
 
 const presets = {
@@ -24,100 +25,108 @@ const presets = {
   },
 }
 
-type ControlsProto = { update(): void; target: THREE.Vector3 }
+type StageShadows = Partial<AccumulativeShadowsProps> &
+  Partial<ContactShadowsProps> & {
+    type: 'contact' | 'accumulative'
+    /** Shadow plane offset, default: 0 */
+    offset?: number
+    /** Shadow bias, default: -0.0001 */
+    bias?: number
+    /** Shadow map size, default: 1024 */
+    size?: number
+  }
 
-type Props = JSX.IntrinsicElements['group'] & {
-  shadows?: boolean
-  adjustCamera?: boolean
-  environment?: PresetsType
+type StageProps = JSX.IntrinsicElements['group'] & {
+  /** Lighting setup, default: "rembrandt" */
+  preset?: 'rembrandt' | 'portrait' | 'upfront' | 'soft'
+  /** Controls the ground shadows, default: "contact" */
+  shadows?: boolean | 'contact' | 'accumulative' | StageShadows
+  /** Optionally wraps and thereby centers the models using <Bounds>, can also be a margin, default: true */
+  adjustCamera?: boolean | number
+  /** The default environment, default: "city" */
+  environment?: PresetsType | null
+  /** The lighting intensity, default: 0.5 */
   intensity?: number
-  ambience?: number
-  // TODO: in a new major state.controls should be the only means of consuming controls, the
-  // controls prop can then be removed!
-  controls?: React.MutableRefObject<ControlsProto>
-  preset?: keyof typeof presets
-  shadowBias?: number
-  contactShadow?:
-    | {
-        blur: number
-        opacity?: number
-        position?: [x: number, y: number, z: number]
-      }
-    | false
+}
+
+function Refit({ radius, adjustCamera }) {
+  const api = useBounds()
+  React.useEffect(() => {
+    if (adjustCamera) api.refresh().clip().fit()
+  }, [radius, adjustCamera])
+  return null
 }
 
 export function Stage({
   children,
-  controls,
-  shadows = true,
   adjustCamera = true,
+  intensity = 0.5,
+  shadows = 'contact',
   environment = 'city',
-  intensity = 1,
   preset = 'rembrandt',
-  shadowBias = 0,
-  contactShadow = {
-    blur: 2,
-    opacity: 0.5,
-    position: [0, 0, 0],
-  },
   ...props
-}: Props) {
+}: StageProps) {
   const config = presets[preset]
-  const camera = useThree((state) => state.camera)
-  // @ts-expect-error new in @react-three/fiber@7.0.5
-  const defaultControls = useThree((state) => state.controls) as ControlsProto
-  const outer = React.useRef<THREE.Group>(null!)
-  const inner = React.useRef<THREE.Group>(null!)
-  const [{ radius, width, height }, set] = React.useState({ radius: 0, width: 0, height: 0 })
-
-  React.useLayoutEffect(() => {
-    outer.current.position.set(0, 0, 0)
-    outer.current.updateWorldMatrix(true, true)
-    const box3 = new THREE.Box3().setFromObject(inner.current)
-    const center = new THREE.Vector3()
-    const sphere = new THREE.Sphere()
-    const height = box3.max.y - box3.min.y
-    const width = box3.max.x - box3.min.x
-    box3.getCenter(center)
-    box3.getBoundingSphere(sphere)
-    set({ radius: sphere.radius, width, height })
-    outer.current.position.set(-center.x, -center.y + height / 2, -center.z)
-  }, [children])
-
-  React.useLayoutEffect(() => {
-    if (adjustCamera) {
-      const y = radius / (height > width ? 1.5 : 2.5)
-      camera.position.set(0, radius * 0.5, radius * 2.5)
-      camera.near = 0.1
-      camera.far = Math.max(5000, radius * 4)
-      camera.lookAt(0, y, 0)
-      const ctrl = defaultControls || controls?.current
-      if (ctrl) {
-        ctrl.target.set(0, y, 0)
-        ctrl.update()
-      }
-    }
-  }, [defaultControls, radius, height, width, adjustCamera])
-
+  const [{ radius, height }, set] = React.useState({ radius: 0, width: 0, height: 0, depth: 0 })
+  const shadowBias = (shadows as StageShadows)?.bias ?? -0.0001
+  const shadowSize = (shadows as StageShadows)?.size ?? 1024
+  const shadowOffset = (shadows as StageShadows)?.offset ?? 0
+  const contactShadow = shadows === 'contact' || (shadows as StageShadows)?.type === 'contact'
+  const accumulativeShadow = shadows === 'accumulative' || (shadows as StageShadows)?.type === 'accumulative'
+  const shadowSpread = { ...(typeof shadows === 'object' ? shadows : {}) }
   return (
-    <group {...props}>
-      <group ref={outer}>
-        <group ref={inner}>{children}</group>
-      </group>
-      {contactShadow && <ContactShadows width={radius * 2} height={radius * 2} far={radius / 2} {...contactShadow} />}
-      {environment && <Environment preset={environment} />}
+    <>
       <ambientLight intensity={intensity / 3} />
       <spotLight
         penumbra={1}
         position={[config.main[0] * radius, config.main[1] * radius, config.main[2] * radius]}
         intensity={intensity * 2}
-        castShadow={shadows}
+        castShadow={!!shadows}
         shadow-bias={shadowBias}
+        shadow-mapSize={shadowSize}
       />
       <pointLight
         position={[config.fill[0] * radius, config.fill[1] * radius, config.fill[2] * radius]}
         intensity={intensity}
       />
-    </group>
+      <Bounds fit={!!adjustCamera} clip={!!adjustCamera} margin={Number(adjustCamera)} observe {...props}>
+        <Refit radius={radius} adjustCamera={adjustCamera} />
+        <Center
+          position={[0, shadowOffset / 2, 0]}
+          onCentered={({ width, height, depth, boundingSphere, ...data }) =>
+            set({ radius: boundingSphere.radius, width, height, depth })
+          }
+        >
+          {children}
+        </Center>
+      </Bounds>
+      <group position={[0, -height / 2 - shadowOffset / 2, 0]}>
+        {contactShadow && (
+          <ContactShadows scale={radius * 4} far={radius} blur={2} {...(shadowSpread as ContactShadowsProps)} />
+        )}
+        {accumulativeShadow && (
+          <AccumulativeShadows
+            temporal
+            frames={100}
+            alphaTest={0.9}
+            toneMapped={true}
+            scale={radius * 4}
+            {...(shadowSpread as AccumulativeShadowsProps)}
+          >
+            <RandomizedLight
+              amount={8}
+              radius={radius}
+              ambient={0.5}
+              intensity={1}
+              position={[config.main[0] * radius, config.main[1] * radius, config.main[2] * radius]}
+              size={radius * 4}
+              bias={-shadowBias}
+              mapSize={shadowSize}
+            />
+          </AccumulativeShadows>
+        )}
+      </group>
+      {environment && <Environment preset={environment} />}
+    </>
   )
 }

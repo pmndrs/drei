@@ -2643,25 +2643,33 @@ Creates a "stage" with proper studio lighting, 0/0/0 top-centred, model-shadows,
 
 ```tsx
 type StageShadows = Partial<AccumulativeShadowsProps> &
+  Partial<RandomizedLightProps> &
   Partial<ContactShadowsProps> & {
     type: 'contact' | 'accumulative'
     /** Shadow plane offset, default: 0 */
     offset?: number
     /** Shadow bias, default: -0.0001 */
     bias?: number
+    /** Shadow normal bias, default: 0 */
+    normalBias?: number
     /** Shadow map size, default: 1024 */
     size?: number
   }
 
-type StageProps = JSX.IntrinsicElements['group'] & {
+type StageProps = {
   /** Lighting setup, default: "rembrandt" */
-  preset?: 'rembrandt' | 'portrait' | 'upfront' | 'soft'
+  preset?:
+    | 'rembrandt'
+    | 'portrait'
+    | 'upfront'
+    | 'soft'
+    | { main: [x: number, y: number, z: number]; fill: [x: number, y: number, z: number] }
   /** Controls the ground shadows, default: "contact" */
   shadows?: boolean | 'contact' | 'accumulative' | StageShadows
-  /** Optional zoom-to-fit using <Bounds>, can also be a margin, default: true */
+  /** Optionally wraps and thereby centers the models using <Bounds>, can also be a margin, default: true */
   adjustCamera?: boolean | number
   /** The default environment, default: "city" */
-  environment?: PresetsType | null
+  environment?: PresetsType | Partial<EnvironmentProps>
   /** The lighting intensity, default: 0.5 */
   intensity?: number
 }
@@ -2670,7 +2678,7 @@ type StageProps = JSX.IntrinsicElements['group'] & {
 By default it gives you contact shadows and auto-centering.
 
 ```jsx
-<Stage>
+<Stage adjustCamera intensity={0.5} shadows="contact" environment="city">
   <mesh />
 </Stage>
 ```

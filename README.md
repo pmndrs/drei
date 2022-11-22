@@ -1982,7 +1982,7 @@ return (
   <a href="https://codesandbox.io/s/fj1qlg"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/fj1qlg/screenshot.png" alt="Demo"/></a>
 </p>
 
-This hook returns a `THREE.Texture` with a pointer trail which can be used in shaders to control displacement among other things.
+This hook returns a `THREE.Texture` with a pointer trail which can be used in shaders to control displacement among other things, and a movement callback `event => void` which reads from `event.uv`.
 
 ```tsx
 type TrailConfig = {
@@ -2008,7 +2008,7 @@ type TrailConfig = {
 ```
 
 ```jsx
-const { texture, onMove } = useTrailTexture(config)
+const [texture, onMove] = useTrailTexture(config)
 return (
   <mesh onPointerMove={onMove}>
     <meshStandardMaterial displacementMap={texture} />

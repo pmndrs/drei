@@ -1,5 +1,5 @@
 import { useMemo, useCallback } from 'react'
-import { useFrame } from '@react-three/fiber'
+import { ThreeEvent, useFrame } from '@react-three/fiber'
 import { Texture } from 'three'
 
 /**
@@ -196,7 +196,7 @@ class TrailTexture {
   }
 }
 
-export function useTrailTexture(config: Partial<TrailConfig> = {}) {
+export function useTrailTexture(config: Partial<TrailConfig> = {}): [Texture, (ThreeEvent) => void] {
   const { size, maxAge, radius, intensity, interpolate, smoothing, minForce, blend, ease } = config
   const trail = useMemo(
     () => new TrailTexture(config),
@@ -204,5 +204,5 @@ export function useTrailTexture(config: Partial<TrailConfig> = {}) {
   )
   useFrame((_, delta) => void trail.update(delta))
   const onMove = useCallback((e) => trail.addTouch(e.uv), [trail])
-  return { texture: trail.texture, onMove }
+  return [trail.texture, onMove]
 }

@@ -1986,23 +1986,32 @@ This hook returns a `THREE.Texture` with a pointer trail which can be used in sh
 
 ```tsx
 type TrailConfig = {
-  size?: number // texture size (default: 64x64)
-  maxAge?: number // max age (ms) of trail points (default: 750)
-  radius?: number // trail radius (default: 0.3)
-  intensity?: number // canvas trail opacity (default: 0.2)
-  interpolate?: number // add points in between slow pointer events (default: 0)
-  smoothing?: number // moving average of pointer force (default: 0)
-  minForce?: number // minimum pointer force (default: 0.3)
-  blend?: CanvasRenderingContext2D['globalCompositeOperation'] // (default: 'screen')
-  ease?: (t: number) => number // default: easeCircOut
+  /** texture size (default: 256x256) */
+  size?: number
+  /** Max age (ms) of trail points (default: 750) */
+  maxAge?: number
+  /** Trail radius (default: 0.3) */
+  radius?: number
+  /** Canvas trail opacity (default: 0.2) */
+  intensity?: number
+  /** Add points in between slow pointer events (default: 0) */
+  interpolate?: number
+  /** Moving average of pointer force (default: 0) */
+  smoothing?: number
+  /** Minimum pointer force (default: 0.3) */
+  minForce?: number
+  /** Blend mode (default: 'screen') */
+  blend?: CanvasRenderingContext2D['globalCompositeOperation']
+  /** Easing (default: easeCircOut) */
+  ease?: (t: number) => number
 }
 ```
 
 ```jsx
-const { texture, onMove } = useTrailTexture(config: TrailConfig)
+const { texture, onMove } = useTrailTexture(config)
 return (
   <mesh onPointerMove={onMove}>
-    <shaderMaterial displacementMap={texture} />
+    <meshStandardMaterial displacementMap={texture} />
 ```
 
 # Performance

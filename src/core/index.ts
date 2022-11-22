@@ -63,6 +63,7 @@ export * from './useFBO'
 export * from './useIntersect'
 export * from './useBoxProjectedEnv'
 export * from './BBAnchor'
+export * from './useTrailTexture'
 
 // Modifiers
 export * from './CurveModifier'

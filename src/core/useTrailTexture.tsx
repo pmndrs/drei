@@ -18,14 +18,23 @@ type Point = {
 }
 
 type TrailConfig = {
+  /** texture size (default: 256x256) */
   size?: number
+  /** Max age (ms) of trail points (default: 750) */
   maxAge?: number
+  /** Trail radius (default: 0.3) */
   radius?: number
+  /** Canvas trail opacity (default: 0.2) */
   intensity?: number
+  /** Add points in between slow pointer events (default: 0) */
   interpolate?: number
+  /** Moving average of pointer force (default: 0) */
   smoothing?: number
+  /** Minimum pointer force (default: 0.3) */
   minForce?: number
+  /** Blend mode (default: 'screen') */
   blend?: CanvasRenderingContext2D['globalCompositeOperation']
+  /** Easing (default: easeCircOut) */
   ease?: (t: number) => number
 }
 
@@ -53,17 +62,20 @@ class TrailTexture {
   smoothing: number
   blend: CanvasRenderingContext2D['globalCompositeOperation']
 
-  constructor({
-    size = 64,
-    maxAge = 750,
-    radius = 0.3,
-    intensity = 0.2,
-    interpolate = 0,
-    smoothing = 0,
-    minForce = 0.3,
-    blend = 'screen', // source-over is canvas default. Others are slower
-    ease = easeCircleOut,
-  }: TrailConfig = {}) {
+  constructor(props: TrailConfig = {}) {
+    const { size, maxAge, radius, intensity, ease, interpolate, smoothing, minForce, blend } = {
+      size: 256,
+      maxAge: 750,
+      radius: 0.3,
+      intensity: 0.2,
+      interpolate: 0,
+      smoothing: 0,
+      minForce: 0.3,
+      blend: 'screen', // source-over is canvas default. Others are slower
+      ease: easeCircleOut,
+      ...props,
+    }
+
     this.size = size
     this.maxAge = maxAge
     this.radius = radius
@@ -187,19 +199,13 @@ class TrailTexture {
   }
 }
 
-export function useTrailTexture(config?: TrailConfig) {
-  const trail = useMemo(() => new TrailTexture(config), [config])
-
-  useFrame((_, delta) => {
-    if (trail) trail.update(delta)
-  })
-
-  const onMove = useCallback(
-    (e) => {
-      trail.addTouch(e.uv)
-    },
-    [trail]
+export function useTrailTexture(config: Partial<TrailConfig> = {}) {
+  const { size, maxAge, radius, intensity, interpolate, smoothing, minForce, blend, ease } = config
+  const trail = useMemo(
+    () => new TrailTexture(config),
+    [size, maxAge, radius, intensity, interpolate, smoothing, minForce, blend, ease]
   )
-
+  useFrame((_, delta) => void trail.update(delta))
+  const onMove = useCallback((e) => trail.addTouch(e.uv), [trail])
   return { texture: trail.texture, onMove }
 }

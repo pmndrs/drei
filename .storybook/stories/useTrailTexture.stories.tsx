@@ -14,7 +14,7 @@ export default {
 function TrailMesh() {
   // a convenience hook that uses useLoader and TextureLoader
   const { texture, onMove } = useTrailTexture({
-    size: number('Size', 64, { min: 64, step: 8 }),
+    size: number('Size', 256, { min: 64, step: 8 }),
     radius: number('Radius', 0.3, { range: true, min: 0.1, max: 1, step: 0.1 }),
     maxAge: number('Max age', 750, { range: true, min: 300, max: 1000, step: 100 }),
   })

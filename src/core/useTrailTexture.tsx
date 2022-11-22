@@ -62,20 +62,17 @@ class TrailTexture {
   smoothing: number
   blend: CanvasRenderingContext2D['globalCompositeOperation']
 
-  constructor(props: TrailConfig = {}) {
-    const { size, maxAge, radius, intensity, ease, interpolate, smoothing, minForce, blend } = {
-      size: 256,
-      maxAge: 750,
-      radius: 0.3,
-      intensity: 0.2,
-      interpolate: 0,
-      smoothing: 0,
-      minForce: 0.3,
-      blend: 'screen', // source-over is canvas default. Others are slower
-      ease: easeCircleOut,
-      ...props,
-    }
-
+  constructor({
+    size = 256,
+    maxAge = 750,
+    radius = 0.3,
+    intensity = 0.2,
+    interpolate = 0,
+    smoothing = 0,
+    minForce = 0.3,
+    blend = 'screen', // source-over is canvas default. Others are slower
+    ease = easeCircleOut,
+  }: TrailConfig = {}) {
     this.size = size
     this.maxAge = maxAge
     this.radius = radius

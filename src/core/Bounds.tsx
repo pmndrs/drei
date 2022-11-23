@@ -14,6 +14,7 @@ export type BoundsApi = {
   refresh(object?: THREE.Object3D | THREE.Box3): any
   clip(): any
   fit(): any
+  to: ({ position, target }: { position: [number, number, number]; target?: [number, number, number] }) => any
 }
 
 export type BoundsProps = JSX.IntrinsicElements['group'] & {

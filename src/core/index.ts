@@ -118,3 +118,4 @@ export * from './PerformanceMonitor'
 // Portals
 export * from './RenderTexture'
 export * from './Mask'
+export * from './Hud'

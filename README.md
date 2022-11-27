@@ -142,6 +142,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         </ul>
         <li><a href="#portals">Portals</a></li>        
         <ul>
+          <li><a href="#hud">Hud</a></li>
           <li><a href="#view">View</a></li>
           <li><a href="#rendertexture">RenderTexture</a></li>
           <li><a href="#mask">Mask</a></li>
@@ -2340,6 +2341,44 @@ function Effects() {
 ```
 
 # Portals
+
+#### Hud
+
+<p>
+  <a href="https://codesandbox.io/s/py4db"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/py4db/screenshot.png" alt="Demo"/></a>
+</p>
+
+Renders a heads-up-display (HUD). Each HUD is a scene on top of the previous. That scene is inside a React `createPortal` and is completely isolated, you can have your own cameras in there, environments, etc. The first HUD (`renderpriotity === 1`) will clear the scene and render the default scene, it needs to be the first to execute! Make sure to be explicit about the `renderpriority` of your HUDs.
+
+```tsx
+type HudProps = {
+  /** Any React node */
+  children: React.ReactNode
+  /** Render priority, default: 1 */
+  renderPriority?: number
+}
+```
+
+```jsx
+{
+  /* Renders on top of the default scene with a perspective camera */
+}
+;<Hud>
+  <PerspectiveCamera makeDefault position={[0, 0, 10]} />
+  <mesh>
+    <ringGeometry />
+  </mesh>
+</Hud>
+{
+  /* Renders on top of the previous HUD with an orthographic camera */
+}
+;<Hud renderPriority={2}>
+  <OrthographicCamera makeDefault position={[0, 0, 10]} />
+  <mesh>
+    <boxGeometry />
+  </mesh>
+</Hud>
+```
 
 #### View
 

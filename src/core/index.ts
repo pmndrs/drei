@@ -1,5 +1,6 @@
 // Abstractions
 export * from './Billboard'
+export * from './ScreenSpace'
 export * from './QuadraticBezierLine'
 export * from './CubicBezierLine'
 export * from './CatmullRomLine'

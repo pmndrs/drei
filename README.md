@@ -65,6 +65,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#text3d">Text3D</a></li>          
           <li><a href="#positionalaudio">PositionalAudio</a></li>
           <li><a href="#billboard">Billboard</a></li>
+          <li><a href="#screenspace">ScreenSpace</a></li>
           <li><a href="#effects">Effects</a></li>
           <li><a href="#gradienttexture">GradientTexture</a></li>
           <li><a href="#edges">Edges</a></li>
@@ -931,6 +932,20 @@ Adds a `<group />` that always faces the camera.
 >
   <Text fontSize={1}>I'm a billboard</Text>
 </Billboard>
+```
+
+#### ScreenSpace
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-screenspace--screen-space-story)
+
+Adds a `<group />` that aligns objects to screen space.
+
+```jsx
+<ScreenSpace
+  depth={1} // Distance from camera
+>
+  <Box>I'm in screen space</Box>
+</ScreenSpace>
 ```
 
 #### GradientTexture

@@ -28,7 +28,7 @@ function RenderHud({ defaultScene, defaultCamera, renderPriority = 1 }: RenderHu
     gl.clearDepth()
     gl.render(scene, camera)
   }, renderPriority)
-  return <> </>
+  return <></>
 }
 
 export function Hud({ children, renderPriority = 1 }: HudProps) {

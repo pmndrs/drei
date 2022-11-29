@@ -15,6 +15,7 @@ export function useVideoTexture(src: string, props: Partial<VideoTextureProps>) 
     muted: true,
     loop: true,
     start: true,
+    playsInline: true,
     ...props,
   }
   const gl = useThree((state) => state.gl)

@@ -35,6 +35,6 @@ export function useVideoTexture(src: string, props: Partial<VideoTextureProps>) 
       }),
     [src]
   )
-  useEffect(() => void (start && texture.image.play()), [texture])
+  useEffect(() => void (start && texture.image.play()), [texture, start])
   return texture
 }

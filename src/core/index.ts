@@ -19,6 +19,7 @@ export * from './Clone'
 export * from './MarchingCubes'
 export * from './Decal'
 export * from './Svg'
+export * from './AsciiRenderer'
 
 // Cameras
 export * from './OrthographicCamera'

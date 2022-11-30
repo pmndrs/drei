@@ -1253,7 +1253,7 @@ Accepts an SVG url or svg raw data.
 #### AsciiRenderer
 
 <p>
-  <a href="https://codesandbox.io/s/5jvdu3"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/5jvdu3/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/vq9wsl"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/vq9wsl/screenshot.png" alt="Demo"/></a>
 </p>
 
 Abstraction of three's [AsciiEffect](https://threejs.org/examples/?q=as#webgl_effects_ascii). It creates a DOM layer on top of the canvas and renders the scene as ascii characters.

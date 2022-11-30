@@ -77,6 +77,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#marchingcubes">MarchingCubes</a></li>
           <li><a href="#decal">Decal</a></li>
           <li><a href="#svg">Svg</a></li>
+          <li><a href="#asciirenderer">AsciiRenderer</a></li>
         </ul>
         <li><a href="#shaders">Shaders</a></li>
         <ul>
@@ -1247,6 +1248,38 @@ Accepts an SVG url or svg raw data.
 
 ```js
 <Svg src={urlOrRawSvgString} />
+```
+
+#### AsciiRenderer
+
+<p>
+  <a href="https://codesandbox.io/s/5jvdu3"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/5jvdu3/screenshot.png" alt="Demo"/></a>
+</p>
+
+Abstraction of three's [AsciiEffect](https://threejs.org/examples/?q=as#webgl_effects_ascii). It creates a DOM layer on top of the canvas and renders the scene as ascii characters.
+
+```tsx
+type AsciiRendererProps = {
+  /** Render index, default: 1 */
+  renderIndex?: number
+  /** CSS background color (can be "transparent"), default: black */
+  bgColor?: string
+  /** CSS character color, default: white */
+  fgColor?: string
+  /** Characters, default: ' .:-+*=%@#' */
+  characters?: string
+  /** Invert character, default: true */
+  invert?: boolean
+  /** Colorize output (very expensive!), default: false */
+  color?: boolean
+  /** Level of detail, default: 0.15 */
+  resolution?: number
+}
+```
+
+```jsx
+<Canvas>
+  <AsciiRenderer />
 ```
 
 # Shaders

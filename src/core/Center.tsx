@@ -17,7 +17,7 @@ export type OnCenterCallbackProps = {
   depthAlignment: number
 }
 
-type CenterProps = JSX.IntrinsicElements['group'] & {
+export type CenterProps = {
   top?: boolean
   right?: boolean
   bottom?: boolean
@@ -36,7 +36,7 @@ type CenterProps = JSX.IntrinsicElements['group'] & {
   onCentered?: (props: OnCenterCallbackProps) => void
 }
 
-export const Center = React.forwardRef<Group, CenterProps>(function Center(
+export const Center = React.forwardRef<Group, JSX.IntrinsicElements['group'] & CenterProps>(function Center(
   {
     children,
     disableX,

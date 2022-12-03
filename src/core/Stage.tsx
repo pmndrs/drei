@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { EnvironmentProps, Environment } from './Environment'
 import { ContactShadowsProps, ContactShadows } from './ContactShadows'
-import { Center } from './Center'
+import { CenterProps, Center } from './Center'
 import {
   AccumulativeShadowsProps,
   RandomizedLightProps,
@@ -60,6 +60,8 @@ type StageProps = {
   environment?: PresetsType | Partial<EnvironmentProps>
   /** The lighting intensity, default: 0.5 */
   intensity?: number
+  /** To adjust centering, default: undefined */
+  center?: Partial<CenterProps>
 }
 
 function Refit({ radius, adjustCamera }) {
@@ -72,6 +74,7 @@ function Refit({ radius, adjustCamera }) {
 
 export function Stage({
   children,
+  center,
   adjustCamera = true,
   intensity = 0.5,
   shadows = 'contact',
@@ -109,10 +112,13 @@ export function Stage({
       <Bounds fit={!!adjustCamera} clip={!!adjustCamera} margin={Number(adjustCamera)} observe {...props}>
         <Refit radius={radius} adjustCamera={adjustCamera} />
         <Center
+          {...center}
           position={[0, shadowOffset / 2, 0]}
-          onCentered={({ width, height, depth, boundingSphere, ...data }) =>
+          onCentered={(props) => {
+            const { width, height, depth, boundingSphere } = props
             set({ radius: boundingSphere.radius, width, height, depth })
-          }
+            if (center?.onCentered) center.onCentered(props)
+          }}
         >
           {children}
         </Center>

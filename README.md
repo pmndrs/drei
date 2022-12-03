@@ -2777,20 +2777,6 @@ This component makes its contents float or hover.
 Creates a "stage" with proper studio lighting, 0/0/0 top-centred, model-shadows, ground-shadows and optional zoom to fit. Make sure to set `makeDefault` on your controls when `adjustCamera` is true!
 
 ```tsx
-type StageShadows = Partial<AccumulativeShadowsProps> &
-  Partial<RandomizedLightProps> &
-  Partial<ContactShadowsProps> & {
-    type: 'contact' | 'accumulative'
-    /** Shadow plane offset, default: 0 */
-    offset?: number
-    /** Shadow bias, default: -0.0001 */
-    bias?: number
-    /** Shadow normal bias, default: 0 */
-    normalBias?: number
-    /** Shadow map size, default: 1024 */
-    size?: number
-  }
-
 type StageProps = {
   /** Lighting setup, default: "rembrandt" */
   preset?:
@@ -2807,7 +2793,23 @@ type StageProps = {
   environment?: PresetsType | Partial<EnvironmentProps>
   /** The lighting intensity, default: 0.5 */
   intensity?: number
+  /** To adjust centering, default: undefined */
+  center?: Partial<CenterProps>
 }
+
+type StageShadows = Partial<AccumulativeShadowsProps> &
+  Partial<RandomizedLightProps> &
+  Partial<ContactShadowsProps> & {
+    type: 'contact' | 'accumulative'
+    /** Shadow plane offset, default: 0 */
+    offset?: number
+    /** Shadow bias, default: -0.0001 */
+    bias?: number
+    /** Shadow normal bias, default: 0 */
+    normalBias?: number
+    /** Shadow map size, default: 1024 */
+    size?: number
+  }
 ```
 
 By default it gives you contact shadows and auto-centering.

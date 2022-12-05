@@ -1,6 +1,18 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
-import { Vector3, Group, Object3D, Matrix4, Camera, PerspectiveCamera, OrthographicCamera, Raycaster } from 'three'
+import {
+  Vector3,
+  Group,
+  Object3D,
+  Matrix4,
+  Camera,
+  PerspectiveCamera,
+  OrthographicCamera,
+  Raycaster,
+  DoubleSide,
+  Mesh,
+  Material,
+} from 'three'
 import { Assign } from 'utility-types'
 import { ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 
@@ -24,20 +36,6 @@ function isObjectBehindCamera(el: Object3D, camera: Camera) {
   const deltaCamObj = objectPos.sub(cameraPos)
   const camDir = camera.getWorldDirection(v3)
   return deltaCamObj.angleTo(camDir) > Math.PI / 2
-}
-
-function isObjectVisible(el: Object3D, camera: Camera, raycaster: Raycaster, occlude: Object3D[]) {
-  const elPos = v1.setFromMatrixPosition(el.matrixWorld)
-  const screenPos = elPos.clone()
-  screenPos.project(camera)
-  raycaster.setFromCamera(screenPos, camera)
-  const intersects = raycaster.intersectObjects(occlude, true)
-  if (intersects.length) {
-    const intersectionDistance = intersects[0].distance
-    const pointDistance = elPos.distanceTo(raycaster.ray.origin)
-    return pointDistance < intersectionDistance
-  }
-  return true
 }
 
 function objectScale(el: Object3D, camera: Camera) {
@@ -109,12 +107,16 @@ export interface HtmlProps
   sprite?: boolean
   transform?: boolean
   zIndexRange?: Array<number>
-  occlude?: React.RefObject<Object3D>[] | boolean
-  onOcclude?: (visible: boolean) => null
   calculatePosition?: CalculatePosition
   as?: string
   wrapperClass?: string
   pointerEvents?: PointerEventsProperties
+
+  // Occlusion based off work by Jerome Etienne and James Baicoianu
+  // https://www.youtube.com/watch?v=ScZcUEDGjJI
+  // as well as Joe Pea in CodePen: https://codepen.io/trusktr/pen/RjzKJx
+  occlude?: boolean
+  material?: Material // Material for occlusion plane
 }
 
 export const Html = React.forwardRef(
@@ -132,7 +134,7 @@ export const Html = React.forwardRef(
       sprite = false,
       transform = false,
       occlude,
-      onOcclude,
+      material,
       zIndexRange = [16777271, 0],
       calculatePosition = defaultCalculatePosition,
       as = 'div',
@@ -142,7 +144,7 @@ export const Html = React.forwardRef(
     }: HtmlProps,
     ref: React.Ref<HTMLDivElement>
   ) => {
-    const { gl, camera, scene, size, raycaster, events } = useThree()
+    const { gl, camera, scene, size, raycaster, events, viewport } = useThree()
 
     const [el] = React.useState(() => document.createElement(as))
     const root = React.useRef<ReactDOM.Root>()
@@ -153,6 +155,22 @@ export const Html = React.forwardRef(
     const transformInnerRef = React.useRef<HTMLDivElement>(null!)
     // Append to the connected element, which makes HTML work with views
     const target = (portal?.current || events.connected || gl.domElement.parentNode) as HTMLElement
+
+    const occlusionMeshRef = React.useRef<Mesh>(null!)
+    const isMeshSizeSet = React.useRef<boolean>(false)
+
+    React.useLayoutEffect(() => {
+      const el = gl.domElement as HTMLCanvasElement
+      if (occlude) {
+        el.style.zIndex = `${zIndexRange[0]}`
+        el.style.position = 'absolute'
+        el.style.pointerEvents = 'none'
+      } else {
+        el.style.zIndex = null!
+        el.style.position = null!
+        el.style.pointerEvents = null!
+      }
+    }, [occlude])
 
     React.useLayoutEffect(() => {
       if (group.current) {
@@ -211,6 +229,8 @@ export const Html = React.forwardRef(
     )
 
     React.useLayoutEffect(() => {
+      isMeshSizeSet.current = false
+
       if (transform) {
         root.current?.render(
           <div ref={transformOuterRef} style={styles}>
@@ -226,7 +246,7 @@ export const Html = React.forwardRef(
 
     const visible = React.useRef(true)
 
-    useFrame(() => {
+    useFrame((gl) => {
       if (group.current) {
         camera.updateMatrixWorld()
         group.current.updateWorldMatrix(true, false)
@@ -239,29 +259,19 @@ export const Html = React.forwardRef(
           Math.abs(oldPosition.current[1] - vec[1]) > eps
         ) {
           const isBehindCamera = isObjectBehindCamera(group.current, camera)
-          let raytraceTarget: null | undefined | boolean | Object3D[] = false
-          if (typeof occlude === 'boolean') {
-            if (occlude === true) {
-              raytraceTarget = [scene]
-            }
-          } else if (Array.isArray(occlude)) {
-            raytraceTarget = occlude.map((item) => item.current) as Object3D[]
-          }
 
           const previouslyVisible = visible.current
-          if (raytraceTarget) {
-            const isvisible = isObjectVisible(group.current, camera, raycaster, raytraceTarget)
-            visible.current = isvisible && !isBehindCamera
-          } else {
-            visible.current = !isBehindCamera
-          }
+          visible.current = !isBehindCamera
 
           if (previouslyVisible !== visible.current) {
-            if (onOcclude) onOcclude(!visible.current)
-            else el.style.display = visible.current ? 'block' : 'none'
+            el.style.display = visible.current ? 'block' : 'none'
           }
 
-          el.style.zIndex = `${objectZIndex(group.current, camera, zIndexRange)}`
+          el.style.zIndex = `${objectZIndex(
+            group.current,
+            camera,
+            occlude ? [zIndexRange[0] - 1, zIndexRange[1]] : zIndexRange
+          )}`
           if (transform) {
             const [widthHalf, heightHalf] = [size.width / 2, size.height / 2]
             const fov = camera.projectionMatrix.elements[5] * heightHalf
@@ -291,8 +301,94 @@ export const Html = React.forwardRef(
           oldZoom.current = camera.zoom
         }
       }
+
+      if (occlusionMeshRef.current && !isMeshSizeSet.current) {
+        if (transform) {
+          if (transformOuterRef.current) {
+            const el = transformOuterRef.current.children[0]
+
+            if (el?.clientWidth && el?.clientHeight) {
+              const ratio = (distanceFactor || 10) / 400
+              const w = el.clientWidth * ratio
+              const h = el.clientHeight * ratio
+
+              occlusionMeshRef.current.scale.set(w, h, 1)
+            }
+          }
+        } else {
+          const ele = el.children[0]
+
+          if (ele?.clientWidth && ele?.clientHeight) {
+            const ratio = 1 / viewport.factor
+            const w = ele.clientWidth * ratio
+            const h = ele.clientHeight * ratio
+
+            occlusionMeshRef.current.scale.set(w, h, 1)
+          }
+
+          occlusionMeshRef.current.lookAt(gl.camera.position)
+        }
+
+        isMeshSizeSet.current = true
+      }
     })
 
-    return <group {...props} ref={group} />
+    const shaders = React.useMemo(
+      () => ({
+        vertexShader: !transform
+          ? /* glsl */ `
+          #include <common>
+
+          void main() {
+            vec2 center = vec2(0., 1.);
+            float rotation = 0.0;
+            
+            // This is somewhat arbitrary, but it seems to work well
+            // Need to figure out how to derive this dynamically if it even matters
+            float size = 0.03;
+
+            vec4 mvPosition = modelViewMatrix * vec4( 0.0, 0.0, 0.0, 1.0 );
+            vec2 scale;
+            scale.x = length( vec3( modelMatrix[ 0 ].x, modelMatrix[ 0 ].y, modelMatrix[ 0 ].z ) );
+            scale.y = length( vec3( modelMatrix[ 1 ].x, modelMatrix[ 1 ].y, modelMatrix[ 1 ].z ) );
+
+            bool isPerspective = isPerspectiveMatrix( projectionMatrix );
+            if ( isPerspective ) scale *= - mvPosition.z;
+
+            vec2 alignedPosition = ( position.xy - ( center - vec2( 0.5 ) ) ) * scale * size;
+            vec2 rotatedPosition;
+            rotatedPosition.x = cos( rotation ) * alignedPosition.x - sin( rotation ) * alignedPosition.y;
+            rotatedPosition.y = sin( rotation ) * alignedPosition.x + cos( rotation ) * alignedPosition.y;
+            mvPosition.xy += rotatedPosition;
+
+            gl_Position = projectionMatrix * mvPosition;
+          }
+      `
+          : undefined,
+        fragmentShader: /* glsl */ `
+        void main() {
+          gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+        }
+      `,
+      }),
+      [transform]
+    )
+
+    return (
+      <group {...props} ref={group}>
+        {occlude && (
+          <mesh material={material} ref={occlusionMeshRef}>
+            <planeGeometry />
+            {!material && (
+              <shaderMaterial
+                side={DoubleSide}
+                vertexShader={shaders.vertexShader}
+                fragmentShader={shaders.fragmentShader}
+              />
+            )}
+          </mesh>
+        )}
+      </group>
+    )
   }
 )

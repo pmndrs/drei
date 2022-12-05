@@ -126,7 +126,7 @@ export const HTMLCalculatePosition = () => (
 )
 HTMLCalculatePosition.storyName = 'Custom Calculate Position'
 
-function HTMLRaycastOccluderScene() {
+function HTMLOccluderScene() {
   const turntableRef = useTurntable()
   const occluderRef = React.useRef()
 
@@ -134,14 +134,14 @@ function HTMLRaycastOccluderScene() {
     <>
       <group ref={turntableRef}>
         <Icosahedron ref={occluderRef} name="pink" args={[5, 5]} position={[0, 0, 0]}>
-          <meshBasicMaterial color="hotpink" wireframe />
-          <Html position={[0, 0, -6]} className="html-story-label" occlude={[turntableRef]}>
+          <meshBasicMaterial color="hotpink" />
+          <Html position={[0, 0, -6]} className="html-story-label" occlude>
             A
           </Html>
         </Icosahedron>
         <Icosahedron name="yellow" args={[5, 5]} position={[16, 0, 0]}>
-          <meshBasicMaterial color="yellow" wireframe />
-          <Html position={[0, 0, -6]} className="html-story-label" occlude={[turntableRef]}>
+          <meshBasicMaterial color="yellow" />
+          <Html transform position={[0, 0, -6]} className="html-story-label html-story-label-B" occlude>
             B
           </Html>
         </Icosahedron>
@@ -152,5 +152,5 @@ function HTMLRaycastOccluderScene() {
   )
 }
 
-export const HTMLRaycastOccluderSt = () => <HTMLRaycastOccluderScene />
-HTMLRaycastOccluderSt.storyName = 'Raycast occluder'
+export const HTMLOccluderSt = () => <HTMLOccluderScene />
+HTMLOccluderSt.storyName = 'Occlusion'

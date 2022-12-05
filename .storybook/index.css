@@ -52,3 +52,9 @@ body,
   align-items: center;
   justify-content: center;
 }
+
+.html-story-label-B {
+  width: 200px;
+  height: 100px;
+  font-size: 50px;
+}

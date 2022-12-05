@@ -38,6 +38,20 @@ function isObjectBehindCamera(el: Object3D, camera: Camera) {
   return deltaCamObj.angleTo(camDir) > Math.PI / 2
 }
 
+function isObjectVisible(el: Object3D, camera: Camera, raycaster: Raycaster, occlude: Object3D[]) {
+  const elPos = v1.setFromMatrixPosition(el.matrixWorld)
+  const screenPos = elPos.clone()
+  screenPos.project(camera)
+  raycaster.setFromCamera(screenPos, camera)
+  const intersects = raycaster.intersectObjects(occlude, true)
+  if (intersects.length) {
+    const intersectionDistance = intersects[0].distance
+    const pointDistance = elPos.distanceTo(raycaster.ray.origin)
+    return pointDistance < intersectionDistance
+  }
+  return true
+}
+
 function objectScale(el: Object3D, camera: Camera) {
   if (camera instanceof OrthographicCamera) {
     return camera.zoom
@@ -96,6 +110,10 @@ type PointerEventsProperties =
   | 'all'
   | 'inherit'
 
+function isRefObject(ref: any): ref is React.RefObject<any> {
+  return ref && typeof ref === 'object' && 'current' in ref
+}
+
 export interface HtmlProps
   extends Omit<Assign<React.HTMLAttributes<HTMLDivElement>, ReactThreeFiber.Object3DNode<Group, typeof Group>>, 'ref'> {
   prepend?: boolean
@@ -115,7 +133,8 @@ export interface HtmlProps
   // Occlusion based off work by Jerome Etienne and James Baicoianu
   // https://www.youtube.com/watch?v=ScZcUEDGjJI
   // as well as Joe Pea in CodePen: https://codepen.io/trusktr/pen/RjzKJx
-  occlude?: boolean
+  occlude?: React.RefObject<Object3D>[] | boolean | 'raycast' | 'blending'
+  onOcclude?: (visible: boolean) => null
   material?: Material // Material for occlusion plane
 }
 
@@ -134,6 +153,7 @@ export const Html = React.forwardRef(
       sprite = false,
       transform = false,
       occlude,
+      onOcclude,
       material,
       zIndexRange = [16777271, 0],
       calculatePosition = defaultCalculatePosition,
@@ -159,10 +179,14 @@ export const Html = React.forwardRef(
     const occlusionMeshRef = React.useRef<Mesh>(null!)
     const isMeshSizeSet = React.useRef<boolean>(false)
 
+    const isRayCastOcclusion = React.useMemo(() => {
+      return occlude === 'raycast' || (Array.isArray(occlude) && occlude.length && isRefObject(occlude[0]))
+    }, [occlude])
+
     React.useLayoutEffect(() => {
       const el = gl.domElement as HTMLCanvasElement
       if (occlude) {
-        el.style.zIndex = `${zIndexRange[0]}`
+        el.style.zIndex = `${Math.floor(zIndexRange[0] / 2)}`
         el.style.position = 'absolute'
         el.style.pointerEvents = 'none'
       } else {
@@ -170,7 +194,7 @@ export const Html = React.forwardRef(
         el.style.position = null!
         el.style.pointerEvents = null!
       }
-    }, [occlude])
+    }, [occlude, isRayCastOcclusion])
 
     React.useLayoutEffect(() => {
       if (group.current) {
@@ -259,19 +283,38 @@ export const Html = React.forwardRef(
           Math.abs(oldPosition.current[1] - vec[1]) > eps
         ) {
           const isBehindCamera = isObjectBehindCamera(group.current, camera)
+          let raytraceTarget: null | undefined | boolean | Object3D[] = false
 
-          const previouslyVisible = visible.current
-          visible.current = !isBehindCamera
-
-          if (previouslyVisible !== visible.current) {
-            el.style.display = visible.current ? 'block' : 'none'
+          if (isRayCastOcclusion) {
+            if (occlude === 'raycast') {
+              raytraceTarget = [scene]
+            } else if (Array.isArray(occlude)) {
+              raytraceTarget = occlude.map((item) => item.current) as Object3D[]
+            }
           }
 
-          el.style.zIndex = `${objectZIndex(
-            group.current,
-            camera,
-            occlude ? [zIndexRange[0] - 1, zIndexRange[1]] : zIndexRange
-          )}`
+          const previouslyVisible = visible.current
+          if (raytraceTarget) {
+            const isvisible = isObjectVisible(group.current, camera, raycaster, raytraceTarget)
+            visible.current = isvisible && !isBehindCamera
+          } else {
+            visible.current = !isBehindCamera
+          }
+
+          if (previouslyVisible !== visible.current) {
+            if (onOcclude) onOcclude(!visible.current)
+            else el.style.display = visible.current ? 'block' : 'none'
+          }
+
+          const halfRange = Math.floor(zIndexRange[0] / 2)
+          const zRange = occlude
+            ? isRayCastOcclusion //
+              ? [zIndexRange[0], halfRange]
+              : [halfRange - 1, 0]
+            : zIndexRange
+
+          el.style.zIndex = `${objectZIndex(group.current, camera, zRange)}`
+
           if (transform) {
             const [widthHalf, heightHalf] = [size.width / 2, size.height / 2]
             const fov = camera.projectionMatrix.elements[5] * heightHalf
@@ -302,7 +345,7 @@ export const Html = React.forwardRef(
         }
       }
 
-      if (occlusionMeshRef.current && !isMeshSizeSet.current) {
+      if (!isRayCastOcclusion && occlusionMeshRef.current && !isMeshSizeSet.current) {
         if (transform) {
           if (transformOuterRef.current) {
             const el = transformOuterRef.current.children[0]
@@ -376,7 +419,7 @@ export const Html = React.forwardRef(
 
     return (
       <group {...props} ref={group}>
-        {occlude && (
+        {occlude && !isRayCastOcclusion && (
           <mesh material={material} ref={occlusionMeshRef}>
             <planeGeometry />
             {!material && (

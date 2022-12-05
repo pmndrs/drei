@@ -7,6 +7,7 @@ import { useTurntable } from '../useTurntable'
 import { Icosahedron, Html, OrthographicCamera } from '../../src'
 import { HtmlProps, CalculatePosition } from 'web/Html'
 import { useFrame, useThree } from '@react-three/fiber'
+import { Object3D } from 'three'
 
 export default {
   title: 'Misc/Html',
@@ -128,21 +129,27 @@ HTMLCalculatePosition.storyName = 'Custom Calculate Position'
 
 function HTMLOccluderScene() {
   const turntableRef = useTurntable()
-  const occluderRef = React.useRef()
+  const occluderRef = React.useRef<Object3D>(null!)
 
   return (
     <>
       <group ref={turntableRef}>
-        <Icosahedron ref={occluderRef} name="pink" args={[5, 5]} position={[0, 0, 0]}>
+        <Icosahedron name="pink" args={[5, 5]} position={[0, 0, 0]}>
           <meshBasicMaterial color="hotpink" />
           <Html position={[0, 0, -6]} className="html-story-label" occlude>
-            A
+            Blending
           </Html>
         </Icosahedron>
         <Icosahedron name="yellow" args={[5, 5]} position={[16, 0, 0]}>
           <meshBasicMaterial color="yellow" />
           <Html transform position={[0, 0, -6]} className="html-story-label html-story-label-B" occlude>
-            B
+            Blending w/ transform
+          </Html>
+        </Icosahedron>
+        <Icosahedron ref={occluderRef} name="orange" args={[5, 5]} position={[0, 0, 16]}>
+          <meshBasicMaterial color="orange" />
+          <Html position={[0, 0, -6]} className="html-story-label" occlude={[occluderRef]}>
+            Raycast occlusion
           </Html>
         </Icosahedron>
       </group>

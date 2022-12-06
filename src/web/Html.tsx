@@ -384,6 +384,12 @@ export const Html = React.forwardRef(
       () => ({
         vertexShader: !transform
           ? /* glsl */ `
+          /*
+            This shader is from the THREE's SpriteMaterial.
+            We need to turn the backing plane into a Sprite
+            (make it always face the camera) if "transfrom" 
+            is false. 
+          */
           #include <common>
 
           void main() {

@@ -14,7 +14,7 @@ import {
   Material,
 } from 'three'
 import { Assign } from 'utility-types'
-import { ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
+import { MaterialProps, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 
 const v1 = new Vector3()
 const v2 = new Vector3()
@@ -135,7 +135,9 @@ export interface HtmlProps
   // as well as Joe Pea in CodePen: https://codepen.io/trusktr/pen/RjzKJx
   occlude?: React.RefObject<Object3D>[] | boolean | 'raycast' | 'blending'
   onOcclude?: (visible: boolean) => null
-  material?: Material // Material for occlusion plane
+  material?: React.ReactNode // Material for occlusion plane
+  castShadow?: boolean // Cast shadow for occlusion plane
+  receiveShadow?: boolean // Receive shadow for occlusion plane
 }
 
 export const Html = React.forwardRef(
@@ -154,6 +156,8 @@ export const Html = React.forwardRef(
       transform = false,
       occlude,
       onOcclude,
+      castShadow,
+      receiveShadow,
       material,
       zIndexRange = [16777271, 0],
       calculatePosition = defaultCalculatePosition,
@@ -420,9 +424,9 @@ export const Html = React.forwardRef(
     return (
       <group {...props} ref={group}>
         {occlude && !isRayCastOcclusion && (
-          <mesh material={material} ref={occlusionMeshRef}>
+          <mesh castShadow={castShadow} receiveShadow={receiveShadow} ref={occlusionMeshRef}>
             <planeGeometry />
-            {!material && (
+            {material || (
               <shaderMaterial
                 side={DoubleSide}
                 vertexShader={shaders.vertexShader}

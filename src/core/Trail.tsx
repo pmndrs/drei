@@ -1,8 +1,7 @@
 import { createPortal, useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import { ColorRepresentation, Group, Object3D, Vector2, Vector3 } from 'three'
-// @ts-ignore
-import { MeshLine as MeshLineImpl, MeshLineMaterial } from 'meshline'
+import { MeshLineGeometry as MeshLineGeometryImpl, MeshLineMaterial } from 'meshline'
 
 type Settings = {
   width: number
@@ -86,9 +85,9 @@ export function useTrail(target: Object3D, settings: Partial<Settings>) {
   return points
 }
 
-export type MeshLine = THREE.Mesh & MeshLineImpl
+export type MeshLineGeometry = THREE.Mesh & MeshLineGeometryImpl
 
-export const Trail = React.forwardRef<MeshLine, React.PropsWithChildren<TrailProps>>((props, forwardRef) => {
+export const Trail = React.forwardRef<MeshLineGeometry, React.PropsWithChildren<TrailProps>>((props, forwardRef) => {
   const { children } = props
   const { width, length, decay, local, stride, interval } = {
     ...defaults,
@@ -117,7 +116,7 @@ export const Trail = React.forwardRef<MeshLine, React.PropsWithChildren<TrailPro
     }
   }, [points, target])
 
-  const geo = React.useMemo(() => new MeshLineImpl(), [])
+  const geo = React.useMemo(() => new MeshLineGeometryImpl(), [])
   const mat = React.useMemo(() => {
     const m = new MeshLineMaterial({
       lineWidth: 0.1 * width,

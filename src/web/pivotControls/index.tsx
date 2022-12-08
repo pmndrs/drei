@@ -1,7 +1,6 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { Size, extend, useFrame, useThree } from '@react-three/fiber'
-import { MeshLine, MeshLineMaterial } from 'meshline'
 
 import { AxisArrow } from './AxisArrow'
 import { PlaneSlider } from './PlaneSlider'
@@ -141,8 +140,6 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
     },
     fRef
   ) => {
-    extend({ MeshLine, MeshLineMaterial })
-
     const invalidate = useThree((state) => state.invalidate)
     const parentRef = React.useRef<THREE.Group>(null!)
     const ref = React.useRef<THREE.Group>(null!)

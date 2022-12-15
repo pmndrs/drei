@@ -47,9 +47,9 @@ export const MeshRefractionMaterial = shaderMaterial(
   
     projectionMatrixInv = inverse(projectionMatrix);
     viewMatrixInv = inverse(viewMatrix);
-  
-    vWorldPosition = (modelMatrix * transformedPosition).xyz;    
-    vNormal = (viewMatrixInv * vec4(normalMatrix * transformedNormal.xyz, 0.0)).xyz;
+
+    vWorldPosition = (modelMatrix * transformedPosition).xyz;
+    vNormal = normalize((viewMatrixInv * vec4(normalMatrix * transformedNormal.xyz, 0.0)).xyz);
     viewDirection = normalize(vWorldPosition - cameraPosition);
     gl_Position = projectionMatrix * viewMatrix * modelMatrix * transformedPosition;
   }`,

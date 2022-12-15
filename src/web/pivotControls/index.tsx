@@ -1,7 +1,6 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { Size, extend, useFrame, useThree } from '@react-three/fiber'
-import { MeshLine, MeshLineMaterial } from 'meshline'
 
 import { AxisArrow } from './AxisArrow'
 import { PlaneSlider } from './PlaneSlider'
@@ -133,6 +132,7 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
       axisColors = ['#ff2060', '#20df80', '#2080ff'],
       hoveredColor = '#ffff40',
       displayValues = true,
+      annotationsClass,
       opacity = 1,
       visible = true,
       userData,
@@ -140,8 +140,6 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
     },
     fRef
   ) => {
-    extend({ MeshLine, MeshLineMaterial })
-
     const invalidate = useThree((state) => state.invalidate)
     const parentRef = React.useRef<THREE.Group>(null!)
     const ref = React.useRef<THREE.Group>(null!)
@@ -210,6 +208,7 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
         displayValues,
         depthTest,
         userData,
+        annotationsClass,
       }),
       [
         onDragStart,
@@ -228,6 +227,7 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
         displayValues,
         userData,
         autoTransform,
+        annotationsClass,
       ]
     )
 

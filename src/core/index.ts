@@ -1,5 +1,6 @@
 // Abstractions
 export * from './Billboard'
+export * from './ScreenSpace'
 export * from './QuadraticBezierLine'
 export * from './CubicBezierLine'
 export * from './CatmullRomLine'
@@ -18,6 +19,7 @@ export * from './Clone'
 export * from './MarchingCubes'
 export * from './Decal'
 export * from './Svg'
+export * from './AsciiRenderer'
 
 // Cameras
 export * from './OrthographicCamera'
@@ -63,6 +65,7 @@ export * from './useFBO'
 export * from './useIntersect'
 export * from './useBoxProjectedEnv'
 export * from './BBAnchor'
+export * from './useTrailTexture'
 
 // Modifiers
 export * from './CurveModifier'
@@ -117,3 +120,4 @@ export * from './PerformanceMonitor'
 // Portals
 export * from './RenderTexture'
 export * from './Mask'
+export * from './Hud'

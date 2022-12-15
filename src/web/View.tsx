@@ -6,6 +6,26 @@ const isOrthographicCamera = (def: any): def is THREE.OrthographicCamera =>
   def && (def as THREE.OrthographicCamera).isOrthographicCamera
 const col = new THREE.Color()
 
+/**
+ * In `@react-three/fiber` after `v8.0.0` but prior to `v8.1.0`, `state.size` contained only dimension
+ * information. After `v8.1.0`, position information (`top`, `left`) was added
+ *
+ * @todo remove this when drei supports v9 and up
+ */
+type LegacyCanvasSize = {
+  height: number
+  width: number
+}
+
+type CanvasSize = LegacyCanvasSize & {
+  top: number
+  left: number
+}
+
+function isNonLegacyCanvasSize(size: Record<string, number>): size is CanvasSize {
+  return 'top' in size
+}
+
 export type ContainerProps = {
   scene: THREE.Scene
   index: number
@@ -13,7 +33,7 @@ export type ContainerProps = {
   frames: number
   rect: React.MutableRefObject<DOMRect>
   track: React.MutableRefObject<HTMLElement>
-  canvasSize: Size
+  canvasSize: LegacyCanvasSize | CanvasSize
 }
 
 export type ViewProps = {
@@ -25,6 +45,30 @@ export type ViewProps = {
   frames?: number
   /** The scene to render, if you leave this undefined it will render the default scene */
   children?: React.ReactNode
+}
+
+function computeContainerPosition(
+  canvasSize: LegacyCanvasSize | CanvasSize,
+  trackRect: DOMRect
+): {
+  position: CanvasSize & { bottom: number, right: number }
+  isOffscreen: boolean
+} {
+  const { right, top, left: trackLeft, bottom: trackBottom, width, height } = trackRect
+  const isOffscreen = trackRect.bottom < 0 || top > canvasSize.height || right < 0 || trackRect.left > canvasSize.width
+  
+  if (isNonLegacyCanvasSize(canvasSize)) {
+    const canvasBottom = canvasSize.top + canvasSize.height
+    const bottom = canvasBottom - trackBottom
+    const left = trackLeft - canvasSize.left
+
+    return { position: { width, height, left, top, bottom, right }, isOffscreen }
+  }
+
+  // Fall back on old behavior if r3f < 8.1.0
+  const bottom = canvasSize.height - trackBottom
+
+  return { position: { width, height, top, left: trackLeft, bottom, right }, isOffscreen }
 }
 
 function Container({ canvasSize, scene, index, children, frames, rect, track }: ContainerProps) {
@@ -41,9 +85,11 @@ function Container({ canvasSize, scene, index, children, frames, rect, track }: 
     }
 
     if (rect.current) {
-      const { left, right, top, bottom, width, height } = rect.current
-      const isOffscreen = bottom < 0 || top > canvasSize.height || right < 0 || left > canvasSize.width
-      const positiveYUpBottom = canvasSize.height - bottom
+      const {
+        position: { left, bottom, width, height },
+        isOffscreen,
+      } = computeContainerPosition(canvasSize, rect.current)
+
       const aspect = width / height
 
       if (isOrthographicCamera(camera)) {
@@ -61,8 +107,8 @@ function Container({ canvasSize, scene, index, children, frames, rect, track }: 
         camera.updateProjectionMatrix()
       }
 
-      state.gl.setViewport(left, positiveYUpBottom, width, height)
-      state.gl.setScissor(left, positiveYUpBottom, width, height)
+      state.gl.setViewport(left, bottom, width, height)
+      state.gl.setScissor(left, bottom, width, height)
       state.gl.setScissorTest(true)
 
       if (isOffscreen) {
@@ -82,6 +128,16 @@ function Container({ canvasSize, scene, index, children, frames, rect, track }: 
     const old = get().events.connected
     setEvents({ connected: track.current })
     return () => setEvents({ connected: old })
+  }, [])
+
+  React.useEffect(() => {
+    if (isNonLegacyCanvasSize(canvasSize)) {
+      return
+    }
+    console.warn(
+      'Detected @react-three/fiber canvas size does not include position information. <View /> may not work as expected. ' +
+        'Upgrade to @react-three/fiber ^8.1.0 for support.\n See https://github.com/pmndrs/drei/issues/944'
+    )
   }, [])
 
   return <>{children}</>

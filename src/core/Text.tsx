@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Text as TextMeshImpl, preloadFont } from './troika-three-text'
+// @ts-ignore
+import { Text as TextMeshImpl, preloadFont } from 'troika-three-text'
 import { ReactThreeFiber, useThree } from '@react-three/fiber'
 import { suspend } from 'suspend-react'
 

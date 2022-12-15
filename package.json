@@ -57,7 +57,6 @@
     "@babel/runtime": "^7.11.2",
     "@react-spring/three": "^9.3.1",
     "@use-gesture/react": "^10.2.0",
-    "bidi-js": "^1.0.2",
     "detect-gpu": "^4.0.36",
     "glsl-noise": "^0.0.0",
     "lodash.clamp": "^4.0.3",
@@ -70,9 +69,8 @@
     "suspend-react": "^0.0.8",
     "three-mesh-bvh": "^0.5.15",
     "three-stdlib": "^2.17.3",
-    "troika-worker-utils": "^0.46.0",
+    "troika-three-text": "^0.47.1",
     "utility-types": "^3.10.0",
-    "webgl-sdf-generator": "^1.1.1",
     "zustand": "^3.5.13"
   },
   "devDependencies": {

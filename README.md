@@ -56,6 +56,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#gizmohelper">GizmoHelper</a></li>
           <li><a href="#pivotcontrols">PivotControls</a></li>
           <li><a href="#transformcontrols">TransformControls</a></li>
+          <li><a href="#grid">Grid</a></li>
           <li><a href="#usehelper">useHelper</a></li>
         </ul>
         <li><a href="#abstractions">Abstractions</a></li>
@@ -645,6 +646,31 @@ If you are using other controls (Orbit, Trackball, etc), you will notice how the
 ```jsx
 <TransformControls mode="translate" />
 <OrbitControls makeDefault />
+```
+
+#### Grid
+
+A robust grid implementation with multiple tweakable parameters.
+
+```tsx
+type GridProps = {
+  axes?: 'xzy' | 'xyz' | 'zyx'
+  gridSize?: number | [number, number]
+  cellColor?: THREE.ColorRepresentation
+  cellSize?: number
+  cellThickness?: number
+  sectionColor?: THREE.ColorRepresentation
+  sectionSize?: number
+  sectionThickness?: number
+  followCamera?: boolean
+  infiniteGrid?: boolean
+  fadeDistance?: number
+  fadeStrength?: number
+}
+```
+
+```jsx
+<Grid />
 ```
 
 #### useHelper

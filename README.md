@@ -650,6 +650,8 @@ If you are using other controls (Orbit, Trackball, etc), you will notice how the
 
 #### Grid
 
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/gizmos-grid--use-grid-scene-st)
+
 <p>
   <a href="https://codesandbox.io/s/imreeu"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/imreeu/screenshot.png" alt="Demo"/></a>
 </p>

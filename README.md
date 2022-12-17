@@ -653,7 +653,7 @@ If you are using other controls (Orbit, Trackball, etc), you will notice how the
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/gizmos-grid--use-grid-scene-st)
 
 <p>
-  <a href="https://codesandbox.io/s/imreeu"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/imreeu/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/19uq2u"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/19uq2u/screenshot.png" alt="Demo"/></a>
 </p>
 
 A y-up oriented, shader-based grid implementation.

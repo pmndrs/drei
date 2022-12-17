@@ -49,6 +49,7 @@ export function Grid({
     followCamera,
   }
   const shader = React.useMemo(() => {
+    const axis = axes.slice(0, 2)
     return new (shaderMaterial(
       {
         ...uniforms,
@@ -57,19 +58,17 @@ export function Grid({
         infiniteGrid: infiniteGrid ? 1 : 0,
         followCamera: followCamera ? 1 : 0,
       },
-      `
-        varying vec3 worldPosition;
+      ` varying vec3 worldPosition;
         uniform float fadeDistance;
         uniform float infiniteGrid;
         uniform float followCamera;
         void main() {
           vec3 pos = position.${axes} * (1. + fadeDistance * infiniteGrid);
-          pos.${axes.slice(0, 2)} += (cameraPosition.${axes.slice(0, 2)} * followCamera);
+          pos.${axis} += (cameraPosition.${axis} * followCamera);
           worldPosition = pos;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
         }`,
-      `
-        varying vec3 worldPosition;
+      ` varying vec3 worldPosition;
         uniform float cellSize;
         uniform float sectionSize;
         uniform vec3 cellColor;
@@ -80,7 +79,7 @@ export function Grid({
         uniform float sectionThickness;
         uniform float infiniteGrid;
         float getGrid(float size, float thickness) {
-          vec2 r = worldPosition.${axes.slice(0, 2)} / size;
+          vec2 r = worldPosition.${axis} / size;
           vec2 grid = abs(fract(r - 0.5) - 0.5) / fwidth(r);
           float line = min(grid.x, grid.y) + 1. - thickness;
           return 1.0 - min(line, 1.);
@@ -88,17 +87,12 @@ export function Grid({
         void main() {
           float g1 = getGrid(cellSize, cellThickness);
           float g2 = getGrid(sectionSize, sectionThickness);
-          float d = 1.0 - min(distance(cameraPosition.${axes.slice(0, 2)}, worldPosition.${axes.slice(
-        0,
-        2
-      )}) / fadeDistance, 1.);
+          float d = 1.0 - min(distance(cameraPosition.${axis}, worldPosition.${axis}) / fadeDistance, 1.);
           vec3 color = mix(cellColor, sectionColor, min(1.,sectionThickness * g2));
           gl_FragColor = vec4(color, (g1 + g2) * pow(d,fadeStrength));
           gl_FragColor.a = mix(0.75 * gl_FragColor.a, gl_FragColor.a, g2);
-          if(gl_FragColor.a <= 0.0)
-            discard;
-        }
-         `,
+          if (gl_FragColor.a <= 0.0) discard;
+        }`,
       (material) => {
         Object.assign(material!, {
           side: THREE.DoubleSide,

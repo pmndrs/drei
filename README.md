@@ -650,11 +650,10 @@ If you are using other controls (Orbit, Trackball, etc), you will notice how the
 
 #### Grid
 
-A robust grid implementation with multiple tweakable parameters.
+A y-up oriented, robust grid implementation with multiple tweakable parameters.
 
 ```tsx
 type GridProps = {
-  axes?: 'xzy' | 'xyz' | 'zyx'
   gridSize?: number | [number, number]
   cellColor?: THREE.ColorRepresentation
   cellSize?: number

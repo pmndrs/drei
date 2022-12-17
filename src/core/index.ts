@@ -41,6 +41,7 @@ export * from './FirstPersonControls'
 export * from './GizmoHelper'
 export * from './GizmoViewcube'
 export * from './GizmoViewport'
+export * from './Grid'
 
 // Loaders
 export * from './useCubeTexture'

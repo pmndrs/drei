@@ -650,21 +650,39 @@ If you are using other controls (Orbit, Trackball, etc), you will notice how the
 
 #### Grid
 
-A y-up oriented, robust grid implementation with multiple tweakable parameters.
+<p>
+  <a href="https://codesandbox.io/s/imreeu"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/imreeu/screenshot.png" alt="Demo"/></a>
+</p>
+
+A y-up oriented, shader-based grid implementation.
 
 ```tsx
-type GridProps = {
-  gridSize?: number | [number, number]
-  cellColor?: THREE.ColorRepresentation
+export type GridMaterialType = {
+  /** Cell size, default: 0.5 */
   cellSize?: number
+  /** Cell thickness, default: 0.5 */
   cellThickness?: number
-  sectionColor?: THREE.ColorRepresentation
+  /** Cell color, default: black */
+  cellColor?: THREE.ColorRepresentation
+  /** Section size, default: 1 */
   sectionSize?: number
+  /** Section thickness, default: 1 */
   sectionThickness?: number
+  /** Section color, default: #2080ff */
+  sectionColor?: THREE.ColorRepresentation
+  /** Follow camera, default: false */
   followCamera?: boolean
+  /** Display the grid infinitely, default: false */
   infiniteGrid?: boolean
+  /** Fade distance, default: 100 */
   fadeDistance?: number
+  /** Fade strength, default: 1 */
   fadeStrength?: number
+}
+
+export type GridProps = GridMaterialType & {
+  /** Default plane-geometry arguments */
+  args?: ConstructorParameters<typeof THREE.PlaneGeometry>
 }
 ```
 

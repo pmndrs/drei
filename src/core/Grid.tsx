@@ -8,20 +8,31 @@ import { extend } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
 
 export type GridMaterialType = {
-  cellColor?: THREE.ColorRepresentation
+  /** Cell size, default: 0.5 */
   cellSize?: number
+  /** Cell thickness, default: 0.5 */
   cellThickness?: number
-  sectionColor?: THREE.ColorRepresentation
+  /** Cell color, default: black */
+  cellColor?: THREE.ColorRepresentation
+  /** Section size, default: 1 */
   sectionSize?: number
+  /** Section thickness, default: 1 */
   sectionThickness?: number
+  /** Section color, default: #2080ff */
+  sectionColor?: THREE.ColorRepresentation
+  /** Follow camera, default: false */
   followCamera?: boolean
+  /** Display the grid infinitely, default: false */
   infiniteGrid?: boolean
+  /** Fade distance, default: 100 */
   fadeDistance?: number
+  /** Fade strength, default: 1 */
   fadeStrength?: number
 }
 
 export type GridProps = GridMaterialType & {
-  gridSize?: number | [number, number]
+  /** Default plane-geometry arguments */
+  args?: ConstructorParameters<typeof THREE.PlaneGeometry>
 }
 
 declare global {
@@ -34,14 +45,14 @@ declare global {
 
 const GridMaterial = shaderMaterial(
   {
-    cellSize: 1,
-    sectionSize: 10,
+    cellSize: 0.5,
+    sectionSize: 1,
     fadeDistance: 100,
     fadeStrength: 1,
-    cellThickness: 1,
-    sectionThickness: 2,
-    cellColor: new THREE.Color('#000000'),
-    sectionColor: new THREE.Color('#2080ff'),
+    cellThickness: 0.5,
+    sectionThickness: 1,
+    cellColor: new THREE.Color(),
+    sectionColor: new THREE.Color(),
     infiniteGrid: 0,
     followCamera: 0,
   },
@@ -50,7 +61,7 @@ const GridMaterial = shaderMaterial(
       uniform float infiniteGrid;
       uniform float followCamera;
       void main() {
-        vec3 pos = position.xz * (1. + fadeDistance * infiniteGrid);
+        vec3 pos = position.xzy * (1. + fadeDistance * infiniteGrid);
         pos.xz += (cameraPosition.xz * followCamera);
         worldPosition = pos;
         gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
@@ -92,7 +103,7 @@ const GridMaterial = shaderMaterial(
 export const Grid = React.forwardRef(
   (
     {
-      gridSize = 20,
+      args,
       cellColor = '#000000',
       sectionColor = '#2080ff',
       cellSize = 1,
@@ -101,29 +112,19 @@ export const Grid = React.forwardRef(
       infiniteGrid = false,
       fadeDistance = 100,
       fadeStrength = 1,
-      cellThickness = 1,
-      sectionThickness = 2,
+      cellThickness = 0.5,
+      sectionThickness = 1,
       ...props
-    }: JSX.IntrinsicElements['mesh'] & GridProps,
+    }: Omit<JSX.IntrinsicElements['mesh'], 'args'> & GridProps,
     fRef: React.ForwardedRef<THREE.Mesh>
   ) => {
     extend({ GridMaterial })
-    const uniforms = {
-      cellSize,
-      sectionSize,
-      cellColor,
-      sectionColor,
-      fadeDistance,
-      fadeStrength,
-      cellThickness,
-      sectionThickness,
-      infiniteGrid,
-      followCamera,
-    }
+    const uniforms1 = { cellSize, sectionSize, cellColor, sectionColor, cellThickness, sectionThickness }
+    const uniforms2 = { fadeDistance, fadeStrength, infiniteGrid, followCamera }
     return (
-      <mesh ref={fRef} rotation-x={-Math.PI / 2} frustumCulled={false} {...props}>
-        <gridMaterial {...uniforms} />
-        <planeGeometry args={typeof gridSize == 'number' ? [gridSize, gridSize] : gridSize} />
+      <mesh ref={fRef} frustumCulled={false} {...props}>
+        <gridMaterial {...uniforms1} {...uniforms2} />
+        <planeGeometry args={args} />
       </mesh>
     )
   }

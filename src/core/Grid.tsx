@@ -1,6 +1,8 @@
-/** Original grid component https://github.com/Fyrestar/THREE.InfiniteGridHelper
- *  By https://github.com/Fyrestar
- */
+/** Based on
+      https://github.com/Fyrestar/THREE.InfiniteGridHelper by https://github.com/Fyrestar
+      and https://github.com/threlte/threlte/blob/main/packages/extras/src/lib/components/Grid/Grid.svelte
+        by https://github.com/grischaerbe and https://github.com/jerzakm
+*/
 
 import * as React from 'react'
 import * as THREE from 'three'

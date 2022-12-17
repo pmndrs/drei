@@ -90,14 +90,9 @@ const GridMaterial = shaderMaterial(
         gl_FragColor = vec4(color, (g1 + g2) * pow(d,fadeStrength));
         gl_FragColor.a = mix(0.75 * gl_FragColor.a, gl_FragColor.a, g2);
         if (gl_FragColor.a <= 0.0) discard;
-      }`,
-  (material) => {
-    Object.assign(material!, {
-      side: THREE.DoubleSide,
-      transparent: true,
-      extensions: { derivatives: true },
-    })
-  }
+        #include <tonemapping_fragment>
+        #include <encodings_fragment>
+      }`
 )
 
 export const Grid = React.forwardRef(
@@ -122,8 +117,8 @@ export const Grid = React.forwardRef(
     const uniforms1 = { cellSize, sectionSize, cellColor, sectionColor, cellThickness, sectionThickness }
     const uniforms2 = { fadeDistance, fadeStrength, infiniteGrid, followCamera }
     return (
-      <mesh ref={fRef} frustumCulled={false} {...props}>
-        <gridMaterial {...uniforms1} {...uniforms2} />
+      <mesh ref={fRef} rotation-x={Math.PI} frustumCulled={false} {...props}>
+        <gridMaterial transparent extensions-derivatives {...uniforms1} {...uniforms2} />
         <planeGeometry args={args} />
       </mesh>
     )

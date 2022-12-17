@@ -1,5 +1,5 @@
-/** Original grid component https://github.com/threlte/threlte/blob/main/packages/extras/src/lib/components/Grid/Grid.svelte
- *  By https://github.com/grischaerbe and https://github.com/jerzakm
+/** Original grid component https://github.com/Fyrestar/THREE.InfiniteGridHelper
+ *  By https://github.com/Fyrestar
  */
 
 import * as React from 'react'

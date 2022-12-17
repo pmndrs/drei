@@ -119,8 +119,8 @@ export const Grid = React.forwardRef(
     const uniforms1 = { cellSize, sectionSize, cellColor, sectionColor, cellThickness, sectionThickness }
     const uniforms2 = { fadeDistance, fadeStrength, infiniteGrid, followCamera }
     return (
-      <mesh ref={fRef} rotation-x={Math.PI} frustumCulled={false} {...props}>
-        <gridMaterial transparent extensions-derivatives {...uniforms1} {...uniforms2} />
+      <mesh ref={fRef} frustumCulled={false} {...props}>
+        <gridMaterial transparent extensions-derivatives side={THREE.DoubleSide} {...uniforms1} {...uniforms2} />
         <planeGeometry args={args} />
       </mesh>
     )

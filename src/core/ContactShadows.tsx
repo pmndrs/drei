@@ -6,7 +6,7 @@ import * as THREE from 'three'
 import { useFrame, useThree } from '@react-three/fiber'
 import { HorizontalBlurShader, VerticalBlurShader } from 'three-stdlib'
 
-type Props = Omit<JSX.IntrinsicElements['group'], 'scale'> & {
+export type ContactShadowsProps = {
   opacity?: number
   width?: number
   height?: number
@@ -36,7 +36,7 @@ export const ContactShadows = React.forwardRef(
       depthWrite = false,
       renderOrder,
       ...props
-    }: Props,
+    }: Omit<JSX.IntrinsicElements['group'], 'scale'> & ContactShadowsProps,
     ref
   ) => {
     const scene = useThree((state) => state.scene)
@@ -58,7 +58,7 @@ export const ContactShadows = React.forwardRef(
       const renderTarget = new THREE.WebGLRenderTarget(resolution, resolution)
       const renderTargetBlur = new THREE.WebGLRenderTarget(resolution, resolution)
       renderTargetBlur.texture.generateMipmaps = renderTarget.texture.generateMipmaps = false
-      const planeGeometry = new THREE.PlaneBufferGeometry(width, height).rotateX(Math.PI / 2)
+      const planeGeometry = new THREE.PlaneGeometry(width, height).rotateX(Math.PI / 2)
       const blurPlane = new THREE.Mesh(planeGeometry)
       const depthMaterial = new THREE.MeshDepthMaterial()
       depthMaterial.depthTest = depthMaterial.depthWrite = false
@@ -78,7 +78,6 @@ export const ContactShadows = React.forwardRef(
           // Colorize the shadow, multiply by the falloff so that the center can remain darker
           'vec4( ucolor * fragCoordZ * 2.0, ( 1.0 - fragCoordZ ) * 1.0 );'
         )
-        console.log(shader.fragmentShader)
       }
 
       const horizontalBlurMaterial = new THREE.ShaderMaterial(HorizontalBlurShader)

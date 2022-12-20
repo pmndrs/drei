@@ -142,11 +142,7 @@ export const Html = React.forwardRef(
     }: HtmlProps,
     ref: React.Ref<HTMLDivElement>
   ) => {
-    const gl = useThree(({ gl }) => gl)
-    const camera = useThree(({ camera }) => camera)
-    const scene = useThree(({ scene }) => scene)
-    const size = useThree(({ size }) => size)
-    const raycaster = useThree(({ raycaster }) => raycaster)
+    const { gl, camera, scene, size, raycaster, events } = useThree()
 
     const [el] = React.useState(() => document.createElement(as))
     const root = React.useRef<ReactDOM.Root>()
@@ -155,7 +151,8 @@ export const Html = React.forwardRef(
     const oldPosition = React.useRef([0, 0])
     const transformOuterRef = React.useRef<HTMLDivElement>(null!)
     const transformInnerRef = React.useRef<HTMLDivElement>(null!)
-    const target = portal?.current ?? gl.domElement.parentNode
+    // Append to the connected element, which makes HTML work with views
+    const target = (portal?.current || events.connected || gl.domElement.parentNode) as HTMLElement
 
     React.useLayoutEffect(() => {
       if (group.current) {

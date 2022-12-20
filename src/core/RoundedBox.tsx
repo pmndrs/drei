@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Mesh, Shape, ExtrudeBufferGeometry } from 'three'
+import { Mesh, Shape, ExtrudeGeometry } from 'three'
 import { NamedArrayTuple } from '../helpers/ts-utils'
 
 const eps = 0.00001
@@ -38,7 +38,7 @@ export const RoundedBox = React.forwardRef<Mesh, Props>(function RoundedBox(
     }),
     [depth, radius, smoothness]
   )
-  const geomRef = React.useRef<ExtrudeBufferGeometry>()
+  const geomRef = React.useRef<ExtrudeGeometry>()
 
   React.useLayoutEffect(() => {
     if (geomRef.current) {

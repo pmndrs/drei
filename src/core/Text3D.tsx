@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { extend, MeshProps, Node } from '@react-three/fiber'
 import { useMemo } from 'react'
 import { suspend } from 'suspend-react'
-import { TextGeometry, FontLoader, TextGeometryParameters } from 'three-stdlib'
+import { TextGeometry, TextGeometryParameters, FontLoader } from 'three-stdlib'
 
 declare global {
   namespace JSX {
@@ -34,7 +34,7 @@ declare type FontData = {
 
 type Text3DProps = {
   font: FontData | string
-  bevelSegments: number
+  bevelSegments?: number
 } & Omit<TextGeometryParameters, 'font'> &
   MeshProps
 
@@ -42,20 +42,22 @@ const types = ['string', 'number']
 const getTextFromChildren = (children) => {
   let label = ''
   const rest: React.ReactNode[] = []
-
   React.Children.forEach(children, (child) => {
     if (types.includes(typeof child)) label += child + ''
     else rest.push(child)
   })
-
   return [label, ...rest]
 }
 
-const Text3DBase = React.forwardRef<THREE.Mesh, React.PropsWithChildren<Text3DProps & { loader: FontLoader }>>(
+export const Text3D = React.forwardRef<
+  THREE.Mesh,
+  React.PropsWithChildren<Text3DProps & { letterSpacing?: number; lineHeight?: number }>
+>(
   (
     {
-      font,
-      loader,
+      font: _font,
+      letterSpacing = 0,
+      lineHeight = 1,
       size = 1,
       height = 0.2,
       bevelThickness = 0.1,
@@ -69,14 +71,17 @@ const Text3DBase = React.forwardRef<THREE.Mesh, React.PropsWithChildren<Text3DPr
     },
     ref
   ) => {
-    React.useMemo(() => {
-      extend({ RenamedTextGeometry: TextGeometry })
-    }, [])
+    React.useMemo(() => extend({ RenamedTextGeometry: TextGeometry }), [])
 
-    const _font = React.useMemo(() => loader.parse(font as FontData), [font])
+    const font = suspend(async () => {
+      let data = typeof _font === 'string' ? await (await fetch(_font as string)).json() : _font
+      let loader = new FontLoader()
+      return loader.parse(data as FontData)
+    }, [_font])
+
     const opts = useMemo(() => {
       return {
-        font: _font,
+        font,
         size,
         height,
         bevelThickness,
@@ -85,8 +90,22 @@ const Text3DBase = React.forwardRef<THREE.Mesh, React.PropsWithChildren<Text3DPr
         bevelSegments,
         bevelOffset,
         curveSegments,
+        letterSpacing,
+        lineHeight,
       }
-    }, [_font, size, height, bevelThickness, bevelSize, bevelEnabled, bevelOffset, curveSegments])
+    }, [
+      font,
+      size,
+      height,
+      bevelThickness,
+      bevelSize,
+      bevelEnabled,
+      bevelSegments,
+      bevelOffset,
+      curveSegments,
+      letterSpacing,
+      lineHeight,
+    ])
 
     /**
      * We need the `children` in the deps because we
@@ -103,24 +122,3 @@ const Text3DBase = React.forwardRef<THREE.Mesh, React.PropsWithChildren<Text3DPr
     )
   }
 )
-
-const Text3DSuspend = React.forwardRef<THREE.Mesh, React.PropsWithChildren<Text3DProps & { loader: FontLoader }>>(
-  ({ font, loader, ...props }, ref) => {
-    const _font = suspend(async () => {
-      const json = await (await fetch(font as string)).json()
-      return json
-    }, [font])
-
-    return <Text3DBase {...props} ref={ref} font={_font as FontData} loader={loader} />
-  }
-)
-
-export const Text3D = React.forwardRef<THREE.Mesh, React.PropsWithChildren<Text3DProps>>((props, ref) => {
-  const loader = React.useMemo(() => new FontLoader(), [])
-
-  if (typeof props.font === 'string') {
-    return <Text3DSuspend {...props} ref={ref} loader={loader} />
-  } else {
-    return <Text3DBase {...props} ref={ref} loader={loader} />
-  }
-})

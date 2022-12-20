@@ -19,12 +19,12 @@ export default {
   ],
 }
 
-export const EnvironmentStory = ({ background, preset }) => (
+export const EnvironmentStory = ({ background, preset, blur }) => (
   <>
     <React.Suspense fallback={null}>
-      <Environment preset={preset} background={background} />
+      <Environment preset={preset} background={background} blur={blur} />
       <mesh>
-        <torusKnotBufferGeometry args={[1, 0.5, 128, 32]} />
+        <torusKnotGeometry args={[1, 0.5, 128, 32]} />
         <meshStandardMaterial metalness={1} roughness={0} />
       </mesh>
     </React.Suspense>
@@ -36,6 +36,7 @@ const presets = Object.keys(presetsObj)
 
 EnvironmentStory.args = {
   background: true,
+  blur: 0,
   preset: presets[0],
 }
 
@@ -46,6 +47,7 @@ EnvironmentStory.argTypes = {
       type: 'select',
     },
   },
+  blur: { control: { type: 'range', min: 0, max: 1, step: 0.01 } },
 }
 
 EnvironmentStory.storyName = 'Default'
@@ -59,7 +61,7 @@ export const EnvironmentFilesStory = ({ background }) => (
         files={[`px.png`, `nx.png`, `py.png`, `ny.png`, `pz.png`, `nz.png`]}
       />
       <mesh>
-        <torusKnotBufferGeometry args={[1, 0.5, 128, 32]} />
+        <torusKnotGeometry args={[1, 0.5, 128, 32]} />
         <meshStandardMaterial metalness={1} roughness={0} />
       </mesh>
     </React.Suspense>

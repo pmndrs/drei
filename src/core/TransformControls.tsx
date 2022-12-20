@@ -15,11 +15,11 @@ export type TransformControlsProps = ReactThreeFiber.Object3DNode<TransformContr
     enabled?: boolean
     axis?: string | null
     domElement?: HTMLElement
-    mode?: string
+    mode?: 'translate' | 'rotate' | 'scale'
     translationSnap?: number | null
     rotationSnap?: number | null
     scaleSnap?: number | null
-    space?: string
+    space?: 'world' | 'local'
     size?: number
     showX?: boolean
     showY?: boolean
@@ -30,10 +30,11 @@ export type TransformControlsProps = ReactThreeFiber.Object3DNode<TransformContr
     onMouseDown?: (e?: THREE.Event) => void
     onMouseUp?: (e?: THREE.Event) => void
     onObjectChange?: (e?: THREE.Event) => void
+    makeDefault?: boolean
   }
 
 export const TransformControls = React.forwardRef<TransformControlsImpl, TransformControlsProps>(
-  ({ children, domElement, onChange, onMouseDown, onMouseUp, onObjectChange, object, ...props }, ref) => {
+  ({ children, domElement, onChange, onMouseDown, onMouseUp, onObjectChange, object, makeDefault, ...props }, ref) => {
     const transformOnlyPropNames = [
       'enabled',
       'axis',
@@ -57,6 +58,8 @@ export const TransformControls = React.forwardRef<TransformControlsImpl, Transfo
     const events = useThree((state) => state.events)
     const defaultCamera = useThree((state) => state.camera)
     const invalidate = useThree((state) => state.invalidate)
+    const get = useThree((state) => state.get)
+    const set = useThree((state) => state.set)
     const explCamera = camera || defaultCamera
     const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
     const controls = React.useMemo(
@@ -83,24 +86,46 @@ export const TransformControls = React.forwardRef<TransformControlsImpl, Transfo
       }
     }, [controls, defaultControls])
 
+    const onChangeRef = React.useRef<(e?: THREE.Event) => void>()
+    const onMouseDownRef = React.useRef<(e?: THREE.Event) => void>()
+    const onMouseUpRef = React.useRef<(e?: THREE.Event) => void>()
+    const onObjectChangeRef = React.useRef<(e?: THREE.Event) => void>()
+
+    React.useLayoutEffect(() => void (onChangeRef.current = onChange), [onChange])
+    React.useLayoutEffect(() => void (onMouseDownRef.current = onMouseDown), [onMouseDown])
+    React.useLayoutEffect(() => void (onMouseUpRef.current = onMouseUp), [onMouseUp])
+    React.useLayoutEffect(() => void (onObjectChangeRef.current = onObjectChange), [onObjectChange])
+
     React.useEffect(() => {
-      const callback = (e: THREE.Event) => {
+      const onChange = (e: THREE.Event) => {
         invalidate()
-        if (onChange) onChange(e)
+        onChangeRef.current?.(e)
       }
 
-      controls?.addEventListener?.('change', callback)
-      if (onMouseDown) controls?.addEventListener?.('mouseDown', onMouseDown)
-      if (onMouseUp) controls?.addEventListener?.('mouseUp', onMouseUp)
-      if (onObjectChange) controls?.addEventListener?.('objectChange', onObjectChange)
+      const onMouseDown = (e: THREE.Event) => onMouseDownRef.current?.(e)
+      const onMouseUp = (e: THREE.Event) => onMouseUpRef.current?.(e)
+      const onObjectChange = (e: THREE.Event) => onObjectChangeRef.current?.(e)
+
+      controls.addEventListener('change', onChange)
+      controls.addEventListener('mouseDown', onMouseDown)
+      controls.addEventListener('mouseUp', onMouseUp)
+      controls.addEventListener('objectChange', onObjectChange)
 
       return () => {
-        controls?.removeEventListener?.('change', callback)
-        if (onMouseDown) controls?.removeEventListener?.('mouseDown', onMouseDown)
-        if (onMouseUp) controls?.removeEventListener?.('mouseUp', onMouseUp)
-        if (onObjectChange) controls?.removeEventListener?.('objectChange', onObjectChange)
+        controls.removeEventListener('change', onChange)
+        controls.removeEventListener('mouseDown', onMouseDown)
+        controls.removeEventListener('mouseUp', onMouseUp)
+        controls.removeEventListener('objectChange', onObjectChange)
       }
-    }, [onChange, onMouseDown, onMouseUp, onObjectChange, controls, invalidate])
+    }, [invalidate, controls])
+
+    React.useEffect(() => {
+      if (makeDefault) {
+        const old = get().controls
+        set({ controls })
+        return () => set({ controls: old })
+      }
+    }, [makeDefault, controls])
 
     return controls ? (
       <>

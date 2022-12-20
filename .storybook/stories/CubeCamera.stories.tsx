@@ -30,7 +30,7 @@ function Sphere({ offset = 0, ...props }) {
     <CubeCamera {...props}>
       {(texture) => (
         <mesh ref={ref}>
-          <sphereBufferGeometry args={[5, 64, 64]} />
+          <sphereGeometry args={[5, 64, 64]} />
           <meshStandardMaterial roughness={0} metalness={1} envMap={texture} />
         </mesh>
       )}

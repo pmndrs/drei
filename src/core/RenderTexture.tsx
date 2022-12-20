@@ -3,7 +3,7 @@ import * as React from 'react'
 import { createPortal, useFrame, useThree } from '@react-three/fiber'
 import { useFBO } from './useFBO'
 
-type Props = THREE.Texture & {
+type Props = JSX.IntrinsicElements['texture'] & {
   /** Optional width of the texture, defaults to viewport bounds */
   width?: number
   /** Optional height of the texture, defaults to viewport bounds */
@@ -45,6 +45,7 @@ export const RenderTexture = React.forwardRef(
       if (!intersection) return false
       // We take that hits uv coords, set up this layers raycaster, et voilà, we have raycasting on arbitrary surfaces
       const uv = intersection.uv
+      if (!uv) return false
       state.raycaster.setFromCamera(state.pointer.set(uv.x * 2 - 1, uv.y * 2 - 1), state.camera)
     }, [])
 

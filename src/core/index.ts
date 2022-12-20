@@ -1,5 +1,6 @@
 // Abstractions
 export * from './Billboard'
+export * from './ScreenSpace'
 export * from './QuadraticBezierLine'
 export * from './CubicBezierLine'
 export * from './CatmullRomLine'
@@ -16,6 +17,9 @@ export * from './Sampler'
 export * from './ComputedAttribute'
 export * from './Clone'
 export * from './MarchingCubes'
+export * from './Decal'
+export * from './Svg'
+export * from './AsciiRenderer'
 
 // Cameras
 export * from './OrthographicCamera'
@@ -37,14 +41,16 @@ export * from './FirstPersonControls'
 export * from './GizmoHelper'
 export * from './GizmoViewcube'
 export * from './GizmoViewport'
+export * from './Grid'
 
 // Loaders
 export * from './useCubeTexture'
 export * from './useFBX'
 export * from './useGLTF'
+export * from './useKTX2'
 export * from './useProgress'
 export * from './useTexture'
-export * from './useKTX2'
+export * from './useVideoTexture'
 
 // Misc
 export * from './Stats'
@@ -60,6 +66,7 @@ export * from './useFBO'
 export * from './useIntersect'
 export * from './useBoxProjectedEnv'
 export * from './BBAnchor'
+export * from './useTrailTexture'
 
 // Modifiers
 export * from './CurveModifier'
@@ -68,6 +75,7 @@ export * from './CurveModifier'
 export * from './MeshDistortMaterial'
 export * from './MeshWobbleMaterial'
 export * from './MeshReflectorMaterial'
+export * from './MeshRefractionMaterial'
 export * from './PointMaterial'
 export * from './shaderMaterial'
 export * from './softShadows'
@@ -108,7 +116,9 @@ export * from './BakeShadows'
 export * from './meshBounds'
 export * from './AdaptiveDpr'
 export * from './AdaptiveEvents'
+export * from './PerformanceMonitor'
 
 // Portals
 export * from './RenderTexture'
 export * from './Mask'
+export * from './Hud'

@@ -22,7 +22,7 @@ import {
   MeshReflectorMaterial as MeshReflectorMaterialImpl,
 } from '../materials/MeshReflectorMaterial'
 
-export type Props = JSX.IntrinsicElements['meshStandardMaterial'] & {
+type Props = JSX.IntrinsicElements['meshStandardMaterial'] & {
   resolution?: number
   mixBlur?: number
   mixStrength?: number

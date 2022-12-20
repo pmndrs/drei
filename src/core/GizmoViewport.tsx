@@ -109,7 +109,7 @@ export const GizmoViewport = ({
   hideAxisHeads,
   disabled,
   font = '18px Inter var, Arial, sans-serif',
-  axisColors = ['#ff3653', '#0adb50', '#2c8fdf'],
+  axisColors = ['#ff2060', '#20df80', '#2080ff'],
   axisHeadScale = 1,
   axisScale,
   labels = ['X', 'Y', 'Z'],

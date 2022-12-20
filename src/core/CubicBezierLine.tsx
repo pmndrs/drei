@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { CubicBezierCurve3, Vector3 } from 'three'
-import { Line2 } from 'three/examples/jsm/lines/Line2'
+import { Line2 } from 'three-stdlib'
 import { Line, LineProps } from './Line'
 
 type Props = Omit<LineProps, 'points' | 'ref'> & {
@@ -20,9 +20,7 @@ export const CubicBezierLine = React.forwardRef<Line2, Props>(function CubicBezi
     const endV = end instanceof Vector3 ? end : new Vector3(...end)
     const midAV = midA instanceof Vector3 ? midA : new Vector3(...midA)
     const midBV = midB instanceof Vector3 ? midB : new Vector3(...midB)
-
     const interpolatedV = new CubicBezierCurve3(startV, midAV, midBV, endV).getPoints(segments)
-
     return interpolatedV
   }, [start, end, midA, midB, segments])
 

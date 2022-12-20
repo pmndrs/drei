@@ -49,5 +49,12 @@ export function useAnimations<T extends AnimationClip>(
       })
     }
   }, [clips])
+
+  React.useEffect(() => {
+    return () => {
+      mixer.stopAllAction()
+    }
+  }, [mixer])
+
   return api
 }

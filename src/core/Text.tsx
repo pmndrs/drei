@@ -1,4 +1,5 @@
 import * as React from 'react'
+// @ts-ignore
 import { Text as TextMeshImpl, preloadFont } from 'troika-three-text'
 import { ReactThreeFiber, useThree } from '@react-three/fiber'
 import { suspend } from 'suspend-react'
@@ -31,7 +32,7 @@ type Props = JSX.IntrinsicElements['mesh'] & {
   strokeOpacity?: number
   fillOpacity?: number
   debugSDF?: boolean
-  onSync?: (troika: TextMeshImpl) => void
+  onSync?: (troika: any) => void
 }
 
 // eslint-disable-next-line prettier/prettier

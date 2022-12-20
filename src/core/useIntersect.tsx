@@ -5,6 +5,8 @@ export function useIntersect<T extends THREE.Object3D>(onChange: (visible: boole
   const ref = React.useRef<T>(null!)
   const check = React.useRef(false)
   const temp = React.useRef(false)
+  const callback = React.useRef(onChange)
+  React.useLayoutEffect(() => void (callback.current = onChange), [onChange])
   React.useEffect(() => {
     const obj = ref.current
     if (obj) {
@@ -18,7 +20,7 @@ export function useIntersect<T extends THREE.Object3D>(onChange: (visible: boole
       obj.onBeforeRender = () => (check.current = true)
       // Compare the check value against the temp value, if it differs set state
       const unsub2 = addAfterEffect(() => {
-        if (check.current !== temp.current) onChange((temp.current = check.current))
+        if (check.current !== temp.current) callback.current?.((temp.current = check.current))
         return true
       })
       return () => {

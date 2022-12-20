@@ -38,9 +38,9 @@ export function Select({
     []
   )
   const [isPointerDown, setDown] = React.useState(false)
-  const [dragging, setDragging] = React.useState(false)
+  const dragging = React.useRef(false)
   const onPointerMove = React.useCallback(() => {
-    setDragging(isPointerDown)
+    dragging.current = isPointerDown
   }, [isPointerDown])
   const onPointerDown = React.useCallback((e) => {
     if (!e.shiftKey) {
@@ -49,7 +49,7 @@ export function Select({
   }, [])
   const onPointerUp = React.useCallback(
     (e) => {
-      if (!dragging) {
+      if (!dragging.current) {
         onClick(e)
       }
       setDown(false)
@@ -64,7 +64,7 @@ export function Select({
     dispatch({ object: customFilter([e.object])[0], shift: multiple && e.shiftKey })
   }, [])
   const onPointerMissed = React.useCallback(() => {
-    !hovered && !dragging && dispatch({})
+    !hovered && !dragging.current && dispatch({})
   }, [hovered, dragging])
 
   const ref = React.useRef<THREE.Group>(null!)

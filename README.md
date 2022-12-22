@@ -78,6 +78,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#marchingcubes">MarchingCubes</a></li>
           <li><a href="#decal">Decal</a></li>
           <li><a href="#svg">Svg</a></li>
+          <li><a href="#gltf">Gltf</a></li>
           <li><a href="#asciirenderer">AsciiRenderer</a></li>
         </ul>
         <li><a href="#shaders">Shaders</a></li>
@@ -1293,6 +1294,18 @@ Accepts an SVG url or svg raw data.
 
 ```js
 <Svg src={urlOrRawSvgString} />
+```
+
+#### Gltf
+
+<p>
+  <a href="https://codesandbox.io/s/if9crg"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/if9crg/screenshot.png" alt="Demo"/></a>
+</p>
+
+This is a convenience component that will load a gltf file and clone the scene using drei/Clone. That means you can re-use and mount the same gltf file multiple times. It accepts all props that Clone does.
+
+```js
+<Gltf src="/model.glb" receiveShadow castShadow />
 ```
 
 #### AsciiRenderer

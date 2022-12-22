@@ -4,7 +4,7 @@ import pick from 'lodash.pick'
 import { MeshProps } from '@react-three/fiber'
 import { SkeletonUtils } from 'three-stdlib'
 
-type Props = Omit<JSX.IntrinsicElements['group'], 'children'> & {
+export type CloneProps = {
   /** Any pre-existing THREE.Object3D (groups, meshes, ...), or an array of objects */
   object: THREE.Object3D | THREE.Object3D[]
   /** Children will be placed within the object, or within the group that holds arrayed objects */
@@ -57,7 +57,7 @@ function createSpread(
     inject,
     castShadow,
     receiveShadow,
-  }: Partial<Props>
+  }: Omit<JSX.IntrinsicElements['group'], 'children'> & Partial<CloneProps>
 ) {
   let spread = pick(child, keys)
   if (deep) {
@@ -79,7 +79,17 @@ function createSpread(
 
 export const Clone = React.forwardRef(
   (
-    { isChild = false, object, children, deep, castShadow, receiveShadow, inject, keys, ...props }: Props,
+    {
+      isChild = false,
+      object,
+      children,
+      deep,
+      castShadow,
+      receiveShadow,
+      inject,
+      keys,
+      ...props
+    }: Omit<JSX.IntrinsicElements['group'], 'children'> & CloneProps,
     forwardRef: React.Ref<THREE.Group>
   ) => {
     const config = { keys, deep, inject, castShadow, receiveShadow }

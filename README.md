@@ -1298,11 +1298,7 @@ Accepts an SVG url or svg raw data.
 
 #### Gltf
 
-<p>
-  <a href="https://codesandbox.io/s/if9crg"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/if9crg/screenshot.png" alt="Demo"/></a>
-</p>
-
-This is a convenience component that will load a gltf file and clone the scene using drei/Clone. That means you can re-use and mount the same gltf file multiple times. It accepts all props that Clone does.
+This is a convenience component that will load a gltf file and clone the scene using [drei/Clone](#clone). That means you can re-use and mount the same gltf file multiple times. It accepts all props that Clone does, including shortcuts (castShadow, receiveShadow) and material overrides.
 
 ```js
 <Gltf src="/model.glb" receiveShadow castShadow />

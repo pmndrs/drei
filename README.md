@@ -56,6 +56,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#gizmohelper">GizmoHelper</a></li>
           <li><a href="#pivotcontrols">PivotControls</a></li>
           <li><a href="#transformcontrols">TransformControls</a></li>
+          <li><a href="#grid">Grid</a></li>
           <li><a href="#usehelper">useHelper</a></li>
         </ul>
         <li><a href="#abstractions">Abstractions</a></li>
@@ -77,6 +78,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#marchingcubes">MarchingCubes</a></li>
           <li><a href="#decal">Decal</a></li>
           <li><a href="#svg">Svg</a></li>
+          <li><a href="#gltf">Gltf</a></li>
           <li><a href="#asciirenderer">AsciiRenderer</a></li>
         </ul>
         <li><a href="#shaders">Shaders</a></li>
@@ -645,6 +647,50 @@ If you are using other controls (Orbit, Trackball, etc), you will notice how the
 ```jsx
 <TransformControls mode="translate" />
 <OrbitControls makeDefault />
+```
+
+#### Grid
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/gizmos-grid--use-grid-scene-st)
+
+<p>
+  <a href="https://codesandbox.io/s/19uq2u"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/19uq2u/screenshot.png" alt="Demo"/></a>
+</p>
+
+A y-up oriented, shader-based grid implementation.
+
+```tsx
+export type GridMaterialType = {
+  /** Cell size, default: 0.5 */
+  cellSize?: number
+  /** Cell thickness, default: 0.5 */
+  cellThickness?: number
+  /** Cell color, default: black */
+  cellColor?: THREE.ColorRepresentation
+  /** Section size, default: 1 */
+  sectionSize?: number
+  /** Section thickness, default: 1 */
+  sectionThickness?: number
+  /** Section color, default: #2080ff */
+  sectionColor?: THREE.ColorRepresentation
+  /** Follow camera, default: false */
+  followCamera?: boolean
+  /** Display the grid infinitely, default: false */
+  infiniteGrid?: boolean
+  /** Fade distance, default: 100 */
+  fadeDistance?: number
+  /** Fade strength, default: 1 */
+  fadeStrength?: number
+}
+
+export type GridProps = GridMaterialType & {
+  /** Default plane-geometry arguments */
+  args?: ConstructorParameters<typeof THREE.PlaneGeometry>
+}
+```
+
+```jsx
+<Grid />
 ```
 
 #### useHelper
@@ -1248,6 +1294,14 @@ Accepts an SVG url or svg raw data.
 
 ```js
 <Svg src={urlOrRawSvgString} />
+```
+
+#### Gltf
+
+This is a convenience component that will load a gltf file and clone the scene using [drei/Clone](#clone). That means you can re-use and mount the same gltf file multiple times. It accepts all props that Clone does, including shortcuts (castShadow, receiveShadow) and material overrides.
+
+```js
+<Gltf src="/model.glb" receiveShadow castShadow />
 ```
 
 #### AsciiRenderer

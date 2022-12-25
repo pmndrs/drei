@@ -19,6 +19,7 @@ export * from './Clone'
 export * from './MarchingCubes'
 export * from './Decal'
 export * from './Svg'
+export * from './Gltf'
 export * from './AsciiRenderer'
 
 // Cameras
@@ -41,6 +42,7 @@ export * from './FirstPersonControls'
 export * from './GizmoHelper'
 export * from './GizmoViewcube'
 export * from './GizmoViewport'
+export * from './Grid'
 
 // Loaders
 export * from './useCubeTexture'

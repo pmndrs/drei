@@ -91,10 +91,10 @@ export const TransformControls = React.forwardRef<TransformControlsImpl, Transfo
     const onMouseUpRef = React.useRef<(e?: THREE.Event) => void>()
     const onObjectChangeRef = React.useRef<(e?: THREE.Event) => void>()
 
-    React.useLayoutEffect(() => (onChangeRef.current = onChange), [onChange])
-    React.useLayoutEffect(() => (onMouseDownRef.current = onMouseDown), [onMouseDown])
-    React.useLayoutEffect(() => (onMouseUpRef.current = onMouseUp), [onMouseUp])
-    React.useLayoutEffect(() => (onObjectChangeRef.current = onObjectChange), [onObjectChange])
+    React.useLayoutEffect(() => void (onChangeRef.current = onChange), [onChange])
+    React.useLayoutEffect(() => void (onMouseDownRef.current = onMouseDown), [onMouseDown])
+    React.useLayoutEffect(() => void (onMouseUpRef.current = onMouseUp), [onMouseUp])
+    React.useLayoutEffect(() => void (onObjectChangeRef.current = onObjectChange), [onObjectChange])
 
     React.useEffect(() => {
       const onChange = (e: THREE.Event) => {

@@ -11,10 +11,9 @@ import {
   Raycaster,
   DoubleSide,
   Mesh,
-  Material,
 } from 'three'
 import { Assign } from 'utility-types'
-import { MaterialProps, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
+import { ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 
 const v1 = new Vector3()
 const v2 = new Vector3()
@@ -136,6 +135,7 @@ export interface HtmlProps
   occlude?: React.RefObject<Object3D>[] | boolean | 'raycast' | 'blending'
   onOcclude?: (visible: boolean) => null
   material?: React.ReactNode // Material for occlusion plane
+  geometry?: React.ReactNode // Material for occlusion plane
   castShadow?: boolean // Cast shadow for occlusion plane
   receiveShadow?: boolean // Receive shadow for occlusion plane
 }
@@ -159,6 +159,7 @@ export const Html = React.forwardRef(
       castShadow,
       receiveShadow,
       material,
+      geometry,
       zIndexRange = [16777271, 0],
       calculatePosition = defaultCalculatePosition,
       as = 'div',
@@ -355,11 +356,25 @@ export const Html = React.forwardRef(
             const el = transformOuterRef.current.children[0]
 
             if (el?.clientWidth && el?.clientHeight) {
-              const ratio = (distanceFactor || 10) / 400
-              const w = el.clientWidth * ratio
-              const h = el.clientHeight * ratio
+              const { isOrthographicCamera } = camera as OrthographicCamera
 
-              occlusionMeshRef.current.scale.set(w, h, 1)
+              if (isOrthographicCamera || geometry) {
+                if (props.scale) {
+                  if (!Array.isArray(props.scale)) {
+                    occlusionMeshRef.current.scale.setScalar(1 / (props.scale as number))
+                  } else if (props.scale instanceof Vector3) {
+                    occlusionMeshRef.current.scale.copy(props.scale.clone().divideScalar(1))
+                  } else {
+                    occlusionMeshRef.current.scale.set(1 / props.scale[0], 1 / props.scale[1], 1 / props.scale[2])
+                  }
+                }
+              } else {
+                const ratio = (distanceFactor || 10) / 400
+                const w = el.clientWidth * ratio
+                const h = el.clientHeight * ratio
+
+                occlusionMeshRef.current.scale.set(w, h, 1)
+              }
             }
           }
         } else {
@@ -431,7 +446,7 @@ export const Html = React.forwardRef(
       <group {...props} ref={group}>
         {occlude && !isRayCastOcclusion && (
           <mesh castShadow={castShadow} receiveShadow={receiveShadow} ref={occlusionMeshRef}>
-            <planeGeometry />
+            {geometry || <planeGeometry />}
             {material || (
               <shaderMaterial
                 side={DoubleSide}

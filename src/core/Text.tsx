@@ -20,7 +20,7 @@ type Props = JSX.IntrinsicElements['mesh'] & {
   depthOffset?: number
   direction?: 'auto' | 'ltr' | 'rtl'
   overflowWrap?: 'normal' | 'break-word'
-  whiteSpace?: 'normal' | 'overflowWrap' | 'overflowWrap'
+  whiteSpace?: 'normal' | 'overflowWrap' | 'nowrap'
   outlineWidth?: number | string
   outlineOffsetX?: number | string
   outlineOffsetY?: number | string

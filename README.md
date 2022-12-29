@@ -3004,7 +3004,7 @@ type AccumulativeShadowsProps = JSX.IntrinsicElements['group'] & {
   /** Scale of the plane,  */
   scale?: number
   /** Temporal accumulates shadows over time which is more performant but has a visual regression over instant results, false  */
-  temporal?: boolean
+  temporal?: false
   /** Opacity of the plane, 1 */
   opacity?: number
   /** Discards alpha pixels, 0.65 */
@@ -3015,10 +3015,8 @@ type AccumulativeShadowsProps = JSX.IntrinsicElements['group'] & {
   colorBlend?: number
   /** Buffer resolution, 1024 */
   resolution?: number
-  /** Texture tonemapping */
-  toneMapped?: boolean
-  /** Fog, false */
-  fog?: boolean
+  /** Children should be randomized lights shining from different angles to emulate raycasting */
+  children?: React.ReactNode
 }
 ```
 

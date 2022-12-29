@@ -34,6 +34,8 @@ export type AccumulativeShadowsProps = {
   resolution?: number
   /** Texture tonemapping */
   toneMapped?: boolean
+  /** Fog, false */
+  fog?: boolean
 }
 
 interface AccumulativeContext {
@@ -120,6 +122,7 @@ export const AccumulativeShadows = React.forwardRef(
       colorBlend = 2,
       resolution = 1024,
       toneMapped = true,
+      fog = false,
       ...props
     }: JSX.IntrinsicElements['group'] & AccumulativeShadowsProps,
     forwardRef: React.ForwardedRef<AccumulativeContext>
@@ -214,6 +217,7 @@ export const AccumulativeShadows = React.forwardRef(
             color={color}
             blend={colorBlend}
             map={plm.progressiveLightMap2.texture}
+            fog={fog}
           />
         </mesh>
       </group>

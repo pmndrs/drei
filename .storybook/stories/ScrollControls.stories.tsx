@@ -117,11 +117,10 @@ const ScrollControlsExample = () => {
 const Container = ({ children }) => (
   <div
     style={{
-      paddingTop: '100px',
-      paddingLeft: '100px',
-      paddingRight: '100px',
-      paddingBottom: '100px',
+      margin: '50px',
+      padding: '50px',
       height: 'calc(100vh - 200px)',
+      position: 'relative',
     }}
   >
     {children}

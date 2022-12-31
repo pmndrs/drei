@@ -53,7 +53,7 @@ export function ScrollControls({
   const [el] = React.useState(() => document.createElement('div'))
   const [fill] = React.useState(() => document.createElement('div'))
   const [fixed] = React.useState(() => document.createElement('div'))
-  const target = gl.domElement.parentNode!
+  const target = gl.domElement.parentNode! as HTMLElement
   const scroll = React.useRef(0)
 
   const state = React.useMemo(() => {
@@ -123,8 +123,10 @@ export function ScrollControls({
     const oldCompute = get().events.compute
     setEvents({
       compute(event: DomEvent, state: RootState) {
-        const offsetX = event.clientX - (target as HTMLElement).offsetLeft
-        const offsetY = event.clientY - (target as HTMLElement).offsetTop
+        // we are using boundingClientRect because we could not rely on target.offsetTop as canvas could be positioned anywhere in dom
+        const { left, top } = target.getBoundingClientRect()
+        const offsetX = event.clientX - left
+        const offsetY = event.clientY - top
         state.pointer.set((offsetX / state.size.width) * 2 - 1, -(offsetY / state.size.height) * 2 + 1)
         state.raycaster.setFromCamera(state.pointer, state.camera)
       },

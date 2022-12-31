@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { createPortal, useFrame, useThree, Size } from '@react-three/fiber'
+import { createPortal, useFrame, useThree } from '@react-three/fiber'
 
 const isOrthographicCamera = (def: any): def is THREE.OrthographicCamera =>
   def && (def as THREE.OrthographicCamera).isOrthographicCamera
@@ -51,12 +51,12 @@ function computeContainerPosition(
   canvasSize: LegacyCanvasSize | CanvasSize,
   trackRect: DOMRect
 ): {
-  position: CanvasSize & { bottom: number, right: number }
+  position: CanvasSize & { bottom: number; right: number }
   isOffscreen: boolean
 } {
   const { right, top, left: trackLeft, bottom: trackBottom, width, height } = trackRect
   const isOffscreen = trackRect.bottom < 0 || top > canvasSize.height || right < 0 || trackRect.left > canvasSize.width
-  
+
   if (isNonLegacyCanvasSize(canvasSize)) {
     const canvasBottom = canvasSize.top + canvasSize.height
     const bottom = canvasBottom - trackBottom

@@ -19,15 +19,14 @@ export function useFBO<T extends boolean = false>(
   const { samples, ...targetSettings } = _settings
 
   const target = React.useMemo(() => {
-    let target
-    target = new THREE.WebGLRenderTarget(_width, _height, {
+    const target = new THREE.WebGLRenderTarget(_width, _height, {
       minFilter: THREE.LinearFilter,
       magFilter: THREE.LinearFilter,
       encoding: gl.outputEncoding,
       type: THREE.HalfFloatType,
       ...targetSettings,
     })
-    target.samples = samples
+    if (samples) target.samples = samples
     return target
   }, [])
 

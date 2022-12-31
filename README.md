@@ -709,12 +709,25 @@ useHelper(condition && mesh, BoxHelper, 'red') // you can passe false instead of
 
 # Shapes
 
-[Buffer-geometry](https://threejs.org/docs/#api/en/core/BufferGeometry) short-cuts for Plane, Box, Sphere, Circle, Cone, Cylinder, Tube, Torus, TorusKnot, Ring, Tetrahedron, Polyhedron, Icosahedron, Octahedron, Dodecahedron, Extrude, Lathe.
+#### Plane, Box, Sphere, Circle, Cone, Cylinder, Tube, Torus, TorusKnot, Ring, Tetrahedron, Polyhedron, Icosahedron, Octahedron, Dodecahedron, Extrude, Lathe
+
+Short-cuts for a [mesh](https://threejs.org/docs/#api/en/objects/Mesh) with a [buffer geometry](https://threejs.org/docs/#api/en/core/BufferGeometry).
 
 ```jsx
+<Box
+  args={[1, 1, 1]}                // Args for the buffer geometry
+  {...meshProps}                  // All THREE.Mesh props are valid
+/>
+
+// Plane with buffer geometry args
 <Plane args={[2, 2]} />
+
+// Box with color set on the default MeshBasicMaterial
+<Box material-color="hotpink" />
+
+// Sphere with a MeshStandardMaterial
 <Sphere>
-  <meshBasicMaterial color="hotpink" />
+  <meshStandardMaterial color="hotpink" />
 </Sphere>
 ```
 
@@ -723,7 +736,12 @@ useHelper(condition && mesh, BoxHelper, 'red') // you can passe false instead of
 A box buffer geometry with rounded corners, done with extrusion.
 
 ```jsx
-<RoundedBox args={[1, 1, 1]} radius={0.05} smoothness={4} {...meshProps}>
+<RoundedBox
+  args={[1, 1, 1]}                // Width, height, depth. Default is [1, 1, 1]
+  radius={0.05}                   // Radius of the rounded corners. Default is 0.05
+  smoothness={4}                  // The number of curve segments. Default is 4
+  {...meshProps}                  // All THREE.Mesh props are valid
+>
   <meshPhongMaterial color="#f3f3f3" wireframe />
 </RoundedBox>
 ```

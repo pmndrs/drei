@@ -129,7 +129,10 @@ export const softShadows = (props?: SoftShadowsProps) => {
 
 function reset(gl, scene, camera) {
   scene.traverse((object) => {
-    if (object.material) gl.properties.remove(object.material)
+    if (object.material) {
+      gl.properties.remove(object.material)
+      object.material.dispose()
+    }
   })
   gl.info.programs.length = 0
   gl.compile(scene, camera)

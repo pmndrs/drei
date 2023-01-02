@@ -46,9 +46,12 @@ body,
 .html-story-label {
   background-color: white;
   color: black;
-  width: 100px;
-  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 8px;
+}
+
+.html-story-label-B {
+  font-size: 50px;
 }

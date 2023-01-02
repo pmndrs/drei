@@ -155,7 +155,7 @@ export const Html = React.forwardRef(
       distanceFactor,
       sprite = false,
       transform = false,
-      occlude = 'raycast',
+      occlude,
       onOcclude,
       castShadow,
       receiveShadow,
@@ -186,7 +186,9 @@ export const Html = React.forwardRef(
     const isMeshSizeSet = React.useRef<boolean>(false)
 
     const isRayCastOcclusion = React.useMemo(() => {
-      return occlude !== 'blending' || (Array.isArray(occlude) && occlude.length && isRefObject(occlude[0]))
+      return (
+        (occlude && occlude !== 'blending') || (Array.isArray(occlude) && occlude.length && isRefObject(occlude[0]))
+      )
     }, [occlude])
 
     React.useLayoutEffect(() => {

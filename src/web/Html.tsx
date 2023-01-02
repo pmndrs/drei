@@ -155,7 +155,7 @@ export const Html = React.forwardRef(
       distanceFactor,
       sprite = false,
       transform = false,
-      occlude,
+      occlude = 'raycast',
       onOcclude,
       castShadow,
       receiveShadow,
@@ -186,7 +186,7 @@ export const Html = React.forwardRef(
     const isMeshSizeSet = React.useRef<boolean>(false)
 
     const isRayCastOcclusion = React.useMemo(() => {
-      return occlude === 'raycast' || (Array.isArray(occlude) && occlude.length && isRefObject(occlude[0]))
+      return occlude !== 'blending' || (Array.isArray(occlude) && occlude.length && isRefObject(occlude[0]))
     }, [occlude])
 
     React.useLayoutEffect(() => {
@@ -292,7 +292,7 @@ export const Html = React.forwardRef(
           let raytraceTarget: null | undefined | boolean | Object3D[] = false
 
           if (isRayCastOcclusion) {
-            if (occlude === 'raycast') {
+            if (occlude !== 'blending') {
               raytraceTarget = [scene]
             } else if (Array.isArray(occlude)) {
               raytraceTarget = occlude.map((item) => item.current) as Object3D[]

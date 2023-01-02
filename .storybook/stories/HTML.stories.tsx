@@ -136,13 +136,13 @@ function HTMLOccluderScene() {
       <group ref={turntableRef}>
         <Icosahedron name="pink" args={[5, 5]} position={[0, 0, 0]}>
           <meshBasicMaterial color="hotpink" />
-          <Html position={[0, 0, -6]} className="html-story-label" occlude>
+          <Html position={[0, 0, -6]} className="html-story-label" occlude="blending">
             Blending
           </Html>
         </Icosahedron>
         <Icosahedron name="yellow" args={[5, 5]} position={[16, 0, 0]}>
           <meshBasicMaterial color="yellow" />
-          <Html transform position={[0, 0, -6]} className="html-story-label html-story-label-B" occlude>
+          <Html transform position={[0, 0, -6]} className="html-story-label html-story-label-B" occlude="blending">
             Blending w/ transform
           </Html>
         </Icosahedron>

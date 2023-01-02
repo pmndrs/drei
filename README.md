@@ -1650,6 +1650,31 @@ Html can hide behind geometry using the `occlude` prop.
 <Html occlude />
 ```
 
+When the Html object hides it sets the opacity prop on the innermost div. If you want to animate or control the transition yourself then you can use `onOcclude`.
+
+```jsx
+const [hidden, set] = useState()
+
+<Html
+  occlude
+  onOcclude={set}
+  style={{
+    transition: 'all 0.5s',
+    opacity: hidden ? 0 : 1,
+    transform: `scale(${hidden ? 0.5 : 1})`
+  }}
+/>
+```
+
+**Blending occlusion**
+
+Html can hide behind geometry as if it was part of the 3D scene using this mode. It can be enabled by using `"blending"` as the `occlude` prop.
+
+```jsx
+// Enable real oclcusion
+<Html occlude="blending" />
+```
+
 You can also give HTML material properties using the `material` prop.
 
 ```jsx
@@ -1675,33 +1700,6 @@ Enable shadows using the `castShadow` and `recieveShadow` prop.
   castShadow // Make HTML cast a shadow
   receiveShadow // Make HTML receive shadows
   material={<meshPhysicalMaterial side={DoubleSide} opacity={0.1} />}
-/>
-```
-
-**Legacy occlusion**
-
-It can be enabled by using ether a ref-array or `"raycast"` as the `occlude` prop.
-
-```jsx
-// Raytrace the entire scene
-<Html occlude="raycast" />
-// Raytrace only specific elements
-<Html occlude={[ref1, ref2]} />
-```
-
-When the Html object hides it sets the opacity prop on the innermost div. If you want to animate or control the transition yourself then you can use `onOcclude`.
-
-```jsx
-const [hidden, set] = useState()
-
-<Html
-  occlude
-  onOcclude={set}
-  style={{
-    transition: 'all 0.5s',
-    opacity: hidden ? 0 : 1,
-    transform: `scale(${hidden ? 0.5 : 1})`
-  }}
 />
 ```
 

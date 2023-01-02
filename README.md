@@ -88,7 +88,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#meshdistortmaterial">MeshDistortMaterial</a></li>
           <li><a href="#meshrefractionmaterial">MeshRefractionMaterial</a></li>
           <li><a href="#pointmaterial">PointMaterial</a></li>
-          <li><a href="#softshadows">softShadows</a></li>
+          <li><a href="#softshadows">SoftShadows</a></li>
           <li><a href="#shadermaterial">shaderMaterial</a></li>
         </ul>
         <li><a href="#modifiers">Modifiers</a></li>
@@ -359,7 +359,7 @@ Scroll controls create a HTML scroll container in front of the canvas. Everythin
 You can listen and react to scroll with the `useScroll` hook which gives you useful data like the current scroll `offset`, `delta` and functions for range finding: `range`, `curve` and `visible`. The latter functions are especially useful if you want to react to the scroll offset, for instance if you wanted to fade things in and out if they are in or out of view.
 
 ```jsx
-<ScrollControls
+;<ScrollControls
   pages={3} // Each page takes 100% of the height of the canvas
   distance={1} // A factor that increases scroll bar travel (default: 1)
   damping={4} // Friction, higher is faster (default: 4)
@@ -737,10 +737,10 @@ A box buffer geometry with rounded corners, done with extrusion.
 
 ```jsx
 <RoundedBox
-  args={[1, 1, 1]}                // Width, height, depth. Default is [1, 1, 1]
-  radius={0.05}                   // Radius of the rounded corners. Default is 0.05
-  smoothness={4}                  // The number of curve segments. Default is 4
-  {...meshProps}                  // All THREE.Mesh props are valid
+  args={[1, 1, 1]} // Width, height, depth. Default is [1, 1, 1]
+  radius={0.05} // Radius of the rounded corners. Default is 0.05
+  smoothness={4} // The number of curve segments. Default is 4
+  {...meshProps} // All THREE.Mesh props are valid
 >
   <meshPhongMaterial color="#f3f3f3" wireframe />
 </RoundedBox>
@@ -1487,22 +1487,16 @@ Antialiased round dots. It takes the same props as regular [THREE.PointsMaterial
 </points>
 ```
 
-#### softShadows
+#### SoftShadows
 
 <p>
   <a href="https://codesandbox.io/s/dh2jc"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/dh2jc/screenshot.png" alt="Demo"/></a>
 </p>
 
-Injects [percent closer soft shadows (pcss)](https://threejs.org/examples/#webgl_shadowmap_pcss) into threes shader chunk.
+Injects [percent closer soft shadows (pcss)](https://threejs.org/examples/#webgl_shadowmap_pcss) into threes shader chunk. Mounting and unmounting this component will lead to all shaders being be re-compiled, although it will only cause overhead if SoftShadows is mounted after the scene has already rendered, if it mounts with everything else in your scene shaders will compile naturally.
 
 ```jsx
-softShadows({
-  frustum: 3.75,
-  size: 0.005,
-  near: 9.5,
-  samples: 17,
-  rings: 11, // Rings (default: 11) must be a int
-})
+<SoftShadows frustum={3.75} size={0.005} near={9.5} samples={17} rings={11} />
 ```
 
 #### shaderMaterial

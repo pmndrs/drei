@@ -1616,6 +1616,7 @@ function Scene() {
   <a href="https://codesandbox.io/s/qyz5r"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/qyz5r/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/9keg6"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/9keg6/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/6oei7"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/6oei7/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/occluded-html-qrw20v"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/occluded-html-qrw20v/screenshot.png" alt="demo"/></a>
 </p>
 
 Allows you to tie HTML content to any object of your scene. It will be projected to the objects whereabouts automatically.
@@ -1646,8 +1647,44 @@ Allows you to tie HTML content to any object of your scene. It will be projected
 Html can hide behind geometry using the `occlude` prop.
 
 ```jsx
-// Raytrace the entire scene
 <Html occlude />
+```
+
+You can also give HTML material properties using the `material` prop.
+
+```jsx
+<Html
+  occlude
+  material={
+    <meshPhysicalMaterial
+      side={DoubleSide} // Required
+      opacity={0.1} // Degree of influence of lighting on the HTML
+      ... // Any other material properties
+    />
+  }
+/>
+```
+
+Enable shadows using the `castShadow` and `recieveShadow` prop.
+
+> Note: Shadows only work with a custom material. Shadows will not work with `meshBasicMaterial` and `shaderMaterial` by default.
+
+```jsx
+<Html
+  occlude
+  castShadow // Make HTML cast a shadow
+  receiveShadow // Make HTML receive shadows
+  material={<meshPhysicalMaterial side={DoubleSide} opacity={0.1} />}
+/>
+```
+
+**Legacy occlusion**
+
+It can be enabled by using ether a ref-array or `"raycast"` as the `occlude` prop.
+
+```jsx
+// Raytrace the entire scene
+<Html occlude="raycast" />
 // Raytrace only specific elements
 <Html occlude={[ref1, ref2]} />
 ```
@@ -1664,7 +1701,8 @@ const [hidden, set] = useState()
     transition: 'all 0.5s',
     opacity: hidden ? 0 : 1,
     transform: `scale(${hidden ? 0.5 : 1})`
-  }} />
+  }}
+/>
 ```
 
 #### CycleRaycast

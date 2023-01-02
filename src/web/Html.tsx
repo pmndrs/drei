@@ -11,9 +11,10 @@ import {
   Raycaster,
   DoubleSide,
   Mesh,
+  Material,
 } from 'three'
 import { Assign } from 'utility-types'
-import { ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
+import { MaterialProps, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 
 const v1 = new Vector3()
 const v2 = new Vector3()
@@ -375,6 +376,8 @@ export const Html = React.forwardRef(
 
                 occlusionMeshRef.current.scale.set(w, h, 1)
               }
+
+              isMeshSizeSet.current = true
             }
           }
         } else {
@@ -386,12 +389,12 @@ export const Html = React.forwardRef(
             const h = ele.clientHeight * ratio
 
             occlusionMeshRef.current.scale.set(w, h, 1)
+
+            isMeshSizeSet.current = true
           }
 
           occlusionMeshRef.current.lookAt(gl.camera.position)
         }
-
-        isMeshSizeSet.current = true
       }
     })
 

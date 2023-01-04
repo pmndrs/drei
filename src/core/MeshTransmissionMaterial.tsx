@@ -95,9 +95,11 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       }
       ` + shader.fragmentShader
       shader.fragmentShader = shader.fragmentShader.replace(
-        '#include <output_fragment>',
-        `vec2 uv = gl_FragCoord.xy / resolution.xy;
-        vec2 refractNormal = vNormal.xy * (1.0 - vNormal.xy * 0.85);
+        'vec3 outgoingLight = totalDiffuse + totalSpecular + totalEmissiveRadiance;',
+        `
+        vec3 outgoingLight = totalDiffuse + totalSpecular + totalEmissiveRadiance;
+        vec2 uv = gl_FragCoord.xy / resolution.xy;
+        vec2 refractNormal = vNormal.xy * (1.0 - vNormal.z * 0.85);
         vec3 refractCol = vec3(0.0);
         float slide;
         #pragma unroll_loop_start
@@ -110,7 +112,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
         }
         #pragma unroll_loop_end
         outgoingLight *= refractCol / float(${samples}) * contrast;
-        #include <output_fragment>`
+        `
       )
     }
 

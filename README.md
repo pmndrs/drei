@@ -87,6 +87,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#meshwobblematerial">MeshWobbleMaterial</a></li>
           <li><a href="#meshdistortmaterial">MeshDistortMaterial</a></li>
           <li><a href="#meshrefractionmaterial">MeshRefractionMaterial</a></li>
+          <li><a href="#meshtransmissionmaterial">MeshTransmissionMaterial</a></li>
           <li><a href="#pointmaterial">PointMaterial</a></li>
           <li><a href="#softshadows">SoftShadows</a></li>
           <li><a href="#shadermaterial">shaderMaterial</a></li>
@@ -1458,7 +1459,7 @@ If you want it to reflect other objects in the scene you best pair it with a cub
 <CubeCamera>
   {(texture) => (
     <mesh geometry={diamondGeometry} {...props}>
-      <RefractionMaterial envMap={texture} />
+      <MeshRefractionMaterial envMap={texture} />
     </mesh>
   )}
 </CubeCamera>
@@ -1470,7 +1471,42 @@ Otherwise just pass it an environment map.
 const texture = useLoader(RGBELoader, "/textures/royal_esplanade_1k.hdr")
 return (
   <mesh geometry={diamondGeometry} {...props}>
-    <RefractionMaterial envMap={texture} />
+    <MeshRefractionMaterial envMap={texture} />
+```
+
+#### MeshTransmissionMaterial
+
+<p>
+  <a href="https://codesandbox.io/s/hmgdjq"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/hmgdjq/screenshot.png" alt="Demo"/></a>
+</p>
+
+A more convincing transmission shader with RGB shift (based on THREE.MeshPhysicalMaterial). This material can be expensive, it causes an additional render of the scene. Low samples and low resolution will make it faster.
+
+```tsx
+type MeshTransmissionMaterialProps = {
+  /** Refraction shift, default: 0 */
+  refraction?: number
+  /** RGB color shift, default: 0.3 */
+  rgbShift?: number
+  /** Noise, default: 0.03 */
+  noise?: number
+  /** Color saturation, default: 1 */
+  saturation?: number
+  /** Color contrast, default: 1 */
+  contrast?: number
+  /** Resolution of the local buffer, default: 1024 */
+  resolution?: number
+  /** Refraction samples, default: 10 */
+  samples?: number
+  /** Buffer scene background (can be a texture, a cubetexture or a color), default: null */
+  background?: THREE.Texture
+}
+```
+
+```jsx
+return (
+  <mesh geometry={geometry} {...props}>
+    <MeshTransmissionMaterial />
 ```
 
 #### PointMaterial

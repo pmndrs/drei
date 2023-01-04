@@ -1511,6 +1511,22 @@ return (
     <MeshTransmissionMaterial />
 ```
 
+If each material rendering the scene on its own is too much expensense you can share the buffer, for instance using drei/PerspectiveCamera.
+
+```jsx
+<PerspectiveCamera makeDefault fov={75} position={[10, 0, 15]} resolution={1024}>
+  {(texture) => (
+    <>
+      <mesh geometry={torus}>
+        <MeshTransmissionMaterial buffer={texture} />
+      </mesh>
+      <mesh geometry={sphere}>
+        <MeshTransmissionMaterial buffer={texture} />
+      </mesh>
+    </>
+  )}
+```
+
 #### PointMaterial
 
 <p>

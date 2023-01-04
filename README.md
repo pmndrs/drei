@@ -1500,6 +1500,8 @@ type MeshTransmissionMaterialProps = {
   samples?: number
   /** Buffer scene background (can be a texture, a cubetexture or a color), default: null */
   background?: THREE.Texture
+  /** The scene rendered into a texture (use it to share a texture between materials), default: null  */
+  buffer?: THREE.Texture
 }
 ```
 

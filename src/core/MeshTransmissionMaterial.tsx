@@ -19,11 +19,12 @@ type MeshTransmissionMaterialType = Omit<JSX.IntrinsicElements['meshPhysicalMate
   /** Color contrast, default: 1 */
   contrast?: number
   resolution?: ReactThreeFiber.Vector2
+  /** The scene rendered into a texture (use it to share a texture between materials), default: null  */
   buffer?: THREE.Texture
   args?: [{ samples: number }]
 }
 
-type MeshTransmissionMaterialProps = Omit<MeshTransmissionMaterialType, 'resolution' | 'buffer' | 'args'> & {
+type MeshTransmissionMaterialProps = Omit<MeshTransmissionMaterialType, 'resolution' | 'args'> & {
   /** Resolution of the local buffer, default: 1024 */
   resolution?: number
   /** Refraction samples, default: 10 */
@@ -123,7 +124,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
 }
 
 export const MeshTransmissionMaterial = React.forwardRef(
-  ({ samples = 10, resolution = 1024, background, ...props }: MeshTransmissionMaterialProps, fref) => {
+  ({ buffer, samples = 10, resolution = 1024, background, ...props }: MeshTransmissionMaterialProps, fref) => {
     extend({ MeshTransmissionMaterial: MeshTransmissionMaterialImpl })
 
     const ref = React.useRef<JSX.IntrinsicElements['meshTransmissionMaterial']>(null!)
@@ -135,23 +136,25 @@ export const MeshTransmissionMaterial = React.forwardRef(
     let oldVis
     let parent
     useFrame((state) => {
-      parent = (ref.current as any).__r3f.parent as THREE.Object3D
-      if (parent) {
-        // Hide the outer groups contents
-        oldVis = parent.visible
-        parent.visible = false
-        // Set render target to the local buffer
-        state.gl.setRenderTarget(fbo)
-        // Save the current background and set the HDR as the new BG
-        // This is what creates the reflections
-        oldBg = state.scene.background
-        if (background) state.scene.background = background
-        // Render into the buffer
-        state.gl.render(state.scene, state.camera)
-        // Set old state back
-        state.scene.background = oldBg
-        state.gl.setRenderTarget(null)
-        parent.visible = oldVis
+      if (!buffer) {
+        parent = (ref.current as any).__r3f.parent as THREE.Object3D
+        if (parent) {
+          // Hide the outer groups contents
+          oldVis = parent.visible
+          parent.visible = false
+          // Set render target to the local buffer
+          state.gl.setRenderTarget(fbo)
+          // Save the current background and set the HDR as the new BG
+          // This is what creates the reflections
+          oldBg = state.scene.background
+          if (background) state.scene.background = background
+          // Render into the buffer
+          state.gl.render(state.scene, state.camera)
+          // Set old state back
+          state.scene.background = oldBg
+          state.gl.setRenderTarget(null)
+          parent.visible = oldVis
+        }
       }
     })
 
@@ -162,7 +165,7 @@ export const MeshTransmissionMaterial = React.forwardRef(
       <meshTransmissionMaterial
         args={[config]}
         ref={ref}
-        buffer={fbo.texture}
+        buffer={buffer || fbo.texture}
         resolution={[size.width * viewport.dpr, size.height * viewport.dpr]}
         {...props}
       />

@@ -332,9 +332,11 @@ class ProgressiveLightMap {
   progressiveLightMap1: THREE.WebGLRenderTarget
   progressiveLightMap2: THREE.WebGLRenderTarget
   discardMat: THREE.ShaderMaterial
-  targetMat: THREE.MeshPhongMaterial
+  targetMat: THREE.MeshLambertMaterial
   previousShadowMap: { value: THREE.Texture }
   averagingWindow: { value: number }
+  clearColor: THREE.Color
+  clearAlpha: number
   lights: { object: THREE.Light; intensity: number }[]
   meshes: { object: THREE.Mesh; material: THREE.Material | THREE.Material[] }[]
 
@@ -346,6 +348,8 @@ class ProgressiveLightMap {
     this.lights = []
     this.meshes = []
     this.object = null
+    this.clearColor = new THREE.Color()
+    this.clearAlpha = 0
 
     // Create the Progressive LightMap Texture
     const format = /(Android|iPad|iPhone|iPod)/g.test(navigator.userAgent) ? THREE.HalfFloatType : THREE.FloatType
@@ -360,7 +364,7 @@ class ProgressiveLightMap {
 
     // Inject some spicy new logic into a standard phong material
     this.discardMat = new DiscardMaterial()
-    this.targetMat = new THREE.MeshPhongMaterial({ shininess: 0, fog: false })
+    this.targetMat = new THREE.MeshLambertMaterial({ fog: false })
     this.previousShadowMap = { value: this.progressiveLightMap1.texture }
     this.averagingWindow = { value: 100 }
     this.targetMat.onBeforeCompile = (shader) => {
@@ -372,17 +376,13 @@ class ProgressiveLightMap {
 
       // Fragment Shader: Set Pixels to average in the Previous frame's Shadows
       const bodyStart = shader.fragmentShader.indexOf('void main() {')
-      shader.fragmentShader = shader.fragmentShader.replace(
-        '#include <clipping_planes_pars_fragment>',
-        '#include <clipping_planes_pars_fragment>\n#include <shadowmask_pars_fragment>\n'
-      )
       shader.fragmentShader =
         'varying vec2 vUv;\n' +
         shader.fragmentShader.slice(0, bodyStart) +
-        '	uniform sampler2D previousShadowMap;\n	uniform float averagingWindow;\n' +
+        'uniform sampler2D previousShadowMap;\n	uniform float averagingWindow;\n' +
         shader.fragmentShader.slice(bodyStart - 1, -1) +
         `\nvec3 texelOld = texture2D(previousShadowMap, vUv).rgb;
-        gl_FragColor.rgb = mix(texelOld, gl_FragColor.rgb, 1.0/averagingWindow);
+        gl_FragColor.rgb = mix(texelOld, gl_FragColor.rgb, 1.0/ averagingWindow);
       }`
 
       // Set the Previous Frame's Texture Buffer and Averaging Window
@@ -392,10 +392,15 @@ class ProgressiveLightMap {
   }
 
   clear() {
+    this.renderer.getClearColor(this.clearColor)
+    this.clearAlpha = this.renderer.getClearAlpha()
+    this.renderer.setClearColor('black', 1)
     this.renderer.setRenderTarget(this.progressiveLightMap1)
     this.renderer.clear()
     this.renderer.setRenderTarget(this.progressiveLightMap2)
     this.renderer.clear()
+    this.renderer.setRenderTarget(null)
+    this.renderer.setClearColor(this.clearColor, this.clearAlpha)
 
     this.lights = []
     this.meshes = []
@@ -424,7 +429,6 @@ class ProgressiveLightMap {
 
   update(camera, blendWindow = 100) {
     if (!this.object) return
-
     // Set each object's material to the UV Unwrapped Surface Mapping Version
     this.averagingWindow.value = blendWindow
     this.object.material = this.targetMat

@@ -7,7 +7,10 @@ import * as React from 'react'
 import { extend, useThree, useFrame, ReactThreeFiber } from '@react-three/fiber'
 import { useFBO } from './useFBO'
 
-type MeshTransmissionMaterialType = Omit<JSX.IntrinsicElements['meshPhysicalMaterial'], 'args'> & {
+type MeshTransmissionMaterialType = Omit<
+  JSX.IntrinsicElements['meshPhysicalMaterial'],
+  'args' | 'transmission' | 'transmissionMap' | 'thickness'
+> & {
   /** Refraction shift, default: 0 */
   refraction?: number
   /** RGB color shift, default: 0.3 */
@@ -75,6 +78,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
         ...this.uniforms,
       }
 
+      // Head
       shader.fragmentShader =
         `uniform float rgbShift;
       uniform vec2 resolution;
@@ -84,35 +88,35 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       uniform float contrast;
       uniform sampler2D buffer;
       
-      float random(vec2 p) {
-        return fract(sin(dot(p.xy ,vec2(12.9898,78.233))) * 43758.5453);
-      }
-    
       vec3 sat(vec3 rgb, float adjustment) {
         const vec3 W = vec3(0.2125, 0.7154, 0.0721);
         vec3 intensity = vec3(dot(rgb, W));
         return mix(intensity, rgb, adjustment);
-      }
-      ` + shader.fragmentShader
+      }\n` + shader.fragmentShader
+
+      // Remove transmission
+      shader.fragmentShader = shader.fragmentShader.replace('#include <transmission_pars_fragment>', '')
+      shader.fragmentShader = shader.fragmentShader.replace('#include <transmission_fragment>', '')
+
+      // Add refraction
       shader.fragmentShader = shader.fragmentShader.replace(
         'vec3 outgoingLight = totalDiffuse + totalSpecular + totalEmissiveRadiance;',
-        `
-        vec3 outgoingLight = totalDiffuse + totalSpecular + totalEmissiveRadiance;
+        `vec3 outgoingLight = totalDiffuse + totalSpecular + totalEmissiveRadiance;
         vec2 uv = gl_FragCoord.xy / resolution.xy;
         vec2 refractNormal = vNormal.xy * (1.0 - vNormal.z * 0.85);
-        vec3 refractCol = vec3(0.0);
+        vec3 refractCol = vec3(0.0);        
+        float randomCoords = rand(uv);
         float slide;
         #pragma unroll_loop_start
         for (int i = 0; i < ${samples}; i ++) {
-          slide = float(UNROLLED_LOOP_INDEX) / float(${samples}) * 0.1 + random(uv) * noise;              
+          slide = float(UNROLLED_LOOP_INDEX) / float(${samples}) * 0.1 + randomCoords * noise;              
           refractCol.r += texture2D(buffer, uv - refractNormal * (refraction + slide * 1.0) * rgbShift).r;
           refractCol.g += texture2D(buffer, uv - refractNormal * (refraction + slide * 2.0) * rgbShift).g;
           refractCol.b += texture2D(buffer, uv - refractNormal * (refraction + slide * 3.0) * rgbShift).b;
           refractCol = sat(refractCol, saturation);
         }
         #pragma unroll_loop_end
-        outgoingLight *= refractCol / float(${samples}) * contrast;
-        `
+        outgoingLight *= refractCol / float(${samples}) * contrast;`
       )
     }
 

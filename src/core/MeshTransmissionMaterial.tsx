@@ -13,6 +13,8 @@ type MeshTransmissionMaterialType = Omit<
 > & {
   /** Refraction shift, default: 0 */
   refraction?: number
+  /** Refraction color, default: black */
+  refractionTint?: ReactThreeFiber.Color
   /** RGB color shift, default: 0.3 */
   rgbShift?: number
   /** Noise, default: 0.03 */
@@ -51,6 +53,7 @@ declare global {
 class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
   uniforms: {
     refraction: Uniform<number>
+    refractionTint: Uniform<THREE.Color>
     buffer: Uniform<THREE.Texture | null>
     rgbShift: Uniform<number>
     noise: Uniform<number>
@@ -59,7 +62,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
     resolution: Uniform<THREE.Vector2>
   }
 
-  constructor({ samples = 10, ...args } = {}) {
+  constructor({ samples = 5, ...args } = {}) {
     super(args)
 
     this.uniforms = {
@@ -69,6 +72,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       saturation: { value: 1.0 },
       contrast: { value: 1.0 },
       buffer: { value: null },
+      refractionTint: { value: new THREE.Color('black') },
       resolution: { value: new THREE.Vector2() },
     }
 
@@ -82,6 +86,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       shader.fragmentShader =
         `uniform float rgbShift;
       uniform vec2 resolution;
+      uniform vec3 refractionTint;
       uniform float refraction;
       uniform float noise;
       uniform float saturation;
@@ -101,10 +106,9 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       // Add refraction
       shader.fragmentShader = shader.fragmentShader.replace(
         'vec3 outgoingLight = totalDiffuse + totalSpecular + totalEmissiveRadiance;',
-        `vec3 outgoingLight = totalDiffuse + totalSpecular + totalEmissiveRadiance;
-        vec2 uv = gl_FragCoord.xy / resolution.xy;
+        `vec2 uv = gl_FragCoord.xy / resolution.xy;
         vec2 refractNormal = vNormal.xy * (1.0 - vNormal.z * 0.85);
-        vec3 refractCol = vec3(0.0);        
+        vec3 refractCol = refractionTint;        
         float randomCoords = rand(uv);
         float slide;
         #pragma unroll_loop_start
@@ -116,7 +120,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
           refractCol = sat(refractCol, saturation);
         }
         #pragma unroll_loop_end
-        outgoingLight *= refractCol / float(${samples}) * contrast;`
+        vec3 outgoingLight = (refractCol * totalDiffuse * contrast) + totalSpecular + totalEmissiveRadiance;`
       )
     }
 

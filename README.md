@@ -51,14 +51,6 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#presentationcontrols">PresentationControls</a></li>
           <li><a href="#keyboardcontrols">KeyboardControls</a></li>
         </ul>
-        <li><a href="#gizmos">Gizmos</a></li>
-        <ul>
-          <li><a href="#gizmohelper">GizmoHelper</a></li>
-          <li><a href="#pivotcontrols">PivotControls</a></li>
-          <li><a href="#transformcontrols">TransformControls</a></li>
-          <li><a href="#grid">Grid</a></li>
-          <li><a href="#usehelper">useHelper</a></li>
-        </ul>
         <li><a href="#abstractions">Abstractions</a></li>
         <ul>
           <li><a href="#image">Image</a></li>
@@ -151,6 +143,14 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#view">View</a></li>
           <li><a href="#rendertexture">RenderTexture</a></li>
           <li><a href="#mask">Mask</a></li>
+        </ul>
+         <li><a href="#gizmos">Gizmos</a></li>
+        <ul>
+          <li><a href="#gizmohelper">GizmoHelper</a></li>
+          <li><a href="#pivotcontrols">PivotControls</a></li>
+          <li><a href="#transformcontrols">TransformControls</a></li>
+          <li><a href="#grid">Grid</a></li>
+          <li><a href="#usehelper">useHelper</a></li>
         </ul>
       </ul>
     </td>

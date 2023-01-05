@@ -120,6 +120,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
           refractCol = sat(refractCol, saturation);
         }
         #pragma unroll_loop_end
+        refractCol /= float(${samples});
         vec3 outgoingLight = (refractCol * totalDiffuse * contrast) + totalSpecular + totalEmissiveRadiance;`
       )
     }

@@ -1480,7 +1480,7 @@ return (
   <a href="https://codesandbox.io/s/hmgdjq"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/hmgdjq/screenshot.png" alt="Demo"/></a>
 </p>
 
-A more convincing transmission shader with RGB shift (based on THREE.MeshPhysicalMaterial). This material can be expensive, it causes an additional render of the scene. Low samples and low resolution will make it faster.
+A more convincing transmission shader with RGB shift (based on THREE.MeshPhysicalMaterial). This material can be expensive as it causes an additional render pass of the scene. Low samples and low resolution will make it faster. It will temporarily make the mesh that uses it invisible for that pass, this is better for performance and also improves visuals. If you have other objects that you don't want to see reflected in the material just add them to the parent mesh as children.
 
 ```tsx
 type MeshTransmissionMaterialProps = {

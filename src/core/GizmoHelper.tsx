@@ -157,9 +157,11 @@ export const GizmoHelper = ({
       gizmoRef.current?.quaternion.setFromRotationMatrix(matrix)
 
       // Render virtual camera
+      const oldClear = gl.autoClear
       if (autoClear) gl.autoClear = false
       gl.clearDepth()
       gl.render(virtualScene, virtualCam.current)
+      gl.autoClear = oldClear
     }
   }, renderPriority)
 

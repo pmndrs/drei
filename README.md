@@ -1486,8 +1486,8 @@ A more convincing transmission shader with RGB shift (based on THREE.MeshPhysica
 type MeshTransmissionMaterialProps = {
   /** Refraction shift, default: 0 */
   refraction?: number
-  /** Refraction color, default: black */
-  refractionTint?: ReactThreeFiber.Color
+  /** White noise roughness, default: 0 */
+  roughness?: number
   /** RGB color shift, default: 0.3 */
   rgbShift?: number
   /** Noise, default: 0.03 */

@@ -9,12 +9,12 @@ import { useFBO } from './useFBO'
 
 type MeshTransmissionMaterialType = Omit<
   JSX.IntrinsicElements['meshPhysicalMaterial'],
-  'args' | 'transmission' | 'transmissionMap' | 'thickness'
+  'args' | 'roughness' | 'transmission' | 'transmissionMap' | 'thickness'
 > & {
   /** Refraction shift, default: 0 */
   refraction?: number
-  /** Refraction color, default: black */
-  refractionTint?: ReactThreeFiber.Color
+  /** White noise roughness, default: 0 */
+  roughness?: number
   /** RGB color shift, default: 0.3 */
   rgbShift?: number
   /** Noise, default: 0.03 */
@@ -53,7 +53,6 @@ declare global {
 class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
   uniforms: {
     refraction: Uniform<number>
-    refractionTint: Uniform<THREE.Color>
     buffer: Uniform<THREE.Texture | null>
     rgbShift: Uniform<number>
     noise: Uniform<number>
@@ -72,7 +71,6 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       saturation: { value: 1.0 },
       contrast: { value: 1.0 },
       buffer: { value: null },
-      refractionTint: { value: new THREE.Color('black') },
       resolution: { value: new THREE.Vector2() },
     }
 
@@ -86,7 +84,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       shader.fragmentShader =
         `uniform float rgbShift;
       uniform vec2 resolution;
-      uniform vec3 refractionTint;
+      uniform vec3 refractionColor;
       uniform float refraction;
       uniform float noise;
       uniform float saturation;
@@ -108,15 +106,19 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
         'vec3 outgoingLight = totalDiffuse + totalSpecular + totalEmissiveRadiance;',
         `vec2 uv = gl_FragCoord.xy / resolution.xy;
         vec2 refractNormal = vNormal.xy * (1.0 - vNormal.z * 0.85);
-        vec3 refractCol = refractionTint;        
+        vec3 refractCol = vec3(0.0);        
         float randomCoords = rand(uv);
+        vec2 randomCoords2;
+        float roughBlur = roughness * roughness;
         float slide;
         #pragma unroll_loop_start
         for (int i = 0; i < ${samples}; i ++) {
-          slide = float(UNROLLED_LOOP_INDEX) / float(${samples}) * 0.1 + randomCoords * noise;              
-          refractCol.r += texture2D(buffer, uv - refractNormal * (refraction + slide * 1.0) * rgbShift).r;
-          refractCol.g += texture2D(buffer, uv - refractNormal * (refraction + slide * 2.0) * rgbShift).g;
-          refractCol.b += texture2D(buffer, uv - refractNormal * (refraction + slide * 3.0) * rgbShift).b;
+          slide = float(UNROLLED_LOOP_INDEX) / float(${samples}) * 0.1 + randomCoords * noise;
+          randomCoords2 = vec2(rand(uv + randomCoords + 0.1 * float(UNROLLED_LOOP_INDEX)), rand(uv - randomCoords - 0.1 * float(UNROLLED_LOOP_INDEX))) - 0.5;
+          randomCoords2 = normalize(randomCoords2) * sqrt(rand(uv + 0.12 * float(UNROLLED_LOOP_INDEX)));
+          refractCol.r += texture2D(buffer, uv - refractNormal * (refraction + slide * 1.0) * rgbShift + randomCoords2 * roughBlur).r;
+          refractCol.g += texture2D(buffer, uv - refractNormal * (refraction + slide * 2.0) * rgbShift + randomCoords2 * roughBlur).g;
+          refractCol.b += texture2D(buffer, uv - refractNormal * (refraction + slide * 3.0) * rgbShift + randomCoords2 * roughBlur).b;
           refractCol = sat(refractCol, saturation);
         }
         #pragma unroll_loop_end

@@ -23,14 +23,14 @@ type MeshTransmissionMaterialType = Omit<
   saturation?: number
   /** Color contrast, default: 1 */
   contrast?: number
-  resolution?: ReactThreeFiber.Vector2
+  resolution?: ReactThreeFiber.Vector2 | null
   /** The scene rendered into a texture (use it to share a texture between materials), default: null  */
   buffer?: THREE.Texture
   args?: [{ samples: number }]
 }
 
 type MeshTransmissionMaterialProps = Omit<MeshTransmissionMaterialType, 'resolution' | 'args'> & {
-  /** Resolution of the local buffer, default: 1024 */
+  /** Resolution of the local buffer, default: undefined (full canvas width/height) */
   resolution?: number
   /** Refraction samples, default: 10 */
   samples?: number
@@ -137,12 +137,12 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
 }
 
 export const MeshTransmissionMaterial = React.forwardRef(
-  ({ buffer, samples = 10, resolution = 1024, background, ...props }: MeshTransmissionMaterialProps, fref) => {
+  ({ buffer, samples = 10, resolution, background, ...props }: MeshTransmissionMaterialProps, fref) => {
     extend({ MeshTransmissionMaterial: MeshTransmissionMaterialImpl })
 
     const ref = React.useRef<JSX.IntrinsicElements['meshTransmissionMaterial']>(null!)
     const { size, viewport } = useThree()
-    const fbo = useFBO(resolution)
+    const fbo = useFBO(resolution, resolution, { samples: 0 })
     const config = React.useMemo(() => ({ samples }), [samples])
 
     let oldBg

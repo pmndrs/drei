@@ -1490,13 +1490,13 @@ type MeshTransmissionMaterialProps = {
   roughness?: number
   /** RGB color shift, default: 0.3 */
   rgbShift?: number
-  /** Noise, default: 0.03 */
+  /** RGB shift noise, default: 0.03 */
   noise?: number
   /** Color saturation, default: 1 */
   saturation?: number
   /** Color contrast, default: 1 */
   contrast?: number
-  /** Resolution of the local buffer, default: 1024 */
+  /** Resolution of the local buffer, default: undefined (full canvas width/height) */
   resolution?: number
   /** Refraction samples, default: 10 */
   samples?: number

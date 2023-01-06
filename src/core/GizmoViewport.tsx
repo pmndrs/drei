@@ -118,12 +118,11 @@ export const GizmoViewport = ({
   ...props
 }: GizmoViewportProps) => {
   const [colorX, colorY, colorZ] = axisColors
-  const { tweenCamera, raycast } = useGizmoContext()
+  const { tweenCamera } = useGizmoContext()
   const axisHeadProps = {
     font,
     disabled,
     labelColor,
-    raycast,
     onClick,
     axisHeadScale,
     onPointerDown: !disabled

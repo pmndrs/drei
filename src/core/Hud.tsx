@@ -17,7 +17,9 @@ type HudProps = {
 
 function RenderHud({ defaultScene, defaultCamera, renderPriority = 1 }: RenderHudProps) {
   const { gl, scene, camera } = useThree()
+  let oldCLear
   useFrame(() => {
+    oldCLear = gl.autoClear
     if (renderPriority === 1) {
       // Clear scene and render the default scene
       gl.autoClear = true
@@ -27,6 +29,8 @@ function RenderHud({ defaultScene, defaultCamera, renderPriority = 1 }: RenderHu
     gl.autoClear = false
     gl.clearDepth()
     gl.render(scene, camera)
+    // Restore default
+    gl.autoClear = oldCLear
   }, renderPriority)
   return <></>
 }

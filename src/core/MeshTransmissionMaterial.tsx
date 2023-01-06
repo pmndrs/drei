@@ -364,14 +364,19 @@ export const MeshTransmissionMaterial = React.forwardRef(
 
     let oldBg
     let oldVis
+    let oldTone
     let parent
     useFrame((state) => {
       if (!buffer) {
         parent = (ref.current as any).__r3f.parent as THREE.Object3D
         ref.current.time = state.clock.getElapsedTime() * distortionSpeed
         if (parent) {
-          // Hide the outer groups contents
+          // Save defaults
+          oldTone = state.gl.toneMapping
           oldVis = parent.visible
+          // Switch off tonemapping lest it double tone maps
+          state.gl.toneMapping = THREE.NoToneMapping
+          // Hide the outer groups contents
           parent.visible = false
           // Set render target to the local buffer
           state.gl.setRenderTarget(fbo)
@@ -385,6 +390,7 @@ export const MeshTransmissionMaterial = React.forwardRef(
           state.scene.background = oldBg
           state.gl.setRenderTarget(null)
           parent.visible = oldVis
+          state.gl.toneMapping = oldTone
         }
       }
     })

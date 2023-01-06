@@ -1480,30 +1480,24 @@ return (
   <a href="https://codesandbox.io/s/hmgdjq"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/hmgdjq/screenshot.png" alt="Demo"/></a>
 </p>
 
-A more convincing transmission shader with RGB shift (based on THREE.MeshPhysicalMaterial). This material can be expensive as it causes an additional render pass of the scene. Low samples and low resolution will make it faster. It will temporarily make the mesh that uses it invisible for that pass, this is better for performance and also improves visuals. If you have other objects that you don't want to see reflected in the material just add them to the parent mesh as children.
+An improved THREE.MeshPhysicalMaterial. It acts like a normal PhysicalMaterial in terms of transmission support, thickness, ior, roughness, etc., but has chromatic aberration, noise-based roughness blur, (primitive) anisotropy support, and unlike the original it can "see" other transmissive or transparent objects which leads to improved visuals.
+
+Keep in mind that it can be expensive as it causes an additional render pass of the scene, minus the host mesh which gets removed from the render-stack temporarily. If you have other objects that you don't want to see reflected in the material just add them to the parent mesh as children. Low samples and low resolution will make it faster.
+
+If you use roughness consider using a tiny resolution, for instance 32x32 pixels, it will still look good but perform much faster.
 
 ```tsx
-type MeshTransmissionMaterialProps = {
-  /** Refraction shift, default: 0 */
-  refraction?: number
-  /** White noise roughness, default: 0 */
-  roughness?: number
-  /** RGB color shift, default: 0.3 */
-  rgbShift?: number
-  /** Noise, default: 0.03 */
-  noise?: number
-  /** Color saturation, default: 1 */
-  saturation?: number
-  /** Color contrast, default: 1 */
-  contrast?: number
-  /** Resolution of the local buffer, default: 1024 */
-  resolution?: number
-  /** Refraction samples, default: 10 */
-  samples?: number
-  /** Buffer scene background (can be a texture, a cubetexture or a color), default: null */
-  background?: THREE.Texture
-  /** The scene rendered into a texture (use it to share a texture between materials), default: null  */
-  buffer?: THREE.Texture
+type MeshTransmissionMaterialProps = JSX.IntrinsicElements['meshPhysicalMaterial'] & {
+  /* Chromatic aberration, default: 0.03 */
+  chromaticAberration?: number
+  /* Anisotropy, default: 0.1 */
+  anisotropy?: number
+  /* Distortion, default: 0 */
+  distortion?: number
+  /* Distortion scale, default: 0.5 */
+  distortionScale?: number
+  /* Temporal distortion, default: 0.5 */
+  temporalDistortion?: number
 }
 ```
 
@@ -1513,7 +1507,7 @@ return (
     <MeshTransmissionMaterial />
 ```
 
-If each material rendering the scene on its own is too much expensense you can share the buffer, for instance using drei/PerspectiveCamera.
+If each material rendering the scene on its own is too much expensense you can share a buffer texture, for instance using drei/PerspectiveCamera. This would mimic the default THREE.MeshPhysicalMaterial behaviour, the upside is that it's faster if you have multiple materials, the downside is that one transmissive material now can't "see" the other.
 
 ```jsx
 <PerspectiveCamera makeDefault fov={75} position={[10, 0, 15]} resolution={1024}>

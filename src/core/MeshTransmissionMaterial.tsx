@@ -1,4 +1,5 @@
 /** Author: @N8Programs https://github.com/N8python
+ *    https://gist.github.com/N8python/eb42d25c7cd00d12e965ac9cba544317
  *  Inspired by: @ore_ukonpower and http://next.junni.co.jp
  *    https://github.com/junni-inc/next.junni.co.jp/blob/master/src/ts/MainScene/World/Sections/Section2/Transparents/Transparent/shaders/transparent.fs
  */
@@ -9,6 +10,8 @@ import { extend, useThree, useFrame, ReactThreeFiber } from '@react-three/fiber'
 import { useFBO } from './useFBO'
 
 type MeshTransmissionMaterialType = Omit<JSX.IntrinsicElements['meshPhysicalMaterial'], 'args'> & {
+  /* Transmission, default: 1 */
+  transmission?: number
   /* Chromatic aberration, default: 0.03 */
   chromaticAberration?: number
   /* Anisotropy, default: 0.1 */
@@ -16,9 +19,9 @@ type MeshTransmissionMaterialType = Omit<JSX.IntrinsicElements['meshPhysicalMate
   /* Distortion, default: 0 */
   distortion?: number
   /* Distortion scale, default: 0.5 */
-  distortionScale?: number
+  distortionScale: Uniform<number>
   /* Temporal distortion, default: 0.5 */
-  temporalDistortion?: number
+  temporalDistortion: Uniform<number>
 
   time?: number
   resolution?: ReactThreeFiber.Vector2
@@ -54,7 +57,12 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
   uniforms: {
     chromaticAberration: Uniform<number>
     transmission: Uniform<number>
+    transmissionMap: Uniform<THREE.Texture | null>
+    _transmission: Uniform<number>
     thickness: Uniform<number>
+    thicknessMap: Uniform<THREE.Texture | null>
+    attenuationDistance: Uniform<number>
+    attenuationColor: Uniform<THREE.Color>
     anisotropy: Uniform<number>
     time: Uniform<number>
     distortion: Uniform<number>
@@ -69,8 +77,15 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
 
     this.uniforms = {
       chromaticAberration: { value: 0.05 },
-      transmission: { value: 1 },
+      // Transmission must always be 0
+      transmission: { value: 0 },
+      // Instead a workaround is used, see below for reasons why
+      _transmission: { value: 1 },
+      transmissionMap: { value: null },
       thickness: { value: 1 },
+      thicknessMap: { value: null },
+      attenuationDistance: { value: 0 },
+      attenuationColor: { value: new THREE.Color() },
       anisotropy: { value: 0.1 },
       time: { value: 0 },
       distortion: { value: 0.0 },
@@ -85,6 +100,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
         ...shader.uniforms,
         ...this.uniforms,
       }
+      ;(shader as any).defines.USE_TRANSMISSION = ''
 
       // Head
       shader.fragmentShader =
@@ -189,14 +205,14 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
               +0.0666667* snoise(8.0*m);
       }\n` + shader.fragmentShader
 
-      // Replace transmission
+      // Remove transmission
       shader.fragmentShader = shader.fragmentShader.replace(
         '#include <transmission_pars_fragment>',
         /*glsl*/ `
         #ifdef USE_TRANSMISSION
           // Transmission code is based on glTF-Sampler-Viewer
           // https://github.com/KhronosGroup/glTF-Sample-Viewer
-          uniform float transmission;
+          uniform float _transmission;
           uniform float thickness;
           uniform float attenuationDistance;
           uniform vec3 attenuationColor;
@@ -262,12 +278,13 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
         #endif\n`
       )
 
+      // Add refraction
       shader.fragmentShader = shader.fragmentShader.replace(
         '#include <transmission_fragment>',
         /*glsl*/ `
         vec2 uv = gl_FragCoord.xy / resolution.xy;      
         // Improve the refraction to use the world pos
-        material.transmission = transmission;
+        material.transmission = _transmission;
         material.transmissionAlpha = 1.0;
         material.thickness = thickness;
         material.attenuationDistance = attenuationDistance;
@@ -313,7 +330,6 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
           transmission.b += transmissionB;
         }
         transmission /= ${samples}.0;
-        material.transmissionAlpha = 1.0;
         totalDiffuse = mix( totalDiffuse, transmission.rgb, material.transmission );\n`
       )
     }
@@ -329,7 +345,15 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
 
 export const MeshTransmissionMaterial = React.forwardRef(
   (
-    { buffer, distortionSpeed = 1, samples = 10, resolution, background, ...props }: MeshTransmissionMaterialProps,
+    {
+      buffer,
+      transmission = 1,
+      distortionSpeed = 1,
+      samples = 10,
+      resolution,
+      background,
+      ...props
+    }: MeshTransmissionMaterialProps,
     fref
   ) => {
     extend({ MeshTransmissionMaterial: MeshTransmissionMaterialImpl })
@@ -372,9 +396,14 @@ export const MeshTransmissionMaterial = React.forwardRef(
       <meshTransmissionMaterial
         args={[React.useMemo(() => ({ samples }), [samples])]}
         ref={ref}
-        buffer={buffer || fbo.texture}
-        resolution={[size.width * viewport.dpr, size.height * viewport.dpr]}
         {...props}
+        buffer={buffer || fbo.texture}
+        // @ts-ignore
+        _transmission={transmission}
+        // In order for this to not incur extra cost "transmission" must be set to 0 and treated as a reserved prop.
+        // This is because THREE.WebGLRenderer will check for transmission > 0 and executed extra renders.
+        transmission={0}
+        resolution={[size.width * viewport.dpr, size.height * viewport.dpr]}
       />
     )
   }

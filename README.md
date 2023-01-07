@@ -1502,7 +1502,7 @@ type MeshTransmissionMaterialProps = JSX.IntrinsicElements['meshPhysicalMaterial
   distortion?: number
   /* Distortion scale, default: 0.5 */
   distortionScale: number
-  /* Temporal distortion, default: 0.5 */
+  /* Temporal distortion (speed of movement), default: 0.0 */
   temporalDistortion: number
 }
 ```

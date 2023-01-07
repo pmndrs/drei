@@ -9,9 +9,16 @@ import * as React from 'react'
 import { extend, useThree, useFrame, ReactThreeFiber } from '@react-three/fiber'
 import { useFBO } from './useFBO'
 
-type MeshTransmissionMaterialType = Omit<JSX.IntrinsicElements['meshPhysicalMaterial'], 'args'> & {
+type MeshTransmissionMaterialType = Omit<
+  JSX.IntrinsicElements['meshPhysicalMaterial'],
+  'args' | 'roughness' | 'thickness' | 'transmission'
+> & {
   /* Transmission, default: 1 */
   transmission?: number
+  /* Thickness (refraction), default: 0 */
+  thickness?: number
+  /* Roughness (blur), default: 0 */
+  roughness?: number
   /* Chromatic aberration, default: 0.03 */
   chromaticAberration?: number
   /* Anisotropy, default: 0.1 */
@@ -19,15 +26,15 @@ type MeshTransmissionMaterialType = Omit<JSX.IntrinsicElements['meshPhysicalMate
   /* Distortion, default: 0 */
   distortion?: number
   /* Distortion scale, default: 0.5 */
-  distortionScale: Uniform<number>
+  distortionScale: number
   /* Temporal distortion, default: 0.5 */
-  temporalDistortion: Uniform<number>
+  temporalDistortion: number
 
   time?: number
   resolution?: ReactThreeFiber.Vector2
   /** The scene rendered into a texture (use it to share a texture between materials), default: null  */
   buffer?: THREE.Texture
-  args?: [{ samples: number }]
+  args?: [samples: number]
 }
 
 type MeshTransmissionMaterialProps = Omit<MeshTransmissionMaterialType, 'resolution' | 'args'> & {
@@ -60,6 +67,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
     transmissionMap: Uniform<THREE.Texture | null>
     _transmission: Uniform<number>
     thickness: Uniform<number>
+    roughness: Uniform<number>
     thicknessMap: Uniform<THREE.Texture | null>
     attenuationDistance: Uniform<number>
     attenuationColor: Uniform<THREE.Color>
@@ -72,8 +80,8 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
     resolution: Uniform<THREE.Vector2>
   }
 
-  constructor({ samples = 6, ...args } = {}) {
-    super(args)
+  constructor(samples = 6) {
+    super()
 
     this.uniforms = {
       chromaticAberration: { value: 0.05 },
@@ -82,7 +90,9 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       // Instead a workaround is used, see below for reasons why
       _transmission: { value: 1 },
       transmissionMap: { value: null },
-      thickness: { value: 1 },
+      // Roughness is 1 in THREE.MeshPhysicalMaterial but it makes little sense in a transmission material
+      roughness: { value: 0 },
+      thickness: { value: 0 },
       thicknessMap: { value: null },
       attenuationDistance: { value: Infinity },
       attenuationColor: { value: new THREE.Color('white') },
@@ -113,12 +123,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       uniform float distortionScale;
       uniform float temporalDistortion;
       uniform sampler2D buffer;
-      
-      vec3 sat(vec3 rgb, float adjustment) {
-        const vec3 W = vec3(0.2125, 0.7154, 0.0721);
-        vec3 intensity = vec3(dot(rgb, W));
-        return mix(intensity, rgb, adjustment);
-      }
+
       vec3 random3(vec3 c) {
         float j = 4096.0*sin(dot(c,vec3(17.0, 59.4, 15.0)));
         vec3 r;
@@ -150,10 +155,8 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       float floatConstruct( uint m ) {
         const uint ieeeMantissa = 0x007FFFFFu; // binary32 mantissa bitmask
         const uint ieeeOne      = 0x3F800000u; // 1.0 in IEEE binary32
-
         m &= ieeeMantissa;                     // Keep only mantissa bits (fractional part)
         m |= ieeeOne;                          // Add fractional part to 1.0
-
         float  f = uintBitsToFloat( m );       // Range [1:2]
         return f - 1.0;                        // Range [0:1]
       }
@@ -199,7 +202,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       }
 
       float snoiseFractal(vec3 m) {
-        return   0.5333333* snoise(m)
+        return 0.5333333* snoise(m)
               +0.2666667* snoise(2.0*m)
               +0.1333333* snoise(4.0*m)
               +0.0666667* snoise(8.0*m);
@@ -400,14 +403,15 @@ export const MeshTransmissionMaterial = React.forwardRef(
 
     return (
       <meshTransmissionMaterial
-        args={[React.useMemo(() => ({ samples }), [samples])]}
+        // Samples must re-compile the shader so we memoize it
+        args={[samples]}
         ref={ref}
         {...props}
         buffer={buffer || fbo.texture}
         // @ts-ignore
         _transmission={transmission}
         // In order for this to not incur extra cost "transmission" must be set to 0 and treated as a reserved prop.
-        // This is because THREE.WebGLRenderer will check for transmission > 0 and executed extra renders.
+        // This is because THREE.WebGLRenderer will check for transmission > 0 and execute extra renders.
         transmission={0}
         resolution={[size.width * viewport.dpr, size.height * viewport.dpr]}
       />

@@ -27,7 +27,7 @@ type MeshTransmissionMaterialType = Omit<
   distortion?: number
   /* Distortion scale, default: 0.5 */
   distortionScale: number
-  /* Temporal distortion, default: 0.5 */
+  /* Temporal distortion (speed of movement), default: 0.0 */
   temporalDistortion: number
 
   time?: number
@@ -38,8 +38,6 @@ type MeshTransmissionMaterialType = Omit<
 }
 
 type MeshTransmissionMaterialProps = Omit<MeshTransmissionMaterialType, 'resolution' | 'args'> & {
-  /** Distortion speed, default: 1 */
-  distortionSpeed?: number
   /** Resolution of the local buffer, default: undefined (fullscreen) */
   resolution?: number
   /** Refraction samples, default: 6 */
@@ -100,7 +98,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       time: { value: 0 },
       distortion: { value: 0.0 },
       distortionScale: { value: 0.5 },
-      temporalDistortion: { value: 0.5 },
+      temporalDistortion: { value: 0.0 },
       buffer: { value: null },
       resolution: { value: new THREE.Vector2() },
     }
@@ -348,15 +346,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
 
 export const MeshTransmissionMaterial = React.forwardRef(
   (
-    {
-      buffer,
-      transmission = 1,
-      distortionSpeed = 1,
-      samples = 10,
-      resolution,
-      background,
-      ...props
-    }: MeshTransmissionMaterialProps,
+    { buffer, transmission = 1, samples = 10, resolution, background, ...props }: MeshTransmissionMaterialProps,
     fref
   ) => {
     extend({ MeshTransmissionMaterial: MeshTransmissionMaterialImpl })
@@ -372,7 +362,7 @@ export const MeshTransmissionMaterial = React.forwardRef(
     useFrame((state) => {
       if (!buffer) {
         parent = (ref.current as any).__r3f.parent as THREE.Object3D
-        ref.current.time = state.clock.getElapsedTime() * distortionSpeed
+        ref.current.time = state.clock.getElapsedTime()
         if (parent) {
           // Save defaults
           oldTone = state.gl.toneMapping

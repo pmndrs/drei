@@ -1488,6 +1488,12 @@ For performance and visual reasons the host mesh gets removed from the render-st
 
 ```tsx
 type MeshTransmissionMaterialProps = JSX.IntrinsicElements['meshPhysicalMaterial'] & {
+  /* Transmission, default: 1 */
+  transmission?: number
+  /* Thickness (refraction), default: 0 */
+  thickness?: number
+  /* Roughness (blur), default: 0 */
+  roughness?: number
   /* Chromatic aberration, default: 0.03 */
   chromaticAberration?: number
   /* Anisotropy, default: 0.1 */
@@ -1495,9 +1501,9 @@ type MeshTransmissionMaterialProps = JSX.IntrinsicElements['meshPhysicalMaterial
   /* Distortion, default: 0 */
   distortion?: number
   /* Distortion scale, default: 0.5 */
-  distortionScale?: number
+  distortionScale: number
   /* Temporal distortion, default: 0.5 */
-  temporalDistortion?: number
+  temporalDistortion: number
 }
 ```
 

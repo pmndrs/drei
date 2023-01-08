@@ -1,6 +1,27 @@
 import * as React from 'react'
-import create, { GetState, StateSelector, Subscribe, UseBoundStore } from 'zustand'
+import create, { StoreApi, UseBoundStore } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
+
+// These are removed in Zustand v4
+type State = object // unknown
+type StateSelector<T extends State, U> = (state: T) => U
+type EqualityChecker<T> = (state: T, newState: T) => boolean
+type StateListener<T> = (state: T, previousState: T) => void
+
+// Zustand v3 marked deprecations in 3.x, but there's no visible upgrade path
+type StoreApiWithSubscribeWithSelector<T extends State> = Omit<StoreApi<T>, 'subscribe'> & {
+  subscribe: {
+    (listener: StateListener<T>): () => void
+    <StateSlice>(
+      selector: StateSelector<T, StateSlice>,
+      listener: StateListener<StateSlice>,
+      options?: {
+        equalityFn?: EqualityChecker<StateSlice>
+        fireImmediately?: boolean
+      }
+    ): () => void
+  }
+}
 
 type KeyboardControlsState<T extends string = string> = { [K in T]: boolean }
 
@@ -25,8 +46,8 @@ type KeyboardControlsProps = {
 }
 
 type KeyboardControlsApi<T extends string = string> = [
-  Subscribe<KeyboardControlsState<T>>,
-  GetState<KeyboardControlsState<T>>,
+  StoreApiWithSubscribeWithSelector<KeyboardControlsState<T>>['subscribe'],
+  StoreApiWithSubscribeWithSelector<KeyboardControlsState<T>>['getState'],
   UseBoundStore<KeyboardControlsState<T>>
 ]
 
@@ -93,13 +114,18 @@ export function KeyboardControls({ map, children, onChange, domElement }: Keyboa
 type Selector<T extends string = string> = (state: KeyboardControlsState<T>) => boolean
 
 export function useKeyboardControls<T extends string = string>(): [
-  Subscribe<KeyboardControlsState<T>>,
-  GetState<KeyboardControlsState<T>>
+  StoreApiWithSubscribeWithSelector<KeyboardControlsState<T>>['subscribe'],
+  StoreApiWithSubscribeWithSelector<KeyboardControlsState<T>>['getState']
 ]
 export function useKeyboardControls<T extends string = string>(sel: Selector<T>): ReturnType<Selector<T>>
 export function useKeyboardControls<T extends string = string>(
   sel?: Selector<T>
-): ReturnType<Selector<T>> | [Subscribe<KeyboardControlsState<T>>, GetState<KeyboardControlsState<T>>] {
+):
+  | ReturnType<Selector<T>>
+  | [
+      StoreApiWithSubscribeWithSelector<KeyboardControlsState<T>>['subscribe'],
+      StoreApiWithSubscribeWithSelector<KeyboardControlsState<T>>['getState']
+    ] {
   const [sub, get, store] = React.useContext<KeyboardControlsApi<T>>(context)
   if (sel) return store(sel)
   else return [sub, get]

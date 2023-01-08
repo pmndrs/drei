@@ -140,7 +140,7 @@ export function Select({
       document.removeEventListener('pointermove', pointerMove)
       document.removeEventListener('pointerup', pointerUp)
     }
-  }, [size, raycaster, camera, controls, gl])
+  }, [size.width, size.height, raycaster, camera, controls, gl])
 
   return (
     <group

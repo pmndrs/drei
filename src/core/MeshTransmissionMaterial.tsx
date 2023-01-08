@@ -360,9 +360,9 @@ export const MeshTransmissionMaterial = React.forwardRef(
     let oldTone
     let parent
     useFrame((state) => {
+      ref.current.time = state.clock.getElapsedTime()
       if (!buffer) {
         parent = (ref.current as any).__r3f.parent as THREE.Object3D
-        ref.current.time = state.clock.getElapsedTime()
         if (parent) {
           // Save defaults
           oldTone = state.gl.toneMapping

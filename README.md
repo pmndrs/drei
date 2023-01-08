@@ -355,26 +355,47 @@ PointerLockControls additionally supports a `selector` prop, which enables the b
   <a href="https://codesandbox.io/s/4jr4p"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/4jr4p/screenshot.png" alt="GLTF and useScroll"/></a>
 </p>
 
+```tsx
+type ScrollControlsProps = {
+  /** Precision, default 0.00001 */
+  eps?: number
+  /** Horontal scroll, default false (vertical) */
+  horizontal?: boolean
+  /** Infinite scroll, default false (experimental!) */
+  infinite?: boolean
+  /** Defines the lenght of the scroll area, each page is height:100%, default 1 */
+  pages?: number
+  /** A factor that increases scroll bar travel, default 1 */
+  distance?: number
+  /** Friction in seconds, default: 0.2 (1/5 second) */
+  damping?: number
+  /** maxSpeed optionally allows you to clamp the maximum speed. If damping is 0.2s and looks OK
+   *  going between, say, page 1 and 2, but not for pages far apart as it'll move very rapid,
+   *  then a maxSpeed of e.g. 3 which will clamp the speed to 3 units per second, it may now
+   *  take much longer than damping to reach the target if it is far away. Default: Infinity */
+  maxSpeed?: number
+  enabled?: boolean
+  style?: React.CSSProperties
+  children: React.ReactNode
+}
+```
+
 Scroll controls create a HTML scroll container in front of the canvas. Everything you drop into the `<Scroll>` component will be affected.
 
 You can listen and react to scroll with the `useScroll` hook which gives you useful data like the current scroll `offset`, `delta` and functions for range finding: `range`, `curve` and `visible`. The latter functions are especially useful if you want to react to the scroll offset, for instance if you wanted to fade things in and out if they are in or out of view.
 
 ```jsx
-;<ScrollControls
-  pages={3} // Each page takes 100% of the height of the canvas
-  distance={1} // A factor that increases scroll bar travel (default: 1)
-  damping={4} // Friction, higher is faster (default: 4)
-  horizontal={false} // Can also scroll horizontally (default: false)
-  infinite={false} // Can also scroll infinitely (default: false)
->
-  {/* You can have components in here, they are not scrolled, but they can still
-      react to scroll by using useScroll! */}
+;<ScrollControls pages={3} damping={0.1}>
+  {/* Canvas contents in here will *not* scroll, but receive useScroll! */}
+  <SomeModel />
   <Scroll>
+    {/* Canvas contents in here will scroll along */}
     <Foo position={[0, 0, 0]} />
     <Foo position={[0, viewport.height, 0]} />
     <Foo position={[0, viewport.height * 1, 0]} />
   </Scroll>
   <Scroll html>
+    {/* DOM contents in here will scroll along */}
     <h1>html in here (optional)</h1>
     <h1 style={{ top: '100vh' }}>second page</h1>
     <h1 style={{ top: '200vh' }}>third page</h1>

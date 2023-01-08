@@ -1525,6 +1525,20 @@ type MeshTransmissionMaterialProps = JSX.IntrinsicElements['meshPhysicalMaterial
   distortionScale: number
   /* Temporal distortion (speed of movement), default: 0.0 */
   temporalDistortion: number
+  /** The scene rendered into a texture (use it to share a texture between materials), default: null  */
+  buffer?: THREE.Texture
+  /** transmissionSampler, you can use the threejs transmission sampler texture that is
+   *  generated once for all transmissive materials. The upside is that it can be faster if you
+   *  use multiple MeshPhysical and Transmission materials, the downside is that transmissive materials
+   *  using this can't see other transparent or transmissive objects nor do you have control over the
+   *  buffer and its resolution, default: false */
+  transmissionSampler?: boolean
+  /** Resolution of the local buffer, default: undefined (fullscreen) */
+  resolution?: number
+  /** Refraction samples, default: 6 */
+  samples?: number
+  /** Buffer scene background (can be a texture, a cubetexture or a color), default: null */
+  background?: THREE.Texture
 }
 ```
 
@@ -1534,7 +1548,37 @@ return (
     <MeshTransmissionMaterial />
 ```
 
-If each material rendering the scene on its own is too much expensense you can share a buffer texture, for instance using drei/PerspectiveCamera. This would mimic the default THREE.MeshPhysicalMaterial behaviour, the upside is that it's faster if you have multiple materials, the downside is that one transmissive material now can't "see" the other.
+If each material rendering the scene on its own is too much expensense you can share a buffer texture. Either by enabling `transmissionSampler` which would use the threejs-internal buffer that MeshPhysicalMaterials use. This might be faster, the downside is that no transmissive material can "see" other transparent or transmissive objects.
+
+```jsx
+<mesh geometry={torus}>
+  <MeshTransmissionMaterial transmissionSampler />
+</mesh>
+<mesh geometry={sphere}>
+  <MeshTransmissionMaterial transmissionSampler />
+</mesh>
+```
+
+Or, by passing a texture to `buffer` manually, for instance using useFBO.
+
+```jsx
+const buffer = useFBO()
+useFrame((state) => {
+  state.gl.setRenderTarget(buffer)
+  state.gl.render(state.scene, state.camera)
+  state.gl.setRenderTarget(null)
+})
+return (
+  <>
+    <mesh geometry={torus}>
+      <MeshTransmissionMaterial buffer={buffer.texture} />
+    </mesh>
+    <mesh geometry={sphere}>
+      <MeshTransmissionMaterial buffer={buffer.texture} />
+    </mesh>
+```
+
+Or a PerspectiveCamera.
 
 ```jsx
 <PerspectiveCamera makeDefault fov={75} position={[10, 0, 15]} resolution={1024}>
@@ -1549,6 +1593,8 @@ If each material rendering the scene on its own is too much expensense you can s
     </>
   )}
 ```
+
+This would mimic the default MeshPhysicalMaterial behaviour, these materials won't "see" one another, but at least they would pick up on everything else, including transmissive or transparent objects.
 
 #### PointMaterial
 

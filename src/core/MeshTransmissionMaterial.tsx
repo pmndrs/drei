@@ -29,15 +29,22 @@ type MeshTransmissionMaterialType = Omit<
   distortionScale: number
   /* Temporal distortion (speed of movement), default: 0.0 */
   temporalDistortion: number
-
-  time?: number
-  resolution?: ReactThreeFiber.Vector2
   /** The scene rendered into a texture (use it to share a texture between materials), default: null  */
   buffer?: THREE.Texture
-  args?: [samples: number]
+  /** Internals */
+  time?: number
+  /** Internals */
+  resolution?: ReactThreeFiber.Vector2
+  /** Internals */
+  args?: [samples: number, transmissionSampler: boolean]
 }
 
 type MeshTransmissionMaterialProps = Omit<MeshTransmissionMaterialType, 'resolution' | 'args'> & {
+  /** transmissionSampler, you can use the threejs transmission sampler texture that is
+   *  generated once for all transmissive materials. The upside is that it can be faster if you
+   *  use multiple MeshPhysical and Transmission materials, the downside is that transmissive materials
+   *  using this can't see other transparent or transmissive objects, default: false */
+  transmissionSampler?: boolean
   /** Resolution of the local buffer, default: undefined (fullscreen) */
   resolution?: number
   /** Refraction samples, default: 6 */
@@ -78,12 +85,12 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
     resolution: Uniform<THREE.Vector2>
   }
 
-  constructor(samples = 6) {
+  constructor(samples = 6, transmissionSampler = false) {
     super()
 
     this.uniforms = {
       chromaticAberration: { value: 0.05 },
-      // Transmission must always be 0
+      // Transmission must always be 0, unless transmissionSampler is being used
       transmission: { value: 0 },
       // Instead a workaround is used, see below for reasons why
       _transmission: { value: 1 },
@@ -103,12 +110,17 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       resolution: { value: new THREE.Vector2() },
     }
 
-    this.onBeforeCompile = (shader) => {
+    this.onBeforeCompile = (shader: THREE.Shader & { defines: { [key: string]: string } }) => {
       shader.uniforms = {
         ...shader.uniforms,
         ...this.uniforms,
       }
-      ;(shader as any).defines.USE_TRANSMISSION = ''
+
+      // If the transmission sampler is active inject a flag
+      if (transmissionSampler) shader.defines.USE_SAMPLER = ''
+      // Otherwise we do use use .transmission and must therefore force USE_TRANSMISSION
+      // because threejs won't inject it for us
+      else shader.defines.USE_TRANSMISSION = ''
 
       // Head
       shader.fragmentShader =
@@ -245,7 +257,16 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
             return roughness * clamp( ior * 2.0 - 2.0, 0.0, 1.0 );
           }
           vec4 getTransmissionSample( const in vec2 fragCoord, const in float roughness, const in float ior ) {
-            return texture2D(buffer, fragCoord.xy);
+            float framebufferLod = log2( transmissionSamplerSize.x ) * applyIorToRoughness( roughness, ior );            
+            #ifdef USE_SAMPLER
+              #ifdef texture2DLodEXT
+                return texture2DLodEXT(transmissionSamplerMap, fragCoord.xy, framebufferLod);
+              #else
+                return texture2D(transmissionSamplerMap, fragCoord.xy, framebufferLod);
+              #endif
+            #else
+              return texture2D(buffer, fragCoord.xy);
+            #endif
           }
           vec3 applyVolumeAttenuation( const in vec3 radiance, const in float transmissionDistance, const in vec3 attenuationColor, const in float attenuationDistance ) {
             if ( isinf( attenuationDistance ) ) {
@@ -346,7 +367,15 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
 
 export const MeshTransmissionMaterial = React.forwardRef(
   (
-    { buffer, transmission = 1, samples = 10, resolution, background, ...props }: MeshTransmissionMaterialProps,
+    {
+      buffer,
+      transmissionSampler = false,
+      transmission = 1,
+      samples = 10,
+      resolution,
+      background,
+      ...props
+    }: MeshTransmissionMaterialProps,
     fref
   ) => {
     extend({ MeshTransmissionMaterial: MeshTransmissionMaterialImpl })
@@ -361,7 +390,7 @@ export const MeshTransmissionMaterial = React.forwardRef(
     let parent
     useFrame((state) => {
       ref.current.time = state.clock.getElapsedTime()
-      if (!buffer) {
+      if (!buffer && !transmissionSampler) {
         parent = (ref.current as any).__r3f.parent as THREE.Object3D
         if (parent) {
           // Save defaults
@@ -394,7 +423,7 @@ export const MeshTransmissionMaterial = React.forwardRef(
     return (
       <meshTransmissionMaterial
         // Samples must re-compile the shader so we memoize it
-        args={[samples]}
+        args={[samples, transmissionSampler]}
         ref={ref}
         {...props}
         buffer={buffer || fbo.texture}
@@ -402,7 +431,8 @@ export const MeshTransmissionMaterial = React.forwardRef(
         _transmission={transmission}
         // In order for this to not incur extra cost "transmission" must be set to 0 and treated as a reserved prop.
         // This is because THREE.WebGLRenderer will check for transmission > 0 and execute extra renders.
-        transmission={0}
+        // The exception is when transmissionSampler is set, in which case we are using three's built in sampler.
+        transmission={transmissionSampler ? transmission : 0}
         resolution={[size.width * viewport.dpr, size.height * viewport.dpr]}
       />
     )

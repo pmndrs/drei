@@ -40,7 +40,7 @@ type Props = JSX.IntrinsicElements['mesh'] & {
 export const Text = React.forwardRef(
   (
     { anchorX = 'center', anchorY = 'middle', font, fontSize = 1, children, characters, onSync, ...props }: Props,
-    ref: React.ForwardedRef<TextMeshImpl>
+    ref: React.ForwardedRef<any>
   ) => {
     const invalidate = useThree(({ invalidate }) => invalidate)
     const [troikaMesh] = React.useState(() => new TextMeshImpl())

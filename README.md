@@ -371,7 +371,7 @@ type ScrollControlsProps = {
   damping?: number
   /** maxSpeed optionally allows you to clamp the maximum speed. If damping is 0.2s and looks OK
    *  going between, say, page 1 and 2, but not for pages far apart as it'll move very rapid,
-   *  then a maxSpeed of e.g. 3 which will clamp the speed to 3 units per second, it may now
+   *  then a maxSpeed of e.g. 0.1 which will clamp the speed to 0.1 units per second, it may now
    *  take much longer than damping to reach the target if it is far away. Default: Infinity */
   maxSpeed?: number
   enabled?: boolean

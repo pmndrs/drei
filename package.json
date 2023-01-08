@@ -71,6 +71,7 @@
     "three-stdlib": "^2.20.4",
     "troika-three-text": "^0.47.1",
     "utility-types": "^3.10.0",
+    "maath": "^0.5.1",
     "zustand": "^3.5.13"
   },
   "devDependencies": {
@@ -115,7 +116,6 @@
     "husky": "^6.0.0",
     "jest": "^26.4.1",
     "json": "^11.0.0",
-    "maath": "^0.5.1",
     "prettier": "^2.4.1",
     "pretty-quick": "^3.1.0",
     "react": "^18.0.0",

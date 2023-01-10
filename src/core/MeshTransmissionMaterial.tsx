@@ -34,12 +34,10 @@ type MeshTransmissionMaterialType = Omit<
   /** Internals */
   time?: number
   /** Internals */
-  resolution?: ReactThreeFiber.Vector2
-  /** Internals */
   args?: [samples: number, transmissionSampler: boolean]
 }
 
-type MeshTransmissionMaterialProps = Omit<MeshTransmissionMaterialType, 'resolution' | 'args'> & {
+type MeshTransmissionMaterialProps = Omit<MeshTransmissionMaterialType, 'args'> & {
   /** transmissionSampler, you can use the threejs transmission sampler texture that is
    *  generated once for all transmissive materials. The upside is that it can be faster if you
    *  use multiple MeshPhysical and Transmission materials, the downside is that transmissive materials
@@ -82,7 +80,6 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
     distortionScale: Uniform<number>
     temporalDistortion: Uniform<number>
     buffer: Uniform<THREE.Texture | null>
-    resolution: Uniform<THREE.Vector2>
   }
 
   constructor(samples = 6, transmissionSampler = false) {
@@ -107,7 +104,6 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       distortionScale: { value: 0.5 },
       temporalDistortion: { value: 0.0 },
       buffer: { value: null },
-      resolution: { value: new THREE.Vector2() },
     }
 
     this.onBeforeCompile = (shader: THREE.Shader & { defines: { [key: string]: string } }) => {
@@ -125,8 +121,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       // Head
       shader.fragmentShader =
         /*glsl*/ `
-      uniform float chromaticAberration;
-      uniform vec2 resolution;            
+      uniform float chromaticAberration;         
       uniform float anisotropy;      
       uniform float time;
       uniform float distortion;
@@ -303,8 +298,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       // Add refraction
       shader.fragmentShader = shader.fragmentShader.replace(
         '#include <transmission_fragment>',
-        /*glsl*/ `
-        vec2 uv = gl_FragCoord.xy / resolution.xy;      
+        /*glsl*/ `  
         // Improve the refraction to use the world pos
         material.transmission = _transmission;
         material.transmissionAlpha = 1.0;
@@ -381,7 +375,6 @@ export const MeshTransmissionMaterial = React.forwardRef(
     extend({ MeshTransmissionMaterial: MeshTransmissionMaterialImpl })
 
     const ref = React.useRef<JSX.IntrinsicElements['meshTransmissionMaterial']>(null!)
-    const { size, viewport } = useThree()
     const fbo = useFBO(resolution)
 
     let oldBg
@@ -433,7 +426,6 @@ export const MeshTransmissionMaterial = React.forwardRef(
         // This is because THREE.WebGLRenderer will check for transmission > 0 and execute extra renders.
         // The exception is when transmissionSampler is set, in which case we are using three's built in sampler.
         transmission={transmissionSampler ? transmission : 0}
-        resolution={[size.width * viewport.dpr, size.height * viewport.dpr]}
       />
     )
   }

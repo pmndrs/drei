@@ -69,14 +69,46 @@ export class BlurPass {
     this.screen.frustumCulled = false
     this.scene.add(this.screen)
   }
-
-  render(renderer, inputBuffer, outputBuffer) {
+  get minDepthThreshold() {
+    return this.convolutionMaterial.uniforms.minDepthThreshold.value
+  }
+  set minDepthThreshold(value) {
+    this.convolutionMaterial.uniforms.minDepthThreshold.value = value
+  }
+  get maxDepthThreshold() {
+    return this.convolutionMaterial.uniforms.maxDepthThreshold.value
+  }
+  set maxDepthThreshold(value) {
+    this.convolutionMaterial.uniforms.maxDepthThreshold.value = value
+  }
+  get depthScale() {
+    return this.convolutionMaterial.uniforms.depthScale.value
+  }
+  set depthScale(value) {
+    this.convolutionMaterial.defines.USE_DEPTH = value > 0
+    this.convolutionMaterial.uniforms.depthScale.value = value
+  }
+  get depthToBlurRatioBias() {
+    return this.convolutionMaterial.uniforms.depthToBlurRatioBias.value
+  }
+  set depthToBlurRatioBias(value) {
+    this.convolutionMaterial.uniforms.depthToBlurRatioBias.value = value
+  }
+  setBlurResolution(width: number, height: number) {
+    this.convolutionMaterial.setTexelSize(1.0 / width, 1.0 / height)
+    this.convolutionMaterial.uniforms.resolution.value.set(width, height)
+  }
+  setResolution(resolution: number) {
+    this.renderTargetA.setSize(resolution, resolution)
+    this.renderTargetB.setSize(resolution, resolution)
+  }
+  render(renderer: WebGLRenderer, inputBuffer: WebGLRenderTarget, outputBuffer: WebGLRenderTarget) {
     const scene = this.scene
     const camera = this.camera
     const renderTargetA = this.renderTargetA
     const renderTargetB = this.renderTargetB
-    let material = this.convolutionMaterial
-    let uniforms = material.uniforms
+    const material = this.convolutionMaterial
+    const uniforms = material.uniforms
     uniforms.depthBuffer.value = inputBuffer.depthTexture
     const kernel = material.kernel
     let lastRT = inputBuffer
@@ -96,5 +128,11 @@ export class BlurPass {
     uniforms.inputBuffer.value = lastRT.texture
     renderer.setRenderTarget(this.renderToScreen ? null : outputBuffer)
     renderer.render(scene, camera)
+  }
+  dispose() {
+    this.renderTargetA.dispose()
+    this.renderTargetB.dispose()
+    this.screen.geometry.dispose()
+    this.convolutionMaterial.dispose()
   }
 }

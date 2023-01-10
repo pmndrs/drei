@@ -86,7 +86,28 @@ export const MeshReflectorMaterial = React.forwardRef<MeshReflectorMaterialImpl,
     const [q] = React.useState(() => new Vector4())
     const [textureMatrix] = React.useState(() => new Matrix4())
     const [virtualCamera] = React.useState(() => new PerspectiveCamera())
-
+    const parameters = {
+      minFilter: LinearFilter,
+      magFilter: LinearFilter,
+      encoding: gl.outputEncoding,
+      type: HalfFloatType,
+    }
+    //incremental change before useFBO()?
+    const [fbo1] = React.useState(() => new WebGLRenderTarget(resolution, resolution, parameters))
+    const [fbo2] = React.useState(() => new WebGLRenderTarget(resolution, resolution, parameters))
+    const [depthTexture] = React.useState(() => new DepthTexture(resolution, resolution))
+    const [blurpass] = React.useState(() => {
+      return new BlurPass({
+        gl,
+        resolution,
+        width: blur[0],
+        height: blur[1],
+        minDepthThreshold,
+        maxDepthThreshold,
+        depthScale,
+        depthToBlurRatioBias,
+      })
+    })
     const beforeRender = React.useCallback(() => {
       // TODO: As of R3f 7-8 this should be __r3f.parent
       const parent = (materialRef.current as any).parent || (materialRef.current as any)?.__r3f.parent
@@ -142,29 +163,23 @@ export const MeshReflectorMaterial = React.forwardRef<MeshReflectorMaterialImpl,
       projectionMatrix.elements[14] = clipPlane.w
     }, [camera, reflectorOffset])
 
-    const [fbo1, fbo2, blurpass, reflectorProps] = React.useMemo(() => {
-      const parameters = {
-        minFilter: LinearFilter,
-        magFilter: LinearFilter,
-        encoding: gl.outputEncoding,
-        type: HalfFloatType,
-      }
-      const fbo1 = new WebGLRenderTarget(resolution, resolution, parameters)
+    const [reflectorProps] = React.useMemo(() => {
+      fbo1.setSize(resolution, resolution)
       fbo1.depthBuffer = true
-      fbo1.depthTexture = new DepthTexture(resolution, resolution)
+      if (depthTexture.image.width !== resolution) {
+        depthTexture.image.width = resolution
+        depthTexture.image.height = resolution
+      }
+      fbo1.depthTexture = depthTexture
       fbo1.depthTexture.format = DepthFormat
       fbo1.depthTexture.type = UnsignedShortType
-      const fbo2 = new WebGLRenderTarget(resolution, resolution, parameters)
-      const blurpass = new BlurPass({
-        gl,
-        resolution,
-        width: blur[0],
-        height: blur[1],
-        minDepthThreshold,
-        maxDepthThreshold,
-        depthScale,
-        depthToBlurRatioBias,
-      })
+      fbo2.setSize(resolution, resolution)
+      blurpass.setBlurResolution(blur[0], blur[1])
+      blurpass.minDepthThreshold = minDepthThreshold
+      blurpass.maxDepthThreshold = maxDepthThreshold
+      blurpass.depthScale = depthScale
+      blurpass.depthToBlurRatioBias = depthToBlurRatioBias
+      blurpass.setResolution(resolution)
       const reflectorProps = {
         mirror,
         textureMatrix,
@@ -185,7 +200,7 @@ export const MeshReflectorMaterial = React.forwardRef<MeshReflectorMaterialImpl,
         'defines-USE_DEPTH': depthScale > 0 ? '' : undefined,
         'defines-USE_DISTORTION': distortionMap ? '' : undefined,
       }
-      return [fbo1, fbo2, blurpass, reflectorProps]
+      return [reflectorProps]
     }, [
       gl,
       blur,
@@ -225,6 +240,15 @@ export const MeshReflectorMaterial = React.forwardRef<MeshReflectorMaterialImpl,
       parent.visible = true
       gl.setRenderTarget(null)
     })
+
+    React.useEffect(() => {
+      return () => {
+        fbo1.dispose()
+        fbo2.dispose()
+        depthTexture.dispose()
+        blurpass.dispose()
+      }
+    }, [])
 
     return (
       <meshReflectorMaterialImpl

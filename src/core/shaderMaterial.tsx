@@ -38,7 +38,6 @@ export function shaderMaterial(
         }, {}),
         vertexShader,
         fragmentShader,
-        ...parameters,
       })
       // Create getter/setters
       entries.forEach(([name]) =>
@@ -48,6 +47,9 @@ export function shaderMaterial(
         })
       )
 
+      // Assign parameters, this might include uniforms
+      Object.assign(this, parameters)
+      // Call onInit
       if (onInit) onInit(this)
     }
   } as unknown as typeof THREE.ShaderMaterial & { key: string }

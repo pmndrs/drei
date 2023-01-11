@@ -1630,16 +1630,15 @@ Injects [percent closer soft shadows (pcss)](https://threejs.org/examples/#webgl
   <a href="https://codesandbox.io/s/ni6v4"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/ni6v4/screenshot.png" alt="Demo"/></a>
 </p>
 
-Creates a THREE.ShaderMaterial for you with easier handling of uniforms, which are also automatically declared as setter/getters on the object.
+Creates a THREE.ShaderMaterial for you with easier handling of uniforms, which are automatically declared as setter/getters on the object and allowed as constructor arguments.
 
 ```jsx
 import { extend } from '@react-three/fiber'
-import glsl from 'babel-plugin-glsl/macro'
 
 const ColorShiftMaterial = shaderMaterial(
   { time: 0, color: new THREE.Color(0.2, 0.0, 0.1) },
   // vertex shader
-  glsl`
+  /*glsl*/`
     varying vec2 vUv;
     void main() {
       vUv = uv;
@@ -1647,7 +1646,7 @@ const ColorShiftMaterial = shaderMaterial(
     }
   `,
   // fragment shader
-  glsl`
+  /*glsl*/`
     uniform float time;
     uniform vec3 color;
     varying vec2 vUv;
@@ -1657,12 +1656,16 @@ const ColorShiftMaterial = shaderMaterial(
   `
 )
 
+// declaratively
 extend({ ColorShiftMaterial })
-
-// in your component
+...
 <mesh>
   <colorShiftMaterial color="hotpink" time={1} />
 </mesh>
+
+// imperatively, all uniforms are available as setter/getters and constructor args
+const material = new ColorShiftMaterial({ color: new THREE.Color("hotpink") })
+material.time = 1
 ```
 
 `shaderMaterial` attaches a unique `key` property to the prototype class. If you wire it to Reacts own `key` property, you can enable hot-reload.

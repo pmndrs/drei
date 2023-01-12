@@ -154,7 +154,6 @@ const CausticsMaterial = shaderMaterial(
   /* glsl */ `  
   uniform mat4 cameraMatrixWorld;
   uniform mat4 cameraProjectionMatrixInv;
-  uniform mat4 modelMatrix;
   uniform vec3 lightDir;
   uniform float near;
   uniform float far;
@@ -186,18 +185,15 @@ const CausticsMaterial = shaderMaterial(
   float planeIntersect( vec3 ro, vec3 rd, vec4 p ) {
     return -(dot(ro,p.xyz)+p.w)/dot(rd,p.xyz);
   }
-  vec3 totalInternalReflection(vec3 ro, vec3 rd, vec3 pos, vec3 normal, float ior, mat4 modelMatrixInverse, out vec3 rayOrigin, out vec3 rayDirection) {
+  vec3 totalInternalReflection(vec3 ro, vec3 rd, vec3 pos, vec3 normal, float ior, out vec3 rayOrigin, out vec3 rayDirection) {
     rayOrigin = ro;
     rayDirection = rd;
     rayDirection = refract(rayDirection, normal, 1.0 / ior);
     rayOrigin = pos + rayDirection * 0.1;
-    rayOrigin = (modelMatrixInverse * vec4(rayOrigin, 1.0)).xyz;    
-    rayDirection = normalize((modelMatrixInverse * vec4(rayDirection, 0.0)).xyz);
     return rayDirection;
   }
   void main() {
     // Each sample consists of random offset in the x and y direction
-    mat4 modelMatrixInverse = inverse(modelMatrix);
     float caustic = 0.0;
     float causticTexelSize = (1.0 / resolution) * size * 2.0;
     float texelsNeeded = worldRadius / causticTexelSize;
@@ -238,10 +234,10 @@ const CausticsMaterial = shaderMaterial(
     vec3 originPos4 = WorldPosFromDepth(0.0, uv4);
     vec3 endPos1, endPos2, endPos3, endPos4;
     vec3 endDir1, endDir2, endDir3, endDir4;
-    totalInternalReflection(originPos1, lightDir, pos1, normal1, ior, modelMatrixInverse, endPos1, endDir1);
-    totalInternalReflection(originPos2, lightDir, pos2, normal2, ior, modelMatrixInverse, endPos2, endDir2);
-    totalInternalReflection(originPos3, lightDir, pos3, normal3, ior, modelMatrixInverse, endPos3, endDir3);
-    totalInternalReflection(originPos4, lightDir, pos4, normal4, ior, modelMatrixInverse, endPos4, endDir4);
+    totalInternalReflection(originPos1, lightDir, pos1, normal1, ior, endPos1, endDir1);
+    totalInternalReflection(originPos2, lightDir, pos2, normal2, ior, endPos2, endDir2);
+    totalInternalReflection(originPos3, lightDir, pos3, normal3, ior, endPos3, endDir3);
+    totalInternalReflection(originPos4, lightDir, pos4, normal4, ior, endPos4, endDir4);
     float lightPosArea = length(cross(originPos2 - originPos1, originPos3 - originPos1)) + length(cross(originPos3 - originPos1, originPos4 - originPos1));
     float t1 = planeIntersect(endPos1, endDir1, vec4(0.0, 1.0, 0.0, 0.0));
     float t2 = planeIntersect(endPos2, endDir2, vec4(0.0, 1.0, 0.0, 0.0));
@@ -252,8 +248,6 @@ const CausticsMaterial = shaderMaterial(
     vec3 finalPos3 = endPos3 + endDir3 * t3;
     vec3 finalPos4 = endPos4 + endDir4 * t4;
     float finalArea = length(cross(finalPos2 - finalPos1, finalPos3 - finalPos1)) + length(cross(finalPos3 - finalPos1, finalPos4 - finalPos1));
-    //gl_FragColor = vec4(lightPosArea, 0.0, 0.0, 1.0);
-    //return;
     caustic += intensity * (lightPosArea / finalArea);
     // Calculate the area of the triangle in light spaces
     gl_FragColor = vec4(vec3(max(caustic, 0.0)), 1.0);
@@ -306,7 +300,7 @@ export const Caustics = React.forwardRef(
     const plane = React.useRef<THREE.Mesh<THREE.PlaneGeometry, CausticsProjectionMaterialType>>(null!)
     const gl = useThree((state) => state.gl)
     const helper = useHelper(debug && camera, THREE.CameraHelper)
-    useHelper(debug && plane, THREE.BoxHelper)
+    const boxHelper = useHelper(debug && plane, THREE.BoxHelper)
 
     // Buffers for front and back faces
     const normalTarget = useFBO(resolution, resolution, NORMALPROPS)
@@ -320,6 +314,7 @@ export const Caustics = React.forwardRef(
     const [causticsMaterial] = React.useState(() => new CausticsMaterial() as CausticsMaterialType)
     const [causticsQuad] = React.useState(() => new FullScreenQuad(causticsMaterial))
 
+    const pos = new THREE.Vector3()
     React.useLayoutEffect(() => {
       // Update matrix world and the camera
       ref.current.updateWorldMatrix(false, true)
@@ -327,16 +322,18 @@ export const Caustics = React.forwardRef(
       camera.current.lookAt(...focus)
       camera.current.updateWorldMatrix(false, false)
       camera.current.updateProjectionMatrix()
-      if (debug) helper.current?.update()
+      if (debug) {
+        helper.current?.update()
+        boxHelper.current?.update()
+      }
 
       // Inject uniforms
       normalMatB.viewMatrix.value = normalMat.viewMatrix.value = camera.current.matrixWorldInverse
       causticsMaterial.cameraMatrixWorld = camera.current.matrixWorld
       causticsMaterial.cameraProjectionMatrixInv = camera.current.projectionMatrixInverse
-      causticsMaterial.lightDir = camera.current.position.clone().normalize().multiplyScalar(-1)
+      causticsMaterial.lightDir = camera.current.getWorldPosition(pos).normalize().multiplyScalar(-1)
       causticsMaterial.near = camera.current.near
       causticsMaterial.far = camera.current.far
-      causticsMaterial.modelMatrix = scene.current.matrixWorld
       causticsMaterial.resolution = resolution
       causticsMaterial.size = frustum
       causticsMaterial.intensity = intensity

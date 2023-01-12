@@ -3148,7 +3148,7 @@ type CausticsProps = JSX.IntrinsicElements['group'] & {
 
 It will create a transparent plane that blends the caustics of the objects it receives into your scene. It will only render once and not take resources any longer!
 
-Make sure to use the `debug` flag to help you stage your contents. Like ContactShadows and AccumulativeShadows the planes faces Y up. It is recommended to use [leva](https://github.com/pmndrs/leva) to configue the props above as some can be micro fractional depending on the models (intensity, worldRadius, ior and backfaceIor especially).
+Make sure to use the `debug` flag to help you stage your contents. Like ContactShadows and AccumulativeShadows the plane faces Y up. It is recommended to use [leva](https://github.com/pmndrs/leva) to configue the props above as some can be micro fractional depending on the models (intensity, worldRadius, ior and backfaceIor especially).
 
 ```jsx
 <Caustics debug backfaces lightSource={[2.5, 5, -2.5]} frustum={4}>

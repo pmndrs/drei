@@ -29,6 +29,7 @@ type CausticsMaterialType = THREE.ShaderMaterial & {
 
 type CausticsProjectionMaterialType = THREE.MeshNormalMaterial & {
   viewMatrix: { value?: THREE.Matrix4 }
+  color?: THREE.Color
   causticsTexture?: THREE.Texture
   causticsTextureB?: THREE.Texture
   lightProjMatrix?: THREE.Matrix4
@@ -52,6 +53,8 @@ type CausticsProps = JSX.IntrinsicElements['group'] & {
   worldRadius?: number
   /** Intensity of the prjected caustics, default: 0.05 */
   intensity?: number
+  /** Caustics color, default: white */
+  color?: ReactThreeFiber.Color
   /** Buffer resolution, default: 2048 */
   resolution?: number
   /** Camera near, default: 0.1 */
@@ -69,6 +72,7 @@ declare global {
     interface IntrinsicElements {
       causticsProjectionMaterial: ReactThreeFiber.MeshNormalMaterialProps & {
         viewMatrix?: { value: THREE.Matrix4 }
+        color?: ReactThreeFiber.Color
         causticsTexture?: THREE.Texture
         causticsTextureB?: THREE.Texture
         lightProjMatrix?: THREE.Matrix4
@@ -101,6 +105,7 @@ const CausticsProjectionMaterial = shaderMaterial(
   {
     causticsTexture: null,
     causticsTextureB: null,
+    color: new THREE.Color(),
     lightProjMatrix: new THREE.Matrix4(),
     lightViewMatrix: new THREE.Matrix4(),
   },
@@ -278,6 +283,7 @@ export const Caustics = React.forwardRef(
       children,
       frustum = 2,
       ior = 1.1,
+      color = 'white',
       causticsOnly = false,
       backfaces = false,
       backfaceIor = 1.1,
@@ -401,6 +407,7 @@ export const Caustics = React.forwardRef(
           <planeGeometry />
           <causticsProjectionMaterial
             transparent
+            color={color}
             causticsTexture={causticsTarget.texture}
             causticsTextureB={causticsTargetB.texture}
             blending={THREE.CustomBlending}

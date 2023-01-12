@@ -105,7 +105,7 @@ const CausticsProjectionMaterial = shaderMaterial(
   {
     causticsTexture: null,
     causticsTextureB: null,
-    color: new THREE.Color(),
+    color: new THREE.Color('white'),
     lightProjMatrix: new THREE.Matrix4(),
     lightViewMatrix: new THREE.Matrix4(),
   },

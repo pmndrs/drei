@@ -195,6 +195,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#lightformer">Lightformer</a></li>
           <li><a href="#spotlight">SpotLight</a></li>
           <li><a href="#shadow">Shadow</a></li>
+          <li><a href="#caustics">Caustics</a></li>
           <li><a href="#contactshadows">ContactShadows</a></li>
           <li><a href="#randomizedlight">RandomizedLight</a></li>
           <li><a href="#accumulativeshadows">AccumulativeShadows</a></li>
@@ -3103,6 +3104,68 @@ A cheap canvas-texture-based circular gradient.
   opacity={0.5}
   fog={false} // Reacts to fog (default=false)
 />
+```
+
+#### Caustics
+
+<p>
+  <a href="https://codesandbox.io/s/szj6p7"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/szj6p7/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/g7wbe0"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/g7wbe0/screenshot.png" alt="Demo"/></a>
+</p>
+
+Caustics are swirls of light that appear when light passes through transmissive surfaces. This component uses a raymarching technique to project caustics onto a catcher plane. It is based on [github/N8python/caustics](https://github.com/N8python/caustics).
+
+```tsx
+type CausticsProps = JSX.IntrinsicElements['group'] & {
+  /** Enables visual cues to help you stage your scene, default: false */
+  debug?: boolean
+  /** Will display caustics only and skip the models, default: false */
+  causticsOnly: boolean
+  /** Will include back faces and enable the backfaceIor prop, default: false */
+  backfaces: boolean
+  /** The size of the camera frustum, default: 2 */
+  frustum?: number
+  /** The IOR refraction index, default: 1.1 */
+  ior?: number
+  /** The IOR refraction index for back faces (only available when backfaces is enabled), default: 1.1 */
+  backfaceIor?: number
+  /** The texel size, default: 0.3125 */
+  worldRadius?: number
+  /** Intensity of the prjected caustics, default: 0.05 */
+  intensity?: number
+  /** Buffer resolution, default: 2048 */
+  resolution?: number
+  /** Camera near, default: 0.1 */
+  near?: number
+  /** Camera far, default: 100 */
+  far?: number
+  /** Camera position, default: [5, 5, 5] */
+  lightSource?: [x: number, y: number, z: number]
+  /** Camera lookAt, default: [0, 0, 0] */
+  focus?: [x: number, y: number, z: number]
+}
+```
+
+It will create a transparent plane that blends the caustics of the objects it receives into your scene. It will only render once and not take resources any longer!
+
+Make sure to use the `debug` flag to help you stage your contents. Like ContactShadows and AccumulativeShadows the plane faces Y up. It is recommended to use [leva](https://github.com/pmndrs/leva) to configue the props above as some can be micro fractional depending on the models (intensity, worldRadius, ior and backfaceIor especially).
+
+```jsx
+<Caustics debug backfaces lightSource={[2.5, 5, -2.5]} frustum={4}>
+  <Bottle />
+  <WineGlass>
+</Caustics>
+```
+
+Sometimes you want to combine caustics for even better visuals, or if you want to emulate multiple lightsources. Use the `causticsOnly` flag in such cases and it will use the model inside only for calculations. Since all loaders in Fiber should be cached there is no expense or memory overhead doing this.
+
+```jsx
+<Caustics lightSource={[2.5, 5, -2.5]} >
+  <WineGlass />
+</Caustics>
+<Caustics causticsOnly lightSource={[-2.5, 5, 2.5]} ior={0.79} worldRadius={0.0124}>
+  <WineGlass />
+</Caustics>
 ```
 
 #### ContactShadows

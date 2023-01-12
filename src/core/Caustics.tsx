@@ -116,6 +116,7 @@ const CausticsProjectionMaterial = shaderMaterial(
      vWorldPosition = worldPosition.xyz;
    }`,
   `varying vec3 vWorldPosition;
+  uniform vec3 color;
   uniform sampler2D causticsTexture; 
   uniform sampler2D causticsTextureB; 
   uniform mat4 lightProjMatrix;
@@ -127,7 +128,7 @@ const CausticsProjectionMaterial = shaderMaterial(
     lightSpacePos.xyz = lightSpacePos.xyz * 0.5 + 0.5; 
     vec3 front = texture2D(causticsTexture, lightSpacePos.xy).rgb;
     vec3 back = texture2D(causticsTextureB, lightSpacePos.xy).rgb;
-    gl_FragColor = vec4(front + back, 1.0);
+    gl_FragColor = vec4((front + back) * color, 1.0);
     #include <tonemapping_fragment>
     #include <encodings_fragment>
    }`

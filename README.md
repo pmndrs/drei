@@ -3133,6 +3133,8 @@ type CausticsProps = JSX.IntrinsicElements['group'] & {
   worldRadius?: number
   /** Intensity of the prjected caustics, default: 0.05 */
   intensity?: number
+  /** Caustics color, default: white */
+  color?: ReactThreeFiber.Color
   /** Buffer resolution, default: 2048 */
   resolution?: number
   /** Camera near, default: 0.1 */

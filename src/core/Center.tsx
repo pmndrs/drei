@@ -24,6 +24,8 @@ export type CenterProps = {
   left?: boolean
   front?: boolean
   back?: boolean
+  /** Disable all axes */
+  disable?: boolean
   /** Disable x-axis centering */
   disableX?: boolean
   /** Disable y-axis centering */
@@ -39,6 +41,7 @@ export type CenterProps = {
 export const Center = React.forwardRef<Group, JSX.IntrinsicElements['group'] & CenterProps>(function Center(
   {
     children,
+    disable,
     disableX,
     disableY,
     disableZ,
@@ -71,9 +74,9 @@ export const Center = React.forwardRef<Group, JSX.IntrinsicElements['group'] & C
     const hAlign = left ? -width / 2 : right ? width / 2 : 0
     const dAlign = front ? depth / 2 : back ? -depth / 2 : 0
     outer.current.position.set(
-      disableX ? 0 : -center.x + hAlign,
-      disableY ? 0 : -center.y + vAlign,
-      disableZ ? 0 : -center.z + dAlign
+      disable || disableX ? 0 : -center.x + hAlign,
+      disable || disableY ? 0 : -center.y + vAlign,
+      disable || disableZ ? 0 : -center.z + dAlign
     )
 
     if (typeof onCentered !== 'undefined') {

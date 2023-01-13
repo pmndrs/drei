@@ -2841,6 +2841,8 @@ export type Props = JSX.IntrinsicElements['group'] & {
   left?: boolean
   front?: boolean
   back?: boolean
+  /** Disable all axes */
+  disable?: boolean
   /** Disable x-axis centering */
   disableX?: boolean
   /** Disable y-axis centering */
@@ -3123,7 +3125,8 @@ type CausticsProps = JSX.IntrinsicElements['group'] & {
   causticsOnly: boolean
   /** Will include back faces and enable the backfaceIor prop, default: false */
   backfaces: boolean
-  /** The size of the camera frustum, default: 2 */
+  /** The size of the camera frustum, make sure it fits your model perfectly
+   *  (with the debug flag)! The better it fits the more resolution you have. default: 2 */
   frustum?: number
   /** The IOR refraction index, default: 1.1 */
   ior?: number

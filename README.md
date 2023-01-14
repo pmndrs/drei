@@ -1830,6 +1830,8 @@ Enable shadows using the `castShadow` and `recieveShadow` prop.
 />
 ```
 
+> Note: Html 'blending' mode only correctly occludes rectangular HTML elements by default. Use the `geometry` prop to swap the backing geometry to a custom one if your Html has a different shape. 
+
 #### CycleRaycast
 
 ![](https://img.shields.io/badge/-Dom only-red)

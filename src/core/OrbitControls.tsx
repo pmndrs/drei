@@ -3,6 +3,10 @@ import * as React from 'react'
 import type { Camera, Event } from 'three'
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 
+export type OrbitControlsChangeEvent = Event & {
+  target: EventTarget & { object: Camera }
+}
+
 export type OrbitControlsProps = Omit<
   ReactThreeFiber.Overwrite<
     ReactThreeFiber.Object3DNode<OrbitControlsImpl, typeof OrbitControlsImpl>,
@@ -11,7 +15,7 @@ export type OrbitControlsProps = Omit<
       domElement?: HTMLElement
       enableDamping?: boolean
       makeDefault?: boolean
-      onChange?: (e?: Event) => void
+      onChange?: (e?: OrbitControlsChangeEvent) => void
       onEnd?: (e?: Event) => void
       onStart?: (e?: Event) => void
       regress?: boolean
@@ -44,7 +48,7 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
     }, [explDomElement, regress, controls, invalidate])
 
     React.useEffect(() => {
-      const callback = (e: Event) => {
+      const callback = (e: OrbitControlsChangeEvent) => {
         invalidate()
         if (regress) performance.regress()
         if (onChange) onChange(e)

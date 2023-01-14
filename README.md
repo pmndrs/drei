@@ -3119,6 +3119,8 @@ Caustics are swirls of light that appear when light passes through transmissive 
 
 ```tsx
 type CausticsProps = JSX.IntrinsicElements['group'] & {
+  /** How many frames it will render, set it to Infinity for runtime, default: 1 */
+  frames?: number
   /** Enables visual cues to help you stage your scene, default: false */
   debug?: boolean
   /** Will display caustics only and skip the models, default: false */
@@ -3144,10 +3146,8 @@ type CausticsProps = JSX.IntrinsicElements['group'] & {
   near?: number
   /** Camera far, default: 100 */
   far?: number
-  /** Camera position, default: [5, 5, 5] */
+  /** Camera position, it will point towards the contents bounds center, default: [5, 5, 5] */
   lightSource?: [x: number, y: number, z: number]
-  /** Camera lookAt, default: [0, 0, 0] */
-  focus?: [x: number, y: number, z: number]
 }
 ```
 

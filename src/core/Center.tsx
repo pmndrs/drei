@@ -73,6 +73,7 @@ export const Center = React.forwardRef<Group, JSX.IntrinsicElements['group'] & C
     const vAlign = top ? height / 2 : bottom ? -height / 2 : 0
     const hAlign = left ? -width / 2 : right ? width / 2 : 0
     const dAlign = front ? depth / 2 : back ? -depth / 2 : 0
+
     outer.current.position.set(
       disable || disableX ? 0 : -center.x + hAlign,
       disable || disableY ? 0 : -center.y + vAlign,

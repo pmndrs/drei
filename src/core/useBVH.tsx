@@ -11,6 +11,14 @@ export interface BVHOptions {
 }
 
 export function useBVH(mesh: React.MutableRefObject<Mesh | undefined>, options?: BVHOptions) {
+  options = {
+    splitStrategy: 'SAH',
+    verbose: false,
+    setBoundingBox: true,
+    maxDepth: 40,
+    maxLeafTris: 10,
+    ...options,
+  }
   React.useEffect(() => {
     if (mesh.current) {
       mesh.current.raycast = acceleratedRaycast
@@ -25,5 +33,5 @@ export function useBVH(mesh: React.MutableRefObject<Mesh | undefined>, options?:
         }
       }
     }
-  }, [mesh, options])
+  }, [mesh, JSON.stringify(options)])
 }

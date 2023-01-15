@@ -91,6 +91,8 @@ type PivotControlsProps = {
   axisColors?: [string | number, string | number, string | number]
   /** Color of the hovered item */
   hoveredColor?: string | number
+  /** HTML value annotations, default: false */
+  annotations?: boolean
   /** CSS Classname applied to the HTML annotations */
   annotationsClass?: string
   /** Drag start event */
@@ -101,7 +103,6 @@ type PivotControlsProps = {
   onDragEnd?: () => void
   /** Set this to false if you want the gizmo to be visible through faces */
   depthTest?: boolean
-  displayValues?: boolean
   opacity?: number
   visible?: boolean
   userData?: { [key: string]: any }
@@ -131,7 +132,7 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
       depthTest = true,
       axisColors = ['#ff2060', '#20df80', '#2080ff'],
       hoveredColor = '#ffff40',
-      displayValues = true,
+      annotations = false,
       annotationsClass,
       opacity = 1,
       visible = true,
@@ -205,9 +206,9 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
         scale,
         lineWidth,
         fixed,
-        displayValues,
         depthTest,
         userData,
+        annotations,
         annotationsClass,
       }),
       [
@@ -224,9 +225,9 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
         ...axisColors,
         hoveredColor,
         opacity,
-        displayValues,
         userData,
         autoTransform,
+        annotations,
         annotationsClass,
       ]
     )

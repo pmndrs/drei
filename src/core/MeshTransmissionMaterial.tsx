@@ -8,6 +8,7 @@ import * as THREE from 'three'
 import * as React from 'react'
 import { extend, useThree, useFrame, ReactThreeFiber } from '@react-three/fiber'
 import { useFBO } from './useFBO'
+import { DiscardMaterial } from '../materials/DiscardMaterial'
 
 type MeshTransmissionMaterialType = Omit<
   JSX.IntrinsicElements['meshPhysicalMaterial'],
@@ -375,10 +376,10 @@ export const MeshTransmissionMaterial = React.forwardRef(
     extend({ MeshTransmissionMaterial: MeshTransmissionMaterialImpl })
 
     const ref = React.useRef<JSX.IntrinsicElements['meshTransmissionMaterial']>(null!)
+    const [discardMaterial] = React.useState(() => new DiscardMaterial())
     const fbo = useFBO(resolution)
 
     let oldBg
-    let oldVis
     let oldTone
     let parent
     useFrame((state) => {
@@ -388,11 +389,10 @@ export const MeshTransmissionMaterial = React.forwardRef(
         if (parent) {
           // Save defaults
           oldTone = state.gl.toneMapping
-          oldVis = parent.visible
           // Switch off tonemapping lest it double tone maps
           state.gl.toneMapping = THREE.NoToneMapping
-          // Hide the outer groups contents
-          parent.visible = false
+          // Use discardmaterial, the parent will be invisible, but it's shadows will still be cast
+          parent.material = discardMaterial
           // Set render target to the local buffer
           state.gl.setRenderTarget(fbo)
           // Save the current background and set the HDR as the new BG
@@ -404,7 +404,7 @@ export const MeshTransmissionMaterial = React.forwardRef(
           // Set old state back
           state.scene.background = oldBg
           state.gl.setRenderTarget(null)
-          parent.visible = oldVis
+          parent.material = ref.current
           state.gl.toneMapping = oldTone
         }
       }

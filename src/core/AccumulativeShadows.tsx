@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import * as React from 'react'
 import { extend, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
+import { DiscardMaterial } from '../materials/DiscardMaterial'
 
 function isLight(object: any): object is THREE.Light {
   return object.isLight
@@ -97,12 +98,6 @@ const SoftShadowMaterial = shaderMaterial(
      #include <tonemapping_fragment>
      #include <encodings_fragment>
    }`
-)
-
-const DiscardMaterial = shaderMaterial(
-  {},
-  'void main() { gl_Position = vec4((uv - 0.5) * 2.0, 1.0, 1.0); }',
-  'void main() { discard; }'
 )
 
 export const AccumulativeShadows = React.forwardRef(

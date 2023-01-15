@@ -60,12 +60,8 @@ type CausticsProps = JSX.IntrinsicElements['group'] & {
   color?: ReactThreeFiber.Color
   /** Buffer resolution, default: 2048 */
   resolution?: number
-  /** Camera near, default: 0.1 */
-  near?: number
-  /** Camera far, default: 100 */
-  far?: number
   /** Camera position, it will point towards the contents bounds center, default: [5, 5, 5] */
-  lightSource?: [x: number, y: number, z: number]
+  lightSource?: [x: number, y: number, z: number] | React.MutableRefObject<THREE.Object3D>
 }
 
 declare global {
@@ -282,6 +278,8 @@ const CAUSTICPROPS = {
   generateMipmaps: true,
 }
 
+const causticsContext = React.createContext(null)
+
 export const Caustics = React.forwardRef(
   (
     {
@@ -296,8 +294,6 @@ export const Caustics = React.forwardRef(
       worldRadius = 0.3125,
       intensity = 0.05,
       resolution = 2024,
-      near = 0.1,
-      far = 100,
       lightSource = [5, 5, 5],
       ...props
     }: CausticsProps,
@@ -325,9 +321,8 @@ export const Caustics = React.forwardRef(
     const [causticsQuad] = React.useState(() => new FullScreenQuad(causticsMaterial))
 
     React.useLayoutEffect(() => {
-      // Update matrix world and the camera on first mount
-      ref.current.updateWorldMatrix(true, true)
-    }, [])
+      ref.current.updateWorldMatrix(false, true)
+    })
 
     let count = 0
 
@@ -343,7 +338,9 @@ export const Caustics = React.forwardRef(
 
     useFrame((state, delta) => {
       if (frames === Infinity || count++ < frames) {
-        lightDir.fromArray(lightSource).normalize()
+        if (Array.isArray(lightSource)) lightDir.fromArray(lightSource).normalize()
+        else lightDir.copy(ref.current.worldToLocal(lightSource.current.getWorldPosition(v)).normalize())
+
         lightDirInv.copy(lightDir).multiplyScalar(-1)
 
         let boundsVertices: THREE.Vector3[] = []
@@ -401,12 +398,11 @@ export const Caustics = React.forwardRef(
         if (debug) helper.current?.update()
 
         // Inject uniforms
+        normalMatB.viewMatrix.value = normalMat.viewMatrix.value = camera.current.matrixWorldInverse
 
         const dirLightNearPlane = lpF.setFromProjectionMatrix(
           lpM.multiplyMatrices(camera.current.projectionMatrix, camera.current.matrixWorldInverse)
         ).planes[4]
-
-        normalMatB.viewMatrix.value = normalMat.viewMatrix.value = camera.current.matrixWorldInverse
 
         causticsMaterial.cameraMatrixWorld = camera.current.matrixWorld
         causticsMaterial.cameraProjectionMatrixInv = camera.current.projectionMatrixInverse
@@ -469,11 +465,15 @@ export const Caustics = React.forwardRef(
       }
     })
 
+    React.useImperativeHandle(fref, () => ref.current, [])
+
     return (
       <group ref={ref} {...props}>
-        <orthographicCamera ref={camera} up={[0, 1, 0]} />
-        <scene ref={scene}>{children}</scene>
-        <mesh ref={plane} rotation-x={-Math.PI / 2}>
+        <scene ref={scene}>
+          <orthographicCamera ref={camera} up={[0, 1, 0]} />
+          {children}
+        </scene>
+        <mesh renderOrder={2} ref={plane} rotation-x={-Math.PI / 2}>
           <planeGeometry />
           <causticsProjectionMaterial
             transparent

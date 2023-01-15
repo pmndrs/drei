@@ -1830,7 +1830,7 @@ Enable shadows using the `castShadow` and `recieveShadow` prop.
 />
 ```
 
-> Note: Html 'blending' mode only correctly occludes rectangular HTML elements by default. Use the `geometry` prop to swap the backing geometry to a custom one if your Html has a different shape. 
+> Note: Html 'blending' mode only correctly occludes rectangular HTML elements by default. Use the `geometry` prop to swap the backing geometry to a custom one if your Html has a different shape.
 
 #### CycleRaycast
 
@@ -3129,9 +3129,6 @@ type CausticsProps = JSX.IntrinsicElements['group'] & {
   causticsOnly: boolean
   /** Will include back faces and enable the backfaceIor prop, default: false */
   backfaces: boolean
-  /** The size of the camera frustum, make sure it fits your model perfectly
-   *  (with the debug flag)! The better it fits the more resolution you have. default: 2 */
-  frustum?: number
   /** The IOR refraction index, default: 1.1 */
   ior?: number
   /** The IOR refraction index for back faces (only available when backfaces is enabled), default: 1.1 */
@@ -3144,12 +3141,8 @@ type CausticsProps = JSX.IntrinsicElements['group'] & {
   color?: ReactThreeFiber.Color
   /** Buffer resolution, default: 2048 */
   resolution?: number
-  /** Camera near, default: 0.1 */
-  near?: number
-  /** Camera far, default: 100 */
-  far?: number
   /** Camera position, it will point towards the contents bounds center, default: [5, 5, 5] */
-  lightSource?: [x: number, y: number, z: number]
+  lightSource?: [x: number, y: number, z: number] | React.MutableRefObject<THREE.Object3D>
 }
 ```
 
@@ -3158,7 +3151,7 @@ It will create a transparent plane that blends the caustics of the objects it re
 Make sure to use the `debug` flag to help you stage your contents. Like ContactShadows and AccumulativeShadows the plane faces Y up. It is recommended to use [leva](https://github.com/pmndrs/leva) to configue the props above as some can be micro fractional depending on the models (intensity, worldRadius, ior and backfaceIor especially).
 
 ```jsx
-<Caustics debug backfaces lightSource={[2.5, 5, -2.5]} frustum={4}>
+<Caustics debug backfaces lightSource={[2.5, 5, -2.5]}>
   <Bottle />
   <WineGlass>
 </Caustics>
@@ -3167,12 +3160,23 @@ Make sure to use the `debug` flag to help you stage your contents. Like ContactS
 Sometimes you want to combine caustics for even better visuals, or if you want to emulate multiple lightsources. Use the `causticsOnly` flag in such cases and it will use the model inside only for calculations. Since all loaders in Fiber should be cached there is no expense or memory overhead doing this.
 
 ```jsx
-<Caustics lightSource={[2.5, 5, -2.5]} >
+<Caustics backfaces lightSource={[2.5, 5, -2.5]} >
   <WineGlass />
 </Caustics>
-<Caustics causticsOnly lightSource={[-2.5, 5, 2.5]} ior={0.79} worldRadius={0.0124}>
+<Caustics causticsOnly backfaces lightSource={[-2.5, 5, 2.5]} ior={0.79} worldRadius={0.0124}>
   <WineGlass />
 </Caustics>
+```
+
+The light source can either be defined by prop or by reference. Use the latter if you want to control the light source, for instance in order to move or animate it. Runtime caustics with frames set to `Infinity`, a low resolution and no backfaces can be feasible.
+
+```jsx
+const lightSource = useRef()
+
+<Caustics frames={Infinity} resolution={256} lightSource={lightSource} >
+  <WineGlass />
+</Caustics>
+<object3d ref={lightSource} position={[2.5, 5, -2.5]} />
 ```
 
 #### ContactShadows

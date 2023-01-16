@@ -1,27 +1,35 @@
 import * as React from 'react'
 import { Vector2, Vector3, Color, ColorRepresentation } from 'three'
 import { ReactThreeFiber, useThree } from '@react-three/fiber'
-import { LineGeometry, LineMaterial, LineMaterialParameters, Line2 } from 'three-stdlib'
+import {
+  LineGeometry,
+  LineSegmentsGeometry,
+  LineMaterial,
+  LineMaterialParameters,
+  Line2,
+  LineSegments2,
+} from 'three-stdlib'
 
 export type LineProps = {
   points: Array<Vector3 | Vector2 | [number, number, number] | [number, number] | number>
   vertexColors?: Array<Color | [number, number, number]>
   lineWidth?: number
+  segments?: boolean
 } & Omit<LineMaterialParameters, 'vertexColors' | 'color'> &
   Omit<ReactThreeFiber.Object3DNode<Line2, typeof Line2>, 'args'> &
   Omit<ReactThreeFiber.Object3DNode<LineMaterial, [LineMaterialParameters]>, 'color' | 'vertexColors' | 'args'> & {
     color?: ColorRepresentation
   }
 
-export const Line = React.forwardRef<Line2, LineProps>(function Line(
-  { points, color = 'black', vertexColors, linewidth, lineWidth, dashed, ...rest },
+export const Line = React.forwardRef<Line2 | LineSegments2, LineProps>(function Line(
+  { points, color = 'black', vertexColors, linewidth, lineWidth, segments, dashed, ...rest },
   ref
 ) {
   const size = useThree((state) => state.size)
-  const [line2] = React.useState(() => new Line2())
+  const line2 = React.useMemo(() => (segments ? new LineSegments2() : new Line2()), [segments])
   const [lineMaterial] = React.useState(() => new LineMaterial())
   const lineGeom = React.useMemo(() => {
-    const geom = new LineGeometry()
+    const geom = segments ? new LineSegmentsGeometry() : new LineGeometry()
     const pValues = points.map((p) => {
       const isArray = Array.isArray(p)
       return p instanceof Vector3
@@ -43,7 +51,7 @@ export const Line = React.forwardRef<Line2, LineProps>(function Line(
     }
 
     return geom
-  }, [points, vertexColors])
+  }, [points, segments, vertexColors])
 
   React.useLayoutEffect(() => {
     line2.computeLineDistances()

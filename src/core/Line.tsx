@@ -26,7 +26,7 @@ export const Line = React.forwardRef<Line2 | LineSegments2, LineProps>(function 
   ref
 ) {
   const size = useThree((state) => state.size)
-  const [line2] = React.useState(() => (segments ? new LineSegments2() : new Line2()))
+  const line2 = React.useMemo(() => (segments ? new LineSegments2() : new Line2()), [segments])
   const [lineMaterial] = React.useState(() => new LineMaterial())
   const lineGeom = React.useMemo(() => {
     const geom = segments ? new LineSegmentsGeometry() : new LineGeometry()

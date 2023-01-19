@@ -138,6 +138,7 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
       visible = true,
       userData,
       children,
+      ...props
     },
     fRef
   ) => {
@@ -251,10 +252,16 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
 
     React.useImperativeHandle(fRef, () => ref.current, [])
 
+    React.useLayoutEffect(() => {
+      // If the matrix is a real matrix4 it means that the user wants to control the gizmo
+      // In that case it should just be set, as a bare prop update would merely copy it
+      if (matrix && matrix instanceof THREE.Matrix4) ref.current.matrix = matrix
+    }, [matrix])
+
     return (
       <context.Provider value={config}>
         <group ref={parentRef}>
-          <group ref={ref} matrix={matrix} matrixAutoUpdate={false}>
+          <group ref={ref} matrix={matrix} matrixAutoUpdate={false} {...props}>
             <group visible={visible} ref={gizmoRef} position={offset} rotation={rotation}>
               {!disableAxes && activeAxes[0] && <AxisArrow axis={0} direction={xDir} />}
               {!disableAxes && activeAxes[1] && <AxisArrow axis={1} direction={yDir} />}

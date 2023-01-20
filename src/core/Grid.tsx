@@ -30,6 +30,8 @@ export type GridMaterialType = {
   fadeDistance?: number
   /** Fade strength, default: 1 */
   fadeStrength?: number
+  /** Material side, default: THREE.BackSide */
+  side?: THREE.Side
 }
 
 export type GridProps = GridMaterialType & {
@@ -111,6 +113,7 @@ export const Grid = React.forwardRef(
       fadeStrength = 1,
       cellThickness = 0.5,
       sectionThickness = 1,
+      side = THREE.BackSide,
       ...props
     }: Omit<JSX.IntrinsicElements['mesh'], 'args'> & GridProps,
     fRef: React.ForwardedRef<THREE.Mesh>
@@ -120,7 +123,7 @@ export const Grid = React.forwardRef(
     const uniforms2 = { fadeDistance, fadeStrength, infiniteGrid, followCamera }
     return (
       <mesh ref={fRef} frustumCulled={false} {...props}>
-        <gridMaterial transparent extensions-derivatives side={THREE.DoubleSide} {...uniforms1} {...uniforms2} />
+        <gridMaterial transparent extensions-derivatives side={side} {...uniforms1} {...uniforms2} />
         <planeGeometry args={args} />
       </mesh>
     )

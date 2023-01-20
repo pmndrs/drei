@@ -124,6 +124,7 @@ export const AccumulativeShadows = React.forwardRef(
     const gl = useThree((state) => state.gl)
     const scene = useThree((state) => state.scene)
     const camera = useThree((state) => state.camera)
+    const invalidate = useThree((state) => state.invalidate)
     const gPlane = React.useRef<THREE.Mesh<THREE.PlaneGeometry, SoftShadowMaterialProps & THREE.ShaderMaterial>>(null!)
     const gLights = React.useRef<THREE.Group>(null!)
 
@@ -190,6 +191,7 @@ export const AccumulativeShadows = React.forwardRef(
 
     useFrame(() => {
       if ((api.temporal || api.frames === Infinity) && api.count < api.frames && api.count < limit) {
+        invalidate()
         api.update()
         api.count++
       }

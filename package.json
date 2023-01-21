@@ -57,11 +57,13 @@
     "@babel/runtime": "^7.11.2",
     "@react-spring/three": "^9.3.1",
     "@use-gesture/react": "^10.2.0",
+    "camera-controls": "^1.37.6",
     "detect-gpu": "^5.0.5",
     "glsl-noise": "^0.0.0",
     "lodash.clamp": "^4.0.3",
     "lodash.omit": "^4.5.0",
     "lodash.pick": "^4.4.0",
+    "maath": "^0.5.1",
     "meshline": "^3.1.6",
     "react-composer": "^5.0.3",
     "react-merge-refs": "^1.1.0",
@@ -71,7 +73,6 @@
     "three-stdlib": "^2.20.4",
     "troika-three-text": "^0.47.1",
     "utility-types": "^3.10.0",
-    "maath": "^0.5.1",
     "zustand": "^3.5.13"
   },
   "devDependencies": {

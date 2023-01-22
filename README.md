@@ -40,6 +40,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         </ul>
         <li><a href="#controls">Controls</a></li>
         <ul>
+          <li><a href="#cameracontrols">CameraControls</a></li>
           <li><a href="#controls">FlyControls</a></li>
           <li><a href="#controls">MapControls</a></li>
           <li><a href="#controls">DeviceOrientationControls</a></li>
@@ -342,6 +343,23 @@ Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storyboo
 All controls react to the default camera. If you have a `<PerspectiveCamera makeDefault />` in your scene, they will control it. If you need to inject an imperative camera or one that isn't the default, use the `camera` prop: `<OrbitControls camera={MyCamera} />`.
 
 PointerLockControls additionally supports a `selector` prop, which enables the binding of `click` event handlers for control activation to other elements than `document` (e.g. a 'Click here to play' button). All elements matching the `selector` prop will activate the controls. It will also center raycast events by default, so regular onPointerOver/etc events on meshes will continue to work.
+
+#### CameraControls
+
+This is an implementation of the [camera-controls](https://github.com/yomotsu/camera-controls) library.
+
+```tsx
+<CameraControls />
+```
+
+```tsx
+type CameraControlsProps = {
+  /** The camera to control, default to the state's `camera` */
+  camera?: PerspectiveCamera | OrthographicCamera
+  /** DOM element to connect to, default to the state's `gl` renderer */
+  domElement?: HTMLElement
+}
+```
 
 #### ScrollControls
 

@@ -34,14 +34,15 @@ export const CameraControls = forwardRef<CameraControlsImpl, CameraControlsProps
   const explCamera = camera || defaultCamera
   const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
 
-  const cameraControls = useMemo(() => new CameraControlsImpl(explCamera, explDomElement), [explCamera, explDomElement])
+  const cameraControls = useMemo(() => new CameraControlsImpl(explCamera), [explCamera])
 
   useFrame((state, delta) => {
     if (cameraControls.enabled) cameraControls.update(delta)
   }, -1)
 
   useEffect(() => {
-    return () => void cameraControls.dispose()
+    cameraControls.connect(explDomElement)
+    return () => void cameraControls.disconnect()
   }, [explDomElement, cameraControls, invalidate])
 
   return <primitive ref={ref} object={cameraControls} {...restProps} />

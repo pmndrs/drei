@@ -4595,10 +4595,10 @@ camelcase@^6.0.0, camelcase@^6.2.0:
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-6.3.0.tgz#5685b95eb209ac9c0c177467778c9c84df58ba9a"
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
 
-camera-controls@^1.37.6:
-  version "1.37.6"
-  resolved "https://registry.yarnpkg.com/camera-controls/-/camera-controls-1.37.6.tgz#d632f58e3b118921609908b53fbc328844d0e904"
-  integrity sha512-Fpppn3RwHgmGPfnjRVtK9AlpjcPdYo/6lFTqsSJ+gk9jRi48VmLFEBZ6uLLmTQiKiKjrs906ZMaAJW3fXIChdA==
+camera-controls@^1.38.0:
+  version "1.38.0"
+  resolved "https://registry.yarnpkg.com/camera-controls/-/camera-controls-1.38.0.tgz#1fe3a90cb13009acf253e066343fd4fb49ea3b2b"
+  integrity sha512-gOLZdfP0NvDKlm6qHqjH13rzrtnL2Vs/Q4BU2tnoGlxg9zqtsQKIkZjIixO8IaSfy6v84NROje5LO+BWEFTcrw==
 
 caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001317:
   version "1.0.30001322"

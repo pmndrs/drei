@@ -57,7 +57,7 @@
     "@babel/runtime": "^7.11.2",
     "@react-spring/three": "^9.3.1",
     "@use-gesture/react": "^10.2.0",
-    "camera-controls": "^1.37.6",
+    "camera-controls": "^1.38.0",
     "detect-gpu": "^5.0.5",
     "glsl-noise": "^0.0.0",
     "lodash.clamp": "^4.0.3",

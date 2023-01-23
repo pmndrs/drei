@@ -1,10 +1,11 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { Size, extend, useFrame, useThree } from '@react-three/fiber'
+import { Size, useFrame, useThree } from '@react-three/fiber'
 
 import { AxisArrow } from './AxisArrow'
 import { PlaneSlider } from './PlaneSlider'
 import { AxisRotator } from './AxisRotator'
+import { ScalingSphere } from './ScalingSphere'
 import { context, OnDragStartProps } from './context'
 
 const tV0 = new THREE.Vector3()
@@ -46,6 +47,7 @@ const mW = new THREE.Matrix4()
 const mL = new THREE.Matrix4()
 const mL0Inv = new THREE.Matrix4()
 const mdL = new THREE.Matrix4()
+const mG = new THREE.Matrix4()
 
 const bb = new THREE.Box3()
 const bbObj = new THREE.Box3()
@@ -53,6 +55,7 @@ const vCenter = new THREE.Vector3()
 const vSize = new THREE.Vector3()
 const vAnchorOffset = new THREE.Vector3()
 const vPosition = new THREE.Vector3()
+const vScale = new THREE.Vector3()
 
 const xDir = new THREE.Vector3(1, 0, 0)
 const yDir = new THREE.Vector3(0, 1, 0)
@@ -82,10 +85,12 @@ type PivotControlsProps = {
   disableAxes?: boolean
   disableSliders?: boolean
   disableRotations?: boolean
+  disableScaling?: boolean
 
   /** Limits */
   translationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
   rotationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
+  scaleLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
 
   /** RGB colors */
   axisColors?: [string | number, string | number, string | number]
@@ -121,6 +126,7 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
       disableAxes = false,
       disableSliders = false,
       disableRotations = false,
+      disableScaling = false,
       activeAxes = [true, true, true],
       offset = [0, 0, 0],
       rotation = [0, 0, 0],
@@ -129,6 +135,7 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
       fixed = false,
       translationLimits,
       rotationLimits,
+      scaleLimits,
       depthTest = true,
       axisColors = ['#ff2060', '#20df80', '#2080ff'],
       hoveredColor = '#ffff40',
@@ -148,6 +155,8 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
     const gizmoRef = React.useRef<THREE.Group>(null!)
     const childrenRef = React.useRef<THREE.Group>(null!)
     const translation = React.useRef<[number, number, number]>([0, 0, 0])
+    const cameraScale = React.useRef<THREE.Vector3>(new THREE.Vector3(1, 1, 1))
+    const gizmoScale = React.useRef<THREE.Vector3>(new THREE.Vector3(1, 1, 1))
 
     React.useLayoutEffect(() => {
       if (!anchor) return
@@ -190,7 +199,12 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
           mL.copy(mW).premultiply(mPInv)
           mL0Inv.copy(mL0).invert()
           mdL.copy(mL).multiply(mL0Inv)
-          if (autoTransform) ref.current.matrix.copy(mL)
+          if (autoTransform) {
+            mG.makeRotationFromEuler(gizmoRef.current.rotation).setPosition(gizmoRef.current.position).premultiply(mW)
+            gizmoScale.current.setFromMatrixScale(mG)
+            gizmoRef.current.scale.copy(cameraScale.current).divide(gizmoScale.current)
+            ref.current.matrix.copy(mL)
+          }
           onDrag && onDrag(mL, mdL, mW, mdW)
           invalidate()
         },
@@ -219,6 +233,7 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
         translation,
         translationLimits,
         rotationLimits,
+        scaleLimits,
         depthTest,
         scale,
         lineWidth,
@@ -233,17 +248,29 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
       ]
     )
 
+    React.useEffect(() => {
+      if (!matrix) return
+
+      parentRef.current.updateWorldMatrix(true, true)
+      mW.copy(parentRef.current.matrixWorld).multiply(matrix)
+      mG.makeRotationFromEuler(gizmoRef.current.rotation).setPosition(gizmoRef.current.position).premultiply(mW)
+      gizmoScale.current.setFromMatrixScale(mG)
+      gizmoRef.current.scale.copy(cameraScale.current).divide(gizmoScale.current)
+    }, [matrix])
+
     const vec = new THREE.Vector3()
     useFrame((state) => {
       if (fixed) {
         const sf = calculateScaleFactor(gizmoRef.current.getWorldPosition(vec), scale, state.camera, state.size)
+        cameraScale.current.setScalar(sf)
         if (gizmoRef.current) {
+          vScale.copy(cameraScale.current).divide(gizmoScale.current)
           if (
-            gizmoRef.current?.scale.x !== sf ||
-            gizmoRef.current?.scale.y !== sf ||
-            gizmoRef.current?.scale.z !== sf
+            gizmoRef.current.scale.x !== vScale.x ||
+            gizmoRef.current.scale.y !== vScale.y ||
+            gizmoRef.current.scale.z !== vScale.z
           ) {
-            gizmoRef.current.scale.setScalar(sf)
+            gizmoRef.current.scale.copy(vScale)
             state.invalidate()
           }
         }
@@ -253,9 +280,18 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
     React.useImperativeHandle(fRef, () => ref.current, [])
 
     React.useLayoutEffect(() => {
+      if (!(matrix && matrix instanceof THREE.Matrix4)) return
+
       // If the matrix is a real matrix4 it means that the user wants to control the gizmo
       // In that case it should just be set, as a bare prop update would merely copy it
-      if (matrix && matrix instanceof THREE.Matrix4) ref.current.matrix = matrix
+      ref.current.matrix = matrix
+
+      // Update gizmo scale in accordance with matrix changes
+      parentRef.current.updateWorldMatrix(true, true)
+      mW.copy(parentRef.current.matrixWorld).multiply(matrix)
+      mG.makeRotationFromEuler(gizmoRef.current.rotation).setPosition(gizmoRef.current.position).premultiply(mW)
+      gizmoScale.current.setFromMatrixScale(mG)
+      gizmoRef.current.scale.copy(cameraScale.current).divide(gizmoScale.current)
     }, [matrix])
 
     return (
@@ -272,6 +308,9 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
               {!disableRotations && activeAxes[0] && activeAxes[1] && <AxisRotator axis={2} dir1={xDir} dir2={yDir} />}
               {!disableRotations && activeAxes[0] && activeAxes[2] && <AxisRotator axis={1} dir1={zDir} dir2={xDir} />}
               {!disableRotations && activeAxes[2] && activeAxes[1] && <AxisRotator axis={0} dir1={yDir} dir2={zDir} />}
+              {!disableScaling && activeAxes[0] && <ScalingSphere axis={0} direction={xDir} />}
+              {!disableScaling && activeAxes[1] && <ScalingSphere axis={1} direction={yDir} />}
+              {!disableScaling && activeAxes[2] && <ScalingSphere axis={2} direction={zDir} />}
             </group>
             <group ref={childrenRef}>{children}</group>
           </group>

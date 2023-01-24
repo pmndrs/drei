@@ -1104,7 +1104,7 @@ Abstracts [THREE.EdgesGeometry](https://threejs.org/docs/#api/en/geometries/Edge
 
 A declarative, `three.MeshLine` based Trails implementation. You can attach it to any mesh and it will give it a beautiful trail.
 
-Props defined bellow with their default values.
+Props defined below with their default values.
 
 ```jsx
 <Trail

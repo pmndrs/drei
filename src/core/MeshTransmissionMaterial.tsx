@@ -372,7 +372,6 @@ export const MeshTransmissionMaterial = React.forwardRef(
       backside = false,
       transmission = 1,
       thickness = 0,
-      ior = 1.5,
       samples = 10,
       resolution,
       backsideResolution,
@@ -414,8 +413,7 @@ export const MeshTransmissionMaterial = React.forwardRef(
             // And now prepare the material for the main render using the backside buffer
             parent.material = ref.current
             parent.material.buffer = fboBack.texture
-            parent.material.thickness = 0
-            parent.material.ior = 1.0
+            parent.material.thickness = 1.0 / (thickness + 0.01)
             parent.material.side = THREE.BackSide
           }
 
@@ -425,7 +423,6 @@ export const MeshTransmissionMaterial = React.forwardRef(
 
           parent.material = ref.current
           parent.material.thickness = thickness
-          parent.material.ior = ior
           parent.material.side = THREE.FrontSide
           parent.material.buffer = fboMain.texture
 
@@ -455,7 +452,6 @@ export const MeshTransmissionMaterial = React.forwardRef(
         // The exception is when transmissionSampler is set, in which case we are using three's built in sampler.
         transmission={transmissionSampler ? transmission : 0}
         thickness={thickness}
-        ior={ior}
       />
     )
   }

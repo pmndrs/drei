@@ -1555,8 +1555,12 @@ type MeshTransmissionMaterialProps = JSX.IntrinsicElements['meshPhysicalMaterial
    *  using this can't see other transparent or transmissive objects nor do you have control over the
    *  buffer and its resolution, default: false */
   transmissionSampler?: boolean
+  /** Render the backside of the material (more cost, better results), default: false */
+  backside?: boolean
   /** Resolution of the local buffer, default: undefined (fullscreen) */
   resolution?: number
+  /** Resolution of the local buffer for backfaces, default: undefined (fullscreen) */
+  backsideResolution?: number
   /** Refraction samples, default: 6 */
   samples?: number
   /** Buffer scene background (can be a texture, a cubetexture or a color), default: null */
@@ -3148,12 +3152,12 @@ type CausticsProps = JSX.IntrinsicElements['group'] & {
   debug?: boolean
   /** Will display caustics only and skip the models, default: false */
   causticsOnly: boolean
-  /** Will include back faces and enable the backfaceIor prop, default: false */
-  backfaces: boolean
+  /** Will include back faces and enable the backsideIOR prop, default: false */
+  backside: boolean
   /** The IOR refraction index, default: 1.1 */
   ior?: number
-  /** The IOR refraction index for back faces (only available when backfaces is enabled), default: 1.1 */
-  backfaceIor?: number
+  /** The IOR refraction index for back faces (only available when backside is enabled), default: 1.1 */
+  backsideIOR?: number
   /** The texel size, default: 0.3125 */
   worldRadius?: number
   /** Intensity of the prjected caustics, default: 0.05 */
@@ -3169,10 +3173,10 @@ type CausticsProps = JSX.IntrinsicElements['group'] & {
 
 It will create a transparent plane that blends the caustics of the objects it receives into your scene. It will only render once and not take resources any longer!
 
-Make sure to use the `debug` flag to help you stage your contents. Like ContactShadows and AccumulativeShadows the plane faces Y up. It is recommended to use [leva](https://github.com/pmndrs/leva) to configue the props above as some can be micro fractional depending on the models (intensity, worldRadius, ior and backfaceIor especially).
+Make sure to use the `debug` flag to help you stage your contents. Like ContactShadows and AccumulativeShadows the plane faces Y up. It is recommended to use [leva](https://github.com/pmndrs/leva) to configue the props above as some can be micro fractional depending on the models (intensity, worldRadius, ior and backsideIOR especially).
 
 ```jsx
-<Caustics debug backfaces lightSource={[2.5, 5, -2.5]}>
+<Caustics debug backside lightSource={[2.5, 5, -2.5]}>
   <Bottle />
   <WineGlass>
 </Caustics>
@@ -3181,15 +3185,15 @@ Make sure to use the `debug` flag to help you stage your contents. Like ContactS
 Sometimes you want to combine caustics for even better visuals, or if you want to emulate multiple lightsources. Use the `causticsOnly` flag in such cases and it will use the model inside only for calculations. Since all loaders in Fiber should be cached there is no expense or memory overhead doing this.
 
 ```jsx
-<Caustics backfaces lightSource={[2.5, 5, -2.5]} >
+<Caustics backside lightSource={[2.5, 5, -2.5]} >
   <WineGlass />
 </Caustics>
-<Caustics causticsOnly backfaces lightSource={[-2.5, 5, 2.5]} ior={0.79} worldRadius={0.0124}>
+<Caustics causticsOnly backside lightSource={[-2.5, 5, 2.5]} ior={0.79} worldRadius={0.0124}>
   <WineGlass />
 </Caustics>
 ```
 
-The light source can either be defined by prop or by reference. Use the latter if you want to control the light source, for instance in order to move or animate it. Runtime caustics with frames set to `Infinity`, a low resolution and no backfaces can be feasible.
+The light source can either be defined by prop or by reference. Use the latter if you want to control the light source, for instance in order to move or animate it. Runtime caustics with frames set to `Infinity`, a low resolution and no backside can be feasible.
 
 ```jsx
 const lightSource = useRef()

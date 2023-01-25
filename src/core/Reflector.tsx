@@ -52,6 +52,9 @@ declare global {
 
 extend({ MeshReflectorMaterial })
 
+/**
+ * @deprecated Use MeshReflectorMaterial instead
+ */
 export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
   (
     {

@@ -20,17 +20,34 @@ export type OrbitControlsProps = Omit<
       onStart?: (e?: Event) => void
       regress?: boolean
       target?: ReactThreeFiber.Vector3
+      // Wether to enable events during orbit controls interaction
+      events?: boolean
     }
   >,
   'ref'
 >
 
 export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsProps>(
-  ({ makeDefault, camera, regress, domElement, enableDamping = true, onChange, onStart, onEnd, ...restProps }, ref) => {
+  (
+    {
+      makeDefault,
+      events: enableEvents,
+      camera,
+      regress,
+      domElement,
+      enableDamping = true,
+      onChange,
+      onStart,
+      onEnd,
+      ...restProps
+    },
+    ref
+  ) => {
     const invalidate = useThree((state) => state.invalidate)
     const defaultCamera = useThree((state) => state.camera)
     const gl = useThree((state) => state.gl)
     const events = useThree((state) => state.events) as EventManager<HTMLElement>
+    const setEvents = useThree((state) => state.setEvents)
     const set = useThree((state) => state.set)
     const get = useThree((state) => state.get)
     const performance = useThree((state) => state.performance)
@@ -48,21 +65,36 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
     }, [explDomElement, regress, controls, invalidate])
 
     React.useEffect(() => {
+      if (enableEvents) {
+        setEvents({ enabled: true })
+      }
+
       const callback = (e: OrbitControlsChangeEvent) => {
         invalidate()
         if (regress) performance.regress()
         if (onChange) onChange(e)
       }
+
+      const onStartCb = (e: Event) => {
+        if (onStart) onStart(e)
+        if (!enableEvents) setEvents({ enabled: false })
+      }
+
+      const onEndCb = (e: Event) => {
+        if (onEnd) onEnd(e)
+        if (!enableEvents) setEvents({ enabled: true })
+      }
+
       controls.addEventListener('change', callback)
-      if (onStart) controls.addEventListener('start', onStart)
-      if (onEnd) controls.addEventListener('end', onEnd)
+      controls.addEventListener('start', onStartCb)
+      controls.addEventListener('end', onEndCb)
 
       return () => {
-        if (onStart) controls.removeEventListener('start', onStart)
-        if (onEnd) controls.removeEventListener('end', onEnd)
+        controls.removeEventListener('start', onStartCb)
+        controls.removeEventListener('end', onEndCb)
         controls.removeEventListener('change', callback)
       }
-    }, [onChange, onStart, onEnd, controls, invalidate])
+    }, [onChange, onStart, onEnd, controls, invalidate, enableEvents])
 
     React.useEffect(() => {
       if (makeDefault) {

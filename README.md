@@ -139,7 +139,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#meshbounds">meshBounds</a></li>
           <li><a href="#adaptivedpr">AdaptiveDpr</a></li>
           <li><a href="#adaptiveevents">AdaptiveEvents</a></li>
-          <li><a href="#usebvh">useBVH</a></li>
+          <li><a href="#bvh">Bvh</a></li>
           <li><a href="#performancemonitor">PerformanceMonitor</a></li>          
         </ul>
         <li><a href="#portals">Portals</a></li>        
@@ -2552,17 +2552,41 @@ Drop this component into your scene and it will switch off the raycaster while t
 <AdaptiveEvents />
 ```
 
-#### useBVH
+#### Bvh
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/performance-usebvh--default-story)
 
-A hook to speed up the default raycasting by using the [BVH Implementation by @gkjohnnson](https://github.com/gkjohnson/three-mesh-bvh).
+An abstraction around [gkjohnson/three-mesh-bvh](https://github.com/gkjohnson/three-mesh-bvh) to speed up raycasting exponentially. Use this component to wrap your scene, a sub-graph, a model or single mesh, and it will automatically compute boundsTree and assign acceleratedRaycast. This component is side-effect free, once unmounted or disabled it will revert to the original raycast.
+
+```tsx
+export interface BVHOptions {
+  /** Split strategy, default: SAH (slowest to construct, fastest runtime, least memory) */
+  splitStrategy?: 'CENTER' | 'AVERAGE' | 'SAH'
+  /** Print out warnings encountered during tree construction, default: false */
+  verbose?: boolean
+  /** If true then the bounding box for the geometry is set once the BVH has been constructed, default: true */
+  setBoundingBox?: boolean
+  /** The maximum depth to allow the tree to build to, default: 40 */
+  maxDepth?: number
+  /** The number of triangles to aim for in a leaf node, default: 10 */
+  maxLeafTris?: number
+}
+
+export type BvhProps = BVHOptions &
+  JSX.IntrinsicElements['group'] & {
+    /**Enabled, default: true */
+    enabled?: boolean
+    /** Use .raycastFirst to retrieve hits which is generally faster, default: false */
+    firstHitOnly?: boolean
+  }
+```
 
 ```jsx
-const mesh = useRef()
-useBVH(mesh)
-
-<mesh ref={mesh} ... />
+<Canvas>
+  <Bvh firstHitOnly>
+    <Scene />
+  </Bvh>
+</Canvas>
 ```
 
 #### PerformanceMonitor

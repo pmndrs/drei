@@ -94,7 +94,7 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
         controls.removeEventListener('end', onEndCb)
         controls.removeEventListener('change', callback)
       }
-    }, [onChange, onStart, onEnd, controls, invalidate, enableEvents])
+    }, [onChange, onStart, onEnd, controls, invalidate, enableEvents, setEvents])
 
     React.useEffect(() => {
       if (makeDefault) {

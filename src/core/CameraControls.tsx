@@ -13,6 +13,11 @@ export type CameraControlsProps = Omit<
     {
       camera?: PerspectiveCamera | OrthographicCamera
       domElement?: HTMLElement
+      onStart?: (e?: { type: 'controlstart' }) => void
+      onEnd?: (e?: { type: 'controlend' }) => void
+      onChange?: (e?: { type: 'control' }) => void
+      events?: boolean
+      regress?: boolean
     }
   >,
   'ref'
@@ -24,12 +29,14 @@ export const CameraControls = forwardRef<CameraControlsImpl, CameraControlsProps
     extend({ CameraControlsImpl })
   }, [])
 
-  const { camera, domElement, ...restProps } = props
+  const { camera, domElement, onStart, onEnd, onChange, events: enableEvents, regress, ...restProps } = props
 
   const defaultCamera = useThree((state) => state.camera)
   const gl = useThree((state) => state.gl)
   const invalidate = useThree((state) => state.invalidate)
   const events = useThree((state) => state.events) as EventManager<HTMLElement>
+  const setEvents = useThree((state) => state.setEvents)
+  const performance = useThree((state) => state.performance)
 
   const explCamera = camera || defaultCamera
   const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
@@ -43,7 +50,39 @@ export const CameraControls = forwardRef<CameraControlsImpl, CameraControlsProps
   useEffect(() => {
     cameraControls.connect(explDomElement)
     return () => void cameraControls.disconnect()
-  }, [explDomElement, cameraControls, invalidate])
+  }, [explDomElement, cameraControls])
+
+  React.useEffect(() => {
+    if (enableEvents) {
+      setEvents({ enabled: true })
+    }
+
+    const callback = (e) => {
+      invalidate()
+      if (regress) performance.regress()
+      if (onChange) onChange(e)
+    }
+
+    const onStartCb: CameraControlsProps['onStart'] = (e) => {
+      if (onStart) onStart(e)
+      if (!enableEvents) setEvents({ enabled: false })
+    }
+
+    const onEndCb: CameraControlsProps['onEnd'] = (e) => {
+      if (onEnd) onEnd(e)
+      if (!enableEvents) setEvents({ enabled: true })
+    }
+
+    cameraControls.addEventListener('control', callback)
+    cameraControls.addEventListener('controlstart', onStartCb)
+    cameraControls.addEventListener('controlend', onEndCb)
+
+    return () => {
+      cameraControls.removeEventListener('control', callback)
+      cameraControls.removeEventListener('controlstart', onStartCb)
+      cameraControls.removeEventListener('controlend', onEndCb)
+    }
+  }, [cameraControls, enableEvents, onStart, onEnd, invalidate, setEvents, regress, onChange])
 
   return <primitive ref={ref} object={cameraControls} {...restProps} />
 })

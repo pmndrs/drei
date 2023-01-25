@@ -46,12 +46,12 @@ type CausticsProps = JSX.IntrinsicElements['group'] & {
   debug?: boolean
   /** Will display caustics only and skip the models, default: false */
   causticsOnly: boolean
-  /** Will include back faces and enable the backfaceIor prop, default: false */
-  backfaces: boolean
+  /** Will include back faces and enable the backsideIOR prop, default: false */
+  backside: boolean
   /** The IOR refraction index, default: 1.1 */
   ior?: number
-  /** The IOR refraction index for back faces (only available when backfaces is enabled), default: 1.1 */
-  backfaceIor?: number
+  /** The IOR refraction index for back faces (only available when backside is enabled), default: 1.1 */
+  backsideIOR?: number
   /** The texel size, default: 0.3125 */
   worldRadius?: number
   /** Intensity of the prjected caustics, default: 0.05 */
@@ -289,8 +289,8 @@ export const Caustics = React.forwardRef(
       ior = 1.1,
       color = 'white',
       causticsOnly = false,
-      backfaces = false,
-      backfaceIor = 1.1,
+      backside = false,
+      backsideIOR = 1.1,
       worldRadius = 0.3125,
       intensity = 0.05,
       resolution = 2024,
@@ -431,7 +431,7 @@ export const Caustics = React.forwardRef(
         // Render back face normals, if enabled
         gl.setRenderTarget(normalTargetB)
         gl.clear()
-        if (backfaces) {
+        if (backside) {
           scene.current.overrideMaterial = normalMatB
           gl.render(scene.current, camera.current)
         }
@@ -450,12 +450,12 @@ export const Caustics = React.forwardRef(
         causticsQuad.render(gl)
 
         // Render back face caustics, if enabled
-        causticsMaterial.ior = backfaceIor
+        causticsMaterial.ior = backsideIOR
         causticsMaterial.normalTexture = normalTargetB.texture
         causticsMaterial.depthTexture = normalTargetB.depthTexture
         gl.setRenderTarget(causticsTargetB)
         gl.clear()
-        if (backfaces) causticsQuad.render(gl)
+        if (backside) causticsQuad.render(gl)
 
         // Reset render target
         gl.setRenderTarget(null)

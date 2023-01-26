@@ -55,7 +55,7 @@ type MeshTransmissionMaterialProps = Omit<MeshTransmissionMaterialType, 'args'> 
   /** Refraction samples, default: 6 */
   samples?: number
   /** Buffer scene background (can be a texture, a cubetexture or a color), default: null */
-  background?: THREE.Texture
+  background?: THREE.Texture | THREE.Color
 }
 
 interface Uniform<T> {

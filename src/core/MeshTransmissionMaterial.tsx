@@ -6,7 +6,7 @@
 
 import * as THREE from 'three'
 import * as React from 'react'
-import { extend, useThree, useFrame, ReactThreeFiber } from '@react-three/fiber'
+import { applyProps, extend, useFrame } from '@react-three/fiber'
 import { useFBO } from './useFBO'
 import { DiscardMaterial } from '../materials/DiscardMaterial'
 
@@ -44,8 +44,12 @@ type MeshTransmissionMaterialProps = Omit<MeshTransmissionMaterialType, 'args'> 
    *  use multiple MeshPhysical and Transmission materials, the downside is that transmissive materials
    *  using this can't see other transparent or transmissive objects, default: false */
   transmissionSampler?: boolean
+  /** Render the backside of the material (more cost, better results), default: false */
+  backside?: boolean
   /** Resolution of the local buffer, default: undefined (fullscreen) */
   resolution?: number
+  /** Resolution of the local buffer for backfaces, default: undefined (fullscreen) */
+  backsideResolution?: number
   /** Refraction samples, default: 6 */
   samples?: number
   /** Buffer scene background (can be a texture, a cubetexture or a color), default: null */
@@ -365,9 +369,12 @@ export const MeshTransmissionMaterial = React.forwardRef(
     {
       buffer,
       transmissionSampler = false,
+      backside = false,
       transmission = 1,
+      thickness = 0,
       samples = 10,
       resolution,
+      backsideResolution,
       background,
       ...props
     }: MeshTransmissionMaterialProps,
@@ -377,7 +384,8 @@ export const MeshTransmissionMaterial = React.forwardRef(
 
     const ref = React.useRef<JSX.IntrinsicElements['meshTransmissionMaterial']>(null!)
     const [discardMaterial] = React.useState(() => new DiscardMaterial())
-    const fbo = useFBO(resolution)
+    const fboBack = useFBO(backsideResolution || resolution)
+    const fboMain = useFBO(resolution)
 
     let oldBg
     let oldTone
@@ -389,18 +397,35 @@ export const MeshTransmissionMaterial = React.forwardRef(
         if (parent) {
           // Save defaults
           oldTone = state.gl.toneMapping
-          // Switch off tonemapping lest it double tone maps
-          state.gl.toneMapping = THREE.NoToneMapping
-          // Use discardmaterial, the parent will be invisible, but it's shadows will still be cast
-          parent.material = discardMaterial
-          // Set render target to the local buffer
-          state.gl.setRenderTarget(fbo)
-          // Save the current background and set the HDR as the new BG
-          // This is what creates the reflections
           oldBg = state.scene.background
+
+          // Switch off tonemapping lest it double tone maps
+          // Save the current background and set the HDR as the new BG
+          // Use discardmaterial, the parent will be invisible, but it's shadows will still be cast
+          state.gl.toneMapping = THREE.NoToneMapping
           if (background) state.scene.background = background
-          // Render into the buffer
+          parent.material = discardMaterial
+
+          if (backside) {
+            // Render into the backside buffer
+            state.gl.setRenderTarget(fboBack)
+            state.gl.render(state.scene, state.camera)
+            // And now prepare the material for the main render using the backside buffer
+            parent.material = ref.current
+            parent.material.buffer = fboBack.texture
+            parent.material.thickness = 1.0 / (thickness + 0.01)
+            parent.material.side = THREE.BackSide
+          }
+
+          // Render into the main buffer
+          state.gl.setRenderTarget(fboMain)
           state.gl.render(state.scene, state.camera)
+
+          parent.material = ref.current
+          parent.material.thickness = thickness
+          parent.material.side = THREE.FrontSide
+          parent.material.buffer = fboMain.texture
+
           // Set old state back
           state.scene.background = oldBg
           state.gl.setRenderTarget(null)
@@ -419,13 +444,14 @@ export const MeshTransmissionMaterial = React.forwardRef(
         args={[samples, transmissionSampler]}
         ref={ref}
         {...props}
-        buffer={buffer || fbo.texture}
+        buffer={buffer || fboMain.texture}
         // @ts-ignore
         _transmission={transmission}
         // In order for this to not incur extra cost "transmission" must be set to 0 and treated as a reserved prop.
         // This is because THREE.WebGLRenderer will check for transmission > 0 and execute extra renders.
         // The exception is when transmissionSampler is set, in which case we are using three's built in sampler.
         transmission={transmissionSampler ? transmission : 0}
+        thickness={thickness}
       />
     )
   }

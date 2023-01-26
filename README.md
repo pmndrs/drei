@@ -139,7 +139,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#meshbounds">meshBounds</a></li>
           <li><a href="#adaptivedpr">AdaptiveDpr</a></li>
           <li><a href="#adaptiveevents">AdaptiveEvents</a></li>
-          <li><a href="#usebvh">useBVH</a></li>
+          <li><a href="#bvh">Bvh</a></li>
           <li><a href="#performancemonitor">PerformanceMonitor</a></li>          
         </ul>
         <li><a href="#portals">Portals</a></li>        
@@ -338,13 +338,17 @@ If available controls have damping enabled by default, they manage their own upd
 
 Some controls allow you to set `makeDefault`, similar to, for instance, PerspectiveCamera. This will set @react-three/fiber's `controls` field in the root store. This can make it easier in situations where you want controls to be known and other parts of the app could respond to it. Some drei controls already take it into account, like CameraShake, Gizmo and TransformControls.
 
-Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-scene-st), TrackballControls, ArcballControls, FlyControls, DeviceOrientationControls, PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st), FirstPersonControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-firstpersoncontrols--first-person-controls-story) and [CameraControls](https://github.com/yomotsu/camera-controls) [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-cameracontrols--camera-controls-story)
+Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-scene-st), TrackballControls, ArcballControls, FlyControls, DeviceOrientationControls, PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st), FirstPersonControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-firstpersoncontrols--first-person-controls-story) and CameraControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-cameracontrols--camera-controls-story)
 
 All controls react to the default camera. If you have a `<PerspectiveCamera makeDefault />` in your scene, they will control it. If you need to inject an imperative camera or one that isn't the default, use the `camera` prop: `<OrbitControls camera={MyCamera} />`.
 
 PointerLockControls additionally supports a `selector` prop, which enables the binding of `click` event handlers for control activation to other elements than `document` (e.g. a 'Click here to play' button). All elements matching the `selector` prop will activate the controls. It will also center raycast events by default, so regular onPointerOver/etc events on meshes will continue to work.
 
 #### CameraControls
+
+<p>
+  <a href="https://codesandbox.io/s/sew669"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/sew669/screenshot.png?v2" alt="CameraControls"/></a>
+</p>
 
 This is an implementation of the [camera-controls](https://github.com/yomotsu/camera-controls) library.
 
@@ -1555,8 +1559,12 @@ type MeshTransmissionMaterialProps = JSX.IntrinsicElements['meshPhysicalMaterial
    *  using this can't see other transparent or transmissive objects nor do you have control over the
    *  buffer and its resolution, default: false */
   transmissionSampler?: boolean
+  /** Render the backside of the material (more cost, better results), default: false */
+  backside?: boolean
   /** Resolution of the local buffer, default: undefined (fullscreen) */
   resolution?: number
+  /** Resolution of the local buffer for backfaces, default: undefined (fullscreen) */
+  backsideResolution?: number
   /** Refraction samples, default: 6 */
   samples?: number
   /** Buffer scene background (can be a texture, a cubetexture or a color), default: null */
@@ -2548,17 +2556,41 @@ Drop this component into your scene and it will switch off the raycaster while t
 <AdaptiveEvents />
 ```
 
-#### useBVH
+#### Bvh
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/performance-usebvh--default-story)
 
-A hook to speed up the default raycasting by using the [BVH Implementation by @gkjohnnson](https://github.com/gkjohnson/three-mesh-bvh).
+An abstraction around [gkjohnson/three-mesh-bvh](https://github.com/gkjohnson/three-mesh-bvh) to speed up raycasting exponentially. Use this component to wrap your scene, a sub-graph, a model or single mesh, and it will automatically compute boundsTree and assign acceleratedRaycast. This component is side-effect free, once unmounted or disabled it will revert to the original raycast.
+
+```tsx
+export interface BVHOptions {
+  /** Split strategy, default: SAH (slowest to construct, fastest runtime, least memory) */
+  splitStrategy?: 'CENTER' | 'AVERAGE' | 'SAH'
+  /** Print out warnings encountered during tree construction, default: false */
+  verbose?: boolean
+  /** If true then the bounding box for the geometry is set once the BVH has been constructed, default: true */
+  setBoundingBox?: boolean
+  /** The maximum depth to allow the tree to build to, default: 40 */
+  maxDepth?: number
+  /** The number of triangles to aim for in a leaf node, default: 10 */
+  maxLeafTris?: number
+}
+
+export type BvhProps = BVHOptions &
+  JSX.IntrinsicElements['group'] & {
+    /**Enabled, default: true */
+    enabled?: boolean
+    /** Use .raycastFirst to retrieve hits which is generally faster, default: false */
+    firstHitOnly?: boolean
+  }
+```
 
 ```jsx
-const mesh = useRef()
-useBVH(mesh)
-
-<mesh ref={mesh} ... />
+<Canvas>
+  <Bvh firstHitOnly>
+    <Scene />
+  </Bvh>
+</Canvas>
 ```
 
 #### PerformanceMonitor
@@ -3148,12 +3180,12 @@ type CausticsProps = JSX.IntrinsicElements['group'] & {
   debug?: boolean
   /** Will display caustics only and skip the models, default: false */
   causticsOnly: boolean
-  /** Will include back faces and enable the backfaceIor prop, default: false */
-  backfaces: boolean
+  /** Will include back faces and enable the backsideIOR prop, default: false */
+  backside: boolean
   /** The IOR refraction index, default: 1.1 */
   ior?: number
-  /** The IOR refraction index for back faces (only available when backfaces is enabled), default: 1.1 */
-  backfaceIor?: number
+  /** The IOR refraction index for back faces (only available when backside is enabled), default: 1.1 */
+  backsideIOR?: number
   /** The texel size, default: 0.3125 */
   worldRadius?: number
   /** Intensity of the prjected caustics, default: 0.05 */
@@ -3169,10 +3201,10 @@ type CausticsProps = JSX.IntrinsicElements['group'] & {
 
 It will create a transparent plane that blends the caustics of the objects it receives into your scene. It will only render once and not take resources any longer!
 
-Make sure to use the `debug` flag to help you stage your contents. Like ContactShadows and AccumulativeShadows the plane faces Y up. It is recommended to use [leva](https://github.com/pmndrs/leva) to configue the props above as some can be micro fractional depending on the models (intensity, worldRadius, ior and backfaceIor especially).
+Make sure to use the `debug` flag to help you stage your contents. Like ContactShadows and AccumulativeShadows the plane faces Y up. It is recommended to use [leva](https://github.com/pmndrs/leva) to configue the props above as some can be micro fractional depending on the models (intensity, worldRadius, ior and backsideIOR especially).
 
 ```jsx
-<Caustics debug backfaces lightSource={[2.5, 5, -2.5]}>
+<Caustics debug backside lightSource={[2.5, 5, -2.5]}>
   <Bottle />
   <WineGlass>
 </Caustics>
@@ -3181,15 +3213,15 @@ Make sure to use the `debug` flag to help you stage your contents. Like ContactS
 Sometimes you want to combine caustics for even better visuals, or if you want to emulate multiple lightsources. Use the `causticsOnly` flag in such cases and it will use the model inside only for calculations. Since all loaders in Fiber should be cached there is no expense or memory overhead doing this.
 
 ```jsx
-<Caustics backfaces lightSource={[2.5, 5, -2.5]} >
+<Caustics backside lightSource={[2.5, 5, -2.5]} >
   <WineGlass />
 </Caustics>
-<Caustics causticsOnly backfaces lightSource={[-2.5, 5, 2.5]} ior={0.79} worldRadius={0.0124}>
+<Caustics causticsOnly backside lightSource={[-2.5, 5, 2.5]} ior={0.79} worldRadius={0.0124}>
   <WineGlass />
 </Caustics>
 ```
 
-The light source can either be defined by prop or by reference. Use the latter if you want to control the light source, for instance in order to move or animate it. Runtime caustics with frames set to `Infinity`, a low resolution and no backfaces can be feasible.
+The light source can either be defined by prop or by reference. Use the latter if you want to control the light source, for instance in order to move or animate it. Runtime caustics with frames set to `Infinity`, a low resolution and no backside can be feasible.
 
 ```jsx
 const lightSource = useRef()

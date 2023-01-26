@@ -1535,6 +1535,8 @@ type MeshTransmissionMaterialProps = JSX.IntrinsicElements['meshPhysicalMaterial
   transmission?: number
   /* Thickness (refraction), default: 0 */
   thickness?: number
+  /** Backside thickness (when backside is true), default: 0 */
+  backsideThickness?: number
   /* Roughness (blur), default: 0 */
   roughness?: number
   /* Chromatic aberration, default: 0.03 */

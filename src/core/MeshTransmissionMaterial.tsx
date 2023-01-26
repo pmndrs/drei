@@ -46,6 +46,8 @@ type MeshTransmissionMaterialProps = Omit<MeshTransmissionMaterialType, 'args'> 
   transmissionSampler?: boolean
   /** Render the backside of the material (more cost, better results), default: false */
   backside?: boolean
+  /** Backside thickness (when backside is true), default: 0 */
+  backsideThickness?: number
   /** Resolution of the local buffer, default: undefined (fullscreen) */
   resolution?: number
   /** Resolution of the local buffer for backfaces, default: undefined (fullscreen) */
@@ -372,6 +374,7 @@ export const MeshTransmissionMaterial = React.forwardRef(
       backside = false,
       transmission = 1,
       thickness = 0,
+      backsideThickness = 0,
       samples = 10,
       resolution,
       backsideResolution,
@@ -413,7 +416,7 @@ export const MeshTransmissionMaterial = React.forwardRef(
             // And now prepare the material for the main render using the backside buffer
             parent.material = ref.current
             parent.material.buffer = fboBack.texture
-            parent.material.thickness = 1.0 / (thickness + 0.01)
+            parent.material.thickness = backsideThickness
             parent.material.side = THREE.BackSide
           }
 

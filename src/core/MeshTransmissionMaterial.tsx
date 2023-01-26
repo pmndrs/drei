@@ -372,6 +372,7 @@ export const MeshTransmissionMaterial = React.forwardRef(
       buffer,
       transmissionSampler = false,
       backside = false,
+      side = THREE.FrontSide,
       transmission = 1,
       thickness = 0,
       backsideThickness = 0,
@@ -426,7 +427,7 @@ export const MeshTransmissionMaterial = React.forwardRef(
 
           parent.material = ref.current
           parent.material.thickness = thickness
-          parent.material.side = THREE.FrontSide
+          parent.material.side = side
           parent.material.buffer = fboMain.texture
 
           // Set old state back
@@ -455,6 +456,7 @@ export const MeshTransmissionMaterial = React.forwardRef(
         // The exception is when transmissionSampler is set, in which case we are using three's built in sampler.
         transmission={transmissionSampler ? transmission : 0}
         thickness={thickness}
+        side={side}
       />
     )
   }

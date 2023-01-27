@@ -97,10 +97,10 @@ export const CameraControls = forwardRef<CameraControlsImpl, CameraControlsProps
     }
   }, [controls, enableEvents, onStart, onEnd, invalidate, setEvents, regress, onChange])
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (makeDefault) {
       const old = get().controls
-      set({ controls: controls as unknown as THREE.EventDispatcher})
+      set({ controls: controls as unknown as THREE.EventDispatcher })
       return () => set({ controls: old })
     }
   }, [makeDefault, controls])

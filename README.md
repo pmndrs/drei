@@ -362,6 +362,8 @@ type CameraControlsProps = {
   camera?: PerspectiveCamera | OrthographicCamera
   /** DOM element to connect to, default to the state's `gl` renderer */
   domElement?: HTMLElement
+  /** Reference this CameraControls instance as state's `controls` */
+  makeDefault?: boolean
 }
 ```
 

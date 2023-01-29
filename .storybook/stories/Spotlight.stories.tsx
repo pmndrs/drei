@@ -61,20 +61,22 @@ export const SpotlightSt = () => <SpotLightScene />
 SpotlightSt.storyName = 'Default'
 
 function SpotLightShadowsScene({ debug, wind }: { debug: boolean; wind: boolean }) {
-  const [diffuse, normal, roughness, ao] = useTexture(
-    [
-      '/textures/grassy_cobble/grassy_cobblestone_diff_2k.jpg',
-      '/textures/grassy_cobble/grassy_cobblestone_nor_gl_2k.jpg', //
-      '/textures/grassy_cobble/grassy_cobblestone_rough_2k.jpg',
-      '/textures/grassy_cobble/grassy_cobblestone_ao_2k.jpg',
-    ],
-    (texs: any) => {
-      for (const tex of texs) {
-        tex.wrapS = tex.wrapT = RepeatWrapping
-        tex.repeat.set(2, 2)
-      }
+  const texs = useTexture([
+    '/textures/grassy_cobble/grassy_cobblestone_diff_2k.jpg',
+    '/textures/grassy_cobble/grassy_cobblestone_nor_gl_2k.jpg', //
+    '/textures/grassy_cobble/grassy_cobblestone_rough_2k.jpg',
+    '/textures/grassy_cobble/grassy_cobblestone_ao_2k.jpg',
+  ])
+
+  React.useLayoutEffect(() => {
+    for (const tex of texs) {
+      tex.wrapS = tex.wrapT = RepeatWrapping
+      tex.repeat.set(2, 2)
     }
-  )
+  }, [texs])
+
+  const [diffuse, normal, roughness, ao] = texs
+
   const leafTexture = useTexture('/textures/other/leaves.jpg')
 
   return (
@@ -144,7 +146,7 @@ function SpotLightShadowsScene({ debug, wind }: { debug: boolean; wind: boolean 
               gl_FragColor = vec4(color, 1.);
             }
           `
-              : undefined
+              : ''
           }
         />
       </SpotLight>
@@ -152,16 +154,10 @@ function SpotLightShadowsScene({ debug, wind }: { debug: boolean; wind: boolean 
   )
 }
 
-export const SpotlightShadowsSt = (props) => (
-  <React.Suspense fallback={null}>
-    <SpotLightShadowsScene {...props} />
-  </React.Suspense>
-)
+export const SpotlightShadowsSt = (props) => <SpotLightShadowsScene {...props} />
 SpotlightShadowsSt.storyName = 'Shadows'
 
 SpotlightShadowsSt.args = {
   debug: false,
   wind: true,
 }
-
-SpotlightShadowsSt.argTypes = {}

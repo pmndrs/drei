@@ -364,6 +364,12 @@ type CameraControlsProps = {
   domElement?: HTMLElement
   /** Reference this CameraControls instance as state's `controls` */
   makeDefault?: boolean
+  /** Events callbacks, see: https://github.com/yomotsu/camera-controls#events */
+  onStart?: (e?: { type: 'controlstart' }) => void
+  onEnd?: (e?: { type: 'controlend' }) => void
+  onChange?: (e?: { type: 'update' }) => void
+  /** While "dragging", state's `events` are disabled by default(for performance). You can explicitly disable this optimisation, by setting this prop to true */
+  events?: boolean
 }
 ```
 

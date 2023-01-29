@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import { Setup } from '../Setup'
 
-import { Box, Html, PresentationControlProps, PresentationControls } from '../../src'
+import { Box, PresentationControlProps, PresentationControls } from '../../src'
 
 export function PresentationControlStory({ enabled, ...rest }: PresentationControlProps) {
   return (
@@ -11,7 +11,6 @@ export function PresentationControlStory({ enabled, ...rest }: PresentationContr
         <meshBasicMaterial wireframe />
         <axesHelper args={[100]} />
       </Box>
-      <Html>abcd</Html>
     </PresentationControls>
   )
 }

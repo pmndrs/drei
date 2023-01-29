@@ -17,7 +17,7 @@ export type CameraControlsProps = Omit<
       onStart?: (e?: { type: 'controlstart' }) => void
       onEnd?: (e?: { type: 'controlend' }) => void
       onChange?: (e?: { type: 'update' }) => void
-      events?: boolean // Wether to enable events during orbit controls interaction
+      events?: boolean // Wether to enable events during controls interaction
       regress?: boolean
     }
   >,

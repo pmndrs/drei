@@ -16,7 +16,7 @@ export type CameraControlsProps = Omit<
       makeDefault?: boolean
       onStart?: (e?: { type: 'controlstart' }) => void
       onEnd?: (e?: { type: 'controlend' }) => void
-      onChange?: (e?: { type: 'control' }) => void
+      onChange?: (e?: { type: 'update' }) => void
       events?: boolean
       regress?: boolean
     }
@@ -86,12 +86,12 @@ export const CameraControls = forwardRef<CameraControlsImpl, CameraControlsProps
       if (!enableEvents) setEvents({ enabled: true })
     }
 
-    controls.addEventListener('control', callback)
+    controls.addEventListener('update', callback)
     controls.addEventListener('controlstart', onStartCb)
     controls.addEventListener('controlend', onEndCb)
 
     return () => {
-      controls.removeEventListener('control', callback)
+      controls.removeEventListener('update', callback)
       controls.removeEventListener('controlstart', onStartCb)
       controls.removeEventListener('controlend', onEndCb)
     }

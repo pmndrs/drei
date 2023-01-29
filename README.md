@@ -478,6 +478,7 @@ Semi-OrbitControls with spring-physics, polar zoom and snap-back, for presentati
   polar={[0, Math.PI / 2]} // Vertical limits
   azimuth={[-Infinity, Infinity]} // Horizontal limits
   config={{ mass: 1, tension: 170, friction: 26 }} // Spring config
+  domElement={events.connected} // The DOM element events for this controller will attach to
 >
   <mesh />
 </PresentationControls>

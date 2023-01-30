@@ -17,12 +17,14 @@ export type PresentationControlProps = {
   config?: any
   enabled?: boolean
   children?: React.ReactNode
+  domElement?: HTMLElement
 }
 
 export function PresentationControls({
   enabled = true,
   snap,
   global,
+  domElement,
   cursor = true,
   children,
   speed = 1,
@@ -32,7 +34,11 @@ export function PresentationControls({
   azimuth = [-Infinity, Infinity],
   config = { mass: 1, tension: 170, friction: 26 },
 }: PresentationControlProps) {
-  const { size, gl } = useThree()
+  const events = useThree((state) => state.events)
+  const gl = useThree((state) => state.gl)
+  const explDomElement = domElement || events.connected || gl.domElement
+
+  const { size } = useThree()
   const rPolar = React.useMemo(
     () => [rotation[0] + polar[0], rotation[0] + polar[1]],
     [rotation[0], polar[0], polar[1]]
@@ -48,18 +54,24 @@ export function PresentationControls({
   const [spring, api] = useSpring(() => ({ scale: 1, rotation: rInitial, config }))
   React.useEffect(() => void api.start({ scale: 1, rotation: rInitial, config }), [rInitial])
   React.useEffect(() => {
-    if (global && cursor && enabled) gl.domElement.style.cursor = 'grab'
+    if (global && cursor && enabled) {
+      explDomElement.style.cursor = 'grab'
+      gl.domElement.style.cursor = ''
+    }
 
-    return () => void (gl.domElement.style.cursor = 'default')
-  }, [global, cursor, gl.domElement, enabled])
+    return () => {
+      explDomElement.style.cursor = 'default'
+      gl.domElement.style.cursor = 'default'
+    }
+  }, [global, cursor, explDomElement, enabled])
   const bind = useGesture(
     {
       onHover: ({ last }) => {
-        if (cursor && !global && enabled) gl.domElement.style.cursor = last ? 'auto' : 'grab'
+        if (cursor && !global && enabled) explDomElement.style.cursor = last ? 'auto' : 'grab'
       },
       onDrag: ({ down, delta: [x, y], memo: [oldY, oldX] = spring.rotation.animation.to || rInitial }) => {
         if (!enabled) return [y, x]
-        if (cursor) gl.domElement.style.cursor = down ? 'grabbing' : 'grab'
+        if (cursor) explDomElement.style.cursor = down ? 'grabbing' : 'grab'
         x = MathUtils.clamp(oldX + (x / size.width) * Math.PI * speed, ...rAzimuth)
         y = MathUtils.clamp(oldY + (y / size.height) * Math.PI * speed, ...rPolar)
         const sConfig = snap && !down && typeof snap !== 'boolean' ? snap : config
@@ -71,7 +83,7 @@ export function PresentationControls({
         return [y, x]
       },
     },
-    { target: global ? gl.domElement : undefined }
+    { target: global ? explDomElement : undefined }
   )
   return (
     <a.group {...bind?.()} {...(spring as any)}>

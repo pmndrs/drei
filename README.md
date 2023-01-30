@@ -2824,8 +2824,6 @@ Masks use the stencil buffer to cut out areas of the screen. This is usually che
   colorWrite?: boolean
   /** If depth  of the masks own material will leak through, default: false */
   depthWrite?: boolean
-  /** children must define a geometry, a render-prop function is allowed which may override the default material */
-  children: ((spread: MaskSpread) => React.ReactNode) | React.ReactNode
 />
 ```
 
@@ -2834,6 +2832,7 @@ First you need to define a mask, give it the shape that you want.
 ```jsx
 <Mask id={1}>
   <planeGeometry />
+  <meshBasicMaterial />
 </Mask>
 ```
 
@@ -2847,27 +2846,16 @@ return (
     <meshStandardMaterial {...stencil} />
 ```
 
-You can build compound masks with multiple shapes by re-using an id.
+You can build compound masks with multiple shapes by re-using an id. You can also use the mask as a normal mesh by providing `colorWrite` and `depthWrite` props.
 
 ```jsx
 <Mask position={[-1, 0, 0]} id={1}>
   <planeGeometry />
+  <meshBasicMaterial />
 </Mask>
-<Mask position={[1, 0, 0]} id={1}>
+<Mask colorWrite depthWrite position={[1, 0, 0]} id={1}>
   <circleGeometry />
-</Mask>
-```
-
-You can override the material of a mask by using a render prop.
-
-```jsx
-<Mask id={1}>
-  {(spread) => (
-    <>
-      <planeGeometry args={[2, 2, 128, 128]} />
-      <MeshDistortMaterial distort={0.5} radius={1} speed={10} {...spread} />
-    </>
-  )}
+  <meshBasicMaterial />
 </Mask>
 ```
 

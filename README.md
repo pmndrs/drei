@@ -195,6 +195,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#environment">Environment</a></li>
           <li><a href="#lightformer">Lightformer</a></li>
           <li><a href="#spotlight">SpotLight</a></li>
+          <li><a href="#spotlightshadows">SpotLightShadows</a></li>
           <li><a href="#shadow">Shadow</a></li>
           <li><a href="#caustics">Caustics</a></li>
           <li><a href="#contactshadows">ContactShadows</a></li>
@@ -3395,6 +3396,11 @@ function Foo() {
 ```
 
 #### SpotLightShadows
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-spotlight--spotlight-shadows-st)
+
+<p>
+  <a href="https://codesandbox.io/s/yyk6gv"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/yyk6gv/screenshot.png" alt="Demo"/></a>
+</p>
 
 A shadow caster that can help cast shadows of different patterns (textures) onto the scene.
 

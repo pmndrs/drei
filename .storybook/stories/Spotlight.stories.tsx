@@ -129,24 +129,20 @@ function SpotLightShadowsScene({ debug, wind }: { debug: boolean; wind: boolean 
             wind
               ? /* glsl */ `
             varying vec2 vUv;
-
             uniform sampler2D uShadowMap;
             uniform float uTime;
-
             void main() {
               // material.repeat.set(2.5) - Since repeat is a shader feature not texture
               // we need to implement it manually
               vec2 uv = mod(vUv, 0.4) * 2.5;
-
               // Fake wind distortion
               uv.x += sin(uv.y * 10.0 + uTime * 0.5) * 0.02;
               uv.y += sin(uv.x * 10.0 + uTime * 0.5) * 0.02;
-
               vec3 color = texture2D(uShadowMap, uv).xyz;
               gl_FragColor = vec4(color, 1.);
             }
           `
-              : ''
+              : undefined
           }
         />
       </SpotLight>
@@ -154,7 +150,15 @@ function SpotLightShadowsScene({ debug, wind }: { debug: boolean; wind: boolean 
   )
 }
 
-export const SpotlightShadowsSt = (props) => <SpotLightShadowsScene {...props} />
+function SpotLightShadowsSceneWithSuspense(props) {
+  return (
+    <React.Suspense fallback={null}>
+      <SpotLightShadowsScene {...props} />
+    </React.Suspense>
+  )
+}
+
+export const SpotlightShadowsSt = (props) => <SpotLightShadowsSceneWithSuspense {...props} />
 SpotlightShadowsSt.storyName = 'Shadows'
 
 SpotlightShadowsSt.args = {

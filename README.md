@@ -195,6 +195,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#environment">Environment</a></li>
           <li><a href="#lightformer">Lightformer</a></li>
           <li><a href="#spotlight">SpotLight</a></li>
+          <li><a href="#spotlightshadows">SpotLightShadows</a></li>
           <li><a href="#shadow">Shadow</a></li>
           <li><a href="#caustics">Caustics</a></li>
           <li><a href="#contactshadows">ContactShadows</a></li>
@@ -362,6 +363,14 @@ type CameraControlsProps = {
   camera?: PerspectiveCamera | OrthographicCamera
   /** DOM element to connect to, default to the state's `gl` renderer */
   domElement?: HTMLElement
+  /** Reference this CameraControls instance as state's `controls` */
+  makeDefault?: boolean
+  /** Events callbacks, see: https://github.com/yomotsu/camera-controls#events */
+  onStart?: (e?: { type: 'controlstart' }) => void
+  onEnd?: (e?: { type: 'controlend' }) => void
+  onChange?: (e?: { type: 'update' }) => void
+  /** While "dragging", state's `events` are disabled by default(for performance). You can explicitly disable this optimisation, by setting this prop to true */
+  events?: boolean
 }
 ```
 
@@ -476,6 +485,7 @@ Semi-OrbitControls with spring-physics, polar zoom and snap-back, for presentati
   polar={[0, Math.PI / 2]} // Vertical limits
   azimuth={[-Infinity, Infinity]} // Horizontal limits
   config={{ mass: 1, tension: 170, friction: 26 }} // Spring config
+  domElement={events.connected} // The DOM element events for this controller will attach to
 >
   <mesh />
 </PresentationControls>
@@ -3374,6 +3384,11 @@ function Foo() {
 ```
 
 #### SpotLightShadows
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-spotlight--spotlight-shadows-st)
+
+<p>
+  <a href="https://codesandbox.io/s/yyk6gv"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/yyk6gv/screenshot.png" alt="Demo"/></a>
+</p>
 
 A shadow caster that can help cast shadows of different patterns (textures) onto the scene.
 

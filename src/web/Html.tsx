@@ -152,7 +152,7 @@ export const Html = React.forwardRef(
     const transformOuterRef = React.useRef<HTMLDivElement>(null!)
     const transformInnerRef = React.useRef<HTMLDivElement>(null!)
     // Append to the connected element, which makes HTML work with views
-    const target = (portal?.current || gl.domElement.parentNode) as HTMLElement
+    const target = (portal?.current || events.connected || gl.domElement.parentNode) as HTMLElement
 
     React.useLayoutEffect(() => {
       if (group.current) {

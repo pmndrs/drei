@@ -1484,6 +1484,16 @@ const [hidden, set] = useState()
   }} />
 ```
 
+When wrapped inside `ScrollControls`, it will scroll with the canvas. To prevent this, pass `{current: gl.domElement.parentNode}` as a `portal` property (obtained from the useThree hook).
+
+```jsx
+const { gl } = useThree()
+
+<Html
+  portal={{current: gl.domElement.parentNode}}
+ />
+```
+
 #### CycleRaycast
 
 ![](https://img.shields.io/badge/-Dom only-red)

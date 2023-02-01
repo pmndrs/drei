@@ -16,20 +16,32 @@ type Props = JSX.IntrinsicElements['texture'] & {
   eventPriority?: number
   /** Optional frame count, defaults to Infinity. If you set it to 1, it would only render a single frame, etc */
   frames?: number
+  /** Optional event compute, defaults to undefined */
+  compute?: (event: any, state: any, previous: any) => false | undefined
   /** Children will be rendered into a portal */
   children: React.ReactNode
 }
 
 export const RenderTexture = React.forwardRef(
   (
-    { children, width, height, samples = 8, renderPriority = 0, eventPriority = 0, frames = Infinity, ...props }: Props,
+    {
+      children,
+      compute,
+      width,
+      height,
+      samples = 8,
+      renderPriority = 0,
+      eventPriority = 0,
+      frames = Infinity,
+      ...props
+    }: Props,
     forwardRef
   ) => {
     const { size, viewport } = useThree()
     const fbo = useFBO((width || size.width) * viewport.dpr, (height || size.height) * viewport.dpr, { samples })
     const [vScene] = React.useState(() => new THREE.Scene())
 
-    const compute = React.useCallback((event, state, previous) => {
+    const uvCompute = React.useCallback((event, state, previous) => {
       // Since this is only a texture it does not have an easy way to obtain the parent, which we
       // need to transform event coordinates to local coordinates. We use r3f internals to find the
       // next Object3D.
@@ -58,7 +70,7 @@ export const RenderTexture = React.forwardRef(
             {children}
           </Container>,
           vScene,
-          { events: { compute, priority: eventPriority } }
+          { events: { compute: compute || uvCompute, priority: eventPriority } }
         )}
         <primitive object={fbo.texture} {...props} />
       </>

@@ -2804,6 +2804,8 @@ This component allows you to render a live scene into a texture which you can th
   eventPriority?: number
   /** Optional frame count, defaults to Infinity. If you set it to 1, it would only render a single frame, etc */
   frames?: number
+  /** Optional event compute, defaults to undefined */
+  compute?: (event: any, state: any, previous: any) => false | undefined
   /** Children will be rendered into a portal */
   children: React.ReactNode
 />
@@ -3384,6 +3386,7 @@ function Foo() {
 ```
 
 #### SpotLightShadows
+
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-spotlight--spotlight-shadows-st)
 
 <p>

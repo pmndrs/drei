@@ -999,10 +999,10 @@ You can align the text using the `<Center>` component.
 </Center>
 ```
 
-It adds two properties that do not exist in the original `TextGeometry`, `lineHeight` and `letterSpacing`. The former a factor that is `1` by default, the latter is in threejs units and `0` by default.
+It adds three properties that do not exist in the original `TextGeometry`, `lineHeight`, `letterSpacing` and smooth. LetterSpacing is a factor that is `1` by default. LineHeight is in threejs units and `0` by default. Smooth merges vertices with a tolerance and calls computeVertexNormals.
 
 ```jsx
-<Text3D lineHeight={0.5} letterSpacing={-0.025}>{`hello\nworld`}</Text3D>
+<Text3D smooth={1} lineHeight={0.5} letterSpacing={-0.025}>{`hello\nworld`}</Text3D>
 ```
 
 #### Effects

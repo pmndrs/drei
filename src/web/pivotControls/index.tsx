@@ -1,12 +1,11 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { Size, extend, useFrame, useThree } from '@react-three/fiber'
-import { MeshLine, MeshLineMaterial } from 'meshline'
 
 import { AxisArrow } from './AxisArrow'
 import { PlaneSlider } from './PlaneSlider'
 import { AxisRotator } from './AxisRotator'
-import { context } from './context'
+import { context, OnDragStartProps } from './context'
 
 const tV0 = new THREE.Vector3()
 const tV1 = new THREE.Vector3()
@@ -92,17 +91,18 @@ type PivotControlsProps = {
   axisColors?: [string | number, string | number, string | number]
   /** Color of the hovered item */
   hoveredColor?: string | number
+  /** HTML value annotations, default: false */
+  annotations?: boolean
   /** CSS Classname applied to the HTML annotations */
   annotationsClass?: string
   /** Drag start event */
-  onDragStart?: () => void
+  onDragStart?: (props: OnDragStartProps) => void
   /** Drag event */
   onDrag?: (l: THREE.Matrix4, deltaL: THREE.Matrix4, w: THREE.Matrix4, deltaW: THREE.Matrix4) => void
   /** Drag end event */
   onDragEnd?: () => void
   /** Set this to false if you want the gizmo to be visible through faces */
   depthTest?: boolean
-  displayValues?: boolean
   opacity?: number
   visible?: boolean
   userData?: { [key: string]: any }
@@ -132,16 +132,16 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
       depthTest = true,
       axisColors = ['#ff2060', '#20df80', '#2080ff'],
       hoveredColor = '#ffff40',
-      displayValues = true,
+      annotations = false,
+      annotationsClass,
       opacity = 1,
       visible = true,
       userData,
       children,
+      ...props
     },
     fRef
   ) => {
-    extend({ MeshLine, MeshLineMaterial })
-
     const invalidate = useThree((state) => state.invalidate)
     const parentRef = React.useRef<THREE.Group>(null!)
     const ref = React.useRef<THREE.Group>(null!)
@@ -176,10 +176,10 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
 
     const config = React.useMemo(
       () => ({
-        onDragStart: () => {
+        onDragStart: (props: OnDragStartProps) => {
           mL0.copy(ref.current.matrix)
           mW0.copy(ref.current.matrixWorld)
-          onDragStart && onDragStart()
+          onDragStart && onDragStart(props)
           invalidate()
         },
         onDrag: (mdW: THREE.Matrix4) => {
@@ -207,9 +207,10 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
         scale,
         lineWidth,
         fixed,
-        displayValues,
         depthTest,
         userData,
+        annotations,
+        annotationsClass,
       }),
       [
         onDragStart,
@@ -225,9 +226,10 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
         ...axisColors,
         hoveredColor,
         opacity,
-        displayValues,
         userData,
         autoTransform,
+        annotations,
+        annotationsClass,
       ]
     )
 
@@ -250,10 +252,16 @@ export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
 
     React.useImperativeHandle(fRef, () => ref.current, [])
 
+    React.useLayoutEffect(() => {
+      // If the matrix is a real matrix4 it means that the user wants to control the gizmo
+      // In that case it should just be set, as a bare prop update would merely copy it
+      if (matrix && matrix instanceof THREE.Matrix4) ref.current.matrix = matrix
+    }, [matrix])
+
     return (
       <context.Provider value={config}>
         <group ref={parentRef}>
-          <group ref={ref} matrix={matrix} matrixAutoUpdate={false}>
+          <group ref={ref} matrix={matrix} matrixAutoUpdate={false} {...props}>
             <group visible={visible} ref={gizmoRef} position={offset} rotation={rotation}>
               {!disableAxes && activeAxes[0] && <AxisArrow axis={0} direction={xDir} />}
               {!disableAxes && activeAxes[1] && <AxisArrow axis={1} direction={yDir} />}

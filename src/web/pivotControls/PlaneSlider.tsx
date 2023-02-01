@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { ThreeEvent, useThree } from '@react-three/fiber'
-import { Line } from '../Line'
+import { Line } from '../../core/Line'
 import { Html } from '../../web/Html'
 import { context } from './context'
 
@@ -39,6 +39,7 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
   const {
     translation,
     translationLimits,
+    annotations,
     annotationsClass,
     depthTest,
     scale,
@@ -46,7 +47,6 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
     fixed,
     axisColors,
     hoveredColor,
-    displayValues,
     opacity,
     onDragStart,
     onDrag,
@@ -70,7 +70,7 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
 
   const onPointerDown = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
-      if (displayValues) {
+      if (annotations) {
         divRef.current.innerText = `${translation.current[(axis + 1) % 3].toFixed(2)}, ${translation.current[
           (axis + 2) % 3
         ].toFixed(2)}`
@@ -86,12 +86,12 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
       clickInfo.current = { clickPoint, e1, e2, plane }
       offsetX0.current = translation.current[(axis + 1) % 3]
       offsetY0.current = translation.current[(axis + 2) % 3]
-      onDragStart()
+      onDragStart({ component: 'Slider', axis, origin, directions: [e1, e2, normal] })
       camControls && (camControls.enabled = false)
       // @ts-ignore
       e.target.setPointerCapture(e.pointerId)
     },
-    [camControls, onDragStart]
+    [annotations, camControls, onDragStart, axis]
   )
 
   const onPointerMove = React.useCallback(
@@ -126,7 +126,7 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
         }
         translation.current[(axis + 1) % 3] = offsetX0.current + offsetX
         translation.current[(axis + 2) % 3] = offsetY0.current + offsetY
-        if (displayValues) {
+        if (annotations) {
           divRef.current.innerText = `${translation.current[(axis + 1) % 3].toFixed(2)}, ${translation.current[
             (axis + 2) % 3
           ].toFixed(2)}`
@@ -139,12 +139,12 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
         onDrag(offsetMatrix)
       }
     },
-    [onDrag, isHovered, translation, translationLimits, axis]
+    [annotations, onDrag, isHovered, translation, translationLimits, axis]
   )
 
   const onPointerUp = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
-      if (displayValues) {
+      if (annotations) {
         divRef.current.style.display = 'none'
       }
       e.stopPropagation()
@@ -154,7 +154,7 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
       // @ts-ignore
       e.target.releasePointerCapture(e.pointerId)
     },
-    [camControls, onDragEnd]
+    [annotations, camControls, onDragEnd]
   )
 
   const onPointerOut = React.useCallback((e: ThreeEvent<PointerEvent>) => {
@@ -185,20 +185,22 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
 
   return (
     <group ref={objRef} matrix={matrixL} matrixAutoUpdate={false}>
-      <Html position={[0, 0, 0]}>
-        <div
-          style={{
-            display: 'none',
-            background: '#151520',
-            color: 'white',
-            padding: '6px 8px',
-            borderRadius: 7,
-            whiteSpace: 'nowrap',
-          }}
-          className={annotationsClass}
-          ref={divRef}
-        />
-      </Html>
+      {annotations && (
+        <Html position={[0, 0, 0]}>
+          <div
+            style={{
+              display: 'none',
+              background: '#151520',
+              color: 'white',
+              padding: '6px 8px',
+              borderRadius: 7,
+              whiteSpace: 'nowrap',
+            }}
+            className={annotationsClass}
+            ref={divRef}
+          />
+        </Html>
+      )}
       <group position={[pos1 * 1.7, pos1 * 1.7, 0]}>
         <mesh
           visible={true}

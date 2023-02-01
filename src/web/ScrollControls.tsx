@@ -4,14 +4,26 @@ import * as ReactDOM from 'react-dom/client'
 import { context as fiberContext, RootState, useFrame, useThree } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
 import { DomEvent } from '@react-three/fiber/dist/declarations/src/core/events'
+import { easing } from 'maath'
 
 export type ScrollControlsProps = {
+  /** Precision, default 0.00001 */
   eps?: number
+  /** Horontal scroll, default false (vertical) */
   horizontal?: boolean
+  /** Infinite scroll, default false (experimental!) */
   infinite?: boolean
+  /** Defines the lenght of the scroll area, each page is height:100%, default 1 */
   pages?: number
+  /** A factor that increases scroll bar travel,default: 1 */
   distance?: number
+  /** Friction in seconds, default: 0.2 (1/5 second) */
   damping?: number
+  /** maxSpeed optionally allows you to clamp the maximum speed. If damping is 0.2s and looks OK
+   *  going between, say, page 1 and 2, but not for pages far apart as it'll move very rapid,
+   *  then a maxSpeed of e.g. 3 which will clamp the speed to 3 units per second, it may now
+   *  take much longer than damping to reach the target if it is far away. Default: Infinity */
+  maxSpeed?: number
   enabled?: boolean
   style?: React.CSSProperties
   children: React.ReactNode
@@ -45,7 +57,8 @@ export function ScrollControls({
   horizontal,
   pages = 1,
   distance = 1,
-  damping = 4,
+  damping = 0.25,
+  maxSpeed = Infinity,
   style = {},
   children,
 }: ScrollControlsProps) {
@@ -53,7 +66,7 @@ export function ScrollControls({
   const [el] = React.useState(() => document.createElement('div'))
   const [fill] = React.useState(() => document.createElement('div'))
   const [fixed] = React.useState(() => document.createElement('div'))
-  const target = gl.domElement.parentNode!
+  const target = gl.domElement.parentNode! as HTMLElement
   const scroll = React.useRef(0)
 
   const state = React.useMemo(() => {
@@ -123,8 +136,10 @@ export function ScrollControls({
     const oldCompute = get().events.compute
     setEvents({
       compute(event: DomEvent, state: RootState) {
-        const offsetX = event.clientX - (target as HTMLElement).offsetLeft
-        const offsetY = event.clientY - (target as HTMLElement).offsetTop
+        // we are using boundingClientRect because we could not rely on target.offsetTop as canvas could be positioned anywhere in dom
+        const { left, top } = target.getBoundingClientRect()
+        const offsetX = event.clientX - left
+        const offsetY = event.clientY - top
         state.pointer.set((offsetX / state.size.width) * 2 - 1, -(offsetY / state.size.height) * 2 + 1)
         state.raycaster.setFromCamera(state.pointer, state.camera)
       },
@@ -186,8 +201,9 @@ export function ScrollControls({
 
   let last = 0
   useFrame((_, delta) => {
-    state.offset = THREE.MathUtils.damp((last = state.offset), scroll.current, damping, delta)
-    state.delta = THREE.MathUtils.damp(state.delta, Math.abs(last - state.offset), damping, delta)
+    last = state.offset
+    easing.damp(state, 'offset', scroll.current, damping, delta, maxSpeed, undefined, eps)
+    easing.damp(state, 'delta', Math.abs(last - state.offset), damping, delta, maxSpeed, undefined, eps)
     if (state.delta > eps) invalidate()
   })
   return <context.Provider value={state}>{children}</context.Provider>

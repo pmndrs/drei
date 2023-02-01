@@ -1,8 +1,8 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { ThreeEvent, useThree } from '@react-three/fiber'
-import { Line } from '../Line'
-import { Html } from '../../web/Html'
+import { Line } from '../../core/Line'
+import { Html } from '../Html'
 import { context } from './context'
 
 const vec1 = new THREE.Vector3()
@@ -43,6 +43,7 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
   const {
     translation,
     translationLimits,
+    annotations,
     annotationsClass,
     depthTest,
     scale,
@@ -50,7 +51,6 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
     fixed,
     axisColors,
     hoveredColor,
-    displayValues,
     opacity,
     onDragStart,
     onDrag,
@@ -68,22 +68,23 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
 
   const onPointerDown = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
-      if (displayValues) {
+      if (annotations) {
         divRef.current.innerText = `${translation.current[axis].toFixed(2)}`
         divRef.current.style.display = 'block'
       }
       e.stopPropagation()
       const rotation = new THREE.Matrix4().extractRotation(objRef.current.matrixWorld)
       const clickPoint = e.point.clone()
+      const origin = new THREE.Vector3().setFromMatrixPosition(objRef.current.matrixWorld)
       const dir = direction.clone().applyMatrix4(rotation).normalize()
       clickInfo.current = { clickPoint, dir }
       offset0.current = translation.current[axis]
-      onDragStart()
+      onDragStart({ component: 'Arrow', axis, origin, directions: [dir] })
       camControls && (camControls.enabled = false)
       // @ts-ignore - setPointerCapture is not in the type definition
       e.target.setPointerCapture(e.pointerId)
     },
-    [direction, camControls, onDragStart, translation, axis]
+    [annotations, direction, camControls, onDragStart, translation, axis]
   )
 
   const onPointerMove = React.useCallback(
@@ -103,19 +104,19 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
           offset = Math.min(offset, max - offset0.current)
         }
         translation.current[axis] = offset0.current + offset
-        if (displayValues) {
+        if (annotations) {
           divRef.current.innerText = `${translation.current[axis].toFixed(2)}`
         }
         offsetMatrix.makeTranslation(dir.x * offset, dir.y * offset, dir.z * offset)
         onDrag(offsetMatrix)
       }
     },
-    [onDrag, isHovered, translation, translationLimits, axis]
+    [annotations, onDrag, isHovered, translation, translationLimits, axis]
   )
 
   const onPointerUp = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
-      if (displayValues) {
+      if (annotations) {
         divRef.current.style.display = 'none'
       }
       e.stopPropagation()
@@ -125,7 +126,7 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
       // @ts-ignore - releasePointerCapture & PointerEvent#pointerId is not in the type definition
       e.target.releasePointerCapture(e.pointerId)
     },
-    [camControls, onDragEnd]
+    [annotations, camControls, onDragEnd]
   )
 
   const onPointerOut = React.useCallback((e: ThreeEvent<PointerEvent>) => {
@@ -154,20 +155,22 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
         onPointerUp={onPointerUp}
         onPointerOut={onPointerOut}
       >
-        <Html position={[0, -coneLength, 0]}>
-          <div
-            style={{
-              display: 'none',
-              background: '#151520',
-              color: 'white',
-              padding: '6px 8px',
-              borderRadius: 7,
-              whiteSpace: 'nowrap',
-            }}
-            className={annotationsClass}
-            ref={divRef}
-          />
-        </Html>
+        {annotations && (
+          <Html position={[0, -coneLength, 0]}>
+            <div
+              style={{
+                display: 'none',
+                background: '#151520',
+                color: 'white',
+                padding: '6px 8px',
+                borderRadius: 7,
+                whiteSpace: 'nowrap',
+              }}
+              className={annotationsClass}
+              ref={divRef}
+            />
+          </Html>
+        )}
         {/* The invisible mesh being raycast */}
         <mesh visible={false} position={[0, (cylinderLength + coneLength) / 2.0, 0]} userData={userData}>
           <cylinderGeometry args={[coneWidth * 1.4, coneWidth * 1.4, cylinderLength + coneLength, 8, 1]} />

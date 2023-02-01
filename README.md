@@ -40,6 +40,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         </ul>
         <li><a href="#controls">Controls</a></li>
         <ul>
+          <li><a href="#cameracontrols">CameraControls</a></li>
           <li><a href="#controls">FlyControls</a></li>
           <li><a href="#controls">MapControls</a></li>
           <li><a href="#controls">DeviceOrientationControls</a></li>
@@ -56,6 +57,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#gizmohelper">GizmoHelper</a></li>
           <li><a href="#pivotcontrols">PivotControls</a></li>
           <li><a href="#transformcontrols">TransformControls</a></li>
+          <li><a href="#grid">Grid</a></li>
           <li><a href="#usehelper">useHelper</a></li>
         </ul>
         <li><a href="#abstractions">Abstractions</a></li>
@@ -65,6 +67,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#text3d">Text3D</a></li>          
           <li><a href="#positionalaudio">PositionalAudio</a></li>
           <li><a href="#billboard">Billboard</a></li>
+          <li><a href="#screenspace">ScreenSpace</a></li>
           <li><a href="#effects">Effects</a></li>
           <li><a href="#gradienttexture">GradientTexture</a></li>
           <li><a href="#edges">Edges</a></li>
@@ -75,6 +78,9 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#useanimations">useAnimations</a></li>
           <li><a href="#marchingcubes">MarchingCubes</a></li>
           <li><a href="#decal">Decal</a></li>
+          <li><a href="#svg">Svg</a></li>
+          <li><a href="#gltf">Gltf</a></li>
+          <li><a href="#asciirenderer">AsciiRenderer</a></li>
         </ul>
         <li><a href="#shaders">Shaders</a></li>
         <ul>
@@ -82,13 +88,10 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#meshwobblematerial">MeshWobbleMaterial</a></li>
           <li><a href="#meshdistortmaterial">MeshDistortMaterial</a></li>
           <li><a href="#meshrefractionmaterial">MeshRefractionMaterial</a></li>
+          <li><a href="#meshtransmissionmaterial">MeshTransmissionMaterial</a></li>
           <li><a href="#pointmaterial">PointMaterial</a></li>
-          <li><a href="#softshadows">softShadows</a></li>
+          <li><a href="#softshadows">SoftShadows</a></li>
           <li><a href="#shadermaterial">shaderMaterial</a></li>
-        </ul>
-        <li><a href="#modifiers">Modifiers</a></li>
-        <ul>
-          <li><a href="#curvemodifier">CurveModifier</a></li>
         </ul>
       </ul>
     </td>
@@ -121,7 +124,8 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#usetexture">useTexture</a></li>
           <li><a href="#usektx2">useKTX2</a></li>
           <li><a href="#usecubetexture">useCubeTexture</a></li>
-          <li><a href="#usevideotexture">useVideoTexture</a></li>          
+          <li><a href="#usevideotexture">useVideoTexture</a></li>
+          <li><a href="#usetrailtexture">useTrailTexture</a></li>          
         </ul>
         <li><a href="#performance">Performance</a></li>
         <ul>
@@ -135,14 +139,19 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#meshbounds">meshBounds</a></li>
           <li><a href="#adaptivedpr">AdaptiveDpr</a></li>
           <li><a href="#adaptiveevents">AdaptiveEvents</a></li>
-          <li><a href="#usebvh">useBVH</a></li>
+          <li><a href="#bvh">Bvh</a></li>
           <li><a href="#performancemonitor">PerformanceMonitor</a></li>          
         </ul>
         <li><a href="#portals">Portals</a></li>        
         <ul>
+          <li><a href="#hud">Hud</a></li>
           <li><a href="#view">View</a></li>
           <li><a href="#rendertexture">RenderTexture</a></li>
           <li><a href="#mask">Mask</a></li>
+        </ul>
+        <li><a href="#modifiers">Modifiers</a></li>
+        <ul>
+          <li><a href="#curvemodifier">CurveModifier</a></li>
         </ul>
       </ul>
     </td>
@@ -186,7 +195,9 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#environment">Environment</a></li>
           <li><a href="#lightformer">Lightformer</a></li>
           <li><a href="#spotlight">SpotLight</a></li>
+          <li><a href="#spotlightshadows">SpotLightShadows</a></li>
           <li><a href="#shadow">Shadow</a></li>
+          <li><a href="#caustics">Caustics</a></li>
           <li><a href="#contactshadows">ContactShadows</a></li>
           <li><a href="#randomizedlight">RandomizedLight</a></li>
           <li><a href="#accumulativeshadows">AccumulativeShadows</a></li>
@@ -208,6 +219,23 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/camera-perspectivecamera--perspective-camera-scene-st)
 
+```tsx
+type Props = Omit<JSX.IntrinsicElements['perspectiveCamera'], 'children'> & {
+  /** Registers the camera as the system default, fiber will start rendering with it */
+  makeDefault?: boolean
+  /** Making it manual will stop responsiveness and you have to calculate aspect ratio yourself. */
+  manual?: boolean
+  /** The contents will either follow the camera, or be hidden when filming if you pass a function */
+  children?: React.ReactNode | ((texture: THREE.Texture) => React.ReactNode)
+  /** Number of frames to render, 0 */
+  frames?: number
+  /** Resolution of the FBO, 256 */
+  resolution?: number
+  /** Optional environment map for functional use */
+  envMap?: THREE.Texture
+}
+```
+
 A responsive [THREE.PerspectiveCamera](https://threejs.org/docs/#api/en/cameras/PerspectiveCamera) that can set itself as the default.
 
 ```jsx
@@ -223,10 +251,22 @@ You can also give it children, which will now occupy the same position as the ca
 </PerspectiveCamera>
 ```
 
-You can also drive it manually, it won't be responsive and you have to calculate aspect ration yourself.
+You can also drive it manually, it won't be responsive and you have to calculate aspect ratio yourself.
 
 ```jsx
 <PerspectiveCamera manual aspect={...} onUpdate={(c) => c.updateProjectionMatrix()}>
+```
+
+You can use the PerspectiveCamera to film contents into a RenderTarget, similar to CubeCamera. As a child you must provide a render-function which receives the texture as its first argument. The result of that function will _not follow the camera_, instead it will be set invisible while the the FBO renders so as to avoid issues where the meshes that receive the texture are interrering.
+
+```jsx
+<PerspectiveCamera position={[0, 0, 10]}>
+  {(texture) => (
+    <mesh geometry={plane}>
+      <meshBasicMaterial map={texture} />
+    </mesh>
+  )}
+</PerspectiveCamera>
 ```
 
 #### OrthographicCamera
@@ -238,6 +278,18 @@ A responsive [THREE.OrthographicCamera](https://threejs.org/docs/#api/en/cameras
 ```jsx
 <OrthographicCamera makeDefault {...props}>
   <mesh />
+</OrthographicCamera>
+```
+
+You can use the OrthographicCamera to film contents into a RenderTarget, it has the same API as OrthographicCamera.
+
+```jsx
+<OrthographicCamera position={[0, 0, 10]}>
+  {(texture) => (
+    <mesh geometry={plane}>
+      <meshBasicMaterial map={texture} />
+    </mesh>
+  )}
 </OrthographicCamera>
 ```
 
@@ -287,11 +339,40 @@ If available controls have damping enabled by default, they manage their own upd
 
 Some controls allow you to set `makeDefault`, similar to, for instance, PerspectiveCamera. This will set @react-three/fiber's `controls` field in the root store. This can make it easier in situations where you want controls to be known and other parts of the app could respond to it. Some drei controls already take it into account, like CameraShake, Gizmo and TransformControls.
 
-Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-scene-st), TrackballControls, ArcballControls, FlyControls, DeviceOrientationControls, PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st), FirstPersonControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-firstpersoncontrols--first-person-controls-story)
+Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-scene-st), TrackballControls, ArcballControls, FlyControls, DeviceOrientationControls, PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st), FirstPersonControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-firstpersoncontrols--first-person-controls-story) and CameraControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-cameracontrols--camera-controls-story)
 
 All controls react to the default camera. If you have a `<PerspectiveCamera makeDefault />` in your scene, they will control it. If you need to inject an imperative camera or one that isn't the default, use the `camera` prop: `<OrbitControls camera={MyCamera} />`.
 
 PointerLockControls additionally supports a `selector` prop, which enables the binding of `click` event handlers for control activation to other elements than `document` (e.g. a 'Click here to play' button). All elements matching the `selector` prop will activate the controls. It will also center raycast events by default, so regular onPointerOver/etc events on meshes will continue to work.
+
+#### CameraControls
+
+<p>
+  <a href="https://codesandbox.io/s/sew669"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/sew669/screenshot.png?v2" alt="CameraControls"/></a>
+</p>
+
+This is an implementation of the [camera-controls](https://github.com/yomotsu/camera-controls) library.
+
+```tsx
+<CameraControls />
+```
+
+```tsx
+type CameraControlsProps = {
+  /** The camera to control, default to the state's `camera` */
+  camera?: PerspectiveCamera | OrthographicCamera
+  /** DOM element to connect to, default to the state's `gl` renderer */
+  domElement?: HTMLElement
+  /** Reference this CameraControls instance as state's `controls` */
+  makeDefault?: boolean
+  /** Events callbacks, see: https://github.com/yomotsu/camera-controls#events */
+  onStart?: (e?: { type: 'controlstart' }) => void
+  onEnd?: (e?: { type: 'controlend' }) => void
+  onChange?: (e?: { type: 'update' }) => void
+  /** While "dragging", state's `events` are disabled by default(for performance). You can explicitly disable this optimisation, by setting this prop to true */
+  events?: boolean
+}
+```
 
 #### ScrollControls
 
@@ -306,26 +387,47 @@ PointerLockControls additionally supports a `selector` prop, which enables the b
   <a href="https://codesandbox.io/s/4jr4p"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/4jr4p/screenshot.png" alt="GLTF and useScroll"/></a>
 </p>
 
+```tsx
+type ScrollControlsProps = {
+  /** Precision, default 0.00001 */
+  eps?: number
+  /** Horontal scroll, default false (vertical) */
+  horizontal?: boolean
+  /** Infinite scroll, default false (experimental!) */
+  infinite?: boolean
+  /** Defines the lenght of the scroll area, each page is height:100%, default 1 */
+  pages?: number
+  /** A factor that increases scroll bar travel, default 1 */
+  distance?: number
+  /** Friction in seconds, default: 0.2 (1/5 second) */
+  damping?: number
+  /** maxSpeed optionally allows you to clamp the maximum speed. If damping is 0.2s and looks OK
+   *  going between, say, page 1 and 2, but not for pages far apart as it'll move very rapid,
+   *  then a maxSpeed of e.g. 0.1 which will clamp the speed to 0.1 units per second, it may now
+   *  take much longer than damping to reach the target if it is far away. Default: Infinity */
+  maxSpeed?: number
+  enabled?: boolean
+  style?: React.CSSProperties
+  children: React.ReactNode
+}
+```
+
 Scroll controls create a HTML scroll container in front of the canvas. Everything you drop into the `<Scroll>` component will be affected.
 
 You can listen and react to scroll with the `useScroll` hook which gives you useful data like the current scroll `offset`, `delta` and functions for range finding: `range`, `curve` and `visible`. The latter functions are especially useful if you want to react to the scroll offset, for instance if you wanted to fade things in and out if they are in or out of view.
 
 ```jsx
-<ScrollControls
-  pages={3} // Each page takes 100% of the height of the canvas
-  distance={1} // A factor that increases scroll bar travel (default: 1)
-  damping={4} // Friction, higher is faster (default: 4)
-  horizontal={false} // Can also scroll horizontally (default: false)
-  infinite={false} // Can also scroll infinitely (default: false)
->
-  {/* You can have components in here, they are not scrolled, but they can still
-      react to scroll by using useScroll! */}
+;<ScrollControls pages={3} damping={0.1}>
+  {/* Canvas contents in here will *not* scroll, but receive useScroll! */}
+  <SomeModel />
   <Scroll>
+    {/* Canvas contents in here will scroll along */}
     <Foo position={[0, 0, 0]} />
     <Foo position={[0, viewport.height, 0]} />
     <Foo position={[0, viewport.height * 1, 0]} />
   </Scroll>
   <Scroll html>
+    {/* DOM contents in here will scroll along */}
     <h1>html in here (optional)</h1>
     <h1 style={{ top: '100vh' }}>second page</h1>
     <h1 style={{ top: '200vh' }}>third page</h1>
@@ -345,18 +447,19 @@ function Foo(props) {
     // Will start increasing when 1 / 3 of the scroll distance is reached,
     // and reach 1 when it reaches 2 / 3rds.
     const b = data.range(1 / 3, 1 / 3)
-        // Same as above but with a margin of 0.1 on both ends
+    // Same as above but with a margin of 0.1 on both ends
     const c = data.range(1 / 3, 1 / 3, 0.1)
     // Will move between 0-1-0 for the selected range
     const d = data.curve(1 / 3, 1 / 3)
     // Same as above, but with a margin of 0.1 on both ends
-    const d = data.curve(1 / 3, 1 / 3, 0.1)
+    const e = data.curve(1 / 3, 1 / 3, 0.1)
     // Returns true if the offset is in range and false if it isn't
-    const e = data.visible(2 / 3, 1 / 3)
+    const f = data.visible(2 / 3, 1 / 3)
     // The visible function can also receive a margin
-    const f = data.visible(2 / 3, 1 / 3, 0.1)
+    const g = data.visible(2 / 3, 1 / 3, 0.1)
   })
   return <mesh ref={ref} {...props} />
+}
 ```
 
 #### PresentationControls
@@ -372,6 +475,7 @@ Semi-OrbitControls with spring-physics, polar zoom and snap-back, for presentati
 
 ```jsx
 <PresentationControls
+  enabled={true} // the controls can be disabled by setting this to false
   global={false} // Spin globally or by dragging the model
   cursor={true} // Whether to toggle cursor style on drag
   snap={false} // Snap-back to center (can also be a spring config)
@@ -381,6 +485,7 @@ Semi-OrbitControls with spring-physics, polar zoom and snap-back, for presentati
   polar={[0, Math.PI / 2]} // Vertical limits
   azimuth={[-Infinity, Infinity]} // Horizontal limits
   config={{ mass: 1, tension: 170, friction: 26 }} // Spring config
+  domElement={events.connected} // The DOM element events for this controller will attach to
 >
   <mesh />
 </PresentationControls>
@@ -390,14 +495,18 @@ Semi-OrbitControls with spring-physics, polar zoom and snap-back, for presentati
 
 ![](https://img.shields.io/badge/-Dom only-red)
 
+<p>
+  <a href="https://codesandbox.io/s/vkgi6"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/vkgi6/screenshot.png" alt="demo"/></a>
+</p>
+
 A rudimentary keyboard controller which distributes your defined data-model to the `useKeyboard` hook. It's a rather simple way to get started with keyboard input.
 
 ```tsx
-type KeyboardControlsState = { [key: string]: boolean }
+type KeyboardControlsState<T extends string = string> = { [K in T]: boolean }
 
-type KeyboardControlsEntry = {
+type KeyboardControlsEntry<T extends string = string> = {
   /** Name of the action */
-  name: string
+  name: T
   /** The keys that define it, you can use either event.key, or event.code */
   keys: string[]
   /** If the event receives the keyup event, true by default */
@@ -418,33 +527,40 @@ type KeyboardControlsProps = {
 
 You start by wrapping your app, or scene, into `<KeyboardControls>`.
 
-```jsx
+```tsx
+enum Controls {
+  forward = 'forward',
+  back = 'back',
+  left = 'left',
+  right = 'right',
+  jump = 'jump',
+}
 function App() {
+  const map = useMemo<KeyboardControlsEntry<Controls>[]>(()=>[
+    { name: Controls.forward, keys: ['ArrowUp', 'w', 'W'] },
+    { name: Controls.back, keys: ['ArrowDown', 's', 'S'] },
+    { name: Controls.left, keys: ['ArrowLeft', 'a', 'A'] },
+    { name: Controls.right, keys: ['ArrowRight', 'd', 'D'] },
+    { name: Controls.jump, keys: ['Space'] },
+  ], [])
   return (
-    <KeyboardControls
-      map={[
-        { name: 'forward', keys: ['ArrowUp', 'w', 'W'] },
-        { name: 'backward', keys: ['ArrowDown', 's', 'S'] },
-        { name: 'leftward', keys: ['ArrowLeft', 'a', 'A'] },
-        { name: 'rightward', keys: ['ArrowRight', 'd', 'D'] },
-        { name: 'jump', keys: ['Space'] },
-      ]}>
+    <KeyboardControls map={map}>
       <App />
     </KeyboardControls>
 ```
 
-You can either respond to input reactively, it uses zustand (width the `subscribeWithSelector` middleware) so all the rules apply:
+You can either respond to input reactively, it uses zustand (with the `subscribeWithSelector` middleware) so all the rules apply:
 
-```jsx
+```tsx
 function Foo() {
-  const pressed = useKeyboardControls(state => foward)
+  const forwardPressed = useKeyboardControls<Controls>(state => state.forward)
 ```
 
 Or transiently, either by `subscribe`, which is a function which returns a function to unsubscribe, so you can pair it with useEffect for cleanup, or `get`, which fetches fresh state non-reactively.
 
-```jsx
+```tsx
 function Foo() {
-  const [sub, get] = useKeyboardControls()
+  const [sub, get] = useKeyboardControls<Controls>()
 
   useEffect(() => {
     return sub(
@@ -457,7 +573,7 @@ function Foo() {
 
   useFrame(() => {
     // Fetch fresh data from store
-    const pressed = get().backward
+    const pressed = get().back
   })
 }
 ```
@@ -495,7 +611,7 @@ Make sure to set the `makeDefault` prop on your controls, in that case you do no
   <a href="https://codesandbox.io/s/om2ff8"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/om2ff8/screenshot.png" alt="demo"/></a>
 </p>
 
-Controls for rotating and translating objects. These controls will stick to the object the transform and by offsetting or anchoring it forms a pivot. This control has HTLM annotations for some transforms and supports `[tab]` for rounded values while dragging.
+Controls for rotating and translating objects. These controls will stick to the object the transform and by offsetting or anchoring it forms a pivot. This control has HTML annotations for some transforms and supports `[tab]` for rounded values while dragging.
 
 ```tsx
 type PivotControlsProps = {
@@ -521,6 +637,8 @@ type PivotControlsProps = {
   axisColors?: [string | number, string | number, string | number]
   /** Color of the hovered item */
   hoveredColor?: string | number
+  /** HTML value annotations, default: false */
+  annotations?: boolean
   /** CSS Classname applied to the HTML annotations */
   annotationsClass?: string
   /** Drag start event */
@@ -577,7 +695,7 @@ You can wrap objects which then receive a transform gizmo.
 You could also reference the object which might make it easier to exchange the target. Now the object does not have to be part of the same sub-graph. References can be plain objects or React.MutableRefObjects.
 
 ```jsx
-<TransformControls object={mesh} mode="translate">
+<TransformControls object={mesh} mode="translate" />
 <mesh ref={mesh} />
 ```
 
@@ -586,6 +704,50 @@ If you are using other controls (Orbit, Trackball, etc), you will notice how the
 ```jsx
 <TransformControls mode="translate" />
 <OrbitControls makeDefault />
+```
+
+#### Grid
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/gizmos-grid--use-grid-scene-st)
+
+<p>
+  <a href="https://codesandbox.io/s/19uq2u"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/19uq2u/screenshot.png" alt="Demo"/></a>
+</p>
+
+A y-up oriented, shader-based grid implementation.
+
+```tsx
+export type GridMaterialType = {
+  /** Cell size, default: 0.5 */
+  cellSize?: number
+  /** Cell thickness, default: 0.5 */
+  cellThickness?: number
+  /** Cell color, default: black */
+  cellColor?: THREE.ColorRepresentation
+  /** Section size, default: 1 */
+  sectionSize?: number
+  /** Section thickness, default: 1 */
+  sectionThickness?: number
+  /** Section color, default: #2080ff */
+  sectionColor?: THREE.ColorRepresentation
+  /** Follow camera, default: false */
+  followCamera?: boolean
+  /** Display the grid infinitely, default: false */
+  infiniteGrid?: boolean
+  /** Fade distance, default: 100 */
+  fadeDistance?: number
+  /** Fade strength, default: 1 */
+  fadeStrength?: number
+}
+
+export type GridProps = GridMaterialType & {
+  /** Default plane-geometry arguments */
+  args?: ConstructorParameters<typeof THREE.PlaneGeometry>
+}
+```
+
+```jsx
+<Grid />
 ```
 
 #### useHelper
@@ -604,12 +766,25 @@ useHelper(condition && mesh, BoxHelper, 'red') // you can passe false instead of
 
 # Shapes
 
-[Buffer-geometry](https://threejs.org/docs/#api/en/core/BufferGeometry) short-cuts for Plane, Box, Sphere, Circle, Cone, Cylinder, Tube, Torus, TorusKnot, Ring, Tetrahedron, Polyhedron, Icosahedron, Octahedron, Dodecahedron, Extrude, Lathe.
+#### Plane, Box, Sphere, Circle, Cone, Cylinder, Tube, Torus, TorusKnot, Ring, Tetrahedron, Polyhedron, Icosahedron, Octahedron, Dodecahedron, Extrude, Lathe
+
+Short-cuts for a [mesh](https://threejs.org/docs/#api/en/objects/Mesh) with a [buffer geometry](https://threejs.org/docs/#api/en/core/BufferGeometry).
 
 ```jsx
+<Box
+  args={[1, 1, 1]}                // Args for the buffer geometry
+  {...meshProps}                  // All THREE.Mesh props are valid
+/>
+
+// Plane with buffer geometry args
 <Plane args={[2, 2]} />
+
+// Box with color set on the default MeshBasicMaterial
+<Box material-color="hotpink" />
+
+// Sphere with a MeshStandardMaterial
 <Sphere>
-  <meshBasicMaterial color="hotpink" />
+  <meshStandardMaterial color="hotpink" />
 </Sphere>
 ```
 
@@ -618,7 +793,12 @@ useHelper(condition && mesh, BoxHelper, 'red') // you can passe false instead of
 A box buffer geometry with rounded corners, done with extrusion.
 
 ```jsx
-<RoundedBox args={[1, 1, 1]} radius={0.05} smoothness={4} {...meshProps}>
+<RoundedBox
+  args={[1, 1, 1]} // Width, height, depth. Default is [1, 1, 1]
+  radius={0.05} // Radius of the rounded corners. Default is 0.05
+  smoothness={4} // The number of curve segments. Default is 4
+  {...meshProps} // All THREE.Mesh props are valid
+>
   <meshPhongMaterial color="#f3f3f3" wireframe />
 </RoundedBox>
 ```
@@ -639,13 +819,14 @@ A triangle that fills the screen, ideal for full-screen fragment shader work (ra
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-line--basic-line)
 
-Renders a THREE.Line2.
+Renders a THREE.Line2 or THREE.LineSegments2 (depending on the value of `segments`).
 
 ```jsx
 <Line
-  points={[[0, 0, 0], ...]}       // Array of points, Array<Vector3 | Vector2 | [number, number, number] | [number, number]>
+  points={[[0, 0, 0], ...]}       // Array of points, Array<Vector3 | Vector2 | [number, number, number] | [number, number] | number>
   color="black"                   // Default
   lineWidth={1}                   // In pixels (default)
+  segments                        // If true, renders a THREE.LineSegments2. Otherwise, renders a THREE.Line2
   dashed={false}                  // Default
   vertexColors={[[0, 0, 0], ...]} // Optional array of RGB values for each point
   {...lineProps}                  // All THREE.Line2 props are valid
@@ -818,10 +999,10 @@ You can align the text using the `<Center>` component.
 </Center>
 ```
 
-It adds two properties that do not exist in the priginal `TextGeometry`, `lineHeight` and `letterSpacing`. The former a factor that is `1` by default, the latter is in threejs units and `0` by default.
+It adds three properties that do not exist in the original `TextGeometry`, `lineHeight`, `letterSpacing` and smooth. LetterSpacing is a factor that is `1` by default. LineHeight is in threejs units and `0` by default. Smooth merges vertices with a tolerance and calls computeVertexNormals.
 
 ```jsx
-<Text3D lineHeight={0.5} letterSpacing={-0.025}>{`hello\nworld`}</Text3D>
+<Text3D smooth={1} lineHeight={0.5} letterSpacing={-0.025}>{`hello\nworld`}</Text3D>
 ```
 
 #### Effects
@@ -876,6 +1057,20 @@ Adds a `<group />` that always faces the camera.
 </Billboard>
 ```
 
+#### ScreenSpace
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-screenspace--screen-space-story)
+
+Adds a `<group />` that aligns objects to screen space.
+
+```jsx
+<ScreenSpace
+  depth={1} // Distance from camera
+>
+  <Box>I'm in screen space</Box>
+</ScreenSpace>
+```
+
 #### GradientTexture
 
 <p>
@@ -923,7 +1118,7 @@ Abstracts [THREE.EdgesGeometry](https://threejs.org/docs/#api/en/geometries/Edge
 
 A declarative, `three.MeshLine` based Trails implementation. You can attach it to any mesh and it will give it a beautiful trail.
 
-Props defined bellow with their default values.
+Props defined below with their default values.
 
 ```jsx
 <Trail
@@ -972,7 +1167,7 @@ You can either pass a Mesh and InstancedMesh as children:
 ```tsx
 // This simple example scatters 1000 spheres on the surface of the sphere mesh.
 <Sampler
-  weight={"normal"} // the name of the attribute to be used as sampling weight
+  weight={'normal'} // the name of the attribute to be used as sampling weight
   transform={transformPoint} // a function that transforms each instance given a sample. See the examples for more.
   count={16} // Number of samples
 >
@@ -981,7 +1176,7 @@ You can either pass a Mesh and InstancedMesh as children:
   </mesh>
 
   <instancedMesh args={[null, null, 1_000]}>
-    <sphereGeometry args={[0.1]}>
+    <sphereGeometry args={[0.1]} />
   </instancedMesh>
 </Sampler>
 ```
@@ -1165,6 +1360,58 @@ If declarative composition is not possible, use the `mesh` prop to define the su
 </Decal>
 ```
 
+#### Svg
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-svg--svg-st)
+
+Wrapper around the `three` [svg loader](https://threejs.org/examples/?q=sv#webgl_loader_svg) demo.
+
+Accepts an SVG url or svg raw data.
+
+```js
+<Svg src={urlOrRawSvgString} />
+```
+
+#### Gltf
+
+This is a convenience component that will load a gltf file and clone the scene using [drei/Clone](#clone). That means you can re-use and mount the same gltf file multiple times. It accepts all props that Clone does, including shortcuts (castShadow, receiveShadow) and material overrides.
+
+```js
+<Gltf src="/model.glb" receiveShadow castShadow />
+```
+
+#### AsciiRenderer
+
+<p>
+  <a href="https://codesandbox.io/s/vq9wsl"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/vq9wsl/screenshot.png" alt="Demo"/></a>
+</p>
+
+Abstraction of three's [AsciiEffect](https://threejs.org/examples/?q=as#webgl_effects_ascii). It creates a DOM layer on top of the canvas and renders the scene as ascii characters.
+
+```tsx
+type AsciiRendererProps = {
+  /** Render index, default: 1 */
+  renderIndex?: number
+  /** CSS background color (can be "transparent"), default: black */
+  bgColor?: string
+  /** CSS character color, default: white */
+  fgColor?: string
+  /** Characters, default: ' .:-+*=%@#' */
+  characters?: string
+  /** Invert character, default: true */
+  invert?: boolean
+  /** Colorize output (very expensive!), default: false */
+  color?: boolean
+  /** Level of detail, default: 0.15 */
+  resolution?: number
+}
+```
+
+```jsx
+<Canvas>
+  <AsciiRenderer />
+```
+
 # Shaders
 
 #### MeshReflectorMaterial
@@ -1269,7 +1516,7 @@ If you want it to reflect other objects in the scene you best pair it with a cub
 <CubeCamera>
   {(texture) => (
     <mesh geometry={diamondGeometry} {...props}>
-      <RefractionMaterial envMap={texture} />
+      <MeshRefractionMaterial envMap={texture} />
     </mesh>
   )}
 </CubeCamera>
@@ -1281,8 +1528,115 @@ Otherwise just pass it an environment map.
 const texture = useLoader(RGBELoader, "/textures/royal_esplanade_1k.hdr")
 return (
   <mesh geometry={diamondGeometry} {...props}>
-    <RefractionMaterial envMap={texture} />
+    <MeshRefractionMaterial envMap={texture} />
 ```
+
+#### MeshTransmissionMaterial
+
+<p>
+  <a href="https://codesandbox.io/s/hmgdjq"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/hmgdjq/screenshot.png" alt="Demo"/></a>
+</p>
+
+An improved THREE.MeshPhysicalMaterial. It acts like a normal PhysicalMaterial in terms of transmission support, thickness, ior, roughness, etc., but has chromatic aberration, noise-based roughness blur, (primitive) anisotropy support, and unlike the original it can "see" other transmissive or transparent objects which leads to improved visuals.
+
+Although it should be faster than MPM keep in mind that it can still be expensive as it causes an additional render pass of the scene. Low samples and low resolution will make it faster. If you use roughness consider using a tiny resolution, for instance 32x32 pixels, it will still look good but perform much faster.
+
+For performance and visual reasons the host mesh gets removed from the render-stack temporarily. If you have other objects that you don't want to see reflected in the material just add them to the parent mesh as children.
+
+```tsx
+type MeshTransmissionMaterialProps = JSX.IntrinsicElements['meshPhysicalMaterial'] & {
+  /* Transmission, default: 1 */
+  transmission?: number
+  /* Thickness (refraction), default: 0 */
+  thickness?: number
+  /** Backside thickness (when backside is true), default: 0 */
+  backsideThickness?: number
+  /* Roughness (blur), default: 0 */
+  roughness?: number
+  /* Chromatic aberration, default: 0.03 */
+  chromaticAberration?: number
+  /* Anisotropy, default: 0.1 */
+  anisotropy?: number
+  /* Distortion, default: 0 */
+  distortion?: number
+  /* Distortion scale, default: 0.5 */
+  distortionScale: number
+  /* Temporal distortion (speed of movement), default: 0.0 */
+  temporalDistortion: number
+  /** The scene rendered into a texture (use it to share a texture between materials), default: null  */
+  buffer?: THREE.Texture
+  /** transmissionSampler, you can use the threejs transmission sampler texture that is
+   *  generated once for all transmissive materials. The upside is that it can be faster if you
+   *  use multiple MeshPhysical and Transmission materials, the downside is that transmissive materials
+   *  using this can't see other transparent or transmissive objects nor do you have control over the
+   *  buffer and its resolution, default: false */
+  transmissionSampler?: boolean
+  /** Render the backside of the material (more cost, better results), default: false */
+  backside?: boolean
+  /** Resolution of the local buffer, default: undefined (fullscreen) */
+  resolution?: number
+  /** Resolution of the local buffer for backfaces, default: undefined (fullscreen) */
+  backsideResolution?: number
+  /** Refraction samples, default: 6 */
+  samples?: number
+  /** Buffer scene background (can be a texture, a cubetexture or a color), default: null */
+  background?: THREE.Texture
+}
+```
+
+```jsx
+return (
+  <mesh geometry={geometry} {...props}>
+    <MeshTransmissionMaterial />
+```
+
+If each material rendering the scene on its own is too much expensense you can share a buffer texture. Either by enabling `transmissionSampler` which would use the threejs-internal buffer that MeshPhysicalMaterials use. This might be faster, the downside is that no transmissive material can "see" other transparent or transmissive objects.
+
+```jsx
+<mesh geometry={torus}>
+  <MeshTransmissionMaterial transmissionSampler />
+</mesh>
+<mesh geometry={sphere}>
+  <MeshTransmissionMaterial transmissionSampler />
+</mesh>
+```
+
+Or, by passing a texture to `buffer` manually, for instance using useFBO.
+
+```jsx
+const buffer = useFBO()
+useFrame((state) => {
+  state.gl.setRenderTarget(buffer)
+  state.gl.render(state.scene, state.camera)
+  state.gl.setRenderTarget(null)
+})
+return (
+  <>
+    <mesh geometry={torus}>
+      <MeshTransmissionMaterial buffer={buffer.texture} />
+    </mesh>
+    <mesh geometry={sphere}>
+      <MeshTransmissionMaterial buffer={buffer.texture} />
+    </mesh>
+```
+
+Or a PerspectiveCamera.
+
+```jsx
+<PerspectiveCamera makeDefault fov={75} position={[10, 0, 15]} resolution={1024}>
+  {(texture) => (
+    <>
+      <mesh geometry={torus}>
+        <MeshTransmissionMaterial buffer={texture} />
+      </mesh>
+      <mesh geometry={sphere}>
+        <MeshTransmissionMaterial buffer={texture} />
+      </mesh>
+    </>
+  )}
+```
+
+This would mimic the default MeshPhysicalMaterial behaviour, these materials won't "see" one another, but at least they would pick up on everything else, including transmissive or transparent objects.
 
 #### PointMaterial
 
@@ -1298,22 +1652,16 @@ Antialiased round dots. It takes the same props as regular [THREE.PointsMaterial
 </points>
 ```
 
-#### softShadows
+#### SoftShadows
 
 <p>
   <a href="https://codesandbox.io/s/dh2jc"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/dh2jc/screenshot.png" alt="Demo"/></a>
 </p>
 
-Injects [percent closer soft shadows (pcss)](https://threejs.org/examples/#webgl_shadowmap_pcss) into threes shader chunk.
+Injects [percent closer soft shadows (pcss)](https://threejs.org/examples/#webgl_shadowmap_pcss) into threes shader chunk. Mounting and unmounting this component will lead to all shaders being be re-compiled, although it will only cause overhead if SoftShadows is mounted after the scene has already rendered, if it mounts with everything else in your scene shaders will compile naturally.
 
 ```jsx
-softShadows({
-  frustum: 3.75,
-  size: 0.005,
-  near: 9.5,
-  samples: 17,
-  rings: 11, // Rings (default: 11) must be a int
-})
+<SoftShadows frustum={3.75} size={0.005} near={9.5} samples={17} rings={11} />
 ```
 
 #### shaderMaterial
@@ -1324,16 +1672,15 @@ softShadows({
   <a href="https://codesandbox.io/s/ni6v4"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/ni6v4/screenshot.png" alt="Demo"/></a>
 </p>
 
-Creates a THREE.ShaderMaterial for you with easier handling of uniforms, which are also automatically declared as setter/getters on the object.
+Creates a THREE.ShaderMaterial for you with easier handling of uniforms, which are automatically declared as setter/getters on the object and allowed as constructor arguments.
 
 ```jsx
 import { extend } from '@react-three/fiber'
-import glsl from 'babel-plugin-glsl/macro'
 
 const ColorShiftMaterial = shaderMaterial(
   { time: 0, color: new THREE.Color(0.2, 0.0, 0.1) },
   // vertex shader
-  glsl`
+  /*glsl*/`
     varying vec2 vUv;
     void main() {
       vUv = uv;
@@ -1341,7 +1688,7 @@ const ColorShiftMaterial = shaderMaterial(
     }
   `,
   // fragment shader
-  glsl`
+  /*glsl*/`
     uniform float time;
     uniform vec3 color;
     varying vec2 vUv;
@@ -1351,12 +1698,16 @@ const ColorShiftMaterial = shaderMaterial(
   `
 )
 
+// declaratively
 extend({ ColorShiftMaterial })
-
-// in your component
+...
 <mesh>
   <colorShiftMaterial color="hotpink" time={1} />
 </mesh>
+
+// imperatively, all uniforms are available as setter/getters and constructor args
+const material = new ColorShiftMaterial({ color: new THREE.Color("hotpink") })
+material.time = 1
 ```
 
 `shaderMaterial` attaches a unique `key` property to the prototype class. If you wire it to Reacts own `key` property, you can enable hot-reload.
@@ -1433,6 +1784,7 @@ function Scene() {
   <a href="https://codesandbox.io/s/qyz5r"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/qyz5r/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/9keg6"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/9keg6/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/6oei7"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/6oei7/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/occluded-html-qrw20v"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/occluded-html-qrw20v/screenshot.png" alt="demo"/></a>
 </p>
 
 Allows you to tie HTML content to any object of your scene. It will be projected to the objects whereabouts automatically.
@@ -1463,10 +1815,7 @@ Allows you to tie HTML content to any object of your scene. It will be projected
 Html can hide behind geometry using the `occlude` prop.
 
 ```jsx
-// Raytrace the entire scene
 <Html occlude />
-// Raytrace only specific elements
-<Html occlude={[ref1, ref2]} />
 ```
 
 When the Html object hides it sets the opacity prop on the innermost div. If you want to animate or control the transition yourself then you can use `onOcclude`.
@@ -1481,8 +1830,33 @@ const [hidden, set] = useState()
     transition: 'all 0.5s',
     opacity: hidden ? 0 : 1,
     transform: `scale(${hidden ? 0.5 : 1})`
-  }} />
+  }}
+/>
 ```
+
+**Blending occlusion**
+
+Html can hide behind geometry as if it was part of the 3D scene using this mode. It can be enabled by using `"blending"` as the `occlude` prop.
+
+```jsx
+// Enable real oclcusion
+<Html occlude="blending" />
+```
+
+Enable shadows using the `castShadow` and `recieveShadow` prop.
+
+> Note: Shadows only work with a custom material. Shadows will not work with `meshBasicMaterial` and `shaderMaterial` by default.
+
+```jsx
+<Html
+  occlude
+  castShadow // Make HTML cast a shadow
+  receiveShadow // Make HTML receive shadows
+  material={<meshPhysicalMaterial side={DoubleSide} opacity={0.1} />}
+/>
+```
+
+> Note: Html 'blending' mode only correctly occludes rectangular HTML elements by default. Use the `geometry` prop to swap the backing geometry to a custom one if your Html has a different shape.
 
 When wrapped inside `ScrollControls`, it will scroll with the canvas. To prevent this, pass `{current: gl.domElement.parentNode}` as a `portal` property (obtained from the useThree hook).
 
@@ -1492,6 +1866,21 @@ const { gl } = useThree()
 <Html
   portal={{current: gl.domElement.parentNode}}
  />
+```
+
+You can also give HTML material properties using the `material` prop.
+
+```jsx
+<Html
+  occlude
+  material={
+    <meshPhysicalMaterial
+      side={DoubleSide} // Required
+      opacity={0.1} // Degree of influence of lighting on the HTML
+      ... // Any other material properties
+    />
+  }
+/>
 ```
 
 #### CycleRaycast
@@ -1584,11 +1973,26 @@ return <SomethingThatNeedsADepthBuffer depthBuffer={depthBuffer} />
 
 Creates a `THREE.WebGLRenderTarget`.
 
+```tsx
+type FBOSettings = {
+  /** Defines the count of MSAA samples. Can only be used with WebGL 2. Default: 0 */
+  samples?: number
+  /** If set, the scene depth will be rendered into buffer.depthTexture. Default: false */
+  depth?: boolean
+} & THREE.WebGLRenderTargetOptions
+
+export function useFBO(
+  /** Width in pixels, or settings (will render fullscreen by default) */
+  width?: number | FBOSettings,
+  /** Height in pixels */
+  height?: number,
+  /**Settings */
+  settings?: FBOSettings
+): THREE.WebGLRenderTarget {
+```
+
 ```jsx
-const target = useFBO({
-  multisample: true,
-  stencilBuffer: false,
-})
+const target = useFBO({ stencilBuffer: false })
 ```
 
 The rendertarget is automatically disposed when unmounted.
@@ -1893,7 +2297,7 @@ A convenience hook that returns a `THREE.VideoTexture` and integrates loading in
 
 ```tsx
 type VideoTextureProps = {
-  unsuspend?: 'canplay' | 'canplaythrough'
+  unsuspend?: 'canplay' | 'canplaythrough' | 'loadedmetadata'
   muted?: boolean
   loop?: boolean
   start?: boolean
@@ -1916,6 +2320,44 @@ const texture = useVideoTexture("/video.mp4")
 return (
   <mesh>
     <meshBasicMaterial map={texture} toneMapped={false} />
+```
+
+#### useTrailTexture
+
+<p>
+  <a href="https://codesandbox.io/s/fj1qlg"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/fj1qlg/screenshot.png" alt="Demo"/></a>
+</p>
+
+This hook returns a `THREE.Texture` with a pointer trail which can be used in shaders to control displacement among other things, and a movement callback `event => void` which reads from `event.uv`.
+
+```tsx
+type TrailConfig = {
+  /** texture size (default: 256x256) */
+  size?: number
+  /** Max age (ms) of trail points (default: 750) */
+  maxAge?: number
+  /** Trail radius (default: 0.3) */
+  radius?: number
+  /** Canvas trail opacity (default: 0.2) */
+  intensity?: number
+  /** Add points in between slow pointer events (default: 0) */
+  interpolate?: number
+  /** Moving average of pointer force (default: 0) */
+  smoothing?: number
+  /** Minimum pointer force (default: 0.3) */
+  minForce?: number
+  /** Blend mode (default: 'screen') */
+  blend?: CanvasRenderingContext2D['globalCompositeOperation']
+  /** Easing (default: easeCircOut) */
+  ease?: (t: number) => number
+}
+```
+
+```jsx
+const [texture, onMove] = useTrailTexture(config)
+return (
+  <mesh onPointerMove={onMove}>
+    <meshStandardMaterial displacementMap={texture} />
 ```
 
 # Performance
@@ -2136,17 +2578,41 @@ Drop this component into your scene and it will switch off the raycaster while t
 <AdaptiveEvents />
 ```
 
-#### useBVH
+#### Bvh
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/performance-usebvh--default-story)
 
-A hook to speed up the default raycasting by using the [BVH Implementation by @gkjohnnson](https://github.com/gkjohnson/three-mesh-bvh).
+An abstraction around [gkjohnson/three-mesh-bvh](https://github.com/gkjohnson/three-mesh-bvh) to speed up raycasting exponentially. Use this component to wrap your scene, a sub-graph, a model or single mesh, and it will automatically compute boundsTree and assign acceleratedRaycast. This component is side-effect free, once unmounted or disabled it will revert to the original raycast.
+
+```tsx
+export interface BVHOptions {
+  /** Split strategy, default: SAH (slowest to construct, fastest runtime, least memory) */
+  splitStrategy?: 'CENTER' | 'AVERAGE' | 'SAH'
+  /** Print out warnings encountered during tree construction, default: false */
+  verbose?: boolean
+  /** If true then the bounding box for the geometry is set once the BVH has been constructed, default: true */
+  setBoundingBox?: boolean
+  /** The maximum depth to allow the tree to build to, default: 40 */
+  maxDepth?: number
+  /** The number of triangles to aim for in a leaf node, default: 10 */
+  maxLeafTris?: number
+}
+
+export type BvhProps = BVHOptions &
+  JSX.IntrinsicElements['group'] & {
+    /**Enabled, default: true */
+    enabled?: boolean
+    /** Use .raycastFirst to retrieve hits which is generally faster, default: false */
+    firstHitOnly?: boolean
+  }
+```
 
 ```jsx
-const mesh = useRef()
-useBVH(mesh)
-
-<mesh ref={mesh} ... />
+<Canvas>
+  <Bvh firstHitOnly>
+    <Scene />
+  </Bvh>
+</Canvas>
 ```
 
 #### PerformanceMonitor
@@ -2245,6 +2711,44 @@ function Effects() {
 
 # Portals
 
+#### Hud
+
+<p>
+  <a href="https://codesandbox.io/s/py4db"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/py4db/screenshot.png" alt="Demo"/></a>
+</p>
+
+Renders a heads-up-display (HUD). Each HUD is a scene on top of the previous. That scene is inside a React `createPortal` and is completely isolated, you can have your own cameras in there, environments, etc. The first HUD (`renderpriotity === 1`) will clear the scene and render the default scene, it needs to be the first to execute! Make sure to be explicit about the `renderpriority` of your HUDs.
+
+```tsx
+type HudProps = {
+  /** Any React node */
+  children: React.ReactNode
+  /** Render priority, default: 1 */
+  renderPriority?: number
+}
+```
+
+```jsx
+{
+  /* Renders on top of the default scene with a perspective camera */
+}
+;<Hud>
+  <PerspectiveCamera makeDefault position={[0, 0, 10]} />
+  <mesh>
+    <ringGeometry />
+  </mesh>
+</Hud>
+{
+  /* Renders on top of the previous HUD with an orthographic camera */
+}
+;<Hud renderPriority={2}>
+  <OrthographicCamera makeDefault position={[0, 0, 10]} />
+  <mesh>
+    <boxGeometry />
+  </mesh>
+</Hud>
+```
+
 #### View
 
 <p>
@@ -2255,7 +2759,13 @@ function Effects() {
 
 Views use gl.scissor to cut the viewport into segments. You tie a view to a tracking div which then controls the position and bounds of the viewport. This allows you to have multiple views with a single, performant canvas. These views will follow their tracking elements, scroll along, resize, etc.
 
-It is advisable to re-connect the event system to a parent that contains both the canvas and the html content. This ensures that both are accessible/selectable and even allows you to mount controls or other deeper integrations into your view.
+It is advisable to re-connect the event system to a parent that contains both the canvas and the html content.
+This ensures that both are accessible/selectable and even allows you to mount controls or other deeper
+integrations into your view.
+
+> Note that `@react-three/fiber` newer than `^8.1.0` is required for `View` to work correctly if the
+> canvas/react three fiber root is not fullscreen. A warning will be logged if drei is used with older
+> versions of `@react-three/fiber`.
 
 ```tsx
 <View
@@ -2304,6 +2814,8 @@ This component allows you to render a live scene into a texture which you can th
   eventPriority?: number
   /** Optional frame count, defaults to Infinity. If you set it to 1, it would only render a single frame, etc */
   frames?: number
+  /** Optional event compute, defaults to undefined */
+  compute?: (event: any, state: any, previous: any) => false | undefined
   /** Children will be rendered into a portal */
   children: React.ReactNode
 />
@@ -2334,8 +2846,6 @@ Masks use the stencil buffer to cut out areas of the screen. This is usually che
   colorWrite?: boolean
   /** If depth  of the masks own material will leak through, default: false */
   depthWrite?: boolean
-  /** children must define a geometry, a render-prop function is allowed which may override the default material */
-  children: (spread: MaskSpread) => React.ReactNode | React.ReactNode
 />
 ```
 
@@ -2344,6 +2854,7 @@ First you need to define a mask, give it the shape that you want.
 ```jsx
 <Mask id={1}>
   <planeGeometry />
+  <meshBasicMaterial />
 </Mask>
 ```
 
@@ -2353,31 +2864,20 @@ Now refer to it with the `useMask` hook and the same id, your content will now b
 const stencil = useMask(1)
 return (
   <mesh>
-    <torusKnotGeoometry />
+    <torusKnotGeometry />
     <meshStandardMaterial {...stencil} />
 ```
 
-You can build compound masks with multiple shapes by re-using an id.
+You can build compound masks with multiple shapes by re-using an id. You can also use the mask as a normal mesh by providing `colorWrite` and `depthWrite` props.
 
 ```jsx
 <Mask position={[-1, 0, 0]} id={1}>
   <planeGeometry />
+  <meshBasicMaterial />
 </Mask>
-<Mask position={[1, 0, 0]} id={1}>
+<Mask colorWrite depthWrite position={[1, 0, 0]} id={1}>
   <circleGeometry />
-</Mask>
-```
-
-You can override the material of a mask by using a render prop.
-
-```jsx
-<Mask id={1}>
-  {(spread) => (
-    <>
-      <planeGeometry args={[2, 2, 128, 128]} />
-      <MeshDistortMaterial distort={0.5} radius={1} speed={10} {...spread} />
-    </>
-  )}
+  <meshBasicMaterial />
 </Mask>
 ```
 
@@ -2408,6 +2908,14 @@ export type Props = JSX.IntrinsicElements['group'] & {
   left?: boolean
   front?: boolean
   back?: boolean
+  /** Disable all axes */
+  disable?: boolean
+  /** Disable x-axis centering */
+  disableX?: boolean
+  /** Disable y-axis centering */
+  disableY?: boolean
+  /** Disable z-axis centering */
+  disableZ?: boolean
   /** Precision, defaults to true, see https://threejs.org/docs/index.html?q=box3#api/en/math/Box3.setFromObject */
   precise?: boolean
   /** Callback, fires in the useLayoutEffect phase, after measurement */
@@ -2496,7 +3004,7 @@ Calculates a boundary box and centers the camera accordingly. If you are using c
 </Bounds>
 ```
 
-The Bounds component also acts as a context provider, use the `useBounds` hook to refresh the bounds, fit the camera, clip near/far planes or focus objects. `refresh(object?: THREE.Object3D | THREE.Box3)` will recalculate bounds. Since this can be expensive only call it when you know the view has changed. `clip` sets the cameras near/far planes. `fit` zooms and centers the view.
+The Bounds component also acts as a context provider, use the `useBounds` hook to refresh the bounds, fit the camera, clip near/far planes, go to camera orientations or focus objects. `refresh(object?: THREE.Object3D | THREE.Box3)` will recalculate bounds, since this can be expensive only call it when you know the view has changed. `clip` sets the cameras near/far planes. `to` sets a position and target for the camera. `fit` zooms and centers the view.
 
 ```jsx
 function Foo() {
@@ -2504,10 +3012,13 @@ function Foo() {
   useEffect(() => {
     // Calculate scene bounds
     bounds.refresh().clip().fit()
+
     // Or, focus a specific object or box3
     // bounds.refresh(ref.current).clip().fit()
     // bounds.refresh(new THREE.Box3()).clip().fit()
 
+    // Or, send the camera to a specific orientatin
+    // bounds.to({position: [0, 10, 10], target: {[5, 5, 0]}})
 <Bounds>
   <Foo />
 ```
@@ -2572,14 +3083,64 @@ This component makes its contents float or hover.
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-stage--stage-st)
 
-Creates a "stage" with proper studio lighting, content centered and planar, shadows and ground-contact shadows.
+<p>
+  <a href="https://codesandbox.io/s/57iefg"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/57iefg/screenshot.png" alt="Demo"/></a>
+</p>
 
-Make sure to set the `makeDefault` prop on your controls, in that case you do not need to provide `controls` via prop.
+Creates a "stage" with proper studio lighting, 0/0/0 top-centred, model-shadows, ground-shadows and optional zoom to fit. Make sure to set `makeDefault` on your controls when `adjustCamera` is true!
+
+```tsx
+type StageProps = {
+  /** Lighting setup, default: "rembrandt" */
+  preset?:
+    | 'rembrandt'
+    | 'portrait'
+    | 'upfront'
+    | 'soft'
+    | { main: [x: number, y: number, z: number]; fill: [x: number, y: number, z: number] }
+  /** Controls the ground shadows, default: "contact" */
+  shadows?: boolean | 'contact' | 'accumulative' | StageShadows
+  /** Optionally wraps and thereby centers the models using <Bounds>, can also be a margin, default: true */
+  adjustCamera?: boolean | number
+  /** The default environment, default: "city" */
+  environment?: PresetsType | Partial<EnvironmentProps>
+  /** The lighting intensity, default: 0.5 */
+  intensity?: number
+  /** To adjust centering, default: undefined */
+  center?: Partial<CenterProps>
+}
+
+type StageShadows = Partial<AccumulativeShadowsProps> &
+  Partial<RandomizedLightProps> &
+  Partial<ContactShadowsProps> & {
+    type: 'contact' | 'accumulative'
+    /** Shadow plane offset, default: 0 */
+    offset?: number
+    /** Shadow bias, default: -0.0001 */
+    bias?: number
+    /** Shadow normal bias, default: 0 */
+    normalBias?: number
+    /** Shadow map size, default: 1024 */
+    size?: number
+  }
+```
+
+By default it gives you contact shadows and auto-centering.
 
 ```jsx
-<Stage contactShadow shadows adjustCamera intensity={1} environment="city" preset="rembrandt" controls={controlsRef}>
+<Stage adjustCamera intensity={0.5} shadows="contact" environment="city">
   <mesh />
 </Stage>
+```
+
+For a little more realistic results enable accumulative shadows, which requires that the canvas, and models, can handle shadows.
+
+```jsx
+<Canvas shadows>
+  <Stage shadows="accumulative">
+    <mesh castShadows />
+  </Stage>
+</Canvas>
 ```
 
 #### Backdrop
@@ -2612,6 +3173,75 @@ A cheap canvas-texture-based circular gradient.
   opacity={0.5}
   fog={false} // Reacts to fog (default=false)
 />
+```
+
+#### Caustics
+
+<p>
+  <a href="https://codesandbox.io/s/szj6p7"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/szj6p7/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/g7wbe0"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/g7wbe0/screenshot.png" alt="Demo"/></a>
+</p>
+
+Caustics are swirls of light that appear when light passes through transmissive surfaces. This component uses a raymarching technique to project caustics onto a catcher plane. It is based on [github/N8python/caustics](https://github.com/N8python/caustics).
+
+```tsx
+type CausticsProps = JSX.IntrinsicElements['group'] & {
+  /** How many frames it will render, set it to Infinity for runtime, default: 1 */
+  frames?: number
+  /** Enables visual cues to help you stage your scene, default: false */
+  debug?: boolean
+  /** Will display caustics only and skip the models, default: false */
+  causticsOnly: boolean
+  /** Will include back faces and enable the backsideIOR prop, default: false */
+  backside: boolean
+  /** The IOR refraction index, default: 1.1 */
+  ior?: number
+  /** The IOR refraction index for back faces (only available when backside is enabled), default: 1.1 */
+  backsideIOR?: number
+  /** The texel size, default: 0.3125 */
+  worldRadius?: number
+  /** Intensity of the prjected caustics, default: 0.05 */
+  intensity?: number
+  /** Caustics color, default: white */
+  color?: ReactThreeFiber.Color
+  /** Buffer resolution, default: 2048 */
+  resolution?: number
+  /** Camera position, it will point towards the contents bounds center, default: [5, 5, 5] */
+  lightSource?: [x: number, y: number, z: number] | React.MutableRefObject<THREE.Object3D>
+}
+```
+
+It will create a transparent plane that blends the caustics of the objects it receives into your scene. It will only render once and not take resources any longer!
+
+Make sure to use the `debug` flag to help you stage your contents. Like ContactShadows and AccumulativeShadows the plane faces Y up. It is recommended to use [leva](https://github.com/pmndrs/leva) to configue the props above as some can be micro fractional depending on the models (intensity, worldRadius, ior and backsideIOR especially).
+
+```jsx
+<Caustics debug backside lightSource={[2.5, 5, -2.5]}>
+  <Bottle />
+  <WineGlass>
+</Caustics>
+```
+
+Sometimes you want to combine caustics for even better visuals, or if you want to emulate multiple lightsources. Use the `causticsOnly` flag in such cases and it will use the model inside only for calculations. Since all loaders in Fiber should be cached there is no expense or memory overhead doing this.
+
+```jsx
+<Caustics backside lightSource={[2.5, 5, -2.5]} >
+  <WineGlass />
+</Caustics>
+<Caustics causticsOnly backside lightSource={[-2.5, 5, 2.5]} ior={0.79} worldRadius={0.0124}>
+  <WineGlass />
+</Caustics>
+```
+
+The light source can either be defined by prop or by reference. Use the latter if you want to control the light source, for instance in order to move or animate it. Runtime caustics with frames set to `Infinity`, a low resolution and no backside can be feasible.
+
+```jsx
+const lightSource = useRef()
+
+<Caustics frames={Infinity} resolution={256} lightSource={lightSource} >
+  <WineGlass />
+</Caustics>
+<object3d ref={lightSource} position={[2.5, 5, -2.5]} />
 ```
 
 #### ContactShadows
@@ -2765,6 +3395,45 @@ function Foo() {
   return <SpotLight depthBuffer={depthBuffer} />
 ```
 
+#### SpotLightShadows
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-spotlight--spotlight-shadows-st)
+
+<p>
+  <a href="https://codesandbox.io/s/yyk6gv"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/yyk6gv/screenshot.png" alt="Demo"/></a>
+</p>
+
+A shadow caster that can help cast shadows of different patterns (textures) onto the scene.
+
+```jsx
+<SpotLight>
+  <SpotLightShadows
+    distance={0.4} // Distance between the shadow caster and light
+    alphaTest={0.5} // Sets the alpha value to be used when running an alpha test. See Material.alphaTest
+    scale={1} //  Scale of the shadow caster plane
+    map={undefined} // Texture - Pattern of the shadow
+    shader={undefined} // Optional shader to run. Lets you add effects to the shadow map. See bellow
+    width={512} // Width of the shadow map. The higher the more expnsive
+    height={512} // Height of the shadow map. The higher the more expnsive
+  />
+</SpotLight>
+```
+
+An optinal `shader` prop lets you run a custom shader to modify/add effects to your shadow texture. The shader privides the following uniforms and varyings.
+
+| Type                | Name         | Notes                                  |
+| ------------------- | ------------ | -------------------------------------- |
+| `varying vec2`      | `vUv`        | UVs of the shadow casting plane        |
+| `uniform sampler2D` | `uShadowMap` | The texture provided to the `map` prop |
+| `uniform float`     | `uTime`      | Current time                           |
+
+Treat the output of the shader like an alpha map where `1` is opaque and `0` is transparent.
+
+```glsl
+gl_FragColor = vec4(vec3(1.), 1.); // Opaque
+gl_FragColor = vec4(vec3(0.), 1.); // Transparnet
+```
+
 #### Environment
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-environment--environment-story)
@@ -2785,6 +3454,7 @@ Sets up a global cubemap, which affects the default `scene.environment`, and opt
 ```jsx
 <Environment
   background={false} // can be true, false or "only" (which only sets the background) (default: false)
+  blur={0} // blur factor between 0 and 1 (default: 0, only works with three 0.146 and up)
   files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']}
   path="/"
   preset={null}

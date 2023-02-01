@@ -14,16 +14,16 @@ declare global {
 
 type Api = {
   getParent: () => React.MutableRefObject<InstancedMesh>
-  subscribe: (ref) => void
+  subscribe: <T>(ref: React.MutableRefObject<T>) => void
 }
 
-type InstancesProps = JSX.IntrinsicElements['instancedMesh'] & {
+export type InstancesProps = JSX.IntrinsicElements['instancedMesh'] & {
   range?: number
   limit?: number
   frames?: number
 }
 
-type InstanceProps = JSX.IntrinsicElements['positionMesh'] & {
+export type InstanceProps = JSX.IntrinsicElements['positionMesh'] & {
   context?: React.Context<Api>
 }
 
@@ -35,7 +35,7 @@ type InstancedMesh = Omit<THREE.InstancedMesh, 'instanceMatrix' | 'instanceColor
 const _instanceLocalMatrix = /*@__PURE__*/ new THREE.Matrix4()
 const _instanceWorldMatrix = /*@__PURE__*/ new THREE.Matrix4()
 const _instanceIntersects: THREE.Intersection[] = /*@__PURE__*/ []
-const _mesh = /*@__PURE__*/ new THREE.Mesh()
+const _mesh = /*@__PURE__*/ new THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>()
 
 class PositionMesh extends THREE.Group {
   color: THREE.Color
@@ -60,7 +60,7 @@ class PositionMesh extends THREE.Group {
     if (!parent.geometry || !parent.material) return
     _mesh.geometry = parent.geometry
     const matrixWorld = parent.matrixWorld
-    let instanceId = parent.userData.instances.indexOf(this.instanceKey)
+    const instanceId = parent.userData.instances.indexOf(this.instanceKey)
     // If the instance wasn't found or exceeds the parents draw range, bail out
     if (instanceId === -1 || instanceId > parent.count) return
     // calculate the world matrix for each instance
@@ -68,6 +68,9 @@ class PositionMesh extends THREE.Group {
     _instanceWorldMatrix.multiplyMatrices(matrixWorld, _instanceLocalMatrix)
     // the mesh represents this single instance
     _mesh.matrixWorld = _instanceWorldMatrix
+    // raycast side according to instance material
+    if (parent.material instanceof THREE.Material) _mesh.material.side = parent.material.side
+    else _mesh.material.side = parent.material[0].side
     _mesh.raycast(raycaster, _instanceIntersects)
     // process the result of raycast
     for (let i = 0, l = _instanceIntersects.length; i < l; i++) {
@@ -80,17 +83,15 @@ class PositionMesh extends THREE.Group {
   }
 }
 
-let i, instanceRef
 const globalContext = /*@__PURE__*/ React.createContext<Api>(null!)
 const parentMatrix = /*@__PURE__*/ new THREE.Matrix4()
 const instanceMatrix = /*@__PURE__*/ new THREE.Matrix4()
 const tempMatrix = /*@__PURE__*/ new THREE.Matrix4()
-const color = /*@__PURE__*/ new THREE.Color()
 const translation = /*@__PURE__*/ new THREE.Vector3()
 const rotation = /*@__PURE__*/ new THREE.Quaternion()
 const scale = /*@__PURE__*/ new THREE.Vector3()
 
-const Instance = React.forwardRef(({ context, children, ...props }: InstanceProps, ref) => {
+export const Instance = React.forwardRef(({ context, children, ...props }: InstanceProps, ref) => {
   React.useMemo(() => extend({ PositionMesh }), [])
   const group = React.useRef<JSX.IntrinsicElements['positionMesh']>()
   const { subscribe, getParent } = React.useContext(context || globalContext)
@@ -102,7 +103,7 @@ const Instance = React.forwardRef(({ context, children, ...props }: InstanceProp
   )
 })
 
-const Instances = React.forwardRef<InstancedMesh, InstancesProps>(
+export const Instances = React.forwardRef<InstancedMesh, InstancesProps>(
   ({ children, range, limit = 1000, frames = Infinity, ...props }, ref) => {
     const [{ context, instance }] = React.useState(() => {
       const context = React.createContext<Api>(null!)
@@ -116,7 +117,7 @@ const Instances = React.forwardRef<InstancedMesh, InstancesProps>(
     const [instances, setInstances] = React.useState<React.MutableRefObject<PositionMesh>[]>([])
     const [[matrices, colors]] = React.useState(() => {
       const mArray = new Float32Array(limit * 16)
-      for (i = 0; i < limit; i++) tempMatrix.identity().toArray(mArray, i * 16)
+      for (let i = 0; i < limit; i++) tempMatrix.identity().toArray(mArray, i * 16)
       return [mArray, new Float32Array([...new Array(limit * 3)].map(() => 1))]
     })
 
@@ -138,15 +139,15 @@ const Instances = React.forwardRef<InstancedMesh, InstancesProps>(
         parentRef.current.instanceMatrix.updateRange.count = updateRange * 16
         parentRef.current.instanceColor.updateRange.count = updateRange * 3
 
-        for (i = 0; i < instances.length; i++) {
-          instanceRef = instances[i].current
+        for (let i = 0; i < instances.length; i++) {
+          const instance = instances[i].current
           // Multiply the inverse of the InstancedMesh world matrix or else
           // Instances will be double-transformed if <Instances> isn't at identity
-          instanceRef.matrixWorld.decompose(translation, rotation, scale)
+          instance.matrixWorld.decompose(translation, rotation, scale)
           instanceMatrix.compose(translation, rotation, scale).premultiply(parentMatrix)
           instanceMatrix.toArray(matrices, i * 16)
           parentRef.current.instanceMatrix.needsUpdate = true
-          instanceRef.color.toArray(colors, i * 3)
+          instance.color.toArray(colors, i * 3)
           parentRef.current.instanceColor.needsUpdate = true
         }
         count++
@@ -197,27 +198,32 @@ const Instances = React.forwardRef<InstancedMesh, InstancesProps>(
   }
 )
 
-function Merged({ meshes, children, ...props }) {
+export interface MergedProps extends InstancesProps {
+  meshes: THREE.Mesh[]
+  children: React.ReactNode
+}
+
+export const Merged = React.forwardRef<THREE.Group, any>(function Merged({ meshes, children, ...props }, ref) {
   const isArray = Array.isArray(meshes)
   // Filter out meshes from collections, which may contain non-meshes
   if (!isArray) for (const key of Object.keys(meshes)) if (!meshes[key].isMesh) delete meshes[key]
   return (
-    <Composer
-      components={(isArray ? meshes : Object.values(meshes)).map(({ geometry, material }) => (
-        <Instances key={geometry.uuid} geometry={geometry} material={material} {...props} />
-      ))}
-    >
-      {(args) =>
-        isArray
-          ? children(...args)
-          : children(
-              Object.keys(meshes)
-                .filter((key) => meshes[key].isMesh)
-                .reduce((acc, key, i) => ({ ...acc, [key]: args[i] }), {})
-            )
-      }
-    </Composer>
+    <group ref={ref}>
+      <Composer
+        components={(isArray ? meshes : Object.values(meshes)).map(({ geometry, material }) => (
+          <Instances key={geometry.uuid} geometry={geometry} material={material} {...props} />
+        ))}
+      >
+        {(args) =>
+          isArray
+            ? children(...args)
+            : children(
+                Object.keys(meshes)
+                  .filter((key) => meshes[key].isMesh)
+                  .reduce((acc, key, i) => ({ ...acc, [key]: args[i] }), {})
+              )
+        }
+      </Composer>
+    </group>
   )
-}
-
-export { Instances, Instance, Merged }
+})

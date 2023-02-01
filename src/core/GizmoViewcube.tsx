@@ -94,7 +94,7 @@ const FaceMaterial = ({
 }
 
 const FaceCube = (props: GenericProps) => {
-  const { tweenCamera, raycast } = useGizmoContext()
+  const { tweenCamera } = useGizmoContext()
   const [hover, setHover] = React.useState<number | null>(null)
   const handlePointerOut = (e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation()
@@ -109,12 +109,7 @@ const FaceCube = (props: GenericProps) => {
     setHover(Math.floor(e.faceIndex! / 2))
   }
   return (
-    <mesh
-      raycast={raycast}
-      onPointerOut={handlePointerOut}
-      onPointerMove={handlePointerMove}
-      onClick={props.onClick || handleClick}
-    >
+    <mesh onPointerOut={handlePointerOut} onPointerMove={handlePointerMove} onClick={props.onClick || handleClick}>
       {[...Array(6)].map((_, index) => (
         <FaceMaterial key={index} index={index} hover={hover === index} {...props} />
       ))}
@@ -124,7 +119,7 @@ const FaceCube = (props: GenericProps) => {
 }
 
 const EdgeCube = ({ onClick, dimensions, position, hoverColor = colors.hover }: EdgeCubeProps): JSX.Element => {
-  const { tweenCamera, raycast } = useGizmoContext()
+  const { tweenCamera } = useGizmoContext()
   const [hover, setHover] = React.useState<boolean>(false)
   const handlePointerOut = (e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation()
@@ -142,7 +137,6 @@ const EdgeCube = ({ onClick, dimensions, position, hoverColor = colors.hover }: 
     <mesh
       scale={1.01}
       position={position}
-      raycast={raycast}
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
       onClick={onClick || handleClick}

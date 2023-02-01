@@ -1,24 +1,12 @@
 import * as React from 'react'
-import { createPortal, useFrame, useThree } from '@react-three/fiber'
-import {
-  Camera,
-  Color,
-  Group,
-  Intersection,
-  Matrix4,
-  Object3D,
-  Quaternion,
-  Raycaster,
-  Scene,
-  Texture,
-  Vector3,
-} from 'three'
+import { useFrame, useThree } from '@react-three/fiber'
+import { Camera, Group, Intersection, Matrix4, Object3D, Quaternion, Raycaster, Scene, Texture, Vector3 } from 'three'
 import { OrthographicCamera } from './OrthographicCamera'
-import { useCamera } from './useCamera'
+import { OrbitControls as OrbitControlsType } from 'three-stdlib'
+import { Hud } from './Hud'
 
 type GizmoHelperContext = {
   tweenCamera: (direction: Vector3) => void
-  raycast: (raycaster: Raycaster, intersects: Intersection[]) => void
 }
 
 const Context = React.createContext<GizmoHelperContext>({} as GizmoHelperContext)
@@ -56,27 +44,25 @@ export type GizmoHelperProps = JSX.IntrinsicElements['group'] & {
   onTarget?: () => Vector3 // return the target to rotate around
 }
 
+const isOrbitControls = (controls: ControlsProto): controls is OrbitControlsType => {
+  return 'minPolarAngle' in (controls as OrbitControlsType)
+}
+
 export const GizmoHelper = ({
   alignment = 'bottom-right',
   margin = [80, 80],
-  renderPriority = 0,
-  autoClear = true,
+  renderPriority = 1,
   onUpdate,
   onTarget,
-  children: GizmoHelperComponent,
+  children,
 }: GizmoHelperProps): any => {
-  const size = useThree(({ size }) => size)
-  const mainCamera = useThree(({ camera }) => camera)
-  // @ts-expect-error new in @react-three/fiber@7.0.5
-  const defaultControls = useThree(({ controls }) => controls) as ControlsProto
-  const gl = useThree(({ gl }) => gl)
-  const scene = useThree(({ scene }) => scene)
-  const invalidate = useThree(({ invalidate }) => invalidate)
-
-  const backgroundRef = React.useRef<null | Color | Texture>()
+  const size = useThree((state) => state.size)
+  const mainCamera = useThree((state) => state.camera)
+  // @ts-ignore
+  const defaultControls = useThree((state) => state.controls) as ControlsProto
+  const invalidate = useThree((state) => state.invalidate)
   const gizmoRef = React.useRef<Group>()
   const virtualCam = React.useRef<Camera>(null!)
-  const [virtualScene] = React.useState(() => new Scene())
 
   const animating = React.useRef(false)
   const radius = React.useRef(0)
@@ -92,33 +78,16 @@ export const GizmoHelper = ({
       animating.current = true
       if (defaultControls || onTarget) focusPoint.current = defaultControls?.target || onTarget?.()
       radius.current = mainCamera.position.distanceTo(target)
-
       // Rotate from current camera orientation
       q1.copy(mainCamera.quaternion)
-
       // To new current camera orientation
       targetPosition.copy(direction).multiplyScalar(radius.current).add(target)
       dummy.lookAt(targetPosition)
       q2.copy(dummy.quaternion)
-
       invalidate()
     },
     [defaultControls, mainCamera, onTarget, invalidate]
   )
-
-  React.useEffect(() => {
-    if (scene.background) {
-      //Interchange the actual scene background with the virtual scene
-      backgroundRef.current = scene.background
-      scene.background = null
-      virtualScene.background = backgroundRef.current
-    }
-
-    return () => {
-      // reset on unmount
-      if (backgroundRef.current) scene.background = backgroundRef.current
-    }
-  }, [])
 
   useFrame((_, delta) => {
     if (virtualCam.current && gizmoRef.current) {
@@ -126,7 +95,12 @@ export const GizmoHelper = ({
       if (animating.current) {
         if (q1.angleTo(q2) < 0.01) {
           animating.current = false
-          mainCamera.up.copy(defaultUp.current)
+          // Orbit controls uses UP vector as the orbit axes,
+          // so we need to reset it after the animation is done
+          // moving it around for the controls to work correctly
+          if (isOrbitControls(defaultControls)) {
+            mainCamera.up.copy(defaultUp.current)
+          }
         } else {
           const step = delta * turnRate
           // animate position by doing a slerp and then scaling the position on the unit sphere
@@ -144,20 +118,13 @@ export const GizmoHelper = ({
       // Sync Gizmo with main camera orientation
       matrix.copy(mainCamera.matrix).invert()
       gizmoRef.current?.quaternion.setFromRotationMatrix(matrix)
-
-      // Render virtual camera
-      if (autoClear) gl.autoClear = false
-      gl.clearDepth()
-      gl.render(virtualScene, virtualCam.current)
     }
-  }, renderPriority)
+  })
 
-  const raycast = useCamera(virtualCam)
-  const gizmoHelperContext = React.useMemo(() => ({ tweenCamera, raycast }), [tweenCamera])
+  const gizmoHelperContext = React.useMemo(() => ({ tweenCamera }), [tweenCamera])
 
   // Position gizmo component within scene
   const [marginX, marginY] = margin
-
   const x = alignment.endsWith('-center')
     ? 0
     : alignment.endsWith('-left')
@@ -168,13 +135,15 @@ export const GizmoHelper = ({
     : alignment.startsWith('top-')
     ? size.height / 2 - marginY
     : -size.height / 2 + marginY
-  return createPortal(
-    <Context.Provider value={gizmoHelperContext}>
-      <OrthographicCamera ref={virtualCam} position={[0, 0, 200]} />
-      <group ref={gizmoRef} position={[x, y, 0]}>
-        {GizmoHelperComponent}
-      </group>
-    </Context.Provider>,
-    virtualScene
+
+  return (
+    <Hud renderPriority={renderPriority}>
+      <Context.Provider value={gizmoHelperContext}>
+        <OrthographicCamera makeDefault ref={virtualCam} position={[0, 0, 200]} />
+        <group ref={gizmoRef} position={[x, y, 0]}>
+          {children}
+        </group>
+      </Context.Provider>
+    </Hud>
   )
 }

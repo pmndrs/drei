@@ -14,6 +14,7 @@ export type BoundsApi = {
   refresh(object?: THREE.Object3D | THREE.Box3): any
   clip(): any
   fit(): any
+  to: ({ position, target }: { position: [number, number, number]; target?: [number, number, number] }) => any
 }
 
 export type BoundsProps = JSX.IntrinsicElements['group'] & {
@@ -94,7 +95,7 @@ export function Bounds({ children, damping = 6, fit, clip, observe, margin = 1.2
         }
 
         if (controls?.constructor.name === 'OrthographicTrackballControls') {
-          // Put camera on a sphere along which it should moves
+          // Put camera on a sphere along which it should move
           const { distance } = getSize()
           const direction = camera.position.clone().sub(controls.target).normalize().multiplyScalar(distance)
           const newPos = controls.target.clone().add(direction)
@@ -111,6 +112,25 @@ export function Bounds({ children, damping = 6, fit, clip, observe, margin = 1.2
         camera.updateProjectionMatrix()
         if (controls) controls.update()
         invalidate()
+        return this
+      },
+      to({ position, target }: { position: [number, number, number]; target?: [number, number, number] }) {
+        current.camera.copy(camera.position)
+        const { center } = getSize()
+        goal.camera.set(...position)
+
+        if (target) {
+          goal.focus.set(...target)
+        } else {
+          goal.focus.copy(center)
+        }
+
+        if (damping) {
+          current.animating = true
+        } else {
+          camera.position.set(...position)
+        }
+
         return this
       },
       fit() {

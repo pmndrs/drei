@@ -4,7 +4,7 @@ import { Color, extend, useThree } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
 import { useTexture } from './useTexture'
 
-export type ImageProps = JSX.IntrinsicElements['mesh'] & {
+export type ImageProps = Omit<JSX.IntrinsicElements['mesh'], 'scale'> & {
   segments?: number
   scale?: number | [number, number]
   color?: Color
@@ -97,7 +97,7 @@ const ImageBase = React.forwardRef(
     const planeBounds = Array.isArray(scale) ? [scale[0], scale[1]] : [scale, scale]
     const imageBounds = [texture!.image.width, texture!.image.height]
     return (
-      <mesh ref={ref} scale={scale} {...props}>
+      <mesh ref={ref} scale={Array.isArray(scale) ? [...scale, 1] : scale} {...props}>
         <planeGeometry args={[1, 1, segments, segments]} />
         <imageMaterial
           color={color}

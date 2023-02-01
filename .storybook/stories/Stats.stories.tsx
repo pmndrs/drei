@@ -10,18 +10,10 @@ export default {
   decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
 }
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      axisHelper: object
-    }
-  }
-}
-
 function Scene() {
   return (
     <>
-      <axisHelper />
+      <axesHelper />
       <Stats />
     </>
   )

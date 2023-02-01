@@ -25,7 +25,7 @@ export function shaderMaterial(
 ) {
   const material = class extends THREE.ShaderMaterial {
     public key: string = ''
-    constructor() {
+    constructor(parameters = {}) {
       const entries = Object.entries(uniforms)
       // Create unforms and shaders
       super({
@@ -47,6 +47,9 @@ export function shaderMaterial(
         })
       )
 
+      // Assign parameters, this might include uniforms
+      Object.assign(this, parameters)
+      // Call onInit
       if (onInit) onInit(this)
     }
   } as unknown as typeof THREE.ShaderMaterial & { key: string }

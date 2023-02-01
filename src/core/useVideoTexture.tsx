@@ -4,17 +4,18 @@ import { useThree } from '@react-three/fiber'
 import { suspend, preload, clear } from 'suspend-react'
 
 interface VideoTextureProps extends HTMLVideoElement {
-  unsuspend?: 'canplay' | 'canplaythrough'
+  unsuspend?: 'canplay' | 'canplaythrough' | 'loadstart' | 'loadedmetadata'
   start?: boolean
 }
 
 export function useVideoTexture(src: string, props: Partial<VideoTextureProps>) {
   const { unsuspend, start, crossOrigin, muted, loop, ...rest } = {
-    unsuspend: 'canplay',
+    unsuspend: 'loadedmetadata',
     crossOrigin: 'Anonymous',
     muted: true,
     loop: true,
     start: true,
+    playsInline: true,
     ...props,
   }
   const gl = useThree((state) => state.gl)
@@ -34,6 +35,6 @@ export function useVideoTexture(src: string, props: Partial<VideoTextureProps>) 
       }),
     [src]
   )
-  useEffect(() => void (start && texture.image.play()), [texture])
+  useEffect(() => void (start && texture.image.play()), [texture, start])
   return texture
 }

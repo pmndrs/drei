@@ -1,8 +1,20 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
-import { Vector3, Group, Object3D, Matrix4, Camera, PerspectiveCamera, OrthographicCamera, Raycaster } from 'three'
+import {
+  Vector3,
+  Group,
+  Object3D,
+  Matrix4,
+  Camera,
+  PerspectiveCamera,
+  OrthographicCamera,
+  Raycaster,
+  DoubleSide,
+  Mesh,
+  Material,
+} from 'three'
 import { Assign } from 'utility-types'
-import { ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
+import { MaterialProps, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 
 const v1 = new Vector3()
 const v2 = new Vector3()
@@ -98,6 +110,10 @@ type PointerEventsProperties =
   | 'all'
   | 'inherit'
 
+function isRefObject(ref: any): ref is React.RefObject<any> {
+  return ref && typeof ref === 'object' && 'current' in ref
+}
+
 export interface HtmlProps
   extends Omit<Assign<React.HTMLAttributes<HTMLDivElement>, ReactThreeFiber.Object3DNode<Group, typeof Group>>, 'ref'> {
   prepend?: boolean
@@ -109,12 +125,20 @@ export interface HtmlProps
   sprite?: boolean
   transform?: boolean
   zIndexRange?: Array<number>
-  occlude?: React.RefObject<Object3D>[] | boolean
-  onOcclude?: (visible: boolean) => null
   calculatePosition?: CalculatePosition
   as?: string
   wrapperClass?: string
   pointerEvents?: PointerEventsProperties
+
+  // Occlusion based off work by Jerome Etienne and James Baicoianu
+  // https://www.youtube.com/watch?v=ScZcUEDGjJI
+  // as well as Joe Pea in CodePen: https://codepen.io/trusktr/pen/RjzKJx
+  occlude?: React.RefObject<Object3D>[] | boolean | 'raycast' | 'blending'
+  onOcclude?: (visible: boolean) => null
+  material?: React.ReactNode // Material for occlusion plane
+  geometry?: React.ReactNode // Material for occlusion plane
+  castShadow?: boolean // Cast shadow for occlusion plane
+  receiveShadow?: boolean // Receive shadow for occlusion plane
 }
 
 export const Html = React.forwardRef(
@@ -133,6 +157,10 @@ export const Html = React.forwardRef(
       transform = false,
       occlude,
       onOcclude,
+      castShadow,
+      receiveShadow,
+      material,
+      geometry,
       zIndexRange = [16777271, 0],
       calculatePosition = defaultCalculatePosition,
       as = 'div',
@@ -142,7 +170,7 @@ export const Html = React.forwardRef(
     }: HtmlProps,
     ref: React.Ref<HTMLDivElement>
   ) => {
-    const { gl, camera, scene, size, raycaster, events } = useThree()
+    const { gl, camera, scene, size, raycaster, events, viewport } = useThree()
 
     const [el] = React.useState(() => document.createElement(as))
     const root = React.useRef<ReactDOM.Root>()
@@ -153,6 +181,22 @@ export const Html = React.forwardRef(
     const transformInnerRef = React.useRef<HTMLDivElement>(null!)
     // Append to the connected element, which makes HTML work with views
     const target = (portal?.current || events.connected || gl.domElement.parentNode) as HTMLElement
+
+    const occlusionMeshRef = React.useRef<Mesh>(null!)
+    const isMeshSizeSet = React.useRef<boolean>(false)
+
+    const isRayCastOcclusion = React.useMemo(() => {
+      return (
+        (occlude && occlude !== 'blending') || (Array.isArray(occlude) && occlude.length && isRefObject(occlude[0]))
+      )
+    }, [occlude])
+
+    React.useLayoutEffect(() => {
+      const el = gl.domElement as HTMLCanvasElement
+      el.style.zIndex = `${Math.floor(zIndexRange[0] / 2)}`
+      el.style.position = 'absolute'
+      el.style.pointerEvents = 'none'
+    }, [])
 
     React.useLayoutEffect(() => {
       if (group.current) {
@@ -211,6 +255,8 @@ export const Html = React.forwardRef(
     )
 
     React.useLayoutEffect(() => {
+      isMeshSizeSet.current = false
+
       if (transform) {
         root.current?.render(
           <div ref={transformOuterRef} style={styles}>
@@ -226,7 +272,7 @@ export const Html = React.forwardRef(
 
     const visible = React.useRef(true)
 
-    useFrame(() => {
+    useFrame((gl) => {
       if (group.current) {
         camera.updateMatrixWorld()
         group.current.updateWorldMatrix(true, false)
@@ -240,12 +286,13 @@ export const Html = React.forwardRef(
         ) {
           const isBehindCamera = isObjectBehindCamera(group.current, camera)
           let raytraceTarget: null | undefined | boolean | Object3D[] = false
-          if (typeof occlude === 'boolean') {
-            if (occlude === true) {
+
+          if (isRayCastOcclusion) {
+            if (occlude !== 'blending') {
               raytraceTarget = [scene]
+            } else if (Array.isArray(occlude)) {
+              raytraceTarget = occlude.map((item) => item.current) as Object3D[]
             }
-          } else if (Array.isArray(occlude)) {
-            raytraceTarget = occlude.map((item) => item.current) as Object3D[]
           }
 
           const previouslyVisible = visible.current
@@ -261,7 +308,15 @@ export const Html = React.forwardRef(
             else el.style.display = visible.current ? 'block' : 'none'
           }
 
-          el.style.zIndex = `${objectZIndex(group.current, camera, zIndexRange)}`
+          const halfRange = Math.floor(zIndexRange[0] / 2)
+          const zRange = occlude
+            ? isRayCastOcclusion //
+              ? [zIndexRange[0], halfRange]
+              : [halfRange - 1, 0]
+            : zIndexRange
+
+          el.style.zIndex = `${objectZIndex(group.current, camera, zRange)}`
+
           if (transform) {
             const [widthHalf, heightHalf] = [size.width / 2, size.height / 2]
             const fov = camera.projectionMatrix.elements[5] * heightHalf
@@ -291,8 +346,116 @@ export const Html = React.forwardRef(
           oldZoom.current = camera.zoom
         }
       }
+
+      if (!isRayCastOcclusion && occlusionMeshRef.current && !isMeshSizeSet.current) {
+        if (transform) {
+          if (transformOuterRef.current) {
+            const el = transformOuterRef.current.children[0]
+
+            if (el?.clientWidth && el?.clientHeight) {
+              const { isOrthographicCamera } = camera as OrthographicCamera
+
+              if (isOrthographicCamera || geometry) {
+                if (props.scale) {
+                  if (!Array.isArray(props.scale)) {
+                    occlusionMeshRef.current.scale.setScalar(1 / (props.scale as number))
+                  } else if (props.scale instanceof Vector3) {
+                    occlusionMeshRef.current.scale.copy(props.scale.clone().divideScalar(1))
+                  } else {
+                    occlusionMeshRef.current.scale.set(1 / props.scale[0], 1 / props.scale[1], 1 / props.scale[2])
+                  }
+                }
+              } else {
+                const ratio = (distanceFactor || 10) / 400
+                const w = el.clientWidth * ratio
+                const h = el.clientHeight * ratio
+
+                occlusionMeshRef.current.scale.set(w, h, 1)
+              }
+
+              isMeshSizeSet.current = true
+            }
+          }
+        } else {
+          const ele = el.children[0]
+
+          if (ele?.clientWidth && ele?.clientHeight) {
+            const ratio = 1 / viewport.factor
+            const w = ele.clientWidth * ratio
+            const h = ele.clientHeight * ratio
+
+            occlusionMeshRef.current.scale.set(w, h, 1)
+
+            isMeshSizeSet.current = true
+          }
+
+          occlusionMeshRef.current.lookAt(gl.camera.position)
+        }
+      }
     })
 
-    return <group {...props} ref={group} />
+    const shaders = React.useMemo(
+      () => ({
+        vertexShader: !transform
+          ? /* glsl */ `
+          /*
+            This shader is from the THREE's SpriteMaterial.
+            We need to turn the backing plane into a Sprite
+            (make it always face the camera) if "transfrom" 
+            is false. 
+          */
+          #include <common>
+
+          void main() {
+            vec2 center = vec2(0., 1.);
+            float rotation = 0.0;
+            
+            // This is somewhat arbitrary, but it seems to work well
+            // Need to figure out how to derive this dynamically if it even matters
+            float size = 0.03;
+
+            vec4 mvPosition = modelViewMatrix * vec4( 0.0, 0.0, 0.0, 1.0 );
+            vec2 scale;
+            scale.x = length( vec3( modelMatrix[ 0 ].x, modelMatrix[ 0 ].y, modelMatrix[ 0 ].z ) );
+            scale.y = length( vec3( modelMatrix[ 1 ].x, modelMatrix[ 1 ].y, modelMatrix[ 1 ].z ) );
+
+            bool isPerspective = isPerspectiveMatrix( projectionMatrix );
+            if ( isPerspective ) scale *= - mvPosition.z;
+
+            vec2 alignedPosition = ( position.xy - ( center - vec2( 0.5 ) ) ) * scale * size;
+            vec2 rotatedPosition;
+            rotatedPosition.x = cos( rotation ) * alignedPosition.x - sin( rotation ) * alignedPosition.y;
+            rotatedPosition.y = sin( rotation ) * alignedPosition.x + cos( rotation ) * alignedPosition.y;
+            mvPosition.xy += rotatedPosition;
+
+            gl_Position = projectionMatrix * mvPosition;
+          }
+      `
+          : undefined,
+        fragmentShader: /* glsl */ `
+        void main() {
+          gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+        }
+      `,
+      }),
+      [transform]
+    )
+
+    return (
+      <group {...props} ref={group}>
+        {occlude && !isRayCastOcclusion && (
+          <mesh castShadow={castShadow} receiveShadow={receiveShadow} ref={occlusionMeshRef}>
+            {geometry || <planeGeometry />}
+            {material || (
+              <shaderMaterial
+                side={DoubleSide}
+                vertexShader={shaders.vertexShader}
+                fragmentShader={shaders.fragmentShader}
+              />
+            )}
+          </mesh>
+        )}
+      </group>
+    )
   }
 )

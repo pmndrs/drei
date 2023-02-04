@@ -2793,11 +2793,19 @@ return (
 This component allows you to render a live scene into a texture which you can then apply to a material. The contents of it run inside a portal and are separate from the rest of the canvas, therefore you can have events in there, environment maps, etc.
 
 ```tsx
-<RenderTexture
+type Props = JSX.IntrinsicElements['texture'] & {
   /** Optional width of the texture, defaults to viewport bounds */
   width?: number
   /** Optional height of the texture, defaults to viewport bounds */
   height?: number
+  /** Optional fbo samples */
+  samples?: number
+  /** Optional stencil buffer, defaults to false */
+  stencilBuffer?: boolean
+  /** Optional depth buffer, defaults to true */
+  depthBuffer?: boolean
+  /** Optional generate mipmaps, defaults to false */
+  generateMipmaps?: boolean
   /** Optional render priority, defaults to 0 */
   renderPriority?: number
   /** Optional event priority, defaults to 0 */
@@ -2808,7 +2816,7 @@ This component allows you to render a live scene into a texture which you can th
   compute?: (event: any, state: any, previous: any) => false | undefined
   /** Children will be rendered into a portal */
   children: React.ReactNode
-/>
+}
 ```
 
 ```jsx

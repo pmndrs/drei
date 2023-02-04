@@ -10,6 +10,12 @@ type Props = JSX.IntrinsicElements['texture'] & {
   height?: number
   /** Optional fbo samples */
   samples?: number
+  /** Optional stencil buffer, defaults to false */
+  stencilBuffer?: boolean
+  /** Optional depth buffer, defaults to true */
+  depthBuffer?: boolean
+  /** Optional generate mipmaps, defaults to false */
+  generateMipmaps?: boolean
   /** Optional render priority, defaults to 0 */
   renderPriority?: number
   /** Optional event priority, defaults to 0 */
@@ -33,12 +39,20 @@ export const RenderTexture = React.forwardRef(
       renderPriority = 0,
       eventPriority = 0,
       frames = Infinity,
+      stencilBuffer = false,
+      depthBuffer = true,
+      generateMipmaps = false,
       ...props
     }: Props,
     forwardRef
   ) => {
     const { size, viewport } = useThree()
-    const fbo = useFBO((width || size.width) * viewport.dpr, (height || size.height) * viewport.dpr, { samples })
+    const fbo = useFBO((width || size.width) * viewport.dpr, (height || size.height) * viewport.dpr, {
+      samples,
+      stencilBuffer,
+      depthBuffer,
+      generateMipmaps,
+    })
     const [vScene] = React.useState(() => new THREE.Scene())
 
     const uvCompute = React.useCallback((event, state, previous) => {

@@ -37,8 +37,9 @@ export const ContactShadows = React.forwardRef(
       renderOrder,
       ...props
     }: Omit<JSX.IntrinsicElements['group'], 'scale'> & ContactShadowsProps,
-    ref
+    fref
   ) => {
+    const ref = React.useRef<THREE.Group>(null!)
     const scene = useThree((state) => state.scene)
     const gl = useThree((state) => state.gl)
     const shadowCamera = React.useRef<THREE.OrthographicCamera>(null!)
@@ -117,6 +118,8 @@ export const ContactShadows = React.forwardRef(
     let count = 0
     useFrame(() => {
       if (shadowCamera.current && (frames === Infinity || count < frames)) {
+        ref.current.visible = false
+
         const initialBackground = scene.background
         scene.background = null
         const initialOverrideMaterial = scene.overrideMaterial
@@ -126,16 +129,22 @@ export const ContactShadows = React.forwardRef(
         scene.overrideMaterial = initialOverrideMaterial
 
         blurShadows(blur)
-        if (smooth) blurShadows(blur * 0.4)
+        if (smooth) {
+          blurShadows(blur * 0.4)
+        }
 
         gl.setRenderTarget(null)
         scene.background = initialBackground
         count++
+
+        ref.current.visible = true
       }
     })
 
+    React.useImperativeHandle(fref, () => ref.current, [])
+
     return (
-      <group rotation-x={Math.PI / 2} {...props} ref={ref as any}>
+      <group rotation-x={Math.PI / 2} {...props} ref={ref}>
         <mesh renderOrder={renderOrder} geometry={planeGeometry} scale={[1, -1, 1]} rotation={[-Math.PI / 2, 0, 0]}>
           <meshBasicMaterial
             map={renderTarget.texture}

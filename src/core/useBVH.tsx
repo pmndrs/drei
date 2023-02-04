@@ -1,11 +1,11 @@
 import { useThree } from '@react-three/fiber'
 import * as React from 'react'
 import { Mesh, Group } from 'three'
-import { acceleratedRaycast, computeBoundsTree, disposeBoundsTree } from 'three-mesh-bvh'
+import { acceleratedRaycast, computeBoundsTree, disposeBoundsTree, SAH, SplitStrategy } from 'three-mesh-bvh'
 
 export interface BVHOptions {
   /** Split strategy, default: SAH (slowest to construct, fastest runtime, least memory) */
-  splitStrategy?: 'CENTER' | 'AVERAGE' | 'SAH'
+  strategy?: typeof SplitStrategy
   /** Print out warnings encountered during tree construction, default: false */
   verbose?: boolean
   /** If true then the bounding box for the geometry is set once the BVH has been constructed, default: true */
@@ -31,7 +31,7 @@ const isMesh = (child: any): child is Mesh => child.isMesh
  */
 export function useBVH(mesh: React.MutableRefObject<Mesh | undefined>, options?: BVHOptions) {
   options = {
-    splitStrategy: 'SAH',
+    strategy: SAH,
     verbose: false,
     setBoundingBox: true,
     maxDepth: 40,
@@ -61,7 +61,7 @@ export const Bvh = React.forwardRef(
       enabled = true,
       firstHitOnly = false,
       children,
-      splitStrategy = 'SAH',
+      strategy = SAH,
       verbose = false,
       setBoundingBox = true,
       maxDepth = 40,
@@ -77,7 +77,7 @@ export const Bvh = React.forwardRef(
 
     React.useEffect(() => {
       if (enabled) {
-        const options = { splitStrategy, verbose, setBoundingBox, maxDepth, maxLeafTris }
+        const options = { strategy, verbose, setBoundingBox, maxDepth, maxLeafTris }
         const group = ref.current
         // This can only safely work if the component is used once, but there is no alternative.
         // Hijacking the raycast method to do it for individual meshes is not an option as it would

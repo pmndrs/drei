@@ -396,7 +396,8 @@ export const MeshTransmissionMaterial = React.forwardRef(
     let parent
     useFrame((state) => {
       ref.current.time = state.clock.getElapsedTime()
-      if (!ref.current.buffer && !transmissionSampler) {
+      // Render only if the buffer matches the built-in and no transmission sampler is set
+      if (ref.current.buffer === fboMain.texture && !transmissionSampler) {
         parent = (ref.current as any).__r3f.parent as THREE.Object3D
         if (parent) {
           // Save defaults

@@ -34,7 +34,6 @@ export const ContactShadows = React.forwardRef(
       smooth = true,
       color = '#000000',
       depthWrite = false,
-      matrixWorldAutoUpdate = false,
       renderOrder,
       ...props
     }: Omit<JSX.IntrinsicElements['group'], 'scale'> & ContactShadowsProps,
@@ -119,19 +118,16 @@ export const ContactShadows = React.forwardRef(
     let count = 0
     let initialBackground: THREE.Color | THREE.Texture | null
     let initialOverrideMaterial: THREE.Material | null
-    let initialMatrixWorldAutoUpdate: boolean
     useFrame(() => {
       if (shadowCamera.current && (frames === Infinity || count < frames)) {
         count++
 
-        initialMatrixWorldAutoUpdate = scene.matrixWorldAutoUpdate
         initialBackground = scene.background
         initialOverrideMaterial = scene.overrideMaterial
 
         ref.current.visible = false
         scene.background = null
         scene.overrideMaterial = depthMaterial
-        if (!matrixWorldAutoUpdate) scene.matrixWorldAutoUpdate = false
 
         gl.setRenderTarget(renderTarget)
         gl.render(scene, shadowCamera.current)
@@ -142,7 +138,6 @@ export const ContactShadows = React.forwardRef(
 
         ref.current.visible = true
         scene.overrideMaterial = initialOverrideMaterial
-        if (!matrixWorldAutoUpdate) scene.matrixWorldAutoUpdate = initialMatrixWorldAutoUpdate
         scene.background = initialBackground
       }
     })

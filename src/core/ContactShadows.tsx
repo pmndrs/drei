@@ -34,6 +34,7 @@ export const ContactShadows = React.forwardRef(
       smooth = true,
       color = '#000000',
       depthWrite = false,
+      matrixWorldAutoUpdate = false,
       renderOrder,
       ...props
     }: Omit<JSX.IntrinsicElements['group'], 'scale'> & ContactShadowsProps,
@@ -116,28 +117,33 @@ export const ContactShadows = React.forwardRef(
     }
 
     let count = 0
+    let initialBackground: THREE.Color | THREE.Texture | null
+    let initialOverrideMaterial: THREE.Material | null
+    let initialMatrixWorldAutoUpdate: boolean
     useFrame(() => {
       if (shadowCamera.current && (frames === Infinity || count < frames)) {
-        ref.current.visible = false
-
-        const initialBackground = scene.background
-        scene.background = null
-        const initialOverrideMaterial = scene.overrideMaterial
-        scene.overrideMaterial = depthMaterial
-        gl.setRenderTarget(renderTarget)
-        gl.render(scene, shadowCamera.current)
-        scene.overrideMaterial = initialOverrideMaterial
-
-        blurShadows(blur)
-        if (smooth) {
-          blurShadows(blur * 0.4)
-        }
-
-        gl.setRenderTarget(null)
-        scene.background = initialBackground
         count++
 
+        initialMatrixWorldAutoUpdate = scene.matrixWorldAutoUpdate
+        initialBackground = scene.background
+        initialOverrideMaterial = scene.overrideMaterial
+
+        ref.current.visible = false
+        scene.background = null
+        scene.overrideMaterial = depthMaterial
+        if (!matrixWorldAutoUpdate) scene.matrixWorldAutoUpdate = false
+
+        gl.setRenderTarget(renderTarget)
+        gl.render(scene, shadowCamera.current)
+
+        blurShadows(blur)
+        if (smooth) blurShadows(blur * 0.4)
+        gl.setRenderTarget(null)
+
         ref.current.visible = true
+        scene.overrideMaterial = initialOverrideMaterial
+        if (!matrixWorldAutoUpdate) scene.matrixWorldAutoUpdate = initialMatrixWorldAutoUpdate
+        scene.background = initialBackground
       }
     })
 
@@ -147,9 +153,9 @@ export const ContactShadows = React.forwardRef(
       <group rotation-x={Math.PI / 2} {...props} ref={ref}>
         <mesh renderOrder={renderOrder} geometry={planeGeometry} scale={[1, -1, 1]} rotation={[-Math.PI / 2, 0, 0]}>
           <meshBasicMaterial
+            transparent
             map={renderTarget.texture}
             map-encoding={gl.outputEncoding}
-            transparent
             opacity={opacity}
             depthWrite={depthWrite}
           />

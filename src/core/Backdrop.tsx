@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { BufferAttribute } from 'three'
 
 const easeInExpo = (x) => (x === 0 ? 0 : Math.pow(2, 10 * x - 10))
 
@@ -14,7 +15,7 @@ export function Backdrop({ children, floor = 0.25, segments = 20, receiveShadow,
   React.useLayoutEffect(() => {
     let i = 0
     const offset = segments / segments / 2
-    const position = ref.current.attributes.position
+    const position = ref.current.attributes.position as BufferAttribute
     for (let x = 0; x < segments + 1; x++) {
       for (let y = 0; y < segments + 1; y++) {
         position.setXYZ(

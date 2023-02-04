@@ -5,15 +5,16 @@ import mergeRefs from 'react-merge-refs'
 
 type Props = JSX.IntrinsicElements['lOD'] & {
   children: React.ReactElement<Object3D>[]
+  hysteresis?: number
   distances: number[]
 }
 
-export const Detailed = React.forwardRef(({ children, distances, ...props }: Props, ref) => {
+export const Detailed = React.forwardRef(({ children, hysteresis = 0, distances, ...props }: Props, ref) => {
   const lodRef = React.useRef<LOD>(null!)
   React.useLayoutEffect(() => {
     const { current: lod } = lodRef
     lod.levels.length = 0
-    lod.children.forEach((object, index) => lod.levels.push({ object, distance: distances[index] }))
+    lod.children.forEach((object, index) => lod.levels.push({ object, hysteresis, distance: distances[index] }))
   })
   useFrame((state) => lodRef.current?.update(state.camera))
   return (

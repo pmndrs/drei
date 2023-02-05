@@ -21,13 +21,11 @@ export default {
 
 export const EnvironmentStory = ({ background, preset, blur }) => (
   <>
-    <React.Suspense fallback={null}>
-      <Environment preset={preset} background={background} blur={blur} />
-      <mesh>
-        <torusKnotGeometry args={[1, 0.5, 128, 32]} />
-        <meshStandardMaterial metalness={1} roughness={0} />
-      </mesh>
-    </React.Suspense>
+    <Environment preset={preset} background={background} blur={blur} />
+    <mesh>
+      <torusKnotGeometry args={[1, 0.5, 128, 32]} />
+      <meshStandardMaterial metalness={1} roughness={0} />
+    </mesh>
     <OrbitControls autoRotate />
   </>
 )
@@ -54,17 +52,15 @@ EnvironmentStory.storyName = 'Default'
 
 export const EnvironmentFilesStory = ({ background }) => (
   <>
-    <React.Suspense fallback={null}>
-      <Environment
-        background={background}
-        path={`cube/`}
-        files={[`px.png`, `nx.png`, `py.png`, `ny.png`, `pz.png`, `nz.png`]}
-      />
-      <mesh>
-        <torusKnotGeometry args={[1, 0.5, 128, 32]} />
-        <meshStandardMaterial metalness={1} roughness={0} />
-      </mesh>
-    </React.Suspense>
+    <Environment
+      background={background}
+      path={`cube/`}
+      files={[`px.png`, `nx.png`, `py.png`, `ny.png`, `pz.png`, `nz.png`]}
+    />
+    <mesh>
+      <torusKnotGeometry args={[1, 0.5, 128, 32]} />
+      <meshStandardMaterial metalness={1} roughness={0} />
+    </mesh>
     <OrbitControls autoRotate />
   </>
 )
@@ -77,14 +73,12 @@ EnvironmentFilesStory.storyName = 'Files'
 
 export const EnvironmentGroundStory = ({ preset, height, radius }) => (
   <>
-    <React.Suspense fallback={null}>
-      <Environment ground={{ height, radius }} preset={preset} />
-      <mesh position={[0, 5, 0]}>
-        <boxGeometry args={[10, 10, 10]} />
-        <meshStandardMaterial metalness={1} roughness={0} />
-      </mesh>
-      <ContactShadows resolution={1024} position={[0, 0, 0]} scale={100} blur={2} opacity={1} far={10} />
-    </React.Suspense>
+    <Environment ground={{ height, radius }} preset={preset} />
+    <mesh position={[0, 5, 0]}>
+      <boxGeometry args={[10, 10, 10]} />
+      <meshStandardMaterial metalness={1} roughness={0} />
+    </mesh>
+    <ContactShadows resolution={1024} position={[0, 0, 0]} scale={100} blur={2} opacity={1} far={10} />
     <OrbitControls autoRotate />
     <PerspectiveCamera position={[40, 40, 40]} makeDefault />
   </>

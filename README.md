@@ -3590,6 +3590,20 @@ Floating, glowing particles.
 />
 ```
 
+Custom shaders are allowed. Sparkles will use the following attributes and uniforms:
+
+```glsl
+attribute float size;
+attribute float speed;
+attribute float opacity;
+attribute vec3 noise;
+attribute vec3 color;
+```
+
+```json
+{ "time": 0, "pixelRatio": 1 }
+```
+
 #### Cloud
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-cloud--cloud-st) ![](https://img.shields.io/badge/-suspense-brightgreen)

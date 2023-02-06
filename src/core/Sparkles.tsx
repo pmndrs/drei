@@ -3,13 +3,6 @@ import * as THREE from 'three'
 import { PointsProps, useThree, useFrame, extend, Node } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
 
-// eslint-disable-next-line
-// @ts-ignore
-import fragShader from '../helpers/glsl/Sparkles.frag.glsl'
-// eslint-disable-next-line
-// @ts-ignore
-import vertShader from '../helpers/glsl/Sparkles.vert.glsl'
-
 interface Props {
   /** Number of particles (default: 100) */
   count?: number
@@ -27,12 +20,43 @@ interface Props {
   noise?: number | [number, number, number] | THREE.Vector3 | Float32Array
 }
 
-const SparklesMaterial = shaderMaterial({ time: 0, pixelRatio: 1 }, vertShader, fragShader)
+const SparklesImplMaterial = shaderMaterial(
+  { time: 0, pixelRatio: 1 },
+  ` uniform float pixelRatio;
+    uniform float time;
+    attribute float size;  
+    attribute float speed;  
+    attribute float opacity;
+    attribute vec3 noise;
+    attribute vec3 color;
+    varying vec3 vColor;
+    varying float vOpacity;
+    void main() {
+      vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+      modelPosition.y += sin(time * speed + modelPosition.x * noise.x * 100.0) * 0.2;
+      modelPosition.z += cos(time * speed + modelPosition.x * noise.y * 100.0) * 0.2;
+      modelPosition.x += cos(time * speed + modelPosition.x * noise.z * 100.0) * 0.2;
+      vec4 viewPosition = viewMatrix * modelPosition;
+      vec4 projectionPostion = projectionMatrix * viewPosition;
+      gl_Position = projectionPostion;
+      gl_PointSize = size * 25. * pixelRatio;
+      gl_PointSize *= (1.0 / - viewPosition.z);
+      vColor = color;
+      vOpacity = opacity;
+    }`,
+  ` varying vec3 vColor;
+    varying float vOpacity;
+    void main() {
+      float distanceToCenter = distance(gl_PointCoord, vec2(0.5));
+      float strength = 0.05 / distanceToCenter - 0.1;
+      gl_FragColor = vec4(vColor, strength * vOpacity);
+    }`
+)
 
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      sparklesMaterial: Node<any, any>
+      sparklesImplMaterial: Node<any, any>
     }
   }
 }
@@ -74,9 +98,9 @@ function usePropAsIsOrAsAttribute<T extends any>(
 }
 
 export const Sparkles = React.forwardRef<THREE.Points, Props & PointsProps>(
-  ({ noise = 1, count = 100, speed = 1, opacity = 1, scale = 1, size, color, ...props }, forwardRef) => {
-    React.useMemo(() => extend({ SparklesMaterial }), [])
-    const matRef = React.useRef<any>()
+  ({ noise = 1, count = 100, speed = 1, opacity = 1, scale = 1, size, color, children, ...props }, forwardRef) => {
+    React.useMemo(() => extend({ SparklesImplMaterial }), [])
+    const ref = React.useRef<THREE.Points>(null!)
     const dpr = useThree((state) => state.viewport.dpr)
     const positions = React.useMemo(
       () =>
@@ -95,11 +119,16 @@ export const Sparkles = React.forwardRef<THREE.Points, Props & PointsProps>(
       !isFloat32Array(color) ? new THREE.Color(color) : color,
       () => 1
     )
+    console.log(colors)
 
-    useFrame((state) => (matRef.current.uniforms.time.value = state.clock.elapsedTime))
+    useFrame((state) => {
+      if (ref.current && ref.current.material) (ref.current.material as any).time = state.clock.elapsedTime
+    })
+
+    React.useImperativeHandle(forwardRef, () => ref.current, [])
 
     return (
-      <points key={`particle-${count}-${JSON.stringify(scale)}`} {...props} ref={forwardRef}>
+      <points key={`particle-${count}-${JSON.stringify(scale)}`} {...props} ref={ref}>
         <bufferGeometry>
           <bufferAttribute attach="attributes-position" args={[positions, 3]} />
           <bufferAttribute attach="attributes-size" args={[sizes, 1]} />
@@ -108,7 +137,7 @@ export const Sparkles = React.forwardRef<THREE.Points, Props & PointsProps>(
           <bufferAttribute attach="attributes-color" args={[colors, 3]} />
           <bufferAttribute attach="attributes-noise" args={[noises, 3]} />
         </bufferGeometry>
-        <sparklesMaterial ref={matRef} transparent pixelRatio={dpr} depthWrite={false} />
+        {children ? children : <sparklesImplMaterial transparent pixelRatio={dpr} depthWrite={false} />}
       </points>
     )
   }

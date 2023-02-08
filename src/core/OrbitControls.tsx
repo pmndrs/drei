@@ -31,7 +31,7 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
   (
     {
       makeDefault,
-      events: enableEvents,
+      events: enableEvents = true,
       camera,
       regress,
       domElement,

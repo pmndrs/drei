@@ -37,7 +37,7 @@ export const CameraControls = forwardRef<CameraControlsImpl, CameraControlsProps
     onStart,
     onEnd,
     onChange,
-    events: enableEvents,
+    events: enableEvents = true,
     regress,
     ...restProps
   } = props

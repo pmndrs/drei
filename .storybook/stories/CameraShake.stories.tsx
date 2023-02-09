@@ -80,10 +80,8 @@ function Scene() {
 
 export const CameraShakeStory = ({ ...args }) => (
   <>
-    <React.Suspense fallback={null}>
-      <CameraShake {...args} />
-      <Scene />
-    </React.Suspense>
+    <CameraShake {...args} />
+    <Scene />
   </>
 )
 
@@ -95,11 +93,9 @@ export const CameraShakeWithOrbitControlsStory = ({ ...args }) => {
   const controlsRef = React.useRef<OrbitControlsImpl>(null)
   return (
     <>
-      <React.Suspense fallback={null}>
-        <OrbitControls ref={controlsRef} />
-        <CameraShake {...args} controls={controlsRef} />
-        <Scene />
-      </React.Suspense>
+      <OrbitControls ref={controlsRef} />
+      <CameraShake {...args} controls={controlsRef} />
+      <Scene />
     </>
   )
 }

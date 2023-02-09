@@ -85,7 +85,7 @@ export const SvgSt: FC<SvgStoryProps> = ({ svg, fillWireframe, strokesWireframe,
     updateArgs({ src: `${url}/${svg || svgRecord.Tiger}` })
   }, [svg])
   return (
-    <Suspense fallback={null}>
+    <>
       <Svg
         {...props}
         position={[-70, 70, 0]}
@@ -94,6 +94,6 @@ export const SvgSt: FC<SvgStoryProps> = ({ svg, fillWireframe, strokesWireframe,
         strokeMaterial={{ wireframe: strokesWireframe }}
       />
       <gridHelper args={[160, 10]} rotation={[MathUtils.DEG2RAD * 90, 0, 0]} />
-    </Suspense>
+    </>
   )
 }

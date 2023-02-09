@@ -49,7 +49,7 @@ BillboardStory.args = {
 BillboardStory.storyName = 'Planes'
 
 export const BillboardTextStory = ({ follow, lockX, lockY, lockZ }) => (
-  <React.Suspense fallback={null}>
+  <>
     <Billboard follow={follow} lockX={lockX} lockY={lockY} lockZ={lockZ} position={[0.5, 2.05, 0.5]}>
       <Text fontSize={1} outlineWidth={'5%'} outlineColor="#000000" outlineOpacity={1}>
         box
@@ -76,7 +76,7 @@ export const BillboardTextStory = ({ follow, lockX, lockY, lockZ }) => (
     </Billboard>
 
     <OrbitControls enablePan={true} zoomSpeed={0.5} />
-  </React.Suspense>
+  </>
 )
 
 BillboardTextStory.args = {

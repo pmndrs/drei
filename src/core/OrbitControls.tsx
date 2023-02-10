@@ -20,29 +20,13 @@ export type OrbitControlsProps = Omit<
       onStart?: (e?: Event) => void
       regress?: boolean
       target?: ReactThreeFiber.Vector3
-      // Wether to enable events during orbit controls interaction
-      events?: boolean
     }
   >,
   'ref'
 >
 
 export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsProps>(
-  (
-    {
-      makeDefault,
-      events: enableEvents = true,
-      camera,
-      regress,
-      domElement,
-      enableDamping = true,
-      onChange,
-      onStart,
-      onEnd,
-      ...restProps
-    },
-    ref
-  ) => {
+  ({ makeDefault, camera, regress, domElement, enableDamping = true, onChange, onStart, onEnd, ...restProps }, ref) => {
     const invalidate = useThree((state) => state.invalidate)
     const defaultCamera = useThree((state) => state.camera)
     const gl = useThree((state) => state.gl)
@@ -65,10 +49,6 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
     }, [explDomElement, regress, controls, invalidate])
 
     React.useEffect(() => {
-      if (enableEvents) {
-        setEvents({ enabled: true })
-      }
-
       const callback = (e: OrbitControlsChangeEvent) => {
         invalidate()
         if (regress) performance.regress()
@@ -77,12 +57,10 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
 
       const onStartCb = (e: Event) => {
         if (onStart) onStart(e)
-        if (!enableEvents) setEvents({ enabled: false })
       }
 
       const onEndCb = (e: Event) => {
         if (onEnd) onEnd(e)
-        if (!enableEvents) setEvents({ enabled: true })
       }
 
       controls.addEventListener('change', callback)
@@ -94,7 +72,7 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
         controls.removeEventListener('end', onEndCb)
         controls.removeEventListener('change', callback)
       }
-    }, [onChange, onStart, onEnd, controls, invalidate, enableEvents, setEvents])
+    }, [onChange, onStart, onEnd, controls, invalidate, setEvents])
 
     React.useEffect(() => {
       if (makeDefault) {

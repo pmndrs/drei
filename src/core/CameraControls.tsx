@@ -30,17 +30,7 @@ export const CameraControls = forwardRef<CameraControlsImpl, CameraControlsProps
     extend({ CameraControlsImpl })
   }, [])
 
-  const {
-    camera,
-    domElement,
-    makeDefault,
-    onStart,
-    onEnd,
-    onChange,
-    events: enableEvents = true,
-    regress,
-    ...restProps
-  } = props
+  const { camera, domElement, makeDefault, onStart, onEnd, onChange, regress, ...restProps } = props
 
   const defaultCamera = useThree((state) => state.camera)
   const gl = useThree((state) => state.gl)
@@ -66,10 +56,6 @@ export const CameraControls = forwardRef<CameraControlsImpl, CameraControlsProps
   }, [explDomElement, controls])
 
   React.useEffect(() => {
-    if (enableEvents) {
-      setEvents({ enabled: true })
-    }
-
     const callback = (e) => {
       invalidate()
       if (regress) performance.regress()
@@ -78,12 +64,10 @@ export const CameraControls = forwardRef<CameraControlsImpl, CameraControlsProps
 
     const onStartCb: CameraControlsProps['onStart'] = (e) => {
       if (onStart) onStart(e)
-      if (!enableEvents) setEvents({ enabled: false })
     }
 
     const onEndCb: CameraControlsProps['onEnd'] = (e) => {
       if (onEnd) onEnd(e)
-      if (!enableEvents) setEvents({ enabled: true })
     }
 
     controls.addEventListener('update', callback)
@@ -95,7 +79,7 @@ export const CameraControls = forwardRef<CameraControlsImpl, CameraControlsProps
       controls.removeEventListener('controlstart', onStartCb)
       controls.removeEventListener('controlend', onEndCb)
     }
-  }, [controls, enableEvents, onStart, onEnd, invalidate, setEvents, regress, onChange])
+  }, [controls, onStart, onEnd, invalidate, setEvents, regress, onChange])
 
   useEffect(() => {
     if (makeDefault) {

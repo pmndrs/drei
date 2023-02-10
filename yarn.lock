@@ -4602,10 +4602,10 @@ camelcase@^6.0.0, camelcase@^6.2.0:
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-6.3.0.tgz#5685b95eb209ac9c0c177467778c9c84df58ba9a"
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
 
-camera-controls@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/camera-controls/-/camera-controls-2.0.1.tgz#051f6f5c9c2ea515250bf23b7e5bc0f0f12282c5"
-  integrity sha512-KYzlahxCFap5y+M3nkkzCYKAT1Rjh5jL7AOzFoDrygxrBiF+ffYzOridEywQBhqcUYU8hDErgqZNqFNUkkAzbQ==
+camera-controls@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/camera-controls/-/camera-controls-2.1.0.tgz#75edd73935270af76b4202dc794cf022afcee4b0"
+  integrity sha512-9b2dpUZp+3Rfkh/E8dU9O9/rBbPDzyB5DBINktedRAF4I5ldZUgBiSYtFac7wF3yXNf4UH2pjP3uRcoAtXTh4A==
 
 caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001317:
   version "1.0.30001322"
@@ -5466,10 +5466,10 @@ detab@2.0.4:
   dependencies:
     repeat-string "^1.5.4"
 
-detect-gpu@^5.0.9:
-  version "5.0.9"
-  resolved "https://registry.yarnpkg.com/detect-gpu/-/detect-gpu-5.0.9.tgz#bbaee58085a2e5765aade3df2f49c9393e70b39f"
-  integrity sha512-3wFHiw8OJjZqxQCbluNP8JNmoDEJuWf1LaLJRvOPC+X1aBQyHhS4R67BINQVoq2vuSrUnpMNIHQ+JXwKd3UhfA==
+detect-gpu@^5.0.10:
+  version "5.0.10"
+  resolved "https://registry.yarnpkg.com/detect-gpu/-/detect-gpu-5.0.10.tgz#4010b89a7f91a24ed8d2a136ee6ac816b39d0801"
+  integrity sha512-V0g0RhtlItrhgBM4/T/lTpjephr9b/xDAOtJZztGTvQxaPSMQ4EAiV9tdHL+4GcT1ATvYmMCm4QbrhyjdEH6Fw==
   dependencies:
     webgl-constants "^1.1.1"
 

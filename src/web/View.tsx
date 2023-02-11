@@ -51,12 +51,12 @@ function computeContainerPosition(
   canvasSize: LegacyCanvasSize | CanvasSize,
   trackRect: DOMRect
 ): {
-  position: CanvasSize & { bottom: number, right: number }
+  position: CanvasSize & { bottom: number; right: number }
   isOffscreen: boolean
 } {
   const { right, top, left: trackLeft, bottom: trackBottom, width, height } = trackRect
   const isOffscreen = trackRect.bottom < 0 || top > canvasSize.height || right < 0 || trackRect.left > canvasSize.width
-  
+
   if (isNonLegacyCanvasSize(canvasSize)) {
     const canvasBottom = canvasSize.top + canvasSize.height
     const bottom = canvasBottom - trackBottom
@@ -115,11 +115,12 @@ function Container({ canvasSize, scene, index, children, frames, rect, track }: 
         state.gl.getClearColor(col)
         state.gl.setClearColor(col, state.gl.getClearAlpha())
         state.gl.clear(true, true)
-        return
+      } else {
+        // When children are present render the portalled scene, otherwise the default scene
+        state.gl.render(children ? virtualScene : scene, camera)
       }
-
-      // When children are present render the portalled scene, otherwise the default scene
-      state.gl.render(children ? virtualScene : scene, camera)
+      // Restore the default state
+      state.gl.setScissorTest(true)
     }
   }, index)
 

@@ -162,4 +162,5 @@ export function SoftShadows({ frustum = 3.75, size = 0.005, near = 9.5, samples 
       reset(gl, scene, camera)
     }
   }, [frustum, size, near, samples, rings])
+  return null
 }

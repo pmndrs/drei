@@ -192,8 +192,9 @@ export const Html = React.forwardRef(
     }, [occlude])
 
     React.useLayoutEffect(() => {
+      const el = gl.domElement as HTMLCanvasElement
+
       if (occlude && occlude === 'blending') {
-        const el = gl.domElement as HTMLCanvasElement
         el.style.zIndex = `${Math.floor(zIndexRange[0] / 2)}`
         el.style.position = 'absolute'
         el.style.pointerEvents = 'none'

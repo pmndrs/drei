@@ -193,10 +193,17 @@ export const Html = React.forwardRef(
 
     React.useLayoutEffect(() => {
       const el = gl.domElement as HTMLCanvasElement
-      el.style.zIndex = `${Math.floor(zIndexRange[0] / 2)}`
-      el.style.position = 'absolute'
-      el.style.pointerEvents = 'none'
-    }, [])
+
+      if (occlude && occlude === 'blending') {
+        el.style.zIndex = `${Math.floor(zIndexRange[0] / 2)}`
+        el.style.position = 'absolute'
+        el.style.pointerEvents = 'none'
+      } else {
+        el.style.zIndex = null!
+        el.style.position = null!
+        el.style.pointerEvents = null!
+      }
+    }, [occlude])
 
     React.useLayoutEffect(() => {
       if (group.current) {

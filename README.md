@@ -1427,7 +1427,7 @@ Easily add reflections and/or blur to any mesh. It takes surface roughness into 
 <mesh>
   <planeGeometry />
   <MeshReflectorMaterial
-    blur={[0, 0]} // Blur ground reflections (width, heigt), 0 skips blur
+    blur={[0, 0]} // Blur ground reflections (width, height), 0 skips blur
     mixBlur={0} // How much blur mixes with surface roughness (default = 1)
     mixStrength={1} // Strength of the reflections
     mixContrast={1} // Contrast of the reflections

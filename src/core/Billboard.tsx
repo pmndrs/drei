@@ -31,7 +31,7 @@ export const Billboard = React.forwardRef<Group, BillboardProps>(function Billbo
     const prevRotation = localRef.current.rotation.clone()
 
     // always face the camera
-    localRef.current.quaternion.copy(camera.quaternion)
+    camera.getWorldQuaternion(localRef.current.quaternion)
 
     // readjust any axis that is locked
     if (lockX) localRef.current.rotation.x = prevRotation.x

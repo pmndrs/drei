@@ -318,7 +318,7 @@ type Props = JSX.IntrinsicElements['group'] & {
 }
 ```
 
-Using the `frames` prop you can control if this camera renders indefinitively or statically (a given number of times).
+Using the `frames` prop you can control if this camera renders indefinitely or statically (a given number of times).
 If you have two static objects in the scene, make it `frames={2}` for instance, so that both objects get to "see" one another in the reflections, which takes multiple renders.
 If you have moving objects, unset the prop and use a smaller `resolution` instead.
 
@@ -389,11 +389,11 @@ type CameraControlsProps = {
 type ScrollControlsProps = {
   /** Precision, default 0.00001 */
   eps?: number
-  /** Horontal scroll, default false (vertical) */
+  /** Horizontal scroll, default false (vertical) */
   horizontal?: boolean
   /** Infinite scroll, default false (experimental!) */
   infinite?: boolean
-  /** Defines the lenght of the scroll area, each page is height:100%, default 1 */
+  /** Defines the length of the scroll area, each page is height:100%, default 1 */
   pages?: number
   /** A factor that increases scroll bar travel, default 1 */
   distance?: number
@@ -415,7 +415,7 @@ Scroll controls create a HTML scroll container in front of the canvas. Everythin
 You can listen and react to scroll with the `useScroll` hook which gives you useful data like the current scroll `offset`, `delta` and functions for range finding: `range`, `curve` and `visible`. The latter functions are especially useful if you want to react to the scroll offset, for instance if you wanted to fade things in and out if they are in or out of view.
 
 ```jsx
-;<ScrollControls pages={3} damping={0.1}>
+<ScrollControls pages={3} damping={0.1}>
   {/* Canvas contents in here will *not* scroll, but receive useScroll! */}
   <SomeModel />
   <Scroll>
@@ -1340,7 +1340,7 @@ The decal box has to intersect the surface, otherwise it will not be visible. if
 </mesh>
 ```
 
-If you do not specifiy a material it will create a transparent meshStandardMaterial with a polygonOffsetFactor of -10 and all rest-props will be spread over it.
+If you do not specify a material it will create a transparent meshStandardMaterial with a polygonOffsetFactor of -10 and all rest-props will be spread over it.
 
 ```jsx
 <mesh>
@@ -1588,7 +1588,7 @@ return (
     <MeshTransmissionMaterial />
 ```
 
-If each material rendering the scene on its own is too much expensense you can share a buffer texture. Either by enabling `transmissionSampler` which would use the threejs-internal buffer that MeshPhysicalMaterials use. This might be faster, the downside is that no transmissive material can "see" other transparent or transmissive objects.
+If each material rendering the scene on its own is too expensive you can share a buffer texture. Either by enabling `transmissionSampler` which would use the threejs-internal buffer that MeshPhysicalMaterials use. This might be faster, the downside is that no transmissive material can "see" other transparent or transmissive objects.
 
 ```jsx
 <mesh geometry={torus}>
@@ -1837,7 +1837,7 @@ const [hidden, set] = useState()
 Html can hide behind geometry as if it was part of the 3D scene using this mode. It can be enabled by using `"blending"` as the `occlude` prop.
 
 ```jsx
-// Enable real oclcusion
+// Enable real occlusion
 <Html occlude="blending" />
 ```
 

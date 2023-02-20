@@ -535,10 +535,10 @@ enum Controls {
 }
 function App() {
   const map = useMemo<KeyboardControlsEntry<Controls>[]>(()=>[
-    { name: Controls.forward, keys: ['ArrowUp', 'w', 'W'] },
-    { name: Controls.back, keys: ['ArrowDown', 's', 'S'] },
-    { name: Controls.left, keys: ['ArrowLeft', 'a', 'A'] },
-    { name: Controls.right, keys: ['ArrowRight', 'd', 'D'] },
+    { name: Controls.forward, keys: ['ArrowUp', 'KeyW'] },
+    { name: Controls.back, keys: ['ArrowDown', 'KeyS'] },
+    { name: Controls.left, keys: ['ArrowLeft', 'KeyA'] },
+    { name: Controls.right, keys: ['ArrowRight', 'KeyD'] },
     { name: Controls.jump, keys: ['Space'] },
   ], [])
   return (

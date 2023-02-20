@@ -18,13 +18,14 @@ export const MeshRefractionMaterial = shaderMaterial(
     resolution: new THREE.Vector2(),
   },
   /*glsl*/ `
+  #ifndef USE_COLOR
+    uniform vec3 color;
+  #endif
   #ifdef USE_INSTANCING_COLOR
-    #ifndef USE_COLOR
-      uniform vec3 color;
-    #endif
-    varying vec3 vColor;
     varying mat4 vInstanceMatrix;
   #endif
+
+  varying vec3 vColor;
   varying vec3 vWorldPosition;  
   varying vec3 vNormal;
 
@@ -37,10 +38,8 @@ export const MeshRefractionMaterial = shaderMaterial(
       transformedPosition = instanceMatrix * transformedPosition;
     #endif
 
+    vColor = color;
     #ifdef USE_INSTANCING_COLOR
-      #ifndef USE_COLOR
-        vColor = color;
-      #endif
       vColor *= instanceColor.rgb;
     #endif
 
@@ -54,6 +53,11 @@ export const MeshRefractionMaterial = shaderMaterial(
   precision highp usampler2D;
   varying vec3 vWorldPosition;
   varying vec3 vNormal;
+  varying vec3 vColor;
+
+  #ifdef USE_INSTANCING
+    varying mat4 vInstanceMatrix;
+  #endif
     
   #ifdef ENVMAP_TYPE_CUBEM
     uniform samplerCube envMap;
@@ -71,16 +75,7 @@ export const MeshRefractionMaterial = shaderMaterial(
   uniform float fresnel;
   uniform mat4 modelMatrix;
   uniform mat4 projectionMatrix;
-
   uniform float aberrationStrength;
-  #ifdef USE_INSTANCING
-    varying mat4 vInstanceMatrix;
-    varying vec3 vColor;
-  #else
-    #ifndef USE_COLOR
-      uniform vec3 color;
-    #endif
-  #endif
   
   float fresnelFunc(vec3 viewDirection, vec3 worldNormal) {
     return pow( 1.0 + dot( viewDirection, worldNormal), 10.0 );
@@ -161,13 +156,7 @@ export const MeshRefractionMaterial = shaderMaterial(
       finalColor = textureGradient(envMap, rayDirection, directionCamPerfect).rgb;    
     #endif
 
-    #ifdef USE_INSTANCING
-      finalColor *= vColor;
-    #else
-      #ifndef USE_COLOR
-        finalColor *= color;
-      #endif
-    #endif
+    finalColor *= vColor;
 
     vec3 viewDirection = normalize(vWorldPosition - cameraPosition);
     float nFresnel = fresnelFunc(viewDirection, normal) * fresnel;

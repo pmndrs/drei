@@ -39,7 +39,7 @@ export const MeshRefractionMaterial = shaderMaterial(
     #endif
 
     #ifdef USE_INSTANCING
-      vModelMatrixInverse = inverse(modelMatrix * vInstanceMatrix);
+      vModelMatrixInverse = inverse(modelMatrix * instanceMatrix);
     #else
       vModelMatrixInverse = inverse(modelMatrix);
     #endif

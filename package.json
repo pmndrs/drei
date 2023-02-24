@@ -55,7 +55,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.11.2",
-    "@react-spring/three": "^9.3.1",
+    "@react-spring/three": "~9.6.1",
     "@use-gesture/react": "^10.2.24",
     "camera-controls": "^2.1.0",
     "detect-gpu": "^5.0.10",

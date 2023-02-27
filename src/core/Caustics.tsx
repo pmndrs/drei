@@ -411,7 +411,6 @@ export const Caustics = React.forwardRef(
         causticsMaterial.lightPlaneNormal = dirLightNearPlane.normal
         causticsMaterial.lightPlaneConstant = dirLightNearPlane.constant
 
-        //console.log(causticsMaterial.lightDir)
         causticsMaterial.near = camera.current.near
         causticsMaterial.far = camera.current.far
         causticsMaterial.resolution = resolution

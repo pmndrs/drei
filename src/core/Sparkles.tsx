@@ -121,7 +121,6 @@ export const Sparkles = React.forwardRef<THREE.Points, Props & PointsProps>(
       !isFloat32Array(color) ? new THREE.Color(color) : color,
       () => 1
     )
-    console.log(colors)
 
     useFrame((state) => {
       if (ref.current && ref.current.material) (ref.current.material as any).time = state.clock.elapsedTime

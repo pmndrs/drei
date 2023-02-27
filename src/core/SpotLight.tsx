@@ -106,7 +106,6 @@ function useCommon(
 
   React.useLayoutEffect(() => {
     if (isSpotLight(spotlight.current)) {
-      console.log(spotlight.current)
       spotlight.current.shadow.mapSize.set(width, height)
       spotlight.current.shadow.needsUpdate = true
     } else {

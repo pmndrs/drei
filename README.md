@@ -2864,6 +2864,12 @@ return (
     <meshStandardMaterial {...stencil} />
 ```
 
+If you are using postprocessing effects you may need to ensure the composer has the stencilBuffer attribute set.
+
+```jsx 
+<Effects stencilBuffer .../>
+```
+
 You can build compound masks with multiple shapes by re-using an id. You can also use the mask as a normal mesh by providing `colorWrite` and `depthWrite` props.
 
 ```jsx

@@ -1,5 +1,17 @@
-// Inspired by: https://github.com/mrdoob/three.js/blob/dev/examples/webgl_shadowmap_pcss.html
-// Implementation: https://twitter.com/N8Programs https://github.com/N8python
+/*  Integration and compilation: @N8Programs
+    Inspired by:
+     https://github.com/mrdoob/three.js/blob/dev/examples/webgl_shadowmap_pcss.html
+     https://developer.nvidia.com/gpugems/gpugems2/part-ii-shading-lighting-and-shadows/chapter-17-efficient-soft-edged-shadows-using
+     https://developer.download.nvidia.com/whitepapers/2008/PCSS_Integration.pdf
+     https://github.com/mrdoob/three.js/blob/master/examples/webgl_shadowmap_pcss.html [spidersharma03]
+     https://spline.design/
+   Concept:
+     https://www.gamedev.net/tutorials/programming/graphics/contact-hardening-soft-shadows-made-fast-r4906/
+   Vogel Disk Implementation:
+     https://www.shadertoy.com/view/4l3yRM [ashalah]
+   High-Frequency Noise Implementation:
+     https://www.shadertoy.com/view/tt3fDH [spawner64]
+*/
 
 import * as React from 'react'
 import * as THREE from 'three'

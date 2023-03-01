@@ -415,7 +415,7 @@ Scroll controls create a HTML scroll container in front of the canvas. Everythin
 You can listen and react to scroll with the `useScroll` hook which gives you useful data like the current scroll `offset`, `delta` and functions for range finding: `range`, `curve` and `visible`. The latter functions are especially useful if you want to react to the scroll offset, for instance if you wanted to fade things in and out if they are in or out of view.
 
 ```jsx
-<ScrollControls pages={3} damping={0.1}>
+;<ScrollControls pages={3} damping={0.1}>
   {/* Canvas contents in here will *not* scroll, but receive useScroll! */}
   <SomeModel />
   <Scroll>
@@ -1653,13 +1653,25 @@ Antialiased round dots. It takes the same props as regular [THREE.PointsMaterial
 #### SoftShadows
 
 <p>
+  <a href="https://codesandbox.io/s/ykfpwf"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/ykfpwf/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/dh2jc"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/dh2jc/screenshot.png" alt="Demo"/></a>
 </p>
 
-Injects [percent closer soft shadows (pcss)](https://threejs.org/examples/#webgl_shadowmap_pcss) into threes shader chunk. Mounting and unmounting this component will lead to all shaders being be re-compiled, although it will only cause overhead if SoftShadows is mounted after the scene has already rendered, if it mounts with everything else in your scene shaders will compile naturally.
+```tsx
+type SoftShadowsProps = {
+  /** Size of the light source (the larger the softer the light), default: 25 */
+  size?: number
+  /** Number of samples (more samples less noise but more expensive), default: 10 */
+  samples?: number
+  /** Depth focus, use it to shift the focal point (where the shadow is the sharpest), default: 0 (the beginning) */
+  focus?: number
+}
+```
+
+Injects percent closer soft shadows (pcss) into threes shader chunk. Mounting and unmounting this component will lead to all shaders being be re-compiled, although it will only cause overhead if SoftShadows is mounted after the scene has already rendered, if it mounts with everything else in your scene shaders will compile naturally.
 
 ```jsx
-<SoftShadows frustum={3.75} size={0.005} near={9.5} samples={17} rings={11} />
+<SoftShadows />
 ```
 
 #### shaderMaterial

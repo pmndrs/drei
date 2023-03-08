@@ -132,7 +132,7 @@ function reset(gl, scene, camera) {
   scene.traverse((object) => {
     if (object.material) {
       gl.properties.remove(object.material)
-      object.material.dispose()
+      object.material.dispose?.()
     }
   })
   gl.info.programs.length = 0

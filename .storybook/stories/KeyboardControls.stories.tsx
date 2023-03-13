@@ -27,10 +27,10 @@ enum Controls {
 export const KeyboardControlsSt = () => {
   const map = useMemo<KeyboardControlsEntry[]>(
     () => [
-      { name: Controls.forward, keys: ['ArrowUp', 'w', 'W'] },
-      { name: Controls.back, keys: ['ArrowDown', 's', 'S'] },
-      { name: Controls.left, keys: ['ArrowLeft', 'a', 'A'] },
-      { name: Controls.right, keys: ['ArrowRight', 'd', 'D'] },
+      { name: Controls.forward, keys: ['ArrowUp', 'KeyW'] },
+      { name: Controls.back, keys: ['ArrowDown', 'KeyS'] },
+      { name: Controls.left, keys: ['ArrowLeft', 'KeyA'] },
+      { name: Controls.right, keys: ['ArrowRight', 'KeyD'] },
       { name: Controls.color, keys: ['Space'] },
     ],
     []

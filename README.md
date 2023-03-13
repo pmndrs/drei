@@ -1447,7 +1447,7 @@ Easily add reflections and/or blur to any mesh. It takes surface roughness into 
       4 = lod channel (based on the roughness)
     */
    reflectorOffset={0.2} // Offsets the virtual camera that projects the reflection. Useful when the reflective surface is some distance from the object's origin (default = 0)
-  >
+  />
 </mesh>
 ```
 

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { Camera, Group, Intersection, Matrix4, Object3D, Quaternion, Raycaster, Scene, Texture, Vector3 } from 'three'
+import { Camera, Group, Matrix4, Object3D, Quaternion, Vector3 } from 'three'
 import { OrthographicCamera } from './OrthographicCamera'
 import { OrbitControls as OrbitControlsType } from 'three-stdlib'
 import { Hud } from './Hud'
@@ -78,12 +78,18 @@ export const GizmoHelper = ({
       animating.current = true
       if (defaultControls || onTarget) focusPoint.current = defaultControls?.target || onTarget?.()
       radius.current = mainCamera.position.distanceTo(target)
+
       // Rotate from current camera orientation
       q1.copy(mainCamera.quaternion)
+
       // To new current camera orientation
       targetPosition.copy(direction).multiplyScalar(radius.current).add(target)
+
       dummy.lookAt(targetPosition)
+      dummy.up.copy(mainCamera.up)
+
       q2.copy(dummy.quaternion)
+
       invalidate()
     },
     [defaultControls, mainCamera, onTarget, invalidate]

@@ -65,7 +65,7 @@ export class PositionPoint extends THREE.Group {
     if (rayPointDistanceSq < localThresholdSq) {
       const intersectPoint = new THREE.Vector3()
       _ray.closestPointToPoint(this.position, intersectPoint)
-      intersectPoint.applyMatrix4(parent.matrixWorld)
+      intersectPoint.applyMatrix4(this.matrixWorld)
       const distance = raycaster.ray.origin.distanceTo(intersectPoint)
       if (distance < raycaster.near || distance > raycaster.far) return
       intersects.push({

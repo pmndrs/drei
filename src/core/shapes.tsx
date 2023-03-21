@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as THREE from 'three'
 
 export type Args<T> = T extends new (...args: any) => any ? ConstructorParameters<T> : T
-export type ShapeProps<T> = Omit<JSX.IntrinsicElements['mesh'], 'args' | 'type'> & {
+export type ShapeProps<T> = Omit<JSX.IntrinsicElements['mesh'], 'args'> & {
   args?: Args<T>
   children?: React.ReactNode
 }

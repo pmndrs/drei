@@ -41,6 +41,8 @@ export const Extrude = create<typeof THREE.ExtrudeGeometry>('extrude')
 export const Lathe = create<typeof THREE.LatheGeometry>('lathe')
 export const Capsule = create<typeof THREE.CapsuleGeometry>('capsule')
 export const Shape = create<typeof THREE.ShapeGeometry>('shape', ({ geometry }) => {
+  // Calculate UVs (by https://discourse.threejs.org/u/prisoner849)
+  // https://discourse.threejs.org/t/custom-shape-in-image-not-working/49348/10
   const pos = geometry.attributes.position as THREE.BufferAttribute
   const b3 = new THREE.Box3().setFromBufferAttribute(pos)
   const b3size = new THREE.Vector3()

@@ -34,6 +34,8 @@ export const QuadraticBezierLine = React.forwardRef<Line2Props, Props>(function 
     else curve.v2.set(...(end as [number, number, number]))
     if (mid instanceof Vector3) {
       curve.v1.copy(mid)
+    } else if (Array.isArray(mid)) {
+      curve.v1.set(...(mid as [number, number, number]))
     } else {
       curve.v1.copy(
         curve.v0

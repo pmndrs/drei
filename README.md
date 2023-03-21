@@ -176,6 +176,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#shapes">Dodecahedron</a></li>
           <li><a href="#shapes">Extrude</a></li>
           <li><a href="#shapes">Lathe</a></li>
+          <li><a href="#shapes">Shape</a></li>
           <li><a href="#roundedbox">RoundedBox</a></li>
           <li><a href="#screenquad">Screenquad</a></li>
           <li><a href="#line">Line</a></li>
@@ -342,8 +343,9 @@ If available controls have damping enabled by default, they manage their own upd
 ```tsx
 <CameraControls makeDefault />
 ```
+
 ```tsx
-const controls = useThree(state => state.controls)
+const controls = useThree((state) => state.controls)
 ```
 
 Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-scene-st), TrackballControls, ArcballControls, FlyControls, DeviceOrientationControls, PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st), FirstPersonControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-firstpersoncontrols--first-person-controls-story) and CameraControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-cameracontrols--camera-controls-story)
@@ -771,7 +773,7 @@ useHelper(condition && mesh, BoxHelper, 'red') // you can passe false instead of
 
 # Shapes
 
-#### Plane, Box, Sphere, Circle, Cone, Cylinder, Tube, Torus, TorusKnot, Ring, Tetrahedron, Polyhedron, Icosahedron, Octahedron, Dodecahedron, Extrude, Lathe
+#### Plane, Box, Sphere, Circle, Cone, Cylinder, Tube, Torus, TorusKnot, Ring, Tetrahedron, Polyhedron, Icosahedron, Octahedron, Dodecahedron, Extrude, Lathe, Shape
 
 Short-cuts for a [mesh](https://threejs.org/docs/#api/en/objects/Mesh) with a [buffer geometry](https://threejs.org/docs/#api/en/core/BufferGeometry).
 
@@ -1453,7 +1455,7 @@ Easily add reflections and/or blur to any mesh. It takes surface roughness into 
       3 = distortion channel
       4 = lod channel (based on the roughness)
     */
-   reflectorOffset={0.2} // Offsets the virtual camera that projects the reflection. Useful when the reflective surface is some distance from the object's origin (default = 0)
+    reflectorOffset={0.2} // Offsets the virtual camera that projects the reflection. Useful when the reflective surface is some distance from the object's origin (default = 0)
   />
 </mesh>
 ```

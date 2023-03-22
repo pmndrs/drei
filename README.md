@@ -1923,6 +1923,25 @@ For this to work properly your event handler have to call `event.stopPropagation
   <a href="https://codesandbox.io/s/ny3p4"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/ny3p4/screenshot.png" alt="Demo"/></a>
 </p>
 
+```tsx
+type Props = {
+  /** Allow multi select, default: false */
+  multiple?: boolean
+  /** Allow box select, default: false */
+  box?: boolean
+  /** Custom CSS border: default: '1px solid #55aaff' */
+  border?: string
+  /** Curom CSS color, default: 'rgba(75, 160, 255, 0.1)' */
+  backgroundColor?: string
+  /** Callback for selection changes */
+  onChange?: (selected: THREE.Object3D[]) => void
+  /** Callback for selection changes once the pointer is up */
+  onChangePointerUp?: (selected: THREE.Object3D[]) => void
+  /** Optional filter for filtering the selection */
+  filter?: (selected: THREE.Object3D[]) => THREE.Object3D[]
+}
+```
+
 This component allows you to select/unselect objects by clicking on them. It keeps track of the currently selected objects and can select multiple objects (with the shift key). Nested components can request the current selection (which is always an array) with the `useSelect` hook. With the `box` prop it will let you shift-box-select objects by holding and draging the cursor over multiple objects. Optionally you can filter the selected items as well as define in which shape they are stored by defining the `filter` prop.
 
 ```jsx

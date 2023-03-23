@@ -30,3 +30,24 @@ function RoundedBoxScene() {
 
 export const RoundedBoxSt = () => <RoundedBoxScene />
 RoundedBoxSt.storyName = 'Default'
+
+function RoundedBoxScene2() {
+  const ref = useTurntable()
+
+  return (
+    <>
+      <spotLight position={[35, 35, 35]} intensity={2} />
+      <RoundedBox
+        ref={ref}
+        args={[number('width', 25), number('height', 25), number('depth', 25)]}
+        radius={number('radius', 8)}
+        smoothness={number('smoothness', 5)}
+      >
+        <meshPhongMaterial color="#f3f3f3" />
+      </RoundedBox>
+    </>
+  )
+}
+
+export const RoundedBoxSt2 = () => <RoundedBoxScene2 />
+RoundedBoxSt2.storyName = 'Solid'

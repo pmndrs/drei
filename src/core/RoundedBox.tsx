@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Mesh, Shape, ExtrudeGeometry } from 'three'
 import { NamedArrayTuple } from '../helpers/ts-utils'
+import { toCreasedNormals } from 'three-stdlib/utils/BufferGeometryUtils'
 
 const eps = 0.00001
 
@@ -19,10 +20,19 @@ type Props = {
   radius?: number
   smoothness?: number
   steps?: number
+  creaseAngle?: number
 } & Omit<JSX.IntrinsicElements['mesh'], 'args'>
 
 export const RoundedBox = React.forwardRef<Mesh, Props>(function RoundedBox(
-  { args: [width = 1, height = 1, depth = 1] = [], radius = 0.05, steps = 1, smoothness = 4, children, ...rest },
+  {
+    args: [width = 1, height = 1, depth = 1] = [],
+    radius = 0.05,
+    steps = 1,
+    smoothness = 4,
+    creaseAngle = 0.4,
+    children,
+    ...rest
+  },
   ref
 ) {
   const shape = React.useMemo(() => createShape(width, height, radius), [width, height, radius])
@@ -43,6 +53,7 @@ export const RoundedBox = React.forwardRef<Mesh, Props>(function RoundedBox(
   React.useLayoutEffect(() => {
     if (geomRef.current) {
       geomRef.current.center()
+      toCreasedNormals(geomRef.current, creaseAngle)
     }
   }, [shape, params])
 

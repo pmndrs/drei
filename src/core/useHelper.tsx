@@ -14,7 +14,7 @@ export function useHelper<T extends Constructor>(
 ) {
   const helper = React.useRef<Helper>()
   const scene = useThree((state) => state.scene)
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     let currentHelper: Helper = undefined!
 
     if (object3D && object3D?.current && helperConstructor) {

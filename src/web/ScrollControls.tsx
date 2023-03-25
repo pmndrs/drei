@@ -24,6 +24,8 @@ export type ScrollControlsProps = {
    *  then a maxSpeed of e.g. 3 which will clamp the speed to 3 units per second, it may now
    *  take much longer than damping to reach the target if it is far away. Default: Infinity */
   maxSpeed?: number
+  /** hideScrollbar optionally hides the scrollbar */
+  hideScrollbar?: boolean
   enabled?: boolean
   style?: React.CSSProperties
   children: React.ReactNode
@@ -55,6 +57,7 @@ export function ScrollControls({
   enabled = true,
   infinite,
   horizontal,
+  hideScrollbar,
   pages = 1,
   distance = 1,
   damping = 0.25,
@@ -108,7 +111,7 @@ export function ScrollControls({
     el.style[horizontal ? 'overflowX' : 'overflowY'] = 'auto'
     el.style[horizontal ? 'overflowY' : 'overflowX'] = 'hidden'
     el.style.top = '0px'
-    el.style.left = '0px'
+    el.style.left = hideScrollbar ? '15px' : '0px'
 
     for (const key in style) {
       el.style[key] = style[key]

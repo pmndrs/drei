@@ -414,6 +414,8 @@ type ScrollControlsProps = {
    *  then a maxSpeed of e.g. 0.1 which will clamp the speed to 0.1 units per second, it may now
    *  take much longer than damping to reach the target if it is far away. Default: Infinity */
   maxSpeed?: number
+  /** hideScrollbar optionally hides the scrollbar */
+  hideScrollbar?: boolean
   enabled?: boolean
   style?: React.CSSProperties
   children: React.ReactNode

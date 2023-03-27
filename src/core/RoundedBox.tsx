@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Mesh, Shape, ExtrudeGeometry } from 'three'
 import { NamedArrayTuple } from '../helpers/ts-utils'
-import { toCreasedNormals } from 'three-stdlib/utils/BufferGeometryUtils'
+import { toCreasedNormals } from 'three-stdlib'
 
 const eps = 0.00001
 

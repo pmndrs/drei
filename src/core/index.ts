@@ -109,6 +109,7 @@ export * from './Cloud'
 export * from './Sparkles'
 export * from './useMatcapTexture'
 export * from './useNormalTexture'
+export * from './Wireframe'
 
 // Performance
 export * from './Points'

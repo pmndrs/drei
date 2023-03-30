@@ -1,3 +1,10 @@
+/**
+ * Port of Matt DesLauriers's webgl-wireframes:
+ * https://github.com/mattdesl/webgl-wireframes
+ *
+ * All credits go to the original author. This is a port to React Three Fiber.
+ */
+
 import { WireframeMaterial, WireframeMaterialProps, WireframeMaterialShaders } from '../materials/WireframeMaterial'
 import * as React from 'react'
 import * as THREE from 'three'

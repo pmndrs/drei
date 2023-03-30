@@ -90,6 +90,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#meshdistortmaterial">MeshDistortMaterial</a></li>
           <li><a href="#meshrefractionmaterial">MeshRefractionMaterial</a></li>
           <li><a href="#meshtransmissionmaterial">MeshTransmissionMaterial</a></li>
+          <li><a href="#meshdiscardmaterial">MeshDiscardMaterial</a></li>
           <li><a href="#pointmaterial">PointMaterial</a></li>
           <li><a href="#softshadows">SoftShadows</a></li>
           <li><a href="#shadermaterial">shaderMaterial</a></li>
@@ -1646,6 +1647,18 @@ Or a PerspectiveCamera.
 ```
 
 This would mimic the default MeshPhysicalMaterial behaviour, these materials won't "see" one another, but at least they would pick up on everything else, including transmissive or transparent objects.
+
+#### MeshDiscardMaterial
+
+A material that renders nothing. In comparison to `<mesh visible={false}` it can be used to hide objects from the scene while still displays shadows and children.
+
+```jsx
+<mesh castShadow>
+  <torusKnotGeonetry />
+  <MeshDiscardMaterial />
+  {/* Shadows and edges will show, but the model itself won't */}
+  <Edges />
+```
 
 #### PointMaterial
 

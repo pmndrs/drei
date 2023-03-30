@@ -43,7 +43,7 @@ export const WireframeMaterialShaders = {
 		varying vec3 v_edges_Barycentric;
 		varying vec3 v_edges_Position;
 
-		void initVer() {
+		void initWireframe() {
 			v_edges_Barycentric = barycentric;
 			v_edges_Position = position.xyz;
 		}
@@ -141,7 +141,7 @@ export const WireframeMaterial = shaderMaterial(
   WireframeMaterialShaders.vertex +
     /* glsl */ `
   	void main() {
-		initVer();
+		initWireframe();
 		gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 	}
   `,

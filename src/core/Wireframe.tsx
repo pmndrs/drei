@@ -156,7 +156,7 @@ export const Wireframe = React.forwardRef<THREE.Group, WireframeProps & Wirefram
             `
             ${WireframeMaterialShaders.vertex}
             void main() {
-              initVer();
+              initWireframe();
           `
           )
 

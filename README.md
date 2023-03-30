@@ -2,7 +2,8 @@
 
 [![Version](https://img.shields.io/npm/v/@react-three/drei?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)
 [![Downloads](https://img.shields.io/npm/dt/@react-three/drei.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)
-[![Discord Shield](https://img.shields.io/discord/740090768164651008?style=flat&colorA=000000&colorB=000000&label=discord&logo=discord&logoColor=ffffff)](https://discord.gg/poimandres)
+[![Discord Shield](https://img.shields.io/discord/740090768164651008?style=flat&colorA=000000&colorB=000000&label=discord&logo=discord&logoColor=ffffff)](https://discord.com/channels/740090768164651008/741751532592038022)
+[![Open in GitHub Codespaces](https://img.shields.io/static/v1?&message=Open%20in%20%20Codespaces&style=flat&colorA=000000&colorB=000000&label=GitHub&logo=github&logoColor=ffffff)](https://github.com/codespaces/new?template_repository=pmndrs%2Fdrei)
 
 A growing collection of useful helpers and fully functional, ready-made abstractions for [@react-three/fiber](https://github.com/pmndrs/react-three-fiber). If you make a component that is generic enough to be useful to others, think about making it available here through a PR!
 
@@ -89,6 +90,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#meshdistortmaterial">MeshDistortMaterial</a></li>
           <li><a href="#meshrefractionmaterial">MeshRefractionMaterial</a></li>
           <li><a href="#meshtransmissionmaterial">MeshTransmissionMaterial</a></li>
+          <li><a href="#meshdiscardmaterial">MeshDiscardMaterial</a></li>
           <li><a href="#pointmaterial">PointMaterial</a></li>
           <li><a href="#softshadows">SoftShadows</a></li>
           <li><a href="#shadermaterial">shaderMaterial</a></li>
@@ -177,6 +179,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#shapes">Dodecahedron</a></li>
           <li><a href="#shapes">Extrude</a></li>
           <li><a href="#shapes">Lathe</a></li>
+          <li><a href="#shapes">Shape</a></li>
           <li><a href="#roundedbox">RoundedBox</a></li>
           <li><a href="#screenquad">Screenquad</a></li>
           <li><a href="#line">Line</a></li>
@@ -338,7 +341,15 @@ If you have moving objects, unset the prop and use a smaller `resolution` instea
 
 If available controls have damping enabled by default, they manage their own updates, remove themselves on unmount, are compatible with the `frameloop="demand"` canvas-flag. They inherit all props from their underlying [THREE controls](https://github.com/mrdoob/three.js/tree/master/examples/jsm/controls). They are the first effects to run before all other useFrames, to ensure that other components may mutate the camera on top of them.
 
-Some controls allow you to set `makeDefault`, similar to, for instance, PerspectiveCamera. This will set @react-three/fiber's `controls` field in the root store. This can make it easier in situations where you want controls to be known and other parts of the app could respond to it. Some drei controls already take it into account, like CameraShake, Gizmo and TransformControls.
+[Some controls](https://github.com/search?q=repo%3Apmndrs%2Fdrei+language%3ATSX+path%3A%2F%5Esrc%5C%2Fcore%5C%2F.*Controls%5C.tsx%2F+makeDefault&type=code) allow you to set `makeDefault`, similar to, for instance, `PerspectiveCamera`. This will set [@react-three/fiber](https://docs.pmnd.rs/react-three-fiber/api/hooks#usethree)'s `controls` field in the root store. This can make it easier in situations where you want controls to be known and other parts of the app could respond to it. Some drei controls already take it into account, like `CameraShake`, `Gizmo` and `TransformControls`.
+
+```tsx
+<CameraControls makeDefault />
+```
+
+```tsx
+const controls = useThree((state) => state.controls)
+```
 
 Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-scene-st), TrackballControls, ArcballControls, FlyControls, DeviceOrientationControls, PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st), FirstPersonControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-firstpersoncontrols--first-person-controls-story) and CameraControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-cameracontrols--camera-controls-story)
 
@@ -536,10 +547,10 @@ enum Controls {
 }
 function App() {
   const map = useMemo<KeyboardControlsEntry<Controls>[]>(()=>[
-    { name: Controls.forward, keys: ['ArrowUp', 'w', 'W'] },
-    { name: Controls.back, keys: ['ArrowDown', 's', 'S'] },
-    { name: Controls.left, keys: ['ArrowLeft', 'a', 'A'] },
-    { name: Controls.right, keys: ['ArrowRight', 'd', 'D'] },
+    { name: Controls.forward, keys: ['ArrowUp', 'KeyW'] },
+    { name: Controls.back, keys: ['ArrowDown', 'KeyS'] },
+    { name: Controls.left, keys: ['ArrowLeft', 'KeyA'] },
+    { name: Controls.right, keys: ['ArrowRight', 'KeyD'] },
     { name: Controls.jump, keys: ['Space'] },
   ], [])
   return (
@@ -675,7 +686,7 @@ return (
 
 #### TransformControls
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-transformcontrols--transform-controls-story)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/gizmos-transformcontrols--transform-controls-story)
 
 <p>
   <a href="https://codesandbox.io/s/btsbj"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/btsbj/screenshot.png" alt="Tranform controls"/></a>
@@ -765,7 +776,7 @@ useHelper(condition && mesh, BoxHelper, 'red') // you can passe false instead of
 
 # Shapes
 
-#### Plane, Box, Sphere, Circle, Cone, Cylinder, Tube, Torus, TorusKnot, Ring, Tetrahedron, Polyhedron, Icosahedron, Octahedron, Dodecahedron, Extrude, Lathe
+#### Plane, Box, Sphere, Circle, Cone, Cylinder, Tube, Torus, TorusKnot, Ring, Tetrahedron, Polyhedron, Icosahedron, Octahedron, Dodecahedron, Extrude, Lathe, Shape
 
 Short-cuts for a [mesh](https://threejs.org/docs/#api/en/objects/Mesh) with a [buffer geometry](https://threejs.org/docs/#api/en/core/BufferGeometry).
 
@@ -796,6 +807,7 @@ A box buffer geometry with rounded corners, done with extrusion.
   args={[1, 1, 1]} // Width, height, depth. Default is [1, 1, 1]
   radius={0.05} // Radius of the rounded corners. Default is 0.05
   smoothness={4} // The number of curve segments. Default is 4
+  creaseAngle={0.4} // Smooth normals everywhere except faces that meet at an angle greater than the crease angle
   {...meshProps} // All THREE.Mesh props are valid
 >
   <meshPhongMaterial color="#f3f3f3" wireframe />
@@ -1447,8 +1459,8 @@ Easily add reflections and/or blur to any mesh. It takes surface roughness into 
       3 = distortion channel
       4 = lod channel (based on the roughness)
     */
-   reflectorOffset={0.2} // Offsets the virtual camera that projects the reflection. Useful when the reflective surface is some distance from the object's origin (default = 0)
-  >
+    reflectorOffset={0.2} // Offsets the virtual camera that projects the reflection. Useful when the reflective surface is some distance from the object's origin (default = 0)
+  />
 </mesh>
 ```
 
@@ -1637,6 +1649,18 @@ Or a PerspectiveCamera.
 
 This would mimic the default MeshPhysicalMaterial behaviour, these materials won't "see" one another, but at least they would pick up on everything else, including transmissive or transparent objects.
 
+#### MeshDiscardMaterial
+
+A material that renders nothing. In comparison to `<mesh visible={false}` it can be used to hide objects from the scene while still displays shadows and children.
+
+```jsx
+<mesh castShadow>
+  <torusKnotGeonetry />
+  <MeshDiscardMaterial />
+  {/* Shadows and edges will show, but the model itself won't */}
+  <Edges />
+```
+
 #### PointMaterial
 
 <p>
@@ -1792,6 +1816,7 @@ function Scene() {
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-html--html-st) ![](https://img.shields.io/badge/-Dom only-red)
 
 <p>
+  <a href="https://codesandbox.io/s/0n9it"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/0n9it/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/qyz5r"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/qyz5r/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/9keg6"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/9keg6/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/6oei7"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/6oei7/screenshot.png" alt="Demo"/></a>
@@ -1912,6 +1937,25 @@ For this to work properly your event handler have to call `event.stopPropagation
 <p>
   <a href="https://codesandbox.io/s/ny3p4"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/ny3p4/screenshot.png" alt="Demo"/></a>
 </p>
+
+```tsx
+type Props = {
+  /** Allow multi select, default: false */
+  multiple?: boolean
+  /** Allow box select, default: false */
+  box?: boolean
+  /** Custom CSS border: default: '1px solid #55aaff' */
+  border?: string
+  /** Curom CSS color, default: 'rgba(75, 160, 255, 0.1)' */
+  backgroundColor?: string
+  /** Callback for selection changes */
+  onChange?: (selected: THREE.Object3D[]) => void
+  /** Callback for selection changes once the pointer is up */
+  onChangePointerUp?: (selected: THREE.Object3D[]) => void
+  /** Optional filter for filtering the selection */
+  filter?: (selected: THREE.Object3D[]) => THREE.Object3D[]
+}
+```
 
 This component allows you to select/unselect objects by clicking on them. It keeps track of the currently selected objects and can select multiple objects (with the shift key). Nested components can request the current selection (which is always an array) with the `useSelect` hook. With the `box` prop it will let you shift-box-select objects by holding and draging the cursor over multiple objects. Optionally you can filter the selected items as well as define in which shape they are stored by defining the `filter` prop.
 
@@ -2328,6 +2372,8 @@ const envMap = useCubeTexture(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png',
 ```
 
 #### useVideoTexture
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-videotexture)
 
 <p>
   <a href="https://codesandbox.io/s/39hg8"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/39hg8/screenshot.png" alt="Demo"/></a>

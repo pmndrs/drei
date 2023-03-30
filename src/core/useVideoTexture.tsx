@@ -8,7 +8,7 @@ interface VideoTextureProps extends HTMLVideoElement {
   start?: boolean
 }
 
-export function useVideoTexture(src: string, props: Partial<VideoTextureProps>) {
+export function useVideoTexture(src: string | MediaStream, props?: Partial<VideoTextureProps>) {
   const { unsuspend, start, crossOrigin, muted, loop, ...rest } = {
     unsuspend: 'loadedmetadata',
     crossOrigin: 'Anonymous',
@@ -19,11 +19,12 @@ export function useVideoTexture(src: string, props: Partial<VideoTextureProps>) 
     ...props,
   }
   const gl = useThree((state) => state.gl)
-  const texture = suspend<[url: string], () => Promise<THREE.VideoTexture>>(
+  const texture = suspend(
     () =>
       new Promise((res, rej) => {
         const video = Object.assign(document.createElement('video'), {
-          src,
+          src: (typeof src === 'string' && src) || undefined,
+          srcObject: (src instanceof MediaStream && src) || undefined,
           crossOrigin,
           loop,
           muted,
@@ -34,7 +35,7 @@ export function useVideoTexture(src: string, props: Partial<VideoTextureProps>) 
         video.addEventListener(unsuspend, () => res(texture))
       }),
     [src]
-  )
+  ) as THREE.VideoTexture
   useEffect(() => void (start && texture.image.play()), [texture, start])
   return texture
 }

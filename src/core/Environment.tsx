@@ -1,24 +1,18 @@
 import * as React from 'react'
-import { useLoader, useThree, createPortal, useFrame, extend, Object3DNode } from '@react-three/fiber'
+import { useThree, createPortal, useFrame, extend, Object3DNode } from '@react-three/fiber'
 import {
   WebGLCubeRenderTarget,
-  EquirectangularReflectionMapping,
-  CubeTextureLoader,
   Texture,
   Scene,
   Loader,
   CubeCamera,
   HalfFloatType,
-  CubeReflectionMapping,
   CubeTexture,
-  sRGBEncoding,
-  LinearEncoding,
   TextureEncoding,
 } from 'three'
-import { RGBELoader, GroundProjectedEnv as GroundProjectedEnvImpl } from 'three-stdlib'
-import { presetsObj, PresetsType } from '../helpers/environment-assets'
-
-const CUBEMAP_ROOT = 'https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/hdris/'
+import { GroundProjectedEnv as GroundProjectedEnvImpl } from 'three-stdlib'
+import { PresetsType } from '../helpers/environment-assets'
+import { EnvironmentLoaderProps, useEnvironment } from './useEnvironment'
 
 export type EnvironmentProps = {
   children?: React.ReactNode
@@ -29,11 +23,8 @@ export type EnvironmentProps = {
   background?: boolean | 'only'
   blur?: number
   map?: THREE.Texture
-  files?: string | string[]
-  path?: string
   preset?: PresetsType
   scene?: Scene | React.MutableRefObject<THREE.Scene>
-  extensions?: (loader: Loader) => void
   ground?:
     | boolean
     | {
@@ -41,8 +32,7 @@ export type EnvironmentProps = {
         height?: number
         scale?: number
       }
-  encoding?: TextureEncoding
-}
+} & EnvironmentLoaderProps
 
 const isRef = (obj: any): obj is React.MutableRefObject<THREE.Scene> => obj.current && obj.current.isScene
 const resolveScene = (scene: THREE.Scene | React.MutableRefObject<THREE.Scene>) =>
@@ -78,40 +68,6 @@ export function EnvironmentMap({ scene, background = false, blur, map }: Environ
     if (map) return setEnvProps(background, scene, defaultScene, map, blur)
   }, [defaultScene, scene, map, background, blur])
   return null
-}
-
-export function useEnvironment({
-  files = ['/px.png', '/nx.png', '/py.png', '/ny.png', '/pz.png', '/nz.png'],
-  path = '',
-  preset = undefined,
-  encoding = undefined,
-  extensions,
-}: Partial<EnvironmentProps>) {
-  if (preset) {
-    if (!(preset in presetsObj)) throw new Error('Preset must be one of: ' + Object.keys(presetsObj).join(', '))
-    files = presetsObj[preset]
-    path = CUBEMAP_ROOT
-  }
-
-  const isCubeMap = Array.isArray(files)
-  const loader = isCubeMap ? CubeTextureLoader : RGBELoader
-  const loaderResult: Texture | Texture[] = useLoader(
-    // @ts-expect-error
-    loader,
-    isCubeMap ? [files] : files,
-    (loader) => {
-      loader.setPath(path)
-      if (extensions) extensions(loader)
-    }
-  )
-  const texture: Texture | CubeTexture = isCubeMap
-    ? // @ts-ignore
-      loaderResult[0]
-    : loaderResult
-  texture.mapping = isCubeMap ? CubeReflectionMapping : EquirectangularReflectionMapping
-  texture.encoding = encoding ?? isCubeMap ? sRGBEncoding : LinearEncoding
-
-  return texture
 }
 
 export function EnvironmentCube({ background = false, scene, blur, ...rest }: EnvironmentProps) {

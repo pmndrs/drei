@@ -108,6 +108,7 @@ export * from './Sky'
 export * from './Stars'
 export * from './Cloud'
 export * from './Sparkles'
+export * from './useEnvironment'
 export * from './useMatcapTexture'
 export * from './useNormalTexture'
 

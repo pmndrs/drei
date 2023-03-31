@@ -208,6 +208,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#stars">Stars</a></li>
           <li><a href="#sparkles">Sparkles</a></li>
           <li><a href="#cloud">Cloud</a></li>
+          <li><a href="#useenvironment">useEnvironment</a></li>
           <li><a href="#usematcaptexture">useMatcapTexture</a></li>
           <li><a href="#usenormaltexture">useNormalTexture</a></li>
         </ul>
@@ -3680,6 +3681,25 @@ Particle based cloud.
   depth={1.5} // Z-dir depth
   segments={20} // Number of particles
 />
+```
+
+#### useEnvironment
+
+A convenience hook to load an environment map. The props are the same as on the `<Environment />` component.
+
+```tsx
+export type EnvironmentLoaderProps = {
+  files?: string | string[]
+  path?: string
+  preset?: PresetsType
+  extensions?: (loader: Loader) => void
+  encoding?: TextureEncoding
+```
+
+```jsx
+const presetTexture = useEnvironment({ preset: 'city' })
+const rgbeTexture = useEnvironment({ files: 'model.hdr' })
+const cubeTexture = useEnvironment({ files: ['px', 'nx', 'py', 'ny', 'pz', 'nz'].map((n) => `${n}.png`) })
 ```
 
 #### useMatcapTexture

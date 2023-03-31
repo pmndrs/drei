@@ -3696,6 +3696,14 @@ export type EnvironmentLoaderProps = {
   encoding?: TextureEncoding
 ```
 
+You can use it without properties, which will default to px, nx, py, ny, pz, nz as \*.png files inside your /public directory.
+
+```jsx
+const cubeTexture = useEnvironment()
+```
+
+Or you can specificy from where to load the files.
+
 ```jsx
 const presetTexture = useEnvironment({ preset: 'city' })
 const rgbeTexture = useEnvironment({ files: 'model.hdr' })

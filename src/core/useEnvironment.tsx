@@ -29,7 +29,7 @@ export function useEnvironment({
   preset = undefined,
   encoding = undefined,
   extensions,
-}: Partial<EnvironmentLoaderProps>) {
+}: Partial<EnvironmentLoaderProps> = {}) {
   if (preset) {
     if (!(preset in presetsObj)) throw new Error('Preset must be one of: ' + Object.keys(presetsObj).join(', '))
     files = presetsObj[preset]

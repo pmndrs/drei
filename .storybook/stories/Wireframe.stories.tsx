@@ -32,7 +32,7 @@ function WireframeScene() {
         </mesh>
 
         <group position={[-2.5, 0, -2.5]}>
-          <Wireframe geometry={geom} stroke="white" squeeze dash fillMix={1} fillOpacity={0.2} />
+          <Wireframe fill="blue" geometry={geom} stroke="white" squeeze dash fillMix={1} fillOpacity={0.2} />
         </group>
 
         <mesh position={[-2.5, 0, 0]}>

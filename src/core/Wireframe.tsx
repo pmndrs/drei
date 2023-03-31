@@ -1,14 +1,13 @@
-/**
- * Port of Matt DesLauriers's webgl-wireframes:
- * https://github.com/mattdesl/webgl-wireframes
- *
- * All credits go to the original author. This is a port to React Three Fiber.
- */
-
-import { WireframeMaterial, WireframeMaterialProps, WireframeMaterialShaders } from '../materials/WireframeMaterial'
 import * as React from 'react'
 import * as THREE from 'three'
 import * as FIBER from '@react-three/fiber'
+import {
+  WireframeMaterial,
+  WireframeMaterialProps,
+  WireframeMaterialShaders,
+  setWireframeOverride,
+  useWireframeUniforms,
+} from '../materials/WireframeMaterial'
 
 declare global {
   namespace JSX {
@@ -20,16 +19,15 @@ declare global {
 
 FIBER.extend({ MeshWireframeMaterial: WireframeMaterial })
 
+interface WireframeProps {
+  geometry?: THREE.BufferGeometry | React.RefObject<THREE.BufferGeometry>
+  simplify?: boolean
+}
+
 type WithGeometry =
   | THREE.Mesh<THREE.BufferGeometry, THREE.Material>
   | THREE.Line<THREE.BufferGeometry, THREE.Material>
   | THREE.Points<THREE.BufferGeometry, THREE.Material>
-
-interface WireframeProps {
-  geometry?: THREE.BufferGeometry | React.RefObject<THREE.BufferGeometry>
-  simplify?: boolean
-  frames?: number
-}
 
 function isWithGeometry(object?: THREE.Object3D | null): object is WithGeometry {
   return !!(object as THREE.Mesh)?.geometry
@@ -75,173 +73,111 @@ function getBarycentricCoordinates(geometry: THREE.BufferGeometry, removeEdge?: 
 }
 
 function getInputGeometry(
-  ref: React.RefObject<THREE.Group | undefined>,
-  inputGeometry?: THREE.BufferGeometry | React.RefObject<THREE.BufferGeometry>
+  inputGeometry: THREE.BufferGeometry | React.RefObject<THREE.BufferGeometry> | React.RefObject<THREE.Object3D>
 ) {
-  // Ether the parent is a mesh, or we have an inputGeometry prop.
-  const parent = ref.current?.parent
-  if (!(isWithGeometry(parent) || inputGeometry)) {
-    throw new Error("<Wireframe />: Must be a child of a mesh or specify it's `geometry` prop.")
-  }
+  const geo = (isRefObject(inputGeometry) ? inputGeometry.current : inputGeometry)!
 
-  // Get the geometry. Ether from the parent, or from the input props.
-  const isInputGeomRef = isRefObject(inputGeometry)
-
-  let geometry = (parent as THREE.Mesh)?.geometry || (isInputGeomRef ? inputGeometry.current : inputGeometry)
-
-  if (!isGeometry(geometry)) {
-    if (inputGeometry) {
-      throw new Error('<Wireframe />: `geometry` prop must be a BufferGeometry or a ref to a BufferGeometry')
-    } else {
-      throw new Error('<Wireframe />: Must be a child of a mesh with a geometry')
+  if (!isGeometry(geo)) {
+    const parent = geo.parent
+    if (isWithGeometry(parent)) {
+      return parent.geometry
     }
-  }
-
-  return geometry
-}
-
-function useUpdateUniform(
-  uniforms: {
-    [key: string]: { value: any }
-  },
-  props: any
-) {
-  for (const key in props) {
-    React.useEffect(() => {
-      if (uniforms[key]?.value !== undefined) {
-        if (uniforms[key].value instanceof THREE.Color) {
-          uniforms[key].value = new THREE.Color(props[key])
-        } else {
-          uniforms[key].value = props[key]
-        }
-      }
-    }, [props[key]])
+  } else {
+    return geo
   }
 }
 
-export const Wireframe = React.forwardRef<THREE.Group, WireframeProps & WireframeMaterialProps>(
-  ({ geometry: customGeometry, frames = Infinity, simplify, ...props }, forwardRef) => {
-    const ref = React.useRef<THREE.Group>(null!)
-    const [geometry, setGeometry] = React.useState<THREE.BufferGeometry | undefined>(undefined)
+function setBarycentricCoordinates(geometry: THREE.BufferGeometry, simplify: boolean) {
+  if (geometry.index) {
+    console.warn('Wireframe: Requires non-indexed geometry, converting to non-indexed geometry.')
+    const nonIndexedGeo = geometry.toNonIndexed()
 
-    const uniforms = React.useMemo(() => getUniforms(), [WireframeMaterialShaders.uniforms])
-    useUpdateUniform(uniforms, props)
-
-    React.useLayoutEffect(() => {
-      const geometry = getInputGeometry(ref, customGeometry)
-      if (geometry.index) {
-        console.warn('Wireframe: Requires non-indexed geometry, converting to non-indexed geometry.')
-        const nonIndexedGeo = geometry.toNonIndexed()
-
-        geometry.copy(nonIndexedGeo)
-        geometry.setIndex(null)
-      }
-
-      const position = geometry.getAttribute('position')
-      const emptyBarycentric = new THREE.BufferAttribute(new Float32Array(position.count * 3), 3)
-      geometry.setAttribute('barycentric', emptyBarycentric)
-
-      if (customGeometry) {
-        setGeometry(geometry)
-      } else {
-        // Override parent material
-        const parent = ref.current.parent as THREE.Mesh<THREE.BufferGeometry, THREE.Material>
-        const material = parent?.material
-
-        if (!material) {
-          throw new Error('<Wireframe />: Must be a child of a mesh with a material or use the `geometry` prop.')
-        }
-
-        material.onBeforeCompile = (shader) => {
-          shader.uniforms = {
-            ...shader.uniforms,
-            ...uniforms,
-          }
-
-          shader.vertexShader = shader.vertexShader.replace(
-            'void main() {',
-            `
-            ${WireframeMaterialShaders.vertex}
-            void main() {
-              initWireframe();
-          `
-          )
-
-          shader.fragmentShader = shader.fragmentShader.replace(
-            'void main() {',
-            `
-            ${WireframeMaterialShaders.fragment}
-            void main() {
-          `
-          )
-
-          shader.fragmentShader = shader.fragmentShader.replace(
-            '#include <color_fragment>',
-            /* glsl */ `
-            #include <color_fragment>
-		        float edge = getWireframe();
-            vec4 colorStroke = vec4(stroke, edge);
-            #ifdef FLIP_SIDED
-              colorStroke.rgb = backfaceStroke;
-            #endif
-            vec4 colorFill = vec4(mix(diffuseColor.rgb, fill, fillMix), mix(diffuseColor.a, fillOpacity, fillMix));
-            vec4 outColor = mix(colorFill, colorStroke, edge * strokeOpacity);
-
-            diffuseColor.rgb = outColor.rgb;
-            diffuseColor.a *= outColor.a;
-          `
-          )
-        }
-
-        material.side = THREE.DoubleSide
-        material.transparent = true
-        material.polygonOffset = true
-        material.polygonOffsetFactor = -1
-      }
-    }, [uniforms, customGeometry])
-
-    const nFrames = React.useRef(0)
-    FIBER.useFrame(() => {
-      if (nFrames.current < frames) {
-        const geometry = getInputGeometry(ref, customGeometry)
-        const barycentric = geometry.getAttribute('barycentric') as THREE.BufferAttribute
-
-        if (barycentric) {
-          const newBarycentric = getBarycentricCoordinates(geometry, simplify)
-
-          for (let i = 0; i < barycentric.count; i++) {
-            barycentric.setXYZ(i, newBarycentric.getX(i), newBarycentric.getY(i), newBarycentric.getZ(i))
-          }
-
-          barycentric.needsUpdate = true
-          nFrames.current++
-        }
-      }
-    })
-
-    return (
-      <>
-        <group ref={ref} />
-
-        {(customGeometry || (isRef(customGeometry) && geometry)) && (
-          <mesh geometry={isRef(customGeometry) ? geometry : customGeometry}>
-            <meshWireframeMaterial
-              attach="material"
-              transparent
-              side={THREE.DoubleSide}
-              polygonOffset={true} //
-              polygonOffsetFactor={-4}
-              {...props}
-              extensions={{
-                derivatives: true,
-                fragDepth: false,
-                drawBuffers: false,
-                shaderTextureLOD: false,
-              }}
-            />
-          </mesh>
-        )}
-      </>
-    )
+    geometry.copy(nonIndexedGeo)
+    geometry.setIndex(null)
   }
-)
+
+  const newBarycentric = getBarycentricCoordinates(geometry, simplify)
+
+  geometry.setAttribute('barycentric', newBarycentric)
+}
+
+function WireframeWithCustomGeo({
+  geometry: customGeometry,
+  simplify = false,
+  ...props
+}: WireframeProps & WireframeMaterialProps) {
+  const [geometry, setGeometry] = React.useState<THREE.BufferGeometry>(null!)
+
+  React.useLayoutEffect(() => {
+    const geom = getInputGeometry(customGeometry!)
+
+    if (!geom) {
+      throw new Error('Wireframe: geometry prop must be a BufferGeometry or a ref to a BufferGeometry.')
+    }
+
+    setBarycentricCoordinates(geom, simplify)
+
+    if (isRef(customGeometry)) {
+      setGeometry(geom)
+    }
+  }, [simplify, customGeometry])
+
+  const drawnGeo = isRef(customGeometry) ? geometry : customGeometry
+
+  return (
+    <>
+      {drawnGeo && (
+        <mesh geometry={drawnGeo}>
+          <meshWireframeMaterial
+            attach="material"
+            transparent
+            side={THREE.DoubleSide}
+            polygonOffset={true} //
+            polygonOffsetFactor={-4}
+            {...props}
+            extensions={{
+              derivatives: true,
+              fragDepth: false,
+              drawBuffers: false,
+              shaderTextureLOD: false,
+            }}
+          />
+        </mesh>
+      )}
+    </>
+  )
+}
+
+function WireframeWithoutCustomGeo({
+  simplify = false,
+  ...props
+}: Omit<WireframeProps, 'geometry'> & WireframeMaterialProps) {
+  const objectRef = React.useRef<THREE.Object3D>(null!)
+  const uniforms = React.useMemo(() => getUniforms(), [WireframeMaterialShaders.uniforms])
+  useWireframeUniforms(uniforms, props)
+
+  React.useLayoutEffect(() => {
+    const geom = getInputGeometry(objectRef)
+
+    if (!geom) {
+      throw new Error('Wireframe: Must be a child of a Mesh, Line or Points object or specify a geometry prop.')
+    }
+
+    setBarycentricCoordinates(geom, simplify)
+  }, [simplify])
+
+  React.useLayoutEffect(() => {
+    const parentMesh = objectRef.current.parent as THREE.Mesh<THREE.BufferGeometry, THREE.Material>
+    setWireframeOverride(parentMesh.material, uniforms)
+  }, [])
+
+  return <object3D ref={objectRef} />
+}
+
+export function Wireframe({ geometry: customGeometry, ...props }: WireframeProps & WireframeMaterialProps) {
+  if (customGeometry) {
+    return <WireframeWithCustomGeo geometry={customGeometry} {...props} />
+  }
+
+  return <WireframeWithoutCustomGeo {...props} />
+}

@@ -2338,6 +2338,7 @@ const envMap = useCubeTexture(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png',
 
 <p>
   <a href="https://codesandbox.io/s/39hg8"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/39hg8/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/2cemck"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/2cemck/screenshot.png?v2" alt="Demo"/></a>
 </p>
 
 A convenience hook that returns a `THREE.VideoTexture` and integrates loading into suspense. By default it falls back until the `canplay` event. Then it starts playing the video, which, if the video is muted, is allowed in the browser without user interaction.

@@ -2370,6 +2370,26 @@ return (
     <meshBasicMaterial map={texture} toneMapped={false} />
 ```
 
+It also accepts a [`MediaStream`](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream) from eg. [`.getDisplayMedia()`](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia):
+
+```jsx
+const [stream, setStream] = useState()
+
+return (
+  <mesh onClick={() => setStream(await navigator.mediaDevices.getDisplayMedia({ video: true })}>
+    <React.Suspense fallback={<meshBasicMaterial wireframe />}>
+      <VideoMaterial src={src} />
+    </React.Suspense>
+```
+```jsx
+function VideoMaterial({ src }) {
+  const texture = useVideoTexture(src)
+
+  return <meshBasicMaterial map={texture} toneMapped={false} />
+}
+```
+NB: It's important to wrap `VideoMaterial` into `React.Suspense` since, `useVideoTexture(src)` here will be suspended until the user shares its screen.
+
 #### useTrailTexture
 
 <p>

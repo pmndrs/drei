@@ -2378,7 +2378,7 @@ const [stream, setStream] = useState()
 return (
   <mesh onClick={() => setStream(await navigator.mediaDevices.getDisplayMedia({ video: true })}>
     <React.Suspense fallback={<meshBasicMaterial wireframe />}>
-      <VideoMaterial src={src} />
+      <VideoMaterial src={stream} />
     </React.Suspense>
 ```
 ```jsx

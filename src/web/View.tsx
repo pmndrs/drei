@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { createPortal, useFrame, useThree, Size } from '@react-three/fiber'
+import { createPortal, useFrame, useThree } from '@react-three/fiber'
 
 const isOrthographicCamera = (def: any): def is THREE.OrthographicCamera =>
   def && (def as THREE.OrthographicCamera).isOrthographicCamera
@@ -159,7 +159,7 @@ export const View = ({ track, index = 1, frames = Infinity, children }: ViewProp
         state.raycaster.setFromCamera(state.pointer, state.camera)
       }
     },
-    [rect]
+    [rect, track]
   )
 
   const [ready, toggle] = React.useReducer(() => true, false)
@@ -168,7 +168,7 @@ export const View = ({ track, index = 1, frames = Infinity, children }: ViewProp
     rect.current = track.current?.getBoundingClientRect()
     // And now we can proceed
     toggle()
-  }, [])
+  }, [track])
 
   return (
     <>

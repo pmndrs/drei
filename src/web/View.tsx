@@ -151,7 +151,7 @@ export const View = ({ track, index = 1, frames = Infinity, children }: ViewProp
 
   const compute = React.useCallback(
     (event, state) => {
-      if (track.current && event.target === track.current) {
+      if (rect.current && track.current && event.target === track.current) {
         const { width, height, left, top } = rect.current
         const x = event.clientX - left
         const y = event.clientY - top
@@ -178,7 +178,7 @@ export const View = ({ track, index = 1, frames = Infinity, children }: ViewProp
             {children}
           </Container>,
           virtualScene,
-          { events: { compute, priority: index }, size: { width: rect.current.width, height: rect.current.height } }
+          { events: { compute, priority: index }, size: { width: rect.current?.width, height: rect.current?.height } }
         )}
     </>
   )

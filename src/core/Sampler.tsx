@@ -89,7 +89,7 @@ export function useSurfaceSampler(
     return new InstancedBufferAttribute(Float32Array.from(arr), 16)
   })
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     if (typeof mesh.current === 'undefined') return
 
     const sampler = new MeshSurfaceSampler(mesh.current)
@@ -103,7 +103,6 @@ export function useSurfaceSampler(
     const position = new Vector3()
     const normal = new Vector3()
     const color = new Color()
-
     const dummy = new Object3D()
 
     mesh.current.updateMatrixWorld(true)
@@ -160,7 +159,7 @@ export function Sampler({
   const instancedRef = React.useRef<InstancedMesh>(null!)
   const meshToSampleRef = React.useRef<Mesh>(null!)
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     instancedRef.current =
       instances?.current ?? (group.current!.children.find((c) => c.hasOwnProperty('instanceMatrix')) as InstancedMesh)
 

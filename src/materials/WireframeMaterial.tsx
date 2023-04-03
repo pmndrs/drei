@@ -81,12 +81,12 @@ export const WireframeMaterialShaders = {
 	  uniform vec3 fill;
   
 	  // This is like
-	  float aastep (float threshold, float dist) {
+	  float aastep(float threshold, float dist) {
 		  float afwidth = fwidth(dist) * 0.5;
 		  return smoothstep(threshold - afwidth, threshold + afwidth, dist);
 	  }
   
-	  float map (float value, float min1, float max1, float min2, float max2) {
+	  float mapValues(float value, float min1, float max1, float min2, float max2) {
 		  return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
 	  }
   
@@ -103,7 +103,7 @@ export const WireframeMaterialShaders = {
 			}
 
 			// the thickness of the stroke
-			float computedThickness = map(thickness, 0.0, 1.0, 0.0, 0.34);
+			float computedThickness = mapValues(thickness, 0.0, 1.0, 0.0, 0.34);
 
 			// if we want to shrink the thickness toward the center of the line segment
 			if (squeeze) {

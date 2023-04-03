@@ -111,6 +111,7 @@ export * from './Sparkles'
 export * from './useEnvironment'
 export * from './useMatcapTexture'
 export * from './useNormalTexture'
+export * from './Wireframe'
 
 // Performance
 export * from './Points'

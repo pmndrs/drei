@@ -95,7 +95,7 @@ export const Center = React.forwardRef<Group, JSX.IntrinsicElements['group'] & C
         depthAlignment: dAlign,
       })
     }
-  }, [children])
+  })
 
   React.useImperativeHandle(fRef, () => ref.current, [])
 

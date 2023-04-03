@@ -105,6 +105,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#cycleraycast">CycleRaycast</a></li>
           <li><a href="#select">Select</a></li>
           <li><a href="#stats">Stats</a></li>
+          <li><a href="#wireframe">Wireframe</a></li>
           <li><a href="#usedepthbuffer">useDepthBuffer</a></li>
           <li><a href="#usecontextbridge">useContextBridge</a></li>
           <li><a href="#usefbo">useFBO</a></li>
@@ -1992,6 +1993,45 @@ useEffect(() => {
 }, [])
 
 return <Stats parent={parent} />
+```
+
+#### Wireframe
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/staging-wireframe--wireframe-st)
+
+Renders an Antialiased, shader based wireframe on or around a geometry.
+
+```jsx
+<mesh>
+  <geometry />
+  <material />
+
+  <Wireframe /> // Will apply wireframe on top of existing material on this mesh
+</mesh>
+
+// OR
+<Wireframe
+  geometry={geometry | geometryRef} // Will create the wireframe based on input geometry.
+
+  // Other props
+  simplify={false} // Remove some edges from wireframes
+  fill={"#00ff00"} // Color of the inside of the wireframe
+  fillMix={0} // Mix between the base color and the Wireframe 'fill'. 0 = base; 1 = wireframe
+  fillOpacity={0.25} // Opacity of the inner fill
+  stroke={"#ff0000"} // Color of the stroke
+  strokeOpacity={1} // Opacity of the stroke
+  thickness={0.05} // Thinkness of the lines
+  colorBackfaces={false} // Whether to draw lines that are facing away from the camera
+  backfaceStroke={"#0000ff"} // Color of the lines that are facing away from the camera
+  dashInvert={true} // Invert the dashes
+  dash={false} // Whether to draw lines as dashes
+  dashRepeats={4} // Number of dashes in one seqment
+  dashLength={0.5} // Length of each dash
+  squeeze={false} // Narrow the centers of each line segment
+  squeezeMin={0.2} // Smallest width to squueze to
+  squeezeMax={1} // Largest width to squeeze from
+/>
+
 ```
 
 #### useDepthBuffer

@@ -45,6 +45,10 @@ function isRef<T>(object?: any | null): object is React.Ref<T> {
   return object?.current !== undefined
 }
 
+function isWireframeGeometry(geometry: any): geometry is THREE.WireframeGeometry {
+  return (geometry as THREE.WireframeGeometry).type === 'WireframeGeometry'
+}
+
 function getUniforms() {
   const u = {}
   for (const key in WireframeMaterialShaders.uniforms) {
@@ -78,8 +82,18 @@ function getInputGeometry(
   const geo = (isRefObject(inputGeometry) ? inputGeometry.current : inputGeometry)!
 
   if (!isGeometry(geo)) {
+    // Disallow WireframeGeometry
+    if (isWireframeGeometry(geo)) {
+      throw new Error('Wireframe: WireframeGeometry is not supported.')
+    }
+
     const parent = geo.parent
     if (isWithGeometry(parent)) {
+      // Disallow WireframeGeometry
+      if (isWireframeGeometry(parent.geometry)) {
+        throw new Error('Wireframe: WireframeGeometry is not supported.')
+      }
+
       return parent.geometry
     }
   } else {

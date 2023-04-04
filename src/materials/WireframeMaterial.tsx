@@ -39,7 +39,7 @@ export const WireframeMaterialShaders = {
     fill: new THREE.Color('#00ff00'),
   },
   vertex: /* glsl */ `
-	  	attribute vec3 barycentric;
+	  attribute vec3 barycentric;
 	
 		varying vec3 v_edges_Barycentric;
 		varying vec3 v_edges_Position;
@@ -81,12 +81,12 @@ export const WireframeMaterialShaders = {
 	  uniform vec3 fill;
   
 	  // This is like
-	  float aastep(float threshold, float dist) {
+	  float wireframe_aastep(float threshold, float dist) {
 		  float afwidth = fwidth(dist) * 0.5;
 		  return smoothstep(threshold - afwidth, threshold + afwidth, dist);
 	  }
   
-	  float mapValues(float value, float min1, float max1, float min2, float max2) {
+	  float wireframe_map(float value, float min1, float max1, float min2, float max2) {
 		  return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
 	  }
   
@@ -103,7 +103,7 @@ export const WireframeMaterialShaders = {
 			}
 
 			// the thickness of the stroke
-			float computedThickness = mapValues(thickness, 0.0, 1.0, 0.0, 0.34);
+			float computedThickness = wireframe_map(thickness, 0.0, 1.0, 0.0, 0.34);
 
 			// if we want to shrink the thickness toward the center of the line segment
 			if (squeeze) {
@@ -126,11 +126,11 @@ export const WireframeMaterialShaders = {
 
 				// create the repeating dash pattern
 				float pattern = fract((positionAlong + offset) * dashRepeats);
-				computedThickness *= 1.0 - aastep(dashLength, pattern);
+				computedThickness *= 1.0 - wireframe_aastep(dashLength, pattern);
 			}
 
 			// compute the anti-aliased stroke edge  
-			float edge = 1.0 - aastep(computedThickness, d);
+			float edge = 1.0 - wireframe_aastep(computedThickness, d);
 
 			return edge;
 	  }
@@ -153,9 +153,11 @@ export const WireframeMaterial = shaderMaterial(
 
 		float edge = getWireframe();
 		vec4 colorStroke = vec4(stroke, edge);
+
 		#ifdef FLIP_SIDED
 			colorStroke.rgb = backfaceStroke;
 		#endif
+    
 		vec4 colorFill = vec4(fill, fillOpacity);
 		vec4 outColor = mix(colorFill, colorStroke, edge * strokeOpacity);
 

@@ -4,7 +4,7 @@ import * as FIBER from '@react-three/fiber'
 import { applyProps } from '@react-three/fiber'
 import { DecalGeometry } from 'three-stdlib'
 
-type DecalProps = Omit<JSX.IntrinsicElements['meshStandardMaterial'], 'children'> & {
+export type DecalProps = Omit<JSX.IntrinsicElements['meshStandardMaterial'], 'children'> & {
   debug?: boolean
   mesh?: React.MutableRefObject<THREE.Mesh>
   position?: FIBER.Vector3
@@ -28,8 +28,12 @@ function vecToArray(vec: number[] | FIBER.Vector3 | FIBER.Euler | number = [0, 0
   }
 }
 
-export function Decal({ debug, mesh, children, position, rotation, scale, ...props }: DecalProps) {
+export const Decal = React.forwardRef<THREE.Mesh, DecalProps>(function Decal(
+  { debug, mesh, children, position, rotation, scale, ...props },
+  forwardRef
+) {
   const ref = React.useRef<THREE.Mesh>(null!)
+  React.useImperativeHandle(forwardRef, () => ref.current)
   const helper = React.useRef<THREE.Mesh>(null!)
 
   React.useLayoutEffect(() => {
@@ -87,4 +91,4 @@ export function Decal({ debug, mesh, children, position, rotation, scale, ...pro
       )}
     </mesh>
   )
-}
+})

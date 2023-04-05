@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { withKnobs } from '@storybook/addon-knobs'
-import { IcosahedronGeometry, Vector3 } from 'three'
+import { IcosahedronGeometry, SphereGeometry, Vector3 } from 'three'
 
 import { Setup } from '../Setup'
 import { Environment, Wireframe } from '../../src'

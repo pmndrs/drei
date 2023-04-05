@@ -52,7 +52,7 @@ export function shaderMaterial(
       // Call onInit
       if (onInit) onInit(this)
     }
-  } as unknown as typeof THREE.ShaderMaterial & { key: string }
+  } as unknown as THREE.ShaderMaterial & { key: string }
   material.key = THREE.MathUtils.generateUUID()
   return material
 }

@@ -69,6 +69,7 @@ export * from './useIntersect'
 export * from './useBoxProjectedEnv'
 export * from './BBAnchor'
 export * from './useTrailTexture'
+export * from './useCubeCamera'
 
 // Modifiers
 export * from './CurveModifier'

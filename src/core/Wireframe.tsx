@@ -176,13 +176,26 @@ function WireframeWithoutCustomGeo({
     if (!geom) {
       throw new Error('Wireframe: Must be a child of a Mesh, Line or Points object or specify a geometry prop.')
     }
+    const og = geom.clone()
 
     setBarycentricCoordinates(geom, simplify)
+
+    return () => {
+      geom.copy(og)
+      og.dispose()
+    }
   }, [simplify])
 
   React.useLayoutEffect(() => {
     const parentMesh = objectRef.current.parent as THREE.Mesh<THREE.BufferGeometry, THREE.Material>
+    const og = parentMesh.material.clone()
+
     setWireframeOverride(parentMesh.material, uniforms)
+
+    return () => {
+      parentMesh.material.dispose()
+      parentMesh.material = og
+    }
   }, [])
 
   return <object3D ref={objectRef} />

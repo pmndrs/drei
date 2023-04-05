@@ -215,8 +215,6 @@ export function setWireframeOverride(
 
   material.side = THREE.DoubleSide
   material.transparent = true
-  material.polygonOffset = true
-  material.polygonOffsetFactor = -1
 }
 
 export function useWireframeUniforms(

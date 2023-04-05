@@ -110,6 +110,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#usecontextbridge">useContextBridge</a></li>
           <li><a href="#usefbo">useFBO</a></li>
           <li><a href="#usecamera">useCamera</a></li>
+          <li><a href="#usecubecamera">useCubeCamera</a></li>
           <li><a href="#usedetectgpu">useDetectGPU</a></li>          
           <li><a href="#useaspect">useAspect</a></li>
           <li><a href="#usecursor">useCursor</a></li>
@@ -2100,6 +2101,31 @@ A hook for the rare case when you are using non-default cameras for heads-up-dis
 <mesh raycast={useCamera(customCamera)} />
 ```
 
+#### useCubeCamera
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-usecubecamera)
+
+Creates a [`THREE.CubeCamera`](https://threejs.org/docs/#api/en/cameras/CubeCamera) that renders into a `fbo` renderTarget and that you can `update()`.
+
+```tsx
+export function useCubeCamera({
+  /** Resolution of the FBO, 256 */
+  resolution?: number
+  /** Camera near, 0.1 */
+  near?: number
+  /** Camera far, 1000 */
+  far?: number
+  /** Custom environment map that is temporarily set as the scenes background */
+  envMap?: THREE.Texture
+  /** Custom fog that is temporarily set as the scenes fog */
+  fog?: Fog | FogExp2
+})
+```
+
+```jsx
+const { fbo, camera, update } = useCubeCamera()
+```
+
 #### useDetectGPU
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/misc-usedetectgpu)
@@ -2425,6 +2451,7 @@ return (
       <VideoMaterial src={stream} />
     </React.Suspense>
 ```
+
 ```jsx
 function VideoMaterial({ src }) {
   const texture = useVideoTexture(src)
@@ -2432,6 +2459,7 @@ function VideoMaterial({ src }) {
   return <meshBasicMaterial map={texture} toneMapped={false} />
 }
 ```
+
 NB: It's important to wrap `VideoMaterial` into `React.Suspense` since, `useVideoTexture(src)` here will be suspended until the user shares its screen.
 
 #### useTrailTexture

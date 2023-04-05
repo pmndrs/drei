@@ -1,10 +1,10 @@
 import * as THREE from 'three'
 import { HalfFloatType, Fog, FogExp2, WebGLCubeRenderTarget } from 'three'
 import * as React from 'react'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useThree } from '@react-three/fiber'
 
-export type Props = {
+export type CubeCameraOptions = {
   /** Resolution of the FBO, 256 */
   resolution?: number
   /** Camera near, 0.1 */
@@ -17,7 +17,7 @@ export type Props = {
   fog?: Fog | FogExp2
 }
 
-export function useCubeCamera({ resolution = 256, near = 0.1, far = 1000, envMap, fog }: Props = {}) {
+export function useCubeCamera({ resolution = 256, near = 0.1, far = 1000, envMap, fog }: CubeCameraOptions = {}) {
   const gl = useThree(({ gl }) => gl)
   const scene = useThree(({ scene }) => scene)
 
@@ -26,7 +26,13 @@ export function useCubeCamera({ resolution = 256, near = 0.1, far = 1000, envMap
     fbo.texture.encoding = gl.outputEncoding
     fbo.texture.type = HalfFloatType
     return fbo
-  }, [resolution])
+  }, [resolution, gl.outputEncoding])
+
+  useEffect(() => {
+    return () => {
+      fbo.dispose()
+    }
+  }, [fbo])
 
   const camera = useMemo(() => new THREE.CubeCamera(near, far, fbo), [near, far, fbo])
 

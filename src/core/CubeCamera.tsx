@@ -2,14 +2,14 @@ import { Group, Texture } from 'three'
 import * as React from 'react'
 import { useFrame } from '@react-three/fiber'
 
-import { useCubeCamera, Props as HookProps } from './useCubeCamera'
+import { useCubeCamera, CubeCameraOptions } from './useCubeCamera'
 
 type Props = JSX.IntrinsicElements['group'] & {
   /** The contents of CubeCamera will be hidden when filming the cube */
   children: (tex: Texture) => React.ReactNode
   /** Number of frames to render, Infinity */
   frames?: number
-} & HookProps
+} & CubeCameraOptions
 
 export function CubeCamera({ children, frames = Infinity, resolution, near, far, envMap, fog, ...props }: Props) {
   const ref = React.useRef<Group>()

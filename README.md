@@ -1999,6 +1999,10 @@ return <Stats parent={parent} />
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/staging-wireframe--wireframe-st)
 
+<p>
+  <a href="https://codesandbox.io/s/2572o5"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/2572o5/screenshot.png" alt="Demo"/></a>
+</p>
+
 Renders an Antialiased, shader based wireframe on or around a geometry.
 
 ```jsx

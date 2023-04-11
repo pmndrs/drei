@@ -1,5 +1,6 @@
 import { Box3, Vector3, Sphere, Group } from 'three'
 import * as React from 'react'
+import { useThree } from '@react-three/fiber'
 
 export type OnCenterCallbackProps = {
   /** The next parent above <Center> */
@@ -60,7 +61,6 @@ export const Center = React.forwardRef<Group, JSX.IntrinsicElements['group'] & C
   const ref = React.useRef<Group>(null!)
   const outer = React.useRef<Group>(null!)
   const inner = React.useRef<Group>(null!)
-  const oldBox = React.useRef<Box3>(new Box3())
   React.useLayoutEffect(() => {
     outer.current.matrixWorld.identity()
     const box3 = new Box3().setFromObject(inner.current, precise)
@@ -82,8 +82,7 @@ export const Center = React.forwardRef<Group, JSX.IntrinsicElements['group'] & C
     )
 
     // Only fire onCentered if the bounding box has changed
-    if (typeof onCentered !== 'undefined' && !oldBox.current.equals(box3)) {
-      oldBox.current.copy(box3)
+    if (typeof onCentered !== 'undefined') {
       onCentered({
         parent: ref.current.parent!,
         container: ref.current,
@@ -98,7 +97,7 @@ export const Center = React.forwardRef<Group, JSX.IntrinsicElements['group'] & C
         depthAlignment: dAlign,
       })
     }
-  })
+  }, [children, onCentered, top, left, front, disable, disableX, disableY, disableZ, precise, right, bottom, back])
 
   React.useImperativeHandle(fRef, () => ref.current, [])
 

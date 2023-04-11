@@ -73,11 +73,17 @@ export const CameraControls = forwardRef<CameraControlsImpl, CameraControlsProps
     controls.addEventListener('update', callback)
     controls.addEventListener('controlstart', onStartCb)
     controls.addEventListener('controlend', onEndCb)
+    controls.addEventListener('control', callback);
+    controls.addEventListener('transitionstart', callback);
+    controls.addEventListener('wake', callback);
 
     return () => {
       controls.removeEventListener('update', callback)
       controls.removeEventListener('controlstart', onStartCb)
       controls.removeEventListener('controlend', onEndCb)
+      controls.removeEventListener('control', callback);
+      controls.removeEventListener('transitionstart', callback);
+      controls.removeEventListener('wake', callback);
     }
   }, [controls, onStart, onEnd, invalidate, setEvents, regress, onChange])
 

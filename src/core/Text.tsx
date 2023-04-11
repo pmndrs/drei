@@ -32,6 +32,7 @@ type Props = JSX.IntrinsicElements['mesh'] & {
   strokeColor?: ReactThreeFiber.Color
   strokeOpacity?: number
   fillOpacity?: number
+  sdfGlyphSize?: number
   debugSDF?: boolean
   onSync?: (troika: any) => void
 }
@@ -39,7 +40,17 @@ type Props = JSX.IntrinsicElements['mesh'] & {
 // eslint-disable-next-line prettier/prettier
 export const Text = React.forwardRef(
   (
-    { anchorX = 'center', anchorY = 'middle', font, fontSize = 1, children, characters, onSync, ...props }: Props,
+    {
+      sdfGlyphSize = 64,
+      anchorX = 'center',
+      anchorY = 'middle',
+      font,
+      fontSize = 1,
+      children,
+      characters,
+      onSync,
+      ...props
+    }: Props,
     ref: React.ForwardedRef<any>
   ) => {
     const invalidate = useThree(({ invalidate }) => invalidate)
@@ -81,6 +92,7 @@ export const Text = React.forwardRef(
         anchorX={anchorX}
         anchorY={anchorY}
         fontSize={fontSize}
+        sdfGlyphSize={sdfGlyphSize}
         {...props}
       >
         {nodes}

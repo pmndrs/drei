@@ -129,7 +129,8 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#usektx2">useKTX2</a></li>
           <li><a href="#usecubetexture">useCubeTexture</a></li>
           <li><a href="#usevideotexture">useVideoTexture</a></li>
-          <li><a href="#usetrailtexture">useTrailTexture</a></li>          
+          <li><a href="#usetrailtexture">useTrailTexture</a></li>
+          <li><a href="#usefont">useFont</a></li>
         </ul>
         <li><a href="#performance">Performance</a></li>
         <ul>
@@ -2498,6 +2499,21 @@ const [texture, onMove] = useTrailTexture(config)
 return (
   <mesh onPointerMove={onMove}>
     <meshStandardMaterial displacementMap={texture} />
+```
+
+#### useFont
+
+Uses THREE.FontLoader to load a font and returns a `THREE.Font` object. It also accepts a JSON object as a parameter. You can use this to preload or share a font across multiple components.
+
+```jsx
+const font = useFont('/fonts/helvetiker_regular.typeface.json')
+return <Text3D font={font} />
+```
+
+In order to preload you do this:
+
+```jsx
+useFont.preload('/fonts/helvetiker_regular.typeface.json')
 ```
 
 # Performance

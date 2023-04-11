@@ -53,6 +53,7 @@ export * from './useKTX2'
 export * from './useProgress'
 export * from './useTexture'
 export * from './useVideoTexture'
+export * from './useFont'
 
 // Misc
 export * from './Stats'

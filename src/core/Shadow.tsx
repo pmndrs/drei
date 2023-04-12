@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Mesh, Color, DoubleSide } from 'three'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type Props = JSX.IntrinsicElements['mesh'] & {
   colorStop?: number
@@ -9,7 +10,7 @@ type Props = JSX.IntrinsicElements['mesh'] & {
   depthWrite?: boolean
 }
 
-export const Shadow = React.forwardRef(
+export const Shadow: ForwardRefComponent<Props, Mesh> = React.forwardRef(
   (
     { fog = false, renderOrder, depthWrite = false, colorStop = 0.0, color = 'black', opacity = 0.5, ...props }: Props,
     ref

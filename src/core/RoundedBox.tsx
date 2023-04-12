@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Mesh, Shape, ExtrudeGeometry } from 'three'
-import { NamedArrayTuple } from '../helpers/ts-utils'
+import { ForwardRefComponent, NamedArrayTuple } from '../helpers/ts-utils'
 import { toCreasedNormals } from 'three-stdlib'
 
 const eps = 0.00001
@@ -23,7 +23,7 @@ type Props = {
   creaseAngle?: number
 } & Omit<JSX.IntrinsicElements['mesh'], 'args'>
 
-export const RoundedBox = React.forwardRef<Mesh, Props>(function RoundedBox(
+export const RoundedBox: ForwardRefComponent<Props, Mesh> = React.forwardRef<Mesh, Props>(function RoundedBox(
   {
     args: [width = 1, height = 1, depth = 1] = [],
     radius = 0.05,

@@ -1,14 +1,15 @@
 import * as React from 'react'
 import { EventManager, Object3DNode, useFrame, useThree } from '@react-three/fiber'
 import { FirstPersonControls as FirstPersonControlImpl } from 'three-stdlib'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type FirstPersonControlsProps = Object3DNode<FirstPersonControlImpl, typeof FirstPersonControlImpl> & {
   domElement?: HTMLElement
   makeDefault?: boolean
 }
 
-export const FirstPersonControls = React.forwardRef<FirstPersonControlImpl, FirstPersonControlsProps>(
-  ({ domElement, makeDefault, ...props }, ref) => {
+export const FirstPersonControls: ForwardRefComponent<FirstPersonControlsProps, FirstPersonControlImpl> =
+  React.forwardRef<FirstPersonControlImpl, FirstPersonControlsProps>(({ domElement, makeDefault, ...props }, ref) => {
     const camera = useThree((state) => state.camera)
     const gl = useThree((state) => state.gl)
     const events = useThree((state) => state.events) as EventManager<HTMLElement>
@@ -30,5 +31,4 @@ export const FirstPersonControls = React.forwardRef<FirstPersonControlImpl, Firs
     }, -1)
 
     return controls ? <primitive ref={ref} object={controls} {...props} /> : null
-  }
-)
+  })

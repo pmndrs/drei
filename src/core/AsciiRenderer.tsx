@@ -67,5 +67,6 @@ export function AsciiRenderer({
     effect.render(scene, camera)
   }, renderIndex)
 
-  // This component returns nothing, it is a purely logical
+  // return something to not break type signatures
+  return <></>
 }

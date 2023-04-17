@@ -2447,7 +2447,7 @@ It also accepts a [`MediaStream`](https://developer.mozilla.org/en-US/docs/Web/A
 const [stream, setStream] = useState()
 
 return (
-  <mesh onClick={() => setStream(await navigator.mediaDevices.getDisplayMedia({ video: true })}>
+  <mesh onClick={async () => setStream(await navigator.mediaDevices.getDisplayMedia({ video: true }))}>
     <React.Suspense fallback={<meshBasicMaterial wireframe />}>
       <VideoMaterial src={stream} />
     </React.Suspense>

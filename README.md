@@ -363,7 +363,7 @@ PointerLockControls additionally supports a `selector` prop, which enables the b
 #### CameraControls
 
 <p>
-  <a href="https://codesandbox.io/s/sew669"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/sew669/screenshot.png?v2" alt="CameraControls"/></a>
+  <a href="https://codesandbox.io/s/us6ipl"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/us6ipl/screenshot.png" alt="CameraControls"/></a>
 </p>
 
 This is an implementation of the [camera-controls](https://github.com/yomotsu/camera-controls) library.

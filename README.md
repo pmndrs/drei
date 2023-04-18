@@ -2441,7 +2441,7 @@ return (
     <meshBasicMaterial map={texture} toneMapped={false} />
 ```
 
-It also accepts a [`MediaStream`](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream) from eg. [`.getDisplayMedia()`](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia):
+It also accepts a [`MediaStream`](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream) from eg. [`.getDisplayMedia()`](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia) or [`.getUserMedia()`](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia):
 
 ```jsx
 const [stream, setStream] = useState()

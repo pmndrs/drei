@@ -240,6 +240,7 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
         opacity={opacity}
         polygonOffset
         polygonOffsetFactor={-10}
+        fog={false}
       />
     </group>
   )

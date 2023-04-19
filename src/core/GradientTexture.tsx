@@ -12,10 +12,8 @@ type Props = {
 export function GradientTexture({ stops, colors, size = 1024, ...props }: Props) {
   const gl = useThree((state) => state.gl)
   const texture = React.useMemo(() => {
-    const canvas = document.createElement('canvas')
+    const canvas = new OffscreenCanvas(16, size)
     const context = canvas.getContext('2d')!
-    canvas.width = 16
-    canvas.height = size
     const gradient = context.createLinearGradient(0, 0, 0, size)
     let i = stops.length
     while (i--) {
@@ -23,7 +21,7 @@ export function GradientTexture({ stops, colors, size = 1024, ...props }: Props)
     }
     context.fillStyle = gradient
     context.fillRect(0, 0, 16, size)
-    const texture = new THREE.Texture(canvas)
+    const texture = new THREE.CanvasTexture(canvas)
     texture.needsUpdate = true
     return texture
   }, [stops])

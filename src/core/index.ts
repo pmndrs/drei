@@ -88,6 +88,7 @@ export * from './softShadows'
 
 // Shapes
 export * from './shapes'
+export * from './Facemesh'
 export * from './RoundedBox'
 export * from './ScreenQuad'
 

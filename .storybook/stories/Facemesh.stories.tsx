@@ -25,14 +25,13 @@ export const FacemeshSt = ({ width, flipY, wireframe, flat, skin }) => (
     <color attach="background" args={['#303030']} />
     <axesHelper />
 
-    <Facemesh width={width} rotation-y={Math.PI} flipY={flipY}>
+    <Facemesh width={width} rotation-y={Math.PI}>
       <meshStandardMaterial side={THREE.DoubleSide} color={skin} flatShading={flat} wireframe={wireframe} />
     </Facemesh>
   </>
 )
 FacemeshSt.args = {
   width: undefined,
-  flipY: undefined,
   wireframe: false,
   flat: true,
   skin: '#cbcbcb',
@@ -40,7 +39,6 @@ FacemeshSt.args = {
 
 FacemeshSt.argTypes = {
   width: { control: { type: 'range', min: 0, max: 6.5, step: 0.01 } },
-  flipY: { control: { type: 'boolean' } },
   wireframe: { control: { type: 'boolean' } },
   flat: { control: { type: 'boolean' } },
   skin: { control: { type: 'color' } },

@@ -2,16 +2,20 @@ import * as React from 'react'
 import { Mesh } from 'three'
 import * as THREE from 'three'
 
-type FacemeshProps = {
-  face?: typeof MYFACE
+export type MediaPipeFaceMesh = typeof MYFACE
+
+export type FacemeshProps = {
+  /** a MediaPipeFaceMesh object */
+  face?: MediaPipeFaceMesh
+  /** width of the mesh */
   width?: number
+  /** or height of the mesh */
   height?: number
-  flipY?: boolean
   children?: React.ReactNode
 } & Omit<JSX.IntrinsicElements['mesh'], 'args'>
 
 export const Facemesh = React.forwardRef<Mesh, FacemeshProps>(
-  ({ face = MYFACE, width = 1, height, flipY = true, children, ...props }, ref) => {
+  ({ face = MYFACE, width = 1, height, children, ...props }, ref) => {
     const geometry = React.useMemo(() => {
       const geometry = new THREE.BufferGeometry()
 
@@ -33,14 +37,13 @@ export const Facemesh = React.forwardRef<Mesh, FacemeshProps>(
       if (height) scale = (height * 1) / face.box.height // fit in height
       geometry.scale(scale, scale, scale)
 
-      if (flipY) {
-        geometry.scale(1, -1, 1)
-      }
+      // flipY
+      geometry.scale(1, -1, 1)
 
       geometry.computeVertexNormals()
 
       return geometry
-    }, [face, width, height, flipY])
+    }, [face, width, height])
 
     return (
       <mesh ref={ref} {...props}>

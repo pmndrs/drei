@@ -188,6 +188,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#quadraticbezierline">QuadraticBezierLine</a></li>
           <li><a href="#cubicbezierline">CubicBezierLine</a></li>
           <li><a href="#catmullromline">CatmullRomLine</a></li>
+          <li><a href="#facemesh">Facemesh</a></li>
         </ul>
         <li><a href="#staging">Staging</a></li>
         <ul>
@@ -927,6 +928,43 @@ Renders a THREE.Line2 using THREE.CatmullRomCurve3 for interpolation.
   {...lineProps}                  // All THREE.Line2 props are valid
   {...materialProps}              // All THREE.LineMaterial props are valid
 />
+```
+
+#### Facemesh
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shapes-facemesh--facemesh-st)
+
+Renders a [MediaPipe `face` mesh](https://github.com/tensorflow/tfjs-models/tree/master/face-landmarks-detection):
+
+```jsx
+const face = {
+  keypoints: [
+    {x: 406.53152857172876, y: 256.8054528661723, z: 10.2, name: "lips"},
+    {x: 406.544237446397, y: 230.06933367750395, z: 8},
+    ...
+  ],
+  box: {
+    xMin: 304.6476503248806,
+    xMax: 502.5079975897382,
+    yMin: 102.16298762367356,
+    yMax: 349.035215984403,
+    width: 197.86034726485758,
+    height: 246.87222836072945
+  },
+}
+
+<Facemesh face={face} />
+```
+
+```tsx
+type FacemeshProps = {
+  /** a MediaPipeFaceMesh object, default: a lambda face */
+  face?: MediaPipeFaceMesh
+  /** width of the mesh, default: 1 */
+  width?: number
+  /** or height of the mesh, default: undefined */
+  height?: number
+}
 ```
 
 # Abstractions

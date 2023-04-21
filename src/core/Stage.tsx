@@ -92,7 +92,11 @@ export function Stage({
   const accumulativeShadow = shadows === 'accumulative' || (shadows as StageShadows)?.type === 'accumulative'
   const shadowSpread = { ...(typeof shadows === 'object' ? shadows : {}) }
   const environmentProps = !environment ? null : typeof environment === 'string' ? { preset: environment } : environment
-
+  const onCentered = React.useCallback((props) => {
+    const { width, height, depth, boundingSphere } = props
+    set({ radius: boundingSphere.radius, width, height, depth })
+    if (center?.onCentered) center.onCentered(props)
+  }, [])
   return (
     <>
       <ambientLight intensity={intensity / 3} />
@@ -111,15 +115,7 @@ export function Stage({
       />
       <Bounds fit={!!adjustCamera} clip={!!adjustCamera} margin={Number(adjustCamera)} observe {...props}>
         <Refit radius={radius} adjustCamera={adjustCamera} />
-        <Center
-          {...center}
-          position={[0, shadowOffset / 2, 0]}
-          onCentered={(props) => {
-            const { width, height, depth, boundingSphere } = props
-            set({ radius: boundingSphere.radius, width, height, depth })
-            if (center?.onCentered) center.onCentered(props)
-          }}
-        >
+        <Center {...center} position={[0, shadowOffset / 2, 0]} onCentered={onCentered}>
           {children}
         </Center>
       </Bounds>

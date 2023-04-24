@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { RGBAFormat, HalfFloatType, WebGLRenderTarget } from 'three'
+import { RGBAFormat, HalfFloatType, WebGLRenderTarget, UnsignedByteType } from 'three'
 import { ReactThreeFiber, extend, useThree, useFrame } from '@react-three/fiber'
 import { EffectComposer, RenderPass, ShaderPass, GammaCorrectionShader } from 'three-stdlib'
 import mergeRefs from 'react-merge-refs'
@@ -66,7 +66,8 @@ export const Effects = React.forwardRef(
         anisotropy,
       })
 
-      if (encoding != null) {
+      // sRGB textures must be RGBA8 since r137 https://github.com/mrdoob/three.js/pull/23129
+      if (type === UnsignedByteType && encoding != null) {
         if ('colorSpace' in t) (t.texture as any).colorSpace = encoding
         else t.texture.encoding = encoding
       }

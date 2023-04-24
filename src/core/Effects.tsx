@@ -61,11 +61,16 @@ export const Effects = React.forwardRef(
       const t = new WebGLRenderTarget(size.width, size.height, {
         type: type || HalfFloatType,
         format: RGBAFormat,
-        encoding: encoding || gl.outputEncoding,
         depthBuffer,
         stencilBuffer,
         anisotropy,
       })
+
+      if (encoding != null) {
+        if ('colorSpace' in t) (t.texture as any).colorSpace = encoding
+        else t.texture.encoding = encoding
+      }
+
       t.samples = multisamping
       return t
     })

@@ -352,11 +352,9 @@ class ProgressiveLightMap {
     const format = /(Android|iPad|iPhone|iPod)/g.test(navigator.userAgent) ? THREE.HalfFloatType : THREE.FloatType
     this.progressiveLightMap1 = new THREE.WebGLRenderTarget(this.res, this.res, {
       type: format,
-      encoding: renderer.outputEncoding,
     })
     this.progressiveLightMap2 = new THREE.WebGLRenderTarget(this.res, this.res, {
       type: format,
-      encoding: renderer.outputEncoding,
     })
 
     // Inject some spicy new logic into a standard phong material

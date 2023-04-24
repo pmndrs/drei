@@ -147,13 +147,7 @@ export const ContactShadows = React.forwardRef(
     return (
       <group rotation-x={Math.PI / 2} {...props} ref={ref}>
         <mesh renderOrder={renderOrder} geometry={planeGeometry} scale={[1, -1, 1]} rotation={[-Math.PI / 2, 0, 0]}>
-          <meshBasicMaterial
-            transparent
-            map={renderTarget.texture}
-            map-encoding={gl.outputEncoding}
-            opacity={opacity}
-            depthWrite={depthWrite}
-          />
+          <meshBasicMaterial transparent map={renderTarget.texture} opacity={opacity} depthWrite={depthWrite} />
         </mesh>
         <orthographicCamera ref={shadowCamera} args={[-width / 2, width / 2, height / 2, -height / 2, 0, far]} />
       </group>

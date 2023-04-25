@@ -93,6 +93,7 @@ export * from './ScreenQuad'
 
 // Staging/Prototyping
 export * from './Center'
+export * from './Resize'
 export * from './Bounds'
 export * from './CameraShake'
 export * from './Float'

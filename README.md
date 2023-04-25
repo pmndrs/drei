@@ -192,6 +192,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <li><a href="#staging">Staging</a></li>
         <ul>
           <li><a href="#center">Center</a></li>
+          <li><a href="#resize">Resize</a></li>
           <li><a href="#BBAnchor">BBAnchor</a></li>        
           <li><a href="#bounds">Bounds</a></li>
           <li><a href="#camerashake">CameraShake</a></li>

@@ -3127,6 +3127,10 @@ function ScaledModel() {
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-resize)
 
+<p>
+  <a href="https://codesandbox.io/s/6yg0i3"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/6yg0i3/screenshot.png" alt="Demo"/></a>
+</p>
+
 Calculates a boundary box and scales its children so the highest dimension is constrained by 1. NB: proportions are preserved.
 
 ```tsx

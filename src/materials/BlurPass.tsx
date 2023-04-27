@@ -8,6 +8,7 @@ import {
   WebGLRenderer,
   Camera,
   Vector2,
+  HalfFloatType,
 } from 'three'
 
 import { ConvolutionMaterial } from './ConvolutionMaterial'
@@ -47,7 +48,7 @@ export class BlurPass {
       magFilter: LinearFilter,
       stencilBuffer: false,
       depthBuffer: false,
-      encoding: gl.outputEncoding,
+      type: HalfFloatType,
     })
     this.renderTargetB = this.renderTargetA.clone()
     this.convolutionMaterial = new ConvolutionMaterial()

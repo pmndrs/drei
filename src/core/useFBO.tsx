@@ -19,18 +19,17 @@ export function useFBO(
   /**Settings */
   settings?: FBOSettings
 ): THREE.WebGLRenderTarget {
-  const { gl, size, viewport } = useThree()
+  const size = useThree((state) => state.size)
+  const viewport = useThree((state) => state.viewport)
   const _width = typeof width === 'number' ? width : size.width * viewport.dpr
   const _height = typeof height === 'number' ? height : size.height * viewport.dpr
   const _settings = (typeof width === 'number' ? settings : (width as FBOSettings)) || {}
   const { samples = 0, depth, ...targetSettings } = _settings
 
   const target = React.useMemo(() => {
-    let target
-    target = new THREE.WebGLRenderTarget(_width, _height, {
+    const target = new THREE.WebGLRenderTarget(_width, _height, {
       minFilter: THREE.LinearFilter,
       magFilter: THREE.LinearFilter,
-      encoding: gl.outputEncoding,
       type: THREE.HalfFloatType,
       ...targetSettings,
     })

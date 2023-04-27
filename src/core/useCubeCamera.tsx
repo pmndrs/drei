@@ -23,10 +23,9 @@ export function useCubeCamera({ resolution = 256, near = 0.1, far = 1000, envMap
 
   const fbo = useMemo(() => {
     const fbo = new WebGLCubeRenderTarget(resolution)
-    fbo.texture.encoding = gl.outputEncoding
     fbo.texture.type = HalfFloatType
     return fbo
-  }, [resolution, gl.outputEncoding])
+  }, [resolution])
 
   useEffect(() => {
     return () => {

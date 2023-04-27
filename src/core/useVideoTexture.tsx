@@ -31,7 +31,9 @@ export function useVideoTexture(src: string | MediaStream, props?: Partial<Video
           ...rest,
         })
         const texture = new THREE.VideoTexture(video)
-        texture.encoding = gl.outputEncoding
+        if ('colorSpace' in texture) (texture as any).colorSpace = (gl as any).outputColorSpace
+        else texture.encoding = gl.outputEncoding
+
         video.addEventListener(unsuspend, () => res(texture))
       }),
     [src]

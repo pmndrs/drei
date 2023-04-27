@@ -12,6 +12,7 @@ import {
   DepthFormat,
   UnsignedShortType,
   Texture,
+  HalfFloatType,
 } from 'three'
 import { useFrame, useThree, extend } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
@@ -154,9 +155,9 @@ export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
 
     const [fbo1, fbo2, blurpass, reflectorProps] = React.useMemo(() => {
       const parameters = {
+        type: HalfFloatType,
         minFilter: LinearFilter,
         magFilter: LinearFilter,
-        encoding: gl.outputEncoding,
       }
       const fbo1 = new WebGLRenderTarget(resolution, resolution, parameters)
       fbo1.depthBuffer = true

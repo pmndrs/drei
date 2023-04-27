@@ -56,6 +56,7 @@
   "dependencies": {
     "@babel/runtime": "^7.11.2",
     "@react-spring/three": "~9.6.1",
+    "@react-three/postprocessing": "^2.8.0",
     "@use-gesture/react": "^10.2.24",
     "camera-controls": "^2.3.1",
     "detect-gpu": "^5.0.14",
@@ -65,6 +66,7 @@
     "lodash.pick": "^4.4.0",
     "maath": "^0.5.2",
     "meshline": "^3.1.6",
+    "postprocessing": "^6.30.2",
     "react-composer": "^5.0.3",
     "react-merge-refs": "^1.1.0",
     "stats.js": "^0.17.0",

@@ -2368,7 +2368,7 @@ const props = useTexture({
 return <meshStandardMaterial {...props} />
 ```
 
-Use the `onLoad` callback to set propeties on loaded textures.
+Use the `onLoad` callback to set properties on loaded textures.
 
 ```jsx
 const texture = useTexture(url, (texture) => {

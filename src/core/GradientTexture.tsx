@@ -22,5 +22,5 @@ export function GradientTexture({ stops, colors, size = 1024, ...props }: Props)
     context.fillRect(0, 0, 16, size)
     return canvas
   }, [stops])
-  return <texture args={[canvas]} attach="map" {...props} />
+  return <canvasTexture args={[canvas]} attach="map" {...props} />
 }

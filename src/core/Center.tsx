@@ -37,6 +37,8 @@ export type CenterProps = {
   precise?: boolean
   /** Callback, fires in the useLayoutEffect phase, after measurement */
   onCentered?: (props: OnCenterCallbackProps) => void
+  /** Optional cacheKey to keep the component from recalculating on every render */
+  cacheKey?: any
 }
 
 export const Center = React.forwardRef<Group, JSX.IntrinsicElements['group'] & CenterProps>(function Center(
@@ -54,6 +56,7 @@ export const Center = React.forwardRef<Group, JSX.IntrinsicElements['group'] & C
     back,
     onCentered,
     precise = true,
+    cacheKey = 0,
     ...props
   },
   fRef
@@ -97,7 +100,7 @@ export const Center = React.forwardRef<Group, JSX.IntrinsicElements['group'] & C
         depthAlignment: dAlign,
       })
     }
-  }, [children, onCentered, top, left, front, disable, disableX, disableY, disableZ, precise, right, bottom, back])
+  }, [cacheKey, onCentered, top, left, front, disable, disableX, disableY, disableZ, precise, right, bottom, back])
 
   React.useImperativeHandle(fRef, () => ref.current, [])
 

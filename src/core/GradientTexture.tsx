@@ -8,7 +8,7 @@ type Props = {
 } & JSX.IntrinsicElements['texture']
 
 export function GradientTexture({ stops, colors, size = 1024, ...props }: Props) {
-  const canvas = React.useMemo(() => {
+  const canvas: HTMLCanvasElement = React.useMemo(() => {
     const canvas = document.createElement('canvas')
     const context = canvas.getContext('2d')!
     canvas.width = 16
@@ -22,5 +22,6 @@ export function GradientTexture({ stops, colors, size = 1024, ...props }: Props)
     context.fillRect(0, 0, 16, size)
     return canvas
   }, [stops])
+  // @ts-ignore ????
   return <canvasTexture args={[canvas]} attach="map" {...props} />
 }

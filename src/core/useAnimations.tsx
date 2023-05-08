@@ -32,6 +32,7 @@ export function useAnimations<T extends AnimationClip>(
             )
           }
         },
+        configurable: true,
       })
     )
     return { ref: actualRef, clips, actions, names: clips.map((c) => c.name), mixer }

@@ -219,6 +219,7 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
             polygonOffset
             polygonOffsetFactor={-10}
             side={THREE.DoubleSide}
+            fog={false}
           />
         </mesh>
         <Line
@@ -232,6 +233,7 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
           polygonOffset
           polygonOffsetFactor={-10}
           userData={userData}
+          fog={false}
         />
       </group>
     </group>

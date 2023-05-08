@@ -4,6 +4,7 @@ import { extend, MeshProps, Node } from '@react-three/fiber'
 import { useMemo } from 'react'
 import { suspend } from 'suspend-react'
 import { mergeVertices, TextGeometry, TextGeometryParameters, FontLoader } from 'three-stdlib'
+import { useFont, FontData } from './useFont'
 
 declare global {
   namespace JSX {
@@ -11,25 +12,6 @@ declare global {
       renamedTextGeometry: Node<any, any>
     }
   }
-}
-
-declare type Glyph = {
-  _cachedOutline: string[]
-  ha: number
-  o: string
-}
-
-declare type FontData = {
-  boundingBox: {
-    yMax: number
-    yMin: number
-  }
-  familyName: string
-  glyphs: {
-    [k: string]: Glyph
-  }
-  resolution: number
-  underlineThickness: number
 }
 
 type Text3DProps = {
@@ -76,11 +58,7 @@ export const Text3D = React.forwardRef<
     React.useMemo(() => extend({ RenamedTextGeometry: TextGeometry }), [])
 
     const ref = React.useRef<THREE.Mesh>(null!)
-    const font = suspend(async () => {
-      let data = typeof _font === 'string' ? await (await fetch(_font as string)).json() : _font
-      let loader = new FontLoader()
-      return loader.parse(data as FontData)
-    }, [_font])
+    const font = useFont(_font)
 
     const opts = useMemo(() => {
       return {

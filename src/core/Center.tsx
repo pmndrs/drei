@@ -1,5 +1,6 @@
 import { Box3, Vector3, Sphere, Group } from 'three'
 import * as React from 'react'
+import { useThree } from '@react-three/fiber'
 
 export type OnCenterCallbackProps = {
   /** The next parent above <Center> */
@@ -36,6 +37,8 @@ export type CenterProps = {
   precise?: boolean
   /** Callback, fires in the useLayoutEffect phase, after measurement */
   onCentered?: (props: OnCenterCallbackProps) => void
+  /** Optional cacheKey to keep the component from recalculating on every render */
+  cacheKey?: any
 }
 
 export const Center = React.forwardRef<Group, JSX.IntrinsicElements['group'] & CenterProps>(function Center(
@@ -53,6 +56,7 @@ export const Center = React.forwardRef<Group, JSX.IntrinsicElements['group'] & C
     back,
     onCentered,
     precise = true,
+    cacheKey = 0,
     ...props
   },
   fRef
@@ -80,6 +84,7 @@ export const Center = React.forwardRef<Group, JSX.IntrinsicElements['group'] & C
       disable || disableZ ? 0 : -center.z + dAlign
     )
 
+    // Only fire onCentered if the bounding box has changed
     if (typeof onCentered !== 'undefined') {
       onCentered({
         parent: ref.current.parent!,
@@ -95,7 +100,7 @@ export const Center = React.forwardRef<Group, JSX.IntrinsicElements['group'] & C
         depthAlignment: dAlign,
       })
     }
-  }, [children])
+  }, [cacheKey, onCentered, top, left, front, disable, disableX, disableY, disableZ, precise, right, bottom, back])
 
   React.useImperativeHandle(fRef, () => ref.current, [])
 

@@ -2,7 +2,8 @@
 
 [![Version](https://img.shields.io/npm/v/@react-three/drei?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)
 [![Downloads](https://img.shields.io/npm/dt/@react-three/drei.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)
-[![Discord Shield](https://img.shields.io/discord/740090768164651008?style=flat&colorA=000000&colorB=000000&label=discord&logo=discord&logoColor=ffffff)](https://discord.gg/poimandres)
+[![Discord Shield](https://img.shields.io/discord/740090768164651008?style=flat&colorA=000000&colorB=000000&label=discord&logo=discord&logoColor=ffffff)](https://discord.com/channels/740090768164651008/741751532592038022)
+[![Open in GitHub Codespaces](https://img.shields.io/static/v1?&message=Open%20in%20%20Codespaces&style=flat&colorA=000000&colorB=000000&label=GitHub&logo=github&logoColor=ffffff)](https://github.com/codespaces/new?template_repository=pmndrs%2Fdrei)
 
 A growing collection of useful helpers and fully functional, ready-made abstractions for [@react-three/fiber](https://github.com/pmndrs/react-three-fiber). If you make a component that is generic enough to be useful to others, think about making it available here through a PR!
 
@@ -89,6 +90,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#meshdistortmaterial">MeshDistortMaterial</a></li>
           <li><a href="#meshrefractionmaterial">MeshRefractionMaterial</a></li>
           <li><a href="#meshtransmissionmaterial">MeshTransmissionMaterial</a></li>
+          <li><a href="#meshdiscardmaterial">MeshDiscardMaterial</a></li>
           <li><a href="#pointmaterial">PointMaterial</a></li>
           <li><a href="#softshadows">SoftShadows</a></li>
           <li><a href="#shadermaterial">shaderMaterial</a></li>
@@ -103,10 +105,12 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#cycleraycast">CycleRaycast</a></li>
           <li><a href="#select">Select</a></li>
           <li><a href="#stats">Stats</a></li>
+          <li><a href="#wireframe">Wireframe</a></li>
           <li><a href="#usedepthbuffer">useDepthBuffer</a></li>
           <li><a href="#usecontextbridge">useContextBridge</a></li>
           <li><a href="#usefbo">useFBO</a></li>
           <li><a href="#usecamera">useCamera</a></li>
+          <li><a href="#usecubecamera">useCubeCamera</a></li>
           <li><a href="#usedetectgpu">useDetectGPU</a></li>          
           <li><a href="#useaspect">useAspect</a></li>
           <li><a href="#usecursor">useCursor</a></li>
@@ -125,7 +129,8 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#usektx2">useKTX2</a></li>
           <li><a href="#usecubetexture">useCubeTexture</a></li>
           <li><a href="#usevideotexture">useVideoTexture</a></li>
-          <li><a href="#usetrailtexture">useTrailTexture</a></li>          
+          <li><a href="#usetrailtexture">useTrailTexture</a></li>
+          <li><a href="#usefont">useFont</a></li>
         </ul>
         <li><a href="#performance">Performance</a></li>
         <ul>
@@ -176,16 +181,19 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#shapes">Dodecahedron</a></li>
           <li><a href="#shapes">Extrude</a></li>
           <li><a href="#shapes">Lathe</a></li>
+          <li><a href="#shapes">Shape</a></li>
           <li><a href="#roundedbox">RoundedBox</a></li>
           <li><a href="#screenquad">Screenquad</a></li>
           <li><a href="#line">Line</a></li>
           <li><a href="#quadraticbezierline">QuadraticBezierLine</a></li>
           <li><a href="#cubicbezierline">CubicBezierLine</a></li>
           <li><a href="#catmullromline">CatmullRomLine</a></li>
+          <li><a href="#facemesh">Facemesh</a></li>
         </ul>
         <li><a href="#staging">Staging</a></li>
         <ul>
           <li><a href="#center">Center</a></li>
+          <li><a href="#resize">Resize</a></li>
           <li><a href="#BBAnchor">BBAnchor</a></li>        
           <li><a href="#bounds">Bounds</a></li>
           <li><a href="#camerashake">CameraShake</a></li>
@@ -205,6 +213,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#stars">Stars</a></li>
           <li><a href="#sparkles">Sparkles</a></li>
           <li><a href="#cloud">Cloud</a></li>
+          <li><a href="#useenvironment">useEnvironment</a></li>
           <li><a href="#usematcaptexture">useMatcapTexture</a></li>
           <li><a href="#usenormaltexture">useNormalTexture</a></li>
         </ul>
@@ -337,7 +346,15 @@ If you have moving objects, unset the prop and use a smaller `resolution` instea
 
 If available controls have damping enabled by default, they manage their own updates, remove themselves on unmount, are compatible with the `frameloop="demand"` canvas-flag. They inherit all props from their underlying [THREE controls](https://github.com/mrdoob/three.js/tree/master/examples/jsm/controls). They are the first effects to run before all other useFrames, to ensure that other components may mutate the camera on top of them.
 
-Some controls allow you to set `makeDefault`, similar to, for instance, PerspectiveCamera. This will set @react-three/fiber's `controls` field in the root store. This can make it easier in situations where you want controls to be known and other parts of the app could respond to it. Some drei controls already take it into account, like CameraShake, Gizmo and TransformControls.
+[Some controls](https://github.com/search?q=repo%3Apmndrs%2Fdrei+language%3ATSX+path%3A%2F%5Esrc%5C%2Fcore%5C%2F.*Controls%5C.tsx%2F+makeDefault&type=code) allow you to set `makeDefault`, similar to, for instance, `PerspectiveCamera`. This will set [@react-three/fiber](https://docs.pmnd.rs/react-three-fiber/api/hooks#usethree)'s `controls` field in the root store. This can make it easier in situations where you want controls to be known and other parts of the app could respond to it. Some drei controls already take it into account, like `CameraShake`, `Gizmo` and `TransformControls`.
+
+```tsx
+<CameraControls makeDefault />
+```
+
+```tsx
+const controls = useThree((state) => state.controls)
+```
 
 Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-scene-st), TrackballControls, ArcballControls, FlyControls, DeviceOrientationControls, PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st), FirstPersonControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-firstpersoncontrols--first-person-controls-story) and CameraControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-cameracontrols--camera-controls-story)
 
@@ -415,7 +432,7 @@ Scroll controls create a HTML scroll container in front of the canvas. Everythin
 You can listen and react to scroll with the `useScroll` hook which gives you useful data like the current scroll `offset`, `delta` and functions for range finding: `range`, `curve` and `visible`. The latter functions are especially useful if you want to react to the scroll offset, for instance if you wanted to fade things in and out if they are in or out of view.
 
 ```jsx
-<ScrollControls pages={3} damping={0.1}>
+;<ScrollControls pages={3} damping={0.1}>
   {/* Canvas contents in here will *not* scroll, but receive useScroll! */}
   <SomeModel />
   <Scroll>
@@ -535,10 +552,10 @@ enum Controls {
 }
 function App() {
   const map = useMemo<KeyboardControlsEntry<Controls>[]>(()=>[
-    { name: Controls.forward, keys: ['ArrowUp', 'w', 'W'] },
-    { name: Controls.back, keys: ['ArrowDown', 's', 'S'] },
-    { name: Controls.left, keys: ['ArrowLeft', 'a', 'A'] },
-    { name: Controls.right, keys: ['ArrowRight', 'd', 'D'] },
+    { name: Controls.forward, keys: ['ArrowUp', 'KeyW'] },
+    { name: Controls.back, keys: ['ArrowDown', 'KeyS'] },
+    { name: Controls.left, keys: ['ArrowLeft', 'KeyA'] },
+    { name: Controls.right, keys: ['ArrowRight', 'KeyD'] },
     { name: Controls.jump, keys: ['Space'] },
   ], [])
   return (
@@ -674,7 +691,7 @@ return (
 
 #### TransformControls
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-transformcontrols--transform-controls-story)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/gizmos-transformcontrols--transform-controls-story)
 
 <p>
   <a href="https://codesandbox.io/s/btsbj"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/btsbj/screenshot.png" alt="Tranform controls"/></a>
@@ -764,7 +781,7 @@ useHelper(condition && mesh, BoxHelper, 'red') // you can passe false instead of
 
 # Shapes
 
-#### Plane, Box, Sphere, Circle, Cone, Cylinder, Tube, Torus, TorusKnot, Ring, Tetrahedron, Polyhedron, Icosahedron, Octahedron, Dodecahedron, Extrude, Lathe
+#### Plane, Box, Sphere, Circle, Cone, Cylinder, Tube, Torus, TorusKnot, Ring, Tetrahedron, Polyhedron, Icosahedron, Octahedron, Dodecahedron, Extrude, Lathe, Shape
 
 Short-cuts for a [mesh](https://threejs.org/docs/#api/en/objects/Mesh) with a [buffer geometry](https://threejs.org/docs/#api/en/core/BufferGeometry).
 
@@ -795,6 +812,7 @@ A box buffer geometry with rounded corners, done with extrusion.
   args={[1, 1, 1]} // Width, height, depth. Default is [1, 1, 1]
   radius={0.05} // Radius of the rounded corners. Default is 0.05
   smoothness={4} // The number of curve segments. Default is 4
+  creaseAngle={0.4} // Smooth normals everywhere except faces that meet at an angle greater than the crease angle
   {...meshProps} // All THREE.Mesh props are valid
 >
   <meshPhongMaterial color="#f3f3f3" wireframe />
@@ -913,6 +931,43 @@ Renders a THREE.Line2 using THREE.CatmullRomCurve3 for interpolation.
 />
 ```
 
+#### Facemesh
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shapes-facemesh--facemesh-st)
+
+Renders a [MediaPipe `face` mesh](https://github.com/tensorflow/tfjs-models/tree/master/face-landmarks-detection):
+
+```jsx
+const face = {
+  keypoints: [
+    {x: 406.53152857172876, y: 256.8054528661723, z: 10.2, name: "lips"},
+    {x: 406.544237446397, y: 230.06933367750395, z: 8},
+    ...
+  ],
+  box: {
+    xMin: 304.6476503248806,
+    xMax: 502.5079975897382,
+    yMin: 102.16298762367356,
+    yMax: 349.035215984403,
+    width: 197.86034726485758,
+    height: 246.87222836072945
+  },
+}
+
+<Facemesh face={face} />
+```
+
+```tsx
+type FacemeshProps = {
+  /** a MediaPipeFaceMesh object, default: a lambda face */
+  face?: MediaPipeFaceMesh
+  /** width of the mesh, default: 1 */
+  width?: number
+  /** or height of the mesh, default: undefined */
+  height?: number
+}
+```
+
 # Abstractions
 
 #### Image
@@ -1007,7 +1062,7 @@ It adds three properties that do not exist in the original `TextGeometry`, `line
 
 Abstraction around threes own [EffectComposer](https://threejs.org/docs/#examples/en/postprocessing/EffectComposer). By default it will prepend a render-pass and a gammacorrection-pass. Children are cloned, `attach` is given to them automatically. You can only use passes or effects in there.
 
-By default it creates a render target with HalfFloatType, RGBAFormat and gl.outputEncoding. You can change all of this to your liking, inspect the types.
+By default it creates a render target with HalfFloatType, RGBAFormat. You can change all of this to your liking, inspect the types.
 
 ```jsx
 import { SSAOPass } from "three-stdlib"
@@ -1446,8 +1501,8 @@ Easily add reflections and/or blur to any mesh. It takes surface roughness into 
       3 = distortion channel
       4 = lod channel (based on the roughness)
     */
-   reflectorOffset={0.2} // Offsets the virtual camera that projects the reflection. Useful when the reflective surface is some distance from the object's origin (default = 0)
-  >
+    reflectorOffset={0.2} // Offsets the virtual camera that projects the reflection. Useful when the reflective surface is some distance from the object's origin (default = 0)
+  />
 </mesh>
 ```
 
@@ -1636,6 +1691,18 @@ Or a PerspectiveCamera.
 
 This would mimic the default MeshPhysicalMaterial behaviour, these materials won't "see" one another, but at least they would pick up on everything else, including transmissive or transparent objects.
 
+#### MeshDiscardMaterial
+
+A material that renders nothing. In comparison to `<mesh visible={false}` it can be used to hide objects from the scene while still displays shadows and children.
+
+```jsx
+<mesh castShadow>
+  <torusKnotGeonetry />
+  <MeshDiscardMaterial />
+  {/* Shadows and edges will show, but the model itself won't */}
+  <Edges />
+```
+
 #### PointMaterial
 
 <p>
@@ -1653,13 +1720,25 @@ Antialiased round dots. It takes the same props as regular [THREE.PointsMaterial
 #### SoftShadows
 
 <p>
+  <a href="https://codesandbox.io/s/ykfpwf"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/ykfpwf/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/dh2jc"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/dh2jc/screenshot.png" alt="Demo"/></a>
 </p>
 
-Injects [percent closer soft shadows (pcss)](https://threejs.org/examples/#webgl_shadowmap_pcss) into threes shader chunk. Mounting and unmounting this component will lead to all shaders being be re-compiled, although it will only cause overhead if SoftShadows is mounted after the scene has already rendered, if it mounts with everything else in your scene shaders will compile naturally.
+```tsx
+type SoftShadowsProps = {
+  /** Size of the light source (the larger the softer the light), default: 25 */
+  size?: number
+  /** Number of samples (more samples less noise but more expensive), default: 10 */
+  samples?: number
+  /** Depth focus, use it to shift the focal point (where the shadow is the sharpest), default: 0 (the beginning) */
+  focus?: number
+}
+```
+
+Injects percent closer soft shadows (pcss) into threes shader chunk. Mounting and unmounting this component will lead to all shaders being be re-compiled, although it will only cause overhead if SoftShadows is mounted after the scene has already rendered, if it mounts with everything else in your scene shaders will compile naturally.
 
 ```jsx
-<SoftShadows frustum={3.75} size={0.005} near={9.5} samples={17} rings={11} />
+<SoftShadows />
 ```
 
 #### shaderMaterial
@@ -1779,6 +1858,7 @@ function Scene() {
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-html--html-st) ![](https://img.shields.io/badge/-Dom only-red)
 
 <p>
+  <a href="https://codesandbox.io/s/0n9it"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/0n9it/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/qyz5r"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/qyz5r/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/9keg6"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/9keg6/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/6oei7"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/6oei7/screenshot.png" alt="Demo"/></a>
@@ -1900,6 +1980,25 @@ For this to work properly your event handler have to call `event.stopPropagation
   <a href="https://codesandbox.io/s/ny3p4"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/ny3p4/screenshot.png" alt="Demo"/></a>
 </p>
 
+```tsx
+type Props = {
+  /** Allow multi select, default: false */
+  multiple?: boolean
+  /** Allow box select, default: false */
+  box?: boolean
+  /** Custom CSS border: default: '1px solid #55aaff' */
+  border?: string
+  /** Curom CSS color, default: 'rgba(75, 160, 255, 0.1)' */
+  backgroundColor?: string
+  /** Callback for selection changes */
+  onChange?: (selected: THREE.Object3D[]) => void
+  /** Callback for selection changes once the pointer is up */
+  onChangePointerUp?: (selected: THREE.Object3D[]) => void
+  /** Optional filter for filtering the selection */
+  filter?: (selected: THREE.Object3D[]) => THREE.Object3D[]
+}
+```
+
 This component allows you to select/unselect objects by clicking on them. It keeps track of the currently selected objects and can select multiple objects (with the shift key). Nested components can request the current selection (which is always an array) with the `useSelect` hook. With the `box` prop it will let you shift-box-select objects by holding and draging the cursor over multiple objects. Optionally you can filter the selected items as well as define in which shape they are stored by defining the `filter` prop.
 
 ```jsx
@@ -1935,6 +2034,49 @@ useEffect(() => {
 }, [])
 
 return <Stats parent={parent} />
+```
+
+#### Wireframe
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/staging-wireframe--wireframe-st)
+
+<p>
+  <a href="https://codesandbox.io/s/2572o5"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/2572o5/screenshot.png" alt="Demo"/></a>
+</p>
+
+Renders an Antialiased, shader based wireframe on or around a geometry.
+
+```jsx
+<mesh>
+  <geometry />
+  <material />
+
+  <Wireframe /> // Will apply wireframe on top of existing material on this mesh
+</mesh>
+
+// OR
+<Wireframe
+  geometry={geometry | geometryRef} // Will create the wireframe based on input geometry.
+
+  // Other props
+  simplify={false} // Remove some edges from wireframes
+  fill={"#00ff00"} // Color of the inside of the wireframe
+  fillMix={0} // Mix between the base color and the Wireframe 'fill'. 0 = base; 1 = wireframe
+  fillOpacity={0.25} // Opacity of the inner fill
+  stroke={"#ff0000"} // Color of the stroke
+  strokeOpacity={1} // Opacity of the stroke
+  thickness={0.05} // Thinkness of the lines
+  colorBackfaces={false} // Whether to draw lines that are facing away from the camera
+  backfaceStroke={"#0000ff"} // Color of the lines that are facing away from the camera
+  dashInvert={true} // Invert the dashes
+  dash={false} // Whether to draw lines as dashes
+  dashRepeats={4} // Number of dashes in one seqment
+  dashLength={0.5} // Length of each dash
+  squeeze={false} // Narrow the centers of each line segment
+  squeezeMin={0.2} // Smallest width to squueze to
+  squeezeMax={1} // Largest width to squeeze from
+/>
+
 ```
 
 #### useDepthBuffer
@@ -1997,6 +2139,31 @@ A hook for the rare case when you are using non-default cameras for heads-up-dis
 
 ```jsx
 <mesh raycast={useCamera(customCamera)} />
+```
+
+#### useCubeCamera
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-usecubecamera)
+
+Creates a [`THREE.CubeCamera`](https://threejs.org/docs/#api/en/cameras/CubeCamera) that renders into a `fbo` renderTarget and that you can `update()`.
+
+```tsx
+export function useCubeCamera({
+  /** Resolution of the FBO, 256 */
+  resolution?: number
+  /** Camera near, 0.1 */
+  near?: number
+  /** Camera far, 1000 */
+  far?: number
+  /** Custom environment map that is temporarily set as the scenes background */
+  envMap?: THREE.Texture
+  /** Custom fog that is temporarily set as the scenes fog */
+  fog?: Fog | FogExp2
+})
+```
+
+```jsx
+const { fbo, camera, update } = useCubeCamera()
 ```
 
 #### useDetectGPU
@@ -2239,19 +2406,6 @@ const props = useTexture({
 return <meshStandardMaterial {...props} />
 ```
 
-Use the `onLoad` callback to set propeties on loaded textures.
-
-```jsx
-const texture = useTexture(url, (texture) => {
-  texture.wrapS = texture.wrapT = THREE.RepeatWrapping
-})
-
-const [texture1, texture2] = useTexture([texture1, texture2], ([texture1, texture2]) => {
-  texture1.wrapS = texture1.wrapT = THREE.RepeatWrapping
-  texture2.wrapS = texture2.wrapT = THREE.RepeatWrapping
-})
-```
-
 #### useKTX2
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-ktx2--use-ktx-2-scene-st)
@@ -2277,8 +2431,11 @@ const envMap = useCubeTexture(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png',
 
 #### useVideoTexture
 
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-videotexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
+
 <p>
   <a href="https://codesandbox.io/s/39hg8"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/39hg8/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/2cemck"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/2cemck/screenshot.png?v2" alt="Demo"/></a>
 </p>
 
 A convenience hook that returns a `THREE.VideoTexture` and integrates loading into suspense. By default it falls back until the `canplay` event. Then it starts playing the video, which, if the video is muted, is allowed in the browser without user interaction.
@@ -2309,6 +2466,28 @@ return (
   <mesh>
     <meshBasicMaterial map={texture} toneMapped={false} />
 ```
+
+It also accepts a [`MediaStream`](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream) from eg. [`.getDisplayMedia()`](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia) or [`.getUserMedia()`](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia):
+
+```jsx
+const [stream, setStream] = useState()
+
+return (
+  <mesh onClick={async () => setStream(await navigator.mediaDevices.getDisplayMedia({ video: true }))}>
+    <React.Suspense fallback={<meshBasicMaterial wireframe />}>
+      <VideoMaterial src={stream} />
+    </React.Suspense>
+```
+
+```jsx
+function VideoMaterial({ src }) {
+  const texture = useVideoTexture(src)
+
+  return <meshBasicMaterial map={texture} toneMapped={false} />
+}
+```
+
+NB: It's important to wrap `VideoMaterial` into `React.Suspense` since, `useVideoTexture(src)` here will be suspended until the user shares its screen.
 
 #### useTrailTexture
 
@@ -2346,6 +2525,21 @@ const [texture, onMove] = useTrailTexture(config)
 return (
   <mesh onPointerMove={onMove}>
     <meshStandardMaterial displacementMap={texture} />
+```
+
+#### useFont
+
+Uses THREE.FontLoader to load a font and returns a `THREE.Font` object. It also accepts a JSON object as a parameter. You can use this to preload or share a font across multiple components.
+
+```jsx
+const font = useFont('/fonts/helvetiker_regular.typeface.json')
+return <Text3D font={font} />
+```
+
+In order to preload you do this:
+
+```jsx
+useFont.preload('/fonts/helvetiker_regular.typeface.json')
 ```
 
 # Performance
@@ -2952,6 +3146,45 @@ function ScaledModel() {
     <Center onCentered={({ container, height }) => container.scale.setScalar(viewport.height / height)}>
       <Model />
     </Center>
+```
+
+#### Resize
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-resize)
+
+<p>
+  <a href="https://codesandbox.io/s/6yg0i3"><img width="20%" src="https://user-images.githubusercontent.com/76580/234665568-2be311d2-1896-4f82-ae20-b10b44c1e952.png" alt="Demo"/></a>
+</p>
+
+Calculates a boundary box and scales its children so the highest dimension is constrained by 1. NB: proportions are preserved.
+
+```tsx
+export type ResizeProps = JSX.IntrinsicElements['group'] & {
+  /** constrained by width dimension (x axis), undefined */
+  width?: boolean
+  /** constrained by height dimension (y axis), undefined */
+  height?: boolean
+  /** constrained by depth dimension (z axis), undefined */
+  depth?: boolean
+  /** You can optionally pass the Box3, otherwise will be computed, undefined */
+  box3?: THREE.Box3
+  /** See https://threejs.org/docs/index.html?q=box3#api/en/math/Box3.setFromObject */
+  precise?: boolean
+}
+```
+
+```jsx
+<Resize>
+  <mesh />
+</Resize>
+```
+
+You can also specify the dimension to be constrained by:
+
+```jsx
+<Resize height>
+  <Box args={[70, 40, 20]}>
+</Resize>
 ```
 
 #### BBAnchor
@@ -3622,6 +3855,33 @@ Particle based cloud.
   depth={1.5} // Z-dir depth
   segments={20} // Number of particles
 />
+```
+
+#### useEnvironment
+
+A convenience hook to load an environment map. The props are the same as on the `<Environment />` component.
+
+```tsx
+export type EnvironmentLoaderProps = {
+  files?: string | string[]
+  path?: string
+  preset?: PresetsType
+  extensions?: (loader: Loader) => void
+  encoding?: TextureEncoding
+```
+
+You can use it without properties, which will default to px, nx, py, ny, pz, nz as \*.png files inside your /public directory.
+
+```jsx
+const cubeTexture = useEnvironment()
+```
+
+Or you can specificy from where to load the files.
+
+```jsx
+const presetTexture = useEnvironment({ preset: 'city' })
+const rgbeTexture = useEnvironment({ files: 'model.hdr' })
+const cubeTexture = useEnvironment({ files: ['px', 'nx', 'py', 'ny', 'pz', 'nz'].map((n) => `${n}.png`) })
 ```
 
 #### useMatcapTexture

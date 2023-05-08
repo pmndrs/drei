@@ -7,11 +7,19 @@ import shallow from 'zustand/shallow'
 const context = React.createContext<THREE.Object3D[]>([])
 
 type Props = JSX.IntrinsicElements['group'] & {
+  /** Allow multi select, default: false */
   multiple?: boolean
+  /** Allow box select, default: false */
   box?: boolean
+  /** Custom CSS border: default: '1px solid #55aaff' */
   border?: string
+  /** Curom CSS color, default: 'rgba(75, 160, 255, 0.1)' */
   backgroundColor?: string
+  /** Callback for selection changes */
   onChange?: (selected: THREE.Object3D[]) => void
+  /** Callback for selection changes once the pointer is up */
+  onChangePointerUp?: (selected: THREE.Object3D[]) => void
+  /** Optional filter for filtering the selection */
   filter?: (selected: THREE.Object3D[]) => THREE.Object3D[]
 }
 
@@ -20,11 +28,13 @@ export function Select({
   multiple,
   children,
   onChange,
+  onChangePointerUp,
   border = '1px solid #55aaff',
   backgroundColor = 'rgba(75, 160, 255, 0.1)',
   filter: customFilter = (item) => item,
   ...props
 }: Props) {
+  const [downed, down] = React.useState(false)
   const { setEvents, camera, raycaster, gl, controls, size, get } = useThree()
   const [hovered, hover] = React.useState(false)
   const [active, dispatch] = React.useReducer(
@@ -37,7 +47,10 @@ export function Select({
     },
     []
   )
-  React.useEffect(() => void onChange?.(active), [active])
+  React.useEffect(() => {
+    if (downed) onChange?.(active)
+    else onChangePointerUp?.(active)
+  }, [active, downed])
   const onClick = React.useCallback((e) => {
     e.stopPropagation()
     dispatch({ object: customFilter([e.object])[0], shift: multiple && e.shiftKey })
@@ -74,7 +87,7 @@ export function Select({
     function onSelectStart(event) {
       if (controls) (controls as any).enabled = false
       setEvents({ enabled: false })
-      isDown = true
+      down((isDown = true))
       gl.domElement.parentElement?.appendChild(element)
       element.style.left = `${event.clientX}px`
       element.style.top = `${event.clientY}px`
@@ -99,7 +112,7 @@ export function Select({
       if (isDown) {
         if (controls) (controls as any).enabled = oldControlsEnabled
         setEvents({ enabled: oldRaycasterEnabled })
-        isDown = false
+        down((isDown = false))
         element.parentElement?.removeChild(element)
       }
     }

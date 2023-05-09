@@ -774,7 +774,7 @@ A hook for a quick way to add helpers to existing nodes in the scene. It handles
 ```jsx
 const mesh = useRef()
 useHelper(mesh, BoxHelper, 'cyan')
-useHelper(condition && mesh, BoxHelper, 'red') // you can passe false instead of the object ref to hide the helper
+useHelper(condition && mesh, BoxHelper, 'red') // you can pass false instead of the object ref to hide the helper
 
 <mesh ref={mesh} ... />
 ```

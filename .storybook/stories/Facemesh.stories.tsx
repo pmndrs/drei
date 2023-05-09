@@ -20,28 +20,30 @@ export default {
   ],
 }
 
-export const FacemeshSt = ({ width, flipY, wireframe, flat, skin }) => (
+export const FacemeshSt = ({ depth, wireframe, flat, skin, debug }) => (
   <>
     <color attach="background" args={['#303030']} />
     <axesHelper />
 
-    <Facemesh width={width} rotation-y={Math.PI}>
+    <Facemesh depth={depth} debug={debug} rotation-z={Math.PI}>
       <meshStandardMaterial side={THREE.DoubleSide} color={skin} flatShading={flat} wireframe={wireframe} />
     </Facemesh>
   </>
 )
 FacemeshSt.args = {
-  width: undefined,
+  depth: undefined,
   wireframe: false,
   flat: true,
   skin: '#cbcbcb',
+  debug: true,
 }
 
 FacemeshSt.argTypes = {
-  width: { control: { type: 'range', min: 0, max: 6.5, step: 0.01 } },
+  depth: { control: { type: 'range', min: 0, max: 6.5, step: 0.01 } },
   wireframe: { control: { type: 'boolean' } },
   flat: { control: { type: 'boolean' } },
   skin: { control: { type: 'color' } },
+  debug: { control: { type: 'boolean' } },
 }
 
 FacemeshSt.storyName = 'Default'

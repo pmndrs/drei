@@ -30,17 +30,22 @@ export type ScrollControlsProps = {
 }
 
 export type ScrollControlsState = {
+  __damp: {
+    velocity_delta: number
+    velocity_offset: number
+  }
+  curve(from: number, distance: number, margin?: number): number
+  damping: number
+  delta: number
   el: HTMLDivElement
   eps: number
   fill: HTMLDivElement
   fixed: HTMLDivElement
   horizontal: boolean | undefined
-  damping: number
   offset: number
-  delta: number
   pages: number
   range(from: number, distance: number, margin?: number): number
-  curve(from: number, distance: number, margin?: number): number
+  scroll: { current: number }
   visible(from: number, distance: number, margin?: number): boolean
 }
 

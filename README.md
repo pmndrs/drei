@@ -961,11 +961,42 @@ const face = {
 type FacemeshProps = {
   /** a MediaPipeFaceMesh object, default: a lambda face */
   face?: MediaPipeFaceMesh
-  /** width of the mesh, default: 1 */
+  /** width of the mesh, default: undefined */
   width?: number
   /** or height of the mesh, default: undefined */
   height?: number
+  /** or depth of the mesh, default: 1 */
+  depth?: number
+  /** a landmarks tri supposed to be vertical, default: [159, 386, 200] (see: https://github.com/tensorflow/tfjs-models/tree/master/face-landmarks-detection#mediapipe-facemesh-keypoints) */
+  verticalTri?: [number, number, number]
+  /** a landmark index to be the origin of the mesh. default: undefined (ie. the bbox center) */
+  origin?: number
+  /** debug mode, default: false */
+  debug?: boolean
 }
+```
+
+Ref-api:
+
+```tsx
+const api = useRef<FacemeshApi>()
+
+const {meshRef, outerRef} = api
+
+<Facemesh ref={api} face={face} />
+```
+
+```tsx
+type FacemeshApi = {
+  meshRef: React.RefObject<THREE.Mesh>
+  outerRef: React.RefObject<THREE.Group>
+}
+```
+
+NB: `outerRef` group is oriented as your `face`. You can for example gets its direction:
+
+```tsx
+meshRef.current.localToWorld(new THREE.Vector3(0, 0, -1))
 ```
 
 # Abstractions

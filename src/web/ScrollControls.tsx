@@ -30,7 +30,7 @@ export type ScrollControlsProps = {
 }
 
 export type ScrollControlsState = {
-  __damp: {
+  __damp?: {
     velocity_delta: number
     velocity_offset: number
   }

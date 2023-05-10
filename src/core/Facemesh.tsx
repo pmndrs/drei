@@ -34,9 +34,9 @@ export const Facemesh = React.forwardRef<FacemeshApi, FacemeshProps>(
   (
     {
       face = FacemeshDatas.SAMPLE_FACE,
-      width = 1,
+      width,
       height,
-      depth,
+      depth = 1,
       verticalTri = [159, 386, 200],
       origin,
       debug = false,
@@ -140,7 +140,7 @@ export const Facemesh = React.forwardRef<FacemeshApi, FacemeshProps>(
     const api = React.useMemo<FacemeshApi>(
       () => ({
         meshRef,
-        outerRef: outerRef,
+        outerRef,
       }),
       []
     )

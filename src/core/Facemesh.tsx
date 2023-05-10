@@ -48,8 +48,8 @@ export const Facemesh = React.forwardRef<FacemeshApi, FacemeshProps>(
     const outerRef = React.useRef<THREE.Group>(null)
     const meshRef = React.useRef<THREE.Mesh>(null)
 
-    const [sightDir] = React.useState(new THREE.Vector3())
-    const [sightDirQuaternion] = React.useState(new THREE.Quaternion())
+    const [sightDir] = React.useState(() => new THREE.Vector3())
+    const [sightDirQuaternion] = React.useState(() => new THREE.Quaternion())
 
     const { invalidate } = useThree()
 
@@ -57,12 +57,12 @@ export const Facemesh = React.forwardRef<FacemeshApi, FacemeshProps>(
       meshRef.current?.geometry.setIndex(FacemeshDatas.TRIANGULATION)
     }, [])
 
-    const [a] = React.useState(new THREE.Vector3())
-    const [b] = React.useState(new THREE.Vector3())
-    const [c] = React.useState(new THREE.Vector3())
-    const [ab] = React.useState(new THREE.Vector3())
-    const [ac] = React.useState(new THREE.Vector3())
-    const [bboxSize] = React.useState(new THREE.Vector3())
+    const [a] = React.useState(() => new THREE.Vector3())
+    const [b] = React.useState(() => new THREE.Vector3())
+    const [c] = React.useState(() => new THREE.Vector3())
+    const [ab] = React.useState(() => new THREE.Vector3())
+    const [ac] = React.useState(() => new THREE.Vector3())
+    const [bboxSize] = React.useState(() => new THREE.Vector3())
     React.useEffect(() => {
       const geometry = meshRef.current?.geometry
       if (!geometry) return

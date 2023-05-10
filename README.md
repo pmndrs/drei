@@ -993,7 +993,7 @@ type FacemeshApi = {
 }
 ```
 
-NB: `outerRef` group is oriented as your `face`. You can for example gets its direction:
+NB: `outerRef` group is oriented as your `face`. You can for example get its world direction:
 
 ```tsx
 meshRef.current.localToWorld(new THREE.Vector3(0, 0, -1))

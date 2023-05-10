@@ -935,7 +935,7 @@ Renders a THREE.Line2 using THREE.CatmullRomCurve3 for interpolation.
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shapes-facemesh--facemesh-st)
 
-Renders a [MediaPipe `face` mesh](https://github.com/tensorflow/tfjs-models/tree/master/face-landmarks-detection):
+Renders an oriented [MediaPipe `face` mesh](https://github.com/tensorflow/tfjs-models/tree/master/face-landmarks-detection):
 
 ```jsx
 const face = {
@@ -980,8 +980,6 @@ Ref-api:
 
 ```tsx
 const api = useRef<FacemeshApi>()
-
-const {meshRef, outerRef} = api
 
 <Facemesh ref={api} face={face} />
 ```

@@ -969,7 +969,9 @@ type FacemeshProps = {
   depth?: number
   /** a landmarks tri supposed to be vertical, default: [159, 386, 200] (see: https://github.com/tensorflow/tfjs-models/tree/master/face-landmarks-detection#mediapipe-facemesh-keypoints) */
   verticalTri?: [number, number, number]
-  /** Displays bounding-box and sight-direction, default false */
+  /** a landmark index to be the origin of the mesh. default: undefined (ie. the bbox center) */
+  origin?: number
+  /** debug mode, default: false */
   debug?: boolean
 }
 ```

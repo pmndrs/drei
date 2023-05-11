@@ -71,6 +71,7 @@ export * from './useBoxProjectedEnv'
 export * from './BBAnchor'
 export * from './useTrailTexture'
 export * from './useCubeCamera'
+export * from './Example'
 
 // Modifiers
 export * from './CurveModifier'

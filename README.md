@@ -1892,15 +1892,15 @@ function Scene() {
 A "counter" example.
 
 ```tsx
-<Example />
+<Example font="/Inter_Bold.json" />
 ```
 
 ```tsx
 type ExampleProps = {
+  font: string
   color?: Color
   debug?: boolean
   bevelSize?: number
-  font?: string
 }
 ```
 
@@ -1909,7 +1909,7 @@ Ref-api:
 ```tsx
 const api = useRef<ExampleApi>()
 
-<Example ref={api} />
+<Example ref={api} font="/Inter_Bold.json" />
 ```
 
 ```tsx

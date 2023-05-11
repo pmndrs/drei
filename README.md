@@ -5,7 +5,7 @@
 [![Discord Shield](https://img.shields.io/discord/740090768164651008?style=flat&colorA=000000&colorB=000000&label=discord&logo=discord&logoColor=ffffff)](https://discord.com/channels/740090768164651008/741751532592038022)
 [![Open in GitHub Codespaces](https://img.shields.io/static/v1?&message=Open%20in%20%20Codespaces&style=flat&colorA=000000&colorB=000000&label=GitHub&logo=github&logoColor=ffffff)](https://github.com/codespaces/new?template_repository=pmndrs%2Fdrei)
 
-A growing collection of useful helpers and fully functional, ready-made abstractions for [@react-three/fiber](https://github.com/pmndrs/react-three-fiber). If you make a component that is generic enough to be useful to others, think about making it available here through a PR!
+A growing collection of useful helpers and fully functional, ready-made abstractions for [@react-three/fiber](https://github.com/pmndrs/react-three-fiber). If you make a component that is generic enough to be useful to others, think about [CONTRIBUTING](CONTRIBUTING.md)!
 
 ```bash
 npm install @react-three/drei
@@ -101,6 +101,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
       <ul>
         <li><a href="#misc">Misc</a></li>
         <ul>
+          <li><a href="#example">Example</a></li>
           <li><a href="#html">Html</a></li>
           <li><a href="#cycleraycast">CycleRaycast</a></li>
           <li><a href="#select">Select</a></li>
@@ -1879,6 +1880,42 @@ function Scene() {
   return (
     //...
   )
+}
+```
+
+#### Example
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-example--example-st)
+
+> :warning: solely for [`CONTRIBUTING`](CONTRIBUTING.md#example) purposes
+
+A "counter" example.
+
+```tsx
+<Example />
+```
+
+```tsx
+type ExampleProps = {
+  color?: Color
+  debug?: boolean
+  bevelSize?: number
+  font?: string
+}
+```
+
+Ref-api:
+
+```tsx
+const api = useRef<ExampleApi>()
+
+<Example ref={api} />
+```
+
+```tsx
+type ExampleApi = {
+  incr: (x?: number) => void
+  decr: (x?: number) => void
 }
 ```
 

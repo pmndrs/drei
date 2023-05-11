@@ -7,10 +7,10 @@ import { Text3D } from './Text3D'
 import { Center } from './Center'
 
 export type ExampleProps = {
+  font: string
   color?: Color
   debug?: boolean
   bevelSize?: number
-  font?: string
 } & JSX.IntrinsicElements['group']
 
 export type ExampleApi = {
@@ -19,10 +19,7 @@ export type ExampleApi = {
 }
 
 export const Example = React.forwardRef<ExampleApi, ExampleProps>(
-  (
-    { font = '/fonts/Inter_Bold.json', color = '#cbcbcb', bevelSize = 0.04, debug = false, children, ...props },
-    fref
-  ) => {
+  ({ font, color = '#cbcbcb', bevelSize = 0.04, debug = false, children, ...props }, fref) => {
     const [counter, setCounter] = React.useState(0)
 
     const incr = React.useCallback((x = 1) => setCounter(counter + x), [counter])

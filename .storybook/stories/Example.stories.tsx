@@ -41,9 +41,7 @@ export const ExampleSt = ({ fontUrl, color, bevelSize, debug }) => {
             apiRef.current?.incr()
           }
         }}
-      >
-        <Sparkles scale={2} />
-      </Example>
+      />
     </>
   )
 }

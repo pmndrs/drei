@@ -1887,7 +1887,7 @@ function Scene() {
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-example--example-st)
 
-> :warning: solely for [`CONTRIBUTING`](CONTRIBUTING.md#example) purposes
+> **Warning** solely for [`CONTRIBUTING`](CONTRIBUTING.md#example) purposes
 
 A "counter" example.
 

@@ -31,12 +31,14 @@ export const Example = React.forwardRef<ExampleApi, ExampleProps>(
 
     return (
       <group {...props}>
-        <Center top cacheKey={JSON.stringify({ counter, font })}>
-          <Text3D bevelEnabled bevelSize={bevelSize} font={font}>
-            {counter}
-            {debug ? <meshNormalMaterial wireframe /> : <meshStandardMaterial color={color} />}
-          </Text3D>
-        </Center>
+        <React.Suspense fallback={null}>
+          <Center top cacheKey={JSON.stringify({ counter, font })}>
+            <Text3D bevelEnabled bevelSize={bevelSize} font={font}>
+              {debug ? <meshNormalMaterial wireframe /> : <meshStandardMaterial color={color} />}
+              {counter}
+            </Text3D>
+          </Center>
+        </React.Suspense>
         {children}
       </group>
     )

@@ -9,6 +9,10 @@ Thanks for wanting to make a contribution and wanting to improve this library fo
 3.  Create a branch for your PR with `git checkout -b pr-type/issue-number-your-branch-name`
 4.  Let's get cooking! 👨🏻‍🍳🥓
 
+## Example
+
+You'll find a sample [`Example.tsx`](src/core/Example.tsx) component and its associated [`Example.stories.tsx`](.storybook/stories/Example.stories.tsx) to start with, as well as its documentation in the [`README`](README.md#example)
+
 ## Commit Guidelines
 
 Be sure your commit messages follow this specification: https://www.conventionalcommits.org/en/v1.0.0-beta.4/

@@ -101,6 +101,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
       <ul>
         <li><a href="#misc">Misc</a></li>
         <ul>
+          <li><a href="#example">Example</a></li>
           <li><a href="#html">Html</a></li>
           <li><a href="#cycleraycast">CycleRaycast</a></li>
           <li><a href="#select">Select</a></li>
@@ -1879,6 +1880,42 @@ function Scene() {
   return (
     //...
   )
+}
+```
+
+#### Example
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-example--example-st)
+
+> ::warning:: solely for development purposes: see [`CONTRIBUTING`](CONTRIBUTING#example)
+
+A "counter" example.
+
+```tsx
+<Example />
+```
+
+```tsx
+type ExampleProps = {
+  color?: Color
+  debug?: boolean
+  bevelSize?: number
+  font?: string
+}
+```
+
+Ref-api:
+
+```tsx
+const api = useRef<ExampleApi>()
+
+<Example ref={api} />
+```
+
+```tsx
+type ExampleApi = {
+  incr: (x?: number) => void
+  decr: (x?: number) => void
 }
 ```
 

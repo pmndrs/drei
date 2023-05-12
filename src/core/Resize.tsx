@@ -22,11 +22,10 @@ export const Resize = React.forwardRef<THREE.Group, ResizeProps>(
 
     React.useLayoutEffect(() => {
       outer.current.matrixWorld.identity()
-
-      box3 ||= new THREE.Box3().setFromObject(inner.current, precise)
-      const w = box3.max.x - box3.min.x
-      const h = box3.max.y - box3.min.y
-      const d = box3.max.z - box3.min.z
+      let box = box3 || new THREE.Box3().setFromObject(inner.current, precise)
+      const w = box.max.x - box.min.x
+      const h = box.max.y - box.min.y
+      const d = box.max.z - box.min.z
 
       let dimension = Math.max(w, h, d)
       if (width) dimension = w

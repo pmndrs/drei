@@ -1,57 +1,10 @@
 html,
 body,
-#root {
-  width: 100%;
+#storybook-root {
   height: 100%;
-  margin: 0;
-  padding: 0;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  overflow: hidden;
   background-color: #121212;
 }
 
-#root {
-  overflow: auto;
-}
-
-.html-story-block {
-  color: white;
-  width: 120px;
-  position: relative;
-  margin-left: 100px;
-}
-
-.html-story-block.margin300 {
-  margin-left: 300px;
-}
-
-.html-story-block:before {
-  content: '';
-  display: block;
-  position: absolute;
-
-  top: 50%;
-  left: -60px;
-
-  width: 60px;
-  height: 1px;
-  background-color: white;
-}
-
-.html-story-label {
-  background-color: white;
-  color: black;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px;
-}
-
-.html-story-label-B {
-  font-size: 50px;
+.sbdocs canvas {
+  min-height: 20rem;
 }

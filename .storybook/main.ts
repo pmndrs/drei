@@ -16,19 +16,27 @@ export default {
   features: {
     postcss: false,
   },
-  webpackFinal: (config) => {
-    config.module.rules.push({
-      test: /\.(glsl|vs|fs|vert|frag)$/,
-      exclude: /node_modules/,
-      use: ['raw-loader', 'glslify-loader'],
-      include: resolve(__dirname, '../'),
-    })
+  // webpackFinal: (config) => {
+  //   config.module.rules.push({
+  //     test: /\.(glsl|vs|fs|vert|frag)$/,
+  //     exclude: /node_modules/,
+  //     use: ['raw-loader', 'glslify-loader'],
+  //     include: resolve(__dirname, '../'),
+  //   })
 
-    return config
-  },
+  //   return config
+  // },
+  // framework: {
+  //   name: '@storybook/react-webpack5',
+  //   options: {},
+  // },
   framework: {
-    name: '@storybook/react-webpack5',
+    name: '@storybook/react-vite',
     options: {},
+  },
+  async viteFinal(config, options) {
+    // Add your configuration here
+    return config
   },
   docs: {
     autodocs: true,

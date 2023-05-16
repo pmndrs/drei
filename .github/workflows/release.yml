@@ -6,20 +6,22 @@ on:
       - 'beta'
       - 'alpha'
   pull_request: {}
+
+# Cancel any previous run (see: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#concurrency)
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.6.0
-        with:
-          access_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: '14.x'
+          cache: 'yarn'
       - name: Install deps
         # this runs a build script so there is no dedicated build
         run: yarn install
@@ -30,23 +32,18 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.repository == 'pmndrs/drei' && contains('refs/heads/master,refs/heads/beta,refs/heads/alpha',github.ref) && github.event_name == 'push' }}
     steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.6.0
-        with:
-          access_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: '14.x'
+          cache: 'yarn'
       - name: Install deps
         # this runs a build script so there is no dedicated build
         run: yarn install
       - name: 🚀 Release
-        uses: cycjimmy/semantic-release-action@v2
+        uses: cycjimmy/semantic-release-action@v3
         with:
-          semantic_version: 17
           extra_plugins: |
             @semantic-release/git
           branches: |

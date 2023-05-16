@@ -50,7 +50,7 @@
     "typecheck": "tsc --noEmit --emitDeclarationOnly false --strict --jsx react",
     "typegen": "tsc --emitDeclarationOnly",
     "storybook": "NODE_OPTIONS=\"--openssl-legacy-provider\" start-storybook -p 6006",
-    "build-storybook": "build-storybook",
+    "build-storybook": "NODE_OPTIONS=\"--openssl-legacy-provider\" build-storybook",
     "copy": "copyfiles package.json README.md LICENSE dist && json -I -f dist/package.json -e \"this.private=false; this.devDependencies=undefined; this.optionalDependencies=undefined; this.scripts=undefined; this.husky=undefined; this.prettier=undefined; this.jest=undefined; this['lint-staged']=undefined;\""
   },
   "dependencies": {

@@ -1,14 +1,18 @@
 import React from 'react'
+import type { Preview } from '@storybook/react'
+
 import './index.css'
 
-export const parameters = {
-  layout: 'fullscreen',
+const preview: Preview = {
+  parameters: {
+    layout: 'fullscreen',
+  },
+  decorators: [
+    (Story) => (
+      <React.Suspense fallback={null}>
+        <Story />
+      </React.Suspense>
+    ),
+  ],
 }
-
-export const decorators = [
-  (Story) => (
-    <React.Suspense fallback={null}>
-      <Story />
-    </React.Suspense>
-  ),
-]
+export default preview

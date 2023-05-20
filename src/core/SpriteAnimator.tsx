@@ -80,7 +80,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
     })
   }
 
-  const calculateAspectRatio = (width: number, height: number, factor: number): Array<number> => {
+  const calculateAspectRatio = (width: number, height: number, factor: number): Vector3 => {
     const adaptedHeight = height * (v.aspect > width / height ? v.width / width : v.height / height)
     const adaptedWidth = width * (v.aspect > width / height ? v.width / width : v.height / height)
 

@@ -167,7 +167,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
       }
     }
 
-    _spriteTexture.premultiplyAlpha = false
+    _spriteTexture.premultipliedAlpha = false
     _spriteTexture.transparent = true
     setSpriteTexture(_spriteTexture)
   }
@@ -317,7 +317,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
           <spriteMaterial
             ref={matRef}
             map={spriteTexture}
-            premultiplyAlpha={false}
+            premultipliedAlpha={false}
             transparent={true}
             alphaTest={alphaTest ?? 0.0}
           />

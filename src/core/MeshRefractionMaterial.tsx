@@ -69,8 +69,9 @@ export function MeshRefractionMaterial({
     const geometry = (material.current as any)?.__r3f?.parent?.geometry
     // Update the BVH
     if (geometry) {
+      ;(material.current as any).bvh = new MeshBVHUniformStruct()
       ;(material.current as any).bvh.updateFrom(
-        new MeshBVH(geometry.toNonIndexed(), { lazyGeneration: false, strategy: SAH })
+        new MeshBVH(geometry.clone().toNonIndexed(), { lazyGeneration: false, strategy: SAH })
       )
     }
   }, [])

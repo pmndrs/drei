@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useFrame, useThree } from '@react-three/fiber'
+import { useFrame, useThree, Vector3 } from '@react-three/fiber'
 import * as THREE from 'three'
 
 export type SpriteAnimatorProps = {
@@ -9,7 +9,7 @@ export type SpriteAnimatorProps = {
   frameName?: string
   scaleFactor?: number
   textureDataURL?: string
-  textureImageURL?: string
+  textureImageURL: string
   loop?: boolean
   numberOfFrames?: number
   autoPlay?: boolean
@@ -61,7 +61,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
   const fpsInterval = 1000 / (fps || 30)
   const [spriteTexture, setSpriteTexture] = React.useState<THREE.Texture>(new THREE.Texture())
   const totalFrames = React.useRef<number>(0)
-  const [aspect, setAspect] = React.useState<number[]>([1, 1])
+  const [aspect, setAspect] = React.useState<Vector3 | undefined>([1, 1, 1])
   const aspectFactor = scaleFactor || 0.1
 
   function loadJsonAndTextureAndExecuteCallback(
@@ -93,7 +93,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
   React.useEffect(() => {
     if (textureDataURL && textureImageURL) {
       loadJsonAndTextureAndExecuteCallback(textureDataURL, textureImageURL, parseSpriteData)
-    } else {
+    } else if (textureImageURL) {
       // only load the texture, this is an image sprite only
       const textureLoader = new THREE.TextureLoader()
       new Promise<THREE.Texture>((resolve) => {
@@ -170,8 +170,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
       }
     }
 
-    _spriteTexture.premultipliedAlpha = false
-    _spriteTexture.transparent = true
+    _spriteTexture.premultiplyAlpha = false
     setSpriteTexture(_spriteTexture)
   }
 

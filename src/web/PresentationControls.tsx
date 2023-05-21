@@ -57,11 +57,10 @@ export function PresentationControls({
     if (global && cursor && enabled) {
       explDomElement.style.cursor = 'grab'
       gl.domElement.style.cursor = ''
-    }
-
-    return () => {
-      explDomElement.style.cursor = 'default'
-      gl.domElement.style.cursor = 'default'
+      return () => {
+        explDomElement.style.cursor = 'default'
+        gl.domElement.style.cursor = 'default'
+      }
     }
   }, [global, cursor, explDomElement, enabled])
   const bind = useGesture(

@@ -937,31 +937,36 @@ Renders a THREE.Line2 using THREE.CatmullRomCurve3 for interpolation.
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shapes-facemesh--facemesh-st)
 
-Renders an oriented [MediaPipe `face` mesh](https://github.com/tensorflow/tfjs-models/tree/master/face-landmarks-detection):
+Renders an oriented [MediaPipe `face` mesh](https://developers.google.com/mediapipe/solutions/vision/face_landmarker/web_js#handle_and_display_results):
 
 ```jsx
-const face = {
-  keypoints: [
-    {x: 406.53152857172876, y: 256.8054528661723, z: 10.2, name: "lips"},
-    {x: 406.544237446397, y: 230.06933367750395, z: 8},
-    ...
-  ],
-  box: {
-    xMin: 304.6476503248806,
-    xMax: 502.5079975897382,
-    yMin: 102.16298762367356,
-    yMax: 349.035215984403,
-    width: 197.86034726485758,
-    height: 246.87222836072945
+const faceLandmarkerResult = {
+    "faceLandmarks": [
+      [
+        { "x": 0.5760777592658997, "y": 0.8639070391654968, "z": -0.030997956171631813 },
+        { "x": 0.572094738483429, "y": 0.7886289358139038, "z": -0.07189624011516571 },
+        // ...
+      ],
+      // ...
+    ],
+    "faceBlendshapes": [
+      // ...
+    ],
+    "facialTransformationMatrixes": [
+      // ...
+    ]
   },
 }
+const points = faceLandmarkerResult.faceLandmarks[0]
 
-<Facemesh face={face} />
+<Facemesh points={points} />
 ```
 
 ```tsx
 type FacemeshProps = {
-  /** a MediaPipeFaceMesh object, default: a lambda face */
+  /** an array of 468+ keypoints as return by mediapipe tasks-vision, default: a lambda face */
+  points?: MediaPipePoints
+  /** @deprecated an face object as returned by face-landmarks-detection */
   face?: MediaPipeFaceMesh
   /** width of the mesh, default: undefined */
   width?: number
@@ -973,6 +978,8 @@ type FacemeshProps = {
   verticalTri?: [number, number, number]
   /** a landmark index to be the origin of the mesh. default: undefined (ie. the bbox center) */
   origin?: number
+  /** whether to enable eyes (if >468 points), default: true */
+  eyes?: boolean
   /** debug mode, default: false */
   debug?: boolean
 }
@@ -983,20 +990,34 @@ Ref-api:
 ```tsx
 const api = useRef<FacemeshApi>()
 
-<Facemesh ref={api} face={face} />
+<Facemesh ref={api} points={points} />
 ```
 
 ```tsx
 type FacemeshApi = {
   meshRef: React.RefObject<THREE.Mesh>
   outerRef: React.RefObject<THREE.Group>
+  eyeRightRef: React.RefObject<FacemeshEyeApi>
+  eyeLeftRef: React.RefObject<FacemeshEyeApi>
+}
+type FacemeshEyeApi = {
+  eyeMeshRef: React.RefObject<THREE.Group>
+  irisMeshRef: React.RefObject<THREE.Group>
+  irisDirRef: React.RefObject<THREE.Group>
+  update: (faceGeometry: THREE.BufferGeometry) => void
 }
 ```
 
-NB: `outerRef` group is oriented as your `face`. You can for example get its world direction:
+You can for example get face mesh world direction:
 
 ```tsx
 meshRef.current.localToWorld(new THREE.Vector3(0, 0, -1))
+```
+
+or get L/R iris direction:
+
+```tsx
+irisRightDirRef.current.localToWorld(new THREE.Vector3(0, 0, -1))
 ```
 
 # Abstractions

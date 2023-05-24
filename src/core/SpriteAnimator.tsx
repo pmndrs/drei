@@ -20,6 +20,7 @@ export type SpriteAnimatorProps = {
   onFrame?: Function
   play?: boolean
   pause?: boolean
+  flipX?: boolean
   position?: Array<number>
   alphaTest?: number
 } & JSX.IntrinsicElements['group']
@@ -43,6 +44,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
     onFrame,
     play,
     pause,
+    flipX,
     alphaTest,
     children,
     ...props
@@ -63,6 +65,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
   const totalFrames = React.useRef<number>(0)
   const [aspect, setAspect] = React.useState<Vector3 | undefined>([1, 1, 1])
   const aspectFactor = scaleFactor || 0.1
+  const flipOffset = flipX ? -1 : 1
 
   function loadJsonAndTextureAndExecuteCallback(
     jsonUrl: string,
@@ -84,8 +87,8 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
     const adaptedHeight = height * (v.aspect > width / height ? v.width / width : v.height / height)
     const adaptedWidth = width * (v.aspect > width / height ? v.width / width : v.height / height)
 
-    //setAspect([adaptedWidth * factor, adaptedHeight * factor, 1])
-    spriteRef.current.scale = [adaptedWidth * factor, adaptedHeight * factor, 1]
+    spriteRef.current.scale.set(adaptedWidth * factor, adaptedHeight * factor, 1)
+
     return [adaptedWidth * factor, adaptedHeight * factor, 1]
   }
 
@@ -171,27 +174,28 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
     }
 
     _spriteTexture.premultiplyAlpha = false
+
     setSpriteTexture(_spriteTexture)
   }
 
   // for frame based JSON Hash sprite data
   const parseFrames = (): any => {
-    let sprites: any = {}
+    const sprites: any = {}
     const data = spriteData.current
-    let delimiters = animationNames
+    const delimiters = animationNames
     if (delimiters) {
       for (let i = 0; i < delimiters.length; i++) {
         sprites[delimiters[i]] = []
 
         for (let innerKey in data['frames']) {
-          let value = data['frames'][innerKey]
-          let frameData = value['frame']
-          let x = frameData['x']
-          let y = frameData['y']
-          let width = frameData['w']
-          let height = frameData['h']
-          let sourceWidth = value['sourceSize']['w']
-          let sourceHeight = value['sourceSize']['h']
+          const value = data['frames'][innerKey]
+          const frameData = value['frame']
+          const x = frameData['x']
+          const y = frameData['y']
+          const width = frameData['w']
+          const height = frameData['h']
+          const sourceWidth = value['sourceSize']['w']
+          const sourceHeight = value['sourceSize']['h']
 
           if (typeof innerKey === 'string' && innerKey.toLowerCase().indexOf(delimiters[i].toLowerCase()) !== -1) {
             sprites[delimiters[i]].push({
@@ -227,16 +231,17 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
       : { w: 0, h: 0 }
 
     matRef.current.map.wrapS = matRef.current.map.wrapT = THREE.RepeatWrapping
-    matRef.current.map.repeat.set(1 / (metaInfo.w / frameW), 1 / (metaInfo.h / frameH))
+    matRef.current.map.center.set(0, 0)
+    matRef.current.map.repeat.set((1 * flipOffset) / (metaInfo.w / frameW), 1 / (metaInfo.h / frameH))
 
     //const framesH = (metaInfo.w - 1) / frameW
     const framesV = (metaInfo.h - 1) / frameH
     const frameOffsetY = 1 / framesV
-    matRef.current.map.offset.x = 0
+    matRef.current.map.offset.x = 0.0 //-matRef.current.map.repeat.x
     matRef.current.map.offset.y = 1 - frameOffsetY
 
     setJsonReady(true)
-    if (onStart) onStart()
+    if (onStart) onStart({ currentFrameName: frameName, currentFrame: currentFrame.current })
   }
 
   // run the animation on each frame
@@ -283,7 +288,10 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
     } = spriteFrames[currentFrame.current]
     const frameOffsetX = 1 / framesH
     const frameOffsetY = 1 / framesV
-    finalValX = frameOffsetX * (frameX / originalSizeX)
+    finalValX =
+      flipOffset > 0
+        ? frameOffsetX * (frameX / originalSizeX)
+        : frameOffsetX * (frameX / originalSizeX) - matRef.current.map.repeat.x
     finalValY = Math.abs(1 - frameOffsetY) - frameOffsetY * (frameY / originalSizeY)
 
     matRef.current.map.offset.x = finalValX
@@ -304,7 +312,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
 
     if (autoPlay || play) {
       runAnimation()
-      onFrame && onFrame(delta, currentFrame.current)
+      onFrame && onFrame({ currentFrameName: currentFrameName.current, currentFrame: currentFrame.current })
     }
   })
 

@@ -20,6 +20,7 @@ const getBabelOptions = ({ useESModules }) => ({
       '@babel/preset-env',
       {
         include: [
+          '@babel/plugin-proposal-class-properties',
           '@babel/plugin-proposal-optional-chaining',
           '@babel/plugin-proposal-nullish-coalescing-operator',
           '@babel/plugin-proposal-numeric-separator',

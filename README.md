@@ -105,6 +105,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#html">Html</a></li>
           <li><a href="#cycleraycast">CycleRaycast</a></li>
           <li><a href="#select">Select</a></li>
+          <li><a href="#spriteanimator">Sprite Animator</a></li>
           <li><a href="#stats">Stats</a></li>
           <li><a href="#wireframe">Wireframe</a></li>
           <li><a href="#usedepthbuffer">useDepthBuffer</a></li>
@@ -2075,6 +2076,69 @@ This component allows you to select/unselect objects by clicking on them. It kee
 
 function Foo() {
   const selected = useSelect()
+```
+
+#### Sprite Animator
+
+![](https://img.shields.io/badge/-Dom only-red)
+
+<p>
+  <a href="https://codesandbox.io/s/r3f-sprite-animator-s12ijv"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/s12ijv/screenshot.png" alt="Demo"/></a>
+</p>
+
+```tsx
+type Props = {
+  /** The start frame of the animation */
+  startFrame?: number
+  /** The end frame of the animation */
+  endFrame?: number
+  /** The desired frames per second of the animaiton */
+  fps?: number
+  /** The frame identifier to use, has to be one of animationNames */
+  frameName?: string
+  /** The scale factor of the aspect ratio */
+  scaleFactor?: number
+  /** The URL of the texture JSON (if using JSON-Array or JSON-Hash) */
+  textureDataURL?: string
+  /** The URL of the texture image */
+  textureImageURL?: string
+  /** Whether or not the animation should loop */
+  loop?: boolean
+  /** The number of frames of the animation (required if using plain spritesheet without JSON) */
+  numberOfFrames?: number
+  /** Whether or not the animation should auto-start when all assets are loaded */
+  autoPlay?: boolean
+  /** The animation names of the spritesheet (if the spritesheet -with JSON- contains more animation sequences) */
+  animationNames?: Array<string>
+  /** Event callback when the animation starts */
+  onStart?: Function
+  /** Event callback when the animation ends */
+  onEnd?: Function
+  /** Event callback when the animation loops */
+  onLoopEnd?: Function
+  /** Event callback when each frame changes */
+  onFrame?: Function
+  /** Control when the animation runs */
+  play?: boolean
+  /** Control when the animation pauses */
+  pause?: boolean
+}
+```
+
+The SpriteAnimator component provided by drei is a powerful tool for animating sprites in a simple and efficient manner. It allows you to create sprite animations by cycling through a sequence of frames from a sprite sheet image or JSON data.
+Notes:
+The SpriteAnimator component internally uses the useFrame hook from react-three-fiber (r3f) for efficient frame updates and rendering.
+
+```jsx
+<SpriteAnimator
+  position={[-3.5, -2.0, 2.5]}
+  startFrame={0}
+  scaleFactor={0.125}
+  autoPlay={true}
+  loop={true}
+  numberOfFrames={16}
+  textureImageURL={'./alien.png'}
+/>
 ```
 
 #### Stats

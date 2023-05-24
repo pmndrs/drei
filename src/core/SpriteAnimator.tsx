@@ -7,8 +7,6 @@ export type SpriteAnimatorProps = {
   endFrame?: number
   fps?: number
   frameName?: string
-  scaleFactor?: number
-  maxScale?: number
   textureDataURL?: string
   textureImageURL: string
   loop?: boolean
@@ -32,8 +30,6 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
     endFrame,
     fps,
     frameName,
-    scaleFactor,
-    maxScale,
     textureDataURL,
     textureImageURL,
     loop,
@@ -66,7 +62,6 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
   const [spriteTexture, setSpriteTexture] = React.useState<THREE.Texture>(new THREE.Texture())
   const totalFrames = React.useRef<number>(0)
   const [aspect, setAspect] = React.useState<Vector3 | undefined>([1, 1, 1])
-  const aspectFactor = scaleFactor || 0.1
   const flipOffset = flipX ? -1 : 1
 
   function loadJsonAndTextureAndExecuteCallback(
@@ -85,24 +80,10 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
     })
   }
 
-  const calculateAspectRatio = (width: number, height: number, factor: number): Vector3 => {
-    const adaptedHeight = height * (v.aspect > width / height ? v.width / width : v.height / height)
-    const adaptedWidth = width * (v.aspect > width / height ? v.width / width : v.height / height)
-    const scaleX = adaptedWidth * factor
-    const scaleY = adaptedHeight * factor
-    const currentMaxScale = maxScale ?? 1
-    // Calculate the maximum scale based on the aspect ratio and max scale limit
-    let finalMaxScaleW = Math.min(currentMaxScale, scaleX)
-    let finalMaxScaleH = Math.min(currentMaxScale, scaleY)
-
-    // Ensure that scaleX and scaleY do not exceed the max scale while maintaining aspect ratio
-    if (scaleX > currentMaxScale) {
-      finalMaxScaleW = currentMaxScale
-      finalMaxScaleH = (scaleY / scaleX) * currentMaxScale
-    }
-
-    spriteRef.current.scale.set(finalMaxScaleW, finalMaxScaleH, 1)
-    return [finalMaxScaleW, finalMaxScaleH, 1]
+  const calculateAspectRatio = (width: number, height: number): Vector3 => {
+    const aspectRatio = height / width
+    spriteRef.current.scale.set(1, aspectRatio, 1)
+    return [1, aspectRatio, 1]
   }
 
   // initial loads
@@ -178,7 +159,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
       textureData.current = _spriteTexture
 
       const { w, h } = getFirstItem(json.frames).sourceSize
-      const aspect = calculateAspectRatio(w, h, aspectFactor)
+      const aspect = calculateAspectRatio(w, h)
 
       setAspect(aspect)
       if (matRef.current) {
@@ -292,7 +273,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
     if (diff <= fpsInterval) return
     timerOffset.current = now - (diff % fpsInterval)
 
-    calculateAspectRatio(frameW, frameH, aspectFactor)
+    calculateAspectRatio(frameW, frameH)
     const framesH = (metaInfo.w - 1) / frameW
     const framesV = (metaInfo.h - 1) / frameH
     const {

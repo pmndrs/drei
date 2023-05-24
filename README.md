@@ -105,7 +105,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#html">Html</a></li>
           <li><a href="#cycleraycast">CycleRaycast</a></li>
           <li><a href="#select">Select</a></li>
-          <li><a href="#spriteanimator">Sprite Animator</a></li>
+          <li><a href="#sprite-animator">Sprite Animator</a></li>
           <li><a href="#stats">Stats</a></li>
           <li><a href="#wireframe">Wireframe</a></li>
           <li><a href="#usedepthbuffer">useDepthBuffer</a></li>

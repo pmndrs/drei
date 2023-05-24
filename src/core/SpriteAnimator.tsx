@@ -8,6 +8,7 @@ export type SpriteAnimatorProps = {
   fps?: number
   frameName?: string
   scaleFactor?: number
+  maxScale?: number
   textureDataURL?: string
   textureImageURL: string
   loop?: boolean
@@ -32,6 +33,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
     fps,
     frameName,
     scaleFactor,
+    maxScale,
     textureDataURL,
     textureImageURL,
     loop,
@@ -86,10 +88,21 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
   const calculateAspectRatio = (width: number, height: number, factor: number): Vector3 => {
     const adaptedHeight = height * (v.aspect > width / height ? v.width / width : v.height / height)
     const adaptedWidth = width * (v.aspect > width / height ? v.width / width : v.height / height)
+    const scaleX = adaptedWidth * factor
+    const scaleY = adaptedHeight * factor
+    const currentMaxScale = maxScale ?? 1
+    // Calculate the maximum scale based on the aspect ratio and max scale limit
+    let finalMaxScaleW = Math.min(currentMaxScale, scaleX)
+    let finalMaxScaleH = Math.min(currentMaxScale, scaleY)
 
-    spriteRef.current.scale.set(adaptedWidth * factor, adaptedHeight * factor, 1)
+    // Ensure that scaleX and scaleY do not exceed the max scale while maintaining aspect ratio
+    if (scaleX > currentMaxScale) {
+      finalMaxScaleW = currentMaxScale
+      finalMaxScaleH = (scaleY / scaleX) * currentMaxScale
+    }
 
-    return [adaptedWidth * factor, adaptedHeight * factor, 1]
+    spriteRef.current.scale.set(finalMaxScaleW, finalMaxScaleH, 1)
+    return [finalMaxScaleW, finalMaxScaleH, 1]
   }
 
   // initial loads

@@ -2096,8 +2096,6 @@ type Props = {
   fps?: number
   /** The frame identifier to use, has to be one of animationNames */
   frameName?: string
-  /** The scale factor of the aspect ratio */
-  scaleFactor?: number
   /** The URL of the texture JSON (if using JSON-Array or JSON-Hash) */
   textureDataURL?: string
   /** The URL of the texture image */
@@ -2122,12 +2120,20 @@ type Props = {
   play?: boolean
   /** Control when the animation pauses */
   pause?: boolean
+  /** Whether or not the Sprite should flip sides on the x-axis */
+  flipX?: boolean
+  /** Sets the alpha value to be used when running an alpha test. https://threejs.org/docs/#api/en/materials/Material.alphaTest */
+  alphaTest?: number
 }
 ```
 
 The SpriteAnimator component provided by drei is a powerful tool for animating sprites in a simple and efficient manner. It allows you to create sprite animations by cycling through a sequence of frames from a sprite sheet image or JSON data.
+
 Notes:
-The SpriteAnimator component internally uses the useFrame hook from react-three-fiber (r3f) for efficient frame updates and rendering.
+
+- The SpriteAnimator component internally uses the useFrame hook from react-three-fiber (r3f) for efficient frame updates and rendering.
+- The sprites should contain equal size frames
+- Trimming of spritesheet frames is not yet supported
 
 ```jsx
 <SpriteAnimator

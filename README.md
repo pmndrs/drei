@@ -1002,9 +1002,7 @@ type FacemeshApi = {
 }
 type FacemeshEyeApi = {
   eyeMeshRef: React.RefObject<THREE.Group>
-  irisMeshRef: React.RefObject<THREE.Group>
   irisDirRef: React.RefObject<THREE.Group>
-  update: (faceGeometry: THREE.BufferGeometry) => void
 }
 ```
 
@@ -1017,7 +1015,7 @@ meshRef.current.localToWorld(new THREE.Vector3(0, 0, -1))
 or get L/R iris direction:
 
 ```tsx
-irisRightDirRef.current.localToWorld(new THREE.Vector3(0, 0, -1))
+eyeRightRef.current.irisDirRef.current.localToWorld(new THREE.Vector3(0, 0, -1))
 ```
 
 # Abstractions

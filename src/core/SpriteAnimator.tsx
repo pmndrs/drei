@@ -346,9 +346,9 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
       <React.Suspense fallback={null}>
         <sprite ref={spriteRef} scale={aspect}>
           <spriteMaterial
+            toneMapped={false}
             ref={matRef}
             map={spriteTexture}
-            premultipliedAlpha={false}
             transparent={true}
             alphaTest={alphaTest ?? 0.0}
           />

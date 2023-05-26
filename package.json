@@ -70,7 +70,7 @@
     "stats.js": "^0.17.0",
     "suspend-react": "^0.0.8",
     "three-mesh-bvh": "^0.5.23",
-    "three-stdlib": "^2.22.8",
+    "three-stdlib": "^2.22.10",
     "troika-three-text": "^0.47.1",
     "utility-types": "^3.10.0",
     "zustand": "^3.5.13"

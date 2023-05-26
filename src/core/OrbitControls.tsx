@@ -20,13 +20,28 @@ export type OrbitControlsProps = Omit<
       onStart?: (e?: Event) => void
       regress?: boolean
       target?: ReactThreeFiber.Vector3
+      keyEvents?: boolean | HTMLElement
     }
   >,
   'ref'
 >
 
 export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsProps>(
-  ({ makeDefault, camera, regress, domElement, enableDamping = true, onChange, onStart, onEnd, ...restProps }, ref) => {
+  (
+    {
+      makeDefault,
+      camera,
+      regress,
+      domElement,
+      enableDamping = true,
+      keyEvents = false,
+      onChange,
+      onStart,
+      onEnd,
+      ...restProps
+    },
+    ref
+  ) => {
     const invalidate = useThree((state) => state.invalidate)
     const defaultCamera = useThree((state) => state.camera)
     const gl = useThree((state) => state.gl)
@@ -44,9 +59,13 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
     }, -1)
 
     React.useEffect(() => {
+      if (keyEvents) {
+        controls.connect(keyEvents === true ? explDomElement : keyEvents)
+      }
+
       controls.connect(explDomElement)
       return () => void controls.dispose()
-    }, [explDomElement, regress, controls, invalidate])
+    }, [keyEvents, explDomElement, regress, controls, invalidate])
 
     React.useEffect(() => {
       const callback = (e: OrbitControlsChangeEvent) => {

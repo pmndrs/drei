@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
-import { GeometryUtils } from 'three-stdlib/utils/GeometryUtils'
+import { GeometryUtils } from 'three-stdlib'
 import { withKnobs, number, color, boolean, select } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'

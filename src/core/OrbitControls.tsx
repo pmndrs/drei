@@ -20,7 +20,7 @@ export type OrbitControlsProps = Omit<
       onStart?: (e?: Event) => void
       regress?: boolean
       target?: ReactThreeFiber.Vector3
-      listenToKeyEvents?: boolean | HTMLElement
+      keyEvents?: boolean | HTMLElement
     }
   >,
   'ref'
@@ -34,7 +34,7 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
       regress,
       domElement,
       enableDamping = true,
-      listenToKeyEvents = false,
+      keyEvents = false,
       onChange,
       onStart,
       onEnd,
@@ -59,13 +59,13 @@ export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsPr
     }, -1)
 
     React.useEffect(() => {
-      if (listenToKeyEvents) {
-        controls.connect(listenToKeyEvents === true ? explDomElement : listenToKeyEvents)
+      if (keyEvents) {
+        controls.connect(keyEvents === true ? explDomElement : keyEvents)
       }
 
       controls.connect(explDomElement)
       return () => void controls.dispose()
-    }, [listenToKeyEvents, explDomElement, regress, controls, invalidate])
+    }, [keyEvents, explDomElement, regress, controls, invalidate])
 
     React.useEffect(() => {
       const callback = (e: OrbitControlsChangeEvent) => {

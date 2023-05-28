@@ -48,7 +48,7 @@ export const RoundedBox = React.forwardRef<Mesh, Props>(function RoundedBox(
     }),
     [depth, radius, smoothness]
   )
-  const geomRef = React.useRef<ExtrudeGeometry>()
+  const geomRef = React.useRef<ExtrudeGeometry>(null)
 
   React.useLayoutEffect(() => {
     if (geomRef.current) {

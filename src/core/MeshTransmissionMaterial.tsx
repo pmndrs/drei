@@ -446,6 +446,7 @@ export const MeshTransmissionMaterial = React.forwardRef(
       <meshTransmissionMaterial
         // Samples must re-compile the shader so we memoize it
         args={[samples, transmissionSampler]}
+        // @ts-ignore
         ref={ref}
         {...props}
         buffer={buffer || fboMain.texture}

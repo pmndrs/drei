@@ -38,7 +38,7 @@ export function useEnvironment({
 
   const isCubeMap = Array.isArray(files)
   const loader = isCubeMap ? CubeTextureLoader : RGBELoader
-  const loaderResult: Texture | Texture[] = useLoader(
+  const loaderResult = useLoader(
     // @ts-expect-error
     loader,
     isCubeMap ? [files] : files,
@@ -46,7 +46,7 @@ export function useEnvironment({
       loader.setPath(path)
       if (extensions) extensions(loader)
     }
-  )
+  ) as Texture | Texture[]
   const texture: Texture | CubeTexture = isCubeMap
     ? // @ts-ignore
       loaderResult[0]

@@ -18,7 +18,7 @@ export function Cloud({
   depthTest = true,
   ...props
 }) {
-  const group = React.useRef<Group>()
+  const group = React.useRef<Group>(null)
   const cloudTexture = useTexture(texture) as Texture
   const clouds = React.useMemo(
     () =>

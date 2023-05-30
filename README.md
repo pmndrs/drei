@@ -2957,7 +2957,7 @@ type PerformanceMonitorProps = {
   step?: number
   /** When performance is higher than the upper bound (good!) */
   onIncline?: (api: PerformanceMonitorApi) => void
-  /** When performance is lower than the upper bound (bad!) */
+  /** When performance is lower than the lower bound (bad!) */
   onDecline?: (api: PerformanceMonitorApi) => void
   /** Incline and decline will change the factor, this will trigger when that happened */
   onChange?: (api: PerformanceMonitorApi) => void

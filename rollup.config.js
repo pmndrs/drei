@@ -38,6 +38,24 @@ const getBabelOptions = ({ useESModules }) => ({
   plugins: [
     '@babel/plugin-proposal-nullish-coalescing-operator',
     ['@babel/transform-runtime', { regenerator: false, useESModules }],
+    {
+      visitor: {
+        VariableDeclaration(path) {
+          // if (path.node.kind !== 'const') return
+
+          for (const declaration of path.node.declarations) {
+            if (declaration.init?.type === 'CallExpression') {
+              declaration.init.leadingComments = [
+                {
+                  type: 'CommentBlock',
+                  value: '@__PURE__',
+                },
+              ]
+            }
+          }
+        },
+      },
+    },
   ],
 })
 
@@ -46,24 +64,13 @@ export default [
     input: ['src/**/*.ts', 'src/**/*.tsx', '!src/index.ts'],
     output: { dir: `dist`, format: 'esm' },
     external,
-    plugins: [
-      multiInput(),
-      json(),
-      glslify(),
-      babel(getBabelOptions({ useESModules: true }, '>1%, not dead, not ie 11, not op_mini all')),
-      resolve({ extensions }),
-    ],
+    plugins: [multiInput(), json(), glslify(), babel(getBabelOptions({ useESModules: true })), resolve({ extensions })],
   },
   {
     input: `./src/index.ts`,
     output: { dir: `dist`, format: 'esm' },
     external,
-    plugins: [
-      json(),
-      glslify(),
-      babel(getBabelOptions({ useESModules: true }, '>1%, not dead, not ie 11, not op_mini all')),
-      resolve({ extensions }),
-    ],
+    plugins: [json(), glslify(), babel(getBabelOptions({ useESModules: true })), resolve({ extensions })],
     preserveModules: true,
   },
   {

@@ -22,8 +22,8 @@ type MeshTransmissionMaterialType = Omit<
   roughness?: number
   /* Chromatic aberration, default: 0.03 */
   chromaticAberration?: number
-  /* Anisotropy, default: 0.1 */
-  anisotropy?: number
+  /* AnisotropicBlur, default: 0.1 */
+  anisotropicBlur?: number
   /* Distortion, default: 0 */
   distortion?: number
   /* Distortion scale, default: 0.5 */
@@ -81,7 +81,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
     thicknessMap: Uniform<THREE.Texture | null>
     attenuationDistance: Uniform<number>
     attenuationColor: Uniform<THREE.Color>
-    anisotropy: Uniform<number>
+    anisotropicBlur: Uniform<number>
     time: Uniform<number>
     distortion: Uniform<number>
     distortionScale: Uniform<number>
@@ -105,7 +105,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       thicknessMap: { value: null },
       attenuationDistance: { value: Infinity },
       attenuationColor: { value: new THREE.Color('white') },
-      anisotropy: { value: 0.1 },
+      anisotropicBlur: { value: 0.1 },
       time: { value: 0 },
       distortion: { value: 0.0 },
       distortionScale: { value: 0.5 },
@@ -129,7 +129,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       shader.fragmentShader =
         /*glsl*/ `
       uniform float chromaticAberration;         
-      uniform float anisotropy;      
+      uniform float anisotropicBlur;      
       uniform float time;
       uniform float distortion;
       uniform float distortionScale;
@@ -325,7 +325,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
         vec3 transmission = vec3(0.0);
         float transmissionR, transmissionB, transmissionG;
         float randomCoords = rand();
-        float thickness_smear = thickness * max(pow(roughnessFactor, 0.33), anisotropy);
+        float thickness_smear = thickness * max(pow(roughnessFactor, 0.33), anisotropicBlur);
         vec3 distortionNormal = vec3(0.0);
         vec3 temporalOffset = vec3(time, -time, -time) * temporalDistortion;
         if (distortion > 0.0) {

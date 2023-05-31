@@ -1621,7 +1621,7 @@ return (
   <a href="https://codesandbox.io/s/hmgdjq"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/hmgdjq/screenshot.png" alt="Demo"/></a>
 </p>
 
-An improved THREE.MeshPhysicalMaterial. It acts like a normal PhysicalMaterial in terms of transmission support, thickness, ior, roughness, etc., but has chromatic aberration, noise-based roughness blur, (primitive) anisotropy support, and unlike the original it can "see" other transmissive or transparent objects which leads to improved visuals.
+An improved THREE.MeshPhysicalMaterial. It acts like a normal PhysicalMaterial in terms of transmission support, thickness, ior, roughness, etc., but has chromatic aberration, noise-based roughness blur, (primitive) anisotropic blur support, and unlike the original it can "see" other transmissive or transparent objects which leads to improved visuals.
 
 Although it should be faster than MPM keep in mind that it can still be expensive as it causes an additional render pass of the scene. Low samples and low resolution will make it faster. If you use roughness consider using a tiny resolution, for instance 32x32 pixels, it will still look good but perform much faster.
 
@@ -1640,7 +1640,7 @@ type MeshTransmissionMaterialProps = JSX.IntrinsicElements['meshPhysicalMaterial
   /* Chromatic aberration, default: 0.03 */
   chromaticAberration?: number
   /* Anisotropy, default: 0.1 */
-  anisotropy?: number
+  anisotropicBlur?: number
   /* Distortion, default: 0 */
   distortion?: number
   /* Distortion scale, default: 0.5 */

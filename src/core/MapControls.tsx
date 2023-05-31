@@ -27,7 +27,7 @@ export const MapControls = React.forwardRef<MapControlsImpl, MapControlsProps>(
     const get = useThree((state) => state.get)
     const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
 
-    const explCamera = camera || defaultCamera
+    const explCamera = (camera || defaultCamera) as THREE.OrthographicCamera | THREE.PerspectiveCamera
     const controls = React.useMemo(() => new MapControlsImpl(explCamera), [explCamera])
 
     React.useEffect(() => {

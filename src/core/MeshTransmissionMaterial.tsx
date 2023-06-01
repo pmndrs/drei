@@ -22,6 +22,8 @@ type MeshTransmissionMaterialType = Omit<
   roughness?: number
   /* Chromatic aberration, default: 0.03 */
   chromaticAberration?: number
+  /* Anisotropy, default: 0.1 */
+  anisotropy?: number
   /* AnisotropicBlur, default: 0.1 */
   anisotropicBlur?: number
   /* Distortion, default: 0 */
@@ -118,6 +120,13 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
         ...shader.uniforms,
         ...this.uniforms,
       }
+
+      // r153+ compat https://github.com/pmndrs/drei/issues/1482
+      shader.defines = { ...shader.defines }
+      Object.defineProperty(shader.defines, 'USE_ANISOTROPY', {
+        get() {},
+        set(_) {},
+      })
 
       // If the transmission sampler is active inject a flag
       if (transmissionSampler) shader.defines.USE_SAMPLER = ''
@@ -380,6 +389,7 @@ export const MeshTransmissionMaterial = React.forwardRef(
       resolution,
       backsideResolution,
       background,
+      anisotropy,
       ...props
     }: MeshTransmissionMaterialProps,
     fref
@@ -454,6 +464,7 @@ export const MeshTransmissionMaterial = React.forwardRef(
         // In order for this to not incur extra cost "transmission" must be set to 0 and treated as a reserved prop.
         // This is because THREE.WebGLRenderer will check for transmission > 0 and execute extra renders.
         // The exception is when transmissionSampler is set, in which case we are using three's built in sampler.
+        anisotropicBlur={anisotropy}
         transmission={transmissionSampler ? transmission : 0}
         thickness={thickness}
         side={side}

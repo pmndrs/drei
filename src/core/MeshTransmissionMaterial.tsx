@@ -121,13 +121,6 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
         ...this.uniforms,
       }
 
-      // r153+ compat https://github.com/pmndrs/drei/issues/1482
-      shader.defines = { ...shader.defines }
-      Object.defineProperty(shader.defines, 'USE_ANISOTROPY', {
-        get() {},
-        set(_) {},
-      })
-
       // If the transmission sampler is active inject a flag
       if (transmissionSampler) shader.defines.USE_SAMPLER = ''
       // Otherwise we do use use .transmission and must therefore force USE_TRANSMISSION

@@ -383,6 +383,7 @@ export const MeshTransmissionMaterial = React.forwardRef(
       backsideResolution,
       background,
       anisotropy,
+      anisotropicBlur,
       ...props
     }: MeshTransmissionMaterialProps,
     fref
@@ -457,7 +458,7 @@ export const MeshTransmissionMaterial = React.forwardRef(
         // In order for this to not incur extra cost "transmission" must be set to 0 and treated as a reserved prop.
         // This is because THREE.WebGLRenderer will check for transmission > 0 and execute extra renders.
         // The exception is when transmissionSampler is set, in which case we are using three's built in sampler.
-        anisotropicBlur={anisotropy}
+        anisotropicBlur={anisotropicBlur ?? anisotropy}
         transmission={transmissionSampler ? transmission : 0}
         thickness={thickness}
         side={side}

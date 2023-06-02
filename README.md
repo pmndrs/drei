@@ -52,6 +52,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#scrollcontrols">ScrollControls</a></li>
           <li><a href="#presentationcontrols">PresentationControls</a></li>
           <li><a href="#keyboardcontrols">KeyboardControls</a></li>
+          <li><a href="#FaceControls">FaceControls</a></li>
         </ul>
         <li><a href="#gizmos">Gizmos</a></li>
         <ul>
@@ -358,7 +359,7 @@ If available controls have damping enabled by default, they manage their own upd
 const controls = useThree((state) => state.controls)
 ```
 
-Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-scene-st), TrackballControls, ArcballControls, FlyControls, DeviceOrientationControls, PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st), FirstPersonControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-firstpersoncontrols--first-person-controls-story) and CameraControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-cameracontrols--camera-controls-story)
+Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-scene-st), TrackballControls, ArcballControls, FlyControls, DeviceOrientationControls, PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st), FirstPersonControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-firstpersoncontrols--first-person-controls-story) CameraControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-cameracontrols--camera-controls-story) and FaceControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-facecontrols)
 
 All controls react to the default camera. If you have a `<PerspectiveCamera makeDefault />` in your scene, they will control it. If you need to inject an imperative camera or one that isn't the default, use the `camera` prop: `<OrbitControls camera={MyCamera} />`.
 
@@ -592,6 +593,76 @@ function Foo() {
     // Fetch fresh data from store
     const pressed = get().back
   })
+}
+```
+
+#### FaceControls
+
+The camera follows your face.
+
+Pre-requisite: wrap into a `FaceLandmarker` provider
+
+```tsx
+<FaceLandmarker>...</FaceLandmarker>
+```
+
+```tsx
+<FaceControls />
+```
+
+```tsx
+type FaceControlsProps = {
+  /** The camera to be controlled, default: global state camera */
+  camera?: THREE.Camera
+  /** Whether to autostart the webcam, default: true */
+  autostart?: boolean
+  /** Enable/disable the webcam, default: true */
+  webcam?: boolean
+  /** A custom video URL or mediaStream, default: undefined */
+  webcamVideoTextureSrc?: VideoTextureSrc
+  /** Disable the rAF camera position/rotation update, default: false */
+  manualUpdate?: boolean
+  /** Disable the rVF face-detection, default: false */
+  manualDetect?: boolean
+  /** Callback function to call on "videoFrame" event, default: undefined */
+  onVideoFrame?: (e: THREE.Event) => void
+  /** Reference this FaceControls instance as state's `controls` */
+  makeDefault?: boolean
+  /** Approximate time to reach the target. A smaller value will reach the target faster. */
+  smoothTime?: number
+  /** Apply position offset extracted from `facialTransformationMatrix` */
+  offset?: boolean
+  /** Offset sensitivity factor, less is more sensible, default: 80 */
+  offsetScalar?: number
+  /** Enable eye-tracking */
+  eyes?: boolean
+  /** Force Facemesh's `origin` to be the middle of the 2 eyes, default: true */
+  eyesAsOrigin?: boolean
+  /** Constant depth of the Facemesh, default: .15 */
+  depth?: number
+  /** Enable debug mode, default: false */
+  debug?: boolean
+  /** Facemesh options, default: undefined */
+  facemesh?: FacemeshProps
+}
+```
+
+```tsx
+type FaceControlsApi = THREE.EventDispatcher & {
+  /** Detect faces from the video */
+  detect: (video: HTMLVideoElement, time: number) => void
+  /** Compute the target for the camera */
+  computeTarget: () => THREE.Object3D
+  /** Update camera's position/rotation to the `target` */
+  update: (delta: number, target?: THREE.Object3D) => void
+  /** <Facemesh> ref api */
+  facemeshApiRef: RefObject<FacemeshApi>
+  /** <Webcam> ref api */
+  webcamApiRef: RefObject<WebcamApi>
+  /** Play the video */
+  play: () => void
+  /** Pause the video */
+  pause: () => void
 }
 ```
 

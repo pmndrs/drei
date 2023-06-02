@@ -13,7 +13,7 @@ import {
 import { RGBELoader } from 'three-stdlib'
 import { presetsObj, PresetsType } from '../helpers/environment-assets'
 
-const CUBEMAP_ROOT = 'https://raw.githack.com/pmndrs/drei-assets/456060a26bbeb8fdf79326f224b6d99b8bcce736'
+const CUBEMAP_ROOT = 'https://raw.githack.com/pmndrs/drei-assets/456060a26bbeb8fdf79326f224b6d99b8bcce736/hdri/'
 
 export type EnvironmentLoaderProps = {
   files?: string | string[]

@@ -14,7 +14,7 @@ import { RGBELoader } from 'three-stdlib'
 import { suspend } from 'suspend-react'
 import { presetsObj, PresetsType } from '../helpers/environment-assets'
 
-const CUBEMAP_ROOT = 'https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/hdris/'
+const CUBEMAP_ROOT = 'https://raw.githack.com/pmndrs/drei-assets/456060a26bbeb8fdf79326f224b6d99b8bcce736/hdri/'
 
 const isPromise = (promise: any): promise is Promise<{ ['default']: string }> =>
   typeof promise === 'object' && typeof (promise as Promise<any>).then === 'function'

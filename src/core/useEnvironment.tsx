@@ -11,12 +11,16 @@ import {
   TextureEncoding,
 } from 'three'
 import { RGBELoader } from 'three-stdlib'
+import { suspend } from 'suspend-react'
 import { presetsObj, PresetsType } from '../helpers/environment-assets'
 
 const CUBEMAP_ROOT = 'https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/hdris/'
 
+const isPromise = (promise: any): promise is Promise<{ ['default']: string }> =>
+  typeof promise === 'object' && typeof (promise as Promise<any>).then === 'function'
+
 export type EnvironmentLoaderProps = {
-  files?: string | string[]
+  files?: string | string[] | Promise<{ ['default']: string }>
   path?: string
   preset?: PresetsType
   extensions?: (loader: Loader) => void
@@ -34,6 +38,17 @@ export function useEnvironment({
     if (!(preset in presetsObj)) throw new Error('Preset must be one of: ' + Object.keys(presetsObj).join(', '))
     files = presetsObj[preset]
     path = CUBEMAP_ROOT
+  }
+
+  // Using promises that return inline-URLs by default
+  if (isPromise(files)) {
+    files = suspend(
+      async (promise) => {
+        const result = await promise
+        return result.default
+      },
+      [files]
+    )
   }
 
   const isCubeMap = Array.isArray(files)

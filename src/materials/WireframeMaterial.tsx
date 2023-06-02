@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { shaderMaterial } from '../core'
+import { shaderMaterial } from '../core/shaderMaterial'
 
 export interface WireframeMaterialProps extends THREE.ShaderMaterialParameters {
   fillOpacity?: number

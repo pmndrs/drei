@@ -12,33 +12,35 @@ export type MediaPipePoints =
   | typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.faceLandmarks[0]
 
 export type FacemeshProps = {
-  /** an array of 468+ keypoints as return by mediapipe tasks-vision, default: a lambda face */
+  /** an array of 468+ keypoints as returned by google/mediapipe tasks-vision, default: a sample face */
   points?: MediaPipePoints
-  /** @deprecated an face object as returned by face-landmarks-detection */
+  /** @deprecated an face object as returned by tensorflow/tfjs-models face-landmarks-detection */
   face?: MediaPipeFaceMesh
-  /** width of the mesh, default: undefined */
+  /** constant width of the mesh, default: undefined */
   width?: number
-  /** or height of the mesh, default: undefined */
+  /** or constant height of the mesh, default: undefined */
   height?: number
-  /** or depth of the mesh, default: 1 */
+  /** or constant depth of the mesh, default: 1 */
   depth?: number
   /** a landmarks tri supposed to be vertical, default: [159, 386, 200] (see: https://github.com/tensorflow/tfjs-models/tree/master/face-landmarks-detection#mediapipe-facemesh-keypoints) */
   verticalTri?: [number, number, number]
-  /** a landmark index to be the origin of the mesh. default: undefined (ie. the bbox center) */
-  origin?: number
-  /**  */
+  /** a landmark index (to get the position from) or a vec3 to be the origin of the mesh. default: undefined (ie. the bbox center) */
+  origin?: number | THREE.Vector3
+  /** A facial transformation matrix, as returned by FaceLandmarkerResult.facialTransformationMatrixes (see: https://developers.google.com/mediapipe/solutions/vision/face_landmarker/web_js#handle_and_display_results) */
   facialTransformationMatrix?: typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.facialTransformationMatrixes[0]
-  /**  */
+  /** Apply position offset extracted from `facialTransformationMatrix` */
   offset?: boolean
-  /** */
+  /** Offset sensitivity factor, less is more sensible */
   offsetScalar?: number
-  /** whether to enable eyes (if >468 points), default: true */
-  eyes?: boolean
-  /** */
+  /** Fface blendshapes, as returned by FaceLandmarkerResult.faceBlendshapes (see: https://developers.google.com/mediapipe/solutions/vision/face_landmarker/web_js#handle_and_display_results) */
   faceBlendshapes?: typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.faceBlendshapes[0]
+  /** whether to enable eyes (nb. `faceBlendshapes` is required for), default: true */
+  eyes?: boolean
+  /** Force `origin` to be the middle of the 2 eyes (nb. `eyes` is required for), default: false */
+  eyesAsOrigin?: boolean
   /** debug mode, default: false */
   debug?: boolean
-} & JSX.IntrinsicElements['group']
+} & Omit<JSX.IntrinsicElements['group'], 'ref'>
 
 export type FacemeshApi = {
   meshRef: React.RefObject<THREE.Mesh>
@@ -73,6 +75,10 @@ const normal = (function () {
   }
 })()
 
+function mean(v1: THREE.Vector3, v2: THREE.Vector3) {
+  return v1.clone().add(v2).multiplyScalar(0.5)
+}
+
 export const Facemesh = React.forwardRef<FacemeshApi, FacemeshProps>(
   (
     {
@@ -88,6 +94,7 @@ export const Facemesh = React.forwardRef<FacemeshApi, FacemeshProps>(
       verticalTri = [159, 386, 152],
       origin,
       eyes = true,
+      eyesAsOrigin = false,
       debug = false,
       children,
       ...props
@@ -100,6 +107,8 @@ export const Facemesh = React.forwardRef<FacemeshApi, FacemeshProps>(
     }
 
     const offsetRef = React.useRef<THREE.Group>(null)
+    const scaleRef = React.useRef<THREE.Group>(null)
+    const originRef = React.useRef<THREE.Group>(null)
     const outerRef = React.useRef<THREE.Group>(null)
     const meshRef = React.useRef<THREE.Mesh>(null)
     const eyeRightRef = React.useRef<FacemeshEyeApi>(null)
@@ -108,6 +117,7 @@ export const Facemesh = React.forwardRef<FacemeshApi, FacemeshProps>(
     const [sightDir] = React.useState(() => new THREE.Vector3())
     const [transform] = React.useState(() => new THREE.Object3D())
     const [sightDirQuaternion] = React.useState(() => new THREE.Quaternion())
+    const [_origin] = React.useState(() => new THREE.Vector3())
 
     const { invalidate } = useThree()
 
@@ -146,6 +156,8 @@ export const Facemesh = React.forwardRef<FacemeshApi, FacemeshProps>(
           transform.position.y *= -1
           transform.position.z *= -1
           offsetRef.current?.position.copy(transform.position.divideScalar(offsetScalar))
+        } else {
+          offsetRef.current?.position.set(0, 0, 0) // reset
         }
       } else {
         // normal to verticalTri
@@ -174,27 +186,56 @@ export const Facemesh = React.forwardRef<FacemeshApi, FacemeshProps>(
       faceGeometry.applyQuaternion(sightDirQuaternionInverse)
       outerRef.current?.setRotationFromQuaternion(sightDirQuaternion)
 
-      // 3. origin: substract the geometry to that landmark coords (once 1.)
-      if (origin) {
-        const position = faceGeometry.getAttribute('position') as THREE.BufferAttribute
-        faceGeometry.translate(-position.getX(origin), -position.getY(origin), -position.getZ(origin))
+      // 3. 👀 eyes
+      if (eyes) {
+        if (!faceBlendshapes) {
+          console.warn('Facemesh `eyes` option only works if `faceBlendshapes` is provided: skipping.')
+        } else {
+          if (eyeRightRef.current && eyeLeftRef.current && originRef.current) {
+            if (eyesAsOrigin) {
+              // compute the middle of the 2 eyes as the `origin`
+              const eyeRightSphere = eyeRightRef.current._computeSphere(faceGeometry)
+              const eyeLeftSphere = eyeLeftRef.current._computeSphere(faceGeometry)
+              const eyesCenter = mean(eyeRightSphere.center, eyeLeftSphere.center)
+              origin = eyesCenter.negate() // eslint-disable-line react-hooks/exhaustive-deps
+
+              eyeRightRef.current._update(faceGeometry, faceBlendshapes, eyeRightSphere)
+              eyeLeftRef.current._update(faceGeometry, faceBlendshapes, eyeLeftSphere)
+            } else {
+              eyeRightRef.current._update(faceGeometry, faceBlendshapes)
+              eyeLeftRef.current._update(faceGeometry, faceBlendshapes)
+            }
+          }
+        }
+      }
+
+      // 3. origin
+      if (originRef.current) {
+        if (origin !== undefined) {
+          if (typeof origin === 'number') {
+            const position = faceGeometry.getAttribute('position') as THREE.BufferAttribute
+            _origin.set(-position.getX(origin), -position.getY(origin), -position.getZ(origin))
+          } else if (origin.isVector3) {
+            _origin.copy(origin)
+          }
+        } else {
+          _origin.setScalar(0)
+        }
+
+        originRef.current.position.copy(_origin)
       }
 
       // 4. re-scale
-      faceGeometry.boundingBox!.getSize(bboxSize)
-      let scale = 1
-      if (width) scale = width / bboxSize.x // fit in width
-      if (height) scale = height / bboxSize.y // fit in height
-      if (depth) scale = depth / bboxSize.z // fit in depth
-      if (scale !== 1) faceGeometry.scale(scale, scale, scale)
+      if (scaleRef.current) {
+        let scale = 1
+        if (width || height || depth) {
+          faceGeometry.boundingBox!.getSize(bboxSize)
+          if (width) scale = width / bboxSize.x // fit in width
+          if (height) scale = height / bboxSize.y // fit in height
+          if (depth) scale = depth / bboxSize.z // fit in depth
+        }
 
-      //
-      // 5. 👀 eyes
-      //
-
-      if (points.length > 468 && eyes) {
-        eyeRightRef.current?._update(faceGeometry, faceBlendshapes)
-        eyeLeftRef.current?._update(faceGeometry, faceBlendshapes)
+        scaleRef.current.scale.setScalar(scale !== 1 ? scale : 1)
       }
 
       faceGeometry.computeVertexNormals()
@@ -217,6 +258,7 @@ export const Facemesh = React.forwardRef<FacemeshApi, FacemeshProps>(
       sightDir,
       sightDirQuaternion,
       bboxSize,
+      _origin,
     ])
 
     //
@@ -234,35 +276,41 @@ export const Facemesh = React.forwardRef<FacemeshApi, FacemeshProps>(
     )
     React.useImperativeHandle(fref, () => api, [api])
 
+    const [meshBboxSize] = React.useState(() => new THREE.Vector3())
+    const bbox = meshRef.current?.geometry.boundingBox
+    const one = bbox?.getSize(meshBboxSize).z || 1
     return (
       <group {...props}>
         <group ref={offsetRef}>
           <group ref={outerRef}>
-            <mesh ref={meshRef}>
-              {children}
-
-              {eyes && (
-                <>
-                  <FacemeshEye side="left" ref={eyeRightRef} debug={debug} />
-                  <FacemeshEye side="right" ref={eyeLeftRef} debug={debug} />
-                </>
-              )}
-
+            <group ref={scaleRef}>
               {debug ? (
                 <>
-                  {meshRef.current?.geometry?.boundingBox && (
-                    <box3Helper args={[meshRef.current?.geometry.boundingBox]} />
-                  )}
+                  <axesHelper args={[one]} />
                   <Line
                     points={[
                       [0, 0, 0],
-                      [0, 0, -(meshRef.current?.geometry.boundingBox?.getSize(new THREE.Vector3()).z || 1)],
+                      [0, 0, -one],
                     ]}
                     color={0x00ffff}
                   />
                 </>
               ) : null}
-            </mesh>
+
+              <group ref={originRef}>
+                {eyes && faceBlendshapes && (
+                  <group name="eyes">
+                    <FacemeshEye side="left" ref={eyeRightRef} debug={debug} />
+                    <FacemeshEye side="right" ref={eyeLeftRef} debug={debug} />
+                  </group>
+                )}
+                <mesh ref={meshRef} name="face">
+                  {children}
+
+                  {debug ? <>{bbox && <box3Helper args={[bbox]} />}</> : null}
+                </mesh>
+              </group>
+            </group>
           </group>
         </group>
       </group>
@@ -271,7 +319,7 @@ export const Facemesh = React.forwardRef<FacemeshApi, FacemeshProps>(
 )
 
 //
-// 👁️ Eye
+// 👁️ FacemeshEye
 //
 
 export type FacemeshEyeProps = {
@@ -281,10 +329,15 @@ export type FacemeshEyeProps = {
 export type FacemeshEyeApi = {
   eyeMeshRef: React.RefObject<THREE.Group>
   irisDirRef: React.RefObject<THREE.Group>
-  _update: (faceGeometry: THREE.BufferGeometry, faceBlendshapes: FacemeshProps['faceBlendshapes']) => void
+  _computeSphere: (faceGeometry: THREE.BufferGeometry) => THREE.Sphere
+  _update: (
+    faceGeometry: THREE.BufferGeometry,
+    faceBlendshapes: FacemeshProps['faceBlendshapes'],
+    sphere?: THREE.Sphere
+  ) => void
 }
 
-const FACEMESH_EYE_CONFIG = {
+export const FacemeshEyeDefaults = {
   contourLandmarks: {
     right: [33, 133, 159, 145, 153],
     left: [263, 362, 386, 374, 380],
@@ -297,74 +350,81 @@ const FACEMESH_EYE_CONFIG = {
     right: 'red',
     left: '#00ff00',
   },
+  fov: {
+    horizontal: 100,
+    vertical: 90,
+  },
 }
 
 export const FacemeshEye = React.forwardRef<FacemeshEyeApi, FacemeshEyeProps>(({ side, debug = true }, fref) => {
   const eyeMeshRef = React.useRef<THREE.Group>(null)
   const irisDirRef = React.useRef<THREE.Group>(null)
 
-  const [eyeCenter] = React.useState(() => new THREE.Vector3())
-
   //
-  // update
+  // _computeSphere()
+  //
+  // Compute eye's sphere .position and .radius
   //
 
-  const _update = React.useCallback(
-    (faceGeometry: THREE.BufferGeometry, faceBlendshapes: FacemeshProps['faceBlendshapes']) => {
+  const [sphere] = React.useState(() => new THREE.Sphere())
+  const _computeSphere = React.useCallback<FacemeshEyeApi['_computeSphere']>(
+    (faceGeometry) => {
       const position = faceGeometry.getAttribute('position') as THREE.BufferAttribute
 
-      //
-      // A. eye mesh
-      //
+      // get some eye contour landmarks points (from geometry)
+      const eyeContourLandmarks = FacemeshEyeDefaults.contourLandmarks[side]
+      const eyeContourPoints = eyeContourLandmarks.map((i) => new THREE.Vector3(position.getX(i), position.getY(i), position.getZ(i))) // prettier-ignore
 
+      // compute center (centroid from eyeContourPoints)
+      sphere.center.set(0, 0, 0)
+      eyeContourPoints.forEach((v) => sphere.center.add(v))
+      sphere.center.divideScalar(eyeContourPoints.length)
+
+      // radius (eye half-width)
+      sphere.radius = eyeContourPoints[0].sub(eyeContourPoints[1]).length() / 2
+
+      return sphere
+    },
+    [sphere, side]
+  )
+
+  //
+  // _update()
+  //
+  // Update:
+  //   - A. eye's mesh (according to sphere)
+  //   - B. iris direction (according to "look*" blendshapes)
+  //
+
+  const [rotation] = React.useState(() => new THREE.Euler())
+  const _update = React.useCallback<FacemeshEyeApi['_update']>(
+    (faceGeometry, faceBlendshapes, sphere) => {
+      // A.
       if (eyeMeshRef.current) {
-        //
-        // compute dims
-        //
-
-        // get some eye contour landmarks points (from geometry)
-        const eyeContourLandmarks = FACEMESH_EYE_CONFIG.contourLandmarks[side]
-        const eyeContourPoints = eyeContourLandmarks.map((i) => new THREE.Vector3(position.getX(i), position.getY(i), position.getZ(i))) // prettier-ignore
-
-        // compute center (centroid from eyeContourPoints)
-        eyeCenter.set(0, 0, 0)
-        eyeContourPoints.forEach((v) => eyeCenter.add(v))
-        eyeCenter.divideScalar(eyeContourPoints.length)
-
-        // radius (eye half-width)
-        const radius = eyeContourPoints[0].sub(eyeContourPoints[1]).length() / 2
-
-        //
-        // mesh
-        //
-
-        // position it to the eye center
-        eyeMeshRef.current.position.set(eyeCenter.x, eyeCenter.y, eyeCenter.z)
-
-        // size it to eye half-width
-        eyeMeshRef.current.scale.setScalar(radius)
+        sphere ??= _computeSphere(faceGeometry) // compute sphere dims (if not passed)
+        eyeMeshRef.current.position.copy(sphere.center)
+        eyeMeshRef.current.scale.setScalar(sphere.radius)
       }
 
-      //
-      // B. iris
-      //
-
-      // iris dir
-      if (faceBlendshapes) {
-        const blendshapes = FACEMESH_EYE_CONFIG.blendshapes[side]
+      // B.
+      if (faceBlendshapes && irisDirRef.current) {
+        const blendshapes = FacemeshEyeDefaults.blendshapes[side]
 
         const lookIn = faceBlendshapes.categories[blendshapes[0]].score
         const lookOut = faceBlendshapes.categories[blendshapes[1]].score
         const lookUp = faceBlendshapes.categories[blendshapes[2]].score
         const lookDown = faceBlendshapes.categories[blendshapes[3]].score
 
-        const rx = 100 * DEG2RAD * 0.5 * (lookDown - lookUp)
-        const ry = 90 * DEG2RAD * 0.5 * (lookIn - lookOut) * (side === 'left' ? 1 : -1)
+        const hfov = FacemeshEyeDefaults.fov.horizontal * DEG2RAD
+        const vfov = FacemeshEyeDefaults.fov.vertical * DEG2RAD
+        const rx = hfov * 0.5 * (lookDown - lookUp)
+        const ry = vfov * 0.5 * (lookIn - lookOut) * (side === 'left' ? 1 : -1)
+        rotation.set(rx, ry, 0)
 
-        irisDirRef.current?.setRotationFromEuler(new THREE.Euler(rx, ry, 0))
+        irisDirRef.current.setRotationFromEuler(rotation)
       }
     },
-    [eyeCenter, side]
+    [_computeSphere, side, rotation]
   )
 
   //
@@ -375,13 +435,14 @@ export const FacemeshEye = React.forwardRef<FacemeshEyeApi, FacemeshEyeProps>(({
     () => ({
       eyeMeshRef: eyeMeshRef,
       irisDirRef: irisDirRef,
+      _computeSphere,
       _update,
     }),
-    [_update]
+    [_computeSphere, _update]
   )
   React.useImperativeHandle(fref, () => api, [api])
 
-  const color = FACEMESH_EYE_CONFIG.color[side]
+  const color = FacemeshEyeDefaults.color[side]
   return (
     <group>
       <group ref={eyeMeshRef}>

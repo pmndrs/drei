@@ -2240,14 +2240,14 @@
   resolved "https://registry.yarnpkg.com/@react-spring/types/-/types-9.6.1.tgz#913d3a68c5cbc1124fdb18eff919432f7b6abdde"
   integrity sha512-POu8Mk0hIU3lRXB3bGIGe4VHIwwDsQyoD1F394OK7STTiX9w4dG3cTLljjYswkQN+hDSHRrj4O36kuVa7KPU8Q==
 
-"@react-three/fiber@^8.0.8":
-  version "8.0.8"
-  resolved "https://registry.yarnpkg.com/@react-three/fiber/-/fiber-8.0.8.tgz#eb8925f0f08cf11712625549b7213af371ecad61"
-  integrity sha512-MVlNSx9BlAUZpA2hPqLafCYlCAVOo89ygl/kXCN4OmTcWswLTWU9bCzUJBxY9QPMSTbSWSfGiv1BT0AA7KRsLQ==
+"@react-three/fiber@^8.13.0":
+  version "8.13.0"
+  resolved "https://registry.yarnpkg.com/@react-three/fiber/-/fiber-8.13.0.tgz#c9eabe60f2276a66d7ce9a3b927083894f4202f9"
+  integrity sha512-hPFzFNgikEMyEbL+NpSA7q+UWZxInrrkJldWaCR2w34Fwf20x9p68bsyN0/yn9oM2VlWoJcJjR8hw1tN9AxHuA==
   dependencies:
     "@babel/runtime" "^7.17.8"
-    "@types/react-reconciler" "^0.26.4"
-    react-merge-refs "^1.1.0"
+    "@types/react-reconciler" "^0.26.7"
+    its-fine "^1.0.6"
     react-reconciler "^0.27.0"
     react-use-measure "^2.1.1"
     scheduler "^0.21.0"
@@ -3360,10 +3360,17 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-reconciler@^0.26.4":
-  version "0.26.4"
-  resolved "https://registry.yarnpkg.com/@types/react-reconciler/-/react-reconciler-0.26.4.tgz#651404be172cf29b65cddf246d8d964b4e448399"
-  integrity sha512-bdx4aIBkQRDAnzc23JBFeZmVpmfLJHfHikmQukEt9qs4bQtq9f+PDbNwhR9u74FkIUyIDz1I1qJ8OF6RwadKpw==
+"@types/react-reconciler@^0.26.7":
+  version "0.26.7"
+  resolved "https://registry.yarnpkg.com/@types/react-reconciler/-/react-reconciler-0.26.7.tgz#0c4643f30821ae057e401b0d9037e03e8e9b2a36"
+  integrity sha512-mBDYl8x+oyPX/VBb3E638N0B7xG+SPk/EAMcVPeexqus/5aTpTphQi0curhhshOqRrc9t6OPoJfEUkbymse/lQ==
+  dependencies:
+    "@types/react" "*"
+
+"@types/react-reconciler@^0.28.0":
+  version "0.28.2"
+  resolved "https://registry.yarnpkg.com/@types/react-reconciler/-/react-reconciler-0.28.2.tgz#f16b0e8cc4748af70ca975eaaace0d79582c71fa"
+  integrity sha512-8tu6lHzEgYPlfDf/J6GOQdIc+gs+S2yAqlby3zTsB3SP2svlqTYe5fwZNtZyfactP74ShooP2vvi1BOp9ZemWw==
   dependencies:
     "@types/react" "*"
 
@@ -7265,6 +7272,13 @@ istanbul-reports@^3.1.4:
   dependencies:
     html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0"
+
+its-fine@^1.0.6:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/its-fine/-/its-fine-1.1.1.tgz#e74b93fddd487441f978a50f64f0f5af4d2fc38e"
+  integrity sha512-v1Ia1xl20KbuSGlwoaGsW0oxsw8Be+TrXweidxD9oT/1lAh6O3K3/GIM95Tt6WCiv6W+h2M7RB1TwdoAjQyyKw==
+  dependencies:
+    "@types/react-reconciler" "^0.28.0"
 
 jake@^10.8.5:
   version "10.8.6"

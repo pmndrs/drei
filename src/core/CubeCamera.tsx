@@ -12,7 +12,7 @@ type Props = JSX.IntrinsicElements['group'] & {
 } & CubeCameraOptions
 
 export function CubeCamera({ children, frames = Infinity, resolution, near, far, envMap, fog, ...props }: Props) {
-  const ref = React.useRef<Group>()
+  const ref = React.useRef<Group>(null)
   const { fbo, camera, update } = useCubeCamera({
     resolution,
     near,

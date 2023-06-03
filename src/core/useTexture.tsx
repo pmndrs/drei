@@ -1,17 +1,17 @@
 import { Texture, TextureLoader } from 'three'
 import { useLoader, useThree } from '@react-three/fiber'
-import { useEffect } from 'react'
-import { useLayoutEffect } from 'react'
+import { useEffect, useLayoutEffect } from 'react'
 
 export const IsObject = (url: any): url is Record<string, string> =>
   url === Object(url) && !Array.isArray(url) && typeof url !== 'function'
 
 export function useTexture<Url extends string[] | string | Record<string, string>>(
   input: Url,
-  onLoad?: (texture: Texture | Texture[]) => void
+  onLoad?: (texture: Texture | Texture[]) => void,
+  extendLoader?: (loader: TextureLoader) => void
 ): Url extends any[] ? Texture[] : Url extends object ? { [key in keyof Url]: Texture } : Texture {
   const gl = useThree((state) => state.gl)
-  const textures = useLoader(TextureLoader, IsObject(input) ? Object.values(input) : (input as any))
+  const textures = useLoader(TextureLoader, IsObject(input) ? Object.values(input) : (input as any), extendLoader)
 
   useLayoutEffect(() => {
     onLoad?.(textures)

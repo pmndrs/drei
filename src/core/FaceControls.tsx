@@ -17,6 +17,7 @@ import {
 import { useFrame, useThree } from '@react-three/fiber'
 import { FaceLandmarkerResult } from '@mediapipe/tasks-vision'
 import { easing } from 'maath'
+import { suspend } from 'suspend-react'
 
 import { useVideoTexture } from './useVideoTexture'
 import { Facemesh, FacemeshApi, FacemeshProps } from './Facemesh'
@@ -284,7 +285,11 @@ export const FaceControls = forwardRef<FaceControlsApi, FaceControlsProps>(
     const faceBlendshapes = faces?.faceBlendshapes?.[0]
     return (
       <FaceControlsContext.Provider value={api}>
-        {webcam && <Webcam ref={webcamApiRef} autostart={autostart} videoTextureSrc={webcamVideoTextureSrc} />}
+        {webcam && (
+          <Suspense fallback={null}>
+            <Webcam ref={webcamApiRef} autostart={autostart} videoTextureSrc={webcamVideoTextureSrc} />
+          </Suspense>
+        )}
 
         <Facemesh
           ref={facemeshApiRef}
@@ -324,30 +329,24 @@ type WebcamProps = {
 }
 
 const Webcam = forwardRef<WebcamApi, WebcamProps>(({ videoTextureSrc, autostart = true }, fref) => {
-  const [stream, setStream] = useState<MediaStream>()
-
   const videoTextureApiRef = useRef<VideoTextureApi>(null)
 
   const faceControls = useFaceControls()
-  useEffect(() => {
-    let strm: MediaStream
 
-    if (!videoTextureSrc) {
-      navigator.mediaDevices
-        .getUserMedia({
+  const stream: MediaStream | null = suspend(async () => {
+    return !videoTextureSrc
+      ? await navigator.mediaDevices.getUserMedia({
           audio: false,
           video: { facingMode: 'user' },
         })
-        .then((s) => {
-          strm = s
-          faceControls.dispatchEvent({ type: 'stream', stream: strm })
-          setStream(strm)
-        })
-        .catch(console.error)
-    }
+      : Promise.resolve(null)
+  }, [])
 
-    return () => strm?.getTracks().forEach((track) => track.stop())
-  }, [faceControls, videoTextureSrc])
+  useEffect(() => {
+    faceControls.dispatchEvent({ type: 'stream', stream })
+
+    return () => stream?.getTracks().forEach((track) => track.stop())
+  }, [stream, faceControls])
 
   // ref-api
   const api = useMemo<WebcamApi>(

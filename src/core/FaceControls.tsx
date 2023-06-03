@@ -1,3 +1,4 @@
+/* eslint react-hooks/exhaustive-deps: 1 */
 import * as THREE from 'three'
 import * as React from 'react'
 import {
@@ -300,7 +301,7 @@ export const FaceControls = forwardRef<FaceControlsApi, FaceControlsProps>(
           rotation-z={Math.PI}
           visible={debug}
         >
-          <meshStandardMaterial flatShading={true} side={THREE.DoubleSide} />
+          <meshBasicMaterial side={THREE.DoubleSide} />
         </Facemesh>
       </FaceControlsContext.Provider>
     )

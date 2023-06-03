@@ -1,3 +1,4 @@
+/* eslint react-hooks/exhaustive-deps: 1 */
 import * as THREE from 'three'
 import * as React from 'react'
 import { withKnobs, number } from '@storybook/addon-knobs'
@@ -13,20 +14,26 @@ export default {
   decorators: [withKnobs, (storyFn) => <Setup cameraFov={60}>{storyFn()}</Setup>],
 }
 
-export const FaceControlsSt = ({ eyes }) => (
-  <>
-    <color attach="background" args={['#303030']} />
-    <axesHelper />
+function FaceControlsScene({ eyes }) {
+  return (
+    <>
+      <color attach="background" args={['#303030']} />
+      <axesHelper />
 
-    <FaceLandmarker>
-      <FaceControls eyes={eyes} />
-    </FaceLandmarker>
+      <React.Suspense fallback={null}>
+        <FaceLandmarker>
+          <FaceControls eyes={eyes} />
+        </FaceLandmarker>
+      </React.Suspense>
 
-    <Box args={[0.1, 0.1, 0.1]}>
-      <meshStandardMaterial />
-    </Box>
-  </>
-)
+      <Box args={[0.1, 0.1, 0.1]}>
+        <meshStandardMaterial />
+      </Box>
+    </>
+  )
+}
+
+export const FaceControlsSt = ({ eyes }) => <FaceControlsScene eyes={eyes} />
 FaceControlsSt.args = {
   eyes: undefined,
 }

@@ -1,8 +1,6 @@
 /* eslint react-hooks/exhaustive-deps: 1 */
 import * as THREE from 'three'
 import * as React from 'react'
-import { withKnobs, number } from '@storybook/addon-knobs'
-import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'
 
@@ -11,7 +9,7 @@ import { FaceLandmarker, FaceControls, Box } from '../../src'
 export default {
   title: 'Controls/FaceControls',
   component: FaceControls,
-  decorators: [withKnobs, (storyFn) => <Setup cameraFov={60}>{storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup cameraFov={60}>{storyFn()}</Setup>],
 }
 
 function FaceControlsScene(props) {

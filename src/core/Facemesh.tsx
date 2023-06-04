@@ -3,7 +3,8 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { DEG2RAD } from 'three/src/math/MathUtils'
 import { useThree } from '@react-three/fiber'
-import { Line } from '../core'
+
+import { Line } from './Line'
 
 export type MediaPipeFaceMesh = typeof FacemeshDatas.SAMPLE_FACE
 

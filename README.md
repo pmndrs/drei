@@ -600,6 +600,10 @@ function Foo() {
 
 The camera follows your face.
 
+<p>
+  <a href="https://codesandbox.io/s/bf01sb"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/bf01sb/thumbnail.png" alt="demo"/></a>
+</p>
+
 Pre-requisite: wrap into a `FaceLandmarker` provider
 
 ```tsx

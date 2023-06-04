@@ -10,7 +10,7 @@ import {
   LinearEncoding,
   TextureEncoding,
 } from 'three'
-import { RGBELoader } from 'three-stdlib'
+import { RGBELoader, EXRLoader } from 'three-stdlib'
 import { suspend } from 'suspend-react'
 import { presetsObj, PresetsType } from '../helpers/environment-assets'
 
@@ -18,6 +18,8 @@ const CUBEMAP_ROOT = 'https://raw.githack.com/pmndrs/drei-assets/456060a26bbeb8f
 
 const isPromise = (promise: any): promise is Promise<{ ['default']: string }> =>
   typeof promise === 'object' && typeof (promise as Promise<any>).then === 'function'
+
+const isArray = (arr: any): arr is string[] => Array.isArray(arr)
 
 export type EnvironmentLoaderProps = {
   files?: string | string[] | Promise<{ ['default']: string }>
@@ -51,8 +53,18 @@ export function useEnvironment({
     )
   }
 
-  const isCubeMap = Array.isArray(files)
-  const loader = isCubeMap ? CubeTextureLoader : RGBELoader
+  const isCubeMap = isArray(files)
+  const extension = !isArray(files) && files.split('.').pop()?.toLowerCase()
+  const loader = isCubeMap
+    ? CubeTextureLoader
+    : extension === 'hdr'
+    ? RGBELoader
+    : extension === 'exr'
+    ? EXRLoader
+    : null
+
+  if (!loader) throw new Error('useEnvironment: Unrecognized file extension: ' + files)
+
   const loaderResult: Texture | Texture[] = useLoader(
     // @ts-expect-error
     loader,

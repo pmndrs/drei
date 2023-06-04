@@ -17,7 +17,7 @@ import {
 import { useFrame, useThree } from '@react-three/fiber'
 import { FaceLandmarkerResult } from '@mediapipe/tasks-vision'
 import { easing } from 'maath'
-import { suspend } from 'suspend-react'
+import { suspend, clear } from 'suspend-react'
 
 import { useVideoTexture } from './useVideoTexture'
 import { Facemesh, FacemeshApi, FacemeshProps } from './Facemesh'
@@ -345,8 +345,11 @@ const Webcam = forwardRef<WebcamApi, WebcamProps>(({ videoTextureSrc, autostart 
   useEffect(() => {
     faceControls.dispatchEvent({ type: 'stream', stream })
 
-    return () => stream?.getTracks().forEach((track) => track.stop())
-  }, [stream, faceControls])
+    return () => {
+      stream?.getTracks().forEach((track) => track.stop())
+      clear([videoTextureSrc])
+    }
+  }, [stream, faceControls, videoTextureSrc])
 
   // ref-api
   const api = useMemo<WebcamApi>(

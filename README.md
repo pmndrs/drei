@@ -1621,7 +1621,7 @@ return (
   <a href="https://codesandbox.io/s/hmgdjq"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/hmgdjq/screenshot.png" alt="Demo"/></a>
 </p>
 
-An improved THREE.MeshPhysicalMaterial. It acts like a normal PhysicalMaterial in terms of transmission support, thickness, ior, roughness, etc., but has chromatic aberration, noise-based roughness blur, (primitive) anisotropy support, and unlike the original it can "see" other transmissive or transparent objects which leads to improved visuals.
+An improved THREE.MeshPhysicalMaterial. It acts like a normal PhysicalMaterial in terms of transmission support, thickness, ior, roughness, etc., but has chromatic aberration, noise-based roughness blur, (primitive) anisotropic blur support, and unlike the original it can "see" other transmissive or transparent objects which leads to improved visuals.
 
 Although it should be faster than MPM keep in mind that it can still be expensive as it causes an additional render pass of the scene. Low samples and low resolution will make it faster. If you use roughness consider using a tiny resolution, for instance 32x32 pixels, it will still look good but perform much faster.
 
@@ -1640,7 +1640,7 @@ type MeshTransmissionMaterialProps = JSX.IntrinsicElements['meshPhysicalMaterial
   /* Chromatic aberration, default: 0.03 */
   chromaticAberration?: number
   /* Anisotropy, default: 0.1 */
-  anisotropy?: number
+  anisotropicBlur?: number
   /* Distortion, default: 0 */
   distortion?: number
   /* Distortion scale, default: 0.5 */
@@ -3814,8 +3814,6 @@ gl_FragColor = vec4(vec3(0.), 1.); // Transparnet
 
 Sets up a global cubemap, which affects the default `scene.environment`, and optionally `scene.background`, unless a custom scene has been passed. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience. If you pass an array of files it will use THREE.CubeTextureLoader.
 
-👉 Note: `preset` property is not meant to be used in production environments. Consider using `files` property together with local files or a CDN of your choice instead.
-
 ```jsx
 <Environment
   background={false} // can be true, false or "only" (which only sets the background) (default: false)
@@ -3828,10 +3826,22 @@ Sets up a global cubemap, which affects the default `scene.environment`, and opt
 />
 ```
 
+The simplest way to use it is to provide a preset. 👉 Note: `preset` property is not meant to be used in production environments and may fail as it relies on CDNs.
+
+```jsx
+<Environment preset="city" />
+```
+
 If you provide a single string it will use THREE.RGBELoader.
 
 ```jsx
 <Environment files="file.hdr" />
+```
+
+You can also use [@pmndrs/assets](https://github.com/pmndrs/assets) to easily self host common assets. Always use dynamic imports to avoid making this part of your main bundle.
+
+```jsx
+<Environment files={import('@pmndrs/assets/hdri/city')} />
 ```
 
 If you already have a cube texture you can pass it directly:

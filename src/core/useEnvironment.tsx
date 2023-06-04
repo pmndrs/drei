@@ -57,10 +57,10 @@ export function useEnvironment({
   const extension = !isArray(files) && files.split('.').pop()?.toLowerCase()
   const loader = isCubeMap
     ? CubeTextureLoader
+    : isPromise(files) || extension === 'exr'
+    ? EXRLoader
     : extension === 'hdr'
     ? RGBELoader
-    : extension === 'exr'
-    ? EXRLoader
     : null
 
   if (!loader) throw new Error('useEnvironment: Unrecognized file extension: ' + files)

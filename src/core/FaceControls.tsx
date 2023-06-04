@@ -39,7 +39,7 @@ function localToLocal(objSrc: THREE.Object3D, v: THREE.Vector3, objDst: THREE.Ob
 //
 //
 
-type FaceControlsProps = {
+export type FaceControlsProps = {
   /** The camera to be controlled, default: global state camera */
   camera?: THREE.Camera
   /** Whether to autostart the webcam, default: true */
@@ -74,7 +74,7 @@ type FaceControlsProps = {
   facemesh?: FacemeshProps
 }
 
-type FaceControlsApi = THREE.EventDispatcher & {
+export type FaceControlsApi = THREE.EventDispatcher & {
   /** Detect faces from the video */
   detect: (video: HTMLVideoElement, time: number) => void
   /** Compute the target for the camera */

@@ -14,7 +14,7 @@ export default {
   decorators: [withKnobs, (storyFn) => <Setup cameraFov={60}>{storyFn()}</Setup>],
 }
 
-function FaceControlsScene({ eyes }) {
+function FaceControlsScene(props) {
   return (
     <>
       <color attach="background" args={['#303030']} />
@@ -22,7 +22,7 @@ function FaceControlsScene({ eyes }) {
 
       <React.Suspense fallback={null}>
         <FaceLandmarker>
-          <FaceControls eyes={eyes} />
+          <FaceControls {...props} />
         </FaceLandmarker>
       </React.Suspense>
 
@@ -33,7 +33,7 @@ function FaceControlsScene({ eyes }) {
   )
 }
 
-export const FaceControlsSt = ({ eyes }) => <FaceControlsScene eyes={eyes} />
+export const FaceControlsSt = (args) => <FaceControlsScene {...args} />
 FaceControlsSt.args = {
   eyes: undefined,
 }

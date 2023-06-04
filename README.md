@@ -627,7 +627,7 @@ type FaceControlsProps = {
   webcamVideoTextureSrc?: VideoTextureSrc
   /** Disable the rAF camera position/rotation update, default: false */
   manualUpdate?: boolean
-  /** Disable the rVF face-detection, default: false */
+  /** Disable the rVFC face-detection, default: false */
   manualDetect?: boolean
   /** Callback function to call on "videoFrame" event, default: undefined */
   onVideoFrame?: (e: THREE.Event) => void
@@ -670,6 +670,8 @@ type FaceControlsApi = THREE.EventDispatcher & {
   pause: () => void
 }
 ```
+
+> **Note** <br>`FaceControls` uses [`requestVideoFrameCallback`](https://caniuse.com/mdn-api_htmlvideoelement_requestvideoframecallback), you may need [a polyfill](https://github.com/ThaUnknown/rvfc-polyfill) (for Firefox).
 
 # Gizmos
 

@@ -340,7 +340,7 @@ const Webcam = forwardRef<WebcamApi, WebcamProps>(({ videoTextureSrc, autostart 
           video: { facingMode: 'user' },
         })
       : Promise.resolve(null)
-  }, [])
+  }, [videoTextureSrc])
 
   useEffect(() => {
     faceControls.dispatchEvent({ type: 'stream', stream })

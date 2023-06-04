@@ -1013,7 +1013,7 @@ Renders a THREE.Line2 using THREE.CatmullRomCurve3 for interpolation.
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shapes-facemesh--facemesh-st)
 
-Renders an oriented [MediaPipe `face` mesh](https://developers.google.com/mediapipe/solutions/vision/face_landmarker/web_js#handle_and_display_results):
+Renders an oriented [MediaPipe face mesh](https://developers.google.com/mediapipe/solutions/vision/face_landmarker/web_js#handle_and_display_results):
 
 ```jsx
 const faceLandmarkerResult = {

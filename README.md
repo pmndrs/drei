@@ -121,6 +121,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#useboxprojectedenv">useBoxProjectedEnv</a></li>
           <li><a href="#useTrail">useTrail</a></li>
           <li><a href="#useSurfaceSampler">useSurfaceSampler</a></li>
+          <li><a href="#facelandmarker">FaceLandmarker</a></li>
         </ul>
         <li><a href="#loading">Loaders</a></li>
         <ul>
@@ -2530,6 +2531,12 @@ const buffer = useSurfaceSampler(
   instancedMesh // [Optional] Instanced mesh to scatter
 )
 ```
+
+### FaceLandmarker
+
+![](https://img.shields.io/badge/-suspense-brightgreen)
+
+A @mediapipe/tasks-vision [`FaceLandmarker`](https://developers.google.com/mediapipe/api/solutions/js/tasks-vision.facelandmarker) provider, as well as a `useFaceLandmarker` hook.
 
 # Loading
 

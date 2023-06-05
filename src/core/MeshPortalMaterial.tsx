@@ -7,29 +7,18 @@ import { shaderMaterial } from './shaderMaterial'
 // Author: N8, https://twitter.com/N8Programs
 const PortalMaterial = shaderMaterial(
   {
-    blur: 0.0,
     map: null,
     resolution: new THREE.Vector2(),
   },
-  `varying vec2 vUv;
-   void main() {
+  `void main() {
      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-     vUv = uv;
    }`,
-  `varying vec2 vUv;
-   uniform float blur;
-   uniform sampler2D map;
+  `uniform sampler2D map;
    uniform vec2 resolution;
-   float blurCircle(vec2 center, vec2 uv, float k) {
-     float sdf = distance(uv, center) - 0.5;
-     float norm = sdf / 0.5;
-     return 1.0 - smoothstep(0.0, 1.0, clamp((1.0/k)*norm + 1.0, 0.0, 1.0));
-   }
    void main() {
      vec2 uv = gl_FragCoord.xy / resolution.xy;
      vec4 t = texture2D(map, uv);
-     float strength = blurCircle(vec2(0.5), vUv, blur);
-     gl_FragColor = vec4(t.rgb, t.a * strength);
+     gl_FragColor = texture2D(map, uv);
      #include <tonemapping_fragment>
      #include <encodings_fragment>
    }`
@@ -38,16 +27,19 @@ const PortalMaterial = shaderMaterial(
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      portalMaterial: ReactThreeFiber.ShaderMaterialProps & { resolution: ReactThreeFiber.Vector2; blur: number }
+      drei_PortalMaterial: ReactThreeFiber.ShaderMaterialProps & { resolution: ReactThreeFiber.Vector2 }
     }
   }
 }
 
-export type PortalProps = JSX.IntrinsicElements['mesh'] & { blur?: number }
+export type PortalProps = JSX.IntrinsicElements['mesh'] & { shader?: string | any }
 
 export const MeshPortalMaterial = React.forwardRef(
-  ({ children, ...props }: PortalProps, fref: React.ForwardedRef<typeof PortalMaterial>) => {
-    extend({ PortalMaterial })
+  (
+    { children, shader: Shader = 'drei_PortalMaterial', ...props }: PortalProps,
+    fref: React.ForwardedRef<typeof PortalMaterial>
+  ) => {
+    extend({ drei_PortalMaterial: PortalMaterial })
     const ref = React.useRef<typeof PortalMaterial>(null!)
     const group = React.useRef<THREE.Group>(null!)
     const { size, events, viewport } = useThree()
@@ -59,7 +51,7 @@ export const MeshPortalMaterial = React.forwardRef(
     })
     React.useImperativeHandle(fref, () => ref.current)
     return (
-      <portalMaterial
+      <Shader
         // @ts-ignore
         ref={ref}
         resolution={[size.width * viewport.dpr, size.height * viewport.dpr]}
@@ -71,7 +63,7 @@ export const MeshPortalMaterial = React.forwardRef(
             {children}
           </group>
         </RenderTexture>
-      </portalMaterial>
+      </Shader>
     )
   }
 )

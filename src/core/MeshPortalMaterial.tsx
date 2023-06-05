@@ -4,6 +4,7 @@ import { ReactThreeFiber, extend, useFrame, useThree } from '@react-three/fiber'
 import { RenderTexture } from './RenderTexture'
 import { shaderMaterial } from './shaderMaterial'
 
+// Author: N8, https://twitter.com/N8Programs
 const PortalMaterial = shaderMaterial(
   {
     map: null,

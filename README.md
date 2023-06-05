@@ -155,6 +155,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#view">View</a></li>
           <li><a href="#rendertexture">RenderTexture</a></li>
           <li><a href="#mask">Mask</a></li>
+          <li><a href="#portal">Portal</a></li>
         </ul>
         <li><a href="#modifiers">Modifiers</a></li>
         <ul>
@@ -3213,6 +3214,25 @@ Invert masks individually by providing a 2nd boolean argument to the `useMask` h
 const stencil = useMask(1, true)
 ```
 
+#### Portal
+
+```tsx
+export type PortalProps = JSX.IntrinsicElements['mesh'] & { blur?: number }
+```
+
+A material that creates a portal into another scene. It is drawn onto the geometry of the mesh that it is applied to.
+
+````jsx
+<mesh {...props}>
+  <planeGeometry />
+  <MeshPortalMaterial>
+    <mesh>
+      <sphereGeometry />
+    </mesh>
+  </MeshPortalMaterial>
+</mesh>
+```
+
 # Staging
 
 #### Center
@@ -3247,7 +3267,7 @@ export type Props = JSX.IntrinsicElements['group'] & {
   /** Callback, fires in the useLayoutEffect phase, after measurement */
   onCentered?: (props: OnCenterCallbackProps) => void
 }
-```
+````
 
 ```tsx
 type OnCenterCallbackProps = {

@@ -2164,6 +2164,11 @@
     "@types/mdx" "^2.0.0"
     "@types/react" ">=16"
 
+"@mediapipe/tasks-vision@^0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@mediapipe/tasks-vision/-/tasks-vision-0.10.0.tgz#d95a816f66889dcb15545636ac7fc78588c1d705"
+  integrity sha512-l7Sqdw9EgO758tLrt+jDqqKnYKjeOFgzC9MRcE4qZnh/XG/o7JBacEF4cAzes+2wsElRCVoVGf8ETllIqgBzWA==
+
 "@ndelangen/get-tarball@^3.0.7":
   version "3.0.7"
   resolved "https://registry.yarnpkg.com/@ndelangen/get-tarball/-/get-tarball-3.0.7.tgz#87c7aef2df4ff4fbdbab6ac9ed32cee142c4b1a3"

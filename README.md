@@ -52,6 +52,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#scrollcontrols">ScrollControls</a></li>
           <li><a href="#presentationcontrols">PresentationControls</a></li>
           <li><a href="#keyboardcontrols">KeyboardControls</a></li>
+          <li><a href="#FaceControls">FaceControls</a></li>
         </ul>
         <li><a href="#gizmos">Gizmos</a></li>
         <ul>
@@ -120,6 +121,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#useboxprojectedenv">useBoxProjectedEnv</a></li>
           <li><a href="#useTrail">useTrail</a></li>
           <li><a href="#useSurfaceSampler">useSurfaceSampler</a></li>
+          <li><a href="#facelandmarker">FaceLandmarker</a></li>
         </ul>
         <li><a href="#loading">Loaders</a></li>
         <ul>
@@ -359,7 +361,7 @@ If available controls have damping enabled by default, they manage their own upd
 const controls = useThree((state) => state.controls)
 ```
 
-Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-scene-st), TrackballControls, ArcballControls, FlyControls, DeviceOrientationControls, PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st), FirstPersonControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-firstpersoncontrols--first-person-controls-story) and CameraControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-cameracontrols--camera-controls-story)
+Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-scene-st), TrackballControls, ArcballControls, FlyControls, DeviceOrientationControls, PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st), FirstPersonControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-firstpersoncontrols--first-person-controls-story) CameraControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-cameracontrols--camera-controls-story) and FaceControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-facecontrols)
 
 All controls react to the default camera. If you have a `<PerspectiveCamera makeDefault />` in your scene, they will control it. If you need to inject an imperative camera or one that isn't the default, use the `camera` prop: `<OrbitControls camera={MyCamera} />`.
 
@@ -595,6 +597,82 @@ function Foo() {
   })
 }
 ```
+
+#### FaceControls
+
+The camera follows your face.
+
+<p>
+  <a href="https://codesandbox.io/s/bf01sb"><img width="20%" src="https://github.com/abernier/abernier/assets/76580/2138ef30-48f3-4ae9-b2bb-4f600de0a35e" alt="demo"/></a>
+</p>
+
+Pre-requisite: wrap into a `FaceLandmarker` provider
+
+```tsx
+<FaceLandmarker>...</FaceLandmarker>
+```
+
+```tsx
+<FaceControls />
+```
+
+```tsx
+type FaceControlsProps = {
+  /** The camera to be controlled, default: global state camera */
+  camera?: THREE.Camera
+  /** Whether to autostart the webcam, default: true */
+  autostart?: boolean
+  /** Enable/disable the webcam, default: true */
+  webcam?: boolean
+  /** A custom video URL or mediaStream, default: undefined */
+  webcamVideoTextureSrc?: VideoTextureSrc
+  /** Disable the rAF camera position/rotation update, default: false */
+  manualUpdate?: boolean
+  /** Disable the rVFC face-detection, default: false */
+  manualDetect?: boolean
+  /** Callback function to call on "videoFrame" event, default: undefined */
+  onVideoFrame?: (e: THREE.Event) => void
+  /** Reference this FaceControls instance as state's `controls` */
+  makeDefault?: boolean
+  /** Approximate time to reach the target. A smaller value will reach the target faster. */
+  smoothTime?: number
+  /** Apply position offset extracted from `facialTransformationMatrix` */
+  offset?: boolean
+  /** Offset sensitivity factor, less is more sensible, default: 80 */
+  offsetScalar?: number
+  /** Enable eye-tracking */
+  eyes?: boolean
+  /** Force Facemesh's `origin` to be the middle of the 2 eyes, default: true */
+  eyesAsOrigin?: boolean
+  /** Constant depth of the Facemesh, default: .15 */
+  depth?: number
+  /** Enable debug mode, default: false */
+  debug?: boolean
+  /** Facemesh options, default: undefined */
+  facemesh?: FacemeshProps
+}
+```
+
+```tsx
+type FaceControlsApi = THREE.EventDispatcher & {
+  /** Detect faces from the video */
+  detect: (video: HTMLVideoElement, time: number) => void
+  /** Compute the target for the camera */
+  computeTarget: () => THREE.Object3D
+  /** Update camera's position/rotation to the `target` */
+  update: (delta: number, target?: THREE.Object3D) => void
+  /** <Facemesh> ref api */
+  facemeshApiRef: RefObject<FacemeshApi>
+  /** <Webcam> ref api */
+  webcamApiRef: RefObject<WebcamApi>
+  /** Play the video */
+  play: () => void
+  /** Pause the video */
+  pause: () => void
+}
+```
+
+> **Note** <br>`FaceControls` uses [`requestVideoFrameCallback`](https://caniuse.com/mdn-api_htmlvideoelement_requestvideoframecallback), you may need [a polyfill](https://github.com/ThaUnknown/rvfc-polyfill) (for Firefox).
 
 # Gizmos
 
@@ -938,42 +1016,59 @@ Renders a THREE.Line2 using THREE.CatmullRomCurve3 for interpolation.
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shapes-facemesh--facemesh-st)
 
-Renders an oriented [MediaPipe `face` mesh](https://github.com/tensorflow/tfjs-models/tree/master/face-landmarks-detection):
+Renders an oriented [MediaPipe face mesh](https://developers.google.com/mediapipe/solutions/vision/face_landmarker/web_js#handle_and_display_results):
 
 ```jsx
-const face = {
-  keypoints: [
-    {x: 406.53152857172876, y: 256.8054528661723, z: 10.2, name: "lips"},
-    {x: 406.544237446397, y: 230.06933367750395, z: 8},
-    ...
-  ],
-  box: {
-    xMin: 304.6476503248806,
-    xMax: 502.5079975897382,
-    yMin: 102.16298762367356,
-    yMax: 349.035215984403,
-    width: 197.86034726485758,
-    height: 246.87222836072945
+const faceLandmarkerResult = {
+    "faceLandmarks": [
+      [
+        { "x": 0.5760777592658997, "y": 0.8639070391654968, "z": -0.030997956171631813 },
+        { "x": 0.572094738483429, "y": 0.7886289358139038, "z": -0.07189624011516571 },
+        // ...
+      ],
+      // ...
+    ],
+    "faceBlendshapes": [
+      // ...
+    ],
+    "facialTransformationMatrixes": [
+      // ...
+    ]
   },
 }
+const points = faceLandmarkerResult.faceLandmarks[0]
 
-<Facemesh face={face} />
+<Facemesh points={points} />
 ```
 
 ```tsx
-type FacemeshProps = {
-  /** a MediaPipeFaceMesh object, default: a lambda face */
+export type FacemeshProps = {
+  /** an array of 468+ keypoints as returned by google/mediapipe tasks-vision, default: a sample face */
+  points?: MediaPipePoints
+  /** @deprecated an face object as returned by tensorflow/tfjs-models face-landmarks-detection */
   face?: MediaPipeFaceMesh
-  /** width of the mesh, default: undefined */
+  /** constant width of the mesh, default: undefined */
   width?: number
-  /** or height of the mesh, default: undefined */
+  /** or constant height of the mesh, default: undefined */
   height?: number
-  /** or depth of the mesh, default: 1 */
+  /** or constant depth of the mesh, default: 1 */
   depth?: number
   /** a landmarks tri supposed to be vertical, default: [159, 386, 200] (see: https://github.com/tensorflow/tfjs-models/tree/master/face-landmarks-detection#mediapipe-facemesh-keypoints) */
   verticalTri?: [number, number, number]
-  /** a landmark index to be the origin of the mesh. default: undefined (ie. the bbox center) */
-  origin?: number
+  /** a landmark index (to get the position from) or a vec3 to be the origin of the mesh. default: undefined (ie. the bbox center) */
+  origin?: number | THREE.Vector3
+  /** A facial transformation matrix, as returned by FaceLandmarkerResult.facialTransformationMatrixes (see: https://developers.google.com/mediapipe/solutions/vision/face_landmarker/web_js#handle_and_display_results) */
+  facialTransformationMatrix?: typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.facialTransformationMatrixes[0]
+  /** Apply position offset extracted from `facialTransformationMatrix` */
+  offset?: boolean
+  /** Offset sensitivity factor, less is more sensible */
+  offsetScalar?: number
+  /** Fface blendshapes, as returned by FaceLandmarkerResult.faceBlendshapes (see: https://developers.google.com/mediapipe/solutions/vision/face_landmarker/web_js#handle_and_display_results) */
+  faceBlendshapes?: typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.faceBlendshapes[0]
+  /** whether to enable eyes (nb. `faceBlendshapes` is required for), default: true */
+  eyes?: boolean
+  /** Force `origin` to be the middle of the 2 eyes (nb. `eyes` is required for), default: false */
+  eyesAsOrigin?: boolean
   /** debug mode, default: false */
   debug?: boolean
 }
@@ -984,20 +1079,28 @@ Ref-api:
 ```tsx
 const api = useRef<FacemeshApi>()
 
-<Facemesh ref={api} face={face} />
+<Facemesh ref={api} points={points} />
 ```
 
 ```tsx
 type FacemeshApi = {
   meshRef: React.RefObject<THREE.Mesh>
   outerRef: React.RefObject<THREE.Group>
+  eyeRightRef: React.RefObject<FacemeshEyeApi>
+  eyeLeftRef: React.RefObject<FacemeshEyeApi>
 }
 ```
 
-NB: `outerRef` group is oriented as your `face`. You can for example get its world direction:
+You can for example get face mesh world direction:
 
 ```tsx
-meshRef.current.localToWorld(new THREE.Vector3(0, 0, -1))
+api.meshRef.current.localToWorld(new THREE.Vector3(0, 0, -1))
+```
+
+or get L/R iris direction:
+
+```tsx
+api.eyeRightRef.current.irisDirRef.current.localToWorld(new THREE.Vector3(0, 0, -1))
 ```
 
 # Abstractions
@@ -2431,6 +2534,12 @@ const buffer = useSurfaceSampler(
   instancedMesh // [Optional] Instanced mesh to scatter
 )
 ```
+
+### FaceLandmarker
+
+![](https://img.shields.io/badge/-suspense-brightgreen)
+
+A @mediapipe/tasks-vision [`FaceLandmarker`](https://developers.google.com/mediapipe/api/solutions/js/tasks-vision.facelandmarker) provider, as well as a `useFaceLandmarker` hook.
 
 # Loading
 

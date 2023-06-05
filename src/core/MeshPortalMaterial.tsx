@@ -20,10 +20,16 @@ const PortalMaterial = shaderMaterial(
    uniform float blur;
    uniform sampler2D map;
    uniform vec2 resolution;
+   float blurCircle(vec2 center, vec2 uv, float k) {
+     float sdf = distance(uv, center) - 0.5;
+     float norm = sdf / 0.5;
+     return 1.0 - smoothstep(0.0, 1.0, clamp((1.0/k)*norm + 1.0, 0.0, 1.0));
+   }
    void main() {
      vec2 uv = gl_FragCoord.xy / resolution.xy;
-     float strength = 1.0 - distance(vUv, vec2(0.5)) * 2.0 * blur;
-     gl_FragColor = vec4(texture2D(map, uv).rgb, strength);
+     vec4 t = texture2D(map, uv);
+     float strength = blurCircle(vec2(0.5), vUv, blur);
+     gl_FragColor = vec4(t.rgb, t.a * strength);
      #include <tonemapping_fragment>
      #include <encodings_fragment>
    }`

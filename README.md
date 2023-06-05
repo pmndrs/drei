@@ -2474,7 +2474,15 @@ A convenience hook that wraps `THREE.DefaultLoadingManager`'s progress status.
 
 ```jsx
 function Loader() {
-  const { active, progress, errors, item, loaded, total } = useProgress()
+  const {
+    active, // If any loaders are active (includes preloading)
+    progress, // Progress of all loaders in the queue (0-100%). Note: This may jump around before reaching 100, as more loaders and preloaders enter the queue
+    errors, // All errors
+    item, // URL of the current item being loaded
+    itemsMap, // A collection (map) of all items pending or loaded. Keys are item URLs, values are true if loaded, false if pending
+    loaded, // Number of items loaded so far
+    total, // Total number of items that have entered the queue
+  } = useProgress()
   return <Html center>{progress} % loaded</Html>
 }
 

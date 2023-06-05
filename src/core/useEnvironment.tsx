@@ -81,7 +81,7 @@ export function useEnvironment({
 
   const sRGBEncoding = 3001
   const LinearEncoding = 3000
-  if ('colorSpace' in texture) texture.colorSpace = encoding ?? isCubeMap ? 'srgb' : 'srgb-linear'
+  if ('colorSpace' in texture) (texture as any).colorSpace = encoding ?? isCubeMap ? 'srgb' : 'srgb-linear'
   else (texture as any).encoding = encoding ?? isCubeMap ? sRGBEncoding : LinearEncoding
 
   return texture

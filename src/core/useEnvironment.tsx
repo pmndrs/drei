@@ -6,8 +6,6 @@ import {
   Loader,
   CubeReflectionMapping,
   CubeTexture,
-  sRGBEncoding,
-  LinearEncoding,
   TextureEncoding,
 } from 'three'
 import { RGBELoader, EXRLoader } from 'three-stdlib'
@@ -36,14 +34,18 @@ export function useEnvironment({
   encoding = undefined,
   extensions,
 }: Partial<EnvironmentLoaderProps> = {}) {
+  let loader: typeof Loader | null = null
+  let isCubeMap: boolean = false
+  let extension: string | false | undefined
+
   if (preset) {
     if (!(preset in presetsObj)) throw new Error('Preset must be one of: ' + Object.keys(presetsObj).join(', '))
     files = presetsObj[preset]
     path = CUBEMAP_ROOT
   }
 
-  // Using promises that return inline-URLs by default
   if (isPromise(files)) {
+    // Using promises that return inline-EXR URLs by default
     files = suspend(
       async (promise) => {
         const result = await promise
@@ -51,17 +53,13 @@ export function useEnvironment({
       },
       [files]
     )
+    loader = EXRLoader
+  } else {
+    // Everything else
+    isCubeMap = isArray(files)
+    extension = !isArray(files) && files.split('.').pop()?.toLowerCase()
+    loader = isCubeMap ? CubeTextureLoader : extension === 'hdr' ? RGBELoader : extension === 'exr' ? EXRLoader : null
   }
-
-  const isCubeMap = isArray(files)
-  const extension = !isArray(files) && files.split('.').pop()?.toLowerCase()
-  const loader = isCubeMap
-    ? CubeTextureLoader
-    : isPromise(files) || extension === 'exr'
-    ? EXRLoader
-    : extension === 'hdr'
-    ? RGBELoader
-    : null
 
   if (!loader) throw new Error('useEnvironment: Unrecognized file extension: ' + files)
 
@@ -70,15 +68,21 @@ export function useEnvironment({
     loader,
     isCubeMap ? [files] : files,
     (loader) => {
-      loader.setPath(path)
+      loader.setPath?.(path)
       if (extensions) extensions(loader)
     }
-  )
+  ) as Texture | Texture[]
   const texture: Texture | CubeTexture = isCubeMap
     ? // @ts-ignore
       loaderResult[0]
     : loaderResult
+
   texture.mapping = isCubeMap ? CubeReflectionMapping : EquirectangularReflectionMapping
-  texture.encoding = encoding ?? isCubeMap ? sRGBEncoding : LinearEncoding
+
+  const sRGBEncoding = 3001
+  const LinearEncoding = 3000
+  if ('colorSpace' in texture) texture.colorSpace = encoding ?? isCubeMap ? 'srgb' : 'srgb-linear'
+  else (texture as any).encoding = encoding ?? isCubeMap ? sRGBEncoding : LinearEncoding
+
   return texture
 }

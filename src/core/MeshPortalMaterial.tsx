@@ -27,19 +27,16 @@ const PortalMaterial = shaderMaterial(
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      drei_PortalMaterial: ReactThreeFiber.ShaderMaterialProps & { resolution: ReactThreeFiber.Vector2 }
+      portalMaterial: ReactThreeFiber.ShaderMaterialProps & { resolution: ReactThreeFiber.Vector2 }
     }
   }
 }
 
-export type PortalProps = JSX.IntrinsicElements['mesh'] & { shader?: string | any }
+export type PortalProps = JSX.IntrinsicElements['mesh']
 
 export const MeshPortalMaterial = React.forwardRef(
-  (
-    { children, shader: Shader = 'drei_PortalMaterial', ...props }: PortalProps,
-    fref: React.ForwardedRef<typeof PortalMaterial>
-  ) => {
-    extend({ drei_PortalMaterial: PortalMaterial })
+  ({ children, ...props }: PortalProps, fref: React.ForwardedRef<typeof PortalMaterial>) => {
+    extend({ PortalMaterial })
     const ref = React.useRef<typeof PortalMaterial>(null!)
     const group = React.useRef<THREE.Group>(null!)
     const { size, events, viewport } = useThree()
@@ -51,7 +48,7 @@ export const MeshPortalMaterial = React.forwardRef(
     })
     React.useImperativeHandle(fref, () => ref.current)
     return (
-      <Shader
+      <portalMaterial
         // @ts-ignore
         ref={ref}
         resolution={[size.width * viewport.dpr, size.height * viewport.dpr]}
@@ -63,7 +60,7 @@ export const MeshPortalMaterial = React.forwardRef(
             {children}
           </group>
         </RenderTexture>
-      </Shader>
+      </portalMaterial>
     )
   }
 )

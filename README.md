@@ -3216,6 +3216,10 @@ const stencil = useMask(1, true)
 
 #### Portal
 
+```tsx
+export type PortalProps = JSX.IntrinsicElements['mesh'] & { blur?: number }
+```
+
 A material that creates a portal into another scene. It is drawn onto the geometry of the mesh that it is applied to.
 
 ````jsx
@@ -3227,6 +3231,12 @@ A material that creates a portal into another scene. It is drawn onto the geomet
     </mesh>
   </MeshPortalMaterial>
 </mesh>
+```
+
+By using the `blur` prop you can optionally blur the edges
+
+```jsx
+<MeshPortalMaterial transparent blur={1} />
 ```
 
 # Staging

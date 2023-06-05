@@ -7,17 +7,23 @@ import { shaderMaterial } from './shaderMaterial'
 // Author: N8, https://twitter.com/N8Programs
 const PortalMaterial = shaderMaterial(
   {
+    blur: 0.0,
     map: null,
     resolution: new THREE.Vector2(),
   },
-  `void main() {
+  `varying vec2 vUv;
+   void main() {
      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+     vUv = uv;
    }`,
-  `uniform sampler2D map;
+  `varying vec2 vUv;
+   uniform float blur;
+   uniform sampler2D map;
    uniform vec2 resolution;
    void main() {
      vec2 uv = gl_FragCoord.xy / resolution.xy;
-     gl_FragColor = texture2D(map, uv);
+     float strength = 1.0 - distance(vUv, vec2(0.5)) * 2.0 * blur;
+     gl_FragColor = vec4(texture2D(map, uv).rgb, strength);
      #include <tonemapping_fragment>
      #include <encodings_fragment>
    }`
@@ -26,12 +32,12 @@ const PortalMaterial = shaderMaterial(
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      portalMaterial: ReactThreeFiber.ShaderMaterialProps & { resolution: ReactThreeFiber.Vector2 }
+      portalMaterial: ReactThreeFiber.ShaderMaterialProps & { resolution: ReactThreeFiber.Vector2; blur: number }
     }
   }
 }
 
-export type PortalProps = JSX.IntrinsicElements['mesh']
+export type PortalProps = JSX.IntrinsicElements['mesh'] & { blur?: number }
 
 export const MeshPortalMaterial = React.forwardRef(
   ({ children, ...props }: PortalProps, fref: React.ForwardedRef<typeof PortalMaterial>) => {

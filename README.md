@@ -3972,7 +3972,7 @@ If you provide a single string it will use THREE.RGBELoader.
 You can also use [@pmndrs/assets](https://github.com/pmndrs/assets) to easily self host common assets. Always use dynamic imports to avoid making this part of your main bundle.
 
 ```jsx
-<Environment files={import('@pmndrs/assets/hdri/city')} />
+<Environment files={import('@pmndrs/assets/hdri/city.exr')} />
 ```
 
 If you already have a cube texture you can pass it directly:

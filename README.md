@@ -600,10 +600,12 @@ function Foo() {
 
 #### FaceControls
 
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-facecontrols)
+
 The camera follows your face.
 
 <p>
-  <a href="https://codesandbox.io/s/bf01sb"><img width="20%" src="https://github.com/abernier/abernier/assets/76580/2138ef30-48f3-4ae9-b2bb-4f600de0a35e" alt="demo"/></a>
+  <a href="https://codesandbox.io/s/jfx2t6"><img width="20%" src="https://github-production-user-asset-6210df.s3.amazonaws.com/76580/243503368-6239eb74-8473-4131-9203-33b29c1bbec0.png" alt="demo"/></a>
 </p>
 
 Pre-requisite: wrap into a `FaceLandmarker` provider

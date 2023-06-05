@@ -3233,12 +3233,6 @@ A material that creates a portal into another scene. It is drawn onto the geomet
 </mesh>
 ```
 
-By using the `blur` prop you can optionally blur the edges
-
-```jsx
-<MeshPortalMaterial transparent blur={1} />
-```
-
 # Staging
 
 #### Center

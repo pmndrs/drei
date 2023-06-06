@@ -2,54 +2,122 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
+
 import { Line } from './Line'
 
 export type MediaPipeFaceMesh = typeof FacemeshDatas.SAMPLE_FACE
 
+export type MediaPipePoints =
+  | typeof FacemeshDatas.SAMPLE_FACE.keypoints
+  | typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.faceLandmarks[0]
+
 export type FacemeshProps = {
-  /** a MediaPipeFaceMesh object, default: a lambda face */
+  /** an array of 468+ keypoints as returned by google/mediapipe tasks-vision, default: a sample face */
+  points?: MediaPipePoints
+  /** @deprecated an face object as returned by tensorflow/tfjs-models face-landmarks-detection */
   face?: MediaPipeFaceMesh
-  /** width of the mesh, default: undefined */
+  /** constant width of the mesh, default: undefined */
   width?: number
-  /** or height of the mesh, default: undefined */
+  /** or constant height of the mesh, default: undefined */
   height?: number
-  /** or depth of the mesh, default: 1 */
+  /** or constant depth of the mesh, default: 1 */
   depth?: number
   /** a landmarks tri supposed to be vertical, default: [159, 386, 200] (see: https://github.com/tensorflow/tfjs-models/tree/master/face-landmarks-detection#mediapipe-facemesh-keypoints) */
   verticalTri?: [number, number, number]
-  /** a landmark index to be the origin of the mesh. default: undefined (ie. the bbox center) */
-  origin?: number
+  /** a landmark index (to get the position from) or a vec3 to be the origin of the mesh. default: undefined (ie. the bbox center) */
+  origin?: number | THREE.Vector3
+  /** A facial transformation matrix, as returned by FaceLandmarkerResult.facialTransformationMatrixes (see: https://developers.google.com/mediapipe/solutions/vision/face_landmarker/web_js#handle_and_display_results) */
+  facialTransformationMatrix?: typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.facialTransformationMatrixes[0]
+  /** Apply position offset extracted from `facialTransformationMatrix` */
+  offset?: boolean
+  /** Offset sensitivity factor, less is more sensible */
+  offsetScalar?: number
+  /** Fface blendshapes, as returned by FaceLandmarkerResult.faceBlendshapes (see: https://developers.google.com/mediapipe/solutions/vision/face_landmarker/web_js#handle_and_display_results) */
+  faceBlendshapes?: typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.faceBlendshapes[0]
+  /** whether to enable eyes (nb. `faceBlendshapes` is required for), default: true */
+  eyes?: boolean
+  /** Force `origin` to be the middle of the 2 eyes (nb. `eyes` is required for), default: false */
+  eyesAsOrigin?: boolean
   /** debug mode, default: false */
   debug?: boolean
-} & JSX.IntrinsicElements['group']
+} & Omit<JSX.IntrinsicElements['group'], 'ref'>
 
 export type FacemeshApi = {
   meshRef: React.RefObject<THREE.Mesh>
   outerRef: React.RefObject<THREE.Group>
+  eyeRightRef: React.RefObject<FacemeshEyeApi>
+  eyeLeftRef: React.RefObject<FacemeshEyeApi>
 }
 
 const defaultLookAt = new THREE.Vector3(0, 0, -1)
 
+const normal = (function () {
+  const a = new THREE.Vector3()
+  const b = new THREE.Vector3()
+  const c = new THREE.Vector3()
+  const ab = new THREE.Vector3()
+  const ac = new THREE.Vector3()
+
+  return function (
+    v1: THREE.Vector3,
+    v2: THREE.Vector3,
+    v3: THREE.Vector3,
+    v: THREE.Vector3 // result
+  ) {
+    a.copy(v1)
+    b.copy(v2)
+    c.copy(v3)
+
+    ab.copy(b).sub(a)
+    ac.copy(c).sub(a)
+
+    return v.crossVectors(ac, ab).normalize()
+  }
+})()
+
+function mean(v1: THREE.Vector3, v2: THREE.Vector3) {
+  return v1.clone().add(v2).multiplyScalar(0.5)
+}
+
 export const Facemesh = React.forwardRef<FacemeshApi, FacemeshProps>(
   (
     {
-      face = FacemeshDatas.SAMPLE_FACE,
+      points = FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.faceLandmarks[0],
+      face,
+      facialTransformationMatrix,
+      faceBlendshapes,
+      offset,
+      offsetScalar = 80,
       width,
       height,
       depth = 1,
-      verticalTri = [159, 386, 200],
+      verticalTri = [159, 386, 152],
       origin,
+      eyes = true,
+      eyesAsOrigin = false,
       debug = false,
       children,
       ...props
     },
     fref
   ) => {
+    if (face) {
+      points = face.keypoints
+      console.warn('Facemesh `face` prop is deprecated: use `points` instead')
+    }
+
+    const offsetRef = React.useRef<THREE.Group>(null)
+    const scaleRef = React.useRef<THREE.Group>(null)
+    const originRef = React.useRef<THREE.Group>(null)
     const outerRef = React.useRef<THREE.Group>(null)
     const meshRef = React.useRef<THREE.Mesh>(null)
+    const eyeRightRef = React.useRef<FacemeshEyeApi>(null)
+    const eyeLeftRef = React.useRef<FacemeshEyeApi>(null)
 
     const [sightDir] = React.useState(() => new THREE.Vector3())
+    const [transform] = React.useState(() => new THREE.Object3D())
     const [sightDirQuaternion] = React.useState(() => new THREE.Quaternion())
+    const [_origin] = React.useState(() => new THREE.Vector3())
 
     const { invalidate } = useThree()
 
@@ -57,32 +125,52 @@ export const Facemesh = React.forwardRef<FacemeshApi, FacemeshProps>(
       meshRef.current?.geometry.setIndex(FacemeshDatas.TRIANGULATION)
     }, [])
 
-    const [a] = React.useState(() => new THREE.Vector3())
-    const [b] = React.useState(() => new THREE.Vector3())
-    const [c] = React.useState(() => new THREE.Vector3())
-    const [ab] = React.useState(() => new THREE.Vector3())
-    const [ac] = React.useState(() => new THREE.Vector3())
     const [bboxSize] = React.useState(() => new THREE.Vector3())
+
     React.useEffect(() => {
-      const geometry = meshRef.current?.geometry
-      if (!geometry) return
+      const faceGeometry = meshRef.current?.geometry
+      if (!faceGeometry) return
 
-      geometry.setFromPoints(face.keypoints as THREE.Vector3[])
+      faceGeometry.setFromPoints(points as THREE.Vector3[])
+      faceGeometry.setDrawRange(0, FacemeshDatas.TRIANGULATION.length)
 
       //
-      // A. compute sightDir vector (normal to verticalTri)
+      // A. compute sightDir vector
+      //
+      //  - either from `facialTransformationMatrix` if available
+      //  - or from `verticalTri`
       //
 
-      a.copy(face.keypoints[verticalTri[0]] as THREE.Vector3)
-      b.copy(face.keypoints[verticalTri[1]] as THREE.Vector3)
-      c.copy(face.keypoints[verticalTri[2]] as THREE.Vector3)
+      if (facialTransformationMatrix) {
+        // from facialTransformationMatrix
+        transform.matrix.fromArray(facialTransformationMatrix.data)
+        transform.matrix.decompose(transform.position, transform.quaternion, transform.scale)
 
-      ab.copy(b).sub(a)
-      ac.copy(c).sub(a)
+        // Rotation: y and z axes are inverted
+        transform.rotation.y *= -1
+        transform.rotation.z *= -1
+        sightDirQuaternion.setFromEuler(transform.rotation)
 
-      sightDir.crossVectors(ac, ab).normalize()
+        // Offset: y and z axes are inverted
+        if (offset) {
+          transform.position.y *= -1
+          transform.position.z *= -1
+          offsetRef.current?.position.copy(transform.position.divideScalar(offsetScalar))
+        } else {
+          offsetRef.current?.position.set(0, 0, 0) // reset
+        }
+      } else {
+        // normal to verticalTri
+        normal(
+          points[verticalTri[0]] as THREE.Vector3,
+          points[verticalTri[1]] as THREE.Vector3,
+          points[verticalTri[2]] as THREE.Vector3,
+          sightDir
+        )
 
-      sightDirQuaternion.setFromUnitVectors(defaultLookAt, sightDir)
+        sightDirQuaternion.setFromUnitVectors(defaultLookAt, sightDir)
+      }
+
       const sightDirQuaternionInverse = sightDirQuaternion.clone().invert()
 
       //
@@ -90,47 +178,87 @@ export const Facemesh = React.forwardRef<FacemeshApi, FacemeshProps>(
       //
 
       // 1. center (before rotate back)
-      geometry.computeBoundingBox()
+      faceGeometry.computeBoundingBox()
       if (debug) invalidate() // invalidate to force re-render for box3Helper (after .computeBoundingBox())
-      geometry.center()
+      faceGeometry.center()
 
       // 2. rotate back + rotate outerRef (once 1.)
-      geometry.applyQuaternion(sightDirQuaternionInverse)
+      faceGeometry.applyQuaternion(sightDirQuaternionInverse)
       outerRef.current?.setRotationFromQuaternion(sightDirQuaternion)
 
-      // 3. origin: substract the geometry to that landmark coords (once 1.)
-      if (origin) {
-        const position = geometry.getAttribute('position') as THREE.BufferAttribute
-        geometry.translate(-position.getX(origin), -position.getY(origin), -position.getZ(origin))
+      // 3. 👀 eyes
+      if (eyes) {
+        if (!faceBlendshapes) {
+          console.warn('Facemesh `eyes` option only works if `faceBlendshapes` is provided: skipping.')
+        } else {
+          if (eyeRightRef.current && eyeLeftRef.current && originRef.current) {
+            if (eyesAsOrigin) {
+              // compute the middle of the 2 eyes as the `origin`
+              const eyeRightSphere = eyeRightRef.current._computeSphere(faceGeometry)
+              const eyeLeftSphere = eyeLeftRef.current._computeSphere(faceGeometry)
+              const eyesCenter = mean(eyeRightSphere.center, eyeLeftSphere.center)
+              origin = eyesCenter.negate() // eslint-disable-line react-hooks/exhaustive-deps
+
+              eyeRightRef.current._update(faceGeometry, faceBlendshapes, eyeRightSphere)
+              eyeLeftRef.current._update(faceGeometry, faceBlendshapes, eyeLeftSphere)
+            } else {
+              eyeRightRef.current._update(faceGeometry, faceBlendshapes)
+              eyeLeftRef.current._update(faceGeometry, faceBlendshapes)
+            }
+          }
+        }
+      }
+
+      // 3. origin
+      if (originRef.current) {
+        if (origin !== undefined) {
+          if (typeof origin === 'number') {
+            const position = faceGeometry.getAttribute('position') as THREE.BufferAttribute
+            _origin.set(-position.getX(origin), -position.getY(origin), -position.getZ(origin))
+          } else if (origin.isVector3) {
+            _origin.copy(origin)
+          }
+        } else {
+          _origin.setScalar(0)
+        }
+
+        originRef.current.position.copy(_origin)
       }
 
       // 4. re-scale
-      geometry.boundingBox?.getSize(bboxSize)
-      let scale = 1
-      if (width) scale = width / bboxSize.x // fit in width
-      if (height) scale = height / bboxSize.y // fit in height
-      if (depth) scale = depth / bboxSize.z // fit in depth
-      if (scale !== 1) geometry.scale(scale, scale, scale)
+      if (scaleRef.current) {
+        let scale = 1
+        if (width || height || depth) {
+          faceGeometry.boundingBox!.getSize(bboxSize)
+          if (width) scale = width / bboxSize.x // fit in width
+          if (height) scale = height / bboxSize.y // fit in height
+          if (depth) scale = depth / bboxSize.z // fit in depth
+        }
 
-      geometry.computeVertexNormals()
-      geometry.attributes.position.needsUpdate = true
+        scaleRef.current.scale.setScalar(scale !== 1 ? scale : 1)
+      }
+
+      faceGeometry.computeVertexNormals()
+      faceGeometry.attributes.position.needsUpdate = true
     }, [
-      face,
+      points,
+      facialTransformationMatrix,
+      faceBlendshapes,
+      transform,
+      offset,
+      offsetScalar,
       width,
       height,
       depth,
       verticalTri,
       origin,
+      eyes,
       debug,
       invalidate,
       sightDir,
       sightDirQuaternion,
-      a,
-      b,
-      c,
-      ab,
-      ac,
       bboxSize,
+      _origin,
     ])
 
     //
@@ -139,35 +267,216 @@ export const Facemesh = React.forwardRef<FacemeshApi, FacemeshProps>(
 
     const api = React.useMemo<FacemeshApi>(
       () => ({
-        meshRef,
         outerRef,
+        meshRef,
+        eyeRightRef,
+        eyeLeftRef,
       }),
       []
     )
     React.useImperativeHandle(fref, () => api, [api])
 
+    const [meshBboxSize] = React.useState(() => new THREE.Vector3())
+    const bbox = meshRef.current?.geometry.boundingBox
+    const one = bbox?.getSize(meshBboxSize).z || 1
     return (
       <group {...props}>
-        <group ref={outerRef}>
-          <mesh ref={meshRef}>
-            {children}
+        <group ref={offsetRef}>
+          <group ref={outerRef}>
+            <group ref={scaleRef}>
+              {debug ? (
+                <>
+                  <axesHelper args={[one]} />
+                  <Line
+                    points={[
+                      [0, 0, 0],
+                      [0, 0, -one],
+                    ]}
+                    color={0x00ffff}
+                  />
+                </>
+              ) : null}
 
-            {debug ? (
-              <>
-                {meshRef.current?.geometry?.boundingBox && (
-                  <box3Helper args={[meshRef.current?.geometry.boundingBox]} />
+              <group ref={originRef}>
+                {eyes && faceBlendshapes && (
+                  <group name="eyes">
+                    <FacemeshEye side="left" ref={eyeRightRef} debug={debug} />
+                    <FacemeshEye side="right" ref={eyeLeftRef} debug={debug} />
+                  </group>
                 )}
-                <Line points={[[0, 0, 0], defaultLookAt]} color={0x00ffff} />
-              </>
-            ) : null}
-          </mesh>
+                <mesh ref={meshRef} name="face">
+                  {children}
+
+                  {debug ? <>{bbox && <box3Helper args={[bbox]} />}</> : null}
+                </mesh>
+              </group>
+            </group>
+          </group>
         </group>
       </group>
     )
   }
 )
 
+//
+// 👁️ FacemeshEye
+//
+
+export type FacemeshEyeProps = {
+  side: 'left' | 'right'
+  debug?: boolean
+}
+export type FacemeshEyeApi = {
+  eyeMeshRef: React.RefObject<THREE.Group>
+  irisDirRef: React.RefObject<THREE.Group>
+  _computeSphere: (faceGeometry: THREE.BufferGeometry) => THREE.Sphere
+  _update: (
+    faceGeometry: THREE.BufferGeometry,
+    faceBlendshapes: FacemeshProps['faceBlendshapes'],
+    sphere?: THREE.Sphere
+  ) => void
+}
+
+export const FacemeshEyeDefaults = {
+  contourLandmarks: {
+    right: [33, 133, 159, 145, 153],
+    left: [263, 362, 386, 374, 380],
+  },
+  blendshapes: {
+    right: [14, 16, 18, 12], // lookIn,lookOut, lookUp,lookDown
+    left: [13, 15, 17, 11], // lookIn,lookOut, lookUp,lookDown
+  },
+  color: {
+    right: 'red',
+    left: '#00ff00',
+  },
+  fov: {
+    horizontal: 100,
+    vertical: 90,
+  },
+}
+
+export const FacemeshEye = React.forwardRef<FacemeshEyeApi, FacemeshEyeProps>(({ side, debug = true }, fref) => {
+  const eyeMeshRef = React.useRef<THREE.Group>(null)
+  const irisDirRef = React.useRef<THREE.Group>(null)
+
+  //
+  // _computeSphere()
+  //
+  // Compute eye's sphere .position and .radius
+  //
+
+  const [sphere] = React.useState(() => new THREE.Sphere())
+  const _computeSphere = React.useCallback<FacemeshEyeApi['_computeSphere']>(
+    (faceGeometry) => {
+      const position = faceGeometry.getAttribute('position') as THREE.BufferAttribute
+
+      // get some eye contour landmarks points (from geometry)
+      const eyeContourLandmarks = FacemeshEyeDefaults.contourLandmarks[side]
+      const eyeContourPoints = eyeContourLandmarks.map((i) => new THREE.Vector3(position.getX(i), position.getY(i), position.getZ(i))) // prettier-ignore
+
+      // compute center (centroid from eyeContourPoints)
+      sphere.center.set(0, 0, 0)
+      eyeContourPoints.forEach((v) => sphere.center.add(v))
+      sphere.center.divideScalar(eyeContourPoints.length)
+
+      // radius (eye half-width)
+      sphere.radius = eyeContourPoints[0].sub(eyeContourPoints[1]).length() / 2
+
+      return sphere
+    },
+    [sphere, side]
+  )
+
+  //
+  // _update()
+  //
+  // Update:
+  //   - A. eye's mesh (according to sphere)
+  //   - B. iris direction (according to "look*" blendshapes)
+  //
+
+  const [rotation] = React.useState(() => new THREE.Euler())
+  const _update = React.useCallback<FacemeshEyeApi['_update']>(
+    (faceGeometry, faceBlendshapes, sphere) => {
+      // A.
+      if (eyeMeshRef.current) {
+        sphere ??= _computeSphere(faceGeometry) // compute sphere dims (if not passed)
+        eyeMeshRef.current.position.copy(sphere.center)
+        eyeMeshRef.current.scale.setScalar(sphere.radius)
+      }
+
+      // B.
+      if (faceBlendshapes && irisDirRef.current) {
+        const blendshapes = FacemeshEyeDefaults.blendshapes[side]
+
+        const lookIn = faceBlendshapes.categories[blendshapes[0]].score
+        const lookOut = faceBlendshapes.categories[blendshapes[1]].score
+        const lookUp = faceBlendshapes.categories[blendshapes[2]].score
+        const lookDown = faceBlendshapes.categories[blendshapes[3]].score
+
+        const hfov = FacemeshEyeDefaults.fov.horizontal * THREE.MathUtils.DEG2RAD
+        const vfov = FacemeshEyeDefaults.fov.vertical * THREE.MathUtils.DEG2RAD
+        const rx = hfov * 0.5 * (lookDown - lookUp)
+        const ry = vfov * 0.5 * (lookIn - lookOut) * (side === 'left' ? 1 : -1)
+        rotation.set(rx, ry, 0)
+
+        irisDirRef.current.setRotationFromEuler(rotation)
+      }
+    },
+    [_computeSphere, side, rotation]
+  )
+
+  //
+  // API
+  //
+
+  const api = React.useMemo<FacemeshEyeApi>(
+    () => ({
+      eyeMeshRef: eyeMeshRef,
+      irisDirRef: irisDirRef,
+      _computeSphere,
+      _update,
+    }),
+    [_computeSphere, _update]
+  )
+  React.useImperativeHandle(fref, () => api, [api])
+
+  const color = FacemeshEyeDefaults.color[side]
+  return (
+    <group>
+      <group ref={eyeMeshRef}>
+        {debug && <axesHelper />}
+
+        <group ref={irisDirRef}>
+          <>
+            {debug && (
+              <Line
+                points={[
+                  [0, 0, 0],
+                  [0, 0, -2],
+                ]}
+                lineWidth={1}
+                color={color}
+              />
+            )}
+          </>
+        </group>
+      </group>
+    </group>
+  )
+})
+
+//
+// Sample datas
+//
+
 export const FacemeshDatas = {
+  // Extracted from: https://github.com/tensorflow/tfjs-models/blob/a8f500809f5afe38feea27870c77e7ba03a6ece4/face-landmarks-detection/demos/shared/triangulation.js
+  // prettier-ignore
+  TRIANGULATION: [
+    127, 34, 139, 11, 0, 37, 232, 231, 120, 72, 37, 39, 128, 121, 47, 232, 121, 128, 104, 69, 67, 175, 171, 148, 157, 154, 155, 118, 50, 101, 73, 39, 40, 9, 151, 108, 48, 115, 131, 194, 204, 211, 74, 40, 185, 80, 42, 183, 40, 92, 186, 230, 229, 118, 202, 212, 214, 83, 18, 17, 76, 61, 146, 160, 29, 30, 56, 157, 173, 106, 204, 194, 135, 214, 192, 203, 165, 98, 21, 71, 68, 51, 45, 4, 144, 24, 23, 77, 146, 91, 205, 50, 187, 201, 200, 18, 91, 106, 182, 90, 91, 181, 85, 84, 17, 206, 203, 36, 148, 171, 140, 92, 40, 39, 193, 189, 244, 159, 158, 28, 247, 246, 161, 236, 3, 196, 54, 68, 104, 193, 168, 8, 117, 228, 31, 189, 193, 55, 98, 97, 99, 126, 47, 100, 166, 79, 218, 155, 154, 26, 209, 49, 131, 135, 136, 150, 47, 126, 217, 223, 52, 53, 45, 51, 134, 211, 170, 140, 67, 69, 108, 43, 106, 91, 230, 119, 120, 226, 130, 247, 63, 53, 52, 238, 20, 242, 46, 70, 156, 78, 62, 96, 46, 53, 63, 143, 34, 227, 173, 155, 133, 123, 117, 111, 44, 125, 19, 236, 134, 51, 216, 206, 205, 154, 153, 22, 39, 37, 167, 200, 201, 208, 36, 142, 100, 57, 212, 202, 20, 60, 99, 28, 158, 157, 35, 226, 113, 160, 159, 27, 204, 202, 210, 113, 225, 46, 43, 202, 204, 62, 76, 77, 137, 123, 116, 41, 38, 72, 203, 129, 142, 64, 98, 240, 49, 102, 64, 41, 73, 74, 212, 216, 207, 42, 74, 184, 169, 170, 211, 170, 149, 176, 105, 66, 69, 122, 6, 168, 123, 147, 187, 96, 77, 90, 65, 55, 107, 89, 90, 180, 101, 100, 120, 63, 105, 104, 93, 137, 227, 15, 86, 85, 129, 102, 49, 14, 87, 86, 55, 8, 9, 100, 47, 121, 145, 23, 22, 88, 89, 179, 6, 122, 196, 88, 95, 96, 138, 172, 136, 215, 58, 172, 115, 48, 219, 42, 80, 81, 195, 3, 51, 43, 146, 61, 171, 175, 199, 81, 82, 38, 53, 46, 225, 144, 163, 110, 246, 33, 7, 52, 65, 66, 229, 228, 117, 34, 127, 234, 107, 108, 69, 109, 108, 151, 48, 64, 235, 62, 78, 191, 129, 209, 126, 111, 35, 143, 163, 161, 246, 117, 123, 50, 222, 65, 52, 19, 125, 141, 221, 55, 65, 3, 195, 197, 25, 7, 33, 220, 237, 44, 70, 71, 139, 122, 193, 245, 247, 130, 33, 71, 21, 162, 153, 158, 159, 170, 169, 150, 188, 174, 196, 216, 186, 92, 144, 160, 161, 2, 97, 167, 141, 125, 241, 164, 167, 37, 72, 38, 12, 145, 159, 160, 38, 82, 13, 63, 68, 71, 226, 35, 111, 158, 153, 154, 101, 50, 205, 206, 92, 165, 209, 198, 217, 165, 167, 97, 220, 115, 218, 133, 112, 243, 239, 238, 241, 214, 135, 169, 190, 173, 133, 171, 208, 32, 125, 44, 237, 86, 87, 178, 85, 86, 179, 84, 85, 180, 83, 84, 181, 201, 83, 182, 137, 93, 132, 76, 62, 183, 61, 76, 184, 57, 61, 185, 212, 57, 186, 214, 207, 187, 34, 143, 156, 79, 239, 237, 123, 137, 177, 44, 1, 4, 201, 194, 32, 64, 102, 129, 213, 215, 138, 59, 166, 219, 242, 99, 97, 2, 94, 141, 75, 59, 235, 24, 110, 228, 25, 130, 226, 23, 24, 229, 22, 23, 230, 26, 22, 231, 112, 26, 232, 189, 190, 243, 221, 56, 190, 28, 56, 221, 27, 28, 222, 29, 27, 223, 30, 29, 224, 247, 30, 225, 238, 79, 20, 166, 59, 75, 60, 75, 240, 147, 177, 215, 20, 79, 166, 187, 147, 213, 112, 233, 244, 233, 128, 245, 128, 114, 188, 114, 217, 174, 131, 115, 220, 217, 198, 236, 198, 131, 134, 177, 132, 58, 143, 35, 124, 110, 163, 7, 228, 110, 25, 356, 389, 368, 11, 302, 267, 452, 350, 349, 302, 303, 269, 357, 343, 277, 452, 453, 357, 333, 332, 297, 175, 152, 377, 384, 398, 382, 347, 348, 330, 303, 304, 270, 9, 336, 337, 278, 279, 360, 418, 262, 431, 304, 408, 409, 310, 415, 407, 270, 409, 410, 450, 348, 347, 422, 430, 434, 313, 314, 17, 306, 307, 375, 387, 388, 260, 286, 414, 398, 335, 406, 418, 364, 367, 416, 423, 358, 327, 251, 284, 298, 281, 5, 4, 373, 374, 253, 307, 320, 321, 425, 427, 411, 421, 313, 18, 321, 405, 406, 320, 404, 405, 315, 16, 17, 426, 425, 266, 377, 400, 369, 322, 391, 269, 417, 465, 464, 386, 257, 258, 466, 260, 388, 456, 399, 419, 284, 332, 333, 417, 285, 8, 346, 340, 261, 413, 441, 285, 327, 460, 328, 355, 371, 329, 392, 439, 438, 382, 341, 256, 429, 420, 360, 364, 394, 379, 277, 343, 437, 443, 444, 283, 275, 440, 363, 431, 262, 369, 297, 338, 337, 273, 375, 321, 450, 451, 349, 446, 342, 467, 293, 334, 282, 458, 461, 462, 276, 353, 383, 308, 324, 325, 276, 300, 293, 372, 345, 447, 382, 398, 362, 352, 345, 340, 274, 1, 19, 456, 248, 281, 436, 427, 425, 381, 256, 252, 269, 391, 393, 200, 199, 428, 266, 330, 329, 287, 273, 422, 250, 462, 328, 258, 286, 384, 265, 353, 342, 387, 259, 257, 424, 431, 430, 342, 353, 276, 273, 335, 424, 292, 325, 307, 366, 447, 345, 271, 303, 302, 423, 266, 371, 294, 455, 460, 279, 278, 294, 271, 272, 304, 432, 434, 427, 272, 407, 408, 394, 430, 431, 395, 369, 400, 334, 333, 299, 351, 417, 168, 352, 280, 411, 325, 319, 320, 295, 296, 336, 319, 403, 404, 330, 348, 349, 293, 298, 333, 323, 454, 447, 15, 16, 315, 358, 429, 279, 14, 15, 316, 285, 336, 9, 329, 349, 350, 374, 380, 252, 318, 402, 403, 6, 197, 419, 318, 319, 325, 367, 364, 365, 435, 367, 397, 344, 438, 439, 272, 271, 311, 195, 5, 281, 273, 287, 291, 396, 428, 199, 311, 271, 268, 283, 444, 445, 373, 254, 339, 263, 466, 249, 282, 334, 296, 449, 347, 346, 264, 447, 454, 336, 296, 299, 338, 10, 151, 278, 439, 455, 292, 407, 415, 358, 371, 355, 340, 345, 372, 390, 249, 466, 346, 347, 280, 442, 443, 282, 19, 94, 370, 441, 442, 295, 248, 419, 197, 263, 255, 359, 440, 275, 274, 300, 383, 368, 351, 412, 465, 263, 467, 466, 301, 368, 389, 380, 374, 386, 395, 378, 379, 412, 351, 419, 436, 426, 322, 373, 390, 388, 2, 164, 393, 370, 462, 461, 164, 0, 267, 302, 11, 12, 374, 373, 387, 268, 12, 13, 293, 300, 301, 446, 261, 340, 385, 384, 381, 330, 266, 425, 426, 423, 391, 429, 355, 437, 391, 327, 326, 440, 457, 438, 341, 382, 362, 459, 457, 461, 434, 430, 394, 414, 463, 362, 396, 369, 262, 354, 461, 457, 316, 403, 402, 315, 404, 403, 314, 405, 404, 313, 406, 405, 421, 418, 406, 366, 401, 361, 306, 408, 407, 291, 409, 408, 287, 410, 409, 432, 436, 410, 434, 416, 411, 264, 368, 383, 309, 438, 457, 352, 376, 401, 274, 275, 4, 421, 428, 262, 294, 327, 358, 433, 416, 367, 289, 455, 439, 462, 370, 326, 2, 326, 370, 305, 460, 455, 254, 449, 448, 255, 261, 446, 253, 450, 449, 252, 451, 450, 256, 452, 451, 341, 453, 452, 413, 464, 463, 441, 413, 414, 258, 442, 441, 257, 443, 442, 259, 444, 443, 260, 445, 444, 467, 342, 445, 459, 458, 250, 289, 392, 290, 290, 328, 460, 376, 433, 435, 250, 290, 392, 411, 416, 433, 341, 463, 464, 453, 464, 465, 357, 465, 412, 343, 412, 399, 360, 363, 440, 437, 399, 456, 420, 456, 363, 401, 435, 288, 372, 383, 353, 339, 255, 249, 448, 261, 255, 133, 243, 190, 133, 155, 112, 33, 246, 247, 33, 130, 25, 398, 384, 286, 362, 398, 414, 362, 463, 341, 263, 359, 467, 263, 249, 255, 466, 467, 260, 75, 60, 166, 238, 239, 79, 162, 127, 139, 72, 11, 37, 121, 232, 120, 73, 72, 39, 114, 128, 47, 233, 232, 128, 103, 104, 67, 152, 175, 148, 173, 157, 155, 119, 118, 101, 74, 73, 40, 107, 9, 108, 49, 48, 131, 32, 194, 211, 184, 74, 185, 191, 80, 183, 185, 40, 186, 119, 230, 118, 210, 202, 214, 84, 83, 17, 77, 76, 146, 161, 160, 30, 190, 56, 173, 182, 106, 194, 138, 135, 192, 129, 203, 98, 54, 21, 68, 5, 51, 4, 145, 144, 23, 90, 77, 91, 207, 205, 187, 83, 201, 18, 181, 91, 182, 180, 90, 181, 16, 85, 17, 205, 206, 36, 176, 148, 140, 165, 92, 39, 245, 193, 244, 27, 159, 28, 30, 247, 161, 174, 236, 196, 103, 54, 104, 55, 193, 8, 111, 117, 31, 221, 189, 55, 240, 98, 99, 142, 126, 100, 219, 166, 218, 112, 155, 26, 198, 209, 131, 169, 135, 150, 114, 47, 217, 224, 223, 53, 220, 45, 134, 32, 211, 140, 109, 67, 108, 146, 43, 91, 231, 230, 120, 113, 226, 247, 105, 63, 52, 241, 238, 242, 124, 46, 156, 95, 78, 96, 70, 46, 63, 116, 143, 227, 116, 123, 111, 1, 44, 19, 3, 236, 51, 207, 216, 205, 26, 154, 22, 165, 39, 167, 199, 200, 208, 101, 36, 100, 43, 57, 202, 242, 20, 99, 56, 28, 157, 124, 35, 113, 29, 160, 27, 211, 204, 210, 124, 113, 46, 106, 43, 204, 96, 62, 77, 227, 137, 116, 73, 41, 72, 36, 203, 142, 235, 64, 240, 48, 49, 64, 42, 41, 74, 214, 212, 207, 183, 42, 184, 210, 169, 211, 140, 170, 176, 104, 105, 69, 193, 122, 168, 50, 123, 187, 89, 96, 90, 66, 65, 107, 179, 89, 180, 119, 101, 120, 68, 63, 104, 234, 93, 227, 16, 15, 85, 209, 129, 49, 15, 14, 86, 107, 55, 9, 120, 100, 121, 153, 145, 22, 178, 88, 179, 197, 6, 196, 89, 88, 96, 135, 138, 136, 138, 215, 172, 218, 115, 219, 41, 42, 81, 5, 195, 51, 57, 43, 61, 208, 171, 199, 41, 81, 38, 224, 53, 225, 24, 144, 110, 105, 52, 66, 118, 229, 117, 227, 34, 234, 66, 107, 69, 10, 109, 151, 219, 48, 235, 183, 62, 191, 142, 129, 126, 116, 111, 143, 7, 163, 246, 118, 117, 50, 223, 222, 52, 94, 19, 141, 222, 221, 65, 196, 3, 197, 45, 220, 44, 156, 70, 139, 188, 122, 245, 139, 71, 162, 145, 153, 159, 149, 170, 150, 122, 188, 196, 206, 216, 92, 163, 144, 161, 164, 2, 167, 242, 141, 241, 0, 164, 37, 11, 72, 12, 144, 145, 160, 12, 38, 13, 70, 63, 71, 31, 226, 111, 157, 158, 154, 36, 101, 205, 203, 206, 165, 126, 209, 217, 98, 165, 97, 237, 220, 218, 237, 239, 241, 210, 214, 169, 140, 171, 32, 241, 125, 237, 179, 86, 178, 180, 85, 179, 181, 84, 180, 182, 83, 181, 194, 201, 182, 177, 137, 132, 184, 76, 183, 185, 61, 184, 186, 57, 185, 216, 212, 186, 192, 214, 187, 139, 34, 156, 218, 79, 237, 147, 123, 177, 45, 44, 4, 208, 201, 32, 98, 64, 129, 192, 213, 138, 235, 59, 219, 141, 242, 97, 97, 2, 141, 240, 75, 235, 229, 24, 228, 31, 25, 226, 230, 23, 229, 231, 22, 230, 232, 26, 231, 233, 112, 232, 244, 189, 243, 189, 221, 190, 222, 28, 221, 223, 27, 222, 224, 29, 223, 225, 30, 224, 113, 247, 225, 99, 60, 240, 213, 147, 215, 60, 20, 166, 192, 187, 213, 243, 112, 244, 244, 233, 245, 245, 128, 188, 188, 114, 174, 134, 131, 220, 174, 217, 236, 236, 198, 134, 215, 177, 58, 156, 143, 124, 25, 110, 7, 31, 228, 25, 264, 356, 368, 0, 11, 267, 451, 452, 349, 267, 302, 269, 350, 357, 277, 350, 452, 357, 299, 333, 297, 396, 175, 377, 381, 384, 382, 280, 347, 330, 269, 303, 270, 151, 9, 337, 344, 278, 360, 424, 418, 431, 270, 304, 409, 272, 310, 407, 322, 270, 410, 449, 450, 347, 432, 422, 434, 18, 313, 17, 291, 306, 375, 259, 387, 260, 424, 335, 418, 434, 364, 416, 391, 423, 327, 301, 251, 298, 275, 281, 4, 254, 373, 253, 375, 307, 321, 280, 425, 411, 200, 421, 18, 335, 321, 406, 321, 320, 405, 314, 315, 17, 423, 426, 266, 396, 377, 369, 270, 322, 269, 413, 417, 464, 385, 386, 258, 248, 456, 419, 298, 284, 333, 168, 417, 8, 448, 346, 261, 417, 413, 285, 326, 327, 328, 277, 355, 329, 309, 392, 438, 381, 382, 256, 279, 429, 360, 365, 364, 379, 355, 277, 437, 282, 443, 283, 281, 275, 363, 395, 431, 369, 299, 297, 337, 335, 273, 321, 348, 450, 349, 359, 446, 467, 283, 293, 282, 250, 458, 462, 300, 276, 383, 292, 308, 325, 283, 276, 293, 264, 372, 447, 346, 352, 340, 354, 274, 19, 363, 456, 281, 426, 436, 425, 380, 381, 252, 267, 269, 393, 421, 200, 428, 371, 266, 329, 432, 287, 422, 290, 250, 328, 385, 258, 384, 446, 265, 342, 386, 387, 257, 422, 424, 430, 445, 342, 276, 422, 273, 424, 306, 292, 307, 352, 366, 345, 268, 271, 302, 358, 423, 371, 327, 294, 460, 331, 279, 294, 303, 271, 304, 436, 432, 427, 304, 272, 408, 395, 394, 431, 378, 395, 400, 296, 334, 299, 6, 351, 168, 376, 352, 411, 307, 325, 320, 285, 295, 336, 320, 319, 404, 329, 330, 349, 334, 293, 333, 366, 323, 447, 316, 15, 315, 331, 358, 279, 317, 14, 316, 8, 285, 9, 277, 329, 350, 253, 374, 252, 319, 318, 403, 351, 6, 419, 324, 318, 325, 397, 367, 365, 288, 435, 397, 278, 344, 439, 310, 272, 311, 248, 195, 281, 375, 273, 291, 175, 396, 199, 312, 311, 268, 276, 283, 445, 390, 373, 339, 295, 282, 296, 448, 449, 346, 356, 264, 454, 337, 336, 299, 337, 338, 151, 294, 278, 455, 308, 292, 415, 429, 358, 355, 265, 340, 372, 388, 390, 466, 352, 346, 280, 295, 442, 282, 354, 19, 370, 285, 441, 295, 195, 248, 197, 457, 440, 274, 301, 300, 368, 417, 351, 465, 251, 301, 389, 385, 380, 386, 394, 395, 379, 399, 412, 419, 410, 436, 322, 387, 373, 388, 326, 2, 393, 354, 370, 461, 393, 164, 267, 268, 302, 12, 386, 374, 387, 312, 268, 13, 298, 293, 301, 265, 446, 340, 380, 385, 381, 280, 330, 425, 322, 426, 391, 420, 429, 437, 393, 391, 326, 344, 440, 438, 458, 459, 461, 364, 434, 394, 428, 396, 262, 274, 354, 457, 317, 316, 402, 316, 315, 403, 315, 314, 404, 314, 313, 405, 313, 421, 406, 323, 366, 361, 292, 306, 407, 306, 291, 408, 291, 287, 409, 287, 432, 410, 427, 434, 411, 372, 264, 383, 459, 309, 457, 366, 352, 401, 1, 274, 4, 418, 421, 262, 331, 294, 358, 435, 433, 367, 392, 289, 439, 328, 462, 326, 94, 2, 370, 289, 305, 455, 339, 254, 448, 359, 255, 446, 254, 253, 449, 253, 252, 450, 252, 256, 451, 256, 341, 452, 414, 413, 463, 286, 441, 414, 286, 258, 441, 258, 257, 442, 257, 259, 443, 259, 260, 444, 260, 467, 445, 309, 459, 250, 305, 289, 290, 305, 290, 460, 401, 376, 435, 309, 250, 392, 376, 411, 433, 453, 341, 464, 357, 453, 465, 343, 357, 412, 437, 343, 399, 344, 360, 440, 420, 437, 456, 360, 420, 363, 361, 401, 288, 265, 372, 353, 390, 339, 249, 339, 448, 255
+  ],
   // My face as default (captured with a 640x480 webcam)
   // prettier-ignore
   SAMPLE_FACE: {
@@ -186,9 +495,33 @@ export const FacemeshDatas = {
       "height":191.0607147216797
     }
   },
-  // Extracted from: https://github.com/tensorflow/tfjs-models/blob/a8f500809f5afe38feea27870c77e7ba03a6ece4/face-landmarks-detection/demos/shared/triangulation.js
+  // Tasks-vision: https://developers.google.com/mediapipe/solutions/vision/face_landmarker/web_js
   // prettier-ignore
-  TRIANGULATION: [
-    127, 34, 139, 11, 0, 37, 232, 231, 120, 72, 37, 39, 128, 121, 47, 232, 121, 128, 104, 69, 67, 175, 171, 148, 157, 154, 155, 118, 50, 101, 73, 39, 40, 9, 151, 108, 48, 115, 131, 194, 204, 211, 74, 40, 185, 80, 42, 183, 40, 92, 186, 230, 229, 118, 202, 212, 214, 83, 18, 17, 76, 61, 146, 160, 29, 30, 56, 157, 173, 106, 204, 194, 135, 214, 192, 203, 165, 98, 21, 71, 68, 51, 45, 4, 144, 24, 23, 77, 146, 91, 205, 50, 187, 201, 200, 18, 91, 106, 182, 90, 91, 181, 85, 84, 17, 206, 203, 36, 148, 171, 140, 92, 40, 39, 193, 189, 244, 159, 158, 28, 247, 246, 161, 236, 3, 196, 54, 68, 104, 193, 168, 8, 117, 228, 31, 189, 193, 55, 98, 97, 99, 126, 47, 100, 166, 79, 218, 155, 154, 26, 209, 49, 131, 135, 136, 150, 47, 126, 217, 223, 52, 53, 45, 51, 134, 211, 170, 140, 67, 69, 108, 43, 106, 91, 230, 119, 120, 226, 130, 247, 63, 53, 52, 238, 20, 242, 46, 70, 156, 78, 62, 96, 46, 53, 63, 143, 34, 227, 173, 155, 133, 123, 117, 111, 44, 125, 19, 236, 134, 51, 216, 206, 205, 154, 153, 22, 39, 37, 167, 200, 201, 208, 36, 142, 100, 57, 212, 202, 20, 60, 99, 28, 158, 157, 35, 226, 113, 160, 159, 27, 204, 202, 210, 113, 225, 46, 43, 202, 204, 62, 76, 77, 137, 123, 116, 41, 38, 72, 203, 129, 142, 64, 98, 240, 49, 102, 64, 41, 73, 74, 212, 216, 207, 42, 74, 184, 169, 170, 211, 170, 149, 176, 105, 66, 69, 122, 6, 168, 123, 147, 187, 96, 77, 90, 65, 55, 107, 89, 90, 180, 101, 100, 120, 63, 105, 104, 93, 137, 227, 15, 86, 85, 129, 102, 49, 14, 87, 86, 55, 8, 9, 100, 47, 121, 145, 23, 22, 88, 89, 179, 6, 122, 196, 88, 95, 96, 138, 172, 136, 215, 58, 172, 115, 48, 219, 42, 80, 81, 195, 3, 51, 43, 146, 61, 171, 175, 199, 81, 82, 38, 53, 46, 225, 144, 163, 110, 246, 33, 7, 52, 65, 66, 229, 228, 117, 34, 127, 234, 107, 108, 69, 109, 108, 151, 48, 64, 235, 62, 78, 191, 129, 209, 126, 111, 35, 143, 163, 161, 246, 117, 123, 50, 222, 65, 52, 19, 125, 141, 221, 55, 65, 3, 195, 197, 25, 7, 33, 220, 237, 44, 70, 71, 139, 122, 193, 245, 247, 130, 33, 71, 21, 162, 153, 158, 159, 170, 169, 150, 188, 174, 196, 216, 186, 92, 144, 160, 161, 2, 97, 167, 141, 125, 241, 164, 167, 37, 72, 38, 12, 145, 159, 160, 38, 82, 13, 63, 68, 71, 226, 35, 111, 158, 153, 154, 101, 50, 205, 206, 92, 165, 209, 198, 217, 165, 167, 97, 220, 115, 218, 133, 112, 243, 239, 238, 241, 214, 135, 169, 190, 173, 133, 171, 208, 32, 125, 44, 237, 86, 87, 178, 85, 86, 179, 84, 85, 180, 83, 84, 181, 201, 83, 182, 137, 93, 132, 76, 62, 183, 61, 76, 184, 57, 61, 185, 212, 57, 186, 214, 207, 187, 34, 143, 156, 79, 239, 237, 123, 137, 177, 44, 1, 4, 201, 194, 32, 64, 102, 129, 213, 215, 138, 59, 166, 219, 242, 99, 97, 2, 94, 141, 75, 59, 235, 24, 110, 228, 25, 130, 226, 23, 24, 229, 22, 23, 230, 26, 22, 231, 112, 26, 232, 189, 190, 243, 221, 56, 190, 28, 56, 221, 27, 28, 222, 29, 27, 223, 30, 29, 224, 247, 30, 225, 238, 79, 20, 166, 59, 75, 60, 75, 240, 147, 177, 215, 20, 79, 166, 187, 147, 213, 112, 233, 244, 233, 128, 245, 128, 114, 188, 114, 217, 174, 131, 115, 220, 217, 198, 236, 198, 131, 134, 177, 132, 58, 143, 35, 124, 110, 163, 7, 228, 110, 25, 356, 389, 368, 11, 302, 267, 452, 350, 349, 302, 303, 269, 357, 343, 277, 452, 453, 357, 333, 332, 297, 175, 152, 377, 384, 398, 382, 347, 348, 330, 303, 304, 270, 9, 336, 337, 278, 279, 360, 418, 262, 431, 304, 408, 409, 310, 415, 407, 270, 409, 410, 450, 348, 347, 422, 430, 434, 313, 314, 17, 306, 307, 375, 387, 388, 260, 286, 414, 398, 335, 406, 418, 364, 367, 416, 423, 358, 327, 251, 284, 298, 281, 5, 4, 373, 374, 253, 307, 320, 321, 425, 427, 411, 421, 313, 18, 321, 405, 406, 320, 404, 405, 315, 16, 17, 426, 425, 266, 377, 400, 369, 322, 391, 269, 417, 465, 464, 386, 257, 258, 466, 260, 388, 456, 399, 419, 284, 332, 333, 417, 285, 8, 346, 340, 261, 413, 441, 285, 327, 460, 328, 355, 371, 329, 392, 439, 438, 382, 341, 256, 429, 420, 360, 364, 394, 379, 277, 343, 437, 443, 444, 283, 275, 440, 363, 431, 262, 369, 297, 338, 337, 273, 375, 321, 450, 451, 349, 446, 342, 467, 293, 334, 282, 458, 461, 462, 276, 353, 383, 308, 324, 325, 276, 300, 293, 372, 345, 447, 382, 398, 362, 352, 345, 340, 274, 1, 19, 456, 248, 281, 436, 427, 425, 381, 256, 252, 269, 391, 393, 200, 199, 428, 266, 330, 329, 287, 273, 422, 250, 462, 328, 258, 286, 384, 265, 353, 342, 387, 259, 257, 424, 431, 430, 342, 353, 276, 273, 335, 424, 292, 325, 307, 366, 447, 345, 271, 303, 302, 423, 266, 371, 294, 455, 460, 279, 278, 294, 271, 272, 304, 432, 434, 427, 272, 407, 408, 394, 430, 431, 395, 369, 400, 334, 333, 299, 351, 417, 168, 352, 280, 411, 325, 319, 320, 295, 296, 336, 319, 403, 404, 330, 348, 349, 293, 298, 333, 323, 454, 447, 15, 16, 315, 358, 429, 279, 14, 15, 316, 285, 336, 9, 329, 349, 350, 374, 380, 252, 318, 402, 403, 6, 197, 419, 318, 319, 325, 367, 364, 365, 435, 367, 397, 344, 438, 439, 272, 271, 311, 195, 5, 281, 273, 287, 291, 396, 428, 199, 311, 271, 268, 283, 444, 445, 373, 254, 339, 263, 466, 249, 282, 334, 296, 449, 347, 346, 264, 447, 454, 336, 296, 299, 338, 10, 151, 278, 439, 455, 292, 407, 415, 358, 371, 355, 340, 345, 372, 390, 249, 466, 346, 347, 280, 442, 443, 282, 19, 94, 370, 441, 442, 295, 248, 419, 197, 263, 255, 359, 440, 275, 274, 300, 383, 368, 351, 412, 465, 263, 467, 466, 301, 368, 389, 380, 374, 386, 395, 378, 379, 412, 351, 419, 436, 426, 322, 373, 390, 388, 2, 164, 393, 370, 462, 461, 164, 0, 267, 302, 11, 12, 374, 373, 387, 268, 12, 13, 293, 300, 301, 446, 261, 340, 385, 384, 381, 330, 266, 425, 426, 423, 391, 429, 355, 437, 391, 327, 326, 440, 457, 438, 341, 382, 362, 459, 457, 461, 434, 430, 394, 414, 463, 362, 396, 369, 262, 354, 461, 457, 316, 403, 402, 315, 404, 403, 314, 405, 404, 313, 406, 405, 421, 418, 406, 366, 401, 361, 306, 408, 407, 291, 409, 408, 287, 410, 409, 432, 436, 410, 434, 416, 411, 264, 368, 383, 309, 438, 457, 352, 376, 401, 274, 275, 4, 421, 428, 262, 294, 327, 358, 433, 416, 367, 289, 455, 439, 462, 370, 326, 2, 326, 370, 305, 460, 455, 254, 449, 448, 255, 261, 446, 253, 450, 449, 252, 451, 450, 256, 452, 451, 341, 453, 452, 413, 464, 463, 441, 413, 414, 258, 442, 441, 257, 443, 442, 259, 444, 443, 260, 445, 444, 467, 342, 445, 459, 458, 250, 289, 392, 290, 290, 328, 460, 376, 433, 435, 250, 290, 392, 411, 416, 433, 341, 463, 464, 453, 464, 465, 357, 465, 412, 343, 412, 399, 360, 363, 440, 437, 399, 456, 420, 456, 363, 401, 435, 288, 372, 383, 353, 339, 255, 249, 448, 261, 255, 133, 243, 190, 133, 155, 112, 33, 246, 247, 33, 130, 25, 398, 384, 286, 362, 398, 414, 362, 463, 341, 263, 359, 467, 263, 249, 255, 466, 467, 260, 75, 60, 166, 238, 239, 79, 162, 127, 139, 72, 11, 37, 121, 232, 120, 73, 72, 39, 114, 128, 47, 233, 232, 128, 103, 104, 67, 152, 175, 148, 173, 157, 155, 119, 118, 101, 74, 73, 40, 107, 9, 108, 49, 48, 131, 32, 194, 211, 184, 74, 185, 191, 80, 183, 185, 40, 186, 119, 230, 118, 210, 202, 214, 84, 83, 17, 77, 76, 146, 161, 160, 30, 190, 56, 173, 182, 106, 194, 138, 135, 192, 129, 203, 98, 54, 21, 68, 5, 51, 4, 145, 144, 23, 90, 77, 91, 207, 205, 187, 83, 201, 18, 181, 91, 182, 180, 90, 181, 16, 85, 17, 205, 206, 36, 176, 148, 140, 165, 92, 39, 245, 193, 244, 27, 159, 28, 30, 247, 161, 174, 236, 196, 103, 54, 104, 55, 193, 8, 111, 117, 31, 221, 189, 55, 240, 98, 99, 142, 126, 100, 219, 166, 218, 112, 155, 26, 198, 209, 131, 169, 135, 150, 114, 47, 217, 224, 223, 53, 220, 45, 134, 32, 211, 140, 109, 67, 108, 146, 43, 91, 231, 230, 120, 113, 226, 247, 105, 63, 52, 241, 238, 242, 124, 46, 156, 95, 78, 96, 70, 46, 63, 116, 143, 227, 116, 123, 111, 1, 44, 19, 3, 236, 51, 207, 216, 205, 26, 154, 22, 165, 39, 167, 199, 200, 208, 101, 36, 100, 43, 57, 202, 242, 20, 99, 56, 28, 157, 124, 35, 113, 29, 160, 27, 211, 204, 210, 124, 113, 46, 106, 43, 204, 96, 62, 77, 227, 137, 116, 73, 41, 72, 36, 203, 142, 235, 64, 240, 48, 49, 64, 42, 41, 74, 214, 212, 207, 183, 42, 184, 210, 169, 211, 140, 170, 176, 104, 105, 69, 193, 122, 168, 50, 123, 187, 89, 96, 90, 66, 65, 107, 179, 89, 180, 119, 101, 120, 68, 63, 104, 234, 93, 227, 16, 15, 85, 209, 129, 49, 15, 14, 86, 107, 55, 9, 120, 100, 121, 153, 145, 22, 178, 88, 179, 197, 6, 196, 89, 88, 96, 135, 138, 136, 138, 215, 172, 218, 115, 219, 41, 42, 81, 5, 195, 51, 57, 43, 61, 208, 171, 199, 41, 81, 38, 224, 53, 225, 24, 144, 110, 105, 52, 66, 118, 229, 117, 227, 34, 234, 66, 107, 69, 10, 109, 151, 219, 48, 235, 183, 62, 191, 142, 129, 126, 116, 111, 143, 7, 163, 246, 118, 117, 50, 223, 222, 52, 94, 19, 141, 222, 221, 65, 196, 3, 197, 45, 220, 44, 156, 70, 139, 188, 122, 245, 139, 71, 162, 145, 153, 159, 149, 170, 150, 122, 188, 196, 206, 216, 92, 163, 144, 161, 164, 2, 167, 242, 141, 241, 0, 164, 37, 11, 72, 12, 144, 145, 160, 12, 38, 13, 70, 63, 71, 31, 226, 111, 157, 158, 154, 36, 101, 205, 203, 206, 165, 126, 209, 217, 98, 165, 97, 237, 220, 218, 237, 239, 241, 210, 214, 169, 140, 171, 32, 241, 125, 237, 179, 86, 178, 180, 85, 179, 181, 84, 180, 182, 83, 181, 194, 201, 182, 177, 137, 132, 184, 76, 183, 185, 61, 184, 186, 57, 185, 216, 212, 186, 192, 214, 187, 139, 34, 156, 218, 79, 237, 147, 123, 177, 45, 44, 4, 208, 201, 32, 98, 64, 129, 192, 213, 138, 235, 59, 219, 141, 242, 97, 97, 2, 141, 240, 75, 235, 229, 24, 228, 31, 25, 226, 230, 23, 229, 231, 22, 230, 232, 26, 231, 233, 112, 232, 244, 189, 243, 189, 221, 190, 222, 28, 221, 223, 27, 222, 224, 29, 223, 225, 30, 224, 113, 247, 225, 99, 60, 240, 213, 147, 215, 60, 20, 166, 192, 187, 213, 243, 112, 244, 244, 233, 245, 245, 128, 188, 188, 114, 174, 134, 131, 220, 174, 217, 236, 236, 198, 134, 215, 177, 58, 156, 143, 124, 25, 110, 7, 31, 228, 25, 264, 356, 368, 0, 11, 267, 451, 452, 349, 267, 302, 269, 350, 357, 277, 350, 452, 357, 299, 333, 297, 396, 175, 377, 381, 384, 382, 280, 347, 330, 269, 303, 270, 151, 9, 337, 344, 278, 360, 424, 418, 431, 270, 304, 409, 272, 310, 407, 322, 270, 410, 449, 450, 347, 432, 422, 434, 18, 313, 17, 291, 306, 375, 259, 387, 260, 424, 335, 418, 434, 364, 416, 391, 423, 327, 301, 251, 298, 275, 281, 4, 254, 373, 253, 375, 307, 321, 280, 425, 411, 200, 421, 18, 335, 321, 406, 321, 320, 405, 314, 315, 17, 423, 426, 266, 396, 377, 369, 270, 322, 269, 413, 417, 464, 385, 386, 258, 248, 456, 419, 298, 284, 333, 168, 417, 8, 448, 346, 261, 417, 413, 285, 326, 327, 328, 277, 355, 329, 309, 392, 438, 381, 382, 256, 279, 429, 360, 365, 364, 379, 355, 277, 437, 282, 443, 283, 281, 275, 363, 395, 431, 369, 299, 297, 337, 335, 273, 321, 348, 450, 349, 359, 446, 467, 283, 293, 282, 250, 458, 462, 300, 276, 383, 292, 308, 325, 283, 276, 293, 264, 372, 447, 346, 352, 340, 354, 274, 19, 363, 456, 281, 426, 436, 425, 380, 381, 252, 267, 269, 393, 421, 200, 428, 371, 266, 329, 432, 287, 422, 290, 250, 328, 385, 258, 384, 446, 265, 342, 386, 387, 257, 422, 424, 430, 445, 342, 276, 422, 273, 424, 306, 292, 307, 352, 366, 345, 268, 271, 302, 358, 423, 371, 327, 294, 460, 331, 279, 294, 303, 271, 304, 436, 432, 427, 304, 272, 408, 395, 394, 431, 378, 395, 400, 296, 334, 299, 6, 351, 168, 376, 352, 411, 307, 325, 320, 285, 295, 336, 320, 319, 404, 329, 330, 349, 334, 293, 333, 366, 323, 447, 316, 15, 315, 331, 358, 279, 317, 14, 316, 8, 285, 9, 277, 329, 350, 253, 374, 252, 319, 318, 403, 351, 6, 419, 324, 318, 325, 397, 367, 365, 288, 435, 397, 278, 344, 439, 310, 272, 311, 248, 195, 281, 375, 273, 291, 175, 396, 199, 312, 311, 268, 276, 283, 445, 390, 373, 339, 295, 282, 296, 448, 449, 346, 356, 264, 454, 337, 336, 299, 337, 338, 151, 294, 278, 455, 308, 292, 415, 429, 358, 355, 265, 340, 372, 388, 390, 466, 352, 346, 280, 295, 442, 282, 354, 19, 370, 285, 441, 295, 195, 248, 197, 457, 440, 274, 301, 300, 368, 417, 351, 465, 251, 301, 389, 385, 380, 386, 394, 395, 379, 399, 412, 419, 410, 436, 322, 387, 373, 388, 326, 2, 393, 354, 370, 461, 393, 164, 267, 268, 302, 12, 386, 374, 387, 312, 268, 13, 298, 293, 301, 265, 446, 340, 380, 385, 381, 280, 330, 425, 322, 426, 391, 420, 429, 437, 393, 391, 326, 344, 440, 438, 458, 459, 461, 364, 434, 394, 428, 396, 262, 274, 354, 457, 317, 316, 402, 316, 315, 403, 315, 314, 404, 314, 313, 405, 313, 421, 406, 323, 366, 361, 292, 306, 407, 306, 291, 408, 291, 287, 409, 287, 432, 410, 427, 434, 411, 372, 264, 383, 459, 309, 457, 366, 352, 401, 1, 274, 4, 418, 421, 262, 331, 294, 358, 435, 433, 367, 392, 289, 439, 328, 462, 326, 94, 2, 370, 289, 305, 455, 339, 254, 448, 359, 255, 446, 254, 253, 449, 253, 252, 450, 252, 256, 451, 256, 341, 452, 414, 413, 463, 286, 441, 414, 286, 258, 441, 258, 257, 442, 257, 259, 443, 259, 260, 444, 260, 467, 445, 309, 459, 250, 305, 289, 290, 305, 290, 460, 401, 376, 435, 309, 250, 392, 376, 411, 433, 453, 341, 464, 357, 453, 465, 343, 357, 412, 437, 343, 399, 344, 360, 440, 420, 437, 456, 360, 420, 363, 361, 401, 288, 265, 372, 353, 390, 339, 249, 339, 448, 255
-  ],
+  SAMPLE_FACELANDMARKER_RESULT: {
+    "faceLandmarks": [
+      [
+        { "x": 0.5760777592658997, "y": 0.8639070391654968, "z": -0.030997956171631813 },
+        { "x": 0.572094738483429, "y": 0.7886289358139038, "z": -0.07189624011516571 },
+        { "x": 0.5723551511764526, "y": 0.8075382709503174, "z": -0.03578168898820877 }, { "x": 0.5548420548439026, "y": 0.7188365459442139, "z": -0.057787876576185226 }, { "x": 0.5706077814102173, "y": 0.7674974799156189, "z": -0.07740399986505508 }, { "x": 0.5681378245353699, "y": 0.7387768030166626, "z": -0.07356284558773041 }, { "x": 0.5621535181999207, "y": 0.6681165099143982, "z": -0.04189874976873398 }, { "x": 0.46613582968711853, "y": 0.6679812073707581, "z": 0.011289681307971478 }, { "x": 0.5579932928085327, "y": 0.6174106597900391, "z": -0.03502821549773216 }, { "x": 0.5563451647758484, "y": 0.5905600190162659, "z": -0.03928658738732338 }, { "x": 0.5487832427024841, "y": 0.4900572597980499, "z": -0.029898937791585922 }, { "x": 0.5765544176101685, "y": 0.8692144751548767, "z": -0.02831427752971649 }, { "x": 0.5771114230155945, "y": 0.873644232749939, "z": -0.02345779910683632 }, { "x": 0.5771905779838562, "y": 0.877016007900238, "z": -0.016658689826726913 }, { "x": 0.5778058767318726, "y": 0.8770116567611694, "z": -0.014505492523312569 }, { "x": 0.5783766508102417, "y": 0.8835000991821289, "z": -0.015996402129530907 }, { "x": 0.5792440176010132, "y": 0.8913810849189758, "z": -0.01924579218029976 }, { "x": 0.5796768069267273, "y": 0.8996334671974182, "z": -0.018261712044477463 }, { "x": 0.5817288160324097, "y": 0.9255813956260681, "z": -0.007126849144697189 }, { "x": 0.5726592540740967, "y": 0.7992473244667053, "z": -0.0643521398305893 }, { "x": 0.5579419136047363, "y": 0.7996989488601685, "z": -0.04566684365272522 }, { "x": 0.4216199815273285, "y": 0.5958762764930725, "z": 0.06776496022939682 }, { "x": 0.5052269697189331, "y": 0.6796539425849915, "z": -0.0010737782577052712 }, { "x": 0.49243026971817017, "y": 0.6838865876197815, "z": -0.0005227324436418712 }, { "x": 0.4796970784664154, "y": 0.6856290102005005, "z": 0.002684245817363262 }, { "x": 0.4618356227874756, "y": 0.6764569878578186, "z": 0.013439622707664967 }, { "x": 0.5160380601882935, "y": 0.6737282276153564, "z": -0.000017607348127057776 }, { "x": 0.48070961236953735, "y": 0.6255870461463928, "z": -0.008339674212038517 }, { "x": 0.49719780683517456, "y": 0.6256808042526245, "z": -0.008027955889701843 }, { "x": 0.46674346923828125, "y": 0.6317623853683472, "z": -0.004460199736058712 }, { "x": 0.4582492709159851, "y": 0.641118049621582, "z": 0.0011905613355338573 }, { "x": 0.45408669114112854, "y": 0.6911458969116211, "z": 0.020514748990535736 }, { "x": 0.535312294960022, "y": 0.9619986414909363, "z": 0.012499462813138962 }, { "x": 0.4608460068702698, "y": 0.6628725528717041, "z": 0.01517564244568348 }, { "x": 0.4206731915473938, "y": 0.6828458309173584, "z": 0.07848648726940155 }, { "x": 0.4390624463558197, "y": 0.6796106696128845, "z": 0.03283142298460007 }, { "x": 0.5029968619346619, "y": 0.7701570391654968, "z": -0.009734481573104858 }, { "x": 0.5595027208328247, "y": 0.8607323169708252, "z": -0.030043255537748337 }, { "x": 0.5621269941329956, "y": 0.8738374710083008, "z": -0.021709579974412918 }, { "x": 0.5451499819755554, "y": 0.865527331829071, "z": -0.022014077752828598 }, { "x": 0.5351184010505676, "y": 0.8705098032951355, "z": -0.011602800339460373 }, { "x": 0.5495014190673828, "y": 0.8744956254959106, "z": -0.016490943729877472 }, { "x": 0.5395170450210571, "y": 0.8759440779685974, "z": -0.007333362940698862 }, { "x": 0.5183624029159546, "y": 0.8959754705429077, "z": 0.010520773939788342 }, { "x": 0.5604349374771118, "y": 0.7895449995994568, "z": -0.07082037627696991 }, { "x": 0.557381272315979, "y": 0.7687489986419678, "z": -0.07590588927268982 }, { "x": 0.4432901442050934, "y": 0.6308897733688354, "z": 0.0027153254486620426 }, { "x": 0.5258325338363647, "y": 0.7151225805282593, "z": -0.014676518738269806 }, { "x": 0.5271827578544617, "y": 0.7833116054534912, "z": -0.037643320858478546 }, { "x": 0.5257382988929749, "y": 0.7717816233634949, "z": -0.03401920944452286 }, { "x": 0.46516409516334534, "y": 0.7705106735229492, "z": 0.0065747760236263275 }, { "x": 0.5558893084526062, "y": 0.7420997619628906, "z": -0.0694495290517807 }, { "x": 0.4720408320426941, "y": 0.6066038608551025, "z": -0.021204356104135513 }, { "x": 0.45432573556900024, "y": 0.6158540844917297, "z": -0.011054684408009052 }, { "x": 0.4305151402950287, "y": 0.5608053803443909, "z": 0.0396830290555954 }, { "x": 0.5310865640640259, "y": 0.6157484650611877, "z": -0.03081176057457924 }, { "x": 0.5114666223526001, "y": 0.6329749226570129, "z": -0.00335998204536736 }, { "x": 0.506435751914978, "y": 0.8786543607711792, "z": 0.012980876490473747 }, { "x": 0.4480472207069397, "y": 0.8640613555908203, "z": 0.12569651007652283 }, { "x": 0.5372058153152466, "y": 0.7942581176757812, "z": -0.03168361634016037 }, { "x": 0.5488379597663879, "y": 0.8001630306243896, "z": -0.03280917927622795 }, { "x": 0.5213388204574585, "y": 0.8794381618499756, "z": 0.011892606504261494 }, { "x": 0.5242055654525757, "y": 0.8789222240447998, "z": 0.008370225317776203 }, { "x": 0.4477175176143646, "y": 0.6039950251579285, "z": -0.0050799972377717495 }, { "x": 0.526964008808136, "y": 0.7916748523712158, "z": -0.02968614175915718 }, { "x": 0.4971255660057068, "y": 0.6050706505775452, "z": -0.028175678104162216 }, { "x": 0.4938119053840637, "y": 0.5882453918457031, "z": -0.03210941329598427 }, { "x": 0.4757143557071686, "y": 0.5094879865646362, "z": -0.01300730835646391 }, { "x": 0.43947282433509827, "y": 0.5816648006439209, "z": 0.01415177434682846 }, { "x": 0.485664039850235, "y": 0.5477864146232605, "z": -0.023685332387685776 }, { "x": 0.43635931611061096, "y": 0.6226438283920288, "z": 0.013606148771941662 }, { "x": 0.42910251021385193, "y": 0.6102726459503174, "z": 0.03926564007997513 }, { "x": 0.5605402588844299, "y": 0.8680099248886108, "z": -0.027318159118294716 }, { "x": 0.5474816560745239, "y": 0.8702861070632935, "z": -0.019686367362737656 }, { "x": 0.5373021364212036, "y": 0.8728838562965393, "z": -0.010484928265213966 }, { "x": 0.540735125541687, "y": 0.7979167103767395, "z": -0.029073253273963928 }, { "x": 0.5228585004806519, "y": 0.87913578748703, "z": 0.009915109723806381 }, { "x": 0.530497670173645, "y": 0.8815253973007202, "z": 0.0020524784922599792 }, { "x": 0.5259912610054016, "y": 0.8790552616119385, "z": 0.007895970717072487 }, { "x": 0.5433906316757202, "y": 0.7882310748100281, "z": -0.05121905356645584 }, { "x": 0.541388213634491, "y": 0.8777219653129578, "z": -0.00466804439201951 }, { "x": 0.5515822172164917, "y": 0.8767023086547852, "z": -0.010475946590304375 }, { "x": 0.5637003779411316, "y": 0.877059817314148, "z": -0.015273625031113625 }, { "x": 0.5640299320220947, "y": 0.9263423085212708, "z": -0.00658724969252944 }, { "x": 0.5642300248146057, "y": 0.8993074893951416, "z": -0.017653480172157288 }, { "x": 0.5637336373329163, "y": 0.8910360932350159, "z": -0.01852807030081749 }, { "x": 0.5637134313583374, "y": 0.8837276697158813, "z": -0.01482592523097992 }, { "x": 0.564205527305603, "y": 0.8768964409828186, "z": -0.01331155002117157 }, { "x": 0.5419867634773254, "y": 0.8778373599052429, "z": -0.0037720394320786 }, { "x": 0.5404468774795532, "y": 0.880696177482605, "z": -0.005610354244709015 }, { "x": 0.5392338633537292, "y": 0.8845721483230591, "z": -0.007352025713771582 }, { "x": 0.538469672203064, "y": 0.8891173601150513, "z": -0.005154991988092661 }, { "x": 0.5189250111579895, "y": 0.8452741503715515, "z": -0.009755070321261883 }, { "x": 0.4258975088596344, "y": 0.7662280797958374, "z": 0.1387351155281067 }, { "x": 0.5725725293159485, "y": 0.8041572570800781, "z": -0.04583907872438431 }, { "x": 0.5342061519622803, "y": 0.8785833120346069, "z": 0.002659974154084921 }, { "x": 0.5324031114578247, "y": 0.8804071545600891, "z": 0.0017832003068178892 }, { "x": 0.5538818836212158, "y": 0.8078407645225525, "z": -0.03254539892077446 }, { "x": 0.5325431823730469, "y": 0.8026832938194275, "z": -0.019140373915433884 }, { "x": 0.5514076948165894, "y": 0.8043903112411499, "z": -0.03313535451889038 }, { "x": 0.5131856203079224, "y": 0.7284771800041199, "z": -0.009399853646755219 }, { "x": 0.49331504106521606, "y": 0.7443980574607849, "z": -0.005225230939686298 }, { "x": 0.5239617824554443, "y": 0.7807451486587524, "z": -0.025881027802824974 }, { "x": 0.4473606050014496, "y": 0.5315827131271362, "z": 0.011164786294102669 }, { "x": 0.45718759298324585, "y": 0.5604941248893738, "z": -0.005943301599472761 }, { "x": 0.4670005738735199, "y": 0.5909327268600464, "z": -0.019681761041283607 }, { "x": 0.5311570167541504, "y": 0.9076261520385742, "z": 0.00389476353302598 }, { "x": 0.5249923467636108, "y": 0.5893563628196716, "z": -0.037981919944286346 }, { "x": 0.5166932344436646, "y": 0.5429551005363464, "z": -0.03319704160094261 }, { "x": 0.5085030198097229, "y": 0.49676206707954407, "z": -0.02691275253891945 }, { "x": 0.4687720239162445, "y": 0.6834565997123718, "z": 0.008113506250083447 }, { "x": 0.4426414966583252, "y": 0.7069531679153442, "z": 0.028577271848917007 }, { "x": 0.5230373740196228, "y": 0.6675713658332825, "z": 0.001773772411979735 }, { "x": 0.4481240212917328, "y": 0.6527872085571289, "z": 0.012414850294589996 }, { "x": 0.5339856743812561, "y": 0.7012367844581604, "z": -0.020220188423991203 }, { "x": 0.5347223281860352, "y": 0.7761190533638, "z": -0.05141595005989075 }, { "x": 0.4315067231655121, "y": 0.7211957573890686, "z": 0.04381405934691429 }, { "x": 0.45203351974487305, "y": 0.7206180095672607, "z": 0.017288070172071457 }, { "x": 0.46892452239990234, "y": 0.7265436053276062, "z": 0.005602988880127668 }, { "x": 0.49314674735069275, "y": 0.7202282547950745, "z": -0.0006408205372281373 }, { "x": 0.5104925632476807, "y": 0.7091827392578125, "z": -0.00362918758764863 }, { "x": 0.5232142210006714, "y": 0.698553740978241, "z": -0.00787867046892643 }, { "x": 0.5497883558273315, "y": 0.6743605136871338, "z": -0.036349106580019 }, { "x": 0.43658503890037537, "y": 0.7627100348472595, "z": 0.042555369436740875 }, { "x": 0.4397648870944977, "y": 0.6528646349906921, "z": 0.017956094816327095 }, { "x": 0.5653332471847534, "y": 0.7992802858352661, "z": -0.06365057826042175 }, { "x": 0.5285563468933105, "y": 0.736810564994812, "z": -0.018836988136172295 }, { "x": 0.4180678725242615, "y": 0.6792560815811157, "z": 0.12284679710865021 }, { "x": 0.5328429937362671, "y": 0.6865872144699097, "z": -0.010484723374247551 }, { "x": 0.5230283141136169, "y": 0.7809416055679321, "z": -0.011922398582100868 }, { "x": 0.4551771283149719, "y": 0.6650775074958801, "z": 0.01774493046104908 }, { "x": 0.5337203741073608, "y": 0.7618928551673889, "z": -0.04697106033563614 }, { "x": 0.43463975191116333, "y": 0.8133478164672852, "z": 0.1354849934577942 }, { "x": 0.5225707292556763, "y": 0.6605283617973328, "z": 0.004980515688657761 }, { "x": 0.5441933870315552, "y": 0.7497199773788452, "z": -0.06091512367129326 }, { "x": 0.4774007797241211, "y": 0.9159183502197266, "z": 0.059622734785079956 }, { "x": 0.48068761825561523, "y": 0.9364941716194153, "z": 0.08404944837093353 }, { "x": 0.4268292486667633, "y": 0.7657528519630432, "z": 0.09051097184419632 }, { "x": 0.46051913499832153, "y": 0.8880485892295837, "z": 0.0738474428653717 }, { "x": 0.4243420660495758, "y": 0.6434382200241089, "z": 0.06230505183339119 }, { "x": 0.5342157483100891, "y": 0.9835634231567383, "z": 0.021662971004843712 }, { "x": 0.5668109655380249, "y": 0.8042187094688416, "z": -0.044937074184417725 }, { "x": 0.5176341533660889, "y": 0.7530587315559387, "z": -0.012967454269528389 }, { "x": 0.430206298828125, "y": 0.6835605502128601, "z": 0.04612284153699875 }, { "x": 0.4794231951236725, "y": 0.6732114553451538, "z": 0.003970044665038586 }, { "x": 0.49073347449302673, "y": 0.6722435355186462, "z": 0.0008692514384165406 }, { "x": 0.5294116139411926, "y": 0.884677529335022, "z": 0.004413890186697245 }, { "x": 0.4430122375488281, "y": 0.80235356092453, "z": 0.04987282305955887 }, { "x": 0.5603825449943542, "y": 1.0092442035675049, "z": 0.026417359709739685 }, { "x": 0.5186598300933838, "y": 0.9828659892082214, "z": 0.0513598807156086 }, { "x": 0.5010536909103394, "y": 0.9640932679176331, "z": 0.06591596454381943 }, { "x": 0.5524769425392151, "y": 0.539441704750061, "z": -0.035816047340631485 }, { "x": 0.5879997611045837, "y": 1.0091472864151, "z": 0.02285068854689598 }, { "x": 0.5016193985939026, "y": 0.6684437990188599, "z": 0.00028415941051207483 }, { "x": 0.511952817440033, "y": 0.6642197370529175, "z": 0.0021144719794392586 }, { "x": 0.5194343328475952, "y": 0.6623469591140747, "z": 0.004674181342124939 }, { "x": 0.4321230351924896, "y": 0.6496355533599854, "z": 0.03124697133898735 }, { "x": 0.508686363697052, "y": 0.6479565501213074, "z": -0.00044765998609364033 }, { "x": 0.4963986277580261, "y": 0.6431032419204712, "z": -0.0032507688738405704 }, { "x": 0.4845542013645172, "y": 0.6430778503417969, "z": -0.002903624437749386 }, { "x": 0.4733612537384033, "y": 0.647506833076477, "z": 0.00023347247042693198 }, { "x": 0.4668654501438141, "y": 0.653346598148346, "z": 0.004762572236359119 }, { "x": 0.41815051436424255, "y": 0.633708119392395, "z": 0.09809435904026031 }, { "x": 0.47159942984580994, "y": 0.6711485385894775, "z": 0.007849935442209244 }, { "x": 0.5734396576881409, "y": 0.8256140351295471, "z": -0.03155219927430153 }, { "x": 0.5306524038314819, "y": 0.8337990641593933, "z": -0.018351426348090172 }, { "x": 0.5371729135513306, "y": 0.7910830974578857, "z": -0.037286680191755295 }, { "x": 0.5549534559249878, "y": 0.8275275826454163, "z": -0.030664825811982155 }, { "x": 0.5597432255744934, "y": 0.6418541669845581, "z": -0.03318847343325615 }, { "x": 0.4958484172821045, "y": 0.9429569244384766, "z": 0.048340678215026855 }, { "x": 0.5140507817268372, "y": 0.9634028077125549, "z": 0.03589847311377525 }, { "x": 0.5587693452835083, "y": 0.9951097369194031, "z": 0.00908728688955307 }, { "x": 0.46411189436912537, "y": 0.9051855206489563, "z": 0.10601935535669327 }, { "x": 0.5181609392166138, "y": 0.6554316878318787, "z": 0.002546071307733655 }, { "x": 0.5436590909957886, "y": 0.7085841298103333, "z": -0.03844436630606651 }, { "x": 0.5872187614440918, "y": 0.9960382580757141, "z": 0.0063423276878893375 }, { "x": 0.5379653573036194, "y": 0.9989125728607178, "z": 0.03636329993605614 }, { "x": 0.4350326955318451, "y": 0.8088565468788147, "z": 0.09147704392671585 }, { "x": 0.5523084998130798, "y": 0.8773422837257385, "z": -0.009068487212061882 }, { "x": 0.5510149598121643, "y": 0.8816931843757629, "z": -0.011043853126466274 }, { "x": 0.5503793954849243, "y": 0.88776695728302, "z": -0.01348799467086792 }, { "x": 0.5501549243927002, "y": 0.8954370617866516, "z": -0.012142189778387547 }, { "x": 0.546072781085968, "y": 0.9192524552345276, "z": -0.003157563041895628 }, { "x": 0.5314661860466003, "y": 0.8771666884422302, "z": 0.0005075141089037061 }, { "x": 0.5293324589729309, "y": 0.8762547969818115, "z": 0.00039177737198770046 }, { "x": 0.5275698900222778, "y": 0.8750609755516052, "z": 0.000047732755774632096 }, { "x": 0.5104271173477173, "y": 0.8607332110404968, "z": 0.0012934643309563398 }, { "x": 0.45938700437545776, "y": 0.8134918212890625, "z": 0.023569690063595772 }, { "x": 0.5418947339057922, "y": 0.6864100694656372, "z": -0.027333909645676613 }, { "x": 0.531914234161377, "y": 0.6456130743026733, "z": -0.005434140563011169 }, { "x": 0.523697018623352, "y": 0.647885262966156, "z": -0.0002466466394253075 }, { "x": 0.5338191390037537, "y": 0.8783687353134155, "z": 0.002268768846988678 }, { "x": 0.46226605772972107, "y": 0.8610277771949768, "z": 0.04718952998518944 }, { "x": 0.5434442758560181, "y": 0.6456181406974792, "z": -0.02327350154519081 }, { "x": 0.5399754643440247, "y": 0.940219521522522, "z": 0.005075343884527683 }, { "x": 0.5661457777023315, "y": 0.71457839012146, "z": -0.06242101639509201 }, { "x": 0.5523148775100708, "y": 0.6974870562553406, "z": -0.04863070324063301 }, { "x": 0.5639959573745728, "y": 0.6923378109931946, "z": -0.05180761218070984 }, { "x": 0.5367592573165894, "y": 0.7423217296600342, "z": -0.03623027727007866 }, { "x": 0.5853689908981323, "y": 0.9752064943313599, "z": -0.002361974213272333 }, { "x": 0.5835235118865967, "y": 0.9493685960769653, "z": -0.003941743168979883 }, { "x": 0.5615018606185913, "y": 0.949194610118866, "z": -0.0015953965485095978 }, { "x": 0.5068561434745789, "y": 0.9048219323158264, "z": 0.01862684078514576 }, { "x": 0.5134067535400391, "y": 0.7971825003623962, "z": -0.008485661819577217 }, { "x": 0.5223897099494934, "y": 0.925589919090271, "z": 0.01249657291918993 }, { "x": 0.48500555753707886, "y": 0.7959478497505188, "z": -0.0032065745908766985 }, { "x": 0.5037734508514404, "y": 0.8184596300125122, "z": -0.004932103678584099 }, { "x": 0.4766361117362976, "y": 0.828806459903717, "z": 0.01027688942849636 }, { "x": 0.5589827299118042, "y": 0.974656343460083, "z": 0.0009666886180639267 }, { "x": 0.5294582843780518, "y": 0.7541216611862183, "z": -0.025603046640753746 }, { "x": 0.4973002076148987, "y": 0.9208990931510925, "z": 0.031931452453136444 }, { "x": 0.5163551568984985, "y": 0.9432790875434875, "z": 0.024321340024471283 }, { "x": 0.49399662017822266, "y": 0.8814862370491028, "z": 0.018687399104237556 }, { "x": 0.44948166608810425, "y": 0.836137592792511, "z": 0.05702034756541252 }, { "x": 0.47898444533348083, "y": 0.8836610913276672, "z": 0.03150695189833641 }, { "x": 0.4454479217529297, "y": 0.8499438166618347, "z": 0.08868525922298431 }, { "x": 0.49572959542274475, "y": 0.8452823758125305, "z": 0.0036111653316766024 }, { "x": 0.5362502336502075, "y": 0.7222585678100586, "z": -0.027912352234125137 }, { "x": 0.5393770337104797, "y": 0.7850722074508667, "z": -0.05415399745106697 }, { "x": 0.531399667263031, "y": 0.7898418307304382, "z": -0.03883346915245056 }, { "x": 0.5451627373695374, "y": 0.7717036604881287, "z": -0.06480253487825394 }, { "x": 0.5206395983695984, "y": 0.6287745833396912, "z": -0.010521138086915016 }, { "x": 0.4974782466888428, "y": 0.6191938519477844, "z": -0.014098240062594414 }, { "x": 0.4774145185947418, "y": 0.6193130612373352, "z": -0.013643337413668633 }, { "x": 0.4616098403930664, "y": 0.6259890198707581, "z": -0.008448202162981033 }, { "x": 0.4516478478908539, "y": 0.6368461847305298, "z": 0.00009050309745362028 }, { "x": 0.4485096037387848, "y": 0.6719120740890503, "z": 0.022984720766544342 }, { "x": 0.42177659273147583, "y": 0.7240667343139648, "z": 0.08511673659086227 }, { "x": 0.4616215229034424, "y": 0.6988231539726257, "z": 0.014238474890589714 }, { "x": 0.4755798876285553, "y": 0.7034608721733093, "z": 0.00625590980052948 }, { "x": 0.4924992024898529, "y": 0.7005885243415833, "z": 0.0009391739731654525 }, { "x": 0.5082254409790039, "y": 0.693384051322937, "z": -0.0009464038303121924 }, { "x": 0.5203112959861755, "y": 0.6849707961082458, "z": -0.0022114769089967012 }, { "x": 0.52867591381073, "y": 0.6779075860977173, "z": -0.002962538506835699 }, { "x": 0.4213953912258148, "y": 0.7219811677932739, "z": 0.1350894570350647 }, { "x": 0.5320829749107361, "y": 0.794858992099762, "z": -0.03181503340601921 }, { "x": 0.5452795028686523, "y": 0.7286570072174072, "z": -0.04771539941430092 }, { "x": 0.5496407747268677, "y": 0.7866933345794678, "z": -0.06452003121376038 }, { "x": 0.557040274143219, "y": 0.7962084412574768, "z": -0.05837344378232956 }, { "x": 0.549176812171936, "y": 0.7895247936248779, "z": -0.057761140167713165 }, { "x": 0.5362890362739563, "y": 0.8005836606025696, "z": -0.026903774589300156 }, { "x": 0.560200035572052, "y": 0.7983731031417847, "z": -0.06172555685043335 }, { "x": 0.5616944432258606, "y": 0.8022753596305847, "z": -0.045200999826192856 }, { "x": 0.5273328423500061, "y": 0.6611284017562866, "z": 0.0029021520167589188 }, { "x": 0.534850537776947, "y": 0.6660012006759644, "z": -0.005215510260313749 }, { "x": 0.5394860506057739, "y": 0.6701375246047974, "z": -0.014931917190551758 }, { "x": 0.4634307324886322, "y": 0.658291757106781, "z": 0.009295716881752014 }, { "x": 0.4538393020629883, "y": 0.6519932150840759, "z": 0.00930330716073513 }, { "x": 0.5776031613349915, "y": 0.7159298658370972, "z": -0.057365912944078445 }, { "x": 0.6504855155944824, "y": 0.6461779475212097, "z": 0.014184834435582161 }, { "x": 0.5860154032707214, "y": 0.7962266206741333, "z": -0.04522843658924103 }, { "x": 0.6842049360275269, "y": 0.5631637573242188, "z": 0.07207967340946198 }, { "x": 0.6152560710906982, "y": 0.6674962639808655, "z": 0.0007529259892180562 }, { "x": 0.6280948519706726, "y": 0.6684326529502869, "z": 0.0016892586136236787 }, { "x": 0.6408625245094299, "y": 0.6663892269134521, "z": 0.005331226624548435 }, { "x": 0.6557814478874207, "y": 0.6534678936004639, "z": 0.01646413467824459 }, { "x": 0.6035663485527039, "y": 0.6639701724052429, "z": 0.0013799630105495453 }, { "x": 0.6329053044319153, "y": 0.608010470867157, "z": -0.006195899099111557 }, { "x": 0.6167260408401489, "y": 0.6117533445358276, "z": -0.006319951266050339 }, { "x": 0.6471013426780701, "y": 0.6112449765205383, "z": -0.0017843559617176652 }, { "x": 0.6560901999473572, "y": 0.6185776591300964, "z": 0.004047257360070944 }, { "x": 0.6666946411132812, "y": 0.6651176810264587, "z": 0.023647578433156013 }, { "x": 0.6311345100402832, "y": 0.9495396018028259, "z": 0.014004078693687916 }, { "x": 0.6544655561447144, "y": 0.6397901773452759, "z": 0.01809609681367874 }, { "x": 0.6965808868408203, "y": 0.6482675075531006, "z": 0.08304904401302338 }, { "x": 0.679817259311676, "y": 0.650188148021698, "z": 0.03632688894867897 }, { "x": 0.6336516737937927, "y": 0.7541458010673523, "z": -0.007742783520370722 }, { "x": 0.5921701192855835, "y": 0.8567668199539185, "z": -0.029399123042821884 }, { "x": 0.591663658618927, "y": 0.870215654373169, "z": -0.02103729173541069 }, { "x": 0.6068367958068848, "y": 0.8584195375442505, "z": -0.020668085664510727 }, { "x": 0.6176617741584778, "y": 0.860965371131897, "z": -0.009790095500648022 }, { "x": 0.6040634512901306, "y": 0.8686612844467163, "z": -0.015289564616978168 }, { "x": 0.6143736839294434, "y": 0.8671170473098755, "z": -0.005712216719985008 }, { "x": 0.6373105049133301, "y": 0.8815656900405884, "z": 0.012672550976276398 }, { "x": 0.5832505822181702, "y": 0.7866312861442566, "z": -0.07051534950733185 }, { "x": 0.5836675763130188, "y": 0.7658692598342896, "z": -0.07566110789775848 }, { "x": 0.6709531545639038, "y": 0.604898989200592, "z": 0.005951565690338612 }, { "x": 0.6029891967773438, "y": 0.705652117729187, "z": -0.013388276100158691 }, { "x": 0.6131622195243835, "y": 0.7728396058082581, "z": -0.036248479038476944 }, { "x": 0.6123163104057312, "y": 0.7612020373344421, "z": -0.03264721855521202 }, { "x": 0.6696187853813171, "y": 0.744706928730011, "z": 0.009673702530562878 }, { "x": 0.5803102254867554, "y": 0.7385968565940857, "z": -0.0689152330160141 }, { "x": 0.6404349207878113, "y": 0.5877999663352966, "z": -0.01929756999015808 }, { "x": 0.6588467955589294, "y": 0.5929454565048218, "z": -0.008487257175147533 }, { "x": 0.6720337867736816, "y": 0.530631422996521, "z": 0.043437421321868896 }, { "x": 0.584305465221405, "y": 0.6099005341529846, "z": -0.030301367864012718 }, { "x": 0.6034283638000488, "y": 0.6217452883720398, "z": -0.001970183802768588 }, { "x": 0.6460927724838257, "y": 0.8608663082122803, "z": 0.015541625209152699 }, { "x": 0.6957815289497375, "y": 0.8326103091239929, "z": 0.13015234470367432 }, { "x": 0.6043362617492676, "y": 0.7861682772636414, "z": -0.030476901680231094 }, { "x": 0.594293475151062, "y": 0.7942103147506714, "z": -0.032218821346759796 }, { "x": 0.6324057579040527, "y": 0.8665139675140381, "z": 0.014255806803703308 }, { "x": 0.6296147704124451, "y": 0.8667733669281006, "z": 0.010388285852968693 }, { "x": 0.663644552230835, "y": 0.5798642635345459, "z": -0.0022301070857793093 }, { "x": 0.6140630841255188, "y": 0.7809288501739502, "z": -0.02835679054260254 }, { "x": 0.615908145904541, "y": 0.5921698212623596, "z": -0.026804860681295395 }, { "x": 0.617181122303009, "y": 0.5748661756515503, "z": -0.03060605563223362 }, { "x": 0.6222207546234131, "y": 0.49137672781944275, "z": -0.011151673272252083 }, { "x": 0.6669357419013977, "y": 0.5541607141494751, "z": 0.017466170713305473 }, { "x": 0.6182981729507446, "y": 0.5320425629615784, "z": -0.021793590858578682 }, { "x": 0.6760554313659668, "y": 0.595052182674408, "z": 0.017115700989961624 }, { "x": 0.6801463961601257, "y": 0.5800720453262329, "z": 0.043127160519361496 }, { "x": 0.5922210812568665, "y": 0.8644017577171326, "z": -0.02662893570959568 }, { "x": 0.6054555177688599, "y": 0.8637874722480774, "z": -0.018363753333687782 }, { "x": 0.6161889433860779, "y": 0.8641164898872375, "z": -0.008808949030935764 }, { "x": 0.6017249822616577, "y": 0.7901403307914734, "z": -0.028126630932092667 }, { "x": 0.631446123123169, "y": 0.8664817810058594, "z": 0.012112865224480629 }, { "x": 0.6249198913574219, "y": 0.8716511130332947, "z": 0.003882825840264559 }, { "x": 0.6281915903091431, "y": 0.867301881313324, "z": 0.009891441091895103 }, { "x": 0.5986843109130859, "y": 0.7813931703567505, "z": -0.050227612257003784 }, { "x": 0.6126407384872437, "y": 0.869275689125061, "z": -0.0031255714129656553 }, { "x": 0.6027271151542664, "y": 0.8711842894554138, "z": -0.009324162267148495 }, { "x": 0.59088134765625, "y": 0.8742044568061829, "z": -0.014608660712838173 }, { "x": 0.5984604358673096, "y": 0.9216185212135315, "z": -0.005981989670544863 }, { "x": 0.5950398445129395, "y": 0.8964707255363464, "z": -0.01703473925590515 }, { "x": 0.5941568613052368, "y": 0.8882410526275635, "z": -0.017784785479307175 }, { "x": 0.5928806662559509, "y": 0.8803883194923401, "z": -0.014153128489851952 }, { "x": 0.5909661054611206, "y": 0.8748103976249695, "z": -0.012609979137778282 }, { "x": 0.6128016710281372, "y": 0.8702545762062073, "z": -0.0022550546564161777 }, { "x": 0.6150846481323242, "y": 0.8726804256439209, "z": -0.00414019962772727 }, { "x": 0.6173093914985657, "y": 0.8770190477371216, "z": -0.005970994010567665 }, { "x": 0.619335412979126, "y": 0.8814800977706909, "z": -0.0036864024586975574 }, { "x": 0.6292637586593628, "y": 0.8314558267593384, "z": -0.007714875973761082 }, { "x": 0.702275276184082, "y": 0.7320667505264282, "z": 0.1433621346950531 }, { "x": 0.6204835176467896, "y": 0.8689177632331848, "z": 0.0044869170524179935 }, { "x": 0.6223508715629578, "y": 0.8704851269721985, "z": 0.00352082890458405 }, { "x": 0.590448260307312, "y": 0.8029727935791016, "z": -0.03200828656554222 }, { "x": 0.6097423434257507, "y": 0.7933741211891174, "z": -0.018042555078864098 }, { "x": 0.59229576587677, "y": 0.7993767261505127, "z": -0.032564569264650345 }, { "x": 0.6171364188194275, "y": 0.7153720259666443, "z": -0.007672437466681004 }, { "x": 0.6389747858047485, "y": 0.726390540599823, "z": -0.002999067772179842 }, { "x": 0.6151940226554871, "y": 0.769412100315094, "z": -0.024427521973848343 }, { "x": 0.6526776552200317, "y": 0.505868136882782, "z": 0.01412637997418642 }, { "x": 0.6475822329521179, "y": 0.5375454425811768, "z": -0.0033899128902703524 }, { "x": 0.6433356404304504, "y": 0.5714520215988159, "z": -0.017428796738386154 }, { "x": 0.626949667930603, "y": 0.8962116837501526, "z": 0.005602736957371235 }, { "x": 0.5868416428565979, "y": 0.5829002261161804, "z": -0.03727729618549347 }, { "x": 0.5877229571342468, "y": 0.5345035791397095, "z": -0.032396964728832245 }, { "x": 0.5887066125869751, "y": 0.48655083775520325, "z": -0.025856535881757736 }, { "x": 0.6507197618484497, "y": 0.6612282991409302, "z": 0.011114613153040409 }, { "x": 0.6803066730499268, "y": 0.677992045879364, "z": 0.032125361263751984 }, { "x": 0.5963194370269775, "y": 0.6598632335662842, "z": 0.002976928371936083 }, { "x": 0.667536199092865, "y": 0.6274255514144897, "z": 0.015618261881172657 }, { "x": 0.5930740833282471, "y": 0.6940041780471802, "z": -0.019217798486351967 }, { "x": 0.6053346395492554, "y": 0.7676517963409424, "z": -0.050308309495449066 }, { "x": 0.6934473514556885, "y": 0.6884298920631409, "z": 0.04794462397694588 }, { "x": 0.6738007664680481, "y": 0.6934011578559875, "z": 0.020697161555290222 }, { "x": 0.6588084697723389, "y": 0.7033141851425171, "z": 0.008462334051728249 }, { "x": 0.6346072554588318, "y": 0.7029502391815186, "z": 0.001542167621664703 }, { "x": 0.6157816648483276, "y": 0.6966525912284851, "z": -0.002009218093007803 }, { "x": 0.6015574336051941, "y": 0.688928484916687, "z": -0.006588225718587637 }, { "x": 0.5746836066246033, "y": 0.6711069345474243, "z": -0.03597589209675789 }, { "x": 0.6947521567344666, "y": 0.7309479117393494, "z": 0.046707939356565475 }, { "x": 0.6759101152420044, "y": 0.6249120831489563, "z": 0.021654341369867325 }, { "x": 0.5794773101806641, "y": 0.7971615195274353, "z": -0.06339326500892639 }, { "x": 0.6041849851608276, "y": 0.727514922618866, "z": -0.017512541264295578 }, { "x": 0.6968844532966614, "y": 0.6440950036048889, "z": 0.12727996706962585 }, { "x": 0.5910853147506714, "y": 0.679325520992279, "z": -0.009497715160250664 }, { "x": 0.6157375574111938, "y": 0.7695677280426025, "z": -0.010624290443956852 }, { "x": 0.6606494784355164, "y": 0.6410489678382874, "z": 0.0208158977329731 }, { "x": 0.6040687561035156, "y": 0.7531470656394958, "z": -0.045887019485235214 }, { "x": 0.7012156248092651, "y": 0.780247151851654, "z": 0.14028730988502502 }, { "x": 0.595149576663971, "y": 0.6527782678604126, "z": 0.006308757700026035 }, { "x": 0.5925500392913818, "y": 0.7436665892601013, "z": -0.060151755809783936 }, { "x": 0.6780198812484741, "y": 0.8905693888664246, "z": 0.0626060739159584 }, { "x": 0.676746666431427, "y": 0.9113880395889282, "z": 0.08726003766059875 }, { "x": 0.7030686140060425, "y": 0.7312687635421753, "z": 0.09529774636030197 }, { "x": 0.688987135887146, "y": 0.8588417172431946, "z": 0.07752864807844162 }, { "x": 0.6883691549301147, "y": 0.6109960675239563, "z": 0.06669612973928452 }, { "x": 0.6358906030654907, "y": 0.9702065587043762, "z": 0.023120900616049767 }, { "x": 0.5781539678573608, "y": 0.8023634552955627, "z": -0.044763918966054916 }, { "x": 0.6170316934585571, "y": 0.7408350706100464, "z": -0.011375460773706436 }, { "x": 0.688542366027832, "y": 0.6516284346580505, "z": 0.050206027925014496 }, { "x": 0.6385149359703064, "y": 0.6540714502334595, "z": 0.006462941411882639 }, { "x": 0.6279382109642029, "y": 0.6563615798950195, "z": 0.003062846139073372 }, { "x": 0.6268895268440247, "y": 0.8736732006072998, "z": 0.00627936702221632 }, { "x": 0.6944946050643921, "y": 0.7709181308746338, "z": 0.053824134171009064 }, { "x": 0.614617109298706, "y": 1.0022112131118774, "z": 0.02719894051551819 }, { "x": 0.6493719220161438, "y": 0.9665167927742004, "z": 0.053563784807920456 }, { "x": 0.6624587178230286, "y": 0.943530797958374, "z": 0.068605437874794 }, { "x": 0.6162528991699219, "y": 0.6558693051338196, "z": 0.002187855076044798 }, { "x": 0.6058168411254883, "y": 0.654328465461731, "z": 0.0036193584091961384 }, { "x": 0.5987918972969055, "y": 0.6536934971809387, "z": 0.006134530063718557 }, { "x": 0.6831037402153015, "y": 0.6195642948150635, "z": 0.03511790186166763 }, { "x": 0.6062582731246948, "y": 0.6356398463249207, "z": 0.001280312892049551 }, { "x": 0.6174948811531067, "y": 0.62776118516922, "z": -0.0013642468256875873 }, { "x": 0.6297246217727661, "y": 0.6253792643547058, "z": -0.0007034156005829573 }, { "x": 0.6407091617584229, "y": 0.627578616142273, "z": 0.0028144705574959517 }, { "x": 0.6479622721672058, "y": 0.6322650909423828, "z": 0.00750273372977972 }, { "x": 0.6915091276168823, "y": 0.5990704298019409, "z": 0.10270945727825165 }, { "x": 0.6457163095474243, "y": 0.6504453420639038, "z": 0.010696077719330788 }, { "x": 0.6164222955703735, "y": 0.8231936097145081, "z": -0.016772059723734856 }, { "x": 0.6042401194572449, "y": 0.7830976843833923, "z": -0.03630910441279411 }, { "x": 0.5922216773033142, "y": 0.8228387236595154, "z": -0.029992375522851944 }, { "x": 0.6646111011505127, "y": 0.92097008228302, "z": 0.050967294722795486 }, { "x": 0.651232898235321, "y": 0.9460107088088989, "z": 0.038000158965587616 }, { "x": 0.6140977144241333, "y": 0.9882472157478333, "z": 0.009882091544568539 }, { "x": 0.6870781183242798, "y": 0.8768675327301025, "z": 0.10980932414531708 }, { "x": 0.5986856818199158, "y": 0.6456438899040222, "z": 0.003999010659754276 }, { "x": 0.585981547832489, "y": 0.7034481763839722, "z": -0.0377722829580307 }, { "x": 0.6342031359672546, "y": 0.9867448806762695, "z": 0.03786521404981613 }, { "x": 0.7013950943946838, "y": 0.776049017906189, "z": 0.09598205983638763 }, { "x": 0.6030206680297852, "y": 0.8719133138656616, "z": -0.007931148633360863 }, { "x": 0.6050592064857483, "y": 0.8767156004905701, "z": -0.009791925549507141 }, { "x": 0.6073468923568726, "y": 0.8831382393836975, "z": -0.012361008673906326 }, { "x": 0.6087977290153503, "y": 0.890143632888794, "z": -0.01098148338496685 }, { "x": 0.6147705316543579, "y": 0.9110084772109985, "z": -0.0018823575228452682 }, { "x": 0.622577965259552, "y": 0.8670604825019836, "z": 0.002609190298244357 }, { "x": 0.6241236329078674, "y": 0.8651344180107117, "z": 0.0025534380692988634 }, { "x": 0.6257084608078003, "y": 0.8638408184051514, "z": 0.0023300074972212315 }, { "x": 0.639931321144104, "y": 0.8449671268463135, "z": 0.0038123116828501225 }, { "x": 0.6810906529426575, "y": 0.7856625318527222, "z": 0.02717764675617218 }, { "x": 0.583532452583313, "y": 0.6811994910240173, "z": -0.026588857173919678 }, { "x": 0.5855660438537598, "y": 0.6393819451332092, "z": -0.004512844607234001 }, { "x": 0.5932201743125916, "y": 0.6398029327392578, "z": 0.0008020466193556786 }, { "x": 0.6200879812240601, "y": 0.8683351874351501, "z": 0.00417016725987196 }, { "x": 0.6842559576034546, "y": 0.8330534100532532, "z": 0.050836317241191864 }, { "x": 0.5754412412643433, "y": 0.6418221592903137, "z": -0.022838059812784195 }, { "x": 0.6232790350914001, "y": 0.9295297265052795, "z": 0.006339520215988159 }, { "x": 0.5764067769050598, "y": 0.694546639919281, "z": -0.04825803264975548 }, { "x": 0.59778892993927, "y": 0.7343927621841431, "z": -0.035004377365112305 }, { "x": 0.6042810678482056, "y": 0.9441440105438232, "z": -0.0010970570147037506 }, { "x": 0.6496372222900391, "y": 0.8869078159332275, "z": 0.021036235615611076 }, { "x": 0.6274012327194214, "y": 0.7830310463905334, "z": -0.006658440921455622 }, { "x": 0.637792706489563, "y": 0.9104999899864197, "z": 0.014290250837802887 }, { "x": 0.6549934148788452, "y": 0.7748609185218811, "z": -0.0006672973395325243 }, { "x": 0.6404005289077759, "y": 0.801220715045929, "z": -0.0026642554439604282 }, { "x": 0.6671456694602966, "y": 0.8045546412467957, "z": 0.013180811889469624 }, { "x": 0.6107483506202698, "y": 0.9680658578872681, "z": 0.001778992242179811 }, { "x": 0.6060343980789185, "y": 0.744587242603302, "z": -0.024382334202528 }, { "x": 0.6602751612663269, "y": 0.8998945355415344, "z": 0.0344940721988678 }, { "x": 0.6463775038719177, "y": 0.9262562394142151, "z": 0.02617623284459114 }, { "x": 0.6579852104187012, "y": 0.8602304458618164, "z": 0.021586716175079346 }, { "x": 0.6926165223121643, "y": 0.8053340315818787, "z": 0.061075080186128616 }, { "x": 0.6724731922149658, "y": 0.8594399690628052, "z": 0.03457934781908989 }, { "x": 0.6975721716880798, "y": 0.8183245062828064, "z": 0.09300774335861206 }, { "x": 0.6512877941131592, "y": 0.8258221745491028, "z": 0.006324059329926968 }, { "x": 0.594887375831604, "y": 0.7148372530937195, "z": -0.026898479089140892 }, { "x": 0.6017440557479858, "y": 0.7773507833480835, "z": -0.05312420800328255 }, { "x": 0.6096571683883667, "y": 0.7806998491287231, "z": -0.037646256387233734 }, { "x": 0.5952993035316467, "y": 0.7654367685317993, "z": -0.06398405134677887 }, { "x": 0.5950021147727966, "y": 0.6201304793357849, "z": -0.009297547861933708 }, { "x": 0.6165438890457153, "y": 0.6052900552749634, "z": -0.012455573305487633 }, { "x": 0.6362661719322205, "y": 0.6015968918800354, "z": -0.011649220250546932 }, { "x": 0.6522727608680725, "y": 0.6046400666236877, "z": -0.005903332494199276 }, { "x": 0.6625409722328186, "y": 0.6128141283988953, "z": 0.0030042496509850025 }, { "x": 0.6688099503517151, "y": 0.6457712054252625, "z": 0.026322703808546066 }, { "x": 0.7013440728187561, "y": 0.6893666386604309, "z": 0.08984331786632538 }, { "x": 0.6608623266220093, "y": 0.6749406456947327, "z": 0.0172116681933403 }, { "x": 0.6482325196266174, "y": 0.6823726296424866, "z": 0.008881398476660252 }, { "x": 0.6313265562057495, "y": 0.6842025518417358, "z": 0.0031308617908507586 }, { "x": 0.6147016286849976, "y": 0.6809731721878052, "z": 0.0007630771724507213 }, { "x": 0.6018834114074707, "y": 0.6755372285842896, "z": -0.0008834321051836014 }, { "x": 0.5925027132034302, "y": 0.670681357383728, "z": -0.001968748401850462 }, { "x": 0.700127363204956, "y": 0.6871103644371033, "z": 0.13980500400066376 }, { "x": 0.6095665693283081, "y": 0.7853189706802368, "z": -0.03074747882783413 }, { "x": 0.5880423784255981, "y": 0.7229287028312683, "z": -0.04691500961780548 }, { "x": 0.5930182337760925, "y": 0.7811514139175415, "z": -0.06398335844278336 }, { "x": 0.5867722034454346, "y": 0.7922660112380981, "z": -0.05794971063733101 }, { "x": 0.5933279991149902, "y": 0.7842848896980286, "z": -0.05714067071676254 }, { "x": 0.6063535809516907, "y": 0.7920218706130981, "z": -0.02590685710310936 }, { "x": 0.5839452743530273, "y": 0.794978141784668, "z": -0.0615212507545948 }, { "x": 0.5828126072883606, "y": 0.8000800013542175, "z": -0.0449722595512867 }, { "x": 0.5909603834152222, "y": 0.6541213393211365, "z": 0.003991890233010054 }, { "x": 0.5852181911468506, "y": 0.6602938771247864, "z": -0.004428438376635313 }, { "x": 0.5825737714767456, "y": 0.6651063561439514, "z": -0.014345290139317513 }, { "x": 0.6517343521118164, "y": 0.6362385153770447, "z": 0.012151890434324741 }, { "x": 0.6615052819252014, "y": 0.6281577944755554, "z": 0.0123682152479887 }, { "x": 0.4856873154640198, "y": 0.6568945646286011, "z": 0.000720038078725338 }, { "x": 0.49988406896591187, "y": 0.6547410488128662, "z": 0.0006949726957827806 }, { "x": 0.48438939452171326, "y": 0.6392973065376282, "z": 0.000705525919329375 }, { "x": 0.47143134474754333, "y": 0.6589511632919312, "z": 0.0006980331381782889 }, { "x": 0.48704618215560913, "y": 0.6752797961235046, "z": 0.0006921177846379578 }, { "x": 0.6243702173233032, "y": 0.640461802482605, "z": -0.00006592126737814397 }, { "x": 0.6390967965126038, "y": 0.6385173797607422, "z": -0.00016105435497593135 }, { "x": 0.6230536699295044, "y": 0.6224825382232666, "z": -0.00016136496560648084 }, { "x": 0.6095397472381592, "y": 0.641917884349823, "z": -0.0001803556369850412 }, { "x": 0.6250996589660645, "y": 0.6586247682571411, "z": -0.0001785515050869435 }
+      ]
+    ],
+    "faceBlendshapes": [
+      {
+        "categories": [
+          { "index": 0, "score": 0.000005187174338061595, "categoryName": "_neutral", "displayName": "" },
+          { "index": 1, "score": 0.24521504342556, "categoryName": "browDownLeft", "displayName": "" },
+          { "index": 2, "score": 0.1987743377685547, "categoryName": "browDownRight", "displayName": "" }, { "index": 3, "score": 0.013400448486208916, "categoryName": "browInnerUp", "displayName": "" }, { "index": 4, "score": 0.012361560948193073, "categoryName": "browOuterUpLeft", "displayName": "" }, { "index": 5, "score": 0.019305096939206123, "categoryName": "browOuterUpRight", "displayName": "" }, { "index": 6, "score": 0.000028426356948330067, "categoryName": "cheekPuff", "displayName": "" }, { "index": 7, "score": 3.4500112633395474e-7, "categoryName": "cheekSquintLeft", "displayName": "" }, { "index": 8, "score": 4.83789051486383e-7, "categoryName": "cheekSquintRight", "displayName": "" }, { "index": 9, "score": 0.07650448381900787, "categoryName": "eyeBlinkLeft", "displayName": "" }, { "index": 10, "score": 0.05070012807846069, "categoryName": "eyeBlinkRight", "displayName": "" }, { "index": 11, "score": 0.13978900015354156, "categoryName": "eyeLookDownLeft", "displayName": "" }, { "index": 12, "score": 0.14198613166809082, "categoryName": "eyeLookDownRight", "displayName": "" }, { "index": 13, "score": 0.2177766114473343, "categoryName": "eyeLookInLeft", "displayName": "" }, { "index": 14, "score": 0.014739357866346836, "categoryName": "eyeLookInRight", "displayName": "" }, { "index": 15, "score": 0.02361512929201126, "categoryName": "eyeLookOutLeft", "displayName": "" }, { "index": 16, "score": 0.19679604470729828, "categoryName": "eyeLookOutRight", "displayName": "" }, { "index": 17, "score": 0.04874616861343384, "categoryName": "eyeLookUpLeft", "displayName": "" }, { "index": 18, "score": 0.049392376095056534, "categoryName": "eyeLookUpRight", "displayName": "" }, { "index": 19, "score": 0.34944331645965576, "categoryName": "eyeSquintLeft", "displayName": "" }, { "index": 20, "score": 0.2939716875553131, "categoryName": "eyeSquintRight", "displayName": "" }, { "index": 21, "score": 0.005955042317509651, "categoryName": "eyeWideLeft", "displayName": "" }, { "index": 22, "score": 0.006776117719709873, "categoryName": "eyeWideRight", "displayName": "" }, { "index": 23, "score": 0.000016942436559475027, "categoryName": "jawForward", "displayName": "" }, { "index": 24, "score": 0.0045165494084358215, "categoryName": "jawLeft", "displayName": "" }, { "index": 25, "score": 0.07803940027952194, "categoryName": "jawOpen", "displayName": "" }, { "index": 26, "score": 0.00002090057751047425, "categoryName": "jawRight", "displayName": "" }, { "index": 27, "score": 0.06032035872340202, "categoryName": "mouthClose", "displayName": "" }, { "index": 28, "score": 0.00228882092051208, "categoryName": "mouthDimpleLeft", "displayName": "" }, { "index": 29, "score": 0.00781762320548296, "categoryName": "mouthDimpleRight", "displayName": "" }, { "index": 30, "score": 0.0017093931091949344, "categoryName": "mouthFrownLeft", "displayName": "" }, { "index": 31, "score": 0.0019319106359034777, "categoryName": "mouthFrownRight", "displayName": "" }, { "index": 32, "score": 0.00008485237776767462, "categoryName": "mouthFunnel", "displayName": "" }, { "index": 33, "score": 0.0009051355300471187, "categoryName": "mouthLeft", "displayName": "" }, { "index": 34, "score": 0.0003630454302765429, "categoryName": "mouthLowerDownLeft", "displayName": "" }, { "index": 35, "score": 0.00017601238505449146, "categoryName": "mouthLowerDownRight", "displayName": "" }, { "index": 36, "score": 0.12865161895751953, "categoryName": "mouthPressLeft", "displayName": "" }, { "index": 37, "score": 0.20137207210063934, "categoryName": "mouthPressRight", "displayName": "" }, { "index": 38, "score": 0.0022203284315764904, "categoryName": "mouthPucker", "displayName": "" }, { "index": 39, "score": 0.0009096377179957926, "categoryName": "mouthRight", "displayName": "" }, { "index": 40, "score": 0.34189721941947937, "categoryName": "mouthRollLower", "displayName": "" }, { "index": 41, "score": 0.11409689486026764, "categoryName": "mouthRollUpper", "displayName": "" }, { "index": 42, "score": 0.17172536253929138, "categoryName": "mouthShrugLower", "displayName": "" }, { "index": 43, "score": 0.004038424696773291, "categoryName": "mouthShrugUpper", "displayName": "" }, { "index": 44, "score": 0.00023205230536404997, "categoryName": "mouthSmileLeft", "displayName": "" }, { "index": 45, "score": 0.00019313619122840464, "categoryName": "mouthSmileRight", "displayName": "" }, { "index": 46, "score": 0.0018571305554360151, "categoryName": "mouthStretchLeft", "displayName": "" }, { "index": 47, "score": 0.0023813238367438316, "categoryName": "mouthStretchRight", "displayName": "" }, { "index": 48, "score": 0.000024323100660694763, "categoryName": "mouthUpperUpLeft", "displayName": "" }, { "index": 49, "score": 0.00003161552012898028, "categoryName": "mouthUpperUpRight", "displayName": "" }, { "index": 50, "score": 1.08198406678639e-7, "categoryName": "noseSneerLeft", "displayName": "" }, { "index": 51, "score": 0.0000012652527630052646, "categoryName": "noseSneerRight", "displayName": "" }
+        ],
+        "headIndex": -1,
+        "headName": ""
+      }
+    ],
+    "facialTransformationMatrixes": [
+      {
+        "rows": 4,
+        "columns": 4,
+        "data": [ 0.9947517514228821, 0.10230544209480286, 0.0013679931871592999, 0, -0.10230997204780579, 0.9947447776794434, 0.003816320328041911, 0, -0.000970348424743861, -0.0039362297393381596, 0.9999914169311523, 0, 2.8888821601867676, -7.808934211730957, -30.52109146118164, 1 ]
+      }
+    ]
+  },
 }

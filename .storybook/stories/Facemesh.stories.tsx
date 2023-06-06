@@ -5,7 +5,7 @@ import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'
 
-import { Facemesh } from '../../src'
+import { Facemesh, FacemeshDatas } from '../../src'
 
 export default {
   title: 'Shapes/Facemesh',
@@ -20,31 +20,44 @@ export default {
   ],
 }
 
-export const FacemeshSt = ({ depth, origin, wireframe, flat, skin, debug }) => (
+export const FacemeshSt = ({ depth, origin, eyes, eyesAsOrigin, offset, offsetScalar, debug }) => (
   <>
     <color attach="background" args={['#303030']} />
     <axesHelper />
 
-    <Facemesh depth={depth} origin={origin} debug={debug} rotation-z={Math.PI}>
-      <meshStandardMaterial side={THREE.DoubleSide} color={skin} flatShading={flat} wireframe={wireframe} />
+    <Facemesh
+      depth={depth}
+      origin={origin}
+      eyes={eyes}
+      faceBlendshapes={FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.faceBlendshapes[0]}
+      eyesAsOrigin={eyesAsOrigin}
+      offset={offset}
+      facialTransformationMatrix={FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.facialTransformationMatrixes[0]}
+      offsetScalar={offsetScalar}
+      debug={debug}
+      rotation-z={Math.PI}
+    >
+      <meshStandardMaterial side={THREE.DoubleSide} color="#cbcbcb" flatShading={true} transparent opacity={0.98} />
     </Facemesh>
   </>
 )
 FacemeshSt.args = {
   depth: undefined,
   origin: undefined,
-  wireframe: false,
-  flat: true,
-  skin: '#cbcbcb',
+  eyes: undefined,
+  eyesAsOrigin: undefined,
+  offset: undefined,
+  offsetScalar: undefined,
   debug: true,
 }
 
 FacemeshSt.argTypes = {
   depth: { control: { type: 'range', min: 0, max: 6.5, step: 0.01 } },
   origin: { control: 'select', options: [undefined, 168, 9] },
-  wireframe: { control: { type: 'boolean' } },
-  flat: { control: { type: 'boolean' } },
-  skin: { control: { type: 'color' } },
+  eyes: { control: { type: 'boolean' } },
+  eyesAsOrigin: { control: { type: 'boolean' } },
+  offset: { control: { type: 'boolean' } },
+  offsetScalar: { control: { type: 'range', min: 0, max: 200, step: 1 } },
   debug: { control: { type: 'boolean' } },
 }
 

@@ -38,6 +38,7 @@ export * from './TransformControls'
 export * from './PointerLockControls'
 export * from './FirstPersonControls'
 export * from './CameraControls'
+export * from './FaceControls'
 
 // Gizmos
 export * from './GizmoHelper'
@@ -73,6 +74,7 @@ export * from './useTrailTexture'
 export * from './useCubeCamera'
 export * from './Example'
 export * from './SpriteAnimator'
+export * from './FaceLandmarker'
 
 // Modifiers
 export * from './CurveModifier'

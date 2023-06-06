@@ -3328,7 +3328,14 @@ const stencil = useMask(1, true)
 #### Portal
 
 ```tsx
-export type PortalProps = JSX.IntrinsicElements['mesh'] & { blur?: number }
+export type PortalProps = JSX.IntrinsicElements['portalMaterialImpl'] & {
+  /** Edge fade blur, 0 = no blur (default) */
+  blur?: number
+  /** SDF resolution, the smaller the faster is the start-up time (default: 512) */
+  resolution?: number
+  /** By default portals use relative coordinates, contents are affects by the local matrix transform */
+  worldUnits?: boolean
+}
 ```
 
 A material that creates a portal into another scene. It is drawn onto the geometry of the mesh that it is applied to.

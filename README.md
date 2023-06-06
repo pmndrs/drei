@@ -3351,7 +3351,7 @@ A material that creates a portal into another scene. It is drawn onto the geomet
 </mesh>
 ```
 
-You can optionally fade or blur the edges of the portal by providing a `blur` prop, do not forget to make the material transparent in that case.
+You can optionally fade or blur the edges of the portal by providing a `blur` prop, do not forget to make the material transparent in that case. It uses SDF flood-fill to determine the shape, you can thereby blur any geometry.
 
 ```jsx
 <MeshPortalMaterial transparent blur={0.5}>

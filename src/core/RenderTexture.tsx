@@ -82,6 +82,8 @@ export const RenderTexture = React.forwardRef(
         {createPortal(
           <Container renderPriority={renderPriority} frames={frames} fbo={fbo}>
             {children}
+            {/* Without an element that receives pointer events state.pointer will always be 0/0 */}
+            <group onPointerOver={() => null} />
           </Container>,
           vScene,
           { events: { compute: compute || uvCompute, priority: eventPriority } }

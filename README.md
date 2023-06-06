@@ -3338,7 +3338,7 @@ export type PortalProps = JSX.IntrinsicElements['portalMaterialImpl'] & {
 }
 ```
 
-A material that creates a portal into another scene. It is drawn onto the geometry of the mesh that it is applied to.
+A material that creates a portal into another scene. It is drawn onto the geometry of the mesh that it is applied to. It uses RenderTexture internally, but counteracts the perspective shift of the texture surface, the portals contents are thereby masked by it but otherwise in the same position as if they were in the original scene.
 
 ```jsx
 <mesh {...props}>

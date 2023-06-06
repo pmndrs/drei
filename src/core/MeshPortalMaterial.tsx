@@ -65,11 +65,15 @@ export type PortalProps = JSX.IntrinsicElements['portalMaterialImpl'] & {
   resolution?: number
   /** By default portals use relative coordinates, contents are affects by the local matrix transform */
   worldUnits?: boolean
+  /** Optional event priority, defaults to 0 */
+  eventPriority?: number
+  /** Optional render priority, defaults to 0 */
+  renderPriority?: number
 }
 
 export const MeshPortalMaterial = React.forwardRef(
   (
-    { children, worldUnits = false, resolution = 512, ...props }: PortalProps,
+    { children, eventPriority, renderPriority, worldUnits = false, resolution = 512, ...props }: PortalProps,
     fref: React.ForwardedRef<PortalMaterialType>
   ) => {
     extend({ PortalMaterialImpl })
@@ -129,7 +133,12 @@ export const MeshPortalMaterial = React.forwardRef(
         toneMapped={false}
         {...props}
       >
-        <RenderTexture attach="map" compute={events.compute as any}>
+        <RenderTexture
+          attach="map"
+          eventPriority={eventPriority}
+          renderPriority={renderPriority}
+          compute={events.compute as any}
+        >
           <group matrixAutoUpdate={false} ref={group}>
             {children}
           </group>

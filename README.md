@@ -3335,6 +3335,10 @@ export type PortalProps = JSX.IntrinsicElements['portalMaterialImpl'] & {
   resolution?: number
   /** By default portals use relative coordinates, contents are affects by the local matrix transform */
   worldUnits?: boolean
+  /** Optional event priority, defaults to 0 */
+  eventPriority?: number
+  /** Optional render priority, defaults to 0 */
+  renderPriority?: number
 }
 ```
 

@@ -176,6 +176,8 @@ export const View = ({ track, index = 1, frames = Infinity, children }: ViewProp
         createPortal(
           <Container canvasSize={size} frames={frames} scene={scene} track={track} rect={rect} index={index}>
             {children}
+            {/* Without an element that receives pointer events state.pointer will always be 0/0 */}
+            <group onPointerOver={() => null} />
           </Container>,
           virtualScene,
           { events: { compute, priority: index }, size: { width: rect.current?.width, height: rect.current?.height } }

@@ -32,7 +32,8 @@ function RenderHud({ defaultScene, defaultCamera, renderPriority = 1 }: RenderHu
     // Restore default
     gl.autoClear = oldCLear
   }, renderPriority)
-  return <></>
+  // Without an element that receives pointer events state.pointer will always be 0/0
+  return <group onPointerOver={() => null} />
 }
 
 export function Hud({ children, renderPriority = 1 }: HudProps) {

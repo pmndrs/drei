@@ -58,22 +58,32 @@ declare global {
   }
 }
 
-export type PortalProps = JSX.IntrinsicElements['portalMaterialImpl'] & { blur?: number; resolution?: number }
+export type PortalProps = JSX.IntrinsicElements['portalMaterialImpl'] & {
+  /** Edge fade blur, 0 = no blur (default) */
+  blur?: number
+  /** SDF resolution, the smaller the faster is the start-up time (default: 512) */
+  resolution?: number
+  /** By default portals use relative coordinates, contents are affects by the local matrix transform */
+  worldUnits?: boolean
+}
 
 export const MeshPortalMaterial = React.forwardRef(
-  ({ children, resolution = 512, ...props }: PortalProps, fref: React.ForwardedRef<PortalMaterialType>) => {
+  (
+    { children, worldUnits = false, resolution = 512, ...props }: PortalProps,
+    fref: React.ForwardedRef<PortalMaterialType>
+  ) => {
     extend({ PortalMaterialImpl })
     const ref = React.useRef<PortalMaterialType>(null!)
     const group = React.useRef<THREE.Group>(null!)
     const { gl, size, events, viewport } = useThree()
     const maskRenderTarget = useFBO(resolution, resolution)
-    const [imageMaterial] = React.useState(() => new THREE.MeshBasicMaterial())
 
     React.useLayoutEffect(() => {
       let mask = (ref.current as any)?.__r3f.parent
       if (!mask) return
 
-      const boundingBox = new THREE.Box3().setFromBufferAttribute(mask.geometry.attributes.position)
+      const tempMesh = new THREE.Mesh(mask.geometry, new THREE.MeshBasicMaterial())
+      const boundingBox = new THREE.Box3().setFromBufferAttribute(tempMesh.geometry.attributes.position)
       const orthoCam = new THREE.OrthographicCamera(
         boundingBox.min.x * (1 + 2 / resolution),
         boundingBox.max.x * (1 + 2 / resolution),
@@ -85,10 +95,8 @@ export const MeshPortalMaterial = React.forwardRef(
       orthoCam.position.set(0, 0, 1)
       orthoCam.lookAt(0, 0, 0)
 
-      const oldMaterial = mask.material
-      mask.material = imageMaterial
       gl.setRenderTarget(maskRenderTarget)
-      gl.render(mask, orthoCam)
+      gl.render(tempMesh, orthoCam)
       const sg = makeSDFGenerator(resolution, resolution, gl)
       const sdf = sg(maskRenderTarget.texture)
       const readSdf = new Float32Array(resolution * resolution)
@@ -101,14 +109,15 @@ export const MeshPortalMaterial = React.forwardRef(
       min = -min
       ref.current.size = min
       ref.current.sdf = sdf.texture
-      mask.material = oldMaterial
+
       gl.setRenderTarget(null)
     }, [resolution])
 
     useFrame(() => {
       let parent = (ref.current as any)?.__r3f.parent
       if (parent) {
-        group.current.matrix.copy(parent.matrixWorld)
+        if (!worldUnits) group.current.matrix.copy(parent.matrixWorld)
+        else group.current.matrix.identity()
       }
     })
 

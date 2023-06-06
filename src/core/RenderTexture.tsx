@@ -109,11 +109,15 @@ function Container({
   fbo: THREE.WebGLRenderTarget
 }) {
   let count = 0
+  let oldAutoClear
   useFrame((state) => {
     if (frames === Infinity || count < frames) {
+      oldAutoClear = state.gl.autoClear
+      state.gl.autoClear = true
       state.gl.setRenderTarget(fbo)
       state.gl.render(state.scene, state.camera)
       state.gl.setRenderTarget(null)
+      state.gl.autoClear = oldAutoClear
       count++
     }
   }, renderPriority)

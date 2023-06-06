@@ -20,7 +20,7 @@ const useProgress = create<Data>((set) => {
     set({
       active: true,
       item,
-      itemsMap: saveItemsMap,
+      itemsMap: new Map(saveItemsMap),
       loaded,
       total,
       progress: ((loaded - saveLastTotalLoaded) / (total - saveLastTotalLoaded)) * 100,
@@ -38,6 +38,7 @@ const useProgress = create<Data>((set) => {
     set({
       active: true,
       item,
+      itemsMap: new Map(saveItemsMap),
       loaded,
       total,
       progress: ((loaded - saveLastTotalLoaded) / (total - saveLastTotalLoaded)) * 100 || 100,

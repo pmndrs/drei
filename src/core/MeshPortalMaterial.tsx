@@ -73,12 +73,11 @@ export type PortalProps = JSX.IntrinsicElements['portalMaterialImpl'] & {
 
 export const MeshPortalMaterial = React.forwardRef(
   (
-    { children, eventPriority, renderPriority, worldUnits = false, resolution = 512, ...props }: PortalProps,
+    { children, blur, eventPriority, renderPriority, worldUnits = false, resolution = 512, ...props }: PortalProps,
     fref: React.ForwardedRef<PortalMaterialType>
   ) => {
     extend({ PortalMaterialImpl })
     const ref = React.useRef<PortalMaterialType>(null!)
-    const group = React.useRef<THREE.Group>(null!)
     const { gl, size, events, viewport } = useThree()
     const maskRenderTarget = useFBO(resolution, resolution)
 
@@ -86,49 +85,45 @@ export const MeshPortalMaterial = React.forwardRef(
       let mask = (ref.current as any)?.__r3f.parent
       if (!mask) return
 
-      const tempMesh = new THREE.Mesh(mask.geometry, new THREE.MeshBasicMaterial())
-      const boundingBox = new THREE.Box3().setFromBufferAttribute(tempMesh.geometry.attributes.position)
-      const orthoCam = new THREE.OrthographicCamera(
-        boundingBox.min.x * (1 + 2 / resolution),
-        boundingBox.max.x * (1 + 2 / resolution),
-        boundingBox.max.y * (1 + 2 / resolution),
-        boundingBox.min.y * (1 + 2 / resolution),
-        0.1,
-        1000
-      )
-      orthoCam.position.set(0, 0, 1)
-      orthoCam.lookAt(0, 0, 0)
+      // Apply the SDF mask only once
+      if (blur && ref.current.sdf === null) {
+        const tempMesh = new THREE.Mesh(mask.geometry, new THREE.MeshBasicMaterial())
+        const boundingBox = new THREE.Box3().setFromBufferAttribute(tempMesh.geometry.attributes.position)
+        const orthoCam = new THREE.OrthographicCamera(
+          boundingBox.min.x * (1 + 2 / resolution),
+          boundingBox.max.x * (1 + 2 / resolution),
+          boundingBox.max.y * (1 + 2 / resolution),
+          boundingBox.min.y * (1 + 2 / resolution),
+          0.1,
+          1000
+        )
+        orthoCam.position.set(0, 0, 1)
+        orthoCam.lookAt(0, 0, 0)
 
-      gl.setRenderTarget(maskRenderTarget)
-      gl.render(tempMesh, orthoCam)
-      const sg = makeSDFGenerator(resolution, resolution, gl)
-      const sdf = sg(maskRenderTarget.texture)
-      const readSdf = new Float32Array(resolution * resolution)
-      gl.readRenderTargetPixels(sdf, 0, 0, resolution, resolution, readSdf)
-      // Get smallest value in sdf
-      let min = Infinity
-      for (let i = 0; i < readSdf.length; i++) {
-        if (readSdf[i] < min) min = readSdf[i]
+        gl.setRenderTarget(maskRenderTarget)
+        gl.render(tempMesh, orthoCam)
+        const sg = makeSDFGenerator(resolution, resolution, gl)
+        const sdf = sg(maskRenderTarget.texture)
+        const readSdf = new Float32Array(resolution * resolution)
+        gl.readRenderTargetPixels(sdf, 0, 0, resolution, resolution, readSdf)
+        // Get smallest value in sdf
+        let min = Infinity
+        for (let i = 0; i < readSdf.length; i++) {
+          if (readSdf[i] < min) min = readSdf[i]
+        }
+        min = -min
+        ref.current.size = min
+        ref.current.sdf = sdf.texture
+
+        gl.setRenderTarget(null)
       }
-      min = -min
-      ref.current.size = min
-      ref.current.sdf = sdf.texture
-
-      gl.setRenderTarget(null)
-    }, [resolution])
-
-    useFrame(() => {
-      let parent = (ref.current as any)?.__r3f.parent
-      if (parent) {
-        if (!worldUnits) group.current.matrix.copy(parent.matrixWorld)
-        else group.current.matrix.identity()
-      }
-    })
+    }, [resolution, blur])
 
     React.useImperativeHandle(fref, () => ref.current)
     return (
       <portalMaterialImpl
         ref={ref}
+        blur={blur}
         resolution={[size.width * viewport.dpr, size.height * viewport.dpr]}
         toneMapped={false}
         attach="material"
@@ -140,14 +135,28 @@ export const MeshPortalMaterial = React.forwardRef(
           renderPriority={renderPriority}
           compute={events.compute as any}
         >
-          <group matrixAutoUpdate={false} ref={group}>
-            {children}
-          </group>
+          {children}
+          <CopyMatrix material={ref} worldUnits={worldUnits} />
         </RenderTexture>
       </portalMaterialImpl>
     )
   }
 )
+
+function CopyMatrix({ material, worldUnits }) {
+  const scene = useThree((state) => state.scene)
+  React.useLayoutEffect(() => {
+    scene.matrixAutoUpdate = false
+  }, [])
+  useFrame(() => {
+    let parent = (material?.current as any)?.__r3f.parent
+    if (parent) {
+      if (!worldUnits) scene.matrixWorld.copy(parent.matrixWorld)
+      else scene.matrixWorld.identity()
+    }
+  })
+  return <></>
+}
 
 const makeSDFGenerator = (clientWidth, clientHeight, renderer) => {
   let finalTarget = new THREE.WebGLRenderTarget(clientWidth, clientHeight, {

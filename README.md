@@ -606,6 +606,7 @@ The camera follows your face.
 
 <p>
   <a href="https://codesandbox.io/s/jfx2t6"><img width="20%" src="https://github-production-user-asset-6210df.s3.amazonaws.com/76580/243503368-6239eb74-8473-4131-9203-33b29c1bbec0.png" alt="demo"/></a>
+  <a href="https://codesandbox.io/s/zhjbhy"><img width="20%" src="https://github-production-user-asset-6210df.s3.amazonaws.com/76580/244052845-5cc535d7-3c97-46e3-a267-52e707c2d9b2.png" alt="demo"/></a>
 </p>
 
 Pre-requisite: wrap into a `FaceLandmarker` provider

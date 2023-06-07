@@ -3327,6 +3327,10 @@ const stencil = useMask(1, true)
 
 #### Portal
 
+<p>
+  <a href="https://codesandbox.io/s/ik11ln"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/ik11ln/screenshot.png" alt="Demo"/></a>
+</p>
+
 ```tsx
 export type PortalProps = JSX.IntrinsicElements['portalMaterialImpl'] & {
   /** Edge fade blur, 0 = no blur (default) */

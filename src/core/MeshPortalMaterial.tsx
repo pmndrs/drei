@@ -131,6 +131,7 @@ export const MeshPortalMaterial = React.forwardRef(
         ref={ref}
         resolution={[size.width * viewport.dpr, size.height * viewport.dpr]}
         toneMapped={false}
+        attach="material"
         {...props}
       >
         <RenderTexture

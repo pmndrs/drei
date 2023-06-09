@@ -42,13 +42,13 @@ const PortalMaterialImpl = shaderMaterial(
    }`
 )
 
-export type PortalMaterialType = ReactThreeFiber.ShaderMaterialProps & {
+export type PortalMaterialType = {
   resolution: ReactThreeFiber.Vector2
   blur: number
-  size: number
-  sdf: THREE.Texture
-  map: THREE.Texture
-}
+  size?: number
+  sdf?: THREE.Texture
+  map?: THREE.Texture
+} & JSX.IntrinsicElements['shaderMaterial']
 
 declare global {
   namespace JSX {
@@ -58,7 +58,7 @@ declare global {
   }
 }
 
-export type PortalProps = JSX.IntrinsicElements['portalMaterialImpl'] & {
+export type PortalProps = JSX.IntrinsicElements['shaderMaterial'] & {
   /** Edge fade blur, 0 = no blur (default) */
   blur?: number
   /** SDF resolution, the smaller the faster is the start-up time (default: 512) */
@@ -73,7 +73,7 @@ export type PortalProps = JSX.IntrinsicElements['portalMaterialImpl'] & {
 
 export const MeshPortalMaterial = React.forwardRef(
   (
-    { children, blur, eventPriority, renderPriority, worldUnits = false, resolution = 512, ...props }: PortalProps,
+    { children, blur = 0, eventPriority, renderPriority, worldUnits = false, resolution = 512, ...props }: PortalProps,
     fref: React.ForwardedRef<PortalMaterialType>
   ) => {
     extend({ PortalMaterialImpl })

@@ -6,8 +6,9 @@ import glslify from 'rollup-plugin-glslify'
 import multiInput from 'rollup-plugin-multi-input'
 import { terser } from 'rollup-plugin-terser'
 
+const inline = ['@mediapipe/tasks-vision']
 const root = process.platform === 'win32' ? path.resolve('/') : '/'
-const external = (id) => !id.startsWith('.') && !id.startsWith(root)
+const external = (id) => !id.startsWith('.') && !id.startsWith(root) && !inline.includes(id)
 const extensions = ['.js', '.jsx', '.ts', '.tsx', '.json']
 
 const getBabelOptions = ({ useESModules }) => ({

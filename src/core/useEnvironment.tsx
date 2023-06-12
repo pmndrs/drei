@@ -41,7 +41,13 @@ export function useEnvironment({
 
   // Everything else
   isCubeMap = isArray(files)
-  extension = !isArray(files) && files.split('.').pop()?.toLowerCase()
+  extension = isArray(files)
+    ? 'cube'
+    : files.startsWith('data:application/exr')
+    ? 'exr'
+    : files.startsWith('data:application/hdr')
+    ? 'hdr'
+    : files.split('.').pop()?.toLowerCase()
   loader = isCubeMap ? CubeTextureLoader : extension === 'hdr' ? RGBELoader : extension === 'exr' ? EXRLoader : null
 
   if (!loader) throw new Error('useEnvironment: Unrecognized file extension: ' + files)

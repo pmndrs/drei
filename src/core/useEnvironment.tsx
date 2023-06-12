@@ -9,18 +9,13 @@ import {
   TextureEncoding,
 } from 'three'
 import { RGBELoader, EXRLoader } from 'three-stdlib'
-import { suspend } from 'suspend-react'
 import { presetsObj, PresetsType } from '../helpers/environment-assets'
 
 const CUBEMAP_ROOT = 'https://raw.githack.com/pmndrs/drei-assets/456060a26bbeb8fdf79326f224b6d99b8bcce736/hdri/'
-
-const isPromise = (promise: any): promise is Promise<{ ['default']: string }> =>
-  typeof promise === 'object' && typeof (promise as Promise<any>).then === 'function'
-
 const isArray = (arr: any): arr is string[] => Array.isArray(arr)
 
 export type EnvironmentLoaderProps = {
-  files?: string | string[] | Promise<{ ['default']: string }>
+  files?: string | string[]
   path?: string
   preset?: PresetsType
   extensions?: (loader: Loader) => void
@@ -44,22 +39,10 @@ export function useEnvironment({
     path = CUBEMAP_ROOT
   }
 
-  if (isPromise(files)) {
-    // Using promises that return inline-EXR URLs by default
-    files = suspend(
-      async (promise) => {
-        const result = await promise
-        return result.default
-      },
-      [files]
-    )
-    loader = EXRLoader
-  } else {
-    // Everything else
-    isCubeMap = isArray(files)
-    extension = !isArray(files) && files.split('.').pop()?.toLowerCase()
-    loader = isCubeMap ? CubeTextureLoader : extension === 'hdr' ? RGBELoader : extension === 'exr' ? EXRLoader : null
-  }
+  // Everything else
+  isCubeMap = isArray(files)
+  extension = !isArray(files) && files.split('.').pop()?.toLowerCase()
+  loader = isCubeMap ? CubeTextureLoader : extension === 'hdr' ? RGBELoader : extension === 'exr' ? EXRLoader : null
 
   if (!loader) throw new Error('useEnvironment: Unrecognized file extension: ' + files)
 

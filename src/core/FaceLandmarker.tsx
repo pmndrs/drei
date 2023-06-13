@@ -13,7 +13,7 @@ type FaceLandmarkerProps = {
 }
 
 export const FaceLandmarkerDefaults = {
-  basePath: 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.2-rc2/wasm',
+  basePath: `https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${process.env.ROLLUP_REPLACE_MEDIAPIPE_TASKS_VISION_VERSION}/wasm`,
   options: {
     baseOptions: {
       modelAssetPath:

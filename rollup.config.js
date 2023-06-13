@@ -5,6 +5,8 @@ import json from '@rollup/plugin-json'
 import glslify from 'rollup-plugin-glslify'
 import multiInput from 'rollup-plugin-multi-input'
 import { terser } from 'rollup-plugin-terser'
+import replace from '@rollup/plugin-replace'
+import mediapipeTasksVisionPkg from '@mediapipe/tasks-vision/package.json'
 
 const root = process.platform === 'win32' ? path.resolve('/') : '/'
 const external = (id) => !id.startsWith('.') && !id.startsWith(root)
@@ -47,6 +49,10 @@ export default [
     output: { dir: `dist`, format: 'esm' },
     external,
     plugins: [
+      replace({
+        preventAssignment: true,
+        'process.env.ROLLUP_REPLACE_MEDIAPIPE_TASKS_VISION_VERSION': JSON.stringify(mediapipeTasksVisionPkg.version),
+      }),
       multiInput(),
       json(),
       glslify(),
@@ -59,6 +65,10 @@ export default [
     output: { dir: `dist`, format: 'esm' },
     external,
     plugins: [
+      replace({
+        preventAssignment: true,
+        'process.env.ROLLUP_REPLACE_MEDIAPIPE_TASKS_VISION_VERSION': JSON.stringify(mediapipeTasksVisionPkg.version),
+      }),
       json(),
       glslify(),
       babel(getBabelOptions({ useESModules: true }, '>1%, not dead, not ie 11, not op_mini all')),
@@ -74,6 +84,10 @@ export default [
       multiInput({
         transformOutputPath: (output) => output.replace(/\.[^/.]+$/, '.cjs.js'),
       }),
+      replace({
+        preventAssignment: true,
+        'process.env.ROLLUP_REPLACE_MEDIAPIPE_TASKS_VISION_VERSION': JSON.stringify(mediapipeTasksVisionPkg.version),
+      }),
       json(),
       glslify(),
       babel(getBabelOptions({ useESModules: false })),
@@ -85,6 +99,16 @@ export default [
     input: `./src/index.ts`,
     output: { file: `dist/index.cjs.js`, format: 'cjs' },
     external,
-    plugins: [json(), glslify(), babel(getBabelOptions({ useESModules: false })), resolve({ extensions }), terser()],
+    plugins: [
+      replace({
+        preventAssignment: true,
+        'process.env.ROLLUP_REPLACE_MEDIAPIPE_TASKS_VISION_VERSION': JSON.stringify(mediapipeTasksVisionPkg.version),
+      }),
+      json(),
+      glslify(),
+      babel(getBabelOptions({ useESModules: false })),
+      resolve({ extensions }),
+      terser(),
+    ],
   },
 ]

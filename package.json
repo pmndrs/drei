@@ -91,6 +91,7 @@
     "@rollup/plugin-commonjs": "^19.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.0.0",
+    "@rollup/plugin-replace": "^5.0.2",
     "@storybook/addon-actions": "^7.0.12",
     "@storybook/addon-controls": "^7.0.12",
     "@storybook/addon-essentials": "^7.0.12",
@@ -135,6 +136,7 @@
     "typescript": "^4.7.4",
     "vite": "^4.3.6",
     "vite-plugin-glslify": "^2.0.1",
+    "vitest": "^0.32.0",
     "yarn": "^1.22.17"
   },
   "peerDependencies": {

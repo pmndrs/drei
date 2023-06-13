@@ -15,7 +15,7 @@ import {
   useContext,
 } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import type { FaceLandmarkerResult } from '@mediapipe/tasks-vision'
+import { FaceLandmarkerResult } from '@mediapipe/tasks-vision'
 import { easing } from 'maath'
 import { suspend, clear } from 'suspend-react'
 

@@ -1,7 +1,7 @@
 /* eslint react-hooks/exhaustive-deps: 1 */
 import * as React from 'react'
 import { createContext, ReactNode, useContext, useEffect } from 'react'
-import type { FaceLandmarker as FaceLandmarkerImpl, FaceLandmarkerOptions } from '@mediapipe/tasks-vision'
+import { FilesetResolver, FaceLandmarker as FaceLandmarkerImpl, FaceLandmarkerOptions } from '@mediapipe/tasks-vision'
 import { clear, suspend } from 'suspend-react'
 
 const FaceLandmarkerContext = createContext({} as FaceLandmarkerImpl | undefined)
@@ -34,7 +34,6 @@ export function FaceLandmarker({
   const opts = JSON.stringify(options)
 
   const faceLandmarker = suspend(async () => {
-    const { FilesetResolver, FaceLandmarker: FaceLandmarkerImpl } = await import('@mediapipe/tasks-vision')
     return await FilesetResolver.forVisionTasks(basePath).then((vision) =>
       FaceLandmarkerImpl.createFromOptions(vision, options)
     )

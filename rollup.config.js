@@ -43,16 +43,18 @@ const getBabelOptions = ({ useESModules }) => ({
   ],
 })
 
+export const replacements = {
+  preventAssignment: true,
+  'process.env.ROLLUP_REPLACE_MEDIAPIPE_TASKS_VISION_VERSION': JSON.stringify(mediapipeTasksVisionPkg.version),
+}
+
 export default [
   {
     input: ['src/**/*.ts', 'src/**/*.tsx', '!src/index.ts'],
     output: { dir: `dist`, format: 'esm' },
     external,
     plugins: [
-      replace({
-        preventAssignment: true,
-        'process.env.ROLLUP_REPLACE_MEDIAPIPE_TASKS_VISION_VERSION': JSON.stringify(mediapipeTasksVisionPkg.version),
-      }),
+      replace(replacements),
       multiInput(),
       json(),
       glslify(),
@@ -65,10 +67,7 @@ export default [
     output: { dir: `dist`, format: 'esm' },
     external,
     plugins: [
-      replace({
-        preventAssignment: true,
-        'process.env.ROLLUP_REPLACE_MEDIAPIPE_TASKS_VISION_VERSION': JSON.stringify(mediapipeTasksVisionPkg.version),
-      }),
+      replace(replacements),
       json(),
       glslify(),
       babel(getBabelOptions({ useESModules: true }, '>1%, not dead, not ie 11, not op_mini all')),
@@ -81,12 +80,9 @@ export default [
     output: { dir: `dist`, format: 'cjs' },
     external,
     plugins: [
+      replace(replacements),
       multiInput({
         transformOutputPath: (output) => output.replace(/\.[^/.]+$/, '.cjs.js'),
-      }),
-      replace({
-        preventAssignment: true,
-        'process.env.ROLLUP_REPLACE_MEDIAPIPE_TASKS_VISION_VERSION': JSON.stringify(mediapipeTasksVisionPkg.version),
       }),
       json(),
       glslify(),
@@ -100,10 +96,7 @@ export default [
     output: { file: `dist/index.cjs.js`, format: 'cjs' },
     external,
     plugins: [
-      replace({
-        preventAssignment: true,
-        'process.env.ROLLUP_REPLACE_MEDIAPIPE_TASKS_VISION_VERSION': JSON.stringify(mediapipeTasksVisionPkg.version),
-      }),
+      replace(replacements),
       json(),
       glslify(),
       babel(getBabelOptions({ useESModules: false })),

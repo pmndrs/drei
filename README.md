@@ -2619,6 +2619,13 @@ useGLTF(url, '/draco-gltf')
 useGLTF.preload(url)
 ```
 
+> Note: If you are using the CDN loaded draco binaries, you can get a small speedup in loading time by prefetching them. You can accomplish this by adding two `<link>` tags to your `<head>` tag. The version in those URLs must exactly match what [useGLTF](src/core/useGLTF.tsx#L18) uses for this to work. It is recommended that you check your browser's network tab to confirm that the correct URL is being used, and that the files get loaded from the prefetch cache on subsequent requests. If you're using create-react-app, this would look like this in your `public/index.html` file:
+
+```html
+<link rel="prefetch" crossorigin="anonymous" href="https://www.gstatic.com/draco/versioned/decoders/1.5.5/draco_wasm_wrapper.js">
+<link rel="prefetch" crossorigin="anonymous" href="https://www.gstatic.com/draco/versioned/decoders/1.5.5/draco_decoder.wasm">
+```
+
 #### useFBX
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-fbx)

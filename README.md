@@ -2036,7 +2036,7 @@ type ExampleApi = {
   <a href="https://codesandbox.io/s/qyz5r"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/qyz5r/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/9keg6"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/9keg6/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/6oei7"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/6oei7/screenshot.png" alt="Demo"/></a>
-  <a href="https://codesandbox.io/s/occluded-html-qrw20v"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/occluded-html-qrw20v/screenshot.png" alt="demo"/></a>
+  <a href="https://codesandbox.io/s/wp9mkp"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/wp9mkp/screenshot.png" alt="demo"/></a>
 </p>
 
 Allows you to tie HTML content to any object of your scene. It will be projected to the objects whereabouts automatically.

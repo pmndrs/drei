@@ -157,7 +157,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#view">View</a></li>
           <li><a href="#rendertexture">RenderTexture</a></li>
           <li><a href="#mask">Mask</a></li>
-          <li><a href="#portal">Portal</a></li>
+          <li><a href="#meshportalmaterial">MeshPortalMaterial</a></li>
         </ul>
         <li><a href="#modifiers">Modifiers</a></li>
         <ul>
@@ -2545,16 +2545,14 @@ const buffer = useSurfaceSampler(
 A @mediapipe/tasks-vision [`FaceLandmarker`](https://developers.google.com/mediapipe/api/solutions/js/tasks-vision.facelandmarker) provider, as well as a `useFaceLandmarker` hook.
 
 ```tsx
-<FaceLandmarker>
-  {/* ... */}
-</FaceLandmarker>
+<FaceLandmarker>{/* ... */}</FaceLandmarker>
 ```
 
 It will instanciate a FaceLandmarker object with the following defaults:
 
 ```tsx
 {
-  basePath: "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@x.y.z/wasm", // x.y.z will value the @mediapipe/tasks-vision version, eg: 0.10.2 
+  basePath: "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@x.y.z/wasm", // x.y.z will value the @mediapipe/tasks-vision version, eg: 0.10.2
   options: {
     baseOptions: {
       modelAssetPath: "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
@@ -2666,12 +2664,19 @@ useGLTF.preload(url)
 > You can accomplish this by adding two `<link>` tags to your `<head>` tag, as below. The version in those URLs must exactly match what [useGLTF](src/core/useGLTF.tsx#L18) uses for this to work. If you're using create-react-app, `public/index.html` file contains the `<head>` tag.
 >
 > ```html
-> <link rel="prefetch" crossorigin="anonymous" href="https://www.gstatic.com/draco/versioned/decoders/1.5.5/draco_wasm_wrapper.js">
-> <link rel="prefetch" crossorigin="anonymous" href="https://www.gstatic.com/draco/versioned/decoders/1.5.5/draco_decoder.wasm">
+> <link
+>   rel="prefetch"
+>   crossorigin="anonymous"
+>   href="https://www.gstatic.com/draco/versioned/decoders/1.5.5/draco_wasm_wrapper.js"
+> />
+> <link
+>   rel="prefetch"
+>   crossorigin="anonymous"
+>   href="https://www.gstatic.com/draco/versioned/decoders/1.5.5/draco_decoder.wasm"
+> />
 > ```
 >
 > It is recommended that you check your browser's network tab to confirm that the correct URLs are being used, and that the files do get loaded from the prefetch cache on subsequent requests.
- 
 
 #### useFBX
 
@@ -3380,14 +3385,17 @@ Invert masks individually by providing a 2nd boolean argument to the `useMask` h
 const stencil = useMask(1, true)
 ```
 
-#### Portal
+#### MeshPortalMaterial
 
 <p>
   <a href="https://codesandbox.io/s/ik11ln"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/ik11ln/screenshot.png" alt="Demo"/></a>
 </p>
 
 ```tsx
-export type PortalProps = JSX.IntrinsicElements['portalMaterialImpl'] & {
+export type PortalProps = JSX.IntrinsicElements['shaderMaterial'] & {
+  /** Mix the portals own scene with the world scene, 0 = world scene render,
+   *  0.5 = both scenes render, 1 = portal scene renders, defaults to 0 */
+  blend?: number
   /** Edge fade blur, 0 = no blur (default) */
   blur?: number
   /** SDF resolution, the smaller the faster is the start-up time (default: 512) */
@@ -3398,6 +3406,8 @@ export type PortalProps = JSX.IntrinsicElements['portalMaterialImpl'] & {
   eventPriority?: number
   /** Optional render priority, defaults to 0 */
   renderPriority?: number
+  /** Optionally diable events inside the portal, defaults to false */
+  events?: boolean
 }
 ```
 
@@ -3418,6 +3428,12 @@ You can optionally fade or blur the edges of the portal by providing a `blur` pr
 
 ```jsx
 <MeshPortalMaterial transparent blur={0.5}>
+```
+
+It is also possible to _enter_ the portal. If blend is 0 your scene will render as usual, if blend is higher it will start to blend the root scene and the portal scene, if blend is 1 it will only render the portal scene. If you put a ref on the material you can transition entering the portal, for instance lerping blend if the camera is close, or on click.
+
+```jsx
+<MeshPortalMaterial blend={1}>
 ```
 
 # Staging

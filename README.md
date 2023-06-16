@@ -719,7 +719,7 @@ useFrame((_, delta) => {
 <FaceControls makeDefault manualUpdate />
 ```
 
-Or, if you want your own custom damping, use `computeTarget` method and update the camera with:
+Or, if you want your own custom damping, use `computeTarget` method and update the camera yourself with:
 
 ```jsx
 const [current] = useState(() => new THREE.Object3D())

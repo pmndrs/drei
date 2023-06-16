@@ -707,7 +707,7 @@ const onVideoFrame = useCallback((event) => {
 
 ##### FaceControls[manualUpdate]
 
-By default, `update` is called each rAF `useFrame` frame, with damping. You can disable this by `manualUpdate` and call `update` yourself.
+By default, `update` is called each rAF `useFrame` frame, with damping. You can disable this by `manualUpdate` and update the camera yourself.
 
 For example:
 

@@ -4087,7 +4087,7 @@ Treat the output of the shader like an alpha map where `1` is opaque and `0` is 
 
 ```glsl
 gl_FragColor = vec4(vec3(1.), 1.); // Opaque
-gl_FragColor = vec4(vec3(0.), 1.); // Transparnet
+gl_FragColor = vec4(vec3(0.), 1.); // Transparent
 ```
 
 #### Environment

@@ -4,7 +4,7 @@ import { useFrame } from '@react-three/fiber'
 
 import { useCubeCamera, CubeCameraOptions } from './useCubeCamera'
 
-type Props = JSX.IntrinsicElements['group'] & {
+type Props = Omit<JSX.IntrinsicElements['group'], 'children'> & {
   /** The contents of CubeCamera will be hidden when filming the cube */
   children: (tex: Texture) => React.ReactNode
   /** Number of frames to render, Infinity */

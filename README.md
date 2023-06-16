@@ -719,7 +719,7 @@ useFrame((_, delta) => {
 <FaceControls makeDefault manualUpdate />
 ```
 
-Or, if you want your own custom damping, use `computeTarget` method and update the camera yourself with:
+Or, if you want your own custom damping, use `computeTarget` method and update the camera pos/rot yourself with:
 
 ```jsx
 const [current] = useState(() => new THREE.Object3D())
@@ -742,7 +742,6 @@ useFrame((_, delta) => {
     // B. Or maybe with no damping at all?
     //
 
-    // controls.update(delta, target)
     // camera.position.copy(target.position)
     // camera.rotation.copy(target.rotation)
   }

@@ -679,7 +679,7 @@ type FaceControlsApi = THREE.EventDispatcher & {
 
 Two `THREE.Event`s are dispatched on FaceControls ref object:
 
-- `{ type: "stream", stream: MediaStream }` -- when webcam's `.getUserMedia()` stream begins
+- `{ type: "stream", stream: MediaStream }` -- when webcam's [`.getUserMedia()`](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia) promise is resolved
 - `{ type: "videoFrame", texture: THREE.VideoTexture, time: number }` -- each time a new video frame is sent to the compositor (thanks to rVFC)
 
 > **Note** <br>rVFC
@@ -707,13 +707,21 @@ const onVideoFrame = useCallback((event) => {
 
 ##### FaceControls[manualUpdate]
 
-By default, `update` is called each rAF `useFrame` frame, with damping. You can disable this by `manualUpdate` and update the camera yourself.
-
-For example:
+By default, `update` method is called each rAF `useFrame`. You can disable this by `manualUpdate` and call it yourself:
 
 ```jsx
 const controls = useThree((state) => state.controls)
 
+useFrame((_, delta) => {
+  controls.update(delta) // 60 or 120 FPS with default damping
+})
+
+<FaceControls makeDefault manualUpdate />
+```
+
+Or, if you want your own custom damping, use `computeTarget` method and update the camera with:
+
+```jsx
 const [current] = useState(() => new THREE.Object3D())
 
 useFrame((_, delta) => {
@@ -739,8 +747,6 @@ useFrame((_, delta) => {
     // camera.rotation.copy(target.rotation)
   }
 })
-
-<FaceControls makeDefault manualUpdate />
 ```
 
 # Gizmos

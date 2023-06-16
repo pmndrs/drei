@@ -675,7 +675,73 @@ type FaceControlsApi = THREE.EventDispatcher & {
 }
 ```
 
-> **Note** <br>`FaceControls` uses [`requestVideoFrameCallback`](https://caniuse.com/mdn-api_htmlvideoelement_requestvideoframecallback), you may need [a polyfill](https://github.com/ThaUnknown/rvfc-polyfill) (for Firefox).
+##### events
+
+Two `THREE.Event`s are dispatched on FaceControls ref object:
+
+- `{ type: "stream", stream: MediaStream }` -- when webcam's `.getUserMedia()` stream begins
+- `{ type: "videoFrame", texture: THREE.VideoTexture, time: number }` -- each time a new video frame is sent to the compositor (thanks to rVFC)
+
+> **Note** <br>rVFC
+>
+> Internally, `FaceControls` uses [`requestVideoFrameCallback`](https://caniuse.com/mdn-api_htmlvideoelement_requestvideoframecallback), you may need [a polyfill](https://github.com/ThaUnknown/rvfc-polyfill) (for Firefox).
+
+##### manualDetect
+
+By default, `detect` is called on each `"videoFrame"`. You can disable this by `manualDetect` and call `detect` yourself.
+
+For example:
+
+```jsx
+const controls = useThree((state) => state.controls)
+
+const onVideoFrame = useCallback((event) => {
+  controls.detect(event.texture.source.data, event.time)
+}, [controls])
+
+<FaceControls makeDefault
+  manualDetect
+  onVideoFrame={onVideoFrame}
+/>
+```
+
+##### manualUpdate
+
+By default, `update` is called each rAF `useFrame` frame, with damping. You can disable this by `manualUpdate` and call `update` yourself.
+
+For example:
+
+```jsx
+const controls = useThree((state) => state.controls)
+
+const [current] = useState(() => new THREE.Object3D())
+
+useFrame((_, delta) => {
+  const target = controls?.computeTarget()
+
+  if (target) {
+    //
+    // A. Define your own damping
+    //
+
+    const eps = 1e-9
+    easing.damp3(current.position, target.position, .25, delta, undefined, undefined, eps)
+    easing.dampE(current.rotation, target.rotation, .25, delta, undefined, undefined, eps)
+    camera.position.copy(current.position)
+    camera.rotation.copy(current.rotation)
+
+    //
+    // B. Or maybe with no damping at all?
+    //
+
+    // controls.update(delta, target)
+    // camera.position.copy(target.position)
+    // camera.rotation.copy(target.rotation)
+  }
+})
+
+<FaceControls makeDefault manualUpdate />
+```
 
 # Gizmos
 

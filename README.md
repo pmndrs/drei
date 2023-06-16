@@ -609,7 +609,7 @@ The camera follows your face.
   <a href="https://codesandbox.io/s/zhjbhy"><img width="20%" src="https://github-production-user-asset-6210df.s3.amazonaws.com/76580/244052845-5cc535d7-3c97-46e3-a267-52e707c2d9b2.png" alt="demo"/></a>
 </p>
 
-Pre-requisite: wrap into a `FaceLandmarker` provider
+Pre-requisite: wrap into a [`FaceLandmarker`](#facelandmarker) provider
 
 ```tsx
 <FaceLandmarker>...</FaceLandmarker>
@@ -2543,6 +2543,48 @@ const buffer = useSurfaceSampler(
 ![](https://img.shields.io/badge/-suspense-brightgreen)
 
 A @mediapipe/tasks-vision [`FaceLandmarker`](https://developers.google.com/mediapipe/api/solutions/js/tasks-vision.facelandmarker) provider, as well as a `useFaceLandmarker` hook.
+
+```tsx
+<FaceLandmarker>
+  {/* ... */}
+</FaceLandmarker>
+```
+
+It will instanciate a FaceLandmarker object with the following defaults:
+
+```tsx
+{
+  basePath: "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@x.y.z/wasm", // x.y.z will value the @mediapipe/tasks-vision version, eg: 0.10.2 
+  options: {
+    baseOptions: {
+      modelAssetPath: "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
+      delegate: "GPU",
+    },
+    runningMode: "VIDEO",
+    outputFaceBlendshapes: true,
+    outputFacialTransformationMatrixes: true,
+  }
+}
+```
+
+You can override defaults, like for example self-host tasks-vision's `wasm/` and `face_landmarker.task` model in you `public/` directory:
+
+```sh
+$ ln -s ../node_modules/@mediapipe/tasks-vision/wasm/ public/tasks-vision-wasm
+$ curl https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task -o public/face_landmarker.task
+```
+
+```tsx
+import { FaceLandmarkerDefaults } from '@react-three/drei'
+
+const visionBasePath = new URL("/tasks-vision-wasm", import.meta.url).toString()
+const modelAssetPath = new URL("/face_landmarker.task", import.meta.url).toString()
+
+const faceLandmarkerOptions = { ...FaceLandmarkerDefaults.options };
+faceLandmarkerOptions.baseOptions.modelAssetPath = modelAssetPath;
+
+<FaceLandmarker basePath={visionBasePath} options={faceLandmarkerOptions}>
+```
 
 # Loading
 

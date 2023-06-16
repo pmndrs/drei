@@ -1,5 +1,18 @@
-import * as THREE from 'three'
-import type { PerspectiveCamera, OrthographicCamera } from 'three'
+import {
+  Box3,
+  EventDispatcher,
+  MathUtils,
+  Matrix4,
+  OrthographicCamera,
+  PerspectiveCamera,
+  Quaternion,
+  Raycaster,
+  Sphere,
+  Spherical,
+  Vector2,
+  Vector3,
+  Vector4,
+} from 'three'
 
 import * as React from 'react'
 import { forwardRef, useMemo, useEffect } from 'react'
@@ -25,8 +38,26 @@ export type CameraControlsProps = Omit<
 >
 
 export const CameraControls = forwardRef<CameraControlsImpl, CameraControlsProps>((props, ref) => {
+  // useMemo is used here instead of useEffect, otherwise the useMemo below runs first and throws
   useMemo(() => {
-    CameraControlsImpl.install({ THREE })
+    // to allow for tree shaking, we only import the subset of THREE that is used by camera-controls
+    // see https://github.com/yomotsu/camera-controls#important
+    const subsetOfTHREE = {
+      Box3,
+      MathUtils: {
+        clamp: MathUtils.clamp,
+      },
+      Matrix4,
+      Quaternion,
+      Raycaster,
+      Sphere,
+      Spherical,
+      Vector2,
+      Vector3,
+      Vector4,
+    }
+
+    CameraControlsImpl.install({ THREE: subsetOfTHREE })
     extend({ CameraControlsImpl })
   }, [])
 
@@ -55,7 +86,7 @@ export const CameraControls = forwardRef<CameraControlsImpl, CameraControlsProps
     return () => void controls.disconnect()
   }, [explDomElement, controls])
 
-  React.useEffect(() => {
+  useEffect(() => {
     const callback = (e) => {
       invalidate()
       if (regress) performance.regress()
@@ -73,24 +104,24 @@ export const CameraControls = forwardRef<CameraControlsImpl, CameraControlsProps
     controls.addEventListener('update', callback)
     controls.addEventListener('controlstart', onStartCb)
     controls.addEventListener('controlend', onEndCb)
-    controls.addEventListener('control', callback);
-    controls.addEventListener('transitionstart', callback);
-    controls.addEventListener('wake', callback);
+    controls.addEventListener('control', callback)
+    controls.addEventListener('transitionstart', callback)
+    controls.addEventListener('wake', callback)
 
     return () => {
       controls.removeEventListener('update', callback)
       controls.removeEventListener('controlstart', onStartCb)
       controls.removeEventListener('controlend', onEndCb)
-      controls.removeEventListener('control', callback);
-      controls.removeEventListener('transitionstart', callback);
-      controls.removeEventListener('wake', callback);
+      controls.removeEventListener('control', callback)
+      controls.removeEventListener('transitionstart', callback)
+      controls.removeEventListener('wake', callback)
     }
   }, [controls, onStart, onEnd, invalidate, setEvents, regress, onChange])
 
   useEffect(() => {
     if (makeDefault) {
       const old = get().controls
-      set({ controls: controls as unknown as THREE.EventDispatcher })
+      set({ controls: controls as unknown as EventDispatcher })
       return () => set({ controls: old })
     }
   }, [makeDefault, controls])

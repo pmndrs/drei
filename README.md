@@ -675,7 +675,7 @@ type FaceControlsApi = THREE.EventDispatcher & {
 }
 ```
 
-##### events
+##### FaceControls events
 
 Two `THREE.Event`s are dispatched on FaceControls ref object:
 
@@ -686,7 +686,7 @@ Two `THREE.Event`s are dispatched on FaceControls ref object:
 >
 > Internally, `FaceControls` uses [`requestVideoFrameCallback`](https://caniuse.com/mdn-api_htmlvideoelement_requestvideoframecallback), you may need [a polyfill](https://github.com/ThaUnknown/rvfc-polyfill) (for Firefox).
 
-##### manualDetect
+##### FaceControls[manualDetect]
 
 By default, `detect` is called on each `"videoFrame"`. You can disable this by `manualDetect` and call `detect` yourself.
 
@@ -705,7 +705,7 @@ const onVideoFrame = useCallback((event) => {
 />
 ```
 
-##### manualUpdate
+##### FaceControls[manualUpdate]
 
 By default, `update` is called each rAF `useFrame` frame, with damping. You can disable this by `manualUpdate` and call `update` yourself.
 

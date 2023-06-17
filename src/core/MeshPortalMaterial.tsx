@@ -1,4 +1,6 @@
-// Author: N8, https://twitter.com/N8Programs
+// Authors:
+//   N8, https://twitter.com/N8Programs
+//   drcmda, https://twitter.com/0xca0a'
 // https://github.com/N8python/maskBlur
 
 import * as THREE from 'three'
@@ -194,14 +196,20 @@ export const MeshPortalMaterial = React.forwardRef(
           compute={compute}
         >
           {children}
-          <CopyMatrix events={events} rootScene={scene} priority={priority} material={ref} worldUnits={worldUnits} />
+          <ManagePortalScene
+            events={events}
+            rootScene={scene}
+            priority={priority}
+            material={ref}
+            worldUnits={worldUnits}
+          />
         </RenderTexture>
       </portalMaterialImpl>
     )
   }
 )
 
-function CopyMatrix({
+function ManagePortalScene({
   events = undefined,
   rootScene,
   material,
@@ -228,7 +236,7 @@ function CopyMatrix({
   }, [events])
 
   const [quad, blend] = React.useMemo(() => {
-    // This fullscree-quad is used to blend the two textures
+    // This fullscreen-quad is used to blend the two textures
     const blend = { value: 0 }
     const quad = new FullScreenQuad(
       new THREE.ShaderMaterial({
@@ -263,11 +271,16 @@ function CopyMatrix({
   useFrame((state) => {
     let parent = (material?.current as any)?.__r3f.parent
     if (parent) {
+      // Move portal contents along with the parent if worldUnits is true
       if (!worldUnits) scene.matrixWorld.copy(parent.matrixWorld)
       else scene.matrixWorld.identity()
 
+      // This bit is only necessary if the portal is blended, now it has a render-priority
+      // and will take over the render loop
       if (priority) {
-        if (material.current?.blend > 0 && material.current?.blend < 1 && parent) {
+        if (material.current?.blend > 0 && material.current?.blend < 1) {
+          // If blend is ongoing (> 0 and < 1) then we need to render both the root scene
+          // and the portal scene, both will then be mixed in the quad from above
           blend.value = material.current.blend
           state.gl.setRenderTarget(buffer1)
           state.gl.render(scene, state.camera)
@@ -276,6 +289,7 @@ function CopyMatrix({
           state.gl.setRenderTarget(null)
           quad.render(state.gl)
         } else if (material.current?.blend === 1) {
+          // However if blend is 1 we only need to render the portal scene
           state.gl.render(scene, state.camera)
         }
       }

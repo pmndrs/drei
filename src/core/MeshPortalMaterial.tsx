@@ -1,6 +1,6 @@
 // Authors:
 //   N8, https://twitter.com/N8Programs
-//   drcmda, https://twitter.com/0xca0a'
+//   drcmda, https://twitter.com/0xca0a
 // https://github.com/N8python/maskBlur
 
 import * as THREE from 'three'

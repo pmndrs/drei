@@ -103,7 +103,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
 
   React.useLayoutEffect(() => {
     modifySpritePosition()
-  }, [spriteTexture])
+  }, [spriteTexture, flipX])
 
   React.useEffect(() => {
     if (autoPlay === false) {

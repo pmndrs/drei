@@ -733,8 +733,8 @@ useFrame((_, delta) => {
     //
 
     const eps = 1e-9
-    easing.damp3(current.position, target.position, .25, delta, undefined, undefined, eps)
-    easing.dampE(current.rotation, target.rotation, .25, delta, undefined, undefined, eps)
+    easing.damp3(current.position, target.position, 0.25, delta, undefined, undefined, eps)
+    easing.dampE(current.rotation, target.rotation, 0.25, delta, undefined, undefined, eps)
     camera.position.copy(current.position)
     camera.rotation.copy(current.rotation)
 
@@ -1349,6 +1349,26 @@ A declarative THREE.Texture which attaches to "map" by default. You can use this
       stops={[0, 1]} // As many stops as you want
       colors={['aquamarine', 'hotpink']} // Colors need to match the number of stops
       size={1024} // Size is optional, default = 1024
+    />
+  </meshBasicMaterial>
+</mesh>
+```
+
+Radial gradient.
+
+```jsx
+import { GradientTexture, GradientType } from './GradientTexture'
+;<mesh>
+  <planeGeometry />
+  <meshBasicMaterial>
+    <GradientTexture
+      stops={[0, 0.5, 1]} // As many stops as you want
+      colors={['aquamarine', 'hotpink', 'yellow']} // Colors need to match the number of stops
+      size={1024} // Size (height) is optional, default = 1024
+      width={1024} // Width of the canvas producing the texture, default = 16
+      type={GradientType.Radial} // The type of the gradient, default = GradientType.Linear
+      innerCircleRadius={0} // Optional, the radius of the inner circle of the gradient, default = 0
+      outerCircleRadius={'auto'} // Optional, the radius of the outer circle of the gradient, default = auto
     />
   </meshBasicMaterial>
 </mesh>

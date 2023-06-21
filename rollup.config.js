@@ -6,7 +6,7 @@ import glslify from 'rollup-plugin-glslify'
 import multiInput from 'rollup-plugin-multi-input'
 import { terser } from 'rollup-plugin-terser'
 import replace from '@rollup/plugin-replace'
-import mediapipeTasksVisionPkg from '@mediapipe/tasks-vision/package.json'
+import { version as mediapipeTasksVisionVersion } from '@mediapipe/tasks-vision/package.json'
 
 const root = process.platform === 'win32' ? path.resolve('/') : '/'
 const external = (id) => !id.startsWith('.') && !id.startsWith(root)
@@ -45,7 +45,7 @@ const getBabelOptions = ({ useESModules }) => ({
 
 export const replacements = {
   preventAssignment: true,
-  'process.env.ROLLUP_REPLACE_MEDIAPIPE_TASKS_VISION_VERSION': JSON.stringify(mediapipeTasksVisionPkg.version),
+  'process.env.ROLLUP_REPLACE_MEDIAPIPE_TASKS_VISION_VERSION': JSON.stringify(mediapipeTasksVisionVersion),
 }
 
 export default [

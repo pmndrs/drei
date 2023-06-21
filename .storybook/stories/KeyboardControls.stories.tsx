@@ -21,22 +21,34 @@ enum Controls {
   left = 'left',
   right = 'right',
   back = 'back',
+  color = 'color',
 }
 
 export const KeyboardControlsSt = () => {
   const map = useMemo<KeyboardControlsEntry[]>(
     () => [
-      { name: Controls.forward, keys: ['ArrowUp', 'w', 'W'] },
-      { name: Controls.back, keys: ['ArrowDown', 's', 'S'] },
-      { name: Controls.left, keys: ['ArrowLeft', 'a', 'A'] },
-      { name: Controls.right, keys: ['ArrowRight', 'd', 'D'] },
+      { name: Controls.forward, keys: ['ArrowUp', 'KeyW'] },
+      { name: Controls.back, keys: ['ArrowDown', 'KeyS'] },
+      { name: Controls.left, keys: ['ArrowLeft', 'KeyA'] },
+      { name: Controls.right, keys: ['ArrowRight', 'KeyD'] },
+      { name: Controls.color, keys: ['Space'] },
     ],
     []
   )
 
+  const [color, setColor] = React.useState('green')
+
   return (
-    <KeyboardControls map={map}>
-      <Player />
+    <KeyboardControls
+      map={map}
+      onChange={(name, pressed, _state) => {
+        // Test onChange by toggling the color.
+        if (name === Controls.color && pressed) {
+          setColor((color) => (color === 'green' ? 'red' : 'green'))
+        }
+      }}
+    >
+      <Player color={color} />
     </KeyboardControls>
   )
 }
@@ -44,7 +56,9 @@ export const KeyboardControlsSt = () => {
 const _velocity = new Vector3()
 const speed = 10
 
-const Player = () => {
+type PlayerProps = { color: string }
+
+const Player = ({ color }: PlayerProps) => {
   const ref = useRef<Mesh>(null)
   const [, get] = useKeyboardControls<Controls>()
 
@@ -66,7 +80,7 @@ const Player = () => {
 
   return (
     <Cone ref={ref} args={[1, 3, 4]} rotation={[-90 * MathUtils.DEG2RAD, 0, 0]}>
-      <meshLambertMaterial color="green" />
+      <meshLambertMaterial color={color} />
     </Cone>
   )
 }

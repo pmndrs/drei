@@ -24,6 +24,8 @@ type MeshTransmissionMaterialType = Omit<
   chromaticAberration?: number
   /* Anisotropy, default: 0.1 */
   anisotropy?: number
+  /* AnisotropicBlur, default: 0.1 */
+  anisotropicBlur?: number
   /* Distortion, default: 0 */
   distortion?: number
   /* Distortion scale, default: 0.5 */
@@ -46,6 +48,8 @@ type MeshTransmissionMaterialProps = Omit<MeshTransmissionMaterialType, 'args'> 
   transmissionSampler?: boolean
   /** Render the backside of the material (more cost, better results), default: false */
   backside?: boolean
+  /** Backside thickness (when backside is true), default: 0 */
+  backsideThickness?: number
   /** Resolution of the local buffer, default: undefined (fullscreen) */
   resolution?: number
   /** Resolution of the local buffer for backfaces, default: undefined (fullscreen) */
@@ -53,7 +57,7 @@ type MeshTransmissionMaterialProps = Omit<MeshTransmissionMaterialType, 'args'> 
   /** Refraction samples, default: 6 */
   samples?: number
   /** Buffer scene background (can be a texture, a cubetexture or a color), default: null */
-  background?: THREE.Texture
+  background?: THREE.Texture | THREE.Color
 }
 
 interface Uniform<T> {
@@ -79,7 +83,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
     thicknessMap: Uniform<THREE.Texture | null>
     attenuationDistance: Uniform<number>
     attenuationColor: Uniform<THREE.Color>
-    anisotropy: Uniform<number>
+    anisotropicBlur: Uniform<number>
     time: Uniform<number>
     distortion: Uniform<number>
     distortionScale: Uniform<number>
@@ -103,7 +107,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       thicknessMap: { value: null },
       attenuationDistance: { value: Infinity },
       attenuationColor: { value: new THREE.Color('white') },
-      anisotropy: { value: 0.1 },
+      anisotropicBlur: { value: 0.1 },
       time: { value: 0 },
       distortion: { value: 0.0 },
       distortionScale: { value: 0.5 },
@@ -127,7 +131,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       shader.fragmentShader =
         /*glsl*/ `
       uniform float chromaticAberration;         
-      uniform float anisotropy;      
+      uniform float anisotropicBlur;      
       uniform float time;
       uniform float distortion;
       uniform float distortionScale;
@@ -323,14 +327,14 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
         vec3 transmission = vec3(0.0);
         float transmissionR, transmissionB, transmissionG;
         float randomCoords = rand();
-        float thickness_smear = thickness * max(pow(roughness, 0.33), anisotropy);
+        float thickness_smear = thickness * max(pow(roughnessFactor, 0.33), anisotropicBlur);
         vec3 distortionNormal = vec3(0.0);
         vec3 temporalOffset = vec3(time, -time, -time) * temporalDistortion;
         if (distortion > 0.0) {
           distortionNormal = distortion * vec3(snoiseFractal(vec3((pos * distortionScale + temporalOffset))), snoiseFractal(vec3(pos.zxy * distortionScale - temporalOffset)), snoiseFractal(vec3(pos.yxz * distortionScale + temporalOffset)));
         }
         for (float i = 0.0; i < ${samples}.0; i ++) {
-          vec3 sampleNorm = normalize(n + roughness * roughness * 2.0 * normalize(vec3(rand() - 0.5, rand() - 0.5, rand() - 0.5)) * pow(rand(), 0.33) + distortionNormal);
+          vec3 sampleNorm = normalize(n + roughnessFactor * roughnessFactor * 2.0 * normalize(vec3(rand() - 0.5, rand() - 0.5, rand() - 0.5)) * pow(rand(), 0.33) + distortionNormal);
           transmissionR = getIBLVolumeRefraction(
             sampleNorm, v, material.roughness, material.diffuseColor, material.specularColor, material.specularF90,
             pos, modelMatrix, viewMatrix, projectionMatrix, material.ior, material.thickness  + thickness_smear * (i + randomCoords) / float(${samples}),
@@ -370,12 +374,16 @@ export const MeshTransmissionMaterial = React.forwardRef(
       buffer,
       transmissionSampler = false,
       backside = false,
+      side = THREE.FrontSide,
       transmission = 1,
       thickness = 0,
+      backsideThickness = 0,
       samples = 10,
       resolution,
       backsideResolution,
       background,
+      anisotropy,
+      anisotropicBlur,
       ...props
     }: MeshTransmissionMaterialProps,
     fref
@@ -392,7 +400,8 @@ export const MeshTransmissionMaterial = React.forwardRef(
     let parent
     useFrame((state) => {
       ref.current.time = state.clock.getElapsedTime()
-      if (!buffer && !transmissionSampler) {
+      // Render only if the buffer matches the built-in and no transmission sampler is set
+      if (ref.current.buffer === fboMain.texture && !transmissionSampler) {
         parent = (ref.current as any).__r3f.parent as THREE.Object3D
         if (parent) {
           // Save defaults
@@ -413,7 +422,7 @@ export const MeshTransmissionMaterial = React.forwardRef(
             // And now prepare the material for the main render using the backside buffer
             parent.material = ref.current
             parent.material.buffer = fboBack.texture
-            parent.material.thickness = 1.0 / (thickness + 0.01)
+            parent.material.thickness = backsideThickness
             parent.material.side = THREE.BackSide
           }
 
@@ -421,9 +430,8 @@ export const MeshTransmissionMaterial = React.forwardRef(
           state.gl.setRenderTarget(fboMain)
           state.gl.render(state.scene, state.camera)
 
-          parent.material = ref.current
           parent.material.thickness = thickness
-          parent.material.side = THREE.FrontSide
+          parent.material.side = side
           parent.material.buffer = fboMain.texture
 
           // Set old state back
@@ -450,8 +458,10 @@ export const MeshTransmissionMaterial = React.forwardRef(
         // In order for this to not incur extra cost "transmission" must be set to 0 and treated as a reserved prop.
         // This is because THREE.WebGLRenderer will check for transmission > 0 and execute extra renders.
         // The exception is when transmissionSampler is set, in which case we are using three's built in sampler.
+        anisotropicBlur={anisotropicBlur ?? anisotropy}
         transmission={transmissionSampler ? transmission : 0}
         thickness={thickness}
+        side={side}
       />
     )
   }

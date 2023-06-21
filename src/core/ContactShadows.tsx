@@ -37,8 +37,9 @@ export const ContactShadows = React.forwardRef(
       renderOrder,
       ...props
     }: Omit<JSX.IntrinsicElements['group'], 'scale'> & ContactShadowsProps,
-    ref
+    fref
   ) => {
+    const ref = React.useRef<THREE.Group>(null!)
     const scene = useThree((state) => state.scene)
     const gl = useThree((state) => state.gl)
     const shadowCamera = React.useRef<THREE.OrthographicCamera>(null!)
@@ -115,35 +116,38 @@ export const ContactShadows = React.forwardRef(
     }
 
     let count = 0
+    let initialBackground: THREE.Color | THREE.Texture | null
+    let initialOverrideMaterial: THREE.Material | null
     useFrame(() => {
       if (shadowCamera.current && (frames === Infinity || count < frames)) {
-        const initialBackground = scene.background
+        count++
+
+        initialBackground = scene.background
+        initialOverrideMaterial = scene.overrideMaterial
+
+        ref.current.visible = false
         scene.background = null
-        const initialOverrideMaterial = scene.overrideMaterial
         scene.overrideMaterial = depthMaterial
+
         gl.setRenderTarget(renderTarget)
         gl.render(scene, shadowCamera.current)
-        scene.overrideMaterial = initialOverrideMaterial
 
         blurShadows(blur)
         if (smooth) blurShadows(blur * 0.4)
-
         gl.setRenderTarget(null)
+
+        ref.current.visible = true
+        scene.overrideMaterial = initialOverrideMaterial
         scene.background = initialBackground
-        count++
       }
     })
 
+    React.useImperativeHandle(fref, () => ref.current, [])
+
     return (
-      <group rotation-x={Math.PI / 2} {...props} ref={ref as any}>
+      <group rotation-x={Math.PI / 2} {...props} ref={ref}>
         <mesh renderOrder={renderOrder} geometry={planeGeometry} scale={[1, -1, 1]} rotation={[-Math.PI / 2, 0, 0]}>
-          <meshBasicMaterial
-            map={renderTarget.texture}
-            map-encoding={gl.outputEncoding}
-            transparent
-            opacity={opacity}
-            depthWrite={depthWrite}
-          />
+          <meshBasicMaterial transparent map={renderTarget.texture} opacity={opacity} depthWrite={depthWrite} />
         </mesh>
         <orthographicCamera ref={shadowCamera} args={[-width / 2, width / 2, height / 2, -height / 2, 0, far]} />
       </group>

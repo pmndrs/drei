@@ -187,6 +187,7 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
           polygonOffset
           renderOrder={1}
           polygonOffsetFactor={-10}
+          fog={false}
         />
         <mesh raycast={() => null} position={[0, cylinderLength + coneLength / 2.0, 0]} renderOrder={500}>
           <coneGeometry args={[coneWidth, coneLength, 24, 1]} />
@@ -197,6 +198,7 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
             opacity={opacity}
             polygonOffset
             polygonOffsetFactor={-10}
+            fog={false}
           />
         </mesh>
       </group>

@@ -38,6 +38,7 @@ export * from './TransformControls'
 export * from './PointerLockControls'
 export * from './FirstPersonControls'
 export * from './CameraControls'
+export * from './FaceControls'
 
 // Gizmos
 export * from './GizmoHelper'
@@ -53,6 +54,7 @@ export * from './useKTX2'
 export * from './useProgress'
 export * from './useTexture'
 export * from './useVideoTexture'
+export * from './useFont'
 
 // Misc
 export * from './Stats'
@@ -69,6 +71,10 @@ export * from './useIntersect'
 export * from './useBoxProjectedEnv'
 export * from './BBAnchor'
 export * from './useTrailTexture'
+export * from './useCubeCamera'
+export * from './Example'
+export * from './SpriteAnimator'
+export * from './FaceLandmarker'
 
 // Modifiers
 export * from './CurveModifier'
@@ -79,17 +85,20 @@ export * from './MeshWobbleMaterial'
 export * from './MeshReflectorMaterial'
 export * from './MeshRefractionMaterial'
 export * from './MeshTransmissionMaterial'
+export * from './MeshDiscardMaterial'
 export * from './PointMaterial'
 export * from './shaderMaterial'
 export * from './softShadows'
 
 // Shapes
 export * from './shapes'
+export * from './Facemesh'
 export * from './RoundedBox'
 export * from './ScreenQuad'
 
 // Staging/Prototyping
 export * from './Center'
+export * from './Resize'
 export * from './Bounds'
 export * from './CameraShake'
 export * from './Float'
@@ -107,8 +116,10 @@ export * from './Sky'
 export * from './Stars'
 export * from './Cloud'
 export * from './Sparkles'
+export * from './useEnvironment'
 export * from './useMatcapTexture'
 export * from './useNormalTexture'
+export * from './Wireframe'
 
 // Performance
 export * from './Points'
@@ -126,3 +137,4 @@ export * from './PerformanceMonitor'
 export * from './RenderTexture'
 export * from './Mask'
 export * from './Hud'
+export * from './MeshPortalMaterial'

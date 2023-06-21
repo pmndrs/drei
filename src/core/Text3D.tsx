@@ -3,7 +3,8 @@ import * as THREE from 'three'
 import { extend, MeshProps, Node } from '@react-three/fiber'
 import { useMemo } from 'react'
 import { suspend } from 'suspend-react'
-import { TextGeometry, TextGeometryParameters, FontLoader } from 'three-stdlib'
+import { mergeVertices, TextGeometry, TextGeometryParameters, FontLoader } from 'three-stdlib'
+import { useFont, FontData } from './useFont'
 
 declare global {
   namespace JSX {
@@ -13,28 +14,10 @@ declare global {
   }
 }
 
-declare type Glyph = {
-  _cachedOutline: string[]
-  ha: number
-  o: string
-}
-
-declare type FontData = {
-  boundingBox: {
-    yMax: number
-    yMin: number
-  }
-  familyName: string
-  glyphs: {
-    [k: string]: Glyph
-  }
-  resolution: number
-  underlineThickness: number
-}
-
 type Text3DProps = {
   font: FontData | string
   bevelSegments?: number
+  smooth?: number
 } & Omit<TextGeometryParameters, 'font'> &
   MeshProps
 
@@ -66,18 +49,16 @@ export const Text3D = React.forwardRef<
       bevelOffset = 0,
       bevelSegments = 4,
       curveSegments = 8,
+      smooth,
       children,
       ...props
     },
-    ref
+    fref
   ) => {
     React.useMemo(() => extend({ RenamedTextGeometry: TextGeometry }), [])
 
-    const font = suspend(async () => {
-      let data = typeof _font === 'string' ? await (await fetch(_font as string)).json() : _font
-      let loader = new FontLoader()
-      return loader.parse(data as FontData)
-    }, [_font])
+    const ref = React.useRef<THREE.Mesh>(null!)
+    const font = useFont(_font)
 
     const opts = useMemo(() => {
       return {
@@ -113,6 +94,15 @@ export const Text3D = React.forwardRef<
      */
     const [label, ...rest] = useMemo(() => getTextFromChildren(children), [children])
     const args = React.useMemo(() => [label, opts], [label, opts])
+
+    React.useLayoutEffect(() => {
+      if (smooth) {
+        ref.current.geometry = mergeVertices(ref.current.geometry, smooth)
+        ref.current.geometry.computeVertexNormals()
+      }
+    }, [args, smooth])
+
+    React.useImperativeHandle(fref, () => ref.current, [])
 
     return (
       <mesh {...props} ref={ref}>

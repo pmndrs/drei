@@ -1,8 +1,8 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { useLayoutEffect, useMemo, useRef } from 'react'
-import { extend, ReactThreeFiber, useThree } from '@react-three/fiber'
-import { MeshBVH, SAH } from 'three-mesh-bvh'
+import { extend, ReactThreeFiber, useThree, useFrame } from '@react-three/fiber'
+import { MeshBVHUniformStruct, MeshBVH, SAH } from 'three-mesh-bvh'
 import { MeshRefractionMaterial as MeshRefractionMaterial_ } from '../materials/MeshRefractionMaterial'
 
 declare global {
@@ -68,11 +68,18 @@ export function MeshRefractionMaterial({
     // Get the geometry of this materials parent
     const geometry = (material.current as any)?.__r3f?.parent?.geometry
     // Update the BVH
-    if (geometry)
-      (material.current as any).bvh.updateFrom(
-        new MeshBVH(geometry.toNonIndexed(), { lazyGeneration: false, strategy: SAH })
+    if (geometry) {
+      ;(material.current as any).bvh = new MeshBVHUniformStruct()
+      ;(material.current as any).bvh.updateFrom(
+        new MeshBVH(geometry.clone().toNonIndexed(), { lazyGeneration: false, strategy: SAH })
       )
+    }
   }, [])
+
+  useFrame(({ camera }) => {
+    ;(material.current as any)!.viewMatrixInverse = camera.matrixWorld
+    ;(material.current as any)!.projectionMatrixInverse = camera.projectionMatrixInverse
+  })
 
   return (
     <meshRefractionMaterial

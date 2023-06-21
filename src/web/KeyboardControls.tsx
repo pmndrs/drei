@@ -74,7 +74,7 @@ export function KeyboardControls({ map, children, onChange, domElement }: Keyboa
         // Set zustand state
         set({ [name]: value })
         // Inform callback
-        if (onChange) onChange(name, value, api[2]())
+        if (onChange) onChange(name, value, api[1]())
       },
     }))
     const keyMap = config.reduce((out, { keys, fn, up = true }) => {

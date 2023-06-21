@@ -146,7 +146,6 @@ export const MeshReflectorMaterial = React.forwardRef<MeshReflectorMaterialImpl,
       const parameters = {
         minFilter: LinearFilter,
         magFilter: LinearFilter,
-        encoding: gl.outputEncoding,
         type: HalfFloatType,
       }
       const fbo1 = new WebGLRenderTarget(resolution, resolution, parameters)

@@ -31,10 +31,10 @@ function TextureWrapper({ ...args }) {
 
 export const ImageStory = ({ url, ...args }) => {
   return (
-    <React.Suspense fallback={null}>
+    <>
       <TextureWrapper {...args} />
       <Image url={url?.[0] || '/images/living-room-2.jpg'} scale={[6, 4, 1]} position={[0, 0, 0]} {...args} />
-    </React.Suspense>
+    </>
   )
 }
 

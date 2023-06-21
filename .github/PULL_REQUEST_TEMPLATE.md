@@ -25,8 +25,8 @@ To check an item, place an "x" in the box like so: "- [x] Documentation"
 Remove items that are irrelevant to your changes.
 -->
 
-- [ ] Documentation updated
-- [ ] Storybook entry added
+- [ ] Documentation updated ([example](https://github.com/pmndrs/drei/blob/master/README.md#example))
+- [ ] Storybook entry added ([example](https://github.com/pmndrs/drei/blob/master/.storybook/stories/Example.stories.tsx))
 - [ ] Ready to be merged
 
 <!-- if you untick ready to be merged & you haven't submitted as a draft, we will change it to draft. -->

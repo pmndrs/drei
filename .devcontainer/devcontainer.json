@@ -1,0 +1,28 @@
+{
+  "image": "mcr.microsoft.com/vscode/devcontainers/javascript-node:18",
+  "hostRequirements": {
+    "memory": "8gb"
+  },
+  "waitFor": "onCreateCommand",
+  "updateContentCommand": "yarn install",
+  "postCreateCommand": "",
+  "postAttachCommand": "yarn storybook -- --port 6006",
+  "customizations": {
+    "codespaces": {
+      "openFiles": ["CONTRIBUTING.md"]
+    },
+    "vscode": {
+      "settings": {
+        "editor.formatOnSave": true
+      },
+      "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+    }
+  },
+  "portsAttributes": {
+    "6006": {
+      "label": "Storybook server",
+      "onAutoForward": "openPreview"
+    }
+  },
+  "forwardPorts": [6006]
+}

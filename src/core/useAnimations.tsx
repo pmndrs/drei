@@ -18,6 +18,7 @@ export function useAnimations<T extends AnimationClip>(
   const [actualRef] = React.useState(() => (root ? (root instanceof Object3D ? { current: root } : root) : ref))
   // eslint-disable-next-line prettier/prettier
   const [mixer] = React.useState(() => new AnimationMixer(undefined as unknown as Object3D))
+  React.useLayoutEffect(() => void ((mixer as any)._root = actualRef.current), [mixer, root])
   const lazyActions = React.useRef({})
   const [api] = React.useState<Api<T>>(() => {
     const actions = {} as { [key in T['name']]: AnimationAction | null }
@@ -32,6 +33,7 @@ export function useAnimations<T extends AnimationClip>(
             )
           }
         },
+        configurable: true,
       })
     )
     return { ref: actualRef, clips, actions, names: clips.map((c) => c.name), mixer }

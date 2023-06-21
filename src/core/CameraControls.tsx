@@ -1,5 +1,18 @@
-import * as THREE from 'three'
-import type { PerspectiveCamera, OrthographicCamera } from 'three'
+import {
+  Box3,
+  EventDispatcher,
+  MathUtils,
+  Matrix4,
+  OrthographicCamera,
+  PerspectiveCamera,
+  Quaternion,
+  Raycaster,
+  Sphere,
+  Spherical,
+  Vector2,
+  Vector3,
+  Vector4,
+} from 'three'
 
 import * as React from 'react'
 import { forwardRef, useMemo, useEffect } from 'react'
@@ -13,10 +26,11 @@ export type CameraControlsProps = Omit<
     {
       camera?: PerspectiveCamera | OrthographicCamera
       domElement?: HTMLElement
+      makeDefault?: boolean
       onStart?: (e?: { type: 'controlstart' }) => void
       onEnd?: (e?: { type: 'controlend' }) => void
-      onChange?: (e?: { type: 'control' }) => void
-      events?: boolean
+      onChange?: (e?: { type: 'update' }) => void
+      events?: boolean // Wether to enable events during controls interaction
       regress?: boolean
     }
   >,
@@ -24,39 +38,55 @@ export type CameraControlsProps = Omit<
 >
 
 export const CameraControls = forwardRef<CameraControlsImpl, CameraControlsProps>((props, ref) => {
+  // useMemo is used here instead of useEffect, otherwise the useMemo below runs first and throws
   useMemo(() => {
-    CameraControlsImpl.install({ THREE })
+    // to allow for tree shaking, we only import the subset of THREE that is used by camera-controls
+    // see https://github.com/yomotsu/camera-controls#important
+    const subsetOfTHREE = {
+      Box3,
+      MathUtils: {
+        clamp: MathUtils.clamp,
+      },
+      Matrix4,
+      Quaternion,
+      Raycaster,
+      Sphere,
+      Spherical,
+      Vector2,
+      Vector3,
+      Vector4,
+    }
+
+    CameraControlsImpl.install({ THREE: subsetOfTHREE })
     extend({ CameraControlsImpl })
   }, [])
 
-  const { camera, domElement, onStart, onEnd, onChange, events: enableEvents, regress, ...restProps } = props
+  const { camera, domElement, makeDefault, onStart, onEnd, onChange, regress, ...restProps } = props
 
   const defaultCamera = useThree((state) => state.camera)
   const gl = useThree((state) => state.gl)
   const invalidate = useThree((state) => state.invalidate)
   const events = useThree((state) => state.events) as EventManager<HTMLElement>
   const setEvents = useThree((state) => state.setEvents)
+  const set = useThree((state) => state.set)
+  const get = useThree((state) => state.get)
   const performance = useThree((state) => state.performance)
 
   const explCamera = camera || defaultCamera
   const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
 
-  const cameraControls = useMemo(() => new CameraControlsImpl(explCamera), [explCamera])
+  const controls = useMemo(() => new CameraControlsImpl(explCamera), [explCamera])
 
   useFrame((state, delta) => {
-    if (cameraControls.enabled) cameraControls.update(delta)
+    if (controls.enabled) controls.update(delta)
   }, -1)
 
   useEffect(() => {
-    cameraControls.connect(explDomElement)
-    return () => void cameraControls.disconnect()
-  }, [explDomElement, cameraControls])
+    controls.connect(explDomElement)
+    return () => void controls.disconnect()
+  }, [explDomElement, controls])
 
-  React.useEffect(() => {
-    if (enableEvents) {
-      setEvents({ enabled: true })
-    }
-
+  useEffect(() => {
     const callback = (e) => {
       invalidate()
       if (regress) performance.regress()
@@ -65,26 +95,38 @@ export const CameraControls = forwardRef<CameraControlsImpl, CameraControlsProps
 
     const onStartCb: CameraControlsProps['onStart'] = (e) => {
       if (onStart) onStart(e)
-      if (!enableEvents) setEvents({ enabled: false })
     }
 
     const onEndCb: CameraControlsProps['onEnd'] = (e) => {
       if (onEnd) onEnd(e)
-      if (!enableEvents) setEvents({ enabled: true })
     }
 
-    cameraControls.addEventListener('control', callback)
-    cameraControls.addEventListener('controlstart', onStartCb)
-    cameraControls.addEventListener('controlend', onEndCb)
+    controls.addEventListener('update', callback)
+    controls.addEventListener('controlstart', onStartCb)
+    controls.addEventListener('controlend', onEndCb)
+    controls.addEventListener('control', callback)
+    controls.addEventListener('transitionstart', callback)
+    controls.addEventListener('wake', callback)
 
     return () => {
-      cameraControls.removeEventListener('control', callback)
-      cameraControls.removeEventListener('controlstart', onStartCb)
-      cameraControls.removeEventListener('controlend', onEndCb)
+      controls.removeEventListener('update', callback)
+      controls.removeEventListener('controlstart', onStartCb)
+      controls.removeEventListener('controlend', onEndCb)
+      controls.removeEventListener('control', callback)
+      controls.removeEventListener('transitionstart', callback)
+      controls.removeEventListener('wake', callback)
     }
-  }, [cameraControls, enableEvents, onStart, onEnd, invalidate, setEvents, regress, onChange])
+  }, [controls, onStart, onEnd, invalidate, setEvents, regress, onChange])
 
-  return <primitive ref={ref} object={cameraControls} {...restProps} />
+  useEffect(() => {
+    if (makeDefault) {
+      const old = get().controls
+      set({ controls: controls as unknown as EventDispatcher })
+      return () => set({ controls: old })
+    }
+  }, [makeDefault, controls])
+
+  return <primitive ref={ref} object={controls} {...restProps} />
 })
 
 export type CameraControls = CameraControlsImpl

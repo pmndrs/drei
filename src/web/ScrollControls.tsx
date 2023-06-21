@@ -221,7 +221,7 @@ const ScrollCanvas = React.forwardRef(({ children }, ref) => {
 })
 
 const ScrollHtml = React.forwardRef(
-  ({ children, style, ...props }: { children?: React.ReactNode; style?: React.StyleHTMLAttributes<any> }, ref) => {
+  ({ children, style, ...props }: { children?: React.ReactNode; style?: React.CSSProperties }, ref) => {
     const state = useScroll()
     const group = React.useRef<HTMLDivElement>(null!)
     const { width, height } = useThree((state) => state.size)

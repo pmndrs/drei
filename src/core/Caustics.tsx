@@ -336,31 +336,47 @@ export const Caustics = React.forwardRef(
     const bounds = new THREE.Box3()
     const focusPos = new THREE.Vector3()
 
-    useFrame((state, delta) => {
+    const boundsVertices: THREE.Vector3[] = []
+    const worldVerts: THREE.Vector3[] = []
+    const projectedVerts: THREE.Vector3[] = []
+    const lightDirs: THREE.Vector3[] = []
+
+    const cameraPos = new THREE.Vector3()
+
+    for (let i = 0; i < 8; i++) {
+      boundsVertices.push(new THREE.Vector3())
+      worldVerts.push(new THREE.Vector3())
+      projectedVerts.push(new THREE.Vector3())
+      lightDirs.push(new THREE.Vector3())
+    }
+
+    useFrame(() => {
       if (frames === Infinity || count++ < frames) {
         if (Array.isArray(lightSource)) lightDir.fromArray(lightSource).normalize()
         else lightDir.copy(ref.current.worldToLocal(lightSource.current.getWorldPosition(v)).normalize())
 
         lightDirInv.copy(lightDir).multiplyScalar(-1)
 
-        let boundsVertices: THREE.Vector3[] = []
         scene.current.parent?.matrixWorld.identity()
         bounds.setFromObject(scene.current, true)
-        boundsVertices.push(new THREE.Vector3(bounds.min.x, bounds.min.y, bounds.min.z))
-        boundsVertices.push(new THREE.Vector3(bounds.min.x, bounds.min.y, bounds.max.z))
-        boundsVertices.push(new THREE.Vector3(bounds.min.x, bounds.max.y, bounds.min.z))
-        boundsVertices.push(new THREE.Vector3(bounds.min.x, bounds.max.y, bounds.max.z))
-        boundsVertices.push(new THREE.Vector3(bounds.max.x, bounds.min.y, bounds.min.z))
-        boundsVertices.push(new THREE.Vector3(bounds.max.x, bounds.min.y, bounds.max.z))
-        boundsVertices.push(new THREE.Vector3(bounds.max.x, bounds.max.y, bounds.min.z))
-        boundsVertices.push(new THREE.Vector3(bounds.max.x, bounds.max.y, bounds.max.z))
+        boundsVertices[0].set(bounds.min.x, bounds.min.y, bounds.min.z)
+        boundsVertices[1].set(bounds.min.x, bounds.min.y, bounds.max.z)
+        boundsVertices[2].set(bounds.min.x, bounds.max.y, bounds.min.z)
+        boundsVertices[3].set(bounds.min.x, bounds.max.y, bounds.max.z)
+        boundsVertices[4].set(bounds.max.x, bounds.min.y, bounds.min.z)
+        boundsVertices[5].set(bounds.max.x, bounds.min.y, bounds.max.z)
+        boundsVertices[6].set(bounds.max.x, bounds.max.y, bounds.min.z)
+        boundsVertices[7].set(bounds.max.x, bounds.max.y, bounds.max.z)
 
-        const worldVerts = boundsVertices.map((v) => v.clone())
+        for (let i = 0; i < 8; i++) {
+          worldVerts[i].copy(boundsVertices[i])
+        }
 
         bounds.getCenter(focusPos)
-        boundsVertices = boundsVertices.map((v) => v.clone().sub(focusPos))
+        boundsVertices.map((v) => v.sub(focusPos))
         const lightPlane = lpP.set(lightDirInv, 0)
-        const projectedVerts = boundsVertices.map((v) => lightPlane.projectPoint(v, new THREE.Vector3()))
+
+        boundsVertices.map((v, i) => lightPlane.projectPoint(v, projectedVerts[i]))
 
         const centralVert = projectedVerts
           .reduce((a, b) => a.add(b), v.set(0, 0, 0))
@@ -368,8 +384,8 @@ export const Caustics = React.forwardRef(
         const radius = projectedVerts.map((v) => v.distanceTo(centralVert)).reduce((a, b) => Math.max(a, b))
         const dirLength = boundsVertices.map((x) => x.dot(lightDir)).reduce((a, b) => Math.max(a, b))
         // Shadows
-        camera.current.position.copy(lightDir.clone().multiplyScalar(dirLength).add(focusPos))
-        camera.current.lookAt(scene.current.localToWorld(focusPos.clone()))
+        camera.current.position.copy(cameraPos.copy(lightDir).multiplyScalar(dirLength).add(focusPos))
+        camera.current.lookAt(scene.current.localToWorld(focusPos))
         const dirMatrix = lpM.lookAt(camera.current.position, focusPos, v.set(0, 1, 0))
         camera.current.left = -radius
         camera.current.right = radius
@@ -383,7 +399,9 @@ export const Caustics = React.forwardRef(
         camera.current.updateMatrixWorld()
 
         // Now find size of ground plane
-        const groundProjectedCoords = worldVerts.map((v) => v.add(lightDir.clone().multiplyScalar(-v.y / lightDir.y)))
+        const groundProjectedCoords = worldVerts.map((v, i) =>
+          v.add(lightDirs[i].copy(lightDir).multiplyScalar(-v.y / lightDir.y))
+        )
         const centerPos = groundProjectedCoords
           .reduce((a, b) => a.add(b), v.set(0, 0, 0))
           .divideScalar(groundProjectedCoords.length)
@@ -411,7 +429,6 @@ export const Caustics = React.forwardRef(
         causticsMaterial.lightPlaneNormal = dirLightNearPlane.normal
         causticsMaterial.lightPlaneConstant = dirLightNearPlane.constant
 
-        //console.log(causticsMaterial.lightDir)
         causticsMaterial.near = camera.current.near
         causticsMaterial.far = camera.current.far
         causticsMaterial.resolution = resolution

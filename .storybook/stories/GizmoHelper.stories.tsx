@@ -136,11 +136,7 @@ const GizmoHelperStoryImpl = ({
   )
 }
 
-export const GizmoHelperStory = (props) => (
-  <React.Suspense fallback={null}>
-    <GizmoHelperStoryImpl {...props} />
-  </React.Suspense>
-)
+export const GizmoHelperStory = (props) => <GizmoHelperStoryImpl {...props} />
 
 GizmoHelperStory.args = args
 GizmoHelperStory.argTypes = argTypes

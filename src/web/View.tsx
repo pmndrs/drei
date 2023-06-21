@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { createPortal, useFrame, useThree, Size } from '@react-three/fiber'
+import { createPortal, useFrame, useThree } from '@react-three/fiber'
 
 const isOrthographicCamera = (def: any): def is THREE.OrthographicCamera =>
   def && (def as THREE.OrthographicCamera).isOrthographicCamera
@@ -51,12 +51,12 @@ function computeContainerPosition(
   canvasSize: LegacyCanvasSize | CanvasSize,
   trackRect: DOMRect
 ): {
-  position: CanvasSize & { bottom: number, right: number }
+  position: CanvasSize & { bottom: number; right: number }
   isOffscreen: boolean
 } {
   const { right, top, left: trackLeft, bottom: trackBottom, width, height } = trackRect
   const isOffscreen = trackRect.bottom < 0 || top > canvasSize.height || right < 0 || trackRect.left > canvasSize.width
-  
+
   if (isNonLegacyCanvasSize(canvasSize)) {
     const canvasBottom = canvasSize.top + canvasSize.height
     const bottom = canvasBottom - trackBottom
@@ -115,11 +115,12 @@ function Container({ canvasSize, scene, index, children, frames, rect, track }: 
         state.gl.getClearColor(col)
         state.gl.setClearColor(col, state.gl.getClearAlpha())
         state.gl.clear(true, true)
-        return
+      } else {
+        // When children are present render the portalled scene, otherwise the default scene
+        state.gl.render(children ? virtualScene : scene, camera)
       }
-
-      // When children are present render the portalled scene, otherwise the default scene
-      state.gl.render(children ? virtualScene : scene, camera)
+      // Restore the default state
+      state.gl.setScissorTest(true)
     }
   }, index)
 
@@ -150,7 +151,7 @@ export const View = ({ track, index = 1, frames = Infinity, children }: ViewProp
 
   const compute = React.useCallback(
     (event, state) => {
-      if (track.current && event.target === track.current) {
+      if (rect.current && track.current && event.target === track.current) {
         const { width, height, left, top } = rect.current
         const x = event.clientX - left
         const y = event.clientY - top
@@ -158,7 +159,7 @@ export const View = ({ track, index = 1, frames = Infinity, children }: ViewProp
         state.raycaster.setFromCamera(state.pointer, state.camera)
       }
     },
-    [rect]
+    [rect, track]
   )
 
   const [ready, toggle] = React.useReducer(() => true, false)
@@ -167,7 +168,7 @@ export const View = ({ track, index = 1, frames = Infinity, children }: ViewProp
     rect.current = track.current?.getBoundingClientRect()
     // And now we can proceed
     toggle()
-  }, [])
+  }, [track])
 
   return (
     <>
@@ -175,9 +176,11 @@ export const View = ({ track, index = 1, frames = Infinity, children }: ViewProp
         createPortal(
           <Container canvasSize={size} frames={frames} scene={scene} track={track} rect={rect} index={index}>
             {children}
+            {/* Without an element that receives pointer events state.pointer will always be 0/0 */}
+            <group onPointerOver={() => null} />
           </Container>,
           virtualScene,
-          { events: { compute, priority: index }, size: { width: rect.current.width, height: rect.current.height } }
+          { events: { compute, priority: index }, size: { width: rect.current?.width, height: rect.current?.height } }
         )}
     </>
   )

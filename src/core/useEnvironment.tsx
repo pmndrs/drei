@@ -9,9 +9,9 @@ import {
   TextureEncoding,
 } from 'three'
 import { RGBELoader, EXRLoader } from 'three-stdlib'
+import { suspend } from 'suspend-react'
 import { presetsObj, PresetsType } from '../helpers/environment-assets'
 
-const CUBEMAP_ROOT = 'https://raw.githack.com/pmndrs/drei-assets/456060a26bbeb8fdf79326f224b6d99b8bcce736/hdri/'
 const isArray = (arr: any): arr is string[] => Array.isArray(arr)
 
 export type EnvironmentLoaderProps = {
@@ -35,8 +35,7 @@ export function useEnvironment({
 
   if (preset) {
     if (!(preset in presetsObj)) throw new Error('Preset must be one of: ' + Object.keys(presetsObj).join(', '))
-    files = presetsObj[preset]
-    path = CUBEMAP_ROOT
+    files = suspend(() => import(`../assets/hdri/${presetsObj[preset]}.exr.js`), [preset]).default
   }
 
   // Everything else

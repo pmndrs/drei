@@ -4143,7 +4143,7 @@ Sets up a global cubemap, which affects the default `scene.environment`, and opt
 />
 ```
 
-The simplest way to use it is to provide a preset. 👉 Note: `preset` property is not meant to be used in production environments and may fail as it relies on CDNs.
+> **Warning** `preset` will use a base64 packed DWAB-EXR compressed HDRI assets similar to https://github.com/pmndrs/assets. Each preset is highly optimized and only weighs around ~150 KB in size, but incurs a small runtime unpack cost.
 
 ```jsx
 <Environment preset="city" />

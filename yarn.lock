@@ -2199,6 +2199,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@pmndrs/assets@^1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@pmndrs/assets/-/assets-1.6.0.tgz#d5df66d107d64db98331b45a93483f5ecb980561"
+  integrity sha512-fOFrjV6FNYIr29iEhF3JrdTAAo3v98TatmYF3efC1MNiMeN0Sx2BGvGnwgu55s6E9gBxR6yXcm/mkk7gRDT9Bg==
+
 "@react-spring/animated@~9.6.1":
   version "9.6.1"
   resolved "https://registry.yarnpkg.com/@react-spring/animated/-/animated-9.6.1.tgz#ccc626d847cbe346f5f8815d0928183c647eb425"

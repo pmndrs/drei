@@ -35,7 +35,7 @@ export function useEnvironment({
 
   if (preset) {
     if (!(preset in presetsObj)) throw new Error('Preset must be one of: ' + Object.keys(presetsObj).join(', '))
-    files = suspend(() => import(`../assets/hdri/${presetsObj[preset]}.exr.js`), [preset]).default
+    files = suspend(() => import(`../assets/hdri/${presetsObj[preset]}.exr.js`), ['r3f_drei_env', preset]).default
   }
 
   // Everything else

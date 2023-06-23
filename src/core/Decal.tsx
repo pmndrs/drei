@@ -68,7 +68,11 @@ export const Decal = React.forwardRef<THREE.Mesh, DecalProps>(function Decal(
       }
 
       target.geometry = new DecalGeometry(parent, state.position, state.rotation, state.scale)
-      if (helper.current) applyProps(helper.current as any, state)
+      if (helper.current) {
+        applyProps(helper.current as any, state)
+        // Prevent the helpers from blocking rays
+        helper.current.traverse((child) => (child.raycast = () => null))
+      }
       // Reset parents matix-world
       parent.matrixWorld = matrixWorld
 

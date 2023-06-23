@@ -272,8 +272,11 @@ function ManagePortalScene({
     let parent = (material?.current as any)?.__r3f.parent
     if (parent) {
       // Move portal contents along with the parent if worldUnits is true
-      if (!worldUnits) scene.matrixWorld.copy(parent.matrixWorld)
-      else scene.matrixWorld.identity()
+      if (!worldUnits) {
+        // If the portal renders exclusively the original scene needs to be updated
+        if (priority && material.current?.blend === 1) parent.updateWorldMatrix(true, false)
+        scene.matrixWorld.copy(parent.matrixWorld)
+      } else scene.matrixWorld.identity()
 
       // This bit is only necessary if the portal is blended, now it has a render-priority
       // and will take over the render loop

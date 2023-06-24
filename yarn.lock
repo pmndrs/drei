@@ -2294,14 +2294,6 @@
   dependencies:
     "@rollup/pluginutils" "^5.0.1"
 
-"@rollup/plugin-multi-entry@^6.0.0":
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/@rollup/plugin-multi-entry/-/plugin-multi-entry-6.0.0.tgz#51dab86a6953787ca2d3ac5416aa71dd46b59f0a"
-  integrity sha512-msBgVncGQwh/ahxeP/rc8MXVZNBOjoVCsBuDk6uqyFzDv/SZN7jksfAsu6DJ2w4r5PaBX3/OXOjVPeCxya2waA==
-  dependencies:
-    "@rollup/plugin-virtual" "^3.0.0"
-    matched "^5.0.1"
-
 "@rollup/plugin-node-resolve@^15.1.0":
   version "15.1.0"
   resolved "https://registry.yarnpkg.com/@rollup/plugin-node-resolve/-/plugin-node-resolve-15.1.0.tgz#9ffcd8e8c457080dba89bb9fcb583a6778dc757e"
@@ -2322,11 +2314,6 @@
     serialize-javascript "^6.0.1"
     smob "^1.0.0"
     terser "^5.17.4"
-
-"@rollup/plugin-virtual@^3.0.0":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@rollup/plugin-virtual/-/plugin-virtual-3.0.1.tgz#cea7e489481cc0ca91516c047f8c53c1cfb1adf6"
-  integrity sha512-fK8O0IL5+q+GrsMLuACVNk2x21g3yaw+sG2qn16SnUd3IlBsQyvWxLMGHmCmXRMecPjGRSZ/1LmZB4rjQm68og==
 
 "@rollup/pluginutils@^4.2.0":
   version "4.2.1"
@@ -5861,6 +5848,17 @@ fast-diff@^1.1.2:
   resolved "https://registry.yarnpkg.com/fast-diff/-/fast-diff-1.2.0.tgz#73ee11982d86caaf7959828d519cfe927fac5f03"
   integrity sha512-xJuoT5+L99XlZ8twedaRf6Ax2TgQVxvgZOYoPKqZufmJib0tL2tegPBOZb1pVNgIhlqDlA0eO0c3wBvQcmzx4w==
 
+fast-glob@3.2.12:
+  version "3.2.12"
+  resolved "https://registry.yarnpkg.com/fast-glob/-/fast-glob-3.2.12.tgz#7f39ec99c2e6ab030337142da9e0c18f37afae80"
+  integrity sha512-DVj4CQIYYow0BlaelwK1pHl5n5cRSJfM60UA0zK891sVInoPri2Ekj7+e1CT3/3qxXenpI+nBBmQAcJPJgaj4w==
+  dependencies:
+    "@nodelib/fs.stat" "^2.0.2"
+    "@nodelib/fs.walk" "^1.2.3"
+    glob-parent "^5.1.2"
+    merge2 "^1.3.0"
+    micromatch "^4.0.4"
+
 fast-glob@^3.2.9:
   version "3.2.11"
   resolved "https://registry.yarnpkg.com/fast-glob/-/fast-glob-3.2.11.tgz#a1172ad95ceb8a16e20caa5c5e56480e5129c1d9"
@@ -6331,7 +6329,7 @@ glob@^7.0.0, glob@^7.2.0:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-glob@^7.0.5, glob@^7.1.1, glob@^7.1.2, glob@^7.1.3, glob@^7.1.4, glob@^7.1.6:
+glob@^7.0.5, glob@^7.1.1, glob@^7.1.2, glob@^7.1.3, glob@^7.1.4:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/glob/-/glob-7.2.0.tgz#d15535af7732e02e948f4c41628bd910293f6023"
   integrity sha512-lmLf6gtyrPq8tTjSmrO94wBeQbFR3HbLHbuyD69wuyQkImp2hWqMGB47OX65FBkPffO641IP9jWa1z4ivqG26Q==
@@ -8116,14 +8114,6 @@ markdown-to-jsx@^7.1.8:
   resolved "https://registry.yarnpkg.com/markdown-to-jsx/-/markdown-to-jsx-7.2.0.tgz#e7b46b65955f6a04d48a753acd55874a14bdda4b"
   integrity sha512-3l4/Bigjm4bEqjCR6Xr+d4DtM1X6vvtGsMGSjJYyep8RjjIvcWtrXBS8Wbfe1/P+atKNMccpsraESIaWVplzVg==
 
-matched@^5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/matched/-/matched-5.0.1.tgz#620606d9dac6b7f4e955354b82e02ef4e3a62dc3"
-  integrity sha512-E1fhSTPRyhAlNaNvGXAgZQlq1hL0bgYMTk/6bktVlIhzUnX/SZs7296ACdVeNJE8xFNGSuvd9IpI7vSnmcqLvw==
-  dependencies:
-    glob "^7.1.6"
-    picomatch "^2.2.1"
-
 mdast-util-definitions@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/mdast-util-definitions/-/mdast-util-definitions-4.0.0.tgz#c5c1a84db799173b4dcf7643cda999e440c24db2"
@@ -9685,6 +9675,13 @@ rollup-plugin-glslify@^1.3.0:
   dependencies:
     glslify "^7.1.1"
     rollup-pluginutils "^2.8.2"
+
+rollup-plugin-multi-input@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-multi-input/-/rollup-plugin-multi-input-1.4.1.tgz#624792c53297965203ef40e652013d34a7eda8e9"
+  integrity sha512-ybvotObZFFDEbqw6MDrYUa/TXmF+1qCVX3svpAddmIOLP3/to5zkSKP0MJV5bNBZfFFpblwChurz4tsPR/zJew==
+  dependencies:
+    fast-glob "3.2.12"
 
 rollup-pluginutils@^2.8.2:
   version "2.8.2"

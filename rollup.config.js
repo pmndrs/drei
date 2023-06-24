@@ -3,8 +3,8 @@ import babel from '@rollup/plugin-babel'
 import resolve from '@rollup/plugin-node-resolve'
 import json from '@rollup/plugin-json'
 import glslify from 'rollup-plugin-glslify'
-import multiInput from 'rollup-plugin-multi-input'
-import { terser } from 'rollup-plugin-terser'
+import multiInput from '@rollup/plugin-multi-entry'
+import terser from '@rollup/plugin-terser'
 
 const root = process.platform === 'win32' ? path.resolve('/') : '/'
 const external = (id) => !id.startsWith('.') && !id.startsWith(root)

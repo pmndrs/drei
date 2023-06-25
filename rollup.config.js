@@ -5,6 +5,8 @@ import json from '@rollup/plugin-json'
 import glslify from 'rollup-plugin-glslify'
 import multiInput from 'rollup-plugin-multi-input'
 import { terser } from 'rollup-plugin-terser'
+import replace from '@rollup/plugin-replace'
+import { version as mediapipeTasksVisionVersion } from '@mediapipe/tasks-vision/package.json'
 
 const root = process.platform === 'win32' ? path.resolve('/') : '/'
 const external = (id) => !id.startsWith('.') && !id.startsWith(root)
@@ -41,12 +43,18 @@ const getBabelOptions = ({ useESModules }) => ({
   ],
 })
 
+export const replacements = {
+  preventAssignment: true,
+  'process.env.ROLLUP_REPLACE_MEDIAPIPE_TASKS_VISION_VERSION': JSON.stringify(mediapipeTasksVisionVersion),
+}
+
 export default [
   {
     input: ['src/**/*.ts', 'src/**/*.tsx', '!src/index.ts'],
     output: { dir: `dist`, format: 'esm' },
     external,
     plugins: [
+      replace(replacements),
       multiInput(),
       json(),
       glslify(),
@@ -59,6 +67,7 @@ export default [
     output: { dir: `dist`, format: 'esm' },
     external,
     plugins: [
+      replace(replacements),
       json(),
       glslify(),
       babel(getBabelOptions({ useESModules: true }, '>1%, not dead, not ie 11, not op_mini all')),
@@ -71,6 +80,7 @@ export default [
     output: { dir: `dist`, format: 'cjs' },
     external,
     plugins: [
+      replace(replacements),
       multiInput({
         transformOutputPath: (output) => output.replace(/\.[^/.]+$/, '.cjs.js'),
       }),
@@ -85,6 +95,13 @@ export default [
     input: `./src/index.ts`,
     output: { file: `dist/index.cjs.js`, format: 'cjs' },
     external,
-    plugins: [json(), glslify(), babel(getBabelOptions({ useESModules: false })), resolve({ extensions }), terser()],
+    plugins: [
+      replace(replacements),
+      json(),
+      glslify(),
+      babel(getBabelOptions({ useESModules: false })),
+      resolve({ extensions }),
+      terser(),
+    ],
   },
 ]

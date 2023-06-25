@@ -24,7 +24,6 @@
     "Marco Perego (https://github.com/emmelleppi)",
     "Josh Ellis (https://github.com/joshuaellis)"
   ],
-  "type": "module",
   "main": "index.cjs.js",
   "module": "index.js",
   "types": "index.d.ts",
@@ -41,7 +40,7 @@
   },
   "scripts": {
     "prebuild": "rimraf dist && npm run typegen",
-    "build": "rollup -c && npm run copy",
+    "build": "rollup -c --bundleConfigAsCjs && npm run copy",
     "prepare": "npm run build && husky install",
     "eslint": "eslint --fix .",
     "eslint:ci": "eslint .",

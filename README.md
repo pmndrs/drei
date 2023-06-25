@@ -1618,19 +1618,21 @@ The decal box has to intersect the surface, otherwise it will not be visible. if
     position={[0, 0, 0]} // Position of the decal
     rotation={[0, 0, 0]} // Rotation of the decal (can be a vector or a degree in radians)
     scale={1} // Scale of the decal
+    polygonOffset
+    polygonOffsetFactor={-1} // The mesh should take precedence over the original
   >
     <meshBasicMaterial map={texture} />
   </Decal>
 </mesh>
 ```
 
-If you do not specify a material it will create a transparent meshStandardMaterial with a polygonOffsetFactor of -10 and all rest-props will be spread over it.
+If you do not specify a material it will create a transparent meshBasicMaterial with a polygonOffsetFactor of -10.
 
 ```jsx
 <mesh>
   <sphereGeometry />
   <meshBasicMaterial />
-  <Decal map={texture} roughness={0.5} />
+  <Decal map={texture} />
 </mesh>
 ```
 
@@ -1638,7 +1640,7 @@ If declarative composition is not possible, use the `mesh` prop to define the su
 
 ```js
 <Decal mesh={ref}>
-  <meshBasicMaterial map={texture} />
+  <meshBasicMaterial map={texture} polygonOffset polygonOffsetFactor={-1} />
 </Decal>
 ```
 

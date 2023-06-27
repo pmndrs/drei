@@ -265,15 +265,12 @@ const NORMALPROPS = {
   depth: true,
   minFilter: THREE.LinearFilter,
   magFilter: THREE.LinearFilter,
-  encoding: THREE.LinearEncoding,
   type: THREE.UnsignedByteType,
 }
 
 const CAUSTICPROPS = {
   minFilter: THREE.LinearMipmapLinearFilter,
   magFilter: THREE.LinearFilter,
-  encoding: THREE.LinearEncoding,
-  format: THREE.RGBAFormat,
   type: THREE.FloatType,
   generateMipmaps: true,
 }

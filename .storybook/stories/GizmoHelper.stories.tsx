@@ -40,7 +40,7 @@ const args = {
   faces,
   gizmo: gizmos[0],
   hideNegativeAxes: false,
-  hoverColor: 'lightgray',
+  hoverColor: '#999',
   labelColor: 'black',
   marginX: 80,
   marginY: 80,
@@ -113,7 +113,7 @@ const GizmoHelperStoryImpl = ({
 
   return (
     <>
-      <primitive object={scene} scale={[0.01, 0.01, 0.01]} />
+      <primitive object={scene} scale={0.01} />
       <GizmoHelper alignment={alignment} margin={[marginX, marginY]}>
         {gizmo === 'GizmoViewcube' ? (
           <GizmoViewcube

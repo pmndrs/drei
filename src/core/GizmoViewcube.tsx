@@ -81,7 +81,7 @@ const FaceMaterial = ({
     return new CanvasTexture(canvas)
   }, [index, faces, font, color, textColor, strokeColor])
   return (
-    <meshLambertMaterial
+    <meshBasicMaterial
       map={texture}
       map-anisotropy={gl.capabilities.getMaxAnisotropy() || 1}
       attach={`material-${index}`}
@@ -156,8 +156,6 @@ export const GizmoViewcube = (props: GenericProps) => {
       {corners.map((corner, index) => (
         <EdgeCube key={index} position={corner} dimensions={cornerDimensions} {...props} />
       ))}
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} intensity={0.5} />
     </group>
   )
 }

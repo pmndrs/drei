@@ -1,6 +1,10 @@
 import * as React from 'react'
-import create, { StoreApi, UseBoundStore } from 'zustand'
+import zustand, { StoreApi, UseBoundStore } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
+
+// TODO: upgrade to v4
+// https://github.com/pmndrs/drei/pull/1550
+const create = (zustand as any).default as typeof zustand
 
 // These are removed in Zustand v4
 type State = object // unknown

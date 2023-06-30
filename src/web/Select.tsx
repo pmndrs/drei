@@ -6,7 +6,7 @@ import zustand from 'zustand/shallow'
 
 // TODO: upgrade to v4
 // https://github.com/pmndrs/drei/pull/1550
-const shallow = (zustand as any).default as typeof zustand
+const shallow = ((zustand as any).default || zustand) as typeof zustand
 
 const context = React.createContext<THREE.Object3D[]>([])
 

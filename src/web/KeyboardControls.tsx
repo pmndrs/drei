@@ -4,7 +4,7 @@ import { subscribeWithSelector } from 'zustand/middleware'
 
 // TODO: upgrade to v4
 // https://github.com/pmndrs/drei/pull/1550
-const create = (zustand as any).default as typeof zustand
+const create = ((zustand as any).default || zustand) as typeof zustand
 
 // These are removed in Zustand v4
 type State = object // unknown

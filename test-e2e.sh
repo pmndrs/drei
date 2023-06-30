@@ -30,7 +30,6 @@ rm -rf e2e/viteapp
 (cd e2e/viteapp; npm i; npm i ../../dist/react-three-drei-0.0.0-semantic-release.tgz)
 
 # App.jsx
-rm e2e/viteapp/src/App.jsx
 cp e2e/App.jsx e2e/viteapp/src/App.jsx
 
 # npm run dev + jest
@@ -39,6 +38,33 @@ npx jest e2e/snapshot.test.js || kill_app
 kill_app
 
 rm -rf e2e/viteapp
+
+#
+# ███╗   ██╗███████╗██╗  ██╗████████╗
+# ████╗  ██║██╔════╝╚██╗██╔╝╚══██╔══╝
+# ██╔██╗ ██║█████╗   ╚███╔╝    ██║   
+# ██║╚██╗██║██╔══╝   ██╔██╗    ██║   
+# ██║ ╚████║███████╗██╔╝ ██╗   ██║   
+# ╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝   ╚═╝   
+#
+
+rm -rf e2e/nextapp
+
+# Vite
+(cd e2e; npx create-next-app@latest nextapp --js --eslint --no-tailwind --no-src-dir --app --import-alias "@/*")
+
+# drei
+(cd e2e/nextapp; npm i; npm i ../../dist/react-three-drei-0.0.0-semantic-release.tgz)
+
+# App.jsx
+cp e2e/App.jsx e2e/nextapp/app/page.js
+
+# npm run dev + jest
+(cd e2e/nextapp; npm run dev -- --port $PORT &)
+npx jest e2e/snapshot.test.js || kill_app
+kill_app
+
+rm -rf e2e/nextapp
 
 #
 #  ██████╗██████╗  █████╗ 
@@ -58,7 +84,6 @@ rm -rf e2e/craapp
 (cd e2e/craapp; npm i ../../dist/react-three-drei-0.0.0-semantic-release.tgz)
 
 # App.jsx
-rm e2e/craapp/src/App.js
 cp e2e/App.jsx e2e/craapp/src/App.js
 
 # npm run dev + jest

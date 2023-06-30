@@ -10,7 +10,7 @@ async function waitForEvent(page, eventName) {
   )
 }
 
-describe('Visual regression', () => {
+describe('snapshot', () => {
   let browser
   let page
   beforeAll(async () => {
@@ -18,7 +18,7 @@ describe('Visual regression', () => {
     page = await browser.newPage()
   })
 
-  it('should', async () => {
+  it('should match previous one', async () => {
     // ⏳ "r3f" event
     await page.goto('http://localhost:5188')
     await waitForEvent(page, 'puppeteer:r3f')

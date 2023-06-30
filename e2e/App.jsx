@@ -1,10 +1,12 @@
+'use client'
+
 import { Suspense, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { Box, Environment, CameraControls } from '@react-three/drei'
 
 function App() {
   return (
-    <Canvas camera={{ position: [1, 1, 1] }} style={{ width: 300, height: 150 }}>
+    <Canvas camera={{ position: [1, 1, 1] }} style={{ width: 300, height: 150, background: 'white' }}>
       <Suspense fallback={null}>
         <Scene />
       </Suspense>

@@ -2,7 +2,11 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { SelectionBox } from 'three-stdlib'
 import { useThree } from '@react-three/fiber'
-import shallow from 'zustand/shallow'
+import zustand from 'zustand/shallow'
+
+// TODO: upgrade to v4
+// https://github.com/pmndrs/drei/pull/1550
+const shallow = (zustand as any).default as typeof zustand
 
 const context = React.createContext<THREE.Object3D[]>([])
 

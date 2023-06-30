@@ -4,7 +4,6 @@ import resolve from '@rollup/plugin-node-resolve'
 import json from '@rollup/plugin-json'
 import glslify from 'rollup-plugin-glslify'
 import multiInput from 'rollup-plugin-multi-input'
-import terser from '@rollup/plugin-terser'
 
 const root = process.platform === 'win32' ? path.resolve('/') : '/'
 const external = (id) => !id.startsWith('.') && !id.startsWith(root)
@@ -77,13 +76,12 @@ export default [
       glslify(),
       babel(getBabelOptions({ useESModules: false })),
       resolve({ extensions }),
-      terser(),
     ],
   },
   {
     input: `./src/index.ts`,
     output: { file: `dist/index.cjs.js`, format: 'cjs' },
     external,
-    plugins: [json(), glslify(), babel(getBabelOptions({ useESModules: false })), resolve({ extensions }), terser()],
+    plugins: [json(), glslify(), babel(getBabelOptions({ useESModules: false })), resolve({ extensions })],
   },
 ]

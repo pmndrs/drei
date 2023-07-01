@@ -18,6 +18,9 @@ export default {
       </Setup>
     ),
   ],
+  parameters: {
+    chromatic: { disableSnapshot: false },
+  },
 }
 
 export const ExampleSt = ({ fontUrl, color, bevelSize, debug }) => {

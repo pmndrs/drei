@@ -1,5 +1,3 @@
-'use client'
-
 import { Suspense, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { Box, Environment, CameraControls } from '@react-three/drei'

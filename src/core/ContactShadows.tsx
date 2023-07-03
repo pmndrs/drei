@@ -11,6 +11,7 @@ export type ContactShadowsProps = {
   width?: number
   height?: number
   blur?: number
+  near?: number
   far?: number
   smooth?: boolean
   resolution?: number
@@ -29,6 +30,7 @@ export const ContactShadows = React.forwardRef(
       width = 1,
       height = 1,
       blur = 1,
+      near = 0,
       far = 10,
       resolution = 512,
       smooth = true,
@@ -149,7 +151,7 @@ export const ContactShadows = React.forwardRef(
         <mesh renderOrder={renderOrder} geometry={planeGeometry} scale={[1, -1, 1]} rotation={[-Math.PI / 2, 0, 0]}>
           <meshBasicMaterial transparent map={renderTarget.texture} opacity={opacity} depthWrite={depthWrite} />
         </mesh>
-        <orthographicCamera ref={shadowCamera} args={[-width / 2, width / 2, height / 2, -height / 2, 0, far]} />
+        <orthographicCamera ref={shadowCamera} args={[-width / 2, width / 2, height / 2, -height / 2, near, far]} />
       </group>
     )
   }

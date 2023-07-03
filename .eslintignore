@@ -2,3 +2,4 @@
 dist/
 node_modules/
 storybook-static/
+test/e2e/*app

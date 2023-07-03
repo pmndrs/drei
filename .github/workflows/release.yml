@@ -23,6 +23,7 @@ jobs:
           cache: 'yarn'
       - run: yarn install
       - run: yarn build-storybook
+      - run: yarn test
       # semantic-release skips not configured branches(see: release.config.js) or pull-requests
       - run: yarn release
         env:

@@ -46,7 +46,7 @@
     "eslint:ci": "eslint .",
     "prettier": "prettier --check .",
     "prettier-fix": "prettier --write .",
-    "test": "npm run eslint:ci && ./test-e2e.sh",
+    "test": "npm run eslint:ci && (cd test/e2e; ./e2e.sh)",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false --strict --jsx react",
     "typegen": "tsc --emitDeclarationOnly",
     "storybook": "NODE_OPTIONS=\"--openssl-legacy-provider\" storybook dev -p 6006",

@@ -3,7 +3,7 @@ set -ex
 
 PORT=5188
 
-(cd dist && npm pack)
+(cd ../../dist; npm pack)
 
 kill_app() {
   kill $(lsof -ti:$PORT)
@@ -20,23 +20,23 @@ kill_app || echo "ok, no previous running process on port $PORT"
 #   ╚═══╝  ╚═╝   ╚═╝   ╚══════╝
 #
 
-rm -rf e2e/viteapp
+rm -rf viteapp
 
 # Vite
-(cd e2e; npm create vite@latest viteapp -- --template react)
+npm create vite@latest viteapp -- --template react
 
 # drei
-(cd e2e/viteapp; npm i; npm i ../../dist/react-three-drei-0.0.0-semantic-release.tgz)
+(cd viteapp; npm i; npm i ../../../dist/react-three-drei-0.0.0-semantic-release.tgz)
 
 # App.jsx
-cp e2e/App.jsx e2e/viteapp/src/App.jsx
+cp App.jsx viteapp/src/App.jsx
 
 # npm run dev + jest
-(cd e2e/viteapp; npm run build; npm run preview -- --port $PORT &)
-npx jest e2e/snapshot.test.js || kill_app
+(cd viteapp; npm run build; npm run preview -- --port $PORT &)
+npx jest snapshot.test.js || kill_app
 kill_app
 
-rm -rf e2e/viteapp
+rm -rf viteapp
 
 #
 #  ██████╗██████╗  █████╗ 
@@ -47,23 +47,23 @@ rm -rf e2e/viteapp
 #  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝
 #
 
-rm -rf e2e/craapp
+rm -rf craapp
 
 # CRA
-(cd e2e; npx create-react-app craapp)
+npx create-react-app craapp
 
 # drei
-(cd e2e/craapp; npm i ../../dist/react-three-drei-0.0.0-semantic-release.tgz)
+(cd craapp; npm i ../../../dist/react-three-drei-0.0.0-semantic-release.tgz)
 
 # App.jsx
-cp e2e/App.jsx e2e/craapp/src/App.js
+cp App.jsx craapp/src/App.js
 
 # npm run dev + jest
-(cd e2e/craapp; npm run build; npx serve -s -p $PORT build &)
-npx jest e2e/snapshot.test.js || kill_app
+(cd craapp; npm run build; npx serve -s -p $PORT build &)
+npx jest snapshot.test.js || kill_app
 kill_app
 
-rm -rf e2e/craapp
+rm -rf craapp
 
 #
 # Teardown

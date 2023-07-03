@@ -1,6 +1,6 @@
 import { Suspense, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { Box, Environment, CameraControls } from '@react-three/drei'
+import { Box, Environment, CameraControls } from '@react-three/drei' // eslint-disable-line import/no-unresolved
 
 function App() {
   return (

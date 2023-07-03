@@ -3,7 +3,6 @@ set -ex
 
 PORT=5188
 
-yarn build
 (cd dist && npm pack)
 
 kill_app() {

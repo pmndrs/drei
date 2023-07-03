@@ -16,6 +16,5 @@ coverage/
 .idea
 yarn-error.log
 .size-snapshot.json
-e2e/viteapp
-e2e/craapp
+e2e/*app
 __diff_output__

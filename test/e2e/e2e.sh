@@ -22,7 +22,7 @@ kill_app || echo "ok, no previous running process on port $PORT"
 
 rm -rf viteapp
 
-# Vite
+# create app
 npm create vite@latest viteapp -- --template react
 
 # drei
@@ -31,7 +31,7 @@ npm create vite@latest viteapp -- --template react
 # App.jsx
 cp App.jsx viteapp/src/App.jsx
 
-# npm run dev + jest
+# build+start+jest
 (cd viteapp; npm run build; npm run preview -- --port $PORT &)
 npx jest snapshot.test.js || kill_app
 kill_app
@@ -49,7 +49,7 @@ rm -rf viteapp
 
 rm -rf craapp
 
-# CRA
+# create app
 npx create-react-app craapp
 
 # drei
@@ -58,7 +58,7 @@ npx create-react-app craapp
 # App.jsx
 cp App.jsx craapp/src/App.js
 
-# npm run dev + jest
+# build+start+jest
 (cd craapp; npm run build; npx serve -s -p $PORT build &)
 npx jest snapshot.test.js || kill_app
 kill_app

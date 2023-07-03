@@ -24,14 +24,14 @@ function ContactShadowScene({ colorized }: any) {
         <meshBasicMaterial color="#2A8AFF" />
       </Sphere>
       <ContactShadows
-        position={[0, 0.01, 0]}
+        position={[0, 0, 0]}
         scale={10}
         far={3}
         blur={3}
         rotation={[Math.PI / 2, 0, 0]}
         color={colorized ? '#2A8AFF' : 'black'}
       />
-      <Plane args={[10, 10]} position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <Plane args={[10, 10]} position={[0, -0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <meshBasicMaterial color="white" />
       </Plane>
     </>

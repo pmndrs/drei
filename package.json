@@ -51,6 +51,7 @@
     "typegen": "tsc --emitDeclarationOnly",
     "storybook": "NODE_OPTIONS=\"--openssl-legacy-provider\" storybook dev -p 6006",
     "build-storybook": "NODE_OPTIONS=\"--openssl-legacy-provider\" storybook build",
+    "chromatic": "chromatic --storybook-build-dir storybook-static/",
     "copy": "copyfiles package.json README.md LICENSE dist && json -I -f dist/package.json -e \"this.private=false; this.devDependencies=undefined; this.optionalDependencies=undefined; this.scripts=undefined; this.husky=undefined; this.prettier=undefined; this.jest=undefined; this['lint-staged']=undefined;\"",
     "release": "semantic-release"
   },

@@ -147,11 +147,11 @@ export const Grid = React.forwardRef(
     extend({ GridMaterial })
 
     const ref = React.useRef<THREE.Mesh>(null!)
-
+    const plane = new THREE.Plane()
+    const upVector = new THREE.Vector3(0, 1, 0)
+    const zeroVector = new THREE.Vector3(0, 0, 0)
     useFrame((state) => {
-      const plane = new THREE.Plane()
-        .setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 0))
-        .applyMatrix4(ref.current.matrixWorld)
+      plane.setFromNormalAndCoplanarPoint(upVector, zeroVector).applyMatrix4(ref.current.matrixWorld)
 
       const gridMaterial = ref.current.material as THREE.ShaderMaterial
       const worldCamProjPosition = gridMaterial.uniforms.worldCamProjPosition as THREE.Uniform<THREE.Vector3>

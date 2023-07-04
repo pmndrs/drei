@@ -16,5 +16,4 @@ coverage/
 .idea
 yarn-error.log
 .size-snapshot.json
-test/e2e/*app
 __diff_output__

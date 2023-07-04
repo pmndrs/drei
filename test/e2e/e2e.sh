@@ -2,14 +2,17 @@
 set -ex
 
 PORT=5188
+DIST=../../dist
 
-(cd ../../dist; npm pack)
+(cd $DIST; npm pack)
+TGZ=$(realpath "$DIST/react-three-drei-0.0.0-semantic-release.tgz")
 
 kill_app() {
-  kill $(lsof -ti:$PORT)
+  kill $(lsof -ti:$PORT) || echo "ok, no previous running process on port $PORT"
 }
+kill_app
 
-kill_app || echo "ok, no previous running process on port $PORT"
+tmp=$(mktemp -d)
 
 #
 # ██╗   ██╗██╗████████╗███████╗
@@ -20,23 +23,22 @@ kill_app || echo "ok, no previous running process on port $PORT"
 #   ╚═══╝  ╚═╝   ╚═╝   ╚══════╝
 #
 
-rm -rf viteapp
+appname=viteapp
+appdir="$tmp/$appname"
 
 # create app
-npm create vite@latest viteapp -- --template react
+(cd $tmp; npm create vite@latest $appname -- --template react)
 
 # drei
-(cd viteapp; npm i; npm i ../../../dist/react-three-drei-0.0.0-semantic-release.tgz)
+(cd $appdir; npm i; npm i $TGZ)
 
 # App.jsx
-cp App.jsx viteapp/src/App.jsx
+cp App.jsx $appdir/src/App.jsx
 
 # build+start+jest
-(cd viteapp; npm run build; npm run preview -- --port $PORT &)
-npx jest snapshot.test.js || kill_app
+(cd $appdir; npm run build; npm run preview -- --port $PORT &)
+npx jest snapshot.test.js || (kill_app && exit 1)
 kill_app
-
-rm -rf viteapp
 
 #
 #  ██████╗██████╗  █████╗ 
@@ -47,23 +49,22 @@ rm -rf viteapp
 #  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝
 #
 
-rm -rf craapp
+appname=craapp
+appdir="$tmp/$appname"
 
 # create app
-npx create-react-app craapp
+(cd $tmp; npx create-react-app $appname)
 
 # drei
-(cd craapp; npm i ../../../dist/react-three-drei-0.0.0-semantic-release.tgz)
+(cd $appdir; npm i $TGZ)
 
 # App.jsx
-cp App.jsx craapp/src/App.js
+cp App.jsx $appdir/src/App.js
 
 # build+start+jest
-(cd craapp; npm run build; npx serve -s -p $PORT build &)
-npx jest snapshot.test.js || kill_app
+(cd $appdir; npm run build; npx serve -s -p $PORT build &)
+npx jest snapshot.test.js || (kill_app && exit 1)
 kill_app
-
-rm -rf craapp
 
 #
 # Teardown

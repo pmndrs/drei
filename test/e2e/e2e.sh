@@ -41,6 +41,32 @@ npx jest snapshot.test.js || (kill_app && exit 1)
 kill_app
 
 #
+# ███╗   ██╗███████╗██╗  ██╗████████╗
+# ████╗  ██║██╔════╝╚██╗██╔╝╚══██╔══╝
+# ██╔██╗ ██║█████╗   ╚███╔╝    ██║   
+# ██║╚██╗██║██╔══╝   ██╔██╗    ██║   
+# ██║ ╚████║███████╗██╔╝ ██╗   ██║   
+# ╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝   ╚═╝   
+#
+
+appname=nextapp
+appdir="$tmp/$appname"
+
+# create app
+(cd $tmp; npx -y create-next-app@latest $appname --js --no-eslint --no-tailwind --no-src-dir --app --import-alias "@/*")
+
+# drei
+(cd $appdir; npm i $TGZ)
+
+# App.jsx
+cp App.jsx $appdir/app/page.js
+
+# build+start+jest
+(cd $appdir; npm run build; npm start -- -p $PORT &)
+npx jest snapshot.test.js || (kill_app && exit 1)
+kill_app
+
+#
 #  ██████╗██████╗  █████╗ 
 # ██╔════╝██╔══██╗██╔══██╗
 # ██║     ██████╔╝███████║

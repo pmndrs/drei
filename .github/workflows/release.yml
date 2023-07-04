@@ -18,11 +18,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # https://www.chromatic.com/docs/github-actions#support-for-codeactionscheckoutv2code-and-above
       - uses: actions/setup-node@v3
         with:
           cache: 'yarn'
       - run: yarn install
       - run: yarn build-storybook
+      - run: yarn chromatic -- --exit-once-uploaded
+        env:
+          CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
       - run: yarn test
       # semantic-release skips not configured branches(see: release.config.js) or pull-requests
       - run: yarn release

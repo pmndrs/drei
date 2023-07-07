@@ -1,3 +1,4 @@
+import CameraControls from 'camera-controls'
 import * as React from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { Camera, Group, Matrix4, Object3D, Quaternion, Vector3 } from 'three'
@@ -22,7 +23,7 @@ const [q1, q2] = [new Quaternion(), new Quaternion()]
 const target = new Vector3()
 const targetPosition = new Vector3()
 
-type ControlsProto = { update(): void; target: THREE.Vector3 }
+type ControlsProto = { update(): void; target: THREE.Vector3; getTarget?(out: THREE.Vector3): THREE.Vector3 }
 
 export type GizmoHelperProps = JSX.IntrinsicElements['group'] & {
   alignment?:
@@ -76,7 +77,9 @@ export const GizmoHelper = ({
   const tweenCamera = React.useCallback(
     (direction: Vector3) => {
       animating.current = true
-      if (defaultControls || onTarget) focusPoint.current = defaultControls?.target || onTarget?.()
+      if (defaultControls || onTarget) {
+        focusPoint.current = (defaultControls?.target ?? defaultControls.getTarget?.(new Vector3())) || onTarget?.()
+      }
       radius.current = mainCamera.position.distanceTo(target)
 
       // Rotate from current camera orientation
@@ -115,8 +118,23 @@ export const GizmoHelper = ({
           mainCamera.position.set(0, 0, 1).applyQuaternion(q1).multiplyScalar(radius.current).add(focusPoint.current)
           mainCamera.up.set(0, 1, 0).applyQuaternion(q1).normalize()
           mainCamera.quaternion.copy(q1)
-          if (onUpdate) onUpdate()
-          else if (defaultControls) defaultControls.update()
+          if (onUpdate) {
+            onUpdate()
+          } else if (defaultControls) {
+            if (defaultControls instanceof CameraControls) {
+              defaultControls.updateCameraUp()
+              defaultControls.setLookAt(
+                mainCamera.position.x,
+                mainCamera.position.y,
+                mainCamera.position.z,
+                focusPoint.current.x,
+                focusPoint.current.y,
+                focusPoint.current.z
+              )
+            } else if (isOrbitControls(defaultControls)) {
+              defaultControls.update()
+            }
+          }
           invalidate()
         }
       }

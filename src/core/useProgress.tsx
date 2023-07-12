@@ -1,9 +1,5 @@
 import { DefaultLoadingManager } from 'three'
-import zustand from 'zustand'
-
-// TODO: upgrade to v4
-// https://github.com/pmndrs/drei/pull/1550
-const create = ((zustand as any).default || zustand) as typeof zustand
+import create from 'zustand'
 
 type Data = {
   errors: string[]

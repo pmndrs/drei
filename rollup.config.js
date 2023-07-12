@@ -4,7 +4,7 @@ import resolve from '@rollup/plugin-node-resolve'
 import json from '@rollup/plugin-json'
 import glslify from 'rollup-plugin-glslify'
 import multiInput from 'rollup-plugin-multi-input'
-import terser from '@rollup/plugin-terser'
+import { terser } from 'rollup-plugin-terser'
 
 const root = process.platform === 'win32' ? path.resolve('/') : '/'
 const external = (id) => !id.startsWith('.') && !id.startsWith(root)
@@ -47,7 +47,7 @@ export default [
     output: { dir: `dist`, format: 'esm' },
     external,
     plugins: [
-      multiInput.default(),
+      multiInput(),
       json(),
       glslify(),
       babel(getBabelOptions({ useESModules: true }, '>1%, not dead, not ie 11, not op_mini all')),
@@ -56,7 +56,7 @@ export default [
   },
   {
     input: `./src/index.ts`,
-    output: { dir: `dist`, format: 'esm', preserveModules: true },
+    output: { dir: `dist`, format: 'esm' },
     external,
     plugins: [
       json(),
@@ -64,13 +64,14 @@ export default [
       babel(getBabelOptions({ useESModules: true }, '>1%, not dead, not ie 11, not op_mini all')),
       resolve({ extensions }),
     ],
+    preserveModules: true,
   },
   {
     input: ['src/**/*.ts', 'src/**/*.tsx', '!src/index.ts'],
     output: { dir: `dist`, format: 'cjs' },
     external,
     plugins: [
-      multiInput.default({
+      multiInput({
         transformOutputPath: (output) => output.replace(/\.[^/.]+$/, '.cjs.js'),
       }),
       json(),

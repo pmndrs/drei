@@ -1,5 +1,5 @@
 // vite.config.js
-import glslify from 'rollup-plugin-glslify'
+import glslify from 'vite-plugin-glslify'
 
 export default {
   plugins: [glslify()],

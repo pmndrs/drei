@@ -56,7 +56,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.11.2",
-    "@mediapipe/tasks-vision": "0.10.2-rc2",
+    "@mediapipe/tasks-vision": "0.10.2",
     "@react-spring/three": "~9.6.1",
     "@use-gesture/react": "^10.2.24",
     "camera-controls": "^2.4.2",

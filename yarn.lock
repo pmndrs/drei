@@ -12623,6 +12623,11 @@ static-extend@^0.1.1:
     define-property "^0.2.5"
     object-copy "^0.1.0"
 
+stats-gl@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/stats-gl/-/stats-gl-1.0.2.tgz#e94cc4aa152ec4e7d68d574896957ac88c634e44"
+  integrity sha512-hx0gBFvedMz/MSlTcss6mjDqPglIPsAA0s7wWH3LjwxxZNdM4aD4uqg3tV7TWQ2q4jGsq1Mqdx/O9uFj3xuGxA==
+
 stats.js@^0.17.0:
   version "0.17.0"
   resolved "https://registry.yarnpkg.com/stats.js/-/stats.js-0.17.0.tgz#b1c3dc46d94498b578b7fd3985b81ace7131cc7d"

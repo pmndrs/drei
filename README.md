@@ -108,6 +108,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#select">Select</a></li>
           <li><a href="#sprite-animator">Sprite Animator</a></li>
           <li><a href="#stats">Stats</a></li>
+          <li><a href="#stats-gl">StatsGl</a></li>
           <li><a href="#wireframe">Wireframe</a></li>
           <li><a href="#usedepthbuffer">useDepthBuffer</a></li>
           <li><a href="#usecontextbridge">useContextBridge</a></li>
@@ -2370,6 +2371,16 @@ useEffect(() => {
 }, [])
 
 return <Stats parent={parent} />
+```
+
+#### StatsGl
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-statsgl--default-story)
+
+Adds [stats-gl](https://github.com/RenaudRohlinger/stats-gl/) to document.body. It takes over the render-loop!
+
+```jsx
+<StatsGl className="stats" {...props} />
 ```
 
 #### Wireframe

@@ -58,6 +58,7 @@ export * from './useFont'
 
 // Misc
 export * from './Stats'
+export * from './StatsGl'
 export * from './useDepthBuffer'
 export * from './useAspect'
 export * from './useCamera'

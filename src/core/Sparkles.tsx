@@ -104,12 +104,11 @@ export const Sparkles = React.forwardRef<THREE.Points, Props & PointsProps>(
     React.useMemo(() => extend({ SparklesImplMaterial }), [])
     const ref = React.useRef<THREE.Points>(null!)
     const dpr = useThree((state) => state.viewport.dpr)
+
+    const _scale = normalizeVector(scale)
     const positions = React.useMemo(
-      () =>
-        Float32Array.from(
-          Array.from({ length: count }, () => normalizeVector(scale).map(THREE.MathUtils.randFloatSpread)).flat()
-        ),
-      [count, scale]
+      () => Float32Array.from(Array.from({ length: count }, () => _scale.map(THREE.MathUtils.randFloatSpread)).flat()),
+      [count, ..._scale]
     )
 
     const sizes = usePropAsIsOrAsAttribute<number>(count, size, Math.random)

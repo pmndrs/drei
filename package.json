@@ -69,7 +69,7 @@
     "meshline": "^3.1.6",
     "react-composer": "^5.0.3",
     "react-merge-refs": "^1.1.0",
-    "stats-gl": "^1.0.2",
+    "stats-gl": "^1.0.3",
     "stats.js": "^0.17.0",
     "suspend-react": "^0.1.3",
     "three-mesh-bvh": "^0.6.0",

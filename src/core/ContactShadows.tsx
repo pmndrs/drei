@@ -6,6 +6,13 @@ import * as THREE from 'three'
 import { useFrame, useThree } from '@react-three/fiber'
 import { HorizontalBlurShader, VerticalBlurShader } from 'three-stdlib'
 
+// @ts-ignore
+import { FullScreenQuad } from 'three/examples/jsm/postprocessing/Pass'
+
+function isMesh(obj: THREE.Object3D): obj is THREE.Mesh {
+  return (obj as THREE.Mesh).isMesh
+}
+
 export type ContactShadowsProps = {
   opacity?: number
   width?: number
@@ -49,110 +56,114 @@ export const ContactShadows = React.forwardRef(
     width = width * (Array.isArray(scale) ? scale[0] : scale || 1)
     height = height * (Array.isArray(scale) ? scale[1] : scale || 1)
 
-    const [
-      renderTarget,
-      planeGeometry,
-      depthMaterial,
-      blurPlane,
-      horizontalBlurMaterial,
-      verticalBlurMaterial,
-      renderTargetBlur,
-    ] = React.useMemo(() => {
-      const renderTarget = new THREE.WebGLRenderTarget(resolution, resolution)
-      const renderTargetBlur = new THREE.WebGLRenderTarget(resolution, resolution)
-      renderTargetBlur.texture.generateMipmaps = renderTarget.texture.generateMipmaps = false
-      const planeGeometry = new THREE.PlaneGeometry(width, height).rotateX(Math.PI / 2)
-      const blurPlane = new THREE.Mesh(planeGeometry)
-      const depthMaterial = new THREE.MeshDepthMaterial()
-      depthMaterial.depthTest = depthMaterial.depthWrite = false
-      depthMaterial.onBeforeCompile = (shader) => {
-        shader.uniforms = {
-          ...shader.uniforms,
-          ucolor: { value: new THREE.Color(color) },
+    const [renderTarget, depthMaterial, fsQuad, horizontalBlurMaterial, verticalBlurMaterial, renderTargetBlur] =
+      React.useMemo(() => {
+        const renderTarget = new THREE.WebGLRenderTarget(resolution, resolution)
+        const renderTargetBlur = new THREE.WebGLRenderTarget(resolution, resolution)
+        renderTargetBlur.texture.generateMipmaps = renderTarget.texture.generateMipmaps = false
+
+        const depthMaterial = new THREE.MeshDepthMaterial()
+        depthMaterial.depthTest = depthMaterial.depthWrite = false
+        depthMaterial.onBeforeCompile = (shader) => {
+          shader.uniforms = {
+            ...shader.uniforms,
+            ucolor: { value: new THREE.Color(color) },
+          }
+          shader.fragmentShader = shader.fragmentShader.replace(
+            `void main() {`, //
+            `uniform vec3 ucolor;
+             void main() {
+            `
+          )
+          shader.fragmentShader = shader.fragmentShader.replace(
+            'vec4( vec3( 1.0 - fragCoordZ ), opacity );',
+            // Colorize the shadow, multiply by the falloff so that the center can remain darker
+            'vec4( ucolor * fragCoordZ * 2.0, ( 1.0 - fragCoordZ ) * 1.0 );'
+          )
         }
-        shader.fragmentShader = shader.fragmentShader.replace(
-          `void main() {`, //
-          `uniform vec3 ucolor;
-           void main() {
-          `
-        )
-        shader.fragmentShader = shader.fragmentShader.replace(
-          'vec4( vec3( 1.0 - fragCoordZ ), opacity );',
-          // Colorize the shadow, multiply by the falloff so that the center can remain darker
-          'vec4( ucolor * fragCoordZ * 2.0, ( 1.0 - fragCoordZ ) * 1.0 );'
-        )
-      }
 
-      const horizontalBlurMaterial = new THREE.ShaderMaterial(HorizontalBlurShader)
-      const verticalBlurMaterial = new THREE.ShaderMaterial(VerticalBlurShader)
-      verticalBlurMaterial.depthTest = horizontalBlurMaterial.depthTest = false
-      return [
-        renderTarget,
-        planeGeometry,
-        depthMaterial,
-        blurPlane,
-        horizontalBlurMaterial,
-        verticalBlurMaterial,
-        renderTargetBlur,
-      ]
-    }, [resolution, width, height, scale, color])
+        const horizontalBlurMaterial = new THREE.ShaderMaterial(HorizontalBlurShader)
+        const verticalBlurMaterial = new THREE.ShaderMaterial(VerticalBlurShader)
+        verticalBlurMaterial.depthTest = horizontalBlurMaterial.depthTest = false
 
-    const blurShadows = (blur) => {
-      blurPlane.visible = true
+        const fsQuad = new FullScreenQuad(null!)
 
-      blurPlane.material = horizontalBlurMaterial
+        return [renderTarget, depthMaterial, fsQuad, horizontalBlurMaterial, verticalBlurMaterial, renderTargetBlur]
+      }, [resolution, width, height, scale, color])
+
+    const blurShadows = (blur: number) => {
+      fsQuad.material = horizontalBlurMaterial
       horizontalBlurMaterial.uniforms.tDiffuse.value = renderTarget.texture
       horizontalBlurMaterial.uniforms.h.value = (blur * 1) / 256
 
       gl.setRenderTarget(renderTargetBlur)
-      gl.render(blurPlane, shadowCamera.current)
+      fsQuad.render(gl)
 
-      blurPlane.material = verticalBlurMaterial
+      fsQuad.material = verticalBlurMaterial
       verticalBlurMaterial.uniforms.tDiffuse.value = renderTargetBlur.texture
       verticalBlurMaterial.uniforms.v.value = (blur * 1) / 256
 
       gl.setRenderTarget(renderTarget)
-      gl.render(blurPlane, shadowCamera.current)
-
-      blurPlane.visible = false
+      fsQuad.render(gl)
     }
 
     let count = 0
-    let initialBackground: THREE.Color | THREE.Texture | null
-    let initialOverrideMaterial: THREE.Material | null
     useFrame(() => {
       if (shadowCamera.current && (frames === Infinity || count < frames)) {
+        gl.autoClear = false
+
         count++
 
-        initialBackground = scene.background
-        initialOverrideMaterial = scene.overrideMaterial
-
-        ref.current.visible = false
-        scene.background = null
-        scene.overrideMaterial = depthMaterial
-
         gl.setRenderTarget(renderTarget)
-        gl.render(scene, shadowCamera.current)
+        gl.clear()
+
+        scene.traverse((obj) => {
+          if (isMesh(obj)) {
+            if (obj.castShadow) {
+              // console.log(obj);
+
+              const originalMaterial = obj.material
+              obj.material = obj.customDepthMaterial || depthMaterial
+              gl.render(obj, shadowCamera.current)
+              obj.material = originalMaterial
+            }
+          }
+        })
 
         blurShadows(blur)
         if (smooth) blurShadows(blur * 0.4)
-        gl.setRenderTarget(null)
 
-        ref.current.visible = true
-        scene.overrideMaterial = initialOverrideMaterial
-        scene.background = initialBackground
+        gl.setRenderTarget(null)
+        gl.autoClear = true
       }
     })
 
     React.useImperativeHandle(fref, () => ref.current, [])
 
+    React.useEffect(() => () => {
+      renderTarget.dispose()
+      renderTargetBlur.dispose()
+      depthMaterial.dispose()
+      horizontalBlurMaterial.dispose()
+      verticalBlurMaterial.dispose()
+    })
+
     return (
-      <group rotation-x={Math.PI / 2} {...props} ref={ref}>
-        <mesh renderOrder={renderOrder} geometry={planeGeometry} scale={[1, -1, 1]} rotation={[-Math.PI / 2, 0, 0]}>
-          <meshBasicMaterial transparent map={renderTarget.texture} opacity={opacity} depthWrite={depthWrite} />
-        </mesh>
-        <orthographicCamera ref={shadowCamera} args={[-width / 2, width / 2, height / 2, -height / 2, near, far]} />
-      </group>
+      <>
+        <group rotation-x={Math.PI / 2} {...props} ref={ref}>
+          <mesh renderOrder={renderOrder} scale={[1, 1, -1]}>
+            <planeGeometry args={[width, height]} />
+            <meshBasicMaterial
+              transparent
+              map={renderTarget.texture}
+              color={color}
+              opacity={opacity}
+              depthWrite={depthWrite}
+            />
+          </mesh>
+          <orthographicCamera ref={shadowCamera} args={[-width / 2, width / 2, height / 2, -height / 2, near, far]} />
+        </group>
+      </>
     )
   }
 )

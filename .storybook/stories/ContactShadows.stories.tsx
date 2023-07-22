@@ -20,7 +20,7 @@ function ContactShadowScene({ colorized }: any) {
 
   return (
     <>
-      <Sphere ref={mesh} args={[1, 32, 32]} position-y={2}>
+      <Sphere ref={mesh} args={[1, 32, 32]} position-y={2} castShadow>
         <meshBasicMaterial color="#2A8AFF" />
       </Sphere>
       <ContactShadows

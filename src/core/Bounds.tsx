@@ -86,6 +86,7 @@ export function Bounds({ children, damping = 6, fit, clip, observe, margin = 1.2
         if (isBox3(object)) box.copy(object)
         else {
           const target = object || ref.current
+          if (!target) return this
           target.updateWorldMatrix(true, true)
           box.setFromObject(target)
         }

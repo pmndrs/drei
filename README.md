@@ -2558,7 +2558,7 @@ A small hook that sets the css body cursor according to the hover state of a mes
 
 ```jsx
 const [hovered, set] = useState()
-useCursor(hovered, /*'pointer', 'auto'*/)
+useCursor(hovered, /*'pointer', 'auto', document.body*/)
 return (
   <mesh onPointerOver={() => set(true)} onPointerOut={() => set(false)}>
 ```

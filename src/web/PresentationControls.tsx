@@ -1,9 +1,8 @@
 import * as React from 'react'
 import { MathUtils } from 'three'
 import { useThree } from '@react-three/fiber'
-import { a, useSpring } from '@react-spring/three'
+import { a, SpringConfig, useSpring } from '@react-spring/three'
 import { useGesture } from '@use-gesture/react'
-import { SpringConfig } from '@react-spring/core'
 
 export type PresentationControlProps = {
   snap?: Boolean | SpringConfig

@@ -430,6 +430,7 @@ export const MeshTransmissionMaterial = React.forwardRef(
           state.gl.setRenderTarget(fboMain)
           state.gl.render(state.scene, state.camera)
 
+          parent.material = ref.current
           parent.material.thickness = thickness
           parent.material.side = side
           parent.material.buffer = fboMain.texture
@@ -437,7 +438,6 @@ export const MeshTransmissionMaterial = React.forwardRef(
           // Set old state back
           state.scene.background = oldBg
           state.gl.setRenderTarget(null)
-          parent.material = ref.current
           state.gl.toneMapping = oldTone
         }
       }

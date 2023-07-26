@@ -12,7 +12,7 @@ type Props = Omit<LineProps, 'points' | 'ref'> & {
   segments?: number
 }
 
-type Line2Props = Object3DNode<Line2, typeof Line2> & {
+export type Line2Props = Object3DNode<Line2, typeof Line2> & {
   setPoints: (
     start: Vector3 | [number, number, number],
     end: Vector3 | [number, number, number],

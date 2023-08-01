@@ -12,7 +12,7 @@ declare global {
   }
 }
 
-const opaque_fragment = (parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'opaque_fragment' : 'output_fragment'
+const opaque_fragment = parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'opaque_fragment' : 'output_fragment'
 
 export class PointMaterialImpl extends THREE.PointsMaterial {
   constructor(props) {
@@ -33,7 +33,7 @@ export class PointMaterialImpl extends THREE.PointsMaterial {
       float mask = 1.0 - smoothstep(1.0 - delta, 1.0 + delta, r);
       gl_FragColor = vec4(gl_FragColor.rgb, mask * gl_FragColor.a );
       #include <tonemapping_fragment>
-      #include <${(parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
+      #include <${parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
       `
       )
     }

@@ -70,7 +70,7 @@ const ImageMaterialImpl = shaderMaterial(
     gl_FragColor = toGrayscale(texture2D(map, zUv) * vec4(color, opacity), grayscale);
     
     #include <tonemapping_fragment>
-    #include <${(parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
+    #include <${parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
   }
 `
 )

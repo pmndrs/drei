@@ -96,7 +96,7 @@ const SoftShadowMaterial = shaderMaterial(
      vec4 sampledDiffuseColor = texture2D(map, vUv);
      gl_FragColor = vec4(color * sampledDiffuseColor.r * blend, max(0.0, (1.0 - (sampledDiffuseColor.r + sampledDiffuseColor.g + sampledDiffuseColor.b) / alphaTest)) * opacity);
      #include <tonemapping_fragment>
-     #include <encodings_fragment>
+     #include <${parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
    }`
 )
 

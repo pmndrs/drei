@@ -53,7 +53,7 @@ export class ConvolutionMaterial extends ShaderMaterial {
 
           #include <dithering_fragment>
           #include <tonemapping_fragment>
-          #include <encodings_fragment>
+          #include <${(parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
         }`,
       vertexShader: `uniform vec2 texelSize;
         uniform vec2 halfTexelSize;

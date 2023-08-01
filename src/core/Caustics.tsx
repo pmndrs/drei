@@ -127,7 +127,7 @@ const CausticsProjectionMaterial = shaderMaterial(
     vec3 back = texture2D(causticsTextureB, lightSpacePos.xy).rgb;
     gl_FragColor = vec4((front + back) * color, 1.0);
     #include <tonemapping_fragment>
-    #include <encodings_fragment>
+    #include <${(parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
    }`
 )
 

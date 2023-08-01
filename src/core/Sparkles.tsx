@@ -51,7 +51,7 @@ const SparklesImplMaterial = shaderMaterial(
       float strength = 0.05 / distanceToCenter - 0.1;
       gl_FragColor = vec4(vColor, strength * vOpacity);
       #include <tonemapping_fragment>
-      #include <encodings_fragment>
+      #include <${(parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
     }`
 )
 

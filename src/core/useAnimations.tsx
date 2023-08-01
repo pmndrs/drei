@@ -44,6 +44,7 @@ export function useAnimations<T extends AnimationClip>(
     return () => {
       // Clean up only when clips change, wipe out lazy actions and uncache clips
       lazyActions.current = {}
+      mixer.stopAllAction()
       Object.values(api.actions).forEach((action) => {
         if (currentRoot) {
           mixer.uncacheAction(action as AnimationClip, currentRoot)
@@ -51,12 +52,6 @@ export function useAnimations<T extends AnimationClip>(
       })
     }
   }, [clips])
-
-  React.useEffect(() => {
-    return () => {
-      mixer.stopAllAction()
-    }
-  }, [mixer])
 
   return api
 }

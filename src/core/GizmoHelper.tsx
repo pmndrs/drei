@@ -131,7 +131,7 @@ export const GizmoHelper = ({
                 focusPoint.current.y,
                 focusPoint.current.z
               )
-            } else if (isOrbitControls(defaultControls)) {
+            } else {
               defaultControls.update()
             }
           }

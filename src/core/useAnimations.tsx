@@ -16,10 +16,12 @@ export function useAnimations<T extends AnimationClip>(
 ): Api<T> {
   const ref = React.useRef<Object3D>()
   const [actualRef] = React.useState(() => (root ? (root instanceof Object3D ? { current: root } : root) : ref))
-  React.useEffect(() => void (actualRef.current = root && (root instanceof Object3D ? root : root.current)), [root])
   // eslint-disable-next-line prettier/prettier
   const [mixer] = React.useState(() => new AnimationMixer(undefined as unknown as Object3D))
-  React.useLayoutEffect(() => void ((mixer as any)._root = actualRef.current), [mixer, root])
+  React.useEffect(() => {
+    actualRef.current = root && (root instanceof Object3D ? root : root.current)
+    ;(mixer as any)._root = actualRef.current
+  }, [root])
   const lazyActions = React.useRef({})
   const api = React.useMemo<Api<T>>(() => {
     const actions = {} as { [key in T['name']]: AnimationAction | null }

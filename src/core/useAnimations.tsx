@@ -21,8 +21,7 @@ export function useAnimations<T extends AnimationClip>(
   const [mixer] = React.useState(() => new AnimationMixer(undefined as unknown as Object3D))
   React.useLayoutEffect(() => void ((mixer as any)._root = actualRef.current), [mixer, root])
   const lazyActions = React.useRef({})
-  // defined because api creation happens both in state initialization and clips update effect
-  const makeApi = () => {
+  const api = React.useMemo<Api<T>>(() => {
     const actions = {} as { [key in T['name']]: AnimationAction | null }
     clips.forEach((clip) =>
       Object.defineProperty(actions, clip.name, {
@@ -39,11 +38,9 @@ export function useAnimations<T extends AnimationClip>(
       })
     )
     return { ref: actualRef, clips, actions, names: clips.map((c) => c.name), mixer }
-  }
-  const [api, setApi] = React.useState<Api<T>>(makeApi)
+  }, [clips])
   useFrame((state, delta) => mixer.update(delta))
   React.useEffect(() => {
-    setApi(makeApi())
     const currentRoot = actualRef.current
     return () => {
       // Clean up only when clips change, wipe out lazy actions and uncache clips

@@ -17,7 +17,7 @@ type U = {
   | boolean
   | Array<any>
   | null
-};
+}
 
 export function shaderMaterial<T extends U>(
   uniforms: T,

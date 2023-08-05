@@ -1,24 +1,26 @@
 import * as THREE from 'three'
 
-export function shaderMaterial(
-  uniforms: {
-    [name: string]:
-      | THREE.CubeTexture
-      | THREE.Texture
-      | Int32Array
-      | Float32Array
-      | THREE.Matrix4
-      | THREE.Matrix3
-      | THREE.Quaternion
-      | THREE.Vector4
-      | THREE.Vector3
-      | THREE.Vector2
-      | THREE.Color
-      | number
-      | boolean
-      | Array<any>
-      | null
-  },
+type U = {
+  [name: string]:
+  | THREE.CubeTexture
+  | THREE.Texture
+  | Int32Array
+  | Float32Array
+  | THREE.Matrix4
+  | THREE.Matrix3
+  | THREE.Quaternion
+  | THREE.Vector4
+  | THREE.Vector3
+  | THREE.Vector2
+  | THREE.Color
+  | number
+  | boolean
+  | Array<any>
+  | null
+};
+
+export function shaderMaterial<T extends U>(
+  uniforms: T,
   vertexShader: string,
   fragmentShader: string,
   onInit?: (material?: THREE.ShaderMaterial) => void
@@ -52,7 +54,7 @@ export function shaderMaterial(
       // Call onInit
       if (onInit) onInit(this)
     }
-  } as unknown as typeof THREE.ShaderMaterial & { key: string }
+  } as unknown as typeof THREE.ShaderMaterial & { key: string } & T
   material.key = THREE.MathUtils.generateUUID()
   return material
 }

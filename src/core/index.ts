@@ -57,6 +57,7 @@ export * from './useVideoTexture'
 export * from './useFont'
 
 // Misc
+export * from './Helper'
 export * from './Stats'
 export * from './StatsGl'
 export * from './useDepthBuffer'

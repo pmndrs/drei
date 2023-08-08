@@ -2036,7 +2036,7 @@ In order for this type to be fully usable in TypeScript, it must be declared as 
 import { ReactThreeFiber } from '@react-three/fiber'
 
 type ColorShiftMatieralNode = ReactThreeFiber.Node<
-  typeof ColorShiftMaterial & JSX.IntrinsicElements['shaderMatieral'],
+  typeof ColorShiftMaterial & JSX.IntrinsicElements['shaderMaterial'],
   typeof ColorShiftMaterial
 >
 

@@ -2030,6 +2030,25 @@ extend({ ColorShiftMaterial })
 <colorShiftMaterial key={ColorShiftMaterial.key} color="hotpink" time={1} />
 ```
 
+In order for this type to be fully usable in TypeScript, it must be declared as follows:
+
+```ts
+import { ReactThreeFiber } from '@react-three/fiber'
+
+type ColorShiftMatieralNode = ReactThreeFiber.Node<
+  typeof ColorShiftMaterial & JSX.IntrinsicElements['shaderMatieral'],
+  typeof ColorShiftMaterial
+>
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      colorShiftMaterial: ColorShiftMaterialNode
+    }
+  }
+}
+```
+
 # Modifiers
 
 #### CurveModifier

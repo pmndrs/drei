@@ -7,7 +7,7 @@ import { MeshBVHUniformStruct, shaderStructs, shaderIntersectFunction } from 'th
 
 export const MeshRefractionMaterial = shaderMaterial(
   {
-    envMap: null,
+    envMap: null as THREE.CubeTexture | THREE.Texture | null,
     bounces: 3,
     ior: 2.4,
     correctMips: true,
@@ -15,7 +15,7 @@ export const MeshRefractionMaterial = shaderMaterial(
     fresnel: 0,
     bvh: new MeshBVHUniformStruct(),
     color: new THREE.Color('white'),
-    resolution: new THREE.Vector2(),
+    resolution: new THREE.Vector2() as THREE.Vector2 | [number, number],
     viewMatrixInverse: new THREE.Matrix4(),
     projectionMatrixInverse: new THREE.Matrix4(),
   },

@@ -18,7 +18,7 @@ export function useAnimations<T extends AnimationClip>(
   const [actualRef] = React.useState(() => (root ? (root instanceof Object3D ? { current: root } : root) : ref))
   // eslint-disable-next-line prettier/prettier
   const [mixer] = React.useState(() => new AnimationMixer(undefined as unknown as Object3D))
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     actualRef.current = root && (root instanceof Object3D ? root : root.current)
     ;(mixer as any)._root = actualRef.current
   }, [root])

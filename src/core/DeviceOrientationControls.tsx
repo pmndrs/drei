@@ -20,7 +20,7 @@ export const DeviceOrientationControls = React.forwardRef<DeviceOrientationContr
     const get = useThree((state) => state.get)
     const set = useThree((state) => state.set)
     const explCamera = camera || defaultCamera
-    const [controls] = React.useState(() => new DeviceOrientationControlsImp(explCamera))
+    const controls = React.useMemo(() => new DeviceOrientationControlsImp(explCamera), [explCamera])
 
     React.useEffect(() => {
       const callback = (e: THREE.Event) => {

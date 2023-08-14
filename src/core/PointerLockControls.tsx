@@ -31,7 +31,7 @@ export const PointerLockControls = React.forwardRef<PointerLockControlsImpl, Poi
     const explCamera = camera || defaultCamera
     const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
 
-    const [controls] = React.useState(() => new PointerLockControlsImpl(explCamera))
+    const controls = React.useMemo(() => new PointerLockControlsImpl(explCamera), [explCamera])
 
     React.useEffect(() => {
       if (enabled) {

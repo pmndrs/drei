@@ -156,7 +156,7 @@ export function Select({
       document.removeEventListener('pointermove', pointerMove)
       document.removeEventListener('pointerup', pointerUp)
     }
-  }, [size.width, size.height, raycaster, camera, controls, gl])
+  }, [shouldDragSelect, size.width, size.height, raycaster, camera, controls, gl])
 
   return (
     <group
@@ -165,8 +165,8 @@ export function Select({
       onPointerOver={() => hover(true)}
       onPointerOut={() => hover(false)}
       onPointerMissed={onPointerMissed}
-      onPointerDown={!shouldDragSelect ? () => down(true) : null}
-      onPointerUp={!shouldDragSelect ? () => down(false) : null}
+      onPointerDown={!shouldDragSelect ? () => down(true) : undefined}
+      onPointerUp={!shouldDragSelect ? () => down(false) : undefined}
       {...props}
     >
       <context.Provider value={active}>{children}</context.Provider>

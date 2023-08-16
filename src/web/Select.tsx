@@ -1,7 +1,7 @@
+import { useThree } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from 'three'
 import { SelectionBox } from 'three-stdlib'
-import { useThree } from '@react-three/fiber'
 import shallow from 'zustand/shallow'
 
 const context = React.createContext<THREE.Object3D[]>([])
@@ -35,7 +35,6 @@ export function Select({
   ...props
 }: Props) {
   const [downed, down] = React.useState(false)
-  const { setEvents, camera, raycaster, gl, controls, size, get } = useThree()
   const [hovered, hover] = React.useState(false)
   const [active, dispatch] = React.useReducer(
     (state, { object, shift }: { object?: THREE.Object3D | THREE.Object3D[]; shift?: boolean }): THREE.Object3D[] => {
@@ -47,19 +46,23 @@ export function Select({
     },
     []
   )
-  React.useEffect(() => {
-    if (downed) onChange?.(active)
-    else onChangePointerUp?.(active)
-  }, [active, downed])
+  const ref = React.useRef<THREE.Group>(null!)
+  const { setEvents, camera, raycaster, gl, controls, size, get } = useThree()
+  const shouldDragSelect = box && multiple
+
+  const onPointerMissed = React.useCallback((e) => !hovered && dispatch({}), [hovered])
   const onClick = React.useCallback((e) => {
     e.stopPropagation()
     dispatch({ object: customFilter([e.object])[0], shift: multiple && e.shiftKey })
   }, [])
-  const onPointerMissed = React.useCallback((e) => !hovered && dispatch({}), [hovered])
 
-  const ref = React.useRef<THREE.Group>(null!)
   React.useEffect(() => {
-    if (!box || !multiple) return
+    if (downed) onChange?.(active)
+    else onChangePointerUp?.(active)
+  }, [active, downed])
+
+  React.useEffect(() => {
+    if (!shouldDragSelect) return
 
     const selBox = new SelectionBox(camera, ref.current as unknown as THREE.Scene)
 
@@ -162,6 +165,8 @@ export function Select({
       onPointerOver={() => hover(true)}
       onPointerOut={() => hover(false)}
       onPointerMissed={onPointerMissed}
+      onPointerDown={!shouldDragSelect ? () => down(true) : null}
+      onPointerUp={!shouldDragSelect ? () => down(false) : null}
       {...props}
     >
       <context.Provider value={active}>{children}</context.Provider>

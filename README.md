@@ -417,6 +417,8 @@ type ScrollControlsProps = {
   /** Infinite scroll, default false (experimental!) */
   infinite?: boolean
   /** Defines the length of the scroll area, each page is height:100%, default 1 */
+  thresholdOffset?: number
+  /** Offset the reset threshold, at the end of the scroll bar on infinite scroll */
   pages?: number
   /** A factor that increases scroll bar travel, default 1 */
   distance?: number

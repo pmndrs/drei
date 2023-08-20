@@ -18,12 +18,9 @@ export function useAnimations<T extends AnimationClip>(
   const [actualRef] = React.useState(() => (root ? (root instanceof Object3D ? { current: root } : root) : ref))
   // eslint-disable-next-line prettier/prettier
   const [mixer] = React.useState(() => new AnimationMixer(undefined as unknown as Object3D))
-  React.useLayoutEffect(() => {
-    actualRef.current = root && (root instanceof Object3D ? root : root.current)
-    ;(mixer as any)._root = actualRef.current
-  }, [root])
+  React.useLayoutEffect(() => void ((mixer as any)._root = actualRef.current), [mixer, root])
   const lazyActions = React.useRef({})
-  const api = React.useMemo<Api<T>>(() => {
+  const [api] = React.useState<Api<T>>(() => {
     const actions = {} as { [key in T['name']]: AnimationAction | null }
     clips.forEach((clip) =>
       Object.defineProperty(actions, clip.name, {
@@ -40,14 +37,13 @@ export function useAnimations<T extends AnimationClip>(
       })
     )
     return { ref: actualRef, clips, actions, names: clips.map((c) => c.name), mixer }
-  }, [clips])
+  })
   useFrame((state, delta) => mixer.update(delta))
   React.useEffect(() => {
     const currentRoot = actualRef.current
     return () => {
       // Clean up only when clips change, wipe out lazy actions and uncache clips
       lazyActions.current = {}
-      mixer.stopAllAction()
       Object.values(api.actions).forEach((action) => {
         if (currentRoot) {
           mixer.uncacheAction(action as AnimationClip, currentRoot)
@@ -55,6 +51,12 @@ export function useAnimations<T extends AnimationClip>(
       })
     }
   }, [clips])
+
+  React.useEffect(() => {
+    return () => {
+      mixer.stopAllAction()
+    }
+  }, [mixer])
 
   return api
 }

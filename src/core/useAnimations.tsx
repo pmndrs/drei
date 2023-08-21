@@ -19,9 +19,9 @@ export function useAnimations<T extends AnimationClip>(
   // eslint-disable-next-line prettier/prettier
   const [mixer] = React.useState(() => new AnimationMixer(undefined as unknown as Object3D))
   React.useLayoutEffect(() => {
-    actualRef.current = root && (root instanceof Object3D ? root : root.current)
+    if (root) actualRef.current = root instanceof Object3D ? root : root.current
     ;(mixer as any)._root = actualRef.current
-  }, [root])
+  })
   const lazyActions = React.useRef({})
   const api = React.useMemo<Api<T>>(() => {
     const actions = {} as { [key in T['name']]: AnimationAction | null }

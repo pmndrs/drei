@@ -6,6 +6,8 @@ import * as React from 'react'
 function createScreenQuadGeometry() {
   const geometry = new THREE.BufferGeometry()
   const vertices = new Float32Array([-1, -1, 3, -1, -1, 3])
+  geometry.boundingSphere = new THREE.Sphere()
+  geometry.boundingSphere.set(new THREE.Vector3(), Infinity)
   geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 2))
   return geometry
 }

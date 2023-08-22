@@ -11,7 +11,7 @@ import {
 import { RGBELoader, EXRLoader } from 'three-stdlib'
 import { presetsObj, PresetsType } from '../helpers/environment-assets'
 
-const CUBEMAP_ROOT = 'https://raw.githack.com/pmndrs/drei-assets/456060a26bbeb8fdf79326f224b6d99b8bcce736/hdri/'
+const CUBEMAP_ROOT = 'https://raw.githack.com/pmndrs/drei-assets/456060a26bbeb8fdf79326f224b6d99b8bcce736/hdri/' // Link is not valid use this link instead https://github.com/pmndrs/drei-assets/blob/master/hdri
 const isArray = (arr: any): arr is string[] => Array.isArray(arr)
 
 export type EnvironmentLoaderProps = {

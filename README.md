@@ -3268,7 +3268,7 @@ function App() {
   const [dpr, setDpr] = useState(1.5)
   return (
     <Canvas dpr={dpr}>
-      <PerformanceMonitor onIncline={() => setDpr(2)} onDecline={() => setDpr(1)} >
+      <PerformanceMonitor onIncline={() => setDpr(2)} onDecline={() => setDpr(1)} />
 ```
 
 You can also use the `onChange` callback to get notified when the average changes in whichever direction. This allows you to make gradual changes. It gives you a `factor` between 0 and 1, which is increased by incline and decreased by decline. The `factor` is initially 0.5 by default. If your app starts with lowest defaults and gradually increases quality set `factor` to 0. If it starts with highest defaults and decreases quality, set it to 1. If it starts in the middle and can either increase or decrease, set it to 0.5.
@@ -3278,16 +3278,16 @@ The following starts at the highest dpr (2) and clamps the gradual dpr between 0
 ```jsx
 import round from 'lodash/round'
 
-const [dpr, set] = useState(2)
+const [dpr, setDpr] = useState(2)
 return (
  <Canvas dpr={dpr}>
-  <PerformanceMonitor factor={1} onChange={({ factor }) => setDpr(round(0.5 + 1.5 * factor, 1))} >
+  <PerformanceMonitor factor={1} onChange={({ factor }) => setDpr(round(0.5 + 1.5 * factor, 1))} />
 ```
 
 If you still experience flip flops despite the bounds you can define a limit of `flipflops`. If it is met `onFallback` will be triggered which typically sets a lowest possible baseline for the app. After the fallback has been called PerformanceMonitor will shut down.
 
 ```jsx
-<PerformanceMonitor flipflops={3} onFallback={() => setDpr(1)}>
+<PerformanceMonitor flipflops={3} onFallback={() => setDpr(1)}/>
 ```
 
 PerformanceMonitor can also have children, if you wrap your app in it you get to use `usePerformanceMonitor` which allows individual components down the nested tree to respond to performance changes on their own.

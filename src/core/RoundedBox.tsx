@@ -29,6 +29,7 @@ export const RoundedBox = React.forwardRef<Mesh, Props>(function RoundedBox(
     radius = 0.05,
     steps = 1,
     smoothness = 4,
+    bevelSegments = 4,
     creaseAngle = 0.4,
     children,
     ...rest
@@ -40,7 +41,7 @@ export const RoundedBox = React.forwardRef<Mesh, Props>(function RoundedBox(
     () => ({
       depth: depth - radius * 2,
       bevelEnabled: true,
-      bevelSegments: smoothness * 2,
+      bevelSegments: bevelSegments * 2,
       steps,
       bevelSize: radius - eps,
       bevelThickness: radius,

@@ -295,10 +295,10 @@ export const Html = React.forwardRef(
           let raytraceTarget: null | undefined | boolean | Object3D[] = false
 
           if (isRayCastOcclusion) {
-            if (occlude !== 'blending') {
-              raytraceTarget = [scene]
-            } else if (Array.isArray(occlude)) {
+            if (Array.isArray(occlude)) {
               raytraceTarget = occlude.map((item) => item.current) as Object3D[]
+            } else if (occlude !== 'blending') {
+              raytraceTarget = [scene]
             }
           }
 

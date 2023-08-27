@@ -2,6 +2,7 @@ import { applyProps, ReactThreeFiber, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from 'three'
 import mergeRefs from 'react-merge-refs'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type LightProps = JSX.IntrinsicElements['mesh'] & {
   args?: any[]
@@ -14,7 +15,7 @@ export type LightProps = JSX.IntrinsicElements['mesh'] & {
   target?: [number, number, number] | THREE.Vector3
 }
 
-export const Lightformer = React.forwardRef(
+export const Lightformer: ForwardRefComponent<LightProps, THREE.Mesh> = React.forwardRef(
   (
     {
       args,

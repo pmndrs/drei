@@ -10,6 +10,7 @@ import { useHelper } from './useHelper'
 import { shaderMaterial } from './shaderMaterial'
 import { Edges } from './Edges'
 import { FullScreenQuad } from 'three-stdlib'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type CausticsMaterialType = THREE.ShaderMaterial & {
   cameraMatrixWorld?: THREE.Matrix4
@@ -277,7 +278,7 @@ const CAUSTICPROPS = {
 
 const causticsContext = React.createContext(null)
 
-export const Caustics = React.forwardRef(
+export const Caustics: ForwardRefComponent<CausticsProps, THREE.Group> = React.forwardRef(
   (
     {
       debug,

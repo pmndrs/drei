@@ -3,6 +3,7 @@ import { RGBAFormat, HalfFloatType, WebGLRenderTarget, UnsignedByteType } from '
 import { ReactThreeFiber, extend, useThree, useFrame } from '@react-three/fiber'
 import { EffectComposer, RenderPass, ShaderPass, GammaCorrectionShader } from 'three-stdlib'
 import mergeRefs from 'react-merge-refs'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type Props = ReactThreeFiber.Node<EffectComposer, typeof EffectComposer> & {
   multisamping?: number
@@ -36,7 +37,7 @@ export const isWebGL2Available = () => {
   }
 }
 
-export const Effects = React.forwardRef(
+export const Effects: ForwardRefComponent<Props, EffectComposer> = React.forwardRef(
   (
     {
       children,

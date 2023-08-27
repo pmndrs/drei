@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { MeshStandardMaterial, MeshStandardMaterialParameters, Shader } from 'three'
 import { useFrame } from '@react-three/fiber'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type WobbleMaterialType = JSX.IntrinsicElements['meshStandardMaterial'] & {
   time?: number
@@ -73,8 +74,10 @@ class WobbleMaterialImpl extends MeshStandardMaterial {
   }
 }
 
-export const MeshWobbleMaterial = React.forwardRef(({ speed = 1, ...props }: Props, ref) => {
-  const [material] = React.useState(() => new WobbleMaterialImpl())
-  useFrame((state) => material && (material.time = state.clock.getElapsedTime() * speed))
-  return <primitive object={material} ref={ref} attach="material" {...props} />
-})
+export const MeshWobbleMaterial: ForwardRefComponent<Props, WobbleMaterialImpl> = React.forwardRef(
+  ({ speed = 1, ...props }: Props, ref) => {
+    const [material] = React.useState(() => new WobbleMaterialImpl())
+    useFrame((state) => material && (material.time = state.clock.getElapsedTime() * speed))
+    return <primitive object={material} ref={ref} attach="material" {...props} />
+  }
+)

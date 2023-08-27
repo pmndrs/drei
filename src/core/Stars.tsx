@@ -3,6 +3,7 @@ import * as React from 'react'
 // eslint-disable-next-line
 import { ReactThreeFiber, useFrame } from '@react-three/fiber'
 import { Points, Vector3, Spherical, Color, AdditiveBlending, ShaderMaterial } from 'three'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type Props = {
   radius?: number
@@ -59,7 +60,7 @@ const genStar = (r: number) => {
   return new Vector3().setFromSpherical(new Spherical(r, Math.acos(1 - Math.random() * 2), Math.random() * 2 * Math.PI))
 }
 
-export const Stars = React.forwardRef(
+export const Stars: ForwardRefComponent<Props, Points> = React.forwardRef(
   ({ radius = 100, depth = 50, count = 5000, saturation = 0, factor = 4, fade = false, speed = 1 }: Props, ref) => {
     const material = React.useRef<StarfieldMaterial>()
     const [position, color, size] = React.useMemo(() => {

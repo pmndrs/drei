@@ -2,6 +2,7 @@ import { ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from 'three'
 import { DeviceOrientationControls as DeviceOrientationControlsImp } from 'three-stdlib'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type DeviceOrientationControlsProps = ReactThreeFiber.Object3DNode<
   DeviceOrientationControlsImp,
@@ -12,7 +13,10 @@ export type DeviceOrientationControlsProps = ReactThreeFiber.Object3DNode<
   makeDefault?: boolean
 }
 
-export const DeviceOrientationControls = React.forwardRef<DeviceOrientationControlsImp, DeviceOrientationControlsProps>(
+export const DeviceOrientationControls: ForwardRefComponent<
+  DeviceOrientationControlsProps,
+  DeviceOrientationControlsImp
+> = React.forwardRef<DeviceOrientationControlsImp, DeviceOrientationControlsProps>(
   (props: DeviceOrientationControlsProps, ref) => {
     const { camera, onChange, makeDefault, ...rest } = props
     const defaultCamera = useThree((state) => state.camera)

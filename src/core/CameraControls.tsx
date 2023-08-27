@@ -19,6 +19,7 @@ import { forwardRef, useMemo, useEffect } from 'react'
 import { extend, useFrame, useThree, ReactThreeFiber, EventManager } from '@react-three/fiber'
 
 import CameraControlsImpl from 'camera-controls'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type CameraControlsProps = Omit<
   ReactThreeFiber.Overwrite<
@@ -37,7 +38,10 @@ export type CameraControlsProps = Omit<
   'ref'
 >
 
-export const CameraControls = forwardRef<CameraControlsImpl, CameraControlsProps>((props, ref) => {
+export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraControlsImpl> = forwardRef<
+  CameraControlsImpl,
+  CameraControlsProps
+>((props, ref) => {
   // useMemo is used here instead of useEffect, otherwise the useMemo below runs first and throws
   useMemo(() => {
     // to allow for tree shaking, we only import the subset of THREE that is used by camera-controls

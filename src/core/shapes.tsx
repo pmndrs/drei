@@ -1,10 +1,11 @@
 import * as React from 'react'
 import * as THREE from 'three'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type Args<T> = T extends new (...args: any) => any ? ConstructorParameters<T> : T
 export type ShapeProps<T> = Omit<JSX.IntrinsicElements['mesh'], 'args'> & { args?: Args<T> }
 
-function create<T>(type: string, effect?: (mesh: THREE.Mesh) => void) {
+function create<T>(type: string, effect?: (mesh: THREE.Mesh) => void): ForwardRefComponent<ShapeProps<T>, THREE.Mesh> {
   const El: any = type + 'Geometry'
   return React.forwardRef(({ args, children, ...props }: ShapeProps<T>, fref: React.ForwardedRef<THREE.Mesh>) => {
     const ref = React.useRef<THREE.Mesh>(null!)

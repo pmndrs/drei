@@ -1,6 +1,7 @@
 import { Box3, Vector3, Sphere, Group } from 'three'
 import * as React from 'react'
 import { useThree } from '@react-three/fiber'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type OnCenterCallbackProps = {
   /** The next parent above <Center> */
@@ -41,7 +42,10 @@ export type CenterProps = {
   cacheKey?: any
 }
 
-export const Center = React.forwardRef<Group, JSX.IntrinsicElements['group'] & CenterProps>(function Center(
+export const Center: ForwardRefComponent<JSX.IntrinsicElements['group'] & CenterProps, Group> = React.forwardRef<
+  Group,
+  JSX.IntrinsicElements['group'] & CenterProps
+>(function Center(
   {
     children,
     disable,

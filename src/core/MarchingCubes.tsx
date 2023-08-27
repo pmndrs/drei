@@ -4,6 +4,7 @@ import { Color, Group } from 'three'
 import mergeRefs from 'react-merge-refs'
 import { MarchingCubes as MarchingCubesImpl } from 'three-stdlib'
 import { useFrame } from '@react-three/fiber'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type Api = {
   getParent: () => React.MutableRefObject<MarchingCubesImpl>
@@ -18,7 +19,7 @@ export type MarchingCubesProps = {
   enableColors?: boolean
 } & JSX.IntrinsicElements['group']
 
-export const MarchingCubes = React.forwardRef(
+export const MarchingCubes: ForwardRefComponent<MarchingCubesProps, MarchingCubesImpl> = React.forwardRef(
   (
     {
       resolution = 28,
@@ -58,7 +59,7 @@ type MarchingCubeProps = {
   color?: Color
 } & JSX.IntrinsicElements['group']
 
-export const MarchingCube = React.forwardRef(
+export const MarchingCube: ForwardRefComponent<MarchingCubeProps, THREE.Group> = React.forwardRef(
   ({ strength = 0.5, subtract = 12, color, ...props }: MarchingCubeProps, ref) => {
     const { getParent } = React.useContext(globalContext)
     const parentRef = React.useMemo(() => getParent(), [getParent])
@@ -79,7 +80,7 @@ type MarchingPlaneProps = {
   subtract?: number
 } & JSX.IntrinsicElements['group']
 
-export const MarchingPlane = React.forwardRef(
+export const MarchingPlane: ForwardRefComponent<MarchingPlaneProps, THREE.Group> = React.forwardRef(
   ({ planeType: _planeType = 'x', strength = 0.5, subtract = 12, ...props }: MarchingPlaneProps, ref) => {
     const { getParent } = React.useContext(globalContext)
     const parentRef = React.useMemo(() => getParent(), [getParent])

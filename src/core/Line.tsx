@@ -9,6 +9,7 @@ import {
   Line2,
   LineSegments2,
 } from 'three-stdlib'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type LineProps = {
   points: Array<Vector3 | Vector2 | [number, number, number] | [number, number] | number>
@@ -21,10 +22,10 @@ export type LineProps = {
     color?: ColorRepresentation
   }
 
-export const Line = React.forwardRef<Line2 | LineSegments2, LineProps>(function Line(
-  { points, color = 'black', vertexColors, linewidth, lineWidth, segments, dashed, ...rest },
-  ref
-) {
+export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = React.forwardRef<
+  Line2 | LineSegments2,
+  LineProps
+>(function Line({ points, color = 'black', vertexColors, linewidth, lineWidth, segments, dashed, ...rest }, ref) {
   const size = useThree((state) => state.size)
   const line2 = React.useMemo(() => (segments ? new LineSegments2() : new Line2()), [segments])
   const [lineMaterial] = React.useState(() => new LineMaterial())

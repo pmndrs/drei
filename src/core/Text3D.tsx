@@ -5,6 +5,7 @@ import { useMemo } from 'react'
 import { suspend } from 'suspend-react'
 import { mergeVertices, TextGeometry, TextGeometryParameters, FontLoader } from 'three-stdlib'
 import { useFont, FontData } from './useFont'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 declare global {
   namespace JSX {
@@ -32,7 +33,10 @@ const getTextFromChildren = (children) => {
   return [label, ...rest]
 }
 
-export const Text3D = React.forwardRef<
+export const Text3D: ForwardRefComponent<
+  React.PropsWithChildren<Text3DProps & { letterSpacing?: number; lineHeight?: number }>,
+  THREE.Mesh
+> = React.forwardRef<
   THREE.Mesh,
   React.PropsWithChildren<Text3DProps & { letterSpacing?: number; lineHeight?: number }>
 >(

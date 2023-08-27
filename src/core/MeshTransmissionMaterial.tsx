@@ -9,6 +9,7 @@ import * as React from 'react'
 import { applyProps, extend, useFrame } from '@react-three/fiber'
 import { useFBO } from './useFBO'
 import { DiscardMaterial } from '../materials/DiscardMaterial'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type MeshTransmissionMaterialType = Omit<
   JSX.IntrinsicElements['meshPhysicalMaterial'],
@@ -368,7 +369,10 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
   }
 }
 
-export const MeshTransmissionMaterial = React.forwardRef(
+export const MeshTransmissionMaterial: ForwardRefComponent<
+  MeshTransmissionMaterialProps,
+  JSX.IntrinsicElements['meshTransmissionMaterial']
+> = React.forwardRef(
   (
     {
       buffer,

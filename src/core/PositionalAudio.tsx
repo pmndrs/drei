@@ -2,6 +2,7 @@ import * as React from 'react'
 import { AudioLoader, AudioListener, PositionalAudio as PositionalAudioImpl } from 'three'
 import { useThree, useLoader } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type Props = JSX.IntrinsicElements['positionalAudio'] & {
   url: string
@@ -9,7 +10,7 @@ type Props = JSX.IntrinsicElements['positionalAudio'] & {
   loop?: boolean
 }
 
-export const PositionalAudio = React.forwardRef(
+export const PositionalAudio: ForwardRefComponent<Props, PositionalAudioImpl> = React.forwardRef(
   ({ url, distance = 1, loop = true, autoplay, ...props }: Props, ref) => {
     const sound = React.useRef<PositionalAudioImpl>()
     const camera = useThree(({ camera }) => camera)

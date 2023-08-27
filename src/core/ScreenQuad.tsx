@@ -2,6 +2,7 @@
 // and @gsimone ;)
 import * as THREE from 'three'
 import * as React from 'react'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 function createScreenQuadGeometry() {
   const geometry = new THREE.BufferGeometry()
@@ -14,12 +15,14 @@ function createScreenQuadGeometry() {
 
 type Props = Omit<JSX.IntrinsicElements['mesh'], 'args'>
 
-export const ScreenQuad = React.forwardRef<THREE.Mesh, Props>(function ScreenQuad({ children, ...restProps }, ref) {
-  const geometry = React.useMemo(createScreenQuadGeometry, [])
+export const ScreenQuad: ForwardRefComponent<Props, THREE.Mesh> = React.forwardRef<THREE.Mesh, Props>(
+  function ScreenQuad({ children, ...restProps }, ref) {
+    const geometry = React.useMemo(createScreenQuadGeometry, [])
 
-  return (
-    <mesh ref={ref} geometry={geometry} frustumCulled={false} {...restProps}>
-      {children}
-    </mesh>
-  )
-})
+    return (
+      <mesh ref={ref} geometry={geometry} frustumCulled={false} {...restProps}>
+        {children}
+      </mesh>
+    )
+  }
+)

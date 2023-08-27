@@ -1,13 +1,14 @@
 import { ReactThreeFiber } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from 'three'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type Props = JSX.IntrinsicElements['lineSegments'] & {
   threshold?: number
   color?: ReactThreeFiber.Color
 }
 
-export const Edges = React.forwardRef(
+export const Edges: ForwardRefComponent<Props, THREE.LineSegments> = React.forwardRef(
   (
     { userData, children, geometry, threshold = 15, color = 'black', ...props }: Props,
     fref: React.ForwardedRef<THREE.LineSegments>

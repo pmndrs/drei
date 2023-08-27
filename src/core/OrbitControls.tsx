@@ -2,6 +2,7 @@ import { EventManager, ReactThreeFiber, useFrame, useThree } from '@react-three/
 import * as React from 'react'
 import type { Camera, Event } from 'three'
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type OrbitControlsChangeEvent = Event & {
   target: EventTarget & { object: Camera }
@@ -26,7 +27,10 @@ export type OrbitControlsProps = Omit<
   'ref'
 >
 
-export const OrbitControls = React.forwardRef<OrbitControlsImpl, OrbitControlsProps>(
+export const OrbitControls: ForwardRefComponent<OrbitControlsProps, OrbitControlsImpl> = React.forwardRef<
+  OrbitControlsImpl,
+  OrbitControlsProps
+>(
   (
     {
       makeDefault,

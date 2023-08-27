@@ -2,6 +2,7 @@ import { useThree } from '@react-three/fiber'
 import * as React from 'react'
 import { Mesh, Group } from 'three'
 import { acceleratedRaycast, computeBoundsTree, disposeBoundsTree, SAH, SplitStrategy } from 'three-mesh-bvh'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export interface BVHOptions {
   /** Split strategy, default: SAH (slowest to construct, fastest runtime, least memory) */
@@ -55,7 +56,7 @@ export function useBVH(mesh: React.MutableRefObject<Mesh | undefined>, options?:
   }, [mesh, JSON.stringify(options)])
 }
 
-export const Bvh = React.forwardRef(
+export const Bvh: ForwardRefComponent<BvhProps, Group> = React.forwardRef(
   (
     {
       enabled = true,

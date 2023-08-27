@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import * as React from 'react'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type Props = Omit<JSX.IntrinsicElements['mesh'], 'id'> & {
   /** Each mask must have an id, you can have compound masks referring to the same id */
@@ -10,7 +11,7 @@ type Props = Omit<JSX.IntrinsicElements['mesh'], 'id'> & {
   depthWrite?: boolean
 }
 
-export const Mask = React.forwardRef(
+export const Mask: ForwardRefComponent<Props, THREE.Mesh> = React.forwardRef(
   ({ id = 1, colorWrite = false, depthWrite = false, ...props }: Props, fref: React.ForwardedRef<THREE.Mesh>) => {
     const ref = React.useRef<THREE.Mesh>(null!)
     const spread = React.useMemo(

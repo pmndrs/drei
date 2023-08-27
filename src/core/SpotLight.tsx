@@ -25,6 +25,7 @@ import { SpotLightMaterial } from '../materials/SpotLightMaterial'
 // eslint-disable-next-line
 // @ts-ignore
 import SpotlightShadowShader from '../helpers/glsl/DefaultSpotlightShadowShadows.glsl'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type SpotLightProps = JSX.IntrinsicElements['spotLight'] & {
   depthBuffer?: DepthTexture
@@ -276,7 +277,7 @@ export function SpotLightShadow(props: React.PropsWithChildren<ShadowMeshProps>)
   return <SpotlightShadowWithoutShader {...props} />
 }
 
-const SpotLight = React.forwardRef(
+const SpotLight: ForwardRefComponent<React.PropsWithChildren<SpotLightProps>, SpotLightImpl> = React.forwardRef(
   (
     {
       // Volumetric

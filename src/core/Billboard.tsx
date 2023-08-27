@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Group } from 'three'
 import { useFrame } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type BillboardProps = {
   follow?: boolean
@@ -19,24 +20,23 @@ export type BillboardProps = {
  * </Billboard>
  * ```
  */
-export const Billboard = React.forwardRef<Group, BillboardProps>(function Billboard(
-  { follow = true, lockX = false, lockY = false, lockZ = false, ...props },
-  ref
-) {
-  const localRef = React.useRef<Group>()
-  useFrame(({ camera }) => {
-    if (!follow || !localRef.current) return
+export const Billboard: ForwardRefComponent<BillboardProps, Group> = React.forwardRef<Group, BillboardProps>(
+  function Billboard({ follow = true, lockX = false, lockY = false, lockZ = false, ...props }, ref) {
+    const localRef = React.useRef<Group>()
+    useFrame(({ camera }) => {
+      if (!follow || !localRef.current) return
 
-    // save previous rotation in case we're locking an axis
-    const prevRotation = localRef.current.rotation.clone()
+      // save previous rotation in case we're locking an axis
+      const prevRotation = localRef.current.rotation.clone()
 
-    // always face the camera
-    camera.getWorldQuaternion(localRef.current.quaternion)
+      // always face the camera
+      camera.getWorldQuaternion(localRef.current.quaternion)
 
-    // readjust any axis that is locked
-    if (lockX) localRef.current.rotation.x = prevRotation.x
-    if (lockY) localRef.current.rotation.y = prevRotation.y
-    if (lockZ) localRef.current.rotation.z = prevRotation.z
-  })
-  return <group ref={mergeRefs([localRef, ref])} {...props} />
-})
+      // readjust any axis that is locked
+      if (lockX) localRef.current.rotation.x = prevRotation.x
+      if (lockY) localRef.current.rotation.y = prevRotation.y
+      if (lockZ) localRef.current.rotation.z = prevRotation.z
+    })
+    return <group ref={mergeRefs([localRef, ref])} {...props} />
+  }
+)

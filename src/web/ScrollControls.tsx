@@ -5,6 +5,7 @@ import { context as fiberContext, RootState, useFrame, useThree } from '@react-t
 import mergeRefs from 'react-merge-refs'
 import { DomEvent } from '@react-three/fiber/dist/declarations/src/core/events'
 import { easing } from 'maath'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type ScrollControlsProps = {
   /** Precision, default 0.00001 */
@@ -209,7 +210,7 @@ export function ScrollControls({
   return <context.Provider value={state}>{children}</context.Provider>
 }
 
-const ScrollCanvas = React.forwardRef(({ children }, ref) => {
+const ScrollCanvas: ForwardRefComponent<{}, THREE.Group> = React.forwardRef(({ children }, ref) => {
   const group = React.useRef<THREE.Group>(null!)
   const state = useScroll()
   const { width, height } = useThree((state) => state.viewport)
@@ -220,41 +221,44 @@ const ScrollCanvas = React.forwardRef(({ children }, ref) => {
   return <group ref={mergeRefs([ref, group])}>{children}</group>
 })
 
-const ScrollHtml = React.forwardRef(
-  ({ children, style, ...props }: { children?: React.ReactNode; style?: React.CSSProperties }, ref) => {
-    const state = useScroll()
-    const group = React.useRef<HTMLDivElement>(null!)
-    const { width, height } = useThree((state) => state.size)
-    const fiberState = React.useContext(fiberContext)
-    const root = React.useMemo(() => ReactDOM.createRoot(state.fixed), [state.fixed])
-    useFrame(() => {
-      if (state.delta > state.eps) {
-        group.current.style.transform = `translate3d(${
-          state.horizontal ? -width * (state.pages - 1) * state.offset : 0
-        }px,${state.horizontal ? 0 : height * (state.pages - 1) * -state.offset}px,0)`
-      }
-    })
-    root.render(
-      <div
-        ref={mergeRefs([ref, group])}
-        style={{ ...style, position: 'absolute', top: 0, left: 0, willChange: 'transform' }}
-        {...props}
-      >
-        <context.Provider value={state}>
-          <fiberContext.Provider value={fiberState}>{children}</fiberContext.Provider>
-        </context.Provider>
-      </div>
-    )
-    return null
-  }
-)
+const ScrollHtml: ForwardRefComponent<{ children?: React.ReactNode; style?: React.CSSProperties }, HTMLDivElement> =
+  React.forwardRef(
+    ({ children, style, ...props }: { children?: React.ReactNode; style?: React.CSSProperties }, ref) => {
+      const state = useScroll()
+      const group = React.useRef<HTMLDivElement>(null!)
+      const { width, height } = useThree((state) => state.size)
+      const fiberState = React.useContext(fiberContext)
+      const root = React.useMemo(() => ReactDOM.createRoot(state.fixed), [state.fixed])
+      useFrame(() => {
+        if (state.delta > state.eps) {
+          group.current.style.transform = `translate3d(${
+            state.horizontal ? -width * (state.pages - 1) * state.offset : 0
+          }px,${state.horizontal ? 0 : height * (state.pages - 1) * -state.offset}px,0)`
+        }
+      })
+      root.render(
+        <div
+          ref={mergeRefs([ref, group])}
+          style={{ ...style, position: 'absolute', top: 0, left: 0, willChange: 'transform' }}
+          {...props}
+        >
+          <context.Provider value={state}>
+            <fiberContext.Provider value={fiberState}>{children}</fiberContext.Provider>
+          </context.Provider>
+        </div>
+      )
+      return null
+    }
+  )
 
 type ScrollProps = {
   html?: boolean
   children?: React.ReactNode
 }
 
-export const Scroll = React.forwardRef(({ html, ...props }: ScrollProps, ref) => {
-  const El = html ? ScrollHtml : ScrollCanvas
-  return <El ref={ref} {...props} />
-})
+export const Scroll: ForwardRefComponent<ScrollProps, THREE.Group & HTMLDivElement> = React.forwardRef(
+  ({ html, ...props }: ScrollProps, ref) => {
+    const El = html ? ScrollHtml : ScrollCanvas
+    return <El ref={ref} {...props} />
+  }
+)

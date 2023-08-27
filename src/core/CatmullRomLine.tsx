@@ -2,6 +2,7 @@ import * as React from 'react'
 import { CatmullRomCurve3, Color, Vector3 } from 'three'
 import { Line2 } from 'three-stdlib'
 import { Line, LineProps } from './Line'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type Props = Omit<LineProps, 'ref'> & {
   closed?: boolean
@@ -10,7 +11,7 @@ type Props = Omit<LineProps, 'ref'> & {
   segments?: number
 }
 
-export const CatmullRomLine = React.forwardRef<Line2, Props>(function CatmullRomLine(
+export const CatmullRomLine: ForwardRefComponent<Props, Line2> = React.forwardRef<Line2, Props>(function CatmullRomLine(
   { points, closed = false, curveType = 'centripetal', tension = 0.5, segments = 20, vertexColors, ...rest },
   ref
 ) {

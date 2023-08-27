@@ -4,6 +4,7 @@ import { OrthographicCamera as OrthographicCameraImpl } from 'three'
 import { useThree, useFrame } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
 import { useFBO } from './useFBO'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 const isFunction = (node: any): node is Function => typeof node === 'function'
 
@@ -22,7 +23,7 @@ type Props = Omit<JSX.IntrinsicElements['orthographicCamera'], 'children'> & {
   envMap?: THREE.Texture
 }
 
-export const OrthographicCamera = React.forwardRef(
+export const OrthographicCamera: ForwardRefComponent<Props, OrthographicCameraImpl> = React.forwardRef(
   ({ envMap, resolution = 256, frames = Infinity, children, makeDefault, ...props }: Props, ref) => {
     const set = useThree(({ set }) => set)
     const camera = useThree(({ camera }) => camera)

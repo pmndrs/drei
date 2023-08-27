@@ -21,6 +21,7 @@ import {
   MeshReflectorMaterialProps,
   MeshReflectorMaterial as MeshReflectorMaterialImpl,
 } from '../materials/MeshReflectorMaterial'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type Props = JSX.IntrinsicElements['meshStandardMaterial'] & {
   resolution?: number
@@ -48,7 +49,10 @@ declare global {
 
 extend({ MeshReflectorMaterialImpl })
 
-export const MeshReflectorMaterial = React.forwardRef<MeshReflectorMaterialImpl, Props>(
+export const MeshReflectorMaterial: ForwardRefComponent<Props, MeshReflectorMaterialImpl> = React.forwardRef<
+  MeshReflectorMaterialImpl,
+  Props
+>(
   (
     {
       mixBlur = 0,

@@ -15,6 +15,7 @@ import {
 } from 'three'
 import { Assign } from 'utility-types'
 import { MaterialProps, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 const v1 = new Vector3()
 const v2 = new Vector3()
@@ -141,7 +142,7 @@ export interface HtmlProps
   receiveShadow?: boolean // Receive shadow for occlusion plane
 }
 
-export const Html = React.forwardRef(
+export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = React.forwardRef(
   (
     {
       children,

@@ -3,6 +3,7 @@ import * as React from 'react'
 import { Text as TextMeshImpl, preloadFont } from 'troika-three-text'
 import { ReactThreeFiber, useThree } from '@react-three/fiber'
 import { suspend } from 'suspend-react'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type Props = JSX.IntrinsicElements['mesh'] & {
   children: React.ReactNode
@@ -38,7 +39,7 @@ type Props = JSX.IntrinsicElements['mesh'] & {
 }
 
 // eslint-disable-next-line prettier/prettier
-export const Text = React.forwardRef(
+export const Text: ForwardRefComponent<Props, any> = React.forwardRef(
   (
     {
       sdfGlyphSize = 64,

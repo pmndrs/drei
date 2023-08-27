@@ -3,6 +3,7 @@ import * as React from 'react'
 import { extend, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
 import { DiscardMaterial } from '../materials/DiscardMaterial'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 function isLight(object: any): object is THREE.Light {
   return object.isLight
@@ -100,7 +101,10 @@ const SoftShadowMaterial = shaderMaterial(
    }`
 )
 
-export const AccumulativeShadows = React.forwardRef(
+export const AccumulativeShadows: ForwardRefComponent<
+  JSX.IntrinsicElements['group'] & AccumulativeShadowsProps,
+  AccumulativeContext
+> = React.forwardRef(
   (
     {
       children,
@@ -246,7 +250,10 @@ export type RandomizedLightProps = {
   far?: number
 }
 
-export const RandomizedLight = React.forwardRef(
+export const RandomizedLight: ForwardRefComponent<
+  JSX.IntrinsicElements['group'] & RandomizedLightProps,
+  AccumulativeLightContext
+> = React.forwardRef(
   (
     {
       castShadow = true,

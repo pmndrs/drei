@@ -19,6 +19,7 @@ import mergeRefs from 'react-merge-refs'
 
 import { BlurPass } from '../materials/BlurPass'
 import { MeshReflectorMaterialProps, MeshReflectorMaterial } from '../materials/MeshReflectorMaterial'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type ReflectorProps = Omit<JSX.IntrinsicElements['mesh'], 'args' | 'children'> &
   Pick<JSX.IntrinsicElements['planeGeometry'], 'args'> & {
@@ -56,7 +57,7 @@ extend({ MeshReflectorMaterial })
 /**
  * @deprecated Use MeshReflectorMaterial instead
  */
-export const Reflector = React.forwardRef<Mesh, ReflectorProps>(
+export const Reflector: ForwardRefComponent<ReflectorProps, Mesh> = React.forwardRef<Mesh, ReflectorProps>(
   (
     {
       mixBlur = 0,

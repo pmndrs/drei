@@ -3,6 +3,7 @@ import * as React from 'react'
 import pick from 'lodash.pick'
 import { MeshProps } from '@react-three/fiber'
 import { SkeletonUtils } from 'three-stdlib'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type CloneProps = {
   /** Any pre-existing THREE.Object3D (groups, meshes, ...), or an array of objects */
@@ -77,58 +78,59 @@ function createSpread(
   return spread
 }
 
-export const Clone = React.forwardRef(
-  (
-    {
-      isChild = false,
-      object,
-      children,
-      deep,
-      castShadow,
-      receiveShadow,
-      inject,
-      keys,
-      ...props
-    }: Omit<JSX.IntrinsicElements['group'], 'children'> & CloneProps,
-    forwardRef: React.Ref<THREE.Group>
-  ) => {
-    const config = { keys, deep, inject, castShadow, receiveShadow }
-    object = React.useMemo(() => {
-      if (isChild === false && !Array.isArray(object)) {
-        let isSkinned = false
-        object.traverse((object) => {
-          if ((object as any).isSkinnedMesh) isSkinned = true
-        })
-        if (isSkinned) return SkeletonUtils.clone(object)
-      }
-      return object
-    }, [object, isChild])
+export const Clone: ForwardRefComponent<Omit<JSX.IntrinsicElements['group'], 'children'> & CloneProps, THREE.Group> =
+  React.forwardRef(
+    (
+      {
+        isChild = false,
+        object,
+        children,
+        deep,
+        castShadow,
+        receiveShadow,
+        inject,
+        keys,
+        ...props
+      }: Omit<JSX.IntrinsicElements['group'], 'children'> & CloneProps,
+      forwardRef: React.Ref<THREE.Group>
+    ) => {
+      const config = { keys, deep, inject, castShadow, receiveShadow }
+      object = React.useMemo(() => {
+        if (isChild === false && !Array.isArray(object)) {
+          let isSkinned = false
+          object.traverse((object) => {
+            if ((object as any).isSkinnedMesh) isSkinned = true
+          })
+          if (isSkinned) return SkeletonUtils.clone(object)
+        }
+        return object
+      }, [object, isChild])
 
-    // Deal with arrayed clones
-    if (Array.isArray(object)) {
+      // Deal with arrayed clones
+      if (Array.isArray(object)) {
+        return (
+          <group {...props} ref={forwardRef}>
+            {object.map((o) => (
+              <Clone key={o.uuid} object={o} {...config} />
+            ))}
+            {children}
+          </group>
+        )
+      }
+
+      // Singleton clones
+      const { children: injectChildren, ...spread } = createSpread(object, config)
+      const Element = object.type[0].toLowerCase() + object.type.slice(1)
+
       return (
-        <group {...props} ref={forwardRef}>
-          {object.map((o) => (
-            <Clone key={o.uuid} object={o} {...config} />
-          ))}
+        <Element {...spread} {...props} ref={forwardRef}>
+          {(object?.children).map((child) => {
+            if (child.type === 'Bone') return <primitive key={child.uuid} object={child} {...config} />
+            return <Clone key={child.uuid} object={child} {...config} isChild />
+          })}
           {children}
-        </group>
+          {injectChildren}
+        </Element>
       )
     }
-
-    // Singleton clones
-    const { children: injectChildren, ...spread } = createSpread(object, config)
-    const Element = object.type[0].toLowerCase() + object.type.slice(1)
-
-    return (
-      <Element {...spread} {...props} ref={forwardRef}>
-        {(object?.children).map((child) => {
-          if (child.type === 'Bone') return <primitive key={child.uuid} object={child} {...config} />
-          return <Clone key={child.uuid} object={child} {...config} isChild />
-        })}
-        {children}
-        {injectChildren}
-      </Element>
-    )
-  }
-)
+  )

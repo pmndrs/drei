@@ -73,6 +73,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#effects">Effects</a></li>
           <li><a href="#gradienttexture">GradientTexture</a></li>
           <li><a href="#edges">Edges</a></li>
+          <li><a href="#outlines">Outlines</a></li>
           <li><a href="#trail">Trail</a></li>
           <li><a href="#sampler">Sampler</a></li>
           <li><a href="#computedattribute">Computed Attribute</a></li>
@@ -1392,6 +1393,37 @@ Abstracts [THREE.EdgesGeometry](https://threejs.org/docs/#api/en/geometries/Edge
     threshold={15} // Display edges only when the angle between two faces exceeds this value (default=15 degrees)
     color="white"
   />
+</mesh>
+```
+
+#### Outlines
+
+<p>
+  <a href="https://codesandbox.io/s/ny3p4"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/ny3p4/screenshot.png" alt="Demo"/></a>
+</p>
+
+An ornamental component that extracts the geometry from its parent and displays an [inverted-hull outline](https://bnpr.gitbook.io/bnpr/outline/inverse-hull-method).
+
+```tsx
+type OutlinesProps = JSX.IntrinsicElements['group'] & {
+  /** Outline color, default: black */
+  color: ReactThreeFiber.Color
+  /** Outline opacity, default: 1 */
+  opacity: number
+  /** Outline transparency, default: false */
+  transparent: boolean
+  /** Outline thickness, default 0.05 */
+  thickness: number
+  /** Geometry crease angle (0 === no crease), default: Math.PI */
+  angle: number
+}
+```
+
+```jsx
+<mesh>
+  <boxGeometry />
+  <meshBasicMaterial />
+  <Outlines thickness={0.05} color="hotpink" />
 </mesh>
 ```
 

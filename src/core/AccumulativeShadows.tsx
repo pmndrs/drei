@@ -266,7 +266,7 @@ export const RandomizedLight: ForwardRefComponent<
       position = [0, 0, 0],
       radius = 1,
       amount = 8,
-      intensity = 1,
+      intensity = parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 155 ? Math.PI : 1,
       ambient = 0.5,
       ...props
     }: JSX.IntrinsicElements['group'] & RandomizedLightProps,

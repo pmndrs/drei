@@ -2,6 +2,7 @@ import { EventManager, ReactThreeFiber, useFrame, useThree } from '@react-three/
 import * as React from 'react'
 import * as THREE from 'three'
 import { FlyControls as FlyControlsImpl } from 'three-stdlib'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type FlyControlsProps = ReactThreeFiber.Object3DNode<FlyControlsImpl, typeof FlyControlsImpl> & {
   onChange?: (e?: THREE.Event) => void
@@ -9,7 +10,10 @@ export type FlyControlsProps = ReactThreeFiber.Object3DNode<FlyControlsImpl, typ
   makeDefault?: boolean
 }
 
-export const FlyControls = React.forwardRef<FlyControlsImpl, FlyControlsProps>(({ domElement, ...props }, fref) => {
+export const FlyControls: ForwardRefComponent<FlyControlsProps, FlyControlsImpl> = React.forwardRef<
+  FlyControlsImpl,
+  FlyControlsProps
+>(({ domElement, ...props }, fref) => {
   const { onChange, makeDefault, ...rest } = props
   const invalidate = useThree((state) => state.invalidate)
   const camera = useThree((state) => state.camera)

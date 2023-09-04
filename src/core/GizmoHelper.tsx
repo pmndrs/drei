@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { Camera, Group, Matrix4, Object3D, Quaternion, Vector3 } from 'three'
+import { Group, Matrix4, Object3D, OrthographicCamera as OrthographicCameraImpl, Quaternion, Vector3 } from 'three'
 import { OrthographicCamera } from './OrthographicCamera'
 import { OrbitControls as OrbitControlsType } from 'three-stdlib'
 import { Hud } from './Hud'
@@ -62,7 +62,7 @@ export const GizmoHelper = ({
   const defaultControls = useThree((state) => state.controls) as ControlsProto
   const invalidate = useThree((state) => state.invalidate)
   const gizmoRef = React.useRef<Group>()
-  const virtualCam = React.useRef<Camera>(null!)
+  const virtualCam = React.useRef<OrthographicCameraImpl>(null!)
 
   const animating = React.useRef(false)
   const radius = React.useRef(0)

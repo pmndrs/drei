@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import * as React from 'react'
 import { createPortal, useFrame, useThree } from '@react-three/fiber'
 import { useFBO } from './useFBO'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type Props = JSX.IntrinsicElements['texture'] & {
   /** Optional width of the texture, defaults to viewport bounds */
@@ -28,7 +29,7 @@ type Props = JSX.IntrinsicElements['texture'] & {
   children: React.ReactNode
 }
 
-export const RenderTexture = React.forwardRef(
+export const RenderTexture: ForwardRefComponent<Props, THREE.Texture> = React.forwardRef(
   (
     {
       children,

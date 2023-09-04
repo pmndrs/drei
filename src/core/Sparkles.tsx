@@ -2,6 +2,7 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { PointsProps, useThree, useFrame, extend, Node } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 interface Props {
   /** Number of particles (default: 100) */
@@ -51,7 +52,7 @@ const SparklesImplMaterial = shaderMaterial(
       float strength = 0.05 / distanceToCenter - 0.1;
       gl_FragColor = vec4(vColor, strength * vOpacity);
       #include <tonemapping_fragment>
-      #include <encodings_fragment>
+      #include <${parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
     }`
 )
 
@@ -99,47 +100,47 @@ function usePropAsIsOrAsAttribute<T extends any>(
   }, [prop])
 }
 
-export const Sparkles = React.forwardRef<THREE.Points, Props & PointsProps>(
-  ({ noise = 1, count = 100, speed = 1, opacity = 1, scale = 1, size, color, children, ...props }, forwardRef) => {
-    React.useMemo(() => extend({ SparklesImplMaterial }), [])
-    const ref = React.useRef<THREE.Points>(null!)
-    const dpr = useThree((state) => state.viewport.dpr)
-    const positions = React.useMemo(
-      () =>
-        Float32Array.from(
-          Array.from({ length: count }, () => normalizeVector(scale).map(THREE.MathUtils.randFloatSpread)).flat()
-        ),
-      [count, scale]
-    )
+export const Sparkles: ForwardRefComponent<Props & PointsProps, THREE.Points> = React.forwardRef<
+  THREE.Points,
+  Props & PointsProps
+>(({ noise = 1, count = 100, speed = 1, opacity = 1, scale = 1, size, color, children, ...props }, forwardRef) => {
+  React.useMemo(() => extend({ SparklesImplMaterial }), [])
+  const ref = React.useRef<THREE.Points>(null!)
+  const dpr = useThree((state) => state.viewport.dpr)
 
-    const sizes = usePropAsIsOrAsAttribute<number>(count, size, Math.random)
-    const opacities = usePropAsIsOrAsAttribute<number>(count, opacity)
-    const speeds = usePropAsIsOrAsAttribute<number>(count, speed)
-    const noises = usePropAsIsOrAsAttribute<typeof noise>(count * 3, noise)
-    const colors = usePropAsIsOrAsAttribute<THREE.ColorRepresentation>(
-      color === undefined ? count * 3 : count,
-      !isFloat32Array(color) ? new THREE.Color(color) : color,
-      () => 1
-    )
+  const _scale = normalizeVector(scale)
+  const positions = React.useMemo(
+    () => Float32Array.from(Array.from({ length: count }, () => _scale.map(THREE.MathUtils.randFloatSpread)).flat()),
+    [count, ..._scale]
+  )
 
-    useFrame((state) => {
-      if (ref.current && ref.current.material) (ref.current.material as any).time = state.clock.elapsedTime
-    })
+  const sizes = usePropAsIsOrAsAttribute<number>(count, size, Math.random)
+  const opacities = usePropAsIsOrAsAttribute<number>(count, opacity)
+  const speeds = usePropAsIsOrAsAttribute<number>(count, speed)
+  const noises = usePropAsIsOrAsAttribute<typeof noise>(count * 3, noise)
+  const colors = usePropAsIsOrAsAttribute<THREE.ColorRepresentation>(
+    color === undefined ? count * 3 : count,
+    !isFloat32Array(color) ? new THREE.Color(color) : color,
+    () => 1
+  )
 
-    React.useImperativeHandle(forwardRef, () => ref.current, [])
+  useFrame((state) => {
+    if (ref.current && ref.current.material) (ref.current.material as any).time = state.clock.elapsedTime
+  })
 
-    return (
-      <points key={`particle-${count}-${JSON.stringify(scale)}`} {...props} ref={ref}>
-        <bufferGeometry>
-          <bufferAttribute attach="attributes-position" args={[positions, 3]} />
-          <bufferAttribute attach="attributes-size" args={[sizes, 1]} />
-          <bufferAttribute attach="attributes-opacity" args={[opacities, 1]} />
-          <bufferAttribute attach="attributes-speed" args={[speeds, 1]} />
-          <bufferAttribute attach="attributes-color" args={[colors, 3]} />
-          <bufferAttribute attach="attributes-noise" args={[noises, 3]} />
-        </bufferGeometry>
-        {children ? children : <sparklesImplMaterial transparent pixelRatio={dpr} depthWrite={false} />}
-      </points>
-    )
-  }
-)
+  React.useImperativeHandle(forwardRef, () => ref.current, [])
+
+  return (
+    <points key={`particle-${count}-${JSON.stringify(scale)}`} {...props} ref={ref}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+        <bufferAttribute attach="attributes-size" args={[sizes, 1]} />
+        <bufferAttribute attach="attributes-opacity" args={[opacities, 1]} />
+        <bufferAttribute attach="attributes-speed" args={[speeds, 1]} />
+        <bufferAttribute attach="attributes-color" args={[colors, 3]} />
+        <bufferAttribute attach="attributes-noise" args={[noises, 3]} />
+      </bufferGeometry>
+      {children ? children : <sparklesImplMaterial transparent pixelRatio={dpr} depthWrite={false} />}
+    </points>
+  )
+})

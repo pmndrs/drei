@@ -15,6 +15,7 @@ import {
 } from 'three'
 import { Assign } from 'utility-types'
 import { MaterialProps, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 const v1 = new Vector3()
 const v2 = new Vector3()
@@ -141,7 +142,7 @@ export interface HtmlProps
   receiveShadow?: boolean // Receive shadow for occlusion plane
 }
 
-export const Html = React.forwardRef(
+export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = React.forwardRef(
   (
     {
       children,
@@ -295,10 +296,10 @@ export const Html = React.forwardRef(
           let raytraceTarget: null | undefined | boolean | Object3D[] = false
 
           if (isRayCastOcclusion) {
-            if (occlude !== 'blending') {
-              raytraceTarget = [scene]
-            } else if (Array.isArray(occlude)) {
+            if (Array.isArray(occlude)) {
               raytraceTarget = occlude.map((item) => item.current) as Object3D[]
+            } else if (occlude !== 'blending') {
+              raytraceTarget = [scene]
             }
           }
 

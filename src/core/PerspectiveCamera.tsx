@@ -4,6 +4,7 @@ import { PerspectiveCamera as PerspectiveCameraImpl } from 'three'
 import { useFrame, useThree } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
 import { useFBO } from './useFBO'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 const isFunction = (node: any): node is Function => typeof node === 'function'
 
@@ -22,7 +23,7 @@ type Props = Omit<JSX.IntrinsicElements['perspectiveCamera'], 'children'> & {
   envMap?: THREE.Texture
 }
 
-export const PerspectiveCamera = React.forwardRef(
+export const PerspectiveCamera: ForwardRefComponent<Props, PerspectiveCameraImpl> = React.forwardRef(
   ({ envMap, resolution = 256, frames = Infinity, makeDefault, children, ...props }: Props, ref) => {
     const set = useThree(({ set }) => set)
     const camera = useThree(({ camera }) => camera)

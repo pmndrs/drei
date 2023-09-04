@@ -73,6 +73,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#effects">Effects</a></li>
           <li><a href="#gradienttexture">GradientTexture</a></li>
           <li><a href="#edges">Edges</a></li>
+          <li><a href="#outlines">Outlines</a></li>
           <li><a href="#trail">Trail</a></li>
           <li><a href="#sampler">Sampler</a></li>
           <li><a href="#computedattribute">Computed Attribute</a></li>
@@ -108,6 +109,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#select">Select</a></li>
           <li><a href="#sprite-animator">Sprite Animator</a></li>
           <li><a href="#stats">Stats</a></li>
+          <li><a href="#stats-gl">StatsGl</a></li>
           <li><a href="#wireframe">Wireframe</a></li>
           <li><a href="#usedepthbuffer">useDepthBuffer</a></li>
           <li><a href="#usecontextbridge">useContextBridge</a></li>
@@ -1394,6 +1396,37 @@ Abstracts [THREE.EdgesGeometry](https://threejs.org/docs/#api/en/geometries/Edge
 </mesh>
 ```
 
+#### Outlines
+
+<p>
+  <a href="https://codesandbox.io/s/2gh6jf"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/2gh6jf/screenshot.png" alt="Demo"/></a>
+</p>
+
+An ornamental component that extracts the geometry from its parent and displays an [inverted-hull outline](https://bnpr.gitbook.io/bnpr/outline/inverse-hull-method).
+
+```tsx
+type OutlinesProps = JSX.IntrinsicElements['group'] & {
+  /** Outline color, default: black */
+  color: ReactThreeFiber.Color
+  /** Outline opacity, default: 1 */
+  opacity: number
+  /** Outline transparency, default: false */
+  transparent: boolean
+  /** Outline thickness, default 0.05 */
+  thickness: number
+  /** Geometry crease angle (0 === no crease), default: Math.PI */
+  angle: number
+}
+```
+
+```jsx
+<mesh>
+  <boxGeometry />
+  <meshBasicMaterial />
+  <Outlines thickness={0.05} color="hotpink" />
+</mesh>
+```
+
 #### Trail
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-trail--use-trail-st)
@@ -1618,19 +1651,21 @@ The decal box has to intersect the surface, otherwise it will not be visible. if
     position={[0, 0, 0]} // Position of the decal
     rotation={[0, 0, 0]} // Rotation of the decal (can be a vector or a degree in radians)
     scale={1} // Scale of the decal
+    polygonOffset
+    polygonOffsetFactor={-1} // The mesh should take precedence over the original
   >
     <meshBasicMaterial map={texture} />
   </Decal>
 </mesh>
 ```
 
-If you do not specify a material it will create a transparent meshStandardMaterial with a polygonOffsetFactor of -10 and all rest-props will be spread over it.
+If you do not specify a material it will create a transparent meshBasicMaterial with a polygonOffsetFactor of -10.
 
 ```jsx
 <mesh>
   <sphereGeometry />
   <meshBasicMaterial />
-  <Decal map={texture} roughness={0.5} />
+  <Decal map={texture} />
 </mesh>
 ```
 
@@ -1638,7 +1673,7 @@ If declarative composition is not possible, use the `mesh` prop to define the su
 
 ```js
 <Decal mesh={ref}>
-  <meshBasicMaterial map={texture} />
+  <meshBasicMaterial map={texture} polygonOffset polygonOffsetFactor={-1} />
 </Decal>
 ```
 
@@ -2370,6 +2405,16 @@ useEffect(() => {
 return <Stats parent={parent} />
 ```
 
+#### StatsGl
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-statsgl--default-story)
+
+Adds [stats-gl](https://github.com/RenaudRohlinger/stats-gl/) to document.body. It takes over the render-loop!
+
+```jsx
+<StatsGl className="stats" {...props} />
+```
+
 #### Wireframe
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/staging-wireframe--wireframe-st)
@@ -2545,7 +2590,7 @@ A small hook that sets the css body cursor according to the hover state of a mes
 
 ```jsx
 const [hovered, set] = useState()
-useCursor(hovered, /*'pointer', 'auto'*/)
+useCursor(hovered, /*'pointer', 'auto', document.body*/)
 return (
   <mesh onPointerOver={() => set(true)} onPointerOut={() => set(false)}>
 ```

@@ -16,3 +16,4 @@ coverage/
 .idea
 yarn-error.log
 .size-snapshot.json
+__diff_output__

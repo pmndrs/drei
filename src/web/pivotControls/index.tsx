@@ -7,6 +7,7 @@ import { PlaneSlider } from './PlaneSlider'
 import { AxisRotator } from './AxisRotator'
 import { ScalingSphere } from './ScalingSphere'
 import { context, OnDragStartProps } from './context'
+import { ForwardRefComponent } from '../../helpers/ts-utils'
 
 const tV0 = new THREE.Vector3()
 const tV1 = new THREE.Vector3()
@@ -114,7 +115,10 @@ type PivotControlsProps = {
   children?: React.ReactNode
 }
 
-export const PivotControls = React.forwardRef<THREE.Group, PivotControlsProps>(
+export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group> = React.forwardRef<
+  THREE.Group,
+  PivotControlsProps
+>(
   (
     {
       matrix,

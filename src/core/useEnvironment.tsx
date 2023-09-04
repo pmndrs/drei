@@ -47,7 +47,7 @@ export function useEnvironment({
     ? 'exr'
     : files.startsWith('data:application/hdr')
     ? 'hdr'
-    : files.split('.').pop()?.toLowerCase()
+    : files.split('.').pop()?.split('?')?.shift()?.toLowerCase()
   loader = isCubeMap ? CubeTextureLoader : extension === 'hdr' ? RGBELoader : extension === 'exr' ? EXRLoader : null
 
   if (!loader) throw new Error('useEnvironment: Unrecognized file extension: ' + files)

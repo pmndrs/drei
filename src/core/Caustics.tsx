@@ -10,6 +10,7 @@ import { useHelper } from './useHelper'
 import { shaderMaterial } from './shaderMaterial'
 import { Edges } from './Edges'
 import { FullScreenQuad } from 'three-stdlib'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type CausticsMaterialType = THREE.ShaderMaterial & {
   cameraMatrixWorld?: THREE.Matrix4
@@ -127,7 +128,7 @@ const CausticsProjectionMaterial = shaderMaterial(
     vec3 back = texture2D(causticsTextureB, lightSpacePos.xy).rgb;
     gl_FragColor = vec4((front + back) * color, 1.0);
     #include <tonemapping_fragment>
-    #include <encodings_fragment>
+    #include <${parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
    }`
 )
 
@@ -265,22 +266,19 @@ const NORMALPROPS = {
   depth: true,
   minFilter: THREE.LinearFilter,
   magFilter: THREE.LinearFilter,
-  encoding: THREE.LinearEncoding,
   type: THREE.UnsignedByteType,
 }
 
 const CAUSTICPROPS = {
   minFilter: THREE.LinearMipmapLinearFilter,
   magFilter: THREE.LinearFilter,
-  encoding: THREE.LinearEncoding,
-  format: THREE.RGBAFormat,
   type: THREE.FloatType,
   generateMipmaps: true,
 }
 
 const causticsContext = React.createContext(null)
 
-export const Caustics = React.forwardRef(
+export const Caustics: ForwardRefComponent<CausticsProps, THREE.Group> = React.forwardRef(
   (
     {
       debug,

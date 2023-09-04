@@ -252,8 +252,8 @@ export function Bounds({
       clip() {
         const { distance } = getSize()
 
-        camera.near = Math.min(distance / 100, 0.01)
-        camera.far = Math.max(distance * 100, 1000)
+        camera.near = distance / 100
+        camera.far = distance * 100
         camera.updateProjectionMatrix()
 
         if (controls) {

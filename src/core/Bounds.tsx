@@ -14,8 +14,15 @@ export type BoundsApi = {
   getSize: () => SizeProps
   refresh(object?: THREE.Object3D | THREE.Box3): any
   reset(): any
-  moveTo(position: THREE.Vector3): any
-  lookAt({ target, up }: { target?: THREE.Vector3; up?: THREE.Vector3 }): any
+  moveTo(position: THREE.Vector3 | [number, number, number]): any
+  lookAt({
+    target,
+    up,
+  }: {
+    target?: THREE.Vector3 | [number, number, number]
+    up?: THREE.Vector3 | [number, number, number]
+  }): any
+  to({ position, target }: { position: [number, number, number]; target: [number, number, number] }): any
   fit(): any
   clip(): any
 }
@@ -158,24 +165,44 @@ export function Bounds({
 
         return this
       },
-      moveTo(position: THREE.Vector3) {
-        goal.current.camPos = position.clone()
+      moveTo(position: THREE.Vector3 | [number, number, number]) {
+        goal.current.camPos = Array.isArray(position) ? new THREE.Vector3(...position) : position.clone()
 
         animationState.current = AnimationState.START
         t.current = 0
 
         return this
       },
-      lookAt({ target, up }: { target: THREE.Vector3; up?: THREE.Vector3 }) {
-        goal.current.target = target.clone()
-        goal.current.camUp = up ? up.clone() : camera.up.clone()
-        const mCamRot = new THREE.Matrix4().lookAt(goal.current.camPos || camera.position, target, goal.current.camUp)
+      lookAt({
+        target,
+        up,
+      }: {
+        target: THREE.Vector3 | [number, number, number]
+        up?: THREE.Vector3 | [number, number, number]
+      }) {
+        goal.current.target = Array.isArray(target) ? new THREE.Vector3(...target) : target.clone()
+        if (up) {
+          goal.current.camUp = Array.isArray(up) ? new THREE.Vector3(...up) : up.clone()
+        } else {
+          goal.current.camUp = camera.up.clone()
+        }
+        const mCamRot = new THREE.Matrix4().lookAt(
+          goal.current.camPos || camera.position,
+          goal.current.target,
+          goal.current.camUp
+        )
         goal.current.camRot = new THREE.Quaternion().setFromRotationMatrix(mCamRot)
 
         animationState.current = AnimationState.START
         t.current = 0
 
         return this
+      },
+      /**
+       * @deprecated Use moveTo and lookAt instead
+       */
+      to({ position, target }: { position: [number, number, number]; target?: [number, number, number] }) {
+        return this.moveTo(position).lookAt({ target })
       },
       fit() {
         if (!isOrthographic(camera)) {

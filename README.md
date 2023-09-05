@@ -2796,6 +2796,10 @@ useGLTF(url, '/draco-gltf')
 useGLTF.preload(url)
 ```
 
+If you want to use your own draco decoder globally, you can pass it through `useGLTF.setDecoderPath(path)`:
+
+````jsx
+
 > **Note** <br>If you are using the CDN loaded draco binaries, you can get a small speedup in loading time by prefetching them.
 >
 > You can accomplish this by adding two `<link>` tags to your `<head>` tag, as below. The version in those URLs must exactly match what [useGLTF](src/core/useGLTF.tsx#L18) uses for this to work. If you're using create-react-app, `public/index.html` file contains the `<head>` tag.
@@ -2828,7 +2832,7 @@ function SuzanneFBX() {
   let fbx = useFBX('suzanne/suzanne.fbx')
   return <primitive object={fbx} />
 }
-```
+````
 
 #### useTexture
 
@@ -3320,7 +3324,7 @@ return (
 If you still experience flip flops despite the bounds you can define a limit of `flipflops`. If it is met `onFallback` will be triggered which typically sets a lowest possible baseline for the app. After the fallback has been called PerformanceMonitor will shut down.
 
 ```jsx
-<PerformanceMonitor flipflops={3} onFallback={() => setDpr(1)}/>
+<PerformanceMonitor flipflops={3} onFallback={() => setDpr(1)} />
 ```
 
 PerformanceMonitor can also have children, if you wrap your app in it you get to use `usePerformanceMonitor` which allows individual components down the nested tree to respond to performance changes on their own.

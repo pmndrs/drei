@@ -49,8 +49,8 @@
     "test": "npm run eslint:ci && (cd test/e2e; ./e2e.sh)",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false --strict --jsx react",
     "typegen": "tsc --emitDeclarationOnly",
-    "storybook": "NODE_OPTIONS=\"--openssl-legacy-provider\" storybook dev -p 6006",
-    "build-storybook": "NODE_OPTIONS=\"--openssl-legacy-provider\" storybook build",
+    "storybook": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider\" storybook dev -p 6006",
+    "build-storybook": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider\" storybook build",
     "copy": "copyfiles package.json README.md LICENSE dist && json -I -f dist/package.json -e \"this.private=false; this.devDependencies=undefined; this.optionalDependencies=undefined; this.scripts=undefined; this.husky=undefined; this.prettier=undefined; this.jest=undefined; this['lint-staged']=undefined;\"",
     "release": "semantic-release"
   },
@@ -60,6 +60,7 @@
     "@react-spring/three": "~9.6.1",
     "@use-gesture/react": "^10.2.24",
     "camera-controls": "^2.4.2",
+    "cross-env": "^7.0.3",
     "detect-gpu": "^5.0.28",
     "glsl-noise": "^0.0.0",
     "lodash.clamp": "^4.0.3",

@@ -5,6 +5,8 @@ import { useLoader } from '@react-three/fiber'
 
 let dracoLoader: DRACOLoader | null = null
 
+let decoderPath: string = 'https://www.gstatic.com/draco/versioned/decoders/1.5.5/'
+
 function extensions(useDraco: boolean | string, useMeshopt: boolean, extendLoader?: (loader: GLTFLoader) => void) {
   return (loader: Loader) => {
     if (extendLoader) {
@@ -14,9 +16,7 @@ function extensions(useDraco: boolean | string, useMeshopt: boolean, extendLoade
       if (!dracoLoader) {
         dracoLoader = new DRACOLoader()
       }
-      dracoLoader.setDecoderPath(
-        typeof useDraco === 'string' ? useDraco : 'https://www.gstatic.com/draco/versioned/decoders/1.5.5/'
-      )
+      dracoLoader.setDecoderPath(typeof useDraco === 'string' ? useDraco : decoderPath)
       ;(loader as GLTFLoader).setDRACOLoader(dracoLoader)
     }
     if (useMeshopt) {
@@ -45,3 +45,6 @@ useGLTF.preload = (
 ) => useLoader.preload(GLTFLoader, path, extensions(useDraco, useMeshOpt, extendLoader))
 
 useGLTF.clear = (input: string | string[]) => useLoader.clear(GLTFLoader, input)
+useGLTF.setDecoderPath = (path: string) => {
+  decoderPath = path
+}

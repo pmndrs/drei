@@ -2358,6 +2358,8 @@ type Props = {
   flipX?: boolean
   /** Sets the alpha value to be used when running an alpha test. https://threejs.org/docs/#api/en/materials/Material.alphaTest */
   alphaTest?: number
+  /** Displays the texture on a SpriteGeometry always facing the camera, if set to false, it renders on a PlaneGeometry */
+  asSprite?: boolean
 }
 ```
 

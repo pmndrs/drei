@@ -969,6 +969,7 @@ A box buffer geometry with rounded corners, done with extrusion.
   args={[1, 1, 1]} // Width, height, depth. Default is [1, 1, 1]
   radius={0.05} // Radius of the rounded corners. Default is 0.05
   smoothness={4} // The number of curve segments. Default is 4
+  bevelSegments={4} // The number of bevel segments. Default is 4, setting it to 0 removes the bevel, as a result the texture is applied to the whole geometry.
   creaseAngle={0.4} // Smooth normals everywhere except faces that meet at an angle greater than the crease angle
   {...meshProps} // All THREE.Mesh props are valid
 >
@@ -2357,6 +2358,8 @@ type Props = {
   flipX?: boolean
   /** Sets the alpha value to be used when running an alpha test. https://threejs.org/docs/#api/en/materials/Material.alphaTest */
   alphaTest?: number
+  /** Displays the texture on a SpriteGeometry always facing the camera, if set to false, it renders on a PlaneGeometry */
+  asSprite?: boolean
 }
 ```
 
@@ -2795,6 +2798,10 @@ useGLTF(url, '/draco-gltf')
 useGLTF.preload(url)
 ```
 
+If you want to use your own draco decoder globally, you can pass it through `useGLTF.setDecoderPath(path)`:
+
+````jsx
+
 > **Note** <br>If you are using the CDN loaded draco binaries, you can get a small speedup in loading time by prefetching them.
 >
 > You can accomplish this by adding two `<link>` tags to your `<head>` tag, as below. The version in those URLs must exactly match what [useGLTF](src/core/useGLTF.tsx#L18) uses for this to work. If you're using create-react-app, `public/index.html` file contains the `<head>` tag.
@@ -2827,7 +2834,7 @@ function SuzanneFBX() {
   let fbx = useFBX('suzanne/suzanne.fbx')
   return <primitive object={fbx} />
 }
-```
+````
 
 #### useTexture
 
@@ -3300,7 +3307,7 @@ function App() {
   const [dpr, setDpr] = useState(1.5)
   return (
     <Canvas dpr={dpr}>
-      <PerformanceMonitor onIncline={() => setDpr(2)} onDecline={() => setDpr(1)} >
+      <PerformanceMonitor onIncline={() => setDpr(2)} onDecline={() => setDpr(1)} />
 ```
 
 You can also use the `onChange` callback to get notified when the average changes in whichever direction. This allows you to make gradual changes. It gives you a `factor` between 0 and 1, which is increased by incline and decreased by decline. The `factor` is initially 0.5 by default. If your app starts with lowest defaults and gradually increases quality set `factor` to 0. If it starts with highest defaults and decreases quality, set it to 1. If it starts in the middle and can either increase or decrease, set it to 0.5.
@@ -3310,16 +3317,16 @@ The following starts at the highest dpr (2) and clamps the gradual dpr between 0
 ```jsx
 import round from 'lodash/round'
 
-const [dpr, set] = useState(2)
+const [dpr, setDpr] = useState(2)
 return (
  <Canvas dpr={dpr}>
-  <PerformanceMonitor factor={1} onChange={({ factor }) => setDpr(round(0.5 + 1.5 * factor, 1))} >
+  <PerformanceMonitor factor={1} onChange={({ factor }) => setDpr(round(0.5 + 1.5 * factor, 1))} />
 ```
 
 If you still experience flip flops despite the bounds you can define a limit of `flipflops`. If it is met `onFallback` will be triggered which typically sets a lowest possible baseline for the app. After the fallback has been called PerformanceMonitor will shut down.
 
 ```jsx
-<PerformanceMonitor flipflops={3} onFallback={() => setDpr(1)}>
+<PerformanceMonitor flipflops={3} onFallback={() => setDpr(1)} />
 ```
 
 PerformanceMonitor can also have children, if you wrap your app in it you get to use `usePerformanceMonitor` which allows individual components down the nested tree to respond to performance changes on their own.

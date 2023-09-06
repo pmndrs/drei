@@ -22,6 +22,7 @@ export type SpriteAnimatorProps = {
   flipX?: boolean
   position?: Array<number>
   alphaTest?: number
+  asSprite?: boolean
 } & JSX.IntrinsicElements['group']
 
 export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
@@ -45,6 +46,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
     flipX,
     alphaTest,
     children,
+    asSprite,
     ...props
   },
   fref
@@ -64,6 +66,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
   const totalFrames = React.useRef<number>(0)
   const [aspect, setAspect] = React.useState<Vector3 | undefined>([1, 1, 1])
   const flipOffset = flipX ? -1 : 1
+  const [displayAsSprite,setDisplayAsSprite] = React.useState(asSprite ?? true)
 
   function loadJsonAndTextureAndExecuteCallback(
     jsonUrl: string,
@@ -101,6 +104,10 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
       })
     }
   }, [])
+
+  React.useEffect(() => {
+    setDisplayAsSprite(asSprite ?? true)
+  }, [asSprite])
 
   React.useLayoutEffect(() => {
     modifySpritePosition()
@@ -328,15 +335,24 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
   return (
     <group {...props}>
       <React.Suspense fallback={null}>
-        <sprite ref={spriteRef} scale={aspect}>
-          <spriteMaterial
-            toneMapped={false}
-            ref={matRef}
-            map={spriteTexture}
-            transparent={true}
-            alphaTest={alphaTest ?? 0.0}
-          />
-        </sprite>
+      {displayAsSprite && (
+          <sprite ref={spriteRef} scale={aspect}>
+            <spriteMaterial toneMapped={false} ref={matRef} map={spriteTexture} transparent={true} alphaTest={alphaTest ?? 0.0} />
+          </sprite>
+        )}
+        {!displayAsSprite && (
+          <mesh ref={spriteRef} scale={aspect}>
+            <planeGeometry args={[1, 1]} />
+            <meshBasicMaterial
+              toneMapped={false}
+              side={THREE.DoubleSide}
+              ref={matRef}
+              map={spriteTexture}
+              transparent={true}
+              alphaTest={alphaTest ?? 0.0}
+            />
+          </mesh>
+        )}
       </React.Suspense>
       {children}
     </group>

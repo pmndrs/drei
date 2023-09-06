@@ -22,7 +22,13 @@ const OutlinesMaterial = shaderMaterial(
 	   #include <morphtarget_vertex>
 	   #include <skinning_vertex>
      #include <project_vertex>
-     vec3 newPosition = transformed + normal * thickness;
+     vec4 transformedNormal = vec4(normal, 0.0);
+     vec4 transformedPosition = vec4(transformed, 1.0);
+     #ifdef USE_INSTANCING
+       transformedNormal = instanceMatrix * transformedNormal;
+       transformedPosition = instanceMatrix * transformedPosition;
+     #endif
+     vec3 newPosition = transformedPosition.xyz + transformedNormal.xyz * thickness;
      gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0); 
    }`,
   `uniform vec3 color;
@@ -54,18 +60,22 @@ export function Outlines({
   thickness = 0.05,
   angle = Math.PI,
   ...props
-}) {
+}: OutlinesProps) {
   const ref = React.useRef<THREE.Group>(null!)
   React.useMemo(() => extend({ OutlinesMaterial }), [])
   React.useLayoutEffect(() => {
     const group = ref.current
-    const parent = group.parent as THREE.Mesh & THREE.SkinnedMesh
+    const parent = group.parent as THREE.Mesh & THREE.SkinnedMesh & THREE.InstancedMesh
     if (parent && parent.geometry) {
       let mesh
       if (parent.skeleton) {
         mesh = new THREE.SkinnedMesh()
         mesh.material = new OutlinesMaterial({ side: THREE.BackSide })
         mesh.bind(parent.skeleton, parent.bindMatrix)
+        group.add(mesh)
+      } else if (parent.isInstancedMesh) {
+        mesh = new THREE.InstancedMesh(parent.geometry, new OutlinesMaterial({ side: THREE.BackSide }), parent.count)
+        mesh.instanceMatrix = parent.instanceMatrix
         group.add(mesh)
       } else {
         mesh = new THREE.Mesh()

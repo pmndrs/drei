@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { shaderMaterial } from './shaderMaterial'
-import { extend, applyProps, dispose, ReactThreeFiber } from '@react-three/fiber'
+import { extend, applyProps, ReactThreeFiber } from '@react-three/fiber'
 import { toCreasedNormals } from 'three-stdlib'
 
 const OutlinesMaterial = shaderMaterial(
@@ -12,7 +12,7 @@ const OutlinesMaterial = shaderMaterial(
    uniform float thickness;
    void main() {
      #if defined (USE_SKINNING)
-	   #include <beginnormal_vertex>
+	     #include <beginnormal_vertex>
        #include <morphnormal_vertex>
        #include <skinbase_vertex>
        #include <skinnormal_vertex>
@@ -62,6 +62,7 @@ export function Outlines({
   ...props
 }: OutlinesProps) {
   const ref = React.useRef<THREE.Group>(null!)
+  const [material] = React.useState(() => new OutlinesMaterial({ side: THREE.BackSide }))
   React.useMemo(() => extend({ OutlinesMaterial }), [])
   React.useLayoutEffect(() => {
     const group = ref.current
@@ -70,28 +71,29 @@ export function Outlines({
       let mesh
       if (parent.skeleton) {
         mesh = new THREE.SkinnedMesh()
-        mesh.material = new OutlinesMaterial({ side: THREE.BackSide })
+        mesh.material = material
         mesh.bind(parent.skeleton, parent.bindMatrix)
         group.add(mesh)
       } else if (parent.isInstancedMesh) {
-        mesh = new THREE.InstancedMesh(parent.geometry, new OutlinesMaterial({ side: THREE.BackSide }), parent.count)
+        mesh = new THREE.InstancedMesh(parent.geometry, material, parent.count)
         mesh.instanceMatrix = parent.instanceMatrix
         group.add(mesh)
       } else {
         mesh = new THREE.Mesh()
-        mesh.material = new OutlinesMaterial({ side: THREE.BackSide })
+        mesh.material = material
         group.add(mesh)
       }
       mesh.geometry = angle ? toCreasedNormals(parent.geometry, angle) : parent.geometry
       return () => {
-        dispose(mesh)
-        group.clear()
+        if (angle) mesh.geometry.dispose()
+        group.remove(mesh)
       }
     }
-  }, [angle])
+  }, [angle, (ref.current as any)?.parent?.geometry])
 
   React.useLayoutEffect(() => {
     const group = ref.current
+    console.log(group.children.length)
     const mesh = group.children[0] as THREE.Mesh<THREE.BufferGeometry, THREE.Material>
     if (mesh) {
       applyProps(mesh.material as any, { transparent, thickness, color, opacity })

@@ -93,7 +93,6 @@ export function Outlines({
 
   React.useLayoutEffect(() => {
     const group = ref.current
-    console.log(group.children.length)
     const mesh = group.children[0] as THREE.Mesh<THREE.BufferGeometry, THREE.Material>
     if (mesh) {
       applyProps(mesh.material as any, { transparent, thickness, color, opacity })

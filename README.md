@@ -1409,6 +1409,8 @@ An ornamental component that extracts the geometry from its parent and displays 
 type OutlinesProps = JSX.IntrinsicElements['group'] & {
   /** Outline color, default: black */
   color: ReactThreeFiber.Color
+  /** Line thickness is independent of zoom, default: false */
+  screenspace: boolean
   /** Outline opacity, default: 1 */
   opacity: number
   /** Outline transparency, default: false */

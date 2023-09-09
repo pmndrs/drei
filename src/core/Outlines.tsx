@@ -63,6 +63,9 @@ type OutlinesProps = JSX.IntrinsicElements['group'] & {
   thickness: number
   /** Geometry crease angle (0 === no crease), default: Math.PI */
   angle: number
+  toneMapped?: boolean
+  polygonOffset?: boolean
+  polygonOffsetFactor?: number
 }
 
 export function Outlines({
@@ -70,6 +73,9 @@ export function Outlines({
   opacity = 1,
   transparent = false,
   screenspace = false,
+  toneMapped = true,
+  polygonOffset = false,
+  polygonOffsetFactor = 0,
   thickness = 0.05,
   angle = Math.PI,
   ...props
@@ -110,9 +116,19 @@ export function Outlines({
     const group = ref.current
     const mesh = group.children[0] as THREE.Mesh<THREE.BufferGeometry, THREE.Material>
     if (mesh) {
-      applyProps(mesh.material as any, { transparent, thickness, color, opacity, size: contextSize, screenspace })
+      applyProps(mesh.material as any, {
+        transparent,
+        thickness,
+        color,
+        opacity,
+        size: contextSize,
+        screenspace,
+        toneMapped,
+        polygonOffset,
+        polygonOffsetFactor,
+      })
     }
-  }, [angle, transparent, thickness, color, opacity, screenspace])
+  }, [angle, transparent, thickness, color, opacity, screenspace, toneMapped, polygonOffset, polygonOffsetFactor])
 
   return <group ref={ref} {...props} />
 }

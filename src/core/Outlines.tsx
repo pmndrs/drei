@@ -22,13 +22,13 @@ const OutlinesMaterial = shaderMaterial(
 	   #include <morphtarget_vertex>
 	   #include <skinning_vertex>
      #include <project_vertex>
-     vec4 transformedNormal = vec4(normal, 0.0);
-     vec4 transformedPosition = vec4(transformed, 1.0);
+     vec4 tNormal = vec4(normal, 0.0);
+     vec4 tPosition = vec4(transformed, 1.0);
      #ifdef USE_INSTANCING
-       transformedNormal = instanceMatrix * transformedNormal;
-       transformedPosition = instanceMatrix * transformedPosition;
+       tNormal = instanceMatrix * tNormal;
+       tPosition = instanceMatrix * tPosition;
      #endif
-     vec3 newPosition = transformedPosition.xyz + transformedNormal.xyz * thickness;
+     vec3 newPosition = tPosition.xyz + tNormal.xyz * thickness;
      gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0); 
    }`,
   `uniform vec3 color;

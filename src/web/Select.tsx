@@ -21,6 +21,8 @@ type Props = JSX.IntrinsicElements['group'] & {
   onChangePointerUp?: (selected: THREE.Object3D[]) => void
   /** Optional filter for filtering the selection */
   filter?: (selected: THREE.Object3D[]) => THREE.Object3D[]
+  /** Deselect on second click on object */
+  deselectOnSecondClick?: boolean
 }
 
 export function Select({
@@ -32,6 +34,7 @@ export function Select({
   border = '1px solid #55aaff',
   backgroundColor = 'rgba(75, 160, 255, 0.1)',
   filter: customFilter = (item) => item,
+  deselectOnSecondClick=true,
   ...props
 }: Props) {
   const [downed, down] = React.useState(false)
@@ -41,7 +44,7 @@ export function Select({
     (state, { object, shift }: { object?: THREE.Object3D | THREE.Object3D[]; shift?: boolean }): THREE.Object3D[] => {
       if (object === undefined) return []
       else if (Array.isArray(object)) return object
-      else if (!shift) return state[0] === object ? [] : [object]
+      else if (!shift) return state[0] === object ? deselectOnSecondClick?[]:[object] : [object]
       else if (state.includes(object)) return state.filter((o) => o !== object)
       else return [object, ...state]
     },

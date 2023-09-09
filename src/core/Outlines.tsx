@@ -128,7 +128,18 @@ export function Outlines({
         polygonOffsetFactor,
       })
     }
-  }, [angle, transparent, thickness, color, opacity, screenspace, toneMapped, polygonOffset, polygonOffsetFactor])
+  }, [
+    angle,
+    transparent,
+    thickness,
+    color,
+    opacity,
+    screenspace,
+    toneMapped,
+    polygonOffset,
+    polygonOffsetFactor,
+    contextSize,
+  ])
 
   return <group ref={ref} {...props} />
 }

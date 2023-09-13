@@ -77,6 +77,7 @@ export * from './useCubeCamera'
 export * from './Example'
 export * from './SpriteAnimator'
 export * from './FaceLandmarker'
+export * from './MotionPath'
 
 // Modifiers
 export * from './CurveModifier'

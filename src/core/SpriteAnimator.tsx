@@ -66,7 +66,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
   const totalFrames = React.useRef<number>(0)
   const [aspect, setAspect] = React.useState<Vector3 | undefined>([1, 1, 1])
   const flipOffset = flipX ? -1 : 1
-  const [displayAsSprite] = React.useState(asSprite ?? true)
+  const [displayAsSprite,setDisplayAsSprite] = React.useState(asSprite ?? true)
 
   function loadJsonAndTextureAndExecuteCallback(
     jsonUrl: string,
@@ -104,6 +104,10 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
       })
     }
   }, [])
+
+  React.useEffect(() => {
+    setDisplayAsSprite(asSprite ?? true)
+  }, [asSprite])
 
   React.useLayoutEffect(() => {
     modifySpritePosition()

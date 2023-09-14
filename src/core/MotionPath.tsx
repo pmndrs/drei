@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
-import { Box, Sphere, PerspectiveCamera } from '@react-three/drei'
+import {Box, Sphere} from "./shapes"
+import { PerspectiveCamera } from './PerspectiveCamera'
 import * as THREE from 'three'
 import { useFrame } from '@react-three/fiber'
 import * as React from 'react'
@@ -8,7 +9,7 @@ interface Curve extends THREE.Curve<THREE.Vector3> {}
 
 interface MotionPathProps {
   curves: Curve[]
-  focusObject: React.MutableRefObject<THREE.Object3D | undefined | string>
+  focusObject: React.MutableRefObject<THREE.Object3D | undefined>
   animationSpeed: number
   showPath: boolean
   attachCamera: boolean
@@ -64,7 +65,7 @@ export const MotionPath: React.FC<MotionPathProps> = (props) => {
 
       const nextPos = path.getPointAt(Math.min(currentT.current + rate.current, 1))
 
-      if (focusObject?.current) {
+      if (focusObject?.current instanceof THREE.Object3D) {
         objRef.current.lookAt(focusObject?.current.position)
       } else {
         objRef.current.lookAt(objRef.current.position.clone().add(tangent))

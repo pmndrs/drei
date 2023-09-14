@@ -19,7 +19,7 @@ interface MotionPathProps {
 export const MotionPath: React.FC<MotionPathProps> = (props) => {
   const {
     curves = [],
-    focusObject = {},
+    focusObject,
     animationSpeed = 0.0015,
     showPath = false,
     attachCamera = false,

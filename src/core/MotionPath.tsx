@@ -2,20 +2,30 @@ import { useEffect, useRef } from 'react'
 import { Box, Sphere, PerspectiveCamera } from '@react-three/drei'
 import * as THREE from 'three'
 import { useFrame } from '@react-three/fiber'
-import * as React from "react"
+import * as React from 'react'
 
 interface Curve extends THREE.Curve<THREE.Vector3> {}
 
 interface MotionPathProps {
-  curves: Curve[];
-  focusObject: React.MutableRefObject<THREE.Object3D | undefined>;
-  animationSpeed: number;
-  showPath: boolean;
-  attachCamera: boolean;
+  curves: Curve[]
+  focusObject: React.MutableRefObject<THREE.Object3D | undefined | string>
+  animationSpeed: number
+  showPath: boolean
+  attachCamera: boolean
+  loop: boolean
+  autoStart: boolean
 }
 
 export const MotionPath: React.FC<MotionPathProps> = (props) => {
-  const { curves, focusObject, animationSpeed, showPath, attachCamera } = props
+  const {
+    curves = [],
+    focusObject = {},
+    animationSpeed = 0.0015,
+    showPath = false,
+    attachCamera = false,
+    loop = true,
+    autoStart = true,
+  } = props
 
   const path = new THREE.CurvePath<THREE.Vector3>()
   for (var i = 0; i < curves.length; i++) {
@@ -26,19 +36,23 @@ export const MotionPath: React.FC<MotionPathProps> = (props) => {
 
   const currentPos = useRef(path.getPointAt(0))
   const currentT = useRef(0)
-  const rate = useRef(0.0015)
+  const rate = useRef(animationSpeed)
 
-  const objRef = useRef<THREE.PerspectiveCamera>(null)
-
-  useEffect(() => {
-    console.log('focus: ', focusObject)
-  }, [focusObject])
+  const objRef = useRef<any>(null)
 
   useFrame(() => {
-    currentT.current += rate.current
+    if (autoStart) {
+      currentT.current += rate.current
 
-    if (currentT.current >= 1.0) {
-      currentT.current = 0.0
+      if (currentT.current >= 1.0) {
+        if (loop) {
+          currentT.current = 0.0
+        } else {
+          return
+        }
+      }
+    } else {
+      currentT.current = 0
     }
 
     const pos = path.getPointAt(currentT.current)
@@ -63,15 +77,25 @@ export const MotionPath: React.FC<MotionPathProps> = (props) => {
 
   return (
     <group>
-      {points.map((item, index) => (
-        <Sphere args={[0.05, 16, 16]} key={index} position={[item.x, item.y, item.z]}>
-          <meshToonMaterial color={'red'} />
-        </Sphere>
-      ))}
-      <Box args={[1, 1, 1]} position={[5, -5, -5]}>
-        <meshToonMaterial color={'limegreen'} />
-      </Box>
-      <PerspectiveCamera makeDefault position={[0, -2, -2]} ref={objRef} />
+      {showPath &&
+        points.map((item, index) => (
+          <Sphere args={[0.05, 16, 16]} key={index} position={[item.x, item.y, item.z]}>
+            <meshToonMaterial color="red" />
+          </Sphere>
+        ))}
+      {showPath === true && props.children === undefined && (
+        <Box args={[1, 1, 1]} position={[5, -5, -5]} ref={objRef}>
+          <meshToonMaterial color="limegreen" />
+        </Box>
+      )}
+      {attachCamera && <PerspectiveCamera makeDefault position={[0, -2, -2]} ref={objRef} />}
+      {!attachCamera &&
+        React.Children.map(props.children, (child) => {
+          if (React.isValidElement(child)) {
+            return React.cloneElement(child, { ref: objRef })
+          }
+          return child
+        })}
     </group>
   )
 }

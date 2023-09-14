@@ -220,6 +220,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#stars">Stars</a></li>
           <li><a href="#sparkles">Sparkles</a></li>
           <li><a href="#cloud">Cloud</a></li>
+          <li><a href="#motion-path">MotionPath</a></li>
           <li><a href="#useenvironment">useEnvironment</a></li>
           <li><a href="#usematcaptexture">useMatcapTexture</a></li>
           <li><a href="#usenormaltexture">useNormalTexture</a></li>
@@ -4376,6 +4377,38 @@ Particle based cloud.
   segments={20} // Number of particles
 />
 ```
+
+#### MotionPath
+
+<p>
+  <a href="https://codesandbox.io/s/drei-motion-path-n75jcq?file=/src/App.tsx"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/drei-motion-path-n75jcq/screenshot.png" alt="Demo"/></a>
+</p>
+
+Motion path animator component, it takes a path of bezier curves as input and animates its children or camera along that path. It can be configured to look upon an external object for staging or presentation purposes.
+
+```tsx
+interface MotionPathProps {
+  curves: Curve[]
+  focusObject: React.MutableRefObject<THREE.Object3D | undefined> // default: {}
+  animationSpeed: number // default: 0.0015
+  showPath: boolean // default: false
+  attachCamera: boolean // default: false
+  loop: boolean // default: false
+  autoStart: boolean // default: true
+}
+```
+
+```jsx
+<MotionPath
+  focusObject={poi} // can be a ref
+  curves={[
+    new THREE.CubicBezierCurve3(new THREE.Vector3(-5, -5, 0), new THREE.Vector3(-10, 0, 0), new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 0)),
+    new THREE.CubicBezierCurve3(new THREE.Vector3(0, 0, 0), new THREE.Vector3(10, 5, 5), new THREE.Vector3(5, 5, 5), new THREE.Vector3(5, 5, 5))
+  ]}
+/>
+```
+
+Note: `attachCamera = true` will automatically add a PerspectiveCamera, make it default and start animating it, this will take priority over any children of the component.
 
 #### useEnvironment
 

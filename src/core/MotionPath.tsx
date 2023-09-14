@@ -64,8 +64,8 @@ export const MotionPath: React.FC<MotionPathProps> = (props) => {
 
       const nextPos = path.getPointAt(Math.min(currentT.current + rate.current, 1))
 
-      if (focusObject.current) {
-        objRef.current.lookAt(focusObject.current.position)
+      if (focusObject?.current) {
+        objRef.current.lookAt(focusObject?.current.position)
       } else {
         objRef.current.lookAt(objRef.current.position.clone().add(tangent))
         objRef.current.lookAt(nextPos)

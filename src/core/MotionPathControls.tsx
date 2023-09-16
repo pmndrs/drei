@@ -147,7 +147,7 @@ interface MotionPathProps {
   autoStart: boolean
   object: React.MutableRefObject<THREE.Object3D | undefined>
   focusObject: React.MutableRefObject<THREE.Object3D | undefined>
-  easeFunction: Ease | undefined
+  easeFunction: any | undefined
 }
 
 export const MotionPathControls: React.FC<MotionPathProps> = (props: {
@@ -158,7 +158,7 @@ export const MotionPathControls: React.FC<MotionPathProps> = (props: {
   duration?: number
   showPath?: boolean
   loop?: boolean
-  autoStart?: React.MutableRefObject<THREE.Object3D | undefined>
+  autoStart?: boolean
   focusObject?: React.MutableRefObject<THREE.Object3D | undefined>
   easeFunction?: any | undefined
 }) => {
@@ -178,15 +178,15 @@ export const MotionPathControls: React.FC<MotionPathProps> = (props: {
   const pathRef = useRef(new THREE.CurvePath<THREE.Vector3>())
   const rate = useRef(animationSpeed)
   const currentT = useRef(0)
-  const motionRef = useRef()
+  const motionRef = useRef(undefined)
   const { camera } = useThree()
 
   // read the curves
   React.useLayoutEffect(() => {
-    const _curves = curves.length > 0 ? curves : ref.current.__r3f.objects
+    const _curves = curves.length > 0 ? curves : ref.current?.__r3f.objects
 
     for (var i = 0; i < _curves.length; i++) {
-      var curve = null
+      var curve: (CubicBezierCurve3 | CatmullRomCurve3 | null) = null
       if (_curves[i].isCubicBezierCurve3) {
         curve = new THREE.CubicBezierCurve3(_curves[i].v0, _curves[i].v1, _curves[i].v2, _curves[i].v3)
       } else if (_curves[i].isCatmullRomCurve3) {
@@ -227,7 +227,7 @@ export const MotionPathControls: React.FC<MotionPathProps> = (props: {
       const tangent = pathRef.current.getTangentAt(Math.max(currentT.current, 0)).normalize()
 
       if (object?.current) {
-        motionRef.current = object.current
+        motionRef.current = object?.current
       } else {
         motionRef.current = camera
       }
@@ -237,16 +237,16 @@ export const MotionPathControls: React.FC<MotionPathProps> = (props: {
       const nextPos = pathRef.current.getPointAt(Math.min(currentT.current + rate.current, 1))
 
       if (focusObject?.current instanceof THREE.Object3D) {
-        motionRef.current.lookAt(focusObject?.current.position)
+        motionRef.current?.lookAt(focusObject?.current.position)
       } else {
-        motionRef.current.lookAt(motionRef.current.position.clone().add(tangent))
-        motionRef.current.lookAt(nextPos)
+        motionRef.current?.lookAt(motionRef.current?.position.clone().add(tangent))
+        motionRef.current?.lookAt(nextPos)
       }
     }
   })
 
   const DebugPath = () => {
-    const [points, setPoints] = React.useState([])
+    const [points, setPoints] = React.useState(THREE.Vector3[])
 
     useEffect(() => {
       if (pathRef.current) {
@@ -254,11 +254,13 @@ export const MotionPathControls: React.FC<MotionPathProps> = (props: {
       }
     }, [])
 
-    return points.map((item: { x: any; y: any; z: any }, index: any) => (
+    return <>
+    {points.map((item: { x: any; y: any; z: any }, index: any) => (
       <Sphere args={[0.05, 16, 16]} key={index} position={[item.x, item.y, item.z]}>
         <meshToonMaterial color="red" />
       </Sphere>
-    ))
+    ))}
+    </>
   }
 
   const debugPathMemo = React.useMemo(() => <DebugPath />, [showPath])

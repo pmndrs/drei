@@ -4,6 +4,8 @@ import * as THREE from 'three'
 import { useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import * as easing from 'maath/easing'
+import { useImperativeHandle } from 'react'
+import { useMemo } from 'react'
 
 type EasingFunction = (t: number) => number
 
@@ -133,10 +135,7 @@ export class CatmullRomCurve3 extends THREE.Curve<THREE.Vector3> {
 }
 
 export const linear = (t: number) => t
-
 export const expo = (t: number) => 1 / (1 + t + 0.48 * t * t + 0.235 * t * t * t)
-export const rsqw = (t: number, delta = 0.01, a = 1, f = 1 / (2 * Math.PI)) =>
-  (a / Math.atan(1 / delta)) * Math.atan(Math.sin(2 * Math.PI * t * f) / delta)
 
 interface MotionPathProps {
   curves: (CubicBezierCurve3 | CatmullRomCurve3)[]
@@ -150,127 +149,147 @@ interface MotionPathProps {
   easeFunction: any | undefined
 }
 
-export const MotionPathControls: React.FC<MotionPathProps> = (props: {
-  children?: any
-  curves?: (CubicBezierCurve3 | CatmullRomCurve3)[]
-  object?: React.MutableRefObject<THREE.Object3D | undefined>
-  animationSpeed?: number
-  duration?: number
-  showPath?: boolean
-  loop?: boolean
-  autoStart?: boolean
-  focusObject?: React.MutableRefObject<THREE.Object3D | undefined>
-  easeFunction?: any | undefined
-}) => {
-  const {
-    curves = [],
-    object,
-    animationSpeed = 0.0018,
-    duration = 5,
-    showPath = false,
-    loop = true,
-    autoStart = true,
-    focusObject,
-    easeFunction,
-  } = props
+export type MotionPathControlsApi = THREE.EventDispatcher & {
+  update: (delta: number) => void
+}
 
-  const ref = useRef<any>()
-  const pathRef = useRef(new THREE.CurvePath<THREE.Vector3>())
-  const rate = useRef(animationSpeed)
-  const currentT = useRef(0)
-  const { camera } = useThree()
-  const motionRef = useRef<THREE.Object3D>(camera)
+export const MotionPathControls = React.forwardRef<MotionPathControlsApi, MotionPathProps>(
+  (
+    {
+      children,
+      curves = [],
+      object,
+      animationSpeed = 0.0018,
+      duration = 5,
+      showPath = false,
+      loop = true,
+      autoStart = true,
+      focusObject,
+      easeFunction,
+    },
+    fref
+  ) => {
+    const ref = useRef<any>()
+    const pathRef = useRef(new THREE.CurvePath<THREE.Vector3>())
+    const rate = useRef(animationSpeed)
+    const currentT = useRef(0)
+    const { camera } = useThree()
+    const motionRef = useRef<THREE.Object3D>(camera)
+    const index = useRef(0)
+    const offsetRef = useRef()
 
-  // read the curves
-  React.useLayoutEffect(() => {
-    const _curves = curves.length > 0 ? curves : ref.current?.__r3f.objects
+    // parse the curves
+    React.useLayoutEffect(() => {
+      const _curves = curves.length > 0 ? curves : ref.current?.__r3f.objects
 
-    for (var i = 0; i < _curves.length; i++) {
-      var curve: any = null
-      if (_curves[i].isCubicBezierCurve3) {
-        curve = new THREE.CubicBezierCurve3(_curves[i].v0, _curves[i].v1, _curves[i].v2, _curves[i].v3)
-      } else if (_curves[i].isCatmullRomCurve3) {
-        curve = new THREE.CatmullRomCurve3(_curves[i].points)
-      }
-
-      pathRef.current.add(curve!)
-    }
-  }, [])
-
-  let index = 0
-  // useFrame
-  useFrame((state: any, delta: number | undefined) => {
-    if (autoStart) {
-      // easing or damp
-      if (easeFunction) {
-        currentT.current = easeFunction(index) ?? animationSpeed
-        index += animationSpeed
-      } else {
-        easing.damp(currentT, 'current', 1, duration, delta, undefined, expo)
-        index = currentT.current
-      }
-
-      if (index >= 1.0) {
-        if (loop) {
-          index = 0.0
-          currentT.current = 0.0
-        } else {
-          currentT.current = 1.0
+      for (var i = 0; i < _curves.length; i++) {
+        var curve: any = null
+        if (_curves[i].isCubicBezierCurve3) {
+          curve = new THREE.CubicBezierCurve3(_curves[i].v0, _curves[i].v1, _curves[i].v2, _curves[i].v3)
+        } else if (_curves[i].isCatmullRomCurve3) {
+          curve = new THREE.CatmullRomCurve3(_curves[i].points)
         }
-      }
-    } else {
-      currentT.current = 0
-    }
 
-    if (pathRef.current.getCurveLengths().length > 0) {
-      const pos = pathRef.current.getPointAt(Math.max(currentT.current, 0))
-      const tangent = pathRef.current.getTangentAt(Math.max(currentT.current, 0)).normalize()
-
-      if (object?.current instanceof THREE.Object3D) {
-        motionRef.current = object.current;
-      } else {
-        if (camera instanceof THREE.Object3D) {
-          motionRef.current = camera;
-        }        
-      }
-
-      motionRef.current?.position.copy(pos)
-
-      const nextPos = pathRef.current.getPointAt(Math.min(currentT.current + rate.current, 1))
-
-      if (focusObject?.current instanceof THREE.Object3D) {
-        motionRef.current?.lookAt(focusObject?.current.position)
-      } else {
-        motionRef.current?.lookAt(motionRef.current?.position.clone().add(tangent))
-        motionRef.current?.lookAt(nextPos)
-      }
-    }
-  })
-
-  const DebugPath = () => {
-    const [points, setPoints] = React.useState<THREE.Vector3[]>([])
-
-    useEffect(() => {
-      if (pathRef.current) {
-        setPoints(pathRef.current.getPoints(100))
+        pathRef.current.add(curve!)
       }
     }, [])
 
-    return <>
-    {points.map((item: { x: any; y: any; z: any }, index: any) => (
-      <Sphere args={[0.05, 16, 16]} key={index} position={[item.x, item.y, item.z]}>
-        <meshToonMaterial color="red" />
-      </Sphere>
-    ))}
-    </>
+    // update the progression, externally
+    const update = React.useCallback<MotionPathControlsApi['update']>(function (t: number) {
+      offsetRef.current = t
+    })
+
+    // Ref API
+    const api = useMemo<MotionPathControlsApi>(
+      () =>
+        Object.assign(Object.create(THREE.EventDispatcher.prototype), {
+          update,
+        }),
+      [update]
+    )
+    // expose the api
+    useImperativeHandle(fref, () => api, [])
+
+    // useFrame
+    useFrame((state: any, delta: number | undefined) => {
+      if (autoStart) {
+        // easing or damp
+        if (easeFunction) {
+          currentT.current = easeFunction(offsetRef.current ?? index.current) ?? animationSpeed
+          // when progress is updated externally
+          if (offsetRef.current) {
+            index.current = offsetRef.current
+          } else {
+            index.current += animationSpeed
+          }
+        } else {
+          easing.damp(currentT, 'current', 1, duration, offsetRef.current ?? animationSpeed, undefined, expo)
+          index.current = currentT.current
+        }
+
+        if (index.current >= 1.0) {
+          if (loop) {
+            index.current = 0.0
+            currentT.current = 0.0
+          } else {
+            currentT.current = 1.0
+          }
+        }
+      } else {
+        currentT.current = 0
+      }
+
+      if (pathRef.current.getCurveLengths().length > 0) {
+        const pos = pathRef.current.getPointAt(Math.max(currentT.current, 0))
+        const tangent = pathRef.current.getTangentAt(Math.max(currentT.current, 0)).normalize()
+        const nextPos = pathRef.current.getPointAt(Math.min(currentT.current + rate.current, 1))
+
+        if (object?.current instanceof THREE.Object3D) {
+          motionRef.current = object.current
+        } else {
+          if (camera instanceof THREE.Object3D) {
+            motionRef.current = camera
+          }
+        }
+
+        motionRef.current?.position.copy(pos)
+
+        if (focusObject?.current instanceof THREE.Object3D) {
+          motionRef.current?.lookAt(focusObject?.current.position)
+        } else {
+          motionRef.current?.lookAt(motionRef.current?.position.clone().add(tangent))
+          motionRef.current?.lookAt(nextPos)
+        }
+      }
+    })
+
+    const DebugPath = () => {
+      const [points, setPoints] = React.useState<THREE.Vector3[]>([])
+
+      useEffect(() => {
+        if (pathRef.current) {
+          setPoints(pathRef.current.getPoints(100))
+        }
+      }, [])
+
+      return (
+        <>
+          {points.map((item: { x: any; y: any; z: any }, index: any) => (
+            <Sphere args={[0.05, 16, 16]} key={index} position={[item.x, item.y, item.z]}>
+              <meshToonMaterial color="red" />
+            </Sphere>
+          ))}
+        </>
+      )
+    }
+
+    const debugPathMemo = React.useMemo(() => <DebugPath />, [showPath])
+
+    return (
+      <group ref={ref}>
+        {children}
+        {showPath && debugPathMemo}
+      </group>
+    )
   }
-
-  const debugPathMemo = React.useMemo(() => <DebugPath />, [showPath])
-
-  return (
-    <group ref={ref}>
-      {props.children}
-      {showPath && debugPathMemo}
-    </group>
-  )
-}
+)

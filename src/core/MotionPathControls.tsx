@@ -178,22 +178,22 @@ export const MotionPathControls: React.FC<MotionPathProps> = (props: {
   const pathRef = useRef(new THREE.CurvePath<THREE.Vector3>())
   const rate = useRef(animationSpeed)
   const currentT = useRef(0)
-  const motionRef = useRef(undefined)
   const { camera } = useThree()
+  const motionRef = useRef<THREE.Object3D>(camera)
 
   // read the curves
   React.useLayoutEffect(() => {
     const _curves = curves.length > 0 ? curves : ref.current?.__r3f.objects
 
     for (var i = 0; i < _curves.length; i++) {
-      var curve: (CubicBezierCurve3 | CatmullRomCurve3 | null) = null
+      var curve: any = null
       if (_curves[i].isCubicBezierCurve3) {
         curve = new THREE.CubicBezierCurve3(_curves[i].v0, _curves[i].v1, _curves[i].v2, _curves[i].v3)
       } else if (_curves[i].isCatmullRomCurve3) {
         curve = new THREE.CatmullRomCurve3(_curves[i].points)
       }
 
-      pathRef.current.add(curve)
+      pathRef.current.add(curve!)
     }
   }, [])
 
@@ -226,13 +226,15 @@ export const MotionPathControls: React.FC<MotionPathProps> = (props: {
       const pos = pathRef.current.getPointAt(Math.max(currentT.current, 0))
       const tangent = pathRef.current.getTangentAt(Math.max(currentT.current, 0)).normalize()
 
-      if (object?.current) {
-        motionRef.current = object?.current
+      if (object?.current instanceof THREE.Object3D) {
+        motionRef.current = object.current;
       } else {
-        motionRef.current = camera
+        if (camera instanceof THREE.Object3D) {
+          motionRef.current = camera;
+        }        
       }
 
-      motionRef.current.position.copy(pos)
+      motionRef.current?.position.copy(pos)
 
       const nextPos = pathRef.current.getPointAt(Math.min(currentT.current + rate.current, 1))
 

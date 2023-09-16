@@ -53,6 +53,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#presentationcontrols">PresentationControls</a></li>
           <li><a href="#keyboardcontrols">KeyboardControls</a></li>
           <li><a href="#FaceControls">FaceControls</a></li>
+          <li><a href="#motionpathcontrols">MotionPathControls</a></li>
         </ul>
         <li><a href="#gizmos">Gizmos</a></li>
         <ul>
@@ -220,7 +221,6 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#stars">Stars</a></li>
           <li><a href="#sparkles">Sparkles</a></li>
           <li><a href="#cloud">Cloud</a></li>
-          <li><a href="#motion-path">MotionPath</a></li>
           <li><a href="#useenvironment">useEnvironment</a></li>
           <li><a href="#usematcaptexture">useMatcapTexture</a></li>
           <li><a href="#usenormaltexture">useNormalTexture</a></li>
@@ -750,6 +750,72 @@ useFrame((_, delta) => {
   }
 })
 ```
+
+#### MotionPathControls
+
+<p>
+  <a href="https://codesandbox.io/s/drei-motion-path-controls-d9x4yf?file=/src/MotionPathControls.tsx:0-7050"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/drei-motion-path-n75jcq/screenshot.png" alt="Demo"/></a>
+</p>
+
+Motion path controls, it takes a path of bezier curves or catmull-rom curves as input and animates the passed `object` along that path. It can be configured to look upon an external object for staging or presentation purposes by adding a `focusObject` property (ref).
+
+```tsx
+interface MotionPathProps {
+  curves: Curve[]
+  focusObject: React.MutableRefObject<THREE.Object3D | undefined> // default: undefined, it will just follow the path
+  object: React.MutableRefObject<THREE.Object3D | undefined> // default: default camera
+  animationSpeed: number // default: 0.0015, only use if EaseFunction has been set, else it has no effect
+  duration: number // the duration for the damping
+  showPath: boolean // default: false
+  loop: boolean // default: false
+  autoStart: boolean // default: true
+  easeFunction: Ease | undefined // use one of the exported ease functions instead of the default maath/damp
+}
+```
+
+```jsx
+<MotionPathControls
+  object={motionRef}
+  focusObject={poi}
+  showPath={true}
+  loop={true}
+  duration={1}
+  autoStart={start}
+  //animationSpeed={0.005}
+  //easeFunction={Ease.Quart.Out}
+>
+  <cubicBezierCurve3 v0={[-5, -5, 0]} v1={[-10, 0, 0]} v2={[0, 3, 0]} v3={[6, 3, 0]} />
+  <cubicBezierCurve3 v0={[6, 3, 0]} v1={[10, 5, 5]} v2={[5, 5, 5]} v3={[5, 5, 5]} />
+</MotionPathControls>
+```
+
+```jsx
+<MotionPathControls
+  object={motionRef}
+  focusObject={poi}
+  showPath={true}
+  loop={true}
+  duration={1}
+  autoStart={start}
+  curves={[
+      new THREE.CubicBezierCurve3(
+      new THREE.Vector3(-5, -5, 0),
+      new THREE.Vector3(-10, 0, 0),
+      new THREE.Vector3(0, 3, 0),
+      new THREE.Vector3(6, 3, 0)
+    ),
+    new THREE.CubicBezierCurve3(
+      new THREE.Vector3(6, 3, 0),
+      new THREE.Vector3(10, 5, 5),
+      new THREE.Vector3(5, 3, 5),
+      new THREE.Vector3(5, 5, 5)
+    ),
+  ]}          
+/>
+```
+
+Note: If no `object` is defined, the default camera will be animated.
+
 
 # Gizmos
 
@@ -4377,38 +4443,6 @@ Particle based cloud.
   segments={20} // Number of particles
 />
 ```
-
-#### MotionPath
-
-<p>
-  <a href="https://codesandbox.io/s/drei-motion-path-n75jcq?file=/src/App.tsx"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/drei-motion-path-n75jcq/screenshot.png" alt="Demo"/></a>
-</p>
-
-Motion path animator component, it takes a path of bezier curves as input and animates its children or camera along that path. It can be configured to look upon an external object for staging or presentation purposes.
-
-```tsx
-interface MotionPathProps {
-  curves: Curve[]
-  focusObject: React.MutableRefObject<THREE.Object3D | undefined> // default: {}
-  animationSpeed: number // default: 0.0015
-  showPath: boolean // default: false
-  attachCamera: boolean // default: false
-  loop: boolean // default: false
-  autoStart: boolean // default: true
-}
-```
-
-```jsx
-<MotionPath
-  focusObject={poi} // can be a ref
-  curves={[
-    new THREE.CubicBezierCurve3(new THREE.Vector3(-5, -5, 0), new THREE.Vector3(-10, 0, 0), new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 0)),
-    new THREE.CubicBezierCurve3(new THREE.Vector3(0, 0, 0), new THREE.Vector3(10, 5, 5), new THREE.Vector3(5, 5, 5), new THREE.Vector3(5, 5, 5))
-  ]}
-/>
-```
-
-Note: `attachCamera = true` will automatically add a PerspectiveCamera, make it default and start animating it, this will take priority over any children of the component.
 
 #### useEnvironment
 

@@ -40,6 +40,7 @@ export * from './PointerLockControls'
 export * from './FirstPersonControls'
 export * from './CameraControls'
 export * from './FaceControls'
+export * from './MotionPathControls'
 
 // Gizmos
 export * from './GizmoHelper'
@@ -77,7 +78,6 @@ export * from './useCubeCamera'
 export * from './Example'
 export * from './SpriteAnimator'
 export * from './FaceLandmarker'
-export * from './MotionPath'
 
 // Modifiers
 export * from './CurveModifier'

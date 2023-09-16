@@ -100,7 +100,7 @@ export const Ease: Ease = {
 }
 
 // cubicbezier cuve
-export class CubicBezierCurve3 extends THREE.Curve {
+export class CubicBezierCurve3 extends THREE.Curve<THREE.Vector3> {
   isCubicBezierCurve3: boolean
   type: string
   v0: any
@@ -119,7 +119,7 @@ export class CubicBezierCurve3 extends THREE.Curve {
 }
 
 // catmull-rom curve
-export class CatmullRomCurve3 extends THREE.Curve {
+export class CatmullRomCurve3 extends THREE.Curve<THREE.Vector3> {
   isCatmullRomCurve3: boolean
   type: string
   points: THREE.Vector3[]
@@ -174,7 +174,7 @@ export const MotionPathControls: React.FC<MotionPathProps> = (props: {
     easeFunction,
   } = props
 
-  const ref = useRef()
+  const ref = useRef<any>()
   const pathRef = useRef(new THREE.CurvePath<THREE.Vector3>())
   const rate = useRef(animationSpeed)
   const currentT = useRef(0)

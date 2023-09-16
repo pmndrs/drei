@@ -246,7 +246,7 @@ export const MotionPathControls: React.FC<MotionPathProps> = (props: {
   })
 
   const DebugPath = () => {
-    const [points, setPoints] = React.useState(THREE.Vector3[])
+    const [points, setPoints] = React.useState<THREE.Vector3[]>([])
 
     useEffect(() => {
       if (pathRef.current) {

@@ -176,7 +176,7 @@ export const MotionPathControls = React.forwardRef<MotionPathControlsApi, Motion
     const { camera } = useThree()
     const motionRef = useRef<THREE.Object3D>(camera)
     const index = useRef(0)
-    const offsetRef = useRef()
+    const offsetRef = useRef<number | undefined>()
 
     // parse the curves
     React.useLayoutEffect(() => {
@@ -197,7 +197,7 @@ export const MotionPathControls = React.forwardRef<MotionPathControlsApi, Motion
     // update the progression, externally
     const update = React.useCallback<MotionPathControlsApi['update']>(function (t: number) {
       offsetRef.current = t
-    })
+    }, [])
 
     // Ref API
     const api = useMemo<MotionPathControlsApi>(

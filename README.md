@@ -754,7 +754,7 @@ useFrame((_, delta) => {
 #### MotionPathControls
 
 <p>
-  <a href="https://codesandbox.io/s/drei-motion-path-controls-d9x4yf?file=/src/MotionPathControls.tsx:0-7050"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/drei-motion-path-n75jcq/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/drei-motion-path-controls-d9x4yf"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/drei-motion-path-n75jcq/screenshot.png" alt="Demo"/></a>
 </p>
 
 Motion path controls, it takes a path of bezier curves or catmull-rom curves as input and animates the passed `object` along that path. It can be configured to look upon an external object for staging or presentation purposes by adding a `focusObject` property (ref).

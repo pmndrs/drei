@@ -223,7 +223,7 @@ export const MotionPathControls = React.forwardRef<MotionPathControlsApi, Motion
             index.current += animationSpeed
           }
         } else {
-          easing.damp(currentT, 'current', 1, duration, offsetRef.current ?? animationSpeed, undefined, expo)
+          easing.damp(currentT, 'current', 1, duration, offsetRef.current ?? delta, undefined, expo)
           index.current = currentT.current
         }
 

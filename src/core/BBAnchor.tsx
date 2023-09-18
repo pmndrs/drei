@@ -10,7 +10,7 @@ export interface BBAnchorProps extends GroupProps {
 }
 
 export const BBAnchor = ({ anchor, ...props }: BBAnchorProps) => {
-  const ref = React.useRef<THREE.Object3D>(null!)
+  const ref = React.useRef<THREE.Group>(null!)
   const parentRef = React.useRef<THREE.Object3D | null>(null)
 
   // Reattach group created by this component to the parent's parent,

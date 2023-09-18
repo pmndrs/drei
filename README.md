@@ -53,6 +53,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#presentationcontrols">PresentationControls</a></li>
           <li><a href="#keyboardcontrols">KeyboardControls</a></li>
           <li><a href="#FaceControls">FaceControls</a></li>
+          <li><a href="#motionpathcontrols">MotionPathControls</a></li>
         </ul>
         <li><a href="#gizmos">Gizmos</a></li>
         <ul>
@@ -749,6 +750,75 @@ useFrame((_, delta) => {
   }
 })
 ```
+
+#### MotionPathControls
+
+<p>
+  <a href="https://codesandbox.io/s/drei-motion-path-controls-d9x4yf"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/drei-motion-path-n75jcq/screenshot.png" alt="Demo"/></a>
+</p>
+
+Motion path controls, it takes a path of bezier curves or catmull-rom curves as input and animates the passed `object` along that path. It can be configured to look upon an external object for staging or presentation purposes by adding a `focusObject` property (ref).
+
+```tsx
+type MotionPathProps = JSX.IntrinsicElements['group'] & {
+  curves?: THREE.Curve[] // The curves from which the curve path is constructed, default: []
+  debug?: boolean // show the path on which the object animates, default: false
+  object?: React.MutableRefObject<THREE.Object3D> // default: default camera
+  focus?: [x: number, y: number, z: number] | React.MutableRefObject<THREE.Object3D> // default: undefined
+  offset?: number // manually progress the object along the path (0 - 1), default: undefined
+  smooth?: boolean // whether or not to smooth out the curve path, default: false
+  eps?: number // End of animation precision, default: 0.00001
+  damping?: number // Approximate time to reach the target. A smaller value will reach the target faster. default: 0.1
+  maxSpeed?: number // Optionally allows you to clamp the maximum speed. default: Infinity
+}
+```
+
+```jsx
+const poi = useRef()
+
+function Loop({ factor = 0.2 }) {
+  const motion = useMotion()
+  useFrame((state, delta) => (motion.current += delta * factor))
+}
+
+<MotionPathControls
+  focus={poi}
+  damping={0.2}
+>
+  <cubicBezierCurve3 v0={[-5, -5, 0]} v1={[-10, 0, 0]} v2={[0, 3, 0]} v3={[6, 3, 0]} />
+  <cubicBezierCurve3 v0={[6, 3, 0]} v1={[10, 5, 5]} v2={[5, 5, 5]} v3={[5, 5, 5]} />
+  <Loop />
+</MotionPathControls>
+  
+<Box args={[1, 1, 1]} ref={poi}/>
+
+```
+
+```jsx
+const poi = useRef()
+
+<MotionPathControls
+  focus={poi}
+  damping={0.2}
+  curves={[
+      new THREE.CubicBezierCurve3(
+      new THREE.Vector3(-5, -5, 0),
+      new THREE.Vector3(-10, 0, 0),
+      new THREE.Vector3(0, 3, 0),
+      new THREE.Vector3(6, 3, 0)
+    ),
+    new THREE.CubicBezierCurve3(
+      new THREE.Vector3(6, 3, 0),
+      new THREE.Vector3(10, 5, 5),
+      new THREE.Vector3(5, 3, 5),
+      new THREE.Vector3(5, 5, 5)
+    ),
+  ]}          
+/>
+
+<Box args={[1, 1, 1]} ref={poi}/>
+```
+
 
 # Gizmos
 

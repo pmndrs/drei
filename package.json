@@ -66,7 +66,7 @@
     "lodash.clamp": "^4.0.3",
     "lodash.omit": "^4.5.0",
     "lodash.pick": "^4.4.0",
-    "maath": "^0.6.0",
+    "maath": "^0.9.0",
     "meshline": "^3.1.6",
     "react-composer": "^5.0.3",
     "react-merge-refs": "^1.1.0",

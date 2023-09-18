@@ -40,6 +40,7 @@ export * from './PointerLockControls'
 export * from './FirstPersonControls'
 export * from './CameraControls'
 export * from './FaceControls'
+export * from './MotionPathControls'
 
 // Gizmos
 export * from './GizmoHelper'

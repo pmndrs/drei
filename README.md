@@ -760,43 +760,46 @@ useFrame((_, delta) => {
 Motion path controls, it takes a path of bezier curves or catmull-rom curves as input and animates the passed `object` along that path. It can be configured to look upon an external object for staging or presentation purposes by adding a `focusObject` property (ref).
 
 ```tsx
-interface MotionPathProps {
-  curves: Curve[]
-  focusObject: React.MutableRefObject<THREE.Object3D | undefined> // default: undefined, it will just follow the path
-  object: React.MutableRefObject<THREE.Object3D | undefined> // default: default camera
-  animationSpeed: number // default: 0.0015, only use if EaseFunction has been set, else it has no effect
-  duration: number // the duration for the damping
-  showPath: boolean // default: false
-  loop: boolean // default: false
-  autoStart: boolean // default: true
-  easeFunction: Ease | undefined // use one of the exported ease functions instead of the default maath/damp
+type MotionPathProps = JSX.IntrinsicElements['group'] & {
+  curves?: THREE.Curve[] // The curves from which the curve path is constructed, default: []
+  debug?: boolean // show the path on which the object animates, default: false
+  object?: React.MutableRefObject<THREE.Object3D> // default: default camera
+  focus?: [x: number, y: number, z: number] | React.MutableRefObject<THREE.Object3D> // default: undefined
+  offset?: number // manually progress the object along the path (0 - 1), default: undefined
+  smooth?: boolean // whether or not to smooth out the curve path, default: false
+  eps?: number // End of animation precision, default: 0.00001
+  damping?: number // Approximate time to reach the target. A smaller value will reach the target faster. default: 0.1
+  maxSpeed?: number // Optionally allows you to clamp the maximum speed. default: Infinity
 }
 ```
 
 ```jsx
+const poi = useRef()
+
+function Loop({ factor = 0.2 }) {
+  const motion = useMotion()
+  useFrame((state, delta) => (motion.current += delta * factor))
+}
+
 <MotionPathControls
-  object={motionRef}
-  focusObject={poi}
-  showPath={true}
-  loop={true}
-  duration={1}
-  autoStart={start}
-  //animationSpeed={0.005}
-  //easeFunction={Ease.Quart.Out}
+  focus={poi}
+  damping={0.2}
 >
   <cubicBezierCurve3 v0={[-5, -5, 0]} v1={[-10, 0, 0]} v2={[0, 3, 0]} v3={[6, 3, 0]} />
   <cubicBezierCurve3 v0={[6, 3, 0]} v1={[10, 5, 5]} v2={[5, 5, 5]} v3={[5, 5, 5]} />
+  <Loop />
 </MotionPathControls>
+  
+<Box args={[1, 1, 1]} ref={poi}/>
+
 ```
 
 ```jsx
+const poi = useRef()
+
 <MotionPathControls
-  object={motionRef}
-  focusObject={poi}
-  showPath={true}
-  loop={true}
-  duration={1}
-  autoStart={start}
+  focus={poi}
+  damping={0.2}
   curves={[
       new THREE.CubicBezierCurve3(
       new THREE.Vector3(-5, -5, 0),
@@ -812,9 +815,9 @@ interface MotionPathProps {
     ),
   ]}          
 />
-```
 
-Note: If no `object` is defined, the default camera will be animated.
+<Box args={[1, 1, 1]} ref={poi}/>
+```
 
 
 # Gizmos

@@ -1,10 +1,11 @@
+/* eslint-disable prettier/prettier */
 import * as THREE from 'three'
 import * as React from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { easing, misc } from 'maath'
 
 type MotionPathProps = JSX.IntrinsicElements['group'] & {
-  curves?: THREE.Curve[]
+  curves?: THREE.Curve<THREE.Vector3>[]
   debug?: boolean
   object?: React.MutableRefObject<THREE.Object3D>
   focus?: [x: number, y: number, z: number] | React.MutableRefObject<THREE.Object3D> 
@@ -13,15 +14,22 @@ type MotionPathProps = JSX.IntrinsicElements['group'] & {
   eps?: number
   damping?: number
   maxSpeed?: number
+  lookupDamping?: number
 }
 
-const context = React.createContext()
+interface Motion {
+  path: React.MutableRefObject<THREE.CurvePath<THREE.Vector3>>; // replace YourPathType with the actual type of path
+  // include other properties if any
+}
 
-export function useMotion() {
+const context = React.createContext<Motion | null>(null)
+
+export function useMotion() { 
   return React.useContext(context)
 }
 
-function Debug({ points = 50 }: { points?: number, path: React.MutableRefObject<THREE.CurvePath> }) {
+function Debug({ points = 50 }: { points?: number }) {
+  //@ts-ignore
   const { path } = useMotion()  
   const [dots, setDots] = React.useState<THREE.Vector3[]>([])
   const [material] = React.useState(() => new THREE.MeshBasicMaterial({ color: "black" }))
@@ -42,7 +50,7 @@ function Debug({ points = 50 }: { points?: number, path: React.MutableRefObject<
   )
 }
 
-export const MotionPathControls = React.forwardRef<THREE.Goup>(
+export const MotionPathControls = React.forwardRef<THREE.Group>(
   (
     {
       children,
@@ -110,7 +118,8 @@ export const MotionPathControls = React.forwardRef<THREE.Goup>(
         path.getTangentAt(state.offset, state.tangent).normalize()
         path.getPointAt(misc.repeat(pos.current - (last - state.offset), 1), state.next)
         const target = object?.current instanceof THREE.Object3D ? object.current : camera
-        target.position.copy(state.point)      
+        target.position.copy(state.point)
+        //@ts-ignore   
         easing.dampLookAt(target, focus?.current instanceof THREE.Object3D ? focus.current.getWorldPosition(vec) : focus, lookupDamping, delta, maxSpeed, undefined, eps)        
       }
     })

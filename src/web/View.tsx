@@ -180,7 +180,10 @@ export const View = ({ track, index = 1, frames = Infinity, children }: ViewProp
             <group onPointerOver={() => null} />
           </Container>,
           virtualScene,
-          { events: { compute, priority: index }, size: { width: rect.current?.width, height: rect.current?.height } }
+          {
+            events: { compute, priority: index },
+            size: { width: rect.current?.width, height: rect.current?.height } as any,
+          }
         )}
     </>
   )

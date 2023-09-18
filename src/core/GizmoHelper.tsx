@@ -61,7 +61,7 @@ export const GizmoHelper = ({
   // @ts-ignore
   const defaultControls = useThree((state) => state.controls) as ControlsProto
   const invalidate = useThree((state) => state.invalidate)
-  const gizmoRef = React.useRef<Group>()
+  const gizmoRef = React.useRef<Group>(null!)
   const virtualCam = React.useRef<OrthographicCameraImpl>(null!)
 
   const animating = React.useRef(false)

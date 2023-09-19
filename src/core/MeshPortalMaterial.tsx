@@ -180,7 +180,7 @@ export const MeshPortalMaterial = React.forwardRef(
 
     return (
       <portalMaterialImpl
-        ref={ref}
+        ref={ref as any}
         blur={blur}
         blend={0}
         resolution={[size.width * viewport.dpr, size.height * viewport.dpr]}

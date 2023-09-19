@@ -53,6 +53,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#presentationcontrols">PresentationControls</a></li>
           <li><a href="#keyboardcontrols">KeyboardControls</a></li>
           <li><a href="#FaceControls">FaceControls</a></li>
+          <li><a href="#motionpathcontrols">MotionPathControls</a></li>
         </ul>
         <li><a href="#gizmos">Gizmos</a></li>
         <ul>
@@ -750,6 +751,118 @@ useFrame((_, delta) => {
 })
 ```
 
+#### MotionPathControls
+
+<p>
+  <a href="https://codesandbox.io/s/2y73c6"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/2y73c6/screenshot.png" alt="Demo"/></a>
+</p>
+
+Motion path controls, it takes a path of bezier curves or catmull-rom curves as input and animates the passed `object` along that path. It can be configured to look upon an external object for staging or presentation purposes by adding a `focusObject` property (ref).
+
+```tsx
+type MotionPathProps = JSX.IntrinsicElements['group'] & {
+  /** An optional array of THREE curves */
+  curves?: THREE.Curve<THREE.Vector3>[]
+  /** Show debug helpers */
+  debug?: boolean
+  /** The target object that is moved, default: null (the default camera) */
+  object?: React.MutableRefObject<THREE.Object3D>
+  /** An object where the target looks towards, can also be a vector, default: null */
+  focus?: [x: number, y: number, z: number] | React.MutableRefObject<THREE.Object3D>
+  /** Position between 0 (start) and end (1), if this is not set useMotion().current must be used, default: null */
+  offset?: number
+  /** Optionally smooth the curve, default: false */
+  smooth?: boolean | number
+  /** Damping tolerance, default: 0.00001 */
+  eps?: number
+  /** Damping factor for movement along the curve, default: 0.1 */
+  damping?: number
+  /** Damping factor for lookAt, default: 0.1 */
+  focusDamping?: number
+  /** Damping maximum speed, default: Infinity */
+  maxSpeed?: number
+}
+```
+
+You can use MotionPathControls with declarative curves.
+
+```jsx
+function App() {
+  const poi = useRef()
+  return (
+    <group>
+      <MotionPathControls offset={0} focus={poi} damping={0.2}>
+        <cubicBezierCurve3 v0={[-5, -5, 0]} v1={[-10, 0, 0]} v2={[0, 3, 0]} v3={[6, 3, 0]} />
+        <cubicBezierCurve3 v0={[6, 3, 0]} v1={[10, 5, 5]} v2={[5, 5, 5]} v3={[5, 5, 5]} />
+      </MotionPathControls>
+      <Box args={[1, 1, 1]} ref={poi}/>
+```
+
+Or with imperative curves.
+
+```jsx
+<MotionPathControls
+  offset={0}
+  focus={poi}
+  damping={0.2}
+  curves={[
+    new THREE.CubicBezierCurve3(
+      new THREE.Vector3(-5, -5, 0),
+      new THREE.Vector3(-10, 0, 0),
+      new THREE.Vector3(0, 3, 0),
+      new THREE.Vector3(6, 3, 0)
+    ),
+    new THREE.CubicBezierCurve3(
+      new THREE.Vector3(6, 3, 0),
+      new THREE.Vector3(10, 5, 5),
+      new THREE.Vector3(5, 3, 5),
+      new THREE.Vector3(5, 5, 5)
+    ),
+  ]}
+/>
+```
+
+You can exert full control with the `useMotion` hook, it allows you to define the current position along the path for instance, or define your own lookAt. Keep in mind that MotionPathControls will still these values unless you set damping and focusDamping to 0. Then you can also employ your own easing.
+
+```tsx
+type MotionState = {
+  /** The user-defined, mutable, current goal position along the curve, it may be >1 or <0 */
+  current: number
+  /** The combined curve */
+  path: THREE.CurvePath<THREE.Vector3>
+  /** The focus object */
+  focus: React.MutableRefObject<THREE.Object3D<THREE.Event>> | [x: number, y: number, z: number] | undefined
+  /** The target object that is moved along the curve */
+  object: React.MutableRefObject<THREE.Object3D<THREE.Event>>
+  /** The automated, 0-1 normalised and damped current goal position along curve */
+  offset: number
+  /** The current point on the curve */
+  point: THREE.Vector3
+  /** The current tangent on the curve */
+  tangent: THREE.Vector3
+  /** The next point on the curve */
+  next: THREE.Vector3
+}
+
+const state: MotionState = useMotion()
+```
+
+```jsx
+function Loop() {
+  const motion = useMotion()
+  useFrame((state, delta) => {
+    // Set the current position along the curve, you can increment indiscriminately for a loop
+    motion.current += delta
+    // Look ahead on the curve
+    motion.object.lookAt(motion.next)
+  })
+}
+
+<MotionPathControls>
+  <cubicBezierCurve3 v0={[-5, -5, 0]} v1={[-10, 0, 0]} v2={[0, 3, 0]} v3={[6, 3, 0]} />
+  <Loop />
+```
+
 # Gizmos
 
 #### GizmoHelper
@@ -1135,13 +1248,13 @@ export type FacemeshProps = {
   /** a landmark index (to get the position from) or a vec3 to be the origin of the mesh. default: undefined (ie. the bbox center) */
   origin?: number | THREE.Vector3
   /** A facial transformation matrix, as returned by FaceLandmarkerResult.facialTransformationMatrixes (see: https://developers.google.com/mediapipe/solutions/vision/face_landmarker/web_js#handle_and_display_results) */
-  facialTransformationMatrix?: typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.facialTransformationMatrixes[0]
+  facialTransformationMatrix?: (typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.facialTransformationMatrixes)[0]
   /** Apply position offset extracted from `facialTransformationMatrix` */
   offset?: boolean
   /** Offset sensitivity factor, less is more sensible */
   offsetScalar?: number
   /** Fface blendshapes, as returned by FaceLandmarkerResult.faceBlendshapes (see: https://developers.google.com/mediapipe/solutions/vision/face_landmarker/web_js#handle_and_display_results) */
-  faceBlendshapes?: typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.faceBlendshapes[0]
+  faceBlendshapes?: (typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.faceBlendshapes)[0]
   /** whether to enable eyes (nb. `faceBlendshapes` is required for), default: true */
   eyes?: boolean
   /** Force `origin` to be the middle of the 2 eyes (nb. `eyes` is required for), default: false */
@@ -2802,8 +2915,6 @@ useGLTF.preload(url)
 
 If you want to use your own draco decoder globally, you can pass it through `useGLTF.setDecoderPath(path)`:
 
-````jsx
-
 > **Note** <br>If you are using the CDN loaded draco binaries, you can get a small speedup in loading time by prefetching them.
 >
 > You can accomplish this by adding two `<link>` tags to your `<head>` tag, as below. The version in those URLs must exactly match what [useGLTF](src/core/useGLTF.tsx#L18) uses for this to work. If you're using create-react-app, `public/index.html` file contains the `<head>` tag.
@@ -2836,7 +2947,7 @@ function SuzanneFBX() {
   let fbx = useFBX('suzanne/suzanne.fbx')
   return <primitive object={fbx} />
 }
-````
+```
 
 #### useTexture
 

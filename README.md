@@ -853,8 +853,8 @@ function Loop() {
   useFrame((state, delta) => {
     // Set the current position along the curve, you can increment indiscriminately for a loop
     motion.current += delta
-    // You can define your own lookAt (if no focus was given to MotionPathControls)
-    motion.object.lookAt(1, 2, 3)
+    // Look ahead on the curve
+    motion.object.lookAt(motion.next)
   })
 }
 

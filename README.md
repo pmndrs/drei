@@ -761,47 +761,52 @@ Motion path controls, it takes a path of bezier curves or catmull-rom curves as 
 
 ```tsx
 type MotionPathProps = JSX.IntrinsicElements['group'] & {
-  curves?: THREE.Curve[] // The curves from which the curve path is constructed, default: []
-  debug?: boolean // show the path on which the object animates, default: false
-  object?: React.MutableRefObject<THREE.Object3D> // default: default camera
-  focus?: [x: number, y: number, z: number] | React.MutableRefObject<THREE.Object3D> // default: undefined
-  offset?: number // manually progress the object along the path (0 - 1), default: undefined
-  smooth?: boolean // whether or not to smooth out the curve path, default: false
-  eps?: number // End of animation precision, default: 0.00001
-  damping?: number // Approximate time to reach the target. A smaller value will reach the target faster. default: 0.1
-  maxSpeed?: number // Optionally allows you to clamp the maximum speed. default: Infinity
+  /** An optional array of THREE curves */
+  curves?: THREE.Curve<THREE.Vector3>[]
+  /** Show debug helpers */
+  debug?: boolean
+  /** The target object that is moved, default: null (the default camera) */
+  object?: React.MutableRefObject<THREE.Object3D>
+  /** An object where the target looks towards, can also be a vector, default: null */
+  focus?: [x: number, y: number, z: number] | React.MutableRefObject<THREE.Object3D>
+  /** Position between 0 (start) and end (1), if this is not set useMotion().current must be used, default: null */
+  offset?: number
+  /** Optionally smooth the curve, default: false */
+  smooth?: boolean | number
+  /** Damping tolerance, default: 0.00001 */
+  eps?: number
+  /** Damping factor for movement along the curve, default: 0.1 */
+  damping?: number
+  /** Damping factor for lookAt, default: 0.1 */
+  focusDamping?: number
+  /** Damping maximum speed, default: Infinity */
+  maxSpeed?: number
 }
 ```
 
+You can use MotionPathControls with declarative curves.
+
 ```jsx
-const poi = useRef()
-
-function Loop({ factor = 0.2 }) {
-  const motion = useMotion()
-  useFrame((state, delta) => (motion.current += delta * factor))
-}
-
-<MotionPathControls
-  focus={poi}
-  damping={0.2}
->
-  <cubicBezierCurve3 v0={[-5, -5, 0]} v1={[-10, 0, 0]} v2={[0, 3, 0]} v3={[6, 3, 0]} />
-  <cubicBezierCurve3 v0={[6, 3, 0]} v1={[10, 5, 5]} v2={[5, 5, 5]} v3={[5, 5, 5]} />
-  <Loop />
-</MotionPathControls>
-
-<Box args={[1, 1, 1]} ref={poi}/>
-
+function App() {
+  const poi = useRef()
+  return (
+    <group>
+      <MotionPathControls offset={0} focus={poi} damping={0.2}>
+        <cubicBezierCurve3 v0={[-5, -5, 0]} v1={[-10, 0, 0]} v2={[0, 3, 0]} v3={[6, 3, 0]} />
+        <cubicBezierCurve3 v0={[6, 3, 0]} v1={[10, 5, 5]} v2={[5, 5, 5]} v3={[5, 5, 5]} />
+      </MotionPathControls>
+      <Box args={[1, 1, 1]} ref={poi}/>
 ```
 
-```jsx
-const poi = useRef()
+Or with imperative curves.
 
+```jsx
 <MotionPathControls
+  offset={0}
   focus={poi}
   damping={0.2}
   curves={[
-      new THREE.CubicBezierCurve3(
+    new THREE.CubicBezierCurve3(
       new THREE.Vector3(-5, -5, 0),
       new THREE.Vector3(-10, 0, 0),
       new THREE.Vector3(0, 3, 0),
@@ -815,8 +820,47 @@ const poi = useRef()
     ),
   ]}
 />
+```
 
-<Box args={[1, 1, 1]} ref={poi}/>
+You can exert full control with the `useMotion` hook, it allows you to define the current position along the path for instance, or define your own lookAt. Keep in mind that MotionPathControls will still these values unless you set damping and focusDamping to 0. Then you can also employ your own easing.
+
+```tsx
+type MotionState = {
+  /** The user-defined, mutable, current goal position along the curve, it may be >1 or <0 */
+  current: number
+  /** The combined curve */
+  path: THREE.CurvePath<THREE.Vector3>
+  /** The focus object */
+  focus: React.MutableRefObject<THREE.Object3D<THREE.Event>> | [x: number, y: number, z: number] | undefined
+  /** The target object that is moved along the curve */
+  object: React.MutableRefObject<THREE.Object3D<THREE.Event>>
+  /** The automated, 0-1 normalised and damped current goal position along curve */
+  offset: number
+  /** The current point on the curve */
+  point: THREE.Vector3
+  /** The current tangent on the curve */
+  tangent: THREE.Vector3
+  /** The next point on the curve */
+  next: THREE.Vector3
+}
+
+const state: MotionState = useMotion()
+```
+
+```jsx
+function Loop() {
+  const motion = useMotion()
+  useFrame((state, delta) => {
+    // Set the current position along the curve, you can increment indiscriminately for a loop
+    motion.current += delta
+    // You can define your own lookAt (if no focus was given to MotionPathControls)
+    motion.object.lookAt(1, 2, 3)
+  })
+}
+
+<MotionPathControls>
+  <cubicBezierCurve3 v0={[-5, -5, 0]} v1={[-10, 0, 0]} v2={[0, 3, 0]} v3={[6, 3, 0]} />
+  <Loop />
 ```
 
 # Gizmos

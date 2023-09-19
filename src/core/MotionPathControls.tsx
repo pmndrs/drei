@@ -5,26 +5,44 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { easing, misc } from 'maath'
 
 type MotionPathProps = JSX.IntrinsicElements['group'] & {
+  /** An optional array of THREE curves */
   curves?: THREE.Curve<THREE.Vector3>[]
+  /** Show debug helpers */
   debug?: boolean
+  /** The target object that is moved, default: null (the default camera) */
   object?: React.MutableRefObject<THREE.Object3D>
+  /** An object where the target looks towards, can also be a vector, default: null */
   focus?: [x: number, y: number, z: number] | React.MutableRefObject<THREE.Object3D>
+  /** Position between 0 (start) and end (1), if this is not set useMotion().current must be used, default: null */
   offset?: number
-  smooth?: boolean
+  /** Optionally smooth the curve, default: false */
+  smooth?: boolean | number
+  /** Damping tolerance, default: 0.00001 */
   eps?: number
+  /** Damping factor for movement along the curve, default: 0.1 */
   damping?: number
+  /** Damping factor for lookAt, default: 0.1 */
+  focusDamping?: number
+  /** Damping maximum speed, default: Infinity */
   maxSpeed?: number
-  lookupDamping?: number
 }
 
 type MotionState = {
-  path: THREE.CurvePath<THREE.Vector3>
-  focus: React.MutableRefObject<THREE.Object3D<THREE.Event>> | [x: number, y: number, z: number] | undefined
-  object: React.MutableRefObject<THREE.Object3D<THREE.Event>>
+  /** The user-defined, mutable, current goal position along the curve, it may be >1 or <0 */
   current: number
+  /** The combined curve */
+  path: THREE.CurvePath<THREE.Vector3>
+  /** The focus object */
+  focus: React.MutableRefObject<THREE.Object3D<THREE.Event>> | [x: number, y: number, z: number] | undefined
+  /** The target object that is moved along the curve */
+  object: React.MutableRefObject<THREE.Object3D<THREE.Event>>
+  /** The 0-1 normalised and damped current goal position along curve */
   offset: number
+  /** The current point on the curve */
   point: THREE.Vector3
+  /** The current tangent on the curve */
   tangent: THREE.Vector3
+  /** The next point on the curve */
   next: THREE.Vector3
 }
 
@@ -38,7 +56,6 @@ export function useMotion() {
 }
 
 function Debug({ points = 50 }: { points?: number }) {
-  //@ts-ignore
   const { path } = useMotion()
   const [dots, setDots] = React.useState<THREE.Vector3[]>([])
   const [material] = React.useState(() => new THREE.MeshBasicMaterial({ color: 'black' }))
@@ -71,7 +88,7 @@ export const MotionPathControls = React.forwardRef<THREE.Group>(
       offset = undefined,
       eps = 0.00001,
       damping = 0.1,
-      lookupDamping = 0.1,
+      focusDamping = 0.1,
       maxSpeed = Infinity,
       ...props
     }: MotionPathProps,
@@ -145,7 +162,7 @@ export const MotionPathControls = React.forwardRef<THREE.Group>(
           easing.dampLookAt(
             target,
             isObject3DRef(focus) ? focus.current.getWorldPosition(vec) : focus,
-            lookupDamping,
+            focusDamping,
             delta,
             maxSpeed,
             undefined,

@@ -33,10 +33,10 @@ type InstancedMesh = Omit<THREE.InstancedMesh, 'instanceMatrix' | 'instanceColor
   instanceColor: THREE.InstancedBufferAttribute
 }
 
-const _instanceLocalMatrix = /*@__PURE__*/ new THREE.Matrix4()
-const _instanceWorldMatrix = /*@__PURE__*/ new THREE.Matrix4()
-const _instanceIntersects: THREE.Intersection[] = /*@__PURE__*/ []
-const _mesh = /*@__PURE__*/ new THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>()
+const _instanceLocalMatrix = new THREE.Matrix4()
+const _instanceWorldMatrix = new THREE.Matrix4()
+const _instanceIntersects: THREE.Intersection[] = []
+const _mesh = new THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>()
 
 class PositionMesh extends THREE.Group {
   color: THREE.Color
@@ -84,13 +84,13 @@ class PositionMesh extends THREE.Group {
   }
 }
 
-const globalContext = /*@__PURE__*/ React.createContext<Api>(null!)
-const parentMatrix = /*@__PURE__*/ new THREE.Matrix4()
-const instanceMatrix = /*@__PURE__*/ new THREE.Matrix4()
-const tempMatrix = /*@__PURE__*/ new THREE.Matrix4()
-const translation = /*@__PURE__*/ new THREE.Vector3()
-const rotation = /*@__PURE__*/ new THREE.Quaternion()
-const scale = /*@__PURE__*/ new THREE.Vector3()
+const globalContext = React.createContext<Api>(null!)
+const parentMatrix = new THREE.Matrix4()
+const instanceMatrix = new THREE.Matrix4()
+const tempMatrix = new THREE.Matrix4()
+const translation = new THREE.Vector3()
+const rotation = new THREE.Quaternion()
+const scale = new THREE.Vector3()
 
 export const Instance = React.forwardRef(({ context, children, ...props }: InstanceProps, ref) => {
   React.useMemo(() => extend({ PositionMesh }), [])

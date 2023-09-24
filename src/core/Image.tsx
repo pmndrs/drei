@@ -4,6 +4,7 @@ import { Color, extend } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
 import { useTexture } from './useTexture'
 import { ForwardRefComponent } from '../helpers/ts-utils'
+import { version } from '../helpers/constants'
 
 export type ImageProps = Omit<JSX.IntrinsicElements['mesh'], 'scale'> & {
   segments?: number
@@ -71,7 +72,7 @@ const ImageMaterialImpl = shaderMaterial(
     gl_FragColor = toGrayscale(texture2D(map, zUv) * vec4(color, opacity), grayscale);
     
     #include <tonemapping_fragment>
-    #include <${parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
+    #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
   }
 `
 )

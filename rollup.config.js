@@ -38,6 +38,20 @@ const getBabelOptions = ({ useESModules }) => ({
   plugins: [
     '@babel/plugin-proposal-nullish-coalescing-operator',
     ['@babel/transform-runtime', { regenerator: false, useESModules }],
+    {
+      visitor: {
+        CallExpression(path) {
+          if (!path.getFunctionParent()) {
+            path.addComment('leading', '@__PURE__')
+          }
+        },
+        NewExpression(path) {
+          if (!path.getFunctionParent()) {
+            path.addComment('leading', '@__PURE__')
+          }
+        },
+      },
+    },
   ],
 })
 

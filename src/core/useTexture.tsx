@@ -19,9 +19,12 @@ export function useTexture<Url extends string[] | string | Record<string, string
 
   // https://github.com/mrdoob/three.js/issues/22696
   // Upload the texture to the GPU immediately instead of waiting for the first render
+  // NOTE: only available for WebGLRenderer
   useEffect(() => {
-    const array = Array.isArray(textures) ? textures : [textures]
-    array.forEach(gl.initTexture)
+    if ('initTexture' in gl) {
+      const array = Array.isArray(textures) ? textures : [textures]
+      array.forEach(gl.initTexture)
+    }
   }, [gl, textures])
 
   if (IsObject(input)) {

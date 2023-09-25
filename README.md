@@ -4476,16 +4476,49 @@ attribute vec3 color;
 
 Particle based cloud.
 
-👉 Note: `<Cloud />` component is not meant to be used in production environments as it relies on third-party CDN.
+```tsx
+type CloudsProps = JSX.IntrinsicElements['group'] & {
+  /** Optional cloud texture, points to a default hosted on rawcdn.githack */
+  texture?: string
+  /** Maximum number of segments, default: 200 (make this tight to save memory!) */
+  limit?: number
+  /** How many segments it renders, default: undefined (all) */
+  range?: number
+  /** Which material it will override, default: MeshLambertMaterial */
+  material?: typeof Material
+}
+
+type CloudProps = JSX.IntrinsicElements['group'] & {
+  /** A seeded random will show the same cloud consistently, default: Math.random() */
+  seed?: number
+  /** How many segments or particles the cloud will have, default: 20 */
+  segments?: number
+  /** The box3 bounds of the cloud, default: [5, 1, 1] */
+  bounds?: ReactThreeFiber.Vector3
+  /** The general scale of the segments */
+  scale?: ReactThreeFiber.Vector3
+  /** The volume/thickness of the segments, default: 6 */
+  volume?: number
+  /** Growth factor for animated clouds (speed > 0), default: 4 */
+  growth?: number
+  /** Animation factor, default: 0.1 */
+  speed?: number
+  /** Camera distance until the segments will fade, default: 10 */
+  fade?: number
+  /** Opacity, default: 0.8 */
+  opacity?: number
+  /** Color, default: white */
+  color?: ReactThreeFiber.Color
+}
+```
+
+Use the `<Clouds>` provider to glob all clouds into a single, instanced draw call.
 
 ```jsx
-<Cloud
-  opacity={0.5}
-  speed={0.4} // Rotation speed
-  width={10} // Width of the full cloud
-  depth={1.5} // Z-dir depth
-  segments={20} // Number of particles
-/>
+<Clouds material={THREE.MeshBasicMaterial}>
+  <Cloud segments={40} bounds={[10, 2, 2]} volume={10} color="orange" />
+  <Cloud seed={1} scale={2} volume={5} color="hotpink" fade={100} />
+</Clouds>
 ```
 
 #### useEnvironment

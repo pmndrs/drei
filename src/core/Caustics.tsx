@@ -11,6 +11,7 @@ import { shaderMaterial } from './shaderMaterial'
 import { Edges } from './Edges'
 import { FullScreenQuad } from 'three-stdlib'
 import { ForwardRefComponent } from '../helpers/ts-utils'
+import { version } from '../helpers/constants'
 
 type CausticsMaterialType = THREE.ShaderMaterial & {
   cameraMatrixWorld?: THREE.Matrix4
@@ -128,7 +129,7 @@ const CausticsProjectionMaterial = shaderMaterial(
     vec3 back = texture2D(causticsTextureB, lightSpacePos.xy).rgb;
     gl_FragColor = vec4((front + back) * color, 1.0);
     #include <tonemapping_fragment>
-    #include <${parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
+    #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
    }`
 )
 

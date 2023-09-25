@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { version } from '../helpers/constants'
 
 export class SpotLightMaterial extends THREE.ShaderMaterial {
   constructor() {
@@ -79,7 +80,7 @@ export class SpotLightMaterial extends THREE.ShaderMaterial {
         gl_FragColor = vec4(lightColor, intensity * opacity);
 
         #include <tonemapping_fragment>
-	      #include <${parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
+	      #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
       }`,
     })
   }

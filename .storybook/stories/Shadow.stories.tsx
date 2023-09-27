@@ -1,10 +1,10 @@
 import * as React from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Mesh } from 'three'
 
 import { Setup } from '../Setup'
 
-import { Shadow, Icosahedron, Plane } from '../../src'
+import { Shadow, Icosahedron, Plane, type ShadowType } from '../../src'
+import { type Mesh } from 'three'
 
 export default {
   title: 'Misc/Shadow',
@@ -13,7 +13,7 @@ export default {
 }
 
 function ShadowScene() {
-  const shadow = React.useRef<Mesh>(null!)
+  const shadow = React.useRef<ShadowType>(null!)
   const mesh = React.useRef<Mesh>(null!)
 
   useFrame(({ clock }) => {

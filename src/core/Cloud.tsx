@@ -150,9 +150,9 @@ export const Clouds = React.forwardRef<Group, CloudsProps>(
       for (index = 0; index < clouds.current.length; index++) {
         config = clouds.current[index]
         config.ref.current.matrixWorld.decompose(translation, rotation, scale)
-        translation.add(pos.copy(config.position).applyQuaternion(rotation))
+        translation.add(pos.copy(config.position).applyQuaternion(rotation).multiply(scale))
         rotation.copy(cquat).multiply(qat.setFromAxisAngle(dir, (config.rotation += delta * config.rotationFactor)))
-        scale.addScalar(config.volume + ((1 + Math.sin(t * config.density * config.speed)) / 2) * config.growth)
+        scale.multiplyScalar(config.volume + ((1 + Math.sin(t * config.density * config.speed)) / 2) * config.growth)
         config.matrix.compose(translation, rotation, scale).premultiply(parentMatrix)
         config.dist = translation.distanceTo(cpos)
       }

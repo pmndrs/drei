@@ -4471,7 +4471,9 @@ attribute vec3 color;
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-cloud--cloud-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
 <p>
+  <a href="https://codesandbox.io/s/gwthnh"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/gwthnh/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/mbfzf"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/mbfzf/screenshot.png" alt="Demo"/></a>
+  
 </p>
 
 Particle based cloud.

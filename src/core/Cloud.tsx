@@ -65,6 +65,8 @@ type CloudProps = JSX.IntrinsicElements['group'] & {
   segments?: number
   /** The box3 bounds of the cloud, default: [5, 1, 1] */
   bounds?: ReactThreeFiber.Vector3
+  /** How to arrange segments inside the bounds, default: inside (cloud are smaller are the edges) */
+  concentrate?: 'inside' | 'outside'
   /** The general scale of the segments */
   scale?: ReactThreeFiber.Vector3
   /** The volume/thickness of the segments, default: 6 */
@@ -205,6 +207,7 @@ export const CloudInstance = React.forwardRef<Group, CloudProps>(
       fade = 10,
       volume = 6,
       growth = 4,
+      concentrate = 'inside',
       seed = Math.random(),
       ...props
     },
@@ -257,13 +260,13 @@ export const CloudInstance = React.forwardRef<Group, CloudProps>(
         const yDiff = Math.abs(cloud.position.y)
         const zDiff = Math.abs(cloud.position.z)
         const max = Math.max(xDiff, yDiff, zDiff)
-        cloud.length = 1
+        cloud.length = concentrate === 'inside' ? 1 : -1
         if (xDiff === max) cloud.length -= xDiff / cloud.bounds.x
         if (yDiff === max) cloud.length -= yDiff / cloud.bounds.y
         if (zDiff === max) cloud.length -= zDiff / cloud.bounds.z
         cloud.volume = Math.max(0.25, cloud.length) * volume
       })
-    }, [bounds, fade, color, opacity, growth, volume, seed, segments, speed])
+    }, [concentrate, bounds, fade, color, opacity, growth, volume, seed, segments, speed])
 
     React.useLayoutEffect(() => {
       const temp = clouds

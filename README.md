@@ -4495,6 +4495,8 @@ type CloudProps = JSX.IntrinsicElements['group'] & {
   segments?: number
   /** The box3 bounds of the cloud, default: [5, 1, 1] */
   bounds?: ReactThreeFiber.Vector3
+  /** How to arrange segments inside the bounds, default: inside (cloud are smaller are the edges) */
+  concentrate?: 'inside' | 'outside'
   /** The general scale of the segments */
   scale?: ReactThreeFiber.Vector3
   /** The volume/thickness of the segments, default: 6 */

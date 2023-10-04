@@ -2092,9 +2092,9 @@ A material that renders nothing. In comparison to `<mesh visible={false}` it can
 Antialiased round dots. It takes the same props as regular [THREE.PointsMaterial](https://threejs.org/docs/index.html?q=PointsMaterial#api/en/materials/PointsMaterial) on which it is based.
 
 ```jsx
-<points>
+<Points>
   <PointMaterial transparent vertexColors size={15} sizeAttenuation={false} depthWrite={false} />
-</points>
+</Points>
 ```
 
 #### SoftShadows

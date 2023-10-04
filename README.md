@@ -298,7 +298,7 @@ A responsive [THREE.OrthographicCamera](https://threejs.org/docs/#api/en/cameras
 </OrthographicCamera>
 ```
 
-You can use the OrthographicCamera to film contents into a RenderTarget, it has the same API as OrthographicCamera.
+You can use the OrthographicCamera to film contents into a RenderTarget, it has the same API as PerspectiveCamera.
 
 ```jsx
 <OrthographicCamera position={[0, 0, 10]}>

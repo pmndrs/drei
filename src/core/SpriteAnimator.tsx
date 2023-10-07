@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useFrame, useThree, Vector3 } from '@react-three/fiber'
+import { useFrame, Vector3 } from '@react-three/fiber'
 import * as THREE from 'three'
 
 type SpriteAnimatorProps = JSX.IntrinsicElements['group'] & {
@@ -69,7 +69,6 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
   ) => {
     const ref = React.useRef<any>()
     const spriteData = React.useRef<any>(null)
-    const [isJsonReady, setJsonReady] = React.useState(false)
     const hasEnded = React.useRef(false)
     const matRef = React.useRef<any>()
     const spriteRef = React.useRef<any>()
@@ -86,7 +85,7 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
     const pos = React.useRef(offset)
     const softEnd = React.useRef(false)
 
-    function reset() { }
+    function reset() {}
 
     const state = React.useMemo<SpriteAnimatorState>(
       () => ({
@@ -274,10 +273,10 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
       const { w: frameW, h: frameH } = Array.isArray(frames)
         ? frames[0].sourceSize
         : frameName
-          ? frames[frameName]
-            ? frames[frameName][0].sourceSize
-            : { w: 0, h: 0 }
+        ? frames[frameName]
+          ? frames[frameName][0].sourceSize
           : { w: 0, h: 0 }
+        : { w: 0, h: 0 }
 
       matRef.current.map.wrapS = matRef.current.map.wrapT = THREE.RepeatWrapping
       matRef.current.map.center.set(0, 0)
@@ -289,7 +288,6 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
       matRef.current.map.offset.x = 0.0 //-matRef.current.map.repeat.x
       matRef.current.map.offset.y = 1 - frameOffsetY
 
-      setJsonReady(true)
       if (onStart && autoPlay) onStart({ currentFrameName: frameName, currentFrame: currentFrame.current })
     }
 

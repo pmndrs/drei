@@ -65,10 +65,17 @@ type CloudProps = JSX.IntrinsicElements['group'] & {
   segments?: number
   /** The box3 bounds of the cloud, default: [5, 1, 1] */
   bounds?: ReactThreeFiber.Vector3
+  /** How to arrange segment volume inside the bounds, default: inside (cloud are smaller at the edges) */
+  concentrate?: 'random' | 'inside' | 'outside'
   /** The general scale of the segments */
   scale?: ReactThreeFiber.Vector3
   /** The volume/thickness of the segments, default: 6 */
   volume?: number
+  /** The smallest volume when distributing clouds, default: 0.25 */
+  smallestVolume?: number
+  /** An optional function that allows you to distribute points and volumes (overriding all settings), default: null
+   *  Both point and volume are factors, point x/y/z can be between -1 and 1, volume between 0 and 1 */
+  distribute?: (cloud: CloudState, index: number) => { point: Vector3; volume?: number }
   /** Growth factor for animated clouds (speed > 0), default: 4 */
   growth?: number
   /** Animation factor, default: 0 */
@@ -143,9 +150,9 @@ export const Clouds = React.forwardRef<Group, CloudsProps>(
       for (index = 0; index < clouds.current.length; index++) {
         config = clouds.current[index]
         config.ref.current.matrixWorld.decompose(translation, rotation, scale)
-        translation.add(pos.copy(config.position).applyQuaternion(rotation))
+        translation.add(pos.copy(config.position).applyQuaternion(rotation).multiply(scale))
         rotation.copy(cquat).multiply(qat.setFromAxisAngle(dir, (config.rotation += delta * config.rotationFactor)))
-        scale.addScalar(config.volume + ((1 + Math.sin(t * config.density * config.speed)) / 2) * config.growth)
+        scale.multiplyScalar(config.volume + ((1 + Math.sin(t * config.density * config.speed)) / 2) * config.growth)
         config.matrix.compose(translation, rotation, scale).premultiply(parentMatrix)
         config.dist = translation.distanceTo(cpos)
       }
@@ -204,7 +211,10 @@ export const CloudInstance = React.forwardRef<Group, CloudProps>(
       color = '#ffffff',
       fade = 10,
       volume = 6,
+      smallestVolume = 0.25,
+      distribute = null,
       growth = 4,
+      concentrate = 'inside',
       seed = Math.random(),
       ...props
     },
@@ -239,6 +249,7 @@ export const CloudInstance = React.forwardRef<Group, CloudProps>(
     React.useLayoutEffect(() => {
       clouds.forEach((cloud, index) => {
         applyProps(cloud as any, {
+          volume,
           color,
           speed,
           growth,
@@ -249,10 +260,18 @@ export const CloudInstance = React.forwardRef<Group, CloudProps>(
           rotationFactor: Math.max(0.2, 0.5 * random()) * speed,
         })
         // Only distribute randomly if there are multiple segments
-        if (segments > 1)
-          cloud.position
-            .copy(cloud.bounds)
-            .multiply({ x: random() * 2 - 1, y: random() * 2 - 1, z: random() * 2 - 1 } as Vector3)
+
+        const distributed = distribute?.(cloud, index)
+
+        if (distributed || segments > 1)
+          cloud.position.copy(cloud.bounds).multiply(
+            distributed?.point ??
+              ({
+                x: random() * 2 - 1,
+                y: random() * 2 - 1,
+                z: random() * 2 - 1,
+              } as Vector3)
+          )
         const xDiff = Math.abs(cloud.position.x)
         const yDiff = Math.abs(cloud.position.y)
         const zDiff = Math.abs(cloud.position.z)
@@ -261,9 +280,15 @@ export const CloudInstance = React.forwardRef<Group, CloudProps>(
         if (xDiff === max) cloud.length -= xDiff / cloud.bounds.x
         if (yDiff === max) cloud.length -= yDiff / cloud.bounds.y
         if (zDiff === max) cloud.length -= zDiff / cloud.bounds.z
-        cloud.volume = Math.max(0.25, cloud.length) * volume
+        cloud.volume =
+          (distributed?.volume !== undefined
+            ? distributed.volume
+            : Math.max(
+                Math.max(0, smallestVolume),
+                concentrate === 'random' ? random() : concentrate === 'inside' ? cloud.length : 1 - cloud.length
+              )) * volume
       })
-    }, [bounds, fade, color, opacity, growth, volume, seed, segments, speed])
+    }, [concentrate, bounds, fade, color, opacity, growth, volume, seed, segments, speed])
 
     React.useLayoutEffect(() => {
       const temp = clouds

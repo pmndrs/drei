@@ -10,7 +10,6 @@ import mergeRefs from 'react-merge-refs'
 import { extend, useFrame } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
 import { ForwardRefComponent } from '../helpers/ts-utils'
-import { version } from '../helpers/constants'
 
 export type GridMaterialType = {
   /** Cell size, default: 0.5 */
@@ -122,7 +121,7 @@ const GridMaterial = shaderMaterial(
       if (gl_FragColor.a <= 0.0) discard;
 
       #include <tonemapping_fragment>
-      #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
+      #include <${parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
     }
   `
 )

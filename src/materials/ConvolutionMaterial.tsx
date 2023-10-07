@@ -1,5 +1,4 @@
 import * as THREE from 'three'
-import { version } from '../helpers/constants'
 
 export class ConvolutionMaterial extends THREE.ShaderMaterial {
   readonly kernel: Float32Array
@@ -54,7 +53,9 @@ export class ConvolutionMaterial extends THREE.ShaderMaterial {
 
           #include <dithering_fragment>
           #include <tonemapping_fragment>
-          #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
+          #include <${
+            parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'
+          }>
         }`,
       vertexShader: `uniform vec2 texelSize;
         uniform vec2 halfTexelSize;

@@ -3,7 +3,6 @@ import * as THREE from 'three'
 import { PointsProps, useThree, useFrame, extend, Node } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
 import { ForwardRefComponent } from '../helpers/ts-utils'
-import { version } from '../helpers/constants'
 
 interface Props {
   /** Number of particles (default: 100) */
@@ -53,7 +52,7 @@ const SparklesImplMaterial = shaderMaterial(
       float strength = 0.05 / distanceToCenter - 0.1;
       gl_FragColor = vec4(vColor, strength * vOpacity);
       #include <tonemapping_fragment>
-      #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
+      #include <${parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
     }`
 )
 

@@ -298,7 +298,7 @@ A responsive [THREE.OrthographicCamera](https://threejs.org/docs/#api/en/cameras
 </OrthographicCamera>
 ```
 
-You can use the OrthographicCamera to film contents into a RenderTarget, it has the same API as OrthographicCamera.
+You can use the OrthographicCamera to film contents into a RenderTarget, it has the same API as PerspectiveCamera.
 
 ```jsx
 <OrthographicCamera position={[0, 0, 10]}>
@@ -4471,7 +4471,9 @@ attribute vec3 color;
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-cloud--cloud-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
 <p>
+  <a href="https://codesandbox.io/s/gwthnh"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/gwthnh/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/mbfzf"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/mbfzf/screenshot.png" alt="Demo"/></a>
+  
 </p>
 
 Particle based cloud.
@@ -4495,17 +4497,24 @@ type CloudProps = JSX.IntrinsicElements['group'] & {
   segments?: number
   /** The box3 bounds of the cloud, default: [5, 1, 1] */
   bounds?: ReactThreeFiber.Vector3
+  /** How to arrange segment volume inside the bounds, default: inside (cloud are smaller at the edges) */
+  concentrate?: 'random' | 'inside' | 'outside'
   /** The general scale of the segments */
   scale?: ReactThreeFiber.Vector3
   /** The volume/thickness of the segments, default: 6 */
   volume?: number
+  /** The smallest volume when distributing clouds, default: 0.25 */
+  smallestVolume?: number
+  /** An optional function that allows you to distribute points and volumes (overriding all settings), default: null
+   *  Both point and volume are factors, point x/y/z can be between -1 and 1, volume between 0 and 1 */
+  distribute?: (cloud: CloudState, index: number) => { point: Vector3; volume?: number }
   /** Growth factor for animated clouds (speed > 0), default: 4 */
   growth?: number
-  /** Animation factor, default: 0.1 */
+  /** Animation factor, default: 0 */
   speed?: number
   /** Camera distance until the segments will fade, default: 10 */
   fade?: number
-  /** Opacity, default: 0.8 */
+  /** Opacity, default: 1 */
   opacity?: number
   /** Color, default: white */
   color?: ReactThreeFiber.Color

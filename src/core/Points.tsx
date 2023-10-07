@@ -22,10 +22,10 @@ type PointsInstancesProps = JSX.IntrinsicElements['points'] & {
   limit?: number
 }
 
-const _inverseMatrix = new THREE.Matrix4()
-const _ray = new THREE.Ray()
-const _sphere = new THREE.Sphere()
-const _position = new THREE.Vector3()
+const _inverseMatrix = /*@__PURE__*/ new THREE.Matrix4()
+const _ray = /*@__PURE__*/ new THREE.Ray()
+const _sphere = /*@__PURE__*/ new THREE.Sphere()
+const _position = /*@__PURE__*/ new THREE.Vector3()
 
 export class PositionPoint extends THREE.Group {
   size: number
@@ -82,9 +82,9 @@ export class PositionPoint extends THREE.Group {
 }
 
 let i, positionRef
-const context = React.createContext<Api>(null!)
-const parentMatrix = new THREE.Matrix4()
-const position = new THREE.Vector3()
+const context = /*@__PURE__*/ React.createContext<Api>(null!)
+const parentMatrix = /*@__PURE__*/ new THREE.Matrix4()
+const position = /*@__PURE__*/ new THREE.Vector3()
 
 /**
  * Instance implementation, relies on react + context to update the attributes based on the children of this component

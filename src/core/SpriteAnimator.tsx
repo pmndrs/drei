@@ -299,7 +299,7 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
         return param[0]
       } else if (typeof param === 'object' && param !== null) {
         const keys = Object.keys(param)
-        return param[keys[0]][0]
+        return frameName ? param[frameName][0] : param[keys[0]][0]
       } else {
         return { w: 0, h: 0 }
       }

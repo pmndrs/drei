@@ -138,6 +138,7 @@ export * from './PerformanceMonitor'
 
 // Portals
 export * from './RenderTexture'
+export * from './RenderCubeTexture'
 export * from './Mask'
 export * from './Hud'
 export * from './MeshPortalMaterial'

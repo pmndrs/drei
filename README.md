@@ -159,6 +159,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#hud">Hud</a></li>
           <li><a href="#view">View</a></li>
           <li><a href="#rendertexture">RenderTexture</a></li>
+          <li><a href="#rendercubetexture">RenderCubeTexture</a></li>
           <li><a href="#mask">Mask</a></li>
           <li><a href="#meshportalmaterial">MeshPortalMaterial</a></li>
         </ul>
@@ -3581,6 +3582,63 @@ type Props = JSX.IntrinsicElements['texture'] & {
   <meshStandardMaterial>
     <RenderTexture attach="map">
       <mesh />
+```
+
+#### RenderCubeTexture
+
+<p>
+  <a href="https://codesandbox.io/s/7qytdw"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/7qytdw/screenshot.png" alt="Demo"/></a>  
+</p>
+
+This component allows you to render a live scene into a cubetexture which you can then apply to a material, for instance as an environment map (via the envMap property). The contents of it run inside a portal and are separate from the rest of the canvas, therefore you can have events in there, environment maps, etc.
+
+```tsx
+export type RenderCubeTextureProps = Omit<JSX.IntrinsicElements['texture'], 'rotation'> & {
+  /** Optional stencil buffer, defaults to false */
+  stencilBuffer?: boolean
+  /** Optional depth buffer, defaults to true */
+  depthBuffer?: boolean
+  /** Optional generate mipmaps, defaults to false */
+  generateMipmaps?: boolean
+  /** Optional render priority, defaults to 0 */
+  renderPriority?: number
+  /** Optional event priority, defaults to 0 */
+  eventPriority?: number
+  /** Optional frame count, defaults to Infinity. If you set it to 1, it would only render a single frame, etc */
+  frames?: number
+  /** Optional event compute, defaults to undefined */
+  compute?: (event: any, state: any, previous: any) => false | undefined
+  /** Flip cubemap, see https://github.com/mrdoob/three.js/blob/master/src/renderers/WebGLCubeRenderTarget.js */
+  flip?: boolean
+  /** Cubemap resolution (for each of the 6 takes), null === full screen resolution, default: 896 */
+  resolution?: number
+  /** Children will be rendered into a portal */
+  children: React.ReactNode
+  near?: number
+  far?: number
+  position?: ReactThreeFiber.Vector3
+  rotation?: ReactThreeFiber.Euler
+  scale?: ReactThreeFiber.Vector3
+  quaternion?: ReactThreeFiber.Quaternion
+  matrix?: ReactThreeFiber.Matrix4
+  matrixAutoUpdate?: boolean
+}
+
+export type RenderCubeTextureApi = {
+  scene: THREE.Scene
+  fbo: THREE.WebGLCubeRenderTarget
+  camera: THREE.CubeCamera
+}
+```
+
+```jsx
+const api = useRef<RenderCubeTextureApi>(null!)
+// ...
+<mesh ref={api}>
+  <sphereGeometry args={[1, 64, 64]} />
+    <meshBasicMaterial>
+      <RenderCubeTexture attach="envMap" flip>
+        <mesh />
 ```
 
 #### Mask

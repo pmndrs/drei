@@ -82,7 +82,9 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
 
   const calculateAspectRatio = (width: number, height: number): Vector3 => {
     const aspectRatio = height / width
-    spriteRef.current.scale.set(1, aspectRatio, 1)
+    if (spriteRef.current) {
+      spriteRef.current.scale.set(1, aspectRatio, 1)
+    }
     return [1, aspectRatio, 1]
   }
 
@@ -116,6 +118,13 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
     if (currentFrameName.current !== frameName && frameName) {
       currentFrame.current = 0
       currentFrameName.current = frameName
+      hasEnded.current = false
+      modifySpritePosition()
+      if (spriteData.current) {
+        const { w, h } = getFirstItem(spriteData.current.frames).sourceSize
+        const _aspect = calculateAspectRatio(w, h)
+        setAspect(_aspect)
+      }
     }
   }, [frameName])
 

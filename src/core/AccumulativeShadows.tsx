@@ -3,6 +3,7 @@ import * as React from 'react'
 import { extend, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
 import { DiscardMaterial } from '../materials/DiscardMaterial'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 function isLight(object: any): object is THREE.Light {
   return object.isLight
@@ -96,11 +97,14 @@ const SoftShadowMaterial = shaderMaterial(
      vec4 sampledDiffuseColor = texture2D(map, vUv);
      gl_FragColor = vec4(color * sampledDiffuseColor.r * blend, max(0.0, (1.0 - (sampledDiffuseColor.r + sampledDiffuseColor.g + sampledDiffuseColor.b) / alphaTest)) * opacity);
      #include <tonemapping_fragment>
-     #include <encodings_fragment>
+     #include <${parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
    }`
 )
 
-export const AccumulativeShadows = React.forwardRef(
+export const AccumulativeShadows: ForwardRefComponent<
+  JSX.IntrinsicElements['group'] & AccumulativeShadowsProps,
+  AccumulativeContext
+> = React.forwardRef(
   (
     {
       children,
@@ -246,7 +250,10 @@ export type RandomizedLightProps = {
   far?: number
 }
 
-export const RandomizedLight = React.forwardRef(
+export const RandomizedLight: ForwardRefComponent<
+  JSX.IntrinsicElements['group'] & RandomizedLightProps,
+  AccumulativeLightContext
+> = React.forwardRef(
   (
     {
       castShadow = true,
@@ -259,7 +266,7 @@ export const RandomizedLight = React.forwardRef(
       position = [0, 0, 0],
       radius = 1,
       amount = 8,
-      intensity = 1,
+      intensity = parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 155 ? Math.PI : 1,
       ambient = 0.5,
       ...props
     }: JSX.IntrinsicElements['group'] & RandomizedLightProps,
@@ -349,13 +356,13 @@ class ProgressiveLightMap {
     this.clearAlpha = 0
 
     // Create the Progressive LightMap Texture
-    const format = /(Android|iPad|iPhone|iPod)/g.test(navigator.userAgent) ? THREE.HalfFloatType : THREE.FloatType
-    this.progressiveLightMap1 = new THREE.WebGLRenderTarget(this.res, this.res, {
-      type: format,
-    })
-    this.progressiveLightMap2 = new THREE.WebGLRenderTarget(this.res, this.res, {
-      type: format,
-    })
+    const textureParams = {
+      type: THREE.HalfFloatType,
+      magFilter: THREE.NearestFilter,
+      minFilter: THREE.NearestFilter,
+    }
+    this.progressiveLightMap1 = new THREE.WebGLRenderTarget(this.res, this.res, textureParams)
+    this.progressiveLightMap2 = new THREE.WebGLRenderTarget(this.res, this.res, textureParams)
 
     // Inject some spicy new logic into a standard phong material
     this.discardMat = new DiscardMaterial()

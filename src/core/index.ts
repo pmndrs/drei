@@ -12,6 +12,7 @@ export * from './Effects'
 export * from './GradientTexture'
 export * from './Image'
 export * from './Edges'
+export * from './Outlines'
 export * from './Trail'
 export * from './Sampler'
 export * from './ComputedAttribute'
@@ -39,6 +40,7 @@ export * from './PointerLockControls'
 export * from './FirstPersonControls'
 export * from './CameraControls'
 export * from './FaceControls'
+export * from './MotionPathControls'
 
 // Gizmos
 export * from './GizmoHelper'
@@ -58,6 +60,7 @@ export * from './useFont'
 
 // Misc
 export * from './Stats'
+export * from './StatsGl'
 export * from './useDepthBuffer'
 export * from './useAspect'
 export * from './useCamera'

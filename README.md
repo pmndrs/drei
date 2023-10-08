@@ -53,6 +53,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#presentationcontrols">PresentationControls</a></li>
           <li><a href="#keyboardcontrols">KeyboardControls</a></li>
           <li><a href="#FaceControls">FaceControls</a></li>
+          <li><a href="#motionpathcontrols">MotionPathControls</a></li>
         </ul>
         <li><a href="#gizmos">Gizmos</a></li>
         <ul>
@@ -73,6 +74,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#effects">Effects</a></li>
           <li><a href="#gradienttexture">GradientTexture</a></li>
           <li><a href="#edges">Edges</a></li>
+          <li><a href="#outlines">Outlines</a></li>
           <li><a href="#trail">Trail</a></li>
           <li><a href="#sampler">Sampler</a></li>
           <li><a href="#computedattribute">Computed Attribute</a></li>
@@ -108,6 +110,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#select">Select</a></li>
           <li><a href="#sprite-animator">Sprite Animator</a></li>
           <li><a href="#stats">Stats</a></li>
+          <li><a href="#stats-gl">StatsGl</a></li>
           <li><a href="#wireframe">Wireframe</a></li>
           <li><a href="#usedepthbuffer">useDepthBuffer</a></li>
           <li><a href="#usecontextbridge">useContextBridge</a></li>
@@ -295,7 +298,7 @@ A responsive [THREE.OrthographicCamera](https://threejs.org/docs/#api/en/cameras
 </OrthographicCamera>
 ```
 
-You can use the OrthographicCamera to film contents into a RenderTarget, it has the same API as OrthographicCamera.
+You can use the OrthographicCamera to film contents into a RenderTarget, it has the same API as PerspectiveCamera.
 
 ```jsx
 <OrthographicCamera position={[0, 0, 10]}>
@@ -748,6 +751,118 @@ useFrame((_, delta) => {
 })
 ```
 
+#### MotionPathControls
+
+<p>
+  <a href="https://codesandbox.io/s/2y73c6"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/2y73c6/screenshot.png" alt="Demo"/></a>
+</p>
+
+Motion path controls, it takes a path of bezier curves or catmull-rom curves as input and animates the passed `object` along that path. It can be configured to look upon an external object for staging or presentation purposes by adding a `focusObject` property (ref).
+
+```tsx
+type MotionPathProps = JSX.IntrinsicElements['group'] & {
+  /** An optional array of THREE curves */
+  curves?: THREE.Curve<THREE.Vector3>[]
+  /** Show debug helpers */
+  debug?: boolean
+  /** The target object that is moved, default: null (the default camera) */
+  object?: React.MutableRefObject<THREE.Object3D>
+  /** An object where the target looks towards, can also be a vector, default: null */
+  focus?: [x: number, y: number, z: number] | React.MutableRefObject<THREE.Object3D>
+  /** Position between 0 (start) and end (1), if this is not set useMotion().current must be used, default: null */
+  offset?: number
+  /** Optionally smooth the curve, default: false */
+  smooth?: boolean | number
+  /** Damping tolerance, default: 0.00001 */
+  eps?: number
+  /** Damping factor for movement along the curve, default: 0.1 */
+  damping?: number
+  /** Damping factor for lookAt, default: 0.1 */
+  focusDamping?: number
+  /** Damping maximum speed, default: Infinity */
+  maxSpeed?: number
+}
+```
+
+You can use MotionPathControls with declarative curves.
+
+```jsx
+function App() {
+  const poi = useRef()
+  return (
+    <group>
+      <MotionPathControls offset={0} focus={poi} damping={0.2}>
+        <cubicBezierCurve3 v0={[-5, -5, 0]} v1={[-10, 0, 0]} v2={[0, 3, 0]} v3={[6, 3, 0]} />
+        <cubicBezierCurve3 v0={[6, 3, 0]} v1={[10, 5, 5]} v2={[5, 5, 5]} v3={[5, 5, 5]} />
+      </MotionPathControls>
+      <Box args={[1, 1, 1]} ref={poi}/>
+```
+
+Or with imperative curves.
+
+```jsx
+<MotionPathControls
+  offset={0}
+  focus={poi}
+  damping={0.2}
+  curves={[
+    new THREE.CubicBezierCurve3(
+      new THREE.Vector3(-5, -5, 0),
+      new THREE.Vector3(-10, 0, 0),
+      new THREE.Vector3(0, 3, 0),
+      new THREE.Vector3(6, 3, 0)
+    ),
+    new THREE.CubicBezierCurve3(
+      new THREE.Vector3(6, 3, 0),
+      new THREE.Vector3(10, 5, 5),
+      new THREE.Vector3(5, 3, 5),
+      new THREE.Vector3(5, 5, 5)
+    ),
+  ]}
+/>
+```
+
+You can exert full control with the `useMotion` hook, it allows you to define the current position along the path for instance, or define your own lookAt. Keep in mind that MotionPathControls will still these values unless you set damping and focusDamping to 0. Then you can also employ your own easing.
+
+```tsx
+type MotionState = {
+  /** The user-defined, mutable, current goal position along the curve, it may be >1 or <0 */
+  current: number
+  /** The combined curve */
+  path: THREE.CurvePath<THREE.Vector3>
+  /** The focus object */
+  focus: React.MutableRefObject<THREE.Object3D<THREE.Event>> | [x: number, y: number, z: number] | undefined
+  /** The target object that is moved along the curve */
+  object: React.MutableRefObject<THREE.Object3D<THREE.Event>>
+  /** The automated, 0-1 normalised and damped current goal position along curve */
+  offset: number
+  /** The current point on the curve */
+  point: THREE.Vector3
+  /** The current tangent on the curve */
+  tangent: THREE.Vector3
+  /** The next point on the curve */
+  next: THREE.Vector3
+}
+
+const state: MotionState = useMotion()
+```
+
+```jsx
+function Loop() {
+  const motion = useMotion()
+  useFrame((state, delta) => {
+    // Set the current position along the curve, you can increment indiscriminately for a loop
+    motion.current += delta
+    // Look ahead on the curve
+    motion.object.lookAt(motion.next)
+  })
+}
+
+<MotionPathControls>
+  <cubicBezierCurve3 v0={[-5, -5, 0]} v1={[-10, 0, 0]} v2={[0, 3, 0]} v3={[6, 3, 0]} />
+  <Loop />
+```
+
 # Gizmos
 
 #### GizmoHelper
@@ -967,6 +1082,7 @@ A box buffer geometry with rounded corners, done with extrusion.
   args={[1, 1, 1]} // Width, height, depth. Default is [1, 1, 1]
   radius={0.05} // Radius of the rounded corners. Default is 0.05
   smoothness={4} // The number of curve segments. Default is 4
+  bevelSegments={4} // The number of bevel segments. Default is 4, setting it to 0 removes the bevel, as a result the texture is applied to the whole geometry.
   creaseAngle={0.4} // Smooth normals everywhere except faces that meet at an angle greater than the crease angle
   {...meshProps} // All THREE.Mesh props are valid
 >
@@ -1132,13 +1248,13 @@ export type FacemeshProps = {
   /** a landmark index (to get the position from) or a vec3 to be the origin of the mesh. default: undefined (ie. the bbox center) */
   origin?: number | THREE.Vector3
   /** A facial transformation matrix, as returned by FaceLandmarkerResult.facialTransformationMatrixes (see: https://developers.google.com/mediapipe/solutions/vision/face_landmarker/web_js#handle_and_display_results) */
-  facialTransformationMatrix?: typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.facialTransformationMatrixes[0]
+  facialTransformationMatrix?: (typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.facialTransformationMatrixes)[0]
   /** Apply position offset extracted from `facialTransformationMatrix` */
   offset?: boolean
   /** Offset sensitivity factor, less is more sensible */
   offsetScalar?: number
   /** Fface blendshapes, as returned by FaceLandmarkerResult.faceBlendshapes (see: https://developers.google.com/mediapipe/solutions/vision/face_landmarker/web_js#handle_and_display_results) */
-  faceBlendshapes?: typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.faceBlendshapes[0]
+  faceBlendshapes?: (typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.faceBlendshapes)[0]
   /** whether to enable eyes (nb. `faceBlendshapes` is required for), default: true */
   eyes?: boolean
   /** Force `origin` to be the middle of the 2 eyes (nb. `eyes` is required for), default: false */
@@ -1394,6 +1510,39 @@ Abstracts [THREE.EdgesGeometry](https://threejs.org/docs/#api/en/geometries/Edge
 </mesh>
 ```
 
+#### Outlines
+
+<p>
+  <a href="https://codesandbox.io/s/2gh6jf"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/2gh6jf/screenshot.png" alt="Demo"/></a>
+</p>
+
+An ornamental component that extracts the geometry from its parent and displays an [inverted-hull outline](https://bnpr.gitbook.io/bnpr/outline/inverse-hull-method). Supported parents are `<mesh>`, `<skinnedMesh>` and `<instancedMesh>`.
+
+```tsx
+type OutlinesProps = JSX.IntrinsicElements['group'] & {
+  /** Outline color, default: black */
+  color: ReactThreeFiber.Color
+  /** Line thickness is independent of zoom, default: false */
+  screenspace: boolean
+  /** Outline opacity, default: 1 */
+  opacity: number
+  /** Outline transparency, default: false */
+  transparent: boolean
+  /** Outline thickness, default 0.05 */
+  thickness: number
+  /** Geometry crease angle (0 === no crease), default: Math.PI */
+  angle: number
+}
+```
+
+```jsx
+<mesh>
+  <boxGeometry />
+  <meshBasicMaterial />
+  <Outlines thickness={0.05} color="hotpink" />
+</mesh>
+```
+
 #### Trail
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-trail--use-trail-st)
@@ -1618,19 +1767,21 @@ The decal box has to intersect the surface, otherwise it will not be visible. if
     position={[0, 0, 0]} // Position of the decal
     rotation={[0, 0, 0]} // Rotation of the decal (can be a vector or a degree in radians)
     scale={1} // Scale of the decal
+    polygonOffset
+    polygonOffsetFactor={-1} // The mesh should take precedence over the original
   >
     <meshBasicMaterial map={texture} />
   </Decal>
 </mesh>
 ```
 
-If you do not specify a material it will create a transparent meshStandardMaterial with a polygonOffsetFactor of -10 and all rest-props will be spread over it.
+If you do not specify a material it will create a transparent meshBasicMaterial with a polygonOffsetFactor of -10.
 
 ```jsx
 <mesh>
   <sphereGeometry />
   <meshBasicMaterial />
-  <Decal map={texture} roughness={0.5} />
+  <Decal map={texture} />
 </mesh>
 ```
 
@@ -1638,7 +1789,7 @@ If declarative composition is not possible, use the `mesh` prop to define the su
 
 ```js
 <Decal mesh={ref}>
-  <meshBasicMaterial map={texture} />
+  <meshBasicMaterial map={texture} polygonOffset polygonOffsetFactor={-1} />
 </Decal>
 ```
 
@@ -2322,6 +2473,8 @@ type Props = {
   flipX?: boolean
   /** Sets the alpha value to be used when running an alpha test. https://threejs.org/docs/#api/en/materials/Material.alphaTest */
   alphaTest?: number
+  /** Displays the texture on a SpriteGeometry always facing the camera, if set to false, it renders on a PlaneGeometry */
+  asSprite?: boolean
 }
 ```
 
@@ -2368,6 +2521,16 @@ useEffect(() => {
 }, [])
 
 return <Stats parent={parent} />
+```
+
+#### StatsGl
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-statsgl--default-story)
+
+Adds [stats-gl](https://github.com/RenaudRohlinger/stats-gl/) to document.body. It takes over the render-loop!
+
+```jsx
+<StatsGl className="stats" {...props} />
 ```
 
 #### Wireframe
@@ -2545,7 +2708,7 @@ A small hook that sets the css body cursor according to the hover state of a mes
 
 ```jsx
 const [hovered, set] = useState()
-useCursor(hovered, /*'pointer', 'auto'*/)
+useCursor(hovered, /*'pointer', 'auto', document.body*/)
 return (
   <mesh onPointerOver={() => set(true)} onPointerOut={() => set(false)}>
 ```
@@ -2749,6 +2912,8 @@ useGLTF(url, '/draco-gltf')
 
 useGLTF.preload(url)
 ```
+
+If you want to use your own draco decoder globally, you can pass it through `useGLTF.setDecoderPath(path)`:
 
 > **Note** <br>If you are using the CDN loaded draco binaries, you can get a small speedup in loading time by prefetching them.
 >
@@ -3255,7 +3420,7 @@ function App() {
   const [dpr, setDpr] = useState(1.5)
   return (
     <Canvas dpr={dpr}>
-      <PerformanceMonitor onIncline={() => setDpr(2)} onDecline={() => setDpr(1)} >
+      <PerformanceMonitor onIncline={() => setDpr(2)} onDecline={() => setDpr(1)} />
 ```
 
 You can also use the `onChange` callback to get notified when the average changes in whichever direction. This allows you to make gradual changes. It gives you a `factor` between 0 and 1, which is increased by incline and decreased by decline. The `factor` is initially 0.5 by default. If your app starts with lowest defaults and gradually increases quality set `factor` to 0. If it starts with highest defaults and decreases quality, set it to 1. If it starts in the middle and can either increase or decrease, set it to 0.5.
@@ -3265,16 +3430,16 @@ The following starts at the highest dpr (2) and clamps the gradual dpr between 0
 ```jsx
 import round from 'lodash/round'
 
-const [dpr, set] = useState(2)
+const [dpr, setDpr] = useState(2)
 return (
  <Canvas dpr={dpr}>
-  <PerformanceMonitor factor={1} onChange={({ factor }) => setDpr(round(0.5 + 1.5 * factor, 1))} >
+  <PerformanceMonitor factor={1} onChange={({ factor }) => setDpr(round(0.5 + 1.5 * factor, 1))} />
 ```
 
 If you still experience flip flops despite the bounds you can define a limit of `flipflops`. If it is met `onFallback` will be triggered which typically sets a lowest possible baseline for the app. After the fallback has been called PerformanceMonitor will shut down.
 
 ```jsx
-<PerformanceMonitor flipflops={3} onFallback={() => setDpr(1)}>
+<PerformanceMonitor flipflops={3} onFallback={() => setDpr(1)} />
 ```
 
 PerformanceMonitor can also have children, if you wrap your app in it you get to use `usePerformanceMonitor` which allows individual components down the nested tree to respond to performance changes on their own.
@@ -4306,21 +4471,63 @@ attribute vec3 color;
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-cloud--cloud-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
 <p>
+  <a href="https://codesandbox.io/s/gwthnh"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/gwthnh/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/mbfzf"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/mbfzf/screenshot.png" alt="Demo"/></a>
+  
 </p>
 
 Particle based cloud.
 
-👉 Note: `<Cloud />` component is not meant to be used in production environments as it relies on third-party CDN.
+```tsx
+type CloudsProps = JSX.IntrinsicElements['group'] & {
+  /** Optional cloud texture, points to a default hosted on rawcdn.githack */
+  texture?: string
+  /** Maximum number of segments, default: 200 (make this tight to save memory!) */
+  limit?: number
+  /** How many segments it renders, default: undefined (all) */
+  range?: number
+  /** Which material it will override, default: MeshLambertMaterial */
+  material?: typeof Material
+}
+
+type CloudProps = JSX.IntrinsicElements['group'] & {
+  /** A seeded random will show the same cloud consistently, default: Math.random() */
+  seed?: number
+  /** How many segments or particles the cloud will have, default: 20 */
+  segments?: number
+  /** The box3 bounds of the cloud, default: [5, 1, 1] */
+  bounds?: ReactThreeFiber.Vector3
+  /** How to arrange segment volume inside the bounds, default: inside (cloud are smaller at the edges) */
+  concentrate?: 'random' | 'inside' | 'outside'
+  /** The general scale of the segments */
+  scale?: ReactThreeFiber.Vector3
+  /** The volume/thickness of the segments, default: 6 */
+  volume?: number
+  /** The smallest volume when distributing clouds, default: 0.25 */
+  smallestVolume?: number
+  /** An optional function that allows you to distribute points and volumes (overriding all settings), default: null
+   *  Both point and volume are factors, point x/y/z can be between -1 and 1, volume between 0 and 1 */
+  distribute?: (cloud: CloudState, index: number) => { point: Vector3; volume?: number }
+  /** Growth factor for animated clouds (speed > 0), default: 4 */
+  growth?: number
+  /** Animation factor, default: 0 */
+  speed?: number
+  /** Camera distance until the segments will fade, default: 10 */
+  fade?: number
+  /** Opacity, default: 1 */
+  opacity?: number
+  /** Color, default: white */
+  color?: ReactThreeFiber.Color
+}
+```
+
+Use the `<Clouds>` provider to glob all clouds into a single, instanced draw call.
 
 ```jsx
-<Cloud
-  opacity={0.5}
-  speed={0.4} // Rotation speed
-  width={10} // Width of the full cloud
-  depth={1.5} // Z-dir depth
-  segments={20} // Number of particles
-/>
+<Clouds material={THREE.MeshBasicMaterial}>
+  <Cloud segments={40} bounds={[10, 2, 2]} volume={10} color="orange" />
+  <Cloud seed={1} scale={2} volume={5} color="hotpink" fade={100} />
+</Clouds>
 ```
 
 #### useEnvironment

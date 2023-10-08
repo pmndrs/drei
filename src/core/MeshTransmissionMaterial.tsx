@@ -9,6 +9,7 @@ import * as React from 'react'
 import { applyProps, extend, useFrame } from '@react-three/fiber'
 import { useFBO } from './useFBO'
 import { DiscardMaterial } from '../materials/DiscardMaterial'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type MeshTransmissionMaterialType = Omit<
   JSX.IntrinsicElements['meshPhysicalMaterial'],
@@ -120,6 +121,10 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
         ...shader.uniforms,
         ...this.uniforms,
       }
+
+      // Fix for r153-r156 anisotropy chunks
+      // https://github.com/mrdoob/three.js/pull/26716
+      if ((this as any).anisotropy > 0) shader.defines.USE_ANISOTROPY = ''
 
       // If the transmission sampler is active inject a flag
       if (transmissionSampler) shader.defines.USE_SAMPLER = ''
@@ -368,7 +373,10 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
   }
 }
 
-export const MeshTransmissionMaterial = React.forwardRef(
+export const MeshTransmissionMaterial: ForwardRefComponent<
+  MeshTransmissionMaterialProps,
+  JSX.IntrinsicElements['meshTransmissionMaterial']
+> = React.forwardRef(
   (
     {
       buffer,
@@ -430,6 +438,7 @@ export const MeshTransmissionMaterial = React.forwardRef(
           state.gl.setRenderTarget(fboMain)
           state.gl.render(state.scene, state.camera)
 
+          parent.material = ref.current
           parent.material.thickness = thickness
           parent.material.side = side
           parent.material.buffer = fboMain.texture
@@ -437,7 +446,6 @@ export const MeshTransmissionMaterial = React.forwardRef(
           // Set old state back
           state.scene.background = oldBg
           state.gl.setRenderTarget(null)
-          parent.material = ref.current
           state.gl.toneMapping = oldTone
         }
       }
@@ -450,7 +458,7 @@ export const MeshTransmissionMaterial = React.forwardRef(
       <meshTransmissionMaterial
         // Samples must re-compile the shader so we memoize it
         args={[samples, transmissionSampler]}
-        ref={ref}
+        ref={ref as any}
         {...props}
         buffer={buffer || fboMain.texture}
         // @ts-ignore

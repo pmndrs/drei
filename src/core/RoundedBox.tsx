@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Mesh, Shape, ExtrudeGeometry } from 'three'
-import { NamedArrayTuple } from '../helpers/ts-utils'
+import { ForwardRefComponent, NamedArrayTuple } from '../helpers/ts-utils'
 import { toCreasedNormals } from 'three-stdlib'
 
 const eps = 0.00001
@@ -19,16 +19,18 @@ type Props = {
   args?: NamedArrayTuple<(width?: number, height?: number, depth?: number) => void>
   radius?: number
   smoothness?: number
+  bevelSegments?: number
   steps?: number
   creaseAngle?: number
 } & Omit<JSX.IntrinsicElements['mesh'], 'args'>
 
-export const RoundedBox = React.forwardRef<Mesh, Props>(function RoundedBox(
+export const RoundedBox: ForwardRefComponent<Props, Mesh> = React.forwardRef<Mesh, Props>(function RoundedBox(
   {
     args: [width = 1, height = 1, depth = 1] = [],
     radius = 0.05,
     steps = 1,
     smoothness = 4,
+    bevelSegments = 4,
     creaseAngle = 0.4,
     children,
     ...rest
@@ -40,7 +42,7 @@ export const RoundedBox = React.forwardRef<Mesh, Props>(function RoundedBox(
     () => ({
       depth: depth - radius * 2,
       bevelEnabled: true,
-      bevelSegments: smoothness * 2,
+      bevelSegments: bevelSegments * 2,
       steps,
       bevelSize: radius - eps,
       bevelThickness: radius,
@@ -48,7 +50,7 @@ export const RoundedBox = React.forwardRef<Mesh, Props>(function RoundedBox(
     }),
     [depth, radius, smoothness]
   )
-  const geomRef = React.useRef<ExtrudeGeometry>()
+  const geomRef = React.useRef<ExtrudeGeometry>(null!)
 
   React.useLayoutEffect(() => {
     if (geomRef.current) {

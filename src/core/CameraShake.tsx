@@ -2,6 +2,7 @@ import * as React from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { Euler } from 'three'
 import { SimplexNoise } from 'three-stdlib'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export interface ShakeController {
   getIntensity: () => number
@@ -27,7 +28,10 @@ export interface CameraShakeProps {
   rollFrequency?: number
 }
 
-export const CameraShake = React.forwardRef<ShakeController | undefined, CameraShakeProps>(
+export const CameraShake: ForwardRefComponent<CameraShakeProps, ShakeController | undefined> = React.forwardRef<
+  ShakeController | undefined,
+  CameraShakeProps
+>(
   (
     {
       intensity = 1,

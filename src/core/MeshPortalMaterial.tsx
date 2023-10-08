@@ -42,7 +42,7 @@ const PortalMaterialImpl = shaderMaterial(
      float alpha = 1.0 - smoothstep(0.0, 1.0, clamp(d/k + 1.0, 0.0, 1.0));
      gl_FragColor = vec4(t.rgb, blur == 0.0 ? t.a : t.a * alpha);
      #include <tonemapping_fragment>
-     #include <encodings_fragment>
+     #include <${parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
    }`
 )
 
@@ -180,7 +180,7 @@ export const MeshPortalMaterial = React.forwardRef(
 
     return (
       <portalMaterialImpl
-        ref={ref}
+        ref={ref as any}
         blur={blur}
         blend={0}
         resolution={[size.width * viewport.dpr, size.height * viewport.dpr]}
@@ -261,7 +261,9 @@ function ManagePortalScene({
             vec4 ta = texture2D(a, vUv);
             vec4 tb = texture2D(b, vUv);
             gl_FragColor = mix(tb, ta, blend);
-            #include <encodings_fragment>
+            #include <${
+              parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'
+            }>
           }`,
       })
     )
@@ -272,8 +274,11 @@ function ManagePortalScene({
     let parent = (material?.current as any)?.__r3f.parent
     if (parent) {
       // Move portal contents along with the parent if worldUnits is true
-      if (!worldUnits) scene.matrixWorld.copy(parent.matrixWorld)
-      else scene.matrixWorld.identity()
+      if (!worldUnits) {
+        // If the portal renders exclusively the original scene needs to be updated
+        if (priority && material.current?.blend === 1) parent.updateWorldMatrix(true, false)
+        scene.matrixWorld.copy(parent.matrixWorld)
+      } else scene.matrixWorld.identity()
 
       // This bit is only necessary if the portal is blended, now it has a render-priority
       // and will take over the render loop

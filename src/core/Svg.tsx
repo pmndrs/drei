@@ -3,6 +3,7 @@ import * as React from 'react'
 import { forwardRef, Fragment, useEffect, useMemo } from 'react'
 import { DoubleSide, Object3D } from 'three'
 import { SVGLoader } from 'three-stdlib'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export interface SvgProps extends Omit<Object3DProps, 'ref'> {
   /** src can be a URL or SVG data */
@@ -15,7 +16,7 @@ export interface SvgProps extends Omit<Object3DProps, 'ref'> {
   strokeMeshProps?: MeshProps
 }
 
-export const Svg = forwardRef<Object3D, SvgProps>(function R3FSvg(
+export const Svg: ForwardRefComponent<SvgProps, Object3D> = forwardRef<Object3D, SvgProps>(function R3FSvg(
   { src, skipFill, skipStrokes, fillMaterial, strokeMaterial, fillMeshProps, strokeMeshProps, ...props },
   ref
 ) {

@@ -9,6 +9,7 @@ import * as THREE from 'three'
 import mergeRefs from 'react-merge-refs'
 import { extend, useFrame } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type GridMaterialType = {
   /** Cell size, default: 0.5 */
@@ -120,55 +121,56 @@ const GridMaterial = shaderMaterial(
       if (gl_FragColor.a <= 0.0) discard;
 
       #include <tonemapping_fragment>
-      #include <encodings_fragment>
+      #include <${parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
     }
   `
 )
 
-export const Grid = React.forwardRef(
-  (
-    {
-      args,
-      cellColor = '#000000',
-      sectionColor = '#2080ff',
-      cellSize = 0.5,
-      sectionSize = 1,
-      followCamera = false,
-      infiniteGrid = false,
-      fadeDistance = 100,
-      fadeStrength = 1,
-      cellThickness = 0.5,
-      sectionThickness = 1,
-      side = THREE.BackSide,
-      ...props
-    }: Omit<JSX.IntrinsicElements['mesh'], 'args'> & GridProps,
-    fRef: React.ForwardedRef<THREE.Mesh>
-  ) => {
-    extend({ GridMaterial })
+export const Grid: ForwardRefComponent<Omit<JSX.IntrinsicElements['mesh'], 'args'> & GridProps, THREE.Mesh> =
+  React.forwardRef(
+    (
+      {
+        args,
+        cellColor = '#000000',
+        sectionColor = '#2080ff',
+        cellSize = 0.5,
+        sectionSize = 1,
+        followCamera = false,
+        infiniteGrid = false,
+        fadeDistance = 100,
+        fadeStrength = 1,
+        cellThickness = 0.5,
+        sectionThickness = 1,
+        side = THREE.BackSide,
+        ...props
+      }: Omit<JSX.IntrinsicElements['mesh'], 'args'> & GridProps,
+      fRef: React.ForwardedRef<THREE.Mesh>
+    ) => {
+      extend({ GridMaterial })
 
-    const ref = React.useRef<THREE.Mesh>(null!)
-
-    useFrame((state) => {
+      const ref = React.useRef<THREE.Mesh>(null!)
       const plane = new THREE.Plane()
-        .setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 0))
-        .applyMatrix4(ref.current.matrixWorld)
+      const upVector = new THREE.Vector3(0, 1, 0)
+      const zeroVector = new THREE.Vector3(0, 0, 0)
+      useFrame((state) => {
+        plane.setFromNormalAndCoplanarPoint(upVector, zeroVector).applyMatrix4(ref.current.matrixWorld)
 
-      const gridMaterial = ref.current.material as THREE.ShaderMaterial
-      const worldCamProjPosition = gridMaterial.uniforms.worldCamProjPosition as THREE.Uniform<THREE.Vector3>
-      const worldPlanePosition = gridMaterial.uniforms.worldPlanePosition as THREE.Uniform<THREE.Vector3>
+        const gridMaterial = ref.current.material as THREE.ShaderMaterial
+        const worldCamProjPosition = gridMaterial.uniforms.worldCamProjPosition as THREE.Uniform<THREE.Vector3>
+        const worldPlanePosition = gridMaterial.uniforms.worldPlanePosition as THREE.Uniform<THREE.Vector3>
 
-      plane.projectPoint(state.camera.position, worldCamProjPosition.value)
-      worldPlanePosition.value.set(0, 0, 0).applyMatrix4(ref.current.matrixWorld)
-    })
+        plane.projectPoint(state.camera.position, worldCamProjPosition.value)
+        worldPlanePosition.value.set(0, 0, 0).applyMatrix4(ref.current.matrixWorld)
+      })
 
-    const uniforms1 = { cellSize, sectionSize, cellColor, sectionColor, cellThickness, sectionThickness }
-    const uniforms2 = { fadeDistance, fadeStrength, infiniteGrid, followCamera }
+      const uniforms1 = { cellSize, sectionSize, cellColor, sectionColor, cellThickness, sectionThickness }
+      const uniforms2 = { fadeDistance, fadeStrength, infiniteGrid, followCamera }
 
-    return (
-      <mesh ref={mergeRefs([ref, fRef])} frustumCulled={false} {...props}>
-        <gridMaterial transparent extensions-derivatives side={side} {...uniforms1} {...uniforms2} />
-        <planeGeometry args={args} />
-      </mesh>
-    )
-  }
-)
+      return (
+        <mesh ref={mergeRefs([ref, fRef])} frustumCulled={false} {...props}>
+          <gridMaterial transparent extensions-derivatives side={side} {...uniforms1} {...uniforms2} />
+          <planeGeometry args={args} />
+        </mesh>
+      )
+    }
+  )

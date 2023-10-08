@@ -1,23 +1,23 @@
-import { NoBlending, ShaderMaterial, Uniform, Vector2 } from 'three'
+import * as THREE from 'three'
 
-export class ConvolutionMaterial extends ShaderMaterial {
+export class ConvolutionMaterial extends THREE.ShaderMaterial {
   readonly kernel: Float32Array
-  constructor(texelSize = new Vector2()) {
+  constructor(texelSize = new THREE.Vector2()) {
     super({
       uniforms: {
-        inputBuffer: new Uniform(null),
-        depthBuffer: new Uniform(null),
-        resolution: new Uniform(new Vector2()),
-        texelSize: new Uniform(new Vector2()),
-        halfTexelSize: new Uniform(new Vector2()),
-        kernel: new Uniform(0.0),
-        scale: new Uniform(1.0),
-        cameraNear: new Uniform(0.0),
-        cameraFar: new Uniform(1.0),
-        minDepthThreshold: new Uniform(0.0),
-        maxDepthThreshold: new Uniform(1.0),
-        depthScale: new Uniform(0.0),
-        depthToBlurRatioBias: new Uniform(0.25),
+        inputBuffer: new THREE.Uniform(null),
+        depthBuffer: new THREE.Uniform(null),
+        resolution: new THREE.Uniform(new THREE.Vector2()),
+        texelSize: new THREE.Uniform(new THREE.Vector2()),
+        halfTexelSize: new THREE.Uniform(new THREE.Vector2()),
+        kernel: new THREE.Uniform(0.0),
+        scale: new THREE.Uniform(1.0),
+        cameraNear: new THREE.Uniform(0.0),
+        cameraFar: new THREE.Uniform(1.0),
+        minDepthThreshold: new THREE.Uniform(0.0),
+        maxDepthThreshold: new THREE.Uniform(1.0),
+        depthScale: new THREE.Uniform(0.0),
+        depthToBlurRatioBias: new THREE.Uniform(0.25),
       },
       fragmentShader: `#include <common>
         #include <dithering_pars_fragment>      
@@ -53,7 +53,9 @@ export class ConvolutionMaterial extends ShaderMaterial {
 
           #include <dithering_fragment>
           #include <tonemapping_fragment>
-          #include <encodings_fragment>
+          #include <${
+            parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'
+          }>
         }`,
       vertexShader: `uniform vec2 texelSize;
         uniform vec2 halfTexelSize;
@@ -77,7 +79,7 @@ export class ConvolutionMaterial extends ShaderMaterial {
 
           gl_Position = vec4(position.xy, 1.0, 1.0);
         }`,
-      blending: NoBlending,
+      blending: THREE.NoBlending,
       depthWrite: false,
       depthTest: false,
     })
@@ -91,7 +93,7 @@ export class ConvolutionMaterial extends ShaderMaterial {
     this.uniforms.texelSize.value.set(x, y)
     this.uniforms.halfTexelSize.value.set(x, y).multiplyScalar(0.5)
   }
-  setResolution(resolution: Vector2) {
+  setResolution(resolution: THREE.Vector2) {
     this.uniforms.resolution.value.copy(resolution)
   }
 }

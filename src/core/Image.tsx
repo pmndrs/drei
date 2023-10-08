@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import { Color, extend } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
 import { useTexture } from './useTexture'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type ImageProps = Omit<JSX.IntrinsicElements['mesh'], 'scale'> & {
   segments?: number
@@ -70,12 +71,12 @@ const ImageMaterialImpl = shaderMaterial(
     gl_FragColor = toGrayscale(texture2D(map, zUv) * vec4(color, opacity), grayscale);
     
     #include <tonemapping_fragment>
-    #include <encodings_fragment>
+    #include <${parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
   }
 `
 )
 
-const ImageBase = React.forwardRef(
+const ImageBase: ForwardRefComponent<Omit<ImageProps, 'url'>, THREE.Mesh> = React.forwardRef(
   (
     {
       children,
@@ -115,19 +116,23 @@ const ImageBase = React.forwardRef(
   }
 )
 
-const ImageWithUrl = React.forwardRef(({ url, ...props }: ImageProps, ref: React.ForwardedRef<THREE.Mesh>) => {
-  const texture = useTexture(url!)
-  return <ImageBase {...props} texture={texture} ref={ref} />
-})
+const ImageWithUrl: ForwardRefComponent<ImageProps, THREE.Mesh> = React.forwardRef(
+  ({ url, ...props }: ImageProps, ref: React.ForwardedRef<THREE.Mesh>) => {
+    const texture = useTexture(url!)
+    return <ImageBase {...props} texture={texture} ref={ref} />
+  }
+)
 
-const ImageWithTexture = React.forwardRef(
+const ImageWithTexture: ForwardRefComponent<ImageProps, THREE.Mesh> = React.forwardRef(
   ({ url: _url, ...props }: ImageProps, ref: React.ForwardedRef<THREE.Mesh>) => {
     return <ImageBase {...props} ref={ref} />
   }
 )
 
-export const Image = React.forwardRef<THREE.Mesh, ImageProps>((props, ref) => {
-  if (props.url) return <ImageWithUrl {...props} ref={ref} />
-  else if (props.texture) return <ImageWithTexture {...props} ref={ref} />
-  else throw new Error('<Image /> requires a url or texture')
-})
+export const Image: ForwardRefComponent<ImageProps, THREE.Mesh> = React.forwardRef<THREE.Mesh, ImageProps>(
+  (props, ref) => {
+    if (props.url) return <ImageWithUrl {...props} ref={ref} />
+    else if (props.texture) return <ImageWithTexture {...props} ref={ref} />
+    else throw new Error('<Image /> requires a url or texture')
+  }
+)

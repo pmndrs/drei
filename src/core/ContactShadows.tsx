@@ -5,12 +5,14 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { useFrame, useThree } from '@react-three/fiber'
 import { HorizontalBlurShader, VerticalBlurShader } from 'three-stdlib'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type ContactShadowsProps = {
   opacity?: number
   width?: number
   height?: number
   blur?: number
+  near?: number
   far?: number
   smooth?: boolean
   resolution?: number
@@ -20,7 +22,10 @@ export type ContactShadowsProps = {
   depthWrite?: boolean
 }
 
-export const ContactShadows = React.forwardRef(
+export const ContactShadows: ForwardRefComponent<
+  Omit<JSX.IntrinsicElements['group'], 'scale'> & ContactShadowsProps,
+  THREE.Group
+> = React.forwardRef(
   (
     {
       scale = 10,
@@ -29,6 +34,7 @@ export const ContactShadows = React.forwardRef(
       width = 1,
       height = 1,
       blur = 1,
+      near = 0,
       far = 10,
       resolution = 512,
       smooth = true,
@@ -149,7 +155,7 @@ export const ContactShadows = React.forwardRef(
         <mesh renderOrder={renderOrder} geometry={planeGeometry} scale={[1, -1, 1]} rotation={[-Math.PI / 2, 0, 0]}>
           <meshBasicMaterial transparent map={renderTarget.texture} opacity={opacity} depthWrite={depthWrite} />
         </mesh>
-        <orthographicCamera ref={shadowCamera} args={[-width / 2, width / 2, height / 2, -height / 2, 0, far]} />
+        <orthographicCamera ref={shadowCamera} args={[-width / 2, width / 2, height / 2, -height / 2, near, far]} />
       </group>
     )
   }

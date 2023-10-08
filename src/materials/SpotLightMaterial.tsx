@@ -1,6 +1,6 @@
-import { ShaderMaterial, Vector3, Color, Vector2 } from 'three'
+import * as THREE from 'three'
 
-export class SpotLightMaterial extends ShaderMaterial {
+export class SpotLightMaterial extends THREE.ShaderMaterial {
   constructor() {
     super({
       uniforms: {
@@ -8,11 +8,11 @@ export class SpotLightMaterial extends ShaderMaterial {
         opacity: { value: 1 },
         attenuation: { value: 2.5 },
         anglePower: { value: 12 },
-        spotPosition: { value: new Vector3(0, 0, 0) },
-        lightColor: { value: new Color('white') },
+        spotPosition: { value: new THREE.Vector3(0, 0, 0) },
+        lightColor: { value: new THREE.Color('white') },
         cameraNear: { value: 0 },
         cameraFar: { value: 1 },
-        resolution: { value: new Vector2(0, 0) },
+        resolution: { value: new THREE.Vector2(0, 0) },
       },
       transparent: true,
       depthWrite: false,
@@ -79,7 +79,7 @@ export class SpotLightMaterial extends ShaderMaterial {
         gl_FragColor = vec4(lightColor, intensity * opacity);
 
         #include <tonemapping_fragment>
-	      #include <encodings_fragment>
+	      #include <${parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
       }`,
     })
   }

@@ -2,6 +2,7 @@ import * as React from 'react'
 import { ReactThreeFiber } from '@react-three/fiber'
 import { Sky as SkyImpl } from 'three-stdlib'
 import { Vector3 } from 'three'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type Props = {
   distance?: number
@@ -25,7 +26,7 @@ export function calcPosFromAngles(inclination: number, azimuth: number, vector: 
   return vector
 }
 
-export const Sky = React.forwardRef(
+export const Sky: ForwardRefComponent<Props, SkyImpl> = React.forwardRef(
   (
     {
       inclination = 0.6,

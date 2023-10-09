@@ -31,6 +31,8 @@ type SpriteAnimatorState = {
   current: number | undefined
   /** The 0-1 normalised and damped current goal position along curve */
   offset: number | undefined
+  hasEnded: boolean | undefined
+  ref: React.MutableRefObject<any> | undefined | null | ((instance: any) => void)
 }
 
 const context = React.createContext<SpriteAnimatorState>(null!)
@@ -69,7 +71,6 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
   ) => {
     const ref = React.useRef<any>()
     const spriteData = React.useRef<any>(null)
-    const hasEnded = React.useRef(false)
     const matRef = React.useRef<any>()
     const spriteRef = React.useRef<any>()
     const timerOffset = React.useRef(window.performance.now())
@@ -93,6 +94,8 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
         offset: pos.current,
         imageUrl: textureImageURL,
         reset: reset,
+        hasEnded: false,
+        ref: fref
       }),
       [textureImageURL]
     )
@@ -145,7 +148,7 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
     }, [asSprite])
 
     React.useEffect(() => {
-      hasEnded.current = false
+      state.hasEnded = false
       if (spriteData.current && playBackwards === true) {
         currentFrame.current = spriteData.current.frames.length - 1
       } else {
@@ -161,7 +164,7 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
       if (currentFrameName.current !== frameName && frameName) {
         currentFrame.current = 0
         currentFrameName.current = frameName
-        hasEnded.current = false
+        state.hasEnded = false
       }
     }, [frameName])
 
@@ -345,7 +348,7 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
           })
 
           if (!_offset) {
-            hasEnded.current = true
+            state.hasEnded = true
           }
         }
         if (!loop) return
@@ -426,7 +429,7 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
         return
       }
 
-      if (!hasEnded.current && autoPlay) {
+      if (!state.hasEnded && autoPlay) {
         runAnimation()
         onFrame && onFrame({ currentFrameName: currentFrameName.current, currentFrame: currentFrame.current })
       }

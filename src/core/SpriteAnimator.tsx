@@ -420,7 +420,7 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
     }
 
     // *** Warning! It runs on every frame! ***
-    useFrame((state, delta) => {
+    useFrame((_, delta) => {
       if (!spriteData.current?.frames || !matRef.current?.map) {
         return
       }

@@ -71,6 +71,7 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
   ) => {
     const ref = React.useRef<any>()
     const spriteData = React.useRef<any>(null)
+    //const hasEnded = React.useRef(false)
     const matRef = React.useRef<any>()
     const spriteRef = React.useRef<any>()
     const timerOffset = React.useRef(window.performance.now())
@@ -95,7 +96,7 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
         imageUrl: textureImageURL,
         reset: reset,
         hasEnded: false,
-        ref: fref
+        ref: fref,
       }),
       [textureImageURL]
     )
@@ -124,7 +125,9 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
 
     const calculateAspectRatio = (width: number, height: number): Vector3 => {
       const aspectRatio = height / width
-      spriteRef.current.scale.set(1, aspectRatio, 1)
+      if (spriteRef.current) {
+        spriteRef.current.scale.set(1, aspectRatio, 1)
+      }
       return [1, aspectRatio, 1]
     }
 
@@ -165,6 +168,12 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
         currentFrame.current = 0
         currentFrameName.current = frameName
         state.hasEnded = false
+        modifySpritePosition()
+        if (spriteData.current) {
+          const { w, h } = getFirstItem(spriteData.current.frames).sourceSize
+          const _aspect = calculateAspectRatio(w, h)
+          setAspect(_aspect)
+        }
       }
     }, [frameName])
 
@@ -348,6 +357,7 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
           })
 
           if (!_offset) {
+            console.log('will end')
             state.hasEnded = true
           }
         }
@@ -377,9 +387,13 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
       timerOffset.current = now - (diff % fpsInterval)
 
       calculateAspectRatio(frameW, frameH)
+
       const framesH = (metaInfo.w - 1) / frameW
       const framesV = (metaInfo.h - 1) / frameH
 
+      if (!spriteFrames[targetFrame]) {
+        return
+      }
       // read the sprite on the currentFrame position
       const {
         frame: { x: frameX, y: frameY },
@@ -420,7 +434,7 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
     }
 
     // *** Warning! It runs on every frame! ***
-    useFrame((_, delta) => {
+    useFrame((_state, _delta) => {
       if (!spriteData.current?.frames || !matRef.current?.map) {
         return
       }

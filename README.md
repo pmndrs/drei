@@ -3662,9 +3662,11 @@ export type FisheyeProps = JSX.IntrinsicElements['mesh'] & {
 This component will take over system rendering. It portals its children into a cubemap which is then projected onto a sphere. The sphere is rendered out on the screen, filling it. You can lower the resolution to increase performance. Six renders per frame are necessary to construct a full fisheye view, and since each facet of the cubemap only takes a portion of the screen full resolution is not necessary. You can also reduce the amount of segments (resulting in edgier rounds).
 
 ```jsx
-<Fisheye>
-  <YourScene />
-</Fisheye>
+<Canvas camera={{ position: [0, 0, 5] }}>
+  <Fisheye>
+    <YourScene />
+  </Fisheye>
+  <OrbitControls />
 ```
 
 #### Mask

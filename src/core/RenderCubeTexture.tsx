@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { ReactThreeFiber, createPortal, useFrame, useThree } from '@react-three/fiber'
+import { ComputeFunction, ReactThreeFiber, createPortal, useFrame, useThree } from '@react-three/fiber'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type RenderCubeTextureProps = Omit<JSX.IntrinsicElements['texture'], 'rotation'> & {
@@ -17,7 +17,7 @@ export type RenderCubeTextureProps = Omit<JSX.IntrinsicElements['texture'], 'rot
   /** Optional frame count, defaults to Infinity. If you set it to 1, it would only render a single frame, etc */
   frames?: number
   /** Optional event compute, defaults to undefined */
-  compute?: (event: any, state: any, previous: any) => false | undefined
+  compute?: ComputeFunction
   /** Flip cubemap, see https://github.com/mrdoob/three.js/blob/master/src/renderers/WebGLCubeRenderTarget.js */
   flip?: boolean
   /** Cubemap resolution (for each of the 6 takes), null === full screen resolution, default: 896 */
@@ -88,12 +88,6 @@ export const RenderCubeTexture: ForwardRefComponent<RenderCubeTextureProps, Rend
     }, [fbo])
 
     const [vScene] = React.useState(() => new THREE.Scene())
-    const uvCompute = React.useCallback((event, state, previous) => {
-      // https://github.com/pmndrs/react-three-fiber/pull/782
-      // Events trigger outside of canvas when moved, use offsetX/Y by default and allow overrides
-      state.pointer.set((event.offsetX / state.size.width) * 2 - 1, -(event.offsetY / state.size.height) * 2 + 1)
-      state.raycaster.setFromCamera(state.pointer, state.camera)
-    }, [])
 
     React.useImperativeHandle(forwardRef, () => ({ scene: vScene, fbo, camera: camera.current }), [fbo])
 
@@ -106,7 +100,7 @@ export const RenderCubeTexture: ForwardRefComponent<RenderCubeTextureProps, Rend
             <group onPointerOver={() => null} />
           </Container>,
           vScene,
-          { events: { compute: compute || uvCompute, priority: eventPriority } }
+          { events: { compute, priority: eventPriority } }
         )}
         <primitive object={fbo.texture} {...props} />
         <cubeCamera

@@ -17,9 +17,9 @@ import { Assign } from 'utility-types'
 import { MaterialProps, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
-const v1 = new Vector3()
-const v2 = new Vector3()
-const v3 = new Vector3()
+const v1 = /* @__PURE__ */ new Vector3()
+const v2 = /* @__PURE__ */ new Vector3()
+const v3 = /* @__PURE__ */ new Vector3()
 
 function defaultCalculatePosition(el: Object3D, camera: Camera, size: { width: number; height: number }) {
   const objectPos = v1.setFromMatrixPosition(el.matrixWorld)
@@ -142,7 +142,7 @@ export interface HtmlProps
   receiveShadow?: boolean // Receive shadow for occlusion plane
 }
 
-export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = React.forwardRef(
+export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__ */ React.forwardRef(
   (
     {
       children,

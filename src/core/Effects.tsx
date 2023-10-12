@@ -37,7 +37,7 @@ export const isWebGL2Available = () => {
   }
 }
 
-export const Effects: ForwardRefComponent<Props, EffectComposer> = React.forwardRef(
+export const Effects: ForwardRefComponent<Props, EffectComposer> = /* @__PURE__ */ React.forwardRef(
   (
     {
       children,

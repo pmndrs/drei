@@ -10,7 +10,7 @@ export type FlyControlsProps = ReactThreeFiber.Object3DNode<FlyControlsImpl, typ
   makeDefault?: boolean
 }
 
-export const FlyControls: ForwardRefComponent<FlyControlsProps, FlyControlsImpl> = React.forwardRef<
+export const FlyControls: ForwardRefComponent<FlyControlsProps, FlyControlsImpl> = /* @__PURE__ */ React.forwardRef<
   FlyControlsImpl,
   FlyControlsProps
 >(({ domElement, ...props }, fref) => {

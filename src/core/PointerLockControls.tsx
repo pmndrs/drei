@@ -20,7 +20,7 @@ export type PointerLockControlsProps = ReactThreeFiber.Object3DNode<
 }
 
 export const PointerLockControls: ForwardRefComponent<PointerLockControlsProps, PointerLockControlsImpl> =
-  React.forwardRef<PointerLockControlsImpl, PointerLockControlsProps>(
+  /* @__PURE__ */ React.forwardRef<PointerLockControlsImpl, PointerLockControlsProps>(
     ({ domElement, selector, onChange, onLock, onUnlock, enabled = true, makeDefault, ...props }, ref) => {
       const { camera, ...rest } = props
       const setEvents = useThree((state) => state.setEvents)

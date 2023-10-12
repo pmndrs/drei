@@ -18,7 +18,7 @@ export type ExampleApi = {
   decr: (x?: number) => void
 }
 
-export const Example = React.forwardRef<ExampleApi, ExampleProps>(
+export const Example = /* @__PURE__ */ React.forwardRef<ExampleApi, ExampleProps>(
   ({ font, color = '#cbcbcb', bevelSize = 0.04, debug = false, children, ...props }, fref) => {
     const [counter, setCounter] = React.useState(0)
 

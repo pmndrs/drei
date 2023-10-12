@@ -36,7 +36,7 @@ const getTextFromChildren = (children) => {
 export const Text3D: ForwardRefComponent<
   React.PropsWithChildren<Text3DProps & { letterSpacing?: number; lineHeight?: number }>,
   THREE.Mesh
-> = React.forwardRef<
+> = /* @__PURE__ */ React.forwardRef<
   THREE.Mesh,
   React.PropsWithChildren<Text3DProps & { letterSpacing?: number; lineHeight?: number }>
 >(

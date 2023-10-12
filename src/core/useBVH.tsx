@@ -56,7 +56,7 @@ export function useBVH(mesh: React.MutableRefObject<Mesh | undefined>, options?:
   }, [mesh, JSON.stringify(options)])
 }
 
-export const Bvh: ForwardRefComponent<BvhProps, Group> = React.forwardRef(
+export const Bvh: ForwardRefComponent<BvhProps, Group> = /* @__PURE__ */ React.forwardRef(
   (
     {
       enabled = true,

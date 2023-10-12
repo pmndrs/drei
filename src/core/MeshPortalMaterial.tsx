@@ -11,15 +11,16 @@ import { useFBO } from './useFBO'
 import { RenderTexture } from './RenderTexture'
 import { shaderMaterial } from './shaderMaterial'
 import { FullScreenQuad } from 'three-stdlib'
+import { version } from '../helpers/constants'
 
-const PortalMaterialImpl = shaderMaterial(
+const PortalMaterialImpl = /* @__PURE__ */ shaderMaterial(
   {
     blur: 0,
     map: null,
     sdf: null,
     blend: 0,
     size: 0,
-    resolution: new THREE.Vector2(),
+    resolution: /* @__PURE__ */ new THREE.Vector2(),
   },
   `varying vec2 vUv;
    void main() {
@@ -42,7 +43,7 @@ const PortalMaterialImpl = shaderMaterial(
      float alpha = 1.0 - smoothstep(0.0, 1.0, clamp(d/k + 1.0, 0.0, 1.0));
      gl_FragColor = vec4(t.rgb, blur == 0.0 ? t.a : t.a * alpha);
      #include <tonemapping_fragment>
-     #include <${parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
+     #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
    }`
 )
 
@@ -81,7 +82,7 @@ export type PortalProps = JSX.IntrinsicElements['shaderMaterial'] & {
   events?: boolean
 }
 
-export const MeshPortalMaterial = React.forwardRef(
+export const MeshPortalMaterial = /* @__PURE__ */ React.forwardRef(
   (
     {
       children,
@@ -261,9 +262,7 @@ function ManagePortalScene({
             vec4 ta = texture2D(a, vUv);
             vec4 tb = texture2D(b, vUv);
             gl_FragColor = mix(tb, ta, blend);
-            #include <${
-              parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'
-            }>
+            #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
           }`,
       })
     )

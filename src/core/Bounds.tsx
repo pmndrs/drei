@@ -39,7 +39,7 @@ const isOrthographic = (def: THREE.Camera): def is THREE.OrthographicCamera =>
   def && (def as THREE.OrthographicCamera).isOrthographicCamera
 const isBox3 = (def: any): def is THREE.Box3 => def && (def as THREE.Box3).isBox3
 
-const context = React.createContext<BoundsApi>(null!)
+const context = /* @__PURE__ */ React.createContext<BoundsApi>(null!)
 export function Bounds({ children, damping = 6, fit, clip, observe, margin = 1.2, eps = 0.01, onFit }: BoundsProps) {
   const ref = React.useRef<THREE.Group>(null!)
   const { camera, invalidate, size, controls: controlsImpl } = useThree()

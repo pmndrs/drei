@@ -54,7 +54,7 @@ type PerformanceMonitorProps = {
   children?: React.ReactNode
 }
 
-const context = createContext<PerformanceMonitorApi>(null!)
+const context = /* @__PURE__ */ createContext<PerformanceMonitorApi>(null!)
 
 export function PerformanceMonitor({
   iterations = 10,

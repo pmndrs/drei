@@ -12,7 +12,7 @@ type Props = JSX.IntrinsicElements['mesh'] & {
 
 export type ShadowType = Mesh<PlaneGeometry, MeshBasicMaterial>
 
-export const Shadow: ForwardRefComponent<Props, ShadowType> = React.forwardRef(
+export const Shadow: ForwardRefComponent<Props, ShadowType> = /* @__PURE__ */ React.forwardRef(
   (
     { fog = false, renderOrder, depthWrite = false, colorStop = 0.0, color = 'black', opacity = 0.5, ...props }: Props,
     ref

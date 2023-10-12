@@ -34,9 +34,9 @@ export const WireframeMaterialShaders = {
     squeeze: false,
     squeezeMin: 0.2,
     squeezeMax: 1,
-    stroke: new THREE.Color('#ff0000'),
-    backfaceStroke: new THREE.Color('#0000ff'),
-    fill: new THREE.Color('#00ff00'),
+    stroke: /* @__PURE__ */ new THREE.Color('#ff0000'),
+    backfaceStroke: /* @__PURE__ */ new THREE.Color('#0000ff'),
+    fill: /* @__PURE__ */ new THREE.Color('#00ff00'),
   },
   vertex: /* glsl */ `
 	  attribute vec3 barycentric;

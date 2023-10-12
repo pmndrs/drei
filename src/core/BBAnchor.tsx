@@ -2,8 +2,8 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { useFrame, GroupProps } from '@react-three/fiber'
 
-const boundingBox = new THREE.Box3()
-const boundingBoxSize = new THREE.Vector3()
+const boundingBox = /* @__PURE__ */ new THREE.Box3()
+const boundingBoxSize = /* @__PURE__ */ new THREE.Vector3()
 
 export interface BBAnchorProps extends GroupProps {
   anchor: THREE.Vector3 | [number, number, number]

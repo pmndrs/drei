@@ -8,7 +8,7 @@ type Props = JSX.IntrinsicElements['lineSegments'] & {
   color?: ReactThreeFiber.Color
 }
 
-export const Edges: ForwardRefComponent<Props, THREE.LineSegments> = React.forwardRef(
+export const Edges: ForwardRefComponent<Props, THREE.LineSegments> = /* @__PURE__ */ React.forwardRef(
   (
     { userData, children, geometry, threshold = 15, color = 'black', ...props }: Props,
     fref: React.ForwardedRef<THREE.LineSegments>

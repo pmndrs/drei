@@ -27,9 +27,9 @@ const decomposeIntoBasis = (e1: THREE.Vector3, e2: THREE.Vector3, offset: THREE.
   return [x, y]
 }
 
-const ray = new THREE.Ray()
-const intersection = new THREE.Vector3()
-const offsetMatrix = new THREE.Matrix4()
+const ray = /* @__PURE__ */ new THREE.Ray()
+const intersection = /* @__PURE__ */ new THREE.Vector3()
+const offsetMatrix = /* @__PURE__ */ new THREE.Matrix4()
 
 export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; axis: 0 | 1 | 2 }> = ({
   dir1,

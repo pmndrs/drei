@@ -51,7 +51,7 @@ type KeyboardControlsApi<T extends string = string> = [
   UseBoundStore<KeyboardControlsState<T>>
 ]
 
-const context = /*@__PURE__*/ React.createContext<KeyboardControlsApi>(null!)
+const context = /* @__PURE__ */ React.createContext<KeyboardControlsApi>(null!)
 
 export function KeyboardControls({ map, children, onChange, domElement }: KeyboardControlsProps) {
   const key = map.map((item) => item.name + item.keys).join('-')

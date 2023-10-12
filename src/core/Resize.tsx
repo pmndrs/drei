@@ -14,7 +14,7 @@ export type ResizeProps = JSX.IntrinsicElements['group'] & {
   precise?: boolean
 }
 
-export const Resize = React.forwardRef<THREE.Group, ResizeProps>(
+export const Resize = /* @__PURE__ */ React.forwardRef<THREE.Group, ResizeProps>(
   ({ children, width, height, depth, box3, precise = true, ...props }, fRef) => {
     const ref = React.useRef<THREE.Group>(null!)
     const outer = React.useRef<THREE.Group>(null!)

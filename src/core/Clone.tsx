@@ -79,7 +79,7 @@ function createSpread(
 }
 
 export const Clone: ForwardRefComponent<Omit<JSX.IntrinsicElements['group'], 'children'> & CloneProps, THREE.Group> =
-  React.forwardRef(
+  /* @__PURE__ */ React.forwardRef(
     (
       {
         isChild = false,

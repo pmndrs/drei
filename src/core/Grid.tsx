@@ -10,6 +10,7 @@ import mergeRefs from 'react-merge-refs'
 import { extend, useFrame } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
 import { ForwardRefComponent } from '../helpers/ts-utils'
+import { version } from '../helpers/constants'
 
 export type GridMaterialType = {
   /** Cell size, default: 0.5 */
@@ -49,7 +50,7 @@ declare global {
   }
 }
 
-const GridMaterial = shaderMaterial(
+const GridMaterial = /* @__PURE__ */ shaderMaterial(
   {
     cellSize: 0.5,
     sectionSize: 1,
@@ -57,12 +58,12 @@ const GridMaterial = shaderMaterial(
     fadeStrength: 1,
     cellThickness: 0.5,
     sectionThickness: 1,
-    cellColor: new THREE.Color(),
-    sectionColor: new THREE.Color(),
+    cellColor: /* @__PURE__ */ new THREE.Color(),
+    sectionColor: /* @__PURE__ */ new THREE.Color(),
     infiniteGrid: false,
     followCamera: false,
-    worldCamProjPosition: new THREE.Vector3(),
-    worldPlanePosition: new THREE.Vector3(),
+    worldCamProjPosition: /* @__PURE__ */ new THREE.Vector3(),
+    worldPlanePosition: /* @__PURE__ */ new THREE.Vector3(),
   },
   /* glsl */ `
     varying vec3 localPosition;
@@ -121,13 +122,13 @@ const GridMaterial = shaderMaterial(
       if (gl_FragColor.a <= 0.0) discard;
 
       #include <tonemapping_fragment>
-      #include <${parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
+      #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
     }
   `
 )
 
 export const Grid: ForwardRefComponent<Omit<JSX.IntrinsicElements['mesh'], 'args'> & GridProps, THREE.Mesh> =
-  React.forwardRef(
+  /* @__PURE__ */ React.forwardRef(
     (
       {
         args,

@@ -21,7 +21,7 @@ const colors = { bg: '#f0f0f0', hover: '#999', text: 'black', stroke: 'black' }
 const defaultFaces = ['Right', 'Left', 'Top', 'Bottom', 'Front', 'Back']
 const makePositionVector = (xyz: number[]) => new Vector3(...xyz).multiplyScalar(0.38)
 
-const corners: Vector3[] = [
+const corners: Vector3[] = /* @__PURE__ */ [
   [1, 1, 1],
   [1, 1, -1],
   [1, -1, 1],
@@ -34,7 +34,7 @@ const corners: Vector3[] = [
 
 const cornerDimensions: XYZ = [0.25, 0.25, 0.25]
 
-const edges: Vector3[] = [
+const edges: Vector3[] = /* @__PURE__ */ [
   [1, 1, 0],
   [1, 0, 1],
   [1, 0, -1],
@@ -49,7 +49,7 @@ const edges: Vector3[] = [
   [-1, -1, 0],
 ].map(makePositionVector)
 
-const edgeDimensions = edges.map(
+const edgeDimensions = /* @__PURE__ */ edges.map(
   (edge) => edge.toArray().map((axis: number): number => (axis == 0 ? 0.5 : 0.25)) as XYZ
 )
 

@@ -15,7 +15,7 @@ export type LightProps = JSX.IntrinsicElements['mesh'] & {
   target?: [number, number, number] | THREE.Vector3
 }
 
-export const Lightformer: ForwardRefComponent<LightProps, THREE.Mesh> = React.forwardRef(
+export const Lightformer: ForwardRefComponent<LightProps, THREE.Mesh> = /* @__PURE__ */ React.forwardRef(
   (
     {
       args,

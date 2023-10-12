@@ -4,7 +4,7 @@ import { createPortal, useFrame, useThree } from '@react-three/fiber'
 
 const isOrthographicCamera = (def: any): def is THREE.OrthographicCamera =>
   def && (def as THREE.OrthographicCamera).isOrthographicCamera
-const col = new THREE.Color()
+const col = /* @__PURE__ */ new THREE.Color()
 
 /**
  * In `@react-three/fiber` after `v8.0.0` but prior to `v8.1.0`, `state.size` contained only dimension

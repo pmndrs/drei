@@ -88,10 +88,10 @@ export function useTrail(target: Object3D, settings: Partial<Settings>) {
 
 export type MeshLineGeometry = THREE.Mesh & MeshLineGeometryImpl
 
-export const Trail: ForwardRefComponent<React.PropsWithChildren<TrailProps>, MeshLineGeometry> = React.forwardRef<
-  MeshLineGeometry,
-  React.PropsWithChildren<TrailProps>
->((props, forwardRef) => {
+export const Trail: ForwardRefComponent<
+  React.PropsWithChildren<TrailProps>,
+  MeshLineGeometry
+> = /* @__PURE__ */ React.forwardRef<MeshLineGeometry, React.PropsWithChildren<TrailProps>>((props, forwardRef) => {
   const { children } = props
   const { width, length, decay, local, stride, interval } = {
     ...defaults,

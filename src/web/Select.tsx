@@ -4,7 +4,7 @@ import { SelectionBox } from 'three-stdlib'
 import { useThree } from '@react-three/fiber'
 import shallow from 'zustand/shallow'
 
-const context = React.createContext<THREE.Object3D[]>([])
+const context = /* @__PURE__ */ React.createContext<THREE.Object3D[]>([])
 
 type Props = JSX.IntrinsicElements['group'] & {
   /** Allow multi select, default: false */

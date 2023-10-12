@@ -49,7 +49,7 @@ type MotionState = {
 const isObject3DRef = (ref: any): ref is React.MutableRefObject<THREE.Object3D> =>
   ref?.current instanceof THREE.Object3D
 
-const context = React.createContext<MotionState>(null!)
+const context = /* @__PURE__ */ React.createContext<MotionState>(null!)
 
 export function useMotion() {
   return React.useContext(context) as MotionState
@@ -76,7 +76,7 @@ function Debug({ points = 50 }: { points?: number }) {
   )
 }
 
-export const MotionPathControls = React.forwardRef<THREE.Group>(
+export const MotionPathControls = /* @__PURE__ */ React.forwardRef<THREE.Group>(
   (
     {
       children,

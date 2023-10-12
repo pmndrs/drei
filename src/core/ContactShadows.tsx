@@ -25,7 +25,7 @@ export type ContactShadowsProps = {
 export const ContactShadows: ForwardRefComponent<
   Omit<JSX.IntrinsicElements['group'], 'scale'> & ContactShadowsProps,
   THREE.Group
-> = React.forwardRef(
+> = /* @__PURE__ */ React.forwardRef(
   (
     {
       scale = 10,

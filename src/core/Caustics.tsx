@@ -11,6 +11,7 @@ import { shaderMaterial } from './shaderMaterial'
 import { Edges } from './Edges'
 import { FullScreenQuad } from 'three-stdlib'
 import { ForwardRefComponent } from '../helpers/ts-utils'
+import { version } from '../helpers/constants'
 
 type CausticsMaterialType = THREE.ShaderMaterial & {
   cameraMatrixWorld?: THREE.Matrix4
@@ -99,13 +100,13 @@ function createNormalMaterial(side = THREE.FrontSide) {
   })
 }
 
-const CausticsProjectionMaterial = shaderMaterial(
+const CausticsProjectionMaterial = /* @__PURE__ */ shaderMaterial(
   {
     causticsTexture: null,
     causticsTextureB: null,
-    color: new THREE.Color(),
-    lightProjMatrix: new THREE.Matrix4(),
-    lightViewMatrix: new THREE.Matrix4(),
+    color: /* @__PURE__ */ new THREE.Color(),
+    lightProjMatrix: /* @__PURE__ */ new THREE.Matrix4(),
+    lightViewMatrix: /* @__PURE__ */ new THREE.Matrix4(),
   },
   `varying vec3 vWorldPosition;   
    void main() {
@@ -128,22 +129,22 @@ const CausticsProjectionMaterial = shaderMaterial(
     vec3 back = texture2D(causticsTextureB, lightSpacePos.xy).rgb;
     gl_FragColor = vec4((front + back) * color, 1.0);
     #include <tonemapping_fragment>
-    #include <${parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
+    #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
    }`
 )
 
-const CausticsMaterial = shaderMaterial(
+const CausticsMaterial = /* @__PURE__ */ shaderMaterial(
   {
-    cameraMatrixWorld: new THREE.Matrix4(),
-    cameraProjectionMatrixInv: new THREE.Matrix4(),
+    cameraMatrixWorld: /* @__PURE__ */ new THREE.Matrix4(),
+    cameraProjectionMatrixInv: /* @__PURE__ */ new THREE.Matrix4(),
     normalTexture: null,
     depthTexture: null,
-    lightDir: new THREE.Vector3(0, 1, 0),
-    lightPlaneNormal: new THREE.Vector3(0, 1, 0),
+    lightDir: /* @__PURE__ */ new THREE.Vector3(0, 1, 0),
+    lightPlaneNormal: /* @__PURE__ */ new THREE.Vector3(0, 1, 0),
     lightPlaneConstant: 0,
     near: 0.1,
     far: 100,
-    modelMatrix: new THREE.Matrix4(),
+    modelMatrix: /* @__PURE__ */ new THREE.Matrix4(),
     worldRadius: 1 / 40,
     ior: 1.1,
     bounces: 0,
@@ -276,9 +277,9 @@ const CAUSTICPROPS = {
   generateMipmaps: true,
 }
 
-const causticsContext = React.createContext(null)
+const causticsContext = /* @__PURE__ */ React.createContext(null)
 
-export const Caustics: ForwardRefComponent<CausticsProps, THREE.Group> = React.forwardRef(
+export const Caustics: ForwardRefComponent<CausticsProps, THREE.Group> = /* @__PURE__ */ React.forwardRef(
   (
     {
       debug,

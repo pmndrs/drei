@@ -17,7 +17,7 @@ export type MapControlsProps = ReactThreeFiber.Overwrite<
   }
 >
 
-export const MapControls: ForwardRefComponent<MapControlsProps, MapControlsImpl> = React.forwardRef<
+export const MapControls: ForwardRefComponent<MapControlsProps, MapControlsImpl> = /* @__PURE__ */ React.forwardRef<
   MapControlsImpl,
   MapControlsProps
 >((props = { enableDamping: true }, ref) => {

@@ -15,7 +15,7 @@ function createScreenQuadGeometry() {
 
 type Props = Omit<JSX.IntrinsicElements['mesh'], 'args'>
 
-export const ScreenQuad: ForwardRefComponent<Props, THREE.Mesh> = React.forwardRef<THREE.Mesh, Props>(
+export const ScreenQuad: ForwardRefComponent<Props, THREE.Mesh> = /* @__PURE__ */ React.forwardRef<THREE.Mesh, Props>(
   function ScreenQuad({ children, ...restProps }, ref) {
     const geometry = React.useMemo(createScreenQuadGeometry, [])
 

@@ -38,7 +38,7 @@ export type CameraControlsProps = Omit<
   'ref'
 >
 
-export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraControlsImpl> = forwardRef<
+export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraControlsImpl> = /* @__PURE__ */ forwardRef<
   CameraControlsImpl,
   CameraControlsProps
 >((props, ref) => {

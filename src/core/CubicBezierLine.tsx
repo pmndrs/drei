@@ -12,7 +12,7 @@ type Props = Omit<LineProps, 'points' | 'ref'> & {
   segments?: number
 }
 
-export const CubicBezierLine: ForwardRefComponent<Props, Line2> = React.forwardRef<Line2, Props>(
+export const CubicBezierLine: ForwardRefComponent<Props, Line2> = /* @__PURE__ */ React.forwardRef<Line2, Props>(
   function CubicBezierLine({ start, end, midA, midB, segments = 20, ...rest }, ref) {
     const points = React.useMemo(() => {
       const startV = start instanceof Vector3 ? start : new Vector3(...start)

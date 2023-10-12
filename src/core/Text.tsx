@@ -39,7 +39,7 @@ type Props = JSX.IntrinsicElements['mesh'] & {
 }
 
 // eslint-disable-next-line prettier/prettier
-export const Text: ForwardRefComponent<Props, any> = React.forwardRef(
+export const Text: ForwardRefComponent<Props, any> = /* @__PURE__ */ React.forwardRef(
   (
     {
       sdfGlyphSize = 64,

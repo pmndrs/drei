@@ -88,15 +88,15 @@ type CloudProps = JSX.IntrinsicElements['group'] & {
   color?: ReactThreeFiber.Color
 }
 
-const parentMatrix = /*@__PURE__*/ new Matrix4()
-const translation = /*@__PURE__*/ new Vector3()
-const rotation = /*@__PURE__*/ new Quaternion()
-const cpos = /*@__PURE__*/ new Vector3()
-const cquat = /*@__PURE__*/ new Quaternion()
-const scale = /*@__PURE__*/ new Vector3()
+const parentMatrix = /* @__PURE__ */ new Matrix4()
+const translation = /* @__PURE__ */ new Vector3()
+const rotation = /* @__PURE__ */ new Quaternion()
+const cpos = /* @__PURE__ */ new Vector3()
+const cquat = /* @__PURE__ */ new Quaternion()
+const scale = /* @__PURE__ */ new Vector3()
 
-const context = React.createContext<React.MutableRefObject<CloudState[]>>(null!)
-export const Clouds = React.forwardRef<Group, CloudsProps>(
+const context = /* @__PURE__ */ React.createContext<React.MutableRefObject<CloudState[]>>(null!)
+export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
   ({ children, material = MeshLambertMaterial, texture = CLOUD_URL, range, limit = 200, ...props }, fref) => {
     const CloudMaterial = React.useMemo(() => {
       return class extends (material as typeof Material) {
@@ -201,7 +201,7 @@ export const Clouds = React.forwardRef<Group, CloudsProps>(
   }
 )
 
-export const CloudInstance = React.forwardRef<Group, CloudProps>(
+export const CloudInstance = /* @__PURE__ */ React.forwardRef<Group, CloudProps>(
   (
     {
       opacity = 1,
@@ -303,7 +303,7 @@ export const CloudInstance = React.forwardRef<Group, CloudProps>(
   }
 )
 
-export const Cloud = React.forwardRef<Group, CloudProps>((props, fref) => {
+export const Cloud = /* @__PURE__ */ React.forwardRef<Group, CloudProps>((props, fref) => {
   const parent = React.useContext(context)
   if (parent) return <CloudInstance ref={fref} {...props} />
   else

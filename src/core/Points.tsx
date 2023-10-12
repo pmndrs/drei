@@ -22,10 +22,10 @@ type PointsInstancesProps = JSX.IntrinsicElements['points'] & {
   limit?: number
 }
 
-const _inverseMatrix = /*@__PURE__*/ new THREE.Matrix4()
-const _ray = /*@__PURE__*/ new THREE.Ray()
-const _sphere = /*@__PURE__*/ new THREE.Sphere()
-const _position = /*@__PURE__*/ new THREE.Vector3()
+const _inverseMatrix = /* @__PURE__ */ new THREE.Matrix4()
+const _ray = /* @__PURE__ */ new THREE.Ray()
+const _sphere = /* @__PURE__ */ new THREE.Sphere()
+const _position = /* @__PURE__ */ new THREE.Vector3()
 
 export class PositionPoint extends THREE.Group {
   size: number
@@ -82,14 +82,14 @@ export class PositionPoint extends THREE.Group {
 }
 
 let i, positionRef
-const context = /*@__PURE__*/ React.createContext<Api>(null!)
-const parentMatrix = /*@__PURE__*/ new THREE.Matrix4()
-const position = /*@__PURE__*/ new THREE.Vector3()
+const context = /* @__PURE__ */ React.createContext<Api>(null!)
+const parentMatrix = /* @__PURE__ */ new THREE.Matrix4()
+const position = /* @__PURE__ */ new THREE.Vector3()
 
 /**
  * Instance implementation, relies on react + context to update the attributes based on the children of this component
  */
-const PointsInstances: ForwardRefComponent<PointsInstancesProps, THREE.Points> = React.forwardRef<
+const PointsInstances: ForwardRefComponent<PointsInstancesProps, THREE.Points> = /* @__PURE__ */ React.forwardRef<
   THREE.Points,
   PointsInstancesProps
 >(({ children, range, limit = 1000, ...props }, ref) => {
@@ -173,8 +173,8 @@ const PointsInstances: ForwardRefComponent<PointsInstancesProps, THREE.Points> =
   )
 })
 
-export const Point: ForwardRefComponent<JSX.IntrinsicElements['positionPoint'], PositionPoint> = React.forwardRef(
-  ({ children, ...props }: JSX.IntrinsicElements['positionPoint'], ref) => {
+export const Point: ForwardRefComponent<JSX.IntrinsicElements['positionPoint'], PositionPoint> =
+  /* @__PURE__ */ React.forwardRef(({ children, ...props }: JSX.IntrinsicElements['positionPoint'], ref) => {
     React.useMemo(() => extend({ PositionPoint }), [])
     const group = React.useRef()
     const { subscribe, getParent } = React.useContext(context)
@@ -184,8 +184,7 @@ export const Point: ForwardRefComponent<JSX.IntrinsicElements['positionPoint'], 
         {children}
       </positionPoint>
     )
-  }
-)
+  })
 
 /**
  * Buffer implementation, relies on complete buffers of the correct number, leaves it to the user to update them
@@ -199,7 +198,7 @@ type PointsBuffersProps = JSX.IntrinsicElements['points'] & {
   stride?: 2 | 3
 }
 
-export const PointsBuffer: ForwardRefComponent<PointsBuffersProps, THREE.Points> = React.forwardRef<
+export const PointsBuffer: ForwardRefComponent<PointsBuffersProps, THREE.Points> = /* @__PURE__ */ React.forwardRef<
   THREE.Points,
   PointsBuffersProps
 >(({ children, positions, colors, sizes, stride = 3, ...props }, forwardedRef) => {
@@ -246,11 +245,9 @@ export const PointsBuffer: ForwardRefComponent<PointsBuffersProps, THREE.Points>
   )
 })
 
-export const Points: ForwardRefComponent<PointsBuffersProps | PointsInstancesProps, THREE.Points> = React.forwardRef<
-  THREE.Points,
-  PointsBuffersProps | PointsInstancesProps
->((props, forwardedRef) => {
-  if ((props as PointsBuffersProps).positions instanceof Float32Array) {
-    return <PointsBuffer {...(props as PointsBuffersProps)} ref={forwardedRef} />
-  } else return <PointsInstances {...(props as PointsInstancesProps)} ref={forwardedRef} />
-})
+export const Points: ForwardRefComponent<PointsBuffersProps | PointsInstancesProps, THREE.Points> =
+  /* @__PURE__ */ React.forwardRef<THREE.Points, PointsBuffersProps | PointsInstancesProps>((props, forwardedRef) => {
+    if ((props as PointsBuffersProps).positions instanceof Float32Array) {
+      return <PointsBuffer {...(props as PointsBuffersProps)} ref={forwardedRef} />
+    } else return <PointsInstances {...(props as PointsInstancesProps)} ref={forwardedRef} />
+  })

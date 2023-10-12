@@ -6,8 +6,8 @@ import { Html } from '../Html'
 import clamp from 'lodash.clamp'
 import { context } from './context'
 
-const clickDir = new THREE.Vector3()
-const intersectionDir = new THREE.Vector3()
+const clickDir = /* @__PURE__ */ new THREE.Vector3()
+const intersectionDir = /* @__PURE__ */ new THREE.Vector3()
 
 const toDegrees = (radians: number) => (radians * 180) / Math.PI
 const toRadians = (degrees: number) => (degrees * Math.PI) / 180
@@ -53,10 +53,10 @@ const minimizeAngle = (angle: number) => {
   return result
 }
 
-const rotMatrix = new THREE.Matrix4()
-const posNew = new THREE.Vector3()
-const ray = new THREE.Ray()
-const intersection = new THREE.Vector3()
+const rotMatrix = /* @__PURE__ */ new THREE.Matrix4()
+const posNew = /* @__PURE__ */ new THREE.Vector3()
+const ray = /* @__PURE__ */ new THREE.Ray()
+const intersection = /* @__PURE__ */ new THREE.Vector3()
 
 export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; axis: 0 | 1 | 2 }> = ({
   dir1,

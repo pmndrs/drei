@@ -22,7 +22,7 @@ export type LineProps = {
     color?: ColorRepresentation
   }
 
-export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = React.forwardRef<
+export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = /* @__PURE__ */ React.forwardRef<
   Line2 | LineSegments2,
   LineProps
 >(function Line({ points, color = 'black', vertexColors, linewidth, lineWidth, segments, dashed, ...rest }, ref) {

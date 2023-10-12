@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import * as FIBER from '@react-three/fiber'
+import { MaterialNode, extend } from '@react-three/fiber'
 import {
   WireframeMaterial,
   WireframeMaterialProps,
@@ -12,12 +12,10 @@ import {
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      meshWireframeMaterial: FIBER.MaterialNode<THREE.ShaderMaterial, WireframeMaterialProps>
+      meshWireframeMaterial: MaterialNode<THREE.ShaderMaterial, WireframeMaterialProps>
     }
   }
 }
-
-FIBER.extend({ MeshWireframeMaterial: WireframeMaterial })
 
 interface WireframeProps {
   geometry?: THREE.BufferGeometry | React.RefObject<THREE.BufferGeometry>
@@ -120,6 +118,7 @@ function WireframeWithCustomGeo({
   simplify = false,
   ...props
 }: WireframeProps & WireframeMaterialProps) {
+  extend({ MeshWireframeMaterial: WireframeMaterial })
   const [geometry, setGeometry] = React.useState<THREE.BufferGeometry>(null!)
 
   React.useLayoutEffect(() => {

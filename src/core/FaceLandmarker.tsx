@@ -4,7 +4,7 @@ import { createContext, ReactNode, useContext, useEffect } from 'react'
 import { FilesetResolver, FaceLandmarker as FaceLandmarkerImpl, FaceLandmarkerOptions } from '@mediapipe/tasks-vision'
 import { clear, suspend } from 'suspend-react'
 
-const FaceLandmarkerContext = createContext({} as FaceLandmarkerImpl | undefined)
+const FaceLandmarkerContext = /* @__PURE__ */ createContext({} as FaceLandmarkerImpl | undefined)
 
 type FaceLandmarkerProps = {
   basePath?: string

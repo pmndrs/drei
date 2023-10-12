@@ -52,12 +52,13 @@ declare global {
   }
 }
 
-extend({ MeshReflectorMaterial })
-
 /**
  * @deprecated Use MeshReflectorMaterial instead
  */
-export const Reflector: ForwardRefComponent<ReflectorProps, Mesh> = React.forwardRef<Mesh, ReflectorProps>(
+export const Reflector: ForwardRefComponent<ReflectorProps, Mesh> = /* @__PURE__ */ React.forwardRef<
+  Mesh,
+  ReflectorProps
+>(
   (
     {
       mixBlur = 0,
@@ -79,6 +80,8 @@ export const Reflector: ForwardRefComponent<ReflectorProps, Mesh> = React.forwar
     },
     ref
   ) => {
+    extend({ MeshReflectorMaterial })
+
     React.useEffect(() => {
       console.warn(
         'Reflector has been deprecated and will be removed next major. Replace it with <MeshReflectorMaterial />!'

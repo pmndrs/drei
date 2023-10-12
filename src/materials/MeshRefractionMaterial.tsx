@@ -4,8 +4,9 @@
 import * as THREE from 'three'
 import { shaderMaterial } from '../core/shaderMaterial'
 import { MeshBVHUniformStruct, shaderStructs, shaderIntersectFunction } from 'three-mesh-bvh'
+import { version } from '../helpers/constants'
 
-export const MeshRefractionMaterial = shaderMaterial(
+export const MeshRefractionMaterial = /* @__PURE__ */ shaderMaterial(
   {
     envMap: null,
     bounces: 3,
@@ -13,11 +14,11 @@ export const MeshRefractionMaterial = shaderMaterial(
     correctMips: true,
     aberrationStrength: 0.01,
     fresnel: 0,
-    bvh: new MeshBVHUniformStruct(),
-    color: new THREE.Color('white'),
-    resolution: new THREE.Vector2(),
-    viewMatrixInverse: new THREE.Matrix4(),
-    projectionMatrixInverse: new THREE.Matrix4(),
+    bvh: /* @__PURE__ */ new MeshBVHUniformStruct(),
+    color: /* @__PURE__ */ new THREE.Color('white'),
+    resolution: /* @__PURE__ */ new THREE.Vector2(),
+    viewMatrixInverse: /* @__PURE__ */ new THREE.Matrix4(),
+    projectionMatrixInverse: /* @__PURE__ */ new THREE.Matrix4(),
   },
   /*glsl*/ `
   uniform mat4 viewMatrixInverse;
@@ -166,6 +167,6 @@ export const MeshRefractionMaterial = shaderMaterial(
     float nFresnel = fresnelFunc(viewDirection, normal) * fresnel;
     gl_FragColor = vec4(mix(finalColor, vec3(1.0), nFresnel), 1.0);      
     #include <tonemapping_fragment>
-    #include <${parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
+    #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
   }`
 )

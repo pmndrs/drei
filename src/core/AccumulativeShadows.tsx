@@ -4,6 +4,7 @@ import { extend, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
 import { DiscardMaterial } from '../materials/DiscardMaterial'
 import { ForwardRefComponent } from '../helpers/ts-utils'
+import { version } from '../helpers/constants'
 
 function isLight(object: any): object is THREE.Light {
   return object.isLight
@@ -72,11 +73,13 @@ declare global {
   }
 }
 
-export const accumulativeContext = React.createContext<AccumulativeContext>(null as unknown as AccumulativeContext)
+export const accumulativeContext = /* @__PURE__ */ React.createContext<AccumulativeContext>(
+  null as unknown as AccumulativeContext
+)
 
-const SoftShadowMaterial = shaderMaterial(
+const SoftShadowMaterial = /* @__PURE__ */ shaderMaterial(
   {
-    color: new THREE.Color(),
+    color: /* @__PURE__ */ new THREE.Color(),
     blend: 2.0,
     alphaTest: 0.75,
     opacity: 0,
@@ -97,14 +100,14 @@ const SoftShadowMaterial = shaderMaterial(
      vec4 sampledDiffuseColor = texture2D(map, vUv);
      gl_FragColor = vec4(color * sampledDiffuseColor.r * blend, max(0.0, (1.0 - (sampledDiffuseColor.r + sampledDiffuseColor.g + sampledDiffuseColor.b) / alphaTest)) * opacity);
      #include <tonemapping_fragment>
-     #include <${parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
+     #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
    }`
 )
 
 export const AccumulativeShadows: ForwardRefComponent<
   JSX.IntrinsicElements['group'] & AccumulativeShadowsProps,
   AccumulativeContext
-> = React.forwardRef(
+> = /* @__PURE__ */ React.forwardRef(
   (
     {
       children,
@@ -253,7 +256,7 @@ export type RandomizedLightProps = {
 export const RandomizedLight: ForwardRefComponent<
   JSX.IntrinsicElements['group'] & RandomizedLightProps,
   AccumulativeLightContext
-> = React.forwardRef(
+> = /* @__PURE__ */ React.forwardRef(
   (
     {
       castShadow = true,
@@ -266,7 +269,7 @@ export const RandomizedLight: ForwardRefComponent<
       position = [0, 0, 0],
       radius = 1,
       amount = 8,
-      intensity = parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 155 ? Math.PI : 1,
+      intensity = version >= 155 ? Math.PI : 1,
       ambient = 0.5,
       ...props
     }: JSX.IntrinsicElements['group'] & RandomizedLightProps,

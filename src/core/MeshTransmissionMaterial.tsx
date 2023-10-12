@@ -376,7 +376,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
 export const MeshTransmissionMaterial: ForwardRefComponent<
   MeshTransmissionMaterialProps,
   JSX.IntrinsicElements['meshTransmissionMaterial']
-> = React.forwardRef(
+> = /* @__PURE__ */ React.forwardRef(
   (
     {
       buffer,

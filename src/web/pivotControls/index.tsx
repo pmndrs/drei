@@ -8,9 +8,9 @@ import { AxisRotator } from './AxisRotator'
 import { context, OnDragStartProps } from './context'
 import { ForwardRefComponent } from '../../helpers/ts-utils'
 
-const tV0 = new THREE.Vector3()
-const tV1 = new THREE.Vector3()
-const tV2 = new THREE.Vector3()
+const tV0 = /* @__PURE__ */ new THREE.Vector3()
+const tV1 = /* @__PURE__ */ new THREE.Vector3()
+const tV2 = /* @__PURE__ */ new THREE.Vector3()
 
 const getPoint2 = (point3: THREE.Vector3, camera: THREE.Camera, size: Size) => {
   const widthHalf = size.width / 2
@@ -39,25 +39,25 @@ export const calculateScaleFactor = (point3: THREE.Vector3, radiusPx: number, ca
   return scale
 }
 
-const mL0 = new THREE.Matrix4()
-const mW0 = new THREE.Matrix4()
-const mP = new THREE.Matrix4()
-const mPInv = new THREE.Matrix4()
-const mW = new THREE.Matrix4()
-const mL = new THREE.Matrix4()
-const mL0Inv = new THREE.Matrix4()
-const mdL = new THREE.Matrix4()
+const mL0 = /* @__PURE__ */ new THREE.Matrix4()
+const mW0 = /* @__PURE__ */ new THREE.Matrix4()
+const mP = /* @__PURE__ */ new THREE.Matrix4()
+const mPInv = /* @__PURE__ */ new THREE.Matrix4()
+const mW = /* @__PURE__ */ new THREE.Matrix4()
+const mL = /* @__PURE__ */ new THREE.Matrix4()
+const mL0Inv = /* @__PURE__ */ new THREE.Matrix4()
+const mdL = /* @__PURE__ */ new THREE.Matrix4()
 
-const bb = new THREE.Box3()
-const bbObj = new THREE.Box3()
-const vCenter = new THREE.Vector3()
-const vSize = new THREE.Vector3()
-const vAnchorOffset = new THREE.Vector3()
-const vPosition = new THREE.Vector3()
+const bb = /* @__PURE__ */ new THREE.Box3()
+const bbObj = /* @__PURE__ */ new THREE.Box3()
+const vCenter = /* @__PURE__ */ new THREE.Vector3()
+const vSize = /* @__PURE__ */ new THREE.Vector3()
+const vAnchorOffset = /* @__PURE__ */ new THREE.Vector3()
+const vPosition = /* @__PURE__ */ new THREE.Vector3()
 
-const xDir = new THREE.Vector3(1, 0, 0)
-const yDir = new THREE.Vector3(0, 1, 0)
-const zDir = new THREE.Vector3(0, 0, 1)
+const xDir = /* @__PURE__ */ new THREE.Vector3(1, 0, 0)
+const yDir = /* @__PURE__ */ new THREE.Vector3(0, 1, 0)
+const zDir = /* @__PURE__ */ new THREE.Vector3(0, 0, 1)
 
 type PivotControlsProps = {
   /** Scale of the gizmo, 1 */
@@ -110,7 +110,7 @@ type PivotControlsProps = {
   children?: React.ReactNode
 }
 
-export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group> = React.forwardRef<
+export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group> = /* @__PURE__ */ React.forwardRef<
   THREE.Group,
   PivotControlsProps
 >(

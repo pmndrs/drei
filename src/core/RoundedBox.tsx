@@ -24,45 +24,47 @@ type Props = {
   creaseAngle?: number
 } & Omit<JSX.IntrinsicElements['mesh'], 'args'>
 
-export const RoundedBox: ForwardRefComponent<Props, Mesh> = React.forwardRef<Mesh, Props>(function RoundedBox(
-  {
-    args: [width = 1, height = 1, depth = 1] = [],
-    radius = 0.05,
-    steps = 1,
-    smoothness = 4,
-    bevelSegments = 4,
-    creaseAngle = 0.4,
-    children,
-    ...rest
-  },
-  ref
-) {
-  const shape = React.useMemo(() => createShape(width, height, radius), [width, height, radius])
-  const params = React.useMemo(
-    () => ({
-      depth: depth - radius * 2,
-      bevelEnabled: true,
-      bevelSegments: bevelSegments * 2,
-      steps,
-      bevelSize: radius - eps,
-      bevelThickness: radius,
-      curveSegments: smoothness,
-    }),
-    [depth, radius, smoothness]
-  )
-  const geomRef = React.useRef<ExtrudeGeometry>(null!)
+export const RoundedBox: ForwardRefComponent<Props, Mesh> = /* @__PURE__ */ React.forwardRef<Mesh, Props>(
+  function RoundedBox(
+    {
+      args: [width = 1, height = 1, depth = 1] = [],
+      radius = 0.05,
+      steps = 1,
+      smoothness = 4,
+      bevelSegments = 4,
+      creaseAngle = 0.4,
+      children,
+      ...rest
+    },
+    ref
+  ) {
+    const shape = React.useMemo(() => createShape(width, height, radius), [width, height, radius])
+    const params = React.useMemo(
+      () => ({
+        depth: depth - radius * 2,
+        bevelEnabled: true,
+        bevelSegments: bevelSegments * 2,
+        steps,
+        bevelSize: radius - eps,
+        bevelThickness: radius,
+        curveSegments: smoothness,
+      }),
+      [depth, radius, smoothness]
+    )
+    const geomRef = React.useRef<ExtrudeGeometry>(null!)
 
-  React.useLayoutEffect(() => {
-    if (geomRef.current) {
-      geomRef.current.center()
-      toCreasedNormals(geomRef.current, creaseAngle)
-    }
-  }, [shape, params])
+    React.useLayoutEffect(() => {
+      if (geomRef.current) {
+        geomRef.current.center()
+        toCreasedNormals(geomRef.current, creaseAngle)
+      }
+    }, [shape, params])
 
-  return (
-    <mesh ref={ref} {...rest}>
-      <extrudeGeometry ref={geomRef} args={[shape, params]} />
-      {children}
-    </mesh>
-  )
-})
+    return (
+      <mesh ref={ref} {...rest}>
+        <extrudeGeometry ref={geomRef} args={[shape, params]} />
+        {children}
+      </mesh>
+    )
+  }
+)

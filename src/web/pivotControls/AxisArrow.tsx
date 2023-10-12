@@ -5,8 +5,8 @@ import { Line } from '../../core/Line'
 import { Html } from '../Html'
 import { context } from './context'
 
-const vec1 = new THREE.Vector3()
-const vec2 = new THREE.Vector3()
+const vec1 = /* @__PURE__ */ new THREE.Vector3()
+const vec2 = /* @__PURE__ */ new THREE.Vector3()
 
 export const calculateOffset = (
   clickPoint: THREE.Vector3,
@@ -36,8 +36,8 @@ export const calculateOffset = (
   return offset
 }
 
-const upV = new THREE.Vector3(0, 1, 0)
-const offsetMatrix = new THREE.Matrix4()
+const upV = /* @__PURE__ */ new THREE.Vector3(0, 1, 0)
+const offsetMatrix = /* @__PURE__ */ new THREE.Matrix4()
 
 export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> = ({ direction, axis }) => {
   const {

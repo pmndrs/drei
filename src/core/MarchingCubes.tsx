@@ -10,7 +10,7 @@ type Api = {
   getParent: () => React.MutableRefObject<MarchingCubesImpl>
 }
 
-const globalContext = React.createContext<Api>(null!)
+const globalContext = /* @__PURE__ */ React.createContext<Api>(null!)
 
 export type MarchingCubesProps = {
   resolution?: number
@@ -19,39 +19,41 @@ export type MarchingCubesProps = {
   enableColors?: boolean
 } & JSX.IntrinsicElements['group']
 
-export const MarchingCubes: ForwardRefComponent<MarchingCubesProps, MarchingCubesImpl> = React.forwardRef(
-  (
-    {
-      resolution = 28,
-      maxPolyCount = 10000,
-      enableUvs = false,
-      enableColors = false,
-      children,
-      ...props
-    }: MarchingCubesProps,
-    ref
-  ) => {
-    const marchingCubesRef = React.useRef<MarchingCubesImpl>(null!)
-    const marchingCubes = React.useMemo(
-      () => new MarchingCubesImpl(resolution, null as unknown as THREE.Material, enableUvs, enableColors, maxPolyCount),
-      [resolution, maxPolyCount, enableUvs, enableColors]
-    )
-    const api = React.useMemo(() => ({ getParent: () => marchingCubesRef }), [])
+export const MarchingCubes: ForwardRefComponent<MarchingCubesProps, MarchingCubesImpl> =
+  /* @__PURE__ */ React.forwardRef(
+    (
+      {
+        resolution = 28,
+        maxPolyCount = 10000,
+        enableUvs = false,
+        enableColors = false,
+        children,
+        ...props
+      }: MarchingCubesProps,
+      ref
+    ) => {
+      const marchingCubesRef = React.useRef<MarchingCubesImpl>(null!)
+      const marchingCubes = React.useMemo(
+        () =>
+          new MarchingCubesImpl(resolution, null as unknown as THREE.Material, enableUvs, enableColors, maxPolyCount),
+        [resolution, maxPolyCount, enableUvs, enableColors]
+      )
+      const api = React.useMemo(() => ({ getParent: () => marchingCubesRef }), [])
 
-    useFrame(() => {
-      marchingCubes.update()
-      marchingCubes.reset()
-    }, -1) // To make sure the reset runs before the balls or planes are added
+      useFrame(() => {
+        marchingCubes.update()
+        marchingCubes.reset()
+      }, -1) // To make sure the reset runs before the balls or planes are added
 
-    return (
-      <>
-        <primitive object={marchingCubes} ref={mergeRefs([marchingCubesRef, ref])} {...props}>
-          <globalContext.Provider value={api}>{children}</globalContext.Provider>
-        </primitive>
-      </>
-    )
-  }
-)
+      return (
+        <>
+          <primitive object={marchingCubes} ref={mergeRefs([marchingCubesRef, ref])} {...props}>
+            <globalContext.Provider value={api}>{children}</globalContext.Provider>
+          </primitive>
+        </>
+      )
+    }
+  )
 
 type MarchingCubeProps = {
   strength?: number
@@ -59,7 +61,7 @@ type MarchingCubeProps = {
   color?: Color
 } & JSX.IntrinsicElements['group']
 
-export const MarchingCube: ForwardRefComponent<MarchingCubeProps, THREE.Group> = React.forwardRef(
+export const MarchingCube: ForwardRefComponent<MarchingCubeProps, THREE.Group> = /* @__PURE__ */ React.forwardRef(
   ({ strength = 0.5, subtract = 12, color, ...props }: MarchingCubeProps, ref) => {
     const { getParent } = React.useContext(globalContext)
     const parentRef = React.useMemo(() => getParent(), [getParent])
@@ -80,7 +82,7 @@ type MarchingPlaneProps = {
   subtract?: number
 } & JSX.IntrinsicElements['group']
 
-export const MarchingPlane: ForwardRefComponent<MarchingPlaneProps, THREE.Group> = React.forwardRef(
+export const MarchingPlane: ForwardRefComponent<MarchingPlaneProps, THREE.Group> = /* @__PURE__ */ React.forwardRef(
   ({ planeType: _planeType = 'x', strength = 0.5, subtract = 12, ...props }: MarchingPlaneProps, ref) => {
     const { getParent } = React.useContext(globalContext)
     const parentRef = React.useMemo(() => getParent(), [getParent])

@@ -79,7 +79,7 @@ export const accumulativeContext = /* @__PURE__ */ React.createContext<Accumulat
 
 const SoftShadowMaterial = /* @__PURE__ */ shaderMaterial(
   {
-    color: new THREE.Color(),
+    color: /* @__PURE__ */ new THREE.Color(),
     blend: 2.0,
     alphaTest: 0.75,
     opacity: 0,

@@ -137,7 +137,7 @@ export const WireframeMaterialShaders = {
 	  `,
 }
 
-export const WireframeMaterial = shaderMaterial(
+export const WireframeMaterial = /* @__PURE__ */ shaderMaterial(
   WireframeMaterialShaders.uniforms,
   WireframeMaterialShaders.vertex +
     /* glsl */ `

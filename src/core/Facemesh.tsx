@@ -51,7 +51,7 @@ export type FacemeshApi = {
 
 const defaultLookAt = /* @__PURE__ */ new THREE.Vector3(0, 0, -1)
 
-const normal = (function () {
+const normal = /* @__PURE__ */ (function () {
   const a = new THREE.Vector3()
   const b = new THREE.Vector3()
   const c = new THREE.Vector3()

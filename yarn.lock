@@ -13042,10 +13042,10 @@ three-mesh-bvh@^0.6.7:
   resolved "https://registry.yarnpkg.com/three-mesh-bvh/-/three-mesh-bvh-0.6.7.tgz#6491876f5bf0c0d67be81a4402f2abdbb2266d76"
   integrity sha512-RYdjMsH+vZvjLwA+ehI4+ZqTaTehAz4iho2yfL5PdGsIHyxpB78g0iy4Emj8079m/9KBX02TzddkvPSKSruQjg==
 
-three-stdlib@^2.27.2:
-  version "2.27.2"
-  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-2.27.2.tgz#d9fb6e8341ad93aa12b71bec2b3480528d6e42bf"
-  integrity sha512-yjHaY4QHRqMi1yGIt5RzWtRFbcCj2YHoCaAY4pldphI5CMf9PoCc9N2UFuVbHqgITQRKnVoCo+OCMU2rIZTXjg==
+three-stdlib@^2.27.3:
+  version "2.27.3"
+  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-2.27.3.tgz#28964e121ecf50d4fcd19203d090f79c8afa9001"
+  integrity sha512-HA3LDEGnrbahOMGMk4HTfCClr/oKQnwvnvNR2gOMytvHg7nk8SIiABl/qgol2xDVp/Lf7MEbeq5ZjzjajuZxpw==
   dependencies:
     "@types/draco3d" "^1.4.0"
     "@types/offscreencanvas" "^2019.6.4"

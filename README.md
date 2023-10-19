@@ -4071,7 +4071,7 @@ For a little more realistic results enable accumulative shadows, which requires 
 ```jsx
 <Canvas shadows>
   <Stage shadows="accumulative">
-    <mesh castShadows />
+    <mesh castShadow />
   </Stage>
 </Canvas>
 ```

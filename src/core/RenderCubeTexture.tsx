@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { ReactThreeFiber, createPortal, useFrame, useThree } from '@react-three/fiber'
+import { ComputeFunction, ReactThreeFiber, createPortal, useFrame, useThree } from '@react-three/fiber'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type RenderCubeTextureProps = Omit<JSX.IntrinsicElements['texture'], 'rotation'> & {
@@ -17,7 +17,7 @@ export type RenderCubeTextureProps = Omit<JSX.IntrinsicElements['texture'], 'rot
   /** Optional frame count, defaults to Infinity. If you set it to 1, it would only render a single frame, etc */
   frames?: number
   /** Optional event compute, defaults to undefined */
-  compute?: (event: any, state: any, previous: any) => false | undefined
+  compute?: ComputeFunction
   /** Flip cubemap, see https://github.com/mrdoob/three.js/blob/master/src/renderers/WebGLCubeRenderTarget.js */
   flip?: boolean
   /** Cubemap resolution (for each of the 6 takes), null === full screen resolution, default: 896 */
@@ -40,89 +40,84 @@ export type RenderCubeTextureApi = {
   camera: THREE.CubeCamera
 }
 
-export const RenderCubeTexture: ForwardRefComponent<RenderCubeTextureProps, RenderCubeTextureApi> = React.forwardRef(
-  (
-    {
-      children,
-      compute,
-      renderPriority = -1,
-      eventPriority = 0,
-      frames = Infinity,
-      stencilBuffer = false,
-      depthBuffer = true,
-      generateMipmaps = false,
-      resolution = 896,
-      near = 0.1,
-      far = 1000,
-      flip = false,
-      position,
-      rotation,
-      scale,
-      quaternion,
-      matrix,
-      matrixAutoUpdate,
-      ...props
-    },
-    forwardRef
-  ) => {
-    const { size, viewport } = useThree()
+export const RenderCubeTexture: ForwardRefComponent<RenderCubeTextureProps, RenderCubeTextureApi> =
+  /* @__PURE__ */ React.forwardRef(
+    (
+      {
+        children,
+        compute,
+        renderPriority = -1,
+        eventPriority = 0,
+        frames = Infinity,
+        stencilBuffer = false,
+        depthBuffer = true,
+        generateMipmaps = false,
+        resolution = 896,
+        near = 0.1,
+        far = 1000,
+        flip = false,
+        position,
+        rotation,
+        scale,
+        quaternion,
+        matrix,
+        matrixAutoUpdate,
+        ...props
+      },
+      forwardRef
+    ) => {
+      const { size, viewport } = useThree()
 
-    const camera = React.useRef<THREE.CubeCamera>(null!)
-    const fbo = React.useMemo(() => {
-      const fbo = new THREE.WebGLCubeRenderTarget(
-        Math.max((resolution || size.width) * viewport.dpr, (resolution || size.height) * viewport.dpr),
-        {
-          stencilBuffer,
-          depthBuffer,
-          generateMipmaps,
-        }
+      const camera = React.useRef<THREE.CubeCamera>(null!)
+      const fbo = React.useMemo(() => {
+        const fbo = new THREE.WebGLCubeRenderTarget(
+          Math.max((resolution || size.width) * viewport.dpr, (resolution || size.height) * viewport.dpr),
+          {
+            stencilBuffer,
+            depthBuffer,
+            generateMipmaps,
+          }
+        )
+        fbo.texture.isRenderTargetTexture = !flip
+        fbo.texture.flipY = true
+        fbo.texture.type = THREE.HalfFloatType
+        return fbo
+      }, [resolution, flip])
+
+      React.useEffect(() => {
+        return () => fbo.dispose()
+      }, [fbo])
+
+      const [vScene] = React.useState(() => new THREE.Scene())
+
+      React.useImperativeHandle(forwardRef, () => ({ scene: vScene, fbo, camera: camera.current }), [fbo])
+
+      return (
+        <>
+          {createPortal(
+            <Container renderPriority={renderPriority} frames={frames} camera={camera}>
+              {children}
+              {/* Without an element that receives pointer events state.pointer will always be 0/0 */}
+              <group onPointerOver={() => null} />
+            </Container>,
+            vScene,
+            { events: { compute, priority: eventPriority } }
+          )}
+          <primitive object={fbo.texture} {...props} />
+          <cubeCamera
+            ref={camera}
+            args={[near, far, fbo]}
+            position={position}
+            rotation={rotation}
+            scale={scale}
+            quaternion={quaternion}
+            matrix={matrix}
+            matrixAutoUpdate={matrixAutoUpdate}
+          />
+        </>
       )
-      fbo.texture.isRenderTargetTexture = !flip
-      fbo.texture.flipY = true
-      fbo.texture.type = THREE.HalfFloatType
-      return fbo
-    }, [resolution, flip])
-
-    React.useEffect(() => {
-      return () => fbo.dispose()
-    }, [fbo])
-
-    const [vScene] = React.useState(() => new THREE.Scene())
-    const uvCompute = React.useCallback((event, state, previous) => {
-      // https://github.com/pmndrs/react-three-fiber/pull/782
-      // Events trigger outside of canvas when moved, use offsetX/Y by default and allow overrides
-      state.pointer.set((event.offsetX / state.size.width) * 2 - 1, -(event.offsetY / state.size.height) * 2 + 1)
-      state.raycaster.setFromCamera(state.pointer, state.camera)
-    }, [])
-
-    React.useImperativeHandle(forwardRef, () => ({ scene: vScene, fbo, camera: camera.current }), [fbo])
-
-    return (
-      <>
-        {createPortal(
-          <Container renderPriority={renderPriority} frames={frames} camera={camera}>
-            {children}
-            {/* Without an element that receives pointer events state.pointer will always be 0/0 */}
-            <group onPointerOver={() => null} />
-          </Container>,
-          vScene,
-          { events: { compute: compute || uvCompute, priority: eventPriority } }
-        )}
-        <primitive object={fbo.texture} {...props} />
-        <cubeCamera
-          ref={camera}
-          args={[near, far, fbo]}
-          position={position}
-          rotation={rotation}
-          scale={scale}
-          quaternion={quaternion}
-          matrix={matrix}
-          matrixAutoUpdate={matrixAutoUpdate}
-        />
-      </>
-    )
-  }
-)
+    }
+  )
 
 // The container component has to be separate, it can not be inlined because "useFrame(state" when run inside createPortal will return
 // the portals own state which includes user-land overrides (custom cameras etc), but if it is executed in <RenderTexture>'s render function

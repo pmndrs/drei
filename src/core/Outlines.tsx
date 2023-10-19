@@ -3,9 +3,16 @@ import * as React from 'react'
 import { shaderMaterial } from './shaderMaterial'
 import { extend, applyProps, ReactThreeFiber, useThree } from '@react-three/fiber'
 import { toCreasedNormals } from 'three-stdlib'
+import { version } from '../helpers/constants'
 
-const OutlinesMaterial = shaderMaterial(
-  { screenspace: false, color: new THREE.Color('black'), opacity: 1, thickness: 0.05, size: new THREE.Vector2() },
+const OutlinesMaterial = /* @__PURE__ */ shaderMaterial(
+  {
+    screenspace: false,
+    color: /* @__PURE__ */ new THREE.Color('black'),
+    opacity: 1,
+    thickness: 0.05,
+    size: /* @__PURE__ */ new THREE.Vector2(),
+  },
   `#include <common>
    #include <morphtarget_pars_vertex>
    #include <skinning_pars_vertex>
@@ -46,7 +53,7 @@ const OutlinesMaterial = shaderMaterial(
    void main(){
      gl_FragColor = vec4(color, opacity);
      #include <tonemapping_fragment>
-     #include <${parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
+     #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
    }`
 )
 

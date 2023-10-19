@@ -1,9 +1,9 @@
 import { Raycaster, Matrix4, Ray, Sphere, Vector3, Intersection } from 'three'
 
-const _inverseMatrix = new Matrix4()
-const _ray = new Ray()
-const _sphere = new Sphere()
-const _vA = new Vector3()
+const _inverseMatrix = /* @__PURE__ */ new Matrix4()
+const _ray = /* @__PURE__ */ new Ray()
+const _sphere = /* @__PURE__ */ new Sphere()
+const _vA = /* @__PURE__ */ new Vector3()
 
 export function meshBounds(raycaster: Raycaster, intersects: Intersection[]) {
   const geometry = this.geometry

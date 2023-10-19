@@ -23,7 +23,7 @@ type Props = Omit<JSX.IntrinsicElements['orthographicCamera'], 'children'> & {
   envMap?: THREE.Texture
 }
 
-export const OrthographicCamera: ForwardRefComponent<Props, OrthographicCameraImpl> = React.forwardRef(
+export const OrthographicCamera: ForwardRefComponent<Props, OrthographicCameraImpl> = /* @__PURE__ */ React.forwardRef(
   ({ envMap, resolution = 256, frames = Infinity, children, makeDefault, ...props }: Props, ref) => {
     const set = useThree(({ set }) => set)
     const camera = useThree(({ camera }) => camera)

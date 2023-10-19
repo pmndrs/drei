@@ -160,7 +160,8 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#view">View</a></li>
           <li><a href="#rendertexture">RenderTexture</a></li>
           <li><a href="#rendercubetexture">RenderCubeTexture</a></li>
-          <li><a href="#mask">Mask</a></li>
+          <li><a href="#fisheye">Fisheye</a></li>
+          <li><a href="#mask">Mask</a></li>          
           <li><a href="#meshportalmaterial">MeshPortalMaterial</a></li>
         </ul>
         <li><a href="#modifiers">Modifiers</a></li>
@@ -3586,10 +3587,6 @@ type Props = JSX.IntrinsicElements['texture'] & {
 
 #### RenderCubeTexture
 
-<p>
-  <a href="https://codesandbox.io/s/7qytdw"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/7qytdw/screenshot.png" alt="Demo"/></a>  
-</p>
-
 This component allows you to render a live scene into a cubetexture which you can then apply to a material, for instance as an environment map (via the envMap property). The contents of it run inside a portal and are separate from the rest of the canvas, therefore you can have events in there, environment maps, etc.
 
 ```tsx
@@ -3607,7 +3604,7 @@ export type RenderCubeTextureProps = Omit<JSX.IntrinsicElements['texture'], 'rot
   /** Optional frame count, defaults to Infinity. If you set it to 1, it would only render a single frame, etc */
   frames?: number
   /** Optional event compute, defaults to undefined */
-  compute?: (event: any, state: any, previous: any) => false | undefined
+  compute?: ComputeFunction
   /** Flip cubemap, see https://github.com/mrdoob/three.js/blob/master/src/renderers/WebGLCubeRenderTarget.js */
   flip?: boolean
   /** Cubemap resolution (for each of the 6 takes), null === full screen resolution, default: 896 */
@@ -3639,6 +3636,37 @@ const api = useRef<RenderCubeTextureApi>(null!)
     <meshBasicMaterial>
       <RenderCubeTexture attach="envMap" flip>
         <mesh />
+```
+
+### Fisheye
+
+<p>
+  <a href="https://codesandbox.io/s/7qytdw"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/7qytdw/screenshot.png" alt="Demo"/></a>  
+</p>
+
+```tsx
+export type FisheyeProps = JSX.IntrinsicElements['mesh'] & {
+  /** Zoom factor, 0..1, 0 */
+  zoom?: number
+  /** Number of segments, 64 */
+  segments?: number
+  /** Cubemap resolution (for each of the 6 takes), null === full screen resolution, default: 896 */
+  resolution?: number
+  /** Children will be projected into the fisheye */
+  children: React.ReactNode
+  /** Optional render priority, defaults to 1 */
+  renderPriority?: number
+}
+```
+
+This component will take over system rendering. It portals its children into a cubemap which is then projected onto a sphere. The sphere is rendered out on the screen, filling it. You can lower the resolution to increase performance. Six renders per frame are necessary to construct a full fisheye view, and since each facet of the cubemap only takes a portion of the screen full resolution is not necessary. You can also reduce the amount of segments (resulting in edgier rounds).
+
+```jsx
+<Canvas camera={{ position: [0, 0, 5] }}>
+  <Fisheye>
+    <YourScene />
+  </Fisheye>
+  <OrbitControls />
 ```
 
 #### Mask

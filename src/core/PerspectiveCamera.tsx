@@ -23,7 +23,7 @@ type Props = Omit<JSX.IntrinsicElements['perspectiveCamera'], 'children'> & {
   envMap?: THREE.Texture
 }
 
-export const PerspectiveCamera: ForwardRefComponent<Props, PerspectiveCameraImpl> = React.forwardRef(
+export const PerspectiveCamera: ForwardRefComponent<Props, PerspectiveCameraImpl> = /* @__PURE__ */ React.forwardRef(
   ({ envMap, resolution = 256, frames = Infinity, makeDefault, children, ...props }: Props, ref) => {
     const set = useThree(({ set }) => set)
     const camera = useThree(({ camera }) => camera)

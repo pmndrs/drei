@@ -33,9 +33,9 @@ type MotionState = {
   /** The combined curve */
   path: THREE.CurvePath<THREE.Vector3>
   /** The focus object */
-  focus: React.MutableRefObject<THREE.Object3D<THREE.Event>> | [x: number, y: number, z: number] | undefined
+  focus: React.MutableRefObject<THREE.Object3D> | [x: number, y: number, z: number] | undefined
   /** The target object that is moved along the curve */
-  object: React.MutableRefObject<THREE.Object3D<THREE.Event>>
+  object: React.MutableRefObject<THREE.Object3D>
   /** The 0-1 normalised and damped current goal position along curve */
   offset: number
   /** The current point on the curve */

@@ -27,6 +27,7 @@
   "main": "index.cjs.js",
   "module": "index.js",
   "types": "index.d.ts",
+  "react-native": "native/index.cjs.js",
   "sideEffects": false,
   "commitlint": {
     "extends": [

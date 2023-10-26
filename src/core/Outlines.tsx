@@ -94,32 +94,42 @@ export function Outlines({
   const { gl } = useThree()
   const contextSize = gl.getDrawingBufferSize(new THREE.Vector2())
   React.useMemo(() => extend({ OutlinesMaterial }), [])
+
+  const oldAngle = React.useRef(0)
+  const oldGeometry = React.useRef<THREE.BufferGeometry>(null!)
   React.useLayoutEffect(() => {
     const group = ref.current
     const parent = group.parent as THREE.Mesh & THREE.SkinnedMesh & THREE.InstancedMesh
     if (parent && parent.geometry) {
-      let mesh
-      if (parent.skeleton) {
-        mesh = new THREE.SkinnedMesh()
-        mesh.material = material
-        mesh.bind(parent.skeleton, parent.bindMatrix)
-        group.add(mesh)
-      } else if (parent.isInstancedMesh) {
-        mesh = new THREE.InstancedMesh(parent.geometry, material, parent.count)
-        mesh.instanceMatrix = parent.instanceMatrix
-        group.add(mesh)
-      } else {
-        mesh = new THREE.Mesh()
-        mesh.material = material
-        group.add(mesh)
-      }
-      mesh.geometry = angle ? toCreasedNormals(parent.geometry, angle) : parent.geometry
-      return () => {
-        if (angle) mesh.geometry.dispose()
-        group.remove(mesh)
+      if (oldAngle.current !== angle || oldGeometry.current !== parent.geometry) {
+        oldAngle.current = angle
+        oldGeometry.current = parent.geometry
+
+        // Remove old mesh
+        let mesh = group.children[0] as any
+        if (mesh) {
+          if (angle) mesh.geometry.dispose()
+          group.remove(mesh)
+        }
+
+        if (parent.skeleton) {
+          mesh = new THREE.SkinnedMesh()
+          mesh.material = material
+          mesh.bind(parent.skeleton, parent.bindMatrix)
+          group.add(mesh)
+        } else if (parent.isInstancedMesh) {
+          mesh = new THREE.InstancedMesh(parent.geometry, material, parent.count)
+          mesh.instanceMatrix = parent.instanceMatrix
+          group.add(mesh)
+        } else {
+          mesh = new THREE.Mesh()
+          mesh.material = material
+          group.add(mesh)
+        }
+        mesh.geometry = angle ? toCreasedNormals(parent.geometry, angle) : parent.geometry
       }
     }
-  }, [angle, (ref.current as any)?.parent?.geometry])
+  })
 
   React.useLayoutEffect(() => {
     const group = ref.current
@@ -138,19 +148,19 @@ export function Outlines({
         polygonOffsetFactor,
       })
     }
-  }, [
-    angle,
-    transparent,
-    thickness,
-    color,
-    opacity,
-    screenspace,
-    toneMapped,
-    polygonOffset,
-    polygonOffsetFactor,
-    contextSize,
-    renderOrder,
-  ])
+  })
+
+  React.useEffect(() => {
+    return () => {
+      // Dispose everything on unmount
+      const group = ref.current
+      let mesh = group.children[0] as THREE.Mesh<THREE.BufferGeometry, THREE.Material>
+      if (mesh) {
+        if (angle) mesh.geometry.dispose()
+        group.remove(mesh)
+      }
+    }
+  }, [])
 
   return <group ref={ref} {...props} />
 }

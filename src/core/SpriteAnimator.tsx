@@ -222,7 +222,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
       }
       return sprites
     } else if (frameName) {
-      let spritesArr = []
+      const spritesArr: any[] = []
       for (const key in data.frames) {
         spritesArr.push(data.frames[key])
       }

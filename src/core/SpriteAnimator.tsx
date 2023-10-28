@@ -17,6 +17,7 @@ export type SpriteAnimatorProps = {
   onEnd?: Function
   onLoopEnd?: Function
   onFrame?: Function
+  play?: boolean
   pause?: boolean
   flipX?: boolean
   position?: Array<number>
@@ -41,6 +42,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
     onEnd,
     onLoopEnd,
     onFrame,
+    play,
     pause,
     flipX,
     alphaTest,
@@ -115,6 +117,13 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
   React.useLayoutEffect(() => {
     modifySpritePosition()
   }, [spriteTexture, flipX])
+
+  React.useEffect(() => {
+    if (autoPlay === false) {
+      if (play) {
+      }
+    }
+  }, [pause])
 
   React.useEffect(() => {
     if (autoPlay) {
@@ -342,7 +351,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
       return
     }
 
-    if (!hasEnded.current && autoPlay) {
+    if (!hasEnded.current && (autoPlay || play)) {
       runAnimation()
       onFrame && onFrame({ currentFrameName: currentFrameName.current, currentFrame: currentFrame.current })
     }

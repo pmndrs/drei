@@ -23,6 +23,7 @@ export type SpriteAnimatorProps = {
   position?: Array<number>
   alphaTest?: number
   asSprite?: boolean
+  resetOnEnd?: boolean
 } & JSX.IntrinsicElements['group']
 
 export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
@@ -47,6 +48,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
     alphaTest,
     children,
     asSprite,
+    resetOnEnd,
     ...props
   },
   fref
@@ -66,7 +68,8 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
   const totalFrames = React.useRef<number>(0)
   const [aspect, setAspect] = React.useState<Vector3 | undefined>([1, 1, 1])
   const flipOffset = flipX ? -1 : 1
-  const [displayAsSprite,setDisplayAsSprite] = React.useState(asSprite ?? true)
+  const [displayAsSprite, setDisplayAsSprite] = React.useState(asSprite ?? true)
+  const pauseRef = React.useRef(pause)
 
   function loadJsonAndTextureAndExecuteCallback(
     jsonUrl: string,
@@ -123,6 +126,12 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
   }, [pause])
 
   React.useEffect(() => {
+    if (autoPlay) {
+      pauseRef.current = false
+    }
+  }, [autoPlay])
+
+  React.useEffect(() => {
     if (currentFrameName.current !== frameName && frameName) {
       currentFrame.current = 0
       currentFrameName.current = frameName
@@ -152,8 +161,8 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
           meta: {
             version: '1.0',
             size: { w: width, h: height },
-            scale: '1',
-          },
+            scale: '1'
+          }
         }
 
         if (parseInt(frameWidth.toString(), 10) === frameWidth) {
@@ -164,7 +173,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
               rotated: false,
               trimmed: false,
               spriteSourceSize: { x: 0, y: 0, w: frameWidth, h: frameHeight },
-              sourceSize: { w: frameWidth, h: height },
+              sourceSize: { w: frameWidth, h: height }
             })
           }
         }
@@ -215,14 +224,20 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
               w: width,
               h: height,
               frame: frameData,
-              sourceSize: { w: sourceWidth, h: sourceHeight },
+              sourceSize: { w: sourceWidth, h: sourceHeight }
             })
           }
         }
       }
-    }
+      return sprites
+    } else if (frameName) {
+      const spritesArr: any[] = []
+      for (const key in data.frames) {
+        spritesArr.push(data.frames[key])
+      }
 
-    return sprites
+      return spritesArr
+    }
   }
 
   // modify the sprite material after json is parsed and state updated
@@ -230,7 +245,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
     if (!spriteData.current) return
     const {
       meta: { size: metaInfo },
-      frames,
+      frames
     } = spriteData.current
 
     const { w: frameW, h: frameH } = Array.isArray(frames)
@@ -262,7 +277,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
     const diff = now - timerOffset.current
     const {
       meta: { size: metaInfo },
-      frames,
+      frames
     } = spriteData.current
     const { w: frameW, h: frameH } = getFirstItem(frames).sourceSize
     const spriteFrames = Array.isArray(frames) ? frames : frameName ? frames[frameName] : []
@@ -276,40 +291,54 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
       if (loop) {
         onLoopEnd?.({
           currentFrameName: frameName,
-          currentFrame: currentFrame.current,
+          currentFrame: currentFrame.current
         })
       } else {
         onEnd?.({
           currentFrameName: frameName,
-          currentFrame: currentFrame.current,
+          currentFrame: currentFrame.current
         })
-        hasEnded.current = true
+        hasEnded.current = resetOnEnd ? false : true
+        if (resetOnEnd) {
+          pauseRef.current = true
+          //calculateFinalPosition(frameW, frameH, metaInfo, spriteFrames)
+        }
       }
+
       if (!loop) return
     }
 
     if (diff <= fpsInterval) return
     timerOffset.current = now - (diff % fpsInterval)
 
+    calculateFinalPosition(frameW, frameH, metaInfo, spriteFrames)
+
+    currentFrame.current += 1
+  }
+
+  const calculateFinalPosition = (
+    frameW: number,
+    frameH: number,
+    metaInfo: { w: number; h: number },
+    spriteFrames: { frame: { x: any; y: any }; sourceSize: { w: any; h: any } }[]
+  ) => {
+    let finalValX = 0
+    let finalValY = 0
     calculateAspectRatio(frameW, frameH)
     const framesH = (metaInfo.w - 1) / frameW
     const framesV = (metaInfo.h - 1) / frameH
     const {
       frame: { x: frameX, y: frameY },
-      sourceSize: { w: originalSizeX, h: originalSizeY },
+      sourceSize: { w: originalSizeX, h: originalSizeY }
     } = spriteFrames[currentFrame.current]
     const frameOffsetX = 1 / framesH
     const frameOffsetY = 1 / framesV
     finalValX =
-      flipOffset > 0
-        ? frameOffsetX * (frameX / originalSizeX)
-        : frameOffsetX * (frameX / originalSizeX) - matRef.current.map.repeat.x
+      flipOffset > 0 ? frameOffsetX * (frameX / originalSizeX) : frameOffsetX * (frameX / originalSizeX) - matRef.current.map.repeat.x
     finalValY = Math.abs(1 - frameOffsetY) - frameOffsetY * (frameY / originalSizeY)
 
     matRef.current.map.offset.x = finalValX
     matRef.current.map.offset.y = finalValY
-
-    currentFrame.current += 1
   }
 
   // *** Warning! It runs on every frame! ***
@@ -318,7 +347,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
       return
     }
 
-    if (pause) {
+    if (pauseRef.current) {
       return
     }
 
@@ -343,7 +372,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = (
   return (
     <group {...props}>
       <React.Suspense fallback={null}>
-      {displayAsSprite && (
+        {displayAsSprite && (
           <sprite ref={spriteRef} scale={aspect}>
             <spriteMaterial toneMapped={false} ref={matRef} map={spriteTexture} transparent={true} alphaTest={alphaTest ?? 0.0} />
           </sprite>

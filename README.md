@@ -2467,8 +2467,8 @@ type Props = {
   onLoopEnd?: Function
   /** Event callback when each frame changes */
   onFrame?: Function
-  /** Control when the animation runs */
-  play?: boolean
+  /** @deprecated Control when the animation runs*/
+  play?: boolean 
   /** Control when the animation pauses */
   pause?: boolean
   /** Whether or not the Sprite should flip sides on the x-axis */
@@ -2477,6 +2477,8 @@ type Props = {
   alphaTest?: number
   /** Displays the texture on a SpriteGeometry always facing the camera, if set to false, it renders on a PlaneGeometry */
   asSprite?: boolean
+  /** Allows the animation to be paused after it ended so it can be restarted on demand via auto */
+  resetOnEnd?: boolean
 }
 ```
 

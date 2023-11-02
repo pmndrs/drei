@@ -117,8 +117,8 @@ export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
               `varying float vOpacity;
               ` +
               shader.fragmentShader.replace(
-                '#include <opaque_fragment>',
-                `#include <opaque_fragment>
+                '#include <output_fragment>',
+                `#include <output_fragment>
                  gl_FragColor = vec4(outgoingLight, diffuseColor.a * vOpacity);
                 `
               )

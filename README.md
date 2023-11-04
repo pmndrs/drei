@@ -2369,6 +2369,16 @@ Enable shadows using the `castShadow` and `recieveShadow` prop.
 
 > Note: Html 'blending' mode only correctly occludes rectangular HTML elements by default. Use the `geometry` prop to swap the backing geometry to a custom one if your Html has a different shape.
 
+If transform mode is enabled, the dimensions of the rendered html will depend on the position relative to the camera, the camera fov and the distanceFactor. For example, an Html component placed at (0,0,0) and with a distanceFactor of 10, rendered inside a scene with a camera positioned at (0,0,2.45) and a FOV of 75, will have the same dimensions as a "plain" html element like in [this example](https://codesandbox.io/s/drei-html-magic-number-6mzt6m). 
+
+Another caveat of transform mode is that on some devices and browsers, the rendered html may appear blurry, as discussed in [#859](https://github.com/pmndrs/drei/issues/859). The issue can be at least mitigated by scaling down the Html parent and scaling up the html children:
+
+```jsx
+<Html transform scale={0.5}>
+  <div style={{ transform: "scale(2)" }}>Some text</div>
+</Html>
+```
+
 #### CycleRaycast
 
 ![](https://img.shields.io/badge/-Dom only-red)

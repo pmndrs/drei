@@ -15,6 +15,7 @@ import {
 import { MaterialNode, extend, applyProps, useFrame, ReactThreeFiber } from '@react-three/fiber'
 import { useTexture } from './useTexture'
 import { v4 } from 'uuid'
+import { version } from '../helpers/constants'
 
 declare global {
   namespace JSX {
@@ -95,6 +96,8 @@ const cpos = /* @__PURE__ */ new Vector3()
 const cquat = /* @__PURE__ */ new Quaternion()
 const scale = /* @__PURE__ */ new Vector3()
 
+const opaque_fragment = version >= 154 ? 'opaque_fragment' : 'output_fragment'
+
 const context = /* @__PURE__ */ React.createContext<React.MutableRefObject<CloudState[]>>(null!)
 export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
   ({ children, material = MeshLambertMaterial, texture = CLOUD_URL, range, limit = 200, ...props }, fref) => {
@@ -117,8 +120,8 @@ export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
               `varying float vOpacity;
               ` +
               shader.fragmentShader.replace(
-                '#include <output_fragment>',
-                `#include <output_fragment>
+                `#include <${opaque_fragment}>`,
+                `#include <${opaque_fragment}>
                  gl_FragColor = vec4(outgoingLight, diffuseColor.a * vOpacity);
                 `
               )

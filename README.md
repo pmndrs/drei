@@ -1769,10 +1769,12 @@ The decal box has to intersect the surface, otherwise it will not be visible. if
     position={[0, 0, 0]} // Position of the decal
     rotation={[0, 0, 0]} // Rotation of the decal (can be a vector or a degree in radians)
     scale={1} // Scale of the decal
-    polygonOffset
-    polygonOffsetFactor={-1} // The mesh should take precedence over the original
   >
-    <meshBasicMaterial map={texture} />
+    <meshBasicMaterial 
+      map={texture} 
+      polygonOffset
+      polygonOffsetFactor={-1} // The material should take precedence over the original
+    />
   </Decal>
 </mesh>
 ```

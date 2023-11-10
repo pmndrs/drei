@@ -2339,21 +2339,6 @@ Html can hide behind geometry as if it was part of the 3D scene using this mode.
 <Html occlude="blending" />
 ```
 
-You can also give HTML material properties using the `material` prop.
-
-```jsx
-<Html
-  occlude
-  material={
-    <meshPhysicalMaterial
-      side={DoubleSide} // Required
-      opacity={0.1} // Degree of influence of lighting on the HTML
-      ... // Any other material properties
-    />
-  }
-/>
-```
-
 Enable shadows using the `castShadow` and `recieveShadow` prop.
 
 > Note: Shadows only work with a custom material. Shadows will not work with `meshBasicMaterial` and `shaderMaterial` by default.
@@ -2368,6 +2353,31 @@ Enable shadows using the `castShadow` and `recieveShadow` prop.
 ```
 
 > Note: Html 'blending' mode only correctly occludes rectangular HTML elements by default. Use the `geometry` prop to swap the backing geometry to a custom one if your Html has a different shape.
+
+When wrapped inside `ScrollControls`, it will scroll with the canvas. To prevent this, pass `{current: gl.domElement.parentNode}` as a `portal` property (obtained from the useThree hook).
+
+```jsx
+const { gl } = useThree()
+
+<Html
+  portal={{current: gl.domElement.parentNode}}
+ />
+```
+
+You can also give HTML material properties using the `material` prop.
+
+```jsx
+<Html
+  occlude
+  material={
+    <meshPhysicalMaterial
+      side={DoubleSide} // Required
+      opacity={0.1} // Degree of influence of lighting on the HTML
+      ... // Any other material properties
+    />
+  }
+/>
+```
 
 #### CycleRaycast
 

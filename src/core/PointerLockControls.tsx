@@ -73,8 +73,8 @@ export const PointerLockControls: ForwardRefComponent<PointerLockControlsProps, 
 
         return () => {
           controls.removeEventListener('change', callback)
-          if (onLock) controls.addEventListener('lock', onLock)
-          if (onUnlock) controls.addEventListener('unlock', onUnlock)
+          if (onLock) controls.removeEventListener('lock', onLock)
+          if (onUnlock) controls.removeEventListener('unlock', onUnlock)
           elements.forEach((element) => (element ? element.removeEventListener('click', handler) : undefined))
         }
       }, [onChange, onLock, onUnlock, selector, controls, invalidate])

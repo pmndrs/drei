@@ -2,10 +2,10 @@ import * as THREE from 'three'
 import * as React from 'react'
 import mergeRefs from 'react-merge-refs'
 import { extend, useFrame, ReactThreeFiber } from '@react-three/fiber'
-import { Line2, LineSegmentsGeometry, LineMaterial } from 'three-stdlib'
+import { Line2, LineSegmentsGeometry, LineMaterial, LineMaterialParameters } from 'three-stdlib'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
-type SegmentsProps = {
+type SegmentsProps = LineMaterialParameters & {
   limit?: number
   lineWidth?: number
   children: React.ReactNode

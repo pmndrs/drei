@@ -1875,7 +1875,7 @@
     "@types/mdx" "^2.0.0"
     "@types/react" ">=16"
 
-"@mediapipe/tasks-vision@^0.10.8":
+"@mediapipe/tasks-vision@0.10.8":
   version "0.10.8"
   resolved "https://registry.yarnpkg.com/@mediapipe/tasks-vision/-/tasks-vision-0.10.8.tgz#a78e137018a19933b7a1d0e887d553d4ab833d10"
   integrity sha512-Rp7ll8BHrKB3wXaRFKhrltwZl1CiXGdibPxuWXvqGnKTnv8fqa/nvftYNuSbf+pbJWKYCXdBtYTITdAUTGGh0Q==

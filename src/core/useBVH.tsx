@@ -103,7 +103,7 @@ export const Bvh: ForwardRefComponent<BvhProps, Group> = /* @__PURE__ */ React.f
           })
         }
       }
-    })
+    }, [])
 
     return (
       <group ref={ref} {...props}>

@@ -3363,6 +3363,14 @@ export interface BVHOptions {
   maxDepth?: number
   /** The number of triangles to aim for in a leaf node, default: 10 */
   maxLeafTris?: number
+  /** If false then an index buffer is created if it does not exist and is rearranged */
+  /** to hold the bvh structure. If false then a separate buffer is created to store the */
+  /** structure and the index buffer (or lack thereof) is retained. This can be used */
+  /** when the existing index layout is important or groups are being used so a */
+  /** single BVH hierarchy can be created to improve performance. */
+  /** default: false */
+  /** Note: This setting is experimental */
+  indirect?: boolean
 }
 
 export type BvhProps = BVHOptions &

@@ -1769,10 +1769,12 @@ The decal box has to intersect the surface, otherwise it will not be visible. if
     position={[0, 0, 0]} // Position of the decal
     rotation={[0, 0, 0]} // Rotation of the decal (can be a vector or a degree in radians)
     scale={1} // Scale of the decal
-    polygonOffset
-    polygonOffsetFactor={-1} // The mesh should take precedence over the original
   >
-    <meshBasicMaterial map={texture} />
+    <meshBasicMaterial 
+      map={texture} 
+      polygonOffset
+      polygonOffsetFactor={-1} // The material should take precedence over the original
+    />
   </Decal>
 </mesh>
 ```
@@ -2468,7 +2470,7 @@ type Props = {
   /** Event callback when each frame changes */
   onFrame?: Function
   /** @deprecated Control when the animation runs*/
-  play?: boolean 
+  play?: boolean
   /** Control when the animation pauses */
   pause?: boolean
   /** Whether or not the Sprite should flip sides on the x-axis */
@@ -3234,7 +3236,12 @@ A wrapper around [THREE.LineSegments](https://threejs.org/docs/#api/en/objects/L
 ##### Prop based:
 
 ```jsx
-<Segments limit={1000} lineWidth={1.0}>
+<Segments
+  limit={1000}
+  lineWidth={1.0}
+  // All THREE.LineMaterial props are valid
+  {...materialProps}
+>
   <Segment start={[0, 0, 0]} end={[0, 10, 0]} color="red" />
   <Segment start={[0, 0, 0]} end={[0, 10, 10]} color={[1, 0, 1]} />
 </Segments>

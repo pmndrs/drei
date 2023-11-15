@@ -1,5 +1,6 @@
 import * as React from 'react'
 import {
+  REVISION,
   DynamicDrawUsage,
   Color,
   Group,
@@ -105,6 +106,7 @@ export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
       return class extends (material as typeof Material) {
         constructor() {
           super()
+          const opaque_fragment = parseInt(REVISION.replace(/\D+/g, '')) >= 154 ? 'opaque_fragment' : 'output_fragment'
           this.onBeforeCompile = (shader) => {
             shader.vertexShader =
               `attribute float opacity;

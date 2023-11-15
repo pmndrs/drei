@@ -307,8 +307,8 @@ export const RandomizedLight: ForwardRefComponent<
     React.useImperativeHandle(forwardRef, () => api, [api])
     React.useLayoutEffect(() => {
       const group = gLights.current
-      if (parent) parent?.lights.set(group.uuid, api)
-      return () => void parent?.lights.delete(group.uuid)
+      if (parent) parent.lights?.set(group.uuid, api)
+      return () => void parent?.lights?.delete(group.uuid)
     }, [parent, api])
     return (
       <group ref={gLights} {...props}>

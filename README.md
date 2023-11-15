@@ -1769,10 +1769,12 @@ The decal box has to intersect the surface, otherwise it will not be visible. if
     position={[0, 0, 0]} // Position of the decal
     rotation={[0, 0, 0]} // Rotation of the decal (can be a vector or a degree in radians)
     scale={1} // Scale of the decal
-    polygonOffset
-    polygonOffsetFactor={-1} // The mesh should take precedence over the original
   >
-    <meshBasicMaterial map={texture} />
+    <meshBasicMaterial 
+      map={texture} 
+      polygonOffset
+      polygonOffsetFactor={-1} // The material should take precedence over the original
+    />
   </Decal>
 </mesh>
 ```
@@ -2369,6 +2371,16 @@ Enable shadows using the `castShadow` and `recieveShadow` prop.
 
 > Note: Html 'blending' mode only correctly occludes rectangular HTML elements by default. Use the `geometry` prop to swap the backing geometry to a custom one if your Html has a different shape.
 
+If transform mode is enabled, the dimensions of the rendered html will depend on the position relative to the camera, the camera fov and the distanceFactor. For example, an Html component placed at (0,0,0) and with a distanceFactor of 10, rendered inside a scene with a perspective camera positioned at (0,0,2.45) and a FOV of 75, will have the same dimensions as a "plain" html element like in [this example](https://codesandbox.io/s/drei-html-magic-number-6mzt6m). 
+
+A caveat of transform mode is that on some devices and browsers, the rendered html may appear blurry, as discussed in [#859](https://github.com/pmndrs/drei/issues/859). The issue can be at least mitigated by scaling down the Html parent and scaling up the html children:
+
+```jsx
+<Html transform scale={0.5}>
+  <div style={{ transform: "scale(2)" }}>Some text</div>
+</Html>
+```
+
 #### CycleRaycast
 
 ![](https://img.shields.io/badge/-Dom only-red)
@@ -2467,7 +2479,7 @@ type Props = {
   onLoopEnd?: Function
   /** Event callback when each frame changes */
   onFrame?: Function
-  /** Control when the animation runs */
+  /** @deprecated Control when the animation runs*/
   play?: boolean
   /** Control when the animation pauses */
   pause?: boolean
@@ -2477,6 +2489,8 @@ type Props = {
   alphaTest?: number
   /** Displays the texture on a SpriteGeometry always facing the camera, if set to false, it renders on a PlaneGeometry */
   asSprite?: boolean
+  /** Allows the animation to be paused after it ended so it can be restarted on demand via auto */
+  resetOnEnd?: boolean
 }
 ```
 
@@ -3232,7 +3246,12 @@ A wrapper around [THREE.LineSegments](https://threejs.org/docs/#api/en/objects/L
 ##### Prop based:
 
 ```jsx
-<Segments limit={1000} lineWidth={1.0}>
+<Segments
+  limit={1000}
+  lineWidth={1.0}
+  // All THREE.LineMaterial props are valid
+  {...materialProps}
+>
   <Segment start={[0, 0, 0]} end={[0, 10, 0]} color="red" />
   <Segment start={[0, 0, 0]} end={[0, 10, 10]} color={[1, 0, 1]} />
 </Segments>
@@ -3344,6 +3363,14 @@ export interface BVHOptions {
   maxDepth?: number
   /** The number of triangles to aim for in a leaf node, default: 10 */
   maxLeafTris?: number
+  /** If false then an index buffer is created if it does not exist and is rearranged */
+  /** to hold the bvh structure. If false then a separate buffer is created to store the */
+  /** structure and the index buffer (or lack thereof) is retained. This can be used */
+  /** when the existing index layout is important or groups are being used so a */
+  /** single BVH hierarchy can be created to improve performance. */
+  /** default: false */
+  /** Note: This setting is experimental */
+  indirect?: boolean
 }
 
 export type BvhProps = BVHOptions &

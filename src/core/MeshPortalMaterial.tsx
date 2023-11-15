@@ -185,7 +185,6 @@ export const MeshPortalMaterial = /* @__PURE__ */ React.forwardRef(
         blur={blur}
         blend={0}
         resolution={[size.width * viewport.dpr, size.height * viewport.dpr]}
-        toneMapped={false}
         attach="material"
         {...props}
       >
@@ -262,6 +261,7 @@ function ManagePortalScene({
             vec4 ta = texture2D(a, vUv);
             vec4 tb = texture2D(b, vUv);
             gl_FragColor = mix(tb, ta, blend);
+            #include <tonemapping_fragment>
             #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
           }`,
       })

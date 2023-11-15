@@ -1875,10 +1875,10 @@
     "@types/mdx" "^2.0.0"
     "@types/react" ">=16"
 
-"@mediapipe/tasks-vision@0.10.2":
-  version "0.10.2"
-  resolved "https://registry.yarnpkg.com/@mediapipe/tasks-vision/-/tasks-vision-0.10.2.tgz#eae193cf4a5c57baf2b235decde288b5152ee433"
-  integrity sha512-d8Q9uRK89ZRWmED2JLI9/blpJcfdbh0iEUuMo8TgkMzNfQBY1/GC0FEJWrairTwHkxIf6Oud1vFBP+aHicWqJA==
+"@mediapipe/tasks-vision@0.10.8":
+  version "0.10.8"
+  resolved "https://registry.yarnpkg.com/@mediapipe/tasks-vision/-/tasks-vision-0.10.8.tgz#a78e137018a19933b7a1d0e887d553d4ab833d10"
+  integrity sha512-Rp7ll8BHrKB3wXaRFKhrltwZl1CiXGdibPxuWXvqGnKTnv8fqa/nvftYNuSbf+pbJWKYCXdBtYTITdAUTGGh0Q==
 
 "@ndelangen/get-tarball@^3.0.7":
   version "3.0.9"
@@ -13042,10 +13042,10 @@ three-mesh-bvh@^0.6.7:
   resolved "https://registry.yarnpkg.com/three-mesh-bvh/-/three-mesh-bvh-0.6.7.tgz#6491876f5bf0c0d67be81a4402f2abdbb2266d76"
   integrity sha512-RYdjMsH+vZvjLwA+ehI4+ZqTaTehAz4iho2yfL5PdGsIHyxpB78g0iy4Emj8079m/9KBX02TzddkvPSKSruQjg==
 
-three-stdlib@^2.27.3:
-  version "2.27.3"
-  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-2.27.3.tgz#28964e121ecf50d4fcd19203d090f79c8afa9001"
-  integrity sha512-HA3LDEGnrbahOMGMk4HTfCClr/oKQnwvnvNR2gOMytvHg7nk8SIiABl/qgol2xDVp/Lf7MEbeq5ZjzjajuZxpw==
+three-stdlib@^2.28.0:
+  version "2.28.5"
+  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-2.28.5.tgz#8184f5bacc90c2eec6ed36a861224e18799226fd"
+  integrity sha512-JdLMhkpT+1ZWeQPyKQNW1zqUwISI2hsUljS6u3vB9lp5EvwsayaAzGnbVeR35895udOF+zxcTiQY3psk+qqlxg==
   dependencies:
     "@types/draco3d" "^1.4.0"
     "@types/offscreencanvas" "^2019.6.4"

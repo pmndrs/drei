@@ -226,6 +226,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#useenvironment">useEnvironment</a></li>
           <li><a href="#usematcaptexture">useMatcapTexture</a></li>
           <li><a href="#usenormaltexture">useNormalTexture</a></li>
+          <li><a href="#shadowalpha">ShadowAlpha</a></li>
         </ul>
       </ul>
     </td>
@@ -1770,8 +1771,8 @@ The decal box has to intersect the surface, otherwise it will not be visible. if
     rotation={[0, 0, 0]} // Rotation of the decal (can be a vector or a degree in radians)
     scale={1} // Scale of the decal
   >
-    <meshBasicMaterial 
-      map={texture} 
+    <meshBasicMaterial
+      map={texture}
       polygonOffset
       polygonOffsetFactor={-1} // The material should take precedence over the original
     />
@@ -2371,13 +2372,13 @@ Enable shadows using the `castShadow` and `recieveShadow` prop.
 
 > Note: Html 'blending' mode only correctly occludes rectangular HTML elements by default. Use the `geometry` prop to swap the backing geometry to a custom one if your Html has a different shape.
 
-If transform mode is enabled, the dimensions of the rendered html will depend on the position relative to the camera, the camera fov and the distanceFactor. For example, an Html component placed at (0,0,0) and with a distanceFactor of 10, rendered inside a scene with a perspective camera positioned at (0,0,2.45) and a FOV of 75, will have the same dimensions as a "plain" html element like in [this example](https://codesandbox.io/s/drei-html-magic-number-6mzt6m). 
+If transform mode is enabled, the dimensions of the rendered html will depend on the position relative to the camera, the camera fov and the distanceFactor. For example, an Html component placed at (0,0,0) and with a distanceFactor of 10, rendered inside a scene with a perspective camera positioned at (0,0,2.45) and a FOV of 75, will have the same dimensions as a "plain" html element like in [this example](https://codesandbox.io/s/drei-html-magic-number-6mzt6m).
 
 A caveat of transform mode is that on some devices and browsers, the rendered html may appear blurry, as discussed in [#859](https://github.com/pmndrs/drei/issues/859). The issue can be at least mitigated by scaling down the Html parent and scaling up the html children:
 
 ```jsx
 <Html transform scale={0.5}>
-  <div style={{ transform: "scale(2)" }}>Some text</div>
+  <div style={{ transform: 'scale(2)' }}>Some text</div>
 </Html>
 ```
 
@@ -4725,4 +4726,20 @@ return (
   <meshStandardMaterial normalMap={normalMap} />
   ...
 )
+```
+
+#### ShadowAlpha
+
+Makes an object's shadow respect its opacity and alphaMap.
+
+```jsx
+<mesh>
+  <geometry />
+  <material transparent opacity={0.5} />
+
+  <ShadowAlpha
+    opacity={undefined} // number. Override the opacity of the shadow.
+    alphaMap={undefined} // THREE.Texture. Override the alphaMap of the shadow
+  />
+</mesh>
 ```

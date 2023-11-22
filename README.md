@@ -4743,3 +4743,5 @@ Makes an object's shadow respect its opacity and alphaMap.
   />
 </mesh>
 ```
+
+> Note: This component uses Screendoor transparency using a dither pattern. This pattern is notacible when the camera gets close to the shadow.

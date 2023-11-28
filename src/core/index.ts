@@ -40,6 +40,7 @@ export * from './PointerLockControls'
 export * from './FirstPersonControls'
 export * from './CameraControls'
 export * from './FaceControls'
+export * from './MotionPathControls'
 
 // Gizmos
 export * from './GizmoHelper'
@@ -137,6 +138,8 @@ export * from './PerformanceMonitor'
 
 // Portals
 export * from './RenderTexture'
+export * from './RenderCubeTexture'
 export * from './Mask'
 export * from './Hud'
+export * from './Fisheye'
 export * from './MeshPortalMaterial'

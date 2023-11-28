@@ -11,7 +11,7 @@ type Data = {
 }
 let saveLastTotalLoaded = 0
 
-const useProgress = create<Data>((set) => {
+const useProgress = /* @__PURE__ */ create<Data>((set) => {
   DefaultLoadingManager.onStart = (item, loaded, total) => {
     set({
       active: true,

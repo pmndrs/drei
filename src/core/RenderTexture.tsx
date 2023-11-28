@@ -29,7 +29,7 @@ type Props = JSX.IntrinsicElements['texture'] & {
   children: React.ReactNode
 }
 
-export const RenderTexture: ForwardRefComponent<Props, THREE.Texture> = React.forwardRef(
+export const RenderTexture: ForwardRefComponent<Props, THREE.Texture> = /* @__PURE__ */ React.forwardRef(
   (
     {
       children,

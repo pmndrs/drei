@@ -20,7 +20,7 @@ export type PointerLockControlsProps = ReactThreeFiber.Object3DNode<
 }
 
 export const PointerLockControls: ForwardRefComponent<PointerLockControlsProps, PointerLockControlsImpl> =
-  React.forwardRef<PointerLockControlsImpl, PointerLockControlsProps>(
+  /* @__PURE__ */ React.forwardRef<PointerLockControlsImpl, PointerLockControlsProps>(
     ({ domElement, selector, onChange, onLock, onUnlock, enabled = true, makeDefault, ...props }, ref) => {
       const { camera, ...rest } = props
       const setEvents = useThree((state) => state.setEvents)
@@ -73,8 +73,8 @@ export const PointerLockControls: ForwardRefComponent<PointerLockControlsProps, 
 
         return () => {
           controls.removeEventListener('change', callback)
-          if (onLock) controls.addEventListener('lock', onLock)
-          if (onUnlock) controls.addEventListener('unlock', onUnlock)
+          if (onLock) controls.removeEventListener('lock', onLock)
+          if (onUnlock) controls.removeEventListener('unlock', onUnlock)
           elements.forEach((element) => (element ? element.removeEventListener('click', handler) : undefined))
         }
       }, [onChange, onLock, onUnlock, selector, controls, invalidate])

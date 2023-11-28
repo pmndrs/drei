@@ -13,7 +13,10 @@ export type FloatProps = JSX.IntrinsicElements['group'] & {
   floatingRange?: [number?, number?]
 }
 
-export const Float: ForwardRefComponent<FloatProps, THREE.Group> = React.forwardRef<THREE.Group, FloatProps>(
+export const Float: ForwardRefComponent<FloatProps, THREE.Group> = /* @__PURE__ */ React.forwardRef<
+  THREE.Group,
+  FloatProps
+>(
   (
     {
       children,

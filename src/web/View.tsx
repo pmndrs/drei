@@ -4,7 +4,7 @@ import { createPortal, useFrame, useThree } from '@react-three/fiber'
 
 const isOrthographicCamera = (def: any): def is THREE.OrthographicCamera =>
   def && (def as THREE.OrthographicCamera).isOrthographicCamera
-const col = new THREE.Color()
+const col = /* @__PURE__ */ new THREE.Color()
 
 /**
  * In `@react-three/fiber` after `v8.0.0` but prior to `v8.1.0`, `state.size` contained only dimension
@@ -180,7 +180,10 @@ export const View = ({ track, index = 1, frames = Infinity, children }: ViewProp
             <group onPointerOver={() => null} />
           </Container>,
           virtualScene,
-          { events: { compute, priority: index }, size: { width: rect.current?.width, height: rect.current?.height } }
+          {
+            events: { compute, priority: index },
+            size: { width: rect.current?.width, height: rect.current?.height } as any,
+          }
         )}
     </>
   )

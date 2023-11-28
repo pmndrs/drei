@@ -45,7 +45,7 @@ export type ScrollControlsState = {
   visible(from: number, distance: number, margin?: number): boolean
 }
 
-const context = React.createContext<ScrollControlsState>(null!)
+const context = /* @__PURE__ */ React.createContext<ScrollControlsState>(null!)
 
 export function useScroll() {
   return React.useContext(context)
@@ -210,7 +210,7 @@ export function ScrollControls({
   return <context.Provider value={state}>{children}</context.Provider>
 }
 
-const ScrollCanvas: ForwardRefComponent<{}, THREE.Group> = React.forwardRef(({ children }, ref) => {
+const ScrollCanvas: ForwardRefComponent<{}, THREE.Group> = /* @__PURE__ */ React.forwardRef(({ children }, ref) => {
   const group = React.useRef<THREE.Group>(null!)
   const state = useScroll()
   const { width, height } = useThree((state) => state.viewport)
@@ -256,7 +256,7 @@ type ScrollProps = {
   children?: React.ReactNode
 }
 
-export const Scroll: ForwardRefComponent<ScrollProps, THREE.Group & HTMLDivElement> = React.forwardRef(
+export const Scroll: ForwardRefComponent<ScrollProps, THREE.Group & HTMLDivElement> = /* @__PURE__ */ React.forwardRef(
   ({ html, ...props }: ScrollProps, ref) => {
     const El = html ? ScrollHtml : ScrollCanvas
     return <El ref={ref} {...props} />

@@ -15,7 +15,7 @@ import {
   useContext,
 } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { FaceLandmarkerResult } from '@mediapipe/tasks-vision'
+import type { FaceLandmarkerResult } from '@mediapipe/tasks-vision'
 import { easing } from 'maath'
 import { suspend, clear } from 'suspend-react'
 
@@ -91,9 +91,9 @@ export type FaceControlsApi = THREE.EventDispatcher & {
   pause: () => void
 }
 
-const FaceControlsContext = createContext({} as FaceControlsApi)
+const FaceControlsContext = /* @__PURE__ */ createContext({} as FaceControlsApi)
 
-export const FaceControls = forwardRef<FaceControlsApi, FaceControlsProps>(
+export const FaceControls = /* @__PURE__ */ forwardRef<FaceControlsApi, FaceControlsProps>(
   (
     {
       camera,
@@ -328,7 +328,7 @@ type WebcamProps = {
   autostart?: boolean
 }
 
-const Webcam = forwardRef<WebcamApi, WebcamProps>(({ videoTextureSrc, autostart = true }, fref) => {
+const Webcam = /* @__PURE__ */ forwardRef<WebcamApi, WebcamProps>(({ videoTextureSrc, autostart = true }, fref) => {
   const videoTextureApiRef = useRef<VideoTextureApi>(null)
 
   const faceControls = useFaceControls()
@@ -374,7 +374,7 @@ const Webcam = forwardRef<WebcamApi, WebcamProps>(({ videoTextureSrc, autostart 
 type VideoTextureApi = { texture: THREE.VideoTexture }
 type VideoTextureProps = { src: VideoTextureSrc; start: boolean }
 
-const VideoTexture = forwardRef<VideoTextureApi, VideoTextureProps>(({ src, start }, fref) => {
+const VideoTexture = /* @__PURE__ */ forwardRef<VideoTextureApi, VideoTextureProps>(({ src, start }, fref) => {
   const texture = useVideoTexture(src, { start })
   const video = texture.source.data
 

@@ -66,7 +66,7 @@ export function CycleRaycast({
 
     // Key events
     const tabEvent = (event: KeyboardEvent) => {
-      if (event.keyCode || event.which === keyCode) {
+      if ((event.keyCode || event.which) === keyCode) {
         if (preventDefault) event.preventDefault()
         if (hits.length > 1) refresh((current) => current + 1)
       }

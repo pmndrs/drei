@@ -57,9 +57,17 @@ export class SpotLightMaterial extends THREE.ShaderMaterial {
         #include <packing>
         #include <logdepthbuf_pars_fragment>
 
-        float readDepth(sampler2D depthSampler, vec2 coord) {
-          float fragCoordZ = texture2D(depthSampler, coord).x;
-          float viewZ = perspectiveDepthToViewZ(fragCoordZ, cameraNear, cameraFar);
+        float readDepth(sampler2D depthSampler, vec2 uv) {
+          float fragCoordZ = texture(depthSampler, uv).r;
+
+          // TODO: fix in packing.glsl
+          // https://github.com/mrdoob/three.js/issues/23072
+          #ifdef USE_LOGDEPTHBUF
+            float viewZ = -1.0 * (exp2((fragCoordZ + 1.0) / logDepthBufFC) - 1.0);
+          #else
+            float viewZ = perspectiveDepthToViewZ(fragCoordZ, cameraNear, cameraFar);
+          #endif
+
           return viewZ;
         }
 

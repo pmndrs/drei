@@ -89,14 +89,14 @@ export function Outlines({
   angle = Math.PI,
   ...props
 }: OutlinesProps) {
-  const ref = React.useRef<THREE.Group>(null!)
+  const ref = React.useRef<THREE.Group>()
   const [material] = React.useState(() => new OutlinesMaterial({ side: THREE.BackSide }))
   const { gl } = useThree()
   const contextSize = gl.getDrawingBufferSize(new THREE.Vector2())
   React.useMemo(() => extend({ OutlinesMaterial }), [])
 
   const oldAngle = React.useRef(0)
-  const oldGeometry = React.useRef<THREE.BufferGeometry>(null!)
+  const oldGeometry = React.useRef<THREE.BufferGeometry>()
   React.useLayoutEffect(() => {
     const group = ref.current
     if (!group) return
@@ -168,5 +168,5 @@ export function Outlines({
     }
   }, [])
 
-  return <group ref={ref} {...props} />
+  return <group ref={ref as React.Ref<THREE.Group>} {...props} />
 }

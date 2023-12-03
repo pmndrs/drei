@@ -89,16 +89,18 @@ export function Outlines({
   angle = Math.PI,
   ...props
 }: OutlinesProps) {
-  const ref = React.useRef<THREE.Group>(null!)
+  const ref = React.useRef<THREE.Group>()
   const [material] = React.useState(() => new OutlinesMaterial({ side: THREE.BackSide }))
   const { gl } = useThree()
   const contextSize = gl.getDrawingBufferSize(new THREE.Vector2())
   React.useMemo(() => extend({ OutlinesMaterial }), [])
 
   const oldAngle = React.useRef(0)
-  const oldGeometry = React.useRef<THREE.BufferGeometry>(null!)
+  const oldGeometry = React.useRef<THREE.BufferGeometry>()
   React.useLayoutEffect(() => {
     const group = ref.current
+    if (!group) return
+
     const parent = group.parent as THREE.Mesh & THREE.SkinnedMesh & THREE.InstancedMesh
     if (parent && parent.geometry) {
       if (oldAngle.current !== angle || oldGeometry.current !== parent.geometry) {
@@ -133,6 +135,8 @@ export function Outlines({
 
   React.useLayoutEffect(() => {
     const group = ref.current
+    if (!group) return
+
     const mesh = group.children[0] as THREE.Mesh<THREE.BufferGeometry, THREE.Material>
     if (mesh) {
       mesh.renderOrder = renderOrder
@@ -154,7 +158,9 @@ export function Outlines({
     return () => {
       // Dispose everything on unmount
       const group = ref.current
-      let mesh = group.children[0] as THREE.Mesh<THREE.BufferGeometry, THREE.Material>
+      if (!group) return
+
+      const mesh = group.children[0] as THREE.Mesh<THREE.BufferGeometry, THREE.Material>
       if (mesh) {
         if (angle) mesh.geometry.dispose()
         group.remove(mesh)
@@ -162,5 +168,5 @@ export function Outlines({
     }
   }, [])
 
-  return <group ref={ref} {...props} />
+  return <group ref={ref as React.Ref<THREE.Group>} {...props} />
 }

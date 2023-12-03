@@ -5,9 +5,9 @@ import { useLayoutEffect, useEffect } from 'react'
 export const IsObject = (url: any): url is Record<string, string> =>
   url === Object(url) && !Array.isArray(url) && typeof url !== 'function'
 
-export type MappedTextureType<T> = T extends any[]
+export type MappedTextureType<T extends string[] | string | Record<string, string>> = T extends any[]
   ? Texture[]
-  : T extends object
+  : T extends Record<string, string>
   ? { [key in keyof T]: Texture }
   : Texture
 

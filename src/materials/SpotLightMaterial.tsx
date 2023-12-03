@@ -24,6 +24,7 @@ export class SpotLightMaterial extends THREE.ShaderMaterial {
         uniform vec3 spotPosition;
         uniform float attenuation;
 
+        #include <common>
         #include <logdepthbuf_pars_vertex>
 
         void main() {

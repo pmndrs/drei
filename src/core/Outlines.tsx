@@ -99,6 +99,8 @@ export function Outlines({
   const oldGeometry = React.useRef<THREE.BufferGeometry>(null!)
   React.useLayoutEffect(() => {
     const group = ref.current
+    if (!group) return
+
     const parent = group.parent as THREE.Mesh & THREE.SkinnedMesh & THREE.InstancedMesh
     if (parent && parent.geometry) {
       if (oldAngle.current !== angle || oldGeometry.current !== parent.geometry) {
@@ -133,6 +135,8 @@ export function Outlines({
 
   React.useLayoutEffect(() => {
     const group = ref.current
+    if (!group) return
+
     const mesh = group.children[0] as THREE.Mesh<THREE.BufferGeometry, THREE.Material>
     if (mesh) {
       mesh.renderOrder = renderOrder
@@ -154,7 +158,9 @@ export function Outlines({
     return () => {
       // Dispose everything on unmount
       const group = ref.current
-      let mesh = group.children[0] as THREE.Mesh<THREE.BufferGeometry, THREE.Material>
+      if (!group) return
+
+      const mesh = group.children[0] as THREE.Mesh<THREE.BufferGeometry, THREE.Material>
       if (mesh) {
         if (angle) mesh.geometry.dispose()
         group.remove(mesh)

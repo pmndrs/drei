@@ -77,7 +77,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#outlines">Outlines</a></li>
           <li><a href="#trail">Trail</a></li>
           <li><a href="#sampler">Sampler</a></li>
-          <li><a href="#computedattribute">Computed Attribute</a></li>
+          <li><a href="#computedattribute">ComputedAttribute</a></li>
           <li><a href="#clone">Clone</a></li>
           <li><a href="#useanimations">useAnimations</a></li>
           <li><a href="#marchingcubes">MarchingCubes</a></li>
@@ -85,6 +85,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#svg">Svg</a></li>
           <li><a href="#gltf">Gltf</a></li>
           <li><a href="#asciirenderer">AsciiRenderer</a></li>
+          <li><a href="#splat">Splat</a></li>
         </ul>
         <li><a href="#shaders">Shaders</a></li>
         <ul>
@@ -1770,8 +1771,8 @@ The decal box has to intersect the surface, otherwise it will not be visible. if
     rotation={[0, 0, 0]} // Rotation of the decal (can be a vector or a degree in radians)
     scale={1} // Scale of the decal
   >
-    <meshBasicMaterial 
-      map={texture} 
+    <meshBasicMaterial
+      map={texture}
       polygonOffset
       polygonOffsetFactor={-1} // The material should take precedence over the original
     />
@@ -1847,6 +1848,33 @@ type AsciiRendererProps = {
 ```jsx
 <Canvas>
   <AsciiRenderer />
+```
+
+#### Splat
+
+<p>
+  <a href="https://codesandbox.io/s/qp4jmf"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/qp4jmf/screenshot.png" alt="Demo"/></a>
+</p>
+
+A declarative abstraction around [antimatter15/splat](https://github.com/antimatter15/splat). It supports re-use, multiple splats with correct depth sorting, splats can move and behave as a regular object3d's, supports alphahash & alphatest, and stream-loading.
+
+```tsx
+type SplatProps = {
+  /** Url towards a *.splat file, no support for *.ply */
+  src: string
+  /** Whether to use tone mapping, default: false */
+  toneMapped?: boolean
+  /** Alpha test value, , default: 0 */
+  alphaTest?: number
+  /** Whether to use alpha hashing, default: false */
+  alphaHash?: boolean
+  /** Chunk size for lazy loading, prevents chokings the worker, default: 25000 (25kb) */
+  chunkSize?: number
+} & JSX.IntrinsicElements['mesh']
+```
+
+```jsx
+<Splat src="https://huggingface.co/cakewalk/splat-data/resolve/main/nike.splat" />
 ```
 
 # Shaders
@@ -2371,13 +2399,13 @@ Enable shadows using the `castShadow` and `recieveShadow` prop.
 
 > Note: Html 'blending' mode only correctly occludes rectangular HTML elements by default. Use the `geometry` prop to swap the backing geometry to a custom one if your Html has a different shape.
 
-If transform mode is enabled, the dimensions of the rendered html will depend on the position relative to the camera, the camera fov and the distanceFactor. For example, an Html component placed at (0,0,0) and with a distanceFactor of 10, rendered inside a scene with a perspective camera positioned at (0,0,2.45) and a FOV of 75, will have the same dimensions as a "plain" html element like in [this example](https://codesandbox.io/s/drei-html-magic-number-6mzt6m). 
+If transform mode is enabled, the dimensions of the rendered html will depend on the position relative to the camera, the camera fov and the distanceFactor. For example, an Html component placed at (0,0,0) and with a distanceFactor of 10, rendered inside a scene with a perspective camera positioned at (0,0,2.45) and a FOV of 75, will have the same dimensions as a "plain" html element like in [this example](https://codesandbox.io/s/drei-html-magic-number-6mzt6m).
 
 A caveat of transform mode is that on some devices and browsers, the rendered html may appear blurry, as discussed in [#859](https://github.com/pmndrs/drei/issues/859). The issue can be at least mitigated by scaling down the Html parent and scaling up the html children:
 
 ```jsx
 <Html transform scale={0.5}>
-  <div style={{ transform: "scale(2)" }}>Some text</div>
+  <div style={{ transform: 'scale(2)' }}>Some text</div>
 </Html>
 ```
 

@@ -22,6 +22,7 @@ export * from './Decal'
 export * from './Svg'
 export * from './Gltf'
 export * from './AsciiRenderer'
+export * from './Splat'
 
 // Cameras
 export * from './OrthographicCamera'

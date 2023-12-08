@@ -4,6 +4,7 @@ import { ReactThreeFiber, extend, useFrame } from '@react-three/fiber'
 import mergeRefs from 'react-merge-refs'
 import Composer from 'react-composer'
 import { ForwardRefComponent } from '../helpers/ts-utils'
+import { setUpdateRange } from '../helpers/deprecated'
 
 declare global {
   namespace JSX {
@@ -129,18 +130,18 @@ export const Instances: ForwardRefComponent<InstancesProps, InstancedMesh> = /* 
     parentRef.current.instanceMatrix.needsUpdate = true
   })
 
+  let iterations = 0
   let count = 0
-  let updateRange = 0
   useFrame(() => {
-    if (frames === Infinity || count < frames) {
+    if (frames === Infinity || iterations < frames) {
       parentRef.current.updateMatrix()
       parentRef.current.updateMatrixWorld()
       parentMatrix.copy(parentRef.current.matrixWorld).invert()
 
-      updateRange = Math.min(limit, range !== undefined ? range : limit, instances.length)
-      parentRef.current.count = updateRange
-      parentRef.current.instanceMatrix.updateRange.count = updateRange * 16
-      parentRef.current.instanceColor.updateRange.count = updateRange * 3
+      count = Math.min(limit, range !== undefined ? range : limit, instances.length)
+      parentRef.current.count = count
+      setUpdateRange(parentRef.current.instanceMatrix, { offset: 0, count: count * 16 })
+      setUpdateRange(parentRef.current.instanceColor, { offset: 0, count: count * 3 })
 
       for (let i = 0; i < instances.length; i++) {
         const instance = instances[i].current
@@ -153,7 +154,7 @@ export const Instances: ForwardRefComponent<InstancesProps, InstancedMesh> = /* 
         instance.color.toArray(colors, i * 3)
         parentRef.current.instanceColor.needsUpdate = true
       }
-      count++
+      iterations++
     }
   })
 

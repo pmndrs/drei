@@ -1,15 +1,15 @@
 import * as React from 'react'
-import { PresetsType } from '../helpers/environment-assets'
+import { EnvironmentProps, Environment } from './Environment'
+import { ContactShadowsProps, ContactShadows } from './ContactShadows'
+import { CenterProps, Center } from './Center'
 import {
-  AccumulativeShadows,
   AccumulativeShadowsProps,
-  RandomizedLight,
   RandomizedLightProps,
+  AccumulativeShadows,
+  RandomizedLight,
 } from './AccumulativeShadows'
-import { Bounds, useBounds } from './Bounds'
-import { Center, CenterProps } from './Center'
-import { ContactShadows, ContactShadowsProps } from './ContactShadows'
-import { Environment, EnvironmentProps } from './Environment'
+import { useBounds, Bounds } from './Bounds'
+import { PresetsType } from '../helpers/environment-assets'
 
 const presets = {
   rembrandt: {

@@ -1,15 +1,15 @@
 import * as React from 'react'
-import { EnvironmentProps, Environment } from './Environment'
-import { ContactShadowsProps, ContactShadows } from './ContactShadows'
-import { CenterProps, Center } from './Center'
-import {
-  AccumulativeShadowsProps,
-  RandomizedLightProps,
-  AccumulativeShadows,
-  RandomizedLight,
-} from './AccumulativeShadows'
-import { useBounds, Bounds } from './Bounds'
 import { PresetsType } from '../helpers/environment-assets'
+import {
+  AccumulativeShadows,
+  AccumulativeShadowsProps,
+  RandomizedLight,
+  RandomizedLightProps,
+} from './AccumulativeShadows'
+import { Bounds, useBounds } from './Bounds'
+import { Center, CenterProps } from './Center'
+import { ContactShadows, ContactShadowsProps } from './ContactShadows'
+import { Environment, EnvironmentProps } from './Environment'
 
 const presets = {
   rembrandt: {
@@ -57,7 +57,7 @@ type StageProps = {
   /** Optionally wraps and thereby centers the models using <Bounds>, can also be a margin, default: true */
   adjustCamera?: boolean | number
   /** The default environment, default: "city" */
-  environment?: PresetsType | Partial<EnvironmentProps>
+  environment?: PresetsType | Partial<EnvironmentProps> | null
   /** The lighting intensity, default: 0.5 */
   intensity?: number
   /** To adjust centering, default: undefined */

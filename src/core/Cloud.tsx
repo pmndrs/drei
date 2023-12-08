@@ -16,6 +16,7 @@ import {
 import { MaterialNode, extend, applyProps, useFrame, ReactThreeFiber } from '@react-three/fiber'
 import { useTexture } from './useTexture'
 import { v4 } from 'uuid'
+import { setUpdateRange } from '../helpers/deprecated'
 
 declare global {
   namespace JSX {
@@ -175,11 +176,13 @@ export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
     })
 
     React.useLayoutEffect(() => {
-      const updateRange = Math.min(limit, range !== undefined ? range : limit, clouds.current.length)
-      instance.current.count = updateRange
-      instance.current.instanceMatrix.updateRange.count = updateRange * 16
-      if (instance.current.instanceColor) instance.current.instanceColor.updateRange.count = updateRange * 3
-      ;(instance.current.geometry.attributes.opacity as BufferAttribute).updateRange.count = updateRange
+      const count = Math.min(limit, range !== undefined ? range : limit, clouds.current.length)
+      instance.current.count = count
+      setUpdateRange(instance.current.instanceMatrix, { offset: 0, count: count * 16 })
+      if (instance.current.instanceColor) {
+        setUpdateRange(instance.current.instanceColor, { offset: 0, count: count * 3 })
+      }
+      setUpdateRange(instance.current.geometry.attributes.opacity as BufferAttribute, { offset: 0, count: count })
     })
 
     let imageBounds = [cloudTexture!.image.width ?? 1, cloudTexture!.image.height ?? 1]

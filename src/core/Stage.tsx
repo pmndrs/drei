@@ -57,7 +57,7 @@ type StageProps = {
   /** Optionally wraps and thereby centers the models using <Bounds>, can also be a margin, default: true */
   adjustCamera?: boolean | number
   /** The default environment, default: "city" */
-  environment?: PresetsType | Partial<EnvironmentProps>
+  environment?: PresetsType | Partial<EnvironmentProps> | null
   /** The lighting intensity, default: 0.5 */
   intensity?: number
   /** To adjust centering, default: undefined */

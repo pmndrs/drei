@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { addEffect, addAfterEffect, useThree } from '@react-three/fiber'
+import { addAfterEffect, useThree } from '@react-three/fiber'
 import Stats from 'stats-gl'
 
 type Props = Partial<Stats> & {
@@ -9,26 +9,24 @@ type Props = Partial<Stats> & {
 }
 
 export function StatsGl({ className, parent, ...props }: Props) {
-  const gl = useThree((state) => state.gl)
+  const gl: any = useThree((state) => state.gl)
 
   const stats = React.useMemo(() => {
     const stats = new Stats({
       ...props,
     })
-    stats.init(gl.domElement)
+    stats.init(gl)
     return stats
   }, [gl])
 
   React.useEffect(() => {
     if (stats) {
       const node = (parent && parent.current) || document.body
-      node?.appendChild(stats.container)
+      node?.appendChild(stats.dom)
       if (className) stats.container.classList.add(...className.split(' ').filter((cls) => cls))
-      const begin = addEffect(() => stats.begin())
-      const end = addAfterEffect(() => stats.end())
+      const end = addAfterEffect(() => stats.update())
       return () => {
-        node?.removeChild(stats.container)
-        begin()
+        node?.removeChild(stats.dom)
         end()
       }
     }

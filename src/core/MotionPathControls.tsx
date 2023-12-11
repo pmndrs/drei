@@ -76,7 +76,7 @@ function Debug({ points = 50 }: { points?: number }) {
   )
 }
 
-export const MotionPathControls = /* @__PURE__ */ React.forwardRef<THREE.Group>(
+export const MotionPathControls = /* @__PURE__ */ React.forwardRef<THREE.Group, MotionPathProps>(
   (
     {
       children,

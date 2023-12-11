@@ -227,6 +227,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#useenvironment">useEnvironment</a></li>
           <li><a href="#usematcaptexture">useMatcapTexture</a></li>
           <li><a href="#usenormaltexture">useNormalTexture</a></li>
+          <li><a href="#shadowalpha">ShadowAlpha</a></li>
         </ul>
       </ul>
     </td>
@@ -4767,3 +4768,21 @@ return (
   ...
 )
 ```
+
+#### ShadowAlpha
+
+Makes an object's shadow respect its opacity and alphaMap.
+
+```jsx
+<mesh>
+  <geometry />
+  <material transparent opacity={0.5} />
+
+  <ShadowAlpha
+    opacity={undefined} // number. Override the opacity of the shadow.
+    alphaMap={undefined} // THREE.Texture. Override the alphaMap of the shadow
+  />
+</mesh>
+```
+
+> Note: This component uses Screendoor transparency using a dither pattern. This pattern is notacible when the camera gets close to the shadow.

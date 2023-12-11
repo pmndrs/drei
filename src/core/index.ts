@@ -124,6 +124,7 @@ export * from './useEnvironment'
 export * from './useMatcapTexture'
 export * from './useNormalTexture'
 export * from './Wireframe'
+export * from './ShadowAlpha'
 
 // Performance
 export * from './Points'

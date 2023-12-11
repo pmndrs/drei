@@ -15,6 +15,7 @@ export type ImageProps = Omit<JSX.IntrinsicElements['mesh'], 'scale'> & {
   toneMapped?: boolean
   transparent?: boolean
   opacity?: number
+  side?: THREE.Side
 } & ({ texture: THREE.Texture; url?: never } | { texture?: never; url: string }) // {texture: THREE.Texture} XOR {url: string}
 
 type ImageMaterialType = JSX.IntrinsicElements['shaderMaterial'] & {
@@ -98,6 +99,7 @@ const ImageBase: ForwardRefComponent<Omit<ImageProps, 'url'>, THREE.Mesh> = /* @
       texture,
       toneMapped,
       transparent,
+      side,
       ...props
     }: Omit<ImageProps, 'url'>,
     ref: React.ForwardedRef<THREE.Mesh>
@@ -118,6 +120,7 @@ const ImageBase: ForwardRefComponent<Omit<ImageProps, 'url'>, THREE.Mesh> = /* @
           imageBounds={imageBounds}
           toneMapped={toneMapped}
           transparent={transparent}
+          side={side}
         />
         {children}
       </mesh>

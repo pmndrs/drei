@@ -206,10 +206,11 @@ export function Bounds({
       },
       fit() {
         if (!isOrthographic(camera)) {
-          // Fit should only modify zoom now. Thus avoid executing it if the camera isn't orthographic
-          return this
+          // For non-orthographic cameras, fit should behave exactly like reset
+          return this.reset()
         }
 
+        // For orthographic cameras, fit should only modify the zoom value
         let maxHeight = 0,
           maxWidth = 0
         const vertices = [
@@ -328,6 +329,7 @@ export function Bounds({
 
         goal.current.camPos && camera.position.lerpVectors(origin.current.camPos, goal.current.camPos, k)
         goal.current.camRot && camera.quaternion.slerpQuaternions(origin.current.camRot, goal.current.camRot, k)
+        goal.current.camUp && camera.up.set(0, 1, 0).applyQuaternion(camera.quaternion)
         goal.current.camZoom &&
           isOrthographic(camera) &&
           (camera.zoom = (1 - k) * origin.current.camZoom + k * goal.current.camZoom)

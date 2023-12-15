@@ -3998,15 +3998,19 @@ For instance, one could want the Html component to be pinned to `positive x`, `p
   <a href="https://codesandbox.io/s/42glz0"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/42glz0/screenshot.png" alt="Demo"/></a>
 </p>
 
-Calculates a boundary box and centers the camera accordingly. If you are using camera controls, make sure to pass them the `makeDefault` prop. `fit` fits the current view on first render. `clip` sets the cameras near/far planes. `observe` will trigger on window resize.
+Calculates a boundary box and centers the camera accordingly. If you are using camera controls, make sure to pass them the `makeDefault` prop. `fit` fits the current view on first render. `clip` sets the cameras near/far planes. `observe` will trigger on window resize. To control the damping animation, use `maxDuration` to set the animation length in seconds, and `interpolateFunc` to define how the animation changes over time (should be an increasing function in [0, 1] interval, `interpolateFunc(0) === 0`, `interpolateFunc(1) === 1`).
 
 ```jsx
-<Bounds fit clip observe damping={6} margin={1.2}>
+const interpolateFunc = (t: number) => 1 - Math.exp(-5 * t) + 0.007 * t // Matches the default Bounds behavior
+const interpolateFunc1 = (t: number) => -t * t * t + 2 * t * t          // Start smoothly, finish linearly
+const interpolateFunc2 = (t: number) => -t * t * t + t * t + t          // Start linearly, finish smoothly
+
+<Bounds fit clip observe margin={1.2} maxDuration={1} interpolateFunc={interpolateFunc}>
   <mesh />
 </Bounds>
 ```
 
-The Bounds component also acts as a context provider, use the `useBounds` hook to refresh the bounds, fit the camera, clip near/far planes, go to camera orientations or focus objects. `refresh(object?: THREE.Object3D | THREE.Box3)` will recalculate bounds, since this can be expensive only call it when you know the view has changed. `clip` sets the cameras near/far planes. `to` sets a position and target for the camera. `fit` zooms and centers the view.
+The Bounds component also acts as a context provider, use the `useBounds` hook to refresh the bounds, fit the camera, clip near/far planes, go to camera orientations or focus objects. `refresh(object?: THREE.Object3D | THREE.Box3)` will recalculate bounds, since this can be expensive only call it when you know the view has changed. `reset` centers the view. `moveTo` changes the camera position. `lookAt` changes the camera orientation, with the respect to up-vector, if specified. `clip` sets the cameras near/far planes. `fit` centers the view for non-orthographic cameras (same as reset) or zooms the view for orthographic cameras.
 
 ```jsx
 function Foo() {
@@ -4019,10 +4023,17 @@ function Foo() {
     // bounds.refresh(ref.current).clip().fit()
     // bounds.refresh(new THREE.Box3()).clip().fit()
 
-    // Or, send the camera to a specific orientatin
-    // bounds.to({position: [0, 10, 10], target: {[5, 5, 0]}})
+    // Or, move the camera to a specific position, and change its orientation
+    // bounds.moveTo([0, 10, 10]).lookAt({ target: [5, 5, 0], up: [0, -1, 0] })
+
+    // For orthographic cameras, reset has to be used to center the view (fit would only change its zoom to match the bounding box)
+    // bounds.refresh().reset().clip().fit()
+  }, [...])
+}
+
 <Bounds>
   <Foo />
+</Bounds>
 ```
 
 #### CameraShake

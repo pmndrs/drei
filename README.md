@@ -1328,6 +1328,20 @@ To make the material transparent:
 <Image url="/file.jpg" transparent opacity={0.5} />
 ```
 
+You can have custom planes, for instance a rounded-corner plane.
+
+```jsx
+import { extend } from '@react-three/fiber'
+import { Image } from '@react-three/drei'
+import { easing, geometry } from 'maath'
+
+extend({ RoundedPlaneGeometry: geometry.RoundedPlaneGeometry })
+
+<Image url="/file.jpg">
+  <roundedPlaneGeometry args={[1, 2, 0.15]} />
+</Image>
+```
+
 #### Text
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-text--text-st) ![](https://img.shields.io/badge/-suspense-brightgreen)

@@ -77,7 +77,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#outlines">Outlines</a></li>
           <li><a href="#trail">Trail</a></li>
           <li><a href="#sampler">Sampler</a></li>
-          <li><a href="#computedattribute">Computed Attribute</a></li>
+          <li><a href="#computedattribute">ComputedAttribute</a></li>
           <li><a href="#clone">Clone</a></li>
           <li><a href="#useanimations">useAnimations</a></li>
           <li><a href="#marchingcubes">MarchingCubes</a></li>
@@ -85,6 +85,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#svg">Svg</a></li>
           <li><a href="#gltf">Gltf</a></li>
           <li><a href="#asciirenderer">AsciiRenderer</a></li>
+          <li><a href="#splat">Splat</a></li>
         </ul>
         <li><a href="#shaders">Shaders</a></li>
         <ul>
@@ -226,6 +227,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#useenvironment">useEnvironment</a></li>
           <li><a href="#usematcaptexture">useMatcapTexture</a></li>
           <li><a href="#usenormaltexture">useNormalTexture</a></li>
+          <li><a href="#shadowalpha">ShadowAlpha</a></li>
         </ul>
       </ul>
     </td>
@@ -856,7 +858,7 @@ function Loop() {
     // Set the current position along the curve, you can increment indiscriminately for a loop
     motion.current += delta
     // Look ahead on the curve
-    motion.object.lookAt(motion.next)
+    motion.object.current.lookAt(motion.next)
   })
 }
 
@@ -1326,6 +1328,20 @@ To make the material transparent:
 <Image url="/file.jpg" transparent opacity={0.5} />
 ```
 
+You can have custom planes, for instance a rounded-corner plane.
+
+```jsx
+import { extend } from '@react-three/fiber'
+import { Image } from '@react-three/drei'
+import { easing, geometry } from 'maath'
+
+extend({ RoundedPlaneGeometry: geometry.RoundedPlaneGeometry })
+
+<Image url="/file.jpg">
+  <roundedPlaneGeometry args={[1, 2, 0.15]} />
+</Image>
+```
+
 #### Text
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-text--text-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
@@ -1770,8 +1786,8 @@ The decal box has to intersect the surface, otherwise it will not be visible. if
     rotation={[0, 0, 0]} // Rotation of the decal (can be a vector or a degree in radians)
     scale={1} // Scale of the decal
   >
-    <meshBasicMaterial 
-      map={texture} 
+    <meshBasicMaterial
+      map={texture}
       polygonOffset
       polygonOffsetFactor={-1} // The material should take precedence over the original
     />
@@ -1847,6 +1863,46 @@ type AsciiRendererProps = {
 ```jsx
 <Canvas>
   <AsciiRenderer />
+```
+
+#### Splat
+
+<p>
+  <a href="https://codesandbox.io/s/qp4jmf"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/qp4jmf/screenshot.png" alt="Demo"/></a>
+</p>
+
+A declarative abstraction around [antimatter15/splat](https://github.com/antimatter15/splat). It supports re-use, multiple splats with correct depth sorting, splats can move and behave as a regular object3d's, supports alphahash & alphatest, and stream-loading.
+
+```tsx
+type SplatProps = {
+  /** Url towards a *.splat file, no support for *.ply */
+  src: string
+  /** Whether to use tone mapping, default: false */
+  toneMapped?: boolean
+  /** Alpha test value, , default: 0 */
+  alphaTest?: number
+  /** Whether to use alpha hashing, default: false */
+  alphaHash?: boolean
+  /** Chunk size for lazy loading, prevents chokings the worker, default: 25000 (25kb) */
+  chunkSize?: number
+} & JSX.IntrinsicElements['mesh']
+```
+
+```jsx
+<Splat src="https://huggingface.co/cakewalk/splat-data/resolve/main/nike.splat" />
+```
+
+In order to depth sort multiple splats correectly you can either use alphaTest, for instance with a low value. But keep in mind that this can show a slight outline under some viewing conditions.
+
+```jsx
+<Splat alphaTest={0.1} src="foo.splat" />
+<Splat alphaTest={0.1} src="bar.splat" />
+```
+
+You can also use alphaHash, but this can be slower and create some noise, you would typically get rid of the noise in postprocessing with a TAA pass. You don't have to use alphaHash on all splats.
+
+```jsx
+<Splat alphaHash src="foo.splat" />
 ```
 
 # Shaders
@@ -2371,13 +2427,13 @@ Enable shadows using the `castShadow` and `recieveShadow` prop.
 
 > Note: Html 'blending' mode only correctly occludes rectangular HTML elements by default. Use the `geometry` prop to swap the backing geometry to a custom one if your Html has a different shape.
 
-If transform mode is enabled, the dimensions of the rendered html will depend on the position relative to the camera, the camera fov and the distanceFactor. For example, an Html component placed at (0,0,0) and with a distanceFactor of 10, rendered inside a scene with a perspective camera positioned at (0,0,2.45) and a FOV of 75, will have the same dimensions as a "plain" html element like in [this example](https://codesandbox.io/s/drei-html-magic-number-6mzt6m). 
+If transform mode is enabled, the dimensions of the rendered html will depend on the position relative to the camera, the camera fov and the distanceFactor. For example, an Html component placed at (0,0,0) and with a distanceFactor of 10, rendered inside a scene with a perspective camera positioned at (0,0,2.45) and a FOV of 75, will have the same dimensions as a "plain" html element like in [this example](https://codesandbox.io/s/drei-html-magic-number-6mzt6m).
 
 A caveat of transform mode is that on some devices and browsers, the rendered html may appear blurry, as discussed in [#859](https://github.com/pmndrs/drei/issues/859). The issue can be at least mitigated by scaling down the Html parent and scaling up the html children:
 
 ```jsx
 <Html transform scale={0.5}>
-  <div style={{ transform: "scale(2)" }}>Some text</div>
+  <div style={{ transform: 'scale(2)' }}>Some text</div>
 </Html>
 ```
 
@@ -3956,15 +4012,19 @@ For instance, one could want the Html component to be pinned to `positive x`, `p
   <a href="https://codesandbox.io/s/42glz0"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/42glz0/screenshot.png" alt="Demo"/></a>
 </p>
 
-Calculates a boundary box and centers the camera accordingly. If you are using camera controls, make sure to pass them the `makeDefault` prop. `fit` fits the current view on first render. `clip` sets the cameras near/far planes. `observe` will trigger on window resize.
+Calculates a boundary box and centers the camera accordingly. If you are using camera controls, make sure to pass them the `makeDefault` prop. `fit` fits the current view on first render. `clip` sets the cameras near/far planes. `observe` will trigger on window resize. To control the damping animation, use `maxDuration` to set the animation length in seconds, and `interpolateFunc` to define how the animation changes over time (should be an increasing function in [0, 1] interval, `interpolateFunc(0) === 0`, `interpolateFunc(1) === 1`).
 
 ```jsx
-<Bounds fit clip observe damping={6} margin={1.2}>
+const interpolateFunc = (t: number) => 1 - Math.exp(-5 * t) + 0.007 * t // Matches the default Bounds behavior
+const interpolateFunc1 = (t: number) => -t * t * t + 2 * t * t          // Start smoothly, finish linearly
+const interpolateFunc2 = (t: number) => -t * t * t + t * t + t          // Start linearly, finish smoothly
+
+<Bounds fit clip observe margin={1.2} maxDuration={1} interpolateFunc={interpolateFunc}>
   <mesh />
 </Bounds>
 ```
 
-The Bounds component also acts as a context provider, use the `useBounds` hook to refresh the bounds, fit the camera, clip near/far planes, go to camera orientations or focus objects. `refresh(object?: THREE.Object3D | THREE.Box3)` will recalculate bounds, since this can be expensive only call it when you know the view has changed. `clip` sets the cameras near/far planes. `to` sets a position and target for the camera. `fit` zooms and centers the view.
+The Bounds component also acts as a context provider, use the `useBounds` hook to refresh the bounds, fit the camera, clip near/far planes, go to camera orientations or focus objects. `refresh(object?: THREE.Object3D | THREE.Box3)` will recalculate bounds, since this can be expensive only call it when you know the view has changed. `reset` centers the view. `moveTo` changes the camera position. `lookAt` changes the camera orientation, with the respect to up-vector, if specified. `clip` sets the cameras near/far planes. `fit` centers the view for non-orthographic cameras (same as reset) or zooms the view for orthographic cameras.
 
 ```jsx
 function Foo() {
@@ -3977,10 +4037,17 @@ function Foo() {
     // bounds.refresh(ref.current).clip().fit()
     // bounds.refresh(new THREE.Box3()).clip().fit()
 
-    // Or, send the camera to a specific orientatin
-    // bounds.to({position: [0, 10, 10], target: {[5, 5, 0]}})
+    // Or, move the camera to a specific position, and change its orientation
+    // bounds.moveTo([0, 10, 10]).lookAt({ target: [5, 5, 0], up: [0, -1, 0] })
+
+    // For orthographic cameras, reset has to be used to center the view (fit would only change its zoom to match the bounding box)
+    // bounds.refresh().reset().clip().fit()
+  }, [...])
+}
+
 <Bounds>
   <Foo />
+</Bounds>
 ```
 
 #### CameraShake
@@ -4726,3 +4793,21 @@ return (
   ...
 )
 ```
+
+#### ShadowAlpha
+
+Makes an object's shadow respect its opacity and alphaMap.
+
+```jsx
+<mesh>
+  <geometry />
+  <material transparent opacity={0.5} />
+
+  <ShadowAlpha
+    opacity={undefined} // number. Override the opacity of the shadow.
+    alphaMap={undefined} // THREE.Texture. Override the alphaMap of the shadow
+  />
+</mesh>
+```
+
+> Note: This component uses Screendoor transparency using a dither pattern. This pattern is notacible when the camera gets close to the shadow.

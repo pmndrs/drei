@@ -15,6 +15,7 @@ export type ImageProps = Omit<JSX.IntrinsicElements['mesh'], 'scale'> & {
   toneMapped?: boolean
   transparent?: boolean
   opacity?: number
+  side?: THREE.Side
 } & ({ texture: THREE.Texture; url?: never } | { texture?: never; url: string }) // {texture: THREE.Texture} XOR {url: string}
 
 type ImageMaterialType = JSX.IntrinsicElements['shaderMaterial'] & {
@@ -37,8 +38,8 @@ declare global {
 const ImageMaterialImpl = /* @__PURE__ */ shaderMaterial(
   {
     color: /* @__PURE__ */ new THREE.Color('white'),
-    scale: [1, 1],
-    imageBounds: [1, 1],
+    scale: /* @__PURE__ */ new THREE.Vector2(1, 1),
+    imageBounds: /* @__PURE__ */ new THREE.Vector2(1, 1),
     map: null,
     zoom: 1,
     grayscale: 0,
@@ -98,13 +99,29 @@ const ImageBase: ForwardRefComponent<Omit<ImageProps, 'url'>, THREE.Mesh> = /* @
       texture,
       toneMapped,
       transparent,
+      side,
       ...props
     }: Omit<ImageProps, 'url'>,
-    ref: React.ForwardedRef<THREE.Mesh>
+    fref: React.ForwardedRef<THREE.Mesh>
   ) => {
     extend({ ImageMaterial: ImageMaterialImpl })
+    const ref = React.useRef<THREE.Mesh>(null!)
     const planeBounds = Array.isArray(scale) ? [scale[0], scale[1]] : [scale, scale]
     const imageBounds = [texture!.image.width, texture!.image.height]
+    React.useImperativeHandle(fref, () => ref.current, [])
+    React.useLayoutEffect(() => {
+      // Support arbitrary plane geometries (for instance with rounded corners)
+      // @ts-ignore
+      if (ref.current.geometry.parameters) {
+        // @ts-ignore
+        ref.current.material.scale.set(
+          // @ts-ignore
+          planeBounds[0] * ref.current.geometry.parameters.width,
+          // @ts-ignore
+          planeBounds[1] * ref.current.geometry.parameters.height
+        )
+      }
+    }, [])
     return (
       <mesh ref={ref} scale={Array.isArray(scale) ? [...scale, 1] : scale} {...props}>
         <planeGeometry args={[1, 1, segments, segments]} />
@@ -118,6 +135,7 @@ const ImageBase: ForwardRefComponent<Omit<ImageProps, 'url'>, THREE.Mesh> = /* @
           imageBounds={imageBounds}
           toneMapped={toneMapped}
           transparent={transparent}
+          side={side}
         />
         {children}
       </mesh>

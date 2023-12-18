@@ -38,6 +38,11 @@ export function useVideoTexture(src: string | MediaStream, props?: Partial<Video
       }),
     [src]
   ) as THREE.VideoTexture
-  useEffect(() => void (start && texture.image.play()), [texture, start])
+  useEffect(() => {
+    if (start) {
+      texture.image.play()
+      return () => texture.image.pause()
+    }
+  }, [texture, start])
   return texture
 }

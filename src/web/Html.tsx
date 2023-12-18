@@ -341,7 +341,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
             }
             el.style.width = size.width + 'px'
             el.style.height = size.height + 'px'
-            el.style.transform = isOrthographicCamera ? '' : `perspective(${fov}px)`
+            el.style.perspective = isOrthographicCamera ? '' : `${fov}px`
             if (transformOuterRef.current && transformInnerRef.current) {
               transformOuterRef.current.style.transform = `${cameraTransform}${cameraMatrix}translate(${widthHalf}px,${heightHalf}px)`
               transformInnerRef.current.style.transform = getObjectCSSMatrix(matrix, 1 / ((distanceFactor || 10) / 400))

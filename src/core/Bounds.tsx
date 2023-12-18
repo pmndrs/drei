@@ -12,19 +12,19 @@ export type SizeProps = {
 
 export type BoundsApi = {
   getSize: () => SizeProps
-  refresh(object?: THREE.Object3D | THREE.Box3): any
-  reset(): any
-  moveTo(position: THREE.Vector3 | [number, number, number]): any
+  refresh(object?: THREE.Object3D | THREE.Box3): BoundsApi
+  reset(): BoundsApi
+  moveTo(position: THREE.Vector3 | [number, number, number]): BoundsApi
   lookAt({
     target,
     up,
   }: {
     target?: THREE.Vector3 | [number, number, number]
     up?: THREE.Vector3 | [number, number, number]
-  }): any
-  to({ position, target }: { position: [number, number, number]; target: [number, number, number] }): any
-  fit(): any
-  clip(): any
+  }): BoundsApi
+  to({ position, target }: { position: [number, number, number]; target: [number, number, number] }): BoundsApi
+  fit(): BoundsApi
+  clip(): BoundsApi
 }
 
 export type BoundsProps = JSX.IntrinsicElements['group'] & {
@@ -296,7 +296,7 @@ export function Bounds({
   React.useLayoutEffect(() => {
     if (observe || count.current++ === 0) {
       api.refresh()
-      if (fit) api.fit()
+      if (fit) api.reset().fit()
       if (clip) api.clip()
     }
   }, [size, clip, fit, observe, camera, controls])

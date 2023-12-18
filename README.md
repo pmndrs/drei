@@ -858,7 +858,7 @@ function Loop() {
     // Set the current position along the curve, you can increment indiscriminately for a loop
     motion.current += delta
     // Look ahead on the curve
-    motion.object.lookAt(motion.next)
+    motion.object.current.lookAt(motion.next)
   })
 }
 

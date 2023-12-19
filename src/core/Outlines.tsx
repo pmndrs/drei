@@ -59,17 +59,17 @@ const OutlinesMaterial = /* @__PURE__ */ shaderMaterial(
 
 type OutlinesProps = JSX.IntrinsicElements['group'] & {
   /** Outline color, default: black */
-  color: ReactThreeFiber.Color
+  color?: ReactThreeFiber.Color
   /** Line thickness is independent of zoom, default: false */
-  screenspace: boolean
+  screenspace?: boolean
   /** Outline opacity, default: 1 */
-  opacity: number
+  opacity?: number
   /** Outline transparency, default: false */
-  transparent: boolean
+  transparent?: boolean
   /** Outline thickness, default 0.05 */
-  thickness: number
+  thickness?: number
   /** Geometry crease angle (0 === no crease), default: Math.PI */
-  angle: number
+  angle?: number
   toneMapped?: boolean
   polygonOffset?: boolean
   polygonOffsetFactor?: number

@@ -10,7 +10,7 @@ import { ForwardRefComponent } from '../helpers/ts-utils'
 export type ScrollControlsProps = {
   /** Precision, default 0.00001 */
   eps?: number
-  /** Horontal scroll, default false (vertical) */
+  /** Horizontal scroll, default false (vertical) */
   horizontal?: boolean
   /** Infinite scroll, default false (experimental!) */
   infinite?: boolean
@@ -18,7 +18,7 @@ export type ScrollControlsProps = {
   pages?: number
   /** A factor that increases scroll bar travel,default: 1 */
   distance?: number
-  /** Friction in seconds, default: 0.2 (1/5 second) */
+  /** Friction in seconds, default: 0.25 (1/4 second) */
   damping?: number
   /** maxSpeed optionally allows you to clamp the maximum speed. If damping is 0.2s and looks OK
    *  going between, say, page 1 and 2, but not for pages far apart as it'll move very rapid,

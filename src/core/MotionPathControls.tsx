@@ -33,9 +33,9 @@ type MotionState = {
   /** The combined curve */
   path: THREE.CurvePath<THREE.Vector3>
   /** The focus object */
-  focus: React.MutableRefObject<THREE.Object3D<THREE.Event>> | [x: number, y: number, z: number] | undefined
+  focus: React.MutableRefObject<THREE.Object3D> | [x: number, y: number, z: number] | undefined
   /** The target object that is moved along the curve */
-  object: React.MutableRefObject<THREE.Object3D<THREE.Event>>
+  object: React.MutableRefObject<THREE.Object3D>
   /** The 0-1 normalised and damped current goal position along curve */
   offset: number
   /** The current point on the curve */
@@ -49,7 +49,7 @@ type MotionState = {
 const isObject3DRef = (ref: any): ref is React.MutableRefObject<THREE.Object3D> =>
   ref?.current instanceof THREE.Object3D
 
-const context = React.createContext<MotionState>(null!)
+const context = /* @__PURE__ */ React.createContext<MotionState>(null!)
 
 export function useMotion() {
   return React.useContext(context) as MotionState
@@ -76,7 +76,7 @@ function Debug({ points = 50 }: { points?: number }) {
   )
 }
 
-export const MotionPathControls = React.forwardRef<THREE.Group>(
+export const MotionPathControls = /* @__PURE__ */ React.forwardRef<THREE.Group, MotionPathProps>(
   (
     {
       children,

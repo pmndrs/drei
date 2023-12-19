@@ -1,5 +1,6 @@
 import * as React from 'react'
 import {
+  REVISION,
   DynamicDrawUsage,
   Color,
   Group,
@@ -15,6 +16,7 @@ import {
 import { MaterialNode, extend, applyProps, useFrame, ReactThreeFiber } from '@react-three/fiber'
 import { useTexture } from './useTexture'
 import { v4 } from 'uuid'
+import { setUpdateRange } from '../helpers/deprecated'
 
 declare global {
   namespace JSX {
@@ -88,20 +90,21 @@ type CloudProps = JSX.IntrinsicElements['group'] & {
   color?: ReactThreeFiber.Color
 }
 
-const parentMatrix = /*@__PURE__*/ new Matrix4()
-const translation = /*@__PURE__*/ new Vector3()
-const rotation = /*@__PURE__*/ new Quaternion()
-const cpos = /*@__PURE__*/ new Vector3()
-const cquat = /*@__PURE__*/ new Quaternion()
-const scale = /*@__PURE__*/ new Vector3()
+const parentMatrix = /* @__PURE__ */ new Matrix4()
+const translation = /* @__PURE__ */ new Vector3()
+const rotation = /* @__PURE__ */ new Quaternion()
+const cpos = /* @__PURE__ */ new Vector3()
+const cquat = /* @__PURE__ */ new Quaternion()
+const scale = /* @__PURE__ */ new Vector3()
 
-const context = React.createContext<React.MutableRefObject<CloudState[]>>(null!)
-export const Clouds = React.forwardRef<Group, CloudsProps>(
+const context = /* @__PURE__ */ React.createContext<React.MutableRefObject<CloudState[]>>(null!)
+export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
   ({ children, material = MeshLambertMaterial, texture = CLOUD_URL, range, limit = 200, ...props }, fref) => {
     const CloudMaterial = React.useMemo(() => {
       return class extends (material as typeof Material) {
         constructor() {
           super()
+          const opaque_fragment = parseInt(REVISION.replace(/\D+/g, '')) >= 154 ? 'opaque_fragment' : 'output_fragment'
           this.onBeforeCompile = (shader) => {
             shader.vertexShader =
               `attribute float opacity;
@@ -117,8 +120,8 @@ export const Clouds = React.forwardRef<Group, CloudsProps>(
               `varying float vOpacity;
               ` +
               shader.fragmentShader.replace(
-                '#include <opaque_fragment>',
-                `#include <opaque_fragment>
+                `#include <${opaque_fragment}>`,
+                `#include <${opaque_fragment}>
                  gl_FragColor = vec4(outgoingLight, diffuseColor.a * vOpacity);
                 `
               )
@@ -173,11 +176,13 @@ export const Clouds = React.forwardRef<Group, CloudsProps>(
     })
 
     React.useLayoutEffect(() => {
-      const updateRange = Math.min(limit, range !== undefined ? range : limit, clouds.current.length)
-      instance.current.count = updateRange
-      instance.current.instanceMatrix.updateRange.count = updateRange * 16
-      if (instance.current.instanceColor) instance.current.instanceColor.updateRange.count = updateRange * 3
-      ;(instance.current.geometry.attributes.opacity as BufferAttribute).updateRange.count = updateRange
+      const count = Math.min(limit, range !== undefined ? range : limit, clouds.current.length)
+      instance.current.count = count
+      setUpdateRange(instance.current.instanceMatrix, { offset: 0, count: count * 16 })
+      if (instance.current.instanceColor) {
+        setUpdateRange(instance.current.instanceColor, { offset: 0, count: count * 3 })
+      }
+      setUpdateRange(instance.current.geometry.attributes.opacity as BufferAttribute, { offset: 0, count: count })
     })
 
     let imageBounds = [cloudTexture!.image.width ?? 1, cloudTexture!.image.height ?? 1]
@@ -201,7 +206,7 @@ export const Clouds = React.forwardRef<Group, CloudsProps>(
   }
 )
 
-export const CloudInstance = React.forwardRef<Group, CloudProps>(
+export const CloudInstance = /* @__PURE__ */ React.forwardRef<Group, CloudProps>(
   (
     {
       opacity = 1,
@@ -303,7 +308,7 @@ export const CloudInstance = React.forwardRef<Group, CloudProps>(
   }
 )
 
-export const Cloud = React.forwardRef<Group, CloudProps>((props, fref) => {
+export const Cloud = /* @__PURE__ */ React.forwardRef<Group, CloudProps>((props, fref) => {
   const parent = React.useContext(context)
   if (parent) return <CloudInstance ref={fref} {...props} />
   else

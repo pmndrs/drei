@@ -1,10 +1,10 @@
 /* eslint react-hooks/exhaustive-deps: 1 */
 import * as React from 'react'
 import { createContext, ReactNode, useContext, useEffect } from 'react'
-import { FilesetResolver, FaceLandmarker as FaceLandmarkerImpl, FaceLandmarkerOptions } from '@mediapipe/tasks-vision'
+import type { FaceLandmarker as FaceLandmarkerImpl, FaceLandmarkerOptions } from '@mediapipe/tasks-vision'
 import { clear, suspend } from 'suspend-react'
 
-const FaceLandmarkerContext = createContext({} as FaceLandmarkerImpl | undefined)
+const FaceLandmarkerContext = /* @__PURE__ */ createContext({} as FaceLandmarkerImpl | undefined)
 
 type FaceLandmarkerProps = {
   basePath?: string
@@ -13,7 +13,7 @@ type FaceLandmarkerProps = {
 }
 
 export const FaceLandmarkerDefaults = {
-  basePath: 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.2/wasm',
+  basePath: 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.8/wasm',
   options: {
     baseOptions: {
       modelAssetPath:
@@ -34,9 +34,9 @@ export function FaceLandmarker({
   const opts = JSON.stringify(options)
 
   const faceLandmarker = suspend(async () => {
-    return await FilesetResolver.forVisionTasks(basePath).then((vision) =>
-      FaceLandmarkerImpl.createFromOptions(vision, options)
-    )
+    const { FilesetResolver, FaceLandmarker } = await import('@mediapipe/tasks-vision')
+    const vision = await FilesetResolver.forVisionTasks(basePath)
+    return FaceLandmarker.createFromOptions(vision, options)
   }, [basePath, opts])
 
   useEffect(() => {

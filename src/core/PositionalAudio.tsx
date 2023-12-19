@@ -10,7 +10,7 @@ type Props = JSX.IntrinsicElements['positionalAudio'] & {
   loop?: boolean
 }
 
-export const PositionalAudio: ForwardRefComponent<Props, PositionalAudioImpl> = React.forwardRef(
+export const PositionalAudio: ForwardRefComponent<Props, PositionalAudioImpl> = /* @__PURE__ */ React.forwardRef(
   ({ url, distance = 1, loop = true, autoplay, ...props }: Props, ref) => {
     const sound = React.useRef<PositionalAudioImpl>()
     const camera = useThree(({ camera }) => camera)

@@ -2,13 +2,13 @@ import * as React from 'react'
 import { useFrame, Vector3 } from '@react-three/fiber'
 import * as THREE from 'three'
 
-type SpriteAnimatorProps = JSX.IntrinsicElements['group'] & {
+export type SpriteAnimatorProps = {
   startFrame?: number
   endFrame?: number
   fps?: number
   frameName?: string
   textureDataURL?: string
-  textureImageURL?: string
+  textureImageURL: string
   loop?: boolean
   numberOfFrames?: number
   autoPlay?: boolean
@@ -17,6 +17,7 @@ type SpriteAnimatorProps = JSX.IntrinsicElements['group'] & {
   onEnd?: Function
   onLoopEnd?: Function
   onFrame?: Function
+  play?: boolean
   pause?: boolean
   flipX?: boolean
   position?: Array<number>
@@ -24,6 +25,7 @@ type SpriteAnimatorProps = JSX.IntrinsicElements['group'] & {
   asSprite?: boolean
   offset?: number
   playBackwards?: boolean
+  resetOnEnd?: boolean
 } & JSX.IntrinsicElements['group']
 
 type SpriteAnimatorState = {
@@ -41,10 +43,10 @@ export function useSpriteAnimator() {
   return React.useContext(context) as SpriteAnimatorState
 }
 
-export const SpriteAnimator = React.forwardRef<THREE.Group>(
+export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ React.forwardRef(
   (
     {
-      startFrame = 0,
+      startFrame,
       endFrame,
       fps,
       frameName,
@@ -58,6 +60,7 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
       onEnd,
       onLoopEnd,
       onFrame,
+      play,
       pause,
       flipX,
       alphaTest,
@@ -65,8 +68,9 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
       asSprite,
       offset,
       playBackwards,
+      resetOnEnd,
       ...props
-    }: SpriteAnimatorProps,
+    },
     fref
   ) => {
     const ref = React.useRef<any>()
@@ -84,8 +88,10 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
     const [aspect, setAspect] = React.useState<Vector3 | undefined>([1, 1, 1])
     const flipOffset = flipX ? -1 : 1
     const [displayAsSprite, setDisplayAsSprite] = React.useState(asSprite ?? true)
+    const pauseRef = React.useRef(pause)
     const pos = React.useRef(offset)
     const softEnd = React.useRef(false)
+    //
 
     function reset() {}
 
@@ -150,6 +156,7 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
       setDisplayAsSprite(asSprite ?? true)
     }, [asSprite])
 
+    // support backwards play
     React.useEffect(() => {
       state.hasEnded = false
       if (spriteData.current && playBackwards === true) {
@@ -162,6 +169,12 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
     React.useLayoutEffect(() => {
       modifySpritePosition()
     }, [spriteTexture, flipX])
+
+    React.useEffect(() => {
+      if (autoPlay) {
+        pauseRef.current = false
+      }
+    }, [autoPlay])
 
     React.useEffect(() => {
       if (currentFrameName.current !== frameName && frameName) {
@@ -177,10 +190,11 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
       }
     }, [frameName])
 
+    // parse sprite-data from JSON file (jsonHash or jsonArray)
     const parseSpriteData = (json: any, _spriteTexture: THREE.Texture): void => {
       // sprite only case
       if (json === null) {
-        if (_spriteTexture && numberOfFrames) {
+        if (numberOfFrames) {
           //get size from texture
           const width = _spriteTexture.image.width
           const height = _spriteTexture.image.height
@@ -192,6 +206,7 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
           if (playBackwards) {
             currentFrame.current = numberOfFrames - 1
           }
+
           spriteData.current = {
             frames: [],
             meta: {
@@ -214,7 +229,7 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
             }
           }
         }
-      } else if (_spriteTexture) {
+      } else {
         spriteData.current = json
         spriteData.current.frames = Array.isArray(json.frames) ? json.frames : parseFrames()
         totalFrames.current = Array.isArray(json.frames) ? json.frames.length : Object.keys(json.frames).length
@@ -257,7 +272,7 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
             const sourceWidth = value['sourceSize']['w']
             const sourceHeight = value['sourceSize']['h']
 
-            if (typeof innerKey === 'string' && innerKey.toLowerCase().indexOf(delimiters[i].toLowerCase()) !== -1) {
+            if (innerKey.toLowerCase().indexOf(delimiters[i].toLowerCase()) !== -1) {
               sprites[delimiters[i]].push({
                 x: x,
                 y: y,
@@ -269,9 +284,15 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
             }
           }
         }
-      }
+        return sprites
+      } else if (frameName) {
+        const spritesArr: any[] = []
+        for (const key in data.frames) {
+          spritesArr.push(data.frames[key])
+        }
 
-      return sprites
+        return spritesArr
+      }
     }
 
     // modify the sprite material after json is parsed and state updated
@@ -300,19 +321,7 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
       matRef.current.map.offset.x = 0.0 //-matRef.current.map.repeat.x
       matRef.current.map.offset.y = 1 - frameOffsetY
 
-      if (onStart && autoPlay) onStart({ currentFrameName: frameName, currentFrame: currentFrame.current })
-    }
-
-    // utils
-    const getFirstItem = (param: any): any => {
-      if (Array.isArray(param)) {
-        return param[0]
-      } else if (typeof param === 'object' && param !== null) {
-        const keys = Object.keys(param)
-        return frameName ? param[frameName][0] : param[keys[0]][0]
-      } else {
-        return { w: 0, h: 0 }
-      }
+      if (onStart) onStart({ currentFrameName: frameName, currentFrame: currentFrame.current })
     }
 
     // run the animation on each frame
@@ -326,11 +335,8 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
       } = spriteData.current
       const { w: frameW, h: frameH } = getFirstItem(frames).sourceSize
       const spriteFrames = Array.isArray(frames) ? frames : frameName ? frames[frameName] : []
-
-      let finalValX = 0
-      let finalValY = 0
       const _endFrame = endFrame || spriteFrames.length - 1
-      const targetFrame = currentFrame.current
+
       var _offset = offset === undefined ? state.current : offset
 
       // conditionals to support backwards play
@@ -358,9 +364,15 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
 
           if (!_offset) {
             console.log('will end')
-            state.hasEnded = true
+          }
+
+          state.hasEnded = resetOnEnd ? false : true
+          if (resetOnEnd) {
+            pauseRef.current = true
+            //calculateFinalPosition(frameW, frameH, metaInfo, spriteFrames)
           }
         }
+
         if (!loop) return
       } else if (onStartCondition) {
         onStart?.({
@@ -383,18 +395,31 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
         softEnd.current = false
       }
 
+      // clock to limit fps
       if (diff <= fpsInterval) return
       timerOffset.current = now - (diff % fpsInterval)
 
-      calculateAspectRatio(frameW, frameH)
+      calculateFinalPosition(frameW, frameH, metaInfo, spriteFrames)
+    }
 
+    const calculateFinalPosition = (
+      frameW: number,
+      frameH: number,
+      metaInfo: { w: number; h: number },
+      spriteFrames: { frame: { x: any; y: any }; sourceSize: { w: any; h: any } }[]
+    ) => {
+      // get the manual update offset to find the next frame
+      var _offset = offset === undefined ? state.current : offset
+      const targetFrame = currentFrame.current
+      let finalValX = 0
+      let finalValY = 0
+      calculateAspectRatio(frameW, frameH)
       const framesH = (metaInfo.w - 1) / frameW
       const framesV = (metaInfo.h - 1) / frameH
-
       if (!spriteFrames[targetFrame]) {
         return
       }
-      // read the sprite on the currentFrame position
+
       const {
         frame: { x: frameX, y: frameY },
         sourceSize: { w: originalSizeX, h: originalSizeY },
@@ -411,8 +436,9 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
       matRef.current.map.offset.x = finalValX
       matRef.current.map.offset.y = finalValY
 
+      // if manual update is active
       if (_offset !== undefined && _offset !== null) {
-        // Calculate the frame index
+        // Calculate the frame index, based on offset given from the provider
         let frameIndex = Math.floor(_offset * spriteFrames.length)
 
         // Ensure the frame index is within the valid range
@@ -439,15 +465,27 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
         return
       }
 
-      if (pause) {
+      if (pauseRef.current) {
         return
       }
 
-      if (!state.hasEnded && autoPlay) {
+      if (!state.hasEnded && (autoPlay || play)) {
         runAnimation()
         onFrame && onFrame({ currentFrameName: currentFrameName.current, currentFrame: currentFrame.current })
       }
     })
+
+    // utils
+    const getFirstItem = (param: any): any => {
+      if (Array.isArray(param)) {
+        return param[0]
+      } else if (typeof param === 'object' && param !== null) {
+        const keys = Object.keys(param)
+        return frameName ? param[frameName][0] : param[keys[0]][0]
+      } else {
+        return { w: 0, h: 0 }
+      }
+    }
 
     return (
       <group {...props} ref={ref}>
@@ -460,7 +498,7 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
                   ref={matRef}
                   map={spriteTexture}
                   transparent={true}
-                  alphaTest={alphaTest ?? 0.01}
+                  alphaTest={alphaTest ?? 0.0}
                 />
               </sprite>
             )}
@@ -473,7 +511,7 @@ export const SpriteAnimator = React.forwardRef<THREE.Group>(
                   ref={matRef}
                   map={spriteTexture}
                   transparent={true}
-                  alphaTest={alphaTest ?? 0.01}
+                  alphaTest={alphaTest ?? 0.0}
                 />
               </mesh>
             )}

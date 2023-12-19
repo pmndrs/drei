@@ -4,6 +4,7 @@ import { Color, extend } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
 import { useTexture } from './useTexture'
 import { ForwardRefComponent } from '../helpers/ts-utils'
+import { version } from '../helpers/constants'
 
 export type ImageProps = Omit<JSX.IntrinsicElements['mesh'], 'scale'> & {
   segments?: number
@@ -14,6 +15,7 @@ export type ImageProps = Omit<JSX.IntrinsicElements['mesh'], 'scale'> & {
   toneMapped?: boolean
   transparent?: boolean
   opacity?: number
+  side?: THREE.Side
 } & ({ texture: THREE.Texture; url?: never } | { texture?: never; url: string }) // {texture: THREE.Texture} XOR {url: string}
 
 type ImageMaterialType = JSX.IntrinsicElements['shaderMaterial'] & {
@@ -33,8 +35,16 @@ declare global {
   }
 }
 
-const ImageMaterialImpl = shaderMaterial(
-  { color: new THREE.Color('white'), scale: [1, 1], imageBounds: [1, 1], map: null, zoom: 1, grayscale: 0, opacity: 1 },
+const ImageMaterialImpl = /* @__PURE__ */ shaderMaterial(
+  {
+    color: /* @__PURE__ */ new THREE.Color('white'),
+    scale: /* @__PURE__ */ new THREE.Vector2(1, 1),
+    imageBounds: /* @__PURE__ */ new THREE.Vector2(1, 1),
+    map: null,
+    zoom: 1,
+    grayscale: 0,
+    opacity: 1,
+  },
   /* glsl */ `
   varying vec2 vUv;
   void main() {
@@ -71,12 +81,12 @@ const ImageMaterialImpl = shaderMaterial(
     gl_FragColor = toGrayscale(texture2D(map, zUv) * vec4(color, opacity), grayscale);
     
     #include <tonemapping_fragment>
-    #include <${parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
+    #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
   }
 `
 )
 
-const ImageBase: ForwardRefComponent<Omit<ImageProps, 'url'>, THREE.Mesh> = React.forwardRef(
+const ImageBase: ForwardRefComponent<Omit<ImageProps, 'url'>, THREE.Mesh> = /* @__PURE__ */ React.forwardRef(
   (
     {
       children,
@@ -89,13 +99,29 @@ const ImageBase: ForwardRefComponent<Omit<ImageProps, 'url'>, THREE.Mesh> = Reac
       texture,
       toneMapped,
       transparent,
+      side,
       ...props
     }: Omit<ImageProps, 'url'>,
-    ref: React.ForwardedRef<THREE.Mesh>
+    fref: React.ForwardedRef<THREE.Mesh>
   ) => {
     extend({ ImageMaterial: ImageMaterialImpl })
+    const ref = React.useRef<THREE.Mesh>(null!)
     const planeBounds = Array.isArray(scale) ? [scale[0], scale[1]] : [scale, scale]
     const imageBounds = [texture!.image.width, texture!.image.height]
+    React.useImperativeHandle(fref, () => ref.current, [])
+    React.useLayoutEffect(() => {
+      // Support arbitrary plane geometries (for instance with rounded corners)
+      // @ts-ignore
+      if (ref.current.geometry.parameters) {
+        // @ts-ignore
+        ref.current.material.scale.set(
+          // @ts-ignore
+          planeBounds[0] * ref.current.geometry.parameters.width,
+          // @ts-ignore
+          planeBounds[1] * ref.current.geometry.parameters.height
+        )
+      }
+    }, [])
     return (
       <mesh ref={ref} scale={Array.isArray(scale) ? [...scale, 1] : scale} {...props}>
         <planeGeometry args={[1, 1, segments, segments]} />
@@ -109,6 +135,7 @@ const ImageBase: ForwardRefComponent<Omit<ImageProps, 'url'>, THREE.Mesh> = Reac
           imageBounds={imageBounds}
           toneMapped={toneMapped}
           transparent={transparent}
+          side={side}
         />
         {children}
       </mesh>
@@ -116,23 +143,24 @@ const ImageBase: ForwardRefComponent<Omit<ImageProps, 'url'>, THREE.Mesh> = Reac
   }
 )
 
-const ImageWithUrl: ForwardRefComponent<ImageProps, THREE.Mesh> = React.forwardRef(
+const ImageWithUrl: ForwardRefComponent<ImageProps, THREE.Mesh> = /* @__PURE__ */ React.forwardRef(
   ({ url, ...props }: ImageProps, ref: React.ForwardedRef<THREE.Mesh>) => {
     const texture = useTexture(url!)
     return <ImageBase {...props} texture={texture} ref={ref} />
   }
 )
 
-const ImageWithTexture: ForwardRefComponent<ImageProps, THREE.Mesh> = React.forwardRef(
+const ImageWithTexture: ForwardRefComponent<ImageProps, THREE.Mesh> = /* @__PURE__ */ React.forwardRef(
   ({ url: _url, ...props }: ImageProps, ref: React.ForwardedRef<THREE.Mesh>) => {
     return <ImageBase {...props} ref={ref} />
   }
 )
 
-export const Image: ForwardRefComponent<ImageProps, THREE.Mesh> = React.forwardRef<THREE.Mesh, ImageProps>(
-  (props, ref) => {
-    if (props.url) return <ImageWithUrl {...props} ref={ref} />
-    else if (props.texture) return <ImageWithTexture {...props} ref={ref} />
-    else throw new Error('<Image /> requires a url or texture')
-  }
-)
+export const Image: ForwardRefComponent<ImageProps, THREE.Mesh> = /* @__PURE__ */ React.forwardRef<
+  THREE.Mesh,
+  ImageProps
+>((props, ref) => {
+  if (props.url) return <ImageWithUrl {...props} ref={ref} />
+  else if (props.texture) return <ImageWithTexture {...props} ref={ref} />
+  else throw new Error('<Image /> requires a url or texture')
+})

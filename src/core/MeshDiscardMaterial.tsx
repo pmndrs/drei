@@ -12,7 +12,9 @@ declare global {
 }
 
 export const MeshDiscardMaterial: ForwardRefComponent<JSX.IntrinsicElements['shaderMaterial'], THREE.ShaderMaterial> =
-  React.forwardRef((props: JSX.IntrinsicElements['shaderMaterial'], fref: React.ForwardedRef<THREE.ShaderMaterial>) => {
-    extend({ DiscardMaterialImpl })
-    return <discardMaterialImpl ref={fref} {...props} />
-  })
+  /* @__PURE__ */ React.forwardRef(
+    (props: JSX.IntrinsicElements['shaderMaterial'], fref: React.ForwardedRef<THREE.ShaderMaterial>) => {
+      extend({ DiscardMaterialImpl })
+      return <discardMaterialImpl ref={fref} {...props} />
+    }
+  )

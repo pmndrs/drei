@@ -10,7 +10,7 @@ type Props = JSX.IntrinsicElements['lOD'] & {
   distances: number[]
 }
 
-export const Detailed: ForwardRefComponent<Props, LOD> = React.forwardRef(
+export const Detailed: ForwardRefComponent<Props, LOD> = /* @__PURE__ */ React.forwardRef(
   ({ children, hysteresis = 0, distances, ...props }: Props, ref) => {
     const lodRef = React.useRef<LOD>(null!)
     React.useLayoutEffect(() => {

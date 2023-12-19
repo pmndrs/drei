@@ -1,17 +1,22 @@
 import { Texture, TextureLoader } from 'three'
 import { useLoader, useThree } from '@react-three/fiber'
-import { useEffect } from 'react'
-import { useLayoutEffect } from 'react'
+import { useLayoutEffect, useEffect } from 'react'
 
 export const IsObject = (url: any): url is Record<string, string> =>
   url === Object(url) && !Array.isArray(url) && typeof url !== 'function'
 
+export type MappedTextureType<T extends string[] | string | Record<string, string>> = T extends any[]
+  ? Texture[]
+  : T extends Record<string, string>
+  ? { [key in keyof T]: Texture }
+  : Texture
+
 export function useTexture<Url extends string[] | string | Record<string, string>>(
   input: Url,
-  onLoad?: (texture: Texture | Texture[]) => void
-): Url extends any[] ? Texture[] : Url extends object ? { [key in keyof Url]: Texture } : Texture {
+  onLoad?: (texture: MappedTextureType<Url>) => void
+): MappedTextureType<Url> {
   const gl = useThree((state) => state.gl)
-  const textures = useLoader(TextureLoader, IsObject(input) ? Object.values(input) : (input as any))
+  const textures = useLoader(TextureLoader, IsObject(input) ? Object.values(input) : input) as MappedTextureType<Url>
 
   useLayoutEffect(() => {
     onLoad?.(textures)
@@ -28,12 +33,12 @@ export function useTexture<Url extends string[] | string | Record<string, string
   }, [gl, textures])
 
   if (IsObject(input)) {
-    const keys = Object.keys(input)
-    const keyed = {} as any
-    keys.forEach((key) => Object.assign(keyed, { [key]: textures[keys.indexOf(key)] }))
+    const keyed = {} as MappedTextureType<Url>
+    let i = 0
+    for (const key in input) keyed[key] = textures[i++]
     return keyed
   } else {
-    return textures as any
+    return textures
   }
 }
 

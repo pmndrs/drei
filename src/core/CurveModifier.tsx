@@ -11,8 +11,8 @@ export interface CurveModifierProps {
 
 export type CurveModifierRef = Pick<Flow, 'moveAlongCurve'>
 
-export const CurveModifier: ForwardRefComponent<CurveModifierProps, CurveModifierRef> = React.forwardRef(
-  ({ children, curve }: CurveModifierProps, ref) => {
+export const CurveModifier: ForwardRefComponent<CurveModifierProps, CurveModifierRef> =
+  /* @__PURE__ */ React.forwardRef(({ children, curve }: CurveModifierProps, ref) => {
     const [scene] = React.useState(() => new THREE.Scene())
     const [obj, set] = React.useState<THREE.Object3D>()
     const modifier = React.useRef<Flow>()
@@ -40,5 +40,4 @@ export const CurveModifier: ForwardRefComponent<CurveModifierProps, CurveModifie
         {obj && <primitive object={obj} />}
       </>
     )
-  }
-)
+  })

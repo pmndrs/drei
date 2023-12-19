@@ -22,6 +22,7 @@ export * from './Decal'
 export * from './Svg'
 export * from './Gltf'
 export * from './AsciiRenderer'
+export * from './Splat'
 
 // Cameras
 export * from './OrthographicCamera'
@@ -123,6 +124,7 @@ export * from './useEnvironment'
 export * from './useMatcapTexture'
 export * from './useNormalTexture'
 export * from './Wireframe'
+export * from './ShadowAlpha'
 
 // Performance
 export * from './Points'
@@ -141,4 +143,5 @@ export * from './RenderTexture'
 export * from './RenderCubeTexture'
 export * from './Mask'
 export * from './Hud'
+export * from './Fisheye'
 export * from './MeshPortalMaterial'

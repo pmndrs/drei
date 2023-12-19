@@ -15,6 +15,15 @@ export interface BVHOptions {
   maxDepth?: number
   /** The number of triangles to aim for in a leaf node, default: 10 */
   maxLeafTris?: number
+
+  /** If false then an index buffer is created if it does not exist and is rearranged */
+  /** to hold the bvh structure. If false then a separate buffer is created to store the */
+  /** structure and the index buffer (or lack thereof) is retained. This can be used */
+  /** when the existing index layout is important or groups are being used so a */
+  /** single BVH hierarchy can be created to improve performance. */
+  /** default: false */
+  /** Note: This setting is experimental */
+  indirect?: boolean
 }
 
 export type BvhProps = BVHOptions &
@@ -37,6 +46,7 @@ export function useBVH(mesh: React.MutableRefObject<Mesh | undefined>, options?:
     setBoundingBox: true,
     maxDepth: 40,
     maxLeafTris: 10,
+    indirect: false,
     ...options,
   }
   React.useEffect(() => {
@@ -56,7 +66,7 @@ export function useBVH(mesh: React.MutableRefObject<Mesh | undefined>, options?:
   }, [mesh, JSON.stringify(options)])
 }
 
-export const Bvh: ForwardRefComponent<BvhProps, Group> = React.forwardRef(
+export const Bvh: ForwardRefComponent<BvhProps, Group> = /* @__PURE__ */ React.forwardRef(
   (
     {
       enabled = true,
@@ -67,6 +77,7 @@ export const Bvh: ForwardRefComponent<BvhProps, Group> = React.forwardRef(
       setBoundingBox = true,
       maxDepth = 40,
       maxLeafTris = 10,
+      indirect = false,
       ...props
     }: BvhProps,
     fref
@@ -78,7 +89,7 @@ export const Bvh: ForwardRefComponent<BvhProps, Group> = React.forwardRef(
 
     React.useEffect(() => {
       if (enabled) {
-        const options = { strategy, verbose, setBoundingBox, maxDepth, maxLeafTris }
+        const options = { strategy, verbose, setBoundingBox, maxDepth, maxLeafTris, indirect }
         const group = ref.current
         // This can only safely work if the component is used once, but there is no alternative.
         // Hijacking the raycast method to do it for individual meshes is not an option as it would
@@ -103,7 +114,7 @@ export const Bvh: ForwardRefComponent<BvhProps, Group> = React.forwardRef(
           })
         }
       }
-    })
+    }, [])
 
     return (
       <group ref={ref} {...props}>

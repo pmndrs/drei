@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { applyProps, ReactThreeFiber } from '@react-three/fiber'
+import { IUniform } from 'three'
 
 // credits for the box-projecting shader code go to codercat (https://codercat.tk)
 // and @0beqz https://gist.github.com/0beqz/8d51b4ae16d68021a09fb504af708fca
@@ -49,9 +50,17 @@ const getIBLRadiance_patch = /* glsl */ `
 #endif
 `
 
-function boxProjectedEnvMap(shader: THREE.Shader, envMapPosition: THREE.Vector3, envMapSize: THREE.Vector3) {
+// FIXME Replace with `THREE.WebGLProgramParametersWithUniforms` type when able to target @types/three@0.160.0
+interface MaterialShader {
+  vertexShader: string
+  fragmentShader: string
+  defines: { [define: string]: string | number | boolean } | undefined
+  uniforms: { [uniform: string]: IUniform }
+}
+
+function boxProjectedEnvMap(shader: MaterialShader, envMapPosition: THREE.Vector3, envMapSize: THREE.Vector3) {
   // defines
-  ;(shader as any).defines.BOX_PROJECTED_ENV_MAP = true
+  shader.defines!.BOX_PROJECTED_ENV_MAP = true
   // uniforms
   shader.uniforms.envMapPosition = { value: envMapPosition }
   shader.uniforms.envMapSize = { value: envMapSize }
@@ -89,7 +98,7 @@ export function useBoxProjectedEnv(
   const spread = React.useMemo(
     () => ({
       ref,
-      onBeforeCompile: (shader: THREE.Shader) => boxProjectedEnvMap(shader, config.position, config.size),
+      onBeforeCompile: (shader: MaterialShader) => boxProjectedEnvMap(shader, config.position, config.size),
       customProgramCacheKey: () => JSON.stringify(config.position.toArray()) + JSON.stringify(config.size.toArray()),
     }),
     [...config.position.toArray(), ...config.size.toArray()]

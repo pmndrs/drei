@@ -1,7 +1,6 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { applyProps, ReactThreeFiber } from '@react-three/fiber'
-import { IUniform } from 'three'
 
 // credits for the box-projecting shader code go to codercat (https://codercat.tk)
 // and @0beqz https://gist.github.com/0beqz/8d51b4ae16d68021a09fb504af708fca
@@ -55,7 +54,7 @@ interface MaterialShader {
   vertexShader: string
   fragmentShader: string
   defines: { [define: string]: string | number | boolean } | undefined
-  uniforms: { [uniform: string]: IUniform }
+  uniforms: { [uniform: string]: THREE.IUniform }
 }
 
 function boxProjectedEnvMap(shader: MaterialShader, envMapPosition: THREE.Vector3, envMapSize: THREE.Vector3) {

@@ -251,10 +251,14 @@ const ScrollHtml: ForwardRefComponent<{ children?: React.ReactNode; style?: Reac
     }
   )
 
-type ScrollProps = {
-  html?: boolean
-  children?: React.ReactNode
-}
+type ScrollProps =
+  | { children?: React.ReactNode } & (
+      | {
+          html?: false
+          style?: never
+        }
+      | { html: true; style?: React.CSSProperties }
+    )
 
 export const Scroll: ForwardRefComponent<ScrollProps, THREE.Group & HTMLDivElement> = /* @__PURE__ */ React.forwardRef(
   ({ html, ...props }: ScrollProps, ref) => {

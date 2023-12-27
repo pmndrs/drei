@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useFrame, Vector3 } from '@react-three/fiber'
 import * as THREE from 'three'
-import { Instances, Instance } from '@react-three/drei'
+import { Instances, Instance } from './Instances'
 
 export type SpriteAnimatorProps = {
   startFrame?: number

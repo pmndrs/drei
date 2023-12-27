@@ -2551,6 +2551,10 @@ type Props = {
   playBackwards: boolean
   /** Allows the animation to be paused after it ended so it can be restarted on demand via auto */
   resetOnEnd?: boolean
+  /** An array of items to create instances from */
+  instanceItems?: any[]
+  /** The max number of items to instance (optional) */
+  maxItems?: number
 }
 ```
 
@@ -2577,7 +2581,7 @@ Notes:
 ScrollControls example
 
 ```jsx
-<ScrollControls damping={0.2} maxSpeed={0.5} pages={2}>
+;<ScrollControls damping={0.2} maxSpeed={0.5} pages={2}>
   <SpriteAnimator
     position={[0.0, -1.5, -1.5]}
     startFrame={0}
@@ -2587,7 +2591,7 @@ ScrollControls example
     textureImageURL={'sprite.png'}
     textureDataURL={'sprite.json'}
   >
-  <FireScroll />
+    <FireScroll />
   </SpriteAnimator>
 </ScrollControls>
 

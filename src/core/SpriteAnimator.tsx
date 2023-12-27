@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { useFrame, Vector3 } from '@react-three/fiber'
 import * as THREE from 'three'
+import { Instances, Instance } from '@react-three/drei'
 
 export type SpriteAnimatorProps = {
   startFrame?: number
@@ -26,6 +27,8 @@ export type SpriteAnimatorProps = {
   offset?: number
   playBackwards?: boolean
   resetOnEnd?: boolean
+  maxItems?: number
+  instanceItems?: any[]
 } & JSX.IntrinsicElements['group']
 
 type SpriteAnimatorState = {
@@ -69,6 +72,8 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
       offset,
       playBackwards,
       resetOnEnd,
+      maxItems,
+      instanceItems,
       ...props
     },
     fref
@@ -91,6 +96,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
     const pauseRef = React.useRef(pause)
     const pos = React.useRef(offset)
     const softEnd = React.useRef(false)
+    const frameBuffer = React.useRef<any[]>([])
     //
 
     function reset() {}
@@ -245,6 +251,21 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
         setAspect(aspect)
         if (matRef.current) {
           matRef.current.map = _spriteTexture
+        }
+      }
+
+      // buffer for instanced
+      if (instanceItems) {
+        for (var i = 0; i < instanceItems.length; i++) {
+          const keys = Object.keys(spriteData.current.frames)
+          const randomKey = keys[Math.floor(Math.random() * keys.length)]
+
+          frameBuffer.current.push({
+            key: i,
+            frames: spriteData.current.frames,
+            selectedFrame: randomKey,
+            offset: { x: 0, y: 0 },
+          })
         }
       }
 
@@ -503,7 +524,9 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
               </sprite>
             )}
             {!displayAsSprite && (
-              <mesh ref={spriteRef} scale={aspect}>
+              <Instances
+                limit={maxItems} // Optional: max amount of items (for calculating buffer size)
+              >
                 <planeGeometry args={[1, 1]} />
                 <meshBasicMaterial
                   toneMapped={false}
@@ -513,7 +536,26 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
                   transparent={true}
                   alphaTest={alphaTest ?? 0.0}
                 />
-              </mesh>
+
+                {(instanceItems ?? [0]).map((item, index) => {
+                  const texture = spriteTexture.clone()
+                  if (matRef.current && frameBuffer.current[index]) {
+                    texture.offset.set(frameBuffer.current[index].offset.x, frameBuffer.current[index].offset.y) // Set the offset for this item
+                  }
+
+                  return (
+                    <Instance key={index} ref={spriteRef} position={item} scale={aspect}>
+                      <meshBasicMaterial
+                        toneMapped={false}
+                        side={THREE.DoubleSide}
+                        map={texture}
+                        transparent={true}
+                        alphaTest={alphaTest ?? 0.0}
+                      />
+                    </Instance>
+                  )
+                })}
+              </Instances>
             )}
           </React.Suspense>
           {children}

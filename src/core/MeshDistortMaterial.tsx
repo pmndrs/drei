@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { MeshPhysicalMaterial, MeshPhysicalMaterialParameters, Shader } from 'three'
+import { IUniform, MeshPhysicalMaterial, MeshPhysicalMaterialParameters } from 'three'
 import { useFrame } from '@react-three/fiber'
 // eslint-disable-next-line
 // @ts-ignore
@@ -42,7 +42,8 @@ class DistortMaterialImpl extends MeshPhysicalMaterial {
     this._radius = { value: 1 }
   }
 
-  onBeforeCompile(shader: Shader) {
+  // FIXME Use `THREE.WebGLProgramParametersWithUniforms` type when able to target @types/three@0.160.0
+  onBeforeCompile(shader: { vertexShader: string; uniforms: { [uniform: string]: IUniform } }) {
     shader.uniforms.time = this._time
     shader.uniforms.radius = this._radius
     shader.uniforms.distort = this._distort

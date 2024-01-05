@@ -2545,8 +2545,16 @@ type Props = {
   alphaTest?: number
   /** Displays the texture on a SpriteGeometry always facing the camera, if set to false, it renders on a PlaneGeometry */
   asSprite?: boolean
+  /** Allows for manual update of the sprite animation e.g: via ScrollControls */
+  offset?: number
+  /** Allows the sprite animation to start from the end towards the start */
+  playBackwards: boolean
   /** Allows the animation to be paused after it ended so it can be restarted on demand via auto */
   resetOnEnd?: boolean
+  /** An array of items to create instances from */
+  instanceItems?: any[]
+  /** The max number of items to instance (optional) */
+  maxItems?: number
 }
 ```
 
@@ -2568,6 +2576,37 @@ Notes:
   numberOfFrames={16}
   textureImageURL={'./alien.png'}
 />
+```
+
+ScrollControls example
+
+```jsx
+;<ScrollControls damping={0.2} maxSpeed={0.5} pages={2}>
+  <SpriteAnimator
+    position={[0.0, -1.5, -1.5]}
+    startFrame={0}
+    onEnd={doSomethingOnEnd}
+    onStart={doSomethingOnStart}
+    autoPlay={true}
+    textureImageURL={'sprite.png'}
+    textureDataURL={'sprite.json'}
+  >
+    <FireScroll />
+  </SpriteAnimator>
+</ScrollControls>
+
+function FireScroll() {
+  const sprite = useSpriteAnimator()
+  const scroll = useScroll()
+  const ref = React.useRef()
+  useFrame(() => {
+    if (sprite && scroll) {
+      sprite.current = scroll.offset
+    }
+  })
+
+  return null
+}
 ```
 
 #### Stats

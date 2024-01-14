@@ -4,7 +4,7 @@ import { Setup } from '../Setup'
 
 import { Sphere, Trail, useTrail, Html, Stats, Float, PerspectiveCamera } from '../../src'
 import { useFrame } from '@react-three/fiber'
-import { InstancedMesh, Mesh, Object3D, Vector3 } from 'three'
+import { Group, InstancedMesh, Mesh, Object3D, Vector3 } from 'three'
 
 export default {
   title: 'Misc/Trail',
@@ -13,7 +13,7 @@ export default {
 }
 
 function TrailScene() {
-  const group = React.useRef<Mesh>(null!)
+  const group = React.useRef<Group>(null!)
   const sphere = React.useRef<Mesh>(null!)
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime()
@@ -102,7 +102,7 @@ export const UseTrailSt = () => <UseTrailScene />
 UseTrailSt.storyName = 'useTrail with Instances'
 
 function UseTrailFloat() {
-  const ref = React.useRef(null!)
+  const ref = React.useRef<Group>(null!)
   return (
     <>
       <Trail

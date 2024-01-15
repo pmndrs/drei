@@ -50,14 +50,14 @@ function TrailScene() {
 export const TrailsSt = () => <TrailScene />
 TrailsSt.storyName = 'Default'
 
-type TheTrailProps = {
-  sphereRef: React.RefObject<Mesh>
+type InstancesTrailProps = {
+  sphere: Mesh
   instancesRef: React.RefObject<InstancedMesh>
 }
 
 // Trail component
-function TheTrail({ sphereRef, instancesRef }: TheTrailProps) {
-  const trailPositions = useTrail(sphereRef.current!, { length: 5, decay: 5, interval: 6 })
+function InstancesTrail({ sphere, instancesRef }: InstancesTrailProps) {
+  const trailPositions = useTrail(sphere, { length: 5, decay: 5, interval: 6 })
   const n = 1000
   const oRef = React.useRef(new Object3D())
 
@@ -86,27 +86,30 @@ function TheTrail({ sphereRef, instancesRef }: TheTrailProps) {
 }
 
 function UseTrailScene() {
-  const sphereRef = React.useRef<Mesh>(null!)
+  const [sphere, setSphere] = React.useState<Mesh | null>(null)
   const instancesRef = React.useRef<InstancedMesh>(null!)
 
-  const [isSphereReady, setIsSphereReady] = React.useState(false)
-  React.useEffect(() => {
-    if (sphereRef.current) setIsSphereReady(true)
-  }, [sphereRef.current])
+  const sphereRefCallback = (node: Mesh) => {
+    if (node !== null) {
+      setSphere(node)
+    }
+  }
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime()
 
-    sphereRef.current.position.x = Math.sin(t) * 3 + Math.cos(t * 2)
-    sphereRef.current.position.y = Math.cos(t) * 3
+    if (!sphere) return
+
+    sphere.position.x = Math.sin(t) * 3 + Math.cos(t * 2)
+    sphere.position.y = Math.cos(t) * 3
   })
 
   return (
     <>
-      <Sphere ref={sphereRef} args={[0.1, 32, 32]} position-x={0} position-y={3}>
+      <Sphere ref={sphereRefCallback} args={[0.1, 32, 32]} position-x={0} position-y={3}>
         <meshNormalMaterial />
       </Sphere>
-      {isSphereReady && <TheTrail sphereRef={sphereRef} instancesRef={instancesRef} />}
+      {sphere && <InstancesTrail sphere={sphere} instancesRef={instancesRef} />}
     </>
   )
 }

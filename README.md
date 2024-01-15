@@ -3638,30 +3638,44 @@ integrations into your view.
 > versions of `@react-three/fiber`.
 
 ```tsx
-<View
-  /** The tracking element, the view will be cut according to its whereabouts */
-  track: React.MutableRefObject<HTMLElement>
+export type ViewProps = {
+  /** Root element, default: "div" */
+  as?: string
+  id?: string
+  className?: string
+  style?: React.CSSProperties
   /** Views take over the render loop, optional render index (1 by default) */
   index?: number
-  /** If you know your view is always at the same place set this to 1 to avoid needless getBoundingClientRect overhead. The default is Infinity, which is best for css animations */
+  /** If you know your view is always at the same place set this to 1 to avoid needless getBoundingClientRect overhead */
   frames?: number
   /** The scene to render, if you leave this undefined it will render the default scene */
   children?: React.ReactNode
-/>
+}
+
+type ViewType = { Port: () => React.ReactNode } & React.ForwardRefExoticComponent<
+  ViewProps & React.RefAttributes<HTMLElement | THREE.Group>
+>
 ```
 
+You can define as many views as you like, directly mix them into your dom graph, right where you want them to appear. Use `View.port` inside the canvas to out them. The canvas should ideally fill the entire screen with absolute positioning, underneath HTML or on top of it, as you prefer.
+
 ```jsx
-const container = useRef()
-const tracking = useRef()
 return (
   <main ref={container}>
     <h1>Html content here</h1>
-    <div ref={tracking} style={{ width: 200, height: 200 }} />
+    <View style={{ width: 200, height: 200 }}>
+      <mesh />
+      <OrbitControls />
+    </View>
+    <View className="canvas-view">
+      <mesh />
+      <CameraControls />
+    </View>
     <Canvas eventSource={container}>
-      <View track={tracking}>
-        <mesh />
-        <OrbitControls />
-      </View>
+      <View.Port />
+    </Canvas>
+  </main>
+)
 ```
 
 #### RenderTexture

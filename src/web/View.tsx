@@ -1,10 +1,12 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { createPortal, useFrame, useThree } from '@react-three/fiber'
+import { context, createPortal, useFrame, useThree } from '@react-three/fiber'
+import tunnel from 'tunnel-rat'
 
 const isOrthographicCamera = (def: any): def is THREE.OrthographicCamera =>
   def && (def as THREE.OrthographicCamera).isOrthographicCamera
 const col = /* @__PURE__ */ new THREE.Color()
+const tracked = /* @__PURE__ */ tunnel()
 
 /**
  * In `@react-three/fiber` after `v8.0.0` but prior to `v8.1.0`, `state.size` contained only dimension
@@ -37,6 +39,11 @@ export type ContainerProps = {
 }
 
 export type ViewProps = {
+  /** Root element, default: "div" */
+  as?: string
+  id?: string
+  className?: string
+  style?: React.CSSProperties
   /** The tracking element, the view will be cut according to its whereabouts */
   track: React.MutableRefObject<HTMLElement>
   /** Views take over the render loop, optional render index (1 by default) */
@@ -61,13 +68,11 @@ function computeContainerPosition(
     const canvasBottom = canvasSize.top + canvasSize.height
     const bottom = canvasBottom - trackBottom
     const left = trackLeft - canvasSize.left
-
     return { position: { width, height, left, top, bottom, right }, isOffscreen }
   }
 
   // Fall back on old behavior if r3f < 8.1.0
   const bottom = canvasSize.height - trackBottom
-
   return { position: { width, height, top, left: trackLeft, bottom, right }, isOffscreen }
 }
 
@@ -77,6 +82,7 @@ function Container({ canvasSize, scene, index, children, frames, rect, track }: 
   const virtualScene = useThree((state) => state.scene)
   const setEvents = useThree((state) => state.setEvents)
 
+  let autoClear
   let frameCount = 0
   useFrame((state) => {
     if (frames === Infinity || frameCount <= frames) {
@@ -107,6 +113,8 @@ function Container({ canvasSize, scene, index, children, frames, rect, track }: 
         camera.updateProjectionMatrix()
       }
 
+      autoClear = state.gl.autoClear
+      state.gl.autoClear = false
       state.gl.setViewport(left, bottom, width, height)
       state.gl.setScissor(left, bottom, width, height)
       state.gl.setScissorTest(true)
@@ -120,7 +128,8 @@ function Container({ canvasSize, scene, index, children, frames, rect, track }: 
         state.gl.render(children ? virtualScene : scene, camera)
       }
       // Restore the default state
-      state.gl.setScissorTest(true)
+      state.gl.setScissorTest(false)
+      state.gl.autoClear = autoClear
     }
   }, index)
 
@@ -144,47 +153,96 @@ function Container({ canvasSize, scene, index, children, frames, rect, track }: 
   return <>{children}</>
 }
 
-export const View = ({ track, index = 1, frames = Infinity, children }: ViewProps) => {
-  const rect = React.useRef<DOMRect>(null!)
-  const { size, scene } = useThree()
-  const [virtualScene] = React.useState(() => new THREE.Scene())
+const CanvasView = React.forwardRef(
+  (
+    { track, index = 1, id, style, className, frames = Infinity, children, ...props }: ViewProps,
+    fref: React.ForwardedRef<THREE.Group>
+  ) => {
+    const rect = React.useRef<DOMRect>(null!)
+    const { size, scene } = useThree()
+    const [virtualScene] = React.useState(() => new THREE.Scene())
 
-  const compute = React.useCallback(
-    (event, state) => {
-      if (rect.current && track.current && event.target === track.current) {
-        const { width, height, left, top } = rect.current
-        const x = event.clientX - left
-        const y = event.clientY - top
-        state.pointer.set((x / width) * 2 - 1, -(y / height) * 2 + 1)
-        state.raycaster.setFromCamera(state.pointer, state.camera)
-      }
-    },
-    [rect, track]
-  )
+    const compute = React.useCallback(
+      (event, state) => {
+        if (rect.current && track.current && event.target === track.current) {
+          const { width, height, left, top } = rect.current
+          const x = event.clientX - left
+          const y = event.clientY - top
+          state.pointer.set((x / width) * 2 - 1, -(y / height) * 2 + 1)
+          state.raycaster.setFromCamera(state.pointer, state.camera)
+        }
+      },
+      [rect, track]
+    )
 
-  const [ready, toggle] = React.useReducer(() => true, false)
-  React.useEffect(() => {
-    // We need the tracking elements bounds beforehand in order to inject it into the portal
-    rect.current = track.current?.getBoundingClientRect()
-    // And now we can proceed
-    toggle()
-  }, [track])
+    const [ready, toggle] = React.useReducer(() => true, false)
+    React.useEffect(() => {
+      // We need the tracking elements bounds beforehand in order to inject it into the portal
+      rect.current = track.current?.getBoundingClientRect()
+      // And now we can proceed
+      toggle()
+    }, [track])
 
-  return (
-    <>
-      {ready &&
-        createPortal(
-          <Container canvasSize={size} frames={frames} scene={scene} track={track} rect={rect} index={index}>
+    return (
+      <group ref={fref} {...props}>
+        {ready &&
+          createPortal(
+            <Container canvasSize={size} frames={frames} scene={scene} track={track} rect={rect} index={index}>
+              {children}
+            </Container>,
+            virtualScene,
+            {
+              events: { compute, priority: index },
+              size: {
+                width: rect.current?.width,
+                height: rect.current?.height,
+                // @ts-ignore
+                top: rect.current?.top,
+                // @ts-ignore
+                left: rect.current?.left,
+              },
+            }
+          )}
+      </group>
+    )
+  }
+)
+
+const HtmlView = React.forwardRef(
+  (
+    { as: El = 'div', id, className, style, index = 1, track, frames = Infinity, children, ...props }: ViewProps,
+    fref: React.ForwardedRef<HTMLElement>
+  ) => {
+    const uuid = React.useId()
+    const ref = React.useRef<HTMLElement>(null!)
+    React.useImperativeHandle(fref, () => ref.current)
+    return (
+      <>
+        {/** @ts-ignore */}
+        <El ref={ref} id={id} className={className} style={style} {...props} />
+        <tracked.In>
+          <CanvasView key={uuid} track={ref} frames={frames} index={index}>
             {children}
-            {/* Without an element that receives pointer events state.pointer will always be 0/0 */}
-            <group onPointerOver={() => null} />
-          </Container>,
-          virtualScene,
-          {
-            events: { compute, priority: index },
-            size: { width: rect.current?.width, height: rect.current?.height } as any,
-          }
-        )}
-    </>
-  )
-}
+          </CanvasView>
+        </tracked.In>
+      </>
+    )
+  }
+)
+
+type ViewType = { Port: () => React.ReactNode } & React.ForwardRefExoticComponent<
+  ViewProps & React.RefAttributes<HTMLElement | THREE.Group>
+>
+
+export const View: ViewType = React.forwardRef(
+  (props: ViewProps, fref: React.ForwardedRef<HTMLElement | THREE.Group>) => {
+    // If we're inside a canvas we should be able to access the context store
+    const store = React.useContext(context)
+    // If that's not the case we render a tunnel
+    if (!store) return <HtmlView ref={fref as unknown as React.ForwardedRef<HTMLElement>} {...props} />
+    // Otherwise a plain canvas-view
+    else return <CanvasView ref={fref as unknown as React.ForwardedRef<THREE.Group>} {...props} />
+  }
+) as ViewType
+
+View.Port = () => <tracked.Out />

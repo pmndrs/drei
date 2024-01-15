@@ -193,6 +193,7 @@ export const Instances: ForwardRefComponent<InstancesProps, InstancedMesh> = /* 
         usage={THREE.DynamicDrawUsage}
       />
       {typeof children === 'function' ? (
+        // @ts-ignore
         <context.Provider value={api}>{children(instance)}</context.Provider>
       ) : (
         <globalContext.Provider value={api}>{children}</globalContext.Provider>

@@ -210,6 +210,7 @@ export function ScrollControls({
   return <context.Provider value={state}>{children}</context.Provider>
 }
 
+// @ts-ignore
 const ScrollCanvas: ForwardRefComponent<{}, THREE.Group> = /* @__PURE__ */ React.forwardRef(({ children }, ref) => {
   const group = React.useRef<THREE.Group>(null!)
   const state = useScroll()

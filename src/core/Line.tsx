@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Vector2, Vector3, Color, ColorRepresentation } from 'three'
+import { Vector2, Vector3, Vector4, Color, ColorRepresentation } from 'three'
 import { ReactThreeFiber, useThree } from '@react-three/fiber'
 import {
   LineGeometry,
@@ -33,7 +33,7 @@ export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = /* @_
     const geom = segments ? new LineSegmentsGeometry() : new LineGeometry()
     const pValues = points.map((p) => {
       const isArray = Array.isArray(p)
-      return p instanceof Vector3
+      return (p instanceof Vector3 || p instanceof Vector4) && !isArray
         ? [p.x, p.y, p.z]
         : p instanceof Vector2
         ? [p.x, p.y, 0]

@@ -133,11 +133,17 @@ function Container({ canvasSize, scene, index, children, frames, rect, track }: 
     }
   }, index)
 
+  const gl = useThree((state) => state.gl)
   React.useEffect(() => {
     // Connect the event layer to the tracking element
     const old = get().events.connected
     setEvents({ connected: track.current })
-    return () => setEvents({ connected: old })
+    return () => {
+      gl.getClearColor(col)
+      gl.setClearColor(col, gl.getClearAlpha())
+      gl.clear(true, true)
+      setEvents({ connected: old })
+    }
   }, [])
 
   React.useEffect(() => {

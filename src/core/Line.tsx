@@ -33,7 +33,7 @@ export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = /* @_
     const geom = segments ? new LineSegmentsGeometry() : new LineGeometry()
     const pValues = points.map((p) => {
       const isArray = Array.isArray(p)
-      return (p instanceof Vector3 || p instanceof Vector4) && !isArray
+      return p instanceof Vector3 || p instanceof Vector4
         ? [p.x, p.y, p.z]
         : p instanceof Vector2
         ? [p.x, p.y, 0]

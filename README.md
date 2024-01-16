@@ -3666,7 +3666,7 @@ export type ViewportProps = { Port: () => React.ReactNode } & React.ForwardRefEx
 >
 ```
 
-You can define as many views as you like, directly mix them into your dom graph, right where you want them to appear. Use `View.Port` inside the canvas to output them. The canvas should ideally fill the entire screen with absolute positioning, underneath HTML or on top of it, as you prefer.
+You can define as many views as you like, directly mix them into your dom graph, right where you want them to appear. `View` is an unstyled HTML DOM element (by default a div, and it takes the same properties as one). Use `View.Port` inside the canvas to output them. The canvas should ideally fill the entire screen with absolute positioning, underneath HTML or on top of it, as you prefer.
 
 ```jsx
 return (

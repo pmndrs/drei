@@ -3639,36 +3639,45 @@ integrations into your view.
 
 ```tsx
 export type ViewProps = {
-  /** Root element, default: "div" */
+  /** Root element type, default: div */
   as?: string
+  /** CSS id prop */
   id?: string
+  /** CSS classname prop */
   className?: string
+  /** CSS style prop */
   style?: React.CSSProperties
+  /** If the view is visible or not, default: true */
+  visible?: boolean
   /** Views take over the render loop, optional render index (1 by default) */
   index?: number
   /** If you know your view is always at the same place set this to 1 to avoid needless getBoundingClientRect overhead */
   frames?: number
   /** The scene to render, if you leave this undefined it will render the default scene */
   children?: React.ReactNode
+  /** The tracking element, the view will be cut according to its whereabouts
+   * @deprecated
+   */
+  track: React.MutableRefObject<HTMLElement>
 }
 
-type ViewType = { Port: () => React.ReactNode } & React.ForwardRefExoticComponent<
+export type ViewportProps = { Port: () => React.ReactNode } & React.ForwardRefExoticComponent<
   ViewProps & React.RefAttributes<HTMLElement | THREE.Group>
 >
 ```
 
-You can define as many views as you like, directly mix them into your dom graph, right where you want them to appear. Use `View.port` inside the canvas to out them. The canvas should ideally fill the entire screen with absolute positioning, underneath HTML or on top of it, as you prefer.
+You can define as many views as you like, directly mix them into your dom graph, right where you want them to appear. Use `View.Port` inside the canvas to output them. The canvas should ideally fill the entire screen with absolute positioning, underneath HTML or on top of it, as you prefer.
 
 ```jsx
 return (
   <main ref={container}>
     <h1>Html content here</h1>
     <View style={{ width: 200, height: 200 }}>
-      <mesh />
+      <mesh geometry={foo} />
       <OrbitControls />
     </View>
     <View className="canvas-view">
-      <mesh />
+      <mesh geometry={bar} />
       <CameraControls />
     </View>
     <Canvas eventSource={container}>

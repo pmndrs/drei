@@ -3638,30 +3638,53 @@ integrations into your view.
 > versions of `@react-three/fiber`.
 
 ```tsx
-<View
-  /** The tracking element, the view will be cut according to its whereabouts */
-  track: React.MutableRefObject<HTMLElement>
+export type ViewProps = {
+  /** Root element type, default: div */
+  as?: string
+  /** CSS id prop */
+  id?: string
+  /** CSS classname prop */
+  className?: string
+  /** CSS style prop */
+  style?: React.CSSProperties
+  /** If the view is visible or not, default: true */
+  visible?: boolean
   /** Views take over the render loop, optional render index (1 by default) */
   index?: number
-  /** If you know your view is always at the same place set this to 1 to avoid needless getBoundingClientRect overhead. The default is Infinity, which is best for css animations */
+  /** If you know your view is always at the same place set this to 1 to avoid needless getBoundingClientRect overhead */
   frames?: number
   /** The scene to render, if you leave this undefined it will render the default scene */
   children?: React.ReactNode
-/>
+  /** The tracking element, the view will be cut according to its whereabouts
+   * @deprecated
+   */
+  track: React.MutableRefObject<HTMLElement>
+}
+
+export type ViewportProps = { Port: () => React.ReactNode } & React.ForwardRefExoticComponent<
+  ViewProps & React.RefAttributes<HTMLElement | THREE.Group>
+>
 ```
 
+You can define as many views as you like, directly mix them into your dom graph, right where you want them to appear. `View` is an unstyled HTML DOM element (by default a div, and it takes the same properties as one). Use `View.Port` inside the canvas to output them. The canvas should ideally fill the entire screen with absolute positioning, underneath HTML or on top of it, as you prefer.
+
 ```jsx
-const container = useRef()
-const tracking = useRef()
 return (
   <main ref={container}>
     <h1>Html content here</h1>
-    <div ref={tracking} style={{ width: 200, height: 200 }} />
+    <View style={{ width: 200, height: 200 }}>
+      <mesh geometry={foo} />
+      <OrbitControls />
+    </View>
+    <View className="canvas-view">
+      <mesh geometry={bar} />
+      <CameraControls />
+    </View>
     <Canvas eventSource={container}>
-      <View track={tracking}>
-        <mesh />
-        <OrbitControls />
-      </View>
+      <View.Port />
+    </Canvas>
+  </main>
+)
 ```
 
 #### RenderTexture

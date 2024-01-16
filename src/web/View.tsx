@@ -126,20 +126,23 @@ function Container({ visible = true, canvasSize, scene, index, children, frames,
       rect.current = track.current?.getBoundingClientRect()
       frameCount++
     }
-    const { position, isOffscreen: _isOffscreen } = computeContainerPosition(canvasSize, rect.current)
-    if (isOffscreen !== _isOffscreen) setOffscreen(_isOffscreen)
-    if (visible && !isOffscreen && rect.current) {
-      const autoClear = prepareSkissor(state, position)
-      // When children are present render the portalled scene, otherwise the default scene
-      state.gl.render(children ? state.scene : scene, state.camera)
-      finishSkissor(state, autoClear)
+    if (rect.current) {
+      const { position, isOffscreen: _isOffscreen } = computeContainerPosition(canvasSize, rect.current)
+      if (isOffscreen !== _isOffscreen) setOffscreen(_isOffscreen)
+      if (visible && !isOffscreen && rect.current) {
+        const autoClear = prepareSkissor(state, position)
+        // When children are present render the portalled scene, otherwise the default scene
+        state.gl.render(children ? state.scene : scene, state.camera)
+        finishSkissor(state, autoClear)
+      }
     }
   }, index)
 
   React.useLayoutEffect(() => {
-    if (!visible || !isOffscreen) {
+    const curRect = rect.current
+    if (curRect && (!visible || !isOffscreen)) {
       // If the view is not visible clear it once, but stop rendering afterwards!
-      const { position } = computeContainerPosition(canvasSize, rect.current)
+      const { position } = computeContainerPosition(canvasSize, curRect)
       const autoClear = prepareSkissor(rootState, position)
       clear(rootState)
       finishSkissor(rootState, autoClear)
@@ -147,22 +150,23 @@ function Container({ visible = true, canvasSize, scene, index, children, frames,
   }, [visible, isOffscreen])
 
   React.useEffect(() => {
+    const curRect = rect.current
     // Connect the event layer to the tracking element
     const old = rootState.get().events.connected
     rootState.setEvents({ connected: track.current })
     return () => {
-      const { position } = computeContainerPosition(canvasSize, rect.current)
-      const autoClear = prepareSkissor(rootState, position)
-      clear(rootState)
-      finishSkissor(rootState, autoClear)
+      if (curRect) {
+        const { position } = computeContainerPosition(canvasSize, curRect)
+        const autoClear = prepareSkissor(rootState, position)
+        clear(rootState)
+        finishSkissor(rootState, autoClear)
+      }
       rootState.setEvents({ connected: old })
     }
   }, [])
 
   React.useEffect(() => {
-    if (isNonLegacyCanvasSize(canvasSize)) {
-      return
-    }
+    if (isNonLegacyCanvasSize(canvasSize)) return
     console.warn(
       'Detected @react-three/fiber canvas size does not include position information. <View /> may not work as expected. ' +
         'Upgrade to @react-three/fiber ^8.1.0 for support.\n See https://github.com/pmndrs/drei/issues/944'

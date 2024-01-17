@@ -2815,7 +2815,7 @@ return (
 
 ![](https://img.shields.io/badge/-Dom only-red)
 
-A small hook that sets the css body cursor according to the hover state of a mesh, so that you can give the use visual feedback when the mouse enters a shape. Arguments 1 and 2 determine the style, the defaults are: onPointerOver = 'pointer', onPointerOut = 'auto'.
+A small hook that sets the css body cursor according to the hover state of a mesh, so that you can give the user visual feedback when the mouse enters a shape. Arguments 1 and 2 determine the style, the defaults are: onPointerOver = 'pointer', onPointerOut = 'auto'.
 
 ```jsx
 const [hovered, set] = useState()

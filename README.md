@@ -1310,10 +1310,26 @@ api.eyeRightRef.current.irisDirRef.current.localToWorld(new THREE.Vector3(0, 0, 
 
 A shader-based image component with auto-cover (similar to css/background: cover).
 
+```tsx
+export type ImageProps = Omit<JSX.IntrinsicElements['mesh'], 'scale'> & {
+  segments?: number
+  scale?: number | [number, number]
+  color?: Color
+  zoom?: number
+  radius?: number
+  grayscale?: number
+  toneMapped?: boolean
+  transparent?: boolean
+  opacity?: number
+  side?: THREE.Side
+}
+```
+
 ```jsx
 function Foo() {
   const ref = useRef()
   useFrame(() => {
+    ref.current.material.radius = ... // between 0 and 1
     ref.current.material.zoom = ... // 1 and higher
     ref.current.material.grayscale = ... // between 0 and 1
     ref.current.material.color.set(...) // mix-in color

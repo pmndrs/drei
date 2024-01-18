@@ -1302,6 +1302,7 @@ api.eyeRightRef.current.irisDirRef.current.localToWorld(new THREE.Vector3(0, 0, 
 #### Image
 
 <p>
+  <a href="https://codesandbox.io/s/9s2wd9"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/9s2wd9/screenshot.png" alt="Horizontal tiles"/></a>
   <a href="https://codesandbox.io/s/l4klb"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/l4klb/screenshot.png" alt="Horizontal tiles"/></a>
   <a href="https://codesandbox.io/s/gsm1y"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/gsm1y/screenshot.png" alt="useIntersect"/></a>
   <a href="https://codesandbox.io/s/x8gvs"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/x8gvs/screenshot.png" alt="Infinite scroll"/></a>

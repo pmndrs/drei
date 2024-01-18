@@ -13,7 +13,7 @@ import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type LineProps = {
   points: Array<Vector3 | Vector2 | [number, number, number] | [number, number] | number>
-  vertexColors?: Array<Color | [number, number, number]>
+  vertexColors?: Array<Color | [number, number, number] | [number, number, number, number]>
   lineWidth?: number
   segments?: boolean
 } & Omit<LineMaterialParameters, 'vertexColors' | 'color'> &
@@ -29,6 +29,7 @@ export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = /* @_
   const size = useThree((state) => state.size)
   const line2 = React.useMemo(() => (segments ? new LineSegments2() : new Line2()), [segments])
   const [lineMaterial] = React.useState(() => new LineMaterial())
+  const itemSize = (vertexColors?.[0] as number[] | undefined)?.length === 4 ? 4 : 3
   const lineGeom = React.useMemo(() => {
     const geom = segments ? new LineSegmentsGeometry() : new LineGeometry()
     const pValues = points.map((p) => {
@@ -48,11 +49,11 @@ export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = /* @_
 
     if (vertexColors) {
       const cValues = vertexColors.map((c) => (c instanceof Color ? c.toArray() : c))
-      geom.setColors(cValues.flat())
+      geom.setColors(cValues.flat(), itemSize)
     }
 
     return geom
-  }, [points, segments, vertexColors])
+  }, [points, segments, vertexColors, itemSize])
 
   React.useLayoutEffect(() => {
     line2.computeLineDistances()
@@ -83,6 +84,7 @@ export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = /* @_
         resolution={[size.width, size.height]}
         linewidth={linewidth ?? lineWidth}
         dashed={dashed}
+        transparent={itemSize === 4}
         {...rest}
       />
     </primitive>

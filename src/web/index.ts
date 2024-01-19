@@ -13,3 +13,12 @@ export * from './View'
 
 // Gizmos
 export * from './pivotControls'
+
+// Controls
+export * from './FaceControls'
+
+// Misc
+export * from './FaceLandmarker'
+
+// Shapes
+export * from './Facemesh'

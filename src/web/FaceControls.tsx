@@ -19,7 +19,7 @@ import type { FaceLandmarkerResult } from '@mediapipe/tasks-vision'
 import { easing } from 'maath'
 import { suspend, clear } from 'suspend-react'
 
-import { useVideoTexture } from './useVideoTexture'
+import { useVideoTexture } from '../core/useVideoTexture'
 import { Facemesh, FacemeshApi, FacemeshProps } from './Facemesh'
 import { useFaceLandmarker } from './FaceLandmarker'
 

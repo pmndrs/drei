@@ -210,16 +210,18 @@ export function ScrollControls({
   return <context.Provider value={state}>{children}</context.Provider>
 }
 
-const ScrollCanvas: ForwardRefComponent<{}, THREE.Group> = /* @__PURE__ */ React.forwardRef(({ children }, ref) => {
-  const group = React.useRef<THREE.Group>(null!)
-  const state = useScroll()
-  const { width, height } = useThree((state) => state.viewport)
-  useFrame(() => {
-    group.current.position.x = state.horizontal ? -width * (state.pages - 1) * state.offset : 0
-    group.current.position.y = state.horizontal ? 0 : height * (state.pages - 1) * state.offset
-  })
-  return <group ref={mergeRefs([ref, group])}>{children}</group>
-})
+const ScrollCanvas = /* @__PURE__ */ React.forwardRef(
+  ({ children }: ScrollProps, ref: React.ForwardedRef<THREE.Group>) => {
+    const group = React.useRef<THREE.Group>(null!)
+    const state = useScroll()
+    const { width, height } = useThree((state) => state.viewport)
+    useFrame(() => {
+      group.current.position.x = state.horizontal ? -width * (state.pages - 1) * state.offset : 0
+      group.current.position.y = state.horizontal ? 0 : height * (state.pages - 1) * state.offset
+    })
+    return <group ref={mergeRefs([ref, group])}>{children}</group>
+  }
+)
 
 const ScrollHtml: ForwardRefComponent<{ children?: React.ReactNode; style?: React.CSSProperties }, HTMLDivElement> =
   React.forwardRef(
@@ -263,6 +265,6 @@ type ScrollProps =
 export const Scroll: ForwardRefComponent<ScrollProps, THREE.Group & HTMLDivElement> = /* @__PURE__ */ React.forwardRef(
   ({ html, ...props }: ScrollProps, ref) => {
     const El = html ? ScrollHtml : ScrollCanvas
-    return <El ref={ref} {...props} />
+    return <El ref={ref} {...(props as ScrollProps)} />
   }
 )

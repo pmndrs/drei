@@ -139,6 +139,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#usevideotexture">useVideoTexture</a></li>
           <li><a href="#usetrailtexture">useTrailTexture</a></li>
           <li><a href="#usefont">useFont</a></li>
+          <li><a href="#usespriteloader"></a></li>
         </ul>
         <li><a href="#performance">Performance</a></li>
         <ul>
@@ -2572,6 +2573,8 @@ type Props = {
   instanceItems?: any[]
   /** The max number of items to instance (optional) */
   maxItems?: number
+  /** External parsed sprite data, usually from useSpriteLoader ready for use */
+  spriteDataset?: any
 }
 ```
 
@@ -2580,8 +2583,9 @@ The SpriteAnimator component provided by drei is a powerful tool for animating s
 Notes:
 
 - The SpriteAnimator component internally uses the useFrame hook from react-three-fiber (r3f) for efficient frame updates and rendering.
-- The sprites should contain equal size frames
+- The sprites (without a JSON file) should contain equal size frames
 - Trimming of spritesheet frames is not yet supported
+- Internally uses the `useSpriteLoader` or can use data from it directly
 
 ```jsx
 <SpriteAnimator
@@ -2598,7 +2602,7 @@ Notes:
 ScrollControls example
 
 ```jsx
-;<ScrollControls damping={0.2} maxSpeed={0.5} pages={2}>
+<ScrollControls damping={0.2} maxSpeed={0.5} pages={2}>
   <SpriteAnimator
     position={[0.0, -1.5, -1.5]}
     startFrame={0}
@@ -3233,6 +3237,58 @@ In order to preload you do this:
 ```jsx
 useFont.preload('/fonts/helvetiker_regular.typeface.json')
 ```
+
+#### useSpriteLoader
+
+Loads texture and JSON files with multiple or single animations and parses them into appropriate format. These assets can be used by multiple SpriteAnimator components to save memory and loading times.
+
+```jsx
+/** The texture url to load the sprite frames from */
+input?: Url | null,
+/** The JSON data describing the position of the frames within the texture (optional) */
+json?: string | null,
+/** The animation names into which the frames will be divided into (optional) */
+animationNames?: string[] | null,
+/** The number of frames on a standalone (no JSON data) spritesheet (optional)*/
+numberOfFrames?: number | null,
+/** The callback to call when all textures and data have been loaded and parsed */
+onLoad?: (texture: Texture, textureData?: any) => void
+```
+
+```jsx
+const { spriteObj } = useSpriteLoader(
+  'multiasset.png',
+  'multiasset.json',
+
+  ['orange', 'Idle Blinking', '_Bat'],
+  null
+)
+
+<SpriteAnimator
+  position={[4.5, 0.5, 0.1]}
+  autoPlay={true}
+  loop={true}
+  scale={5}
+  frameName={'_Bat'}
+  animationNames={['_Bat']}
+  spriteDataset={spriteObj}
+  alphaTest={0.01}
+  asSprite={false}
+/>
+
+<SpriteAnimator
+  position={[5.5, 0.5, 5.8]}
+  autoPlay={true}
+  loop={true}
+  scale={5}
+  frameName={'Idle Blinking'}
+  animationNames={['Idle Blinking']}
+  spriteDataset={spriteObj}
+  alphaTest={0.01}
+  asSprite={false}
+/>
+```
+
 
 # Performance
 

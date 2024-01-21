@@ -1302,6 +1302,7 @@ api.eyeRightRef.current.irisDirRef.current.localToWorld(new THREE.Vector3(0, 0, 
 #### Image
 
 <p>
+  <a href="https://codesandbox.io/s/9s2wd9"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/9s2wd9/screenshot.png" alt="Horizontal tiles"/></a>
   <a href="https://codesandbox.io/s/l4klb"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/l4klb/screenshot.png" alt="Horizontal tiles"/></a>
   <a href="https://codesandbox.io/s/gsm1y"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/gsm1y/screenshot.png" alt="useIntersect"/></a>
   <a href="https://codesandbox.io/s/x8gvs"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/x8gvs/screenshot.png" alt="Infinite scroll"/></a>
@@ -1310,10 +1311,26 @@ api.eyeRightRef.current.irisDirRef.current.localToWorld(new THREE.Vector3(0, 0, 
 
 A shader-based image component with auto-cover (similar to css/background: cover).
 
+```tsx
+export type ImageProps = Omit<JSX.IntrinsicElements['mesh'], 'scale'> & {
+  segments?: number
+  scale?: number | [number, number]
+  color?: Color
+  zoom?: number
+  radius?: number
+  grayscale?: number
+  toneMapped?: boolean
+  transparent?: boolean
+  opacity?: number
+  side?: THREE.Side
+}
+```
+
 ```jsx
 function Foo() {
   const ref = useRef()
   useFrame(() => {
+    ref.current.material.radius = ... // between 0 and 1
     ref.current.material.zoom = ... // 1 and higher
     ref.current.material.grayscale = ... // between 0 and 1
     ref.current.material.color.set(...) // mix-in color
@@ -3623,6 +3640,7 @@ type HudProps = {
 
 <p>
   <a href="https://codesandbox.io/s/v5i9wl"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/v5i9wl/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/r9w2ob"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/r9w2ob/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/bp6tmc"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/bp6tmc/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/1wmlew"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/1wmlew/screenshot.png" alt="Demo"/></a>
 </p>
@@ -3638,30 +3656,53 @@ integrations into your view.
 > versions of `@react-three/fiber`.
 
 ```tsx
-<View
-  /** The tracking element, the view will be cut according to its whereabouts */
-  track: React.MutableRefObject<HTMLElement>
+export type ViewProps = {
+  /** Root element type, default: div */
+  as?: string
+  /** CSS id prop */
+  id?: string
+  /** CSS classname prop */
+  className?: string
+  /** CSS style prop */
+  style?: React.CSSProperties
+  /** If the view is visible or not, default: true */
+  visible?: boolean
   /** Views take over the render loop, optional render index (1 by default) */
   index?: number
-  /** If you know your view is always at the same place set this to 1 to avoid needless getBoundingClientRect overhead. The default is Infinity, which is best for css animations */
+  /** If you know your view is always at the same place set this to 1 to avoid needless getBoundingClientRect overhead */
   frames?: number
   /** The scene to render, if you leave this undefined it will render the default scene */
   children?: React.ReactNode
-/>
+  /** The tracking element, the view will be cut according to its whereabouts
+   * @deprecated
+   */
+  track: React.MutableRefObject<HTMLElement>
+}
+
+export type ViewportProps = { Port: () => React.ReactNode } & React.ForwardRefExoticComponent<
+  ViewProps & React.RefAttributes<HTMLElement | THREE.Group>
+>
 ```
 
+You can define as many views as you like, directly mix them into your dom graph, right where you want them to appear. `View` is an unstyled HTML DOM element (by default a div, and it takes the same properties as one). Use `View.Port` inside the canvas to output them. The canvas should ideally fill the entire screen with absolute positioning, underneath HTML or on top of it, as you prefer.
+
 ```jsx
-const container = useRef()
-const tracking = useRef()
 return (
   <main ref={container}>
     <h1>Html content here</h1>
-    <div ref={tracking} style={{ width: 200, height: 200 }} />
+    <View style={{ width: 200, height: 200 }}>
+      <mesh geometry={foo} />
+      <OrbitControls />
+    </View>
+    <View className="canvas-view">
+      <mesh geometry={bar} />
+      <CameraControls />
+    </View>
     <Canvas eventSource={container}>
-      <View track={tracking}>
-        <mesh />
-        <OrbitControls />
-      </View>
+      <View.Port />
+    </Canvas>
+  </main>
+)
 ```
 
 #### RenderTexture

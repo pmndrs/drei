@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { Color, extend } from '@react-three/fiber'
+import { Color, extend, useThree } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
 import { useTexture } from './useTexture'
 import { ForwardRefComponent } from '../helpers/ts-utils'
@@ -11,6 +11,7 @@ export type ImageProps = Omit<JSX.IntrinsicElements['mesh'], 'scale'> & {
   scale?: number | [number, number]
   color?: Color
   zoom?: number
+  radius?: number
   grayscale?: number
   toneMapped?: boolean
   transparent?: boolean
@@ -21,6 +22,8 @@ export type ImageProps = Omit<JSX.IntrinsicElements['mesh'], 'scale'> & {
 type ImageMaterialType = JSX.IntrinsicElements['shaderMaterial'] & {
   scale?: number[]
   imageBounds?: number[]
+  radius?: number
+  resolution?: number
   color?: Color
   map: THREE.Texture
   zoom?: number
@@ -40,25 +43,32 @@ const ImageMaterialImpl = /* @__PURE__ */ shaderMaterial(
     color: /* @__PURE__ */ new THREE.Color('white'),
     scale: /* @__PURE__ */ new THREE.Vector2(1, 1),
     imageBounds: /* @__PURE__ */ new THREE.Vector2(1, 1),
+    resolution: 1024,
     map: null,
     zoom: 1,
+    radius: 0,
     grayscale: 0,
     opacity: 1,
   },
   /* glsl */ `
   varying vec2 vUv;
+  varying vec2 vPos;
   void main() {
     gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.);
     vUv = uv;
+    vPos = position.xy;
   }
 `,
   /* glsl */ `
   // mostly from https://gist.github.com/statico/df64c5d167362ecf7b34fca0b1459a44
   varying vec2 vUv;
+  varying vec2 vPos;
   uniform vec2 scale;
   uniform vec2 imageBounds;
+  uniform float resolution;
   uniform vec3 color;
   uniform sampler2D map;
+  uniform float radius;
   uniform float zoom;
   uniform float grayscale;
   uniform float opacity;
@@ -69,6 +79,14 @@ const ImageMaterialImpl = /* @__PURE__ */ shaderMaterial(
   vec2 aspect(vec2 size) {
     return size / min(size.x, size.y);
   }
+  
+  const float PI = 3.14159265;
+    
+  // from https://iquilezles.org/articles/distfunctions
+  float udRoundBox( vec2 p, vec2 b, float r ) {
+    return length(max(abs(p)-b+r,0.0))-r;
+  }
+
   void main() {
     vec2 s = aspect(scale);
     vec2 i = aspect(imageBounds);
@@ -78,7 +96,12 @@ const ImageMaterialImpl = /* @__PURE__ */ shaderMaterial(
     vec2 offset = (rs < ri ? vec2((new.x - s.x) / 2.0, 0.0) : vec2(0.0, (new.y - s.y) / 2.0)) / new;
     vec2 uv = vUv * s / new + offset;
     vec2 zUv = (uv - vec2(0.5, 0.5)) / zoom + vec2(0.5, 0.5);
-    gl_FragColor = toGrayscale(texture2D(map, zUv) * vec4(color, opacity), grayscale);
+
+    vec2 res = vec2(scale * resolution);
+    vec2 halfRes = 0.5 * res;
+    float b = udRoundBox(vUv.xy * res - halfRes, halfRes, resolution * radius);    
+	  vec3 a = mix(vec3(1.0,0.0,0.0), vec3(0.0,0.0,0.0), smoothstep(0.0, 1.0, b));
+    gl_FragColor = toGrayscale(texture2D(map, zUv) * vec4(color, opacity * a), grayscale);
     
     #include <tonemapping_fragment>
     #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
@@ -96,6 +119,7 @@ const ImageBase: ForwardRefComponent<Omit<ImageProps, 'url'>, THREE.Mesh> = /* @
       zoom = 1,
       grayscale = 0,
       opacity = 1,
+      radius = 0,
       texture,
       toneMapped,
       transparent,
@@ -106,8 +130,10 @@ const ImageBase: ForwardRefComponent<Omit<ImageProps, 'url'>, THREE.Mesh> = /* @
   ) => {
     extend({ ImageMaterial: ImageMaterialImpl })
     const ref = React.useRef<THREE.Mesh>(null!)
+    const size = useThree((state) => state.size)
     const planeBounds = Array.isArray(scale) ? [scale[0], scale[1]] : [scale, scale]
     const imageBounds = [texture!.image.width, texture!.image.height]
+    const resolution = Math.max(size.width, size.height)
     React.useImperativeHandle(fref, () => ref.current, [])
     React.useLayoutEffect(() => {
       // Support arbitrary plane geometries (for instance with rounded corners)
@@ -133,9 +159,12 @@ const ImageBase: ForwardRefComponent<Omit<ImageProps, 'url'>, THREE.Mesh> = /* @
           opacity={opacity}
           scale={planeBounds}
           imageBounds={imageBounds}
+          resolution={resolution}
+          radius={radius}
           toneMapped={toneMapped}
           transparent={transparent}
           side={side}
+          key={ImageMaterialImpl.key}
         />
         {children}
       </mesh>

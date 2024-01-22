@@ -10,7 +10,7 @@ export type SpriteAnimatorProps = {
   fps?: number
   frameName?: string
   textureDataURL?: string
-  textureImageURL: string
+  textureImageURL?: string
   loop?: boolean
   numberOfFrames?: number
   autoPlay?: boolean

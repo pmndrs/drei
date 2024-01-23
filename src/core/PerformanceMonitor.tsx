@@ -89,6 +89,7 @@ export function PerformanceMonitor({
   }))
 
   let lastFactor = 0
+  let lastChange: string | null = null
   useFrame(() => {
     const { frames, averages } = api
 
@@ -108,15 +109,21 @@ export function PerformanceMonitor({
           const lowerBounds = averages.filter((value) => value < lower)
           // Trigger incline when more than -threshold- avgs exceed the upper bound
           if (upperBounds.length > iterations * threshold) {
+            if (lastChange !== 'incline') {
+              api.flipped++
+              lastChange = 'incline'
+            }
             api.factor = Math.min(1, api.factor + step)
-            api.flipped++
             if (onIncline) onIncline(api)
             api.subscriptions.forEach((value) => value.onIncline && value.onIncline(api))
           }
           // Trigger decline when more than -threshold- avgs are below the lower bound
           if (lowerBounds.length > iterations * threshold) {
+            if (lastChange !== 'decline') {
+              api.flipped++
+              lastChange = 'decline'
+            }
             api.factor = Math.max(0, api.factor - step)
-            api.flipped++
             if (onDecline) onDecline(api)
             api.subscriptions.forEach((value) => value.onDecline && value.onDecline(api))
           }

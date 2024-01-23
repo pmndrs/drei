@@ -132,10 +132,8 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
     // initial loads
     React.useEffect(() => {
       if (spriteDataset) {
-        console.log(spriteDataset)
         parseSpriteDataLite(spriteDataset?.spriteTexture?.clone(), spriteDataset.spriteData)
       } else {
-        console.log('running for individual dataset')
         loadJsonAndTexture(textureImageURL, textureDataURL)
       }
     }, [spriteDataset])
@@ -312,10 +310,6 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
             currentFrame: currentFrame.current,
           })
 
-          if (!_offset) {
-            console.log('will end')
-          }
-
           state.hasEnded = resetOnEnd ? false : true
           if (resetOnEnd) {
             pauseRef.current = true
@@ -469,24 +463,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
                 />
 
                 {(instanceItems ?? [0]).map((item, index) => {
-                  const texture = spriteTexture.clone()
-                  if (matRef.current && frameBuffer.current[index]) {
-                    // perhaps we can target some of these to make them play another animation
-                    texture.offset.set(frameBuffer.current[index].offset.x, frameBuffer.current[index].offset.y) // Set the offset for this item
-                  }
-
-                  return (
-                    <Instance key={index} ref={spriteRef} position={item} scale={aspect}>
-                      <meshBasicMaterial
-                        premultipliedAlpha={false}
-                        toneMapped={false}
-                        side={THREE.DoubleSide}
-                        map={texture}
-                        transparent={true}
-                        alphaTest={alphaTest ?? 0.0}
-                      />
-                    </Instance>
-                  )
+                  return <Instance key={index} ref={spriteRef} position={item} scale={aspect}></Instance>
                 })}
               </Instances>
             )}

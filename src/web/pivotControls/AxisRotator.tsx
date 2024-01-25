@@ -3,7 +3,6 @@ import * as THREE from 'three'
 import { ThreeEvent, useThree } from '@react-three/fiber'
 import { Line } from '../../core/Line'
 import { Html } from '../Html'
-import clamp from 'lodash.clamp'
 import { context } from './context'
 
 const clickDir = /* @__PURE__ */ new THREE.Vector3()
@@ -142,7 +141,7 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
         if (min !== undefined && max !== undefined && max - min < 2 * Math.PI) {
           deltaAngle = minimizeAngle(deltaAngle)
           deltaAngle = deltaAngle > Math.PI ? deltaAngle - 2 * Math.PI : deltaAngle
-          deltaAngle = clamp(deltaAngle, min - angle0.current, max - angle0.current)
+          deltaAngle = THREE.MathUtils.clamp(deltaAngle, min - angle0.current, max - angle0.current)
           angle.current = angle0.current + deltaAngle
         } else {
           angle.current = minimizeAngle(angle0.current + deltaAngle)

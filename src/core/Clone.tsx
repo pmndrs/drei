@@ -1,6 +1,5 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import pick from 'lodash.pick'
 import { MeshProps } from '@react-three/fiber'
 import { SkeletonUtils } from 'three-stdlib'
 import { ForwardRefComponent } from '../helpers/ts-utils'
@@ -60,7 +59,11 @@ function createSpread(
     receiveShadow,
   }: Omit<JSX.IntrinsicElements['group'], 'children'> & Partial<CloneProps>
 ) {
-  let spread = pick(child, keys)
+  let spread: Record<(typeof keys)[number], any> = {}
+  for (const key of keys) {
+    spread[key] = child[key]
+  }
+
   if (deep) {
     if (spread.geometry && deep !== 'materialsOnly') spread.geometry = spread.geometry.clone()
     if (spread.material && deep !== 'geometriesOnly') spread.material = spread.material.clone()
@@ -124,7 +127,7 @@ export const Clone: ForwardRefComponent<Omit<JSX.IntrinsicElements['group'], 'ch
 
       return (
         <Element {...spread} {...props} ref={forwardRef}>
-          {(object?.children).map((child) => {
+          {object.children.map((child) => {
             if (child.type === 'Bone') return <primitive key={child.uuid} object={child} {...config} />
             return <Clone key={child.uuid} object={child} {...config} isChild />
           })}

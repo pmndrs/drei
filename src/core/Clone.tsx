@@ -123,7 +123,7 @@ export const Clone: ForwardRefComponent<Omit<JSX.IntrinsicElements['group'], 'ch
 
       // Singleton clones
       const { children: injectChildren, ...spread } = createSpread(object, config)
-      const Element = object.type[0].toLowerCase() + object.type.slice(1)
+      const Element = (object.type[0].toLowerCase() + object.type.slice(1)) as unknown as React.ExoticComponent<any>
 
       return (
         <Element {...spread} {...props} ref={forwardRef}>

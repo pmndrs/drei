@@ -1,6 +1,4 @@
 import { ReactThreeFiber, useThree } from '@react-three/fiber'
-import omit from 'lodash.omit'
-import pick from 'lodash.pick'
 import * as React from 'react'
 import * as THREE from 'three'
 import { TransformControls as TransformControlsImpl } from 'three-stdlib'
@@ -37,26 +35,32 @@ export type TransformControlsProps = ReactThreeFiber.Object3DNode<TransformContr
 export const TransformControls: ForwardRefComponent<TransformControlsProps, TransformControlsImpl> =
   /* @__PURE__ */ React.forwardRef<TransformControlsImpl, TransformControlsProps>(
     (
-      { children, domElement, onChange, onMouseDown, onMouseUp, onObjectChange, object, makeDefault, ...props },
+      {
+        children,
+        domElement,
+        onChange,
+        onMouseDown,
+        onMouseUp,
+        onObjectChange,
+        object,
+        makeDefault,
+        camera,
+        // Transform
+        enabled,
+        axis,
+        mode,
+        translationSnap,
+        rotationSnap,
+        scaleSnap,
+        space,
+        size,
+        showX,
+        showY,
+        showZ,
+        ...props
+      },
       ref
     ) => {
-      const transformOnlyPropNames = [
-        'enabled',
-        'axis',
-        'mode',
-        'translationSnap',
-        'rotationSnap',
-        'scaleSnap',
-        'space',
-        'size',
-        'showX',
-        'showY',
-        'showZ',
-      ]
-
-      const { camera, ...rest } = props
-      const transformProps = pick(rest, transformOnlyPropNames)
-      const objectProps = omit(rest, transformOnlyPropNames)
       // @ts-expect-error new in @react-three/fiber@7.0.5
       const defaultControls = useThree((state) => state.controls) as ControlsProto
       const gl = useThree((state) => state.gl)
@@ -71,7 +75,7 @@ export const TransformControls: ForwardRefComponent<TransformControlsProps, Tran
         () => new TransformControlsImpl(explCamera, explDomElement),
         [explCamera, explDomElement]
       )
-      const group = React.useRef<THREE.Group>()
+      const group = React.useRef<THREE.Group>(null!)
 
       React.useLayoutEffect(() => {
         if (object) {
@@ -132,13 +136,27 @@ export const TransformControls: ForwardRefComponent<TransformControlsProps, Tran
         }
       }, [makeDefault, controls])
 
-      return controls ? (
+      return (
         <>
-          <primitive ref={ref} object={controls} {...transformProps} />
-          <group ref={group} {...objectProps}>
+          <primitive
+            ref={ref}
+            object={controls}
+            enabled={enabled}
+            axis={axis}
+            mode={mode}
+            translationSnap={translationSnap}
+            rotationSnap={rotationSnap}
+            scaleSnap={scaleSnap}
+            space={space}
+            size={size}
+            showX={showX}
+            showY={showY}
+            showZ={showZ}
+          />
+          <group ref={group} {...props}>
             {children}
           </group>
         </>
-      ) : null
+      )
     }
   )

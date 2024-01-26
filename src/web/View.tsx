@@ -1,5 +1,3 @@
-'use client'
-
 import * as React from 'react'
 import * as THREE from 'three'
 import { RootState, context, createPortal, useFrame, useThree } from '@react-three/fiber'

@@ -1,7 +1,6 @@
 import * as React from 'react'
-import { Group } from 'three'
+import { Group, Quaternion } from 'three'
 import { useFrame } from '@react-three/fiber'
-import mergeRefs from 'react-merge-refs'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type BillboardProps = {
@@ -20,23 +19,36 @@ export type BillboardProps = {
  * </Billboard>
  * ```
  */
-export const Billboard: ForwardRefComponent<BillboardProps, Group> = React.forwardRef<Group, BillboardProps>(
-  function Billboard({ follow = true, lockX = false, lockY = false, lockZ = false, ...props }, ref) {
-    const localRef = React.useRef<Group>()
-    useFrame(({ camera }) => {
-      if (!follow || !localRef.current) return
+export const Billboard: ForwardRefComponent<BillboardProps, Group> = /* @__PURE__ */ React.forwardRef<
+  Group,
+  BillboardProps
+>(function Billboard({ children, follow = true, lockX = false, lockY = false, lockZ = false, ...props }, fref) {
+  const inner = React.useRef<Group>(null!)
+  const localRef = React.useRef<Group>(null!)
+  const q = new Quaternion()
 
-      // save previous rotation in case we're locking an axis
-      const prevRotation = localRef.current.rotation.clone()
+  useFrame(({ camera }) => {
+    if (!follow || !localRef.current) return
 
-      // always face the camera
-      camera.getWorldQuaternion(localRef.current.quaternion)
+    // save previous rotation in case we're locking an axis
+    const prevRotation = localRef.current.rotation.clone()
 
-      // readjust any axis that is locked
-      if (lockX) localRef.current.rotation.x = prevRotation.x
-      if (lockY) localRef.current.rotation.y = prevRotation.y
-      if (lockZ) localRef.current.rotation.z = prevRotation.z
-    })
-    return <group ref={mergeRefs([localRef, ref])} {...props} />
-  }
-)
+    // always face the camera
+    localRef.current.updateMatrix()
+    localRef.current.updateWorldMatrix(false, false)
+    localRef.current.getWorldQuaternion(q)
+    camera.getWorldQuaternion(inner.current.quaternion).premultiply(q.invert())
+
+    // readjust any axis that is locked
+    if (lockX) localRef.current.rotation.x = prevRotation.x
+    if (lockY) localRef.current.rotation.y = prevRotation.y
+    if (lockZ) localRef.current.rotation.z = prevRotation.z
+  })
+
+  React.useImperativeHandle(fref, () => localRef.current, [])
+  return (
+    <group ref={localRef} matrixAutoUpdate={false} matrixWorldAutoUpdate={false} {...props}>
+      <group ref={inner}>{children}</group>
+    </group>
+  )
+})

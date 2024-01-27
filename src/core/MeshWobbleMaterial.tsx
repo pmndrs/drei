@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { MeshStandardMaterial, MeshStandardMaterialParameters, Shader } from 'three'
+import { IUniform, MeshStandardMaterial, MeshStandardMaterialParameters } from 'three'
 import { useFrame } from '@react-three/fiber'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
@@ -37,7 +37,8 @@ class WobbleMaterialImpl extends MeshStandardMaterial {
     this._factor = { value: 1 }
   }
 
-  onBeforeCompile(shader: Shader) {
+  // FIXME Use `THREE.WebGLProgramParametersWithUniforms` type when able to target @types/three@0.160.0
+  onBeforeCompile(shader: { vertexShader: string; uniforms: { [uniform: string]: IUniform } }) {
     shader.uniforms.time = this._time
     shader.uniforms.factor = this._factor
 
@@ -74,7 +75,7 @@ class WobbleMaterialImpl extends MeshStandardMaterial {
   }
 }
 
-export const MeshWobbleMaterial: ForwardRefComponent<Props, WobbleMaterialImpl> = React.forwardRef(
+export const MeshWobbleMaterial: ForwardRefComponent<Props, WobbleMaterialImpl> = /* @__PURE__ */ React.forwardRef(
   ({ speed = 1, ...props }: Props, ref) => {
     const [material] = React.useState(() => new WobbleMaterialImpl())
     useFrame((state) => material && (material.time = state.clock.getElapsedTime() * speed))

@@ -9,18 +9,18 @@ type GizmoHelperContext = {
   tweenCamera: (direction: Vector3) => void
 }
 
-const Context = React.createContext<GizmoHelperContext>({} as GizmoHelperContext)
+const Context = /* @__PURE__ */ React.createContext<GizmoHelperContext>({} as GizmoHelperContext)
 
 export const useGizmoContext = () => {
   return React.useContext<GizmoHelperContext>(Context)
 }
 
 const turnRate = 2 * Math.PI // turn rate in angles per second
-const dummy = new Object3D()
-const matrix = new Matrix4()
-const [q1, q2] = [new Quaternion(), new Quaternion()]
-const target = new Vector3()
-const targetPosition = new Vector3()
+const dummy = /* @__PURE__ */ new Object3D()
+const matrix = /* @__PURE__ */ new Matrix4()
+const [q1, q2] = [/* @__PURE__ */ new Quaternion(), /* @__PURE__ */ new Quaternion()]
+const target = /* @__PURE__ */ new Vector3()
+const targetPosition = /* @__PURE__ */ new Vector3()
 
 type ControlsProto = { update(): void; target: THREE.Vector3 }
 
@@ -61,7 +61,7 @@ export const GizmoHelper = ({
   // @ts-ignore
   const defaultControls = useThree((state) => state.controls) as ControlsProto
   const invalidate = useThree((state) => state.invalidate)
-  const gizmoRef = React.useRef<Group>()
+  const gizmoRef = React.useRef<Group>(null!)
   const virtualCam = React.useRef<OrthographicCameraImpl>(null!)
 
   const animating = React.useRef(false)

@@ -1,9 +1,10 @@
-import { Loader } from 'three'
-// @ts-ignore
-import { GLTFLoader, DRACOLoader, MeshoptDecoder, GLTF } from 'three-stdlib'
-import { useLoader } from '@react-three/fiber'
+import { type Loader } from 'three'
+import { type GLTF, GLTFLoader, DRACOLoader, MeshoptDecoder } from 'three-stdlib'
+import { type ObjectMap, useLoader } from '@react-three/fiber'
 
 let dracoLoader: DRACOLoader | null = null
+
+let decoderPath: string = 'https://www.gstatic.com/draco/versioned/decoders/1.5.5/'
 
 function extensions(useDraco: boolean | string, useMeshopt: boolean, extendLoader?: (loader: GLTFLoader) => void) {
   return (loader: Loader) => {
@@ -14,9 +15,7 @@ function extensions(useDraco: boolean | string, useMeshopt: boolean, extendLoade
       if (!dracoLoader) {
         dracoLoader = new DRACOLoader()
       }
-      dracoLoader.setDecoderPath(
-        typeof useDraco === 'string' ? useDraco : 'https://www.gstatic.com/draco/versioned/decoders/1.5.5/'
-      )
+      dracoLoader.setDecoderPath(typeof useDraco === 'string' ? useDraco : decoderPath)
       ;(loader as GLTFLoader).setDRACOLoader(dracoLoader)
     }
     if (useMeshopt) {
@@ -32,9 +31,8 @@ export function useGLTF<T extends string | string[]>(
   useDraco: boolean | string = true,
   useMeshOpt: boolean = true,
   extendLoader?: (loader: GLTFLoader) => void
-) {
-  const gltf = useLoader<GLTF, T>(GLTFLoader, path, extensions(useDraco, useMeshOpt, extendLoader))
-  return gltf
+): T extends any[] ? (GLTF & ObjectMap)[] : GLTF & ObjectMap {
+  return useLoader(GLTFLoader, path, extensions(useDraco, useMeshOpt, extendLoader))
 }
 
 useGLTF.preload = (
@@ -45,3 +43,6 @@ useGLTF.preload = (
 ) => useLoader.preload(GLTFLoader, path, extensions(useDraco, useMeshOpt, extendLoader))
 
 useGLTF.clear = (input: string | string[]) => useLoader.clear(GLTFLoader, input)
+useGLTF.setDecoderPath = (path: string) => {
+  decoderPath = path
+}

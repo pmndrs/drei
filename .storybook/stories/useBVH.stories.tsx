@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { Setup } from '../Setup'
-import { MeshBVHVisualizer } from 'three-mesh-bvh'
+import { MeshBVHHelper } from 'three-mesh-bvh'
 
 import { useHelper, useBVH, TorusKnot, OrbitControls } from '../../src'
 import { useFrame, useThree } from '@react-three/fiber'
@@ -24,7 +24,7 @@ function TorusBVH({ bvh, ...props }) {
   })
   const debug = boolean('vizualize bounds', true)
 
-  useHelper(debug ? mesh : dummy, MeshBVHVisualizer)
+  useHelper(debug ? mesh : dummy, MeshBVHHelper)
 
   const [hovered, setHover] = React.useState(false)
   return (

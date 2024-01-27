@@ -4,7 +4,7 @@ import { SelectionBox } from 'three-stdlib'
 import { useThree } from '@react-three/fiber'
 import shallow from 'zustand/shallow'
 
-const context = React.createContext<THREE.Object3D[]>([])
+const context = /* @__PURE__ */ React.createContext<THREE.Object3D[]>([])
 
 type Props = JSX.IntrinsicElements['group'] & {
   /** Allow multi select, default: false */
@@ -169,6 +169,9 @@ export function Select({
   )
 }
 
-export function useSelect() {
+// The return type is explicitly declared here because otherwise TypeScript will emit `THREE.Object3D<THREE.Event>[]`.
+// The meaning of the generic parameter for `Object3D` was changed in r156, so it should not be included so that it
+// works with all versions of @types/three.
+export function useSelect(): THREE.Object3D[] {
   return React.useContext(context)
 }

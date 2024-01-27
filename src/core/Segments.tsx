@@ -2,10 +2,10 @@ import * as THREE from 'three'
 import * as React from 'react'
 import mergeRefs from 'react-merge-refs'
 import { extend, useFrame, ReactThreeFiber } from '@react-three/fiber'
-import { Line2, LineSegmentsGeometry, LineMaterial } from 'three-stdlib'
+import { Line2, LineSegmentsGeometry, LineMaterial, LineMaterialParameters } from 'three-stdlib'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
-type SegmentsProps = {
+type SegmentsProps = LineMaterialParameters & {
   limit?: number
   lineWidth?: number
   children: React.ReactNode
@@ -22,9 +22,9 @@ type SegmentProps = Omit<JSX.IntrinsicElements['segmentObject'], 'start' | 'end'
   color?: ReactThreeFiber.Color
 }
 
-const context = React.createContext<Api>(null!)
+const context = /* @__PURE__ */ React.createContext<Api>(null!)
 
-const Segments: ForwardRefComponent<SegmentsProps, Line2> = React.forwardRef<Line2, SegmentsProps>(
+const Segments: ForwardRefComponent<SegmentsProps, Line2> = /* @__PURE__ */ React.forwardRef<Line2, SegmentsProps>(
   (props, forwardedRef) => {
     React.useMemo(() => extend({ SegmentObject }), [])
 
@@ -114,16 +114,15 @@ export class SegmentObject {
 const normPos = (pos: SegmentProps['start']): SegmentObject['start'] =>
   pos instanceof THREE.Vector3 ? pos : new THREE.Vector3(...(typeof pos === 'number' ? [pos, pos, pos] : pos))
 
-const Segment: ForwardRefComponent<SegmentProps, SegmentObject> = React.forwardRef<SegmentObject, SegmentProps>(
-  ({ color, start, end }, forwardedRef) => {
-    const api = React.useContext<Api>(context)
-    if (!api) throw 'Segment must used inside Segments component.'
-    const ref = React.useRef<SegmentObject>(null)
-    React.useLayoutEffect(() => api.subscribe(ref), [])
-    return (
-      <segmentObject ref={mergeRefs([ref, forwardedRef])} color={color} start={normPos(start)} end={normPos(end)} />
-    )
-  }
-)
+const Segment: ForwardRefComponent<SegmentProps, SegmentObject> = /* @__PURE__ */ React.forwardRef<
+  SegmentObject,
+  SegmentProps
+>(({ color, start, end }, forwardedRef) => {
+  const api = React.useContext<Api>(context)
+  if (!api) throw 'Segment must used inside Segments component.'
+  const ref = React.useRef<SegmentObject>(null)
+  React.useLayoutEffect(() => api.subscribe(ref), [])
+  return <segmentObject ref={mergeRefs([ref, forwardedRef])} color={color} start={normPos(start)} end={normPos(end)} />
+})
 
 export { Segments, Segment }

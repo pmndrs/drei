@@ -3,13 +3,13 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
 
-import { Line } from './Line'
+import { Line } from '../core/Line'
 
 export type MediaPipeFaceMesh = typeof FacemeshDatas.SAMPLE_FACE
 
 export type MediaPipePoints =
   | typeof FacemeshDatas.SAMPLE_FACE.keypoints
-  | typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.faceLandmarks[0]
+  | (typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.faceLandmarks)[0]
 
 export type FacemeshProps = {
   /** an array of 468+ keypoints as returned by google/mediapipe tasks-vision, default: a sample face */
@@ -27,13 +27,13 @@ export type FacemeshProps = {
   /** a landmark index (to get the position from) or a vec3 to be the origin of the mesh. default: undefined (ie. the bbox center) */
   origin?: number | THREE.Vector3
   /** A facial transformation matrix, as returned by FaceLandmarkerResult.facialTransformationMatrixes (see: https://developers.google.com/mediapipe/solutions/vision/face_landmarker/web_js#handle_and_display_results) */
-  facialTransformationMatrix?: typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.facialTransformationMatrixes[0]
+  facialTransformationMatrix?: (typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.facialTransformationMatrixes)[0]
   /** Apply position offset extracted from `facialTransformationMatrix` */
   offset?: boolean
   /** Offset sensitivity factor, less is more sensible */
   offsetScalar?: number
   /** Fface blendshapes, as returned by FaceLandmarkerResult.faceBlendshapes (see: https://developers.google.com/mediapipe/solutions/vision/face_landmarker/web_js#handle_and_display_results) */
-  faceBlendshapes?: typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.faceBlendshapes[0]
+  faceBlendshapes?: (typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.faceBlendshapes)[0]
   /** whether to enable eyes (nb. `faceBlendshapes` is required for), default: true */
   eyes?: boolean
   /** Force `origin` to be the middle of the 2 eyes (nb. `eyes` is required for), default: false */
@@ -49,9 +49,9 @@ export type FacemeshApi = {
   eyeLeftRef: React.RefObject<FacemeshEyeApi>
 }
 
-const defaultLookAt = new THREE.Vector3(0, 0, -1)
+const defaultLookAt = /* @__PURE__ */ new THREE.Vector3(0, 0, -1)
 
-const normal = (function () {
+const normal = /* @__PURE__ */ (function () {
   const a = new THREE.Vector3()
   const b = new THREE.Vector3()
   const c = new THREE.Vector3()
@@ -79,7 +79,7 @@ function mean(v1: THREE.Vector3, v2: THREE.Vector3) {
   return v1.clone().add(v2).multiplyScalar(0.5)
 }
 
-export const Facemesh = React.forwardRef<FacemeshApi, FacemeshProps>(
+export const Facemesh = /* @__PURE__ */ React.forwardRef<FacemeshApi, FacemeshProps>(
   (
     {
       points = FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.faceLandmarks[0],
@@ -356,116 +356,118 @@ export const FacemeshEyeDefaults = {
   },
 }
 
-export const FacemeshEye = React.forwardRef<FacemeshEyeApi, FacemeshEyeProps>(({ side, debug = true }, fref) => {
-  const eyeMeshRef = React.useRef<THREE.Group>(null)
-  const irisDirRef = React.useRef<THREE.Group>(null)
+export const FacemeshEye = /* @__PURE__ */ React.forwardRef<FacemeshEyeApi, FacemeshEyeProps>(
+  ({ side, debug = true }, fref) => {
+    const eyeMeshRef = React.useRef<THREE.Group>(null)
+    const irisDirRef = React.useRef<THREE.Group>(null)
 
-  //
-  // _computeSphere()
-  //
-  // Compute eye's sphere .position and .radius
-  //
+    //
+    // _computeSphere()
+    //
+    // Compute eye's sphere .position and .radius
+    //
 
-  const [sphere] = React.useState(() => new THREE.Sphere())
-  const _computeSphere = React.useCallback<FacemeshEyeApi['_computeSphere']>(
-    (faceGeometry) => {
-      const position = faceGeometry.getAttribute('position') as THREE.BufferAttribute
+    const [sphere] = React.useState(() => new THREE.Sphere())
+    const _computeSphere = React.useCallback<FacemeshEyeApi['_computeSphere']>(
+      (faceGeometry) => {
+        const position = faceGeometry.getAttribute('position') as THREE.BufferAttribute
 
-      // get some eye contour landmarks points (from geometry)
-      const eyeContourLandmarks = FacemeshEyeDefaults.contourLandmarks[side]
-      const eyeContourPoints = eyeContourLandmarks.map((i) => new THREE.Vector3(position.getX(i), position.getY(i), position.getZ(i))) // prettier-ignore
+        // get some eye contour landmarks points (from geometry)
+        const eyeContourLandmarks = FacemeshEyeDefaults.contourLandmarks[side]
+        const eyeContourPoints = eyeContourLandmarks.map((i) => new THREE.Vector3(position.getX(i), position.getY(i), position.getZ(i))) // prettier-ignore
 
-      // compute center (centroid from eyeContourPoints)
-      sphere.center.set(0, 0, 0)
-      eyeContourPoints.forEach((v) => sphere.center.add(v))
-      sphere.center.divideScalar(eyeContourPoints.length)
+        // compute center (centroid from eyeContourPoints)
+        sphere.center.set(0, 0, 0)
+        eyeContourPoints.forEach((v) => sphere.center.add(v))
+        sphere.center.divideScalar(eyeContourPoints.length)
 
-      // radius (eye half-width)
-      sphere.radius = eyeContourPoints[0].sub(eyeContourPoints[1]).length() / 2
+        // radius (eye half-width)
+        sphere.radius = eyeContourPoints[0].sub(eyeContourPoints[1]).length() / 2
 
-      return sphere
-    },
-    [sphere, side]
-  )
+        return sphere
+      },
+      [sphere, side]
+    )
 
-  //
-  // _update()
-  //
-  // Update:
-  //   - A. eye's mesh (according to sphere)
-  //   - B. iris direction (according to "look*" blendshapes)
-  //
+    //
+    // _update()
+    //
+    // Update:
+    //   - A. eye's mesh (according to sphere)
+    //   - B. iris direction (according to "look*" blendshapes)
+    //
 
-  const [rotation] = React.useState(() => new THREE.Euler())
-  const _update = React.useCallback<FacemeshEyeApi['_update']>(
-    (faceGeometry, faceBlendshapes, sphere) => {
-      // A.
-      if (eyeMeshRef.current) {
-        sphere ??= _computeSphere(faceGeometry) // compute sphere dims (if not passed)
-        eyeMeshRef.current.position.copy(sphere.center)
-        eyeMeshRef.current.scale.setScalar(sphere.radius)
-      }
+    const [rotation] = React.useState(() => new THREE.Euler())
+    const _update = React.useCallback<FacemeshEyeApi['_update']>(
+      (faceGeometry, faceBlendshapes, sphere) => {
+        // A.
+        if (eyeMeshRef.current) {
+          sphere ??= _computeSphere(faceGeometry) // compute sphere dims (if not passed)
+          eyeMeshRef.current.position.copy(sphere.center)
+          eyeMeshRef.current.scale.setScalar(sphere.radius)
+        }
 
-      // B.
-      if (faceBlendshapes && irisDirRef.current) {
-        const blendshapes = FacemeshEyeDefaults.blendshapes[side]
+        // B.
+        if (faceBlendshapes && irisDirRef.current) {
+          const blendshapes = FacemeshEyeDefaults.blendshapes[side]
 
-        const lookIn = faceBlendshapes.categories[blendshapes[0]].score
-        const lookOut = faceBlendshapes.categories[blendshapes[1]].score
-        const lookUp = faceBlendshapes.categories[blendshapes[2]].score
-        const lookDown = faceBlendshapes.categories[blendshapes[3]].score
+          const lookIn = faceBlendshapes.categories[blendshapes[0]].score
+          const lookOut = faceBlendshapes.categories[blendshapes[1]].score
+          const lookUp = faceBlendshapes.categories[blendshapes[2]].score
+          const lookDown = faceBlendshapes.categories[blendshapes[3]].score
 
-        const hfov = FacemeshEyeDefaults.fov.horizontal * THREE.MathUtils.DEG2RAD
-        const vfov = FacemeshEyeDefaults.fov.vertical * THREE.MathUtils.DEG2RAD
-        const rx = hfov * 0.5 * (lookDown - lookUp)
-        const ry = vfov * 0.5 * (lookIn - lookOut) * (side === 'left' ? 1 : -1)
-        rotation.set(rx, ry, 0)
+          const hfov = FacemeshEyeDefaults.fov.horizontal * THREE.MathUtils.DEG2RAD
+          const vfov = FacemeshEyeDefaults.fov.vertical * THREE.MathUtils.DEG2RAD
+          const rx = hfov * 0.5 * (lookDown - lookUp)
+          const ry = vfov * 0.5 * (lookIn - lookOut) * (side === 'left' ? 1 : -1)
+          rotation.set(rx, ry, 0)
 
-        irisDirRef.current.setRotationFromEuler(rotation)
-      }
-    },
-    [_computeSphere, side, rotation]
-  )
+          irisDirRef.current.setRotationFromEuler(rotation)
+        }
+      },
+      [_computeSphere, side, rotation]
+    )
 
-  //
-  // API
-  //
+    //
+    // API
+    //
 
-  const api = React.useMemo<FacemeshEyeApi>(
-    () => ({
-      eyeMeshRef: eyeMeshRef,
-      irisDirRef: irisDirRef,
-      _computeSphere,
-      _update,
-    }),
-    [_computeSphere, _update]
-  )
-  React.useImperativeHandle(fref, () => api, [api])
+    const api = React.useMemo<FacemeshEyeApi>(
+      () => ({
+        eyeMeshRef: eyeMeshRef,
+        irisDirRef: irisDirRef,
+        _computeSphere,
+        _update,
+      }),
+      [_computeSphere, _update]
+    )
+    React.useImperativeHandle(fref, () => api, [api])
 
-  const color = FacemeshEyeDefaults.color[side]
-  return (
-    <group>
-      <group ref={eyeMeshRef}>
-        {debug && <axesHelper />}
+    const color = FacemeshEyeDefaults.color[side]
+    return (
+      <group>
+        <group ref={eyeMeshRef}>
+          {debug && <axesHelper />}
 
-        <group ref={irisDirRef}>
-          <>
-            {debug && (
-              <Line
-                points={[
-                  [0, 0, 0],
-                  [0, 0, -2],
-                ]}
-                lineWidth={1}
-                color={color}
-              />
-            )}
-          </>
+          <group ref={irisDirRef}>
+            <>
+              {debug && (
+                <Line
+                  points={[
+                    [0, 0, 0],
+                    [0, 0, -2],
+                  ]}
+                  lineWidth={1}
+                  color={color}
+                />
+              )}
+            </>
+          </group>
         </group>
       </group>
-    </group>
-  )
-})
+    )
+  }
+)
 
 //
 // Sample datas

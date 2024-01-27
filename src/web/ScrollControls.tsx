@@ -10,7 +10,7 @@ import { ForwardRefComponent } from '../helpers/ts-utils'
 export type ScrollControlsProps = {
   /** Precision, default 0.00001 */
   eps?: number
-  /** Horontal scroll, default false (vertical) */
+  /** Horizontal scroll, default false (vertical) */
   horizontal?: boolean
   /** Infinite scroll, default false (experimental!) */
   infinite?: boolean
@@ -18,7 +18,7 @@ export type ScrollControlsProps = {
   pages?: number
   /** A factor that increases scroll bar travel,default: 1 */
   distance?: number
-  /** Friction in seconds, default: 0.2 (1/5 second) */
+  /** Friction in seconds, default: 0.25 (1/4 second) */
   damping?: number
   /** maxSpeed optionally allows you to clamp the maximum speed. If damping is 0.2s and looks OK
    *  going between, say, page 1 and 2, but not for pages far apart as it'll move very rapid,
@@ -45,7 +45,7 @@ export type ScrollControlsState = {
   visible(from: number, distance: number, margin?: number): boolean
 }
 
-const context = React.createContext<ScrollControlsState>(null!)
+const context = /* @__PURE__ */ React.createContext<ScrollControlsState>(null!)
 
 export function useScroll() {
   return React.useContext(context)
@@ -210,16 +210,18 @@ export function ScrollControls({
   return <context.Provider value={state}>{children}</context.Provider>
 }
 
-const ScrollCanvas: ForwardRefComponent<{}, THREE.Group> = React.forwardRef(({ children }, ref) => {
-  const group = React.useRef<THREE.Group>(null!)
-  const state = useScroll()
-  const { width, height } = useThree((state) => state.viewport)
-  useFrame(() => {
-    group.current.position.x = state.horizontal ? -width * (state.pages - 1) * state.offset : 0
-    group.current.position.y = state.horizontal ? 0 : height * (state.pages - 1) * state.offset
-  })
-  return <group ref={mergeRefs([ref, group])}>{children}</group>
-})
+const ScrollCanvas = /* @__PURE__ */ React.forwardRef(
+  ({ children }: ScrollProps, ref: React.ForwardedRef<THREE.Group>) => {
+    const group = React.useRef<THREE.Group>(null!)
+    const state = useScroll()
+    const { width, height } = useThree((state) => state.viewport)
+    useFrame(() => {
+      group.current.position.x = state.horizontal ? -width * (state.pages - 1) * state.offset : 0
+      group.current.position.y = state.horizontal ? 0 : height * (state.pages - 1) * state.offset
+    })
+    return <group ref={mergeRefs([ref, group])}>{children}</group>
+  }
+)
 
 const ScrollHtml: ForwardRefComponent<{ children?: React.ReactNode; style?: React.CSSProperties }, HTMLDivElement> =
   React.forwardRef(
@@ -251,14 +253,18 @@ const ScrollHtml: ForwardRefComponent<{ children?: React.ReactNode; style?: Reac
     }
   )
 
-type ScrollProps = {
-  html?: boolean
-  children?: React.ReactNode
-}
+type ScrollProps =
+  | { children?: React.ReactNode } & (
+      | {
+          html?: false
+          style?: never
+        }
+      | { html: true; style?: React.CSSProperties }
+    )
 
-export const Scroll: ForwardRefComponent<ScrollProps, THREE.Group & HTMLDivElement> = React.forwardRef(
+export const Scroll: ForwardRefComponent<ScrollProps, THREE.Group & HTMLDivElement> = /* @__PURE__ */ React.forwardRef(
   ({ html, ...props }: ScrollProps, ref) => {
     const El = html ? ScrollHtml : ScrollCanvas
-    return <El ref={ref} {...props} />
+    return <El ref={ref} {...(props as ScrollProps)} />
   }
 )

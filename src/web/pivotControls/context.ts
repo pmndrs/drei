@@ -28,4 +28,4 @@ export type PivotContext = {
   annotationsClass?: string
 }
 
-export const context = React.createContext<PivotContext>(null!)
+export const context = /* @__PURE__ */ React.createContext<PivotContext>(null!)

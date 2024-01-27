@@ -122,6 +122,10 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
         ...this.uniforms,
       }
 
+      // Fix for r153-r156 anisotropy chunks
+      // https://github.com/mrdoob/three.js/pull/26716
+      if ((this as any).anisotropy > 0) shader.defines.USE_ANISOTROPY = ''
+
       // If the transmission sampler is active inject a flag
       if (transmissionSampler) shader.defines.USE_SAMPLER = ''
       // Otherwise we do use use .transmission and must therefore force USE_TRANSMISSION
@@ -372,7 +376,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
 export const MeshTransmissionMaterial: ForwardRefComponent<
   MeshTransmissionMaterialProps,
   JSX.IntrinsicElements['meshTransmissionMaterial']
-> = React.forwardRef(
+> = /* @__PURE__ */ React.forwardRef(
   (
     {
       buffer,
@@ -454,7 +458,7 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
       <meshTransmissionMaterial
         // Samples must re-compile the shader so we memoize it
         args={[samples, transmissionSampler]}
-        ref={ref}
+        ref={ref as any}
         {...props}
         buffer={buffer || fboMain.texture}
         // @ts-ignore

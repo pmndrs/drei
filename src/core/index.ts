@@ -22,6 +22,7 @@ export * from './Decal'
 export * from './Svg'
 export * from './Gltf'
 export * from './AsciiRenderer'
+export * from './Splat'
 
 // Cameras
 export * from './OrthographicCamera'
@@ -39,7 +40,7 @@ export * from './TransformControls'
 export * from './PointerLockControls'
 export * from './FirstPersonControls'
 export * from './CameraControls'
-export * from './FaceControls'
+export * from './MotionPathControls'
 
 // Gizmos
 export * from './GizmoHelper'
@@ -76,7 +77,6 @@ export * from './useTrailTexture'
 export * from './useCubeCamera'
 export * from './Example'
 export * from './SpriteAnimator'
-export * from './FaceLandmarker'
 
 // Modifiers
 export * from './CurveModifier'
@@ -94,7 +94,6 @@ export * from './softShadows'
 
 // Shapes
 export * from './shapes'
-export * from './Facemesh'
 export * from './RoundedBox'
 export * from './ScreenQuad'
 
@@ -122,6 +121,7 @@ export * from './useEnvironment'
 export * from './useMatcapTexture'
 export * from './useNormalTexture'
 export * from './Wireframe'
+export * from './ShadowAlpha'
 
 // Performance
 export * from './Points'
@@ -137,6 +137,8 @@ export * from './PerformanceMonitor'
 
 // Portals
 export * from './RenderTexture'
+export * from './RenderCubeTexture'
 export * from './Mask'
 export * from './Hud'
+export * from './Fisheye'
 export * from './MeshPortalMaterial'

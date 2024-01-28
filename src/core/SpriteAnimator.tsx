@@ -2,6 +2,7 @@ import * as React from 'react'
 import { useFrame, Vector3 } from '@react-three/fiber'
 import * as THREE from 'three'
 import { Instances, Instance } from './Instances'
+import { useSpriteLoader } from './useSpriteLoader'
 
 export type SpriteAnimatorProps = {
   startFrame?: number
@@ -9,7 +10,7 @@ export type SpriteAnimatorProps = {
   fps?: number
   frameName?: string
   textureDataURL?: string
-  textureImageURL: string
+  textureImageURL?: string
   loop?: boolean
   numberOfFrames?: number
   autoPlay?: boolean
@@ -29,6 +30,7 @@ export type SpriteAnimatorProps = {
   resetOnEnd?: boolean
   maxItems?: number
   instanceItems?: any[]
+  spriteDataset?: any
 } & JSX.IntrinsicElements['group']
 
 type SpriteAnimatorState = {
@@ -74,17 +76,16 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
       resetOnEnd,
       maxItems,
       instanceItems,
+      spriteDataset,
       ...props
     },
     fref
   ) => {
     const ref = React.useRef<any>()
     const spriteData = React.useRef<any>(null)
-    //const hasEnded = React.useRef(false)
     const matRef = React.useRef<any>()
     const spriteRef = React.useRef<any>()
     const timerOffset = React.useRef(window.performance.now())
-    const textureData = React.useRef<any>()
     const currentFrame = React.useRef<number>(startFrame || 0)
     const currentFrameName = React.useRef<string>(frameName || '')
     const fpsInterval = 1000 / (fps || 30)
@@ -97,6 +98,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
     const pos = React.useRef(offset)
     const softEnd = React.useRef(false)
     const frameBuffer = React.useRef<any[]>([])
+    const { spriteObj, loadJsonAndTexture } = useSpriteLoader(null, null, animationNames, numberOfFrames)
     //
 
     function reset() {}
@@ -110,7 +112,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
         hasEnded: false,
         ref: fref,
       }),
-      [textureImageURL]
+      [textureImageURL, spriteDataset]
     )
 
     React.useImperativeHandle(fref, () => ref.current, [])
@@ -118,22 +120,6 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
     React.useLayoutEffect(() => {
       pos.current = offset
     }, [offset])
-
-    function loadJsonAndTextureAndExecuteCallback(
-      jsonUrl: string,
-      textureUrl: string,
-      callback: (json: any, texture: THREE.Texture) => void
-    ): void {
-      const textureLoader = new THREE.TextureLoader()
-      const jsonPromise = fetch(jsonUrl).then((response) => response.json())
-      const texturePromise = new Promise<THREE.Texture>((resolve) => {
-        textureLoader.load(textureUrl, resolve)
-      })
-
-      Promise.all([jsonPromise, texturePromise]).then((response) => {
-        callback(response[0], response[1])
-      })
-    }
 
     const calculateAspectRatio = (width: number, height: number): Vector3 => {
       const aspectRatio = height / width
@@ -145,18 +131,18 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
 
     // initial loads
     React.useEffect(() => {
-      if (textureDataURL && textureImageURL) {
-        loadJsonAndTextureAndExecuteCallback(textureDataURL, textureImageURL, parseSpriteData)
-      } else if (textureImageURL) {
-        // only load the texture, this is an image sprite only
-        const textureLoader = new THREE.TextureLoader()
-        new Promise<THREE.Texture>((resolve) => {
-          textureLoader.load(textureImageURL, resolve)
-        }).then((texture) => {
-          parseSpriteData(null, texture)
-        })
+      if (spriteDataset) {
+        parseSpriteDataLite(spriteDataset?.spriteTexture?.clone(), spriteDataset.spriteData)
+      } else {
+        loadJsonAndTexture(textureImageURL, textureDataURL)
       }
-    }, [])
+    }, [spriteDataset])
+
+    React.useEffect(() => {
+      if (spriteObj) {
+        parseSpriteDataLite(spriteObj?.spriteTexture?.clone(), spriteObj?.spriteData)
+      }
+    }, [spriteObj])
 
     React.useEffect(() => {
       setDisplayAsSprite(asSprite ?? true)
@@ -196,17 +182,14 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
       }
     }, [frameName])
 
-    // parse sprite-data from JSON file (jsonHash or jsonArray)
-    const parseSpriteData = (json: any, _spriteTexture: THREE.Texture): void => {
-      // sprite only case
-      if (json === null) {
+    // lite version for pre-loaded assets
+    const parseSpriteDataLite = (textureData: THREE.Texture, frameData: any = null) => {
+      if (frameData === null) {
         if (numberOfFrames) {
           //get size from texture
-          const width = _spriteTexture.image.width
-          const height = _spriteTexture.image.height
-          const frameWidth = width / numberOfFrames
-          const frameHeight = height
-          textureData.current = _spriteTexture
+          const width = textureData.image.width
+          const height = textureData.image.height
+
           totalFrames.current = numberOfFrames
 
           if (playBackwards) {
@@ -222,35 +205,22 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
             },
           }
 
-          if (parseInt(frameWidth.toString(), 10) === frameWidth) {
-            // if it fits
-            for (let i = 0; i < numberOfFrames; i++) {
-              spriteData.current.frames.push({
-                frame: { x: i * frameWidth, y: 0, w: frameWidth, h: frameHeight },
-                rotated: false,
-                trimmed: false,
-                spriteSourceSize: { x: 0, y: 0, w: frameWidth, h: frameHeight },
-                sourceSize: { w: frameWidth, h: height },
-              })
-            }
-          }
+          spriteData.current.frames = frameData
         }
       } else {
-        spriteData.current = json
-        spriteData.current.frames = Array.isArray(json.frames) ? json.frames : parseFrames()
-        totalFrames.current = Array.isArray(json.frames) ? json.frames.length : Object.keys(json.frames).length
-        textureData.current = _spriteTexture
+        spriteData.current = frameData
+        totalFrames.current = spriteData.current.frames.length
 
         if (playBackwards) {
           currentFrame.current = totalFrames.current - 1
         }
 
-        const { w, h } = getFirstItem(json.frames).sourceSize
+        const { w, h } = getFirstItem(spriteData.current.frames).sourceSize
         const aspect = calculateAspectRatio(w, h)
 
         setAspect(aspect)
         if (matRef.current) {
-          matRef.current.map = _spriteTexture
+          matRef.current.map = textureData
         }
       }
 
@@ -269,51 +239,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
         }
       }
 
-      _spriteTexture.premultiplyAlpha = false
-
-      setSpriteTexture(_spriteTexture)
-    }
-
-    // for frame based JSON Hash sprite data
-    const parseFrames = (): any => {
-      const sprites: any = {}
-      const data = spriteData.current
-      const delimiters = animationNames
-      if (delimiters) {
-        for (let i = 0; i < delimiters.length; i++) {
-          sprites[delimiters[i]] = []
-
-          for (const innerKey in data['frames']) {
-            const value = data['frames'][innerKey]
-            const frameData = value['frame']
-            const x = frameData['x']
-            const y = frameData['y']
-            const width = frameData['w']
-            const height = frameData['h']
-            const sourceWidth = value['sourceSize']['w']
-            const sourceHeight = value['sourceSize']['h']
-
-            if (innerKey.toLowerCase().indexOf(delimiters[i].toLowerCase()) !== -1) {
-              sprites[delimiters[i]].push({
-                x: x,
-                y: y,
-                w: width,
-                h: height,
-                frame: frameData,
-                sourceSize: { w: sourceWidth, h: sourceHeight },
-              })
-            }
-          }
-        }
-        return sprites
-      } else if (frameName) {
-        const spritesArr: any[] = []
-        for (const key in data.frames) {
-          spritesArr.push(data.frames[key])
-        }
-
-        return spritesArr
-      }
+      setSpriteTexture(textureData)
     }
 
     // modify the sprite material after json is parsed and state updated
@@ -348,6 +274,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
     // run the animation on each frame
     const runAnimation = (): void => {
       //if (!frameName) return
+
       const now = window.performance.now()
       const diff = now - timerOffset.current
       const {
@@ -382,10 +309,6 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
             currentFrameName: frameName,
             currentFrame: currentFrame.current,
           })
-
-          if (!_offset) {
-            console.log('will end')
-          }
 
           state.hasEnded = resetOnEnd ? false : true
           if (resetOnEnd) {
@@ -515,6 +438,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
             {displayAsSprite && (
               <sprite ref={spriteRef} scale={aspect}>
                 <spriteMaterial
+                  premultipliedAlpha={false}
                   toneMapped={false}
                   ref={matRef}
                   map={spriteTexture}
@@ -529,6 +453,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
               >
                 <planeGeometry args={[1, 1]} />
                 <meshBasicMaterial
+                  premultipliedAlpha={false}
                   toneMapped={false}
                   side={THREE.DoubleSide}
                   ref={matRef}
@@ -538,22 +463,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
                 />
 
                 {(instanceItems ?? [0]).map((item, index) => {
-                  const texture = spriteTexture.clone()
-                  if (matRef.current && frameBuffer.current[index]) {
-                    texture.offset.set(frameBuffer.current[index].offset.x, frameBuffer.current[index].offset.y) // Set the offset for this item
-                  }
-
-                  return (
-                    <Instance key={index} ref={spriteRef} position={item} scale={aspect}>
-                      <meshBasicMaterial
-                        toneMapped={false}
-                        side={THREE.DoubleSide}
-                        map={texture}
-                        transparent={true}
-                        alphaTest={alphaTest ?? 0.0}
-                      />
-                    </Instance>
-                  )
+                  return <Instance key={index} ref={spriteRef} position={item} scale={aspect}></Instance>
                 })}
               </Instances>
             )}

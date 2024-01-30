@@ -140,7 +140,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#usevideotexture">useVideoTexture</a></li>
           <li><a href="#usetrailtexture">useTrailTexture</a></li>
           <li><a href="#usefont">useFont</a></li>
-          <li><a href="#usespriteloader"></a></li>
+          <li><a href="#usespriteloader">useSpriteLoader</a></li>
         </ul>
         <li><a href="#performance">Performance</a></li>
         <ul>

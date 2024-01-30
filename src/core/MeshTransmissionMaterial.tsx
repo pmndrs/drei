@@ -30,9 +30,9 @@ type MeshTransmissionMaterialType = Omit<
   /* Distortion, default: 0 */
   distortion?: number
   /* Distortion scale, default: 0.5 */
-  distortionScale: number
+  distortionScale?: number
   /* Temporal distortion (speed of movement), default: 0.0 */
-  temporalDistortion: number
+  temporalDistortion?: number
   /** The scene rendered into a texture (use it to share a texture between materials), default: null  */
   buffer?: THREE.Texture
   /** Internals */

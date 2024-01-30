@@ -215,7 +215,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#environment">Environment</a></li>
           <li><a href="#lightformer">Lightformer</a></li>
           <li><a href="#spotlight">SpotLight</a></li>
-          <li><a href="#spotlightshadows">SpotLightShadows</a></li>
+          <li><a href="#spotlightshadow">SpotLightShadow</a></li>
           <li><a href="#shadow">Shadow</a></li>
           <li><a href="#caustics">Caustics</a></li>
           <li><a href="#contactshadows">ContactShadows</a></li>
@@ -4556,7 +4556,7 @@ function Foo() {
   return <SpotLight depthBuffer={depthBuffer} />
 ```
 
-#### SpotLightShadows
+#### SpotLightShadow
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-spotlight--spotlight-shadows-st)
 
@@ -4568,7 +4568,7 @@ A shadow caster that can help cast shadows of different patterns (textures) onto
 
 ```jsx
 <SpotLight>
-  <SpotLightShadows
+  <SpotLightShadow
     distance={0.4} // Distance between the shadow caster and light
     alphaTest={0.5} // Sets the alpha value to be used when running an alpha test. See Material.alphaTest
     scale={1} //  Scale of the shadow caster plane
@@ -4580,7 +4580,7 @@ A shadow caster that can help cast shadows of different patterns (textures) onto
 </SpotLight>
 ```
 
-An optinal `shader` prop lets you run a custom shader to modify/add effects to your shadow texture. The shader privides the following uniforms and varyings.
+An optional `shader` prop lets you run a custom shader to modify/add effects to your shadow texture. The shader provides the following uniforms and varyings.
 
 | Type                | Name         | Notes                                  |
 | ------------------- | ------------ | -------------------------------------- |

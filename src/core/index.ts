@@ -57,6 +57,7 @@ export * from './useProgress'
 export * from './useTexture'
 export * from './useVideoTexture'
 export * from './useFont'
+export * from './useSpriteLoader'
 
 // Misc
 export * from './Stats'

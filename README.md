@@ -140,6 +140,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#usevideotexture">useVideoTexture</a></li>
           <li><a href="#usetrailtexture">useTrailTexture</a></li>
           <li><a href="#usefont">useFont</a></li>
+          <li><a href="#usespriteloader"></a></li>
         </ul>
         <li><a href="#performance">Performance</a></li>
         <ul>
@@ -215,7 +216,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#environment">Environment</a></li>
           <li><a href="#lightformer">Lightformer</a></li>
           <li><a href="#spotlight">SpotLight</a></li>
-          <li><a href="#spotlightshadows">SpotLightShadows</a></li>
+          <li><a href="#spotlightshadow">SpotLightShadow</a></li>
           <li><a href="#shadow">Shadow</a></li>
           <li><a href="#caustics">Caustics</a></li>
           <li><a href="#contactshadows">ContactShadows</a></li>
@@ -1303,6 +1304,7 @@ api.eyeRightRef.current.irisDirRef.current.localToWorld(new THREE.Vector3(0, 0, 
 #### Image
 
 <p>
+  <a href="https://codesandbox.io/s/9s2wd9"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/9s2wd9/screenshot.png" alt="Horizontal tiles"/></a>
   <a href="https://codesandbox.io/s/l4klb"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/l4klb/screenshot.png" alt="Horizontal tiles"/></a>
   <a href="https://codesandbox.io/s/gsm1y"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/gsm1y/screenshot.png" alt="useIntersect"/></a>
   <a href="https://codesandbox.io/s/x8gvs"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/x8gvs/screenshot.png" alt="Infinite scroll"/></a>
@@ -1311,10 +1313,26 @@ api.eyeRightRef.current.irisDirRef.current.localToWorld(new THREE.Vector3(0, 0, 
 
 A shader-based image component with auto-cover (similar to css/background: cover).
 
+```tsx
+export type ImageProps = Omit<JSX.IntrinsicElements['mesh'], 'scale'> & {
+  segments?: number
+  scale?: number | [number, number]
+  color?: Color
+  zoom?: number
+  radius?: number
+  grayscale?: number
+  toneMapped?: boolean
+  transparent?: boolean
+  opacity?: number
+  side?: THREE.Side
+}
+```
+
 ```jsx
 function Foo() {
   const ref = useRef()
   useFrame(() => {
+    ref.current.material.radius = ... // between 0 and 1
     ref.current.material.zoom = ... // 1 and higher
     ref.current.material.grayscale = ... // between 0 and 1
     ref.current.material.color.set(...) // mix-in color
@@ -2070,9 +2088,9 @@ type MeshTransmissionMaterialProps = JSX.IntrinsicElements['meshPhysicalMaterial
   /* Distortion, default: 0 */
   distortion?: number
   /* Distortion scale, default: 0.5 */
-  distortionScale: number
+  distortionScale?: number
   /* Temporal distortion (speed of movement), default: 0.0 */
-  temporalDistortion: number
+  temporalDistortion?: number
   /** The scene rendered into a texture (use it to share a texture between materials), default: null  */
   buffer?: THREE.Texture
   /** transmissionSampler, you can use the threejs transmission sampler texture that is
@@ -2562,8 +2580,18 @@ type Props = {
   alphaTest?: number
   /** Displays the texture on a SpriteGeometry always facing the camera, if set to false, it renders on a PlaneGeometry */
   asSprite?: boolean
+  /** Allows for manual update of the sprite animation e.g: via ScrollControls */
+  offset?: number
+  /** Allows the sprite animation to start from the end towards the start */
+  playBackwards: boolean
   /** Allows the animation to be paused after it ended so it can be restarted on demand via auto */
   resetOnEnd?: boolean
+  /** An array of items to create instances from */
+  instanceItems?: any[]
+  /** The max number of items to instance (optional) */
+  maxItems?: number
+  /** External parsed sprite data, usually from useSpriteLoader ready for use */
+  spriteDataset?: any
 }
 ```
 
@@ -2572,8 +2600,9 @@ The SpriteAnimator component provided by drei is a powerful tool for animating s
 Notes:
 
 - The SpriteAnimator component internally uses the useFrame hook from react-three-fiber (r3f) for efficient frame updates and rendering.
-- The sprites should contain equal size frames
+- The sprites (without a JSON file) should contain equal size frames
 - Trimming of spritesheet frames is not yet supported
+- Internally uses the `useSpriteLoader` or can use data from it directly
 
 ```jsx
 <SpriteAnimator
@@ -2585,6 +2614,37 @@ Notes:
   numberOfFrames={16}
   textureImageURL={'./alien.png'}
 />
+```
+
+ScrollControls example
+
+```jsx
+<ScrollControls damping={0.2} maxSpeed={0.5} pages={2}>
+  <SpriteAnimator
+    position={[0.0, -1.5, -1.5]}
+    startFrame={0}
+    onEnd={doSomethingOnEnd}
+    onStart={doSomethingOnStart}
+    autoPlay={true}
+    textureImageURL={'sprite.png'}
+    textureDataURL={'sprite.json'}
+  >
+    <FireScroll />
+  </SpriteAnimator>
+</ScrollControls>
+
+function FireScroll() {
+  const sprite = useSpriteAnimator()
+  const scroll = useScroll()
+  const ref = React.useRef()
+  useFrame(() => {
+    if (sprite && scroll) {
+      sprite.current = scroll.offset
+    }
+  })
+
+  return null
+}
 ```
 
 #### Stats
@@ -2793,7 +2853,7 @@ return (
 
 ![](https://img.shields.io/badge/-Dom only-red)
 
-A small hook that sets the css body cursor according to the hover state of a mesh, so that you can give the use visual feedback when the mouse enters a shape. Arguments 1 and 2 determine the style, the defaults are: onPointerOver = 'pointer', onPointerOut = 'auto'.
+A small hook that sets the css body cursor according to the hover state of a mesh, so that you can give the user visual feedback when the mouse enters a shape. Arguments 1 and 2 determine the style, the defaults are: onPointerOver = 'pointer', onPointerOut = 'auto'.
 
 ```jsx
 const [hovered, set] = useState()
@@ -3195,6 +3255,58 @@ In order to preload you do this:
 useFont.preload('/fonts/helvetiker_regular.typeface.json')
 ```
 
+#### useSpriteLoader
+
+Loads texture and JSON files with multiple or single animations and parses them into appropriate format. These assets can be used by multiple SpriteAnimator components to save memory and loading times.
+
+```jsx
+/** The texture url to load the sprite frames from */
+input?: Url | null,
+/** The JSON data describing the position of the frames within the texture (optional) */
+json?: string | null,
+/** The animation names into which the frames will be divided into (optional) */
+animationNames?: string[] | null,
+/** The number of frames on a standalone (no JSON data) spritesheet (optional)*/
+numberOfFrames?: number | null,
+/** The callback to call when all textures and data have been loaded and parsed */
+onLoad?: (texture: Texture, textureData?: any) => void
+```
+
+```jsx
+const { spriteObj } = useSpriteLoader(
+  'multiasset.png',
+  'multiasset.json',
+
+  ['orange', 'Idle Blinking', '_Bat'],
+  null
+)
+
+<SpriteAnimator
+  position={[4.5, 0.5, 0.1]}
+  autoPlay={true}
+  loop={true}
+  scale={5}
+  frameName={'_Bat'}
+  animationNames={['_Bat']}
+  spriteDataset={spriteObj}
+  alphaTest={0.01}
+  asSprite={false}
+/>
+
+<SpriteAnimator
+  position={[5.5, 0.5, 5.8]}
+  autoPlay={true}
+  loop={true}
+  scale={5}
+  frameName={'Idle Blinking'}
+  animationNames={['Idle Blinking']}
+  spriteDataset={spriteObj}
+  alphaTest={0.01}
+  asSprite={false}
+/>
+```
+
+
 # Performance
 
 #### Instances
@@ -3530,12 +3642,10 @@ You can also use the `onChange` callback to get notified when the average change
 The following starts at the highest dpr (2) and clamps the gradual dpr between 0.5 at the lowest and 2 at the highest. If the app is in trouble it will reduce `factor` by `step` until it is either 0 or the app has found its sweet spot above that.
 
 ```jsx
-import round from 'lodash/round'
-
 const [dpr, setDpr] = useState(2)
 return (
  <Canvas dpr={dpr}>
-  <PerformanceMonitor factor={1} onChange={({ factor }) => setDpr(round(0.5 + 1.5 * factor, 1))} />
+  <PerformanceMonitor factor={1} onChange={({ factor }) => setDpr(Math.floor(0.5 + 1.5 * factor, 1))} />
 ```
 
 If you still experience flip flops despite the bounds you can define a limit of `flipflops`. If it is met `onFallback` will be triggered which typically sets a lowest possible baseline for the app. After the fallback has been called PerformanceMonitor will shut down.
@@ -3601,6 +3711,7 @@ type HudProps = {
 
 <p>
   <a href="https://codesandbox.io/s/v5i9wl"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/v5i9wl/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/r9w2ob"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/r9w2ob/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/bp6tmc"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/bp6tmc/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/1wmlew"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/1wmlew/screenshot.png" alt="Demo"/></a>
 </p>
@@ -3616,30 +3727,53 @@ integrations into your view.
 > versions of `@react-three/fiber`.
 
 ```tsx
-<View
-  /** The tracking element, the view will be cut according to its whereabouts */
-  track: React.MutableRefObject<HTMLElement>
+export type ViewProps = {
+  /** Root element type, default: div */
+  as?: string
+  /** CSS id prop */
+  id?: string
+  /** CSS classname prop */
+  className?: string
+  /** CSS style prop */
+  style?: React.CSSProperties
+  /** If the view is visible or not, default: true */
+  visible?: boolean
   /** Views take over the render loop, optional render index (1 by default) */
   index?: number
-  /** If you know your view is always at the same place set this to 1 to avoid needless getBoundingClientRect overhead. The default is Infinity, which is best for css animations */
+  /** If you know your view is always at the same place set this to 1 to avoid needless getBoundingClientRect overhead */
   frames?: number
   /** The scene to render, if you leave this undefined it will render the default scene */
   children?: React.ReactNode
-/>
+  /** The tracking element, the view will be cut according to its whereabouts
+   * @deprecated
+   */
+  track: React.MutableRefObject<HTMLElement>
+}
+
+export type ViewportProps = { Port: () => React.ReactNode } & React.ForwardRefExoticComponent<
+  ViewProps & React.RefAttributes<HTMLElement | THREE.Group>
+>
 ```
 
+You can define as many views as you like, directly mix them into your dom graph, right where you want them to appear. `View` is an unstyled HTML DOM element (by default a div, and it takes the same properties as one). Use `View.Port` inside the canvas to output them. The canvas should ideally fill the entire screen with absolute positioning, underneath HTML or on top of it, as you prefer.
+
 ```jsx
-const container = useRef()
-const tracking = useRef()
 return (
   <main ref={container}>
     <h1>Html content here</h1>
-    <div ref={tracking} style={{ width: 200, height: 200 }} />
+    <View style={{ width: 200, height: 200 }}>
+      <mesh geometry={foo} />
+      <OrbitControls />
+    </View>
+    <View className="canvas-view">
+      <mesh geometry={bar} />
+      <CameraControls />
+    </View>
     <Canvas eventSource={container}>
-      <View track={tracking}>
-        <mesh />
-        <OrbitControls />
-      </View>
+      <View.Port />
+    </Canvas>
+  </main>
+)
 ```
 
 #### RenderTexture
@@ -4439,7 +4573,7 @@ function Foo() {
   return <SpotLight depthBuffer={depthBuffer} />
 ```
 
-#### SpotLightShadows
+#### SpotLightShadow
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-spotlight--spotlight-shadows-st)
 
@@ -4451,7 +4585,7 @@ A shadow caster that can help cast shadows of different patterns (textures) onto
 
 ```jsx
 <SpotLight>
-  <SpotLightShadows
+  <SpotLightShadow
     distance={0.4} // Distance between the shadow caster and light
     alphaTest={0.5} // Sets the alpha value to be used when running an alpha test. See Material.alphaTest
     scale={1} //  Scale of the shadow caster plane
@@ -4463,7 +4597,7 @@ A shadow caster that can help cast shadows of different patterns (textures) onto
 </SpotLight>
 ```
 
-An optinal `shader` prop lets you run a custom shader to modify/add effects to your shadow texture. The shader privides the following uniforms and varyings.
+An optional `shader` prop lets you run a custom shader to modify/add effects to your shadow texture. The shader provides the following uniforms and varyings.
 
 | Type                | Name         | Notes                                  |
 | ------------------- | ------------ | -------------------------------------- |

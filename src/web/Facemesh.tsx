@@ -3,7 +3,7 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
 
-import { Line } from './Line'
+import { Line } from '../core/Line'
 
 export type MediaPipeFaceMesh = typeof FacemeshDatas.SAMPLE_FACE
 

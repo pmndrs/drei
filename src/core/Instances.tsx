@@ -34,6 +34,14 @@ type InstancedMesh = Omit<THREE.InstancedMesh, 'instanceMatrix' | 'instanceColor
   instanceColor: THREE.InstancedBufferAttribute
 }
 
+function isFunctionChild(
+  value: any
+): value is (
+  props: React.ForwardRefExoticComponent<Omit<InstanceProps, 'ref'> & React.RefAttributes<unknown>>
+) => React.ReactNode {
+  return typeof value === 'function'
+}
+
 const _instanceLocalMatrix = /* @__PURE__ */ new THREE.Matrix4()
 const _instanceWorldMatrix = /* @__PURE__ */ new THREE.Matrix4()
 const _instanceIntersects: THREE.Intersection[] = []
@@ -192,7 +200,7 @@ export const Instances: ForwardRefComponent<InstancesProps, InstancedMesh> = /* 
         itemSize={3}
         usage={THREE.DynamicDrawUsage}
       />
-      {typeof children === 'function' ? (
+      {isFunctionChild(children) ? (
         <context.Provider value={api}>{children(instance)}</context.Provider>
       ) : (
         <globalContext.Provider value={api}>{children}</globalContext.Provider>

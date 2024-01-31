@@ -4,7 +4,7 @@ import { Setup } from '../Setup'
 
 import { Sphere, Trail, useTrail, Html, Stats, Float, PerspectiveCamera } from '../../src'
 import { useFrame } from '@react-three/fiber'
-import { InstancedMesh, Mesh, Object3D, Vector3 } from 'three'
+import { Group, InstancedMesh, Mesh, Object3D, Vector3 } from 'three'
 
 export default {
   title: 'Misc/Trail',
@@ -13,7 +13,7 @@ export default {
 }
 
 function TrailScene() {
-  const group = React.useRef<Mesh>(null!)
+  const group = React.useRef<Group>(null!)
   const sphere = React.useRef<Mesh>(null!)
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime()
@@ -50,50 +50,66 @@ function TrailScene() {
 export const TrailsSt = () => <TrailScene />
 TrailsSt.storyName = 'Default'
 
-function UseTrailScene() {
-  const [sphere, setSphere] = React.useState<Mesh>(null!)
-  const instancesRef = React.useRef<InstancedMesh>(null!)
-  useFrame(({ clock }) => {
-    const t = clock.getElapsedTime()
+type InstancesTrailProps = {
+  sphere: Mesh
+  instancesRef: React.RefObject<InstancedMesh>
+}
 
-    sphere.position.x = Math.sin(t) * 3 + Math.cos(t * 2)
-    sphere.position.y = Math.cos(t) * 3
-  })
-
+// Trail component
+function InstancesTrail({ sphere, instancesRef }: InstancesTrailProps) {
   const trailPositions = useTrail(sphere, { length: 5, decay: 5, interval: 6 })
   const n = 1000
+  const oRef = React.useRef(new Object3D())
 
-  const [o] = React.useState(() => new Object3D())
-  function updateInstances() {
-    if (!instancesRef.current) return
-
+  useFrame(() => {
+    if (!instancesRef.current || !trailPositions.current) return
+    const o = oRef.current
     for (let i = 0; i < n; i += 1) {
-      const x = trailPositions.current?.slice(i * 3, i * 3 + 3)
-      // @ts-ignore
-      o.position.set(...x)
+      const [x, y, z] = trailPositions.current.slice(i * 3, i * 3 + 3)
 
+      o.position.set(x, y, z)
       o.scale.setScalar((i * 10) / n)
       o.updateMatrixWorld()
 
       instancesRef.current.setMatrixAt(i, o.matrixWorld)
     }
 
-    instancesRef.current.count = n
     instancesRef.current.instanceMatrix.needsUpdate = true
+  })
+
+  return (
+    <instancedMesh ref={instancesRef} args={[null!, null!, n]}>
+      <boxGeometry args={[0.1, 0.1, 0.1]} />
+      <meshNormalMaterial />
+    </instancedMesh>
+  )
+}
+
+function UseTrailScene() {
+  const [sphere, setSphere] = React.useState<Mesh | null>(null)
+  const instancesRef = React.useRef<InstancedMesh>(null!)
+
+  const sphereRefCallback = (node: Mesh) => {
+    if (node !== null) {
+      setSphere(node)
+    }
   }
 
-  useFrame(updateInstances)
+  useFrame(({ clock }) => {
+    const t = clock.getElapsedTime()
+
+    if (!sphere) return
+
+    sphere.position.x = Math.sin(t) * 3 + Math.cos(t * 2)
+    sphere.position.y = Math.cos(t) * 3
+  })
 
   return (
     <>
-      <Sphere ref={setSphere} args={[0.1, 32, 32]} position-x={0} position-y={3}>
+      <Sphere ref={sphereRefCallback} args={[0.1, 32, 32]} position-x={0} position-y={3}>
         <meshNormalMaterial />
       </Sphere>
-
-      <instancedMesh ref={instancesRef} args={[null!, null!, n]}>
-        <boxGeometry args={[0.1, 0.1, 0.1]} />
-        <meshNormalMaterial />
-      </instancedMesh>
+      {sphere && <InstancesTrail sphere={sphere} instancesRef={instancesRef} />}
     </>
   )
 }
@@ -102,7 +118,7 @@ export const UseTrailSt = () => <UseTrailScene />
 UseTrailSt.storyName = 'useTrail with Instances'
 
 function UseTrailFloat() {
-  const ref = React.useRef(null!)
+  const ref = React.useRef<Group>(null!)
   return (
     <>
       <Trail

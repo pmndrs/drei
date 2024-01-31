@@ -71,6 +71,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#positionalaudio">PositionalAudio</a></li>
           <li><a href="#billboard">Billboard</a></li>
           <li><a href="#screenspace">ScreenSpace</a></li>
+          <li><a href="#screensizer">ScreenSizer</a></li>
           <li><a href="#effects">Effects</a></li>
           <li><a href="#gradienttexture">GradientTexture</a></li>
           <li><a href="#edges">Edges</a></li>
@@ -139,6 +140,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#usevideotexture">useVideoTexture</a></li>
           <li><a href="#usetrailtexture">useTrailTexture</a></li>
           <li><a href="#usefont">useFont</a></li>
+          <li><a href="#usespriteloader">useSpriteLoader</a></li>
         </ul>
         <li><a href="#performance">Performance</a></li>
         <ul>
@@ -214,7 +216,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#environment">Environment</a></li>
           <li><a href="#lightformer">Lightformer</a></li>
           <li><a href="#spotlight">SpotLight</a></li>
-          <li><a href="#spotlightshadows">SpotLightShadows</a></li>
+          <li><a href="#spotlightshadow">SpotLightShadow</a></li>
           <li><a href="#shadow">Shadow</a></li>
           <li><a href="#caustics">Caustics</a></li>
           <li><a href="#contactshadows">ContactShadows</a></li>
@@ -1484,6 +1486,22 @@ Adds a `<group />` that aligns objects to screen space.
 </ScreenSpace>
 ```
 
+#### ScreenSizer
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-screensizer--screen-sizer-story)
+
+Adds a `<object3D />` that scales objects to screen space.
+
+```jsx
+<ScreenSizer
+  scale={1} // scale factor
+>
+  <Box
+    args={[100, 100, 100]} // will render roughly as a 100px box
+  />
+</ScreenSizer>
+```
+
 #### GradientTexture
 
 <p>
@@ -2070,9 +2088,9 @@ type MeshTransmissionMaterialProps = JSX.IntrinsicElements['meshPhysicalMaterial
   /* Distortion, default: 0 */
   distortion?: number
   /* Distortion scale, default: 0.5 */
-  distortionScale: number
+  distortionScale?: number
   /* Temporal distortion (speed of movement), default: 0.0 */
-  temporalDistortion: number
+  temporalDistortion?: number
   /** The scene rendered into a texture (use it to share a texture between materials), default: null  */
   buffer?: THREE.Texture
   /** transmissionSampler, you can use the threejs transmission sampler texture that is
@@ -2572,6 +2590,8 @@ type Props = {
   instanceItems?: any[]
   /** The max number of items to instance (optional) */
   maxItems?: number
+  /** External parsed sprite data, usually from useSpriteLoader ready for use */
+  spriteDataset?: any
 }
 ```
 
@@ -2580,8 +2600,9 @@ The SpriteAnimator component provided by drei is a powerful tool for animating s
 Notes:
 
 - The SpriteAnimator component internally uses the useFrame hook from react-three-fiber (r3f) for efficient frame updates and rendering.
-- The sprites should contain equal size frames
+- The sprites (without a JSON file) should contain equal size frames
 - Trimming of spritesheet frames is not yet supported
+- Internally uses the `useSpriteLoader` or can use data from it directly
 
 ```jsx
 <SpriteAnimator
@@ -2598,7 +2619,7 @@ Notes:
 ScrollControls example
 
 ```jsx
-;<ScrollControls damping={0.2} maxSpeed={0.5} pages={2}>
+<ScrollControls damping={0.2} maxSpeed={0.5} pages={2}>
   <SpriteAnimator
     position={[0.0, -1.5, -1.5]}
     startFrame={0}
@@ -2832,7 +2853,7 @@ return (
 
 ![](https://img.shields.io/badge/-Dom only-red)
 
-A small hook that sets the css body cursor according to the hover state of a mesh, so that you can give the use visual feedback when the mouse enters a shape. Arguments 1 and 2 determine the style, the defaults are: onPointerOver = 'pointer', onPointerOut = 'auto'.
+A small hook that sets the css body cursor according to the hover state of a mesh, so that you can give the user visual feedback when the mouse enters a shape. Arguments 1 and 2 determine the style, the defaults are: onPointerOver = 'pointer', onPointerOut = 'auto'.
 
 ```jsx
 const [hovered, set] = useState()
@@ -3234,6 +3255,58 @@ In order to preload you do this:
 useFont.preload('/fonts/helvetiker_regular.typeface.json')
 ```
 
+#### useSpriteLoader
+
+Loads texture and JSON files with multiple or single animations and parses them into appropriate format. These assets can be used by multiple SpriteAnimator components to save memory and loading times.
+
+```jsx
+/** The texture url to load the sprite frames from */
+input?: Url | null,
+/** The JSON data describing the position of the frames within the texture (optional) */
+json?: string | null,
+/** The animation names into which the frames will be divided into (optional) */
+animationNames?: string[] | null,
+/** The number of frames on a standalone (no JSON data) spritesheet (optional)*/
+numberOfFrames?: number | null,
+/** The callback to call when all textures and data have been loaded and parsed */
+onLoad?: (texture: Texture, textureData?: any) => void
+```
+
+```jsx
+const { spriteObj } = useSpriteLoader(
+  'multiasset.png',
+  'multiasset.json',
+
+  ['orange', 'Idle Blinking', '_Bat'],
+  null
+)
+
+<SpriteAnimator
+  position={[4.5, 0.5, 0.1]}
+  autoPlay={true}
+  loop={true}
+  scale={5}
+  frameName={'_Bat'}
+  animationNames={['_Bat']}
+  spriteDataset={spriteObj}
+  alphaTest={0.01}
+  asSprite={false}
+/>
+
+<SpriteAnimator
+  position={[5.5, 0.5, 5.8]}
+  autoPlay={true}
+  loop={true}
+  scale={5}
+  frameName={'Idle Blinking'}
+  animationNames={['Idle Blinking']}
+  spriteDataset={spriteObj}
+  alphaTest={0.01}
+  asSprite={false}
+/>
+```
+
+
 # Performance
 
 #### Instances
@@ -3569,12 +3642,10 @@ You can also use the `onChange` callback to get notified when the average change
 The following starts at the highest dpr (2) and clamps the gradual dpr between 0.5 at the lowest and 2 at the highest. If the app is in trouble it will reduce `factor` by `step` until it is either 0 or the app has found its sweet spot above that.
 
 ```jsx
-import round from 'lodash/round'
-
 const [dpr, setDpr] = useState(2)
 return (
  <Canvas dpr={dpr}>
-  <PerformanceMonitor factor={1} onChange={({ factor }) => setDpr(round(0.5 + 1.5 * factor, 1))} />
+  <PerformanceMonitor factor={1} onChange={({ factor }) => setDpr(Math.floor(0.5 + 1.5 * factor, 1))} />
 ```
 
 If you still experience flip flops despite the bounds you can define a limit of `flipflops`. If it is met `onFallback` will be triggered which typically sets a lowest possible baseline for the app. After the fallback has been called PerformanceMonitor will shut down.
@@ -4502,7 +4573,7 @@ function Foo() {
   return <SpotLight depthBuffer={depthBuffer} />
 ```
 
-#### SpotLightShadows
+#### SpotLightShadow
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-spotlight--spotlight-shadows-st)
 
@@ -4514,7 +4585,7 @@ A shadow caster that can help cast shadows of different patterns (textures) onto
 
 ```jsx
 <SpotLight>
-  <SpotLightShadows
+  <SpotLightShadow
     distance={0.4} // Distance between the shadow caster and light
     alphaTest={0.5} // Sets the alpha value to be used when running an alpha test. See Material.alphaTest
     scale={1} //  Scale of the shadow caster plane
@@ -4526,7 +4597,7 @@ A shadow caster that can help cast shadows of different patterns (textures) onto
 </SpotLight>
 ```
 
-An optinal `shader` prop lets you run a custom shader to modify/add effects to your shadow texture. The shader privides the following uniforms and varyings.
+An optional `shader` prop lets you run a custom shader to modify/add effects to your shadow texture. The shader provides the following uniforms and varyings.
 
 | Type                | Name         | Notes                                  |
 | ------------------- | ------------ | -------------------------------------- |

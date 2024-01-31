@@ -1,6 +1,7 @@
 // Abstractions
 export * from './Billboard'
 export * from './ScreenSpace'
+export * from './ScreenSizer'
 export * from './QuadraticBezierLine'
 export * from './CubicBezierLine'
 export * from './CatmullRomLine'
@@ -57,6 +58,7 @@ export * from './useProgress'
 export * from './useTexture'
 export * from './useVideoTexture'
 export * from './useFont'
+export * from './useSpriteLoader'
 
 // Misc
 export * from './Stats'
@@ -142,3 +144,6 @@ export * from './Mask'
 export * from './Hud'
 export * from './Fisheye'
 export * from './MeshPortalMaterial'
+
+// Others
+export * from './calculateScaleFactor'

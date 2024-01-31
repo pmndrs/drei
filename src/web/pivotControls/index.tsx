@@ -174,9 +174,6 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
           mL0Inv.copy(mL0).invert()
           mdL.copy(mL).multiply(mL0Inv)
           if (autoTransform) {
-            mG.makeRotationFromEuler(gizmoRef.current.rotation).setPosition(gizmoRef.current.position).premultiply(mW)
-            gizmoScale.current.setFromMatrixScale(mG)
-            gizmoRef.current.scale.copy(cameraScale.current).divide(gizmoScale.current)
             ref.current.matrix.copy(mL)
           }
           onDrag && onDrag(mL, mdL, mW, mdW)
@@ -222,51 +219,37 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
       ]
     )
 
-    React.useEffect(() => {
-      if (!matrix) return
-
-      parentRef.current.updateWorldMatrix(true, true)
-      mW.copy(parentRef.current.matrixWorld).multiply(matrix)
-      mG.makeRotationFromEuler(gizmoRef.current.rotation).setPosition(gizmoRef.current.position).premultiply(mW)
-      gizmoScale.current.setFromMatrixScale(mG)
-      gizmoRef.current.scale.copy(cameraScale.current).divide(gizmoScale.current)
-    }, [matrix])
-
     const vec = new THREE.Vector3()
     useFrame((state) => {
       if (fixed) {
         const sf = calculateScaleFactor(gizmoRef.current.getWorldPosition(vec), scale, state.camera, state.size)
         cameraScale.current.setScalar(sf)
-        if (gizmoRef.current) {
-          vScale.copy(cameraScale.current).divide(gizmoScale.current)
-          if (
-            gizmoRef.current.scale.x !== vScale.x ||
-            gizmoRef.current.scale.y !== vScale.y ||
-            gizmoRef.current.scale.z !== vScale.z
-          ) {
-            gizmoRef.current.scale.copy(vScale)
-            state.invalidate()
-          }
-        }
+      }
+
+      if (matrix && matrix instanceof THREE.Matrix4) {
+        ref.current.matrix = matrix
+      }
+      // Update gizmo scale in accordance with matrix changes
+      // Without this, there might be noticable turbulences if scaling happens fast enough
+      ref.current.updateWorldMatrix(true, true)
+
+      mG.makeRotationFromEuler(gizmoRef.current.rotation)
+        .setPosition(gizmoRef.current.position)
+        .premultiply(ref.current.matrixWorld)
+      gizmoScale.current.setFromMatrixScale(mG)
+
+      vScale.copy(cameraScale.current).divide(gizmoScale.current)
+      if (
+        gizmoRef.current.scale.x !== vScale.x ||
+        gizmoRef.current.scale.y !== vScale.y ||
+        gizmoRef.current.scale.z !== vScale.z
+      ) {
+        gizmoRef.current.scale.copy(vScale)
+        state.invalidate()
       }
     })
 
     React.useImperativeHandle(fRef, () => ref.current, [])
-
-    React.useLayoutEffect(() => {
-      if (!(matrix && matrix instanceof THREE.Matrix4)) return
-
-      // If the matrix is a real matrix4 it means that the user wants to control the gizmo
-      // In that case it should just be set, as a bare prop update would merely copy it
-      ref.current.matrix = matrix
-
-      // Update gizmo scale in accordance with matrix changes
-      parentRef.current.updateWorldMatrix(true, true)
-      mW.copy(parentRef.current.matrixWorld).multiply(matrix)
-      mG.makeRotationFromEuler(gizmoRef.current.rotation).setPosition(gizmoRef.current.position).premultiply(mW)
-      gizmoScale.current.setFromMatrixScale(mG)
-      gizmoRef.current.scale.copy(cameraScale.current).divide(gizmoScale.current)
-    }, [matrix])
 
     return (
       <context.Provider value={config}>

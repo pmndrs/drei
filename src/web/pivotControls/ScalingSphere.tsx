@@ -1,11 +1,13 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { ThreeEvent, useThree } from '@react-three/fiber'
-import { Html } from '../Html'
-import { context } from './context'
 
-const vec1 = new THREE.Vector3()
-const vec2 = new THREE.Vector3()
+import { Html } from '../../web/Html'
+import { context } from './context'
+import { calculateScaleFactor } from '../../core/calculateScaleFactor'
+
+const vec1 = /* @__PURE__ */ new THREE.Vector3()
+const vec2 = /* @__PURE__ */ new THREE.Vector3()
 
 export const calculateOffset = (
   clickPoint: THREE.Vector3,
@@ -35,9 +37,9 @@ export const calculateOffset = (
   return offset
 }
 
-const upV = new THREE.Vector3(0, 1, 0)
-const scaleV = new THREE.Vector3()
-const scaleMatrix = new THREE.Matrix4()
+const upV = /* @__PURE__ */ new THREE.Vector3(0, 1, 0)
+const scaleV = /* @__PURE__ */ new THREE.Vector3()
+const scaleMatrix = /* @__PURE__ */ new THREE.Matrix4()
 
 export const ScalingSphere: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> = ({ direction, axis }) => {
   const {
@@ -57,6 +59,7 @@ export const ScalingSphere: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2
     userData,
   } = React.useContext(context)
 
+  const size = useThree((state) => state.size)
   // @ts-expect-error new in @react-three/fiber@7.0.5
   const camControls = useThree((state) => state.controls) as { enabled: boolean }
   const divRef = React.useRef<HTMLDivElement>(null!)
@@ -69,14 +72,11 @@ export const ScalingSphere: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2
     dir: THREE.Vector3
     mPLG: THREE.Matrix4
     mPLGInv: THREE.Matrix4
+    offsetMultiplier: number
   } | null>(null)
   const [isHovered, setIsHovered] = React.useState(false)
 
-  const pos = fixed ? 1.2 : 1.2 * scale
-
-  const getOffsetL = React.useCallback((offsetW: number) => {
-    return offsetW / meshRef.current.getWorldScale(scaleV).y
-  }, [])
+  const position = fixed ? 1.2 : 1.2 * scale
 
   const onPointerDown = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
@@ -91,13 +91,16 @@ export const ScalingSphere: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2
       const dir = direction.clone().applyMatrix4(rotation).normalize()
       const mPLG = objRef.current.matrixWorld.clone()
       const mPLGInv = mPLG.clone().invert()
-      clickInfo.current = { clickPoint, dir, mPLG, mPLGInv }
+      const offsetMultiplier = fixed
+        ? 1 / calculateScaleFactor(objRef.current.getWorldPosition(vec1), scale, e.camera, size)
+        : 1 / scale
+      clickInfo.current = { clickPoint, dir, mPLG, mPLGInv, offsetMultiplier }
       onDragStart({ component: 'Sphere', axis, origin, directions: [dir] })
       camControls && (camControls.enabled = false)
       // @ts-ignore - setPointerCapture is not in the type definition
       e.target.setPointerCapture(e.pointerId)
     },
-    [annotations, camControls, direction, onDragStart, axis]
+    [annotations, camControls, direction, onDragStart, axis, fixed, scale, size]
   )
 
   const onPointerMove = React.useCallback(
@@ -106,11 +109,11 @@ export const ScalingSphere: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2
       if (!isHovered) setIsHovered(true)
 
       if (clickInfo.current) {
-        const { clickPoint, dir, mPLG, mPLGInv } = clickInfo.current
+        const { clickPoint, dir, mPLG, mPLGInv, offsetMultiplier } = clickInfo.current
         const [min, max] = scaleLimits?.[axis] || [1e-5, undefined] // always limit the minimal value, since setting it very low might break the transform
 
         const offsetW = calculateOffset(clickPoint, dir, e.ray.origin, e.ray.direction)
-        const offsetL = getOffsetL(offsetW)
+        const offsetL = offsetW * offsetMultiplier
         let upscale = Math.pow(2, offsetL * 0.2)
 
         // @ts-ignore
@@ -123,7 +126,7 @@ export const ScalingSphere: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2
           upscale = Math.min(upscale, max / scale0.current)
         }
         scaleCur.current = scale0.current * upscale
-        meshRef.current.position.set(0, pos + offsetL, 0)
+        meshRef.current.position.set(0, position + offsetL, 0)
         if (annotations) {
           divRef.current.innerText = `${scaleCur.current.toFixed(2)}`
         }
@@ -133,7 +136,7 @@ export const ScalingSphere: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2
         onDrag(scaleMatrix)
       }
     },
-    [annotations, pos, getOffsetL, onDrag, isHovered, scaleLimits, axis]
+    [annotations, position, onDrag, isHovered, scaleLimits, axis]
   )
 
   const onPointerUp = React.useCallback(
@@ -144,13 +147,13 @@ export const ScalingSphere: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2
       e.stopPropagation()
       scale0.current = scaleCur.current
       clickInfo.current = null
-      meshRef.current.position.set(0, pos, 0)
+      meshRef.current.position.set(0, position, 0)
       onDragEnd()
       camControls && (camControls.enabled = true)
       // @ts-ignore - releasePointerCapture & PointerEvent#pointerId is not in the type definition
       e.target.releasePointerCapture(e.pointerId)
     },
-    [annotations, camControls, onDragEnd, pos]
+    [annotations, camControls, onDragEnd, position]
   )
 
   const onPointerOut = React.useCallback((e: ThreeEvent<PointerEvent>) => {
@@ -158,15 +161,14 @@ export const ScalingSphere: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2
     setIsHovered(false)
   }, [])
 
-  const { radius, position, matrixL } = React.useMemo(() => {
+  const { radius, matrixL } = React.useMemo(() => {
     const radius = fixed ? (lineWidth / scale) * 1.8 : scale / 22.5
-    const position = fixed ? 1.2 : 1.2 * scale
     const quaternion = new THREE.Quaternion().setFromUnitVectors(upV, direction.clone().normalize())
     const matrixL = new THREE.Matrix4().makeRotationFromQuaternion(quaternion)
-    return { radius, position, matrixL }
+    return { radius, matrixL }
   }, [direction, scale, lineWidth, fixed])
 
-  const color_ = isHovered ? hoveredColor : axisColors[axis]
+  const color = isHovered ? hoveredColor : axisColors[axis]
 
   return (
     <group ref={objRef}>
@@ -199,7 +201,7 @@ export const ScalingSphere: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2
           <meshBasicMaterial
             transparent
             depthTest={depthTest}
-            color={color_}
+            color={color}
             opacity={opacity}
             polygonOffset
             polygonOffsetFactor={-10}

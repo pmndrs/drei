@@ -93,7 +93,7 @@ export const ScalingSphere: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2
       const mPLGInv = mPLG.clone().invert()
       const offsetMultiplier = fixed
         ? 1 / calculateScaleFactor(objRef.current.getWorldPosition(vec1), scale, e.camera, size)
-        : 1 / scale
+        : 1
       clickInfo.current = { clickPoint, dir, mPLG, mPLGInv, offsetMultiplier }
       onDragStart({ component: 'Sphere', axis, origin, directions: [dir] })
       camControls && (camControls.enabled = false)
@@ -114,7 +114,8 @@ export const ScalingSphere: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2
 
         const offsetW = calculateOffset(clickPoint, dir, e.ray.origin, e.ray.direction)
         const offsetL = offsetW * offsetMultiplier
-        let upscale = Math.pow(2, offsetL * 0.2)
+        const offsetH = fixed ? offsetL : offsetL / scale
+        let upscale = Math.pow(2, offsetH * 0.2)
 
         // @ts-ignore
         if (e.shiftKey) {

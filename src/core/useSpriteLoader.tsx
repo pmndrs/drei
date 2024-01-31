@@ -10,6 +10,7 @@ export const getFirstItem = (param: any): any => {
     return param[0]
   } else if (typeof param === 'object' && param !== null) {
     const keys = Object.keys(param)
+
     return param[keys[0]][0]
   } else {
     return { w: 0, h: 0 }
@@ -142,7 +143,6 @@ export function useSpriteLoader<Url extends string>(
       spriteDataRef.current = json
       spriteDataRef.current.frames = Array.isArray(json.frames) ? json.frames : parseFrames()
       totalFrames.current = Array.isArray(json.frames) ? json.frames.length : Object.keys(json.frames).length
-
       const { w, h } = getFirstItem(json.frames).sourceSize
       aspect = calculateAspectRatio(w, h, aspectFactor, v)
     }
@@ -184,9 +184,15 @@ export function useSpriteLoader<Url extends string>(
           }
         }
       }
-    }
+      return sprites
+    } else {
+      const spritesArr: any[] = []
+      for (const key in data.frames) {
+        spritesArr.push(data.frames[key])
+      }
 
-    return sprites
+      return spritesArr
+    }
   }
 
   React.useLayoutEffect(() => {

@@ -240,9 +240,9 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
 
       vScale.copy(cameraScale.current).divide(gizmoScale.current)
       if (
-        gizmoRef.current.scale.x !== vScale.x ||
-        gizmoRef.current.scale.y !== vScale.y ||
-        gizmoRef.current.scale.z !== vScale.z
+        Math.abs(gizmoRef.current.scale.x - vScale.x) > 1e-4 ||
+        Math.abs(gizmoRef.current.scale.y - vScale.y) > 1e-4 ||
+        Math.abs(gizmoRef.current.scale.z - vScale.z) > 1e-4
       ) {
         gizmoRef.current.scale.copy(vScale)
         state.invalidate()

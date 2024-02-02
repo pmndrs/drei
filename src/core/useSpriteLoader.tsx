@@ -160,6 +160,7 @@ export function useSpriteLoader<Url extends string>(
     const delimiters = animationNames
     if (delimiters) {
       for (let i = 0; i < delimiters.length; i++) {
+        // we convert each named animation group into an array
         sprites[delimiters[i]] = []
 
         for (const innerKey in data['frames']) {
@@ -186,6 +187,7 @@ export function useSpriteLoader<Url extends string>(
       }
       return sprites
     } else {
+      // we need to convert it into an array
       const spritesArr: any[] = []
       for (const key in data.frames) {
         spritesArr.push(data.frames[key])

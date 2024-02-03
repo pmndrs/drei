@@ -1,6 +1,6 @@
 import { Texture, TextureLoader } from 'three'
 import { useLoader, useThree } from '@react-three/fiber'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import * as React from 'react'
 import * as THREE from 'three'
 
@@ -10,7 +10,6 @@ export const getFirstItem = (param: any): any => {
     return param[0]
   } else if (typeof param === 'object' && param !== null) {
     const keys = Object.keys(param)
-
     return param[keys[0]][0]
   } else {
     return { w: 0, h: 0 }
@@ -44,7 +43,6 @@ export function useSpriteLoader<Url extends string>(
   onLoad?: (texture: Texture, textureData?: any) => void
 ): any {
   const v = useThree((state) => state.viewport)
-  const gl = useThree((state) => state.gl)
   const spriteDataRef = React.useRef<any>(null)
   const totalFrames = React.useRef<number>(0)
   const aspectFactor = 0.1
@@ -143,6 +141,7 @@ export function useSpriteLoader<Url extends string>(
       spriteDataRef.current = json
       spriteDataRef.current.frames = Array.isArray(json.frames) ? json.frames : parseFrames()
       totalFrames.current = Array.isArray(json.frames) ? json.frames.length : Object.keys(json.frames).length
+
       const { w, h } = getFirstItem(json.frames).sourceSize
       aspect = calculateAspectRatio(w, h, aspectFactor, v)
     }
@@ -160,7 +159,6 @@ export function useSpriteLoader<Url extends string>(
     const delimiters = animationNames
     if (delimiters) {
       for (let i = 0; i < delimiters.length; i++) {
-        // we convert each named animation group into an array
         sprites[delimiters[i]] = []
 
         for (const innerKey in data['frames']) {
@@ -185,31 +183,14 @@ export function useSpriteLoader<Url extends string>(
           }
         }
       }
-      return sprites
-    } else {
-      // we need to convert it into an array
-      const spritesArr: any[] = []
-      for (const key in data.frames) {
-        spritesArr.push(data.frames[key])
-      }
-
-      return spritesArr
     }
+
+    return sprites
   }
 
   React.useLayoutEffect(() => {
     onLoad?.(spriteTexture, spriteData)
   }, [spriteTexture, spriteData])
-
-  // https://github.com/mrdoob/three.js/issues/22696
-  // Upload the texture to the GPU immediately instead of waiting for the first render
-  // NOTE: only available for WebGLRenderer
-  useEffect(() => {
-    if ('initTexture' in gl) {
-      const array = Array.isArray(spriteTexture) ? spriteTexture : [spriteTexture]
-      array.forEach(gl.initTexture)
-    }
-  }, [gl, spriteTexture])
 
   return { spriteObj, loadJsonAndTexture }
 }

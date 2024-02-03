@@ -1,5 +1,5 @@
 import { Object3DProps, useFrame } from '@react-three/fiber'
-import { ForwardRefComponent } from 'helpers/ts-utils'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 import * as React from 'react'
 import { forwardRef, useRef } from 'react'
 import mergeRefs from 'react-merge-refs'

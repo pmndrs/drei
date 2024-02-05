@@ -1,6 +1,6 @@
 import { Texture, TextureLoader } from 'three'
 import { useLoader, useThree } from '@react-three/fiber'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import * as React from 'react'
 import * as THREE from 'three'
 
@@ -44,7 +44,6 @@ export function useSpriteLoader<Url extends string>(
   onLoad?: (texture: Texture, textureData?: any) => void
 ): any {
   const v = useThree((state) => state.viewport)
-  const gl = useThree((state) => state.gl)
   const spriteDataRef = React.useRef<any>(null)
   const totalFrames = React.useRef<number>(0)
   const aspectFactor = 0.1
@@ -200,16 +199,6 @@ export function useSpriteLoader<Url extends string>(
   React.useLayoutEffect(() => {
     onLoad?.(spriteTexture, spriteData)
   }, [spriteTexture, spriteData])
-
-  // https://github.com/mrdoob/three.js/issues/22696
-  // Upload the texture to the GPU immediately instead of waiting for the first render
-  // NOTE: only available for WebGLRenderer
-  useEffect(() => {
-    if ('initTexture' in gl) {
-      const array = Array.isArray(spriteTexture) ? spriteTexture : [spriteTexture]
-      array.forEach(gl.initTexture)
-    }
-  }, [gl, spriteTexture])
 
   return { spriteObj, loadJsonAndTexture }
 }

@@ -168,12 +168,12 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
       }
     }, [autoPlay])
 
-    React.useEffect(() => {
+    React.useLayoutEffect(() => {
       if (currentFrameName.current !== frameName && frameName) {
         currentFrame.current = 0
         currentFrameName.current = frameName
         state.hasEnded = false
-        modifySpritePosition()
+        // modifySpritePosition()
         if (spriteData.current) {
           const { w, h } = getFirstItem(spriteData.current.frames).sourceSize
           const _aspect = calculateAspectRatio(w, h)
@@ -389,7 +389,6 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
         frameIndex = Math.max(0, Math.min(frameIndex, spriteFrames.length - 1))
 
         if (isNaN(frameIndex)) {
-          console.log('nan frame detected')
           frameIndex = 0 //fallback
         }
         currentFrame.current = frameIndex
@@ -449,7 +448,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
             )}
             {!displayAsSprite && (
               <Instances
-                limit={maxItems} // Optional: max amount of items (for calculating buffer size)
+                limit={maxItems ?? 1} // Optional: max amount of items (for calculating buffer size)
               >
                 <planeGeometry args={[1, 1]} />
                 <meshBasicMaterial

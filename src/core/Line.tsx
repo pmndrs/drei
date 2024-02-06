@@ -25,7 +25,7 @@ export type LineProps = {
 export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = /* @__PURE__ */ React.forwardRef<
   Line2 | LineSegments2,
   LineProps
->(function Line({ points, color = 'black', vertexColors, linewidth, lineWidth, segments, dashed, ...rest }, ref) {
+>(function Line({ points, color = 0xffffff, vertexColors, linewidth, lineWidth, segments, dashed, ...rest }, ref) {
   const size = useThree((state) => state.size)
   const line2 = React.useMemo(() => (segments ? new LineSegments2() : new Line2()), [segments])
   const [lineMaterial] = React.useState(() => new LineMaterial())
@@ -48,6 +48,8 @@ export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = /* @_
     geom.setPositions(pValues.flat())
 
     if (vertexColors) {
+      // using vertexColors requires the color value to be white see #1813
+      color = 0xffffff
       const cValues = vertexColors.map((c) => (c instanceof Color ? c.toArray() : c))
       geom.setColors(cValues.flat(), itemSize)
     }

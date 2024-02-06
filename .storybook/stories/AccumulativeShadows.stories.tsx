@@ -36,9 +36,7 @@ function AccumulativeShadowScene() {
 }
 
 function Suzi(props) {
-  const { scene, materials } = useGLTF(
-    'https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/models/suzanne-high-poly/model.gltf'
-  ) as any
+  const { scene, materials } = useGLTF('/suzanne-high-poly.gltf') as any
   React.useLayoutEffect(() => {
     scene.traverse((obj) => obj.isMesh && (obj.receiveShadow = obj.castShadow = true))
     applyProps(materials.default, {

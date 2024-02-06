@@ -1,6 +1,5 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { applyProps } from '@react-three/fiber'
 import { FlakesTexture } from 'three/examples/jsm/textures/FlakesTexture'
 
 import { Setup } from '../Setup'
@@ -36,22 +35,22 @@ function AccumulativeShadowScene() {
 }
 
 function Suzi(props) {
-  const { scene, materials } = useGLTF('/suzanne-high-poly.gltf') as any
+  const { scene, materials } = useGLTF('/suzanne-high-poly.gltf')
   React.useLayoutEffect(() => {
-    scene.traverse((obj) => obj.isMesh && (obj.receiveShadow = obj.castShadow = true))
-    applyProps(materials.default, {
-      color: 'orange',
-      roughness: 0,
-      normalMap: new THREE.CanvasTexture(
-        new FlakesTexture(),
-        THREE.UVMapping,
-        THREE.RepeatWrapping,
-        THREE.RepeatWrapping
-      ),
-      'normalMap-flipY': false,
-      'normalMap-repeat': [40, 40],
-      normalScale: [0.05, 0.05],
-    })
+    scene.traverse((obj) => (obj as any).isMesh && (obj.receiveShadow = obj.castShadow = true))
+
+    const material = materials.default as THREE.MeshStandardMaterial
+    material.color.set('orange')
+    material.roughness = 0
+    material.normalMap = new THREE.CanvasTexture(
+      new FlakesTexture(),
+      THREE.UVMapping,
+      THREE.RepeatWrapping,
+      THREE.RepeatWrapping
+    )
+    material.normalMap.flipY = false
+    material.normalMap.repeat.set(40, 40)
+    material.normalScale.set(0.05, 0.05)
   })
   return <primitive object={scene} {...props} />
 }

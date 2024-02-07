@@ -1,6 +1,8 @@
-import { type Loader } from 'three'
-import { type GLTF, GLTFLoader, DRACOLoader, MeshoptDecoder } from 'three-stdlib'
-import { type ObjectMap, useLoader } from '@react-three/fiber'
+import type { Loader } from 'three'
+import { GLTFLoader, DRACOLoader, MeshoptDecoder } from 'three-stdlib'
+import type { GLTF } from 'three-stdlib'
+import type { ObjectMap } from '@react-three/fiber'
+import { useLoader } from '@react-three/fiber'
 
 let dracoLoader: DRACOLoader | null = null
 

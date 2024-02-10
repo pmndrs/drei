@@ -1,10 +1,10 @@
 import { Object3DProps, useFrame } from '@react-three/fiber'
-import { ForwardRefComponent } from 'helpers/ts-utils'
 import * as React from 'react'
 import { forwardRef, useRef } from 'react'
 import mergeRefs from 'react-merge-refs'
 import { Object3D, Vector3 } from 'three'
 import { calculateScaleFactor } from './calculateScaleFactor'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 
 const worldPos = /* @__PURE__ */ new Vector3()
 

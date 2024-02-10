@@ -6,7 +6,7 @@
 
 import * as THREE from 'three'
 import * as React from 'react'
-import { applyProps, extend, useFrame } from '@react-three/fiber'
+import { extend, useFrame } from '@react-three/fiber'
 import { useFBO } from './useFBO'
 import { DiscardMaterial } from '../materials/DiscardMaterial'
 import { ForwardRefComponent } from '../helpers/ts-utils'
@@ -154,7 +154,6 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
         return r-0.5;
       }
 
-      float seed = 0.0;
       uint hash( uint x ) {
         x += ( x << 10u );
         x ^= ( x >>  6u );
@@ -181,14 +180,12 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       }
 
       // Pseudo-random value in half-open range [0:1].
-      float random( float x ) { return floatConstruct(hash(floatBitsToUint(x))); }
-      float random( vec2  v ) { return floatConstruct(hash(floatBitsToUint(v))); }
-      float random( vec3  v ) { return floatConstruct(hash(floatBitsToUint(v))); }
-      float random( vec4  v ) { return floatConstruct(hash(floatBitsToUint(v))); }
-
-      float rand() {
-        float result = random(vec3(gl_FragCoord.xy, seed));
-        seed += 1.0;
+      float randomBase( float x ) { return floatConstruct(hash(floatBitsToUint(x))); }
+      float randomBase( vec2  v ) { return floatConstruct(hash(floatBitsToUint(v))); }
+      float randomBase( vec3  v ) { return floatConstruct(hash(floatBitsToUint(v))); }
+      float randomBase( vec4  v ) { return floatConstruct(hash(floatBitsToUint(v))); }
+      float rand(float seed) {
+        float result = randomBase(vec3(gl_FragCoord.xy, seed));
         return result;
       }
 
@@ -327,11 +324,12 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
         #endif
         
         vec3 pos = vWorldPosition;
+        float runningSeed = 0.0;
         vec3 v = normalize( cameraPosition - pos );
         vec3 n = inverseTransformDirection( normal, viewMatrix );
         vec3 transmission = vec3(0.0);
         float transmissionR, transmissionB, transmissionG;
-        float randomCoords = rand();
+        float randomCoords = rand(runningSeed++);
         float thickness_smear = thickness * max(pow(roughnessFactor, 0.33), anisotropicBlur);
         vec3 distortionNormal = vec3(0.0);
         vec3 temporalOffset = vec3(time, -time, -time) * temporalDistortion;
@@ -339,7 +337,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
           distortionNormal = distortion * vec3(snoiseFractal(vec3((pos * distortionScale + temporalOffset))), snoiseFractal(vec3(pos.zxy * distortionScale - temporalOffset)), snoiseFractal(vec3(pos.yxz * distortionScale + temporalOffset)));
         }
         for (float i = 0.0; i < ${samples}.0; i ++) {
-          vec3 sampleNorm = normalize(n + roughnessFactor * roughnessFactor * 2.0 * normalize(vec3(rand() - 0.5, rand() - 0.5, rand() - 0.5)) * pow(rand(), 0.33) + distortionNormal);
+          vec3 sampleNorm = normalize(n + roughnessFactor * roughnessFactor * 2.0 * normalize(vec3(rand(runningSeed++) - 0.5, rand(runningSeed++) - 0.5, rand(runningSeed++) - 0.5)) * pow(rand(runningSeed++), 0.33) + distortionNormal);
           transmissionR = getIBLVolumeRefraction(
             sampleNorm, v, material.roughness, material.diffuseColor, material.specularColor, material.specularF90,
             pos, modelMatrix, viewMatrix, projectionMatrix, material.ior, material.thickness  + thickness_smear * (i + randomCoords) / float(${samples}),

@@ -16,8 +16,7 @@
     "outDir": "dist",
     "resolveJsonModule": true,
     "noImplicitAny": false,
-    "noImplicitThis": false,
-    "baseUrl": "./src"
+    "noImplicitThis": false
   },
   "include": ["./src", "custom.d.ts"],
   "exclude": ["./node_modules/**/*"]

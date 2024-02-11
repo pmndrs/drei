@@ -42,6 +42,8 @@ type SpriteAnimatorState = {
   ref: React.MutableRefObject<any> | undefined | null | ((instance: any) => void)
 }
 
+type Scale = number | [number, number, number] | Vector3
+
 const context = React.createContext<SpriteAnimatorState>(null!)
 
 export function useSpriteAnimator() {
@@ -91,7 +93,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
     const fpsInterval = 1000 / (fps || 30)
     const [spriteTexture, setSpriteTexture] = React.useState<THREE.Texture>(new THREE.Texture())
     const totalFrames = React.useRef<number>(0)
-    const [aspect, setAspect] = React.useState<Vector3 | undefined>([1, 1, 1])
+    const [aspect, setAspect] = React.useState<number[] | null>([1, 1, 1])
     const flipOffset = flipX ? -1 : 1
     const [displayAsSprite, setDisplayAsSprite] = React.useState(asSprite ?? true)
     const pauseRef = React.useRef(pause)
@@ -121,7 +123,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
       pos.current = offset
     }, [offset])
 
-    const calculateAspectRatio = (width: number, height: number): Vector3 => {
+    const calculateAspectRatio = (width: number, height: number): number[] => {
       const aspectRatio = height / width
       if (spriteRef.current) {
         spriteRef.current.scale.set(1, aspectRatio, 1)
@@ -268,7 +270,12 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
       matRef.current.map.offset.x = 0.0 //-matRef.current.map.repeat.x
       matRef.current.map.offset.y = 1 - frameOffsetY
 
-      if (onStart) onStart({ currentFrameName: frameName, currentFrame: currentFrame.current })
+      if (onStart) {
+        onStart({
+          currentFrameName: frameName,
+          currentFrame: currentFrame.current,
+        })
+      }
     }
 
     // run the animation on each frame
@@ -350,7 +357,10 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
       frameW: number,
       frameH: number,
       metaInfo: { w: number; h: number },
-      spriteFrames: { frame: { x: any; y: any }; sourceSize: { w: any; h: any } }[]
+      spriteFrames: {
+        frame: { x: any; y: any }
+        sourceSize: { w: any; h: any }
+      }[]
     ) => {
       // get the manual update offset to find the next frame
       var _offset = offset === undefined ? state.current : offset
@@ -414,7 +424,11 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
 
       if (!state.hasEnded && (autoPlay || play)) {
         runAnimation()
-        onFrame && onFrame({ currentFrameName: currentFrameName.current, currentFrame: currentFrame.current })
+        onFrame &&
+          onFrame({
+            currentFrameName: currentFrameName.current,
+            currentFrame: currentFrame.current,
+          })
       }
     })
 
@@ -430,12 +444,35 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
       }
     }
 
+    function multiplyScale(initialScale: number[], newScale: Scale): number[] {
+      let _newScale: number[] = []
+
+      // If newScale is a single number, convert it to a Vector3
+      if (typeof newScale === 'number') {
+        _newScale = [newScale, newScale, newScale]
+      } else if (Array.isArray(newScale)) {
+        // If newScale is an array, convert it to a Vector3
+        _newScale = newScale
+      } else if (newScale instanceof THREE.Vector3) {
+        _newScale = [newScale.x, newScale.y, newScale.z]
+      }
+
+      // Multiply the scale values element-wise
+      const result = initialScale.map((value, index) => value * _newScale[index])
+      // Convert the result to an array of numbers
+      return result
+    }
+
     return (
-      <group {...props} ref={ref}>
+      <group
+        {...props}
+        ref={ref}
+        scale={multiplyScale(aspect ?? [1, 1, 1], props.scale ?? 1.0) as [number, number, number]}
+      >
         <context.Provider value={state}>
           <React.Suspense fallback={null}>
             {displayAsSprite && (
-              <sprite ref={spriteRef} scale={aspect}>
+              <sprite ref={spriteRef} scale={1.0}>
                 <spriteMaterial
                   premultipliedAlpha={false}
                   toneMapped={false}
@@ -462,7 +499,14 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
                 />
 
                 {(instanceItems ?? [0]).map((item, index) => {
-                  return <Instance key={index} ref={spriteRef} position={item} scale={aspect}></Instance>
+                  return (
+                    <Instance
+                      key={index}
+                      ref={instanceItems?.length === 1 ? spriteRef : null}
+                      position={item}
+                      scale={1.0}
+                    ></Instance>
+                  )
                 })}
               </Instances>
             )}

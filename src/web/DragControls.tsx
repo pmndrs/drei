@@ -96,32 +96,40 @@ export const DragControls: ForwardRefComponent<DragControlsProps, THREE.Group> =
           const previousLocalMatrix = ref.current.matrix.clone()
           const previousWorldMatrix = ref.current.matrixWorld.clone()
 
-          const newPosition = new THREE.Vector3(
+          const intendedNewPosition = new THREE.Vector3(
             mousePosition3D.x - dragOffset.x,
             mousePosition3D.y - dragOffset.y,
             mousePosition3D.z - dragOffset.z
           )
 
           if (dragLimits) {
-            newPosition.x = dragLimits[0]
-              ? Math.max(Math.min(newPosition.x, dragLimits[0][1]), dragLimits[0][0])
-              : newPosition.x
-            newPosition.y = dragLimits[1]
-              ? Math.max(Math.min(newPosition.y, dragLimits[1][1]), dragLimits[1][0])
-              : newPosition.y
-            newPosition.z = dragLimits[2]
-              ? Math.max(Math.min(newPosition.z, dragLimits[2][1]), dragLimits[2][0])
-              : newPosition.z
+            intendedNewPosition.x = dragLimits[0]
+              ? Math.max(Math.min(intendedNewPosition.x, dragLimits[0][1]), dragLimits[0][0])
+              : intendedNewPosition.x
+            intendedNewPosition.y = dragLimits[1]
+              ? Math.max(Math.min(intendedNewPosition.y, dragLimits[1][1]), dragLimits[1][0])
+              : intendedNewPosition.y
+            intendedNewPosition.z = dragLimits[2]
+              ? Math.max(Math.min(intendedNewPosition.z, dragLimits[2][1]), dragLimits[2][0])
+              : intendedNewPosition.z
           }
 
           if (autoTransform) {
-            ref.current.matrix.setPosition(newPosition)
+            ref.current.matrix.setPosition(intendedNewPosition)
+
+            const deltaLocalMatrix = ref.current.matrix.clone().multiply(previousLocalMatrix.invert())
+            const deltaWorldMatrix = ref.current.matrix.clone().multiply(previousWorldMatrix.invert())
+
+            onDrag && onDrag(ref.current.matrix, deltaLocalMatrix, ref.current.matrixWorld, deltaWorldMatrix)
+          } else {
+            const tempMatrix = new THREE.Matrix4().copy(ref.current.matrix)
+            tempMatrix.setPosition(intendedNewPosition)
+
+            const deltaLocalMatrix = tempMatrix.clone().multiply(previousLocalMatrix.invert())
+            const deltaWorldMatrix = tempMatrix.clone().multiply(previousWorldMatrix.invert())
+
+            onDrag && onDrag(tempMatrix, deltaLocalMatrix, ref.current.matrixWorld, deltaWorldMatrix)
           }
-
-          const deltaLocalMatrix = ref.current.matrix.clone().multiply(previousLocalMatrix.invert())
-          const deltaWorldMatrix = ref.current.matrixWorld.clone().multiply(previousWorldMatrix.invert())
-
-          onDrag && onDrag(ref.current.matrix, deltaLocalMatrix, ref.current.matrixWorld, deltaWorldMatrix)
           invalidate()
         },
         onDragEnd: () => {

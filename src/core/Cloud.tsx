@@ -88,6 +88,8 @@ type CloudProps = JSX.IntrinsicElements['group'] & {
   opacity?: number
   /** Color, default: white */
   color?: ReactThreeFiber.Color
+  /** Frustum culling, default: true */
+  frustumCulled?: boolean
 }
 
 const parentMatrix = /* @__PURE__ */ new Matrix4()
@@ -99,7 +101,10 @@ const scale = /* @__PURE__ */ new Vector3()
 
 const context = /* @__PURE__ */ React.createContext<React.MutableRefObject<CloudState[]>>(null!)
 export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
-  ({ children, material = MeshLambertMaterial, texture = CLOUD_URL, range, limit = 200, ...props }, fref) => {
+  (
+    { children, material = MeshLambertMaterial, texture = CLOUD_URL, range, limit = 200, frustumCulled, ...props },
+    fref
+  ) => {
     const CloudMaterial = React.useMemo(() => {
       return class extends (material as typeof Material) {
         constructor() {
@@ -193,7 +198,12 @@ export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
       <group ref={fref} {...props}>
         <context.Provider value={clouds}>
           {children}
-          <instancedMesh matrixAutoUpdate={false} ref={instance} args={[null as any, null as any, limit]}>
+          <instancedMesh
+            matrixAutoUpdate={false}
+            ref={instance}
+            args={[null as any, null as any, limit]}
+            frustumCulled={frustumCulled}
+          >
             <instancedBufferAttribute usage={DynamicDrawUsage} attach="instanceColor" args={[colors, 3]} />
             <planeGeometry args={[...imageBounds] as any}>
               <instancedBufferAttribute usage={DynamicDrawUsage} attach="attributes-opacity" args={[opacities, 1]} />

@@ -11,6 +11,8 @@ type Props = JSX.IntrinsicElements['mesh'] & {
   color?: ReactThreeFiber.Color
   /** Font size, default: 1 */
   fontSize?: number
+  fontWeight?: number | string
+  fontStyle?: 'italic' | 'normal'
   maxWidth?: number
   lineHeight?: number
   letterSpacing?: number

@@ -10,7 +10,7 @@ const worldPos = /* @__PURE__ */ new Vector3()
 
 export interface ScreenSizerProps extends Object3DProps {
   /** Scale factor. Defaults to 1, which equals 1 pixel size. */
-  scale: number
+  scale?: number
 }
 
 /**

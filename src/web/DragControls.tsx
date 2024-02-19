@@ -15,7 +15,7 @@ type ControlsProto = {
   enabled: boolean
 }
 
-type DragControlsProps = {
+export type DragControlsProps = {
   /** If autoTransform is true, automatically apply the local transform on drag, true */
   autoTransform?: boolean
   /** The matrix to control */

@@ -2,10 +2,10 @@ import { CubeTextureLoader, CubeTexture } from 'three'
 import { useLoader } from '@react-three/fiber'
 
 type Options = {
-  path: string
+  path?: string
 }
 
-export function useCubeTexture(files: string[], { path }: Options): CubeTexture {
+export function useCubeTexture(files: string[], { path }: Options = {}): CubeTexture {
   // @ts-ignore
   const [cubeTexture] = useLoader(
     // @ts-ignore

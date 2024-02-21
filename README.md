@@ -1527,7 +1527,7 @@ Radial gradient.
 
 ```jsx
 import { GradientTexture, GradientType } from './GradientTexture'
-;<mesh>
+<mesh>
   <planeGeometry />
   <meshBasicMaterial>
     <GradientTexture
@@ -3657,7 +3657,7 @@ If you still experience flip flops despite the bounds you can define a limit of 
 PerformanceMonitor can also have children, if you wrap your app in it you get to use `usePerformanceMonitor` which allows individual components down the nested tree to respond to performance changes on their own.
 
 ```jsx
-;<PerformanceMonitor>
+<PerformanceMonitor>
   <Effects />
 </PerformanceMonitor>
 
@@ -3687,19 +3687,16 @@ type HudProps = {
 ```
 
 ```jsx
-{
-  /* Renders on top of the default scene with a perspective camera */
-}
-;<Hud>
+{ /* Renders on top of the default scene with a perspective camera */ }
+<Hud>
   <PerspectiveCamera makeDefault position={[0, 0, 10]} />
   <mesh>
     <ringGeometry />
   </mesh>
 </Hud>
-{
-  /* Renders on top of the previous HUD with an orthographic camera */
-}
-;<Hud renderPriority={2}>
+
+{ /* Renders on top of the previous HUD with an orthographic camera */ }
+<Hud renderPriority={2}>
   <OrthographicCamera makeDefault position={[0, 0, 10]} />
   <mesh>
     <boxGeometry />
@@ -4228,7 +4225,7 @@ const config = {
   controls: undefined, // if using orbit controls, pass a ref here so we can update the rotation
 }
 
-;<CameraShake {...config} />
+<CameraShake {...config} />
 ```
 
 ```ts

@@ -173,7 +173,13 @@ function Container({ visible = true, canvasSize, scene, index, children, frames,
     )
   }, [])
 
-  return <>{children}</>
+  return (
+    <>
+      {children}
+      {/** Without an element that receives pointer events state.pointer will always be 0/0 */}
+      <group onPointerOver={() => null} />
+    </>
+  )
 }
 
 const CanvasView = React.forwardRef(

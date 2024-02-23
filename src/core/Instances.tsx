@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { ReactThreeFiber, extend, useFrame } from '@react-three/fiber'
-import mergeRefs from 'react-merge-refs'
+import { mergeRefs } from 'react-merge-refs'
 import Composer from 'react-composer'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 import { setUpdateRange } from '../helpers/deprecated'

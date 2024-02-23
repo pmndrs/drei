@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { Color, Group } from 'three'
-import mergeRefs from 'react-merge-refs'
+import { mergeRefs } from 'react-merge-refs'
 import { MarchingCubes as MarchingCubesImpl } from 'three-stdlib'
 import { useFrame } from '@react-three/fiber'
 import { ForwardRefComponent } from '../helpers/ts-utils'

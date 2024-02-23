@@ -1,7 +1,7 @@
 import { applyProps, ReactThreeFiber, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from 'three'
-import mergeRefs from 'react-merge-refs'
+import { mergeRefs } from 'react-merge-refs'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type LightProps = JSX.IntrinsicElements['mesh'] & {

@@ -2,7 +2,7 @@ import * as React from 'react'
 import { RGBAFormat, HalfFloatType, WebGLRenderTarget, UnsignedByteType } from 'three'
 import { ReactThreeFiber, extend, useThree, useFrame } from '@react-three/fiber'
 import { EffectComposer, RenderPass, ShaderPass, GammaCorrectionShader } from 'three-stdlib'
-import mergeRefs from 'react-merge-refs'
+import { mergeRefs } from 'react-merge-refs'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type Props = ReactThreeFiber.Node<EffectComposer, typeof EffectComposer> & {

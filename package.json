@@ -67,7 +67,7 @@
     "maath": "^0.10.7",
     "meshline": "^3.1.6",
     "react-composer": "^5.0.3",
-    "react-merge-refs": "^1.1.0",
+    "react-merge-refs": "^2.1.1",
     "stats-gl": "^2.0.0",
     "stats.js": "^0.17.0",
     "suspend-react": "^0.1.3",

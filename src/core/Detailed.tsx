@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { LOD, Object3D } from 'three'
 import { useFrame } from '@react-three/fiber'
-import mergeRefs from 'react-merge-refs'
+import { mergeRefs } from 'react-merge-refs'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type Props = JSX.IntrinsicElements['lOD'] & {

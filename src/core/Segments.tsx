@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import mergeRefs from 'react-merge-refs'
+import { mergeRefs } from 'react-merge-refs'
 import { extend, useFrame, ReactThreeFiber } from '@react-three/fiber'
 import { Line2, LineSegmentsGeometry, LineMaterial, LineMaterialParameters } from 'three-stdlib'
 import { ForwardRefComponent } from '../helpers/ts-utils'

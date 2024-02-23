@@ -15,7 +15,7 @@ import {
   HalfFloatType,
 } from 'three'
 import { useFrame, useThree, extend } from '@react-three/fiber'
-import mergeRefs from 'react-merge-refs'
+import { mergeRefs } from 'react-merge-refs'
 
 import { BlurPass } from '../materials/BlurPass'
 import { MeshReflectorMaterialProps, MeshReflectorMaterial } from '../materials/MeshReflectorMaterial'

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { QuadraticBezierCurve3, Vector3 } from 'three'
 import { Line2 } from 'three-stdlib'
-import mergeRefs from 'react-merge-refs'
+import { mergeRefs } from 'react-merge-refs'
 import { Line, LineProps } from './Line'
 import { Object3DNode } from '@react-three/fiber'
 import { ForwardRefComponent } from '../helpers/ts-utils'

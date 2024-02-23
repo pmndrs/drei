@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { AudioLoader, AudioListener, PositionalAudio as PositionalAudioImpl } from 'three'
 import { useThree, useLoader } from '@react-three/fiber'
-import mergeRefs from 'react-merge-refs'
+import { mergeRefs } from 'react-merge-refs'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type Props = JSX.IntrinsicElements['positionalAudio'] & {

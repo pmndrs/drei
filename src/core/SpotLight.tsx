@@ -19,7 +19,7 @@ import {
 } from 'three'
 import { useFrame, useThree } from '@react-three/fiber'
 import { FullScreenQuad } from 'three-stdlib'
-import mergeRefs from 'react-merge-refs'
+import { mergeRefs } from 'react-merge-refs'
 import { SpotLightMaterial } from '../materials/SpotLightMaterial'
 
 // eslint-disable-next-line

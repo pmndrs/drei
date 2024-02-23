@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import * as React from 'react'
 import { OrthographicCamera as OrthographicCameraImpl } from 'three'
 import { useThree, useFrame } from '@react-three/fiber'
-import mergeRefs from 'react-merge-refs'
+import { mergeRefs } from 'react-merge-refs'
 import { useFBO } from './useFBO'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 

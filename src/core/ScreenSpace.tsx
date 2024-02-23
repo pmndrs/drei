@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Group } from 'three'
-import mergeRefs from 'react-merge-refs'
+import { mergeRefs } from 'react-merge-refs'
 import { useFrame } from '@react-three/fiber'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 

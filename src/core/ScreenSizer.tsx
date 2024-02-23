@@ -1,7 +1,7 @@
 import { Object3DProps, useFrame } from '@react-three/fiber'
 import * as React from 'react'
 import { forwardRef, useRef } from 'react'
-import mergeRefs from 'react-merge-refs'
+import { mergeRefs } from 'react-merge-refs'
 import { Object3D, Vector3 } from 'three'
 import { calculateScaleFactor } from './calculateScaleFactor'
 import { ForwardRefComponent } from '../helpers/ts-utils'

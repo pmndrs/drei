@@ -6,7 +6,7 @@
 
 import * as React from 'react'
 import * as THREE from 'three'
-import mergeRefs from 'react-merge-refs'
+import { mergeRefs } from 'react-merge-refs'
 import { extend, useFrame } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
 import { ForwardRefComponent } from '../helpers/ts-utils'

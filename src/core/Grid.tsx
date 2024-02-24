@@ -6,7 +6,6 @@
 
 import * as React from 'react'
 import * as THREE from 'three'
-import mergeRefs from 'react-merge-refs'
 import { extend, useFrame } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
 import { ForwardRefComponent } from '../helpers/ts-utils'
@@ -150,6 +149,7 @@ export const Grid: ForwardRefComponent<Omit<JSX.IntrinsicElements['mesh'], 'args
       extend({ GridMaterial })
 
       const ref = React.useRef<THREE.Mesh>(null!)
+      React.useImperativeHandle(fRef, () => ref.current, [])
       const plane = new THREE.Plane()
       const upVector = new THREE.Vector3(0, 1, 0)
       const zeroVector = new THREE.Vector3(0, 0, 0)
@@ -168,7 +168,7 @@ export const Grid: ForwardRefComponent<Omit<JSX.IntrinsicElements['mesh'], 'args
       const uniforms2 = { fadeDistance, fadeStrength, infiniteGrid, followCamera }
 
       return (
-        <mesh ref={mergeRefs([ref, fRef])} frustumCulled={false} {...props}>
+        <mesh ref={ref} frustumCulled={false} {...props}>
           <gridMaterial transparent extensions-derivatives side={side} {...uniforms1} {...uniforms2} />
           <planeGeometry args={args} />
         </mesh>

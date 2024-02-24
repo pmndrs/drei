@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { LOD, Object3D } from 'three'
 import { useFrame } from '@react-three/fiber'
-import mergeRefs from 'react-merge-refs'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type Props = JSX.IntrinsicElements['lOD'] & {
@@ -13,6 +12,7 @@ type Props = JSX.IntrinsicElements['lOD'] & {
 export const Detailed: ForwardRefComponent<Props, LOD> = /* @__PURE__ */ React.forwardRef(
   ({ children, hysteresis = 0, distances, ...props }: Props, ref) => {
     const lodRef = React.useRef<LOD>(null!)
+    React.useImperativeHandle(ref, () => lodRef.current, [])
     React.useLayoutEffect(() => {
       const { current: lod } = lodRef
       lod.levels.length = 0
@@ -20,7 +20,7 @@ export const Detailed: ForwardRefComponent<Props, LOD> = /* @__PURE__ */ React.f
     })
     useFrame((state) => lodRef.current?.update(state.camera))
     return (
-      <lOD ref={mergeRefs([lodRef, ref])} {...props}>
+      <lOD ref={lodRef} {...props}>
         {children}
       </lOD>
     )

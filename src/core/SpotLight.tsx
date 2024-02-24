@@ -19,7 +19,6 @@ import {
 } from 'three'
 import { useFrame, useThree } from '@react-three/fiber'
 import { FullScreenQuad } from 'three-stdlib'
-import mergeRefs from 'react-merge-refs'
 import { SpotLightMaterial } from '../materials/SpotLightMaterial'
 
 // eslint-disable-next-line
@@ -298,19 +297,13 @@ const SpotLight: ForwardRefComponent<React.PropsWithChildren<SpotLightProps>, Sp
     ref: React.ForwardedRef<SpotLightImpl>
   ) => {
     const spotlight = React.useRef<any>(null!)
+    React.useImperativeHandle(ref, () => spotlight.current, [])
 
     return (
       <group>
         {debug && spotlight.current && <spotLightHelper args={[spotlight.current]} />}
 
-        <spotLight
-          ref={mergeRefs([ref, spotlight])}
-          angle={angle}
-          color={color}
-          distance={distance}
-          castShadow
-          {...props}
-        >
+        <spotLight ref={spotlight} angle={angle} color={color} distance={distance} castShadow {...props}>
           {volumetric && (
             <VolumetricMesh
               debug={debug}

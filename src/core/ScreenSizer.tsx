@@ -1,7 +1,6 @@
 import { Object3DProps, useFrame } from '@react-three/fiber'
 import * as React from 'react'
 import { forwardRef, useRef } from 'react'
-import mergeRefs from 'react-merge-refs'
 import { Object3D, Vector3 } from 'three'
 import { calculateScaleFactor } from './calculateScaleFactor'
 import { ForwardRefComponent } from '../helpers/ts-utils'
@@ -30,7 +29,8 @@ export const ScreenSizer: ForwardRefComponent<ScreenSizerProps, Object3D> = /* @
   Object3D,
   ScreenSizerProps
 >(({ scale = 1, ...props }, ref) => {
-  const container = useRef<Object3D>(null)
+  const container = useRef<Object3D>(null!)
+  React.useImperativeHandle(ref, () => container.current, [])
 
   useFrame((state) => {
     const obj = container.current
@@ -39,5 +39,5 @@ export const ScreenSizer: ForwardRefComponent<ScreenSizerProps, Object3D> = /* @
     obj.scale.setScalar(sf * scale)
   })
 
-  return <object3D ref={mergeRefs([container, ref])} {...props} />
+  return <object3D ref={container} {...props} />
 })

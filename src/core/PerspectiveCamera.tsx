@@ -2,7 +2,6 @@ import * as THREE from 'three'
 import * as React from 'react'
 import { PerspectiveCamera as PerspectiveCameraImpl } from 'three'
 import { useFrame, useThree } from '@react-three/fiber'
-import mergeRefs from 'react-merge-refs'
 import { useFBO } from './useFBO'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
@@ -29,6 +28,7 @@ export const PerspectiveCamera: ForwardRefComponent<Props, PerspectiveCameraImpl
     const camera = useThree(({ camera }) => camera)
     const size = useThree(({ size }) => size)
     const cameraRef = React.useRef<PerspectiveCameraImpl>(null!)
+    React.useImperativeHandle(ref, () => cameraRef.current, [])
     const groupRef = React.useRef<THREE.Group>(null!)
     const fbo = useFBO(resolution)
 
@@ -71,7 +71,7 @@ export const PerspectiveCamera: ForwardRefComponent<Props, PerspectiveCameraImpl
 
     return (
       <>
-        <perspectiveCamera ref={mergeRefs([cameraRef, ref])} {...props}>
+        <perspectiveCamera ref={cameraRef} {...props}>
           {!functional && children}
         </perspectiveCamera>
         <group ref={groupRef}>{functional && children(fbo.texture)}</group>

@@ -107,7 +107,7 @@ export const Instance = /* @__PURE__ */ React.forwardRef(({ context, children, .
   const { subscribe, getParent } = React.useContext(context || globalContext)
   React.useLayoutEffect(() => subscribe(group), [])
   return (
-    <positionMesh instance={getParent()} instanceKey={group} ref={group} {...props}>
+    <positionMesh instance={getParent()} instanceKey={group} ref={group as any} {...props}>
       {children}
     </positionMesh>
   )

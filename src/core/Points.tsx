@@ -1,7 +1,6 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { ReactThreeFiber, extend, useFrame } from '@react-three/fiber'
-import mergeRefs from 'react-merge-refs'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 declare global {
@@ -94,6 +93,7 @@ const PointsInstances: ForwardRefComponent<PointsInstancesProps, THREE.Points> =
   PointsInstancesProps
 >(({ children, range, limit = 1000, ...props }, ref) => {
   const parentRef = React.useRef<THREE.Points>(null!)
+  React.useImperativeHandle(ref, () => parentRef.current, [])
   const [refs, setRefs] = React.useState<React.MutableRefObject<PositionPoint>[]>([])
   const [[positions, colors, sizes]] = React.useState(() => [
     new Float32Array(limit * 3),
@@ -138,13 +138,7 @@ const PointsInstances: ForwardRefComponent<PointsInstancesProps, THREE.Points> =
   )
 
   return (
-    <points
-      userData={{ instances: refs }}
-      matrixAutoUpdate={false}
-      ref={mergeRefs([ref, parentRef])}
-      raycast={() => null}
-      {...props}
-    >
+    <points userData={{ instances: refs }} matrixAutoUpdate={false} ref={parentRef} raycast={() => null} {...props}>
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
@@ -176,11 +170,12 @@ const PointsInstances: ForwardRefComponent<PointsInstancesProps, THREE.Points> =
 export const Point: ForwardRefComponent<JSX.IntrinsicElements['positionPoint'], PositionPoint> =
   /* @__PURE__ */ React.forwardRef(({ children, ...props }: JSX.IntrinsicElements['positionPoint'], ref) => {
     React.useMemo(() => extend({ PositionPoint }), [])
-    const group = React.useRef()
+    const group = React.useRef<PositionPoint>(null!)
+    React.useImperativeHandle(ref, () => group.current, [])
     const { subscribe, getParent } = React.useContext(context)
     React.useLayoutEffect(() => subscribe(group), [])
     return (
-      <positionPoint instance={getParent()} instanceKey={group} ref={mergeRefs([ref, group])} {...props}>
+      <positionPoint instance={getParent()} instanceKey={group as any} ref={group} {...props}>
         {children}
       </positionPoint>
     )
@@ -203,6 +198,7 @@ export const PointsBuffer: ForwardRefComponent<PointsBuffersProps, THREE.Points>
   PointsBuffersProps
 >(({ children, positions, colors, sizes, stride = 3, ...props }, forwardedRef) => {
   const pointsRef = React.useRef<THREE.Points>(null!)
+  React.useImperativeHandle(forwardedRef, () => pointsRef.current, [])
 
   useFrame(() => {
     const attr = pointsRef.current.geometry.attributes
@@ -212,7 +208,7 @@ export const PointsBuffer: ForwardRefComponent<PointsBuffersProps, THREE.Points>
   })
 
   return (
-    <points ref={mergeRefs([forwardedRef, pointsRef])} {...props}>
+    <points ref={pointsRef} {...props}>
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"

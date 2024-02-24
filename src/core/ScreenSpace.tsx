@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { Group } from 'three'
-import mergeRefs from 'react-merge-refs'
 import { useFrame } from '@react-three/fiber'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
@@ -13,13 +12,14 @@ export const ScreenSpace: ForwardRefComponent<ScreenSpaceProps, Group> = /* @__P
   ScreenSpaceProps
 >(({ children, depth = -1, ...rest }, ref) => {
   const localRef = React.useRef<Group>(null!)
+  React.useImperativeHandle(ref, () => localRef.current, [])
 
   useFrame(({ camera }) => {
     localRef.current.quaternion.copy(camera.quaternion)
     localRef.current.position.copy(camera.position)
   })
   return (
-    <group ref={mergeRefs([ref, localRef])} {...rest}>
+    <group ref={localRef} {...rest}>
       <group position-z={-depth}>{children}</group>
     </group>
   )

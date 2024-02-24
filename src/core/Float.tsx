@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { useFrame } from '@react-three/fiber'
-import mergeRefs from 'react-merge-refs'
 import * as THREE from 'three'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
@@ -30,6 +29,7 @@ export const Float: ForwardRefComponent<FloatProps, THREE.Group> = /* @__PURE__ 
     forwardRef
   ) => {
     const ref = React.useRef<THREE.Group>(null!)
+    React.useImperativeHandle(forwardRef, () => ref.current, [])
     const offset = React.useRef(Math.random() * 10000)
     useFrame((state) => {
       if (!enabled || speed === 0) return
@@ -44,7 +44,7 @@ export const Float: ForwardRefComponent<FloatProps, THREE.Group> = /* @__PURE__ 
     })
     return (
       <group {...props}>
-        <group ref={mergeRefs([ref, forwardRef])} matrixAutoUpdate={false}>
+        <group ref={ref} matrixAutoUpdate={false}>
           {children}
         </group>
       </group>

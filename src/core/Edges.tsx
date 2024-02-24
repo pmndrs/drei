@@ -40,14 +40,12 @@ export const Edges: ForwardRefComponent<EdgesProps, EdgesRef> = /* @__PURE__ */ 
           ref.current.geometry.setPositions(points)
           ref.current.geometry.attributes.instanceStart.needsUpdate = true
           ref.current.geometry.attributes.instanceEnd.needsUpdate = true
-
-          ref.current.visible = true
         }
       }
     })
 
     return (
-      <mesh ref={ref} visible={false} raycast={() => null} {...props}>
+      <mesh ref={ref} raycast={() => null} {...props}>
         <primitive object={geometry} attach="geometry" />
         <primitive
           object={material}

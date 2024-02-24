@@ -3202,6 +3202,17 @@ function VideoMaterial({ src }) {
 
 NB: It's important to wrap `VideoMaterial` into `React.Suspense` since, `useVideoTexture(src)` here will be suspended until the user shares its screen.
 
+HLS - useVideoTexture supports .m3u8 HLS manifest via (https://github.com/video-dev/hls.js). 
+
+You can fine-tune via the hls configuration:
+
+```
+ const texture = useVideoTexture('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', {
+    hls: { abrEwmaFastLive: 1.0, abrEwmaSlowLive: 3.0, enableWorker: true }
+  })
+```
+>Available options: https://github.com/video-dev/hls.js/blob/master/docs/API.md#fine-tuning  
+
 #### useTrailTexture
 
 <p>

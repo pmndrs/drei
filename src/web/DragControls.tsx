@@ -47,8 +47,7 @@ export const DragControls: ForwardRefComponent<DragControlsProps, THREE.Group> =
     { autoTransform = true, matrix, axisLock, dragLimits, onHover, onDragStart, onDrag, onDragEnd, children, ...props },
     fRef
   ) => {
-    // @ts-expect-error new in @react-three/fiber@7.0.5
-    const defaultControls = useThree((state) => state.controls) as ControlsProto
+    const defaultControls = useThree((state) => (state as any).controls) as ControlsProto | undefined
     const { camera, size, raycaster, invalidate } = useThree()
     const ref = React.useRef<THREE.Group>(null!)
 
@@ -56,7 +55,7 @@ export const DragControls: ForwardRefComponent<DragControlsProps, THREE.Group> =
       {
         onHover: ({ hovering }) => onHover && onHover(hovering ?? false),
         onDragStart: ({ event }) => {
-          defaultControls.enabled = false
+          if (defaultControls) defaultControls.enabled = false
           const { point } = event as any
 
           ref.current.matrix.decompose(initialModelPosition, new THREE.Quaternion(), new THREE.Vector3())
@@ -133,7 +132,7 @@ export const DragControls: ForwardRefComponent<DragControlsProps, THREE.Group> =
           invalidate()
         },
         onDragEnd: () => {
-          defaultControls.enabled = true
+          if (defaultControls) defaultControls.enabled = true
 
           onDragEnd && onDragEnd()
           invalidate()

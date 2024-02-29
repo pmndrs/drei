@@ -37,7 +37,7 @@ export type DragControlsProps = {
   ) => void /** Drag end event */
   onDragEnd?: () => void
   children: React.ReactNode
-  dragConfig: DragConfig
+  dragConfig?: DragConfig
 }
 
 export const DragControls: ForwardRefComponent<DragControlsProps, THREE.Group> = React.forwardRef<
@@ -155,7 +155,7 @@ export const DragControls: ForwardRefComponent<DragControlsProps, THREE.Group> =
         drag: {
           filterTaps: true,
           threshold: 1,
-          ...dragConfig,
+          ...(typeof dragConfig === 'object' ? dragConfig : {}),
         },
       }
     )

@@ -1,19 +1,19 @@
-import { Box3, Vector3, Sphere, Group } from 'three'
+import { Box3, Vector3, Sphere, Group, Object3D } from 'three'
 import * as React from 'react'
 import { useThree } from '@react-three/fiber'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type OnCenterCallbackProps = {
   /** The next parent above <Center> */
-  parent: THREE.Object3D
+  parent: Object3D
   /** The outmost container group of the <Center> component */
-  container: THREE.Object3D
+  container: Object3D
   width: number
   height: number
   depth: number
-  boundingBox: THREE.Box3
-  boundingSphere: THREE.Sphere
-  center: THREE.Vector3
+  boundingBox: Box3
+  boundingSphere: Sphere
+  center: Vector3
   verticalAlignment: number
   horizontalAlignment: number
   depthAlignment: number

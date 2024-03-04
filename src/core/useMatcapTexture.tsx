@@ -25,7 +25,7 @@ export function useMatcapTexture(
   id: number | string = 0,
   format = 1024,
   onLoad?: (texture: Texture | Texture[]) => void
-): [THREE.Texture, string, number] {
+): [Texture, string, number] {
   const matcapList = suspend(() => fetch(LIST_URL).then((res) => res.json()), ['matcapList']) as Record<string, string>
 
   const DEFAULT_MATCAP = matcapList[0]

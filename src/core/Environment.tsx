@@ -22,9 +22,9 @@ export type EnvironmentProps = {
   resolution?: number
   background?: boolean | 'only'
   blur?: number
-  map?: THREE.Texture
+  map?: Texture
   preset?: PresetsType
-  scene?: Scene | React.MutableRefObject<THREE.Scene>
+  scene?: Scene | React.MutableRefObject<Scene>
   ground?:
     | boolean
     | {
@@ -34,9 +34,8 @@ export type EnvironmentProps = {
       }
 } & EnvironmentLoaderProps
 
-const isRef = (obj: any): obj is React.MutableRefObject<THREE.Scene> => obj.current && obj.current.isScene
-const resolveScene = (scene: THREE.Scene | React.MutableRefObject<THREE.Scene>) =>
-  isRef(scene) ? scene.current : scene
+const isRef = (obj: any): obj is React.MutableRefObject<Scene> => obj.current && obj.current.isScene
+const resolveScene = (scene: Scene | React.MutableRefObject<Scene>) => (isRef(scene) ? scene.current : scene)
 
 function setEnvProps(
   background: boolean | 'only',

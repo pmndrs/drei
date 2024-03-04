@@ -1,7 +1,8 @@
 import * as React from 'react'
+import { Object3D } from 'three'
 import { addEffect, addAfterEffect } from '@react-three/fiber'
 
-export function useIntersect<T extends THREE.Object3D>(onChange: (visible: boolean) => void) {
+export function useIntersect<T extends Object3D>(onChange: (visible: boolean) => void) {
   const ref = React.useRef<T>(null!)
   const check = React.useRef(false)
   const temp = React.useRef(false)

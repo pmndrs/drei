@@ -1,6 +1,6 @@
 import { createPortal, useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
-import { ColorRepresentation, Group, Object3D, Vector2, Vector3 } from 'three'
+import { ColorRepresentation, Group, Mesh, Object3D, Vector2, Vector3 } from 'three'
 import { MeshLineGeometry as MeshLineGeometryImpl, MeshLineMaterial } from 'meshline'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
@@ -86,7 +86,7 @@ export function useTrail(target: Object3D, settings: Partial<Settings>) {
   return points
 }
 
-export type MeshLineGeometry = THREE.Mesh & MeshLineGeometryImpl
+export type MeshLineGeometry = Mesh & MeshLineGeometryImpl
 
 export const Trail: ForwardRefComponent<
   React.PropsWithChildren<TrailProps>,

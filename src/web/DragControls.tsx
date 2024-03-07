@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
-import { useGesture } from '@use-gesture/react'
+import { useGesture, DragConfig } from '@use-gesture/react'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 const initialModelPosition = new THREE.Vector3()
@@ -37,6 +37,7 @@ export type DragControlsProps = {
   ) => void /** Drag end event */
   onDragEnd?: () => void
   children: React.ReactNode
+  dragConfig?: DragConfig
 }
 
 export const DragControls: ForwardRefComponent<DragControlsProps, THREE.Group> = React.forwardRef<
@@ -44,7 +45,19 @@ export const DragControls: ForwardRefComponent<DragControlsProps, THREE.Group> =
   DragControlsProps
 >(
   (
-    { autoTransform = true, matrix, axisLock, dragLimits, onHover, onDragStart, onDrag, onDragEnd, children, ...props },
+    {
+      autoTransform = true,
+      matrix,
+      axisLock,
+      dragLimits,
+      onHover,
+      onDragStart,
+      onDrag,
+      onDragEnd,
+      children,
+      dragConfig,
+      ...props
+    },
     fRef
   ) => {
     const defaultControls = useThree((state) => (state as any).controls) as ControlsProto | undefined
@@ -142,6 +155,7 @@ export const DragControls: ForwardRefComponent<DragControlsProps, THREE.Group> =
         drag: {
           filterTaps: true,
           threshold: 1,
+          ...(typeof dragConfig === 'object' ? dragConfig : {}),
         },
       }
     )

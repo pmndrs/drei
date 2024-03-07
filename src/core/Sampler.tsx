@@ -140,7 +140,7 @@ export function useSurfaceSampler(
 
     buffer.needsUpdate = true
 
-    setBuffer(buffer.clone())
+    setBuffer(new InstancedBufferAttribute(buffer.array, buffer.itemSize).copy(buffer))
   }, [mesh, instanceMesh, weight, count, transform])
 
   return buffer

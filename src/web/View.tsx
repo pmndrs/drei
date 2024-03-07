@@ -35,7 +35,10 @@ export type ContainerProps = {
   children?: React.ReactNode
   frames: number
   rect: React.MutableRefObject<DOMRect>
-  track: React.MutableRefObject<HTMLElement>
+  /**
+   * @deprecated You can use inline Views now, see: https://github.com/pmndrs/drei/pull/1784
+   */
+  track?: React.MutableRefObject<HTMLElement>
   canvasSize: LegacyCanvasSize | CanvasSize
 }
 
@@ -57,9 +60,9 @@ export type ViewProps = {
   /** The scene to render, if you leave this undefined it will render the default scene */
   children?: React.ReactNode
   /** The tracking element, the view will be cut according to its whereabouts
-   * @deprecated
+   * @deprecated You can use inline Views now, see: https://github.com/pmndrs/drei/pull/1784
    */
-  track: React.MutableRefObject<HTMLElement>
+  track?: React.MutableRefObject<HTMLElement>
 }
 
 function computeContainerPosition(canvasSize: LegacyCanvasSize | CanvasSize, trackRect: DOMRect) {
@@ -123,7 +126,7 @@ function Container({ visible = true, canvasSize, scene, index, children, frames,
   let frameCount = 0
   useFrame((state) => {
     if (frames === Infinity || frameCount <= frames) {
-      rect.current = track.current?.getBoundingClientRect()
+      if (track) rect.current = track.current?.getBoundingClientRect()
       frameCount++
     }
     if (rect.current) {
@@ -150,6 +153,8 @@ function Container({ visible = true, canvasSize, scene, index, children, frames,
   }, [visible, isOffscreen])
 
   React.useEffect(() => {
+    if (!track) return
+
     const curRect = rect.current
     // Connect the event layer to the tracking element
     const old = rootState.get().events.connected
@@ -163,7 +168,7 @@ function Container({ visible = true, canvasSize, scene, index, children, frames,
       }
       rootState.setEvents({ connected: old })
     }
-  }, [])
+  }, [track])
 
   React.useEffect(() => {
     if (isNonLegacyCanvasSize(canvasSize)) return
@@ -194,7 +199,7 @@ const CanvasView = React.forwardRef(
 
     const compute = React.useCallback(
       (event, state) => {
-        if (rect.current && track.current && event.target === track.current) {
+        if (rect.current && track && track.current && event.target === track.current) {
           const { width, height, left, top } = rect.current
           const x = event.clientX - left
           const y = event.clientY - top
@@ -207,7 +212,7 @@ const CanvasView = React.forwardRef(
 
     React.useEffect(() => {
       // We need the tracking elements bounds beforehand in order to inject it into the portal
-      rect.current = track.current?.getBoundingClientRect()
+      if (track) rect.current = track.current?.getBoundingClientRect()
       // And now we can proceed
       toggle()
     }, [track])

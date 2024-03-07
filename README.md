@@ -3793,9 +3793,9 @@ export type ViewProps = {
   /** The scene to render, if you leave this undefined it will render the default scene */
   children?: React.ReactNode
   /** The tracking element, the view will be cut according to its whereabouts
-   * @deprecated
+   * @deprecated You can use inline Views now, see: https://github.com/pmndrs/drei/pull/1784
    */
-  track: React.MutableRefObject<HTMLElement>
+  track?: React.MutableRefObject<HTMLElement>
 }
 
 export type ViewportProps = { Port: () => React.ReactNode } & React.ForwardRefExoticComponent<

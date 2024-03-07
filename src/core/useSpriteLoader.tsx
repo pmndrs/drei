@@ -140,16 +140,23 @@ export function useSpriteLoader<Url extends string>(
       }
     } else if (_spriteTexture) {
       spriteDataRef.current = json
-      spriteDataRef.current.frames = Array.isArray(json.frames) ? json.frames : parseFrames()
+      spriteDataRef.current.frames = parseFrames()
       totalFrames.current = Array.isArray(json.frames) ? json.frames.length : Object.keys(json.frames).length
       const { w, h } = getFirstItem(json.frames).sourceSize
       aspect = calculateAspectRatio(w, h, aspectFactor, v)
     }
 
     setSpriteData(spriteDataRef.current)
-    _spriteTexture.encoding = THREE.sRGBEncoding
+    // @ts-ignore
+    if ('encoding' in _spriteTexture) _spriteTexture.encoding = 3001 // sRGBEncoding
+    // @ts-ignore
+    else _spriteTexture.colorSpace = 'srgb'
     setSpriteTexture(_spriteTexture)
-    setSpriteObj({ spriteTexture: _spriteTexture, spriteData: spriteDataRef.current, aspect: aspect })
+    setSpriteObj({
+      spriteTexture: _spriteTexture,
+      spriteData: spriteDataRef.current,
+      aspect: aspect,
+    })
   }
 
   // for frame based JSON Hash sprite data
@@ -157,7 +164,38 @@ export function useSpriteLoader<Url extends string>(
     const sprites: any = {}
     const data = spriteDataRef.current
     const delimiters = animationNames
-    if (delimiters) {
+
+    if (delimiters && Array.isArray(data['frames'])) {
+      for (let i = 0; i < delimiters.length; i++) {
+        // we convert each named animation group into an array
+        sprites[delimiters[i]] = []
+
+        for (const value of data['frames']) {
+          const frameData = value['frame']
+          const x = frameData['x']
+          const y = frameData['y']
+          const width = frameData['w']
+          const height = frameData['h']
+          const sourceWidth = value['sourceSize']['w']
+          const sourceHeight = value['sourceSize']['h']
+
+          if (
+            typeof value['filename'] === 'string' &&
+            value['filename'].toLowerCase().indexOf(delimiters[i].toLowerCase()) !== -1
+          ) {
+            sprites[delimiters[i]].push({
+              x: x,
+              y: y,
+              w: width,
+              h: height,
+              frame: frameData,
+              sourceSize: { w: sourceWidth, h: sourceHeight },
+            })
+          }
+        }
+      }
+      return sprites
+    } else if (delimiters && typeof data['frames'] === 'object') {
       for (let i = 0; i < delimiters.length; i++) {
         // we convert each named animation group into an array
         sprites[delimiters[i]] = []

@@ -6,6 +6,7 @@ import { ForwardRefComponent } from '../../helpers/ts-utils'
 import { AxisArrow } from './AxisArrow'
 import { AxisRotator } from './AxisRotator'
 import { PlaneSlider } from './PlaneSlider'
+import { ScalingSphere } from './ScalingSphere'
 import { OnDragStartProps, context } from './context'
 import { calculateScaleFactor } from '../../core/calculateScaleFactor'
 
@@ -17,6 +18,7 @@ const mW = /* @__PURE__ */ new THREE.Matrix4()
 const mL = /* @__PURE__ */ new THREE.Matrix4()
 const mL0Inv = /* @__PURE__ */ new THREE.Matrix4()
 const mdL = /* @__PURE__ */ new THREE.Matrix4()
+const mG = /* @__PURE__ */ new THREE.Matrix4()
 
 const bb = /* @__PURE__ */ new THREE.Box3()
 const bbObj = /* @__PURE__ */ new THREE.Box3()
@@ -24,6 +26,7 @@ const vCenter = /* @__PURE__ */ new THREE.Vector3()
 const vSize = /* @__PURE__ */ new THREE.Vector3()
 const vAnchorOffset = /* @__PURE__ */ new THREE.Vector3()
 const vPosition = /* @__PURE__ */ new THREE.Vector3()
+const vScale = /* @__PURE__ */ new THREE.Vector3()
 
 const xDir = /* @__PURE__ */ new THREE.Vector3(1, 0, 0)
 const yDir = /* @__PURE__ */ new THREE.Vector3(0, 1, 0)
@@ -53,10 +56,12 @@ type PivotControlsProps = {
   disableAxes?: boolean
   disableSliders?: boolean
   disableRotations?: boolean
+  disableScaling?: boolean
 
   /** Limits */
   translationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
   rotationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
+  scaleLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
 
   /** RGB colors */
   axisColors?: [string | number, string | number, string | number]
@@ -95,6 +100,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
       disableAxes = false,
       disableSliders = false,
       disableRotations = false,
+      disableScaling = false,
       activeAxes = [true, true, true],
       offset = [0, 0, 0],
       rotation = [0, 0, 0],
@@ -103,6 +109,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
       fixed = false,
       translationLimits,
       rotationLimits,
+      scaleLimits,
       depthTest = true,
       axisColors = ['#ff2060', '#20df80', '#2080ff'],
       hoveredColor = '#ffff40',
@@ -122,6 +129,8 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
     const gizmoRef = React.useRef<THREE.Group>(null!)
     const childrenRef = React.useRef<THREE.Group>(null!)
     const translation = React.useRef<[number, number, number]>([0, 0, 0])
+    const cameraScale = React.useRef<THREE.Vector3>(new THREE.Vector3(1, 1, 1))
+    const gizmoScale = React.useRef<THREE.Vector3>(new THREE.Vector3(1, 1, 1))
 
     React.useLayoutEffect(() => {
       if (!anchor) return
@@ -164,7 +173,9 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
           mL.copy(mW).premultiply(mPInv)
           mL0Inv.copy(mL0).invert()
           mdL.copy(mL).multiply(mL0Inv)
-          if (autoTransform) ref.current.matrix.copy(mL)
+          if (autoTransform) {
+            ref.current.matrix.copy(mL)
+          }
           onDrag && onDrag(mL, mdL, mW, mdW)
           invalidate()
         },
@@ -193,6 +204,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
         translation,
         translationLimits,
         rotationLimits,
+        scaleLimits,
         depthTest,
         scale,
         lineWidth,
@@ -211,26 +223,33 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
     useFrame((state) => {
       if (fixed) {
         const sf = calculateScaleFactor(gizmoRef.current.getWorldPosition(vec), scale, state.camera, state.size)
-        if (gizmoRef.current) {
-          if (
-            gizmoRef.current?.scale.x !== sf ||
-            gizmoRef.current?.scale.y !== sf ||
-            gizmoRef.current?.scale.z !== sf
-          ) {
-            gizmoRef.current.scale.setScalar(sf)
-            state.invalidate()
-          }
-        }
+        cameraScale.current.setScalar(sf)
+      }
+
+      if (matrix && matrix instanceof THREE.Matrix4) {
+        ref.current.matrix = matrix
+      }
+      // Update gizmo scale in accordance with matrix changes
+      // Without this, there might be noticable turbulences if scaling happens fast enough
+      ref.current.updateWorldMatrix(true, true)
+
+      mG.makeRotationFromEuler(gizmoRef.current.rotation)
+        .setPosition(gizmoRef.current.position)
+        .premultiply(ref.current.matrixWorld)
+      gizmoScale.current.setFromMatrixScale(mG)
+
+      vScale.copy(cameraScale.current).divide(gizmoScale.current)
+      if (
+        Math.abs(gizmoRef.current.scale.x - vScale.x) > 1e-4 ||
+        Math.abs(gizmoRef.current.scale.y - vScale.y) > 1e-4 ||
+        Math.abs(gizmoRef.current.scale.z - vScale.z) > 1e-4
+      ) {
+        gizmoRef.current.scale.copy(vScale)
+        state.invalidate()
       }
     })
 
     React.useImperativeHandle(fRef, () => ref.current, [])
-
-    React.useLayoutEffect(() => {
-      // If the matrix is a real matrix4 it means that the user wants to control the gizmo
-      // In that case it should just be set, as a bare prop update would merely copy it
-      if (matrix && matrix instanceof THREE.Matrix4) ref.current.matrix = matrix
-    }, [matrix])
 
     return (
       <context.Provider value={config}>
@@ -246,6 +265,9 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
               {!disableRotations && activeAxes[0] && activeAxes[1] && <AxisRotator axis={2} dir1={xDir} dir2={yDir} />}
               {!disableRotations && activeAxes[0] && activeAxes[2] && <AxisRotator axis={1} dir1={zDir} dir2={xDir} />}
               {!disableRotations && activeAxes[2] && activeAxes[1] && <AxisRotator axis={0} dir1={yDir} dir2={zDir} />}
+              {!disableScaling && activeAxes[0] && <ScalingSphere axis={0} direction={xDir} />}
+              {!disableScaling && activeAxes[1] && <ScalingSphere axis={1} direction={yDir} />}
+              {!disableScaling && activeAxes[2] && <ScalingSphere axis={2} direction={zDir} />}
             </group>
             <group ref={childrenRef}>{children}</group>
           </group>

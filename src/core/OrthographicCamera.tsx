@@ -2,7 +2,6 @@ import * as THREE from 'three'
 import * as React from 'react'
 import { OrthographicCamera as OrthographicCameraImpl } from 'three'
 import { useThree, useFrame } from '@react-three/fiber'
-import mergeRefs from 'react-merge-refs'
 import { useFBO } from './useFBO'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
@@ -29,6 +28,7 @@ export const OrthographicCamera: ForwardRefComponent<Props, OrthographicCameraIm
     const camera = useThree(({ camera }) => camera)
     const size = useThree(({ size }) => size)
     const cameraRef = React.useRef<OrthographicCameraImpl>(null!)
+    React.useImperativeHandle(ref, () => cameraRef.current, [])
     const groupRef = React.useRef<THREE.Group>(null!)
     const fbo = useFBO(resolution)
 
@@ -76,7 +76,7 @@ export const OrthographicCamera: ForwardRefComponent<Props, OrthographicCameraIm
           right={size.width / 2}
           top={size.height / 2}
           bottom={size.height / -2}
-          ref={mergeRefs([cameraRef, ref])}
+          ref={cameraRef}
           {...props}
         >
           {!functional && children}

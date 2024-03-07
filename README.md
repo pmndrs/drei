@@ -59,6 +59,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <ul>
           <li><a href="#gizmohelper">GizmoHelper</a></li>
           <li><a href="#pivotcontrols">PivotControls</a></li>
+          <li><a href="#dragcontrols">DragControls</a></li>
           <li><a href="#transformcontrols">TransformControls</a></li>
           <li><a href="#grid">Grid</a></li>
           <li><a href="#usehelper">useHelper</a></li>
@@ -965,6 +966,57 @@ return (
     onDrag={({ matrix: matrix_ }) => matrix.copy(matrix_)}
 ```
 
+#### DragControls
+
+[![storybook](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/gizmos-dragcontrols--drag-controls-story) ![Dom only](https://img.shields.io/badge/-Dom%20only-red)
+
+You can use DragControls to make objects draggable in your scene. It supports locking the drag to specific axes, setting drag limits, and custom drag start, drag, and drag end events.
+
+```tsx
+type DragControlsProps = {
+  /** If autoTransform is true, automatically apply the local transform on drag, true */
+  autoTransform?: boolean
+  /** The matrix to control */
+  matrix?: THREE.Matrix4
+  /** Lock the drag to a specific axis */
+  axisLock?: 'x' | 'y' | 'z'
+  /** Limits */
+  dragLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
+  /** Hover event */
+  onHover?: (hovering: boolean) => void
+  /** Drag start event */
+  onDragStart?: (origin: THREE.Vector3) => void
+  /** Drag event */
+  onDrag?: (
+    localMatrix: THREE.Matrix4,
+    deltaLocalMatrix: THREE.Matrix4,
+    worldMatrix: THREE.Matrix4,
+    deltaWorldMatrix: THREE.Matrix4
+  ) => void
+  /** Drag end event */
+  onDragEnd?: () => void
+  children: React.ReactNode
+}
+```
+
+```jsx
+<DragControls>
+  <mesh />
+</DragControls>
+```
+
+You can utilize DragControls as a controlled component by toggling `autoTransform` off, which then requires you to manage the matrix transformation manually. Alternatively, keeping `autoTransform` enabled allows you to apply the matrix to external objects, enabling DragControls to manage objects that are not directly parented within it.
+
+```jsx
+const matrix = new THREE.Matrix4()
+return (
+  <DragControls
+    ref={ref}
+    matrix={matrix}
+    autoTransform={false}
+    onDrag={(localMatrix) => matrix.copy(localMatrix)}
+```
+
 #### TransformControls
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/gizmos-transformcontrols--transform-controls-story)
@@ -1395,7 +1447,7 @@ Text will suspend while loading the font data, but in order to completely avoid 
 
 Render 3D text using ThreeJS's `TextGeometry`.
 
-Text3D will suspend while loading the font data. Text3D requires fonts in JSON format generated through (typeface.json)[http://gero3.github.io/facetype.js], either as a path to a JSON file or a JSON object. If you face display issues try checking "Reverse font direction" in the typeface tool.
+Text3D will suspend while loading the font data. Text3D requires fonts in JSON format generated through [typeface.json](http://gero3.github.io/facetype.js), either as a path to a JSON file or a JSON object. If you face display issues try checking "Reverse font direction" in the typeface tool.
 
 ```jsx
 <Text3D font={fontUrl} {...textOptions}>
@@ -2619,7 +2671,7 @@ Notes:
 ScrollControls example
 
 ```jsx
-<ScrollControls damping={0.2} maxSpeed={0.5} pages={2}>
+;<ScrollControls damping={0.2} maxSpeed={0.5} pages={2}>
   <SpriteAnimator
     position={[0.0, -1.5, -1.5]}
     startFrame={0}
@@ -3305,7 +3357,6 @@ const { spriteObj } = useSpriteLoader(
   asSprite={false}
 />
 ```
-
 
 # Performance
 

@@ -1,7 +1,6 @@
 import { applyProps, ReactThreeFiber, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from 'three'
-import mergeRefs from 'react-merge-refs'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type LightProps = JSX.IntrinsicElements['mesh'] & {
@@ -33,6 +32,7 @@ export const Lightformer: ForwardRefComponent<LightProps, THREE.Mesh> = /* @__PU
   ) => {
     // Apply emissive power
     const ref = React.useRef<THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>>(null!)
+    React.useImperativeHandle(forwardRef, () => ref.current, [])
     React.useLayoutEffect(() => {
       if (!children && !props.material) {
         applyProps(ref.current.material as any, { color })
@@ -49,7 +49,7 @@ export const Lightformer: ForwardRefComponent<LightProps, THREE.Mesh> = /* @__PU
     scale = Array.isArray(scale) && scale.length === 2 ? [scale[0], scale[1], 1] : scale
 
     return (
-      <mesh ref={mergeRefs([ref, forwardRef])} scale={scale} {...props}>
+      <mesh ref={ref} scale={scale} {...props}>
         {Form === 'circle' ? (
           <ringGeometry args={[0, 1, 64]} />
         ) : Form === 'ring' ? (

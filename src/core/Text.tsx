@@ -1,6 +1,4 @@
 import * as React from 'react'
-// @ts-ignore
-import { Text as TextMeshImpl, preloadFont } from 'troika-three-text'
 import { ReactThreeFiber, useThree } from '@react-three/fiber'
 import { suspend } from 'suspend-react'
 import { ForwardRefComponent } from '../helpers/ts-utils'
@@ -56,6 +54,10 @@ export const Text: ForwardRefComponent<Props, any> = /* @__PURE__ */ React.forwa
     }: Props,
     ref: React.ForwardedRef<any>
   ) => {
+    // https://github.com/pmndrs/drei/issues/1725
+    // https://github.com/pmndrs/drei/issues/1840
+    const { Text: TextMeshImpl, preloadFont } = suspend(async () => import('troika-three-text'), [])
+
     const invalidate = useThree(({ invalidate }) => invalidate)
     const [troikaMesh] = React.useState(() => new TextMeshImpl())
 

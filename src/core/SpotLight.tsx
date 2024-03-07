@@ -13,7 +13,6 @@ import {
   WebGLRenderTarget,
   ShaderMaterial,
   RGBAFormat,
-  LinearEncoding,
   RepeatWrapping,
   Object3D,
 } from 'three'
@@ -160,7 +159,6 @@ function SpotlightShadowWithShader({
     () =>
       new WebGLRenderTarget(width, height, {
         format: RGBAFormat,
-        encoding: LinearEncoding,
         stencilBuffer: false,
         // depthTexture: null!
       }),

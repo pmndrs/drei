@@ -9,20 +9,17 @@ import {
 } from 'three'
 import { RGBELoader, EXRLoader } from 'three-stdlib'
 import { presetsObj, PresetsType } from '../helpers/environment-assets'
+import { LinearEncoding, sRGBEncoding, TextureEncoding } from '../helpers/deprecated'
 
 const CUBEMAP_ROOT = 'https://raw.githack.com/pmndrs/drei-assets/456060a26bbeb8fdf79326f224b6d99b8bcce736/hdri/'
 const isArray = (arr: any): arr is string[] => Array.isArray(arr)
-
-const LinearEncoding = 3000
-const sRGBEncoding = 3001
 
 export type EnvironmentLoaderProps = {
   files?: string | string[]
   path?: string
   preset?: PresetsType
   extensions?: (loader: Loader) => void
-  // TextureEncoding was deprecated in r152, and removed in r162.
-  encoding?: typeof LinearEncoding | typeof sRGBEncoding
+  encoding?: TextureEncoding
 }
 
 export function useEnvironment({

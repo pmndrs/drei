@@ -1,6 +1,6 @@
 import { Texture, TextureLoader } from 'three'
 import { useLoader, useThree } from '@react-three/fiber'
-import { useLayoutEffect, useEffect } from 'react'
+import { useLayoutEffect, useEffect, useMemo } from 'react'
 
 export const IsObject = (url: any): url is Record<string, string> =>
   url === Object(url) && !Array.isArray(url) && typeof url !== 'function'
@@ -32,14 +32,18 @@ export function useTexture<Url extends string[] | string | Record<string, string
     }
   }, [gl, textures])
 
-  if (IsObject(input)) {
-    const keyed = {} as MappedTextureType<Url>
-    let i = 0
-    for (const key in input) keyed[key] = textures[i++]
-    return keyed
-  } else {
-    return textures
-  }
+  const mappedTextures = useMemo(() => {
+    if (IsObject(input)) {
+      const keyed = {} as MappedTextureType<Url>
+      let i = 0
+      for (const key in input) keyed[key] = textures[i++]
+      return keyed
+    } else {
+      return textures
+    }
+  }, [input, textures])
+
+  return mappedTextures
 }
 
 useTexture.preload = (url: string extends any[] ? string[] : string) => useLoader.preload(TextureLoader, url)

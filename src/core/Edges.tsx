@@ -1,35 +1,63 @@
-import { ReactThreeFiber } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from 'three'
+import { LineSegmentsGeometry, LineMaterial } from 'three-stdlib'
 import { ForwardRefComponent } from '../helpers/ts-utils'
+import { useThree, type Color, type ThreeElements, useFrame } from '@react-three/fiber'
 
-type Props = JSX.IntrinsicElements['lineSegments'] & {
+export type EdgesRef = THREE.Mesh<LineSegmentsGeometry, LineMaterial>
+
+export interface EdgesProps extends Partial<ThreeElements['mesh']> {
+  color?: Color
+  opacity?: number
   threshold?: number
-  color?: ReactThreeFiber.Color
+  linewidth?: number
+  lineWidth?: number
 }
 
-export const Edges: ForwardRefComponent<Props, THREE.LineSegments> = /* @__PURE__ */ React.forwardRef(
-  (
-    { userData, children, geometry, threshold = 15, color = 'black', ...props }: Props,
-    fref: React.ForwardedRef<THREE.LineSegments>
-  ) => {
-    const ref = React.useRef<THREE.LineSegments>(null!)
-    React.useLayoutEffect(() => {
-      const parent = ref.current.parent as THREE.Mesh
+export const Edges: ForwardRefComponent<EdgesProps, EdgesRef> = /* @__PURE__ */ React.forwardRef<EdgesRef, EdgesProps>(
+  ({ children, threshold = 15, color = 'black', opacity = 1, linewidth, lineWidth, ...props }: EdgesProps, fref) => {
+    const ref = React.useRef<EdgesRef>(null!)
+    React.useImperativeHandle(fref, () => ref.current, [])
+
+    const geometry = React.useMemo(() => new LineSegmentsGeometry(), [])
+    const material = React.useMemo(() => new LineMaterial(), [])
+    const size = useThree((s) => s.size)
+
+    const memoizedGeometry = React.useRef<THREE.BufferGeometry>()
+    const memoizedThreshold = React.useRef<number>()
+    useFrame(() => {
+      const edges = ref.current
+      const parent = edges.parent as THREE.Mesh
       if (parent) {
-        const geom = geometry || parent.geometry
-        if (geom !== ref.current.userData.currentGeom || threshold !== ref.current.userData.currentThreshold) {
-          ref.current.userData.currentGeom = geom
-          ref.current.userData.currentThreshold = threshold
-          ref.current.geometry = new THREE.EdgesGeometry(geom, threshold)
+        const geometry = edges.geometry ?? parent.geometry
+        if (geometry !== memoizedGeometry.current || threshold !== memoizedThreshold.current) {
+          memoizedGeometry.current = geometry
+          memoizedThreshold.current = threshold
+
+          const points = (new THREE.EdgesGeometry(geometry, threshold).attributes.position as THREE.BufferAttribute)
+            .array as Float32Array
+
+          ref.current.geometry.setPositions(points)
+          ref.current.geometry.attributes.instanceStart.needsUpdate = true
+          ref.current.geometry.attributes.instanceEnd.needsUpdate = true
         }
       }
     })
-    React.useImperativeHandle(fref, () => ref.current)
+
     return (
-      <lineSegments ref={ref} raycast={() => null} {...props}>
-        {children ? children : <lineBasicMaterial color={color} />}
-      </lineSegments>
+      <mesh ref={ref} raycast={() => null} {...props}>
+        <primitive object={geometry} attach="geometry" />
+        <primitive
+          object={material}
+          attach="material"
+          color={color}
+          opacity={opacity}
+          transparent={opacity < 1}
+          resolution={[size.width, size.height]}
+          linewidth={linewidth ?? lineWidth ?? 1}
+        />
+        {children}
+      </mesh>
     )
   }
 )

@@ -448,7 +448,7 @@ Scroll controls create a HTML scroll container in front of the canvas. Everythin
 You can listen and react to scroll with the `useScroll` hook which gives you useful data like the current scroll `offset`, `delta` and functions for range finding: `range`, `curve` and `visible`. The latter functions are especially useful if you want to react to the scroll offset, for instance if you wanted to fade things in and out if they are in or out of view.
 
 ```jsx
-;<ScrollControls pages={3} damping={0.1}>
+<ScrollControls pages={3} damping={0.1}>
   {/* Canvas contents in here will *not* scroll, but receive useScroll! */}
   <SomeModel />
   <Scroll>
@@ -1596,7 +1596,7 @@ Radial gradient.
 
 ```jsx
 import { GradientTexture, GradientType } from './GradientTexture'
-;<mesh>
+<mesh>
   <planeGeometry />
   <meshBasicMaterial>
     <GradientTexture
@@ -3725,7 +3725,7 @@ If you still experience flip flops despite the bounds you can define a limit of 
 PerformanceMonitor can also have children, if you wrap your app in it you get to use `usePerformanceMonitor` which allows individual components down the nested tree to respond to performance changes on their own.
 
 ```jsx
-;<PerformanceMonitor>
+<PerformanceMonitor>
   <Effects />
 </PerformanceMonitor>
 
@@ -3755,19 +3755,16 @@ type HudProps = {
 ```
 
 ```jsx
-{
-  /* Renders on top of the default scene with a perspective camera */
-}
-;<Hud>
+{ /* Renders on top of the default scene with a perspective camera */ }
+<Hud>
   <PerspectiveCamera makeDefault position={[0, 0, 10]} />
   <mesh>
     <ringGeometry />
   </mesh>
 </Hud>
-{
-  /* Renders on top of the previous HUD with an orthographic camera */
-}
-;<Hud renderPriority={2}>
+
+{ /* Renders on top of the previous HUD with an orthographic camera */ }
+<Hud renderPriority={2}>
   <OrthographicCamera makeDefault position={[0, 0, 10]} />
   <mesh>
     <boxGeometry />
@@ -4296,7 +4293,7 @@ const config = {
   controls: undefined, // if using orbit controls, pass a ref here so we can update the rotation
 }
 
-;<CameraShake {...config} />
+<CameraShake {...config} />
 ```
 
 ```ts

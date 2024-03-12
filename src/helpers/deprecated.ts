@@ -13,3 +13,11 @@ export const setUpdateRange = (
     attribute.updateRange = updateRange
   }
 }
+
+export const LinearEncoding = 3000
+export const sRGBEncoding = 3001
+
+/**
+ * TextureEncoding was deprecated in r152, and removed in r162.
+ */
+export type TextureEncoding = typeof LinearEncoding | typeof sRGBEncoding

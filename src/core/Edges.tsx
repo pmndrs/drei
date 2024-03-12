@@ -25,18 +25,16 @@ export const Edges: ForwardRefComponent<EdgesProps, EdgesRef> = /* @__PURE__ */ 
 
     const memoizedGeometry = React.useRef<THREE.BufferGeometry>()
     const memoizedThreshold = React.useRef<number>()
-    useFrame(() => {
-      const edges = ref.current
-      const parent = edges.parent as THREE.Mesh
+
+    React.useLayoutEffect(() => {
+      const parent = ref.current.parent as THREE.Mesh
       if (parent) {
-        const geometry = edges.geometry ?? parent.geometry
+        const geometry = parent.geometry
         if (geometry !== memoizedGeometry.current || threshold !== memoizedThreshold.current) {
           memoizedGeometry.current = geometry
           memoizedThreshold.current = threshold
-
           const points = (new THREE.EdgesGeometry(geometry, threshold).attributes.position as THREE.BufferAttribute)
             .array as Float32Array
-
           ref.current.geometry.setPositions(points)
           ref.current.geometry.attributes.instanceStart.needsUpdate = true
           ref.current.geometry.attributes.instanceEnd.needsUpdate = true

@@ -25,7 +25,7 @@ export type LineProps = {
 export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = /* @__PURE__ */ React.forwardRef<
   Line2 | LineSegments2,
   LineProps
->(function Line({ points, color = 0xffffff, vertexColors, linewidth, lineWidth, segments, dashed, ...rest }, ref) {
+>(function Line({ points, color = 0xffffff, vertexColors, linewidth = 1, lineWidth, segments, dashed, ...rest }, ref) {
   const size = useThree((state) => state.size)
   const line2 = React.useMemo(() => (segments ? new LineSegments2() : new Line2()), [segments])
   const [lineMaterial] = React.useState(() => new LineMaterial())

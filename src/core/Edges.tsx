@@ -1,28 +1,26 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { LineSegmentsGeometry, LineMaterial } from 'three-stdlib'
+import { ReactThreeFiber, type ThreeElements } from '@react-three/fiber'
+import { LineSegmentsGeometry, LineMaterial, LineMaterialParameters, Line2, LineSegments2 } from 'three-stdlib'
 import { ForwardRefComponent } from '../helpers/ts-utils'
-import { useThree, type Color, type ThreeElements, useFrame } from '@react-three/fiber'
+import { Line } from './Line'
 
 export type EdgesRef = THREE.Mesh<LineSegmentsGeometry, LineMaterial>
-
-export interface EdgesProps extends Partial<ThreeElements['mesh']> {
-  color?: Color
-  opacity?: number
+export type EdgesProps = Partial<ThreeElements['mesh']> & {
   threshold?: number
-  linewidth?: number
   lineWidth?: number
-}
+} & Omit<LineMaterialParameters, 'vertexColors' | 'color'> &
+  Omit<ReactThreeFiber.Object3DNode<Line2, typeof Line2>, 'args'> &
+  Omit<ReactThreeFiber.Object3DNode<LineMaterial, [LineMaterialParameters]>, 'color' | 'vertexColors' | 'args'> & {
+    color?: THREE.ColorRepresentation
+  }
 
 export const Edges: ForwardRefComponent<EdgesProps, EdgesRef> = /* @__PURE__ */ React.forwardRef<EdgesRef, EdgesProps>(
-  ({ children, threshold = 15, color = 'black', opacity = 1, linewidth, lineWidth, ...props }: EdgesProps, fref) => {
-    const ref = React.useRef<EdgesRef>(null!)
+  ({ threshold = 15, ...props }: EdgesProps, fref) => {
+    const ref = React.useRef<LineSegments2>(null!)
     React.useImperativeHandle(fref, () => ref.current, [])
 
-    const geometry = React.useMemo(() => new LineSegmentsGeometry(), [])
-    const material = React.useMemo(() => new LineMaterial(), [])
-    const size = useThree((s) => s.size)
-
+    const tmpPoints = React.useMemo(() => [0, 0, 0, 1, 0, 0], [])
     const memoizedGeometry = React.useRef<THREE.BufferGeometry>()
     const memoizedThreshold = React.useRef<number>()
 
@@ -38,24 +36,11 @@ export const Edges: ForwardRefComponent<EdgesProps, EdgesRef> = /* @__PURE__ */ 
           ref.current.geometry.setPositions(points)
           ref.current.geometry.attributes.instanceStart.needsUpdate = true
           ref.current.geometry.attributes.instanceEnd.needsUpdate = true
+          ref.current.computeLineDistances()
         }
       }
     })
 
-    return (
-      <mesh ref={ref} raycast={() => null} {...props}>
-        <primitive object={geometry} attach="geometry" />
-        <primitive
-          object={material}
-          attach="material"
-          color={color}
-          opacity={opacity}
-          transparent={opacity < 1}
-          resolution={[size.width, size.height]}
-          linewidth={linewidth ?? lineWidth ?? 1}
-        />
-        {children}
-      </mesh>
-    )
+    return <Line segments points={tmpPoints} ref={ref} raycast={() => null} {...props} />
   }
 )

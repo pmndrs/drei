@@ -4887,6 +4887,8 @@ type CloudsProps = JSX.IntrinsicElements['group'] & {
   range?: number
   /** Which material it will override, default: MeshLambertMaterial */
   material?: typeof Material
+  /** Frustum culling, default: true */
+  frustumCulled?: boolean
 }
 
 type CloudProps = JSX.IntrinsicElements['group'] & {

@@ -58,6 +58,8 @@ type CloudsProps = JSX.IntrinsicElements['group'] & {
   range?: number
   /** Which material it will override, default: MeshLambertMaterial */
   material?: typeof Material
+  /** Frustum culling, default: true */
+  frustumCulled?: boolean
 }
 
 type CloudProps = JSX.IntrinsicElements['group'] & {
@@ -88,8 +90,6 @@ type CloudProps = JSX.IntrinsicElements['group'] & {
   opacity?: number
   /** Color, default: white */
   color?: ReactThreeFiber.Color
-  /** Frustum culling, default: true */
-  frustumCulled?: boolean
 }
 
 const parentMatrix = /* @__PURE__ */ new Matrix4()

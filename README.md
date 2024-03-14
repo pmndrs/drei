@@ -2462,7 +2462,7 @@ Allows you to tie HTML content to any object of your scene. It will be projected
   sprite // Renders as sprite, but only in transform mode (default=false)
   calculatePosition={(el: Object3D, camera: Camera, size: { width: number; height: number }) => number[]} // Override default positioning function. (default=undefined) [ignored in transform mode]
   occlude={[ref]} // Can be true or a Ref<Object3D>[], true occludes the entire scene (default: undefined)
-  onOcclude={(visible) => null} // Callback when the visibility changes (default: undefined)
+  onOcclude={(hidden) => null} // Callback when the visibility changes (default: undefined)
   {...groupProps} // All THREE.Group props are valid
   {...divProps} // All HTMLDivElement props are valid
 >

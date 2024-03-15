@@ -1,6 +1,6 @@
 import { EventManager, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
-import type { Camera, Event } from 'three'
+import type { Camera, Event, OrthographicCamera, PerspectiveCamera } from 'three'
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
@@ -52,7 +52,7 @@ export const OrbitControls: ForwardRefComponent<OrbitControlsProps, OrbitControl
       const set = useThree((state) => state.set)
       const get = useThree((state) => state.get)
       const performance = useThree((state) => state.performance)
-      const explCamera = (camera || defaultCamera) as THREE.OrthographicCamera | THREE.PerspectiveCamera
+      const explCamera = (camera || defaultCamera) as OrthographicCamera | PerspectiveCamera
       const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
       const controls = React.useMemo(() => new OrbitControlsImpl(explCamera), [explCamera])
 

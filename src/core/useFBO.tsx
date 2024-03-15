@@ -1,13 +1,32 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
+import { TextureEncoding } from '../helpers/deprecated'
+
+// TODO: consume this from three >r154 when SemVer allows
+type ColorSpace = 'srgb' | 'srgb-linear' | '' | string
 
 type FBOSettings = {
   /** Defines the count of MSAA samples. Can only be used with WebGL 2. Default: 0 */
   samples?: number
   /** If set, the scene depth will be rendered into buffer.depthTexture. Default: false */
   depth?: boolean
-} & THREE.WebGLRenderTargetOptions
+
+  // WebGLRenderTargetOptions => RenderTargetOptions
+  wrapS?: THREE.Wrapping | undefined
+  wrapT?: THREE.Wrapping | undefined
+  magFilter?: THREE.MagnificationTextureFilter | undefined
+  minFilter?: THREE.MinificationTextureFilter | undefined
+  format?: number | undefined // RGBAFormat;
+  type?: THREE.TextureDataType | undefined // UnsignedByteType;
+  anisotropy?: number | undefined // 1;
+  depthBuffer?: boolean | undefined // true;
+  stencilBuffer?: boolean | undefined // false;
+  generateMipmaps?: boolean | undefined // true;
+  depthTexture?: THREE.DepthTexture | undefined
+  encoding?: TextureEncoding | undefined
+  colorSpace?: ColorSpace | undefined
+}
 
 // 👇 uncomment when TS version supports function overloads
 // export function useFBO(settings?: FBOSettings)

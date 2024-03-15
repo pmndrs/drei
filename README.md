@@ -2825,7 +2825,7 @@ type FBOSettings = {
   samples?: number
   /** If set, the scene depth will be rendered into buffer.depthTexture. Default: false */
   depth?: boolean
-} & THREE.WebGLRenderTargetOptions
+} & THREE.RenderTargetOptions
 
 export function useFBO(
   /** Width in pixels, or settings (will render fullscreen by default) */

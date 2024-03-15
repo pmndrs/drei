@@ -1,7 +1,7 @@
 import * as React from 'react'
-import { BufferAttribute } from 'three'
+import { PlaneGeometry, BufferAttribute } from 'three'
 
-const easeInExpo = (x) => (x === 0 ? 0 : Math.pow(2, 10 * x - 10))
+const easeInExpo = (x: number) => (x === 0 ? 0 : Math.pow(2, 10 * x - 10))
 
 export type BackdropProps = JSX.IntrinsicElements['group'] & {
   floor?: number
@@ -11,7 +11,7 @@ export type BackdropProps = JSX.IntrinsicElements['group'] & {
 }
 
 export function Backdrop({ children, floor = 0.25, segments = 20, receiveShadow, ...props }) {
-  const ref = React.useRef<THREE.PlaneGeometry>(null!)
+  const ref = React.useRef<PlaneGeometry>(null!)
   React.useLayoutEffect(() => {
     let i = 0
     const offset = segments / segments / 2

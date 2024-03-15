@@ -22,7 +22,7 @@ const [q1, q2] = [/* @__PURE__ */ new Quaternion(), /* @__PURE__ */ new Quaterni
 const target = /* @__PURE__ */ new Vector3()
 const targetPosition = /* @__PURE__ */ new Vector3()
 
-type ControlsProto = { update(): void; target: THREE.Vector3 }
+type ControlsProto = { update(): void; target: Vector3 }
 
 export type GizmoHelperProps = JSX.IntrinsicElements['group'] & {
   alignment?:

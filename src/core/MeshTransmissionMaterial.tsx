@@ -66,6 +66,12 @@ interface Uniform<T> {
   value: T
 }
 
+interface Shader {
+  uniforms: { [uniform: string]: Uniform<any> }
+  vertexShader: string
+  fragmentShader: string
+}
+
 declare global {
   namespace JSX {
     interface IntrinsicElements {
@@ -117,7 +123,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       buffer: { value: null },
     }
 
-    this.onBeforeCompile = (shader: THREE.Shader & { defines: { [key: string]: string } }) => {
+    this.onBeforeCompile = (shader: Shader & { defines: { [key: string]: string } }) => {
       shader.uniforms = {
         ...shader.uniforms,
         ...this.uniforms,

@@ -1,3 +1,5 @@
+import * as THREE from 'three'
+
 /**
  * Sets `BufferAttribute.updateRange` since r159.
  */

@@ -117,7 +117,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       buffer: { value: null },
     }
 
-    this.onBeforeCompile = (shader: THREE.Shader & { defines: { [key: string]: string } }) => {
+    this.onBeforeCompile = (shader: any) => {
       shader.uniforms = {
         ...shader.uniforms,
         ...this.uniforms,

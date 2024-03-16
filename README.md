@@ -63,6 +63,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#transformcontrols">TransformControls</a></li>
           <li><a href="#grid">Grid</a></li>
           <li><a href="#usehelper">useHelper</a></li>
+          <li><a href="#helper">Helper</a></li>
         </ul>
         <li><a href="#abstractions">Abstractions</a></li>
         <ul>
@@ -1107,6 +1108,22 @@ useHelper(condition && mesh, BoxHelper, 'red') // you can pass false instead of 
 <mesh ref={mesh} ... />
 ```
 
+#### Helper
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/gizmos-helper--default-story)
+
+A component for declaratively adding helpers to existing nodes in the scene. It handles removal of the helper on unmount and auto-updates it by default.
+
+```jsx
+<mesh>
+  <boxGeometry />
+  <meshBasicMaterial />
+
+  <Helper type={BoxHelper} args={['royalblue']} />
+  <Helper type={VertexNormalsHelper} args={[1, 0xff0000]} />
+</mesh>
+```
+
 # Shapes
 
 #### Plane, Box, Sphere, Circle, Cone, Cylinder, Tube, Torus, TorusKnot, Ring, Tetrahedron, Polyhedron, Icosahedron, Octahedron, Dodecahedron, Extrude, Lathe, Shape
@@ -1447,7 +1464,7 @@ Text will suspend while loading the font data, but in order to completely avoid 
 
 Render 3D text using ThreeJS's `TextGeometry`.
 
-Text3D will suspend while loading the font data. Text3D requires fonts in JSON format generated through (typeface.json)[http://gero3.github.io/facetype.js], either as a path to a JSON file or a JSON object. If you face display issues try checking "Reverse font direction" in the typeface tool.
+Text3D will suspend while loading the font data. Text3D requires fonts in JSON format generated through [typeface.json](http://gero3.github.io/facetype.js), either as a path to a JSON file or a JSON object. If you face display issues try checking "Reverse font direction" in the typeface tool.
 
 ```jsx
 <Text3D font={fontUrl} {...textOptions}>
@@ -1601,13 +1618,14 @@ import { GradientTexture, GradientType } from './GradientTexture'
   <a href="https://codesandbox.io/s/ny3p4"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/ny3p4/screenshot.png" alt="Demo"/></a>
 </p>
 
-Abstracts [THREE.EdgesGeometry](https://threejs.org/docs/#api/en/geometries/EdgesGeometry). It pulls the geometry automatically from its parent, optionally you can ungroup it and give it a `geometry` prop. You can give it children, for instance a custom material.
+Abstracts [THREE.EdgesGeometry](https://threejs.org/docs/#api/en/geometries/EdgesGeometry). It pulls the geometry automatically from its parent, optionally you can ungroup it and give it a `geometry` prop. You can give it children, for instance a custom material. Edges is based on `<Line>` and supports all of its props.
 
 ```jsx
 <mesh>
   <boxGeometry />
   <meshBasicMaterial />
   <Edges
+    linewidth={4}
     scale={1.1}
     threshold={15} // Display edges only when the angle between two faces exceeds this value (default=15 degrees)
     color="white"
@@ -2807,7 +2825,7 @@ type FBOSettings = {
   samples?: number
   /** If set, the scene depth will be rendered into buffer.depthTexture. Default: false */
   depth?: boolean
-} & THREE.WebGLRenderTargetOptions
+} & THREE.RenderTargetOptions
 
 export function useFBO(
   /** Width in pixels, or settings (will render fullscreen by default) */
@@ -3747,6 +3765,7 @@ type HudProps = {
     <ringGeometry />
   </mesh>
 </Hud>
+
 {
   /* Renders on top of the previous HUD with an orthographic camera */
 }
@@ -3796,9 +3815,9 @@ export type ViewProps = {
   /** The scene to render, if you leave this undefined it will render the default scene */
   children?: React.ReactNode
   /** The tracking element, the view will be cut according to its whereabouts
-   * @deprecated
+   * @deprecated You can use inline Views now, see: https://github.com/pmndrs/drei/pull/1784
    */
-  track: React.MutableRefObject<HTMLElement>
+  track?: React.MutableRefObject<HTMLElement>
 }
 
 export type ViewportProps = { Port: () => React.ReactNode } & React.ForwardRefExoticComponent<
@@ -4279,7 +4298,7 @@ const config = {
   controls: undefined, // if using orbit controls, pass a ref here so we can update the rotation
 }
 
-;<CameraShake {...config} />
+<CameraShake {...config} />
 ```
 
 ```ts
@@ -4870,6 +4889,8 @@ type CloudsProps = JSX.IntrinsicElements['group'] & {
   range?: number
   /** Which material it will override, default: MeshLambertMaterial */
   material?: typeof Material
+  /** Frustum culling, default: true */
+  frustumCulled?: boolean
 }
 
 type CloudProps = JSX.IntrinsicElements['group'] & {

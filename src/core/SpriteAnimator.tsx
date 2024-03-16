@@ -368,8 +368,8 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
       let finalValX = 0
       let finalValY = 0
       calculateAspectRatio(frameW, frameH)
-      const framesH = (metaInfo.w - 1) / frameW
-      const framesV = (metaInfo.h - 1) / frameH
+      const framesH = Math.round((metaInfo.w - 1) / frameW)
+      const framesV = Math.round((metaInfo.h - 1) / frameH)
       if (!spriteFrames[targetFrame]) {
         return
       }

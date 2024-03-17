@@ -2,14 +2,6 @@ import { useMemo, useCallback } from 'react'
 import { ThreeEvent, useFrame } from '@react-three/fiber'
 import { Texture } from 'three'
 
-/**
- *  Adapted from https://github.com/brunoimbrizi/interactive-particles/blob/master/src/scripts/webgl/particles/TrailTexture.js
- *  Changes:
- *    * accepts config as constructor params
- *    * frame-rate independent aging
- *    * added option to interpolate between slow mouse events
- *    * added option for smoothing between values to avoid large jumps in force
- */
 type Point = {
   x: number
   y: number
@@ -39,7 +31,7 @@ type TrailConfig = {
 }
 
 // smooth new sample (measurement) based on previous sample (current)
-function smoothAverage(current, measurement, smoothing = 0.9) {
+function smoothAverage(current: number, measurement: number, smoothing: number = 0.9) {
   return measurement * smoothing + current * (1.0 - smoothing)
 }
 
@@ -91,7 +83,13 @@ class TrailTexture {
   initTexture() {
     this.canvas = document.createElement('canvas')
     this.canvas.width = this.canvas.height = this.size
-    this.ctx = this.canvas.getContext('2d')!
+    const ctx = this.canvas.getContext('2d')
+
+    if (ctx === null) {
+      throw new Error('2D not available')
+    }
+
+    this.ctx = ctx
     this.ctx.fillStyle = 'black'
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
 
@@ -203,6 +201,6 @@ export function useTrailTexture(config: Partial<TrailConfig> = {}): [Texture, (T
     [size, maxAge, radius, intensity, interpolate, smoothing, minForce, blend, ease]
   )
   useFrame((_, delta) => void trail.update(delta))
-  const onMove = useCallback((e) => trail.addTouch(e.uv), [trail])
+  const onMove = useCallback((e: ThreeEvent<PointerEvent>) => trail.addTouch(e.uv), [trail])
   return [trail.texture, onMove]
 }

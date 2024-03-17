@@ -3,8 +3,9 @@ import { useFrame } from '@react-three/fiber'
 
 import { Setup } from '../Setup'
 
-import { Shadow, Icosahedron, Plane, type ShadowType } from '../../src'
-import { type Mesh } from 'three'
+import { Shadow, Icosahedron, Plane } from '../../src'
+import type { ShadowType } from '../../src'
+import type { Mesh } from 'three'
 
 export default {
   title: 'Misc/Shadow',

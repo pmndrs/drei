@@ -2,14 +2,17 @@ import { Texture, TextureLoader } from 'three'
 import { useLoader, useThree } from '@react-three/fiber'
 import { useLayoutEffect, useEffect, useMemo } from 'react'
 
-export const IsObject = (url: any): url is Record<string, string> =>
+export const IsObject = (url: unknown): url is Record<string, string> =>
   url === Object(url) && !Array.isArray(url) && typeof url !== 'function'
 
-export type MappedTextureType<T extends string[] | string | Record<string, string>> = T extends any[]
-  ? Texture[]
-  : T extends Record<string, string>
-  ? { [key in keyof T]: Texture }
-  : Texture
+type TextureArray<T> = T extends string[] ? Texture[] : never
+type TextureRecord<T> = T extends Record<string, string> ? { [key in keyof T]: Texture } : never
+type SingleTexture<T> = T extends string ? Texture : never
+
+export type MappedTextureType<T extends string[] | string | Record<string, string>> =
+  | TextureArray<T>
+  | TextureRecord<T>
+  | SingleTexture<T>
 
 export function useTexture<Url extends string[] | string | Record<string, string>>(
   input: Url,
@@ -27,8 +30,20 @@ export function useTexture<Url extends string[] | string | Record<string, string
   // NOTE: only available for WebGLRenderer
   useEffect(() => {
     if ('initTexture' in gl) {
-      const array = Array.isArray(textures) ? textures : [textures]
-      array.forEach(gl.initTexture)
+      let textureArray: Texture[] = []
+      if (Array.isArray(textures)) {
+        textureArray = textures
+      } else if (textures instanceof Texture) {
+        textureArray = [textures]
+      } else if (IsObject(textures)) {
+        textureArray = Object.values(textures)
+      }
+
+      textureArray.forEach((texture) => {
+        if (texture instanceof Texture) {
+          gl.initTexture(texture)
+        }
+      })
     }
   }, [gl, textures])
 
@@ -46,5 +61,5 @@ export function useTexture<Url extends string[] | string | Record<string, string
   return mappedTextures
 }
 
-useTexture.preload = (url: string extends any[] ? string[] : string) => useLoader.preload(TextureLoader, url)
+useTexture.preload = (url: string | string[]) => useLoader.preload(TextureLoader, url)
 useTexture.clear = (input: string | string[]) => useLoader.clear(TextureLoader, input)

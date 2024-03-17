@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { addEffect, addAfterEffect } from '@react-three/fiber'
-import * as StatsImpl from 'stats.js'
+// @ts-ignore
+import StatsImpl from 'stats.js'
 import { useEffectfulState } from '../helpers/useEffectfulState'
 
 type Props = {

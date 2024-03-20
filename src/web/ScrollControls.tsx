@@ -23,6 +23,8 @@ export type ScrollControlsProps = {
    *  going between, say, page 1 and 2, but not for pages far apart as it'll move very rapid,
    *  then a maxSpeed of e.g. 3 which will clamp the speed to 3 units per second, it may now
    *  take much longer than damping to reach the target if it is far away. Default: Infinity */
+  thresholdOffset?: number
+  /** Offset the reset threshold, at the end of the scroll bar on infinite scroll */
   maxSpeed?: number
   enabled?: boolean
   style?: React.CSSProperties
@@ -54,6 +56,7 @@ export function ScrollControls({
   eps = 0.00001,
   enabled = true,
   infinite,
+  thresholdOffset = 0,
   horizontal,
   pages = 1,
   distance = 1,
@@ -171,7 +174,7 @@ export function ScrollControls({
 
         if (infinite) {
           if (!disableScroll) {
-            if (current >= scrollThreshold) {
+            if (current >= scrollThreshold - thresholdOffset) {
               const damp = 1 - state.offset
               el[horizontal ? 'scrollLeft' : 'scrollTop'] = 1
               scroll.current = state.offset = -damp

@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { RGBAFormat, HalfFloatType, WebGLRenderTarget, UnsignedByteType, TextureDataType } from 'three'
-import { ReactThreeFiber, extend, useThree, useFrame } from '@react-three/fiber'
+import { extend, useThree, useFrame, ThreeElement } from '@react-three/fiber'
 import { EffectComposer, RenderPass, ShaderPass, GammaCorrectionShader } from 'three-stdlib'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 import { TextureEncoding } from '../helpers/deprecated'
 
-type Props = ReactThreeFiber.Node<EffectComposer, typeof EffectComposer> & {
+type Props = ThreeElement<typeof EffectComposer> & {
   multisamping?: number
   encoding?: TextureEncoding
   type?: TextureDataType
@@ -21,9 +21,9 @@ type Props = ReactThreeFiber.Node<EffectComposer, typeof EffectComposer> & {
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      effectComposer: ReactThreeFiber.Node<EffectComposer, typeof EffectComposer>
-      renderPass: ReactThreeFiber.Node<RenderPass, typeof RenderPass>
-      shaderPass: ReactThreeFiber.Node<ShaderPass, typeof ShaderPass>
+      effectComposer: ThreeElement<typeof EffectComposer>
+      renderPass: ThreeElement<typeof RenderPass>
+      shaderPass: ThreeElement<typeof ShaderPass>
     }
   }
 }
@@ -88,10 +88,12 @@ export const Effects: ForwardRefComponent<Props, EffectComposer> = /* @__PURE__ 
     }, renderIndex)
 
     const passes: React.ReactNode[] = []
-    if (!disableRenderPass)
+    if (!disableRenderPass) {
       passes.push(<renderPass key="renderpass" attach={`passes-${passes.length}`} args={[scene, camera]} />)
-    if (!disableGamma)
+    }
+    if (!disableGamma) {
       passes.push(<shaderPass attach={`passes-${passes.length}`} key="gammapass" args={[GammaCorrectionShader]} />)
+    }
 
     React.Children.forEach(children, (el: any) => {
       el && passes.push(React.cloneElement(el, { key: passes.length, attach: `passes-${passes.length}` }))

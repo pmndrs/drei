@@ -1,4 +1,4 @@
-import { EventManager, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
+import { EventManager, ReactThreeFiber, ThreeElement, useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import { forwardRef, useEffect, useMemo } from 'react'
 import { ArcballControls as ArcballControlsImpl } from 'three-stdlib'
@@ -8,7 +8,7 @@ import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type ArcballControlsProps = Omit<
   ReactThreeFiber.Overwrite<
-    ReactThreeFiber.Object3DNode<ArcballControlsImpl, typeof ArcballControlsImpl>,
+    ThreeElement<typeof ArcballControlsImpl>,
     {
       target?: ReactThreeFiber.Vector3
       camera?: OrthographicCamera | PerspectiveCamera

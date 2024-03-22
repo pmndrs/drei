@@ -1,11 +1,11 @@
-import { ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
+import { ReactThreeFiber, ThreeElement, useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from 'three'
 import { TrackballControls as TrackballControlsImpl } from 'three-stdlib'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type TrackballControlsProps = ReactThreeFiber.Overwrite<
-  ReactThreeFiber.Object3DNode<TrackballControlsImpl, typeof TrackballControlsImpl>,
+  ThreeElement<typeof TrackballControlsImpl>,
   {
     target?: ReactThreeFiber.Vector3
     camera?: THREE.Camera

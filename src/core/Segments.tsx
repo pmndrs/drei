@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { extend, useFrame, ReactThreeFiber } from '@react-three/fiber'
+import { extend, useFrame, ReactThreeFiber, ThreeElement } from '@react-three/fiber'
 import { Line2, LineSegmentsGeometry, LineMaterial, LineMaterialParameters } from 'three-stdlib'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
@@ -94,7 +94,7 @@ const Segments: ForwardRefComponent<SegmentsProps, Line2> = /* @__PURE__ */ Reac
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      segmentObject: ReactThreeFiber.Object3DNode<SegmentObject, typeof SegmentObject>
+      segmentObject: ThreeElement<typeof SegmentObject>
     }
   }
 }

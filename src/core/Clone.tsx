@@ -1,8 +1,8 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { MeshProps } from '@react-three/fiber'
 import { SkeletonUtils } from 'three-stdlib'
 import { ForwardRefComponent } from '../helpers/ts-utils'
+import { ThreeElements } from '@react-three/fiber'
 
 export type CloneProps = {
   /** Any pre-existing THREE.Object3D (groups, meshes, ...), or an array of objects */
@@ -14,7 +14,7 @@ export type CloneProps = {
   /** The property keys it will shallow-clone (material, geometry, visible, ...) */
   keys?: string[]
   /** Can either spread over props or fill in JSX children, applies to every mesh within */
-  inject?: MeshProps | React.ReactNode | ((object: THREE.Object3D) => React.ReactNode)
+  inject?: ThreeElements['mesh'] | React.ReactNode | ((object: THREE.Object3D) => React.ReactNode)
   /** Short access castShadow, applied to every mesh within */
   castShadow?: boolean
   /** Short access receiveShadow, applied to every mesh within */

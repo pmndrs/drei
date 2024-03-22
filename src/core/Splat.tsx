@@ -297,14 +297,14 @@ async function load(shared: SharedState) {
   const data = await fetch(shared.url)
 
   if (data.body === null) throw 'Failed to fetch file'
-  let _totalDownloadBytes = data.headers.get('Content-Length')
+  const _totalDownloadBytes = data.headers.get('Content-Length')
   const totalDownloadBytes = _totalDownloadBytes ? parseInt(_totalDownloadBytes) : undefined
   if (totalDownloadBytes == undefined) throw 'Failed to get content length'
   shared.stream = data.body.getReader()
   shared.totalDownloadBytes = totalDownloadBytes
   shared.numVertices = Math.floor(shared.totalDownloadBytes / shared.rowLength)
   const context = shared.gl.getContext()
-  let maxTextureSize = context.getParameter(context.MAX_TEXTURE_SIZE)
+  const maxTextureSize = context.getParameter(context.MAX_TEXTURE_SIZE)
   shared.maxVertexes = maxTextureSize * maxTextureSize
 
   if (shared.numVertices > shared.maxVertexes) shared.numVertices = shared.maxVertexes
@@ -363,7 +363,7 @@ async function lazyLoad(shared: SharedState) {
       chunks.push(value)
       const bytesRemains = bytesDownloaded - bytesProcessed
       if (shared.totalDownloadBytes != undefined && bytesRemains > shared.rowLength * shared.chunkSize) {
-        let vertexCount = Math.floor(bytesRemains / shared.rowLength)
+        const vertexCount = Math.floor(bytesRemains / shared.rowLength)
         const concatenatedChunksbuffer = new Uint8Array(bytesRemains)
         let offset = 0
         for (const chunk of chunks) {
@@ -378,7 +378,7 @@ async function lazyLoad(shared: SharedState) {
         }
         const buffer = new Uint8Array(vertexCount * shared.rowLength)
         buffer.set(concatenatedChunksbuffer.subarray(0, buffer.byteLength), 0)
-        const matrices = pushDataBuffer(shared, buffer.buffer, vertexCount)
+        const matrices = pushDataBuffer(shared, buffer.buffer, vertexCount)!
         shared.worker.postMessage(
           { method: 'push', src: shared.url, length: shared.numVertices * 16, matrices: matrices.buffer },
           [matrices.buffer]
@@ -402,14 +402,14 @@ async function lazyLoad(shared: SharedState) {
 
   if (bytesDownloaded - bytesProcessed > 0) {
     // Concatenate the chunks into a single Uint8Array
-    let concatenatedChunks = new Uint8Array(chunks.reduce((acc, chunk) => acc + chunk.length, 0))
+    const concatenatedChunks = new Uint8Array(chunks.reduce((acc, chunk) => acc + chunk.length, 0))
     let offset = 0
     for (const chunk of chunks) {
       concatenatedChunks.set(chunk, offset)
       offset += chunk.length
     }
-    let numVertices = Math.floor(concatenatedChunks.byteLength / shared.rowLength)
-    const matrices = pushDataBuffer(shared, concatenatedChunks.buffer, numVertices)
+    const numVertices = Math.floor(concatenatedChunks.byteLength / shared.rowLength)
+    const matrices = pushDataBuffer(shared, concatenatedChunks.buffer, numVertices)!
     shared.worker.postMessage(
       { method: 'push', src: shared.url, length: numVertices * 16, matrices: matrices.buffer },
       [matrices.buffer]
@@ -453,7 +453,7 @@ function connect(shared: SharedState, target: TargetMesh) {
   target.vm2 = new THREE.Matrix4()
   target.viewport = new THREE.Vector4()
 
-  let splatIndexArray = new Uint32Array(shared.bufferTextureWidth * shared.bufferTextureHeight)
+  const splatIndexArray = new Uint32Array(shared.bufferTextureWidth * shared.bufferTextureHeight)
   const splatIndexes = new THREE.InstancedBufferAttribute(splatIndexArray, 1, false)
   splatIndexes.setUsage(THREE.DynamicDrawUsage)
 
@@ -473,7 +473,7 @@ function connect(shared: SharedState, target: TargetMesh) {
 
   function listener(e: { data: { key: string; indices: Uint32Array } }) {
     if (target && e.data.key === target.uuid) {
-      let indexes = new Uint32Array(e.data.indices)
+      const indexes = new Uint32Array(e.data.indices)
       // @ts-ignore
       geometry.attributes.splatIndex.set(indexes)
       geometry.attributes.splatIndex.needsUpdate = true
@@ -491,8 +491,9 @@ function connect(shared: SharedState, target: TargetMesh) {
         centerAndScaleTextureProperties?.__webglTexture &&
         covAndColorTextureProperties?.__webglTexture &&
         shared.loadedVertexCount > 0
-      )
+      ) {
         break
+      }
       await new Promise((resolve) => setTimeout(resolve, 10))
     }
     target.ready = true
@@ -504,8 +505,9 @@ function connect(shared: SharedState, target: TargetMesh) {
 
 function pushDataBuffer(shared: SharedState, buffer: ArrayBufferLike, vertexCount: number) {
   const context = shared.gl.getContext()
-  if (shared.loadedVertexCount + vertexCount > shared.maxVertexes)
+  if (shared.loadedVertexCount + vertexCount > shared.maxVertexes) {
     vertexCount = shared.maxVertexes - shared.loadedVertexCount
+  }
   if (vertexCount <= 0) throw 'Failed to parse file'
 
   const u_buffer = new Uint8Array(buffer)
@@ -536,8 +538,11 @@ function pushDataBuffer(shared: SharedState, buffer: ArrayBufferLike, vertexCoun
 
     const cov_indexes = [0, 1, 2, 5, 6, 10]
     let max_value = 0.0
-    for (let j = 0; j < cov_indexes.length; j++)
-      if (Math.abs(mtx.elements[cov_indexes[j]]) > max_value) max_value = Math.abs(mtx.elements[cov_indexes[j]])
+    for (let j = 0; j < cov_indexes.length; j++) {
+      if (Math.abs(mtx.elements[cov_indexes[j]]) > max_value) {
+        max_value = Math.abs(mtx.elements[cov_indexes[j]])
+      }
+    }
 
     let destOffset = shared.loadedVertexCount * 4 + i * 4
     shared.centerAndScaleData[destOffset + 0] = center.x
@@ -546,8 +551,9 @@ function pushDataBuffer(shared: SharedState, buffer: ArrayBufferLike, vertexCoun
     shared.centerAndScaleData[destOffset + 3] = max_value / 32767.0
 
     destOffset = shared.loadedVertexCount * 8 + i * 4 * 2
-    for (let j = 0; j < cov_indexes.length; j++)
+    for (let j = 0; j < cov_indexes.length; j++) {
       covAndColorData_int16[destOffset + j] = (mtx.elements[cov_indexes[j]] * 32767.0) / max_value
+    }
 
     // RGBA
     destOffset = shared.loadedVertexCount * 16 + (i * 4 + 3) * 4
@@ -637,7 +643,9 @@ export function Splat({
 
   // Shared state, globally memoized, the same url re-uses the same daza
   const shared = useLoader(SplatLoader as unknown as LoaderProto<unknown>, src, (loader) => {
+    // @ts-expect-error
     loader.gl = gl
+    // @ts-expect-error
     loader.chunkSize = chunkSize
   }) as SharedState
 

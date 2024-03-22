@@ -3,7 +3,7 @@ import * as React from 'react'
 import { MeshSurfaceSampler } from 'three-stdlib'
 
 import { Color, Group, InstancedBufferAttribute, InstancedMesh, Mesh, Object3D, Vector3 } from 'three'
-import { GroupProps } from '@react-three/fiber'
+import { ThreeElements } from '@react-three/fiber'
 
 type SamplePayload = {
   /**
@@ -154,7 +154,7 @@ export function Sampler({
   mesh,
   count = 16,
   ...props
-}: React.PropsWithChildren<Props & GroupProps>) {
+}: React.PropsWithChildren<Props & ThreeElements['group']>) {
   const group = React.useRef<Group>(null!)
   const instancedRef = React.useRef<InstancedMesh>(null!)
   const meshToSampleRef = React.useRef<Mesh>(null!)

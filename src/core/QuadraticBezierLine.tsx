@@ -2,8 +2,8 @@ import * as React from 'react'
 import { QuadraticBezierCurve3, Vector3 } from 'three'
 import { Line2 } from 'three-stdlib'
 import { Line, LineProps } from './Line'
-import { Object3DNode } from '@react-three/fiber'
 import { ForwardRefComponent } from '../helpers/ts-utils'
+import { ThreeElement } from '@react-three/fiber'
 
 type Props = Omit<LineProps, 'points' | 'ref'> & {
   start: Vector3 | [number, number, number]
@@ -12,7 +12,7 @@ type Props = Omit<LineProps, 'points' | 'ref'> & {
   segments?: number
 }
 
-export type Line2Props = Object3DNode<Line2, typeof Line2> & {
+export type Line2Props = ThreeElement<typeof Line2> & {
   setPoints: (
     start: Vector3 | [number, number, number],
     end: Vector3 | [number, number, number],

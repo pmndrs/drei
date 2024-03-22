@@ -1,11 +1,11 @@
-import { EventManager, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
+import { EventManager, ReactThreeFiber, ThreeElement, useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from 'three'
 import { MapControls as MapControlsImpl } from 'three-stdlib'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type MapControlsProps = ReactThreeFiber.Overwrite<
-  ReactThreeFiber.Object3DNode<MapControlsImpl, typeof MapControlsImpl>,
+  ThreeElement<typeof MapControlsImpl>,
   {
     target?: ReactThreeFiber.Vector3
     camera?: THREE.Camera

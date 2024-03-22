@@ -6,20 +6,11 @@ type Options = {
 }
 
 export function useCubeTexture(files: string[], { path }: Options): CubeTexture {
-  // @ts-ignore
-  const [cubeTexture] = useLoader(
-    // @ts-ignore
-    CubeTextureLoader,
-    [files],
-    (loader: CubeTextureLoader) => loader.setPath(path)
-  )
+  // @ts-expect-error
+  const [cubeTexture] = useLoader(CubeTextureLoader, [files], (loader: CubeTextureLoader) => loader.setPath(path))
   return cubeTexture
 }
 
 useCubeTexture.preload = (files: string[], { path }: Options) =>
-  useLoader.preload(
-    // @ts-ignore
-    CubeTextureLoader,
-    [files],
-    (loader: CubeTextureLoader) => loader.setPath(path)
-  )
+  // @ts-expect-error
+  useLoader.preload(CubeTextureLoader, [files], (loader: CubeTextureLoader) => loader.setPath(path))

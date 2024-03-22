@@ -1,4 +1,4 @@
-import { ReactThreeFiber, useThree } from '@react-three/fiber'
+import { ThreeElement, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from 'three'
 import { TransformControls as TransformControlsImpl } from 'three-stdlib'
@@ -8,7 +8,7 @@ type ControlsProto = {
   enabled: boolean
 }
 
-export type TransformControlsProps = ReactThreeFiber.Object3DNode<TransformControlsImpl, typeof TransformControlsImpl> &
+export type TransformControlsProps = ThreeElement<typeof TransformControlsImpl> &
   JSX.IntrinsicElements['group'] & {
     object?: THREE.Object3D | React.MutableRefObject<THREE.Object3D>
     enabled?: boolean

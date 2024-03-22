@@ -1,13 +1,13 @@
 import * as React from 'react'
 import { ShaderMaterial } from 'three'
-import { extend, ReactThreeFiber } from '@react-three/fiber'
+import { extend, ThreeElements } from '@react-three/fiber'
 import { DiscardMaterial as DiscardMaterialImpl } from '../materials/DiscardMaterial'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      discardMaterialImpl: ReactThreeFiber.ShaderMaterialProps
+      discardMaterialImpl: ThreeElements['shaderMaterial']
     }
   }
 }

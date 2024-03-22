@@ -1,4 +1,4 @@
-import { BufferAttributeProps } from '@react-three/fiber'
+import { ThreeElements } from '@react-three/fiber'
 import * as React from 'react'
 import { BufferAttribute, BufferGeometry } from 'three'
 
@@ -16,7 +16,7 @@ export const ComputedAttribute = ({
   compute,
   name,
   ...props
-}: React.PropsWithChildren<Props & BufferAttributeProps>) => {
+}: React.PropsWithChildren<Props & ThreeElements['bufferAttribute']>) => {
   const [bufferAttribute] = React.useState(() => new BufferAttribute(new Float32Array(0), 1))
   const primitive = React.useRef<BufferAttribute>(null)
 

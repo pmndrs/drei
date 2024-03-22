@@ -1,16 +1,15 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { extend, MeshProps, Node } from '@react-three/fiber'
+import { extend, ThreeElement, ThreeElements } from '@react-three/fiber'
 import { useMemo } from 'react'
-import { suspend } from 'suspend-react'
-import { mergeVertices, TextGeometry, TextGeometryParameters, FontLoader } from 'three-stdlib'
+import { mergeVertices, TextGeometry, TextGeometryParameters } from 'three-stdlib'
 import { useFont, FontData } from './useFont'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      renamedTextGeometry: Node<any, any>
+      renamedTextGeometry: ThreeElement<typeof TextGeometry>
     }
   }
 }
@@ -20,7 +19,7 @@ type Text3DProps = {
   bevelSegments?: number
   smooth?: number
 } & Omit<TextGeometryParameters, 'font'> &
-  MeshProps
+  ThreeElements['mesh']
 
 const types = ['string', 'number']
 const getTextFromChildren = (children) => {
@@ -97,7 +96,7 @@ export const Text3D: ForwardRefComponent<
      * need to be able to do `<Text3d>{state}</Text3d>`.
      */
     const [label, ...rest] = useMemo(() => getTextFromChildren(children), [children])
-    const args = React.useMemo(() => [label, opts], [label, opts])
+    const args = React.useMemo(() => [label, opts], [label, opts]) as [string, TextGeometryParameters]
 
     React.useLayoutEffect(() => {
       if (smooth) {

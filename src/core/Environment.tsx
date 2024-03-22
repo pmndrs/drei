@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { useThree, createPortal, useFrame, extend, Object3DNode } from '@react-three/fiber'
-import { WebGLCubeRenderTarget, Texture, Scene, Loader, CubeCamera, HalfFloatType, CubeTexture } from 'three'
+import { useThree, createPortal, useFrame, extend, ThreeElement } from '@react-three/fiber'
+import { WebGLCubeRenderTarget, Texture, Scene, CubeCamera, HalfFloatType, CubeTexture } from 'three'
 import { GroundProjectedEnv as GroundProjectedEnvImpl } from 'three-stdlib'
 import { PresetsType } from '../helpers/environment-assets'
 import { EnvironmentLoaderProps, useEnvironment } from './useEnvironment'
@@ -129,7 +129,7 @@ export function EnvironmentPortal({
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      groundProjectedEnvImpl: Object3DNode<GroundProjectedEnvImpl, typeof GroundProjectedEnvImpl>
+      groundProjectedEnvImpl: ThreeElement<typeof GroundProjectedEnvImpl>
     }
   }
 }

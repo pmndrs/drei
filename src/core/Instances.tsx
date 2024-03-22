@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { ReactThreeFiber, extend, useFrame } from '@react-three/fiber'
+import { ThreeElement, extend, useFrame } from '@react-three/fiber'
 import Composer from 'react-composer'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 import { setUpdateRange } from '../helpers/deprecated'
@@ -8,7 +8,7 @@ import { setUpdateRange } from '../helpers/deprecated'
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      positionMesh: ReactThreeFiber.Object3DNode<PositionMesh, typeof PositionMesh>
+      positionMesh: ThreeElement<typeof PositionMesh>
     }
   }
 }

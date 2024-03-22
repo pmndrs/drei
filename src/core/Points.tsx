@@ -1,12 +1,12 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { ReactThreeFiber, extend, useFrame } from '@react-three/fiber'
+import { ThreeElement, extend, useFrame } from '@react-three/fiber'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      positionPoint: ReactThreeFiber.Object3DNode<PositionPoint, typeof PositionPoint>
+      positionPoint: ThreeElement<typeof PositionPoint>
     }
   }
 }
@@ -245,5 +245,7 @@ export const Points: ForwardRefComponent<PointsBuffersProps | PointsInstancesPro
   /* @__PURE__ */ React.forwardRef<THREE.Points, PointsBuffersProps | PointsInstancesProps>((props, forwardedRef) => {
     if ((props as PointsBuffersProps).positions instanceof Float32Array) {
       return <PointsBuffer {...(props as PointsBuffersProps)} ref={forwardedRef} />
-    } else return <PointsInstances {...(props as PointsInstancesProps)} ref={forwardedRef} />
+    } else {
+      return <PointsInstances {...(props as PointsInstancesProps)} ref={forwardedRef} />
+    }
   })

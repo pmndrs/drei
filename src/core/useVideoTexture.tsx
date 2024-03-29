@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { useCallback, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useThree } from '@react-three/fiber'
 import { suspend } from 'suspend-react'
 import Hls, { HlsConfig } from 'hls.js'
@@ -7,13 +7,14 @@ import Hls, { HlsConfig } from 'hls.js'
 interface VideoTextureProps extends HTMLVideoElement {
   unsuspend?: 'canplay' | 'canplaythrough' | 'loadstart' | 'loadedmetadata'
   start?: boolean
+  hls?: HLSConfiguration
 }
 
 interface HLSConfiguration {
   hls: HlsConfig
 }
 
-export function useVideoTexture(src: string | MediaStream, props?: Partial<VideoTextureProps | HLSConfiguration>) {
+export function useVideoTexture(src: string | MediaStream, props?: Partial<VideoTextureProps>) {
   const { unsuspend, start, crossOrigin, muted, loop, hls, ...rest } = {
     unsuspend: 'loadedmetadata',
     crossOrigin: 'Anonymous',
@@ -24,17 +25,12 @@ export function useVideoTexture(src: string | MediaStream, props?: Partial<Video
     hls: {},
     ...props,
   }
+
+  const url = new URL(typeof src === 'string' ? src : '', window.location.href)
+  const shouldUseHLS = url.pathname.endsWith('.m3u8') && Hls.isSupported()
+  const hlsRef = useRef(shouldUseHLS ? new Hls({ ...hls }) : null)
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const gl = useThree((state) => state.gl)
-
-  const createHLSBinding = useCallback(() => {
-    if (videoRef.current && typeof src === 'string') {
-      var video: HTMLVideoElement = videoRef.current
-      const _hls = new Hls({ ...hls })
-      _hls.attachMedia(video)
-      _hls.loadSource(src)
-    }
-  }, [])
 
   const texture = suspend(
     () =>
@@ -51,15 +47,19 @@ export function useVideoTexture(src: string | MediaStream, props?: Partial<Video
 
         // hlsjs extension
         if (typeof src === 'string') {
-          const url = new URL(src, window.location.href)
-
-          if (url.pathname.endsWith('.m3u8') && Hls.isSupported()) {
-            createHLSBinding()
+          if (shouldUseHLS) {
+            const _hls: Hls | null = hlsRef.current
+            if (_hls) {
+              _hls.attachMedia(video)
+              _hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+                _hls.loadSource(src)
+              })
+            }
+          } else {
+            video.src = src
           }
-
-          // hls.js is not supported on platforms that do not have Media Source Extensions (MSE) enabled.
-          // When the browser has built-in HLS support (check using `canPlayType`), we can provide an HLS manifest (i.e. .m3u8 URL) directly to the video element through the `src` property.
-          // This is using the built-in support of the plain video element, without using hls.js
+        } else if (src instanceof MediaStream) {
+          video.srcObject = src
         }
 
         const texture = new THREE.VideoTexture(video)
@@ -70,11 +70,17 @@ export function useVideoTexture(src: string | MediaStream, props?: Partial<Video
       }),
     [src]
   ) as THREE.VideoTexture
+
   useEffect(() => {
-    if (start) {
-      texture.image.play()
-      return () => texture.image.pause()
+    start && texture.image.play()
+
+    return () => {
+      if (hlsRef.current) {
+        hlsRef.current.destroy()
+        hlsRef.current = null
+      }
     }
   }, [texture, start])
+
   return texture
 }

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
 import {
+  Vector2,
   Vector3,
   Group,
   Object3D,
@@ -11,15 +12,15 @@ import {
   Raycaster,
   DoubleSide,
   Mesh,
-  Material,
 } from 'three'
 import { Assign } from 'utility-types'
-import { MaterialProps, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
+import { ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 const v1 = /* @__PURE__ */ new Vector3()
 const v2 = /* @__PURE__ */ new Vector3()
 const v3 = /* @__PURE__ */ new Vector3()
+const v4 = /* @__PURE__ */ new Vector2()
 
 function defaultCalculatePosition(el: Object3D, camera: Camera, size: { width: number; height: number }) {
   const objectPos = v1.setFromMatrixPosition(el.matrixWorld)
@@ -43,7 +44,8 @@ function isObjectVisible(el: Object3D, camera: Camera, raycaster: Raycaster, occ
   const elPos = v1.setFromMatrixPosition(el.matrixWorld)
   const screenPos = elPos.clone()
   screenPos.project(camera)
-  raycaster.setFromCamera(screenPos, camera)
+  v4.set(screenPos.x, screenPos.y)
+  raycaster.setFromCamera(v4, camera)
   const intersects = raycaster.intersectObjects(occlude, true)
   if (intersects.length) {
     const intersectionDistance = intersects[0].distance
@@ -135,7 +137,7 @@ export interface HtmlProps
   // https://www.youtube.com/watch?v=ScZcUEDGjJI
   // as well as Joe Pea in CodePen: https://codepen.io/trusktr/pen/RjzKJx
   occlude?: React.RefObject<Object3D>[] | boolean | 'raycast' | 'blending'
-  onOcclude?: (visible: boolean) => null
+  onOcclude?: (visible: boolean) => void
   material?: React.ReactNode // Material for occlusion plane
   geometry?: React.ReactNode // Material for occlusion plane
   castShadow?: boolean // Cast shadow for occlusion plane
@@ -409,15 +411,15 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
           /*
             This shader is from the THREE's SpriteMaterial.
             We need to turn the backing plane into a Sprite
-            (make it always face the camera) if "transfrom" 
-            is false. 
+            (make it always face the camera) if "transfrom"
+            is false.
           */
           #include <common>
 
           void main() {
             vec2 center = vec2(0., 1.);
             float rotation = 0.0;
-            
+
             // This is somewhat arbitrary, but it seems to work well
             // Need to figure out how to derive this dynamically if it even matters
             float size = 0.03;

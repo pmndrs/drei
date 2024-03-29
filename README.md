@@ -59,9 +59,11 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <ul>
           <li><a href="#gizmohelper">GizmoHelper</a></li>
           <li><a href="#pivotcontrols">PivotControls</a></li>
+          <li><a href="#dragcontrols">DragControls</a></li>
           <li><a href="#transformcontrols">TransformControls</a></li>
           <li><a href="#grid">Grid</a></li>
           <li><a href="#usehelper">useHelper</a></li>
+          <li><a href="#helper">Helper</a></li>
         </ul>
         <li><a href="#abstractions">Abstractions</a></li>
         <ul>
@@ -965,6 +967,57 @@ return (
     onDrag={({ matrix: matrix_ }) => matrix.copy(matrix_)}
 ```
 
+#### DragControls
+
+[![storybook](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/gizmos-dragcontrols--drag-controls-story) ![Dom only](https://img.shields.io/badge/-Dom%20only-red)
+
+You can use DragControls to make objects draggable in your scene. It supports locking the drag to specific axes, setting drag limits, and custom drag start, drag, and drag end events.
+
+```tsx
+type DragControlsProps = {
+  /** If autoTransform is true, automatically apply the local transform on drag, true */
+  autoTransform?: boolean
+  /** The matrix to control */
+  matrix?: THREE.Matrix4
+  /** Lock the drag to a specific axis */
+  axisLock?: 'x' | 'y' | 'z'
+  /** Limits */
+  dragLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
+  /** Hover event */
+  onHover?: (hovering: boolean) => void
+  /** Drag start event */
+  onDragStart?: (origin: THREE.Vector3) => void
+  /** Drag event */
+  onDrag?: (
+    localMatrix: THREE.Matrix4,
+    deltaLocalMatrix: THREE.Matrix4,
+    worldMatrix: THREE.Matrix4,
+    deltaWorldMatrix: THREE.Matrix4
+  ) => void
+  /** Drag end event */
+  onDragEnd?: () => void
+  children: React.ReactNode
+}
+```
+
+```jsx
+<DragControls>
+  <mesh />
+</DragControls>
+```
+
+You can utilize DragControls as a controlled component by toggling `autoTransform` off, which then requires you to manage the matrix transformation manually. Alternatively, keeping `autoTransform` enabled allows you to apply the matrix to external objects, enabling DragControls to manage objects that are not directly parented within it.
+
+```jsx
+const matrix = new THREE.Matrix4()
+return (
+  <DragControls
+    ref={ref}
+    matrix={matrix}
+    autoTransform={false}
+    onDrag={(localMatrix) => matrix.copy(localMatrix)}
+```
+
 #### TransformControls
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/gizmos-transformcontrols--transform-controls-story)
@@ -1053,6 +1106,22 @@ useHelper(mesh, BoxHelper, 'cyan')
 useHelper(condition && mesh, BoxHelper, 'red') // you can pass false instead of the object ref to hide the helper
 
 <mesh ref={mesh} ... />
+```
+
+#### Helper
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/gizmos-helper--default-story)
+
+A component for declaratively adding helpers to existing nodes in the scene. It handles removal of the helper on unmount and auto-updates it by default.
+
+```jsx
+<mesh>
+  <boxGeometry />
+  <meshBasicMaterial />
+
+  <Helper type={BoxHelper} args={['royalblue']} />
+  <Helper type={VertexNormalsHelper} args={[1, 0xff0000]} />
+</mesh>
 ```
 
 # Shapes
@@ -1395,7 +1464,7 @@ Text will suspend while loading the font data, but in order to completely avoid 
 
 Render 3D text using ThreeJS's `TextGeometry`.
 
-Text3D will suspend while loading the font data. Text3D requires fonts in JSON format generated through (typeface.json)[http://gero3.github.io/facetype.js], either as a path to a JSON file or a JSON object. If you face display issues try checking "Reverse font direction" in the typeface tool.
+Text3D will suspend while loading the font data. Text3D requires fonts in JSON format generated through [typeface.json](http://gero3.github.io/facetype.js), either as a path to a JSON file or a JSON object. If you face display issues try checking "Reverse font direction" in the typeface tool.
 
 ```jsx
 <Text3D font={fontUrl} {...textOptions}>
@@ -1549,13 +1618,14 @@ import { GradientTexture, GradientType } from './GradientTexture'
   <a href="https://codesandbox.io/s/ny3p4"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/ny3p4/screenshot.png" alt="Demo"/></a>
 </p>
 
-Abstracts [THREE.EdgesGeometry](https://threejs.org/docs/#api/en/geometries/EdgesGeometry). It pulls the geometry automatically from its parent, optionally you can ungroup it and give it a `geometry` prop. You can give it children, for instance a custom material.
+Abstracts [THREE.EdgesGeometry](https://threejs.org/docs/#api/en/geometries/EdgesGeometry). It pulls the geometry automatically from its parent, optionally you can ungroup it and give it a `geometry` prop. You can give it children, for instance a custom material. Edges is based on `<Line>` and supports all of its props.
 
 ```jsx
 <mesh>
   <boxGeometry />
   <meshBasicMaterial />
   <Edges
+    linewidth={4}
     scale={1.1}
     threshold={15} // Display edges only when the angle between two faces exceeds this value (default=15 degrees)
     color="white"
@@ -2619,7 +2689,7 @@ Notes:
 ScrollControls example
 
 ```jsx
-<ScrollControls damping={0.2} maxSpeed={0.5} pages={2}>
+;<ScrollControls damping={0.2} maxSpeed={0.5} pages={2}>
   <SpriteAnimator
     position={[0.0, -1.5, -1.5]}
     startFrame={0}
@@ -2755,7 +2825,7 @@ type FBOSettings = {
   samples?: number
   /** If set, the scene depth will be rendered into buffer.depthTexture. Default: false */
   depth?: boolean
-} & THREE.WebGLRenderTargetOptions
+} & THREE.RenderTargetOptions
 
 export function useFBO(
   /** Width in pixels, or settings (will render fullscreen by default) */
@@ -3317,7 +3387,6 @@ const { spriteObj } = useSpriteLoader(
 />
 ```
 
-
 # Performance
 
 #### Instances
@@ -3707,6 +3776,7 @@ type HudProps = {
     <ringGeometry />
   </mesh>
 </Hud>
+
 {
   /* Renders on top of the previous HUD with an orthographic camera */
 }
@@ -3756,9 +3826,9 @@ export type ViewProps = {
   /** The scene to render, if you leave this undefined it will render the default scene */
   children?: React.ReactNode
   /** The tracking element, the view will be cut according to its whereabouts
-   * @deprecated
+   * @deprecated You can use inline Views now, see: https://github.com/pmndrs/drei/pull/1784
    */
-  track: React.MutableRefObject<HTMLElement>
+  track?: React.MutableRefObject<HTMLElement>
 }
 
 export type ViewportProps = { Port: () => React.ReactNode } & React.ForwardRefExoticComponent<
@@ -4239,7 +4309,7 @@ const config = {
   controls: undefined, // if using orbit controls, pass a ref here so we can update the rotation
 }
 
-;<CameraShake {...config} />
+<CameraShake {...config} />
 ```
 
 ```ts
@@ -4830,6 +4900,8 @@ type CloudsProps = JSX.IntrinsicElements['group'] & {
   range?: number
   /** Which material it will override, default: MeshLambertMaterial */
   material?: typeof Material
+  /** Frustum culling, default: true */
+  frustumCulled?: boolean
 }
 
 type CloudProps = JSX.IntrinsicElements['group'] & {

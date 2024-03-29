@@ -1,14 +1,14 @@
 import * as React from 'react'
-import { RGBAFormat, HalfFloatType, WebGLRenderTarget, UnsignedByteType } from 'three'
+import { RGBAFormat, HalfFloatType, WebGLRenderTarget, UnsignedByteType, TextureDataType } from 'three'
 import { ReactThreeFiber, extend, useThree, useFrame } from '@react-three/fiber'
 import { EffectComposer, RenderPass, ShaderPass, GammaCorrectionShader } from 'three-stdlib'
-import mergeRefs from 'react-merge-refs'
 import { ForwardRefComponent } from '../helpers/ts-utils'
+import { TextureEncoding } from '../helpers/deprecated'
 
 type Props = ReactThreeFiber.Node<EffectComposer, typeof EffectComposer> & {
   multisamping?: number
-  encoding?: number
-  type?: number
+  encoding?: TextureEncoding
+  type?: TextureDataType
   renderIndex?: number
   disableGamma?: boolean
   disableRenderPass?: boolean
@@ -56,7 +56,8 @@ export const Effects: ForwardRefComponent<Props, EffectComposer> = /* @__PURE__ 
     ref
   ) => {
     React.useMemo(() => extend({ EffectComposer, RenderPass, ShaderPass }), [])
-    const composer = React.useRef<EffectComposer>()
+    const composer = React.useRef<EffectComposer>(null!)
+    React.useImperativeHandle(ref, () => composer.current, [])
     const { scene, camera, gl, size, viewport } = useThree()
     const [target] = React.useState(() => {
       const t = new WebGLRenderTarget(size.width, size.height, {
@@ -97,7 +98,7 @@ export const Effects: ForwardRefComponent<Props, EffectComposer> = /* @__PURE__ 
     })
 
     return (
-      <effectComposer ref={mergeRefs([ref, composer])} args={[gl, target]} {...props}>
+      <effectComposer ref={composer} args={[gl, target]} {...props}>
         {passes}
       </effectComposer>
     )

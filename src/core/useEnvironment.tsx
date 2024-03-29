@@ -6,10 +6,10 @@ import {
   Loader,
   CubeReflectionMapping,
   CubeTexture,
-  TextureEncoding,
 } from 'three'
 import { RGBELoader, EXRLoader } from 'three-stdlib'
 import { presetsObj, PresetsType } from '../helpers/environment-assets'
+import { LinearEncoding, sRGBEncoding, TextureEncoding } from '../helpers/deprecated'
 
 const CUBEMAP_ROOT = 'https://raw.githack.com/pmndrs/drei-assets/456060a26bbeb8fdf79326f224b6d99b8bcce736/hdri/'
 const isArray = (arr: any): arr is string[] => Array.isArray(arr)
@@ -68,8 +68,6 @@ export function useEnvironment({
 
   texture.mapping = isCubeMap ? CubeReflectionMapping : EquirectangularReflectionMapping
 
-  const sRGBEncoding = 3001
-  const LinearEncoding = 3000
   if ('colorSpace' in texture) (texture as any).colorSpace = encoding ?? isCubeMap ? 'srgb' : 'srgb-linear'
   else (texture as any).encoding = encoding ?? isCubeMap ? sRGBEncoding : LinearEncoding
 

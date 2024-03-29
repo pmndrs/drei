@@ -81,7 +81,7 @@ declare global {
   }
 }
 
-function createNormalMaterial(side = THREE.FrontSide) {
+function createNormalMaterial(side: THREE.Side = THREE.FrontSide) {
   const viewMatrix = { value: new THREE.Matrix4() }
   return Object.assign(new THREE.MeshNormalMaterial({ side }) as CausticsProjectionMaterialType, {
     viewMatrix,
@@ -108,7 +108,7 @@ const CausticsProjectionMaterial = /* @__PURE__ */ shaderMaterial(
     lightProjMatrix: /* @__PURE__ */ new THREE.Matrix4(),
     lightViewMatrix: /* @__PURE__ */ new THREE.Matrix4(),
   },
-  `varying vec3 vWorldPosition;   
+  `varying vec3 vWorldPosition;
    void main() {
      gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.);
      vec4 worldPosition = modelMatrix * vec4(position, 1.);
@@ -116,15 +116,15 @@ const CausticsProjectionMaterial = /* @__PURE__ */ shaderMaterial(
    }`,
   `varying vec3 vWorldPosition;
   uniform vec3 color;
-  uniform sampler2D causticsTexture; 
-  uniform sampler2D causticsTextureB; 
+  uniform sampler2D causticsTexture;
+  uniform sampler2D causticsTextureB;
   uniform mat4 lightProjMatrix;
   uniform mat4 lightViewMatrix;
    void main() {
-    // Apply caustics  
+    // Apply caustics
     vec4 lightSpacePos = lightProjMatrix * lightViewMatrix * vec4(vWorldPosition, 1.0);
     lightSpacePos.xyz /= lightSpacePos.w;
-    lightSpacePos.xyz = lightSpacePos.xyz * 0.5 + 0.5; 
+    lightSpacePos.xyz = lightSpacePos.xyz * 0.5 + 0.5;
     vec3 front = texture2D(causticsTexture, lightSpacePos.xy).rgb;
     vec3 back = texture2D(causticsTextureB, lightSpacePos.xy).rgb;
     gl_FragColor = vec4((front + back) * color, 1.0);
@@ -158,7 +158,7 @@ const CausticsMaterial = /* @__PURE__ */ shaderMaterial(
       vUv = uv;
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   }`,
-  /* glsl */ `  
+  /* glsl */ `
   uniform mat4 cameraMatrixWorld;
   uniform mat4 cameraProjectionMatrixInv;
   uniform vec3 lightDir;
@@ -186,7 +186,7 @@ const CausticsMaterial = /* @__PURE__ */ shaderMaterial(
     viewSpacePosition /= viewSpacePosition.w;
     vec4 worldSpacePosition = cameraMatrixWorld * viewSpacePosition;
     return worldSpacePosition.xyz;
-  }                  
+  }
   float sdPlane( vec3 p, vec3 n, float h ) {
     // n must be normalized
     return dot(p,n) + h;

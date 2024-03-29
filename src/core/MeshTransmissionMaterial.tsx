@@ -51,6 +51,7 @@ type MeshTransmissionMaterialProps = Omit<MeshTransmissionMaterialType, 'args'> 
   backside?: boolean
   /** Backside thickness (when backside is true), default: 0 */
   backsideThickness?: number
+  backsideEnvMapIntensity?: number
   /** Resolution of the local buffer, default: undefined (fullscreen) */
   resolution?: number
   /** Resolution of the local buffer for backfaces, default: undefined (fullscreen) */
@@ -63,6 +64,12 @@ type MeshTransmissionMaterialProps = Omit<MeshTransmissionMaterialType, 'args'> 
 
 interface Uniform<T> {
   value: T
+}
+
+interface Shader {
+  uniforms: { [uniform: string]: Uniform<any> }
+  vertexShader: string
+  fragmentShader: string
 }
 
 declare global {
@@ -116,7 +123,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       buffer: { value: null },
     }
 
-    this.onBeforeCompile = (shader: THREE.Shader & { defines: { [key: string]: string } }) => {
+    this.onBeforeCompile = (shader: Shader & { defines: { [key: string]: string } }) => {
       shader.uniforms = {
         ...shader.uniforms,
         ...this.uniforms,
@@ -384,6 +391,7 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
       transmission = 1,
       thickness = 0,
       backsideThickness = 0,
+      backsideEnvMapIntensity = 1,
       samples = 10,
       resolution,
       backsideResolution,
@@ -402,6 +410,7 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
     const fboMain = useFBO(resolution)
 
     let oldBg
+    let oldEnvMapIntensity
     let oldTone
     let parent
     useFrame((state) => {
@@ -413,6 +422,7 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
           // Save defaults
           oldTone = state.gl.toneMapping
           oldBg = state.scene.background
+          oldEnvMapIntensity = ref.current.envMapIntensity
 
           // Switch off tonemapping lest it double tone maps
           // Save the current background and set the HDR as the new BG
@@ -430,6 +440,7 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
             parent.material.buffer = fboBack.texture
             parent.material.thickness = backsideThickness
             parent.material.side = THREE.BackSide
+            parent.material.envMapIntensity = backsideEnvMapIntensity
           }
 
           // Render into the main buffer
@@ -440,6 +451,7 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
           parent.material.thickness = thickness
           parent.material.side = side
           parent.material.buffer = fboMain.texture
+          parent.material.envMapIntensity = oldEnvMapIntensity
 
           // Set old state back
           state.scene.background = oldBg

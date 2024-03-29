@@ -1,7 +1,6 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { Color, Group } from 'three'
-import mergeRefs from 'react-merge-refs'
 import { MarchingCubes as MarchingCubesImpl } from 'three-stdlib'
 import { useFrame } from '@react-three/fiber'
 import { ForwardRefComponent } from '../helpers/ts-utils'
@@ -33,6 +32,7 @@ export const MarchingCubes: ForwardRefComponent<MarchingCubesProps, MarchingCube
       ref
     ) => {
       const marchingCubesRef = React.useRef<MarchingCubesImpl>(null!)
+      React.useImperativeHandle(ref, () => marchingCubesRef.current, [])
       const marchingCubes = React.useMemo(
         () =>
           new MarchingCubesImpl(resolution, null as unknown as THREE.Material, enableUvs, enableColors, maxPolyCount),
@@ -47,7 +47,7 @@ export const MarchingCubes: ForwardRefComponent<MarchingCubesProps, MarchingCube
 
       return (
         <>
-          <primitive object={marchingCubes} ref={mergeRefs([marchingCubesRef, ref])} {...props}>
+          <primitive object={marchingCubes} ref={marchingCubesRef} {...props}>
             <globalContext.Provider value={api}>{children}</globalContext.Provider>
           </primitive>
         </>
@@ -65,14 +65,15 @@ export const MarchingCube: ForwardRefComponent<MarchingCubeProps, THREE.Group> =
   ({ strength = 0.5, subtract = 12, color, ...props }: MarchingCubeProps, ref) => {
     const { getParent } = React.useContext(globalContext)
     const parentRef = React.useMemo(() => getParent(), [getParent])
-    const cubeRef = React.useRef<Group>()
+    const cubeRef = React.useRef<Group>(null!)
+    React.useImperativeHandle(ref, () => cubeRef.current, [])
     const vec = new THREE.Vector3()
     useFrame((state) => {
       if (!parentRef.current || !cubeRef.current) return
       cubeRef.current.getWorldPosition(vec)
       parentRef.current.addBall(0.5 + vec.x * 0.5, 0.5 + vec.y * 0.5, 0.5 + vec.z * 0.5, strength, subtract, color)
     })
-    return <group ref={mergeRefs([ref, cubeRef])} {...props} />
+    return <group ref={cubeRef} {...props} />
   }
 )
 
@@ -86,7 +87,8 @@ export const MarchingPlane: ForwardRefComponent<MarchingPlaneProps, THREE.Group>
   ({ planeType: _planeType = 'x', strength = 0.5, subtract = 12, ...props }: MarchingPlaneProps, ref) => {
     const { getParent } = React.useContext(globalContext)
     const parentRef = React.useMemo(() => getParent(), [getParent])
-    const wallRef = React.useRef<Group>()
+    const wallRef = React.useRef<Group>(null!)
+    React.useImperativeHandle(ref, () => wallRef.current, [])
     const planeType = React.useMemo(
       () => (_planeType === 'x' ? 'addPlaneX' : _planeType === 'y' ? 'addPlaneY' : 'addPlaneZ'),
       [_planeType]
@@ -96,6 +98,6 @@ export const MarchingPlane: ForwardRefComponent<MarchingPlaneProps, THREE.Group>
       if (!parentRef.current || !wallRef.current) return
       parentRef.current[planeType](strength, subtract)
     })
-    return <group ref={mergeRefs([ref, wallRef])} {...props} />
+    return <group ref={wallRef} {...props} />
   }
 )

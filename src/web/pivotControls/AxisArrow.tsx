@@ -182,6 +182,7 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
           depthTest={depthTest}
           points={[0, 0, 0, 0, cylinderLength, 0] as any}
           lineWidth={lineWidth}
+          side={THREE.DoubleSide}
           color={color_ as any}
           opacity={opacity}
           polygonOffset

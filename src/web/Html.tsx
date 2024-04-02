@@ -137,7 +137,7 @@ export interface HtmlProps
   // https://www.youtube.com/watch?v=ScZcUEDGjJI
   // as well as Joe Pea in CodePen: https://codepen.io/trusktr/pen/RjzKJx
   occlude?: React.RefObject<Object3D>[] | boolean | 'raycast' | 'blending'
-  onOcclude?: (visible: boolean) => void
+  onOcclude?: (hidden: boolean) => void
   material?: React.ReactNode // Material for occlusion plane
   geometry?: React.ReactNode // Material for occlusion plane
   castShadow?: boolean // Cast shadow for occlusion plane

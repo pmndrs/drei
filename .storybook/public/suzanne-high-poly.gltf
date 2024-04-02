@@ -7,9 +7,7 @@
   "scenes": [
     {
       "name": "Scene",
-      "nodes": [
-        0
-      ]
+      "nodes": [0]
     }
   ],
   "nodes": [
@@ -54,16 +52,8 @@
     {
       "componentType": 5126,
       "count": 10206,
-      "max": [
-        0.9306385004351532,
-        1.5072998966190019,
-        0.5770668715282248
-      ],
-      "min": [
-        -0.9306385004351532,
-        0.16743480326434024,
-        -0.5456946575472748
-      ],
+      "max": [0.9306385004351532, 1.5072998966190019, 0.5770668715282248],
+      "min": [-0.9306385004351532, 0.16743480326434024, -0.5456946575472748],
       "type": "VEC3"
     },
     {
@@ -94,19 +84,11 @@
   "materials": [
     {
       "name": "default",
-      "emissiveFactor": [
-        0,
-        0,
-        0
-      ],
+      "emissiveFactor": [0, 0, 0],
       "alphaMode": "OPAQUE",
       "doubleSided": false
     }
   ],
-  "extensionsRequired": [
-    "KHR_draco_mesh_compression"
-  ],
-  "extensionsUsed": [
-    "KHR_draco_mesh_compression"
-  ]
+  "extensionsRequired": ["KHR_draco_mesh_compression"],
+  "extensionsUsed": ["KHR_draco_mesh_compression"]
 }

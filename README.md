@@ -926,6 +926,14 @@ type PivotControlsProps = {
   autoTransform?: boolean
   /** Allows you to switch individual axes off */
   activeAxes?: [boolean, boolean, boolean]
+  /** Allows you to disable translation via axes arrows */
+  disableAxes?: boolean
+  /** Allows you to disable translation via axes planes */
+  disableSliders?: boolean
+  /** Allows you to disable rotation */
+  disableRotations?: boolean
+  /** Allows you to disable scaling */
+  disableScaling?: boolean
   /** RGB colors */
   axisColors?: [string | number, string | number, string | number]
   /** Color of the hovered item */
@@ -1082,6 +1090,8 @@ export type GridMaterialType = {
   fadeDistance?: number
   /** Fade strength, default: 1 */
   fadeStrength?: number
+  /** Fade from camera (1) or origin (0), or somewhere in between, default: camera */
+  fadeFrom?: number;
 }
 
 export type GridProps = GridMaterialType & {
@@ -1618,13 +1628,14 @@ import { GradientTexture, GradientType } from './GradientTexture'
   <a href="https://codesandbox.io/s/ny3p4"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/ny3p4/screenshot.png" alt="Demo"/></a>
 </p>
 
-Abstracts [THREE.EdgesGeometry](https://threejs.org/docs/#api/en/geometries/EdgesGeometry). It pulls the geometry automatically from its parent, optionally you can ungroup it and give it a `geometry` prop. You can give it children, for instance a custom material.
+Abstracts [THREE.EdgesGeometry](https://threejs.org/docs/#api/en/geometries/EdgesGeometry). It pulls the geometry automatically from its parent, optionally you can ungroup it and give it a `geometry` prop. You can give it children, for instance a custom material. Edges is based on `<Line>` and supports all of its props.
 
 ```jsx
 <mesh>
   <boxGeometry />
   <meshBasicMaterial />
   <Edges
+    linewidth={4}
     scale={1.1}
     threshold={15} // Display edges only when the angle between two faces exceeds this value (default=15 degrees)
     color="white"
@@ -2461,7 +2472,7 @@ Allows you to tie HTML content to any object of your scene. It will be projected
   sprite // Renders as sprite, but only in transform mode (default=false)
   calculatePosition={(el: Object3D, camera: Camera, size: { width: number; height: number }) => number[]} // Override default positioning function. (default=undefined) [ignored in transform mode]
   occlude={[ref]} // Can be true or a Ref<Object3D>[], true occludes the entire scene (default: undefined)
-  onOcclude={(visible) => null} // Callback when the visibility changes (default: undefined)
+  onOcclude={(hidden) => null} // Callback when the visibility changes (default: undefined)
   {...groupProps} // All THREE.Group props are valid
   {...divProps} // All HTMLDivElement props are valid
 >
@@ -2824,7 +2835,7 @@ type FBOSettings = {
   samples?: number
   /** If set, the scene depth will be rendered into buffer.depthTexture. Default: false */
   depth?: boolean
-} & THREE.WebGLRenderTargetOptions
+} & THREE.RenderTargetOptions
 
 export function useFBO(
   /** Width in pixels, or settings (will render fullscreen by default) */
@@ -3270,6 +3281,18 @@ function VideoMaterial({ src }) {
 ```
 
 NB: It's important to wrap `VideoMaterial` into `React.Suspense` since, `useVideoTexture(src)` here will be suspended until the user shares its screen.
+
+HLS - useVideoTexture supports .m3u8 HLS manifest via (https://github.com/video-dev/hls.js).
+
+You can fine-tune via the hls configuration:
+
+```
+ const texture = useVideoTexture('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', {
+    hls: { abrEwmaFastLive: 1.0, abrEwmaSlowLive: 3.0, enableWorker: true }
+  })
+```
+
+> Available options: https://github.com/video-dev/hls.js/blob/master/docs/API.md#fine-tuning
 
 #### useTrailTexture
 
@@ -3764,6 +3787,7 @@ type HudProps = {
     <ringGeometry />
   </mesh>
 </Hud>
+
 {
   /* Renders on top of the previous HUD with an orthographic camera */
 }
@@ -4296,7 +4320,7 @@ const config = {
   controls: undefined, // if using orbit controls, pass a ref here so we can update the rotation
 }
 
-;<CameraShake {...config} />
+<CameraShake {...config} />
 ```
 
 ```ts
@@ -4887,6 +4911,8 @@ type CloudsProps = JSX.IntrinsicElements['group'] & {
   range?: number
   /** Which material it will override, default: MeshLambertMaterial */
   material?: typeof Material
+  /** Frustum culling, default: true */
+  frustumCulled?: boolean
 }
 
 type CloudProps = JSX.IntrinsicElements['group'] & {

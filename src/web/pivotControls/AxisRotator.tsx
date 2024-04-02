@@ -235,6 +235,7 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
         depthTest={depthTest}
         points={arc}
         lineWidth={lineWidth}
+        side={THREE.DoubleSide}
         color={(isHovered ? hoveredColor : axisColors[axis]) as any}
         opacity={opacity}
         polygonOffset

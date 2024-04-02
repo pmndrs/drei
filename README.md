@@ -926,6 +926,14 @@ type PivotControlsProps = {
   autoTransform?: boolean
   /** Allows you to switch individual axes off */
   activeAxes?: [boolean, boolean, boolean]
+  /** Allows you to disable translation via axes arrows */
+  disableAxes?: boolean
+  /** Allows you to disable translation via axes planes */
+  disableSliders?: boolean
+  /** Allows you to disable rotation */
+  disableRotations?: boolean
+  /** Allows you to disable scaling */
+  disableScaling?: boolean
   /** RGB colors */
   axisColors?: [string | number, string | number, string | number]
   /** Color of the hovered item */
@@ -3272,7 +3280,7 @@ function VideoMaterial({ src }) {
 
 NB: It's important to wrap `VideoMaterial` into `React.Suspense` since, `useVideoTexture(src)` here will be suspended until the user shares its screen.
 
-HLS - useVideoTexture supports .m3u8 HLS manifest via (https://github.com/video-dev/hls.js). 
+HLS - useVideoTexture supports .m3u8 HLS manifest via (https://github.com/video-dev/hls.js).
 
 You can fine-tune via the hls configuration:
 
@@ -3281,7 +3289,8 @@ You can fine-tune via the hls configuration:
     hls: { abrEwmaFastLive: 1.0, abrEwmaSlowLive: 3.0, enableWorker: true }
   })
 ```
->Available options: https://github.com/video-dev/hls.js/blob/master/docs/API.md#fine-tuning  
+
+> Available options: https://github.com/video-dev/hls.js/blob/master/docs/API.md#fine-tuning
 
 #### useTrailTexture
 

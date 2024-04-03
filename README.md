@@ -926,6 +926,14 @@ type PivotControlsProps = {
   autoTransform?: boolean
   /** Allows you to switch individual axes off */
   activeAxes?: [boolean, boolean, boolean]
+  /** Allows you to disable translation via axes arrows */
+  disableAxes?: boolean
+  /** Allows you to disable translation via axes planes */
+  disableSliders?: boolean
+  /** Allows you to disable rotation */
+  disableRotations?: boolean
+  /** Allows you to disable scaling */
+  disableScaling?: boolean
   /** RGB colors */
   axisColors?: [string | number, string | number, string | number]
   /** Color of the hovered item */
@@ -1082,6 +1090,8 @@ export type GridMaterialType = {
   fadeDistance?: number
   /** Fade strength, default: 1 */
   fadeStrength?: number
+  /** Fade from camera (1) or origin (0), or somewhere in between, default: camera */
+  fadeFrom?: number;
 }
 
 export type GridProps = GridMaterialType & {
@@ -3271,6 +3281,18 @@ function VideoMaterial({ src }) {
 ```
 
 NB: It's important to wrap `VideoMaterial` into `React.Suspense` since, `useVideoTexture(src)` here will be suspended until the user shares its screen.
+
+HLS - useVideoTexture supports .m3u8 HLS manifest via (https://github.com/video-dev/hls.js).
+
+You can fine-tune via the hls configuration:
+
+```
+ const texture = useVideoTexture('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', {
+    hls: { abrEwmaFastLive: 1.0, abrEwmaSlowLive: 3.0, enableWorker: true }
+  })
+```
+
+> Available options: https://github.com/video-dev/hls.js/blob/master/docs/API.md#fine-tuning
 
 #### useTrailTexture
 

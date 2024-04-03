@@ -108,7 +108,7 @@ export function Outlines({
         oldGeometry.current = parent.geometry
 
         // Remove old mesh
-        let mesh = group.children[0] as any
+        let mesh = group.children?.[0] as any
         if (mesh) {
           if (angle) mesh.geometry.dispose()
           group.remove(mesh)

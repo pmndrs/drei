@@ -4722,7 +4722,8 @@ Sets up a global cubemap, which affects the default `scene.environment`, and opt
 ```jsx
 <Environment
   background={false} // can be true, false or "only" (which only sets the background) (default: false)
-  blur={0} // blur factor between 0 and 1 (default: 0, only works with three 0.146 and up)
+  blur={0} // optional blur factor between 0 and 1 (default: 0, only works with three 0.146 and up)
+  rotation={[0, Math.PI / 2, 0]} // optional rotation (default: 0, only works with three 0.163 and up)
   files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']}
   path="/"
   preset={null}

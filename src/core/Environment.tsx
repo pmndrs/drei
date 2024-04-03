@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { useThree, createPortal, useFrame, extend, Object3DNode } from '@react-three/fiber'
-import { WebGLCubeRenderTarget, Texture, Scene, Loader, CubeCamera, HalfFloatType, CubeTexture } from 'three'
+import { useThree, createPortal, useFrame, extend, Object3DNode, Vector3, applyProps } from '@react-three/fiber'
+import { WebGLCubeRenderTarget, Texture, Scene, CubeCamera, HalfFloatType, CubeTexture } from 'three'
 import { GroundProjectedEnv as GroundProjectedEnvImpl } from 'three-stdlib'
 import { PresetsType } from '../helpers/environment-assets'
 import { EnvironmentLoaderProps, useEnvironment } from './useEnvironment'
@@ -13,6 +13,7 @@ export type EnvironmentProps = {
   resolution?: number
   background?: boolean | 'only'
   blur?: number
+  rotation?: Vector3
   map?: Texture
   preset?: PresetsType
   scene?: Scene | React.MutableRefObject<Scene>
@@ -33,39 +34,50 @@ function setEnvProps(
   scene: Scene | React.MutableRefObject<Scene> | undefined,
   defaultScene: Scene,
   texture: Texture,
-  blur = 0
+  blur: number = 0,
+  rotation: Vector3 = [0, 0, 0]
 ) {
   const target = resolveScene(scene || defaultScene)
   const oldbg = target.background
   const oldenv = target.environment
   // @ts-ignore
   const oldBlur = target.backgroundBlurriness || 0
-  if (background !== 'only') target.environment = texture
-  if (background) target.background = texture
   // @ts-ignore
-  if (background && target.backgroundBlurriness !== undefined) target.backgroundBlurriness = blur
+  const oldRotation = target.backgroundBlurriness !== undefined ? target.backgroundRotation.copy() : 0
+  if (background !== 'only') target.environment = texture
+  if (background) {
+    target.background = texture
+    // @ts-ignore
+    if (target.backgroundBlurriness !== undefined) target.backgroundBlurriness = blur
+    // @ts-ignore
+    if (target.backgroundRotation !== undefined) applyProps(target, { backgroundRotation: rotation })
+  }
   return () => {
     if (background !== 'only') target.environment = oldenv
-    if (background) target.background = oldbg
-    // @ts-ignore
-    if (background && target.backgroundBlurriness !== undefined) target.backgroundBlurriness = oldBlur
+    if (background) {
+      target.background = oldbg
+      // @ts-ignore
+      if (target.backgroundBlurriness !== undefined) target.backgroundBlurriness = oldBlur
+      // @ts-ignore
+      if (target.backgroundRotation !== undefined) applyProps(target, { backgroundRotation: oldRotation })
+    }
   }
 }
 
-export function EnvironmentMap({ scene, background = false, blur, map }: EnvironmentProps) {
+export function EnvironmentMap({ scene, background = false, blur, rotation, map }: EnvironmentProps) {
   const defaultScene = useThree((state) => state.scene)
   React.useLayoutEffect(() => {
-    if (map) return setEnvProps(background, scene, defaultScene, map, blur)
-  }, [defaultScene, scene, map, background, blur])
+    if (map) return setEnvProps(background, scene, defaultScene, map, blur, rotation)
+  }, [defaultScene, scene, map, background, blur, rotation])
   return null
 }
 
-export function EnvironmentCube({ background = false, scene, blur, ...rest }: EnvironmentProps) {
+export function EnvironmentCube({ background = false, scene, blur, rotation, ...rest }: EnvironmentProps) {
   const texture = useEnvironment(rest)
   const defaultScene = useThree((state) => state.scene)
   React.useLayoutEffect(() => {
-    return setEnvProps(background, scene, defaultScene, texture, blur)
-  }, [texture, background, scene, defaultScene, blur])
+    return setEnvProps(background, scene, defaultScene, texture, blur, rotation)
+  }, [texture, background, scene, defaultScene, blur, rotation])
   return null
 }
 
@@ -78,6 +90,7 @@ export function EnvironmentPortal({
   map,
   background = false,
   blur,
+  rotation,
   scene,
   files,
   path,
@@ -96,7 +109,7 @@ export function EnvironmentPortal({
 
   React.useLayoutEffect(() => {
     if (frames === 1) camera.current.update(gl, virtualScene)
-    return setEnvProps(background, scene, defaultScene, fbo.texture, blur)
+    return setEnvProps(background, scene, defaultScene, fbo.texture, blur, rotation)
   }, [children, virtualScene, fbo.texture, scene, defaultScene, background, frames, gl])
 
   let count = 1

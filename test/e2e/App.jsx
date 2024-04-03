@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { Box, Environment, CameraControls } from '@react-three/drei' // eslint-disable-line import/no-unresolved
+import { Sphere, Environment, CameraControls } from '@react-three/drei' // eslint-disable-line import/no-unresolved
 
 function App() {
   return (
@@ -21,9 +21,9 @@ function Scene() {
 
   return (
     <>
-      <Box>
-        <meshStandardMaterial />
-      </Box>
+      <Sphere>
+        <meshStandardMaterial roughness={0} metalness={1} />
+      </Sphere>
       <Environment preset="city" />
       <CameraControls />
     </>

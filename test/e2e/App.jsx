@@ -22,7 +22,7 @@ function Scene() {
   return (
     <>
       <Sphere>
-        <meshStandardMaterial roughness={0} metalness={1} />
+        <meshStandardMaterial />
       </Sphere>
       <Environment preset="city" />
       <CameraControls />

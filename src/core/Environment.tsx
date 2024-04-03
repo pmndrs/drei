@@ -13,6 +13,7 @@ export type EnvironmentProps = {
   resolution?: number
   background?: boolean | 'only'
   blur?: number
+  intensity?: number
   rotation?: Vector3
   map?: Texture
   preset?: PresetsType
@@ -35,6 +36,7 @@ function setEnvProps(
   defaultScene: Scene,
   texture: Texture,
   blur: number = 0,
+  intensity: number = 1,
   rotation: Vector3 = [0, 0, 0]
 ) {
   const target = resolveScene(scene || defaultScene)
@@ -43,12 +45,16 @@ function setEnvProps(
   // @ts-ignore
   const oldBlur = target.backgroundBlurriness || 0
   // @ts-ignore
+  const oldIntensity = target.environmentIntensity || 1
+  // @ts-ignore
   const oldRotation = target.backgroundBlurriness !== undefined ? target.backgroundRotation.copy() : 0
   if (background !== 'only') target.environment = texture
   if (background) {
     target.background = texture
     // @ts-ignore
     if (target.backgroundBlurriness !== undefined) target.backgroundBlurriness = blur
+    // @ts-ignore
+    if (target.environmentIntensity !== undefined) target.environmentIntensity = intensity
     // @ts-ignore
     if (target.backgroundRotation !== undefined) applyProps(target, { backgroundRotation: rotation })
   }
@@ -59,24 +65,26 @@ function setEnvProps(
       // @ts-ignore
       if (target.backgroundBlurriness !== undefined) target.backgroundBlurriness = oldBlur
       // @ts-ignore
+      if (target.environmentIntensity !== undefined) target.environmentIntensity = oldIntensity
+      // @ts-ignore
       if (target.backgroundRotation !== undefined) applyProps(target, { backgroundRotation: oldRotation })
     }
   }
 }
 
-export function EnvironmentMap({ scene, background = false, blur, rotation, map }: EnvironmentProps) {
+export function EnvironmentMap({ scene, background = false, blur, rotation, intensity, map }: EnvironmentProps) {
   const defaultScene = useThree((state) => state.scene)
   React.useLayoutEffect(() => {
-    if (map) return setEnvProps(background, scene, defaultScene, map, blur, rotation)
+    if (map) return setEnvProps(background, scene, defaultScene, map, blur, intensity, rotation)
   }, [defaultScene, scene, map, background, blur, rotation])
   return null
 }
 
-export function EnvironmentCube({ background = false, scene, blur, rotation, ...rest }: EnvironmentProps) {
+export function EnvironmentCube({ background = false, scene, blur, rotation, intensity, ...rest }: EnvironmentProps) {
   const texture = useEnvironment(rest)
   const defaultScene = useThree((state) => state.scene)
   React.useLayoutEffect(() => {
-    return setEnvProps(background, scene, defaultScene, texture, blur, rotation)
+    return setEnvProps(background, scene, defaultScene, texture, blur, intensity, rotation)
   }, [texture, background, scene, defaultScene, blur, rotation])
   return null
 }
@@ -90,6 +98,7 @@ export function EnvironmentPortal({
   map,
   background = false,
   blur,
+  intensity,
   rotation,
   scene,
   files,
@@ -109,7 +118,7 @@ export function EnvironmentPortal({
 
   React.useLayoutEffect(() => {
     if (frames === 1) camera.current.update(gl, virtualScene)
-    return setEnvProps(background, scene, defaultScene, fbo.texture, blur, rotation)
+    return setEnvProps(background, scene, defaultScene, fbo.texture, blur, intensity, rotation)
   }, [children, virtualScene, fbo.texture, scene, defaultScene, background, frames, gl])
 
   let count = 1

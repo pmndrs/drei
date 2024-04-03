@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useThree, createPortal, useFrame, extend, Object3DNode, Vector3, applyProps } from '@react-three/fiber'
+import { useThree, createPortal, useFrame, extend, Object3DNode, Euler, applyProps } from '@react-three/fiber'
 import { WebGLCubeRenderTarget, Texture, Scene, CubeCamera, HalfFloatType, CubeTexture } from 'three'
 import { GroundProjectedEnv as GroundProjectedEnvImpl } from 'three-stdlib'
 import { PresetsType } from '../helpers/environment-assets'
@@ -17,9 +17,9 @@ export type EnvironmentProps = {
   blur?: number
   backgroundBlurriness?: number
   backgroundIntensity?: number
-  backgroundRotation?: Vector3
+  backgroundRotation?: Euler
   environmentIntensity?: number
-  environmentRotation?: Vector3
+  environmentRotation?: Euler
 
   map?: Texture
   preset?: PresetsType

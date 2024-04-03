@@ -1091,7 +1091,7 @@ export type GridMaterialType = {
   /** Fade strength, default: 1 */
   fadeStrength?: number
   /** Fade from camera (1) or origin (0), or somewhere in between, default: camera */
-  fadeFrom?: number;
+  fadeFrom?: number
 }
 
 export type GridProps = GridMaterialType & {
@@ -4717,7 +4717,7 @@ gl_FragColor = vec4(vec3(0.), 1.); // Transparent
   <a href="https://codesandbox.io/s/0c5hv9"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/0c5hv9/screenshot.png" alt="Demo"/></a>
 </p>
 
-Sets up a global cubemap, which affects the default `scene.environment`, and optionally `scene.background`, unless a custom scene has been passed. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience. If you pass an array of files it will use THREE.CubeTextureLoader.
+Sets up a global cubemap, which affects the default `scene.environment`, and optionally `scene.background`, unless a custom scene has been passed. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience.
 
 ```jsx
 <Environment
@@ -4731,16 +4731,33 @@ Sets up a global cubemap, which affects the default `scene.environment`, and opt
 />
 ```
 
-The simplest way to use it is to provide a preset. 👉 Note: `preset` property is not meant to be used in production environments and may fail as it relies on CDNs.
+The simplest way to use it is to provide a preset (linking towards common HDRI Haven assets hosted on github). 👉 Note: `preset` property is not meant to be used in production environments and may fail as it relies on CDNs.
+
+Current presets are
+
+- apartment: 'lebombo_1k.hdr'
+- city: 'potsdamer_platz_1k.hdr'
+- dawn: 'kiara_1_dawn_1k.hdr'
+- forest: 'forest_slope_1k.hdr'
+- lobby: 'st_fagans_interior_1k.hdr'
+- night: 'dikhololo_night_1k.hdr'
+- park: 'rooitou_park_1k.hdr'
+- studio: 'studio_small_03_1k.hdr'
+- sunset: 'venice_sunset_1k.hdr'
+- warehouse: 'empty_warehouse_01_1k.hdr'
 
 ```jsx
 <Environment preset="city" />
 ```
 
-If you provide a single string it will use THREE.RGBELoader.
+Otherwise use the files property. It will use RGBELoader for _.hdr, EXRLoader for _.exr, HDRJPGLoader for [gainmap](https://github.com/MONOGRID/gainmap-js) _.jpg, GainMapLoader for gainmap _.webp, CubeTextureLoader for an array of images. Of all these, gainmap has the smallest footprint.
 
 ```jsx
 <Environment files="file.hdr" />
+<Environment files="file.exr" />
+<Environment files="file.jpg" />
+<Environment files="file.webp" />
+<Environment files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']}
 ```
 
 You can also use [@pmndrs/assets](https://github.com/pmndrs/assets) to easily self host common assets. Always use dynamic imports to avoid making this part of your main bundle.
@@ -4777,7 +4794,7 @@ return (
     <mesh />
 ```
 
-Declarative environment content can also animate with the `frames` prop, the envmap can be live. Give it a low resolution and this will happen at very little cost
+Declarative environment content can also animate with the `frames` prop, the envmap can be live. Give it a low resolution and this will happen at little cost
 
 ```jsx
 return (

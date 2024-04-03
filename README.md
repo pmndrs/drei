@@ -4756,8 +4756,8 @@ Otherwise use the files property. It will use RGBELoader for _.hdr, EXRLoader fo
 <Environment files="file.hdr" />
 <Environment files="file.exr" />
 <Environment files="file.jpg" />
-<Environment files="file.webp" />
-<Environment files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']}
+<Environment files={['file.webp', 'file-gainmap.webp', 'file.json']} />
+<Environment files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']} />
 ```
 
 You can also use [@pmndrs/assets](https://github.com/pmndrs/assets) to easily self host common assets. Always use dynamic imports to avoid making this part of your main bundle.

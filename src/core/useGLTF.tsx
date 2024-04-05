@@ -5,23 +5,31 @@ import { type ObjectMap, useLoader } from '@react-three/fiber'
 let dracoLoader: DRACOLoader | null = null
 
 let decoderPath: string = 'https://www.gstatic.com/draco/versioned/decoders/1.5.5/'
+type DracoLoaderOption = boolean | string
 
-function extensions(useDraco: boolean | string, useMeshopt: boolean, extendLoader?: (loader: GLTFLoader) => void) {
+const setupDracoLoader = (useDraco: DracoLoaderOption) => {
+  if (!dracoLoader) dracoLoader = new DRACOLoader()
+  const path = typeof useDraco === 'string' ? useDraco : decoderPath
+  dracoLoader.setDecoderPath(path)
+  return dracoLoader
+}
+
+const setupMeshoptDecoder = () => {
+  return typeof MeshoptDecoder === 'function' ? MeshoptDecoder() : MeshoptDecoder
+}
+
+function extensions(useDraco: DracoLoaderOption, useMeshopt: boolean, extendLoader?: (loader: GLTFLoader) => void) {
   return (loader: Loader) => {
     if (extendLoader) {
       extendLoader(loader as GLTFLoader)
     }
     if (useDraco) {
-      if (!dracoLoader) {
-        dracoLoader = new DRACOLoader()
-      }
-      dracoLoader.setDecoderPath(typeof useDraco === 'string' ? useDraco : decoderPath)
+      const dracoLoader = setupDracoLoader(useDraco)
       ;(loader as GLTFLoader).setDRACOLoader(dracoLoader)
     }
     if (useMeshopt) {
-      ;(loader as GLTFLoader).setMeshoptDecoder(
-        typeof MeshoptDecoder === 'function' ? MeshoptDecoder() : MeshoptDecoder
-      )
+      const meshoptDecoder = setupMeshoptDecoder()
+      ;(loader as GLTFLoader).setMeshoptDecoder(meshoptDecoder)
     }
   }
 }

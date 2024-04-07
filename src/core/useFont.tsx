@@ -19,18 +19,29 @@ export type FontData = {
   resolution: number
   underlineThickness: number
 }
+type FontInput = string | FontData
 
 let fontLoader: FontLoader | null = null
 
-async function loader(font: string | FontData) {
-  if (!fontLoader) fontLoader = new FontLoader()
-  let data = typeof font === 'string' ? await (await fetch(font as string)).json() : font
-  return fontLoader.parse(data as FontData)
+async function loadFontData(font: FontInput): Promise<FontData> {
+  return typeof font === 'string' ? await (await fetch(font)).json() : font
 }
 
-export function useFont(font: string | FontData) {
+function parseFontData(fontData: FontData) {
+  if (!fontLoader) {
+    fontLoader = new FontLoader()
+  }
+  return fontLoader.parse(fontData)
+}
+
+async function loader(font: FontInput) {
+  const data = await loadFontData(font)
+  return parseFontData(data)
+}
+
+export function useFont(font: FontInput) {
   return suspend(loader, [font])
 }
 
-useFont.preload = (font: string | FontData) => preload(loader, [font])
-useFont.clear = (font: string | FontData) => clear([font])
+useFont.preload = (font: FontInput) => preload(loader, [font])
+useFont.clear = (font: FontInput) => clear([font])

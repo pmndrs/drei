@@ -19,9 +19,9 @@ export default {
   ],
 }
 
-export const EnvironmentStory = ({ background, preset, blur }) => (
+export const EnvironmentStory = ({ background, preset, backgroundBlurriness }) => (
   <>
-    <Environment preset={preset} background={background} blur={blur} />
+    <Environment preset={preset} background={background} backgroundBlurriness={backgroundBlurriness} />
     <mesh>
       <torusKnotGeometry args={[1, 0.5, 128, 32]} />
       <meshStandardMaterial metalness={1} roughness={0} />
@@ -34,7 +34,7 @@ const presets = Object.keys(presetsObj)
 
 EnvironmentStory.args = {
   background: true,
-  blur: 0,
+  backgroundBlurriness: 0,
   preset: presets[0],
 }
 
@@ -45,7 +45,7 @@ EnvironmentStory.argTypes = {
       type: 'select',
     },
   },
-  blur: { control: { type: 'range', min: 0, max: 1, step: 0.01 } },
+  backgroundBlurriness: { control: { type: 'range', min: 0, max: 1, step: 0.01 } },
 }
 
 EnvironmentStory.storyName = 'Default'

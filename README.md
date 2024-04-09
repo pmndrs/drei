@@ -3736,7 +3736,7 @@ The following starts at the highest dpr (2) and clamps the gradual dpr between 0
 const [dpr, setDpr] = useState(2)
 return (
  <Canvas dpr={dpr}>
-  <PerformanceMonitor factor={1} onChange={({ factor }) => setDpr(Math.floor(0.5 + 1.5 * factor, 1))} />
+  <PerformanceMonitor factor={1} onChange={({ factor }) => setDpr(Math.round(0.5 + 1.5 * factor * 10) / 10)} />
 ```
 
 If you still experience flip flops despite the bounds you can define a limit of `flipflops`. If it is met `onFallback` will be triggered which typically sets a lowest possible baseline for the app. After the fallback has been called PerformanceMonitor will shut down.

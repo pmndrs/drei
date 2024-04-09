@@ -71,14 +71,14 @@ function setEnvProps(
   if (background !== 'only') target.environment = texture
   if (background) {
     target.background = texture
-    applyProps(target as any, sceneProps)
   }
+  applyProps(target as any, sceneProps)
   return () => {
     if (background !== 'only') target.environment = oldenv
     if (background) {
       target.background = oldbg
-      applyProps(target as any, oldSceneProps)
     }
+    applyProps(target as any, oldSceneProps)
   }
 }
 

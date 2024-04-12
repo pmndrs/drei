@@ -53,6 +53,7 @@ type PivotControlsProps = {
   /** Allows you to switch individual axes off */
   activeAxes?: [boolean, boolean, boolean]
 
+  /** Allows you to switch individual transformations off */
   disableAxes?: boolean
   disableSliders?: boolean
   disableRotations?: boolean

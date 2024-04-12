@@ -283,7 +283,7 @@ const HtmlView = React.forwardRef(
   }
 )
 
-export type ViewportProps = { Port: () => React.ReactNode } & React.ForwardRefExoticComponent<
+export type ViewportProps = { Port: () => JSX.Element } & React.ForwardRefExoticComponent<
   ViewProps & React.RefAttributes<HTMLElement | THREE.Group>
 >
 

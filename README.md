@@ -926,6 +926,14 @@ type PivotControlsProps = {
   autoTransform?: boolean
   /** Allows you to switch individual axes off */
   activeAxes?: [boolean, boolean, boolean]
+  /** Allows you to disable translation via axes arrows */
+  disableAxes?: boolean
+  /** Allows you to disable translation via axes planes */
+  disableSliders?: boolean
+  /** Allows you to disable rotation */
+  disableRotations?: boolean
+  /** Allows you to disable scaling */
+  disableScaling?: boolean
   /** RGB colors */
   axisColors?: [string | number, string | number, string | number]
   /** Color of the hovered item */
@@ -1082,6 +1090,8 @@ export type GridMaterialType = {
   fadeDistance?: number
   /** Fade strength, default: 1 */
   fadeStrength?: number
+  /** Fade from camera (1) or origin (0), or somewhere in between, default: camera */
+  fadeFrom?: number
 }
 
 export type GridProps = GridMaterialType & {
@@ -2462,7 +2472,7 @@ Allows you to tie HTML content to any object of your scene. It will be projected
   sprite // Renders as sprite, but only in transform mode (default=false)
   calculatePosition={(el: Object3D, camera: Camera, size: { width: number; height: number }) => number[]} // Override default positioning function. (default=undefined) [ignored in transform mode]
   occlude={[ref]} // Can be true or a Ref<Object3D>[], true occludes the entire scene (default: undefined)
-  onOcclude={(visible) => null} // Callback when the visibility changes (default: undefined)
+  onOcclude={(hidden) => null} // Callback when the visibility changes (default: undefined)
   {...groupProps} // All THREE.Group props are valid
   {...divProps} // All HTMLDivElement props are valid
 >
@@ -3271,6 +3281,18 @@ function VideoMaterial({ src }) {
 ```
 
 NB: It's important to wrap `VideoMaterial` into `React.Suspense` since, `useVideoTexture(src)` here will be suspended until the user shares its screen.
+
+HLS - useVideoTexture supports .m3u8 HLS manifest via (https://github.com/video-dev/hls.js).
+
+You can fine-tune via the hls configuration:
+
+```
+ const texture = useVideoTexture('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', {
+    hls: { abrEwmaFastLive: 1.0, abrEwmaSlowLive: 3.0, enableWorker: true }
+  })
+```
+
+> Available options: https://github.com/video-dev/hls.js/blob/master/docs/API.md#fine-tuning
 
 #### useTrailTexture
 
@@ -4695,12 +4717,16 @@ gl_FragColor = vec4(vec3(0.), 1.); // Transparent
   <a href="https://codesandbox.io/s/0c5hv9"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/0c5hv9/screenshot.png" alt="Demo"/></a>
 </p>
 
-Sets up a global cubemap, which affects the default `scene.environment`, and optionally `scene.background`, unless a custom scene has been passed. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience. If you pass an array of files it will use THREE.CubeTextureLoader.
+Sets up a global cubemap, which affects the default `scene.environment`, and optionally `scene.background`, unless a custom scene has been passed. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience.
 
 ```jsx
 <Environment
   background={false} // can be true, false or "only" (which only sets the background) (default: false)
-  blur={0} // blur factor between 0 and 1 (default: 0, only works with three 0.146 and up)
+  backgroundBlurriness={0} // optional blur factor between 0 and 1 (default: 0, only works with three 0.146 and up)
+  backgroundIntensity={1} // optional intensity factor (default: 1, only works with three 0.163 and up)
+  backgroundRotation={[0, Math.PI / 2, 0]} // optional rotation (default: 0, only works with three 0.163 and up)
+  environmentIntensity={1} // optional intensity factor (default: 1, only works with three 0.163 and up)
+  environmentRotation={[0, Math.PI / 2, 0]} // optional rotation (default: 0, only works with three 0.163 and up)
   files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']}
   path="/"
   preset={null}
@@ -4709,16 +4735,33 @@ Sets up a global cubemap, which affects the default `scene.environment`, and opt
 />
 ```
 
-The simplest way to use it is to provide a preset. 👉 Note: `preset` property is not meant to be used in production environments and may fail as it relies on CDNs.
+The simplest way to use it is to provide a preset (linking towards common HDRI Haven assets hosted on github). 👉 Note: `preset` property is not meant to be used in production environments and may fail as it relies on CDNs.
+
+Current presets are
+
+- apartment: 'lebombo_1k.hdr'
+- city: 'potsdamer_platz_1k.hdr'
+- dawn: 'kiara_1_dawn_1k.hdr'
+- forest: 'forest_slope_1k.hdr'
+- lobby: 'st_fagans_interior_1k.hdr'
+- night: 'dikhololo_night_1k.hdr'
+- park: 'rooitou_park_1k.hdr'
+- studio: 'studio_small_03_1k.hdr'
+- sunset: 'venice_sunset_1k.hdr'
+- warehouse: 'empty_warehouse_01_1k.hdr'
 
 ```jsx
 <Environment preset="city" />
 ```
 
-If you provide a single string it will use THREE.RGBELoader.
+Otherwise use the files property. It will use RGBELoader for _.hdr, EXRLoader for _.exr, HDRJPGLoader for [gainmap](https://github.com/MONOGRID/gainmap-js) _.jpg, GainMapLoader for gainmap _.webp, CubeTextureLoader for an array of images. Of all these, gainmap has the smallest footprint.
 
 ```jsx
 <Environment files="file.hdr" />
+<Environment files="file.exr" />
+<Environment files="file.jpg" />
+<Environment files={['file.webp', 'file-gainmap.webp', 'file.json']} />
+<Environment files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']} />
 ```
 
 You can also use [@pmndrs/assets](https://github.com/pmndrs/assets) to easily self host common assets. Always use dynamic imports to avoid making this part of your main bundle.
@@ -4755,7 +4798,7 @@ return (
     <mesh />
 ```
 
-Declarative environment content can also animate with the `frames` prop, the envmap can be live. Give it a low resolution and this will happen at very little cost
+Declarative environment content can also animate with the `frames` prop, the envmap can be live. Give it a low resolution and this will happen at little cost
 
 ```jsx
 return (

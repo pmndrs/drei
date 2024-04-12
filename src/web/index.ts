@@ -21,5 +21,8 @@ export { DragControls } from './DragControls'
 // Misc
 export * from './FaceLandmarker'
 
+// Loaders
+export * from './useVideoTexture'
+
 // Shapes
 export * from './Facemesh'

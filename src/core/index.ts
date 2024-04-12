@@ -56,7 +56,6 @@ export * from './useGLTF'
 export * from './useKTX2'
 export * from './useProgress'
 export * from './useTexture'
-export * from './useVideoTexture'
 export * from './useFont'
 export * from './useSpriteLoader'
 

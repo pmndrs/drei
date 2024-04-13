@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { useEffect, useRef } from 'react'
 import { useThree } from '@react-three/fiber'
 import { suspend } from 'suspend-react'
-import Hls, { HlsConfig } from 'hls.js'
+import type { HlsConfig, default as Hls } from 'hls.js'
 
 interface VideoTextureProps extends HTMLVideoElement {
   unsuspend?: 'canplay' | 'canplaythrough' | 'loadstart' | 'loadedmetadata'
@@ -12,6 +12,23 @@ interface VideoTextureProps extends HTMLVideoElement {
 
 interface HLSConfiguration {
   hls: HlsConfig
+}
+
+const IS_BROWSER =
+  typeof window !== 'undefined' &&
+  typeof window.document?.createElement === 'function' &&
+  typeof window.navigator?.userAgent === 'string'
+
+let _HLSModule: typeof import('hls.js') | null = null
+async function getHLS(url: URL, config: Partial<HlsConfig>): Promise<Hls | null> {
+  if (IS_BROWSER && url.pathname.endsWith('.m3u8')) {
+    _HLSModule ??= await import('hls.js')
+    if (_HLSModule.default.isSupported()) {
+      return new _HLSModule.default({ ...config })
+    }
+  }
+
+  return null
 }
 
 export function useVideoTexture(src: string | MediaStream, props?: Partial<VideoTextureProps>) {
@@ -27,14 +44,13 @@ export function useVideoTexture(src: string | MediaStream, props?: Partial<Video
   }
 
   const url = new URL(typeof src === 'string' ? src : '', window.location.href)
-  const shouldUseHLS = url.pathname.endsWith('.m3u8') && Hls.isSupported()
-  const hlsRef = useRef(shouldUseHLS ? new Hls({ ...hls }) : null)
+  const hlsRef = useRef<Hls | null>(null)
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const gl = useThree((state) => state.gl)
 
   const texture = suspend(
     () =>
-      new Promise((res, rej) => {
+      new Promise(async (res, rej) => {
         const video = Object.assign(document.createElement('video'), {
           src: (typeof src === 'string' && src) || undefined,
           srcObject: (src instanceof MediaStream && src) || undefined,
@@ -47,14 +63,13 @@ export function useVideoTexture(src: string | MediaStream, props?: Partial<Video
 
         // hlsjs extension
         if (typeof src === 'string') {
-          if (shouldUseHLS) {
-            const _hls: Hls | null = hlsRef.current
-            if (_hls) {
-              _hls.attachMedia(video)
-              _hls.on(Hls.Events.MEDIA_ATTACHED, () => {
-                _hls.loadSource(src)
-              })
-            }
+          const _hls = (hlsRef.current = await getHLS(url, hls))
+
+          if (_hls) {
+            _hls.attachMedia(video)
+            _hls.on('hlsMediaAttached' as typeof Hls.Events.MEDIA_ATTACHED, () => {
+              _hls.loadSource(src)
+            })
           } else {
             video.src = src
           }

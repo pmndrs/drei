@@ -35,14 +35,14 @@ export const RoundedBox: ForwardRefComponent<Props, Mesh> = /* @__PURE__ */ Reac
 
     const geomRef = React.useRef<RoundedBoxGeometry>(null!)
 
+    const args = React.useMemo(() => [width, height, depth, segments, radius], [width, height, depth, segments, radius])
+
     React.useLayoutEffect(() => {
       if (geomRef.current) {
         geomRef.current.center()
         toCreasedNormals(geomRef.current, creaseAngle)
       }
-    }, [geomRef])
-
-    const args = React.useMemo(() => [width, height, depth, segments, radius], [width, height, depth, segments, radius])
+    }, [args])
 
     return (
       <mesh ref={ref} {...rest}>

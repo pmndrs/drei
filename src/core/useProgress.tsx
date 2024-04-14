@@ -6,16 +6,21 @@ type Data = {
   active: boolean
   progress: number
   item: string
+  itemsMap: Map<string, boolean>
   loaded: number
   total: number
 }
 let saveLastTotalLoaded = 0
+let saveItemsMap = new Map<string, boolean>()
 
 const useProgress = /* @__PURE__ */ create<Data>((set) => {
   DefaultLoadingManager.onStart = (item, loaded, total) => {
+    // set in raw map to prevent data loss from batched updates
+    saveItemsMap.set(item, false)
     set({
       active: true,
       item,
+      itemsMap: new Map(saveItemsMap),
       loaded,
       total,
       progress: ((loaded - saveLastTotalLoaded) / (total - saveLastTotalLoaded)) * 100,
@@ -29,9 +34,11 @@ const useProgress = /* @__PURE__ */ create<Data>((set) => {
     if (loaded === total) {
       saveLastTotalLoaded = total
     }
+    saveItemsMap.set(item, true)
     set({
       active: true,
       item,
+      itemsMap: new Map(saveItemsMap),
       loaded,
       total,
       progress: ((loaded - saveLastTotalLoaded) / (total - saveLastTotalLoaded)) * 100 || 100,
@@ -42,6 +49,7 @@ const useProgress = /* @__PURE__ */ create<Data>((set) => {
     active: false,
     progress: 0,
     item: '',
+    itemsMap: new Map<string, boolean>(),
     loaded: 0,
     total: 0,
   }

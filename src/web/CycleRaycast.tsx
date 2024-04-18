@@ -3,9 +3,13 @@ import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
 
 export type CycleRaycastProps = {
-  onChanged?: (hits: THREE.Intersection[], cycle: number) => null
+  /** onChanged event to get all objects that are intersect with raycaster */
+  onChanged?: (hits: THREE.Intersection[], cycle: number) => void
+  /** Call event.preventDefault() (default: true) */
   preventDefault?: boolean
+  /** Wheel events (default: true) */
   scroll?: boolean
+  /** Keyboard events (default: 9 [Tab]) */
   keyCode?: number
   portal?: React.MutableRefObject<HTMLElement>
 }

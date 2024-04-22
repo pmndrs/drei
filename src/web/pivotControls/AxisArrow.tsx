@@ -68,6 +68,10 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
 
   const onPointerDown = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
+      if (e.button !== 0) {
+        e.stopPropagation()
+        return
+      }
       if (annotations) {
         divRef.current.innerText = `${translation.current[axis].toFixed(2)}`
         divRef.current.style.display = 'block'
@@ -116,6 +120,10 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
 
   const onPointerUp = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
+      if (e.button !== 0) {
+        e.stopPropagation()
+        return
+      }
       if (annotations) {
         divRef.current.style.display = 'none'
       }
@@ -154,6 +162,10 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerOut={onPointerOut}
+        onContextMenu={(e) => {
+          e.stopPropagation()
+          e.nativeEvent.preventDefault()
+        }}
       >
         {annotations && (
           <Html position={[0, -coneLength, 0]}>

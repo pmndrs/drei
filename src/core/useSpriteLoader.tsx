@@ -1,5 +1,5 @@
 import { Texture, TextureLoader } from 'three'
-import { useLoader, useThree } from '@react-three/fiber'
+import { Size, useLoader, useThree } from '@react-three/fiber'
 import { useState } from 'react'
 import * as React from 'react'
 import * as THREE from 'three'
@@ -17,9 +17,10 @@ export const getFirstItem = (param: any): any => {
   }
 }
 
-export const calculateAspectRatio = (width: number, height: number, factor: number, v: any): THREE.Vector3 => {
-  const adaptedHeight = height * (v.aspect > width / height ? v.width / width : v.height / height)
-  const adaptedWidth = width * (v.aspect > width / height ? v.width / width : v.height / height)
+export const calculateAspectRatio = (width: number, height: number, factor: number, size: Size): THREE.Vector3 => {
+  const aspect = size.width / size.height
+  const adaptedHeight = height * (aspect > width / height ? size.width / width : size.height / height)
+  const adaptedWidth = width * (aspect > width / height ? size.width / width : size.height / height)
   const scaleX = adaptedWidth * factor
   const scaleY = adaptedHeight * factor
   const currentMaxScale = 1
@@ -43,7 +44,7 @@ export function useSpriteLoader<Url extends string>(
   numberOfFrames?: number | null,
   onLoad?: (texture: Texture, textureData?: any) => void
 ): any {
-  const v = useThree((state) => state.viewport)
+  const size = useThree((state) => state.size)
   const spriteDataRef = React.useRef<any>(null)
   const totalFrames = React.useRef<number>(0)
   const aspectFactor = 0.1
@@ -136,14 +137,14 @@ export function useSpriteLoader<Url extends string>(
           }
         }
 
-        aspect = calculateAspectRatio(frameWidth, frameHeight, aspectFactor, v)
+        aspect = calculateAspectRatio(frameWidth, frameHeight, aspectFactor, size)
       }
     } else if (_spriteTexture) {
       spriteDataRef.current = json
       spriteDataRef.current.frames = parseFrames()
       totalFrames.current = Array.isArray(json.frames) ? json.frames.length : Object.keys(json.frames).length
       const { w, h } = getFirstItem(json.frames).sourceSize
-      aspect = calculateAspectRatio(w, h, aspectFactor, v)
+      aspect = calculateAspectRatio(w, h, aspectFactor, size)
     }
 
     setSpriteData(spriteDataRef.current)

@@ -1,10 +1,10 @@
 /* eslint-disable prettier/prettier */
 import * as THREE from 'three'
 import * as React from 'react'
-import { useFrame, useThree } from '@react-three/fiber'
+import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
 import { easing, misc } from 'maath'
 
-type MotionPathProps = JSX.IntrinsicElements['group'] & {
+type MotionPathProps = ThreeElements['group'] & {
   /** An optional array of THREE curves */
   curves?: THREE.Curve<THREE.Vector3>[]
   /** Show debug helpers */

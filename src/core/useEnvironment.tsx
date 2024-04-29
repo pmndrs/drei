@@ -31,7 +31,6 @@ export function useEnvironment({
 }: Partial<EnvironmentLoaderProps> = {}) {
   let loader: typeof Loader | null = null
   let isCubeMap: boolean = false
-  let extension: string | false | undefined
 
   if (preset) {
     if (!(preset in presetsObj)) throw new Error('Preset must be one of: ' + Object.keys(presetsObj).join(', '))
@@ -41,7 +40,7 @@ export function useEnvironment({
 
   // Everything else
   isCubeMap = isArray(files)
-  extension = isArray(files)
+  const extension = isArray(files)
     ? 'cube'
     : files.startsWith('data:application/exr')
     ? 'exr'

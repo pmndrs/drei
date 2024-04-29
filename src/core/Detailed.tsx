@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { LOD, Object3D } from 'three'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, ThreeElements } from '@react-three/fiber'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
-type Props = JSX.IntrinsicElements['lOD'] & {
+type Props = ThreeElements['lOD'] & {
   children: React.ReactElement<Object3D>[]
   hysteresis?: number
   distances: number[]

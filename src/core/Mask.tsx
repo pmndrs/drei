@@ -1,8 +1,9 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { ForwardRefComponent } from '../helpers/ts-utils'
+import { ThreeElements } from '@react-three/fiber'
 
-type Props = Omit<JSX.IntrinsicElements['mesh'], 'id'> & {
+type Props = Omit<ThreeElements['mesh'], 'id'> & {
   /** Each mask must have an id, you can have compound masks referring to the same id */
   id: number
   /** If colors of the masks own material will leak through, default: false */

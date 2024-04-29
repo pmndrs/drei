@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import * as React from 'react'
 import { Color, Group } from 'three'
 import { MarchingCubes as MarchingCubesImpl } from 'three-stdlib'
-import { useFrame } from '@react-three/fiber'
+import { ThreeElements, useFrame } from '@react-three/fiber'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type Api = {
@@ -16,7 +16,7 @@ export type MarchingCubesProps = {
   maxPolyCount?: number
   enableUvs?: boolean
   enableColors?: boolean
-} & JSX.IntrinsicElements['group']
+} & ThreeElements['group']
 
 export const MarchingCubes: ForwardRefComponent<MarchingCubesProps, MarchingCubesImpl> =
   /* @__PURE__ */ React.forwardRef(
@@ -59,7 +59,7 @@ type MarchingCubeProps = {
   strength?: number
   subtract?: number
   color?: Color
-} & JSX.IntrinsicElements['group']
+} & ThreeElements['group']
 
 export const MarchingCube: ForwardRefComponent<MarchingCubeProps, THREE.Group> = /* @__PURE__ */ React.forwardRef(
   ({ strength = 0.5, subtract = 12, color, ...props }: MarchingCubeProps, ref) => {
@@ -67,12 +67,14 @@ export const MarchingCube: ForwardRefComponent<MarchingCubeProps, THREE.Group> =
     const parentRef = React.useMemo(() => getParent(), [getParent])
     const cubeRef = React.useRef<Group>(null!)
     React.useImperativeHandle(ref, () => cubeRef.current, [])
-    const vec = new THREE.Vector3()
-    useFrame((state) => {
+    const vec = React.useMemo(() => new THREE.Vector3(), [])
+
+    useFrame(() => {
       if (!parentRef.current || !cubeRef.current) return
       cubeRef.current.getWorldPosition(vec)
       parentRef.current.addBall(0.5 + vec.x * 0.5, 0.5 + vec.y * 0.5, 0.5 + vec.z * 0.5, strength, subtract, color)
     })
+
     return <group ref={cubeRef} {...props} />
   }
 )
@@ -81,7 +83,7 @@ type MarchingPlaneProps = {
   planeType?: 'x' | 'y' | 'z'
   strength?: number
   subtract?: number
-} & JSX.IntrinsicElements['group']
+} & ThreeElements['group']
 
 export const MarchingPlane: ForwardRefComponent<MarchingPlaneProps, THREE.Group> = /* @__PURE__ */ React.forwardRef(
   ({ planeType: _planeType = 'x', strength = 0.5, subtract = 12, ...props }: MarchingPlaneProps, ref) => {

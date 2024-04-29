@@ -1,8 +1,10 @@
 import { useThree } from '@react-three/fiber'
 
 export function useAspect(width: number, height: number, factor: number = 1): [number, number, number] {
-  const v = useThree((state) => state.viewport)
-  const adaptedHeight = height * (v.aspect > width / height ? v.width / width : v.height / height)
-  const adaptedWidth = width * (v.aspect > width / height ? v.width / width : v.height / height)
+  const size = useThree((state) => state.size)
+  const aspect = size.width / size.height
+  const adaptedHeight = height * (aspect > width / height ? size.width / width : size.height / height)
+  const adaptedWidth = width * (aspect > width / height ? size.width / width : size.height / height)
+
   return [adaptedWidth * factor, adaptedHeight * factor, 1]
 }

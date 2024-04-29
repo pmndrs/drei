@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { AudioLoader, AudioListener, PositionalAudio as PositionalAudioImpl } from 'three'
-import { useThree, useLoader } from '@react-three/fiber'
+import { useThree, useLoader, ThreeElements } from '@react-three/fiber'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
-type Props = JSX.IntrinsicElements['positionalAudio'] & {
+type Props = ThreeElements['positionalAudio'] & {
   url: string
   distance?: number
   loop?: boolean

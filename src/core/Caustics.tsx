@@ -41,7 +41,7 @@ type CausticsProjectionMaterialType = THREE.MeshNormalMaterial & {
   lightViewMatrix?: THREE.Matrix4
 }
 
-type CausticsProps = JSX.IntrinsicElements['group'] & {
+type CausticsProps = ThreeElements['group'] & {
   /** How many frames it will render, set it to Infinity for runtime, default: 1 */
   frames?: number
   /** Enables visual cues to help you stage your scene, default: false */

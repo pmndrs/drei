@@ -58,7 +58,7 @@ export const Effects: ForwardRefComponent<Props, EffectComposer> = /* @__PURE__ 
     React.useMemo(() => extend({ EffectComposer, RenderPass, ShaderPass }), [])
     const composer = React.useRef<EffectComposer>(null!)
     React.useImperativeHandle(ref, () => composer.current, [])
-    const { scene, camera, gl, size, viewport } = useThree()
+    const { scene, camera, gl, size, dpr } = useThree()
     const [target] = React.useState(() => {
       const t = new WebGLRenderTarget(size.width, size.height, {
         type: type || HalfFloatType,
@@ -80,8 +80,8 @@ export const Effects: ForwardRefComponent<Props, EffectComposer> = /* @__PURE__ 
 
     React.useEffect(() => {
       composer.current?.setSize(size.width, size.height)
-      composer.current?.setPixelRatio(viewport.dpr)
-    }, [gl, size, viewport.dpr])
+      composer.current?.setPixelRatio(dpr)
+    }, [gl, size, dpr])
 
     useFrame(() => {
       if (!disableRender) composer.current?.render()

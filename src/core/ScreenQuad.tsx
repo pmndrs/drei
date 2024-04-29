@@ -3,6 +3,7 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { ForwardRefComponent } from '../helpers/ts-utils'
+import { ThreeElements } from '@react-three/fiber'
 
 function createScreenQuadGeometry() {
   const geometry = new THREE.BufferGeometry()
@@ -13,7 +14,7 @@ function createScreenQuadGeometry() {
   return geometry
 }
 
-type Props = Omit<JSX.IntrinsicElements['mesh'], 'args'>
+type Props = Omit<ThreeElements['mesh'], 'args'>
 
 export const ScreenQuad: ForwardRefComponent<Props, THREE.Mesh> = /* @__PURE__ */ React.forwardRef<THREE.Mesh, Props>(
   function ScreenQuad({ children, ...restProps }, ref) {

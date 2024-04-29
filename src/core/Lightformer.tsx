@@ -1,9 +1,9 @@
-import { applyProps, ReactThreeFiber, useThree } from '@react-three/fiber'
+import { applyProps, ReactThreeFiber, ThreeElements } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from 'three'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
-export type LightProps = JSX.IntrinsicElements['mesh'] & {
+export type LightProps = ThreeElements['mesh'] & {
   args?: any[]
   map?: THREE.Texture
   toneMapped?: boolean

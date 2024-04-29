@@ -16,16 +16,14 @@ import {
   RepeatWrapping,
   Object3D,
 } from 'three'
-import { useFrame, useThree } from '@react-three/fiber'
+import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
 import { FullScreenQuad } from 'three-stdlib'
 import { SpotLightMaterial } from '../materials/SpotLightMaterial'
-
-// eslint-disable-next-line
-// @ts-ignore
+// @ts-expect-error
 import SpotlightShadowShader from '../helpers/glsl/DefaultSpotlightShadowShadows.glsl'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
-type SpotLightProps = JSX.IntrinsicElements['spotLight'] & {
+type SpotLightProps = ThreeElements['spotLight'] & {
   depthBuffer?: DepthTexture
   attenuation?: number
   anglePower?: number
@@ -55,7 +53,7 @@ function VolumetricMesh({
   const mesh = React.useRef<Mesh>(null!)
   const size = useThree((state) => state.size)
   const camera = useThree((state) => state.camera)
-  const dpr = useThree((state) => state.viewport.dpr)
+  const dpr = useThree((state) => state.dpr)
   const [material] = React.useState(() => new SpotLightMaterial())
   const [vec] = React.useState(() => new Vector3())
 

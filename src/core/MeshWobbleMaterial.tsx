@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { IUniform, MeshStandardMaterial, MeshStandardMaterialParameters } from 'three'
-import { useFrame } from '@react-three/fiber'
+import { ThreeElements, useFrame } from '@react-three/fiber'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
-type WobbleMaterialType = JSX.IntrinsicElements['meshStandardMaterial'] & {
+type WobbleMaterialType = ThreeElements['meshStandardMaterial'] & {
   time?: number
   factor?: number
   speed?: number

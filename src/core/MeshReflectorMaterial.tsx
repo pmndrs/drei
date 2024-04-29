@@ -13,7 +13,7 @@ import {
   Texture,
   HalfFloatType,
 } from 'three'
-import { useFrame, useThree, extend } from '@react-three/fiber'
+import { useFrame, useThree, extend, ThreeElements } from '@react-three/fiber'
 
 import { BlurPass } from '../materials/BlurPass'
 import {
@@ -22,7 +22,7 @@ import {
 } from '../materials/MeshReflectorMaterial'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
-type Props = JSX.IntrinsicElements['meshStandardMaterial'] & {
+type Props = ThreeElements['meshStandardMaterial'] & {
   resolution?: number
   mixBlur?: number
   mixStrength?: number

@@ -1,13 +1,13 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { OrthographicCamera as OrthographicCameraImpl } from 'three'
-import { useThree, useFrame } from '@react-three/fiber'
+import { useThree, useFrame, ThreeElements } from '@react-three/fiber'
 import { useFBO } from './useFBO'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 const isFunction = (node: any): node is Function => typeof node === 'function'
 
-type Props = Omit<JSX.IntrinsicElements['orthographicCamera'], 'children'> & {
+type Props = Omit<ThreeElements['orthographicCamera'], 'children'> & {
   /** Registers the camera as the system default, fiber will start rendering with it */
   makeDefault?: boolean
   /** Making it manual will stop responsiveness and you have to calculate aspect ratio yourself. */

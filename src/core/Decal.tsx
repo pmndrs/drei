@@ -1,11 +1,11 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import * as FIBER from '@react-three/fiber'
-import { applyProps } from '@react-three/fiber'
+import { ThreeElements, applyProps } from '@react-three/fiber'
 import { DecalGeometry } from 'three-stdlib'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
-export type DecalProps = Omit<JSX.IntrinsicElements['mesh'], 'children'> & {
+export type DecalProps = Omit<ThreeElements['mesh'], 'children'> & {
   debug?: boolean
   mesh?: React.MutableRefObject<THREE.Mesh>
   position?: FIBER.Vector3

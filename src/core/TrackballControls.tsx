@@ -21,7 +21,7 @@ export type TrackballControlsProps = ReactThreeFiber.Overwrite<
 export const TrackballControls: ForwardRefComponent<TrackballControlsProps, TrackballControlsImpl> =
   /* @__PURE__ */ React.forwardRef<TrackballControlsImpl, TrackballControlsProps>(
     ({ makeDefault, camera, domElement, regress, onChange, onStart, onEnd, ...restProps }, ref) => {
-      const { invalidate, camera: defaultCamera, gl, events, set, get, performance, viewport } = useThree()
+      const { invalidate, camera: defaultCamera, gl, events, set, get, performance, size } = useThree()
       const explCamera = camera || defaultCamera
       const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
       const controls = React.useMemo(
@@ -56,7 +56,7 @@ export const TrackballControls: ForwardRefComponent<TrackballControlsProps, Trac
 
       React.useEffect(() => {
         controls.handleResize()
-      }, [viewport])
+      }, [size])
 
       React.useEffect(() => {
         if (makeDefault) {

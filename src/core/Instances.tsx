@@ -1,15 +1,13 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { ThreeElement, extend, useFrame } from '@react-three/fiber'
+import { ThreeElement, ThreeElements, extend, useFrame } from '@react-three/fiber'
 import Composer from 'react-composer'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 import { setUpdateRange } from '../helpers/deprecated'
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      positionMesh: ThreeElement<typeof PositionMesh>
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    positionMesh: ThreeElement<typeof PositionMesh>
   }
 }
 
@@ -18,13 +16,13 @@ type Api = {
   subscribe: <T>(ref: React.MutableRefObject<T>) => void
 }
 
-export type InstancesProps = JSX.IntrinsicElements['instancedMesh'] & {
+export type InstancesProps = ThreeElements['instancedMesh'] & {
   range?: number
   limit?: number
   frames?: number
 }
 
-export type InstanceProps = JSX.IntrinsicElements['positionMesh'] & {
+export type InstanceProps = ThreeElements['positionMesh'] & {
   context?: React.Context<Api>
 }
 
@@ -49,7 +47,7 @@ const _mesh = /* @__PURE__ */ new THREE.Mesh<THREE.BufferGeometry, THREE.MeshBas
 class PositionMesh extends THREE.Group {
   color: THREE.Color
   instance: React.MutableRefObject<THREE.InstancedMesh | undefined>
-  instanceKey: React.MutableRefObject<JSX.IntrinsicElements['positionMesh'] | undefined>
+  instanceKey: React.MutableRefObject<ThreeElements['positionMesh'] | undefined>
   constructor() {
     super()
     this.color = new THREE.Color('white')
@@ -102,7 +100,7 @@ const scale = /* @__PURE__ */ new THREE.Vector3()
 
 export const Instance = /* @__PURE__ */ React.forwardRef(({ context, children, ...props }: InstanceProps, ref) => {
   React.useMemo(() => extend({ PositionMesh }), [])
-  const group = React.useRef<JSX.IntrinsicElements['positionMesh']>()
+  const group = React.useRef<ThreeElements['positionMesh']>()
   React.useImperativeHandle(ref, () => group.current, [])
   const { subscribe, getParent } = React.useContext(context || globalContext)
   React.useLayoutEffect(() => subscribe(group), [])

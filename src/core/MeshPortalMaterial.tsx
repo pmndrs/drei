@@ -5,7 +5,7 @@
 
 import * as THREE from 'three'
 import * as React from 'react'
-import { ReactThreeFiber, extend, useFrame, useThree } from '@react-three/fiber'
+import { ReactThreeFiber, ThreeElements, extend, useFrame, useThree } from '@react-three/fiber'
 import { useIntersect } from './useIntersect'
 import { useFBO } from './useFBO'
 import { RenderTexture } from './RenderTexture'
@@ -54,7 +54,7 @@ export type PortalMaterialType = {
   size?: number
   sdf?: THREE.Texture
   map?: THREE.Texture
-} & JSX.IntrinsicElements['shaderMaterial']
+} & ThreeElements['shaderMaterial']
 
 declare global {
   namespace JSX {
@@ -64,7 +64,7 @@ declare global {
   }
 }
 
-export type PortalProps = JSX.IntrinsicElements['shaderMaterial'] & {
+export type PortalProps = ThreeElements['shaderMaterial'] & {
   /** Mix the portals own scene with the world scene, 0 = world scene render,
    *  0.5 = both scenes render, 1 = portal scene renders, defaults to 0 */
   blend?: number
@@ -99,7 +99,7 @@ export const MeshPortalMaterial = /* @__PURE__ */ React.forwardRef(
     extend({ PortalMaterialImpl })
 
     const ref = React.useRef<PortalMaterialType>(null!)
-    const { scene, gl, size, viewport, setEvents } = useThree()
+    const { scene, gl, size, dpr, setEvents } = useThree()
     const maskRenderTarget = useFBO(resolution, resolution)
 
     const [priority, setPriority] = React.useState(0)
@@ -163,7 +163,7 @@ export const MeshPortalMaterial = /* @__PURE__ */ React.forwardRef(
 
     React.useImperativeHandle(fref, () => ref.current)
 
-    const compute = React.useCallback((event, state, previous) => {
+    const compute = React.useCallback((event, state) => {
       if (!parent.current) return false
       state.pointer.set((event.offsetX / state.size.width) * 2 - 1, -(event.offsetY / state.size.height) * 2 + 1)
       state.raycaster.setFromCamera(state.pointer, state.camera)
@@ -184,7 +184,7 @@ export const MeshPortalMaterial = /* @__PURE__ */ React.forwardRef(
         ref={ref as any}
         blur={blur}
         blend={0}
-        resolution={[size.width * viewport.dpr, size.height * viewport.dpr]}
+        resolution={[size.width * dpr, size.height * dpr]}
         attach="material"
         {...props}
       >
@@ -270,14 +270,16 @@ function ManagePortalScene({
   }, [])
 
   useFrame((state) => {
-    let parent = (material?.current as any)?.__r3f.parent
+    const parent = (material?.current as any)?.__r3f.parent
     if (parent) {
       // Move portal contents along with the parent if worldUnits is true
       if (!worldUnits) {
         // If the portal renders exclusively the original scene needs to be updated
         if (priority && material.current?.blend === 1) parent.updateWorldMatrix(true, false)
         scene.matrixWorld.copy(parent.matrixWorld)
-      } else scene.matrixWorld.identity()
+      } else {
+        scene.matrixWorld.identity()
+      }
 
       // This bit is only necessary if the portal is blended, now it has a render-priority
       // and will take over the render loop
@@ -303,41 +305,42 @@ function ManagePortalScene({
 }
 
 const makeSDFGenerator = (clientWidth, clientHeight, renderer) => {
-  let finalTarget = new THREE.WebGLRenderTarget(clientWidth, clientHeight, {
+  const finalTarget = new THREE.WebGLRenderTarget(clientWidth, clientHeight, {
     minFilter: THREE.LinearMipmapLinearFilter,
     magFilter: THREE.LinearFilter,
     type: THREE.FloatType,
     format: THREE.RedFormat,
     generateMipmaps: true,
   })
-  let outsideRenderTarget = new THREE.WebGLRenderTarget(clientWidth, clientHeight, {
+  const outsideRenderTarget = new THREE.WebGLRenderTarget(clientWidth, clientHeight, {
     minFilter: THREE.NearestFilter,
     magFilter: THREE.NearestFilter,
   })
-  let insideRenderTarget = new THREE.WebGLRenderTarget(clientWidth, clientHeight, {
+  const insideRenderTarget = new THREE.WebGLRenderTarget(clientWidth, clientHeight, {
     minFilter: THREE.NearestFilter,
     magFilter: THREE.NearestFilter,
   })
-  let outsideRenderTarget2 = new THREE.WebGLRenderTarget(clientWidth, clientHeight, {
+  const outsideRenderTarget2 = new THREE.WebGLRenderTarget(clientWidth, clientHeight, {
     minFilter: THREE.NearestFilter,
     magFilter: THREE.NearestFilter,
   })
-  let insideRenderTarget2 = new THREE.WebGLRenderTarget(clientWidth, clientHeight, {
+  const insideRenderTarget2 = new THREE.WebGLRenderTarget(clientWidth, clientHeight, {
     minFilter: THREE.NearestFilter,
     magFilter: THREE.NearestFilter,
   })
-  let outsideRenderTargetFinal = new THREE.WebGLRenderTarget(clientWidth, clientHeight, {
-    minFilter: THREE.NearestFilter,
-    magFilter: THREE.NearestFilter,
-    type: THREE.FloatType,
-    format: THREE.RedFormat,
-  })
-  let insideRenderTargetFinal = new THREE.WebGLRenderTarget(clientWidth, clientHeight, {
+  const outsideRenderTargetFinal = new THREE.WebGLRenderTarget(clientWidth, clientHeight, {
     minFilter: THREE.NearestFilter,
     magFilter: THREE.NearestFilter,
     type: THREE.FloatType,
     format: THREE.RedFormat,
   })
+  const insideRenderTargetFinal = new THREE.WebGLRenderTarget(clientWidth, clientHeight, {
+    minFilter: THREE.NearestFilter,
+    magFilter: THREE.NearestFilter,
+    type: THREE.FloatType,
+    format: THREE.RedFormat,
+  })
+
   const uvRender = new FullScreenQuad(
     new THREE.ShaderMaterial({
       uniforms: { tex: { value: null } },
@@ -468,7 +471,7 @@ const makeSDFGenerator = (clientWidth, clientHeight, renderer) => {
   )
 
   return (image: THREE.Texture) => {
-    let ft = finalTarget
+    const ft = finalTarget
     image.minFilter = THREE.NearestFilter
     image.magFilter = THREE.NearestFilter
     uvRender.material.uniforms.tex.value = image

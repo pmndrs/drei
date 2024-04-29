@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { extend, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
+import { extend, ReactThreeFiber, ThreeElements, useFrame, useThree } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
 import { DiscardMaterial } from '../materials/DiscardMaterial'
 import { ForwardRefComponent } from '../helpers/ts-utils'
@@ -65,11 +65,9 @@ type SoftShadowMaterialProps = {
   blend?: number
 }
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      softShadowMaterial: JSX.IntrinsicElements['shaderMaterial'] & SoftShadowMaterialProps
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    softShadowMaterial: ThreeElements['shaderMaterial'] & SoftShadowMaterialProps
   }
 }
 
@@ -105,7 +103,7 @@ const SoftShadowMaterial = /* @__PURE__ */ shaderMaterial(
 )
 
 export const AccumulativeShadows: ForwardRefComponent<
-  JSX.IntrinsicElements['group'] & AccumulativeShadowsProps,
+  ThreeElements['group'] & AccumulativeShadowsProps,
   AccumulativeContext
 > = /* @__PURE__ */ React.forwardRef(
   (
@@ -123,7 +121,7 @@ export const AccumulativeShadows: ForwardRefComponent<
       resolution = 1024,
       toneMapped = true,
       ...props
-    }: JSX.IntrinsicElements['group'] & AccumulativeShadowsProps,
+    }: ThreeElements['group'] & AccumulativeShadowsProps,
     forwardRef: React.ForwardedRef<AccumulativeContext>
   ) => {
     extend({ SoftShadowMaterial })
@@ -254,7 +252,7 @@ export type RandomizedLightProps = {
 }
 
 export const RandomizedLight: ForwardRefComponent<
-  JSX.IntrinsicElements['group'] & RandomizedLightProps,
+  ThreeElements['group'] & RandomizedLightProps,
   AccumulativeLightContext
 > = /* @__PURE__ */ React.forwardRef(
   (
@@ -265,14 +263,13 @@ export const RandomizedLight: ForwardRefComponent<
       size = 5,
       near = 0.5,
       far = 500,
-      frames = 1,
       position = [0, 0, 0],
       radius = 1,
       amount = 8,
       intensity = version >= 155 ? Math.PI : 1,
       ambient = 0.5,
       ...props
-    }: JSX.IntrinsicElements['group'] & RandomizedLightProps,
+    }: ThreeElements['group'] & RandomizedLightProps,
     forwardRef: React.ForwardedRef<AccumulativeLightContext>
   ) => {
     const gLights = React.useRef<THREE.Group>(null!)
@@ -291,8 +288,8 @@ export const RandomizedLight: ForwardRefComponent<
               position[2] + THREE.MathUtils.randFloatSpread(radius)
             )
           } else {
-            let lambda = Math.acos(2 * Math.random() - 1) - Math.PI / 2.0
-            let phi = 2 * Math.PI * Math.random()
+            const lambda = Math.acos(2 * Math.random() - 1) - Math.PI / 2.0
+            const phi = 2 * Math.PI * Math.random()
             light.position.set(
               Math.cos(lambda) * Math.cos(phi) * length,
               Math.abs(Math.cos(lambda) * Math.sin(phi) * length),

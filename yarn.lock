@@ -2638,19 +2638,19 @@
   resolved "https://registry.yarnpkg.com/@react-spring/types/-/types-9.6.1.tgz#913d3a68c5cbc1124fdb18eff919432f7b6abdde"
   integrity sha512-POu8Mk0hIU3lRXB3bGIGe4VHIwwDsQyoD1F394OK7STTiX9w4dG3cTLljjYswkQN+hDSHRrj4O36kuVa7KPU8Q==
 
-"@react-three/fiber@npm:@nicetouch/react-three-fiber@^9.0.0-alpha.2--nt.9.35":
-  version "9.0.0-alpha.2--nt.9.35"
-  resolved "https://registry.yarnpkg.com/@nicetouch/react-three-fiber/-/react-three-fiber-9.0.0-alpha.2--nt.9.35.tgz#c253295377f4f988b64a98596726f6793d925e6c"
-  integrity sha512-m9edgBeJwJZIrHyKCReexC3sKv6D93TAtBAsnov7JPjtVjcvxSBVoaAxyL6KOWpu5d7F9xAQtWXYronT6ciHAA==
+"@react-three/fiber@^9.0.0-alpha.4":
+  version "9.0.0-alpha.4"
+  resolved "https://registry.yarnpkg.com/@react-three/fiber/-/fiber-9.0.0-alpha.4.tgz#1b364c328f7b1f1aa49dd5c9722fce27c5d64b7b"
+  integrity sha512-9yR36gDu0pMNERLaNmigSJQ3wShz0T9USMu+lGkYycfpRlnYVZylZcnrlV1VbsVKF6gLUjyTHG198y/hw4Axyg==
   dependencies:
     "@babel/runtime" "^7.17.8"
-    "@types/react-reconciler" "^0.26.7"
+    "@types/react-reconciler" "^0.28.8"
     base64-js "^1.5.1"
     buffer "^6.0.3"
-    its-fine "^1.0.6"
-    react-reconciler "^0.27.0"
+    its-fine "^1.2.5"
+    react-reconciler "0.31.0-beta-94eed63c49-20240425"
     react-use-measure "^2.1.1"
-    scheduler "^0.21.0"
+    scheduler "0.25.0-beta-94eed63c49-20240425"
     suspend-react "^0.1.3"
     zustand "^4.1.2"
 
@@ -3907,17 +3907,17 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-reconciler@^0.26.7":
-  version "0.26.7"
-  resolved "https://registry.yarnpkg.com/@types/react-reconciler/-/react-reconciler-0.26.7.tgz#0c4643f30821ae057e401b0d9037e03e8e9b2a36"
-  integrity sha512-mBDYl8x+oyPX/VBb3E638N0B7xG+SPk/EAMcVPeexqus/5aTpTphQi0curhhshOqRrc9t6OPoJfEUkbymse/lQ==
-  dependencies:
-    "@types/react" "*"
-
 "@types/react-reconciler@^0.28.0":
   version "0.28.4"
   resolved "https://registry.yarnpkg.com/@types/react-reconciler/-/react-reconciler-0.28.4.tgz#c2c06f6d42f055972290eecebb87b10d0ac66e0e"
   integrity sha512-Xd55E2aLI9Q/ikDQEmfRzIwYJs4oO0h9ZHA3FZDakzt1WR6JMZcpqtCZlF97I72KVjoY4rHXU5TfvkRDOyr/rg==
+  dependencies:
+    "@types/react" "*"
+
+"@types/react-reconciler@^0.28.8":
+  version "0.28.8"
+  resolved "https://registry.yarnpkg.com/@types/react-reconciler/-/react-reconciler-0.28.8.tgz#e51710572bcccf214306833c2438575d310b3e98"
+  integrity sha512-SN9c4kxXZonFhbX4hJrZy37yw9e7EIxcpHCxQv5JUS18wDE5ovkQKlqQEkufdJCCMfuI9BnjUJvhYeJ9x5Ra7g==
   dependencies:
     "@types/react" "*"
 
@@ -8631,10 +8631,10 @@ iterator.prototype@^1.1.2:
     reflect.getprototypeof "^1.0.4"
     set-function-name "^2.0.1"
 
-its-fine@^1.0.6:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/its-fine/-/its-fine-1.1.1.tgz#e74b93fddd487441f978a50f64f0f5af4d2fc38e"
-  integrity sha512-v1Ia1xl20KbuSGlwoaGsW0oxsw8Be+TrXweidxD9oT/1lAh6O3K3/GIM95Tt6WCiv6W+h2M7RB1TwdoAjQyyKw==
+its-fine@^1.2.5:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/its-fine/-/its-fine-1.2.5.tgz#5466c287f86a0a73e772c8d8d515626c97195dc9"
+  integrity sha512-fXtDA0X0t0eBYAGLVM5YsgJGsJ5jEmqZEPrGbzdf5awjv0xE7nqv3TVnvtUF060Tkes15DbDAKW/I48vsb6SyA==
   dependencies:
     "@types/react-reconciler" "^0.28.0"
 
@@ -11499,13 +11499,12 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-reconciler@^0.27.0:
-  version "0.27.0"
-  resolved "https://registry.yarnpkg.com/react-reconciler/-/react-reconciler-0.27.0.tgz#360124fdf2d76447c7491ee5f0e04503ed9acf5b"
-  integrity sha512-HmMDKciQjYmBRGuuhIaKA1ba/7a+UsM5FzOZsMO2JYHt9Jh8reCb7j1eDC95NOyUlKM9KRyvdx0flBuDvYSBoA==
+react-reconciler@0.31.0-beta-94eed63c49-20240425:
+  version "0.31.0-beta-94eed63c49-20240425"
+  resolved "https://registry.yarnpkg.com/react-reconciler/-/react-reconciler-0.31.0-beta-94eed63c49-20240425.tgz#c2d469ab0f933d82150ca871b8b2daae001fd0d7"
+  integrity sha512-1ffTu3lmFEjdSlHxGjb7ztGDdXtbhKSka8cTRB8/Cj99536qvLpohOfpEsdzkBo1x3I31Q4h+C8g/fZ54MZBxA==
   dependencies:
-    loose-envify "^1.1.0"
-    scheduler "^0.21.0"
+    scheduler "0.25.0-beta-94eed63c49-20240425"
 
 react-refresh@^0.14.0:
   version "0.14.0"
@@ -12092,12 +12091,10 @@ safe-regex@^1.1.0:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-scheduler@^0.21.0:
-  version "0.21.0"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.21.0.tgz#6fd2532ff5a6d877b6edb12f00d8ab7e8f308820"
-  integrity sha512-1r87x5fz9MXqswA2ERLo0EbOAU74DpIUO090gIasYTqlVoJeMcl+Z1Rg7WHz+qtPujhS/hGIt9kxZOYBV3faRQ==
-  dependencies:
-    loose-envify "^1.1.0"
+scheduler@0.25.0-beta-94eed63c49-20240425:
+  version "0.25.0-beta-94eed63c49-20240425"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.25.0-beta-94eed63c49-20240425.tgz#db261000b28fa56d65fff2e9c17eb7bd094a669a"
+  integrity sha512-U8hoOV7uut5E8cMvRSMikEBBqLXfv2BpdxUsG45euaOfnqEgFrCdLLh6ydM+YBJ36+28olXMNmK2PFFzeg4UdQ==
 
 scheduler@^0.23.0:
   version "0.23.0"

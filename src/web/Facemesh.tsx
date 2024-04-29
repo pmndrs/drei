@@ -1,7 +1,7 @@
 /* eslint react-hooks/exhaustive-deps: 1 */
 import * as React from 'react'
 import * as THREE from 'three'
-import { useThree } from '@react-three/fiber'
+import { ThreeElements, useThree } from '@react-three/fiber'
 
 import { Line } from '../core/Line'
 
@@ -40,7 +40,7 @@ export type FacemeshProps = {
   eyesAsOrigin?: boolean
   /** debug mode, default: false */
   debug?: boolean
-} & Omit<JSX.IntrinsicElements['group'], 'ref'>
+} & Omit<ThreeElements['group'], 'ref'>
 
 export type FacemeshApi = {
   meshRef: React.RefObject<THREE.Mesh>

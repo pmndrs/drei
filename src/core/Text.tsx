@@ -1,9 +1,9 @@
 import * as React from 'react'
-import { ReactThreeFiber, useThree } from '@react-three/fiber'
+import { ReactThreeFiber, ThreeElements, useThree } from '@react-three/fiber'
 import { suspend } from 'suspend-react'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
-type Props = JSX.IntrinsicElements['mesh'] & {
+type Props = ThreeElements['mesh'] & {
   children: React.ReactNode
   characters?: string
   color?: ReactThreeFiber.Color

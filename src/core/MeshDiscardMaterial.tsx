@@ -4,17 +4,15 @@ import { extend, ThreeElements } from '@react-three/fiber'
 import { DiscardMaterial as DiscardMaterialImpl } from '../materials/DiscardMaterial'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      discardMaterialImpl: ThreeElements['shaderMaterial']
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    discardMaterialImpl: ThreeElements['shaderMaterial']
   }
 }
 
-export const MeshDiscardMaterial: ForwardRefComponent<JSX.IntrinsicElements['shaderMaterial'], ShaderMaterial> =
+export const MeshDiscardMaterial: ForwardRefComponent<ThreeElements['shaderMaterial'], ShaderMaterial> =
   /* @__PURE__ */ React.forwardRef(
-    (props: JSX.IntrinsicElements['shaderMaterial'], fref: React.ForwardedRef<ShaderMaterial>) => {
+    (props: ThreeElements['shaderMaterial'], fref: React.ForwardedRef<ShaderMaterial>) => {
       extend({ DiscardMaterialImpl })
       return <discardMaterialImpl ref={fref} {...props} />
     }

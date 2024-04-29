@@ -5,10 +5,10 @@
 
 import * as THREE from 'three'
 import * as React from 'react'
-import { useFrame, useThree } from '@react-three/fiber'
+import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
 import { RenderCubeTexture, RenderCubeTextureApi } from './RenderCubeTexture'
 
-export type FisheyeProps = JSX.IntrinsicElements['mesh'] & {
+export type FisheyeProps = ThreeElements['mesh'] & {
   /** Zoom factor, 0..1, 0 */
   zoom?: number
   /** Number of segments, 64 */
@@ -55,7 +55,7 @@ export function Fisheye({
   const sph = new THREE.Sphere(new THREE.Vector3(), radius)
   const normalMatrix = new THREE.Matrix3()
 
-  const compute = React.useCallback((event, state, prev) => {
+  const compute = React.useCallback((event, state) => {
     // Raycast from the render camera to the sphere and get the surface normal
     // of the point hit in world space of the sphere scene
     // We have to set the raycaster using the orthocam and pointer

@@ -1,13 +1,11 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { ThreeElement, extend, useFrame } from '@react-three/fiber'
+import { ThreeElement, ThreeElements, extend, useFrame } from '@react-three/fiber'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      positionPoint: ThreeElement<typeof PositionPoint>
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    positionPoint: ThreeElement<typeof PositionPoint>
   }
 }
 
@@ -16,7 +14,7 @@ type Api = {
   subscribe: (ref) => void
 }
 
-type PointsInstancesProps = JSX.IntrinsicElements['points'] & {
+type PointsInstancesProps = ThreeElements['points'] & {
   range?: number
   limit?: number
 }
@@ -30,7 +28,7 @@ export class PositionPoint extends THREE.Group {
   size: number
   color: THREE.Color
   instance: React.MutableRefObject<THREE.Points | undefined>
-  instanceKey: React.MutableRefObject<JSX.IntrinsicElements['positionPoint'] | undefined>
+  instanceKey: React.MutableRefObject<ThreeElements['positionPoint'] | undefined>
   constructor() {
     super()
     this.size = 0
@@ -167,8 +165,8 @@ const PointsInstances: ForwardRefComponent<PointsInstancesProps, THREE.Points> =
   )
 })
 
-export const Point: ForwardRefComponent<JSX.IntrinsicElements['positionPoint'], PositionPoint> =
-  /* @__PURE__ */ React.forwardRef(({ children, ...props }: JSX.IntrinsicElements['positionPoint'], ref) => {
+export const Point: ForwardRefComponent<ThreeElements['positionPoint'], PositionPoint> =
+  /* @__PURE__ */ React.forwardRef(({ children, ...props }: ThreeElements['positionPoint'], ref) => {
     React.useMemo(() => extend({ PositionPoint }), [])
     const group = React.useRef<PositionPoint>(null!)
     React.useImperativeHandle(ref, () => group.current, [])
@@ -184,7 +182,7 @@ export const Point: ForwardRefComponent<JSX.IntrinsicElements['positionPoint'], 
 /**
  * Buffer implementation, relies on complete buffers of the correct number, leaves it to the user to update them
  */
-type PointsBuffersProps = JSX.IntrinsicElements['points'] & {
+type PointsBuffersProps = ThreeElements['points'] & {
   // a buffer containing all points position
   positions: Float32Array
   colors?: Float32Array

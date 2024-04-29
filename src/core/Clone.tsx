@@ -57,7 +57,7 @@ function createSpread(
     inject,
     castShadow,
     receiveShadow,
-  }: Omit<JSX.IntrinsicElements['group'], 'children'> & Partial<CloneProps>
+  }: Omit<ThreeElements['group'], 'children'> & Partial<CloneProps>
 ) {
   let spread: Record<(typeof keys)[number], any> = {}
   for (const key of keys) {
@@ -81,7 +81,7 @@ function createSpread(
   return spread
 }
 
-export const Clone: ForwardRefComponent<Omit<JSX.IntrinsicElements['group'], 'children'> & CloneProps, THREE.Group> =
+export const Clone: ForwardRefComponent<Omit<ThreeElements['group'], 'children'> & CloneProps, THREE.Group> =
   /* @__PURE__ */ React.forwardRef(
     (
       {
@@ -94,7 +94,7 @@ export const Clone: ForwardRefComponent<Omit<JSX.IntrinsicElements['group'], 'ch
         inject,
         keys,
         ...props
-      }: Omit<JSX.IntrinsicElements['group'], 'children'> & CloneProps,
+      }: Omit<ThreeElements['group'], 'children'> & CloneProps,
       forwardRef: React.Ref<THREE.Group>
     ) => {
       const config = { keys, deep, inject, castShadow, receiveShadow }

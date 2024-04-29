@@ -1,7 +1,8 @@
 import * as THREE from 'three'
 import * as React from 'react'
+import { ThreeElements } from '@react-three/fiber'
 
-export type ResizeProps = JSX.IntrinsicElements['group'] & {
+export type ResizeProps = ThreeElements['group'] & {
   /** Whether to fit into width (x axis), undefined */
   width?: boolean
   /** Whether to fit into height (y axis), undefined */
@@ -22,7 +23,7 @@ export const Resize = /* @__PURE__ */ React.forwardRef<THREE.Group, ResizeProps>
 
     React.useLayoutEffect(() => {
       outer.current.matrixWorld.identity()
-      let box = box3 || new THREE.Box3().setFromObject(inner.current, precise)
+      const box = box3 || new THREE.Box3().setFromObject(inner.current, precise)
       const w = box.max.x - box.min.x
       const h = box.max.y - box.min.y
       const d = box.max.z - box.min.z

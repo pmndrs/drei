@@ -39,9 +39,9 @@ export function useFBO(
   settings?: FBOSettings
 ): THREE.WebGLRenderTarget {
   const size = useThree((state) => state.size)
-  const viewport = useThree((state) => state.viewport)
-  const _width = typeof width === 'number' ? width : size.width * viewport.dpr
-  const _height = typeof height === 'number' ? height : size.height * viewport.dpr
+  const dpr = useThree((state) => state.dpr)
+  const _width = typeof width === 'number' ? width : size.width * dpr
+  const _height = typeof height === 'number' ? height : size.height * dpr
   const _settings = (typeof width === 'number' ? settings : (width as FBOSettings)) || {}
   const { samples = 0, depth, ...targetSettings } = _settings
 

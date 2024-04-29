@@ -1,12 +1,12 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { SelectionBox } from 'three-stdlib'
-import { useThree } from '@react-three/fiber'
+import { ThreeElements, useThree } from '@react-three/fiber'
 import shallow from 'zustand/shallow'
 
 const context = /* @__PURE__ */ React.createContext<THREE.Object3D[]>([])
 
-type Props = JSX.IntrinsicElements['group'] & {
+type Props = ThreeElements['group'] & {
   /** Allow multi select, default: false */
   multiple?: boolean
   /** Allow box select, default: false */
@@ -55,7 +55,7 @@ export function Select({
     e.stopPropagation()
     dispatch({ object: customFilter([e.object])[0], shift: multiple && e.shiftKey })
   }, [])
-  const onPointerMissed = React.useCallback((e) => !hovered && dispatch({}), [hovered])
+  const onPointerMissed = React.useCallback(() => !hovered && dispatch({}), [hovered])
 
   const ref = React.useRef<THREE.Group>(null!)
   React.useEffect(() => {
@@ -140,7 +140,7 @@ export function Select({
       }
     }
 
-    function pointerUp(event) {
+    function pointerUp() {
       if (isDown) onSelectOver()
     }
 

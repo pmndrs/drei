@@ -1,8 +1,9 @@
 import * as React from 'react'
 import { Mesh, Color, DoubleSide, type PlaneGeometry, type MeshBasicMaterial } from 'three'
 import { ForwardRefComponent } from '../helpers/ts-utils'
+import { ThreeElements } from '@react-three/fiber'
 
-type Props = JSX.IntrinsicElements['mesh'] & {
+type Props = ThreeElements['mesh'] & {
   colorStop?: number
   fog?: boolean
   color?: Color | number | string

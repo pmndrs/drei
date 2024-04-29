@@ -1,8 +1,7 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
-import { context as fiberContext, RootState, useFrame, useThree } from '@react-three/fiber'
-import { DomEvent } from '@react-three/fiber/dist/declarations/src/core/events'
+import { DomEvent, context as fiberContext, RootState, useFrame, useThree } from '@react-three/fiber'
 import { easing } from 'maath'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
@@ -214,7 +213,7 @@ const ScrollCanvas = /* @__PURE__ */ React.forwardRef(
     const group = React.useRef<THREE.Group>(null!)
     React.useImperativeHandle(ref, () => group.current, [])
     const state = useScroll()
-    const { width, height } = useThree((state) => state.viewport)
+    const { width, height } = useThree((state) => state.size)
     useFrame(() => {
       group.current.position.x = state.horizontal ? -width * (state.pages - 1) * state.offset : 0
       group.current.position.y = state.horizontal ? 0 : height * (state.pages - 1) * state.offset

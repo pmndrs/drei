@@ -4,13 +4,9 @@ import { ForwardRefComponent } from '../helpers/ts-utils'
 import { version } from '../helpers/constants'
 import { ThreeElements } from '@react-three/fiber'
 
-type PointMaterialType = JSX.IntrinsicElements['pointsMaterial']
-
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      pointMaterialImpl: PointMaterialType
-    }
+declare module '@react-three/fiber' {
+  interface IntrinsicElements {
+    pointMaterialImpl: ThreeElements['pointsMaterial']
   }
 }
 

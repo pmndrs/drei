@@ -1,8 +1,14 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { extend, useFrame, ReactThreeFiber, ThreeElement } from '@react-three/fiber'
+import { extend, useFrame, ReactThreeFiber, ThreeElement, ThreeElements } from '@react-three/fiber'
 import { Line2, LineSegmentsGeometry, LineMaterial, LineMaterialParameters } from 'three-stdlib'
 import { ForwardRefComponent } from '../helpers/ts-utils'
+
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    segmentObject: ThreeElement<typeof SegmentObject>
+  }
+}
 
 type SegmentsProps = LineMaterialParameters & {
   limit?: number
@@ -15,7 +21,7 @@ type Api = {
 }
 
 type SegmentRef = React.RefObject<SegmentObject>
-type SegmentProps = Omit<JSX.IntrinsicElements['segmentObject'], 'start' | 'end' | 'color'> & {
+type SegmentProps = Omit<ThreeElements['segmentObject'], 'start' | 'end' | 'color'> & {
   start: ReactThreeFiber.Vector3
   end: ReactThreeFiber.Vector3
   color?: ReactThreeFiber.Color
@@ -90,14 +96,6 @@ const Segments: ForwardRefComponent<SegmentsProps, Line2> = /* @__PURE__ */ Reac
     )
   }
 )
-
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      segmentObject: ThreeElement<typeof SegmentObject>
-    }
-  }
-}
 
 export class SegmentObject {
   color: THREE.Color

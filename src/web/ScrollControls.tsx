@@ -253,14 +253,19 @@ const ScrollHtml: ForwardRefComponent<{ children?: React.ReactNode; style?: Reac
     }
   )
 
-type ScrollProps =
-  | { children?: React.ReactNode } & (
-      | {
-          html?: false
-          style?: never
-        }
-      | { html: true; style?: React.CSSProperties }
-    )
+interface ScrollPropsWithFalseHtml {
+  children?: React.ReactNode
+  html?: false
+  style?: never
+}
+
+interface ScrollPropsWithTrueHtml {
+  children?: React.ReactNode
+  html: true
+  style?: React.CSSProperties
+}
+
+type ScrollProps = ScrollPropsWithFalseHtml | ScrollPropsWithTrueHtml
 
 export const Scroll: ForwardRefComponent<ScrollProps, THREE.Group & HTMLDivElement> = /* @__PURE__ */ React.forwardRef(
   ({ html, ...props }: ScrollProps, ref) => {

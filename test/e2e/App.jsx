@@ -24,9 +24,7 @@ function Scene() {
       <Box>
         <meshStandardMaterial />
       </Box>
-
       <Environment preset="city" />
-
       <CameraControls />
     </>
   )

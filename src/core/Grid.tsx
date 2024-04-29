@@ -32,6 +32,8 @@ export type GridMaterialType = {
   fadeDistance?: number
   /** Fade strength, default: 1 */
   fadeStrength?: number
+  /** Fade from camera (1) or origin (0), or somewhere in between, default: camera */
+  fadeFrom?: number
   /** Material side, default: THREE.BackSide */
   side?: THREE.Side
 }
@@ -53,6 +55,7 @@ const GridMaterial = /* @__PURE__ */ shaderMaterial(
     sectionSize: 1,
     fadeDistance: 100,
     fadeStrength: 1,
+    fadeFrom: 1,
     cellThickness: 0.5,
     sectionThickness: 1,
     cellColor: /* @__PURE__ */ new THREE.Color(),
@@ -96,6 +99,7 @@ const GridMaterial = /* @__PURE__ */ shaderMaterial(
     uniform vec3 sectionColor;
     uniform float fadeDistance;
     uniform float fadeStrength;
+    uniform float fadeFrom;
     uniform float cellThickness;
     uniform float sectionThickness;
 
@@ -110,7 +114,8 @@ const GridMaterial = /* @__PURE__ */ shaderMaterial(
       float g1 = getGrid(cellSize, cellThickness);
       float g2 = getGrid(sectionSize, sectionThickness);
 
-      float dist = distance(worldCamProjPosition, worldPosition.xyz);
+      vec3 from = worldCamProjPosition*vec3(fadeFrom);
+      float dist = distance(from, worldPosition.xyz);
       float d = 1.0 - min(dist / fadeDistance, 1.0);
       vec3 color = mix(cellColor, sectionColor, min(1.0, sectionThickness * g2));
 
@@ -137,6 +142,7 @@ export const Grid: ForwardRefComponent<Omit<ThreeElements['mesh'], 'args'> & Gri
         infiniteGrid = false,
         fadeDistance = 100,
         fadeStrength = 1,
+        fadeFrom = 1,
         cellThickness = 0.5,
         sectionThickness = 1,
         side = THREE.BackSide,
@@ -163,7 +169,7 @@ export const Grid: ForwardRefComponent<Omit<ThreeElements['mesh'], 'args'> & Gri
       })
 
       const uniforms1 = { cellSize, sectionSize, cellColor, sectionColor, cellThickness, sectionThickness }
-      const uniforms2 = { fadeDistance, fadeStrength, infiniteGrid, followCamera }
+      const uniforms2 = { fadeDistance, fadeStrength, fadeFrom, infiniteGrid, followCamera }
 
       return (
         <mesh ref={ref} frustumCulled={false} {...props}>

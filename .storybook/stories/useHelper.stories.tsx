@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { type ElementRef } from 'react'
 import { BoxHelper, CameraHelper } from 'three'
 import { VertexNormalsHelper } from 'three-stdlib'
 
@@ -27,7 +28,7 @@ type StoryProps = {
 }
 
 const Scene: React.FC<StoryProps> = ({ showHelper }) => {
-  const mesh = React.useRef()
+  const mesh = React.useRef<ElementRef<typeof Sphere>>(null)
   useHelper(showHelper && mesh, BoxHelper, 'royalblue')
   useHelper(showHelper && mesh, VertexNormalsHelper, 1, 0xff0000)
 
@@ -42,7 +43,7 @@ export const DefaultStory = (args: StoryProps) => <Scene {...args} />
 DefaultStory.storyName = 'Default'
 
 const CameraScene: React.FC<StoryProps> = ({ showHelper }) => {
-  const camera = React.useRef<THREE.PerspectiveCamera>()
+  const camera = React.useRef<THREE.PerspectiveCamera>(null)
   useHelper(showHelper && camera, CameraHelper)
 
   useFrame(({ clock }) => {

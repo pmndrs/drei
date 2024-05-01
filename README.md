@@ -1118,6 +1118,25 @@ useHelper(condition && mesh, BoxHelper, 'red') // you can pass false instead of 
 <mesh ref={mesh} ... />
 ```
 
+<details>
+
+  @drcmda [said](https://discord.com/channels/740090768164651008/741751532592038022/1016471308416065586):
+
+  > drei/useHelper makes this a bit easier, because otherwise it would be:
+  >
+  > ```tsx
+  > const [light, set] = useState()
+  > 
+  > return (
+  >   <>
+  >     <pointLight ref={set} />
+  >     {light && <pointLightHelper args={[light]} />
+  > ```
+  > 
+  > which sucks
+
+</details>
+
 #### Helper
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/gizmos-helper--default-story)

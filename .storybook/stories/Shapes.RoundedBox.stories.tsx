@@ -21,7 +21,7 @@ function RoundedBoxScene() {
       ref={ref}
       args={[number('width', 25), number('height', 25), number('depth', 25)]}
       radius={number('radius', 1)}
-      smoothness={number('smoothness', 5)}
+      segments={number('segments', 5)}
     >
       <meshPhongMaterial color="#f3f3f3" wireframe />
     </RoundedBox>
@@ -41,7 +41,7 @@ function RoundedBoxScene2() {
         ref={ref}
         args={[number('width', 25), number('height', 25), number('depth', 25)]}
         radius={number('radius', 8)}
-        smoothness={number('smoothness', 5)}
+        segments={number('segments', 5)}
       >
         <meshPhongMaterial color="#f3f3f3" />
       </RoundedBox>

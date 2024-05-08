@@ -53,7 +53,7 @@ function VolumetricMesh({
   const mesh = React.useRef<Mesh>(null!)
   const size = useThree((state) => state.size)
   const camera = useThree((state) => state.camera)
-  const dpr = useThree((state) => state.dpr)
+  const dpr = useThree((state) => state.viewport.dpr)
   const [material] = React.useState(() => new SpotLightMaterial())
   const [vec] = React.useState(() => new Vector3())
 

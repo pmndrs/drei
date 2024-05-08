@@ -47,8 +47,8 @@ export const RenderTexture: ForwardRefComponent<Props, THREE.Texture> = /* @__PU
     }: Props,
     forwardRef
   ) => {
-    const { size, dpr } = useThree()
-    const fbo = useFBO((width || size.width) * dpr, (height || size.height) * dpr, {
+    const { size, viewport } = useThree()
+    const fbo = useFBO((width || size.width) * viewport.dpr, (height || size.height) * viewport.dpr, {
       samples,
       stencilBuffer,
       depthBuffer,

@@ -106,7 +106,7 @@ export const Sparkles: ForwardRefComponent<Props & ThreeElements['points'], THRE
     ({ noise = 1, count = 100, speed = 1, opacity = 1, scale = 1, size, color, children, ...props }, forwardRef) => {
       React.useMemo(() => extend({ SparklesImplMaterial }), [])
       const ref = React.useRef<THREE.Points>(null!)
-      const dpr = useThree((state) => state.dpr)
+      const dpr = useThree((state) => state.viewport.dpr)
 
       const _scale = normalizeVector(scale)
       const positions = React.useMemo(

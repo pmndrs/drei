@@ -1,6 +1,6 @@
 {
   "name": "@nicetouch/drei",
-  "version": "10.0.0-alpha.1--nt.9.14",
+  "version": "10.0.0-alpha.1",
   "private": false,
   "description": "useful add-ons for react-three-fiber",
   "keywords": [
@@ -65,6 +65,7 @@
     "cross-env": "^7.0.3",
     "detect-gpu": "^5.0.28",
     "glsl-noise": "^0.0.0",
+    "hls.js": "1.3.5",
     "maath": "^0.10.7",
     "meshline": "^3.1.6",
     "react-composer": "^5.0.3",
@@ -77,12 +78,12 @@
     "tunnel-rat": "^0.1.2",
     "utility-types": "^3.10.0",
     "uuid": "^9.0.1",
-    "zustand": "^3.7.1",
-    "hls.js": "1.3.5"
+    "zustand": "^3.7.1"
   },
   "devDependencies": {
     "@babel/core": "^7.14.3",
     "@babel/plugin-proposal-class-properties": "^7.18.6",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.18.6",
     "@babel/plugin-transform-modules-commonjs": "^7.14.0",
     "@babel/plugin-transform-runtime": "^7.14.3",
     "@babel/preset-env": "^7.21.5",
@@ -90,7 +91,7 @@
     "@babel/preset-typescript": "^7.21.5",
     "@commitlint/cli": "^12.0.1",
     "@commitlint/config-conventional": "^12.0.1",
-    "@react-three/fiber": "^9.0.0-alpha.4",
+    "@react-three/fiber": "^9.0.0-alpha.5",
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-commonjs": "^19.0.0",
     "@rollup/plugin-json": "^4.1.0",
@@ -127,8 +128,8 @@
     "prettier": "^2.4.1",
     "pretty-quick": "^3.1.0",
     "puppeteer": "^20.7.4",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
+    "react": "19.0.0-beta-94eed63c49-20240425",
+    "react-dom": "19.0.0-beta-94eed63c49-20240425",
     "rimraf": "^3.0.2",
     "rollup": "^2.78.1",
     "rollup-plugin-glslify": "^1.3.0",
@@ -145,14 +146,18 @@
     "yarn": "^1.22.17"
   },
   "peerDependencies": {
-    "@react-three/fiber": ">=8.0",
-    "react": ">=18.0",
-    "react-dom": ">=18.0",
+    "@react-three/fiber": ">=9.0.0-alpha.5",
+    "react": ">=19.0",
+    "react-dom": ">=19.0",
     "three": ">=0.137"
   },
   "peerDependenciesMeta": {
     "react-dom": {
       "optional": true
     }
+  },
+  "overrides": {
+    "@types/react": "npm:types-react@beta",
+    "@types/react-dom": "npm:types-react-dom@beta"
   }
 }

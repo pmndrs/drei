@@ -4,7 +4,7 @@ import { useThree, useFrame } from '@react-three/fiber'
 import { useFBO } from './useFBO'
 
 function useDepthBuffer({ size = 256, frames = Infinity }: { size?: number; frames?: number } = {}) {
-  const dpr = useThree((state) => state.dpr)
+  const dpr = useThree((state) => state.viewport.dpr)
   const { width, height } = useThree((state) => state.size)
   const w = size || width * dpr
   const h = size || height * dpr

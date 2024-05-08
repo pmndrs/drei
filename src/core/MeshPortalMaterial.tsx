@@ -99,7 +99,7 @@ export const MeshPortalMaterial = /* @__PURE__ */ React.forwardRef(
     extend({ PortalMaterialImpl })
 
     const ref = React.useRef<PortalMaterialType>(null!)
-    const { scene, gl, size, dpr, setEvents } = useThree()
+    const { scene, gl, size, viewport, setEvents } = useThree()
     const maskRenderTarget = useFBO(resolution, resolution)
 
     const [priority, setPriority] = React.useState(0)
@@ -184,7 +184,7 @@ export const MeshPortalMaterial = /* @__PURE__ */ React.forwardRef(
         ref={ref as any}
         blur={blur}
         blend={0}
-        resolution={[size.width * dpr, size.height * dpr]}
+        resolution={[size.width * viewport.dpr, size.height * viewport.dpr]}
         attach="material"
         {...props}
       >

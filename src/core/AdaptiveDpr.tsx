@@ -5,8 +5,7 @@ export function AdaptiveDpr({ pixelated }: { pixelated?: boolean }) {
   const gl = useThree((state) => state.gl)
   const active = useThree((state) => state.internal.active)
   const current = useThree((state) => state.performance.current)
-  const dpr = useThree((state) => state.dpr)
-  const initialDpr = React.useMemo(() => dpr, [])
+  const initialDpr = useThree((state) => state.viewport.initialDpr)
   const setDpr = useThree((state) => state.setDpr)
 
   // Restore initial pixelratio on unmount

@@ -85,8 +85,10 @@ export function PresentationControls({
   )
   return (
     // TODO: react-spring needs to be updated for v9
+    // @ts-expect-error
     <a.group {...bind?.()} {...(spring as any)}>
       {children}
+      {/* @ts-expect-error */}
     </a.group>
   )
 }

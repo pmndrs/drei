@@ -172,7 +172,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
     }: HtmlProps,
     ref: React.Ref<HTMLDivElement>
   ) => {
-    const { gl, camera, scene, size, raycaster, events } = useThree()
+    const { gl, camera, scene, size, raycaster, events, viewport } = useThree()
 
     const [el] = React.useState(() => document.createElement(as))
     const root = React.useRef<ReactDOM.Root>()
@@ -389,9 +389,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
           const ele = el.children[0]
 
           if (ele?.clientWidth && ele?.clientHeight) {
-            // TODO: `factor` needs to be properly calculated. But how?
-            const factor = 1
-            const ratio = 1 / factor
+            const ratio = 1 / viewport.factor
             const w = ele.clientWidth * ratio
             const h = ele.clientHeight * ratio
 

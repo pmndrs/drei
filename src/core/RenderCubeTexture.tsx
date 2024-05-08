@@ -66,12 +66,12 @@ export const RenderCubeTexture: ForwardRefComponent<RenderCubeTextureProps, Rend
       },
       forwardRef
     ) => {
-      const { size, dpr } = useThree()
+      const { size, viewport } = useThree()
 
       const camera = React.useRef<THREE.CubeCamera>(null!)
       const fbo = React.useMemo(() => {
         const fbo = new THREE.WebGLCubeRenderTarget(
-          Math.max((resolution || size.width) * dpr, (resolution || size.height) * dpr),
+          Math.max((resolution || size.width) * viewport.dpr, (resolution || size.height) * viewport.dpr),
           {
             stencilBuffer,
             depthBuffer,

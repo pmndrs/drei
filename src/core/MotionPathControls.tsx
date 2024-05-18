@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import * as THREE from 'three'
 import * as React from 'react'
-import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
+import { ThreeElements, useFrame, useInstanceHandle, useThree } from '@react-three/fiber'
 import { easing, misc } from 'maath'
 
 type MotionPathProps = ThreeElements['group'] & {
@@ -113,10 +113,22 @@ export const MotionPathControls = /* @__PURE__ */ React.forwardRef<THREE.Group, 
       [focus, object]
     )
 
+    const instance = useInstanceHandle(ref)
+
     React.useLayoutEffect(() => {
       path.curves = []
-      const _curves = curves.length > 0 ? curves : ref.current?.__r3f.objects
-      for (var i = 0; i < _curves.length; i++) path.add(_curves[i])
+
+      if (curves.length) {
+        for (const curve of curves) {
+          path.add(curve)
+        }
+      } else if (instance.current) {
+        for (const child of instance.current.children) {
+          if (child instanceof THREE.Curve) {
+            path.add(child)
+          }
+        }
+      }
 
       //Smoothen curve
       if (smooth) {

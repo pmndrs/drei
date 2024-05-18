@@ -8,7 +8,7 @@
  *  - Must depreciate in favor of https://github.com/mrdoob/three.js/issues/10600 when it's ready.
  */
 
-import { useFrame } from '@react-three/fiber'
+import { useFrame, useInstanceHandle } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from 'three'
 
@@ -95,9 +95,11 @@ export function ShadowAlpha({ opacity, alphaMap }: ShadowAlphaProps) {
     }
   }, [])
 
+  const instance = useInstanceHandle(depthMaterialRef)
+
   useFrame(() => {
-    const parent = (depthMaterialRef.current as any).__r3f?.parent
-    if (parent) {
+    const parent = instance.current?.parent?.object
+    if (parent instanceof THREE.Mesh) {
       const parentMainMaterial = parent.material
       if (parentMainMaterial) {
         uShadowOpacity.current.value = opacity ?? parentMainMaterial.opacity

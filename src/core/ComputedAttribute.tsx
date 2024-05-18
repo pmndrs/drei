@@ -1,8 +1,8 @@
-import { ThreeElements } from '@react-three/fiber'
+import { type ThreeElements, type Instance, useInstanceHandle } from '@react-three/fiber'
 import * as React from 'react'
-import { BufferAttribute, BufferGeometry } from 'three'
+import { type BufferGeometry, BufferAttribute } from 'three'
 
-type Props = {
+export interface ComputeAttributeProps extends Partial<ThreeElements['bufferAttribute']> {
   compute: (geometry: BufferGeometry) => BufferAttribute
   name: string
 }
@@ -12,21 +12,19 @@ type Props = {
  * Computes the BufferAttribute by calling the `compute` function
  * and attaches the attribute to the geometry.
  */
-export const ComputedAttribute = ({
-  compute,
-  name,
-  ...props
-}: React.PropsWithChildren<Props & ThreeElements['bufferAttribute']>) => {
+export const ComputedAttribute = ({ compute, name, ...props }: React.PropsWithChildren<ComputeAttributeProps>) => {
   const [bufferAttribute] = React.useState(() => new BufferAttribute(new Float32Array(0), 1))
-  const primitive = React.useRef<BufferAttribute>(null)
+  const primitive = React.useRef<BufferAttribute>(null!)
+
+  const instance = useInstanceHandle(primitive)
 
   React.useLayoutEffect(() => {
-    if (primitive.current) {
-      // @ts-expect-error brittle
-      const parent = (primitive.current.parent as BufferGeometry) ?? primitive.current.__r3f.parent
-
-      const attr = compute(parent)
-      primitive.current.copy(attr)
+    if (instance.current) {
+      const parent: Instance<BufferGeometry> | null = instance.current.parent
+      if (parent) {
+        const attr = compute(parent.object)
+        primitive.current.copy(attr)
+      }
     }
   }, [compute])
 

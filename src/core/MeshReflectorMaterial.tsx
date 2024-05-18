@@ -12,8 +12,9 @@ import {
   UnsignedShortType,
   Texture,
   HalfFloatType,
+  Mesh,
 } from 'three'
-import { useFrame, useThree, extend, ThreeElements } from '@react-three/fiber'
+import { useFrame, useThree, extend, ThreeElements, useInstanceHandle } from '@react-three/fiber'
 
 import { BlurPass } from '../materials/BlurPass'
 import {
@@ -88,10 +89,11 @@ export const MeshReflectorMaterial: ForwardRefComponent<Props, MeshReflectorMate
       const [textureMatrix] = React.useState(() => new Matrix4())
       const [virtualCamera] = React.useState(() => new PerspectiveCamera())
 
+      const instance = useInstanceHandle(materialRef)
+
       const beforeRender = React.useCallback(() => {
-        // TODO: As of R3f 7-8 this should be __r3f.parent
-        const parent = (materialRef.current as any).parent || (materialRef.current as any)?.__r3f.parent
-        if (!parent) return
+        const parent = instance.current?.parent?.object
+        if (!(parent instanceof Mesh)) return
 
         reflectorWorldPosition.setFromMatrixPosition(parent.matrixWorld)
         cameraWorldPosition.setFromMatrixPosition(camera.matrixWorld)
@@ -210,9 +212,8 @@ export const MeshReflectorMaterial: ForwardRefComponent<Props, MeshReflectorMate
       ])
 
       useFrame(() => {
-        // TODO: As of R3f 7-8 this should be __r3f.parent
-        const parent = (materialRef.current as any).parent || (materialRef.current as any)?.__r3f.parent
-        if (!parent) return
+        const parent = instance.current?.parent?.object
+        if (!(parent instanceof Mesh)) return
 
         parent.visible = false
         const currentXrEnabled = gl.xr.enabled

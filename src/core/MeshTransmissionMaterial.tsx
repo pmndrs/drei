@@ -6,7 +6,7 @@
 
 import * as THREE from 'three'
 import * as React from 'react'
-import { ThreeElements, extend, useFrame } from '@react-three/fiber'
+import { ThreeElements, extend, useFrame, useInstanceHandle } from '@react-three/fiber'
 import { useFBO } from './useFBO'
 import { DiscardMaterial } from '../materials/DiscardMaterial'
 import { ForwardRefComponent } from '../helpers/ts-utils'
@@ -403,20 +403,21 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
     extend({ MeshTransmissionMaterial: MeshTransmissionMaterialImpl })
 
     const ref = React.useRef<ThreeElements['meshTransmissionMaterial']>(null!)
+    const instance = useInstanceHandle(ref)
     const [discardMaterial] = React.useState(() => new DiscardMaterial())
     const fboBack = useFBO(backsideResolution || resolution)
     const fboMain = useFBO(resolution)
 
-    let oldBg
-    let oldEnvMapIntensity
-    let oldTone
-    let parent
+    let oldBg: THREE.Color | THREE.Texture | THREE.CubeTexture | null = null
+    let oldEnvMapIntensity: number | undefined
+    let oldTone: THREE.ToneMapping = null!
+    let parent: THREE.Mesh<THREE.BufferGeometry, any> | null = null
     useFrame((state) => {
       ref.current.time = state.clock.getElapsedTime()
       // Render only if the buffer matches the built-in and no transmission sampler is set
       if (ref.current.buffer === fboMain.texture && !transmissionSampler) {
-        parent = (ref.current as any).__r3f.parent as THREE.Object3D
-        if (parent) {
+        parent = instance.current?.parent?.object
+        if (parent instanceof THREE.Mesh) {
           // Save defaults
           oldTone = state.gl.toneMapping
           oldBg = state.scene.background
@@ -434,22 +435,22 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
             state.gl.setRenderTarget(fboBack)
             state.gl.render(state.scene, state.camera)
             // And now prepare the material for the main render using the backside buffer
-            parent.material = ref.current
-            parent.material.buffer = fboBack.texture
-            parent.material.thickness = backsideThickness
-            parent.material.side = THREE.BackSide
-            parent.material.envMapIntensity = backsideEnvMapIntensity
+            const material = (parent.material = ref.current)
+            material.buffer = fboBack.texture
+            material.thickness = backsideThickness
+            material.side = THREE.BackSide
+            material.envMapIntensity = backsideEnvMapIntensity
           }
 
           // Render into the main buffer
           state.gl.setRenderTarget(fboMain)
           state.gl.render(state.scene, state.camera)
 
-          parent.material = ref.current
-          parent.material.thickness = thickness
-          parent.material.side = side
-          parent.material.buffer = fboMain.texture
-          parent.material.envMapIntensity = oldEnvMapIntensity
+          const material = (parent.material = ref.current)
+          material.thickness = thickness
+          material.side = side
+          material.buffer = fboMain.texture
+          material.envMapIntensity = oldEnvMapIntensity
 
           // Set old state back
           state.scene.background = oldBg

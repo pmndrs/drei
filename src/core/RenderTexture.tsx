@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { ThreeElements, createPortal, useFrame, useThree } from '@react-three/fiber'
+import { ThreeElements, createPortal, useFrame, useInstanceHandle, useThree } from '@react-three/fiber'
 import { useFBO } from './useFBO'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
@@ -56,19 +56,22 @@ export const RenderTexture: ForwardRefComponent<Props, THREE.Texture> = /* @__PU
     })
     const [vScene] = React.useState(() => new THREE.Scene())
 
+    const ref = React.useRef<THREE.Texture>(null!)
+    const instance = useInstanceHandle(ref)
+
     const uvCompute = React.useCallback((event, state, previous) => {
       // Since this is only a texture it does not have an easy way to obtain the parent, which we
       // need to transform event coordinates to local coordinates. We use r3f internals to find the
       // next Object3D.
-      let parent = (fbo.texture as any)?.__r3f.parent
+      let parent = instance.current?.parent
       while (parent && !(parent instanceof THREE.Object3D)) {
-        parent = parent.__r3f.parent
+        parent = parent.parent
       }
-      if (!parent) return false
+      if (!parent || !(parent.object instanceof THREE.Object3D)) return false
       // First we call the previous state-onion-layers compute, this is what makes it possible to nest portals
       if (!previous.raycaster.camera) previous.events.compute(event, previous, previous.previousRoot?.getState())
       // We run a quick check against the parent, if it isn't hit there's no need to raycast at all
-      const [intersection] = previous.raycaster.intersectObject(parent)
+      const [intersection] = previous.raycaster.intersectObject(parent.object)
       if (!intersection) return false
       // We take that hits uv coords, set up this layers raycaster, et voilà, we have raycasting on arbitrary surfaces
       const uv = intersection.uv
@@ -89,7 +92,7 @@ export const RenderTexture: ForwardRefComponent<Props, THREE.Texture> = /* @__PU
           vScene,
           { events: { compute: compute || uvCompute, priority: eventPriority } }
         )}
-        <primitive object={fbo.texture} {...props} />
+        <primitive ref={ref} object={fbo.texture} {...props} />
       </>
     )
   }

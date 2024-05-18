@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { useLayoutEffect, useMemo, useRef } from 'react'
-import { extend, ReactThreeFiber, useThree, useFrame, ThreeElements } from '@react-three/fiber'
+import { extend, ReactThreeFiber, useThree, useFrame, ThreeElements, useInstanceHandle } from '@react-three/fiber'
 import { MeshBVHUniformStruct, MeshBVH, SAH } from 'three-mesh-bvh'
 import { MeshRefractionMaterial as MeshRefractionMaterial_ } from '../materials/MeshRefractionMaterial'
 
@@ -64,14 +64,16 @@ export function MeshRefractionMaterial({
     return temp
   }, [aberrationStrength, fastChroma])
 
+  const instance = useInstanceHandle(material)
+
   useLayoutEffect(() => {
     // Get the geometry of this materials parent
-    const geometry = (material.current as any)?.__r3f?.parent?.geometry
+    const parent = instance.current?.parent?.object
     // Update the BVH
-    if (geometry) {
+    if (parent instanceof THREE.Mesh) {
       ;(material.current as any).bvh = new MeshBVHUniformStruct()
       ;(material.current as any).bvh.updateFrom(
-        new MeshBVH(geometry.clone().toNonIndexed(), { lazyGeneration: false, strategy: SAH })
+        new MeshBVH(parent.geometry.clone().toNonIndexed(), { lazyGeneration: false, strategy: SAH })
       )
     }
   }, [])

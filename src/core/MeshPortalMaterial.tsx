@@ -5,7 +5,15 @@
 
 import * as THREE from 'three'
 import * as React from 'react'
-import { ReactThreeFiber, ThreeElements, extend, useFrame, useThree } from '@react-three/fiber'
+import {
+  Instance,
+  ReactThreeFiber,
+  ThreeElements,
+  extend,
+  useFrame,
+  useInstanceHandle,
+  useThree,
+} from '@react-three/fiber'
 import { useIntersect } from './useIntersect'
 import { useFBO } from './useFBO'
 import { RenderTexture } from './RenderTexture'
@@ -116,10 +124,16 @@ export const MeshPortalMaterial = /* @__PURE__ */ React.forwardRef(
     const [visible, setVisible] = React.useState(true)
     // See if the parent mesh is in the camera frustum
     const parent = useIntersect(setVisible) as React.MutableRefObject<THREE.Mesh<THREE.BufferGeometry>>
+    const instance = useInstanceHandle(ref)
     React.useLayoutEffect(() => {
       // Since the ref above is not tied to a mesh directly (we're inside a material),
       // it has to be tied to the parent mesh here
-      parent.current = (ref.current as any)?.__r3f.parent
+      if (instance.current) {
+        const mesh: Instance<THREE.Mesh> | null = instance.current.parent
+        if (mesh) {
+          parent.current = mesh.object
+        }
+      }
     }, [])
 
     React.useLayoutEffect(() => {
@@ -269,14 +283,18 @@ function ManagePortalScene({
     return [quad, blend]
   }, [])
 
+  const instance = useInstanceHandle(material)
+
   useFrame((state) => {
-    const parent = (material?.current as any)?.__r3f.parent
+    if (!instance.current) return
+
+    const parent: Instance<THREE.Mesh> | null = instance.current.parent
     if (parent) {
       // Move portal contents along with the parent if worldUnits is true
       if (!worldUnits) {
         // If the portal renders exclusively the original scene needs to be updated
-        if (priority && material.current?.blend === 1) parent.updateWorldMatrix(true, false)
-        scene.matrixWorld.copy(parent.matrixWorld)
+        if (priority && material.current?.blend === 1) parent.object.updateWorldMatrix(true, false)
+        scene.matrixWorld.copy(parent.object.matrixWorld)
       } else {
         scene.matrixWorld.identity()
       }

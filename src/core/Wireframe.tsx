@@ -9,11 +9,9 @@ import {
   useWireframeUniforms,
 } from '../materials/WireframeMaterial'
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      meshWireframeMaterial: ThreeElement<typeof THREE.ShaderMaterial> & WireframeMaterialProps
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    meshWireframeMaterial: ThreeElement<typeof THREE.ShaderMaterial> & WireframeMaterialProps
   }
 }
 

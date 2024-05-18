@@ -14,14 +14,6 @@ type Props = WobbleMaterialType & {
   factor?: number
 }
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      wobbleMaterialImpl: WobbleMaterialType
-    }
-  }
-}
-
 interface Uniform<T> {
   value: T
 }

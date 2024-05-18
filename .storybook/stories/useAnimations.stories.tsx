@@ -6,6 +6,7 @@ import { withKnobs, select, number } from '@storybook/addon-knobs'
 import { Setup } from '../Setup'
 
 import { useAnimations, useGLTF, useMatcapTexture } from '../../src'
+import { ThreeElements } from '@react-three/fiber'
 
 export default {
   title: 'Abstractions/useAnimations',
@@ -51,7 +52,7 @@ function AnimationController(props: AnimationControllerProps) {
   return null
 }
 
-function YBotModel(props: JSX.IntrinsicElements['group']) {
+function YBotModel(props: ThreeElements['group']) {
   const ybotRef = React.useRef<THREE.Group>(null)
   const { nodes, animations } = useGLTF('ybot.glb') as GLTFResult
   const [matcapBody] = useMatcapTexture('293534_B2BFC5_738289_8A9AA7', 1024)
@@ -63,10 +64,10 @@ function YBotModel(props: JSX.IntrinsicElements['group']) {
         <group rotation={[Math.PI / 2, 0, 0]} scale={[0.01, 0.01, 0.01]}>
           <primitive object={nodes.mixamorigHips} />
           <skinnedMesh geometry={nodes.YB_Body.geometry} skeleton={nodes.YB_Body.skeleton}>
-            <meshMatcapMaterial matcap={matcapBody} skinning />
+            <meshMatcapMaterial matcap={matcapBody} />
           </skinnedMesh>
           <skinnedMesh geometry={nodes.YB_Joints.geometry} skeleton={nodes.YB_Joints.skeleton}>
-            <meshMatcapMaterial matcap={matcapJoints} skinning />
+            <meshMatcapMaterial matcap={matcapJoints} />
           </skinnedMesh>
         </group>
       </group>

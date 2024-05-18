@@ -6,11 +6,9 @@ import { mergeVertices, TextGeometry, TextGeometryParameters } from 'three-stdli
 import { useFont, FontData } from './useFont'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      renamedTextGeometry: ThreeElement<typeof TextGeometry>
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    renamedTextGeometry: ThreeElement<typeof TextGeometry>
   }
 }
 

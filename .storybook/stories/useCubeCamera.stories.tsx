@@ -12,14 +12,6 @@ export default {
   decorators: [(storyFn) => <Setup cameraPosition={new THREE.Vector3(0, 10, 40)}>{storyFn()}</Setup>],
 }
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      axisHelper: object
-    }
-  }
-}
-
 function Sphere({ offset = 0, ...props }) {
   const ref = React.useRef<THREE.Group>()
 

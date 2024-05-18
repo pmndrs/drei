@@ -16,11 +16,9 @@ type Props = DistortMaterialType & {
   factor?: number
 }
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      distortMaterialImpl: DistortMaterialType
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    distortMaterialImpl: DistortMaterialType
   }
 }
 

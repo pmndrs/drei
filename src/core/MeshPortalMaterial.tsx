@@ -64,11 +64,9 @@ export type PortalMaterialType = {
   map?: THREE.Texture
 } & ThreeElements['shaderMaterial']
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      portalMaterialImpl: PortalMaterialType
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    portalMaterialImpl: PortalMaterialType
   }
 }
 

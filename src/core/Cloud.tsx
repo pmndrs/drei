@@ -18,14 +18,6 @@ import { useTexture } from './useTexture'
 import { v4 } from 'uuid'
 import { setUpdateRange } from '../helpers/deprecated'
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      cloudMaterial: ThreeElements['meshLambertMaterial']
-    }
-  }
-}
-
 const CLOUD_URL = 'https://rawcdn.githack.com/pmndrs/drei-assets/9225a9f1fbd449d9411125c2f419b843d0308c9f/cloud.png'
 
 type CloudState = {
@@ -208,7 +200,7 @@ export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
             <planeGeometry args={[...imageBounds] as any}>
               <instancedBufferAttribute usage={DynamicDrawUsage} attach="attributes-opacity" args={[opacities, 1]} />
             </planeGeometry>
-            <cloudMaterial key={material.name} map={cloudTexture} transparent depthWrite={false} />
+            <meshLambertMaterial key={material.name} map={cloudTexture} transparent depthWrite={false} />
           </instancedMesh>
         </context.Provider>
       </group>

@@ -30,11 +30,9 @@ type ImageMaterialType = ThreeElements['shaderMaterial'] & {
   grayscale?: number
 }
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      imageMaterial: ImageMaterialType
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    imageMaterial: ImageMaterialType
   }
 }
 

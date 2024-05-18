@@ -52,11 +52,9 @@ export type SharedState = {
   onProgress?: (event: ProgressEvent) => void
 }
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      splatMaterial: SplatMaterialType & ThreeElements['shaderMaterial']
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    splatMaterial: SplatMaterialType & ThreeElements['shaderMaterial']
   }
 }
 

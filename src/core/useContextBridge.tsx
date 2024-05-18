@@ -15,7 +15,7 @@ export function useContextBridge(...contexts: Array<React.Context<any>>) {
            * https://github.com/DefinitelyTyped/DefinitelyTyped/issues/44572#issuecomment-625878049
            * https://github.com/microsoft/TypeScript/issues/14729
            */
-        ) as unknown as JSX.Element,
+        ) as unknown as React.JSX.Element,
     []
   )
 }

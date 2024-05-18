@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { extend } from '@react-three/fiber'
+import { ThreeElements, extend } from '@react-three/fiber'
 import { Texture } from 'three'
 
 import { withKnobs, number } from '@storybook/addon-knobs'
@@ -58,13 +58,11 @@ extend({ MyMaterial })
 type MyMaterialImpl = {
   repeats: number
   map: Texture | Texture[]
-} & JSX.IntrinsicElements['shaderMaterial']
+} & ThreeElements['shaderMaterial']
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      myMaterial: MyMaterialImpl
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    myMaterial: MyMaterialImpl
   }
 }
 

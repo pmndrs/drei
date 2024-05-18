@@ -28,11 +28,10 @@ export const MeshWobbleMaterialSt = () => <MeshWobbleMaterialScene />
 MeshWobbleMaterialSt.storyName = 'Default'
 
 function MeshWobbleMaterialRefScene() {
-  const material = React.useRef<JSX.IntrinsicElements['wobbleMaterialImpl']>(null!)
+  const material = React.useRef<React.ComponentRef<typeof MeshWobbleMaterial>>(null!)
 
   useFrame(({ clock }) => {
     material.current.factor = Math.abs(Math.sin(clock.getElapsedTime())) * 2
-    material.current.speed = Math.abs(Math.sin(clock.getElapsedTime())) * 10
   })
 
   return (

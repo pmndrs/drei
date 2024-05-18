@@ -1,22 +1,20 @@
 import React from 'react'
 import { BufferGeometry, CatmullRomCurve3, LineBasicMaterial, LineLoop, Vector3 } from 'three'
 import { FontLoader, TextGeometry, TextGeometryParameters } from 'three-stdlib'
-import { extend, useFrame, useLoader } from '@react-three/fiber'
+import { ThreeElements, extend, useFrame, useLoader } from '@react-three/fiber'
 
 import { Setup } from '../Setup'
 import { CurveModifier, CurveModifierRef } from '../../src'
 
 extend({ StdText: TextGeometry })
 
-type TextGeometryImpl = JSX.IntrinsicElements['extrudeGeometry'] & {
+type StdTextProps = Omit<ThreeElements['extrudeGeometry'], 'args'> & {
   args: [string, TextGeometryParameters]
 }
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      stdText: TextGeometryImpl
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    stdText: StdTextProps
   }
 }
 
@@ -29,7 +27,7 @@ export default {
 }
 
 function CurveModifierScene() {
-  const curveRef = React.useRef<CurveModifierRef>()
+  const curveRef = React.useRef<CurveModifierRef>(null!)
   const geomRef = React.useRef<TextGeometry>(null!)
   const font = useLoader(FontLoader, '/fonts/helvetiker_regular.typeface.json')
 
@@ -80,7 +78,7 @@ function CurveModifierScene() {
                 bevelThickness: 0.02,
                 bevelSize: 0.01,
                 bevelOffset: 0,
-                bevelSegments: 5,
+                // bevelSegments: 5,
               },
             ]}
             ref={geomRef}

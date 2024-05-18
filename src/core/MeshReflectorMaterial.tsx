@@ -39,11 +39,9 @@ type Props = ThreeElements['meshStandardMaterial'] & {
   reflectorOffset?: number
 }
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      meshReflectorMaterialImpl: MeshReflectorMaterialProps
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    meshReflectorMaterialImpl: MeshReflectorMaterialProps
   }
 }
 

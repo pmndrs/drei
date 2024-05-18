@@ -18,13 +18,11 @@ type Props = ThreeElement<typeof EffectComposer> & {
   anisotropy?: number
 }
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      effectComposer: ThreeElement<typeof EffectComposer>
-      renderPass: ThreeElement<typeof RenderPass>
-      shaderPass: ThreeElement<typeof ShaderPass>
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    effectComposer: ThreeElement<typeof EffectComposer>
+    renderPass: ThreeElement<typeof RenderPass>
+    shaderPass: ThreeElement<typeof ShaderPass>
   }
 }
 

@@ -4,7 +4,7 @@ import { useFrame } from '@react-three/fiber'
 import { withKnobs, number } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
-import { MeshDistortMaterial, Icosahedron } from '../../src'
+import { MeshDistortMaterial, Icosahedron, DistortMaterialImpl } from '../../src'
 
 export default {
   title: 'Shaders/MeshDistortMaterial',
@@ -29,7 +29,7 @@ export const MeshDistortMaterialSt = () => <MeshDistortMaterialScene />
 MeshDistortMaterialSt.storyName = 'Default'
 
 function MeshDistortMaterialRefScene() {
-  const material = React.useRef<JSX.IntrinsicElements['distortMaterialImpl']>(null!)
+  const material = React.useRef<React.ComponentRef<typeof MeshDistortMaterial>>(null!)
 
   useFrame(({ clock }) => {
     material.current.distort = Math.sin(clock.getElapsedTime())

@@ -5,11 +5,9 @@ import { extend, ReactThreeFiber, useThree, useFrame, ThreeElements, useInstance
 import { MeshBVHUniformStruct, MeshBVH, SAH } from 'three-mesh-bvh'
 import { MeshRefractionMaterial as MeshRefractionMaterial_ } from '../materials/MeshRefractionMaterial'
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      meshRefractionMaterial: typeof MeshRefractionMaterial_
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    meshRefractionMaterial: typeof MeshRefractionMaterial_
   }
 }
 

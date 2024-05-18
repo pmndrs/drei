@@ -45,7 +45,7 @@ export type ReflectorProps = Omit<ThreeElements['mesh'], 'args' | 'children'> &
       (
         Component: React.ElementType<ThreeElements['meshReflectorMaterial']>,
         ComponentProps: MeshReflectorMaterialProps
-      ): JSX.Element | null
+      ): React.JSX.Element | null
     }
   }
 

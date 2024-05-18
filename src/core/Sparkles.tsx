@@ -57,11 +57,9 @@ const SparklesImplMaterial = /* @__PURE__ */ shaderMaterial(
     }`
 )
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      sparklesImplMaterial: ThreeElement<typeof SparklesImplMaterial> & { pixelRatio?: number; time?: number }
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    sparklesImplMaterial: ThreeElement<typeof SparklesImplMaterial> & { pixelRatio?: number; time?: number }
   }
 }
 

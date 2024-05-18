@@ -66,18 +66,18 @@ type CausticsProps = ThreeElements['group'] & {
   lightSource?: [x: number, y: number, z: number] | React.MutableRefObject<THREE.Object3D>
 }
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      causticsProjectionMaterial: ThreeElements['meshNormalMaterial'] & {
-        viewMatrix?: { value: THREE.Matrix4 }
-        color?: ReactThreeFiber.Color
-        causticsTexture?: THREE.Texture
-        causticsTextureB?: THREE.Texture
-        lightProjMatrix?: THREE.Matrix4
-        lightViewMatrix?: THREE.Matrix4
-      }
-    }
+type CausticsProjectionMaterialProps = ThreeElements['meshNormalMaterial'] & {
+  viewMatrix?: { value: THREE.Matrix4 }
+  color?: ReactThreeFiber.Color
+  causticsTexture?: THREE.Texture
+  causticsTextureB?: THREE.Texture
+  lightProjMatrix?: THREE.Matrix4
+  lightViewMatrix?: THREE.Matrix4
+}
+
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    causticsProjectionMaterial: CausticsProjectionMaterialProps
   }
 }
 

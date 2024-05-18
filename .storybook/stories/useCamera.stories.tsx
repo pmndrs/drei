@@ -13,7 +13,7 @@ export default {
 }
 
 function UseCameraScene() {
-  const virtualCam = React.useRef<THREE.Camera>(null!)
+  const virtualCam = React.useRef<THREE.OrthographicCamera>(null!)
   const ref = React.useRef<THREE.Mesh>()
 
   const [hover, setHover] = React.useState<null | number>(null)
@@ -58,7 +58,7 @@ function UseCameraScene() {
       <pointLight position={[10, 10, 10]} intensity={0.5} />
     </>,
     virtualScene
-  ) as unknown as JSX.Element
+  )
 }
 
 export const UseCameraSt = () => <UseCameraScene />

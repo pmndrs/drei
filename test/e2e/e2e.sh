@@ -30,7 +30,7 @@ appdir="$tmp/$appname"
 (cd $tmp; npm create vite@latest $appname -- --template react)
 
 # drei
-(cd $appdir; npm i; npm i $TGZ)
+(cd $appdir; npm i; npm i --legacy-peer-deps $TGZ)
 
 # App.jsx
 cp App.jsx $appdir/src/App.jsx

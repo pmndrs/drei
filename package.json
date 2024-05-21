@@ -1,7 +1,7 @@
 {
-  "name": "@nicetouch/drei",
-  "version": "10.0.0-alpha.1",
-  "private": false,
+  "name": "@react-three/drei",
+  "version": "0.0.0-semantic-release",
+  "private": true,
   "description": "useful add-ons for react-three-fiber",
   "keywords": [
     "react",

@@ -24,10 +24,10 @@
     "Marco Perego (https://github.com/emmelleppi)",
     "Josh Ellis (https://github.com/joshuaellis)"
   ],
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "react-native": "dist/native/index.cjs.js",
+  "main": "index.cjs.js",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "react-native": "native/index.cjs.js",
   "sideEffects": false,
   "commitlint": {
     "extends": [

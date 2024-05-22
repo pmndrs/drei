@@ -1,13 +1,13 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { PerspectiveCamera as PerspectiveCameraImpl } from 'three'
-import { useFrame, useThree } from '@react-three/fiber'
+import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
 import { useFBO } from './useFBO'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 const isFunction = (node: any): node is Function => typeof node === 'function'
 
-type Props = Omit<JSX.IntrinsicElements['perspectiveCamera'], 'children'> & {
+type Props = Omit<ThreeElements['perspectiveCamera'], 'children'> & {
   /** Registers the camera as the system default, fiber will start rendering with it */
   makeDefault?: boolean
   /** Making it manual will stop responsiveness and you have to calculate aspect ratio yourself. */

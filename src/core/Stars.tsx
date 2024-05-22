@@ -1,7 +1,6 @@
-import * as THREE from 'three'
 import * as React from 'react'
 // eslint-disable-next-line
-import { ReactThreeFiber, useFrame } from '@react-three/fiber'
+import { ReactThreeFiber, ThreeElement, useFrame } from '@react-three/fiber'
 import { Points, Vector3, Spherical, Color, AdditiveBlending, ShaderMaterial } from 'three'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 import { version } from '../helpers/constants'
@@ -52,7 +51,7 @@ class StarfieldMaterial extends ShaderMaterial {
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      starfieldMaterial: ReactThreeFiber.MaterialNode<StarfieldMaterial, []>
+      starfieldMaterial: ThreeElement<typeof StarfieldMaterial>
     }
   }
 }

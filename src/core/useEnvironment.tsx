@@ -32,7 +32,6 @@ export function useEnvironment({
 }: Partial<EnvironmentLoaderProps> = {}) {
   let loader: typeof Loader | null = null
   let multiFile: boolean = false
-  let extension: string | false | undefined
 
   if (preset) {
     if (!(preset in presetsObj)) throw new Error('Preset must be one of: ' + Object.keys(presetsObj).join(', '))
@@ -46,7 +45,7 @@ export function useEnvironment({
 
   // Everything else
   multiFile = isArray(files)
-  extension = isCubemap
+  const extension = isCubemap
     ? 'cube'
     : isGainmap
     ? 'webp'
@@ -80,6 +79,7 @@ export function useEnvironment({
     (loader) => {
       // Gainmap requires a renderer
       if (extension === 'webp' || extension === 'jpg' || extension === 'jpeg') {
+        // @ts-expect-error
         loader.setRenderer(gl)
       }
       loader.setPath?.(path)

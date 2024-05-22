@@ -13,7 +13,7 @@ import {
   Quaternion,
   BufferAttribute,
 } from 'three'
-import { MaterialNode, extend, applyProps, useFrame, ReactThreeFiber } from '@react-three/fiber'
+import { extend, applyProps, useFrame, ReactThreeFiber, ThreeElements } from '@react-three/fiber'
 import { useTexture } from './useTexture'
 import { v4 } from 'uuid'
 import { setUpdateRange } from '../helpers/deprecated'
@@ -21,7 +21,7 @@ import { setUpdateRange } from '../helpers/deprecated'
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      cloudMaterial: MaterialNode<MeshLambertMaterial, typeof MeshLambertMaterial>
+      cloudMaterial: ThreeElements['meshLambertMaterial']
     }
   }
 }
@@ -49,7 +49,7 @@ type CloudState = {
   color: Color
 }
 
-type CloudsProps = JSX.IntrinsicElements['group'] & {
+type CloudsProps = Omit<ThreeElements['group'], 'ref'> & {
   /** Optional cloud texture, points to a default hosted on rawcdn.githack */
   texture?: string
   /** Maximum number of segments, default: 200 (make this tight to save memory!) */
@@ -62,7 +62,7 @@ type CloudsProps = JSX.IntrinsicElements['group'] & {
   frustumCulled?: boolean
 }
 
-type CloudProps = JSX.IntrinsicElements['group'] & {
+type CloudProps = Omit<ThreeElements['group'], 'ref'> & {
   /** A seeded random will show the same cloud consistently, default: Math.random() */
   seed?: number
   /** How many segments or particles the cloud will have, default: 20 */
@@ -191,7 +191,7 @@ export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
     })
 
     let imageBounds = [cloudTexture!.image.width ?? 1, cloudTexture!.image.height ?? 1]
-    let max = Math.max(imageBounds[0], imageBounds[1])
+    const max = Math.max(imageBounds[0], imageBounds[1])
     imageBounds = [imageBounds[0] / max, imageBounds[1] / max]
 
     return (
@@ -278,7 +278,7 @@ export const CloudInstance = /* @__PURE__ */ React.forwardRef<Group, CloudProps>
 
         const distributed = distribute?.(cloud, index)
 
-        if (distributed || segments > 1)
+        if (distributed || segments > 1) {
           cloud.position.copy(cloud.bounds).multiply(
             distributed?.point ??
               ({
@@ -287,6 +287,8 @@ export const CloudInstance = /* @__PURE__ */ React.forwardRef<Group, CloudProps>
                 z: random() * 2 - 1,
               } as Vector3)
           )
+        }
+
         const xDiff = Math.abs(cloud.position.x)
         const yDiff = Math.abs(cloud.position.y)
         const zDiff = Math.abs(cloud.position.z)
@@ -320,11 +322,14 @@ export const CloudInstance = /* @__PURE__ */ React.forwardRef<Group, CloudProps>
 
 export const Cloud = /* @__PURE__ */ React.forwardRef<Group, CloudProps>((props, fref) => {
   const parent = React.useContext(context)
-  if (parent) return <CloudInstance ref={fref} {...props} />
-  else
+
+  if (parent) {
+    return <CloudInstance ref={fref} {...props} />
+  } else {
     return (
       <Clouds>
         <CloudInstance ref={fref} {...props} />
       </Clouds>
     )
+  }
 })

@@ -1,17 +1,17 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { ReactThreeFiber, type ThreeElements } from '@react-three/fiber'
+import { ThreeElement, type ThreeElements } from '@react-three/fiber'
 import { LineSegmentsGeometry, LineMaterial, LineMaterialParameters, Line2, LineSegments2 } from 'three-stdlib'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 import { Line } from './Line'
 
 export type EdgesRef = THREE.Mesh<LineSegmentsGeometry, LineMaterial>
-export type EdgesProps = Partial<ThreeElements['mesh']> & {
+export type EdgesProps = Omit<Partial<ThreeElements['mesh']>, 'ref'> & {
   threshold?: number
   lineWidth?: number
 } & Omit<LineMaterialParameters, 'vertexColors' | 'color'> &
-  Omit<ReactThreeFiber.Object3DNode<Line2, typeof Line2>, 'args'> &
-  Omit<ReactThreeFiber.Object3DNode<LineMaterial, [LineMaterialParameters]>, 'color' | 'vertexColors' | 'args'> & {
+  Omit<ThreeElement<typeof Line2>, 'args' | 'ref'> &
+  Omit<ThreeElement<typeof LineMaterial>, 'color' | 'vertexColors' | 'args' | 'ref'> & {
     color?: THREE.ColorRepresentation
   }
 

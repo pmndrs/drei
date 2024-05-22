@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useThree } from '@react-three/fiber'
+import { ThreeElements, useThree } from '@react-three/fiber'
 export enum GradientType {
   Linear = 'linear',
   Radial = 'radial',
@@ -14,7 +14,7 @@ type Props = {
   type?: GradientType
   innerCircleRadius?: number
   outerCircleRadius?: string | number
-} & JSX.IntrinsicElements['texture']
+} & ThreeElements['texture']
 
 export function GradientTexture({
   stops,

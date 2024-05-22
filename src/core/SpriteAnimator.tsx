@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useFrame, Vector3 } from '@react-three/fiber'
+import { ThreeElements, useFrame, Vector3 } from '@react-three/fiber'
 import * as THREE from 'three'
 import { Instances, Instance } from './Instances'
 import { useSpriteLoader } from './useSpriteLoader'
@@ -31,7 +31,7 @@ export type SpriteAnimatorProps = {
   maxItems?: number
   instanceItems?: any[]
   spriteDataset?: any
-} & JSX.IntrinsicElements['group']
+} & Omit<ThreeElements['group'], 'ref'>
 
 type SpriteAnimatorState = {
   /** The user-defined, mutable, current goal position along the curve, it may be >1 or <0 */
@@ -467,7 +467,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
       <group
         {...props}
         ref={ref}
-        scale={multiplyScale(aspect ?? [1, 1, 1], props.scale ?? 1.0) as [number, number, number]}
+        scale={multiplyScale(aspect ?? [1, 1, 1], (props.scale as any) ?? 1.0) as [number, number, number]}
       >
         <context.Provider value={state}>
           <React.Suspense fallback={null}>

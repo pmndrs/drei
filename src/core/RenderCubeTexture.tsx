@@ -1,9 +1,9 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { ComputeFunction, ReactThreeFiber, createPortal, useFrame, useThree } from '@react-three/fiber'
+import { ComputeFunction, ReactThreeFiber, ThreeElements, createPortal, useFrame, useThree } from '@react-three/fiber'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
-export type RenderCubeTextureProps = Omit<JSX.IntrinsicElements['texture'], 'rotation'> & {
+export type RenderCubeTextureProps = Omit<ThreeElements['texture'], 'rotation'> & {
   /** Optional stencil buffer, defaults to false */
   stencilBuffer?: boolean
   /** Optional depth buffer, defaults to true */

@@ -1,4 +1,4 @@
-import { EventManager, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
+import { EventManager, ReactThreeFiber, ThreeElement, useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import type { Camera, Event, OrthographicCamera, PerspectiveCamera } from 'three'
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
@@ -10,7 +10,7 @@ export type OrbitControlsChangeEvent = Event & {
 
 export type OrbitControlsProps = Omit<
   ReactThreeFiber.Overwrite<
-    ReactThreeFiber.Object3DNode<OrbitControlsImpl, typeof OrbitControlsImpl>,
+    ThreeElement<typeof OrbitControlsImpl>,
     {
       camera?: Camera
       domElement?: HTMLElement

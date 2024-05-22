@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { useLayoutEffect, useMemo, useRef } from 'react'
-import { extend, ReactThreeFiber, useThree, useFrame } from '@react-three/fiber'
+import { extend, ReactThreeFiber, useThree, useFrame, ThreeElements } from '@react-three/fiber'
 import { MeshBVHUniformStruct, MeshBVH, SAH } from 'three-mesh-bvh'
 import { MeshRefractionMaterial as MeshRefractionMaterial_ } from '../materials/MeshRefractionMaterial'
 
@@ -13,7 +13,7 @@ declare global {
   }
 }
 
-type MeshRefractionMaterialProps = JSX.IntrinsicElements['shaderMaterial'] & {
+type MeshRefractionMaterialProps = ThreeElements['shaderMaterial'] & {
   /** Environment map */
   envMap: THREE.CubeTexture | THREE.Texture
   /** Number of ray-cast bounces, it can be expensive to have too many, 2 */

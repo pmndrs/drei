@@ -1,14 +1,10 @@
-import { EventManager, ReactThreeFiber, RootState, useThree } from '@react-three/fiber'
-import { DomEvent } from '@react-three/fiber/dist/declarations/src/core/events'
+import { DomEvent, EventManager, RootState, ThreeElement, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from 'three'
 import { PointerLockControls as PointerLockControlsImpl } from 'three-stdlib'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
-export type PointerLockControlsProps = ReactThreeFiber.Object3DNode<
-  PointerLockControlsImpl,
-  typeof PointerLockControlsImpl
-> & {
+export type PointerLockControlsProps = ThreeElement<typeof PointerLockControlsImpl> & {
   domElement?: HTMLElement
   selector?: string
   enabled?: boolean

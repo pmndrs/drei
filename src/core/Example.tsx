@@ -1,7 +1,5 @@
-/* eslint react-hooks/exhaustive-deps: 1 */
 import * as React from 'react'
-import * as THREE from 'three'
-import type { Color } from '@react-three/fiber'
+import type { Color, ThreeElements } from '@react-three/fiber'
 
 import { Text3D } from './Text3D'
 import { Center } from './Center'
@@ -11,7 +9,7 @@ export type ExampleProps = {
   color?: Color
   debug?: boolean
   bevelSize?: number
-} & JSX.IntrinsicElements['group']
+} & ThreeElements['group']
 
 export type ExampleApi = {
   incr: (x?: number) => void

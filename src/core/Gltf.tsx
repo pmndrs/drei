@@ -3,8 +3,9 @@ import * as THREE from 'three'
 import { useGLTF } from './useGLTF'
 import { Clone, CloneProps } from './Clone'
 import { ForwardRefComponent } from '../helpers/ts-utils'
+import { ThreeElements } from '@react-three/fiber'
 
-type GltfProps = Omit<JSX.IntrinsicElements['group'], 'children'> &
+type GltfProps = Omit<ThreeElements['group'], 'children'> &
   Omit<CloneProps, 'object'> & {
     src: string
   }

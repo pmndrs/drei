@@ -10,6 +10,7 @@ import {
 } from './AccumulativeShadows'
 import { useBounds, Bounds } from './Bounds'
 import { PresetsType } from '../helpers/environment-assets'
+import { ThreeElements } from '@react-three/fiber'
 
 const presets = {
   rembrandt: {
@@ -81,7 +82,7 @@ export function Stage({
   environment = 'city',
   preset = 'rembrandt',
   ...props
-}: JSX.IntrinsicElements['group'] & StageProps) {
+}: ThreeElements['group'] & StageProps) {
   const config = typeof preset === 'string' ? presets[preset] : preset
   const [{ radius, height }, set] = React.useState({ radius: 0, width: 0, height: 0, depth: 0 })
   const shadowBias = (shadows as StageShadows)?.bias ?? -0.0001

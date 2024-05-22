@@ -1,11 +1,10 @@
 import * as React from 'react'
-// @ts-ignore
+import { ReactThreeFiber, ThreeElements, useThree } from '@react-three/fiber'
 import { Text as TextMeshImpl, preloadFont } from 'troika-three-text'
-import { ReactThreeFiber, useThree } from '@react-three/fiber'
 import { suspend } from 'suspend-react'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
-type Props = JSX.IntrinsicElements['mesh'] & {
+type Props = ThreeElements['mesh'] & {
   children: React.ReactNode
   characters?: string
   color?: ReactThreeFiber.Color

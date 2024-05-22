@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as THREE from 'three'
 
-import { useFrame, useThree } from '@react-three/fiber'
+import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
 
 export type SizeProps = {
   box: THREE.Box3
@@ -27,7 +27,7 @@ export type BoundsApi = {
   clip(): BoundsApi
 }
 
-export type BoundsProps = JSX.IntrinsicElements['group'] & {
+export type BoundsProps = ThreeElements['group'] & {
   maxDuration?: number
   margin?: number
   observe?: boolean
@@ -127,8 +127,9 @@ export function Bounds({
     return {
       getSize,
       refresh(object?: THREE.Object3D | THREE.Box3) {
-        if (isBox3(object)) box.copy(object)
-        else {
+        if (isBox3(object)) {
+          box.copy(object)
+        } else {
           const target = object || ref.current
           if (!target) return this
           target.updateWorldMatrix(true, true)

@@ -1,10 +1,10 @@
 import { Group, Texture } from 'three'
 import * as React from 'react'
-import { useFrame } from '@react-three/fiber'
+import { ThreeElements, useFrame } from '@react-three/fiber'
 
 import { useCubeCamera, CubeCameraOptions } from './useCubeCamera'
 
-type Props = Omit<JSX.IntrinsicElements['group'], 'children'> & {
+type Props = Omit<ThreeElements['group'], 'children'> & {
   /** The contents of CubeCamera will be hidden when filming the cube */
   children: (tex: Texture) => React.ReactNode
   /** Number of frames to render, Infinity */

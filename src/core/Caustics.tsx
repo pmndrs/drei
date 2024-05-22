@@ -4,7 +4,7 @@
 
 import * as THREE from 'three'
 import * as React from 'react'
-import { extend, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
+import { extend, ReactThreeFiber, ThreeElements, useFrame, useThree } from '@react-three/fiber'
 import { useFBO } from './useFBO'
 import { useHelper } from './useHelper'
 import { shaderMaterial } from './shaderMaterial'
@@ -41,7 +41,7 @@ type CausticsProjectionMaterialType = THREE.MeshNormalMaterial & {
   lightViewMatrix?: THREE.Matrix4
 }
 
-type CausticsProps = JSX.IntrinsicElements['group'] & {
+type CausticsProps = ThreeElements['group'] & {
   /** How many frames it will render, set it to Infinity for runtime, default: 1 */
   frames?: number
   /** Enables visual cues to help you stage your scene, default: false */
@@ -69,7 +69,7 @@ type CausticsProps = JSX.IntrinsicElements['group'] & {
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      causticsProjectionMaterial: ReactThreeFiber.MeshNormalMaterialProps & {
+      causticsProjectionMaterial: ThreeElements['meshNormalMaterial'] & {
         viewMatrix?: { value: THREE.Matrix4 }
         color?: ReactThreeFiber.Color
         causticsTexture?: THREE.Texture
@@ -276,8 +276,6 @@ const CAUSTICPROPS = {
   type: THREE.FloatType,
   generateMipmaps: true,
 }
-
-const causticsContext = /* @__PURE__ */ React.createContext(null)
 
 export const Caustics: ForwardRefComponent<CausticsProps, THREE.Group> = /* @__PURE__ */ React.forwardRef(
   (

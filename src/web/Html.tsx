@@ -14,7 +14,7 @@ import {
   Mesh,
 } from 'three'
 import { Assign } from 'utility-types'
-import { ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
+import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 const v1 = /* @__PURE__ */ new Vector3()
@@ -117,8 +117,7 @@ function isRefObject(ref: any): ref is React.RefObject<any> {
   return ref && typeof ref === 'object' && 'current' in ref
 }
 
-export interface HtmlProps
-  extends Omit<Assign<React.HTMLAttributes<HTMLDivElement>, ReactThreeFiber.Object3DNode<Group, typeof Group>>, 'ref'> {
+export interface HtmlProps extends Omit<Assign<React.HTMLAttributes<HTMLDivElement>, ThreeElements['group']>, 'ref'> {
   prepend?: boolean
   center?: boolean
   fullscreen?: boolean

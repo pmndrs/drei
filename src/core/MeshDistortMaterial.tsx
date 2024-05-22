@@ -1,12 +1,11 @@
 import * as React from 'react'
 import { IUniform, MeshPhysicalMaterial, MeshPhysicalMaterialParameters } from 'three'
-import { useFrame } from '@react-three/fiber'
-// eslint-disable-next-line
-// @ts-ignore
+import { ThreeElements, useFrame } from '@react-three/fiber'
+// @ts-expect-error
 import distort from '../helpers/glsl/distort.vert.glsl'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
-type DistortMaterialType = JSX.IntrinsicElements['meshPhysicalMaterial'] & {
+type DistortMaterialType = ThreeElements['meshPhysicalMaterial'] & {
   time?: number
   distort?: number
   radius?: number

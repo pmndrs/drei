@@ -6,7 +6,7 @@
 
 import * as React from 'react'
 import * as THREE from 'three'
-import { extend, useFrame } from '@react-three/fiber'
+import { ThreeElements, extend, useFrame } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 import { version } from '../helpers/constants'
@@ -33,7 +33,7 @@ export type GridMaterialType = {
   /** Fade strength, default: 1 */
   fadeStrength?: number
   /** Fade from camera (1) or origin (0), or somewhere in between, default: camera */
-  fadeFrom?: number;
+  fadeFrom?: number
   /** Material side, default: THREE.BackSide */
   side?: THREE.Side
 }
@@ -43,11 +43,9 @@ export type GridProps = GridMaterialType & {
   args?: ConstructorParameters<typeof THREE.PlaneGeometry>
 }
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      gridMaterial: JSX.IntrinsicElements['shaderMaterial'] & GridMaterialType
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    gridMaterial: ThreeElements['shaderMaterial'] & GridMaterialType
   }
 }
 
@@ -131,7 +129,7 @@ const GridMaterial = /* @__PURE__ */ shaderMaterial(
   `
 )
 
-export const Grid: ForwardRefComponent<Omit<JSX.IntrinsicElements['mesh'], 'args'> & GridProps, THREE.Mesh> =
+export const Grid: ForwardRefComponent<Omit<ThreeElements['mesh'], 'args'> & GridProps, THREE.Mesh> =
   /* @__PURE__ */ React.forwardRef(
     (
       {
@@ -149,7 +147,7 @@ export const Grid: ForwardRefComponent<Omit<JSX.IntrinsicElements['mesh'], 'args
         sectionThickness = 1,
         side = THREE.BackSide,
         ...props
-      }: Omit<JSX.IntrinsicElements['mesh'], 'args'> & GridProps,
+      }: Omit<ThreeElements['mesh'], 'args'> & GridProps,
       fRef: React.ForwardedRef<THREE.Mesh>
     ) => {
       extend({ GridMaterial })

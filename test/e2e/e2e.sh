@@ -27,7 +27,7 @@ appname=viteapp
 appdir="$tmp/$appname"
 
 # create app
-(cd $tmp; npm create vite@latest $appname -- --template react)
+(cd $tmp; npm create -y vite@latest $appname -- --template react)
 
 # drei
 (cd $appdir; npm i; npm i $TGZ)

@@ -1,6 +1,6 @@
 import { Texture, TextureLoader } from 'three'
 import { useLoader, useThree } from '@react-three/fiber'
-import { useLayoutEffect, useEffect, useMemo } from 'react'
+import { useEffect, useLayoutEffect, useMemo } from 'react'
 
 export const IsObject = (url: unknown): url is Record<string, string> =>
   url === Object(url) && !Array.isArray(url) && typeof url !== 'function'
@@ -19,31 +19,20 @@ export function useTexture<Url extends string[] | string | Record<string, string
   onLoad?: (texture: MappedTextureType<Url>) => void
 ): MappedTextureType<Url> {
   const gl = useThree((state) => state.gl)
-  const textures = useLoader(TextureLoader, IsObject(input) ? Object.values(input) : input) as MappedTextureType<Url>
-
-  useLayoutEffect(() => {
-    onLoad?.(textures)
-  }, [onLoad])
+  const textures = useLoader(TextureLoader, IsObject(input) ? Object.values(input) : input)
 
   // https://github.com/mrdoob/three.js/issues/22696
   // Upload the texture to the GPU immediately instead of waiting for the first render
   // NOTE: only available for WebGLRenderer
   useEffect(() => {
     if ('initTexture' in gl) {
-      let textureArray: Texture[] = []
       if (Array.isArray(textures)) {
-        textureArray = textures
-      } else if (textures instanceof Texture) {
-        textureArray = [textures]
-      } else if (IsObject(textures)) {
-        textureArray = Object.values(textures)
-      }
-
-      textureArray.forEach((texture) => {
-        if (texture instanceof Texture) {
+        for (const texture of textures) {
           gl.initTexture(texture)
         }
-      })
+      } else {
+        gl.initTexture(textures)
+      }
     }
   }, [gl, textures])
 
@@ -54,9 +43,13 @@ export function useTexture<Url extends string[] | string | Record<string, string
       for (const key in input) keyed[key] = textures[i++]
       return keyed
     } else {
-      return textures
+      return textures as MappedTextureType<Url>
     }
   }, [input, textures])
+
+  useLayoutEffect(() => {
+    onLoad?.(mappedTextures)
+  }, [mappedTextures])
 
   return mappedTextures
 }

@@ -24,6 +24,8 @@ export type ScrollControlsProps = {
    *  then a maxSpeed of e.g. 3 which will clamp the speed to 3 units per second, it may now
    *  take much longer than damping to reach the target if it is far away. Default: Infinity */
   maxSpeed?: number
+  /** If true attaches the scroll container before the canvas */
+  prepend?: boolean
   enabled?: boolean
   style?: React.CSSProperties
   children: React.ReactNode
@@ -59,6 +61,7 @@ export function ScrollControls({
   distance = 1,
   damping = 0.25,
   maxSpeed = Infinity,
+  prepend = false,
   style = {},
   children,
 }: ScrollControlsProps) {
@@ -126,7 +129,9 @@ export function ScrollControls({
     fill.style.width = horizontal ? `${pages * distance * 100}%` : '100%'
     fill.style.pointerEvents = 'none'
     el.appendChild(fill)
-    target.appendChild(el)
+
+    if (prepend) target.prepend(el)
+    else target.appendChild(el)
 
     // Init scroll one pixel in to allow upward/leftward scroll
     el[horizontal ? 'scrollLeft' : 'scrollTop'] = 1

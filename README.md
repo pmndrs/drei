@@ -437,6 +437,8 @@ type ScrollControlsProps = {
    *  then a maxSpeed of e.g. 0.1 which will clamp the speed to 0.1 units per second, it may now
    *  take much longer than damping to reach the target if it is far away. Default: Infinity */
   maxSpeed?: number
+  /** If true attaches the scroll container before the canvas */
+  prepend?: boolean
   enabled?: boolean
   style?: React.CSSProperties
   children: React.ReactNode

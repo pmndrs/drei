@@ -437,6 +437,8 @@ type ScrollControlsProps = {
    *  then a maxSpeed of e.g. 0.1 which will clamp the speed to 0.1 units per second, it may now
    *  take much longer than damping to reach the target if it is far away. Default: Infinity */
   maxSpeed?: number
+  /** If true attaches the scroll container before the canvas */
+  prepend?: boolean
   enabled?: boolean
   style?: React.CSSProperties
   children: React.ReactNode
@@ -3231,11 +3233,11 @@ const envMap = useCubeTexture(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png',
   <a href="https://codesandbox.io/s/2cemck"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/2cemck/screenshot.png?v2" alt="Demo"/></a>
 </p>
 
-A convenience hook that returns a `THREE.VideoTexture` and integrates loading into suspense. By default it falls back until the `canplay` event. Then it starts playing the video, which, if the video is muted, is allowed in the browser without user interaction.
+A convenience hook that returns a `THREE.VideoTexture` and integrates loading into suspense. By default it falls back until the `loadedmetadata` event. Then it starts playing the video, which, if the video is muted, is allowed in the browser without user interaction.
 
 ```tsx
 type VideoTextureProps = {
-  unsuspend?: 'canplay' | 'canplaythrough' | 'loadedmetadata'
+  unsuspend?: 'canplay' | 'canplaythrough' | 'loadstart' | 'loadedmetadata'
   muted?: boolean
   loop?: boolean
   start?: boolean
@@ -3244,7 +3246,7 @@ type VideoTextureProps = {
 
 export function useVideoTexture(src: string, props: VideoTextureProps) {
   const { unsuspend, start, crossOrigin, muted, loop } = {
-    unsuspend: 'canplay',
+    unsuspend: 'loadedmetadata',
     crossOrigin: 'Anonymous',
     muted: true,
     loop: true,

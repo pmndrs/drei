@@ -190,8 +190,8 @@ export function useSpriteLoader<Url extends string>(
       const height = texture.image.height
 
       // Calculate rows and columns based on the number of frames and image dimensions
-      const cols = Math.ceil(Math.sqrt(totalFrames * (width / height)))
-      const rows = Math.ceil(totalFrames / cols)
+      const cols = Math.round(Math.sqrt(totalFrames * (width / height)))
+      const rows = Math.round(totalFrames / cols)
 
       const frameWidth = width / cols
       const frameHeight = height / rows

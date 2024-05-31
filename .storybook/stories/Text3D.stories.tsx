@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { DoubleSide, Vector3 } from 'three'
-import { withKnobs, number, color as colorKnob } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
 import { useTurntable } from '../useTurntable'
@@ -11,7 +10,7 @@ import { useEffect } from 'react'
 export default {
   title: 'Abstractions/Text3D',
   component: Text,
-  decorators: [withKnobs, (storyFn) => <Setup cameraPosition={new Vector3(0, 0, 5)}>{storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 5)}>{storyFn()}</Setup>],
 }
 
 function Text3DScene() {

@@ -1,27 +1,21 @@
 import * as React from 'react'
-import { withKnobs, number } from '@storybook/addon-knobs'
 import { useFrame } from '@react-three/fiber'
 
 import { Setup } from '../Setup'
 
 import { Sky, Plane } from '../../src'
+import { distance } from 'maath/dist/declarations/src/vector2'
 
 export default {
   title: 'Staging/Sky',
   component: Sky,
-  decorators: [withKnobs, (storyFn) => <Setup> {storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup> {storyFn()}</Setup>],
 }
 
-function SkyScene() {
+function SkyScene(args) {
   return (
     <>
-      <Sky
-        turbidity={number('Turbidity', 8, { range: true, max: 10, step: 0.1 })}
-        rayleigh={number('Rayleigh', 6, { range: true, max: 10, step: 0.1 })}
-        mieCoefficient={number('mieCoefficient', 0.005, { range: true, max: 0.1, step: 0.001 })}
-        mieDirectionalG={number('mieDirectionalG', 0.8, { range: true, max: 1, step: 0.01 })}
-        sunPosition={[number('Pos X', 0), number('Pos Y', 0), number('Pos Z', 0)]}
-      />
+      <Sky {...args} />
       <Plane rotation-x={Math.PI / 2} args={[100, 100, 4, 4]}>
         <meshBasicMaterial color="black" wireframe />
       </Plane>
@@ -30,21 +24,26 @@ function SkyScene() {
   )
 }
 
-export const SkySt = () => <SkyScene />
+export const SkySt = (args) => <SkyScene {...args} />
 SkySt.storyName = 'Default'
+SkySt.args = {
+  turbidity: 8,
+  rayleigh: 6,
+  mieCoefficient: 0.005,
+  mieDirectionalG: 0.8,
+  sunPosition: [1, 0, 0],
+}
+SkySt.argTypes = {
+  turbidity: { control: { type: 'range', min: 0, max: 10, step: 0.1 } },
+  rayleigh: { control: { type: 'range', min: 0, max: 10, step: 0.1 } },
+  mieCoefficient: { control: { type: 'range', min: 0, max: 0.1, step: 0.001 } },
+  mieDirectionalG: { control: { type: 'range', min: 0, max: 1, step: 0.01 } },
+}
 
-function SkyScene2() {
+function SkyScene2(args) {
   return (
     <>
-      <Sky
-        distance={3000}
-        turbidity={number('Turbidity', 8, { range: true, max: 10, step: 0.1 })}
-        rayleigh={number('Rayleigh', 6, { range: true, max: 10, step: 0.1 })}
-        mieCoefficient={number('mieCoefficient', 0.005, { range: true, max: 0.1, step: 0.001 })}
-        mieDirectionalG={number('mieDirectionalG', 0.8, { range: true, max: 1, step: 0.01 })}
-        inclination={number('Inclination', 0.49, { range: true, max: 1, step: 0.01 })}
-        azimuth={number('Azimuth', 0.25, { range: true, max: 1, step: 0.01 })}
-      />
+      <Sky {...args} />
       <Plane rotation-x={Math.PI / 2} args={[100, 100, 4, 4]}>
         <meshBasicMaterial color="black" wireframe />
       </Plane>
@@ -53,10 +52,27 @@ function SkyScene2() {
   )
 }
 
-export const SkySt2 = () => <SkyScene2 />
+export const SkySt2 = (args) => <SkyScene2 {...args} />
 SkySt2.storyName = 'Custom angles'
+SkySt2.args = {
+  distance: 3000,
+  turbidity: 8,
+  rayleigh: 6,
+  mieCoefficient: 0.005,
+  mieDirectionalG: 0.8,
+  inclination: 0.49,
+  azimuth: 0.25,
+}
+SkySt2.argTypes = {
+  turbidity: { control: { type: 'range', min: 0, max: 10, step: 0.1 } },
+  rayleigh: { control: { type: 'range', min: 0, max: 10, step: 0.1 } },
+  mieCoefficient: { control: { type: 'range', min: 0, max: 0.1, step: 0.001 } },
+  mieDirectionalG: { control: { type: 'range', min: 0, max: 1, step: 0.01 } },
+  inclination: { control: { type: 'range', min: 0, max: 1, step: 0.01 } },
+  azimuth: { control: { type: 'range', min: 0, max: 1, step: 0.01 } },
+}
 
-function SkyScene3() {
+function SkyScene3(args) {
   // NOT the right way to do it...
   const [inclination, setInclination] = React.useState(0)
   useFrame(() => {
@@ -65,15 +81,7 @@ function SkyScene3() {
 
   return (
     <>
-      <Sky
-        distance={3000}
-        turbidity={number('Turbidity', 8, { range: true, max: 10, step: 0.1 })}
-        rayleigh={number('Rayleigh', 6, { range: true, max: 10, step: 0.1 })}
-        mieCoefficient={number('mieCoefficient', 0.005, { range: true, max: 0.1, step: 0.001 })}
-        mieDirectionalG={number('mieDirectionalG', 0.8, { range: true, max: 1, step: 0.01 })}
-        inclination={inclination}
-        azimuth={number('Azimuth', 0.25, { range: true, max: 1, step: 0.01 })}
-      />
+      <Sky {...args} />
       <Plane rotation-x={Math.PI / 2} args={[100, 100, 4, 4]}>
         <meshBasicMaterial color="black" wireframe />
       </Plane>
@@ -82,5 +90,22 @@ function SkyScene3() {
   )
 }
 
-export const SkySt3 = () => <SkyScene3 />
+export const SkySt3 = (args) => <SkyScene3 {...args} />
 SkySt3.storyName = 'Rotation'
+SkySt3.args = {
+  distance: 3000,
+  turbidity: 8,
+  rayleigh: 6,
+  mieCoefficient: 0.005,
+  mieDirectionalG: 0.8,
+  inclination: 0.49,
+  azimuth: 0.25,
+}
+SkySt3.argTypes = {
+  turbidity: { control: { type: 'range', min: 0, max: 10, step: 0.1 } },
+  rayleigh: { control: { type: 'range', min: 0, max: 10, step: 0.1 } },
+  mieCoefficient: { control: { type: 'range', min: 0, max: 0.1, step: 0.001 } },
+  mieDirectionalG: { control: { type: 'range', min: 0, max: 1, step: 0.01 } },
+  inclination: { control: { type: 'range', min: 0, max: 1, step: 0.01 } },
+  azimuth: { control: { type: 'range', min: 0, max: 1, step: 0.01 } },
+}

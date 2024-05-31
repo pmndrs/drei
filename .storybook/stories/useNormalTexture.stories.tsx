@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { withKnobs, number } from '@storybook/addon-knobs'
+
 import { Mesh, Vector2, Vector3 } from 'three'
 
 import { Setup } from '../Setup'
@@ -8,14 +8,22 @@ import { useGLTF, useNormalTexture } from '../../src'
 export default {
   title: 'Staging/useNormalTexture',
   component: useNormalTexture,
-  decorators: [withKnobs, (storyFn) => <Setup cameraPosition={new Vector3(0, 0, 3)}>{storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 3)}>{storyFn()}</Setup>],
 }
 
-function Suzanne() {
+function Suzanne({
+  textureRepeat,
+  textureScale,
+  textureIndex,
+}: {
+  textureRepeat: number
+  textureScale: number
+  textureIndex: number
+}) {
   const { nodes } = useGLTF('suzanne.glb', true) as any
-  const repeat = number('texture repeat', 8)
-  const scale = number('texture scale', 4)
-  const [normalTexture] = useNormalTexture(number('texture index', 3), {
+  const repeat = textureRepeat
+  const scale = textureScale
+  const [normalTexture] = useNormalTexture(textureIndex, {
     repeat: [repeat, repeat],
     anisotropy: 8,
   })
@@ -33,15 +41,20 @@ function Suzanne() {
   )
 }
 
-function UseNormalTexture() {
+function UseNormalTexture({ textureRepeat, textureScale, textureIndex, ...args }) {
   return (
     <React.Suspense fallback={null}>
-      <Suzanne />
+      <Suzanne textureRepeat={textureRepeat} textureScale={textureScale} textureIndex={textureIndex} />
     </React.Suspense>
   )
 }
 
-export const UseNormalTextureSt = () => <UseNormalTexture />
+export const UseNormalTextureSt = (args) => <UseNormalTexture {...args} />
 UseNormalTextureSt.story = {
   name: 'Default',
+}
+UseNormalTextureSt.args = {
+  textureRepeat: 8,
+  textureScale: 4,
+  textureIndex: 3,
 }

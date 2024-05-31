@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { withKnobs } from '@storybook/addon-knobs'
 import { IcosahedronGeometry, SphereGeometry, Vector3 } from 'three'
 
 import { Setup } from '../Setup'
@@ -8,7 +7,7 @@ import { Environment, Wireframe } from '../../src'
 export default {
   title: 'Staging/Wireframe',
   component: Wireframe,
-  decorators: [withKnobs, (storyFn) => <Setup cameraPosition={new Vector3(2, 2, 2)}>{storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(2, 2, 2)}>{storyFn()}</Setup>],
 }
 
 function WireframeScene() {

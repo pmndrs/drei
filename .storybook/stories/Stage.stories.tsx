@@ -1,15 +1,16 @@
 import * as React from 'react'
-import { withKnobs, select, number, boolean, object } from '@storybook/addon-knobs'
 import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'
 import { Stage, Sphere } from '../../src'
 import { presetsObj, PresetsType } from '../../src/helpers/environment-assets'
 
+const environments = Object.keys(presetsObj)
+
 export default {
   title: 'Staging/Stage',
   component: Stage,
-  decorators: [withKnobs, (storyFn) => <Setup cameraPosition={new Vector3(0, 0, 3)}>{storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 3)}>{storyFn()}</Setup>],
 }
 
 enum presets {
@@ -19,16 +20,11 @@ enum presets {
   soft = 'soft',
 }
 
-function StageStory() {
-  const envPresets = Object.keys(presetsObj)
-  const envPreset = select('Environment', envPresets, envPresets[0])
-  const intensity = number('Intensity', 1)
-  const presetKnob = select('Preset', presets, presets[0])
-
+function StageStory(args) {
   return (
     <React.Suspense fallback={null}>
       <color attach="background" args={['white']} />
-      <Stage intensity={intensity} environment={envPreset as PresetsType} preset={presetKnob}>
+      <Stage {...args}>
         <Sphere args={[1, 64, 64]}>
           <meshStandardMaterial roughness={0} color="royalblue" />
         </Sphere>
@@ -37,7 +33,16 @@ function StageStory() {
   )
 }
 
-export const StageSt = () => <StageStory />
+export const StageSt = (args) => <StageStory {...args} />
 StageSt.story = {
   name: 'Default',
+}
+StageSt.args = {
+  intensity: 1,
+  environment: environments[0],
+  preset: 'rembrandt',
+}
+StageSt.argTypes = {
+  environment: { control: 'select', options: environments },
+  preset: { control: 'select', options: presets },
 }

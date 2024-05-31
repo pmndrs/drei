@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { withKnobs, number } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
 import {
@@ -18,11 +17,11 @@ import { MathUtils, RepeatWrapping } from 'three'
 export default {
   title: 'Staging/Spotlight',
   component: SpotLight,
-  decorators: [withKnobs, (storyFn) => <Setup lights={false}> {storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup lights={false}> {storyFn()}</Setup>],
 }
 
-function SpotLightScene() {
-  const depthBuffer = useDepthBuffer({ size: number('size', 256) })
+function SpotLightScene({ size, ...args }) {
+  const depthBuffer = useDepthBuffer({ size })
 
   return (
     <>
@@ -57,8 +56,11 @@ function SpotLightScene() {
   )
 }
 
-export const SpotlightSt = () => <SpotLightScene />
+export const SpotlightSt = (args) => <SpotLightScene {...args} />
 SpotlightSt.storyName = 'Default'
+SpotlightSt.args = {
+  size: 256,
+}
 
 function SpotLightShadowsScene({ debug, wind }: { debug: boolean; wind: boolean }) {
   const texs = useTexture([

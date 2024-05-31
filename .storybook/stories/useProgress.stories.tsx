@@ -4,12 +4,11 @@ import { Vector3 } from 'three'
 import { Setup } from '../Setup'
 
 import { Environment, Html, useGLTF, useProgress, Loader } from '../../src'
-import { withKnobs, boolean } from '@storybook/addon-knobs'
 
 export default {
   title: 'Misc/useProgress',
   component: useProgress,
-  decorators: [withKnobs, (storyFn) => <Setup cameraPosition={new Vector3(0, 0, 5)}>{storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 5)}>{storyFn()}</Setup>],
 }
 
 function Helmet() {
@@ -44,20 +43,19 @@ function LoadExtras() {
   )
 }
 
-function UseProgressScene() {
-  return (
-    <React.Suspense fallback={<CustomLoader />}>
-      {boolean('Load extras', false) ? <LoadExtras /> : <Helmet />}
-    </React.Suspense>
-  )
+function UseProgressScene({ loadExtras }) {
+  return <React.Suspense fallback={<CustomLoader />}>{loadExtras ? <LoadExtras /> : <Helmet />}</React.Suspense>
 }
 
-export const UseProgressSceneSt = () => <UseProgressScene />
+export const UseProgressSceneSt = (args) => <UseProgressScene {...args} />
 UseProgressSceneSt.story = {
   name: 'Default',
 }
+UseProgressSceneSt.args = {
+  loadExtras: false,
+}
 
-export function WithOutOfTheBoxLoader() {
+function WithOutOfTheBoxLoaderScene({ loadExtras }) {
   return (
     <React.Suspense
       fallback={
@@ -66,7 +64,12 @@ export function WithOutOfTheBoxLoader() {
         </Html>
       }
     >
-      {boolean('Load extras', false) ? <LoadExtras /> : <Helmet />}
+      {loadExtras ? <LoadExtras /> : <Helmet />}
     </React.Suspense>
   )
+}
+
+export const WithOutOfTheBoxLoaderSt = (args) => <WithOutOfTheBoxLoaderScene {...args} />
+WithOutOfTheBoxLoaderSt.args = {
+  loadExtras: false,
 }

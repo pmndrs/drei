@@ -1,33 +1,37 @@
 import * as React from 'react'
 import { useFrame } from '@react-three/fiber'
 
-import { withKnobs, number } from '@storybook/addon-knobs'
-
 import { Setup } from '../Setup'
 import { MeshWobbleMaterial, Torus } from '../../src'
 
 export default {
   title: 'Shaders/MeshWobbleMaterial',
   component: MeshWobbleMaterial,
-  decorators: [withKnobs, (storyFn) => <Setup> {storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup> {storyFn()}</Setup>],
 }
 
-function MeshWobbleMaterialScene() {
+function MeshWobbleMaterialScene(args) {
   return (
     <Torus args={[1, 0.25, 16, 100]}>
-      <MeshWobbleMaterial
-        color="#f25042"
-        speed={number('Speed', 1, { range: true, max: 10, step: 0.1 })}
-        factor={number('Factor', 0.6, { range: true, min: 0, max: 1, step: 0.1 })}
-      />
+      <MeshWobbleMaterial {...args} />
     </Torus>
   )
 }
 
-export const MeshWobbleMaterialSt = () => <MeshWobbleMaterialScene />
+export const MeshWobbleMaterialSt = (args) => <MeshWobbleMaterialScene {...args} />
 MeshWobbleMaterialSt.storyName = 'Default'
+MeshWobbleMaterialSt.args = {
+  color: '#f25042',
+  speed: 1,
+  factor: 0.6,
+}
+MeshWobbleMaterialSt.argTypes = {
+  color: { control: 'color' },
+  speed: { control: { type: 'range', min: 0, max: 10, step: 0.1 } },
+  factor: { control: { type: 'range', min: 0, max: 1, step: 0.1 } },
+}
 
-function MeshWobbleMaterialRefScene() {
+function MeshWobbleMaterialRefScene(args) {
   const material = React.useRef<JSX.IntrinsicElements['wobbleMaterialImpl']>(null!)
 
   useFrame(({ clock }) => {
@@ -37,10 +41,11 @@ function MeshWobbleMaterialRefScene() {
 
   return (
     <Torus args={[1, 0.25, 16, 100]}>
-      <MeshWobbleMaterial color="#f25042" ref={material} />
+      <MeshWobbleMaterial {...args} color="#f25042" ref={material} />
     </Torus>
   )
 }
 
-export const MeshWobbleMaterialRefSt = () => <MeshWobbleMaterialRefScene />
+export const MeshWobbleMaterialRefSt = (args) => <MeshWobbleMaterialRefScene {...args} />
 MeshWobbleMaterialRefSt.storyName = 'Ref'
+MeshWobbleMaterialRefSt.args = {}

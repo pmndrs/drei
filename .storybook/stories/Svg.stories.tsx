@@ -1,5 +1,4 @@
-import { useEffect } from '@storybook/addons'
-import { useArgs } from '@storybook/client-api'
+import { useEffect, useArgs } from '@storybook/preview-api'
 import { ComponentMeta } from '@storybook/react'
 import * as React from 'react'
 import { ComponentProps, FC, Suspense } from 'react'

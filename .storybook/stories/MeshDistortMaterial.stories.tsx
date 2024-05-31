@@ -1,32 +1,37 @@
 import * as React from 'react'
 import { useFrame } from '@react-three/fiber'
 
-import { withKnobs, number } from '@storybook/addon-knobs'
-
 import { Setup } from '../Setup'
 import { MeshDistortMaterial, Icosahedron } from '../../src'
 
 export default {
   title: 'Shaders/MeshDistortMaterial',
   component: MeshDistortMaterial,
-  decorators: [withKnobs, (storyFn) => <Setup> {storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup> {storyFn()}</Setup>],
 }
 
-function MeshDistortMaterialScene() {
+function MeshDistortMaterialScene(args) {
   return (
     <Icosahedron args={[1, 4]}>
-      <MeshDistortMaterial
-        color="#f25042"
-        speed={number('Speed', 1, { range: true, max: 10, step: 0.1 })}
-        distort={number('Distort', 0.6, { range: true, min: 0, max: 1, step: 0.1 })}
-        radius={number('Radius', 1, { range: true, min: 0, max: 1, step: 0.1 })}
-      />
+      <MeshDistortMaterial {...args} />
     </Icosahedron>
   )
 }
 
-export const MeshDistortMaterialSt = () => <MeshDistortMaterialScene />
+export const MeshDistortMaterialSt = (args) => <MeshDistortMaterialScene {...args} />
 MeshDistortMaterialSt.storyName = 'Default'
+MeshDistortMaterialSt.args = {
+  color: '#f25042',
+  speed: 1,
+  distort: 0.6,
+  radius: 1,
+}
+MeshDistortMaterialSt.argTypes = {
+  color: { control: 'color' },
+  speed: { control: { type: 'range', min: 0, max: 10, step: 0.1 } },
+  distort: { control: { type: 'range', min: 0, max: 1, step: 0.1 } },
+  radius: { control: { type: 'range', min: 0, max: 1, step: 0.1 } },
+}
 
 function MeshDistortMaterialRefScene() {
   const material = React.useRef<JSX.IntrinsicElements['distortMaterialImpl']>(null!)

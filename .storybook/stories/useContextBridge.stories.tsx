@@ -1,13 +1,12 @@
 import * as React from 'react'
 import { Canvas } from '@react-three/fiber'
-import { withKnobs } from '@storybook/addon-knobs'
 
 import { OrbitControls, Box, useContextBridge, Text } from '../../src'
 
 export default {
   title: 'Misc/useContextBridge',
   component: useContextBridge,
-  decorators: [(storyFn) => storyFn(), withKnobs],
+  decorators: [(storyFn) => storyFn()],
 }
 
 type ThemeContext = { colors: { red: string; green: string; blue: string } }

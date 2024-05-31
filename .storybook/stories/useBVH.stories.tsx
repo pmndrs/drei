@@ -5,24 +5,30 @@ import { MeshBVHHelper } from 'three-mesh-bvh'
 
 import { useHelper, useBVH, TorusKnot, OrbitControls } from '../../src'
 import { useFrame, useThree } from '@react-three/fiber'
-import { withKnobs, boolean, select } from '@storybook/addon-knobs'
 import { Mesh, Raycaster, Vector3 } from 'three'
 
 export default {
   title: 'Performance/useBVH',
   component: useBVH,
-  decorators: [(storyFn) => <Setup controls={false}>{storyFn()}</Setup>, withKnobs],
+  decorators: [(storyFn) => <Setup controls={false}>{storyFn()}</Setup>],
 }
 
-function TorusBVH({ bvh, ...props }) {
+const strategies = ['CENTER', 'AVERAGE', 'SAH'] as const
+
+type Strategy = (typeof strategies)[number]
+
+function TorusBVH({
+  bvh,
+  debug,
+  strategy,
+  ...props
+}: { bvh: boolean; debug: boolean; strategy: Strategy } & React.ComponentProps<typeof TorusKnot>) {
   const mesh = React.useRef()
   const dummy = React.useRef()
 
-  const strat = select('split strategy', ['CENTER', 'AVERAGE', 'SAH'], 'CENTER')
   useBVH(bvh ? mesh : dummy, {
-    splitStrategy: strat,
+    splitStrategy: strategy,
   })
-  const debug = boolean('vizualize bounds', true)
 
   useHelper(debug ? mesh : dummy, MeshBVHHelper)
 
@@ -118,9 +124,8 @@ const DebugRayCast = ({ grp }) => {
   )
 }
 
-function Scene() {
+function Scene({ bvh, debug, strategy, ...args }) {
   const grp = React.useRef()
-  const bvh = boolean('raycast bvh enabled', true)
 
   const { raycaster }: any = useThree()
   raycaster.firstHitOnly = true
@@ -128,9 +133,9 @@ function Scene() {
   return (
     <>
       <group ref={grp}>
-        <TorusBVH bvh={bvh} position-z={-2} />
-        <TorusBVH bvh={bvh} position-z={0} />
-        <TorusBVH bvh={bvh} position-z={2} />
+        <TorusBVH bvh={bvh} position-z={-2} debug={debug} strategy={strategy} />
+        <TorusBVH bvh={bvh} position-z={0} debug={debug} strategy={strategy} />
+        <TorusBVH bvh={bvh} position-z={2} debug={debug} strategy={strategy} />
       </group>
       <DebugRayCast grp={grp} />
       <OrbitControls enablePan={false} zoomSpeed={0.5} />
@@ -138,5 +143,13 @@ function Scene() {
   )
 }
 
-export const DefaultStory = () => <Scene />
+export const DefaultStory = (args) => <Scene {...args} />
 DefaultStory.storyName = 'Default'
+DefaultStory.args = {
+  bvh: true,
+  debug: true,
+  strategy: strategies[0],
+}
+DefaultStory.argTypes = {
+  strategy: { control: 'select', options: strategies },
+}

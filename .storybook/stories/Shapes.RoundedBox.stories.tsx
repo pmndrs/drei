@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { withKnobs, number } from '@storybook/addon-knobs'
 import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'
@@ -10,44 +9,48 @@ import { RoundedBox } from '../../src'
 export default {
   title: 'Shapes/RoundedBox',
   component: RoundedBox,
-  decorators: [withKnobs, (storyFn) => <Setup cameraPosition={new Vector3(-30, 30, 30)}>{storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(-30, 30, 30)}>{storyFn()}</Setup>],
 }
 
-function RoundedBoxScene() {
+function RoundedBoxScene({ width, height, depth, ...args }) {
   const ref = useTurntable()
 
   return (
-    <RoundedBox
-      ref={ref}
-      args={[number('width', 25), number('height', 25), number('depth', 25)]}
-      radius={number('radius', 1)}
-      smoothness={number('smoothness', 5)}
-    >
+    <RoundedBox ref={ref} args={[width, height, depth]} {...args}>
       <meshPhongMaterial color="#f3f3f3" wireframe />
     </RoundedBox>
   )
 }
 
-export const RoundedBoxSt = () => <RoundedBoxScene />
+export const RoundedBoxSt = (args) => <RoundedBoxScene {...args} />
 RoundedBoxSt.storyName = 'Default'
+RoundedBoxSt.args = {
+  width: 25,
+  height: 25,
+  depth: 25,
+  radius: 1,
+  smoothness: 5,
+}
 
-function RoundedBoxScene2() {
+function RoundedBoxScene2({ width, height, depth, ...args }) {
   const ref = useTurntable()
 
   return (
     <>
       <spotLight position={[35, 35, 35]} intensity={2} />
-      <RoundedBox
-        ref={ref}
-        args={[number('width', 25), number('height', 25), number('depth', 25)]}
-        radius={number('radius', 8)}
-        smoothness={number('smoothness', 5)}
-      >
+      <RoundedBox ref={ref} args={[width, height, depth]} {...args}>
         <meshPhongMaterial color="#f3f3f3" />
       </RoundedBox>
     </>
   )
 }
 
-export const RoundedBoxSt2 = () => <RoundedBoxScene2 />
+export const RoundedBoxSt2 = (args) => <RoundedBoxScene2 {...args} />
 RoundedBoxSt2.storyName = 'Solid'
+RoundedBoxSt2.args = {
+  width: 25,
+  height: 25,
+  depth: 25,
+  radius: 8,
+  smoothness: 5,
+}

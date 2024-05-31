@@ -1,6 +1,5 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { withKnobs } from '@storybook/addon-knobs'
 import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'
@@ -11,7 +10,6 @@ export default {
   title: 'Misc/Example',
   component: Example,
   decorators: [
-    withKnobs,
     (storyFn) => (
       <Setup cameraPosition={new Vector3(1, 2, 4)} cameraFov={60}>
         {storyFn()}

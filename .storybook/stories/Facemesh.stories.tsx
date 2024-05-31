@@ -1,6 +1,5 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { withKnobs, number } from '@storybook/addon-knobs'
 import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'
@@ -11,7 +10,6 @@ export default {
   title: 'Shapes/Facemesh',
   component: Facemesh,
   decorators: [
-    withKnobs,
     (storyFn) => (
       <Setup cameraPosition={new Vector3(0, 0, 5)} cameraFov={60}>
         {storyFn()}

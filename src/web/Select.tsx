@@ -48,7 +48,7 @@ export function Select({
     []
   )
   React.useEffect(() => {
-    if (downed) onChange?.(active)
+    if (!downed) onChange?.(active)
     else onChangePointerUp?.(active)
   }, [active, downed])
   const onClick = React.useCallback((e) => {

@@ -11,7 +11,8 @@ A growing collection of useful helpers and fully functional, ready-made abstract
 npm install @react-three/drei
 ```
 
-:point_right: this package is using the stand-alone [`three-stdlib`](https://github.com/pmndrs/three-stdlib) instead of [`three/examples/jsm`](https://github.com/mrdoob/three.js/tree/master/examples/jsm). :point_left:
+> [!IMPORTANT]  
+> this package is using the stand-alone [`three-stdlib`](https://github.com/pmndrs/three-stdlib) instead of [`three/examples/jsm`](https://github.com/mrdoob/three.js/tree/master/examples/jsm).
 
 ### Basic usage:
 

@@ -126,7 +126,10 @@ export function useSpriteLoader<Url extends string>(
         const width = _spriteTexture.image.width
         const height = _spriteTexture.image.height
         totalFrames.current = numberOfFrames
-        const { rows, columns, frameWidth, frameHeight } = getRowsAndColumns(_spriteTexture, numberOfFrames)
+        const { rows, columns, frameWidth, frameHeight, emptyFrames } = getRowsAndColumns(
+          _spriteTexture,
+          numberOfFrames
+        )
         spriteDataRef.current = {
           frames: [],
           meta: {
@@ -140,15 +143,32 @@ export function useSpriteLoader<Url extends string>(
           },
         }
 
-        if (parseInt(frameWidth.toString(), 10) === frameWidth) {
-          // if it fits
-          for (let i = 0; i < numberOfFrames; i++) {
+        for (let row = 0; row < rows; row++) {
+          for (let col = 0; col < columns; col++) {
+            const isExcluded = (emptyFrames ?? []).some((coord) => coord.row === row && coord.col === col)
+
+            if (isExcluded) {
+              continue
+            }
             spriteDataRef.current.frames.push({
-              frame: { x: i * frameWidth, y: 0, w: frameWidth, h: frameHeight },
+              frame: {
+                x: col * frameWidth,
+                y: row * frameHeight,
+                w: frameWidth,
+                h: frameHeight,
+              },
               rotated: false,
               trimmed: false,
-              spriteSourceSize: { x: 0, y: 0, w: frameWidth, h: frameHeight },
-              sourceSize: { w: frameWidth, h: height },
+              spriteSourceSize: {
+                x: 0,
+                y: 0,
+                w: frameWidth,
+                h: frameHeight,
+              },
+              sourceSize: {
+                w: frameWidth,
+                h: frameHeight,
+              },
             })
           }
         }
@@ -216,9 +236,9 @@ export function useSpriteLoader<Url extends string>(
         }
       }
 
-      return { rows, columns: cols, frameWidth, frameHeight }
+      return { rows, columns: cols, frameWidth, frameHeight, emptyFrames }
     } else {
-      return { rows: 0, columns: 0, frameWidth: 0, frameHeight: 0 }
+      return { rows: 0, columns: 0, frameWidth: 0, frameHeight: 0, emptyFrames: [] }
     }
   }
 

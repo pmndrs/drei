@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { withKnobs, optionsKnob, boolean } from '@storybook/addon-knobs'
 import { Object3D } from 'three'
 import { TransformControls as TransformControlsImpl, OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 
@@ -85,24 +84,26 @@ function TransformControlsLockScene({ mode, showX, showY, showZ }) {
   )
 }
 
-export const TransformControlsLockSt = () => {
-  const modesObj = {
-    scale: 'scale',
-    rotate: 'rotate',
-    translate: 'translate',
-  }
-
-  return (
-    <TransformControlsLockScene
-      mode={optionsKnob('mode', modesObj, 'translate', {
-        display: 'radio',
-      })}
-      showX={boolean('showX', true)}
-      showY={boolean('showY', true)}
-      showZ={boolean('showZ', true)}
-    />
-  )
+const modesObj = {
+  scale: 'scale',
+  rotate: 'rotate',
+  translate: 'translate',
+}
+export const TransformControlsLockSt = (args) => {
+  return <TransformControlsLockScene {...args} />
 }
 
 TransformControlsLockSt.storyName = 'Lock orbit controls while transforming'
-TransformControlsLockSt.decorators = [withKnobs, (storyFn) => <Setup controls={false}>{storyFn()}</Setup>]
+TransformControlsLockSt.decorators = [(storyFn) => <Setup controls={false}>{storyFn()}</Setup>]
+TransformControlsLockSt.args = {
+  mode: 'translate',
+  showX: true,
+  showY: true,
+  showZ: true,
+}
+TransformControlsLockSt.argTypes = {
+  mode: { control: { type: 'radio', options: modesObj } },
+  showX: { control: 'boolean' },
+  showY: { control: 'boolean' },
+  showZ: { control: 'boolean' },
+}

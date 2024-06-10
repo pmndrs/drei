@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
 import { useFrame } from '@react-three/fiber'
-import { withKnobs } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
 
@@ -31,7 +30,6 @@ export function BasicSegments() {
 BasicSegments.storyName = 'Basic'
 
 BasicSegments.decorators = [
-  withKnobs,
   (storyFn) => (
     <Setup controls={false} cameraPosition={new Vector3(10, 10, 10)}>
       {storyFn()}
@@ -72,7 +70,6 @@ export function ManySegments() {
 ManySegments.storyName = 'Performance'
 
 ManySegments.decorators = [
-  withKnobs,
   (storyFn) => (
     <Setup controls={false} cameraPosition={new Vector3(10, 10, 10)}>
       {storyFn()}

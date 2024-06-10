@@ -1,6 +1,5 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { withKnobs } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
 
@@ -10,7 +9,6 @@ export default {
   title: 'Staging/Resize',
   component: Resize,
   decorators: [
-    withKnobs,
     (storyFn) => (
       <Setup camera={{ position: [1, 1, 1], zoom: 150 }} orthographic>
         {storyFn()}

@@ -17,6 +17,20 @@ export const getFirstItem = (param: any): any => {
   }
 }
 
+export const checkIfFrameIsEmpty = (frameData: Uint8ClampedArray) => {
+  for (let i = 3; i < frameData.length; i += 4) {
+    if (frameData[i] !== 0) {
+      return false
+    }
+  }
+  return true
+}
+
+type SpriteMetaDimension = {
+  row: number
+  col: number
+}
+
 export const calculateAspectRatio = (width: number, height: number, factor: number, v: any): THREE.Vector3 => {
   const adaptedHeight = height * (v.aspect > width / height ? v.width / width : v.height / height)
   const adaptedWidth = width * (v.aspect > width / height ? v.width / width : v.height / height)
@@ -111,14 +125,17 @@ export function useSpriteLoader<Url extends string>(
         //get size from texture
         const width = _spriteTexture.image.width
         const height = _spriteTexture.image.height
-        const frameWidth = width / numberOfFrames
-        const frameHeight = height
         totalFrames.current = numberOfFrames
+        const { rows, columns, frameWidth, frameHeight } = getRowsAndColumns(_spriteTexture, numberOfFrames)
         spriteDataRef.current = {
           frames: [],
           meta: {
             version: '1.0',
             size: { w: width, h: height },
+            rows,
+            columns,
+            frameWidth,
+            frameHeight,
             scale: '1',
           },
         }
@@ -157,6 +174,52 @@ export function useSpriteLoader<Url extends string>(
       spriteData: spriteDataRef.current,
       aspect: aspect,
     })
+  }
+
+  const getRowsAndColumns = (texture: THREE.Texture, totalFrames: number) => {
+    if (texture.image) {
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')!
+
+      canvas.width = texture.image.width
+      canvas.height = texture.image.height
+
+      ctx.drawImage(texture.image, 0, 0)
+
+      const width = texture.image.width
+      const height = texture.image.height
+
+      // Calculate rows and columns based on the number of frames and image dimensions
+      const cols = Math.round(Math.sqrt(totalFrames * (width / height)))
+      const rows = Math.round(totalFrames / cols)
+
+      const frameWidth = width / cols
+      const frameHeight = height / rows
+
+      const emptyFrames: SpriteMetaDimension[] = []
+
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          const frameIndex = row * cols + col
+
+          if (frameIndex >= totalFrames) {
+            emptyFrames.push({ row, col })
+            continue
+          }
+
+          const frameData = ctx.getImageData(col * frameWidth, row * frameHeight, frameWidth, frameHeight).data
+
+          const isEmpty = checkIfFrameIsEmpty(frameData)
+          if (isEmpty) {
+            emptyFrames.push({ row, col })
+          }
+        }
+      }
+
+      return { rows, columns: cols, frameWidth, frameHeight }
+    } else {
+      return { rows: 0, columns: 0, frameWidth: 0, frameHeight: 0 }
+    }
   }
 
   // for frame based JSON Hash sprite data

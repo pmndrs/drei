@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { DoubleSide, Vector3 } from 'three'
-import { withKnobs, number, color as colorKnob } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
 import { useTurntable } from '../useTurntable'
@@ -10,7 +9,7 @@ import { Text } from '../../src'
 export default {
   title: 'Abstractions/Text',
   component: Text,
-  decorators: [withKnobs, (storyFn) => <Setup cameraPosition={new Vector3(0, 0, 200)}>{storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 200)}>{storyFn()}</Setup>],
 }
 
 function TextScene() {
@@ -158,9 +157,8 @@ function TextRtlScene() {
   )
 }
 
-function CustomMaterialTextScene() {
+function CustomMaterialTextScene({ color, opacity }) {
   const ref = useTurntable()
-  const defaultColor = '#EC2D2D'
 
   return (
     <React.Suspense fallback={null}>
@@ -175,12 +173,7 @@ function CustomMaterialTextScene() {
         anchorX="center"
         anchorY="middle"
       >
-        <meshBasicMaterial
-          side={DoubleSide}
-          color={colorKnob('Color', defaultColor)}
-          transparent
-          opacity={number('Opacity', 1, { range: true, min: 0, max: 1, step: 0.1 })}
-        />
+        <meshBasicMaterial side={DoubleSide} color={color} transparent opacity={opacity} />
         LOREM IPSUM DOLOR SIT AMET, CONSECTETUR ADIPISCING ELIT, SED DO EIUSMOD TEMPOR INCIDIDUNT UT LABORE ET DOLORE
         MAGNA ALIQUA. UT ENIM AD MINIM VENIAM, QUIS NOSTRUD EXERCITATION ULLAMCO LABORIS NISI UT ALIQUIP EX EA COMMODO
         CONSEQUAT. DUIS AUTE IRURE DOLOR IN REPREHENDERIT IN VOLUPTATE VELIT ESSE CILLUM DOLORE EU FUGIAT NULLA
@@ -203,5 +196,13 @@ TextShadowSt.storyName = 'Text Shadow'
 export const TextLtrSt = () => <TextRtlScene />
 TextLtrSt.storyName = 'Text Rtl'
 
-export const CustomMaterialTextSt = () => <CustomMaterialTextScene />
+export const CustomMaterialTextSt = (args) => <CustomMaterialTextScene {...args} />
 CustomMaterialTextSt.storyName = 'Custom Material'
+CustomMaterialTextSt.args = {
+  color: '#EC2D2D',
+  opacity: 1,
+}
+CustomMaterialTextSt.argTypes = {
+  color: { control: 'color' },
+  opacity: { control: { type: 'range', min: 0, max: 1, step: 0.1 } },
+}

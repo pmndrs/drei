@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { withKnobs, number } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
 
@@ -8,15 +7,15 @@ import { useTrailTexture } from '../../src'
 export default {
   title: 'misc/useTrailTexture',
   component: useTrailTexture,
-  decorators: [withKnobs, (storyFn) => <Setup>{storyFn()}</Setup>],
+  decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
 }
 
-function TrailMesh() {
+function TrailMesh({ size, radius, maxAge }) {
   // a convenience hook that uses useLoader and TextureLoader
   const [texture, onMove] = useTrailTexture({
-    size: number('Size', 256, { min: 64, step: 8 }),
-    radius: number('Radius', 0.3, { range: true, min: 0.1, max: 1, step: 0.1 }),
-    maxAge: number('Max age', 750, { range: true, min: 300, max: 1000, step: 100 }),
+    size,
+    radius,
+    maxAge,
   })
 
   return (
@@ -27,15 +26,25 @@ function TrailMesh() {
   )
 }
 
-function UseTrailTextureScene() {
+function UseTrailTextureScene(args) {
   return (
     <React.Suspense fallback={null}>
-      <TrailMesh />
+      <TrailMesh {...args} />
     </React.Suspense>
   )
 }
 
-export const UseTextureSceneSt = () => <UseTrailTextureScene />
+export const UseTextureSceneSt = (args) => <UseTrailTextureScene {...args} />
 UseTextureSceneSt.story = {
   name: 'Default',
+}
+UseTextureSceneSt.args = {
+  size: 256,
+  radius: 0.3,
+  maxAge: 750,
+}
+UseTextureSceneSt.argTypes = {
+  size: { control: { type: 'range', min: 64, step: 8 } },
+  radius: { control: { type: 'range', min: 0.1, max: 1, step: 0.1 } },
+  maxAge: { control: { type: 'range', min: 300, max: 1000, step: 100 } },
 }

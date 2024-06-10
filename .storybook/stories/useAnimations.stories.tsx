@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
 import { GLTF } from 'three-stdlib'
-import { withKnobs, select, number } from '@storybook/addon-knobs'
 
 import { Setup } from '../Setup'
 
@@ -10,7 +9,7 @@ import { useAnimations, useGLTF, useMatcapTexture } from '../../src'
 export default {
   title: 'Abstractions/useAnimations',
   component: useAnimations,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 3)}>{storyFn()}</Setup>, withKnobs],
+  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 3)}>{storyFn()}</Setup>],
 }
 
 type GLTFResult = GLTF & {
@@ -30,18 +29,11 @@ type AnimationControllerProps = {
   animations: THREE.AnimationClip[]
 }
 
-function AnimationController(props: AnimationControllerProps) {
+function AnimationController(props: AnimationControllerProps & { selectedAction: string; blendDuration: number }) {
   const { actions } = useAnimations(props.animations, props.ybotRef)
 
-  // Storybook Knobs
-  const actionOptions = Object.keys(actions)
-  const selectedAction = select('Animation', actionOptions, actionOptions[2])
-  const blendDuration = number('Blend duration', 0.5, {
-    range: true,
-    min: 0,
-    max: 2,
-    step: 0.1,
-  })
+  const selectedAction = props.selectedAction
+  const blendDuration = props.blendDuration
 
   React.useEffect(() => {
     actions[selectedAction]?.reset().fadeIn(blendDuration).play()
@@ -51,7 +43,7 @@ function AnimationController(props: AnimationControllerProps) {
   return null
 }
 
-function YBotModel(props: JSX.IntrinsicElements['group']) {
+function YBotModel(props: JSX.IntrinsicElements['group'] & { selectedAction: string; blendDuration: number }) {
   const ybotRef = React.useRef<THREE.Group>(null)
   const { nodes, animations } = useGLTF('ybot.glb') as GLTFResult
   const [matcapBody] = useMatcapTexture('293534_B2BFC5_738289_8A9AA7', 1024)
@@ -71,20 +63,33 @@ function YBotModel(props: JSX.IntrinsicElements['group']) {
         </group>
       </group>
 
-      <AnimationController ybotRef={ybotRef} animations={animations} />
+      <AnimationController
+        ybotRef={ybotRef}
+        animations={animations}
+        selectedAction={props.selectedAction}
+        blendDuration={props.blendDuration}
+      />
     </>
   )
 }
 
 useGLTF.preload('ybot.glb')
 
-function UseAnimationsScene() {
+function UseAnimationsScene({ selectedAction, blendDuration }) {
   return (
     <React.Suspense fallback={null}>
-      <YBotModel position={[0, -1, 0]} />
+      <YBotModel position={[0, -1, 0]} selectedAction={selectedAction} blendDuration={blendDuration} />
     </React.Suspense>
   )
 }
 
-export const UseAnimationsSt = () => <UseAnimationsScene />
+export const UseAnimationsSt = (args) => <UseAnimationsScene {...args} />
 UseAnimationsSt.storyName = 'Default'
+UseAnimationsSt.args = {
+  selectedAction: 'Strut',
+  blendDuration: 0.5,
+}
+UseAnimationsSt.argTypes = {
+  selectedAction: { control: 'select', options: ['Dance', 'Idle', 'Strut'] },
+  blendDuration: { controls: { type: 'range', min: 0, max: 2, step: 0.1 } },
+}

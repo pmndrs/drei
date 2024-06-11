@@ -3354,6 +3354,12 @@ useFont.preload('/fonts/helvetiker_regular.typeface.json')
 
 Loads texture and JSON files with multiple or single animations and parses them into appropriate format. These assets can be used by multiple SpriteAnimator components to save memory and loading times.
 
+Returns: `{spriteTexture:Texture, spriteData:{any[], object}, aspect:Vector3}`
+
+- spriteTexture: The ThreeJS Texture
+- spriteData: A collection of the sprite frames, and some meta information (width, height)
+- aspect: Information about the aspect ratio of the sprite sheet
+
 ```jsx
 /** The texture url to load the sprite frames from */
 input?: Url | null,

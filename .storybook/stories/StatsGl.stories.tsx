@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
@@ -8,16 +9,20 @@ export default {
   title: 'Misc/StatsGl',
   component: StatsGl,
   decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
-}
+} satisfies Meta<typeof StatsGl>
 
-function Scene() {
+type Story = StoryObj<typeof StatsGl>
+
+function StatsGlScene(props: React.ComponentProps<typeof StatsGl>) {
   return (
     <>
       <axesHelper />
-      <StatsGl />
+      <StatsGl {...props} />
     </>
   )
 }
 
-export const DefaultStory = () => <Scene />
-DefaultStory.storyName = 'Default'
+export const StatsGlSt = {
+  render: (args) => <StatsGlScene {...args} />,
+  name: 'Default',
+} satisfies Story

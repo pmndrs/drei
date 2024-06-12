@@ -1,22 +1,9 @@
 import * as React from 'react'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
 import { DeviceOrientationControls, Box } from '../../src'
-
-export function DeviceOrientationControlsStory() {
-  return (
-    <>
-      <DeviceOrientationControls />
-      <Box args={[100, 100, 100, 4, 4, 4]}>
-        <meshBasicMaterial wireframe />
-        <axesHelper args={[100]} />
-      </Box>
-    </>
-  )
-}
-
-DeviceOrientationControlsStory.storyName = 'Default'
 
 export default {
   title: 'Controls/DeviceOrientationControls',
@@ -28,4 +15,24 @@ export default {
       </Setup>
     ),
   ],
+} satisfies Meta<typeof DeviceOrientationControls>
+
+type Story = StoryObj<typeof DeviceOrientationControls>
+
+function DeviceOrientationControlsScene(props: React.ComponentProps<typeof DeviceOrientationControls>) {
+  return (
+    <>
+      <DeviceOrientationControls {...props} />
+
+      <Box args={[100, 100, 100, 4, 4, 4]}>
+        <meshBasicMaterial wireframe />
+        <axesHelper args={[100]} />
+      </Box>
+    </>
+  )
 }
+
+export const DeviceOrientationControlsSt = {
+  name: 'Default',
+  render: (args) => <DeviceOrientationControlsScene {...args} />,
+} satisfies Story

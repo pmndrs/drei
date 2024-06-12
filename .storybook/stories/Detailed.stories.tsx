@@ -1,9 +1,11 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
 import { Detailed, Icosahedron, OrbitControls } from '../../src'
+import { ComponentProps } from 'react'
 
 export default {
   title: 'Abstractions/Detailed',
@@ -15,12 +17,14 @@ export default {
       </Setup>
     ),
   ],
-}
+} satisfies Meta<typeof Detailed>
 
-function DetailedScene() {
+type Story = StoryObj<typeof Detailed>
+
+function DetailedScene(props: ComponentProps<typeof Detailed>) {
   return (
     <>
-      <Detailed distances={[0, 50, 150]}>
+      <Detailed {...props} distances={[0, 50, 150]}>
         <Icosahedron args={[10, 3]}>
           <meshBasicMaterial color="hotpink" wireframe />
         </Icosahedron>
@@ -36,5 +40,7 @@ function DetailedScene() {
   )
 }
 
-export const DetailedSt = () => <DetailedScene />
-DetailedSt.storyName = 'Default'
+export const DetailedSt = {
+  render: (args) => <DetailedScene {...args} />,
+  name: 'Default',
+} satisfies Story

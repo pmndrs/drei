@@ -1,8 +1,10 @@
 import * as React from 'react'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 import { Sampler, Decal, useTexture, useSurfaceSampler, PerspectiveCamera, OrbitControls } from '../../src'
 import { Euler, InstancedBufferAttribute, Matrix4, Mesh, Quaternion, Vector3 } from 'three'
+import { ComponentProps } from 'react'
 
 function LoopOverInstancedBufferAttribute({ children, buffer }: { buffer?: InstancedBufferAttribute; children: any }) {
   const [m] = React.useState(() => new Matrix4())
@@ -31,9 +33,11 @@ export default {
       </Setup>
     ),
   ],
-}
+} satisfies Meta<typeof Sampler>
 
-function DecalScene() {
+type Story = StoryObj<typeof Sampler>
+
+function DecalScene(props: ComponentProps<typeof Sampler>) {
   const ref = React.useRef<any>()
 
   const [reactMap, threeMap] = useTexture(['/decals/react.png', '/decals/three.png'])
@@ -83,5 +87,7 @@ function DecalScene() {
   )
 }
 
-export const DecalSt = () => <DecalScene />
-DecalSt.storyName = 'Default'
+export const DecalSt = {
+  render: (args) => <DecalScene {...args} />,
+  name: 'Default',
+} satisfies Story

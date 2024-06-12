@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
@@ -8,12 +9,14 @@ export default {
   title: 'Staging/Stars',
   component: Stars,
   decorators: [(storyFn) => <Setup> {storyFn()}</Setup>],
-}
+} satisfies Meta<typeof Stars>
 
-function StarsScene() {
+type Story = StoryObj<typeof Stars>
+
+function StarsScene(props: React.ComponentProps<typeof Stars>) {
   return (
     <>
-      <Stars />
+      <Stars {...props} />
       <Plane rotation-x={Math.PI / 2} args={[100, 100, 4, 4]}>
         <meshBasicMaterial color="black" wireframe />
       </Plane>
@@ -22,5 +25,7 @@ function StarsScene() {
   )
 }
 
-export const StarsSt = () => <StarsScene />
-StarsSt.storyName = 'Default'
+export const StarsSt = {
+  render: (args) => <StarsScene {...args} />,
+  name: 'Default',
+} satisfies Story

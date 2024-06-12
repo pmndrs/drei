@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { Component, ComponentProps } from 'react'
 import { BufferGeometry, CatmullRomCurve3, LineBasicMaterial, LineLoop, Vector3 } from 'three'
 import { FontLoader, TextGeometry, TextGeometryParameters } from 'three-stdlib'
 import { extend, useFrame, useLoader } from '@react-three/fiber'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 import { CurveModifier, CurveModifierRef } from '../../src'
@@ -26,9 +27,11 @@ export default {
   title: 'Modifiers/CurveModifier',
   component: CurveModifier,
   decorators: [(storyFn) => <Setup cameraPosition={cameraPosition}>{storyFn()}</Setup>],
-}
+} satisfies Meta<typeof CurveModifier>
 
-function CurveModifierScene() {
+type Story = StoryObj<typeof CurveModifier>
+
+function CurvedText(props: ComponentProps<typeof CurveModifier>) {
   const curveRef = React.useRef<CurveModifierRef>()
   const geomRef = React.useRef<TextGeometry>(null!)
   const font = useLoader(FontLoader, '/fonts/helvetiker_regular.typeface.json')
@@ -64,7 +67,7 @@ function CurveModifierScene() {
 
   return (
     <>
-      <CurveModifier ref={curveRef} curve={curve}>
+      <CurveModifier ref={curveRef} curve={curve} {...props}>
         <mesh>
           <stdText
             attach="geometry"
@@ -93,9 +96,15 @@ function CurveModifierScene() {
   )
 }
 
-export const CurveModifierSt = () => (
-  <React.Suspense fallback={null}>
-    <CurveModifierScene />
-  </React.Suspense>
-)
-CurveModifierSt.storyName = 'Default'
+function CurveModifierScene(props: ComponentProps<typeof CurveModifier>) {
+  return (
+    <React.Suspense fallback={null}>
+      <CurvedText {...props} />
+    </React.Suspense>
+  )
+}
+
+export const CurveModifierSt = {
+  render: (args) => <CurveModifierScene {...args} />,
+  name: 'Default',
+} satisfies Story

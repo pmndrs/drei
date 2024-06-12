@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
@@ -10,9 +11,11 @@ export default {
   title: 'Misc/ShadowAlpha',
   component: ShadowAlpha,
   decorators: [(storyFn) => <Setup lights={false}> {storyFn()}</Setup>],
-}
+} satisfies Meta<typeof ShadowAlpha>
 
-function ShadowAlphaScene() {
+type Story = StoryObj<typeof ShadowAlpha>
+
+function ShadowAlphaScene(props: React.ComponentProps<typeof ShadowAlpha>) {
   const mesh = React.useRef<Mesh<BufferGeometry, MeshStandardMaterial>>(null!)
 
   useFrame(({ clock }) => {
@@ -24,7 +27,7 @@ function ShadowAlphaScene() {
     <>
       <Icosahedron castShadow ref={mesh} args={[1, 2]} position-y={2}>
         <meshStandardMaterial color="lightblue" transparent />
-        <ShadowAlpha />
+        <ShadowAlpha {...props} />
       </Icosahedron>
 
       <Plane receiveShadow args={[4, 4]} rotation={[-Math.PI / 2, 0, 0]}>
@@ -37,5 +40,7 @@ function ShadowAlphaScene() {
   )
 }
 
-export const ShadowAlphaSt = () => <ShadowAlphaScene />
-ShadowAlphaSt.storyName = 'Default'
+export const ShadowAlphaSt = {
+  render: (args) => <ShadowAlphaScene {...args} />,
+  name: 'Default',
+} satisfies Story

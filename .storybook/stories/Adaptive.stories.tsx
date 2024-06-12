@@ -1,5 +1,6 @@
-import React, { Suspense } from 'react'
+import React, { ComponentProps, Suspense } from 'react'
 import { Vector3 } from 'three'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
@@ -10,7 +11,7 @@ import type { GLTF } from 'three-stdlib'
 
 export default {
   title: 'Performance/Adaptive',
-  component: useGLTF,
+  component: AdaptiveDpr,
   decorators: [
     (storyFn) => (
       <Setup
@@ -25,7 +26,9 @@ export default {
       </Setup>
     ),
   ],
-}
+} satisfies Meta<typeof AdaptiveDpr>
+
+type Story = StoryObj<typeof AdaptiveDpr>
 
 interface ArcherGLTF extends GLTF {
   materials: { material_0: Material }
@@ -51,7 +54,7 @@ function Archer() {
   )
 }
 
-function AdaptiveScene() {
+function AdaptiveScene(props: ComponentProps<typeof AdaptiveDpr>) {
   return (
     <>
       <Suspense fallback={null}>
@@ -65,14 +68,20 @@ function AdaptiveScene() {
         castShadow
         shadow-bias={-0.001}
       />
-      <AdaptiveDpr pixelated />
+      <AdaptiveDpr {...props} />
       <AdaptiveEvents />
       <OrbitControls regress />
     </>
   )
 }
 
-export const AdaptiveSceneSt = () => <AdaptiveScene />
-AdaptiveSceneSt.story = {
+export const AdaptiveSceneSt = {
   name: 'Default',
-}
+  render: (args) => <AdaptiveScene {...args} />,
+  args: {
+    pixelated: true,
+  },
+  argTypes: {
+    pixelated: { control: 'boolean' },
+  },
+} satisfies Story

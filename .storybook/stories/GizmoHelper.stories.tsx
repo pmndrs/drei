@@ -22,9 +22,9 @@ export default {
   title: 'Gizmos/GizmoHelper',
   component: GizmoHelper,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup controls={false} cameraPosition={new Vector3(0, 0, 10)}>
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],

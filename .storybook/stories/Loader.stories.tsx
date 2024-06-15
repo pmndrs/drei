@@ -9,7 +9,13 @@ import { Html, useGLTF, Loader } from '../../src'
 export default {
   title: 'Misc/Loader',
   component: Loader,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 5)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(0, 0, 5)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Loader>
 
 type Story = StoryObj<typeof Loader>

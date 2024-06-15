@@ -8,7 +8,13 @@ import { Box, FlyControls } from '../../src'
 export default {
   title: 'Controls/FlyControls',
   component: FlyControls,
-  decorators: [(storyFn) => <Setup controls={false}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup controls={false}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof FlyControls>
 
 type Story = StoryObj<typeof FlyControls>

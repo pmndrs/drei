@@ -8,7 +8,13 @@ import { Stars, Plane } from '../../src'
 export default {
   title: 'Staging/Stars',
   component: Stars,
-  decorators: [(storyFn) => <Setup> {storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Stars>
 
 type Story = StoryObj<typeof Stars>

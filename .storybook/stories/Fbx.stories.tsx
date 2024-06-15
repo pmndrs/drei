@@ -8,7 +8,13 @@ import { Fbx, useCubeTexture } from '../../src'
 export default {
   title: 'Loaders/Fbx',
   component: Fbx,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 5)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(0, 0, 5)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Fbx>
 
 type Story = StoryObj<typeof Fbx>

@@ -9,7 +9,13 @@ import { Box, CameraControls, PerspectiveCamera, Plane, useFBO } from '../../src
 export default {
   title: 'Controls/CameraControls',
   component: CameraControls,
-  decorators: [(storyFn) => <Setup controls={false}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup controls={false}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof CameraControls>
 
 type Story = StoryObj<typeof CameraControls>

@@ -8,7 +8,13 @@ import { Icosahedron, Texture } from '../../src'
 export default {
   title: 'Loaders/Texture',
   component: Texture,
-  decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Texture>
 
 type Story = StoryObj<typeof Texture>

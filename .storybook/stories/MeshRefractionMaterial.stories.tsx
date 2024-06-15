@@ -21,9 +21,9 @@ export default {
   title: 'Shaders/MeshRefractionMaterial',
   component: MeshRefractionMaterial,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup cameraFov={45} cameraPosition={new THREE.Vector3(-5, 0.5, 5)}>
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],

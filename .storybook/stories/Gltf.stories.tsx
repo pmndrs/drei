@@ -7,9 +7,15 @@ import { Setup } from '../Setup'
 import { Gltf } from '../../src'
 
 export default {
-  title: 'Loaders/GLTF',
+  title: 'Loaders/Gltf',
   component: Gltf,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 5)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(0, 0, 5)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Gltf>
 
 type Story = StoryObj<typeof Gltf>

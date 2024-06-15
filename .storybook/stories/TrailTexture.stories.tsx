@@ -8,7 +8,13 @@ import { TrailTexture } from '../../src'
 export default {
   title: 'misc/TrailTexture',
   component: TrailTexture,
-  decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof TrailTexture>
 
 type Story = StoryObj<typeof TrailTexture>

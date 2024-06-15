@@ -13,7 +13,7 @@ export default {
   title: 'Performance/Adaptive',
   component: AdaptiveDpr,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup
         cameraPosition={new Vector3(0, 0, 30)}
         cameraFov={50}
@@ -22,7 +22,7 @@ export default {
         lights={false}
         performance={{ min: 0.2 }}
       >
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],

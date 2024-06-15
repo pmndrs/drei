@@ -9,7 +9,13 @@ import { useTurntable } from '../useTurntable'
 export default {
   title: 'Shapes/Sphere',
   component: Sphere,
-  decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Sphere>
 
 type Story = StoryObj<typeof Sphere>

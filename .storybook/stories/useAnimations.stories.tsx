@@ -27,7 +27,13 @@ function UseAnimation({ animations, root, selectedAction, blendDuration }: UseAn
 export default {
   title: 'Abstractions/useAnimations',
   component: UseAnimation,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 3)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(0, 0, 3)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof UseAnimation>
 
 type Story = StoryObj<typeof UseAnimation>

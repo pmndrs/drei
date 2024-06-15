@@ -17,7 +17,13 @@ export default {
     inclination: { control: { type: 'range', min: 0, max: 1, step: 0.01 } },
     azimuth: { control: { type: 'range', min: 0, max: 1, step: 0.01 } },
   },
-  decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Sky>
 
 type Story = StoryObj<typeof Sky>

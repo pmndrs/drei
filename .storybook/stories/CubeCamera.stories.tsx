@@ -11,7 +11,13 @@ import { ComponentProps } from 'react'
 export default {
   title: 'Camera/CubeCamera',
   component: CubeCamera,
-  decorators: [(storyFn) => <Setup cameraPosition={new THREE.Vector3(0, 10, 40)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new THREE.Vector3(0, 10, 40)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof CubeCamera>
 
 type Story = StoryObj<typeof CubeCamera>

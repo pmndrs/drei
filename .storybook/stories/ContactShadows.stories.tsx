@@ -11,7 +11,13 @@ import { ComponentProps } from 'react'
 export default {
   title: 'Staging/ContactShadows',
   component: ContactShadows,
-  decorators: [(storyFn) => <Setup> {storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof ContactShadows>
 
 type Story = StoryObj<typeof ContactShadows>

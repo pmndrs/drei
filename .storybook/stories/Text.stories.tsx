@@ -10,7 +10,13 @@ import { Text } from '../../src'
 export default {
   title: 'Abstractions/Text',
   component: Text,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 200)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(0, 0, 200)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Text>
 
 type Story = StoryObj<typeof Text>

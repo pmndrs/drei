@@ -11,7 +11,13 @@ import { ComponentProps } from 'react'
 export default {
   title: 'Controls/FaceControls',
   component: FaceControls,
-  decorators: [(storyFn) => <Setup cameraFov={60}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraFov={60}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof FaceControls>
 
 type Story = StoryObj<typeof FaceControls>

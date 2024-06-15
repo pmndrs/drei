@@ -18,7 +18,13 @@ export default {
     speed: { control: { type: 'range', min: 0, max: 10, step: 0.1 } },
     factor: { control: { type: 'range', min: 0, max: 1, step: 0.1 } },
   },
-  decorators: [(storyFn) => <Setup> {storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof MeshWobbleMaterial>
 
 type Story = StoryObj<typeof MeshWobbleMaterial>

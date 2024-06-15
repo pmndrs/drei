@@ -9,7 +9,13 @@ import { useTurntable } from '../useTurntable'
 export default {
   title: 'Shapes/Ring',
   component: Ring,
-  decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Ring>
 
 type Story = StoryObj<typeof Ring>

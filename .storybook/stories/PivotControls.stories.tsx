@@ -8,7 +8,13 @@ import { Meta, StoryObj } from '@storybook/react'
 export default {
   title: 'Gizmos/PivotControls',
   component: PivotControls,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 2.5)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(0, 0, 2.5)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof PivotControls>
 
 type Story = StoryObj<typeof PivotControls>

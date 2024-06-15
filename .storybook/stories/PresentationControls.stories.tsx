@@ -9,9 +9,9 @@ export default {
   title: 'Controls/PresentationControls',
   component: PresentationControls,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup camera={{ near: 1, far: 1100, fov: 75 }} controls={false}>
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],

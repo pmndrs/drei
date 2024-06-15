@@ -67,7 +67,13 @@ function ShaderMaterial(props: React.ComponentProps<'myMaterial'>) {
 export default {
   title: 'Shaders/shaderMaterial',
   component: ShaderMaterial,
-  decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof ShaderMaterial>
 
 type Story = StoryObj<typeof ShaderMaterial>

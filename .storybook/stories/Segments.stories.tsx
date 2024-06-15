@@ -10,9 +10,9 @@ import { Segment, Segments, OrbitControls } from '../../src'
 export default {
   title: 'Performance/Segments',
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup controls={false} cameraPosition={new Vector3(10, 10, 10)}>
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],

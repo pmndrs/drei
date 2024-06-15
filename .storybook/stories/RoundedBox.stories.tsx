@@ -10,7 +10,13 @@ import { RoundedBox } from '../../src'
 export default {
   title: 'Shapes/RoundedBox',
   component: RoundedBox,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(-30, 30, 30)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(-30, 30, 30)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof RoundedBox>
 
 type Story = StoryObj<typeof RoundedBox>

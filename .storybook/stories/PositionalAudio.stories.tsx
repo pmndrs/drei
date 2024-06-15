@@ -8,7 +8,13 @@ import { PositionalAudio } from '../../src'
 export default {
   title: 'Abstractions/PositionalAudio',
   component: PositionalAudio,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 20)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(0, 0, 20)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof PositionalAudio>
 
 type Story = StoryObj<typeof PositionalAudio>

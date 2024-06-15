@@ -11,7 +11,13 @@ import { useGLTF, AccumulativeShadows, RandomizedLight, OrbitControls, Environme
 export default {
   title: 'Staging/AccumulativeShadows',
   component: AccumulativeShadows,
-  decorators: [(storyFn) => <Setup> {storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof AccumulativeShadows>
 
 type Story = StoryObj<typeof AccumulativeShadows>

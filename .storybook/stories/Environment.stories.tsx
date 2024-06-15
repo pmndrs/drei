@@ -13,9 +13,9 @@ export default {
   title: 'Staging/Environment',
   component: Environment,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup cameraPosition={new Vector3(0, 0, 10)} controls={false}>
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],

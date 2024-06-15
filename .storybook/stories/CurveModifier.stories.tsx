@@ -26,7 +26,13 @@ const cameraPosition = new Vector3(0, 10, 20)
 export default {
   title: 'Modifiers/CurveModifier',
   component: CurveModifier,
-  decorators: [(storyFn) => <Setup cameraPosition={cameraPosition}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={cameraPosition}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof CurveModifier>
 
 type Story = StoryObj<typeof CurveModifier>

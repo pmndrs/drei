@@ -12,10 +12,9 @@ export default {
   title: 'Staging/BBAnchor',
   component: BBAnchor,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup cameraPosition={new THREE.Vector3(2, 2, 2)} controls={false}>
-        {' '}
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],

@@ -10,7 +10,13 @@ import { Fbo, TorusKnot, Box, PerspectiveCamera } from '../../src'
 export default {
   title: 'Misc/Fbo',
   component: Fbo,
-  decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Fbo>
 
 type Story = StoryObj<typeof Fbo>

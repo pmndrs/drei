@@ -9,7 +9,13 @@ import { useTurntable } from '../useTurntable'
 export default {
   title: 'Shapes/Octahedron',
   component: Octahedron,
-  decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Octahedron>
 
 type Story = StoryObj<typeof Octahedron>

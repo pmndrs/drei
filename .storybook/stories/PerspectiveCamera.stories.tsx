@@ -8,7 +8,13 @@ import { Setup } from '../Setup'
 export default {
   title: 'Camera/PerspectiveCamera',
   component: PerspectiveCamera,
-  decorators: [(storyFn) => <Setup controls={false}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup controls={false}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof PerspectiveCamera>
 
 type Story = StoryObj<typeof PerspectiveCamera>

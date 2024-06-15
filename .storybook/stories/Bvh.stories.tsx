@@ -11,7 +11,13 @@ import { Group, Mesh, Raycaster, Vector3 } from 'three'
 export default {
   title: 'Performance/Bvh',
   component: Bvh,
-  decorators: [(storyFn) => <Setup controls={false}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup controls={false}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Bvh>
 
 type Story = StoryObj<typeof Bvh>

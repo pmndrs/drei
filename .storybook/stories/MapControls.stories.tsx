@@ -12,9 +12,9 @@ export default {
   title: 'Controls/MapControls',
   component: MapControls,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup orthographic camera={{ position: [0, 0, 50], zoom: 10, up: [0, 0, 1], far: 10000 }} controls={false}>
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],

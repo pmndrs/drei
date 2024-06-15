@@ -10,7 +10,13 @@ import { Icosahedron, Plane, ShadowAlpha } from '../../src'
 export default {
   title: 'Misc/ShadowAlpha',
   component: ShadowAlpha,
-  decorators: [(storyFn) => <Setup lights={false}> {storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup lights={false}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof ShadowAlpha>
 
 type Story = StoryObj<typeof ShadowAlpha>

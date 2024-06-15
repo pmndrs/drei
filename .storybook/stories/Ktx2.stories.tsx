@@ -6,9 +6,15 @@ import { Setup } from '../Setup'
 import { Box, Ktx2 } from '../../src'
 
 export default {
-  title: 'Loaders/KTX2',
+  title: 'Loaders/Ktx2',
   component: Ktx2,
-  decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Ktx2>
 
 type Story = StoryObj<typeof Ktx2>

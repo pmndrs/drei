@@ -11,7 +11,13 @@ import { float } from 'three/examples/jsm/nodes/Nodes.js'
 export default {
   title: 'Staging/Float',
   component: Float,
-  decorators: [(storyFn) => <Setup cameraPosition={new THREE.Vector3(0, 0, 10)}> {storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new THREE.Vector3(0, 0, 10)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Float>
 
 type Story = StoryObj<typeof Float>

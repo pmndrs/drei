@@ -11,7 +11,13 @@ import { ComponentProps } from 'react'
 export default {
   title: 'Staging/Center',
   component: Center,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, -10)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(0, 0, -10)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Center>
 
 type Story = StoryObj<typeof Center>

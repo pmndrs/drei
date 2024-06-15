@@ -9,7 +9,13 @@ import { Text3D, Float, Center } from '../../src'
 export default {
   title: 'Abstractions/Text3D',
   component: Text3D,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 5)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(0, 0, 5)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Text3D>
 
 type Story = StoryObj<typeof Text3D>

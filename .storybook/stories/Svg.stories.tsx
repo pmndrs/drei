@@ -10,14 +10,14 @@ export default {
   title: 'Abstractions/Svg',
   component: Svg,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup
         gl={{ toneMapping: NoToneMapping }}
         onCreated={(st) => st.gl.setClearColor('#ccc')}
         cameraPosition={new Vector3(0, 0, 200)}
         lights={false}
       >
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],

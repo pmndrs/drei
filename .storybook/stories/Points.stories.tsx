@@ -13,7 +13,13 @@ import * as misc from 'maath/misc'
 export default {
   title: 'Performance/Points',
   component: Points,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(10, 10, 10)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(10, 10, 10)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Points>
 
 type Story = StoryObj<typeof Points>

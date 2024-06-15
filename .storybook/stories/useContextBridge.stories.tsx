@@ -16,7 +16,6 @@ function ContextBridge({
 export default {
   title: 'Misc/useContextBridge',
   component: ContextBridge,
-  decorators: [(storyFn) => storyFn()],
 } satisfies Meta<typeof ContextBridge>
 
 type Story = StoryObj<typeof ContextBridge>

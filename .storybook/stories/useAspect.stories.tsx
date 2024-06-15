@@ -26,7 +26,13 @@ export default {
     height: { control: { type: 'range', min: 0, max: 2000 } },
     factor: { control: { type: 'range', min: 0, max: 10, step: 0.01 } },
   },
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, -10, 0)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(0, -10, 0)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof UseAspect>
 
 type Story = StoryObj<typeof UseAspect>

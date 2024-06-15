@@ -10,7 +10,13 @@ import { Lathe } from '../../src'
 export default {
   title: 'Shapes/Lathe',
   component: Lathe,
-  decorators: [(storyFn) => <Setup cameraPosition={new THREE.Vector3(-30, 30, 30)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new THREE.Vector3(-30, 30, 30)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Lathe>
 
 type Story = StoryObj<typeof Lathe>

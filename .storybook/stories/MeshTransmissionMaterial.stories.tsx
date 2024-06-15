@@ -17,9 +17,9 @@ export default {
   title: 'Shaders/MeshTransmissionMaterial',
   component: MeshTransmissionMaterial,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup cameraFov={25} cameraPosition={new THREE.Vector3(15, 0, 15)}>
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],

@@ -11,9 +11,9 @@ export default {
   title: 'Staging/Cloud',
   component: Cloud,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup controls={false} cameraPosition={new Vector3(0, 0, 10)}>
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],

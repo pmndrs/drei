@@ -22,9 +22,9 @@ export default {
     roughness: 1,
   },
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup cameraFov={20} cameraPosition={new Vector3(-2, 2, 6)}>
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],

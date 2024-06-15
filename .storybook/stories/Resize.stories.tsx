@@ -10,9 +10,9 @@ export default {
   title: 'Staging/Resize',
   component: Resize,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup camera={{ position: [1, 1, 1], zoom: 150 }} orthographic>
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],

@@ -8,7 +8,13 @@ import { Outlines } from '../../src'
 export default {
   title: 'Abstractions/Outlines',
   component: Outlines,
-  decorators: [(storyFn) => <Setup cameraPosition={new THREE.Vector3(0, 0, 10)}> {storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new THREE.Vector3(0, 0, 10)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Outlines>
 
 type Story = StoryObj<typeof Outlines>

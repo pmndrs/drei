@@ -8,7 +8,13 @@ import { Grid, Box } from '../../src'
 export default {
   title: 'Gizmos/Grid',
   component: Grid,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(-5, 5, 10)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(-5, 5, 10)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Grid>
 
 type Story = StoryObj<typeof Grid>

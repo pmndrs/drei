@@ -8,7 +8,13 @@ import { Setup } from '../Setup'
 export default {
   title: 'Camera/OrthographicCamera',
   component: OrthographicCamera,
-  decorators: [(storyFn) => <Setup controls={false}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup controls={false}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof OrthographicCamera>
 
 type Story = StoryObj<typeof OrthographicCamera>

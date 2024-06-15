@@ -18,7 +18,13 @@ import { Setup } from '../Setup'
 export default {
   title: 'Staging/Spotlight',
   component: SpotLight,
-  decorators: [(storyFn) => <Setup lights={false}> {storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup lights={false}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof SpotLight>
 
 type Story = StoryObj<typeof SpotLight>

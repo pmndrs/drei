@@ -11,9 +11,9 @@ export default {
   title: 'Misc/Example',
   component: Example,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup cameraPosition={new Vector3(1, 2, 4)} cameraFov={60}>
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],

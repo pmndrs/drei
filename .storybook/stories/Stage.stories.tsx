@@ -11,7 +11,13 @@ const environments = Object.keys(presetsObj) as Array<PresetsType>
 export default {
   title: 'Staging/Stage',
   component: Stage,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 3)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(0, 0, 3)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Stage>
 
 type Story = StoryObj<typeof Stage>

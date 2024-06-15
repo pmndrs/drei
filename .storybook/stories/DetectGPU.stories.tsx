@@ -9,7 +9,13 @@ import { DetectGPU, Text } from '../../src'
 export default {
   title: 'Misc/DetectGPU',
   component: DetectGPU,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 20)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(0, 0, 20)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof DetectGPU>
 
 type Story = StoryObj<typeof DetectGPU>

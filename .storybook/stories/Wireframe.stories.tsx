@@ -8,7 +8,13 @@ import { Environment, Wireframe } from '../../src'
 export default {
   title: 'Staging/Wireframe',
   component: Wireframe,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(2, 2, 2)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(2, 2, 2)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Wireframe>
 
 type Story = StoryObj<typeof Wireframe>

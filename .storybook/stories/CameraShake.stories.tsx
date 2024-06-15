@@ -13,9 +13,9 @@ export default {
   title: 'Staging/CameraShake',
   component: CameraShake,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup cameraPosition={new THREE.Vector3(0, 0, 10)} controls={false}>
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],

@@ -27,9 +27,11 @@ export default {
   title: 'Misc/Decal',
   component: Sampler,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup cameraPosition={new Vector3(0, 0, 5)}>
-        <React.Suspense fallback={null}>{storyFn()}</React.Suspense>
+        <React.Suspense fallback={null}>
+          <Story />
+        </React.Suspense>
       </Setup>
     ),
   ],

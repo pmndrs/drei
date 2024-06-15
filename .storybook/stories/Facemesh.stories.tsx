@@ -11,9 +11,9 @@ export default {
   title: 'Shapes/Facemesh',
   component: Facemesh,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup cameraPosition={new Vector3(0, 0, 5)} cameraFov={60}>
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],

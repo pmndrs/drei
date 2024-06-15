@@ -12,7 +12,13 @@ import { ComponentProps } from 'react'
 export default {
   title: 'Gizmos/Helper',
   component: Helper,
-  decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Helper>
 
 type Story = StoryObj<typeof Helper>

@@ -12,7 +12,13 @@ import { Meta, StoryObj } from '@storybook/react'
 export default {
   title: 'Misc/Html',
   component: Html,
-  decorators: [(storyFn) => <Setup cameraPosition={new THREE.Vector3(-20, 20, -20)}> {storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new THREE.Vector3(-20, 20, -20)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Html>
 
 type Story = StoryObj<typeof Html>

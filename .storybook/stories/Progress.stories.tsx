@@ -9,7 +9,13 @@ import { Html, useGLTF, Progress } from '../../src'
 export default {
   title: 'Misc/Progress',
   component: Progress,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 5)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(0, 0, 5)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Progress>
 
 type Story = StoryObj<typeof Progress>

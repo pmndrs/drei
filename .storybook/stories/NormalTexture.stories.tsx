@@ -9,7 +9,13 @@ import { Meta, StoryObj } from '@storybook/react'
 export default {
   title: 'Staging/NormalTexture',
   component: NormalTexture,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 3)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(0, 0, 3)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof NormalTexture>
 
 type Story = StoryObj<typeof NormalTexture>

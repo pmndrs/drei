@@ -9,7 +9,13 @@ import { useGLTF, MatcapTexture } from '../../src'
 export default {
   title: 'Staging/MatcapTexture',
   component: MatcapTexture,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 3)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(0, 0, 3)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof MatcapTexture>
 
 type Story = StoryObj<typeof MatcapTexture>

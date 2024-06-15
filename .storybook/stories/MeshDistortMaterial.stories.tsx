@@ -20,7 +20,13 @@ export default {
     distort: { control: { type: 'range', min: 0, max: 1, step: 0.1 } },
     radius: { control: { type: 'range', min: 0, max: 1, step: 0.1 } },
   },
-  decorators: [(storyFn) => <Setup> {storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof MeshDistortMaterial>
 
 type Story = StoryObj<typeof MeshDistortMaterial>

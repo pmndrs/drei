@@ -9,9 +9,9 @@ export default {
   title: 'Abstractions/ScreenSpace',
   component: ScreenSpace,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup controls={false} cameraPosition={new Vector3(0, 0, 10)}>
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],

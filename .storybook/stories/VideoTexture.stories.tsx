@@ -10,7 +10,13 @@ import { Plane, VideoTexture, useTexture } from '../../src'
 export default {
   title: 'Misc/VideoTexture',
   component: VideoTexture,
-  decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof VideoTexture>
 
 type Story = StoryObj<typeof VideoTexture>

@@ -11,7 +11,13 @@ import type { OrthographicCamera, PerspectiveCamera as PerspectiveCameraType } f
 export default {
   title: 'Controls/ArcballControls',
   component: ArcballControls,
-  decorators: [(storyFn) => <Setup controls={false}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup controls={false}>
+        <Story />
+      </Setup>
+    ),
+  ],
   args: {
     enablePan: true,
     enableRotate: true,

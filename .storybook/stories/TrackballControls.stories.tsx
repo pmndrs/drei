@@ -9,7 +9,13 @@ import { Icosahedron, TrackballControls } from '../../src'
 export default {
   title: 'Controls/TrackballControls',
   component: TrackballControls,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 10)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(0, 0, 10)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof TrackballControls>
 
 type Story = StoryObj<typeof TrackballControls>

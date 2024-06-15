@@ -9,7 +9,13 @@ import { Setup } from '../Setup'
 export default {
   title: 'Abstractions/ScreenSizer',
   component: ScreenSizer,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 10)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(0, 0, 10)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof ScreenSizer>
 
 type Story = StoryObj<typeof ScreenSizer>

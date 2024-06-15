@@ -10,9 +10,9 @@ export default {
   title: 'Staging/Sparkles',
   component: Sparkles,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup cameraPosition={new Vector3(1, 1, 1)} controls={false}>
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],

@@ -8,7 +8,13 @@ import { Box, FirstPersonControls } from '../../src'
 export default {
   title: 'Controls/FirstPersonControls',
   component: FirstPersonControls,
-  decorators: [(storyFn) => <Setup controls={false}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup controls={false}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof FirstPersonControls>
 
 type Story = StoryObj<typeof FirstPersonControls>

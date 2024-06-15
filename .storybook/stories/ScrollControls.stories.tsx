@@ -118,7 +118,13 @@ const ScrollControlsSetup = ({ children }) => (
 )
 
 export const ScrollControlsSt = {
-  decorators: [(storyFn) => <ScrollControlsSetup>{storyFn()}</ScrollControlsSetup>],
+  decorators: [
+    (Story) => (
+      <ScrollControlsSetup>
+        <Story />
+      </ScrollControlsSetup>
+    ),
+  ],
   render: (args) => <ScrollControlsScene {...args} />,
   name: 'Default',
 } satisfies Story
@@ -140,9 +146,11 @@ const Container = ({ children }) => (
 
 export const ScrollControlsContainerSt = {
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Container>
-        <ScrollControlsSetup>{storyFn()}</ScrollControlsSetup>
+        <ScrollControlsSetup>
+          <Story />
+        </ScrollControlsSetup>
       </Container>
     ),
   ],

@@ -98,7 +98,13 @@ function TransformControlsLockScene(props: React.ComponentProps<typeof Transform
 }
 
 export const TransformControlsLockSt = {
-  decorators: [(storyFn) => <Setup controls={false}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup controls={false}>
+        <Story />
+      </Setup>
+    ),
+  ],
   args: {
     mode: 'translate',
     showX: true,

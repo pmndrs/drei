@@ -19,9 +19,9 @@ export default {
   title: 'Shapes/Line',
   component: Line,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup controls={false} cameraPosition={new Vector3(0, 0, 17)}>
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],

@@ -8,7 +8,13 @@ import { CubeTexture, Icosahedron } from '../../src'
 export default {
   title: 'Abstractions/CubeTexture',
   component: CubeTexture,
-  decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof CubeTexture>
 
 type Story = StoryObj<typeof CubeTexture>

@@ -10,9 +10,9 @@ export default {
   title: 'Controls/KeyboardControls',
   component: KeyboardControls,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup cameraPosition={new Vector3(0, 10, 0)} lights={true}>
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],

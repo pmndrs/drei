@@ -10,7 +10,13 @@ import { ScreenQuad, shaderMaterial } from '../../src'
 export default {
   title: 'Shapes/ScreenQuad',
   component: ScreenQuad,
-  decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof ScreenQuad>
 
 type Story = StoryObj<typeof ScreenQuad>

@@ -10,7 +10,13 @@ import { Tube } from '../../src'
 export default {
   title: 'Shapes/Tube',
   component: Tube,
-  decorators: [(storyFn) => <Setup cameraPosition={new THREE.Vector3(-30, 30, 30)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new THREE.Vector3(-30, 30, 30)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Tube>
 
 type Story = StoryObj<typeof Tube>

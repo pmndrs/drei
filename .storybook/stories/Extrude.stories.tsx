@@ -10,7 +10,13 @@ import { Extrude } from '../../src'
 export default {
   title: 'Shapes/Extrude',
   component: Extrude,
-  decorators: [(storyFn) => <Setup cameraPosition={new THREE.Vector3(-30, 30, 30)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new THREE.Vector3(-30, 30, 30)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof Extrude>
 
 type Story = StoryObj<typeof Extrude>

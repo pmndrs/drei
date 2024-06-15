@@ -10,7 +10,13 @@ import { useCamera, OrthographicCamera } from '../../src'
 export default {
   title: 'Misc/useCamera',
   component: UseCameraScene,
-  decorators: [(storyFn) => <Setup cameraPosition={new THREE.Vector3(0, 0, 5)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new THREE.Vector3(0, 0, 5)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof UseCameraScene>
 
 type Story = StoryObj<typeof UseCameraScene>

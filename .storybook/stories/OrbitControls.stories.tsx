@@ -19,7 +19,13 @@ export default {
     enableZoom: true,
     reverseOrbit: false,
   },
-  decorators: [(storyFn) => <Setup controls={false}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup controls={false}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof OrbitControls>
 
 type Story = StoryObj<typeof OrbitControls>

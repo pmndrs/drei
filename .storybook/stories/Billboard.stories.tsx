@@ -11,9 +11,9 @@ export default {
   title: 'Abstractions/Billboard',
   component: Billboard,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup controls={false} cameraPosition={new Vector3(0, 0, 10)}>
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],

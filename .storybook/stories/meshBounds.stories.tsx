@@ -29,7 +29,13 @@ function MeshBounds(props: React.ComponentProps<'mesh'>) {
 export default {
   title: 'Misc/meshBounds',
   component: MeshBounds,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 5)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(0, 0, 5)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof MeshBounds>
 
 type Story = StoryObj<typeof MeshBounds>

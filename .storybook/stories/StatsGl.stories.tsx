@@ -8,7 +8,13 @@ import { StatsGl } from '../../src'
 export default {
   title: 'Misc/StatsGl',
   component: StatsGl,
-  decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof StatsGl>
 
 type Story = StoryObj<typeof StatsGl>

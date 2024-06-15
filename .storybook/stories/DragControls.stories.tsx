@@ -9,7 +9,13 @@ import { ComponentProps } from 'react'
 export default {
   title: 'Gizmos/DragControls',
   component: DragControls,
-  decorators: [(storyFn) => <Setup cameraPosition={new THREE.Vector3(0, 0, 5)}>{storyFn()}</Setup>],
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new THREE.Vector3(0, 0, 5)}>
+        <Story />
+      </Setup>
+    ),
+  ],
 } satisfies Meta<typeof DragControls>
 
 type Story = StoryObj<typeof DragControls>

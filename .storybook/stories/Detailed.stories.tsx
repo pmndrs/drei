@@ -11,9 +11,9 @@ export default {
   title: 'Abstractions/Detailed',
   component: Detailed,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup controls={false} cameraPosition={new Vector3(0, 0, 100)}>
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],

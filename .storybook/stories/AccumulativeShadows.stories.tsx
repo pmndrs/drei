@@ -1,6 +1,8 @@
 import * as THREE from 'three'
 import * as React from 'react'
+import { ComponentProps } from 'react'
 import { FlakesTexture } from 'three/examples/jsm/textures/FlakesTexture'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
@@ -8,33 +10,36 @@ import { useGLTF, AccumulativeShadows, RandomizedLight, OrbitControls, Environme
 
 export default {
   title: 'Staging/AccumulativeShadows',
-  component: AccumulativeShadowScene,
-  decorators: [(storyFn) => <Setup> {storyFn()}</Setup>],
-}
+  component: AccumulativeShadows,
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof AccumulativeShadows>
 
-function AccumulativeShadowScene() {
+type Story = StoryObj<typeof AccumulativeShadows>
+
+function AccumulativeShadowScene(props: ComponentProps<typeof AccumulativeShadows>) {
   return (
-    <React.Suspense fallback={null}>
+    <>
       <color attach="background" args={['goldenrod']} />
+
       <Suzi rotation={[-0.63, 0, 0]} scale={2} position={[0, -1.175, 0]} />
-      <AccumulativeShadows
-        temporal
-        frames={100}
-        color="goldenrod"
-        alphaTest={0.65}
-        opacity={2}
-        scale={14}
-        position={[0, -0.5, 0]}
-      >
+
+      <AccumulativeShadows {...props} position={[0, -0.5, 0]}>
         <RandomizedLight amount={8} radius={4} ambient={0.5} bias={0.001} position={[5, 5, -10]} />
       </AccumulativeShadows>
+
       <OrbitControls autoRotate={true} />
       <Environment preset="city" />
-    </React.Suspense>
+    </>
   )
 }
 
-function Suzi(props) {
+function Suzi(props: ComponentProps<'group'>) {
   const { scene, materials } = useGLTF('/suzanne-high-poly.gltf')
   React.useLayoutEffect(() => {
     scene.traverse((obj) => (obj as any).isMesh && (obj.receiveShadow = obj.castShadow = true))
@@ -55,5 +60,18 @@ function Suzi(props) {
   return <primitive object={scene} {...props} />
 }
 
-export const AccumulativeShadowSt = () => <AccumulativeShadowScene />
-AccumulativeShadowSt.storyName = 'Default'
+export const AccumulativeShadowSt = {
+  name: 'Default',
+  render: (args) => <AccumulativeShadowScene {...args} />,
+  args: {
+    temporal: true,
+    frames: 100,
+    color: 'goldenrod',
+    alphaTest: 0.65,
+    opacity: 2,
+    scale: 14,
+  },
+  argTypes: {
+    color: { control: 'color' },
+  },
+} satisfies Story

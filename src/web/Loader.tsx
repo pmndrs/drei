@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useProgress } from '../core/useProgress'
+import { useProgress } from '../core/Progress'
 import { CSSProperties } from 'react'
 
 interface LoaderOptions {

@@ -1,7 +1,7 @@
 import { DepthTexture, DepthFormat, UnsignedShortType } from 'three'
 import * as React from 'react'
 import { useThree, useFrame } from '@react-three/fiber'
-import { useFBO } from './useFBO'
+import { useFBO } from './Fbo'
 
 function useDepthBuffer({ size = 256, frames = Infinity }: { size?: number; frames?: number } = {}) {
   const dpr = useThree((state) => state.viewport.dpr)

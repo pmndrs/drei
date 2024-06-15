@@ -1,21 +1,32 @@
 import * as React from 'react'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
-import { Sphere, Sampler, Float, ComputedAttribute, TransformFn } from '../../src'
-import { useFrame } from '@react-three/fiber'
-import { BufferAttribute, Mesh, Vector3 } from 'three'
+import { Sampler, ComputedAttribute, TransformFn } from '../../src'
+import { BufferAttribute, Vector3 } from 'three'
 
 export default {
   title: 'Misc/Sampler',
   component: Sampler,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 5)}> {storyFn()}</Setup>],
-}
+  args: {
+    count: 500,
+  },
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(0, 0, 5)}>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof Sampler>
 
-function SamplerScene() {
+type Story = StoryObj<typeof Sampler>
+
+function SamplerScene(props: React.ComponentProps<typeof Sampler>) {
   return (
     <>
-      <Sampler count={500}>
+      <Sampler {...props}>
         <mesh>
           <torusKnotGeometry />
           <meshNormalMaterial />
@@ -30,16 +41,20 @@ function SamplerScene() {
   )
 }
 
-export const SamplerSt = () => <SamplerScene />
-SamplerSt.storyName = 'Default'
+export const SamplerSt = {
+  render: (args) => <SamplerScene {...args} />,
+  name: 'Default',
+} satisfies Story
 
-function RefAPIScene() {
+//
+
+function RefAPIScene(props: React.ComponentProps<typeof Sampler>) {
   const meshRef = React.useRef(null)
   const instancesRef = React.useRef(null)
 
   return (
     <>
-      <Sampler count={500} mesh={meshRef} instances={instancesRef} />
+      <Sampler {...props} mesh={meshRef} instances={instancesRef} />
 
       <mesh ref={meshRef}>
         <torusKnotGeometry />
@@ -54,13 +69,17 @@ function RefAPIScene() {
   )
 }
 
-export const RefAPISt = () => <RefAPIScene />
-RefAPISt.storyName = 'Using Refs'
+export const RefAPISt = {
+  render: (args) => <RefAPIScene {...args} />,
+  name: 'Using Refs',
+} satisfies Story
 
-function TransformSamplerScene() {
+//
+
+function TransformSamplerScene(props: React.ComponentProps<typeof Sampler>) {
   return (
     <>
-      <Sampler count={500} transform={transformInstances}>
+      <Sampler {...props} transform={transformInstances}>
         <mesh>
           <torusKnotGeometry />
           <meshNormalMaterial />
@@ -75,39 +94,15 @@ function TransformSamplerScene() {
   )
 }
 
-export const SamplerTransformSt = () => <TransformSamplerScene />
-SamplerTransformSt.storyName = 'With transform'
+export const SamplerTransformSt = {
+  render: (args) => <TransformSamplerScene {...args} />,
+  name: 'With transform',
+} satisfies Story
 
-function SamplerWeightScene() {
-  return (
-    <>
-      <Sampler count={500} weight="upness" transform={transformInstances}>
-        <mesh>
-          <torusKnotGeometry>
-            <ComputedAttribute name="upness" compute={computeUpness} />
-          </torusKnotGeometry>
-          <meshNormalMaterial />
-        </mesh>
-
-        <instancedMesh args={[null!, null!, 1_000]}>
-          <sphereGeometry args={[0.1, 32, 32, Math.PI / 2]} />
-          <meshNormalMaterial />
-        </instancedMesh>
-      </Sampler>
-    </>
-  )
-}
-
-export const SamplerWeightSt = () => <SamplerWeightScene />
-SamplerWeightSt.storyName = 'With weight'
+//
 
 function remap(x: number, [low1, high1]: number[], [low2, high2]: number[]) {
   return low2 + ((x - low1) * (high2 - low2)) / (high1 - low1)
-}
-
-const transformInstances: TransformFn = ({ dummy, position }) => {
-  dummy.position.copy(position)
-  dummy.scale.setScalar(Math.random() * 0.75)
 }
 
 const computeUpness = (geometry) => {
@@ -128,3 +123,37 @@ const computeUpness = (geometry) => {
 
   return new BufferAttribute(arr, 1)
 }
+
+function SamplerWeightScene(props: React.ComponentProps<typeof Sampler>) {
+  return (
+    <>
+      <Sampler {...props}>
+        <mesh>
+          <torusKnotGeometry>
+            <ComputedAttribute name="upness" compute={computeUpness} />
+          </torusKnotGeometry>
+          <meshNormalMaterial />
+        </mesh>
+
+        <instancedMesh args={[null!, null!, 1_000]}>
+          <sphereGeometry args={[0.1, 32, 32, Math.PI / 2]} />
+          <meshNormalMaterial />
+        </instancedMesh>
+      </Sampler>
+    </>
+  )
+}
+
+const transformInstances: TransformFn = ({ dummy, position }) => {
+  dummy.position.copy(position)
+  dummy.scale.setScalar(Math.random() * 0.75)
+}
+
+export const SamplerWeightSt = {
+  args: {
+    weight: 'upness',
+    transform: transformInstances,
+  },
+  render: (args) => <SamplerWeightScene {...args} />,
+  name: 'With weight',
+} satisfies Story

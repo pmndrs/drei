@@ -1,18 +1,28 @@
 /* eslint react-hooks/exhaustive-deps: 1 */
 import * as THREE from 'three'
 import * as React from 'react'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
 import { FaceLandmarker, FaceControls, Box } from '../../src'
+import { ComponentProps } from 'react'
 
 export default {
   title: 'Controls/FaceControls',
   component: FaceControls,
-  decorators: [(storyFn) => <Setup cameraFov={60}>{storyFn()}</Setup>],
-}
+  decorators: [
+    (Story) => (
+      <Setup cameraFov={60}>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof FaceControls>
 
-function FaceControlsScene(props) {
+type Story = StoryObj<typeof FaceControls>
+
+function FaceControlsScene(props: ComponentProps<typeof FaceControls>) {
   return (
     <>
       <color attach="background" args={['#303030']} />
@@ -31,13 +41,7 @@ function FaceControlsScene(props) {
   )
 }
 
-export const FaceControlsSt = (args) => <FaceControlsScene {...args} />
-FaceControlsSt.args = {
-  eyes: undefined,
-}
-
-FaceControlsSt.argTypes = {
-  eyes: { control: { type: 'boolean' } },
-}
-
-FaceControlsSt.storyName = 'Default'
+export const FaceControlsSt = {
+  render: (args) => <FaceControlsScene {...args} />,
+  name: 'Default',
+} satisfies Story

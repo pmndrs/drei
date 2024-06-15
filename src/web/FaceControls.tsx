@@ -19,7 +19,7 @@ import type { FaceLandmarkerResult } from '@mediapipe/tasks-vision'
 import { easing } from 'maath'
 import { suspend, clear } from 'suspend-react'
 
-import { useVideoTexture } from '../core/useVideoTexture'
+import { useVideoTexture } from '../core/VideoTexture'
 import { Facemesh, FacemeshApi, FacemeshProps } from './Facemesh'
 import { useFaceLandmarker } from './FaceLandmarker'
 
@@ -92,6 +92,16 @@ export type FaceControlsApi = THREE.EventDispatcher & {
 }
 
 const FaceControlsContext = /* @__PURE__ */ createContext({} as FaceControlsApi)
+
+/**
+ * The camera follows your face.
+ *
+ * Pre-requisite: wrap into a `FaceLandmarker` provider:
+ *
+ * ```jsx
+ * <FaceLandmarker>...</FaceLandmarker>
+ * ```
+ */
 
 export const FaceControls = /* @__PURE__ */ forwardRef<FaceControlsApi, FaceControlsProps>(
   (

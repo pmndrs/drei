@@ -7,7 +7,7 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { extend, useFrame } from '@react-three/fiber'
-import { useFBO } from './useFBO'
+import { useFBO } from './Fbo'
 import { DiscardMaterial } from '../materials/DiscardMaterial'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 

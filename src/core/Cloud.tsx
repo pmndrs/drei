@@ -14,7 +14,7 @@ import {
   BufferAttribute,
 } from 'three'
 import { MaterialNode, extend, applyProps, useFrame, ReactThreeFiber } from '@react-three/fiber'
-import { useTexture } from './useTexture'
+import { useTexture } from './Texture'
 import { v4 } from 'uuid'
 import { setUpdateRange } from '../helpers/deprecated'
 

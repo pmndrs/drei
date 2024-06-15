@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { Color, extend, useThree } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
-import { useTexture } from './useTexture'
+import { useTexture } from './Texture'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 import { version } from '../helpers/constants'
 

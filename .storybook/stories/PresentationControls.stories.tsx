@@ -1,12 +1,27 @@
 import * as React from 'react'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
-import { Box, PresentationControlProps, PresentationControls } from '../../src'
+import { Box, PresentationControls } from '../../src'
 
-export function PresentationControlStory({ enabled, ...rest }: PresentationControlProps) {
+export default {
+  title: 'Controls/PresentationControls',
+  component: PresentationControls,
+  decorators: [
+    (Story) => (
+      <Setup camera={{ near: 1, far: 1100, fov: 75 }} controls={false}>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof PresentationControls>
+
+type Story = StoryObj<typeof PresentationControls>
+
+function PresentationControlScene(props: React.ComponentProps<typeof PresentationControls>) {
   return (
-    <PresentationControls global snap enabled={enabled} {...rest}>
+    <PresentationControls {...props}>
       <Box args={[1, 1, 1]}>
         <meshBasicMaterial wireframe />
         <axesHelper args={[100]} />
@@ -15,19 +30,12 @@ export function PresentationControlStory({ enabled, ...rest }: PresentationContr
   )
 }
 
-PresentationControlStory.storyName = 'Default'
-PresentationControlStory.args = {
-  enabled: true,
-}
-
-export default {
-  title: 'Controls/PresentationControls',
-  component: PresentationControls,
-  decorators: [
-    (storyFn) => (
-      <Setup camera={{ near: 1, far: 1100, fov: 75 }} controls={false}>
-        {storyFn()}
-      </Setup>
-    ),
-  ],
-}
+export const PresentationControlStory = {
+  args: {
+    global: true,
+    snap: true,
+    enabled: true,
+  },
+  render: (args) => <PresentationControlScene {...args} />,
+  name: 'Default',
+} satisfies Story

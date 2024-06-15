@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 import { Grid, Box } from '../../src'
@@ -7,13 +8,21 @@ import { Grid, Box } from '../../src'
 export default {
   title: 'Gizmos/Grid',
   component: Grid,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(-5, 5, 10)}>{storyFn()}</Setup>],
-}
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(-5, 5, 10)}>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof Grid>
 
-function UseGridScene() {
+type Story = StoryObj<typeof Grid>
+
+function GridScene(props: React.ComponentProps<typeof Grid>) {
   return (
     <React.Suspense fallback={null}>
-      <Grid cellColor="white" args={[10, 10]} />
+      <Grid {...props} />
       <Box position={[0, 0.5, 0]}>
         <meshStandardMaterial />
       </Box>
@@ -22,7 +31,11 @@ function UseGridScene() {
   )
 }
 
-export const UseGridSceneSt = () => <UseGridScene />
-UseGridSceneSt.story = {
+export const GridSt = {
+  render: (args) => <GridScene {...args} />,
+  args: {
+    cellColor: 'white',
+    args: [10, 10],
+  },
   name: 'Default',
-}
+} satisfies Story

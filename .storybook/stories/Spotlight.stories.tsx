@@ -1,6 +1,7 @@
+import { Meta, StoryObj } from '@storybook/react'
 import * as React from 'react'
 
-import { Setup } from '../Setup'
+import { MathUtils, RepeatWrapping } from 'three'
 import {
   Circle,
   Environment,
@@ -12,37 +13,29 @@ import {
   useDepthBuffer,
   useTexture,
 } from '../../src'
-import { MathUtils, RepeatWrapping } from 'three'
+import { Setup } from '../Setup'
 
 export default {
   title: 'Staging/Spotlight',
   component: SpotLight,
-  decorators: [(storyFn) => <Setup lights={false}> {storyFn()}</Setup>],
-}
+  decorators: [
+    (Story) => (
+      <Setup lights={false}>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof SpotLight>
 
-function SpotLightScene({ size, ...args }) {
-  const depthBuffer = useDepthBuffer({ size })
+type Story = StoryObj<typeof SpotLight>
+
+function SpotLightScene(props: React.ComponentProps<typeof SpotLight>) {
+  const depthBuffer = useDepthBuffer({ size: 256 })
 
   return (
     <>
-      <SpotLight
-        penumbra={0.5}
-        depthBuffer={depthBuffer}
-        position={[3, 2, 0]}
-        intensity={0.5}
-        angle={0.5}
-        color="#ff005b"
-        castShadow
-      />
-      <SpotLight
-        penumbra={0.5}
-        depthBuffer={depthBuffer}
-        position={[-3, 2, 0]}
-        intensity={0.5}
-        angle={0.5}
-        color="#0EEC82"
-        castShadow
-      />
+      <SpotLight depthBuffer={depthBuffer} position={[3, 2, 0]} color="#ff005b" {...props} />
+      <SpotLight depthBuffer={depthBuffer} position={[-3, 2, 0]} color="#0EEC82" {...props} />
 
       <mesh position-y={0.5} castShadow>
         <boxGeometry />
@@ -56,13 +49,22 @@ function SpotLightScene({ size, ...args }) {
   )
 }
 
-export const SpotlightSt = (args) => <SpotLightScene {...args} />
-SpotlightSt.storyName = 'Default'
-SpotlightSt.args = {
-  size: 256,
-}
+export const SpotlightSt = {
+  args: {
+    penumbra: 0.5,
+    intensity: 0.5,
+    angle: 0.5,
+    castShadow: true,
+  },
+  render: (args) => <SpotLightScene {...args} />,
+  name: 'Default',
+} satisfies Story
 
-function SpotLightShadowsScene({ debug, wind }: { debug: boolean; wind: boolean }) {
+//
+
+function SpotLightShadowsScene(props: React.ComponentProps<typeof SpotLight>) {
+  const wind = true
+
   const texs = useTexture([
     '/textures/grassy_cobble/grassy_cobblestone_diff_2k.jpg',
     '/textures/grassy_cobble/grassy_cobblestone_nor_gl_2k.jpg', //
@@ -112,15 +114,7 @@ function SpotLightShadowsScene({ debug, wind }: { debug: boolean; wind: boolean 
         />
       </Circle>
 
-      <SpotLight
-        distance={20}
-        intensity={5}
-        angle={MathUtils.degToRad(45)}
-        color={'#fadcb9'}
-        position={[5, 7, -2]}
-        volumetric={false}
-        debug={debug}
-      >
+      <SpotLight {...props}>
         <SpotLightShadow
           scale={4}
           distance={0.4}
@@ -152,18 +146,16 @@ function SpotLightShadowsScene({ debug, wind }: { debug: boolean; wind: boolean 
   )
 }
 
-function SpotLightShadowsSceneWithSuspense(props) {
-  return (
-    <React.Suspense fallback={null}>
-      <SpotLightShadowsScene {...props} />
-    </React.Suspense>
-  )
-}
-
-export const SpotlightShadowsSt = (props) => <SpotLightShadowsSceneWithSuspense {...props} />
-SpotlightShadowsSt.storyName = 'Shadows'
-
-SpotlightShadowsSt.args = {
-  debug: false,
-  wind: true,
-}
+export const SpotlightShadowsSt = {
+  args: {
+    distance: 20,
+    intensity: 5,
+    angle: MathUtils.degToRad(45),
+    color: '#fadcb9',
+    position: [5, 7, -2],
+    volumetric: false,
+    debug: false,
+  },
+  render: (args) => <SpotLightShadowsScene {...args} />,
+  name: 'Shadows',
+} satisfies Story

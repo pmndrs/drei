@@ -1,20 +1,30 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
 import { useFrame } from '@react-three/fiber'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
-import { Segment, Segments, OrbitControls, SegmentObject } from '../../src'
+import { Segment, Segments, OrbitControls } from '../../src'
 
 export default {
   title: 'Performance/Segments',
+  decorators: [
+    (Story) => (
+      <Setup controls={false} cameraPosition={new Vector3(10, 10, 10)}>
+        <Story />
+      </Setup>
+    ),
+  ],
   component: Segments,
-}
+} satisfies Meta<typeof Segments>
 
-export function BasicSegments() {
+type Story = StoryObj<typeof Segments>
+
+function BasicSegmentsScene(props: React.ComponentProps<typeof Segments>) {
   return (
     <>
-      <Segments limit={6} lineWidth={2.0}>
+      <Segments {...props}>
         <Segment start={[0, 0, 0]} end={[10, 0, 0]} color={'red'} />
         <Segment start={[0, 0, 0]} end={[0, 10, 0]} color={'blue'} />
         <Segment start={[0, 0, 0]} end={[0, 0, 10]} color={'green'} />
@@ -27,18 +37,19 @@ export function BasicSegments() {
   )
 }
 
-BasicSegments.storyName = 'Basic'
+export const BasicSegmentsSt = {
+  args: {
+    limit: 6,
+    lineWidth: 2.0,
+  },
+  render: (args) => <BasicSegmentsScene {...args} />,
+  name: 'Basic',
+} satisfies Story
 
-BasicSegments.decorators = [
-  (storyFn) => (
-    <Setup controls={false} cameraPosition={new Vector3(10, 10, 10)}>
-      {storyFn()}
-    </Setup>
-  ),
-]
+//
 
-function AnimatedSegments() {
-  const ref = React.useRef<SegmentObject[]>([])
+function AnimatedSegments(props: React.ComponentProps<typeof Segments>) {
+  const ref = React.useRef<React.ElementRef<typeof Segment>[]>([])
   useFrame(({ clock }) => {
     ref.current.forEach((r, i) => {
       const time = clock.elapsedTime
@@ -51,28 +62,28 @@ function AnimatedSegments() {
     })
   })
   return (
-    <Segments limit={10000} lineWidth={0.1}>
+    <Segments {...props}>
       {Array.from({ length: 10000 }).map((_, i) => (
-        <Segment key={i} ref={(r) => (ref.current[i] = r)} color="orange" start={[0, 0, 0]} end={[0, 0, 0]} />
+        <Segment key={i} ref={(r) => (ref.current[i] = r!)} color="orange" start={[0, 0, 0]} end={[0, 0, 0]} />
       ))}
     </Segments>
   )
 }
 
-export function ManySegments() {
+function ManySegmentsScene(props: React.ComponentProps<typeof Segments>) {
   return (
     <>
-      <AnimatedSegments />
+      <AnimatedSegments {...props} />
       <OrbitControls />
     </>
   )
 }
-ManySegments.storyName = 'Performance'
 
-ManySegments.decorators = [
-  (storyFn) => (
-    <Setup controls={false} cameraPosition={new Vector3(10, 10, 10)}>
-      {storyFn()}
-    </Setup>
-  ),
-]
+export const ManySegmentsSt = {
+  args: {
+    limit: 10000,
+    lineWidth: 0.1,
+  },
+  render: (args) => <ManySegmentsScene {...args} />,
+  name: 'Performance',
+} satisfies Story

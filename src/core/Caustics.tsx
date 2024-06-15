@@ -5,7 +5,7 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { extend, ReactThreeFiber, useFrame, useThree } from '@react-three/fiber'
-import { useFBO } from './useFBO'
+import { useFBO } from './Fbo'
 import { useHelper } from './Helper'
 import { shaderMaterial } from './shaderMaterial'
 import { Edges } from './Edges'

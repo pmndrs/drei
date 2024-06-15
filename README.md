@@ -63,7 +63,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#dragcontrols">DragControls</a></li>
           <li><a href="#transformcontrols">TransformControls</a></li>
           <li><a href="#grid">Grid</a></li>
-          <li><a href="#usehelper">useHelper</a></li>
+          <li><a href="#helper--usehelper">Helper / useHelper</a></li>
           <li><a href="#helper">Helper</a></li>
         </ul>
         <li><a href="#abstractions">Abstractions</a></li>
@@ -119,29 +119,29 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#wireframe">Wireframe</a></li>
           <li><a href="#usedepthbuffer">useDepthBuffer</a></li>
           <li><a href="#usecontextbridge">useContextBridge</a></li>
-          <li><a href="#usefbo">useFBO</a></li>
+          <li><a href="#fbo--usefbo">Fbo / useFBO</a></li>
           <li><a href="#usecamera">useCamera</a></li>
-          <li><a href="#usecubecamera">useCubeCamera</a></li>
-          <li><a href="#usedetectgpu">useDetectGPU</a></li>          
+          <li><a href="#cubecamera--usecubecamera">CubeCamera / useCubeCamera</a></li>
+          <li><a href="#detectgpu--usedetectgpu">DetectGPU / useDetectGPU</a></li>          
           <li><a href="#useaspect">useAspect</a></li>
           <li><a href="#usecursor">useCursor</a></li>
           <li><a href="#useintersect">useIntersect</a></li>
           <li><a href="#useboxprojectedenv">useBoxProjectedEnv</a></li>
-          <li><a href="#useTrail">useTrail</a></li>
+          <li><a href="#trail--useTrail">Trail / useTrail</a></li>
           <li><a href="#useSurfaceSampler">useSurfaceSampler</a></li>
           <li><a href="#facelandmarker">FaceLandmarker</a></li>
         </ul>
         <li><a href="#loading">Loaders</a></li>
         <ul>
           <li><a href="#loader">Loader</a></li>
-          <li><a href="#useprogress">useProgress</a></li>
-          <li><a href="#usegltf">useGLTF</a></li>
-          <li><a href="#usefbx">useFBX</a></li>
-          <li><a href="#usetexture">useTexture</a></li>
-          <li><a href="#usektx2">useKTX2</a></li>
-          <li><a href="#usecubetexture">useCubeTexture</a></li>
-          <li><a href="#usevideotexture">useVideoTexture</a></li>
-          <li><a href="#usetrailtexture">useTrailTexture</a></li>
+          <li><a href="#progress--useprogress">Progress / useProgress</a></li>
+          <li><a href="#gltf--usegltf">Gltf / useGLTF</a></li>
+          <li><a href="#fbx--usefbx">FBX / useFBX</a></li>
+          <li><a href="#texture--usetexture">Texture / useTexture</a></li>
+          <li><a href="#ktx2--usektx2">Ktx2 / useKTX2</a></li>
+          <li><a href="#cubetexture--usecubetexture">CubeTexture / useCubeTexture</a></li>
+          <li><a href="#videotexture--usevideotexture">VideoTexture / useVideoTexture</a></li>
+          <li><a href="#trailtexture--usetrailtexture">TrailTexture / useTrailTexture</a></li>
           <li><a href="#usefont">useFont</a></li>
           <li><a href="#usespriteloader">useSpriteLoader</a></li>
         </ul>
@@ -230,8 +230,8 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#sparkles">Sparkles</a></li>
           <li><a href="#cloud">Cloud</a></li>
           <li><a href="#useenvironment">useEnvironment</a></li>
-          <li><a href="#usematcaptexture">useMatcapTexture</a></li>
-          <li><a href="#usenormaltexture">useNormalTexture</a></li>
+          <li><a href="#matcaptexture--usematcaptexture">MatcapTexture / useMatcapTexture</a></li>
+          <li><a href="#normaltexture--usenormaltexture">NormalTexture / useNormalTexture</a></li>
           <li><a href="#shadowalpha">ShadowAlpha</a></li>
         </ul>
       </ul>

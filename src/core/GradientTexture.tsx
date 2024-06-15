@@ -1,5 +1,7 @@
 import * as React from 'react'
 import { useThree } from '@react-three/fiber'
+import * as THREE from 'three'
+
 export enum GradientType {
   Linear = 'linear',
   Radial = 'radial',
@@ -7,7 +9,7 @@ export enum GradientType {
 
 type Props = {
   stops: Array<number>
-  colors: Array<string>
+  colors: Array<THREE.ColorRepresentation>
   attach?: string
   size?: number
   width?: number
@@ -53,9 +55,10 @@ export function GradientTexture({
       )
     }
 
+    const tempColor = new THREE.Color() // reuse instance for performance
     let i = stops.length
     while (i--) {
-      gradient.addColorStop(stops[i], colors[i])
+      gradient.addColorStop(stops[i], tempColor.set(colors[i]).getStyle())
     }
     context.save()
     context.fillStyle = gradient

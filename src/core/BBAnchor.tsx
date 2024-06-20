@@ -6,6 +6,7 @@ const boundingBox = /* @__PURE__ */ new THREE.Box3()
 const boundingBoxSize = /* @__PURE__ */ new THREE.Vector3()
 
 export interface BBAnchorProps extends GroupProps {
+  /** Origin point for `children` (in bbox coordinates) */
   anchor: THREE.Vector3 | [number, number, number]
 }
 

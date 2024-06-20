@@ -1,6 +1,7 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { useFrame, useThree } from '@react-three/fiber'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 import { useGLTF, ScrollControls, Scroll, useCursor, useIntersect } from '../../src'
@@ -8,22 +9,18 @@ import { useGLTF, ScrollControls, Scroll, useCursor, useIntersect } from '../../
 export default {
   title: 'Controls/ScrollControls',
   component: ScrollControls,
-  decorators: [],
-}
+  args: {
+    pages: 3, // Each page takes 100% of the height of the canvas
+    distance: 1, // A factor that increases scroll bar travel (default: 1)
+    damping: 4, // Friction, higher is faster (default: 4)
+    horizontal: false, // Can also scroll horizontally (default: false)
+    infinite: false, // Can also scroll infinitely (default: false)
+  },
+} satisfies Meta<typeof ScrollControls>
 
-const ScrollControlsSetup = ({ children }) => (
-  <Setup
-    controls={false}
-    orthographic
-    camera={{ zoom: 80 }}
-    gl={{ alpha: false, antialias: false, stencil: false, depth: false }}
-    dpr={[1, 1.5]}
-  >
-    {children}
-  </Setup>
-)
+type Story = StoryObj<typeof ScrollControls>
 
-function Suzanne(props) {
+function Suzanne(props: React.ComponentProps<'group'>) {
   const { nodes } = useGLTF('suzanne.glb', true)
 
   const [hovered, setHovered] = React.useState(false)
@@ -56,17 +53,11 @@ function Suzanne(props) {
   )
 }
 
-const ScrollControlsExample = () => {
+const ScrollControlsScene = (props: React.ComponentProps<typeof ScrollControls>) => {
   const viewport = useThree((state) => state.viewport)
   const canvasSize = useThree((state) => state.size)
   return (
-    <ScrollControls
-      pages={3} // Each page takes 100% of the height of the canvas
-      distance={1} // A factor that increases scroll bar travel (default: 1)
-      damping={4} // Friction, higher is faster (default: 4)
-      horizontal={false} // Can also scroll horizontally (default: false)
-      infinite={false} // Can also scroll infinitely (default: false)
-    >
+    <ScrollControls {...props}>
       {/* You can have components in here, they are not scrolled, but they can still
           react to scroll by using useScroll! */}
       <Scroll>
@@ -114,6 +105,32 @@ const ScrollControlsExample = () => {
   )
 }
 
+const ScrollControlsSetup = ({ children }) => (
+  <Setup
+    controls={false}
+    orthographic
+    camera={{ zoom: 80 }}
+    gl={{ alpha: false, antialias: false, stencil: false, depth: false }}
+    dpr={[1, 1.5]}
+  >
+    {children}
+  </Setup>
+)
+
+export const ScrollControlsSt = {
+  decorators: [
+    (Story) => (
+      <ScrollControlsSetup>
+        <Story />
+      </ScrollControlsSetup>
+    ),
+  ],
+  render: (args) => <ScrollControlsScene {...args} />,
+  name: 'Default',
+} satisfies Story
+
+//
+
 const Container = ({ children }) => (
   <div
     style={{
@@ -127,19 +144,16 @@ const Container = ({ children }) => (
   </div>
 )
 
-export const DefaultStory = () => (
-  <React.Suspense fallback={null}>
-    <ScrollControlsExample />
-  </React.Suspense>
-)
-DefaultStory.decorators = [(storyFn) => <ScrollControlsSetup>{storyFn()}</ScrollControlsSetup>]
-DefaultStory.storyName = 'Default'
-
-export const InsideContainerStory = () => (
-  <Container>
-    <ScrollControlsSetup>
-      <DefaultStory />
-    </ScrollControlsSetup>
-  </Container>
-)
-InsideContainerStory.storyName = 'Inside a container'
+export const ScrollControlsContainerSt = {
+  decorators: [
+    (Story) => (
+      <Container>
+        <ScrollControlsSetup>
+          <Story />
+        </ScrollControlsSetup>
+      </Container>
+    ),
+  ],
+  render: (args) => <ScrollControlsScene {...args} />,
+  name: 'Inside a container',
+} satisfies Story

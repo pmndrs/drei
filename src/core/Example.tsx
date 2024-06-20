@@ -7,17 +7,24 @@ import { Text3D } from './Text3D'
 import { Center } from './Center'
 
 export type ExampleProps = {
+  /** Text font to use */
   font: string
+  /** Text color */
   color?: Color
+  /** Debug mode */
   debug?: boolean
+  /** Text bevel size */
   bevelSize?: number
-} & JSX.IntrinsicElements['group']
+} & React.ComponentProps<'group'>
 
 export type ExampleApi = {
   incr: (x?: number) => void
   decr: (x?: number) => void
 }
 
+/**
+ * A simple counter example component. Click to increment, meta-click to decrement.
+ */
 export const Example = /* @__PURE__ */ React.forwardRef<ExampleApi, ExampleProps>(
   ({ font, color = '#cbcbcb', bevelSize = 0.04, debug = false, children, ...props }, fref) => {
     const [counter, setCounter] = React.useState(0)

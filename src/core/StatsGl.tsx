@@ -23,9 +23,11 @@ export function StatsGl({ className, parent, ...props }: Props) {
     if (stats) {
       const node = (parent && parent.current) || document.body
       node?.appendChild(stats.dom)
-      if (className) stats.container.classList.add(...className.split(' ').filter((cls) => cls))
+      const classNames = (className ?? '').split(' ').filter((cls) => cls)
+      if (classNames.length) stats.dom.classList.add(...classNames)
       const end = addAfterEffect(() => stats.update())
       return () => {
+        if (classNames.length) stats.dom.classList.remove(...classNames)
         node?.removeChild(stats.dom)
         end()
       }

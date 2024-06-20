@@ -189,9 +189,9 @@ export function useSpriteLoader<Url extends string>(
 
     setSpriteData(spriteDataRef.current)
     // @ts-ignore
-    if ('encoding' in _spriteTexture) _spriteTexture.encoding = THREE.sRGBEncoding
+    if ('encoding' in _spriteTexture) _spriteTexture.encoding = 3001 // sRGBEncoding
     // @ts-ignore
-    else _spriteTexture.colorSpace = 'srgb'
+    else _spriteTexture.colorSpace = THREE.SRGBColorSpace
     setSpriteTexture(_spriteTexture)
     setSpriteObj({
       spriteTexture: _spriteTexture,

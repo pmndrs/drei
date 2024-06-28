@@ -5,22 +5,34 @@ import { Setup } from '../Setup'
 import { useTurntable } from '../useTurntable'
 
 import { Icosahedron, Html, OrthographicCamera } from '../../src'
-import { HtmlProps, CalculatePosition } from 'web/Html'
+import { HtmlProps, CalculatePosition } from '../../src/web/Html'
 import { useFrame, useThree } from '@react-three/fiber'
-import { Object3D } from 'three'
+import { Meta, StoryObj } from '@storybook/react'
 
 export default {
   title: 'Misc/Html',
   component: Html,
-  decorators: [(storyFn) => <Setup cameraPosition={new THREE.Vector3(-20, 20, -20)}> {storyFn()}</Setup>],
-}
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new THREE.Vector3(-20, 20, -20)}>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof Html>
+
+type Story = StoryObj<typeof Html>
 
 function HTMLScene({
-  children = null,
   color = 'hotpink',
+  children,
   ...htmlProps
-}: HtmlProps & { color?: string; children?: React.ReactNode }) {
-  const ref = useTurntable()
+}: {
+  color?: React.ComponentProps<'meshBasicMaterial'>['color']
+  children?: React.ReactNode
+} & HtmlProps) {
+  const ref = useTurntable<React.ElementRef<'group'>>()
+
   return (
     <group ref={ref}>
       <Icosahedron args={[2, 2]} position={[3, 6, 4]}>
@@ -37,39 +49,51 @@ function HTMLScene({
         <meshBasicMaterial color={color} wireframe />
         <Html {...htmlProps}>Third</Html>
       </Icosahedron>
+
       {children}
     </group>
   )
 }
 
-export const HTMLSt = () => <HTMLScene distanceFactor={30} className="html-story-block" />
-HTMLSt.storyName = 'Default'
+export const HTMLSt = {
+  args: {
+    distanceFactor: 30,
+    className: 'html-story-block',
+  },
+  render: (args) => <HTMLScene {...args} />,
+  name: 'Transform mode',
+} satisfies Story
 
-function HTMLTransformScene() {
+//
+
+function HTMLTransformScene(props: HtmlProps) {
   return (
     <HTMLScene color="palegreen" transform className="html-story-block margin300" distanceFactor={30}>
-      <Html
-        sprite
-        transform
-        distanceFactor={20}
-        position={[5, 15, 0]}
-        style={{
-          background: 'palegreen',
-          fontSize: '50px',
-          padding: '10px 18px',
-          border: '2px solid black',
-        }}
-      >
-        Transform mode
-      </Html>
+      <Html {...props}>Transform mode</Html>
     </HTMLScene>
   )
 }
 
-export const HTMLTransformSt = () => <HTMLTransformScene />
-HTMLTransformSt.storyName = 'Transform mode'
+export const HTMLTransformSt = {
+  args: {
+    sprite: true,
+    transform: true,
+    distanceFactor: 20,
+    position: [5, 15, 0],
+    style: {
+      background: 'palegreen',
+      fontSize: '50px',
+      padding: '10px 18px',
+      border: '2px solid black',
+    },
+  },
+  render: (args) => <HTMLTransformScene {...args} />,
+  name: 'Transform mode',
+} satisfies Story
 
-function HTMLOrthographicScene() {
+//
+
+function HTMLOrthographicScene(props: HtmlProps) {
   const camera = useThree((state) => state.camera)
   const [zoomIn, setZoomIn] = React.useState(true)
 
@@ -96,9 +120,7 @@ function HTMLOrthographicScene() {
         <meshBasicMaterial color="hotpink" wireframe />
         {
           // for smoother text use css will-change: transform
-          <Html className="html-story-label" distanceFactor={1}>
-            Orthographic
-          </Html>
+          <Html {...props}>Orthographic</Html>
         }
       </Icosahedron>
       <ambientLight intensity={0.8} />
@@ -107,8 +129,16 @@ function HTMLOrthographicScene() {
   )
 }
 
-export const HTMLOrthoSt = () => <HTMLOrthographicScene />
-HTMLOrthoSt.storyName = 'Orthographic'
+export const HTMLOrthoSt = {
+  args: {
+    distanceFactor: 1,
+    className: 'html-story-label',
+  },
+  render: (args) => <HTMLOrthographicScene {...args} />,
+  name: 'Orthographic',
+} satisfies Story
+
+//
 
 const v1 = new THREE.Vector3()
 const overrideCalculatePosition: CalculatePosition = (el, camera, size) => {
@@ -122,33 +152,45 @@ const overrideCalculatePosition: CalculatePosition = (el, camera, size) => {
   ]
 }
 
-export const HTMLCalculatePosition = () => (
-  <HTMLScene className="html-story-label" calculatePosition={overrideCalculatePosition} />
-)
-HTMLCalculatePosition.storyName = 'Custom Calculate Position'
+export const HTMLCalculatePositionSt = {
+  args: {
+    className: 'html-story-label',
+    calculatePosition: overrideCalculatePosition,
+  },
+  render: (args) => <HTMLScene {...args} />,
+  name: 'Custom Calculate Position',
+} satisfies Story
 
-function HTMLOccluderScene() {
-  const turntableRef = useTurntable()
-  const occluderRef = React.useRef<Object3D>(null!)
+//
+
+function HTMLOccluderScene(props: HtmlProps) {
+  const turntableRef = useTurntable<React.ElementRef<'group'>>()
+  const occluderRef = React.useRef<React.ElementRef<typeof Icosahedron>>(null)
 
   return (
     <>
       <group ref={turntableRef}>
         <Icosahedron name="pink" args={[5, 5]} position={[0, 0, 0]}>
           <meshBasicMaterial color="hotpink" />
-          <Html position={[0, 0, -6]} className="html-story-label" occlude="blending">
+          <Html {...props} position={[0, 0, -6]} className="html-story-label" occlude="blending">
             Blending
           </Html>
         </Icosahedron>
         <Icosahedron name="yellow" args={[5, 5]} position={[16, 0, 0]}>
           <meshBasicMaterial color="yellow" />
-          <Html transform position={[0, 0, -6]} className="html-story-label html-story-label-B" occlude="blending">
+          <Html
+            {...props}
+            transform
+            position={[0, 0, -6]}
+            className="html-story-label html-story-label-B"
+            occlude="blending"
+          >
             Blending w/ transform
           </Html>
         </Icosahedron>
         <Icosahedron ref={occluderRef} name="orange" args={[5, 5]} position={[0, 0, 16]}>
           <meshBasicMaterial color="orange" />
-          <Html position={[0, 0, -6]} className="html-story-label" occlude={[occluderRef]}>
+          <Html {...props} position={[0, 0, -6]} className="html-story-label" occlude={[occluderRef]}>
             Raycast occlusion
           </Html>
         </Icosahedron>
@@ -159,5 +201,8 @@ function HTMLOccluderScene() {
   )
 }
 
-export const HTMLOccluderSt = () => <HTMLOccluderScene />
-HTMLOccluderSt.storyName = 'Occlusion'
+export const HTMLOccluderSt = {
+  args: {},
+  render: (args) => <HTMLOccluderScene {...args} />,
+  name: 'Occlusion',
+} satisfies Story

@@ -63,7 +63,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#dragcontrols">DragControls</a></li>
           <li><a href="#transformcontrols">TransformControls</a></li>
           <li><a href="#grid">Grid</a></li>
-          <li><a href="#usehelper">useHelper</a></li>
+          <li><a href="#helper--usehelper">Helper / useHelper</a></li>
           <li><a href="#helper">Helper</a></li>
         </ul>
         <li><a href="#abstractions">Abstractions</a></li>
@@ -119,29 +119,29 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#wireframe">Wireframe</a></li>
           <li><a href="#usedepthbuffer">useDepthBuffer</a></li>
           <li><a href="#usecontextbridge">useContextBridge</a></li>
-          <li><a href="#usefbo">useFBO</a></li>
+          <li><a href="#fbo--usefbo">Fbo / useFBO</a></li>
           <li><a href="#usecamera">useCamera</a></li>
-          <li><a href="#usecubecamera">useCubeCamera</a></li>
-          <li><a href="#usedetectgpu">useDetectGPU</a></li>          
+          <li><a href="#cubecamera--usecubecamera">CubeCamera / useCubeCamera</a></li>
+          <li><a href="#detectgpu--usedetectgpu">DetectGPU / useDetectGPU</a></li>          
           <li><a href="#useaspect">useAspect</a></li>
           <li><a href="#usecursor">useCursor</a></li>
           <li><a href="#useintersect">useIntersect</a></li>
           <li><a href="#useboxprojectedenv">useBoxProjectedEnv</a></li>
-          <li><a href="#useTrail">useTrail</a></li>
+          <li><a href="#trail--useTrail">Trail / useTrail</a></li>
           <li><a href="#useSurfaceSampler">useSurfaceSampler</a></li>
           <li><a href="#facelandmarker">FaceLandmarker</a></li>
         </ul>
         <li><a href="#loading">Loaders</a></li>
         <ul>
           <li><a href="#loader">Loader</a></li>
-          <li><a href="#useprogress">useProgress</a></li>
-          <li><a href="#usegltf">useGLTF</a></li>
-          <li><a href="#usefbx">useFBX</a></li>
-          <li><a href="#usetexture">useTexture</a></li>
-          <li><a href="#usektx2">useKTX2</a></li>
-          <li><a href="#usecubetexture">useCubeTexture</a></li>
-          <li><a href="#usevideotexture">useVideoTexture</a></li>
-          <li><a href="#usetrailtexture">useTrailTexture</a></li>
+          <li><a href="#progress--useprogress">Progress / useProgress</a></li>
+          <li><a href="#gltf--usegltf">Gltf / useGLTF</a></li>
+          <li><a href="#fbx--usefbx">FBX / useFBX</a></li>
+          <li><a href="#texture--usetexture">Texture / useTexture</a></li>
+          <li><a href="#ktx2--usektx2">Ktx2 / useKTX2</a></li>
+          <li><a href="#cubetexture--usecubetexture">CubeTexture / useCubeTexture</a></li>
+          <li><a href="#videotexture--usevideotexture">VideoTexture / useVideoTexture</a></li>
+          <li><a href="#trailtexture--usetrailtexture">TrailTexture / useTrailTexture</a></li>
           <li><a href="#usefont">useFont</a></li>
           <li><a href="#usespriteloader">useSpriteLoader</a></li>
         </ul>
@@ -230,8 +230,8 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#sparkles">Sparkles</a></li>
           <li><a href="#cloud">Cloud</a></li>
           <li><a href="#useenvironment">useEnvironment</a></li>
-          <li><a href="#usematcaptexture">useMatcapTexture</a></li>
-          <li><a href="#usenormaltexture">useNormalTexture</a></li>
+          <li><a href="#matcaptexture--usematcaptexture">MatcapTexture / useMatcapTexture</a></li>
+          <li><a href="#normaltexture--usenormaltexture">NormalTexture / useNormalTexture</a></li>
           <li><a href="#shadowalpha">ShadowAlpha</a></li>
         </ul>
       </ul>
@@ -373,7 +373,7 @@ If available controls have damping enabled by default, they manage their own upd
 const controls = useThree((state) => state.controls)
 ```
 
-Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-scene-st), TrackballControls, ArcballControls, FlyControls, DeviceOrientationControls, PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st), FirstPersonControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-firstpersoncontrols--first-person-controls-story) CameraControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-cameracontrols--camera-controls-story) and FaceControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-facecontrols)
+Drei currently exports OrbitControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-orbitcontrols--orbit-controls-story), MapControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-mapcontrols--map-controls-st), TrackballControls, ArcballControls, FlyControls, DeviceOrientationControls, PointerLockControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-pointerlockcontrols--pointer-lock-controls-scene-st), FirstPersonControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-firstpersoncontrols--first-person-controls-story) CameraControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-cameracontrols--camera-controls-story) and FaceControls [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-facecontrols)
 
 All controls react to the default camera. If you have a `<PerspectiveCamera makeDefault />` in your scene, they will control it. If you need to inject an imperative camera or one that isn't the default, use the `camera` prop: `<OrbitControls camera={MyCamera} />`.
 
@@ -1107,9 +1107,9 @@ export type GridProps = GridMaterialType & {
 <Grid />
 ```
 
-#### useHelper
+#### Helper / useHelper
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-usehelper--default-story)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/gizmos-helper)
 
 A hook for a quick way to add helpers to existing nodes in the scene. It handles removal of the helper on unmount and auto-updates it by default.
 
@@ -1121,11 +1121,7 @@ useHelper(condition && mesh, BoxHelper, 'red') // you can pass false instead of 
 <mesh ref={mesh} ... />
 ```
 
-#### Helper
-
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/gizmos-helper--default-story)
-
-A component for declaratively adding helpers to existing nodes in the scene. It handles removal of the helper on unmount and auto-updates it by default.
+or with `Helper`:
 
 ```jsx
 <mesh>
@@ -1192,7 +1188,7 @@ A triangle that fills the screen, ideal for full-screen fragment shader work (ra
 
 #### Line
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-line--basic-line)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shapes-line--basic-line-st)
 
 Renders a THREE.Line2 or THREE.LineSegments2 (depending on the value of `segments`).
 
@@ -1211,7 +1207,7 @@ Renders a THREE.Line2 or THREE.LineSegments2 (depending on the value of `segment
 
 #### QuadraticBezierLine
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-line--quadratic-bezier)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shapes-line--quadratic-bezier-st)
 
 <p>
   <a href="https://codesandbox.io/s/2ij9u"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/2ij9u/screenshot.png" alt="Demo"/></a>
@@ -1250,7 +1246,7 @@ return <QuadraticBezierLine ref={ref} />
 
 #### CubicBezierLine
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-line--cubic-bezier)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shapes-line--cubic-bezier-st)
 
 Renders a THREE.Line2 using THREE.CubicBezierCurve3 for interpolation.
 
@@ -1271,7 +1267,7 @@ Renders a THREE.Line2 using THREE.CubicBezierCurve3 for interpolation.
 
 #### CatmullRomLine
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-line--catmull-rom)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shapes-line--catmull-rom-st)
 
 Renders a THREE.Line2 using THREE.CatmullRomCurve3 for interpolation.
 
@@ -1941,14 +1937,6 @@ Accepts an SVG url or svg raw data.
 
 ```js
 <Svg src={urlOrRawSvgString} />
-```
-
-#### Gltf
-
-This is a convenience component that will load a gltf file and clone the scene using [drei/Clone](#clone). That means you can re-use and mount the same gltf file multiple times. It accepts all props that Clone does, including shortcuts (castShadow, receiveShadow) and material overrides.
-
-```js
-<Gltf src="/model.glb" receiveShadow castShadow />
 ```
 
 #### AsciiRenderer
@@ -2826,9 +2814,9 @@ const depthBuffer = useDepthBuffer({
 return <SomethingThatNeedsADepthBuffer depthBuffer={depthBuffer} />
 ```
 
-#### useFBO
+#### Fbo / useFBO
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-usefbo--use-fbo-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-fbo)
 
 Creates a `THREE.WebGLRenderTarget`.
 
@@ -2870,9 +2858,9 @@ A hook for the rare case when you are using non-default cameras for heads-up-dis
 <mesh raycast={useCamera(customCamera)} />
 ```
 
-#### useCubeCamera
+#### CubeCamera / useCubeCamera
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-usecubecamera)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/camera-cubecamera)
 
 Creates a [`THREE.CubeCamera`](https://threejs.org/docs/#api/en/cameras/CubeCamera) that renders into a `fbo` renderTarget and that you can `update()`.
 
@@ -2895,9 +2883,9 @@ export function useCubeCamera({
 const { fbo, camera, update } = useCubeCamera()
 ```
 
-#### useDetectGPU
+#### DetectGPU / useDetectGPU
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/misc-usedetectgpu)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/misc-detectgpu)
 
 This hook uses [DetectGPU by @TimvanScherpenzeel](https://github.com/TimvanScherpenzeel/detect-gpu), wrapped into suspense, to determine what tier should be assigned to the user's GPU.
 
@@ -2982,9 +2970,9 @@ const projection = useBoxProjectedEnv(
 </CubeCamera>
 ```
 
-#### useTrail
+#### Trail / useTrail
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-trail--use-trail-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-trail)
 
 A hook to obtain an array of points that make up a [Trail](#trail). You can use this array to drive your own `MeshLine` or make a trail out of anything you please.
 
@@ -3104,9 +3092,9 @@ You can override styles, too.
 >
 ```
 
-#### useProgress
+#### Progress / useProgress
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-useprogress--use-progress-scene-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-progress)
 
 A convenience hook that wraps `THREE.DefaultLoadingManager`'s progress status.
 
@@ -3131,7 +3119,7 @@ const errors = useProgress((state) => state.errors)
 
 👉 Note that your loading component does not have to be a suspense fallback. You can use it anywhere, even in your dom tree, for instance for overlays.
 
-#### useGLTF
+#### Gltf / useGLTF
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-gltf)
 
@@ -3166,7 +3154,7 @@ If you want to use your own draco decoder globally, you can pass it through `use
 >
 > It is recommended that you check your browser's network tab to confirm that the correct URLs are being used, and that the files do get loaded from the prefetch cache on subsequent requests.
 
-#### useFBX
+#### Fbx / useFBX
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-fbx)
 
@@ -3181,7 +3169,7 @@ function SuzanneFBX() {
 }
 ```
 
-#### useTexture
+#### Texture / useTexture
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-texture)
 
@@ -3202,9 +3190,9 @@ const props = useTexture({
 return <meshStandardMaterial {...props} />
 ```
 
-#### useKTX2
+#### Ktx2 / useKTX2
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-ktx2--use-ktx-2-scene-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-ktx2)
 
 A convenience hook that uses `useLoader` and `KTX2Loader`
 
@@ -3215,9 +3203,9 @@ const [texture1, texture2] = useKTX2([texture1, texture2])
 return <meshStandardMaterial map={texture} />
 ```
 
-#### useCubeTexture
+#### CubeTexture / useCubeTexture
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-cubetexture)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-cubetexture)
 
 A convenience hook that uses `useLoader` and `CubeTextureLoader`
 
@@ -3225,9 +3213,9 @@ A convenience hook that uses `useLoader` and `CubeTextureLoader`
 const envMap = useCubeTexture(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'], { path: 'cube/' })
 ```
 
-#### useVideoTexture
+#### VideoTexture / useVideoTexture
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-videotexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/misc-videotexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
 <p>
   <a href="https://codesandbox.io/s/39hg8"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/39hg8/screenshot.png" alt="Demo"/></a>
@@ -3297,7 +3285,9 @@ You can fine-tune via the hls configuration:
 
 > Available options: https://github.com/video-dev/hls.js/blob/master/docs/API.md#fine-tuning
 
-#### useTrailTexture
+#### TrailTexture / useTrailTexture
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/misc-trailtexture)
 
 <p>
   <a href="https://codesandbox.io/s/fj1qlg"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/fj1qlg/screenshot.png" alt="Demo"/></a>
@@ -3353,6 +3343,12 @@ useFont.preload('/fonts/helvetiker_regular.typeface.json')
 #### useSpriteLoader
 
 Loads texture and JSON files with multiple or single animations and parses them into appropriate format. These assets can be used by multiple SpriteAnimator components to save memory and loading times.
+
+Returns: `{spriteTexture:Texture, spriteData:{any[], object}, aspect:Vector3}`
+
+- spriteTexture: The ThreeJS Texture
+- spriteData: A collection of the sprite frames, and some meta information (width, height)
+- aspect: Information about the aspect ratio of the sprite sheet
 
 ```jsx
 /** The texture url to load the sprite frames from */
@@ -3626,7 +3622,7 @@ Drop this component into your scene and it will switch off the raycaster while t
 
 #### Bvh
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/performance-usebvh--default-story)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/performance-bvh)
 
 An abstraction around [gkjohnson/three-mesh-bvh](https://github.com/gkjohnson/three-mesh-bvh) to speed up raycasting exponentially. Use this component to wrap your scene, a sub-graph, a model or single mesh, and it will automatically compute boundsTree and assign acceleratedRaycast. This component is side-effect free, once unmounted or disabled it will revert to the original raycast.
 
@@ -5006,9 +5002,9 @@ const rgbeTexture = useEnvironment({ files: 'model.hdr' })
 const cubeTexture = useEnvironment({ files: ['px', 'nx', 'py', 'ny', 'pz', 'nz'].map((n) => `${n}.png`) })
 ```
 
-#### useMatcapTexture
+#### MatcapTexture / useMatcapTexture
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-usematcaptexture--use-matcap-texture-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-matcaptexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
 Loads matcap textures from this repository: https://github.com/emmelleppi/matcaps
 
@@ -5037,9 +5033,9 @@ const [matcap] = useMatcapTexture('3E2335_D36A1B_8E4A2E_2842A5')
 
 👉 Use the `url` to download the texture when you are ready for production!
 
-#### useNormalTexture
+#### NormalTexture / useNormalTexture
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-usenormaltexture--use-normal-texture-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-normaltexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
 
 Loads normal textures from this repository: https://github.com/emmelleppi/normal-maps
 

@@ -1,5 +1,7 @@
 import * as React from 'react'
+import { ComponentProps } from 'react'
 import * as THREE from 'three'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
@@ -10,34 +12,25 @@ export default {
   title: 'Staging/BBAnchor',
   component: BBAnchor,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup cameraPosition={new THREE.Vector3(2, 2, 2)} controls={false}>
-        {' '}
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],
-  argTypes: {
-    drawBoundingBox: { control: 'boolean' },
-    anchorX: { control: { type: 'range', min: -1, max: 1, step: 0.1 } },
-    anchorY: { control: { type: 'range', min: -1, max: 1, step: 0.1 } },
-    anchorZ: { control: { type: 'range', min: -1, max: 1, step: 0.1 } },
-    children: { table: { disable: true } },
-  },
-}
+} satisfies Meta<typeof BBAnchor>
 
-type Anchor = THREE.Vector3 | [number, number, number]
+type Story = StoryObj<typeof BBAnchor>
 
 function BBAnchorScene({
-  anchor,
   drawBoundingBox,
   children,
-}: {
-  anchor: Anchor
+  ...props
+}: ComponentProps<typeof BBAnchor> & {
   drawBoundingBox: boolean
-  children?: React.ReactChild
+  children?: React.ReactNode
 }) {
-  const ref = React.useRef()
+  const ref = React.useRef(null)
 
   useHelper(drawBoundingBox && ref, BoxHelper, 'cyan')
 
@@ -46,15 +39,11 @@ function BBAnchorScene({
       <OrbitControls autoRotate />
       <Icosahedron ref={ref}>
         <meshBasicMaterial color="hotpink" wireframe />
-        <BBAnchor anchor={anchor}>{children}</BBAnchor>
+        <BBAnchor {...props}>{children}</BBAnchor>
       </Icosahedron>
     </>
   )
 }
-
-const Template = ({ drawBoundingBox, anchorX, anchorY, anchorZ, ...args }) => (
-  <BBAnchorScene drawBoundingBox={drawBoundingBox} anchor={[anchorX, anchorY, anchorZ]} {...args} />
-)
 
 function HtmlComp() {
   return (
@@ -70,15 +59,17 @@ function HtmlComp() {
   )
 }
 
-export const BBAnchorWithHtml = Template.bind({})
-BBAnchorWithHtml.args = {
-  drawBoundingBox: true,
-  anchorX: 1,
-  anchorY: 1,
-  anchorZ: 1,
-  children: <HtmlComp />,
-}
-BBAnchorWithHtml.storyName = 'With Html component'
+export const BBAnchorWithHtml = {
+  render: (args) => (
+    <BBAnchorScene {...args} drawBoundingBox={true}>
+      <HtmlComp />
+    </BBAnchorScene>
+  ),
+  args: {
+    anchor: [1, 1, 1],
+  },
+  name: 'With Html component',
+} satisfies Story
 
 function MeshComp() {
   return (
@@ -88,12 +79,14 @@ function MeshComp() {
   )
 }
 
-export const BBAnchorWithMesh = Template.bind({})
-BBAnchorWithMesh.args = {
-  drawBoundingBox: true,
-  anchorX: 1,
-  anchorY: 1,
-  anchorZ: 1,
-  children: <MeshComp />,
-}
-BBAnchorWithMesh.storyName = 'With other mesh'
+export const BBAnchorWithMesh = {
+  render: (args) => (
+    <BBAnchorScene {...args} drawBoundingBox={true}>
+      <MeshComp />
+    </BBAnchorScene>
+  ),
+  args: {
+    anchor: [1, 1, 1],
+  },
+  name: 'With other mesh',
+} satisfies Story

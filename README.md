@@ -911,6 +911,8 @@ Controls for rotating and translating objects. These controls will stick to the 
 
 ```tsx
 type PivotControlsProps = {
+  /** Enables/disables the control, true */
+  enabled?: boolean
   /** Scale of the gizmo, 1 */
   scale?: number
   /** Width of the gizmo lines, this is a THREE.Line2 prop, 2.5 */

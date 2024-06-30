@@ -21,6 +21,8 @@ type Props = JSX.IntrinsicElements['group'] & {
   onChangePointerUp?: (selected: THREE.Object3D[]) => void
   /** Optional filter for filtering the selection */
   filter?: (selected: THREE.Object3D[]) => THREE.Object3D[]
+  onStart?: (event: MouseEvent) => boolean
+  onEnd?: (event: MouseEvent) => void
 }
 
 export function Select({
@@ -32,13 +34,15 @@ export function Select({
   border = '1px solid #55aaff',
   backgroundColor = 'rgba(75, 160, 255, 0.1)',
   filter: customFilter = (item) => item,
+  onStart = (event) => event.shiftKey,
+  onEnd,
   ...props
 }: Props) {
   const [downed, down] = React.useState(false)
   const { setEvents, camera, raycaster, gl, controls, size, get } = useThree()
   const [hovered, hover] = React.useState(false)
   const [active, dispatch] = React.useReducer(
-    (state, { object, shift }: { object?: THREE.Object3D | THREE.Object3D[]; shift?: boolean }): THREE.Object3D[] => {
+      (state, { object, shift }: { object?: THREE.Object3D | THREE.Object3D[]; shift?: boolean }): THREE.Object3D[] => {
       if (object === undefined) return []
       else if (Array.isArray(object)) return object
       else if (!shift) return state[0] === object ? [] : [object]
@@ -78,13 +82,13 @@ export function Select({
 
     let isDown = false
 
-    function prepareRay(event, vec) {
+    function prepareRay(event: PointerEvent, vec) {
       const { offsetX, offsetY } = event
       const { width, height } = size
       vec.set((offsetX / width) * 2 - 1, -(offsetY / height) * 2 + 1)
     }
 
-    function onSelectStart(event) {
+    function onSelectStart(event: PointerEvent) {
       if (controls) (controls as any).enabled = false
       setEvents({ enabled: false })
       down((isDown = true))
@@ -97,7 +101,7 @@ export function Select({
       startPoint.y = event.clientY
     }
 
-    function onSelectMove(event) {
+    function onSelectMove(event: PointerEvent) {
       pointBottomRight.x = Math.max(startPoint.x, event.clientX)
       pointBottomRight.y = Math.max(startPoint.y, event.clientY)
       pointTopLeft.x = Math.min(startPoint.x, event.clientX)
@@ -117,15 +121,15 @@ export function Select({
       }
     }
 
-    function pointerDown(event) {
-      if (event.shiftKey) {
+    function pointerDown(event: PointerEvent) {
+      if (onStart(event)) {
         onSelectStart(event)
         prepareRay(event, selBox.startPoint)
       }
     }
 
     let previous: THREE.Mesh<THREE.BufferGeometry, THREE.Material | THREE.Material[]>[] = []
-    function pointerMove(event) {
+    function pointerMove(event: PointerEvent) {
       if (isDown) {
         onSelectMove(event)
         prepareRay(event, selBox.endPoint)
@@ -140,8 +144,11 @@ export function Select({
       }
     }
 
-    function pointerUp(event) {
-      if (isDown) onSelectOver()
+    function pointerUp(event: PointerEvent) {
+      if (isDown) {
+        onSelectOver()
+        onEnd?.(event);
+      }
     }
 
     document.addEventListener('pointerdown', pointerDown, { passive: true })

@@ -10,7 +10,7 @@ type Props = JSX.IntrinsicElements['positionalAudio'] & {
 }
 
 export const PositionalAudio: ForwardRefComponent<Props, PositionalAudioImpl> = /* @__PURE__ */ React.forwardRef(
-  ({ url, distance = 1, loop = true, autoplay, ...props }: Props, ref) => {
+  ({ url, distance = 1, loop = false, autoplay, ...props }: Props, ref) => {
     const sound = React.useRef<PositionalAudioImpl>(null!)
     React.useImperativeHandle(ref, () => sound.current, [])
     const camera = useThree(({ camera }) => camera)

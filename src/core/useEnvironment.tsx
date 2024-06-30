@@ -25,7 +25,7 @@ export type EnvironmentLoaderProps = {
 
 export function useEnvironment({
   files = ['/px.png', '/nx.png', '/py.png', '/ny.png', '/pz.png', '/nz.png'],
-  path = '',
+  path = CUBEMAP_ROOT,
   preset = undefined,
   encoding = undefined,
   extensions,
@@ -37,7 +37,6 @@ export function useEnvironment({
   if (preset) {
     if (!(preset in presetsObj)) throw new Error('Preset must be one of: ' + Object.keys(presetsObj).join(', '))
     files = presetsObj[preset]
-    path = CUBEMAP_ROOT
   }
 
   const isCubemap = isArray(files) && files.length === 6

@@ -48,12 +48,11 @@ export const Svg: ForwardRefComponent<SvgProps, Object3D> = /* @__PURE__ */ forw
                 path.userData?.style.fill !== undefined &&
                 path.userData.style.fill !== 'none' &&
                 SVGLoader.createShapes(path).map((shape, s) => (
-                  <mesh key={s} {...fillMeshProps}>
+                  <mesh key={s} {...fillMeshProps} renderOrder={s}>
                     <shapeGeometry args={[shape]} />
                     <meshBasicMaterial
                       color={path.userData!.style.fill}
                       opacity={path.userData!.style.fillOpacity}
-                      transparent={true}
                       side={DoubleSide}
                       depthWrite={false}
                       {...fillMaterial}
@@ -64,11 +63,10 @@ export const Svg: ForwardRefComponent<SvgProps, Object3D> = /* @__PURE__ */ forw
                 path.userData?.style.stroke !== undefined &&
                 path.userData.style.stroke !== 'none' &&
                 path.subPaths.map((_subPath, s) => (
-                  <mesh key={s} geometry={strokeGeometries[p]![s]} {...strokeMeshProps}>
+                  <mesh key={s} geometry={strokeGeometries[p]![s]} {...strokeMeshProps} renderOrder={s}>
                     <meshBasicMaterial
                       color={path.userData!.style.stroke}
                       opacity={path.userData!.style.strokeOpacity}
-                      transparent={true}
                       side={DoubleSide}
                       depthWrite={false}
                       {...strokeMaterial}

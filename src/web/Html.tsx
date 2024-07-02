@@ -164,7 +164,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
       receiveShadow,
       material,
       geometry,
-      zIndexRange = [16777271, 0],
+      zIndexRange = [2, 0],
       calculatePosition = defaultCalculatePosition,
       as = 'div',
       wrapperClass,
@@ -198,7 +198,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
       const el = gl.domElement as HTMLCanvasElement
 
       if (occlude && occlude === 'blending') {
-        el.style.zIndex = `${Math.floor(zIndexRange[0] / 2)}`
+        el.style.zIndex = `2`
         el.style.position = 'absolute'
         el.style.pointerEvents = 'none'
       } else {
@@ -318,7 +318,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
             else el.style.display = visible.current ? 'block' : 'none'
           }
 
-          const halfRange = Math.floor(zIndexRange[0] / 2)
+          const halfRange = Math.floor(zIndexRange[0])
           const zRange = occlude
             ? isRayCastOcclusion //
               ? [zIndexRange[0], halfRange]

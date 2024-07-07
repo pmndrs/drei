@@ -6,6 +6,10 @@ import { shaderMaterial } from '../core/shaderMaterial'
 import { MeshBVHUniformStruct, shaderStructs, shaderIntersectFunction } from 'three-mesh-bvh'
 import { version } from '../helpers/constants'
 
+declare module 'three-mesh-bvh' {
+  const shaderIntersectFunction: string
+}
+
 export const MeshRefractionMaterial = /* @__PURE__ */ shaderMaterial(
   {
     envMap: null,

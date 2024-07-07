@@ -18,6 +18,6 @@
     "noImplicitAny": false,
     "noImplicitThis": false
   },
-  "include": ["./src", "custom.d.ts"],
+  "include": ["./src"],
   "exclude": ["./node_modules/**/*"]
 }

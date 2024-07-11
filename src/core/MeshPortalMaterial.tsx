@@ -113,7 +113,7 @@ export const MeshPortalMaterial = /* @__PURE__ */ React.forwardRef(
       if (events !== undefined) setEvents({ enabled: !events })
     }, [events])
 
-    const [visible, setVisible] = React.useState(true)
+    const [visible, setVisible] = React.useState(false)
     // See if the parent mesh is in the camera frustum
     const parent = useIntersect(setVisible) as React.MutableRefObject<THREE.Mesh<THREE.BufferGeometry>>
     React.useLayoutEffect(() => {

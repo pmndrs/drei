@@ -1,7 +1,12 @@
 import * as React from 'react'
 import { useThree } from '@react-three/fiber'
 
-export function AdaptiveDpr({ pixelated }: { pixelated?: boolean }) {
+export function AdaptiveDpr({
+  pixelated,
+}: {
+  /** Whether or not to use 'pixelated' imageRendering for canvas */
+  pixelated?: boolean
+}) {
   const gl = useThree((state) => state.gl)
   const active = useThree((state) => state.internal.active)
   const current = useThree((state) => state.performance.current)

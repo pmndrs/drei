@@ -11,6 +11,7 @@ import { RGBELoader, EXRLoader } from 'three-stdlib'
 import { GainMapLoader, HDRJPGLoader } from '@monogrid/gainmap-js'
 import { presetsObj, PresetsType } from '../helpers/environment-assets'
 import { LinearEncoding, sRGBEncoding, TextureEncoding } from '../helpers/deprecated'
+import { useLayoutEffect } from 'react'
 
 const CUBEMAP_ROOT = 'https://raw.githack.com/pmndrs/drei-assets/456060a26bbeb8fdf79326f224b6d99b8bcce736/hdri/'
 const isArray = (arr: any): arr is string[] => Array.isArray(arr)
@@ -32,7 +33,6 @@ export function useEnvironment({
 }: Partial<EnvironmentLoaderProps> = {}) {
   let loader: typeof Loader | null = null
   let multiFile: boolean = false
-  let extension: string | false | undefined
 
   if (preset) {
     if (!(preset in presetsObj)) throw new Error('Preset must be one of: ' + Object.keys(presetsObj).join(', '))
@@ -46,7 +46,7 @@ export function useEnvironment({
 
   // Everything else
   multiFile = isArray(files)
-  extension = isCubemap
+  const extension: string | false | undefined = isCubemap
     ? 'cube'
     : isGainmap
     ? 'webp'
@@ -73,6 +73,19 @@ export function useEnvironment({
   if (!loader) throw new Error('useEnvironment: Unrecognized file extension: ' + files)
 
   const gl = useThree((state) => state.gl)
+
+  useLayoutEffect(() => {
+    // Only required for gainmap
+    if (extension !== 'webp' && extension !== 'jpg' && extension !== 'jpeg') return
+
+    function clearGainmapTexture() {
+      // @ts-expect-error
+      useLoader.clear(loader, multiFile ? [files] : files)
+    }
+
+    gl.domElement.addEventListener('webglcontextlost', clearGainmapTexture, { once: true })
+  }, [files, gl.domElement])
+
   const loaderResult: Texture | Texture[] = useLoader(
     // @ts-expect-error
     loader,

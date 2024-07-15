@@ -116,3 +116,33 @@ export const EnvironmentSt3 = {
   },
   name: 'Ground',
 } satisfies Story
+
+function EnvironmentScene4(props: ComponentProps<typeof Environment>) {
+  return (
+    <>
+      <Environment {...props} />
+      <mesh>
+        <torusKnotGeometry args={[1, 0.5, 128, 32]} />
+        <meshStandardMaterial metalness={1} roughness={0} />
+      </mesh>
+      <OrbitControls autoRotate />
+    </>
+  )
+}
+
+export const EnvironmentSt4 = {
+  render: (args) => <EnvironmentScene4 {...args} />,
+  args: {
+    files: ['/gainmap/potsdamer_platz_1k.jpg'],
+    background: true,
+  },
+  argTypes: {
+    preset: {
+      options: presets,
+      control: {
+        type: 'select',
+      },
+    },
+  },
+  name: 'Gainmap',
+} satisfies Story

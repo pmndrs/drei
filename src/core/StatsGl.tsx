@@ -1,4 +1,4 @@
-import { ForwardRefComponent } from '@react-three/drei/helpers/ts-utils'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 import { addAfterEffect, useThree } from '@react-three/fiber'
 import * as React from 'react'
 

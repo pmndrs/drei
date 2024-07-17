@@ -16,7 +16,7 @@ function App() {
 
 function Scene() {
   useEffect(() => {
-    document.dispatchEvent(new Event('puppeteer:r3f'))
+    document.dispatchEvent(new Event('playright:r3f'))
   }, [])
 
   return (

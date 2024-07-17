@@ -1,5 +1,5 @@
 const http = require('http')
-const puppeteer = require('puppeteer')
+const { chromium } = require('playwright')
 
 const { toMatchImageSnapshot } = require('jest-image-snapshot')
 expect.extend({ toMatchImageSnapshot })
@@ -31,7 +31,7 @@ describe('snapshot', () => {
   let page
   beforeAll(async () => {
     await waitForServer()
-    browser = await puppeteer.launch({ headless: 'new' })
+    browser = await chromium.launch()
     page = await browser.newPage()
   }, 30000)
 

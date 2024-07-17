@@ -37,7 +37,7 @@ cp App.jsx $appdir/src/App.jsx
 
 # build+start+jest
 (cd $appdir; npm run build; npm run preview -- --port $PORT &)
-npx jest snapshot.test.js || (kill_app && exit 1)
+npx playwright test snapshot.test.js || (kill_app && exit 1)
 kill_app
 
 #
@@ -63,7 +63,7 @@ cp App.jsx $appdir/app/page.js
 
 # build+start+jest
 (cd $appdir; npm run build; npm start -- -p $PORT &)
-npx jest snapshot.test.js || (kill_app && exit 1)
+npx playwright test snapshot.test.js || (kill_app && exit 1)
 kill_app
 
 #
@@ -89,7 +89,7 @@ cp App.jsx $appdir/src/App.js
 
 # build+start+jest
 (cd $appdir; npm run build; npx serve -s -p $PORT build &)
-npx jest snapshot.test.js || (kill_app && exit 1)
+npx playwright test snapshot.test.js || (kill_app && exit 1)
 kill_app
 
 #

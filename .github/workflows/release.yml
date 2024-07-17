@@ -16,14 +16,19 @@ concurrency:
 jobs:
   main:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/pmndrs/playwright:main
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           cache: 'yarn'
-      - run: yarn install
-      - run: yarn build-storybook
+      - run: yarn install --frozen-lockfile
       - run: yarn test
+      - run: yarn build-storybook
       # semantic-release skips not configured branches(see: release.config.js) or pull-requests
       - run: yarn release
         env:

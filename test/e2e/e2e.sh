@@ -3,14 +3,20 @@ set -ex
 
 PORT=5188
 DIST=../../dist
+PID_FILE=/tmp/drei-e2e.pid
 
 (cd $DIST; npm pack)
 TGZ=$(realpath "$DIST/react-three-drei-0.0.0-semantic-release.tgz")
 
 kill_app() {
-  kill $(lsof -ti:$PORT) || echo "ok, no previous running process on port $PORT"
+  kill $(cat $PID_FILE)
 }
-kill_app
+
+cleanup() {
+    kill_app || true
+}
+cleanup
+trap cleanup EXIT
 
 tmp=$(mktemp -d)
 
@@ -36,8 +42,8 @@ appdir="$tmp/$appname"
 cp App.jsx $appdir/src/App.jsx
 
 # build+start+jest
-(cd $appdir; npm run build; npm run preview -- --port $PORT &)
-npx playwright test snapshot.test.js || (kill_app && exit 1)
+(cd $appdir; npm run build; npm run preview -- --host --port $PORT & echo $! > $PID_FILE)
+npx playwright test snapshot.test.js
 kill_app
 
 #
@@ -62,8 +68,8 @@ appdir="$tmp/$appname"
 cp App.jsx $appdir/app/page.js
 
 # build+start+jest
-(cd $appdir; npm run build; npm start -- -p $PORT &)
-npx playwright test snapshot.test.js || (kill_app && exit 1)
+(cd $appdir; npm run build; npm start -- -p $PORT & echo $! > $PID_FILE)
+npx playwright test snapshot.test.js
 kill_app
 
 #
@@ -88,8 +94,8 @@ appdir="$tmp/$appname"
 cp App.jsx $appdir/src/App.js
 
 # build+start+jest
-(cd $appdir; npm run build; npx serve -s -p $PORT build &)
-npx playwright test snapshot.test.js || (kill_app && exit 1)
+(cd $appdir; npm run build; npx serve -s -p $PORT build & echo $! > $PID_FILE)
+npx playwright test snapshot.test.js
 kill_app
 
 #

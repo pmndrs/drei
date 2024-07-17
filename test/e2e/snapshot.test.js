@@ -1,8 +1,5 @@
 const http = require('http')
-const { chromium } = require('playwright')
-
-const { toMatchImageSnapshot } = require('jest-image-snapshot')
-expect.extend({ toMatchImageSnapshot })
+const { test, expect } = require('@playwright/test')
 
 const host = 'http://localhost:5188/'
 
@@ -12,6 +9,7 @@ async function waitForEvent(page, eventName) {
     eventName
   )
 }
+
 function waitForServer() {
   return new Promise((resolve) => {
     function ping() {
@@ -26,29 +24,16 @@ function waitForServer() {
   })
 }
 
-describe('snapshot', () => {
-  let browser
-  let page
-  beforeAll(async () => {
-    await waitForServer()
-    browser = await chromium.launch()
-    page = await browser.newPage()
-  }, 30000)
+test('should match previous one', async ({ page }) => {
+  await waitForServer()
 
-  it('should match previous one', async () => {
-    // ⏳ "r3f" event
-    await page.goto(host)
-    await waitForEvent(page, 'puppeteer:r3f')
+  // ⏳ "r3f" event
+  await page.goto(host)
+  await waitForEvent(page, 'playright:r3f')
 
-    // 📸 <canvas>
-    const $canvas = await page.$('canvas[data-engine]')
-    const image = await $canvas.screenshot()
+  // 📸 <canvas>
+  const $canvas = page.locator('canvas[data-engine]')
 
-    // compare
-    expect(image).toMatchImageSnapshot({})
-  }, 30000)
-
-  afterAll(async () => {
-    await browser?.close()
-  })
+  // 👁️
+  await expect($canvas).toHaveScreenshot()
 })

@@ -5078,3 +5078,16 @@ Makes an object's shadow respect its opacity and alphaMap.
 ```
 
 > Note: This component uses Screendoor transparency using a dither pattern. This pattern is notacible when the camera gets close to the shadow.
+
+<details>
+  <summary>Maintenance</summary>
+
+### Tests
+
+To run visual tests in the same environment as the CI:
+
+```sh
+$ docker run --rm -v $(pwd):/app -w /app mcr.microsoft.com/playwright:v1.45.2-jammy yarn test
+```
+
+</details>

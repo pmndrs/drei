@@ -53,6 +53,7 @@ export const ContactShadows: ForwardRefComponent<
     width = width * (Array.isArray(scale) ? scale[0] : scale || 1)
     height = height * (Array.isArray(scale) ? scale[1] : scale || 1)
 
+    const renderTargetAccFrames = React.useRef(0)
     const [
       renderTarget,
       planeGeometry,
@@ -87,6 +88,8 @@ export const ContactShadows: ForwardRefComponent<
         )
       }
 
+      renderTargetAccFrames.current = 0
+
       const horizontalBlurMaterial = new THREE.ShaderMaterial(HorizontalBlurShader)
       const verticalBlurMaterial = new THREE.ShaderMaterial(VerticalBlurShader)
       verticalBlurMaterial.depthTest = horizontalBlurMaterial.depthTest = false
@@ -99,7 +102,7 @@ export const ContactShadows: ForwardRefComponent<
         verticalBlurMaterial,
         renderTargetBlur,
       ]
-    }, [resolution, width, height, scale, color])
+    }, [resolution, width, height, scale, color, frames])
 
     const blurShadows = (blur) => {
       blurPlane.visible = true
@@ -121,12 +124,11 @@ export const ContactShadows: ForwardRefComponent<
       blurPlane.visible = false
     }
 
-    let count = 0
     let initialBackground: THREE.Color | THREE.Texture | null
     let initialOverrideMaterial: THREE.Material | null
     useFrame(() => {
-      if (shadowCamera.current && (frames === Infinity || count < frames)) {
-        count++
+      if (shadowCamera.current && (frames === Infinity || renderTargetAccFrames.current < frames)) {
+        renderTargetAccFrames.current++
 
         initialBackground = scene.background
         initialOverrideMaterial = scene.overrideMaterial

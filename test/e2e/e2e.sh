@@ -40,7 +40,7 @@ appdir="$tmp/$appname"
 # App.jsx
 cp App.jsx $appdir/src/App.jsx
 
-# build+start+jest
+# build+start+playwright
 (cd $appdir; npm run build; npm run preview -- --host --port $PORT &)
 npx playwright test snapshot.test.js
 kill_app
@@ -66,7 +66,7 @@ appdir="$tmp/$appname"
 # App.jsx
 cp App.jsx $appdir/app/page.js
 
-# build+start+jest
+# build+start+playwright
 (cd $appdir; npm run build; npm start -- -p $PORT &)
 npx playwright test snapshot.test.js
 kill_app
@@ -92,7 +92,7 @@ appdir="$tmp/$appname"
 # App.jsx
 cp App.jsx $appdir/src/App.js
 
-# build+start+jest
+# build+start+playwright
 (cd $appdir; npm run build; npx serve -s -p $PORT build &)
 npx playwright test snapshot.test.js
 kill_app

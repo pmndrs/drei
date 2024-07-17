@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  main:
+  test:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/pmndrs/playwright:main
@@ -26,8 +26,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           cache: 'yarn'
-      - run: yarn install --frozen-lockfile
+      - run: yarn install
       - run: yarn test
+
+  build-and-release:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          cache: 'yarn'
+      - run: yarn install
       - run: yarn build-storybook
       # semantic-release skips not configured branches(see: release.config.js) or pull-requests
       - run: yarn release

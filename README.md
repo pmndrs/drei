@@ -5087,7 +5087,9 @@ Makes an object's shadow respect its opacity and alphaMap.
 To run visual tests in the same environment as the CI:
 
 ```sh
-$ docker run --rm -v $(pwd):/app -w /app mcr.microsoft.com/playwright:v1.45.2-jammy yarn test
+$ docker run --init --rm -v $(pwd):/app -w /app ghcr.io/pmndrs/playwright:main yarn test
 ```
+
+NB: if running on mac m-series, you'll need to add `--platform linux/arm64` to the docker command.
 
 </details>

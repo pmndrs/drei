@@ -4350,6 +4350,16 @@ This component makes its contents float or hover.
 </Float>
 ```
 
+If you have your frameloop set to `demand`, you can set `autoInvalidate` to `true`. This will ensure the animation will render while it is enabled.
+
+```js
+<Canvas frameloop="demand">
+  <Float autoInvalidate>
+    <mesh />
+  </Float>
+</Canvas>
+```
+
 #### Stage
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-stage--stage-st)

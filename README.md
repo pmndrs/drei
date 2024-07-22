@@ -4350,6 +4350,16 @@ This component makes its contents float or hover.
 </Float>
 ```
 
+If you have your frameloop set to `demand`, you can set `autoInvalidate` to `true`. This will ensure the animation will render while it is enabled.
+
+```js
+<Canvas frameloop="demand">
+  <Float autoInvalidate>
+    <mesh />
+  </Float>
+</Canvas>
+```
+
 #### Stage
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-stage--stage-st)
@@ -5078,3 +5088,18 @@ Makes an object's shadow respect its opacity and alphaMap.
 ```
 
 > Note: This component uses Screendoor transparency using a dither pattern. This pattern is notacible when the camera gets close to the shadow.
+
+<details>
+  <summary>Maintenance</summary>
+
+### Tests
+
+To run visual tests in the same environment as the CI:
+
+```sh
+$ docker run --init --rm -v $(pwd):/app -w /app ghcr.io/pmndrs/playwright:main yarn test
+```
+
+NB: if running on mac m-series, you'll need to add `--platform linux/arm64` to the docker command.
+
+</details>

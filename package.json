@@ -29,16 +29,6 @@
   "types": "index.d.ts",
   "react-native": "native/index.cjs.js",
   "sideEffects": false,
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ],
-    "rules": {
-      "body-max-line-length": [
-        0
-      ]
-    }
-  },
   "scripts": {
     "prebuild": "rimraf dist && npm run typegen",
     "build": "rollup -c && npm run copy",

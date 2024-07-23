@@ -40,14 +40,14 @@
     }
   },
   "scripts": {
-    "prebuild": "rimraf dist && npm run typegen",
-    "build": "rollup -c && npm run copy",
-    "prepare": "npm run build && husky install",
+    "prebuild": "rimraf dist && yarn typegen",
+    "build": "rollup -c && yarn copy",
+    "prepare": "yarn build && husky install",
     "eslint": "eslint --fix .",
     "eslint:ci": "eslint .",
     "prettier": "prettier --check .",
     "prettier-fix": "prettier --write .",
-    "test": "npm run eslint:ci && (cd test/e2e; ./e2e.sh)",
+    "test": "yarn eslint:ci && (cd test/e2e; ./e2e.sh)",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false --strict --jsx react",
     "typegen": "tsc --emitDeclarationOnly",
     "storybook": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider\" storybook dev -p 6006",

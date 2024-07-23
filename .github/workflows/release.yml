@@ -28,6 +28,7 @@ jobs:
         with:
           cache: 'yarn'
       - run: yarn install
+      - run: yarn build
       - run: yarn test
 
   build-and-release:
@@ -39,6 +40,7 @@ jobs:
         with:
           cache: 'yarn'
       - run: yarn install
+      - run: yarn build
       - run: yarn build-storybook
       # semantic-release skips not configured branches(see: release.config.js) or pull-requests
       - run: yarn release

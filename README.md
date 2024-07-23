@@ -5097,9 +5097,13 @@ Makes an object's shadow respect its opacity and alphaMap.
 To run visual tests in the same environment as the CI:
 
 ```sh
+$ yarn build
 $ docker run --init --rm -v $(pwd):/app -w /app ghcr.io/pmndrs/playwright:main yarn test
 ```
 
-NB: if running on mac m-series, you'll need to add `--platform linux/arm64` to the docker command.
+> [!TIP]
+> If running on mac m-series, you may need to add `--platform linux/arm64` to the docker command.
+
+To update a snapshot, simply remove it and relaunch the test command.
 
 </details>

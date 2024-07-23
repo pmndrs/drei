@@ -3,8 +3,6 @@ const { test, expect } = require('@playwright/test')
 
 const host = 'http://localhost:5188/'
 
-const TIMEOUT = 10000
-
 async function waitForEvent(page, eventName) {
   await page.evaluate(
     (eventName) => new Promise((resolve) => document.addEventListener(eventName, resolve, { once: true })),

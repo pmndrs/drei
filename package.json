@@ -29,16 +29,6 @@
   "types": "index.d.ts",
   "react-native": "native/index.cjs.js",
   "sideEffects": false,
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ],
-    "rules": {
-      "body-max-line-length": [
-        0
-      ]
-    }
-  },
   "scripts": {
     "build": "rimraf dist && yarn typegen && rollup -c && yarn copy",
     "prepare": "yarn build && husky install",

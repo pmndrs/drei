@@ -139,8 +139,7 @@
     "ts-node": "^10.9.1",
     "typescript": "^5.4.5",
     "vite": "^4.3.6",
-    "vite-plugin-glslify": "^2.0.1",
-    "yarn": "^1.22.17"
+    "vite-plugin-glslify": "^2.0.1"
   },
   "peerDependencies": {
     "@react-three/fiber": ">=8.0",

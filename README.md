@@ -11,7 +11,7 @@ A growing collection of useful helpers and fully functional, ready-made abstract
 npm install @react-three/drei
 ```
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > this package is using the stand-alone [`three-stdlib`](https://github.com/pmndrs/three-stdlib) instead of [`three/examples/jsm`](https://github.com/mrdoob/three.js/tree/master/examples/jsm).
 
 ### Basic usage:
@@ -49,7 +49,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#controls">TrackballControls</a></li>
           <li><a href="#controls">ArcballControls</a></li>
           <li><a href="#controls">PointerLockControls</a></li>
-          <li><a href="#controls">FirstPersonControls</a></li>          
+          <li><a href="#controls">FirstPersonControls</a></li>
           <li><a href="#scrollcontrols">ScrollControls</a></li>
           <li><a href="#presentationcontrols">PresentationControls</a></li>
           <li><a href="#keyboardcontrols">KeyboardControls</a></li>
@@ -70,7 +70,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <ul>
           <li><a href="#image">Image</a></li>
           <li><a href="#text">Text</a></li>
-          <li><a href="#text3d">Text3D</a></li>          
+          <li><a href="#text3d">Text3D</a></li>
           <li><a href="#positionalaudio">PositionalAudio</a></li>
           <li><a href="#billboard">Billboard</a></li>
           <li><a href="#screenspace">ScreenSpace</a></li>
@@ -122,7 +122,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#fbo--usefbo">Fbo / useFBO</a></li>
           <li><a href="#usecamera">useCamera</a></li>
           <li><a href="#cubecamera--usecubecamera">CubeCamera / useCubeCamera</a></li>
-          <li><a href="#detectgpu--usedetectgpu">DetectGPU / useDetectGPU</a></li>          
+          <li><a href="#detectgpu--usedetectgpu">DetectGPU / useDetectGPU</a></li>
           <li><a href="#useaspect">useAspect</a></li>
           <li><a href="#usecursor">useCursor</a></li>
           <li><a href="#useintersect">useIntersect</a></li>
@@ -158,16 +158,16 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
           <li><a href="#adaptivedpr">AdaptiveDpr</a></li>
           <li><a href="#adaptiveevents">AdaptiveEvents</a></li>
           <li><a href="#bvh">Bvh</a></li>
-          <li><a href="#performancemonitor">PerformanceMonitor</a></li>          
+          <li><a href="#performancemonitor">PerformanceMonitor</a></li>
         </ul>
-        <li><a href="#portals">Portals</a></li>        
+        <li><a href="#portals">Portals</a></li>
         <ul>
           <li><a href="#hud">Hud</a></li>
           <li><a href="#view">View</a></li>
           <li><a href="#rendertexture">RenderTexture</a></li>
           <li><a href="#rendercubetexture">RenderCubeTexture</a></li>
           <li><a href="#fisheye">Fisheye</a></li>
-          <li><a href="#mask">Mask</a></li>          
+          <li><a href="#mask">Mask</a></li>
           <li><a href="#meshportalmaterial">MeshPortalMaterial</a></li>
         </ul>
         <li><a href="#modifiers">Modifiers</a></li>
@@ -210,7 +210,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
         <ul>
           <li><a href="#center">Center</a></li>
           <li><a href="#resize">Resize</a></li>
-          <li><a href="#BBAnchor">BBAnchor</a></li>        
+          <li><a href="#BBAnchor">BBAnchor</a></li>
           <li><a href="#bounds">Bounds</a></li>
           <li><a href="#camerashake">CameraShake</a></li>
           <li><a href="#float">Float</a></li>
@@ -283,7 +283,7 @@ You can also drive it manually, it won't be responsive and you have to calculate
 <PerspectiveCamera manual aspect={...} onUpdate={(c) => c.updateProjectionMatrix()}>
 ```
 
-You can use the PerspectiveCamera to film contents into a RenderTarget, similar to CubeCamera. As a child you must provide a render-function which receives the texture as its first argument. The result of that function will _not follow the camera_, instead it will be set invisible while the the FBO renders so as to avoid issues where the meshes that receive the texture are interrering.
+You can use the PerspectiveCamera to film contents into a RenderTarget, similar to CubeCamera. As a child you must provide a render-function which receives the texture as its first argument. The result of that function will _not follow the camera_, instead it will be set invisible while the FBO renders so as to avoid issues where the meshes that receive the texture are interrering.
 
 ```jsx
 <PerspectiveCamera position={[0, 0, 10]}>
@@ -446,7 +446,7 @@ type ScrollControlsProps = {
 }
 ```
 
-Scroll controls create a HTML scroll container in front of the canvas. Everything you drop into the `<Scroll>` component will be affected.
+Scroll controls create an HTML scroll container in front of the canvas. Everything you drop into the `<Scroll>` component will be affected.
 
 You can listen and react to scroll with the `useScroll` hook which gives you useful data like the current scroll `offset`, `delta` and functions for range finding: `range`, `curve` and `visible`. The latter functions are especially useful if you want to react to the scroll offset, for instance if you wanted to fade things in and out if they are in or out of view.
 
@@ -623,7 +623,7 @@ The camera follows your face.
   <a href="https://codesandbox.io/s/zhjbhy"><img width="20%" src="https://github-production-user-asset-6210df.s3.amazonaws.com/76580/244052845-5cc535d7-3c97-46e3-a267-52e707c2d9b2.png" alt="demo"/></a>
 </p>
 
-Pre-requisite: wrap into a [`FaceLandmarker`](#facelandmarker) provider
+Prerequisite: wrap into a [`FaceLandmarker`](#facelandmarker) provider
 
 ```tsx
 <FaceLandmarker>...</FaceLandmarker>
@@ -3872,7 +3872,7 @@ return (
 #### RenderTexture
 
 <p>
-  <a href="https://codesandbox.io/s/0z8i2c"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/0z8i2c/screenshot.png" alt="Demo"/></a>  
+  <a href="https://codesandbox.io/s/0z8i2c"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/0z8i2c/screenshot.png" alt="Demo"/></a>
 </p>
 
 This component allows you to render a live scene into a texture which you can then apply to a material. The contents of it run inside a portal and are separate from the rest of the canvas, therefore you can have events in there, environment maps, etc.
@@ -3968,7 +3968,7 @@ const api = useRef<RenderCubeTextureApi>(null!)
 ### Fisheye
 
 <p>
-  <a href="https://codesandbox.io/s/7qytdw"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/7qytdw/screenshot.png" alt="Demo"/></a>  
+  <a href="https://codesandbox.io/s/7qytdw"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/7qytdw/screenshot.png" alt="Demo"/></a>
 </p>
 
 ```tsx
@@ -4000,7 +4000,7 @@ This component will take over system rendering. It portals its children into a c
 
 <p>
   <a href="https://codesandbox.io/s/7n2yru"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/7n2yru/screenshot.png" alt="Demo"/></a>
-  <a href="https://codesandbox.io/s/z3f2mw"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/z3f2mw/screenshot.png" alt="Demo"/></a>  
+  <a href="https://codesandbox.io/s/z3f2mw"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/z3f2mw/screenshot.png" alt="Demo"/></a>
 </p>
 
 Masks use the stencil buffer to cut out areas of the screen. This is usually cheaper as it doesn't require double renders or createPortal.
@@ -4058,8 +4058,8 @@ const stencil = useMask(1, true)
 
 <p>
   <a href="https://codesandbox.io/s/9m4tpc"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/9m4tpc/screenshot.png" alt="Demo"/></a>
-  <a href="https://codesandbox.io/s/qvk72r"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/qvk72r/screenshot.png" alt="Demo"/></a>  
-  <a href="https://codesandbox.io/s/drc6qg"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/drc6qg/screenshot.png" alt="Demo"/></a>  
+  <a href="https://codesandbox.io/s/qvk72r"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/qvk72r/screenshot.png" alt="Demo"/></a>
+  <a href="https://codesandbox.io/s/drc6qg"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/drc6qg/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/ik11ln"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/ik11ln/screenshot.png" alt="Demo"/></a>
 </p>
 
@@ -4312,7 +4312,7 @@ const config = {
   maxYaw: 0.1, // Max amount camera can yaw in either direction
   maxPitch: 0.1, // Max amount camera can pitch in either direction
   maxRoll: 0.1, // Max amount camera can roll in either direction
-  yawFrequency: 0.1, // Frequency of the the yaw rotation
+  yawFrequency: 0.1, // Frequency of the yaw rotation
   pitchFrequency: 0.1, // Frequency of the pitch rotation
   rollFrequency: 0.1, // Frequency of the roll rotation
   intensity: 1, // initial intensity of the shake
@@ -4348,6 +4348,16 @@ This component makes its contents float or hover.
 >
   <mesh />
 </Float>
+```
+
+If you have your frameloop set to `demand`, you can set `autoInvalidate` to `true`. This will ensure the animation will render while it is enabled.
+
+```js
+<Canvas frameloop="demand">
+  <Float autoInvalidate>
+    <mesh />
+  </Float>
+</Canvas>
 ```
 
 #### Stage
@@ -4918,7 +4928,7 @@ attribute vec3 color;
 <p>
   <a href="https://codesandbox.io/s/gwthnh"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/gwthnh/screenshot.png" alt="Demo"/></a>
   <a href="https://codesandbox.io/s/mbfzf"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/mbfzf/screenshot.png" alt="Demo"/></a>
-  
+
 </p>
 
 Particle based cloud.
@@ -5078,3 +5088,22 @@ Makes an object's shadow respect its opacity and alphaMap.
 ```
 
 > Note: This component uses Screendoor transparency using a dither pattern. This pattern is notacible when the camera gets close to the shadow.
+
+<details>
+  <summary>Maintenance</summary>
+
+### Tests
+
+To run visual tests in the same environment as the CI:
+
+```sh
+$ yarn build
+$ docker run --init --rm -v $(pwd):/app -w /app ghcr.io/pmndrs/playwright:main yarn test
+```
+
+> [!TIP]
+> If running on mac m-series, you may need to add `--platform linux/arm64` to the docker command.
+
+To update a snapshot, simply remove it and relaunch the test command.
+
+</details>

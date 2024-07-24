@@ -17,7 +17,7 @@ const OutlinesMaterial = /* @__PURE__ */ shaderMaterial(
    #include <morphtarget_pars_vertex>
    #include <skinning_pars_vertex>
    uniform float thickness;
-   uniform float screenspace;
+   uniform bool screenspace;
    uniform vec2 size;
    void main() {
      #if defined (USE_SKINNING)
@@ -37,7 +37,7 @@ const OutlinesMaterial = /* @__PURE__ */ shaderMaterial(
        tNormal = instanceMatrix * tNormal;
        tPosition = instanceMatrix * tPosition;
      #endif
-     if (screenspace == 0.0) {
+     if (screenspace) {
        vec3 newPosition = tPosition.xyz + tNormal.xyz * thickness;
        gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0); 
      } else {

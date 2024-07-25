@@ -6,7 +6,7 @@ import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export interface BVHOptions {
   /** Split strategy, default: SAH (slowest to construct, fastest runtime, least memory) */
-  strategy?: typeof SplitStrategy
+  strategy?: SplitStrategy
   /** Print out warnings encountered during tree construction, default: false */
   verbose?: boolean
   /** If true then the bounding box for the geometry is set once the BVH has been constructed, default: true */

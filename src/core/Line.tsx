@@ -12,8 +12,8 @@ import {
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type LineProps = {
-  points: Array<Vector3 | Vector2 | [number, number, number] | [number, number] | number>
-  vertexColors?: Array<Color | [number, number, number] | [number, number, number, number]>
+  points: ReadonlyArray<Vector3 | Vector2 | readonly [number, number, number] | readonly [number, number] | number>
+  vertexColors?: ReadonlyArray<Color | [number, number, number] | [number, number, number, number]>
   lineWidth?: number
   segments?: boolean
 } & Omit<LineMaterialParameters, 'vertexColors' | 'color'> &

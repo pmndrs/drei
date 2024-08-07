@@ -40,14 +40,14 @@
     }
   },
   "scripts": {
-    "prebuild": "rimraf dist && npm run typegen",
-    "build": "rollup -c && npm run copy",
-    "prepare": "npm run build && husky install",
+    "prebuild": "rimraf dist && yarn typegen",
+    "build": "rollup -c && yarn copy",
+    "prepare": "yarn build && husky install",
     "eslint": "eslint --fix .",
     "eslint:ci": "eslint .",
     "prettier": "prettier --check .",
     "prettier-fix": "prettier --write .",
-    "test": "npm run eslint:ci && (cd test/e2e; ./e2e.sh)",
+    "test": "yarn eslint:ci && (cd test/e2e; ./e2e.sh)",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false --strict --jsx react",
     "typegen": "tsc --emitDeclarationOnly",
     "storybook": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider\" storybook dev -p 6006",
@@ -139,8 +139,7 @@
     "ts-node": "^10.9.1",
     "typescript": "^5.4.5",
     "vite": "^4.3.6",
-    "vite-plugin-glslify": "^2.0.1",
-    "yarn": "^1.22.17"
+    "vite-plugin-glslify": "^2.0.1"
   },
   "peerDependencies": {
     "@react-three/fiber": ">=8.0",
@@ -152,5 +151,6 @@
     "react-dom": {
       "optional": true
     }
-  }
+  },
+  "packageManager": "yarn@4.3.1"
 }

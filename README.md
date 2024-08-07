@@ -5092,6 +5092,13 @@ Makes an object's shadow respect its opacity and alphaMap.
 <details>
   <summary>Maintenance</summary>
 
+### INSTALL
+
+```sh
+& corepack enable
+$ yarn install
+```
+
 ### Tests
 
 To run visual tests in the same environment as the CI:

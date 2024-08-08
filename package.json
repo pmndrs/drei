@@ -40,8 +40,7 @@
     }
   },
   "scripts": {
-    "prebuild": "rimraf dist && yarn typegen",
-    "build": "rollup -c && yarn copy",
+    "build": "rimraf dist && yarn typegen && rollup -c && yarn copy",
     "prepare": "yarn build && husky install",
     "eslint": "eslint --fix .",
     "eslint:ci": "eslint .",

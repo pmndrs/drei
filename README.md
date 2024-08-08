@@ -977,7 +977,7 @@ return (
     ref={ref}
     matrix={matrix}
     autoTransform={false}
-    onDrag={({ matrix: matrix_ }) => matrix.copy(matrix_)}
+    onDrag={(matrixL) => matrix.copy(matrixL)}
 ```
 
 #### DragControls

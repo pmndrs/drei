@@ -47,7 +47,7 @@ export const Billboard: ForwardRefComponent<BillboardProps, Group> = /* @__PURE_
 
   React.useImperativeHandle(fref, () => localRef.current, [])
   return (
-    <group ref={localRef} matrixAutoUpdate={false} matrixWorldAutoUpdate={false} {...props}>
+    <group ref={localRef} {...props}>
       <group ref={inner}>{children}</group>
     </group>
   )

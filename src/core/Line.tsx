@@ -72,7 +72,10 @@ export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = /* @_
   }, [dashed, lineMaterial])
 
   React.useEffect(() => {
-    return () => lineGeom.dispose()
+    return () => {
+      lineGeom.dispose()
+      lineMaterial.dispose()
+    }
   }, [lineGeom])
 
   return (

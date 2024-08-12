@@ -302,7 +302,7 @@ export function useSpriteLoader<Url extends string>(
           const sourceWidth = value['sourceSize']['w']
           const sourceHeight = value['sourceSize']['h']
 
-          if (typeof innerKey === 'string' && innerKey.toLowerCase().indexOf(delimiters[i].toLowerCase()) !== -1) {
+          if (innerKey.toLowerCase().indexOf(delimiters[i].toLowerCase()) !== -1) {
             sprites[delimiters[i]].push({
               x: x,
               y: y,

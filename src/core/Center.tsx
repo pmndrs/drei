@@ -1,6 +1,5 @@
 import { Box3, Vector3, Sphere, Group, Object3D } from 'three'
 import * as React from 'react'
-import { useThree } from '@react-three/fiber'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type OnCenterCallbackProps = {

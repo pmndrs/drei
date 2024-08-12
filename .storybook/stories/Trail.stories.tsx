@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
-import { Sphere, Trail, useTrail, Html, Stats, Float, PerspectiveCamera } from '../../src'
+import { Sphere, Trail, useTrail, Float, PerspectiveCamera } from '../../src'
 import { useFrame } from '@react-three/fiber'
 import { Group, InstancedMesh, Mesh, Object3D, Vector3 } from 'three'
 

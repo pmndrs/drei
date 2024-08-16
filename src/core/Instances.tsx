@@ -19,6 +19,7 @@ type Api = {
 }
 
 export type InstancesProps = JSX.IntrinsicElements['instancedMesh'] & {
+  context?: React.Context<Api>
   range?: number
   limit?: number
   frames?: number
@@ -113,15 +114,17 @@ export const Instance = /* @__PURE__ */ React.forwardRef(({ context, children, .
   )
 })
 
-export const Instances: ForwardRefComponent<InstancesProps, InstancedMesh> = /* @__PURE__ */ React.forwardRef<
-  InstancedMesh,
+export const Instances: ForwardRefComponent<InstancesProps, THREE.InstancedMesh> = /* @__PURE__ */ React.forwardRef<
+  THREE.InstancedMesh,
   InstancesProps
->(({ children, range, limit = 1000, frames = Infinity, ...props }, ref) => {
-  const [{ context, instance }] = React.useState(() => {
-    const context = React.createContext<Api>(null!)
+>(({ context, children, range, limit = 1000, frames = Infinity, ...props }, ref) => {
+  const [{ localContext, instance }] = React.useState(() => {
+    const localContext = React.createContext<Api>(null!)
     return {
-      context,
-      instance: React.forwardRef((props: InstanceProps, ref) => <Instance context={context} {...props} ref={ref} />),
+      localContext,
+      instance: React.forwardRef((props: InstanceProps, ref) => (
+        <Instance context={localContext} {...props} ref={ref} />
+      )),
     }
   })
 
@@ -202,7 +205,9 @@ export const Instances: ForwardRefComponent<InstancesProps, InstancedMesh> = /* 
         usage={THREE.DynamicDrawUsage}
       />
       {isFunctionChild(children) ? (
-        <context.Provider value={api}>{children(instance)}</context.Provider>
+        <localContext.Provider value={api}>{children(instance)}</localContext.Provider>
+      ) : context ? (
+        <context.Provider value={api}>{children}</context.Provider>
       ) : (
         <globalContext.Provider value={api}>{children}</globalContext.Provider>
       )}
@@ -241,3 +246,15 @@ export const Merged: ForwardRefComponent<any, THREE.Group> = /* @__PURE__ */ Rea
     )
   }
 )
+
+export function createInstances() {
+  const context = React.createContext<Api>(null!)
+  return [
+    React.forwardRef<THREE.InstancedMesh, InstancesProps>((props, fref) => (
+      <Instances ref={fref} context={context} {...props} />
+    )),
+    React.forwardRef<PositionMesh, InstanceProps>((props, fref) => (
+      <Instance ref={fref} context={context} {...props} />
+    )),
+  ]
+}

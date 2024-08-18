@@ -280,11 +280,18 @@ export const InstancedAttribute = React.forwardRef(({ name, defaultValue }: Inst
   React.useImperativeHandle(fref, () => ref.current, [])
   React.useLayoutEffect(() => {
     const parent = (ref.current as any).__r3f.parent
+
+    parent.geometry.attributes[name] = ref.current
+
     const value = Array.isArray(defaultValue) ? defaultValue : [defaultValue]
     const array = Array.from({ length: parent.userData.limit }, () => value).flat()
     ref.current.array = new Float32Array(array)
     ref.current.itemSize = value.length
     ref.current.count = array.length / ref.current.itemSize
+
+    return () => {
+      delete parent.geometry.attributes[name]
+    }
   }, [name])
   let iterations = 0
   useFrame(() => {
@@ -304,5 +311,5 @@ export const InstancedAttribute = React.forwardRef(({ name, defaultValue }: Inst
       iterations++
     }
   })
-  return <instancedBufferAttribute ref={ref} attach={`geometry-attributes-${name}`} usage={THREE.DynamicDrawUsage} />
+  return <instancedBufferAttribute ref={ref} usage={THREE.DynamicDrawUsage} />
 })

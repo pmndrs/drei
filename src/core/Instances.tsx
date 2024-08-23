@@ -265,6 +265,10 @@ export const Merged: ForwardRefComponent<any, THREE.Group> = /* @__PURE__ */ Rea
   }
 )
 
+/** Idea and implementation for global instances and instanced attributes by
+/*  Matias Gonzalez Fernandez https://x.com/matiNotFound
+/*  and Paul Henschel https://x.com/0xca0a
+*/
 export function createInstances() {
   const context = React.createContext<Api>(null!)
   return [

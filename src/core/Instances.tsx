@@ -32,6 +32,8 @@ export type InstanceProps = JSX.IntrinsicElements['positionMesh'] & {
 export type InstancedAttributeProps = JSX.IntrinsicElements['instancedBufferAttribute'] & {
   name: string
   defaultValue: any
+  normalized?: boolean
+  usage?: number
 }
 
 type InstancedMesh = Omit<THREE.InstancedMesh, 'instanceMatrix' | 'instanceColor'> & {
@@ -275,41 +277,40 @@ export function createInstances() {
   ]
 }
 
-export const InstancedAttribute = React.forwardRef(({ name, defaultValue }: InstancedAttributeProps, fref) => {
-  const ref = React.useRef<THREE.InstancedBufferAttribute>(null!)
-  React.useImperativeHandle(fref, () => ref.current, [])
-  React.useLayoutEffect(() => {
-    const parent = (ref.current as any).__r3f.parent
-
-    parent.geometry.attributes[name] = ref.current
-
-    const value = Array.isArray(defaultValue) ? defaultValue : [defaultValue]
-    const array = Array.from({ length: parent.userData.limit }, () => value).flat()
-    ref.current.array = new Float32Array(array)
-    ref.current.itemSize = value.length
-    ref.current.count = array.length / ref.current.itemSize
-
-    return () => {
-      delete parent.geometry.attributes[name]
-    }
-  }, [name])
-  let iterations = 0
-  useFrame(() => {
-    const parent = (ref.current as any).__r3f.parent
-    if (parent.userData.frames === Infinity || iterations < parent.userData.frames) {
-      for (let i = 0; i < parent.userData.instances.length; i++) {
-        const instance = parent.userData.instances[i].current
-        const value = instance[name]
-        if (value !== undefined) {
-          ref.current.set(
-            Array.isArray(value) ? value : typeof value.toArray === 'function' ? value.toArray() : [value],
-            i * ref.current.itemSize
-          )
-          ref.current.needsUpdate = true
-        }
+export const InstancedAttribute = React.forwardRef(
+  ({ name, defaultValue, normalized, usage = THREE.DynamicDrawUsage }: InstancedAttributeProps, fref) => {
+    const ref = React.useRef<THREE.InstancedBufferAttribute>(null!)
+    React.useImperativeHandle(fref, () => ref.current, [])
+    React.useLayoutEffect(() => {
+      const parent = (ref.current as any).__r3f.parent
+      parent.geometry.attributes[name] = ref.current
+      const value = Array.isArray(defaultValue) ? defaultValue : [defaultValue]
+      const array = Array.from({ length: parent.userData.limit }, () => value).flat()
+      ref.current.array = new Float32Array(array)
+      ref.current.itemSize = value.length
+      ref.current.count = array.length / ref.current.itemSize
+      return () => {
+        delete parent.geometry.attributes[name]
       }
-      iterations++
-    }
-  })
-  return <instancedBufferAttribute ref={ref} usage={THREE.DynamicDrawUsage} />
-})
+    }, [name])
+    let iterations = 0
+    useFrame(() => {
+      const parent = (ref.current as any).__r3f.parent
+      if (parent.userData.frames === Infinity || iterations < parent.userData.frames) {
+        for (let i = 0; i < parent.userData.instances.length; i++) {
+          const instance = parent.userData.instances[i].current
+          const value = instance[name]
+          if (value !== undefined) {
+            ref.current.set(
+              Array.isArray(value) ? value : typeof value.toArray === 'function' ? value.toArray() : [value],
+              i * ref.current.itemSize
+            )
+            ref.current.needsUpdate = true
+          }
+        }
+        iterations++
+      }
+    })
+    return <instancedBufferAttribute ref={ref} usage={usage} normalized={normalized} />
+  }
+)

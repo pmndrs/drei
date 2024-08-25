@@ -3139,7 +3139,7 @@ If you want to use your own draco decoder globally, you can pass it through `use
 
 > **Note** <br>If you are using the CDN loaded draco binaries, you can get a small speedup in loading time by prefetching them.
 >
-> You can accomplish this by adding two `<link>` tags to your `<head>` tag, as below. The version in those URLs must exactly match what [useGLTF](src/core/useGLTF.tsx#L18) uses for this to work. If you're using create-react-app, `public/index.html` file contains the `<head>` tag.
+> You can accomplish this by adding two `<link>` tags to your `<head>` tag, as below. The version in those URLs must exactly match what [useGLTF](src/core/Gltf.tsx#L32) uses for this to work. If you're using create-react-app, `public/index.html` file contains the `<head>` tag.
 >
 > ```html
 > <link

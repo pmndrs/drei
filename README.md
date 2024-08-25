@@ -3449,6 +3449,55 @@ You can define events on them!
 <Instance onClick={...} onPointerOver={...} />
 ```
 
+If you need nested, multiple instances in the same parent graph, it would normally not work because an `<Instance>` is directly paired to its nearest `<Instances>` provider. You can use the global `createInstances` helper for such cases, it creates dedicated instances-instance pairs. The first return value is the provider, the second the instance component. Both take the same properties as `<Instances>` and `<Instance>`.
+
+```jsx
+const [CubeInstances, Cube] = createInstances()
+const [SphereInstances, Sphere] = createInstances()
+
+function App() {
+  return (
+    <>
+      <CubeInstances>
+        <boxGeometry />
+        <meshStandardMaterial />
+        <SphereInstances>
+          <sphereGeometry />
+          <meshLambertMaterial />
+          <Cube position={[1, 2, 3]} />
+          <Sphere position={[4, 5, 6]} />
+        </SphereInstances>
+      </CubeInstances>
+    </>
+  )
+}
+```
+
+If your custom materials need instanced attributes you can create them using the `InstancedAttribute` component. It will automatically create the buffer and update it when the component changes. The `defaultValue` can have any stride, from single floats to arrays.
+
+```jsx
+<Instances ref={ref} limit={20}>
+  <boxGeometry />
+  <someSpecialMaterial />
+  <InstancedAttribute name="foo" defaultValue={1} />
+  <Instance position={[-1.2, 0, 0]} foo={10} />
+</Instances>
+```
+
+```glsl
+# vertex
+attribute float foo;
+varying float vFoo;
+void main() {
+  ...
+  vFoo = foo;
+
+# fragment
+varying float vFoo;
+void main() {
+  ...
+```
+
 👉 Note: While creating instances declaratively keeps all the power of components with reduced draw calls, it comes at the cost of CPU overhead. For cases like foliage where you want no CPU overhead with thousands of intances you should use THREE.InstancedMesh such as in this [example](https://codesandbox.io/s/grass-shader-5xho4?file=/src/Grass.js).
 
 #### Merged

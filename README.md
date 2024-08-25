@@ -4065,7 +4065,14 @@ Masks use the stencil buffer to cut out areas of the screen. This is usually che
 />
 ```
 
-First you need to define a mask, give it the shape that you want.
+As of threejs 163 you need to toggle the stencil flag on your canvas gl property:
+
+```jsx
+<Canvas gl={{ stencil:true }}>...</Canvas>
+
+```
+
+Define a mask, give it the shape that you want.
 
 ```jsx
 <Mask id={1}>

@@ -97,6 +97,45 @@ export function useEnvironment({
   return texture
 }
 
+type EnvironmentLoaderPreloadOptions = Omit<EnvironmentLoaderProps, 'encoding'>
+const preloadDefaultOptions = {
+  files: defaultFiles,
+  path: '',
+  preset: undefined,
+  extensions: undefined,
+}
+
+useEnvironment.preload = (preloadOptions?: EnvironmentLoaderPreloadOptions) => {
+  const options = { ...preloadDefaultOptions, ...preloadOptions }
+  let { files, path = '' } = options
+  const { preset, extensions } = options
+
+  if (preset) {
+    validatePreset(preset)
+    files = presetsObj[preset]
+    path = CUBEMAP_ROOT
+  }
+
+  const { extension } = getExtension(files)
+
+  if (extension === 'webp' || extension === 'jpg' || extension === 'jpeg') {
+    throw new Error('useEnvironment: Preloading gainmaps is not supported')
+  }
+
+  const loader = getLoader(extension)
+  if (!loader) throw new Error('useEnvironment: Unrecognized file extension: ' + files)
+
+  useLoader.preload(
+    // @ts-expect-error
+    loader,
+    isArray(files) ? [files] : files,
+    (loader) => {
+      loader.setPath?.(path)
+      if (extensions) extensions(loader)
+    }
+  )
+}
+
 type EnvironmentLoaderClearOptions = Pick<EnvironmentLoaderProps, 'files' | 'preset'>
 const clearDefaultOptins = {
   files: defaultFiles,

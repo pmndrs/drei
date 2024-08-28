@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Vector2, Vector3, Vector4, Color, ColorRepresentation } from 'three'
-import { ReactThreeFiber, useThree } from '@react-three/fiber'
+import { ReactThreeFiber, useThree, Vector2 as FiberVector2, Vector3 as FiberVector3 } from '@react-three/fiber'
 import {
   LineGeometry,
   LineSegmentsGeometry,
@@ -12,7 +12,7 @@ import {
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type LineProps = {
-  points: ReadonlyArray<Vector3 | Vector2 | readonly [number, number, number] | readonly [number, number] | number>
+  points: ReadonlyArray<FiberVector2 | FiberVector3>
   vertexColors?: ReadonlyArray<Color | [number, number, number] | [number, number, number, number]>
   lineWidth?: number
   segments?: boolean

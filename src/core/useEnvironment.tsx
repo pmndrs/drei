@@ -24,8 +24,10 @@ export type EnvironmentLoaderProps = {
   encoding?: TextureEncoding
 }
 
+const defaultFiles = ['/px.png', '/nx.png', '/py.png', '/ny.png', '/pz.png', '/nz.png']
+
 export function useEnvironment({
-  files = ['/px.png', '/nx.png', '/py.png', '/ny.png', '/pz.png', '/nz.png'],
+  files = defaultFiles,
   path = '',
   preset = undefined,
   encoding = undefined,
@@ -35,41 +37,17 @@ export function useEnvironment({
   let multiFile: boolean = false
 
   if (preset) {
-    if (!(preset in presetsObj)) throw new Error('Preset must be one of: ' + Object.keys(presetsObj).join(', '))
+    validatePreset(preset)
     files = presetsObj[preset]
     path = CUBEMAP_ROOT
   }
 
-  const isCubemap = isArray(files) && files.length === 6
-  const isGainmap = isArray(files) && files.length === 3 && files.some((file) => file.endsWith('json'))
-  const firstEntry = isArray(files) ? files[0] : files
-
   // Everything else
   multiFile = isArray(files)
-  const extension: string | false | undefined = isCubemap
-    ? 'cube'
-    : isGainmap
-    ? 'webp'
-    : firstEntry.startsWith('data:application/exr')
-    ? 'exr'
-    : firstEntry.startsWith('data:application/hdr')
-    ? 'hdr'
-    : firstEntry.startsWith('data:image/jpeg')
-    ? 'jpg'
-    : firstEntry.split('.').pop()?.split('?')?.shift()?.toLowerCase()
-  loader =
-    extension === 'cube'
-      ? CubeTextureLoader
-      : extension === 'hdr'
-      ? RGBELoader
-      : extension === 'exr'
-      ? EXRLoader
-      : extension === 'jpg' || extension === 'jpeg'
-      ? (HDRJPGLoader as unknown as typeof Loader)
-      : extension === 'webp'
-      ? (GainMapLoader as unknown as typeof Loader)
-      : null
 
+  const { extension, isCubemap } = getExtension(files)
+
+  loader = getLoader(extension)
   if (!loader) throw new Error('useEnvironment: Unrecognized file extension: ' + files)
 
   const gl = useThree((state) => state.gl)
@@ -79,8 +57,11 @@ export function useEnvironment({
     if (extension !== 'webp' && extension !== 'jpg' && extension !== 'jpeg') return
 
     function clearGainmapTexture() {
-      // @ts-expect-error
-      useLoader.clear(loader, multiFile ? [files] : files)
+      useLoader.clear(
+        // @ts-expect-error
+        loader,
+        multiFile ? [files] : files
+      )
     }
 
     gl.domElement.addEventListener('webglcontextlost', clearGainmapTexture, { once: true })
@@ -114,4 +95,72 @@ export function useEnvironment({
   else (texture as any).encoding = encoding ?? isCubemap ? sRGBEncoding : LinearEncoding
 
   return texture
+}
+
+type EnvironmentLoaderClearOptions = Pick<EnvironmentLoaderProps, 'files' | 'preset'>
+const clearDefaultOptins = {
+  files: defaultFiles,
+  preset: undefined,
+}
+
+useEnvironment.clear = (clearOptions?: EnvironmentLoaderClearOptions) => {
+  const options = { ...clearDefaultOptins, ...clearOptions }
+  let { files } = options
+  const { preset } = options
+
+  if (preset) {
+    validatePreset(preset)
+    files = presetsObj[preset]
+  }
+
+  const { extension } = getExtension(files)
+  const loader = getLoader(extension)
+  if (!loader) throw new Error('useEnvironment: Unrecognized file extension: ' + files)
+  useLoader.clear(
+    // @ts-expect-error
+    loader,
+    isArray(files) ? [files] : files
+  )
+}
+
+function validatePreset(preset: string) {
+  if (!(preset in presetsObj)) throw new Error('Preset must be one of: ' + Object.keys(presetsObj).join(', '))
+}
+
+function getExtension(files: string | string[]) {
+  const isCubemap = isArray(files) && files.length === 6
+  const isGainmap = isArray(files) && files.length === 3 && files.some((file) => file.endsWith('json'))
+  const firstEntry = isArray(files) ? files[0] : files
+
+  // Everything else
+  const extension: string | false | undefined = isCubemap
+    ? 'cube'
+    : isGainmap
+    ? 'webp'
+    : firstEntry.startsWith('data:application/exr')
+    ? 'exr'
+    : firstEntry.startsWith('data:application/hdr')
+    ? 'hdr'
+    : firstEntry.startsWith('data:image/jpeg')
+    ? 'jpg'
+    : firstEntry.split('.').pop()?.split('?')?.shift()?.toLowerCase()
+
+  return { extension, isCubemap, isGainmap }
+}
+
+function getLoader(extension: string | undefined) {
+  const loader: typeof Loader | null =
+    extension === 'cube'
+      ? CubeTextureLoader
+      : extension === 'hdr'
+      ? RGBELoader
+      : extension === 'exr'
+      ? EXRLoader
+      : extension === 'jpg' || extension === 'jpeg'
+      ? (HDRJPGLoader as unknown as typeof Loader)
+      : extension === 'webp'
+      ? (GainMapLoader as unknown as typeof Loader)
+      : null
+
+  return loader
 }

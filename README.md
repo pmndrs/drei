@@ -5063,6 +5063,24 @@ const rgbeTexture = useEnvironment({ files: 'model.hdr' })
 const cubeTexture = useEnvironment({ files: ['px', 'nx', 'py', 'ny', 'pz', 'nz'].map((n) => `${n}.png`) })
 ```
 
+In order to preload you do this:
+
+```jsx
+useEnvironment.preload({ preset: 'city' })
+useEnvironment.preload({ files: 'model.hdr' })
+useEnvironment.preload({ files: ['px', 'nx', 'py', 'ny', 'pz', 'nz'].map((n) => `${n}.png`) })
+```
+
+Keep in mind that preloading [gainmaps](https://github.com/MONOGRID/gainmap-js) is not possible, because their loader requires access to the renderer.
+
+You can also clear your environment map from the cache:
+
+```jsx
+useEnvironment.clear({ preset: 'city' })
+useEnvironment.clear({ files: 'model.hdr' })
+useEnvironment.clear({ files: ['px', 'nx', 'py', 'ny', 'pz', 'nz'].map((n) => `${n}.png`) })
+```
+
 #### MatcapTexture / useMatcapTexture
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-matcaptexture) ![](https://img.shields.io/badge/-suspense-brightgreen)

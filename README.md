@@ -2245,7 +2245,7 @@ A material that renders nothing. In comparison to `<mesh visible={false}` it can
 
 ```jsx
 <mesh castShadow>
-  <torusKnotGeonetry />
+  <torusKnotGeometry />
   <MeshDiscardMaterial />
   {/* Shadows and edges will show, but the model itself won't */}
   <Edges />

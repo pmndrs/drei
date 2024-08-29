@@ -95,7 +95,6 @@ export const GizmoHelper = ({
       targetPosition.copy(direction).multiplyScalar(radius.current).add(target)
 
       dummy.lookAt(targetPosition)
-      dummy.up.copy(mainCamera.up)
 
       q2.copy(dummy.quaternion)
 

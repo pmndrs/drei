@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { useFrame } from '@react-three/fiber'
-
-import { withKnobs, number } from '@storybook/addon-knobs'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 import { MeshDistortMaterial, Icosahedron } from '../../src'
@@ -9,27 +8,46 @@ import { MeshDistortMaterial, Icosahedron } from '../../src'
 export default {
   title: 'Shaders/MeshDistortMaterial',
   component: MeshDistortMaterial,
-  decorators: [withKnobs, (storyFn) => <Setup> {storyFn()}</Setup>],
-}
+  args: {
+    color: '#f25042',
+    speed: 1,
+    distort: 0.6,
+    radius: 1,
+  },
+  argTypes: {
+    color: { control: 'color' },
+    speed: { control: { type: 'range', min: 0, max: 10, step: 0.1 } },
+    distort: { control: { type: 'range', min: 0, max: 1, step: 0.1 } },
+    radius: { control: { type: 'range', min: 0, max: 1, step: 0.1 } },
+  },
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof MeshDistortMaterial>
 
-function MeshDistortMaterialScene() {
+type Story = StoryObj<typeof MeshDistortMaterial>
+
+function MeshDistortMaterialScene(props: React.ComponentProps<typeof MeshDistortMaterial>) {
   return (
     <Icosahedron args={[1, 4]}>
-      <MeshDistortMaterial
-        color="#f25042"
-        speed={number('Speed', 1, { range: true, max: 10, step: 0.1 })}
-        distort={number('Distort', 0.6, { range: true, min: 0, max: 1, step: 0.1 })}
-        radius={number('Radius', 1, { range: true, min: 0, max: 1, step: 0.1 })}
-      />
+      <MeshDistortMaterial {...props} />
     </Icosahedron>
   )
 }
 
-export const MeshDistortMaterialSt = () => <MeshDistortMaterialScene />
-MeshDistortMaterialSt.storyName = 'Default'
+export const MeshDistortMaterialSt = {
+  render: (args) => <MeshDistortMaterialScene {...args} />,
+  name: 'Default',
+} satisfies Story
 
-function MeshDistortMaterialRefScene() {
-  const material = React.useRef<JSX.IntrinsicElements['distortMaterialImpl']>(null!)
+//
+
+function MeshDistortMaterialRefScene(props: React.ComponentProps<typeof MeshDistortMaterial>) {
+  const material = React.useRef<React.ElementRef<typeof MeshDistortMaterial>>(null!)
 
   useFrame(({ clock }) => {
     material.current.distort = Math.sin(clock.getElapsedTime())
@@ -37,10 +55,12 @@ function MeshDistortMaterialRefScene() {
 
   return (
     <Icosahedron args={[1, 4]}>
-      <MeshDistortMaterial color="#f25042" ref={material} />
+      <MeshDistortMaterial {...props} ref={material} />
     </Icosahedron>
   )
 }
 
-export const MeshDistortMaterialRefSt = () => <MeshDistortMaterialRefScene />
-MeshDistortMaterialRefSt.storyName = 'Ref'
+export const MeshDistortMaterialRefSt = {
+  render: (args) => <MeshDistortMaterialRefScene {...args} />,
+  name: 'Ref',
+} satisfies Story

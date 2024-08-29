@@ -17,6 +17,20 @@ export const getFirstItem = (param: any): any => {
   }
 }
 
+export const checkIfFrameIsEmpty = (frameData: Uint8ClampedArray) => {
+  for (let i = 3; i < frameData.length; i += 4) {
+    if (frameData[i] !== 0) {
+      return false
+    }
+  }
+  return true
+}
+
+type SpriteMetaDimension = {
+  row: number
+  col: number
+}
+
 export const calculateAspectRatio = (width: number, height: number, factor: number, v: any): THREE.Vector3 => {
   const adaptedHeight = height * (v.aspect > width / height ? v.width / width : v.height / height)
   const adaptedWidth = width * (v.aspect > width / height ? v.width / width : v.height / height)
@@ -111,36 +125,63 @@ export function useSpriteLoader<Url extends string>(
         //get size from texture
         const width = _spriteTexture.image.width
         const height = _spriteTexture.image.height
-        const frameWidth = width / numberOfFrames
-        const frameHeight = height
         totalFrames.current = numberOfFrames
+        const { rows, columns, frameWidth, frameHeight, emptyFrames } = getRowsAndColumns(
+          _spriteTexture,
+          numberOfFrames
+        )
         spriteDataRef.current = {
           frames: [],
           meta: {
             version: '1.0',
             size: { w: width, h: height },
+            rows,
+            columns,
+            frameWidth,
+            frameHeight,
             scale: '1',
           },
         }
 
-        if (parseInt(frameWidth.toString(), 10) === frameWidth) {
-          // if it fits
-          for (let i = 0; i < numberOfFrames; i++) {
+        for (let row = 0; row < rows; row++) {
+          for (let col = 0; col < columns; col++) {
+            const isExcluded = (emptyFrames ?? []).some((coord) => coord.row === row && coord.col === col)
+
+            if (isExcluded) {
+              continue
+            }
             spriteDataRef.current.frames.push({
-              frame: { x: i * frameWidth, y: 0, w: frameWidth, h: frameHeight },
+              frame: {
+                x: col * frameWidth,
+                y: row * frameHeight,
+                w: frameWidth,
+                h: frameHeight,
+              },
               rotated: false,
               trimmed: false,
-              spriteSourceSize: { x: 0, y: 0, w: frameWidth, h: frameHeight },
-              sourceSize: { w: frameWidth, h: height },
+              spriteSourceSize: {
+                x: 0,
+                y: 0,
+                w: frameWidth,
+                h: frameHeight,
+              },
+              sourceSize: {
+                w: frameWidth,
+                h: frameHeight,
+              },
             })
           }
         }
 
         aspect = calculateAspectRatio(frameWidth, frameHeight, aspectFactor, v)
       }
+
+      //scale ratio for stadalone sprite
+      spriteDataRef.current.frames = calculateScaleRatio(spriteDataRef.current.frames)
     } else if (_spriteTexture) {
       spriteDataRef.current = json
       spriteDataRef.current.frames = parseFrames()
+
       totalFrames.current = Array.isArray(json.frames) ? json.frames.length : Object.keys(json.frames).length
       const { w, h } = getFirstItem(json.frames).sourceSize
       aspect = calculateAspectRatio(w, h, aspectFactor, v)
@@ -150,7 +191,7 @@ export function useSpriteLoader<Url extends string>(
     // @ts-ignore
     if ('encoding' in _spriteTexture) _spriteTexture.encoding = 3001 // sRGBEncoding
     // @ts-ignore
-    else _spriteTexture.colorSpace = 'srgb'
+    else _spriteTexture.colorSpace = THREE.SRGBColorSpace
     setSpriteTexture(_spriteTexture)
     setSpriteObj({
       spriteTexture: _spriteTexture,
@@ -159,9 +200,55 @@ export function useSpriteLoader<Url extends string>(
     })
   }
 
+  const getRowsAndColumns = (texture: THREE.Texture, totalFrames: number) => {
+    if (texture.image) {
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')!
+
+      canvas.width = texture.image.width
+      canvas.height = texture.image.height
+
+      ctx.drawImage(texture.image, 0, 0)
+
+      const width = texture.image.width
+      const height = texture.image.height
+
+      // Calculate rows and columns based on the number of frames and image dimensions
+      const cols = Math.round(Math.sqrt(totalFrames * (width / height)))
+      const rows = Math.round(totalFrames / cols)
+
+      const frameWidth = width / cols
+      const frameHeight = height / rows
+
+      const emptyFrames: SpriteMetaDimension[] = []
+
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          const frameIndex = row * cols + col
+
+          if (frameIndex >= totalFrames) {
+            emptyFrames.push({ row, col })
+            continue
+          }
+
+          const frameData = ctx.getImageData(col * frameWidth, row * frameHeight, frameWidth, frameHeight).data
+
+          const isEmpty = checkIfFrameIsEmpty(frameData)
+          if (isEmpty) {
+            emptyFrames.push({ row, col })
+          }
+        }
+      }
+
+      return { rows, columns: cols, frameWidth, frameHeight, emptyFrames }
+    } else {
+      return { rows: 0, columns: 0, frameWidth: 0, frameHeight: 0, emptyFrames: [] }
+    }
+  }
+
   // for frame based JSON Hash sprite data
   const parseFrames = (): any => {
-    const sprites: any = {}
+    const sprites: Record<string, any> = {}
     const data = spriteDataRef.current
     const delimiters = animationNames
 
@@ -194,6 +281,11 @@ export function useSpriteLoader<Url extends string>(
           }
         }
       }
+
+      for (const frame in sprites) {
+        sprites[frame].frame = calculateScaleRatio(sprites[frame])
+      }
+
       return sprites
     } else if (delimiters && typeof data['frames'] === 'object') {
       for (let i = 0; i < delimiters.length; i++) {
@@ -222,16 +314,50 @@ export function useSpriteLoader<Url extends string>(
           }
         }
       }
+
+      for (const frame in sprites) {
+        sprites[frame].frame = calculateScaleRatio(sprites[frame])
+      }
+
       return sprites
     } else {
       // we need to convert it into an array
-      const spritesArr: any[] = []
+      let spritesArr: any[] = []
+
       for (const key in data.frames) {
         spritesArr.push(data.frames[key])
       }
 
+      spritesArr = calculateScaleRatio(spritesArr)
+
       return spritesArr
     }
+  }
+
+  // calculate scale ratio for the frames
+  const calculateScaleRatio = (frames: any[]) => {
+    // Find the largest frame
+    let largestFrame: any = null
+    for (const frame of frames) {
+      const { w, h } = frame.frame
+      const area = w * h
+      if (!largestFrame || area > largestFrame.area) {
+        largestFrame = { ...frame.frame, area }
+      }
+    }
+
+    // Set scaleRatio property on each frame
+    for (const frame of frames) {
+      const { w, h } = frame.frame
+      const area = w * h
+      if (area === largestFrame?.area) {
+        frame.scaleRatio = 1
+      } else {
+        frame.scaleRatio = Math.sqrt(area / largestFrame?.area)
+      }
+    }
+
+    return frames
   }
 
   React.useLayoutEffect(() => {

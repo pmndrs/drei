@@ -7,7 +7,7 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { extend, useFrame } from '@react-three/fiber'
-import { useFBO } from './useFBO'
+import { useFBO } from './Fbo'
 import { DiscardMaterial } from '../materials/DiscardMaterial'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
@@ -66,6 +66,12 @@ interface Uniform<T> {
   value: T
 }
 
+interface Shader {
+  uniforms: { [uniform: string]: Uniform<any> }
+  vertexShader: string
+  fragmentShader: string
+}
+
 declare global {
   namespace JSX {
     interface IntrinsicElements {
@@ -117,7 +123,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       buffer: { value: null },
     }
 
-    this.onBeforeCompile = (shader: THREE.Shader & { defines: { [key: string]: string } }) => {
+    this.onBeforeCompile = (shader: Shader & { defines: { [key: string]: string } }) => {
       shader.uniforms = {
         ...shader.uniforms,
         ...this.uniforms,

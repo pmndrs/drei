@@ -7,12 +7,7 @@ const preview: Preview = {
   parameters: {
     layout: 'fullscreen',
   },
-  decorators: [
-    (Story) => (
-      <React.Suspense fallback={null}>
-        <Story />
-      </React.Suspense>
-    ),
-  ],
+
+  tags: ['autodocs'],
 }
 export default preview

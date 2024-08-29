@@ -1,13 +1,20 @@
 import * as React from 'react'
-import { withKnobs, optionsKnob, boolean } from '@storybook/addon-knobs'
 import { Object3D } from 'three'
 import { TransformControls as TransformControlsImpl, OrbitControls as OrbitControlsImpl } from 'three-stdlib'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
 import { Box, OrbitControls, Select, TransformControls } from '../../src'
 
-export function TransformControlsStory() {
+export default {
+  title: 'Gizmos/TransformControls',
+  component: TransformControls,
+} satisfies Meta<typeof TransformControls>
+
+type Story = StoryObj<typeof TransformControls>
+
+function TransformControlsScene(props: React.ComponentProps<typeof TransformControls>) {
   const ref = React.useRef<TransformControlsImpl>(null!)
 
   React.useEffect(() => {
@@ -18,7 +25,7 @@ export function TransformControlsStory() {
 
   return (
     <Setup>
-      <TransformControls ref={ref}>
+      <TransformControls ref={ref} {...props}>
         <Box>
           <meshBasicMaterial wireframe />
         </Box>
@@ -27,21 +34,21 @@ export function TransformControlsStory() {
   )
 }
 
-TransformControlsStory.storyName = 'Default'
+export const TransformControlsSt = {
+  render: (args) => <TransformControlsScene {...args} />,
+  name: 'Default',
+} satisfies Story
 
-export default {
-  title: 'Gizmos/TransformControls',
-  component: TransformControls,
-}
+//
 
-export function TransformControlsSelectObjectStory() {
+function TransformControlsSelectObjectScene(props: React.ComponentProps<typeof TransformControls>) {
   const [selected, setSelected] = React.useState<Object3D[]>([])
   const active = selected[0]
 
   return (
     <Setup controls={false}>
       <OrbitControls makeDefault />
-      {active && <TransformControls object={active} />}
+      {active && <TransformControls {...props} object={active} />}
       <Select box onChange={setSelected}>
         <group>
           <Box position={[-1, 0, 0]}>
@@ -58,9 +65,14 @@ export function TransformControlsSelectObjectStory() {
   )
 }
 
-TransformControlsSelectObjectStory.storyName = 'With <Select />'
+export const TransformControlsSelectObjectSt = {
+  render: (args) => <TransformControlsSelectObjectScene {...args} />,
+  name: 'With <Select />',
+} satisfies Story
 
-function TransformControlsLockScene({ mode, showX, showY, showZ }) {
+//
+
+function TransformControlsLockScene(props: React.ComponentProps<typeof TransformControls>) {
   const orbitControls = React.useRef<OrbitControlsImpl>(null!)
   const transformControls = React.useRef<TransformControlsImpl>(null!)
 
@@ -75,7 +87,7 @@ function TransformControlsLockScene({ mode, showX, showY, showZ }) {
 
   return (
     <>
-      <TransformControls ref={transformControls} mode={mode} showX={showX} showY={showY} showZ={showZ}>
+      <TransformControls ref={transformControls} {...props}>
         <Box>
           <meshBasicMaterial wireframe />
         </Box>
@@ -85,24 +97,35 @@ function TransformControlsLockScene({ mode, showX, showY, showZ }) {
   )
 }
 
-export const TransformControlsLockSt = () => {
-  const modesObj = {
-    scale: 'scale',
-    rotate: 'rotate',
-    translate: 'translate',
-  }
-
-  return (
-    <TransformControlsLockScene
-      mode={optionsKnob('mode', modesObj, 'translate', {
-        display: 'radio',
-      })}
-      showX={boolean('showX', true)}
-      showY={boolean('showY', true)}
-      showZ={boolean('showZ', true)}
-    />
-  )
-}
-
-TransformControlsLockSt.storyName = 'Lock orbit controls while transforming'
-TransformControlsLockSt.decorators = [withKnobs, (storyFn) => <Setup controls={false}>{storyFn()}</Setup>]
+export const TransformControlsLockSt = {
+  decorators: [
+    (Story) => (
+      <Setup controls={false}>
+        <Story />
+      </Setup>
+    ),
+  ],
+  args: {
+    mode: 'translate',
+    showX: true,
+    showY: true,
+    showZ: true,
+  },
+  argTypes: {
+    mode: {
+      control: {
+        type: 'radio',
+        options: {
+          scale: 'scale',
+          rotate: 'rotate',
+          translate: 'translate',
+        },
+      },
+    },
+    showX: { control: 'boolean' },
+    showY: { control: 'boolean' },
+    showZ: { control: 'boolean' },
+  },
+  render: (args) => <TransformControlsLockScene {...args} />,
+  name: 'Lock orbit controls while transforming',
+} satisfies Story

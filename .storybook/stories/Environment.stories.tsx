@@ -1,118 +1,148 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
 import { Environment, ContactShadows, PerspectiveCamera, OrbitControls } from '../../src'
 
 import { presetsObj } from '../../src/helpers/environment-assets'
+import { ComponentProps } from 'react'
 
 export default {
   title: 'Staging/Environment',
   component: Environment,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup cameraPosition={new Vector3(0, 0, 10)} controls={false}>
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],
-}
+} satisfies Meta<typeof Environment>
 
-export const EnvironmentStory = ({ background, preset, blur }) => (
-  <>
-    <Environment preset={preset} background={background} blur={blur} />
-    <mesh>
-      <torusKnotGeometry args={[1, 0.5, 128, 32]} />
-      <meshStandardMaterial metalness={1} roughness={0} />
-    </mesh>
-    <OrbitControls autoRotate />
-  </>
-)
+type Story = StoryObj<typeof Environment>
 
 const presets = Object.keys(presetsObj)
 
-EnvironmentStory.args = {
-  background: true,
-  blur: 0,
-  preset: presets[0],
+function EnvironmentScene1(props: ComponentProps<typeof Environment>) {
+  return (
+    <>
+      <Environment {...props} />
+      <mesh>
+        <torusKnotGeometry args={[1, 0.5, 128, 32]} />
+        <meshStandardMaterial metalness={1} roughness={0} />
+      </mesh>
+      <OrbitControls autoRotate />
+    </>
+  )
 }
 
-EnvironmentStory.argTypes = {
-  preset: {
-    options: presets,
-    control: {
-      type: 'select',
+export const EnvironmentSt1 = {
+  render: (args) => <EnvironmentScene1 {...args} />,
+  args: {
+    background: true,
+    backgroundBlurriness: 0,
+    preset: 'apartment',
+  },
+  argTypes: {
+    background: { control: 'boolean' },
+    backgroundBlurriness: { control: { type: 'range', min: 0, max: 1, step: 0.01 } },
+    preset: {
+      options: presets,
+      control: {
+        type: 'select',
+      },
     },
   },
-  blur: { control: { type: 'range', min: 0, max: 1, step: 0.01 } },
+
+  name: 'Default',
+} satisfies Story
+
+function EnvironmentScene2(props: ComponentProps<typeof Environment>) {
+  return (
+    <>
+      <Environment {...props} />
+      <mesh>
+        <torusKnotGeometry args={[1, 0.5, 128, 32]} />
+        <meshStandardMaterial metalness={1} roughness={0} />
+      </mesh>
+      <OrbitControls autoRotate />
+    </>
+  )
 }
 
-EnvironmentStory.storyName = 'Default'
+export const EnvironmentSt2 = {
+  render: (args) => <EnvironmentScene2 {...args} />,
+  args: {
+    background: true,
+    path: 'cube/',
+    files: ['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'],
+  },
+  argTypes: {
+    background: { control: 'boolean' },
+  },
+  name: 'Files',
+} satisfies Story
 
-export const EnvironmentFilesStory = ({ background }) => (
-  <>
-    <Environment
-      background={background}
-      path={`cube/`}
-      files={[`px.png`, `nx.png`, `py.png`, `ny.png`, `pz.png`, `nz.png`]}
-    />
-    <mesh>
-      <torusKnotGeometry args={[1, 0.5, 128, 32]} />
-      <meshStandardMaterial metalness={1} roughness={0} />
-    </mesh>
-    <OrbitControls autoRotate />
-  </>
-)
-
-EnvironmentFilesStory.args = {
-  background: true,
+function EnvironmentScene3(props: ComponentProps<typeof Environment>) {
+  return (
+    <>
+      <Environment {...props} />
+      <mesh position={[0, 5, 0]}>
+        <boxGeometry args={[10, 10, 10]} />
+        <meshStandardMaterial metalness={1} roughness={0} />
+      </mesh>
+      <ContactShadows resolution={1024} position={[0, 0, 0]} scale={100} blur={2} opacity={1} far={10} />
+      <OrbitControls autoRotate />
+      <PerspectiveCamera position={[40, 40, 40]} makeDefault />
+    </>
+  )
 }
 
-EnvironmentFilesStory.storyName = 'Files'
-
-export const EnvironmentGroundStory = ({ preset, height, radius }) => (
-  <>
-    <Environment ground={{ height, radius }} preset={preset} />
-    <mesh position={[0, 5, 0]}>
-      <boxGeometry args={[10, 10, 10]} />
-      <meshStandardMaterial metalness={1} roughness={0} />
-    </mesh>
-    <ContactShadows resolution={1024} position={[0, 0, 0]} scale={100} blur={2} opacity={1} far={10} />
-    <OrbitControls autoRotate />
-    <PerspectiveCamera position={[40, 40, 40]} makeDefault />
-  </>
-)
-
-EnvironmentGroundStory.args = {
-  height: 15,
-  radius: 60,
-  preset: 'park',
-}
-
-EnvironmentGroundStory.argTypes = {
-  preset: {
-    options: presets,
-    control: {
-      type: 'select',
+export const EnvironmentSt3 = {
+  render: (args) => <EnvironmentScene3 {...args} />,
+  args: {
+    ground: { height: 15, radius: 60 },
+    preset: 'park',
+  },
+  argTypes: {
+    preset: {
+      options: presets,
+      control: {
+        type: 'select',
+      },
     },
   },
-  height: {
-    control: {
-      type: 'range',
-      min: 0,
-      max: 50,
-      step: 0.1,
-    },
-  },
-  radius: {
-    control: {
-      type: 'range',
-      min: 0,
-      max: 200,
-      step: 1,
-    },
-  },
+  name: 'Ground',
+} satisfies Story
+
+function EnvironmentScene4(props: ComponentProps<typeof Environment>) {
+  return (
+    <>
+      <Environment {...props} />
+      <mesh>
+        <torusKnotGeometry args={[1, 0.5, 128, 32]} />
+        <meshStandardMaterial metalness={1} roughness={0} />
+      </mesh>
+      <OrbitControls autoRotate />
+    </>
+  )
 }
 
-EnvironmentGroundStory.storyName = 'Ground'
+export const EnvironmentSt4 = {
+  render: (args) => <EnvironmentScene4 {...args} />,
+  args: {
+    files: ['/gainmap/potsdamer_platz_1k.jpg'],
+    background: true,
+  },
+  argTypes: {
+    preset: {
+      options: presets,
+      control: {
+        type: 'select',
+      },
+    },
+  },
+  name: 'Gainmap',
+} satisfies Story

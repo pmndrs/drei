@@ -1,11 +1,12 @@
 import * as React from 'react'
-import { useProgress } from '../core/useProgress'
+import { useProgress } from '../core/Progress'
+import { CSSProperties } from 'react'
 
 interface LoaderOptions {
-  containerStyles: any
-  innerStyles: any
-  barStyles: any
-  dataStyles: any
+  containerStyles: CSSProperties
+  innerStyles: CSSProperties
+  barStyles: CSSProperties
+  dataStyles: CSSProperties
   dataInterpolation: (p: number) => string
   initialState: (active: boolean) => boolean
 }
@@ -57,7 +58,7 @@ export function Loader({
   ) : null
 }
 
-const styles = {
+const styles: { [key: string]: CSSProperties } = {
   container: {
     position: 'absolute',
     top: 0,

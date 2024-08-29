@@ -14,7 +14,7 @@ import {
   BufferAttribute,
 } from 'three'
 import { MaterialNode, extend, applyProps, useFrame, ReactThreeFiber } from '@react-three/fiber'
-import { useTexture } from './useTexture'
+import { useTexture } from './Texture'
 import { v4 } from 'uuid'
 import { setUpdateRange } from '../helpers/deprecated'
 
@@ -58,6 +58,8 @@ type CloudsProps = JSX.IntrinsicElements['group'] & {
   range?: number
   /** Which material it will override, default: MeshLambertMaterial */
   material?: typeof Material
+  /** Frustum culling, default: true */
+  frustumCulled?: boolean
 }
 
 type CloudProps = JSX.IntrinsicElements['group'] & {
@@ -88,8 +90,6 @@ type CloudProps = JSX.IntrinsicElements['group'] & {
   opacity?: number
   /** Color, default: white */
   color?: ReactThreeFiber.Color
-  /** Frustum culling, default: true */
-  frustumCulled?: boolean
 }
 
 const parentMatrix = /* @__PURE__ */ new Matrix4()

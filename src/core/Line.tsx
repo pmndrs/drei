@@ -72,7 +72,10 @@ export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = /* @_
   }, [dashed, lineMaterial])
 
   React.useEffect(() => {
-    return () => lineGeom.dispose()
+    return () => {
+      lineGeom.dispose()
+      lineMaterial.dispose()
+    }
   }, [lineGeom])
 
   return (
@@ -84,7 +87,7 @@ export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = /* @_
         color={color}
         vertexColors={Boolean(vertexColors)}
         resolution={[size.width, size.height]}
-        linewidth={linewidth ?? lineWidth}
+        linewidth={linewidth ?? lineWidth ?? 1}
         dashed={dashed}
         transparent={itemSize === 4}
         {...rest}

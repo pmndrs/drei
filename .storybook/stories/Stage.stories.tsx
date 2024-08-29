@@ -1,43 +1,52 @@
 import * as React from 'react'
-import { withKnobs, select, number, boolean, object } from '@storybook/addon-knobs'
 import { Vector3 } from 'three'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 import { Stage, Sphere } from '../../src'
 import { presetsObj, PresetsType } from '../../src/helpers/environment-assets'
 
+const environments = Object.keys(presetsObj) as Array<PresetsType>
+
 export default {
   title: 'Staging/Stage',
   component: Stage,
-  decorators: [withKnobs, (storyFn) => <Setup cameraPosition={new Vector3(0, 0, 3)}>{storyFn()}</Setup>],
-}
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(0, 0, 3)}>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof Stage>
 
-enum presets {
-  rembrant = 'rembrandt',
-  portrait = 'portrait',
-  upfront = 'upfront',
-  soft = 'soft',
-}
+type Story = StoryObj<typeof Stage>
 
-function StageStory() {
-  const envPresets = Object.keys(presetsObj)
-  const envPreset = select('Environment', envPresets, envPresets[0])
-  const intensity = number('Intensity', 1)
-  const presetKnob = select('Preset', presets, presets[0])
+const presets = ['rembrant', 'portrait', 'upfront', 'soft']
 
+function StageScene(props: React.ComponentProps<typeof Stage>) {
   return (
-    <React.Suspense fallback={null}>
+    <>
       <color attach="background" args={['white']} />
-      <Stage intensity={intensity} environment={envPreset as PresetsType} preset={presetKnob}>
+      <Stage {...props}>
         <Sphere args={[1, 64, 64]}>
           <meshStandardMaterial roughness={0} color="royalblue" />
         </Sphere>
       </Stage>
-    </React.Suspense>
+    </>
   )
 }
 
-export const StageSt = () => <StageStory />
-StageSt.story = {
+export const StageSt = {
+  args: {
+    intensity: 1,
+    environment: environments[0],
+    preset: 'rembrandt',
+  },
+  argTypes: {
+    environment: { control: 'select', options: environments },
+    preset: { control: 'select', options: presets },
+  },
+  render: (args) => <StageScene {...args} />,
   name: 'Default',
-}
+} satisfies Story

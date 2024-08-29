@@ -1,17 +1,10 @@
 import * as React from 'react'
 import { extend } from '@react-three/fiber'
 import { Texture } from 'three'
-
-import { withKnobs, number } from '@storybook/addon-knobs'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
-import { Box, MeshDistortMaterial, shaderMaterial, useTexture } from '../../src'
-
-export default {
-  title: 'Shaders/shaderMaterial',
-  component: MeshDistortMaterial,
-  decorators: [withKnobs, (storyFn) => <Setup> {storyFn()}</Setup>],
-}
+import { Box, shaderMaterial, useTexture } from '../../src'
 
 const MyMaterial = shaderMaterial(
   { map: new Texture(), repeats: 1 },
@@ -52,7 +45,6 @@ void main(){
 }
 `
 )
-
 extend({ MyMaterial })
 
 type MyMaterialImpl = {
@@ -68,19 +60,41 @@ declare global {
   }
 }
 
-function ShaderMaterialScene() {
-  const map = useTexture(`https://source.unsplash.com/random/400x400`)
+function ShaderMaterial(props: React.ComponentProps<'myMaterial'>) {
+  return <myMaterial {...props} />
+}
+
+export default {
+  title: 'Shaders/shaderMaterial',
+  component: ShaderMaterial,
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof ShaderMaterial>
+
+type Story = StoryObj<typeof ShaderMaterial>
+
+function ShaderMaterialScene(args) {
+  const map = useTexture(`images/living-room-2.jpg`)
 
   return (
     <Box args={[5, 5, 5]}>
-      <myMaterial repeats={number('repeats', 2, { range: true, min: 1, max: 10, step: 1 })} map={map} />
+      <ShaderMaterial {...args} map={map} />
     </Box>
   )
 }
 
-export const ShaderMaterialStory = () => (
-  <React.Suspense fallback={null}>
-    <ShaderMaterialScene />
-  </React.Suspense>
-)
-ShaderMaterialStory.storyName = 'Default'
+export const ShaderMaterialSt = {
+  args: {
+    repeats: 2,
+  },
+  argTypes: {
+    repeats: { control: { type: 'range', min: 1, max: 10, step: 1 } },
+  },
+  render: (args) => <ShaderMaterialScene {...args} />,
+  name: 'Default',
+} satisfies Story

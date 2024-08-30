@@ -19,6 +19,8 @@ jobs:
       home_redirect: '/getting-started/introduction'
       icon: '🥉'
       logo: '/logo.jpg'
+      github: 'https://github.com/pmndrs/drei'
+      discord: 'https://discord.com/channels/740090768164651008/741751532592038022'
 
   deploy:
     needs: build

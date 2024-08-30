@@ -14,13 +14,13 @@ npm install @react-three/drei
 > [!IMPORTANT]
 > this package is using the stand-alone [`three-stdlib`](https://github.com/pmndrs/three-stdlib) instead of [`three/examples/jsm`](https://github.com/mrdoob/three.js/tree/master/examples/jsm).
 
-### Basic usage:
+### Basic usage
 
 ```jsx
 import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei'
 ```
 
-### React-native:
+### React-native
 
 ```jsx
 import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei/native'
@@ -3014,7 +3014,7 @@ const buffer = useSurfaceSampler(
 )
 ```
 
-### FaceLandmarker
+#### FaceLandmarker
 
 ![](https://img.shields.io/badge/-suspense-brightgreen)
 
@@ -4014,7 +4014,7 @@ const api = useRef<RenderCubeTextureApi>(null!)
         <mesh />
 ```
 
-### Fisheye
+#### Fisheye
 
 <p>
   <a href="https://codesandbox.io/s/7qytdw"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/7qytdw/screenshot.png" alt="Demo"/></a>
@@ -4594,7 +4594,7 @@ Since this is a rather expensive effect you can limit the amount of frames it re
 <ContactShadows frames={1} />
 ```
 
-### RandomizedLight
+#### RandomizedLight
 
 A randomized light that internally runs multiple lights and jiggles them. See below, you would normally pair it with `AccumulativeShadows`. This component is context aware, paired with AccumulativeShadows it will take the number of frames from its parent.
 
@@ -4641,7 +4641,7 @@ interface AccumulativeLightContext {
 }
 ```
 
-###  AccumulativeShadows
+####  AccumulativeShadows
 
 <p>
   <a href="https://codesandbox.io/s/hxcc1x"><img width="20%" src="https://codesandbox.io/api/v1/sandboxes/hxcc1x/screenshot.png" alt="Demo"/></a>

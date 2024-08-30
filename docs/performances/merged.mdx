@@ -1,0 +1,43 @@
+---
+title: Merged
+---
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="l900i" />
+  </li>
+</Grid>
+
+This creates instances for existing meshes and allows you to use them cheaply in the same scene graph. Each type will cost you exactly one draw call, no matter how many you use. `meshes` has to be a collection of pre-existing THREE.Mesh objects.
+
+```jsx
+<Merged meshes={[box, sphere]}>
+  {(Box, Sphere) => (
+    <>
+      <Box position={[-2, -2, 0]} color="red" />
+      <Box position={[-3, -3, 0]} color="tomato" />
+      <Sphere scale={0.7} position={[2, 1, 0]} color="green" />
+      <Sphere scale={0.7} position={[3, 2, 0]} color="teal" />
+    </>
+  )}
+</Merged>
+```
+
+You may also use object notation, which is good for loaded models.
+
+```jsx
+function Model({ url }) {
+  const { nodes } = useGLTF(url)
+  return (
+    <Merged meshes={nodes}>
+      {({ Screw, Filter, Pipe }) => (
+        <>
+          <Screw />
+          <Filter position={[1, 2, 3]} />
+          <Pipe position={[4, 5, 6]} />
+        </>
+      )}
+    </Merged>
+  )
+}
+```

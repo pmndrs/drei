@@ -1,0 +1,23 @@
+---
+title: Mesh
+---
+
+Short-cuts for a [mesh](https://threejs.org/docs/#api/en/objects/Mesh) with a [buffer geometry](https://threejs.org/docs/#api/en/core/BufferGeometry).
+
+```jsx
+<Box
+  args={[1, 1, 1]}                // Args for the buffer geometry
+  {...meshProps}                  // All THREE.Mesh props are valid
+/>
+
+// Plane with buffer geometry args
+<Plane args={[2, 2]} />
+
+// Box with color set on the default MeshBasicMaterial
+<Box material-color="hotpink" />
+
+// Sphere with a MeshStandardMaterial
+<Sphere>
+  <meshStandardMaterial color="hotpink" />
+</Sphere>
+```

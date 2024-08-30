@@ -1,0 +1,17 @@
+---
+title: useSurfaceSampler
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-decal--decal-st)
+
+A hook to obtain the result of the [`<Sampler />`](#sampler) as a buffer. Useful for driving anything other than `InstancedMesh` via the Sampler.
+
+```js
+const buffer = useSurfaceSampler(
+  mesh, // Mesh to sample
+  count, // [Optional] Number of samples (default: 16)
+  transform, // [Optional] Transformation function. Same as in `<Sampler />`
+  weight, // [Optional] Same as in `<Sampler />`
+  instancedMesh // [Optional] Instanced mesh to scatter
+)
+```

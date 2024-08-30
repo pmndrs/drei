@@ -1,0 +1,46 @@
+---
+title: Resize
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-resize)
+
+<Grid cols={4}>
+  <a href="https://codesandbox.io/s/6yg0i3">
+    <img
+      width="20%"
+      src="https://user-images.githubusercontent.com/76580/234665568-2be311d2-1896-4f82-ae20-b10b44c1e952.png"
+      alt="Demo"
+    />
+  </a>
+</Grid>
+
+Calculates a boundary box and scales its children so the highest dimension is constrained by 1. NB: proportions are preserved.
+
+```tsx
+export type ResizeProps = JSX.IntrinsicElements['group'] & {
+  /** constrained by width dimension (x axis), undefined */
+  width?: boolean
+  /** constrained by height dimension (y axis), undefined */
+  height?: boolean
+  /** constrained by depth dimension (z axis), undefined */
+  depth?: boolean
+  /** You can optionally pass the Box3, otherwise will be computed, undefined */
+  box3?: THREE.Box3
+  /** See https://threejs.org/docs/index.html?q=box3#api/en/math/Box3.setFromObject */
+  precise?: boolean
+}
+```
+
+```jsx
+<Resize>
+  <mesh />
+</Resize>
+```
+
+You can also specify the dimension to be constrained by:
+
+```jsx
+<Resize height>
+  <Box args={[70, 40, 20]}>
+</Resize>
+```

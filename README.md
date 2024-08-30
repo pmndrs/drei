@@ -250,11 +250,11 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 
 #### PerspectiveCamera
 
-[Documentation has moved here](https://pmndrs.github.io/drei/cameras/persective-camera)
+[Documentation has moved here](https://pmndrs.github.io/drei/cameras/perspective-camera)
 
 #### OrthographicCamera
 
-[Documentation has moved here](https://pmndrs.github.io/drei/cameras/orhtographic-camera)
+[Documentation has moved here](https://pmndrs.github.io/drei/cameras/orthographic-camera)
 
 #### CubeCamera
 
@@ -268,7 +268,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 
 #### ScrollControls
 
-[Documentation has moved here](https://pmndrs.github.io/drei/controls/scoll-controls)
+[Documentation has moved here](https://pmndrs.github.io/drei/controls/scroll-controls)
 
 #### PresentationControls
 
@@ -276,11 +276,11 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 
 #### KeyboardControls
 
-[Documentation has moved here](https://pmndrs.github.io/drei/controls/keybord-controls)
+[Documentation has moved here](https://pmndrs.github.io/drei/controls/keyboard-controls)
 
 #### FaceControls
 
-[Documentation has moved here](https://pmndrs.github.io/drei/controls/fase-controls)
+[Documentation has moved here](https://pmndrs.github.io/drei/controls/face-controls)
 
 #### MotionPathControls
 
@@ -302,7 +302,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 
 #### TransformControls
 
-[Documentation has moved here](https://pmndrs.github.io/drei/gizmos/transfrom-controls)
+[Documentation has moved here](https://pmndrs.github.io/drei/gizmos/transform-controls)
 
 #### Grid
 
@@ -366,7 +366,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 
 #### PositionalAudio
 
-[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/postional-audio)
+[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/positional-audio)
 
 #### Billboard
 
@@ -382,7 +382,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 
 #### GradientTexture
 
-[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/gradiant-texture)
+[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/gradient-texture)
 
 #### Edges
 
@@ -426,7 +426,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 
 #### AsciiRenderer
 
-[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/ascci-renderer)
+[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/ascii-renderer)
 
 #### Splat
 
@@ -566,97 +566,97 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 
 #### Loader
 
-[Documentation has moved here](https://pmndrs.github.io/drei/loading/loader)
+[Documentation has moved here](https://pmndrs.github.io/drei/loaders/loader)
 
 #### Progress / useProgress
 
-[Documentation has moved here](https://pmndrs.github.io/drei/loading/use-progress)
+[Documentation has moved here](https://pmndrs.github.io/drei/loaders/progress-use-progress)
 
 #### Gltf / useGLTF
 
-[Documentation has moved here](https://pmndrs.github.io/drei/loading/use-gltf)
+[Documentation has moved here](https://pmndrs.github.io/drei/loaders/gltf-use-gltf)
 
 #### Fbx / useFBX
 
-[Documentation has moved here](https://pmndrs.github.io/drei/loading/fbx-use-fbx)
+[Documentation has moved here](https://pmndrs.github.io/drei/loaders/fbx-use-fbx)
 
 #### Texture / useTexture
 
-[Documentation has moved here](https://pmndrs.github.io/drei/loading/textue-use-texture)
+[Documentation has moved here](https://pmndrs.github.io/drei/loaders/texture-use-texture)
 
 #### Ktx2 / useKTX2
 
-[Documentation has moved here](https://pmndrs.github.io/drei/loading/ktx2-use-ktx2)
+[Documentation has moved here](https://pmndrs.github.io/drei/loaders/ktx2-use-ktx2)
 
 #### CubeTexture / useCubeTexture
 
-[Documentation has moved here](https://pmndrs.github.io/drei/loading/cube-texture-use-cube-texture)
+[Documentation has moved here](https://pmndrs.github.io/drei/loaders/cube-texture-use-cube-texture)
 
 #### VideoTexture / useVideoTexture
 
-[Documentation has moved here](https://pmndrs.github.io/drei/loading/video-texture-use-video-texture)
+[Documentation has moved here](https://pmndrs.github.io/drei/loaders/video-texture-use-video-texture)
 
 #### TrailTexture / useTrailTexture
 
-[Documentation has moved here](https://pmndrs.github.io/drei/loading/trail-texture-use-trail-texture)
+[Documentation has moved here](https://pmndrs.github.io/drei/loaders/trail-texture-use-trail-texture)
 
 #### useFont
 
-[Documentation has moved here](https://pmndrs.github.io/drei/loading/use-font)
+[Documentation has moved here](https://pmndrs.github.io/drei/loaders/use-font)
 
 #### useSpriteLoader
 
-[Documentation has moved here](https://pmndrs.github.io/drei/loading/use-sprite-loader)
+[Documentation has moved here](https://pmndrs.github.io/drei/loaders/use-sprite-loader)
 
 # Performance
 
 #### Instances
 
-[Documentation has moved here](https://pmndrs.github.io/drei/performance/instances)
+[Documentation has moved here](https://pmndrs.github.io/drei/performances/instances)
 
 #### Merged
 
-[Documentation has moved here](https://pmndrs.github.io/drei/performance/merged)
+[Documentation has moved here](https://pmndrs.github.io/drei/performances/merged)
 
 #### Points
 
-[Documentation has moved here](https://pmndrs.github.io/drei/performance/points)
+[Documentation has moved here](https://pmndrs.github.io/drei/performances/points)
 
 #### Segments
 
-[Documentation has moved here](https://pmndrs.github.io/drei/performance/segments)
+[Documentation has moved here](https://pmndrs.github.io/drei/performances/segments)
 
 #### Detailed
 
-[Documentation has moved here](https://pmndrs.github.io/drei/performance/detailed)
+[Documentation has moved here](https://pmndrs.github.io/drei/performances/detailed)
 
 #### Preload
 
-[Documentation has moved here](https://pmndrs.github.io/drei/performance/preload)
+[Documentation has moved here](https://pmndrs.github.io/drei/performances/preload)
 
 #### BakeShadows
 
-[Documentation has moved here](https://pmndrs.github.io/drei/performance/bake-shadows)
+[Documentation has moved here](https://pmndrs.github.io/drei/performances/bake-shadows)
 
 #### meshBounds
 
-[Documentation has moved here](https://pmndrs.github.io/drei/performance/mesh-bounds)
+[Documentation has moved here](https://pmndrs.github.io/drei/performances/mesh-bounds)
 
 #### AdaptiveDpr
 
-[Documentation has moved here](https://pmndrs.github.io/drei/performance/adaptive-dpr)
+[Documentation has moved here](https://pmndrs.github.io/drei/performances/adaptive-dpr)
 
 #### AdaptiveEvents
 
-[Documentation has moved here](https://pmndrs.github.io/drei/performance/adaptive-events)
+[Documentation has moved here](https://pmndrs.github.io/drei/performances/adaptive-events)
 
 #### Bvh
 
-[Documentation has moved here](https://pmndrs.github.io/drei/performance/bvh)
+[Documentation has moved here](https://pmndrs.github.io/drei/performances/bvh)
 
 #### PerformanceMonitor
 
-[Documentation has moved here](https://pmndrs.github.io/drei/performance/performance-monitor)
+[Documentation has moved here](https://pmndrs.github.io/drei/performances/performance-monitor)
 
 # Portals
 
@@ -740,7 +740,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 
 #### AccumulativeShadows
 
-[Documentation has moved here](https://pmndrs.github.io/drei/staging/acumulative-shadows)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/accumulative-shadows)
 
 #### SpotLight
 

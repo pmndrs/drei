@@ -16,13 +16,13 @@ npm install @react-three/drei
 > [!IMPORTANT]
 > this package is using the stand-alone [`three-stdlib`](https://github.com/pmndrs/three-stdlib) instead of [`three/examples/jsm`](https://github.com/mrdoob/three.js/tree/master/examples/jsm).
 
-### Basic usage
+## Basic usage
 
 ```jsx
 import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei'
 ```
 
-### React-native
+## React-native
 
 ```jsx
 import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei/native'
@@ -30,14 +30,13 @@ import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei/nativ
 
 The `native` route of the library **does not** export `Html` or `Loader`. The default export of the library is `web` which **does** export `Html` and `Loader`.
 
-<details>
-  <summary>See all components on https://docs.pmnd.rs/drei</summary>
+## Documentation
 
-> [!CAUTION]
+https://pmndrs.github.io/drei
+
+> [!WARNING]
 > Below is an archive of the anchors links with their new respective locations to the documentation website.
 > Do not update the links below, they are for reference only.
-
-### Index
 
 <!-- <table>
   <tr>
@@ -248,7 +247,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
   </tr>
 </table> -->
 
-# Cameras
+### Cameras
 
 #### PerspectiveCamera
 
@@ -262,7 +261,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 
 [Documentation has moved here](https://pmndrs.github.io/drei/cameras/cube-camera)
 
-# Controls
+### Controls
 
 #### CameraControls
 
@@ -288,7 +287,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 
 [Documentation has moved here](https://pmndrs.github.io/drei/controls/motion-path-controls)
 
-# Gizmos
+### Gizmos
 
 #### GizmoHelper
 
@@ -314,7 +313,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 
 [Documentation has moved here](https://pmndrs.github.io/drei/gizmos/helper-use-helper)
 
-# Shapes
+### Shapes
 
 #### Plane, Box, Sphere, Circle, Cone, Cylinder, Tube, Torus, TorusKnot, Ring, Tetrahedron, Polyhedron, Icosahedron, Octahedron, Dodecahedron, Extrude, Lathe, Shape
 
@@ -348,7 +347,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 
 [Documentation has moved here](https://pmndrs.github.io/drei/shapes/facemesh)
 
-# Abstractions
+### Abstractions
 
 #### Image
 
@@ -434,7 +433,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 
 [Documentation has moved here](https://pmndrs.github.io/drei/abstractions/splat)
 
-# Shaders
+### Shaders
 
 #### MeshReflectorMaterial
 
@@ -472,13 +471,13 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 
 [Documentation has moved here](https://pmndrs.github.io/drei/shaders/shader-material)
 
-# Modifiers
+### Modifiers
 
 #### CurveModifier
 
 [Documentation has moved here](https://pmndrs.github.io/drei/modifiers/curve-modifier)
 
-# Misc
+### Misc
 
 #### useContextBridge
 
@@ -564,7 +563,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 
 [Documentation has moved here](https://pmndrs.github.io/drei/misc/face-landmarker)
 
-# Loading
+### Loading
 
 #### Loader
 
@@ -610,7 +609,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 
 [Documentation has moved here](https://pmndrs.github.io/drei/loaders/use-sprite-loader)
 
-# Performance
+### Performance
 
 #### Instances
 
@@ -660,7 +659,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 
 [Documentation has moved here](https://pmndrs.github.io/drei/performances/performance-monitor)
 
-# Portals
+### Portals
 
 #### Hud
 
@@ -690,7 +689,7 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 
 [Documentation has moved here](https://pmndrs.github.io/drei/portals/mesh-portal-material)
 
-# Staging
+### Staging
 
 #### Center
 
@@ -791,5 +790,3 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 #### ShadowAlpha
 
 [Documentation has moved here](https://pmndrs.github.io/drei/staging/shadow-alpha)
-
-</details>

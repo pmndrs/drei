@@ -1,4 +1,4 @@
-[![logo](logo.jpg)](https://codesandbox.io/s/bfplr)
+[![logo](docs/logo.jpg)](https://codesandbox.io/s/bfplr)
 
 [![Version](https://img.shields.io/npm/v/@react-three/drei?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)
 [![Downloads](https://img.shields.io/npm/dt/@react-three/drei.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)

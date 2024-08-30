@@ -1,0 +1,21 @@
+---
+title: CurveModifier
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/modifiers-curvemodifier)
+
+Given a curve will replace the children of this component with a mesh that move along said curve calling the property `moveAlongCurve` on the passed ref. Uses [three's Curve Modifier](https://threejs.org/examples/#webgl_modifier_curve)
+
+```jsx
+const curveRef = useRef()
+
+const curve = React.useMemo(() => new THREE.CatmullRomCurve3([...handlePos], true, 'centripetal'), [handlePos])
+
+return (
+  <CurveModifier ref={curveRef} curve={curve}>
+    <mesh>
+      <boxGeometry args={[10, 10]} />
+    </mesh>
+  </CurveModifier>
+)
+```

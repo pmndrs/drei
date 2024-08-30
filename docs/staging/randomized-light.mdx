@@ -1,0 +1,48 @@
+---
+title: RandomizedLight
+---
+
+A randomized light that internally runs multiple lights and jiggles them. See below, you would normally pair it with `AccumulativeShadows`. This component is context aware, paired with AccumulativeShadows it will take the number of frames from its parent.
+
+```tsx
+type RandomizedLightProps = JSX.IntrinsicElements['group'] & {
+  /** How many frames it will jiggle the lights, 1.
+   *  Frames is context aware, if a provider like AccumulativeShadows exists, frames will be taken from there!  */
+  frames?: number
+  /** Light position, [0, 0, 0] */
+  position?: [x: number, y: number, z: number]
+  /** Radius of the jiggle, higher values make softer light, 5 */
+  radius?: number
+  /** Amount of lights, 8 */
+  amount?: number
+  /** Light intensity, 1 */
+  intensity?: number
+  /** Ambient occlusion, lower values mean less AO, hight more, you can mix AO and directional light, 0.5 */
+  ambient?: number
+  /** If the lights cast shadows, this is true by default */
+  castShadow?: boolean
+  /** Default shadow bias, 0 */
+  bias?: number
+  /** Default map size, 512 */
+  mapSize?: number
+  /** Default size of the shadow camera, 10 */
+  size?: number
+  /** Default shadow camera near, 0.5 */
+  near?: number
+  /** Default shadow camera far, 500 */
+  far?: number
+}
+```
+
+```jsx
+<RandomizedLight castShadow amount={8} frames={100} position={[5, 5, -10]} />
+```
+
+## Refernce api
+
+```jsx
+interface AccumulativeLightContext {
+  /** Jiggles the lights */
+  update: () => void;
+}
+```

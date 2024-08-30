@@ -1,7 +1,7 @@
 ---
 title: Introduction
 description: Useful helpers for react-three-fiber
-nav: 0
+nav: -1
 ---
 
 [![logo](../logo.jpg)](https://codesandbox.io/s/bfplr)
@@ -33,3 +33,24 @@ import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei/nativ
 ```
 
 The `native` route of the library **does not** export `Html` or `Loader`. The default export of the library is `web` which **does** export `Html` and `Loader`.
+
+## INSTALL
+
+```sh
+& corepack enable
+$ yarn install
+```
+
+## Tests
+
+To run visual tests in the same environment as the CI:
+
+```sh
+$ yarn build
+$ docker run --init --rm -v $(pwd):/app -w /app ghcr.io/pmndrs/playwright:main yarn test
+```
+
+> [!TIP]
+> If running on mac m-series, you may need to add `--platform linux/arm64` to the docker command.
+
+To update a snapshot, simply remove it and relaunch the test command.

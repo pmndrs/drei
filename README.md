@@ -28,6 +28,13 @@ import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei/nativ
 
 The `native` route of the library **does not** export `Html` or `Loader`. The default export of the library is `web` which **does** export `Html` and `Loader`.
 
+<details>
+  <summary>See all components on https://docs.pmnd.rs/drei</summary>
+
+> [!CAUTION]
+> Below is an archive of the anchors links with their new respective locations to the documentation website.
+> Do not update the links below, they are for reference only.
+
 ### Index
 
 <!-- <table>
@@ -243,542 +250,544 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 
 #### PerspectiveCamera
 
-[docs](https://pmndrs.github.io/drei/cameras/persective-camera)
+[Documentation has moved here](https://pmndrs.github.io/drei/cameras/persective-camera)
 
 #### OrthographicCamera
 
-[docs](https://pmndrs.github.io/drei/cameras/orhtographic-camera)
+[Documentation has moved here](https://pmndrs.github.io/drei/cameras/orhtographic-camera)
 
 #### CubeCamera
 
-[docs](https://pmndrs.github.io/drei/cameras/cube-camera)
+[Documentation has moved here](https://pmndrs.github.io/drei/cameras/cube-camera)
 
 # Controls
 
 #### CameraControls
 
-[docs](https://pmndrs.github.io/drei/controls/camera-controls)
+[Documentation has moved here](https://pmndrs.github.io/drei/controls/camera-controls)
 
 #### ScrollControls
 
-[docs](https://pmndrs.github.io/drei/controls/scoll-controls)
+[Documentation has moved here](https://pmndrs.github.io/drei/controls/scoll-controls)
 
 #### PresentationControls
 
-[docs](https://pmndrs.github.io/drei/controls/presentation-controls)
+[Documentation has moved here](https://pmndrs.github.io/drei/controls/presentation-controls)
 
 #### KeyboardControls
 
-[docs](https://pmndrs.github.io/drei/controls/keybord-controls)
+[Documentation has moved here](https://pmndrs.github.io/drei/controls/keybord-controls)
 
 #### FaceControls
 
-[docs](https://pmndrs.github.io/drei/controls/fase-controls)
+[Documentation has moved here](https://pmndrs.github.io/drei/controls/fase-controls)
 
 #### MotionPathControls
 
-[docs](https://pmndrs.github.io/drei/controls/motion-path-controls)
+[Documentation has moved here](https://pmndrs.github.io/drei/controls/motion-path-controls)
 
 # Gizmos
 
 #### GizmoHelper
 
-[docs](https://pmndrs.github.io/drei/gizmos/gizmo-helper)
+[Documentation has moved here](https://pmndrs.github.io/drei/gizmos/gizmo-helper)
 
 #### PivotControls
 
-[docs](https://pmndrs.github.io/drei/gizmos/pivot-controls)
+[Documentation has moved here](https://pmndrs.github.io/drei/gizmos/pivot-controls)
 
 #### DragControls
 
-[docs](https://pmndrs.github.io/drei/gizmos/drag-controls)
+[Documentation has moved here](https://pmndrs.github.io/drei/gizmos/drag-controls)
 
 #### TransformControls
 
-[docs](https://pmndrs.github.io/drei/gizmos/transfrom-controls)
+[Documentation has moved here](https://pmndrs.github.io/drei/gizmos/transfrom-controls)
 
 #### Grid
 
-[docs](https://pmndrs.github.io/drei/gizmos/grid)
+[Documentation has moved here](https://pmndrs.github.io/drei/gizmos/grid)
 
 #### Helper / useHelper
 
-[docs](https://pmndrs.github.io/drei/gizmos/helper-use-helper)
+[Documentation has moved here](https://pmndrs.github.io/drei/gizmos/helper-use-helper)
 
 # Shapes
 
 #### Plane, Box, Sphere, Circle, Cone, Cylinder, Tube, Torus, TorusKnot, Ring, Tetrahedron, Polyhedron, Icosahedron, Octahedron, Dodecahedron, Extrude, Lathe, Shape
 
-[docs](https://pmndrs.github.io/drei/shapes/mesh)
+[Documentation has moved here](https://pmndrs.github.io/drei/shapes/mesh)
 
 #### RoundedBox
 
-[docs](https://pmndrs.github.io/drei/shapes/rounded-box)
+[Documentation has moved here](https://pmndrs.github.io/drei/shapes/rounded-box)
 
 #### ScreenQuad
 
-[docs](https://pmndrs.github.io/drei/shapes/screen-quad)
+[Documentation has moved here](https://pmndrs.github.io/drei/shapes/screen-quad)
 
 #### Line
 
-[docs](https://pmndrs.github.io/drei/shapes/line)
+[Documentation has moved here](https://pmndrs.github.io/drei/shapes/line)
 
 #### QuadraticBezierLine
 
-[docs](https://pmndrs.github.io/drei/shapes/quadratic-bezier-line)
+[Documentation has moved here](https://pmndrs.github.io/drei/shapes/quadratic-bezier-line)
 
 #### CubicBezierLine
 
-[docs](https://pmndrs.github.io/drei/shapes/cubic-bezier-line)
+[Documentation has moved here](https://pmndrs.github.io/drei/shapes/cubic-bezier-line)
 
 #### CatmullRomLine
 
-[docs](https://pmndrs.github.io/drei/shapes/catmull-rom-line)
+[Documentation has moved here](https://pmndrs.github.io/drei/shapes/catmull-rom-line)
 
 #### Facemesh
 
-[docs](https://pmndrs.github.io/drei/shapes/facemesh)
+[Documentation has moved here](https://pmndrs.github.io/drei/shapes/facemesh)
 
 # Abstractions
 
 #### Image
 
-[docs](https://pmndrs.github.io/drei/abstractions/image)
+[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/image)
 
 #### Text
 
-[docs](https://pmndrs.github.io/drei/abstractions/text)
+[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/text)
 
 #### Text3D
 
-[docs](https://pmndrs.github.io/drei/abstractions/text3d)
+[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/text3d)
 
 #### Effects
 
-[docs](https://pmndrs.github.io/drei/abstractions/effects)
+[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/effects)
 
 #### PositionalAudio
 
-[docs](https://pmndrs.github.io/drei/abstractions/postional-audio)
+[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/postional-audio)
 
 #### Billboard
 
-[docs](https://pmndrs.github.io/drei/abstractions/billboard)
+[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/billboard)
 
 #### ScreenSpace
 
-[docs](https://pmndrs.github.io/drei/abstractions/screen-space)
+[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/screen-space)
 
 #### ScreenSizer
 
-[docs](https://pmndrs.github.io/drei/abstractions/screen-sizer)
+[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/screen-sizer)
 
 #### GradientTexture
 
-[docs](https://pmndrs.github.io/drei/abstractions/gradiant-texture)
+[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/gradiant-texture)
 
 #### Edges
 
-[docs](https://pmndrs.github.io/drei/abstractions/edges)
+[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/edges)
 
 #### Outlines
 
-[docs](https://pmndrs.github.io/drei/abstractions/outlines)
+[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/outlines)
 
 #### Trail
 
-[docs](https://pmndrs.github.io/drei/abstractions/trail)
+[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/trail)
 
 #### Sampler
 
-[docs](https://pmndrs.github.io/drei/abstractions/sampler)
+[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/sampler)
 
 #### ComputedAttribute
 
-[docs](https://pmndrs.github.io/drei/abstractions/computed-attribute)
+[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/computed-attribute)
 
 #### Clone
 
-[docs](https://pmndrs.github.io/drei/abstractions/clone)
+[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/clone)
 
 #### useAnimations
 
-[docs](https://pmndrs.github.io/drei/abstractions/use-animations)
+[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/use-animations)
 
 #### MarchingCubes
 
-[docs](https://pmndrs.github.io/drei/abstractions/marching-cubes)
+[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/marching-cubes)
 
 #### Decal
 
-[docs](https://pmndrs.github.io/drei/abstractions/decal)
+[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/decal)
 
 #### Svg
 
-[docs](https://pmndrs.github.io/drei/abstractions/svg)
+[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/svg)
 
 #### AsciiRenderer
 
-[docs](https://pmndrs.github.io/drei/abstractions/ascci-renderer)
+[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/ascci-renderer)
 
 #### Splat
 
-[docs](https://pmndrs.github.io/drei/abstractions/splat)
+[Documentation has moved here](https://pmndrs.github.io/drei/abstractions/splat)
 
 # Shaders
 
 #### MeshReflectorMaterial
 
-[docs](https://pmndrs.github.io/drei/shaders/mesh-reflector-material)
+[Documentation has moved here](https://pmndrs.github.io/drei/shaders/mesh-reflector-material)
 
 #### MeshWobbleMaterial
 
-[docs](https://pmndrs.github.io/drei/shaders/mesh-wobble-material)
+[Documentation has moved here](https://pmndrs.github.io/drei/shaders/mesh-wobble-material)
 
 #### MeshDistortMaterial
 
-[docs](https://pmndrs.github.io/drei/shaders/mesh-distort-material)
+[Documentation has moved here](https://pmndrs.github.io/drei/shaders/mesh-distort-material)
 
 #### MeshRefractionMaterial
 
-[docs](https://pmndrs.github.io/drei/shaders/mesh-refraction-material)
+[Documentation has moved here](https://pmndrs.github.io/drei/shaders/mesh-refraction-material)
 
 #### MeshTransmissionMaterial
 
-[docs](https://pmndrs.github.io/drei/shaders/mesh-transmission-material)
+[Documentation has moved here](https://pmndrs.github.io/drei/shaders/mesh-transmission-material)
 
 #### MeshDiscardMaterial
 
-[docs](https://pmndrs.github.io/drei/shaders/mesh-discard-material)
+[Documentation has moved here](https://pmndrs.github.io/drei/shaders/mesh-discard-material)
 
 #### PointMaterial
 
-[docs](https://pmndrs.github.io/drei/shaders/point-material)
+[Documentation has moved here](https://pmndrs.github.io/drei/shaders/point-material)
 
 #### SoftShadows
 
-[docs](https://pmndrs.github.io/drei/shaders/soft-shadows)
+[Documentation has moved here](https://pmndrs.github.io/drei/shaders/soft-shadows)
 
 #### shaderMaterial
 
-[docs](https://pmndrs.github.io/drei/shaders/shader-material)
+[Documentation has moved here](https://pmndrs.github.io/drei/shaders/shader-material)
 
 # Modifiers
 
 #### CurveModifier
 
-[docs](https://pmndrs.github.io/drei/modifiers/curve-modifier)
+[Documentation has moved here](https://pmndrs.github.io/drei/modifiers/curve-modifier)
 
 # Misc
 
 #### useContextBridge
 
-[docs](https://pmndrs.github.io/drei/misc/use-context-bridge)
+[Documentation has moved here](https://pmndrs.github.io/drei/misc/use-context-bridge)
 
 #### Example
 
-[docs](https://pmndrs.github.io/drei/misc/example)
+[Documentation has moved here](https://pmndrs.github.io/drei/misc/example)
 
 #### Html
 
-[docs](https://pmndrs.github.io/drei/misc/html)
+[Documentation has moved here](https://pmndrs.github.io/drei/misc/html)
 
 #### CycleRaycast
 
-[docs](https://pmndrs.github.io/drei/misc/cycle-raycast)
+[Documentation has moved here](https://pmndrs.github.io/drei/misc/cycle-raycast)
 
 #### Select
 
-[docs](https://pmndrs.github.io/drei/misc/select)
+[Documentation has moved here](https://pmndrs.github.io/drei/misc/select)
 
 #### Sprite Animator
 
-[docs](https://pmndrs.github.io/drei/misc/sprite-animator)
+[Documentation has moved here](https://pmndrs.github.io/drei/misc/sprite-animator)
 
 #### Stats
 
-[docs](https://pmndrs.github.io/drei/misc/stats)
+[Documentation has moved here](https://pmndrs.github.io/drei/misc/stats)
 
 #### StatsGl
 
-[docs](https://pmndrs.github.io/drei/misc/stats-gl)
+[Documentation has moved here](https://pmndrs.github.io/drei/misc/stats-gl)
 
 #### Wireframe
 
-[docs](https://pmndrs.github.io/drei/misc/wireframe)
+[Documentation has moved here](https://pmndrs.github.io/drei/misc/wireframe)
 
 #### useDepthBuffer
 
-[docs](https://pmndrs.github.io/drei/misc/use-depth-buffer)
+[Documentation has moved here](https://pmndrs.github.io/drei/misc/use-depth-buffer)
 
 #### Fbo / useFBO
 
-[docs](https://pmndrs.github.io/drei/misc/fbo-use-fbo)
+[Documentation has moved here](https://pmndrs.github.io/drei/misc/fbo-use-fbo)
 
 #### useCamera
 
-[docs](https://pmndrs.github.io/drei/misc/use-camera)
+[Documentation has moved here](https://pmndrs.github.io/drei/misc/use-camera)
 
 #### CubeCamera / useCubeCamera
 
-[docs](https://pmndrs.github.io/drei/misc/cube-camera-use-cube-camera)
+[Documentation has moved here](https://pmndrs.github.io/drei/misc/cube-camera-use-cube-camera)
 
 #### DetectGPU / useDetectGPU
 
-[docs](https://pmndrs.github.io/drei/misc/detect-gpu-use-detect-gpu)
+[Documentation has moved here](https://pmndrs.github.io/drei/misc/detect-gpu-use-detect-gpu)
 
 #### useAspect
 
-[docs](https://pmndrs.github.io/drei/misc/use-aspect)
+[Documentation has moved here](https://pmndrs.github.io/drei/misc/use-aspect)
 
 #### useCursor
 
-[docs](https://pmndrs.github.io/drei/misc/use-cursor)
+[Documentation has moved here](https://pmndrs.github.io/drei/misc/use-cursor)
 
 #### useIntersect
 
-[docs](https://pmndrs.github.io/drei/misc/use-intersect)
+[Documentation has moved here](https://pmndrs.github.io/drei/misc/use-intersect)
 
 #### useBoxProjectedEnv
 
-[docs](https://pmndrs.github.io/drei/misc/use-box-projected-env)
+[Documentation has moved here](https://pmndrs.github.io/drei/misc/use-box-projected-env)
 
 #### Trail / useTrail
 
-[docs](https://pmndrs.github.io/drei/misc/trail-use-trail)
+[Documentation has moved here](https://pmndrs.github.io/drei/misc/trail-use-trail)
 
 #### useSurfaceSampler
 
-[docs](https://pmndrs.github.io/drei/misc/use-surface-sampler)
+[Documentation has moved here](https://pmndrs.github.io/drei/misc/use-surface-sampler)
 
 #### FaceLandmarker
 
-[docs](https://pmndrs.github.io/drei/misc/face-landmarker)
+[Documentation has moved here](https://pmndrs.github.io/drei/misc/face-landmarker)
 
 # Loading
 
 #### Loader
 
-[docs](https://pmndrs.github.io/drei/loading/loader)
+[Documentation has moved here](https://pmndrs.github.io/drei/loading/loader)
 
 #### Progress / useProgress
 
-[docs](https://pmndrs.github.io/drei/loading/use-progress)
+[Documentation has moved here](https://pmndrs.github.io/drei/loading/use-progress)
 
 #### Gltf / useGLTF
 
-[docs](https://pmndrs.github.io/drei/loading/use-gltf)
+[Documentation has moved here](https://pmndrs.github.io/drei/loading/use-gltf)
 
 #### Fbx / useFBX
 
-[docs](https://pmndrs.github.io/drei/loading/fbx-use-fbx)
+[Documentation has moved here](https://pmndrs.github.io/drei/loading/fbx-use-fbx)
 
 #### Texture / useTexture
 
-[docs](https://pmndrs.github.io/drei/loading/textue-use-texture)
+[Documentation has moved here](https://pmndrs.github.io/drei/loading/textue-use-texture)
 
 #### Ktx2 / useKTX2
 
-[docs](https://pmndrs.github.io/drei/loading/ktx2-use-ktx2)
+[Documentation has moved here](https://pmndrs.github.io/drei/loading/ktx2-use-ktx2)
 
 #### CubeTexture / useCubeTexture
 
-[docs](https://pmndrs.github.io/drei/loading/cube-texture-use-cube-texture)
+[Documentation has moved here](https://pmndrs.github.io/drei/loading/cube-texture-use-cube-texture)
 
 #### VideoTexture / useVideoTexture
 
-[docs](https://pmndrs.github.io/drei/loading/video-texture-use-video-texture)
+[Documentation has moved here](https://pmndrs.github.io/drei/loading/video-texture-use-video-texture)
 
 #### TrailTexture / useTrailTexture
 
-[docs](https://pmndrs.github.io/drei/loading/trail-texture-use-trail-texture)
+[Documentation has moved here](https://pmndrs.github.io/drei/loading/trail-texture-use-trail-texture)
 
 #### useFont
 
-[docs](https://pmndrs.github.io/drei/loading/use-font)
+[Documentation has moved here](https://pmndrs.github.io/drei/loading/use-font)
 
 #### useSpriteLoader
 
-[docs](https://pmndrs.github.io/drei/loading/use-sprite-loader)
+[Documentation has moved here](https://pmndrs.github.io/drei/loading/use-sprite-loader)
 
 # Performance
 
 #### Instances
 
-[docs](https://pmndrs.github.io/drei/performance/instances)
+[Documentation has moved here](https://pmndrs.github.io/drei/performance/instances)
 
 #### Merged
 
-[docs](https://pmndrs.github.io/drei/performance/merged)
+[Documentation has moved here](https://pmndrs.github.io/drei/performance/merged)
 
 #### Points
 
-[docs](https://pmndrs.github.io/drei/performance/points)
+[Documentation has moved here](https://pmndrs.github.io/drei/performance/points)
 
 #### Segments
 
-[docs](https://pmndrs.github.io/drei/performance/segments)
+[Documentation has moved here](https://pmndrs.github.io/drei/performance/segments)
 
 #### Detailed
 
-[docs](https://pmndrs.github.io/drei/performance/detailed)
+[Documentation has moved here](https://pmndrs.github.io/drei/performance/detailed)
 
 #### Preload
 
-[docs](https://pmndrs.github.io/drei/performance/preload)
+[Documentation has moved here](https://pmndrs.github.io/drei/performance/preload)
 
 #### BakeShadows
 
-[docs](https://pmndrs.github.io/drei/performance/bake-shadows)
+[Documentation has moved here](https://pmndrs.github.io/drei/performance/bake-shadows)
 
 #### meshBounds
 
-[docs](https://pmndrs.github.io/drei/performance/mesh-bounds)
+[Documentation has moved here](https://pmndrs.github.io/drei/performance/mesh-bounds)
 
 #### AdaptiveDpr
 
-[docs](https://pmndrs.github.io/drei/performance/adaptive-dpr)
+[Documentation has moved here](https://pmndrs.github.io/drei/performance/adaptive-dpr)
 
 #### AdaptiveEvents
 
-[docs](https://pmndrs.github.io/drei/performance/adaptive-events)
+[Documentation has moved here](https://pmndrs.github.io/drei/performance/adaptive-events)
 
 #### Bvh
 
-[docs](https://pmndrs.github.io/drei/performance/bvh)
+[Documentation has moved here](https://pmndrs.github.io/drei/performance/bvh)
 
 #### PerformanceMonitor
 
-[docs](https://pmndrs.github.io/drei/performance/performance-monitor)
+[Documentation has moved here](https://pmndrs.github.io/drei/performance/performance-monitor)
 
 # Portals
 
 #### Hud
 
-[docs](https://pmndrs.github.io/drei/portals/hud)
+[Documentation has moved here](https://pmndrs.github.io/drei/portals/hud)
 
 #### View
 
-[docs](https://pmndrs.github.io/drei/portals/view)
+[Documentation has moved here](https://pmndrs.github.io/drei/portals/view)
 
 #### RenderTexture
 
-[docs](https://pmndrs.github.io/drei/portals/render-texture)
+[Documentation has moved here](https://pmndrs.github.io/drei/portals/render-texture)
 
 #### RenderCubeTexture
 
-[docs](https://pmndrs.github.io/drei/portals/render-cube-texture)
+[Documentation has moved here](https://pmndrs.github.io/drei/portals/render-cube-texture)
 
 #### Fisheye
 
-[docs](https://pmndrs.github.io/drei/portals/fisheye)
+[Documentation has moved here](https://pmndrs.github.io/drei/portals/fisheye)
 
 #### Mask
 
-[docs](https://pmndrs.github.io/drei/portals/mask)
+[Documentation has moved here](https://pmndrs.github.io/drei/portals/mask)
 
 #### MeshPortalMaterial
 
-[docs](https://pmndrs.github.io/drei/portals/mesh-portal-material)
+[Documentation has moved here](https://pmndrs.github.io/drei/portals/mesh-portal-material)
 
 # Staging
 
 #### Center
 
-[docs](https://pmndrs.github.io/drei/staging/center)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/center)
 
 #### Resize
 
-[docs](https://pmndrs.github.io/drei/staging/resize)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/resize)
 
 #### BBAnchor
 
-[docs](https://pmndrs.github.io/drei/staging/bb-anchor)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/bb-anchor)
 
 #### Bounds
 
-[docs](https://pmndrs.github.io/drei/staging/bounds)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/bounds)
 
 #### CameraShake
 
-[docs](https://pmndrs.github.io/drei/staging/camera-shake)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/camera-shake)
 
 #### Float
 
-[docs](https://pmndrs.github.io/drei/staging/float)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/float)
 
 #### Stage
 
-[docs](https://pmndrs.github.io/drei/staging/stage)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/stage)
 
 #### Backdrop
 
-[docs](https://pmndrs.github.io/drei/staging/backdrop)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/backdrop)
 
 #### Shadow
 
-[docs](https://pmndrs.github.io/drei/staging/shadow)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/shadow)
 
 #### Caustics
 
-[docs](https://pmndrs.github.io/drei/staging/caustics)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/caustics)
 
 #### ContactShadows
 
-[docs](https://pmndrs.github.io/drei/staging/contact-shadows)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/contact-shadows)
 
 #### RandomizedLight
 
-[docs](https://pmndrs.github.io/drei/staging/randomized-light)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/randomized-light)
 
 #### AccumulativeShadows
 
-[docs](https://pmndrs.github.io/drei/staging/acumulative-shadows)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/acumulative-shadows)
 
 #### SpotLight
 
-[docs](https://pmndrs.github.io/drei/staging/spot-light)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/spot-light)
 
 #### SpotLightShadow
 
-[docs](https://pmndrs.github.io/drei/staging/spot-light-shadow)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/spot-light-shadow)
 
 #### Environment
 
-[docs](https://pmndrs.github.io/drei/staging/environment)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/environment)
 
 #### Lightformer
 
-[docs](https://pmndrs.github.io/drei/staging/lightformer)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/lightformer)
 
 #### Sky
 
-[docs](https://pmndrs.github.io/drei/staging/sky)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/sky)
 
 #### Stars
 
-[docs](https://pmndrs.github.io/drei/staging/stars)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/stars)
 
 #### Sparkles
 
-[docs](https://pmndrs.github.io/drei/staging/sparkles)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/sparkles)
 
 #### Cloud
 
-[docs](https://pmndrs.github.io/drei/staging/cloud)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/cloud)
 
 #### useEnvironment
 
-[docs](https://pmndrs.github.io/drei/staging/use-environment)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/use-environment)
 
 #### MatcapTexture / useMatcapTexture
 
-[docs](https://pmndrs.github.io/drei/staging/matcap-texture-use-matcap-texture)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/matcap-texture-use-matcap-texture)
 
 #### NormalTexture / useNormalTexture
 
-[docs](https://pmndrs.github.io/drei/staging/normal-texture-use-normal-texture)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/normal-texture-use-normal-texture)
 
 #### ShadowAlpha
 
-[docs](https://pmndrs.github.io/drei/staging/shadow-alpha)
+[Documentation has moved here](https://pmndrs.github.io/drei/staging/shadow-alpha)
+
+</details>

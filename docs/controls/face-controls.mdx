@@ -39,8 +39,8 @@ type FaceControlsProps = {
   manualUpdate?: boolean
   /** Disable the rVFC face-detection, default: false */
   manualDetect?: boolean
-  /** Callback function to call on "EOF_MARKERrame" event, default: undefined */
-  EOF_MARKERrame?: (e: THREE.Event) => void
+  /** Callback function to call on "videoFrame" event, default: undefined */
+  onVideoFrame?: (e: THREE.Event) => void
   /** Reference this FaceControls instance as state's `controls` */
   makeDefault?: boolean
   /** Approximate time to reach the target. A smaller value will reach the target faster. */
@@ -86,29 +86,29 @@ type FaceControlsApi = THREE.EventDispatcher & {
 Two `THREE.Event`s are dispatched on FaceControls ref object:
 
 - `{ type: "stream", stream: MediaStream }` -- when webcam's [`.getUserMedia()`](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia) promise is resolved
-- `{ type: "EOF_MARKERrame", texture: THREE.VideoTexture, time: number }` -- each time a new video frame is sent to the compositor (thanks to rVFC)
+- `{ type: "videoFrame", texture: THREE.VideoTexture, time: number }` -- each time a new video frame is sent to the compositor (thanks to rVFC)
 
 > [!Note]
 > rVFC
 >
-> Internally, `FaceControls` uses [`EOF_MARKERrameCallback`](https://caniuse.com/mdn-EOF_MARKERramecallback), you may need [a polyfill](https://github.com/ThaUnknown/rvfc-polyfill) (for Firefox).
+> Internally, `FaceControls` uses [`requestVideoFrameCallback`](https://caniuse.com/mdn-api_htmlvideoelement_requestvideoframecallback), you may need [a polyfill](https://github.com/ThaUnknown/rvfc-polyfill) (for Firefox).
 
 ## FaceControls[manualDetect]
 
-By default, `detect` is called on each `"EOF_MARKERrame"`. You can disable this by `manualDetect` and call `detect` yourself.
+By default, `detect` is called on each `"videoFrame"`. You can disable this by `manualDetect` and call `detect` yourself.
 
 For example:
 
 ```jsx
 const controls = useThree((state) => state.controls)
 
-const EOF_MARKERrame = useCallback((event) => {
+const onVideoFrame = useCallback((event) => {
   controls.detect(event.texture.source.data, event.time)
 }, [controls])
 
 <FaceControls makeDefault
   manualDetect
-  EOF_MARKERrame={EOF_MARKERrame}
+  onVideoFrame={onVideoFrame}
 />
 ```
 

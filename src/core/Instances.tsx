@@ -54,7 +54,7 @@ const _instanceWorldMatrix = /* @__PURE__ */ new THREE.Matrix4()
 const _instanceIntersects: THREE.Intersection[] = []
 const _mesh = /* @__PURE__ */ new THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>()
 
-class PositionMesh extends THREE.Group {
+export class PositionMesh extends THREE.Group {
   color: THREE.Color
   instance: React.MutableRefObject<THREE.InstancedMesh | undefined>
   instanceKey: React.MutableRefObject<JSX.IntrinsicElements['positionMesh'] | undefined>
@@ -157,7 +157,7 @@ export const Instances: ForwardRefComponent<InstancesProps, THREE.InstancedMesh>
 
   const attributes = React.useRef<[string, THREE.InstancedBufferAttribute][]>([])
   React.useLayoutEffect(() => {
-    attributes.current = Object.entries(parentRef.current.geometry.attributes).filter(([name, value]) =>
+    attributes.current = Object.entries(parentRef.current.geometry.attributes).filter(([_name, value]) =>
       isInstancedBufferAttribute(value)
     ) as [string, THREE.InstancedBufferAttribute][]
   })
@@ -269,16 +269,16 @@ export const Merged: ForwardRefComponent<any, THREE.Group> = /* @__PURE__ */ Rea
 /*  Matias Gonzalez Fernandez https://x.com/matiNotFound
 /*  and Paul Henschel https://x.com/0xca0a
 */
-export function createInstances() {
+export function createInstances<T = InstanceProps>() {
   const context = React.createContext<Api>(null!)
   return [
     React.forwardRef<THREE.InstancedMesh, InstancesProps>((props, fref) => (
       <Instances ref={fref} context={context} {...props} />
     )),
-    React.forwardRef<PositionMesh, InstanceProps>((props, fref) => (
+    React.forwardRef<PositionMesh & T, T & InstanceProps>((props, fref) => (
       <Instance ref={fref} context={context} {...props} />
     )),
-  ]
+  ] as const
 }
 
 export const InstancedAttribute = React.forwardRef(

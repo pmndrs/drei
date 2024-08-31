@@ -102,3 +102,39 @@ void main() {
 ```
 
 👉 Note: While creating instances declaratively keeps all the power of components with reduced draw calls, it comes at the cost of CPU overhead. For cases like foliage where you want no CPU overhead with thousands of intances you should use THREE.InstancedMesh such as in this [example](https://codesandbox.io/s/grass-shader-5xho4?file=/src/Grass.js).
+
+### Typed Instances
+
+When you need to declare custom attributes for your instances, you can use the `createInstances` helper to type its attributes.
+
+```tsx
+
+interface SphereAttributes {
+  myCustomAttribute: number
+}
+
+const [SphereInstances, Sphere] = createInstances<SphereAttributes>()
+
+function App() {
+  return (
+    <>
+      <SphereInstances>
+        <InstancedAttribute name="myCustomAttribute" defaultValue={1} />
+        <sphereGeometry />
+        <shaderMaterial
+            // will recienve myCustomAttribute as an attribute
+            vertexShader={`
+              attribute float myCustomAttribute;
+              void main() {
+                ...
+              }
+            `}
+        />
+        <Sphere
+          position={[4, 5, 6]}
+          myCustomAttribute={1} // typed
+        />
+      </SphereInstances>
+    </>
+  )
+}

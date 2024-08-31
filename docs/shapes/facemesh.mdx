@@ -46,13 +46,13 @@ export type FacemeshProps = {
   /** a landmark index (to get the position from) or a vec3 to be the origin of the mesh. default: undefined (ie. the bbox center) */
   origin?: number | THREE.Vector3
   /** A facial transformation matrix, as returned by FaceLandmarkerResult.facialTransformationMatrixes (see: https://developers.google.com/mediapipe/solutions/vision/face_landmarker/web_js#handle_and_display_results) */
-  facialTransformationMatrix?: (EOF_MARKER FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.facialTransformationMatrixes)[0]
+  facialTransformationMatrix?: (typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.facialTransformationMatrixes)[0]
   /** Apply position offset extracted from `facialTransformationMatrix` */
   offset?: boolean
   /** Offset sensitivity factor, less is more sensible */
   offsetScalar?: number
   /** Fface blendshapes, as returned by FaceLandmarkerResult.faceBlendshapes (see: https://developers.google.com/mediapipe/solutions/vision/face_landmarker/web_js#handle_and_display_results) */
-  faceBlendshapes?: (EOF_MARKER FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.faceBlendshapes)[0]
+  faceBlendshapes?: (typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.faceBlendshapes)[0]
   /** whether to enable eyes (nb. `faceBlendshapes` is required for), default: true */
   eyes?: boolean
   /** Force `origin` to be the middle of the 2 eyes (nb. `eyes` is required for), default: false */

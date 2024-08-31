@@ -40,7 +40,7 @@ export type GridMaterialType = {
 
 export type GridProps = GridMaterialType & {
   /** Default plane-geometry arguments */
-  args?: ConstructorParameters<EOF_MARKER THREE.PlaneGeometry>
+  args?: ConstructorParameters<typeof THREE.PlaneGeometry>
 }
 ```
 

@@ -121,7 +121,7 @@ function App() {
       <SphereInstances>
         <InstancedAttribute name="myCustomAttribute" defaultValue={1} />
         <sphereGeometry />
-        <meshShaderMaterial
+        <shaderMaterial
             // will recienve myCustomAttribute as an attribute
             vertexShader={`
               attribute float myCustomAttribute;

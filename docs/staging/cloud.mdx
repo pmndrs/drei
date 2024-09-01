@@ -26,7 +26,7 @@ type CloudsProps = JSX.IntrinsicElements['group'] & {
   /** How many segments it renders, default: undefined (all) */
   range?: number
   /** Which material it will override, default: MeshLambertMaterial */
-  material?: EOF_MARKER Material
+  material?: typeof Material
   /** Frustum culling, default: true */
   frustumCulled?: boolean
 }

@@ -1,5 +1,6 @@
 ---
 title: Instances
+sourcecode: src/core/Instances.tsx
 ---
 
 <Grid cols={4}>
@@ -108,7 +109,6 @@ void main() {
 When you need to declare custom attributes for your instances, you can use the `createInstances` helper to type its attributes.
 
 ```tsx
-
 interface SphereAttributes {
   myCustomAttribute: number
 }
@@ -122,8 +122,8 @@ function App() {
         <InstancedAttribute name="myCustomAttribute" defaultValue={1} />
         <sphereGeometry />
         <shaderMaterial
-            // will recienve myCustomAttribute as an attribute
-            vertexShader={`
+          // will recienve myCustomAttribute as an attribute
+          vertexShader={`
               attribute float myCustomAttribute;
               void main() {
                 ...
@@ -138,3 +138,4 @@ function App() {
     </>
   )
 }
+```

@@ -1,5 +1,6 @@
 ---
 title: PerformanceMonitor
+sourcecode: src/core/PerformanceMonitor.tsx
 ---
 
 This component will collect the average fps (frames per second) over time. If after a couple of iterations the averages are below or above a threshold it will trigger onIncline and onDecline callbacks that allow you to respond. Typically you would reduce the quality of your scene, the resolution, effects, the amount of stuff to render, or, increase it if you have enough framerate to fill.

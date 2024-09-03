@@ -779,6 +779,24 @@ https://pmndrs.github.io/drei
 
 [Documentation has moved here](https://pmndrs.github.io/drei/staging/use-environment)
 
+In order to preload you do this:
+
+```jsx
+useEnvironment.preload({ preset: 'city' })
+useEnvironment.preload({ files: 'model.hdr' })
+useEnvironment.preload({ files: ['px', 'nx', 'py', 'ny', 'pz', 'nz'].map((n) => `${n}.png`) })
+```
+
+Keep in mind that preloading [gainmaps](https://github.com/MONOGRID/gainmap-js) is not possible, because their loader requires access to the renderer.
+
+You can also clear your environment map from the cache:
+
+```jsx
+useEnvironment.clear({ preset: 'city' })
+useEnvironment.clear({ files: 'model.hdr' })
+useEnvironment.clear({ files: ['px', 'nx', 'py', 'ny', 'pz', 'nz'].map((n) => `${n}.png`) })
+```
+
 #### MatcapTexture / useMatcapTexture
 
 [Documentation has moved here](https://pmndrs.github.io/drei/staging/matcap-texture-use-matcap-texture)

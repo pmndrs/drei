@@ -1,0 +1,28 @@
+---
+title: Helper / useHelper
+sourcecode: src/core/Helper.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/gizmos-helper)
+
+A hook for a quick way to add helpers to existing nodes in the scene. It handles removal of the helper on unmount and auto-updates it by default.
+
+```jsx
+const mesh = useRef()
+useHelper(mesh, BoxHelper, 'cyan')
+useHelper(condition && mesh, BoxHelper, 'red') // you can pass false instead of the object ref to hide the helper
+
+<mesh ref={mesh} ... />
+```
+
+or with `Helper`:
+
+```jsx
+<mesh>
+  <boxGeometry />
+  <meshBasicMaterial />
+
+  <Helper type={BoxHelper} args={['royalblue']} />
+  <Helper type={VertexNormalsHelper} args={[1, 0xff0000]} />
+</mesh>
+```

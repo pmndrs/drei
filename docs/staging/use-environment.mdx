@@ -1,0 +1,29 @@
+---
+title: useEnvironment
+sourcecode: src/core/useEnvironment.tsx
+---
+
+A convenience hook to load an environment map. The props are the same as on the `<Environment />` component.
+
+```tsx
+export type EnvironmentLoaderProps = {
+  files?: string | string[]
+  path?: string
+  preset?: PresetsType
+  extensions?: (loader: Loader) => void
+  encoding?: TextureEncoding
+```
+
+You can use it without properties, which will default to px, nx, py, ny, pz, nz as \*.png files inside your /public directory.
+
+```jsx
+const cubeTexture = useEnvironment()
+```
+
+Or you can specificy from where to load the files.
+
+```jsx
+const presetTexture = useEnvironment({ preset: 'city' })
+const rgbeTexture = useEnvironment({ files: 'model.hdr' })
+const cubeTexture = useEnvironment({ files: ['px', 'nx', 'py', 'ny', 'pz', 'nz'].map((n) => `${n}.png`) })
+```

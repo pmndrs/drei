@@ -1,0 +1,47 @@
+---
+title: Bvh
+sourcecode: src/core/Bvh.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/performance-bvh)
+
+An abstraction around [gkjohnson/three-mesh-bvh](https://github.com/gkjohnson/three-mesh-bvh) to speed up raycasting exponentially. Use this component to wrap your scene, a sub-graph, a model or single mesh, and it will automatically compute boundsTree and assign acceleratedRaycast. This component is side-effect free, once unmounted or disabled it will revert to the original raycast.
+
+```tsx
+export interface BVHOptions {
+  /** Split strategy, default: SAH (slowest to construct, fastest runtime, least memory) */
+  splitStrategy?: 'CENTER' | 'AVERAGE' | 'SAH'
+  /** Print out warnings encountered during tree construction, default: false */
+  verbose?: boolean
+  /** If true then the bounding box for the geometry is set once the BVH has been constructed, default: true */
+  setBoundingBox?: boolean
+  /** The maximum depth to allow the tree to build to, default: 40 */
+  maxDepth?: number
+  /** The number of triangles to aim for in a leaf node, default: 10 */
+  maxLeafTris?: number
+  /** If false then an index buffer is created if it does not exist and is rearranged */
+  /** to hold the bvh structure. If false then a separate buffer is created to store the */
+  /** structure and the index buffer (or lack thereof) is retained. This can be used */
+  /** when the existing index layout is important or groups are being used so a */
+  /** single BVH hierarchy can be created to improve performance. */
+  /** default: false */
+  /** Note: This setting is experimental */
+  indirect?: boolean
+}
+
+export type BvhProps = BVHOptions &
+  JSX.IntrinsicElements['group'] & {
+    /**Enabled, default: true */
+    enabled?: boolean
+    /** Use .raycastFirst to retrieve hits which is generally faster, default: false */
+    firstHitOnly?: boolean
+  }
+```
+
+```jsx
+<Canvas>
+  <Bvh firstHitOnly>
+    <Scene />
+  </Bvh>
+</Canvas>
+```

@@ -1,0 +1,35 @@
+---
+title: PresentationControls
+sourcecode: src/web/PresentationControls.tsx
+---
+
+![](https://img.shields.io/badge/-Dom only-red)
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="kheke" />
+  </li>
+  <li>
+    <Codesandbox id="qyz5r" />
+  </li>
+</Grid>
+
+Semi-OrbitControls with spring-physics, polar zoom and snap-back, for presentational purposes. These controls do not turn the camera but will spin their contents. They will not suddenly come to rest when they reach limits like OrbitControls do, but rather smoothly anticipate stopping position.
+
+```jsx
+<PresentationControls
+  enabled={true} // the controls can be disabled by setting this to false
+  global={false} // Spin globally or by dragging the model
+  cursor={true} // Whether to toggle cursor style on drag
+  snap={false} // Snap-back to center (can also be a spring config)
+  speed={1} // Speed factor
+  zoom={1} // Zoom factor when half the polar-max is reached
+  rotation={[0, 0, 0]} // Default rotation
+  polar={[0, Math.PI / 2]} // Vertical limits
+  azimuth={[-Infinity, Infinity]} // Horizontal limits
+  config={{ mass: 1, tension: 170, friction: 26 }} // Spring config
+  domElement={events.connected} // The DOM element events for this controller will attach to
+>
+  <mesh />
+</PresentationControls>
+```

@@ -1,5 +1,6 @@
 ---
 title: useEnvironment
+sourcecode: src/core/useEnvironment.tsx
 ---
 
 A convenience hook to load an environment map. The props are the same as on the `<Environment />` component.
@@ -25,4 +26,22 @@ Or you can specificy from where to load the files.
 const presetTexture = useEnvironment({ preset: 'city' })
 const rgbeTexture = useEnvironment({ files: 'model.hdr' })
 const cubeTexture = useEnvironment({ files: ['px', 'nx', 'py', 'ny', 'pz', 'nz'].map((n) => `${n}.png`) })
+```
+
+In order to preload you do this:
+
+```jsx
+useEnvironment.preload({ preset: 'city' })
+useEnvironment.preload({ files: 'model.hdr' })
+useEnvironment.preload({ files: ['px', 'nx', 'py', 'ny', 'pz', 'nz'].map((n) => `${n}.png`) })
+```
+
+Keep in mind that preloading [gainmaps](https://github.com/MONOGRID/gainmap-js) is not possible, because their loader requires access to the renderer.
+
+You can also clear your environment map from the cache:
+
+```jsx
+useEnvironment.clear({ preset: 'city' })
+useEnvironment.clear({ files: 'model.hdr' })
+useEnvironment.clear({ files: ['px', 'nx', 'py', 'ny', 'pz', 'nz'].map((n) => `${n}.png`) })
 ```

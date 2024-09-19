@@ -16,14 +16,13 @@ type Props = {
   type?: GradientType
   innerCircleRadius?: number
   outerCircleRadius?: string | number
-} & JSX.IntrinsicElements['texture']
+} & Omit<JSX.IntrinsicElements['texture'], 'type'>
 
 export function GradientTexture({
   stops,
   colors,
   size = 1024,
   width = 16,
-  //@ts-ignore - weird error about type never, although the type is clearly defined
   type = GradientType.Linear,
   innerCircleRadius = 0,
   outerCircleRadius = 'auto',

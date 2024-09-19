@@ -14,7 +14,11 @@ sourcecode: src/core/VideoTexture.tsx
   </li>
 </Grid>
 
-A convenience hook that returns a `THREE.VideoTexture` and integrates loading into suspense. By default it falls back until the `loadedmetadata` event. Then it starts playing the video, which, if the video is muted, is allowed in the browser without user interaction.
+<Intro>
+  A convenience hook that returns a `THREE.VideoTexture` and integrates loading into suspense.
+</Intro>
+
+By default it falls back until the `loadedmetadata` event. Then it starts playing the video, which, if the video is muted, is allowed in the browser without user interaction.
 
 ```tsx
 type VideoTextureProps = {
@@ -43,6 +47,8 @@ return (
     <meshBasicMaterial map={texture} toneMapped={false} />
 ```
 
+## `MediaStream`
+
 It also accepts a [`MediaStream`](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream) from eg. [`.getDisplayMedia()`](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia) or [`.getUserMedia()`](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia):
 
 ```jsx
@@ -65,14 +71,16 @@ function VideoMaterial({ src }) {
 
 NB: It's important to wrap `VideoMaterial` into `React.Suspense` since, `useVideoTexture(src)` here will be suspended until the user shares its screen.
 
+## HLS
+
 HLS - useVideoTexture supports .m3u8 HLS manifest via (https://github.com/video-dev/hls.js).
 
 You can fine-tune via the hls configuration:
 
-```
- const texture = useVideoTexture('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', {
-    hls: { abrEwmaFastLive: 1.0, abrEwmaSlowLive: 3.0, enableWorker: true }
-  })
+```jsx
+const texture = useVideoTexture('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', {
+  hls: { abrEwmaFastLive: 1.0, abrEwmaSlowLive: 3.0, enableWorker: true }
+})
 ```
 
-> Available options: https://github.com/video-dev/hls.js/blob/master/docs/API.md#fine-tuning
+Available options: https://github.com/video-dev/hls.js/blob/master/docs/API.md#fine-tuning

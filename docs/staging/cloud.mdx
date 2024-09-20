@@ -1,0 +1,73 @@
+---
+title: Cloud
+sourcecode: src/core/Cloud.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-cloud--cloud-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
+
+<Grid cols={4}>
+
+<li>
+  <Codesandbox id="gwthnh" />
+</li>
+<li>
+  <Codesandbox id="mbfzf" />
+</li>
+
+</Grid>
+
+Particle based cloud.
+
+```tsx
+type CloudsProps = JSX.IntrinsicElements['group'] & {
+  /** Optional cloud texture, points to a default hosted on rawcdn.githack */
+  texture?: string
+  /** Maximum number of segments, default: 200 (make this tight to save memory!) */
+  limit?: number
+  /** How many segments it renders, default: undefined (all) */
+  range?: number
+  /** Which material it will override, default: MeshLambertMaterial */
+  material?: typeof Material
+  /** Frustum culling, default: true */
+  frustumCulled?: boolean
+}
+
+type CloudProps = JSX.IntrinsicElements['group'] & {
+  /** A seeded random will show the same cloud consistently, default: Math.random() */
+  seed?: number
+  /** How many segments or particles the cloud will have, default: 20 */
+  segments?: number
+  /** The box3 bounds of the cloud, default: [5, 1, 1] */
+  bounds?: ReactThreeFiber.Vector3
+  /** How to arrange segment volume inside the bounds, default: inside (cloud are smaller at the edges) */
+  concentrate?: 'random' | 'inside' | 'outside'
+  /** The general scale of the segments */
+  scale?: ReactThreeFiber.Vector3
+  /** The volume/thickness of the segments, default: 6 */
+  volume?: number
+  /** The smallest volume when distributing clouds, default: 0.25 */
+  smallestVolume?: number
+  /** An optional function that allows you to distribute points and volumes (overriding all settings), default: null
+   *  Both point and volume are factors, point x/y/z can be between -1 and 1, volume between 0 and 1 */
+  distribute?: (cloud: CloudState, index: number) => { point: Vector3; volume?: number }
+  /** Growth factor for animated clouds (speed > 0), default: 4 */
+  growth?: number
+  /** Animation factor, default: 0 */
+  speed?: number
+  /** Camera distance until the segments will fade, default: 10 */
+  fade?: number
+  /** Opacity, default: 1 */
+  opacity?: number
+  /** Color, default: white */
+  color?: ReactThreeFiber.Color
+}
+```
+
+Use the `<Clouds>` provider to glob all clouds into a single, instanced draw call.
+
+```jsx
+<Clouds material={THREE.MeshBasicMaterial}>
+  <Cloud segments={40} bounds={[10, 2, 2]} volume={10} color="orange" />
+  <Cloud seed={1} scale={2} volume={5} color="hotpink" fade={100} />
+</Clouds>
+```

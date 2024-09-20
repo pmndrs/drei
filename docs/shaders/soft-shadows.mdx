@@ -1,0 +1,30 @@
+---
+title: SoftShadows
+sourcecode: src/core/softShadows.tsx
+---
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="ykfpwf" />
+  </li>
+  <li>
+    <Codesandbox id="dh2jc" />
+  </li>
+</Grid>
+
+```tsx
+type SoftShadowsProps = {
+  /** Size of the light source (the larger the softer the light), default: 25 */
+  size?: number
+  /** Number of samples (more samples less noise but more expensive), default: 10 */
+  samples?: number
+  /** Depth focus, use it to shift the focal point (where the shadow is the sharpest), default: 0 (the beginning) */
+  focus?: number
+}
+```
+
+Injects percent closer soft shadows (pcss) into threes shader chunk. Mounting and unmounting this component will lead to all shaders being be re-compiled, although it will only cause overhead if SoftShadows is mounted after the scene has already rendered, if it mounts with everything else in your scene shaders will compile naturally.
+
+```jsx
+<SoftShadows />
+```

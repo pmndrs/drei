@@ -1,0 +1,14 @@
+---
+title: MeshDiscardMaterial
+sourcecode: src/core/MeshDiscardMaterial.tsx
+---
+
+A material that renders nothing. In comparison to `<mesh visible={false}` it can be used to hide objects from the scene while still displays shadows and children.
+
+```jsx
+<mesh castShadow>
+  <torusKnotGeonetry />
+  <MeshDiscardMaterial />
+  {/* Shadows and edges will show, but the model itself won't */}
+  <Edges />
+```

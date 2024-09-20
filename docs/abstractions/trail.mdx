@@ -1,0 +1,35 @@
+---
+title: Trail
+sourcecode: src/core/Trail.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-trail--use-trail-st)
+
+A declarative, `three.MeshLine` based Trails implementation. You can attach it to any mesh and it will give it a beautiful trail.
+
+Props defined below with their default values.
+
+```jsx
+<Trail
+  width={0.2} // Width of the line
+  color={'hotpink'} // Color of the line
+  length={1} // Length of the line
+  decay={1} // How fast the line fades away
+  local={false} // Wether to use the target's world or local positions
+  stride={0} // Min distance between previous and current point
+  interval={1} // Number of frames to wait before next calculation
+  target={undefined} // Optional target. This object will produce the trail.
+  attenuation={(width) => width} // A function to define the width in each point along it.
+>
+  {/* If `target` is not defined, Trail will use the first `Object3D` child as the target. */}
+  <mesh>
+    <sphereGeometry />
+    <meshBasicMaterial />
+  </mesh>
+
+  {/* You can optionally define a custom meshLineMaterial to use. */}
+  {/* <meshLineMaterial color={"red"} /> */}
+</Trail>
+```
+
+👉 Inspired by [TheSpite's Codevember 2021 #9](https://spite.github.io/codevember-2021/9/)

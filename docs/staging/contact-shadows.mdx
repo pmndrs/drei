@@ -1,0 +1,24 @@
+---
+title: ContactShadows
+sourcecode: src/core/ContactShadows.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-contactshadows--contact-shadow-st)
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="qxjoj" />
+  </li>
+</Grid>
+
+A [contact shadow](https://threejs.org/examples/#webgl_shadow_contact) implementation, facing upwards (positive Y) by default. `scale` can be a positive number or a 2D array `[x: number, y: number]`.
+
+```jsx
+<ContactShadows opacity={1} scale={10} blur={1} far={10} resolution={256} color="#000000" />
+```
+
+Since this is a rather expensive effect you can limit the amount of frames it renders when your objects are static. For instance making it render only once:
+
+```jsx
+<ContactShadows frames={1} />
+```

@@ -1,0 +1,104 @@
+---
+title: ScrollControls
+sourcecode: src/web/ScrollControls.tsx
+---
+
+![](https://img.shields.io/badge/-Dom only-red)
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="l4klb" />
+  </li>
+  <li>
+    <Codesandbox id="4m0d0" />
+  </li>
+  <li>
+    <Codesandbox id="gsm1y" />
+  </li>
+  <li>
+    <Codesandbox id="x8gvs" />
+  </li>
+  <li>
+    <Codesandbox id="yjhzv" />
+  </li>
+  <li>
+    <Codesandbox id="4jr4p" />
+  </li>
+</Grid>
+
+```tsx
+type ScrollControlsProps = {
+  /** Precision, default 0.00001 */
+  eps?: number
+  /** Horizontal scroll, default false (vertical) */
+  horizontal?: boolean
+  /** Infinite scroll, default false (experimental!) */
+  infinite?: boolean
+  /** Defines the length of the scroll area, each page is height:100%, default 1 */
+  pages?: number
+  /** A factor that increases scroll bar travel, default 1 */
+  distance?: number
+  /** Friction in seconds, default: 0.2 (1/5 second) */
+  damping?: number
+  /** maxSpeed optionally allows you to clamp the maximum speed. If damping is 0.2s and looks OK
+   *  going between, say, page 1 and 2, but not for pages far apart as it'll move very rapid,
+   *  then a maxSpeed of e.g. 0.1 which will clamp the speed to 0.1 units per second, it may now
+   *  take much longer than damping to reach the target if it is far away. Default: Infinity */
+  maxSpeed?: number
+  /** If true attaches the scroll container before the canvas */
+  prepend?: boolean
+  enabled?: boolean
+  style?: React.CSSProperties
+  children: React.ReactNode
+}
+```
+
+Scroll controls create an HTML scroll container in front of the canvas. Everything you drop into the `<Scroll>` component will be affected.
+
+You can listen and react to scroll with the `useScroll` hook which gives you useful data like the current scroll `offset`, `delta` and functions for range finding: `range`, `curve` and `visible`. The latter functions are especially useful if you want to react to the scroll offset, for instance if you wanted to fade things in and out if they are in or out of view.
+
+```jsx
+;<ScrollControls pages={3} damping={0.1}>
+  {/* Canvas contents in here will *not* scroll, but receive useScroll! */}
+  <SomeModel />
+  <Scroll>
+    {/* Canvas contents in here will scroll along */}
+    <Foo position={[0, 0, 0]} />
+    <Foo position={[0, viewport.height, 0]} />
+    <Foo position={[0, viewport.height * 1, 0]} />
+  </Scroll>
+  <Scroll html>
+    {/* DOM contents in here will scroll along */}
+    <h1>html in here (optional)</h1>
+    <h1 style={{ top: '100vh' }}>second page</h1>
+    <h1 style={{ top: '200vh' }}>third page</h1>
+  </Scroll>
+</ScrollControls>
+
+function Foo(props) {
+  const ref = useRef()
+  const data = useScroll()
+  useFrame(() => {
+    // data.offset = current scroll position, between 0 and 1, dampened
+    // data.delta = current delta, between 0 and 1, dampened
+
+    // Will be 0 when the scrollbar is at the starting position,
+    // then increase to 1 until 1 / 3 of the scroll distance is reached
+    const a = data.range(0, 1 / 3)
+    // Will start increasing when 1 / 3 of the scroll distance is reached,
+    // and reach 1 when it reaches 2 / 3rds.
+    const b = data.range(1 / 3, 1 / 3)
+    // Same as above but with a margin of 0.1 on both ends
+    const c = data.range(1 / 3, 1 / 3, 0.1)
+    // Will move between 0-1-0 for the selected range
+    const d = data.curve(1 / 3, 1 / 3)
+    // Same as above, but with a margin of 0.1 on both ends
+    const e = data.curve(1 / 3, 1 / 3, 0.1)
+    // Returns true if the offset is in range and false if it isn't
+    const f = data.visible(2 / 3, 1 / 3)
+    // The visible function can also receive a margin
+    const g = data.visible(2 / 3, 1 / 3, 0.1)
+  })
+  return <mesh ref={ref} {...props} />
+}
+```

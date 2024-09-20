@@ -1,0 +1,23 @@
+---
+title: Texture / useTexture
+sourcecode: src/core/Texture.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-texture)
+
+A convenience hook that uses `useLoader` and `TextureLoader`
+
+```jsx
+const texture = useTexture(url)
+const [texture1, texture2] = useTexture([texture1, texture2])
+```
+
+You can also use key: url objects:
+
+```jsx
+const props = useTexture({
+  metalnessMap: url1,
+  map: url2,
+})
+return <meshStandardMaterial {...props} />
+```

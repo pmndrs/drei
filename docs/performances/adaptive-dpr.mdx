@@ -1,0 +1,10 @@
+---
+title: AdaptiveDpr
+sourcecode: src/core/AdaptiveDpr.tsx
+---
+
+Drop this component into your scene and it will cut the pixel-ratio on regress according to the canvas's performance min/max settings. This allows you to temporarily reduce visual quality in exchange for more performance, for instance when the camera moves (look into drei's controls regress flag). Optionally, you can set the canvas to a pixelated filter, which would be even faster.
+
+```jsx
+<AdaptiveDpr pixelated />
+```

@@ -1,0 +1,21 @@
+---
+title: MeshDistortMaterial
+sourcecode: src/core/MeshDistortMaterial.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shaders-meshdistortmaterial--mesh-distort-material-st)
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="l03yb" />
+  </li>
+</Grid>
+
+This material makes your geometry distort following simplex noise.
+
+```jsx
+<mesh>
+  <boxGeometry />
+  <MeshDistortMaterial distort={1} speed={10} />
+</mesh>
+```

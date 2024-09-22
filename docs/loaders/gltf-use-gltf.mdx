@@ -36,3 +36,27 @@ If you want to use your own draco decoder globally, you can pass it through `use
 > ```
 >
 > It is recommended that you check your browser's network tab to confirm that the correct URLs are being used, and that the files do get loaded from the prefetch cache on subsequent requests.
+
+If for example your model [`facecap.glb`](https://github.com/mrdoob/three.js/blob/master/examples/models/gltf/facecap.glb) needs KTX2 textures, you can `extendLoader`:
+
+```tsx
+import { KTX2Loader } from "three-stdlib"
+const ktx2Loader = new KTX2Loader()
+ktx2Loader.setTranscoderPath("https://unpkg.com/three@0.168.0/examples/jsm/libs/basis/")
+
+// ...
+
+const { gl } = useThree()
+useGLTF("facecap.glb", true, true, (loader) => {
+  loader.setKTX2Loader(ktx2Loader.detectSupport(gl))
+})
+```
+
+## `Gltf`
+
+A `Gltf` component is also provided:
+
+```tsx
+<Gltf src={url} />
+<Gltf src={url} useDraco='/draco-gltf' />
+```

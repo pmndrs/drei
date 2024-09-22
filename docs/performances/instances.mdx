@@ -1,0 +1,141 @@
+---
+title: Instances
+sourcecode: src/core/Instances.tsx
+---
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="h8o2d" />
+  </li>
+  <li>
+    <Codesandbox id="i6t0j" />
+  </li>
+</Grid>
+
+A wrapper around [THREE.InstancedMesh](https://threejs.org/docs/#api/en/objects/InstancedMesh). This allows you to define hundreds of thousands of objects in a single draw call, but declaratively!
+
+```jsx
+<Instances
+  limit={1000} // Optional: max amount of items (for calculating buffer size)
+  range={1000} // Optional: draw-range
+>
+  <boxGeometry />
+  <meshStandardMaterial />
+  <Instance
+    color="red"
+    scale={2}
+    position={[1, 2, 3]}
+    rotation={[Math.PI / 3, 0, 0]}
+    onClick={onClick} ... />
+  // As many as you want, make them conditional, mount/unmount them, lazy load them, etc ...
+</Instances>
+```
+
+You can nest Instances and use relative coordinates!
+
+```jsx
+<group position={[1, 2, 3]} rotation={[Math.PI / 2, 0, 0]}>
+  <Instance />
+</group>
+```
+
+Instances can also receive non-instanced objects, for instance annotations!
+
+```jsx
+<Instance>
+  <Html>hello from the dom</Html>
+</Instance>
+```
+
+You can define events on them!
+
+```jsx
+<Instance onClick={...} onPointerOver={...} />
+```
+
+If you need nested, multiple instances in the same parent graph, it would normally not work because an `<Instance>` is directly paired to its nearest `<Instances>` provider. You can use the global `createInstances` helper for such cases, it creates dedicated instances-instance pairs. The first return value is the provider, the second the instance component. Both take the same properties as `<Instances>` and `<Instance>`.
+
+```jsx
+const [CubeInstances, Cube] = createInstances()
+const [SphereInstances, Sphere] = createInstances()
+
+function App() {
+  return (
+    <>
+      <CubeInstances>
+        <boxGeometry />
+        <meshStandardMaterial />
+        <SphereInstances>
+          <sphereGeometry />
+          <meshLambertMaterial />
+          <Cube position={[1, 2, 3]} />
+          <Sphere position={[4, 5, 6]} />
+        </SphereInstances>
+      </CubeInstances>
+    </>
+  )
+}
+```
+
+If your custom materials need instanced attributes you can create them using the `InstancedAttribute` component. It will automatically create the buffer and update it when the component changes. The `defaultValue` can have any stride, from single floats to arrays.
+
+```jsx
+<Instances ref={ref} limit={20}>
+  <boxGeometry />
+  <someSpecialMaterial />
+  <InstancedAttribute name="foo" defaultValue={1} />
+  <Instance position={[-1.2, 0, 0]} foo={10} />
+</Instances>
+```
+
+```glsl
+# vertex
+attribute float foo;
+varying float vFoo;
+void main() {
+  ...
+  vFoo = foo;
+
+# fragment
+varying float vFoo;
+void main() {
+  ...
+```
+
+👉 Note: While creating instances declaratively keeps all the power of components with reduced draw calls, it comes at the cost of CPU overhead. For cases like foliage where you want no CPU overhead with thousands of intances you should use THREE.InstancedMesh such as in this [example](https://codesandbox.io/s/grass-shader-5xho4?file=/src/Grass.js).
+
+### Typed Instances
+
+When you need to declare custom attributes for your instances, you can use the `createInstances` helper to type its attributes.
+
+```tsx
+interface SphereAttributes {
+  myCustomAttribute: number
+}
+
+const [SphereInstances, Sphere] = createInstances<SphereAttributes>()
+
+function App() {
+  return (
+    <>
+      <SphereInstances>
+        <InstancedAttribute name="myCustomAttribute" defaultValue={1} />
+        <sphereGeometry />
+        <shaderMaterial
+          // will recienve myCustomAttribute as an attribute
+          vertexShader={`
+              attribute float myCustomAttribute;
+              void main() {
+                ...
+              }
+            `}
+        />
+        <Sphere
+          position={[4, 5, 6]}
+          myCustomAttribute={1} // typed
+        />
+      </SphereInstances>
+    </>
+  )
+}
+```

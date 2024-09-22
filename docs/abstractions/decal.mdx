@@ -1,0 +1,53 @@
+---
+title: Decal
+sourcecode: src/core/Decal.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/misc-decal--decal-st)
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="ymb5d9" />
+  </li>
+</Grid>
+
+Abstraction around Three's `DecalGeometry`. It will use the its parent `mesh` as the decal surface by default.
+
+The decal box has to intersect the surface, otherwise it will not be visible. if you do not specifiy a rotation it will look at the parents center point. You can also pass a single number as the rotation which allows you to spin it.
+
+```js
+<mesh>
+  <sphereGeometry />
+  <meshBasicMaterial />
+  <Decal
+    debug // Makes "bounding box" of the decal visible
+    position={[0, 0, 0]} // Position of the decal
+    rotation={[0, 0, 0]} // Rotation of the decal (can be a vector or a degree in radians)
+    scale={1} // Scale of the decal
+  >
+    <meshBasicMaterial
+      map={texture}
+      polygonOffset
+      polygonOffsetFactor={-1} // The material should take precedence over the original
+    />
+  </Decal>
+</mesh>
+```
+
+If you do not specify a material it will create a transparent meshBasicMaterial with a polygonOffsetFactor of -10.
+
+```jsx
+<mesh>
+  <sphereGeometry />
+  <meshBasicMaterial />
+  <Decal map={texture} />
+</mesh>
+```
+
+If declarative composition is not possible, use the `mesh` prop to define the surface the decal must attach to.
+
+```js
+<Decal mesh={ref}>
+  <meshBasicMaterial map={texture} polygonOffset polygonOffsetFactor={-1} />
+</Decal>
+```

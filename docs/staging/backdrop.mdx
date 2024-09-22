@@ -1,0 +1,21 @@
+---
+title: Backdrop
+sourcecode: src/core/Backdrop.tsx
+---
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="8yfnd" />
+  </li>
+</Grid>
+
+A curved plane, like a studio backdrop. This is for presentational purposes, to break up light and shadows more interestingly.
+
+```jsx
+<Backdrop
+  floor={0.25} // Stretches the floor segment, 0.25 by default
+  segments={20} // Mesh-resolution, 20 by default
+>
+  <meshStandardMaterial color="#353540" />
+</Backdrop>
+```

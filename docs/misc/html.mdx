@@ -1,0 +1,120 @@
+---
+title: Html
+sourceocde: src/web/Html.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-html--html-st) ![](https://img.shields.io/badge/-Dom only-red)
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="0n9it" />
+  </li>
+  <li>
+    <Codesandbox id="qyz5r" />
+  </li>
+  <li>
+    <Codesandbox id="9keg6" />
+  </li>
+  <li>
+    <Codesandbox id="6oei7" />
+  </li>
+  <li>
+    <Codesandbox id="wp9mkp" />
+  </li>
+</Grid>
+
+Allows you to tie HTML content to any object of your scene. It will be projected to the objects whereabouts automatically.
+
+```jsx
+<Html
+  as='div' // Wrapping element (default: 'div')
+  wrapperClass // The className of the wrapping element (default: undefined)
+  prepend // Project content behind the canvas (default: false)
+  center // Adds a -50%/-50% css transform (default: false) [ignored in transform mode]
+  fullscreen // Aligns to the upper-left corner, fills the screen (default:false) [ignored in transform mode]
+  distanceFactor={10} // If set (default: undefined), children will be scaled by this factor, and also by distance to a PerspectiveCamera / zoom by a OrthographicCamera.
+  zIndexRange={[100, 0]} // Z-order range (default=[16777271, 0])
+  portal={domnodeRef} // Reference to target container (default=undefined)
+  transform // If true, applies matrix3d transformations (default=false)
+  sprite // Renders as sprite, but only in transform mode (default=false)
+  calculatePosition={(el: Object3D, camera: Camera, size: { width: number; height: number }) => number[]} // Override default positioning function. (default=undefined) [ignored in transform mode]
+  occlude={[ref]} // Can be true or a Ref<Object3D>[], true occludes the entire scene (default: undefined)
+  onOcclude={(hidden) => null} // Callback when the visibility changes (default: undefined)
+  {...groupProps} // All THREE.Group props are valid
+  {...divProps} // All HTMLDivElement props are valid
+>
+  <h1>hello</h1>
+  <Grid cols={4}>world</Grid>
+</Html>
+```
+
+Html can hide behind geometry using the `occlude` prop.
+
+```jsx
+<Html occlude />
+```
+
+When the Html object hides it sets the opacity prop on the innermost div. If you want to animate or control the transition yourself then you can use `onOcclude`.
+
+```jsx
+const [hidden, set] = useState()
+
+<Html
+  occlude
+  onOcclude={set}
+  style={{
+    transition: 'all 0.5s',
+    opacity: hidden ? 0 : 1,
+    transform: `scale(${hidden ? 0.5 : 1})`
+  }}
+/>
+```
+
+**Blending occlusion**
+
+Html can hide behind geometry as if it was part of the 3D scene using this mode. It can be enabled by using `"blending"` as the `occlude` prop.
+
+```jsx
+// Enable real occlusion
+<Html occlude="blending" />
+```
+
+You can also give HTML material properties using the `material` prop.
+
+```jsx
+<Html
+  occlude
+  material={
+    <meshPhysicalMaterial
+      side={DoubleSide} // Required
+      opacity={0.1} // Degree of influence of lighting on the HTML
+      ... // Any other material properties
+    />
+  }
+/>
+```
+
+Enable shadows using the `castShadow` and `recieveShadow` prop.
+
+> Note: Shadows only work with a custom material. Shadows will not work with `meshBasicMaterial` and `shaderMaterial` by default.
+
+```jsx
+<Html
+  occlude
+  castShadow // Make HTML cast a shadow
+  receiveShadow // Make HTML receive shadows
+  material={<meshPhysicalMaterial side={DoubleSide} opacity={0.1} />}
+/>
+```
+
+> Note: Html 'blending' mode only correctly occludes rectangular HTML elements by default. Use the `geometry` prop to swap the backing geometry to a custom one if your Html has a different shape.
+
+If transform mode is enabled, the dimensions of the rendered html will depend on the position relative to the camera, the camera fov and the distanceFactor. For example, an Html component placed at (0,0,0) and with a distanceFactor of 10, rendered inside a scene with a perspective camera positioned at (0,0,2.45) and a FOV of 75, will have the same dimensions as a "plain" html element like in [this example](https://codesandbox.io/s/drei-html-magic-number-6mzt6m).
+
+A caveat of transform mode is that on some devices and browsers, the rendered html may appear blurry, as discussed in [#859](https://github.com/pmndrs/drei/issues/859). The issue can be at least mitigated by scaling down the Html parent and scaling up the html children:
+
+```jsx
+<Html transform scale={0.5}>
+  <div style={{ transform: 'scale(2)' }}>Some text</div>
+</Html>
+```

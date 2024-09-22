@@ -1,0 +1,28 @@
+---
+title: Text
+sourcecode: src/core/Text.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-text--text-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="yup2o" />
+  </li>
+</Grid>
+
+Hi-quality text rendering w/ signed distance fields (SDF) and antialiasing, using [troika-3d-text](https://github.com/protectwise/troika/tree/master/packages/troika-3d-text). All of troikas props are valid! Text is suspense-based!
+
+```jsx
+<Text color="black" anchorX="center" anchorY="middle">
+  hello world!
+</Text>
+```
+
+Text will suspend while loading the font data, but in order to completely avoid FOUC you can pass the characters it needs to render.
+
+```jsx
+<Text font={fontUrl} characters="abcdefghijklmnopqrstuvwxyz0123456789!">
+  hello world!
+</Text>
+```

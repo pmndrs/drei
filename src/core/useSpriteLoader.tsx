@@ -203,7 +203,7 @@ export function useSpriteLoader<Url extends string>(
   const getRowsAndColumns = (texture: THREE.Texture, totalFrames: number) => {
     if (texture.image) {
       const canvas = document.createElement('canvas')
-      const ctx = canvas.getContext('2d',{ willReadFrequently: true })!
+      const ctx = canvas.getContext('2d', { willReadFrequently: true })!
 
       canvas.width = texture.image.width
       canvas.height = texture.image.height

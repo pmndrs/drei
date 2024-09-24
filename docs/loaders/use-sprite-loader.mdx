@@ -21,7 +21,9 @@ animationNames?: string[] | null,
 /** The number of frames on a standalone (no JSON data) spritesheet (optional)*/
 numberOfFrames?: number | null,
 /** The callback to call when all textures and data have been loaded and parsed */
-onLoad?: (texture: Texture, textureData?: any) => void
+onLoad?: (texture: Texture, textureData?: any) => void,
+/** Allows the configuration of the canvas options */
+canvasRenderingContext2DSettings?: CanvasRenderingContext2DSettings
 ```
 
 ```jsx

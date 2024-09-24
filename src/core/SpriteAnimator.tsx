@@ -31,6 +31,7 @@ export type SpriteAnimatorProps = {
   maxItems?: number
   instanceItems?: any[]
   spriteDataset?: any
+  canvasRenderingContext2DSettings?: CanvasRenderingContext2DSettings
 } & JSX.IntrinsicElements['group']
 
 type SpriteAnimatorState = {
@@ -79,6 +80,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
       maxItems,
       instanceItems,
       spriteDataset,
+      canvasRenderingContext2DSettings,
       ...props
     },
     fref
@@ -100,7 +102,14 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
     const pos = React.useRef(offset)
     const softEnd = React.useRef(false)
     const frameBuffer = React.useRef<any[]>([])
-    const { spriteObj, loadJsonAndTexture } = useSpriteLoader(null, null, animationNames, numberOfFrames)
+    const { spriteObj, loadJsonAndTexture } = useSpriteLoader(
+      null,
+      null,
+      animationNames,
+      numberOfFrames,
+      undefined,
+      canvasRenderingContext2DSettings
+    )
     //
 
     function reset() {}

@@ -44,10 +44,10 @@ type SpriteAnimatorState = {
 
 type Scale = number | [number, number, number] | Vector3
 
-const context = React.createContext<SpriteAnimatorState>(null!)
+const context = React.createContext<SpriteAnimatorState | null>(null)
 
 export function useSpriteAnimator() {
-  return React.useContext(context) as SpriteAnimatorState
+  return React.useContext(context)
 }
 
 export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ React.forwardRef(

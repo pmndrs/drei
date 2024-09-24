@@ -55,7 +55,8 @@ export function useSpriteLoader<Url extends string>(
   json?: string | null,
   animationNames?: string[] | null,
   numberOfFrames?: number | null,
-  onLoad?: (texture: Texture, textureData?: any) => void
+  onLoad?: (texture: Texture, textureData?: any) => void,
+  canvasRenderingContext2DSettings?: CanvasRenderingContext2DSettings
 ): any {
   const v = useThree((state) => state.viewport)
   const spriteDataRef = React.useRef<any>(null)
@@ -210,7 +211,7 @@ export function useSpriteLoader<Url extends string>(
   const getRowsAndColumns = (texture: THREE.Texture, totalFrames: number) => {
     if (texture.image) {
       const canvas = document.createElement('canvas')
-      const ctx = canvas.getContext('2d')
+      const ctx = canvas.getContext('2d', canvasRenderingContext2DSettings)
 
       if (!ctx) {
         throw new Error('Failed to get 2d context')

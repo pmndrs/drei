@@ -90,13 +90,20 @@ export function useSpriteLoader<Url extends string>(
   }
 
   function loadStandaloneSprite(textureUrl?: string) {
-    if (textureUrl || input) {
-      new Promise<THREE.Texture>((resolve) => {
-        textureLoader.load(textureUrl ?? input!, resolve)
-      }).then((texture) => {
-        parseSpriteData(null, texture)
-      })
+    if (!textureUrl && !input) {
+      throw new Error('Either textureUrl or input must be provided')
     }
+
+    const validUrl = textureUrl ?? input
+    if (!validUrl) {
+      throw new Error('A valid texture URL must be provided')
+    }
+
+    new Promise<THREE.Texture>((resolve) => {
+      textureLoader.load(validUrl, resolve)
+    }).then((texture) => {
+      parseSpriteData(null, texture)
+    })
   }
 
   /**
@@ -203,7 +210,11 @@ export function useSpriteLoader<Url extends string>(
   const getRowsAndColumns = (texture: THREE.Texture, totalFrames: number) => {
     if (texture.image) {
       const canvas = document.createElement('canvas')
-      const ctx = canvas.getContext('2d')!
+      const ctx = canvas.getContext('2d')
+
+      if (!ctx) {
+        throw new Error('Failed to get 2d context')
+      }
 
       canvas.width = texture.image.width
       canvas.height = texture.image.height

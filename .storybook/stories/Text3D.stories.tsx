@@ -42,3 +42,13 @@ export const Text3DSt = {
   render: (args) => <Text3DScene {...args} />,
   name: 'Default',
 } satisfies Story
+
+export const Text3DTtfSt = {
+  args: {
+    font: '/fonts/Placeholder.ttf',
+    bevelEnabled: true,
+    bevelSize: 0.05,
+  },
+  render: (args) => <Text3DScene {...args} />,
+  name: 'TTF',
+} satisfies Story

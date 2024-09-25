@@ -133,8 +133,9 @@ function BasicPointsInstancesScene(props: React.ComponentProps<typeof Points>) {
   return (
     <>
       <Points {...props}>
-        {points.map((p) => (
+        {points.map((p, i) => (
           <PointEvent
+            key={i}
             position={p as [number, number, number]}
             color={p as [number, number, number]}
             size={Math.random() * 0.5 + 0.1}

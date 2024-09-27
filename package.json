@@ -61,7 +61,7 @@
     "stats-gl": "^2.0.0",
     "stats.js": "^0.17.0",
     "suspend-react": "^0.1.3",
-    "three-mesh-bvh": "^0.7.8",
+    "three-mesh-bvh": "^0.8.0",
     "three-stdlib": "^2.29.9",
     "troika-three-text": "^0.49.0",
     "tunnel-rat": "^0.1.2",

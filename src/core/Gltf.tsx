@@ -1,67 +1,60 @@
 import * as React from 'react'
-
+import { GLTFLoader, DRACOLoader, MeshoptDecoder, GLTF } from 'three-stdlib'
+import { ObjectMap, useLoader } from '@react-three/fiber'
 import { Clone } from './Clone'
-import { type Loader } from 'three'
-import { type GLTF, GLTFLoader, DRACOLoader, MeshoptDecoder } from 'three-stdlib'
-import { type ObjectMap, useLoader } from '@react-three/fiber'
 
 let dracoLoader: DRACOLoader | null = null
-
 let decoderPath: string = 'https://www.gstatic.com/draco/versioned/decoders/1.5.5/'
 
-function extensions(useDraco: boolean | string, useMeshopt: boolean, extendLoader?: (loader: GLTFLoader) => void) {
-  return (loader: Loader) => {
+type Path = string | string[]
+type UseDraco = boolean | string
+type UseMeshOpt = boolean
+type ExtendLoader = (loader: GLTFLoader) => void
+
+function extensions(useDraco: UseDraco = true, useMeshopt: UseMeshOpt = true, extendLoader?: ExtendLoader) {
+  return (loader: GLTFLoader) => {
     if (extendLoader) {
-      extendLoader(loader as GLTFLoader)
+      extendLoader(loader)
     }
     if (useDraco) {
       if (!dracoLoader) {
         dracoLoader = new DRACOLoader()
       }
       dracoLoader.setDecoderPath(typeof useDraco === 'string' ? useDraco : decoderPath)
-      ;(loader as GLTFLoader).setDRACOLoader(dracoLoader)
+      loader.setDRACOLoader(dracoLoader)
     }
     if (useMeshopt) {
-      ;(loader as GLTFLoader).setMeshoptDecoder(
-        typeof MeshoptDecoder === 'function' ? MeshoptDecoder() : MeshoptDecoder
-      )
+      loader.setMeshoptDecoder(typeof MeshoptDecoder === 'function' ? MeshoptDecoder() : MeshoptDecoder)
     }
   }
 }
 
-export function useGLTF<T extends string | string[]>(
+export const useGLTF = <T extends Path>(
   path: T,
-  useDraco: boolean | string = true,
-  useMeshOpt: boolean = true,
-  extendLoader?: (loader: GLTFLoader) => void
-): T extends any[] ? (GLTF & ObjectMap)[] : GLTF & ObjectMap {
-  return useLoader(GLTFLoader, path, extensions(useDraco, useMeshOpt, extendLoader))
-}
+  useDraco?: UseDraco,
+  useMeshOpt?: UseMeshOpt,
+  extendLoader?: ExtendLoader
+): T extends any[] ? (GLTF & ObjectMap)[] : GLTF & ObjectMap =>
+  useLoader(GLTFLoader, path, extensions(useDraco, useMeshOpt, extendLoader))
 
-useGLTF.preload = (
-  path: string | string[],
-  useDraco: boolean | string = true,
-  useMeshOpt: boolean = true,
-  extendLoader?: (loader: GLTFLoader) => void
-) => useLoader.preload(GLTFLoader, path, extensions(useDraco, useMeshOpt, extendLoader))
+useGLTF.preload = (path: Path, useDraco: UseDraco, useMeshOpt: UseMeshOpt, extendLoader?: ExtendLoader) =>
+  useLoader.preload(GLTFLoader, path, extensions(useDraco, useMeshOpt, extendLoader))
 
-useGLTF.clear = (input: string | string[]) => useLoader.clear(GLTFLoader, input)
+useGLTF.clear = (path: Path) => useLoader.clear(GLTFLoader, path)
 useGLTF.setDecoderPath = (path: string) => {
   decoderPath = path
 }
 
 //
 
-type UseGLTF = Parameters<typeof useGLTF>
 type CloneProps = React.ComponentProps<typeof Clone>
-
 type GltfRef = React.ElementRef<typeof Clone>
 
 type GltfProps = Omit<CloneProps, 'object'> & {
   src: string // simple string, not a string[] as useGLTF supports (otherwise we should render multiple <Clone>s?)
-  useDraco?: UseGLTF[1]
-  useMeshOpt?: UseGLTF[2]
-  extendLoader?: UseGLTF[3]
+  useDraco?: UseDraco
+  useMeshOpt?: UseMeshOpt
+  extendLoader?: ExtendLoader
 }
 export const Gltf = /* @__PURE__ */ React.forwardRef<GltfRef, GltfProps>(
   ({ src, useDraco, useMeshOpt, extendLoader, ...props }, ref) => {

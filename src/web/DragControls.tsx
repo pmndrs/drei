@@ -34,9 +34,11 @@ export type DragControlsProps = {
     deltaLocalMatrix: THREE.Matrix4,
     worldMatrix: THREE.Matrix4,
     deltaWorldMatrix: THREE.Matrix4
-  ) => void /** Drag end event */
+  ) => void
+  /** Drag end event */
   onDragEnd?: () => void
   children: React.ReactNode
+  /** Drag config for useGesture hook */
   dragConfig?: DragConfig
 }
 

@@ -8,10 +8,10 @@ let decoderPath: string = 'https://www.gstatic.com/draco/versioned/decoders/1.5.
 
 type Path = string | string[]
 type UseDraco = boolean | string
-type UseMeshOpt = boolean
+type UseMeshopt = boolean
 type ExtendLoader = (loader: GLTFLoader) => void
 
-function extensions(useDraco: UseDraco = true, useMeshopt: UseMeshOpt = true, extendLoader?: ExtendLoader) {
+function extensions(useDraco: UseDraco = true, useMeshopt: UseMeshopt = true, extendLoader?: ExtendLoader) {
   return (loader: GLTFLoader) => {
     if (extendLoader) {
       extendLoader(loader)
@@ -32,13 +32,13 @@ function extensions(useDraco: UseDraco = true, useMeshopt: UseMeshOpt = true, ex
 export const useGLTF = <T extends Path>(
   path: T,
   useDraco?: UseDraco,
-  useMeshOpt?: UseMeshOpt,
+  useMeshopt?: UseMeshopt,
   extendLoader?: ExtendLoader
 ): T extends any[] ? (GLTF & ObjectMap)[] : GLTF & ObjectMap =>
-  useLoader(GLTFLoader, path, extensions(useDraco, useMeshOpt, extendLoader))
+  useLoader(GLTFLoader, path, extensions(useDraco, useMeshopt, extendLoader))
 
-useGLTF.preload = (path: Path, useDraco: UseDraco, useMeshOpt: UseMeshOpt, extendLoader?: ExtendLoader) =>
-  useLoader.preload(GLTFLoader, path, extensions(useDraco, useMeshOpt, extendLoader))
+useGLTF.preload = (path: Path, useDraco: UseDraco, useMeshopt: UseMeshopt, extendLoader?: ExtendLoader) =>
+  useLoader.preload(GLTFLoader, path, extensions(useDraco, useMeshopt, extendLoader))
 
 useGLTF.clear = (path: Path) => useLoader.clear(GLTFLoader, path)
 useGLTF.setDecoderPath = (path: string) => {
@@ -53,7 +53,7 @@ type GltfRef = React.ElementRef<typeof Clone>
 type GltfProps = Omit<CloneProps, 'object'> & {
   src: string // simple string, not a string[] as useGLTF supports (otherwise we should render multiple <Clone>s?)
   useDraco?: UseDraco
-  useMeshOpt?: UseMeshOpt
+  useMeshOpt?: UseMeshopt
   extendLoader?: ExtendLoader
 }
 export const Gltf = /* @__PURE__ */ React.forwardRef<GltfRef, GltfProps>(

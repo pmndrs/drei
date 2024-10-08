@@ -7,6 +7,10 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { HorizontalBlurShader, VerticalBlurShader } from 'three-stdlib'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
+function isMesh(obj: THREE.Object3D): obj is THREE.Mesh {
+  return (obj as THREE.Mesh).isMesh
+}
+
 export type ContactShadowsProps = {
   opacity?: number
   width?: number
@@ -75,7 +79,7 @@ export const ContactShadows: ForwardRefComponent<
           ucolor: { value: new THREE.Color(color) },
         }
         shader.fragmentShader = shader.fragmentShader.replace(
-          `void main() {`, //
+          `void main() {`,
           `uniform vec3 ucolor;
            void main() {
           `
@@ -101,7 +105,7 @@ export const ContactShadows: ForwardRefComponent<
       ]
     }, [resolution, width, height, scale, color])
 
-    const blurShadows = (blur) => {
+    const blurShadows = (blur: number) => {
       blurPlane.visible = true
 
       blurPlane.material = horizontalBlurMaterial
@@ -122,33 +126,48 @@ export const ContactShadows: ForwardRefComponent<
     }
 
     let count = 0
-    let initialBackground: THREE.Color | THREE.Texture | null
-    let initialOverrideMaterial: THREE.Material | null
     useFrame(() => {
       if (shadowCamera.current && (frames === Infinity || count < frames)) {
+        gl.autoClear = false
+
         count++
 
-        initialBackground = scene.background
-        initialOverrideMaterial = scene.overrideMaterial
-
-        ref.current.visible = false
-        scene.background = null
-        scene.overrideMaterial = depthMaterial
-
         gl.setRenderTarget(renderTarget)
-        gl.render(scene, shadowCamera.current)
+        gl.clear()
+
+        scene.traverse((obj) => {
+          if (isMesh(obj)) {
+            if (obj.castShadow) {
+              const originalMaterial = obj.material
+              obj.material = obj.customDepthMaterial || depthMaterial
+              gl.render(obj, shadowCamera.current)
+              obj.material = originalMaterial
+            }
+          }
+        })
 
         blurShadows(blur)
         if (smooth) blurShadows(blur * 0.4)
-        gl.setRenderTarget(null)
 
-        ref.current.visible = true
-        scene.overrideMaterial = initialOverrideMaterial
-        scene.background = initialBackground
+        gl.setRenderTarget(null)
+        gl.autoClear = true
       }
     })
 
     React.useImperativeHandle(fref, () => ref.current, [])
+
+    React.useEffect(
+      () => () => {
+        renderTarget.dispose()
+        renderTargetBlur.dispose()
+        planeGeometry.dispose()
+        depthMaterial.dispose()
+        blurPlane.geometry.dispose()
+        horizontalBlurMaterial.dispose()
+        verticalBlurMaterial.dispose()
+      },
+      []
+    )
 
     return (
       <group rotation-x={Math.PI / 2} {...props} ref={ref}>

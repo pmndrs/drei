@@ -37,7 +37,7 @@ export const useGLTF = <T extends Path>(
 ): T extends any[] ? (GLTF & ObjectMap)[] : GLTF & ObjectMap =>
   useLoader(GLTFLoader, path, extensions(useDraco, useMeshopt, extendLoader))
 
-useGLTF.preload = (path: Path, useDraco: UseDraco, useMeshopt: UseMeshopt, extendLoader?: ExtendLoader) =>
+useGLTF.preload = (path: Path, useDraco?: UseDraco, useMeshopt?: UseMeshopt, extendLoader?: ExtendLoader) =>
   useLoader.preload(GLTFLoader, path, extensions(useDraco, useMeshopt, extendLoader))
 
 useGLTF.clear = (path: Path) => useLoader.clear(GLTFLoader, path)

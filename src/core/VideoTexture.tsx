@@ -109,5 +109,9 @@ export const VideoTexture = ({
 } & Parameters<typeof useVideoTexture>[1]) => {
   const ret = useVideoTexture(src, config)
 
+  useEffect(() => {
+    return () => void ret.dispose()
+  }, [ret])
+
   return <>{children?.(ret)}</>
 }

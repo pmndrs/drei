@@ -73,7 +73,7 @@ export const VideoTextureSt2 = {
 //
 
 function VideoTextureScene3(props: React.ComponentProps<typeof VideoTexture>) {
-  const [mediaStream, setMediaStream] = useState<MediaStream>()
+  const [mediaStream, setMediaStream] = useState<MediaStream | null>(null)
 
   return (
     <>
@@ -97,4 +97,26 @@ function VideoTextureScene3(props: React.ComponentProps<typeof VideoTexture>) {
 export const UseVideoTextureSceneSt3 = {
   render: (args) => <VideoTextureScene3 {...args} />,
   name: 'MediaStream',
+} satisfies Story
+
+//
+
+function VideoTextureScene4(props: React.ComponentProps<typeof VideoTexture>) {
+  return (
+    <>
+      <Plane args={[4, 2.25]}>
+        <VideoTexture {...props}>
+          {(texture) => <meshBasicMaterial side={THREE.DoubleSide} map={texture} toneMapped={false} />}
+        </VideoTexture>
+      </Plane>
+    </>
+  )
+}
+
+export const VideoTextureSt4 = {
+  args: {
+    src: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', // m3u8 file from: https://hlsjs.video-dev.org/demo/
+  },
+  render: (args) => <VideoTextureScene4 {...args} />,
+  name: 'hls▸js',
 } satisfies Story

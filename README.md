@@ -34,6 +34,9 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 
 https://pmndrs.github.io/drei
 
+<details>
+  <summary>Old doc</summary>
+
 > [!WARNING]
 > Below is an archive of the anchors links with their new respective locations to the documentation website.
 > Do not update the links below, they are for reference only.
@@ -790,3 +793,5 @@ https://pmndrs.github.io/drei
 #### ShadowAlpha
 
 [Documentation has moved here](https://pmndrs.github.io/drei/staging/shadow-alpha)
+
+</details>

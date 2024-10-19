@@ -30,6 +30,7 @@ export function useVideoTexture(
     crossOrigin = 'anonymous',
     muted = true,
     loop = true,
+    playsInline = true,
     ...videoProps
   }: {
     unsuspend?: keyof HTMLVideoElementEventMap
@@ -39,7 +40,6 @@ export function useVideoTexture(
 ) {
   const gl = useThree((state) => state.gl)
   const hlsRef = useRef<Hls | null>(null)
-  const videoRef = useRef<HTMLVideoElement | null>(null)
 
   const texture = suspend(
     () =>
@@ -58,9 +58,9 @@ export function useVideoTexture(
           crossOrigin,
           loop,
           muted,
+          playsInline,
           ...videoProps,
         })
-        videoRef.current = video
 
         // hlsjs extension
         if (src && IS_BROWSER && src.endsWith('.m3u8')) {

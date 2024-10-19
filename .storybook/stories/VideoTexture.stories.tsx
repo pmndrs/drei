@@ -35,7 +35,7 @@ function VideoTextureScene(props: React.ComponentProps<typeof VideoTexture>) {
 
 export const VideoTextureSt = {
   args: {
-    src: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+    src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
   },
   render: (args) => <VideoTextureScene {...args} />,
   name: 'Default',
@@ -64,7 +64,7 @@ function FallbackMaterial({ url }: { url: string }) {
 
 export const VideoTextureSt2 = {
   args: {
-    src: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+    src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
   },
   render: (args) => <VideoTextureScene2 {...args} />,
   name: 'Suspense',

@@ -1658,12 +1658,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.8.4":
+"@babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.8.4":
   version: 7.22.15
   resolution: "@babel/runtime@npm:7.22.15"
   dependencies:
     regenerator-runtime: "npm:^0.14.0"
   checksum: 10c0/96b74adfd1db812d06ed56d9db12acecfc844d252b93994ce4901433957bd28affba725622a4dc9e7f76384c4cb6cadc3d620d07817c8be9156eaedba5eea059
+  languageName: node
+  linkType: hard
+
+"@babel/runtime@npm:^7.25.7":
+  version: 7.25.7
+  resolution: "@babel/runtime@npm:7.25.7"
+  dependencies:
+    regenerator-runtime: "npm:^0.14.0"
+  checksum: 10c0/86b7829d2fc9343714a9afe92757cf96c4dc799006ca61d73cda62f4b9e29bfa1ce36794955bc6cb4c188f5b10db832c949339895e1bbe81a69022d9d578ce29
   languageName: node
   linkType: hard
 
@@ -2842,7 +2851,7 @@ __metadata:
     "@babel/preset-env": "npm:^7.21.5"
     "@babel/preset-react": "npm:^7.18.6"
     "@babel/preset-typescript": "npm:^7.21.5"
-    "@babel/runtime": "npm:^7.11.2"
+    "@babel/runtime": "npm:^7.25.7"
     "@chromatic-com/storybook": "npm:^1"
     "@mediapipe/tasks-vision": "npm:0.10.8"
     "@monogrid/gainmap-js": "npm:^3.0.5"

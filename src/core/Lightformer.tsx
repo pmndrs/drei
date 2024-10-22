@@ -1,4 +1,4 @@
-import { applyProps, ReactThreeFiber, useThree } from '@react-three/fiber'
+import { applyProps, ReactThreeFiber } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from 'three'
 import { ForwardRefComponent } from '../helpers/ts-utils'

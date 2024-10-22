@@ -97,6 +97,10 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
 
   const onPointerDown = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
+      if (e.button !== 0) {
+        e.stopPropagation()
+        return
+      }
       if (annotations) {
         divRef.current.innerText = `${toDegrees(angle.current).toFixed(0)}º`
         divRef.current.style.display = 'block'
@@ -163,6 +167,10 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
 
   const onPointerUp = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
+      if (e.button !== 0) {
+        e.stopPropagation()
+        return
+      }
       if (annotations) {
         divRef.current.style.display = 'none'
       }
@@ -207,6 +215,10 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerOut={onPointerOut}
+      onContextMenu={(e) => {
+        e.stopPropagation()
+        e.nativeEvent.preventDefault()
+      }}
       matrix={matrixL}
       matrixAutoUpdate={false}
     >

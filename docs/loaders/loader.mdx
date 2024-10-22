@@ -1,0 +1,36 @@
+---
+title: Loader
+sourcecode: src/web/Loader.tsx
+---
+
+![](https://img.shields.io/badge/-Dom only-red)
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="0buje" />
+  </li>
+</Grid>
+
+A quick and easy loading overlay component that you can drop on top of your canvas. It's intended to "hide" the whole app, so if you have multiple suspense wrappers in your application, you should use multiple loaders. It will show an animated loadingbar and a percentage.
+
+```jsx
+<Canvas>
+  <Suspense fallback={null}>
+    <AsyncModels />
+  </Suspense>
+</Canvas>
+<Loader />
+```
+
+You can override styles, too.
+
+```jsx
+<Loader
+  containerStyles={...container} // Flex layout styles
+  innerStyles={...inner} // Inner container styles
+  barStyles={...bar} // Loading-bar styles
+  dataStyles={...data} // Text styles
+  dataInterpolation={(p) => `Loading ${p.toFixed(2)}%`} // Text
+  initialState={(active) => active} // Initial black out state
+>
+```

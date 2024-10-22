@@ -53,7 +53,6 @@ export function useTexture<Url extends string[] | string | Record<string, string
       const keyed = {} as MappedTextureType<Url>
       let i = 0
       for (const key in input) keyed[key] = textures[i++]
-      console.log('keyed', keyed)
       return keyed
     } else {
       return textures

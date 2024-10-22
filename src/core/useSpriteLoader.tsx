@@ -55,7 +55,8 @@ export function useSpriteLoader<Url extends string>(
   json?: string | null,
   animationNames?: string[] | null,
   numberOfFrames?: number | null,
-  onLoad?: (texture: Texture, textureData?: any) => void
+  onLoad?: (texture: Texture, textureData?: any) => void,
+  canvasRenderingContext2DSettings?: CanvasRenderingContext2DSettings
 ): any {
   const v = useThree((state) => state.viewport)
   const spriteDataRef = React.useRef<any>(null)
@@ -90,13 +91,20 @@ export function useSpriteLoader<Url extends string>(
   }
 
   function loadStandaloneSprite(textureUrl?: string) {
-    if (textureUrl || input) {
-      new Promise<THREE.Texture>((resolve) => {
-        textureLoader.load(textureUrl ?? input!, resolve)
-      }).then((texture) => {
-        parseSpriteData(null, texture)
-      })
+    if (!textureUrl && !input) {
+      throw new Error('Either textureUrl or input must be provided')
     }
+
+    const validUrl = textureUrl ?? input
+    if (!validUrl) {
+      throw new Error('A valid texture URL must be provided')
+    }
+
+    new Promise<THREE.Texture>((resolve) => {
+      textureLoader.load(validUrl, resolve)
+    }).then((texture) => {
+      parseSpriteData(null, texture)
+    })
   }
 
   /**
@@ -175,9 +183,13 @@ export function useSpriteLoader<Url extends string>(
 
         aspect = calculateAspectRatio(frameWidth, frameHeight, aspectFactor, v)
       }
+
+      //scale ratio for stadalone sprite
+      spriteDataRef.current.frames = calculateScaleRatio(spriteDataRef.current.frames)
     } else if (_spriteTexture) {
       spriteDataRef.current = json
       spriteDataRef.current.frames = parseFrames()
+
       totalFrames.current = Array.isArray(json.frames) ? json.frames.length : Object.keys(json.frames).length
       const { w, h } = getFirstItem(json.frames).sourceSize
       aspect = calculateAspectRatio(w, h, aspectFactor, v)
@@ -187,7 +199,7 @@ export function useSpriteLoader<Url extends string>(
     // @ts-ignore
     if ('encoding' in _spriteTexture) _spriteTexture.encoding = 3001 // sRGBEncoding
     // @ts-ignore
-    else _spriteTexture.colorSpace = 'srgb'
+    else _spriteTexture.colorSpace = THREE.SRGBColorSpace
     setSpriteTexture(_spriteTexture)
     setSpriteObj({
       spriteTexture: _spriteTexture,
@@ -199,7 +211,11 @@ export function useSpriteLoader<Url extends string>(
   const getRowsAndColumns = (texture: THREE.Texture, totalFrames: number) => {
     if (texture.image) {
       const canvas = document.createElement('canvas')
-      const ctx = canvas.getContext('2d')!
+      const ctx = canvas.getContext('2d', canvasRenderingContext2DSettings)
+
+      if (!ctx) {
+        throw new Error('Failed to get 2d context')
+      }
 
       canvas.width = texture.image.width
       canvas.height = texture.image.height
@@ -244,7 +260,7 @@ export function useSpriteLoader<Url extends string>(
 
   // for frame based JSON Hash sprite data
   const parseFrames = (): any => {
-    const sprites: any = {}
+    const sprites: Record<string, any> = {}
     const data = spriteDataRef.current
     const delimiters = animationNames
 
@@ -277,6 +293,11 @@ export function useSpriteLoader<Url extends string>(
           }
         }
       }
+
+      for (const frame in sprites) {
+        sprites[frame].frame = calculateScaleRatio(sprites[frame])
+      }
+
       return sprites
     } else if (delimiters && typeof data['frames'] === 'object') {
       for (let i = 0; i < delimiters.length; i++) {
@@ -305,16 +326,50 @@ export function useSpriteLoader<Url extends string>(
           }
         }
       }
+
+      for (const frame in sprites) {
+        sprites[frame].frame = calculateScaleRatio(sprites[frame])
+      }
+
       return sprites
     } else {
       // we need to convert it into an array
-      const spritesArr: any[] = []
+      let spritesArr: any[] = []
+
       for (const key in data.frames) {
         spritesArr.push(data.frames[key])
       }
 
+      spritesArr = calculateScaleRatio(spritesArr)
+
       return spritesArr
     }
+  }
+
+  // calculate scale ratio for the frames
+  const calculateScaleRatio = (frames: any[]) => {
+    // Find the largest frame
+    let largestFrame: any = null
+    for (const frame of frames) {
+      const { w, h } = frame.frame
+      const area = w * h
+      if (!largestFrame || area > largestFrame.area) {
+        largestFrame = { ...frame.frame, area }
+      }
+    }
+
+    // Set scaleRatio property on each frame
+    for (const frame of frames) {
+      const { w, h } = frame.frame
+      const area = w * h
+      if (area === largestFrame?.area) {
+        frame.scaleRatio = 1
+      } else {
+        frame.scaleRatio = Math.sqrt(area / largestFrame?.area)
+      }
+    }
+
+    return frames
   }
 
   React.useLayoutEffect(() => {

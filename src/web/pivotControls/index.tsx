@@ -33,6 +33,8 @@ const yDir = /* @__PURE__ */ new THREE.Vector3(0, 1, 0)
 const zDir = /* @__PURE__ */ new THREE.Vector3(0, 0, 1)
 
 type PivotControlsProps = {
+  /** Enables/disables the control, true */
+  enabled?: boolean
   /** Scale of the gizmo, 1 */
   scale?: number
   /** Width of the gizmo lines, this is a THREE.Line2 prop, 2.5 */
@@ -92,6 +94,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
 >(
   (
     {
+      enabled = true,
       matrix,
       onDragStart,
       onDrag,
@@ -257,18 +260,34 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
         <group ref={parentRef}>
           <group ref={ref} matrix={matrix} matrixAutoUpdate={false} {...props}>
             <group visible={visible} ref={gizmoRef} position={offset} rotation={rotation}>
-              {!disableAxes && activeAxes[0] && <AxisArrow axis={0} direction={xDir} />}
-              {!disableAxes && activeAxes[1] && <AxisArrow axis={1} direction={yDir} />}
-              {!disableAxes && activeAxes[2] && <AxisArrow axis={2} direction={zDir} />}
-              {!disableSliders && activeAxes[0] && activeAxes[1] && <PlaneSlider axis={2} dir1={xDir} dir2={yDir} />}
-              {!disableSliders && activeAxes[0] && activeAxes[2] && <PlaneSlider axis={1} dir1={zDir} dir2={xDir} />}
-              {!disableSliders && activeAxes[2] && activeAxes[1] && <PlaneSlider axis={0} dir1={yDir} dir2={zDir} />}
-              {!disableRotations && activeAxes[0] && activeAxes[1] && <AxisRotator axis={2} dir1={xDir} dir2={yDir} />}
-              {!disableRotations && activeAxes[0] && activeAxes[2] && <AxisRotator axis={1} dir1={zDir} dir2={xDir} />}
-              {!disableRotations && activeAxes[2] && activeAxes[1] && <AxisRotator axis={0} dir1={yDir} dir2={zDir} />}
-              {!disableScaling && activeAxes[0] && <ScalingSphere axis={0} direction={xDir} />}
-              {!disableScaling && activeAxes[1] && <ScalingSphere axis={1} direction={yDir} />}
-              {!disableScaling && activeAxes[2] && <ScalingSphere axis={2} direction={zDir} />}
+              {enabled && (
+                <>
+                  {!disableAxes && activeAxes[0] && <AxisArrow axis={0} direction={xDir} />}
+                  {!disableAxes && activeAxes[1] && <AxisArrow axis={1} direction={yDir} />}
+                  {!disableAxes && activeAxes[2] && <AxisArrow axis={2} direction={zDir} />}
+                  {!disableSliders && activeAxes[0] && activeAxes[1] && (
+                    <PlaneSlider axis={2} dir1={xDir} dir2={yDir} />
+                  )}
+                  {!disableSliders && activeAxes[0] && activeAxes[2] && (
+                    <PlaneSlider axis={1} dir1={zDir} dir2={xDir} />
+                  )}
+                  {!disableSliders && activeAxes[2] && activeAxes[1] && (
+                    <PlaneSlider axis={0} dir1={yDir} dir2={zDir} />
+                  )}
+                  {!disableRotations && activeAxes[0] && activeAxes[1] && (
+                    <AxisRotator axis={2} dir1={xDir} dir2={yDir} />
+                  )}
+                  {!disableRotations && activeAxes[0] && activeAxes[2] && (
+                    <AxisRotator axis={1} dir1={zDir} dir2={xDir} />
+                  )}
+                  {!disableRotations && activeAxes[2] && activeAxes[1] && (
+                    <AxisRotator axis={0} dir1={yDir} dir2={zDir} />
+                  )}
+                  {!disableScaling && activeAxes[0] && <ScalingSphere axis={0} direction={xDir} />}
+                  {!disableScaling && activeAxes[1] && <ScalingSphere axis={1} direction={yDir} />}
+                  {!disableScaling && activeAxes[2] && <ScalingSphere axis={2} direction={zDir} />}
+                </>
+              )}
             </group>
             <group ref={childrenRef}>{children}</group>
           </group>

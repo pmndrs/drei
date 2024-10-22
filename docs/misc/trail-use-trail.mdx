@@ -1,0 +1,28 @@
+---
+title: Trail / useTrail
+sourcecode: src/core/Trail.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-trail)
+
+A hook to obtain an array of points that make up a [Trail](#trail). You can use this array to drive your own `MeshLine` or make a trail out of anything you please.
+
+Note: The hook returns a ref (`MutableRefObject<Vector3[]>`) this means updates to it will not trigger a re-draw, thus keeping this cheap.
+
+```js
+const points = useTrail(
+  target, // Required target object. This object will produce the trail.
+  {
+    length, // Length of the line
+    decay, // How fast the line fades away
+    local, // Wether to use the target's world or local positions
+    stride, // Min distance between previous and current point
+    interval, // Number of frames to wait before next calculation
+  }
+)
+
+// To use...
+useFrame(() => {
+  meshLineRef.current.position.setPoints(points.current)
+})
+```

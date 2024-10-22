@@ -1,0 +1,25 @@
+---
+title: CycleRaycast
+sourcecode: src/web/CycleRaycast.tsx
+---
+
+![](https://img.shields.io/badge/-Dom only-red)
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="ls503" />
+  </li>
+</Grid>
+
+This component allows you to cycle through all objects underneath the cursor with optional visual feedback. This can be useful for non-trivial selection, CAD data, housing, everything that has layers. It does this by changing the raycasters filter function and then refreshing the raycaster.
+
+For this to work properly your event handler have to call `event.stopPropagation()`, for instance in `onPointerOver` or `onClick`, only one element can be selective for cycling to make sense.
+
+```jsx
+<CycleRaycast
+  preventDefault={true} // Call event.preventDefault() (default: true)
+  scroll={true} // Wheel events (default: true)
+  keyCode={9} // Keyboard events (default: 9 [Tab])
+  onChanged={(objects, cycle) => console.log(objects, cycle)} // Optional onChanged event
+/>
+```

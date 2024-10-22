@@ -1,0 +1,62 @@
+---
+title:  AccumulativeShadows
+sourcecode: src/core/AccumulativeShadows.tsx
+---
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="hxcc1x" />
+  </li>
+</Grid>
+
+A planar, Y-up oriented shadow-catcher that can accumulate into soft shadows and has zero performance impact after all frames have accumulated. It can be temporal, it will accumulate over time, or instantaneous, which might be expensive depending on how many frames you render.
+
+You must pair it with lightsources (and scene objects!) that cast shadows, which go into the children slot. Best use it with the `RandomizedLight` component, which jiggles a set of lights around, creating realistic raycast-like shadows and ambient occlusion.
+
+```tsx
+type AccumulativeShadowsProps = JSX.IntrinsicElements['group'] & {
+  /** How many frames it can render, more yields cleaner results but takes more time, 40 */
+  frames?: number
+  /** If frames === Infinity blend controls the refresh ratio, 100 */
+  blend?: number
+  /** Can limit the amount of frames rendered if frames === Infinity, usually to get some performance back once a movable scene has settled, Infinity */
+  limit?: number
+  /** Scale of the plane,  */
+  scale?: number
+  /** Temporal accumulates shadows over time which is more performant but has a visual regression over instant results, false  */
+  temporal?: false
+  /** Opacity of the plane, 1 */
+  opacity?: number
+  /** Discards alpha pixels, 0.65 */
+  alphaTest?: number
+  /** Shadow color, black */
+  color?: string
+  /** Colorblend, how much colors turn to black, 0 is black, 2 */
+  colorBlend?: number
+  /** Buffer resolution, 1024 */
+  resolution?: number
+  /** Children should be randomized lights shining from different angles to emulate raycasting */
+  children?: React.ReactNode
+}
+```
+
+```jsx
+<AccumulativeShadows temporal frames={100} scale={10}>
+  <RandomizedLight amount={8} position={[5, 5, -10]} />
+</AccumulativeShadows>
+```
+
+## Reference api
+
+```tsx
+interface AccumulativeContext {
+  /** Returns the plane geometry onto which the shadow is cast */
+  getMesh: () => THREE.Mesh<THREE.PlaneGeometry, SoftShadowMaterialProps & THREE.ShaderMaterial>
+  /** Resets the buffers, starting from scratch */
+  reset: () => void
+  /** Updates the lightmap for a number of frames accumulartively */
+  update: (frames?: number) => void
+  /** Allows children to subscribe. AccumulativeShadows will call child.update() in its own update function */
+  setLights: React.Dispatch<React.SetStateAction<AccumulativeLightContext[]>>
+}
+```

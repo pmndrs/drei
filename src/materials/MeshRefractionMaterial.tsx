@@ -16,6 +16,7 @@ export const MeshRefractionMaterial = /* @__PURE__ */ shaderMaterial(
     fresnel: 0,
     bvh: /* @__PURE__ */ new MeshBVHUniformStruct(),
     color: /* @__PURE__ */ new THREE.Color('white'),
+    opacity: 1,
     resolution: /* @__PURE__ */ new THREE.Vector2(),
     viewMatrixInverse: /* @__PURE__ */ new THREE.Matrix4(),
     projectionMatrixInverse: /* @__PURE__ */ new THREE.Matrix4(),
@@ -23,15 +24,15 @@ export const MeshRefractionMaterial = /* @__PURE__ */ shaderMaterial(
   /*glsl*/ `
   uniform mat4 viewMatrixInverse;
 
-  varying vec3 vWorldPosition;  
+  varying vec3 vWorldPosition;
   varying vec3 vNormal;
   varying mat4 vModelMatrixInverse;
 
-  #ifdef USE_INSTANCING_COLOR
-    varying vec3 vInstanceColor;
-  #endif
+  #include <color_pars_vertex>
 
-  void main() {        
+  void main() {
+    #include <color_vertex>
+
     vec4 transformedNormal = vec4(normal, 0.0);
     vec4 transformedPosition = vec4(position, 1.0);
     #ifdef USE_INSTANCING
@@ -43,10 +44,6 @@ export const MeshRefractionMaterial = /* @__PURE__ */ shaderMaterial(
       vModelMatrixInverse = inverse(modelMatrix * instanceMatrix);
     #else
       vModelMatrixInverse = inverse(modelMatrix);
-    #endif
-
-    #ifdef USE_INSTANCING_COLOR
-      vInstanceColor = instanceColor.rgb;
     #endif
 
     vWorldPosition = (modelMatrix * transformedPosition).xyz;
@@ -61,16 +58,14 @@ export const MeshRefractionMaterial = /* @__PURE__ */ shaderMaterial(
   varying vec3 vNormal;
   varying mat4 vModelMatrixInverse;
 
-  #ifdef USE_INSTANCING_COLOR
-    varying vec3 vInstanceColor;
-  #endif
-    
+  #include <color_pars_fragment>
+
   #ifdef ENVMAP_TYPE_CUBEM
     uniform samplerCube envMap;
   #else
     uniform sampler2D envMap;
   #endif
-    
+
   uniform float bounces;
   ${shaderStructs}
   ${shaderIntersectFunction}
@@ -84,11 +79,12 @@ export const MeshRefractionMaterial = /* @__PURE__ */ shaderMaterial(
   uniform mat4 viewMatrixInverse;
   uniform float aberrationStrength;
   uniform vec3 color;
-  
+  uniform float opacity;
+
   float fresnelFunc(vec3 viewDirection, vec3 worldNormal) {
     return pow( 1.0 + dot( viewDirection, worldNormal), 10.0 );
   }
-    
+
   vec3 totalInternalReflection(vec3 ro, vec3 rd, vec3 normal, float ior, mat4 modelMatrixInverse) {
     vec3 rayOrigin = ro;
     vec3 rayDirection = rd;
@@ -103,7 +99,7 @@ export const MeshRefractionMaterial = /* @__PURE__ */ shaderMaterial(
       float side = 1.0;
       float dist = 0.0;
       bvhIntersectFirstHit( bvh, rayOrigin, rayDirection, faceIndices, faceNormal, barycoord, side, dist );
-      vec3 hitPos = rayOrigin + rayDirection * max(dist - 0.001, 0.0);      
+      vec3 hitPos = rayOrigin + rayDirection * max(dist - 0.001, 0.0);
       vec3 tempDir = refract(rayDirection, faceNormal, ior);
       if (length(tempDir) != 0.0) {
         rayDirection = tempDir;
@@ -115,10 +111,10 @@ export const MeshRefractionMaterial = /* @__PURE__ */ shaderMaterial(
     rayDirection = normalize((modelMatrix * vec4(rayDirection, 0.0)).xyz);
     return rayDirection;
   }
-    
+
   #include <common>
   #include <cube_uv_reflection_fragment>
-    
+
   #ifdef ENVMAP_TYPE_CUBEM
     vec4 textureGradient(samplerCube envMap, vec3 rayDirection, vec3 directionCamPerfect) {
       return textureGrad(envMap, rayDirection, dFdx(correctMips ? directionCamPerfect: rayDirection), dFdy(correctMips ? directionCamPerfect: rayDirection));
@@ -130,7 +126,7 @@ export const MeshRefractionMaterial = /* @__PURE__ */ shaderMaterial(
       return textureGrad(envMap, uvv, dFdx(correctMips ? smoothUv : uvv), dFdy(correctMips ? smoothUv : uvv));
     }
   #endif
-  
+
   void main() {
     vec2 uv = gl_FragCoord.xy / resolution;
     vec3 directionCamPerfect = (projectionMatrixInverse * vec4(uv * 2.0 - 1.0, 0.0, 1.0)).xyz;
@@ -139,10 +135,13 @@ export const MeshRefractionMaterial = /* @__PURE__ */ shaderMaterial(
     vec3 normal = vNormal;
     vec3 rayOrigin = cameraPosition;
     vec3 rayDirection = normalize(vWorldPosition - cameraPosition);
-    vec3 finalColor;
+
+    vec4 diffuseColor = vec4(color, opacity);
+    #include <color_fragment>
+
     #ifdef CHROMATIC_ABERRATIONS
       vec3 rayDirectionG = totalInternalReflection(rayOrigin, rayDirection, normal, max(ior, 1.0), vModelMatrixInverse);
-      #ifdef FAST_CHROMA 
+      #ifdef FAST_CHROMA
         vec3 rayDirectionR = normalize(rayDirectionG + 1.0 * vec3(aberrationStrength / 2.0));
         vec3 rayDirectionB = normalize(rayDirectionG - 1.0 * vec3(aberrationStrength / 2.0));
       #else
@@ -152,20 +151,16 @@ export const MeshRefractionMaterial = /* @__PURE__ */ shaderMaterial(
       float finalColorR = textureGradient(envMap, rayDirectionR, directionCamPerfect).r;
       float finalColorG = textureGradient(envMap, rayDirectionG, directionCamPerfect).g;
       float finalColorB = textureGradient(envMap, rayDirectionB, directionCamPerfect).b;
-      finalColor = vec3(finalColorR, finalColorG, finalColorB);
+      diffuseColor.rgb *= vec3(finalColorR, finalColorG, finalColorB);
     #else
       rayDirection = totalInternalReflection(rayOrigin, rayDirection, normal, max(ior, 1.0), vModelMatrixInverse);
-      finalColor = textureGradient(envMap, rayDirection, directionCamPerfect).rgb;    
-    #endif
-
-    finalColor *= color;
-    #ifdef USE_INSTANCING_COLOR
-      finalColor *= vInstanceColor;
+      diffuseColor.rgb *= textureGradient(envMap, rayDirection, directionCamPerfect).rgb;
     #endif
 
     vec3 viewDirection = normalize(vWorldPosition - cameraPosition);
     float nFresnel = fresnelFunc(viewDirection, normal) * fresnel;
-    gl_FragColor = vec4(mix(finalColor, vec3(1.0), nFresnel), 1.0);      
+    gl_FragColor = vec4(mix(diffuseColor.rgb, vec3(1.0), nFresnel), diffuseColor.a);
+
     #include <tonemapping_fragment>
     #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
   }`

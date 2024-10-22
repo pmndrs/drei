@@ -1,0 +1,42 @@
+---
+title: Segments
+sourcecode: src/core/Segments.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/performance-segments--many-segments)
+
+A wrapper around [THREE.LineSegments](https://threejs.org/docs/#api/en/objects/LineSegments). This allows you to use thousands of segments under the same geometry.
+
+## Prop based:
+
+```jsx
+<Segments
+  limit={1000}
+  lineWidth={1.0}
+  // All THREE.LineMaterial props are valid
+  {...materialProps}
+>
+  <Segment start={[0, 0, 0]} end={[0, 10, 0]} color="red" />
+  <Segment start={[0, 0, 0]} end={[0, 10, 10]} color={[1, 0, 1]} />
+</Segments>
+```
+
+## Ref based (for fast updates):
+
+```jsx
+const ref = useRef()
+
+// E.g. to change segment position each frame.
+useFrame(() => {
+  ref.current.start.set(0,0,0)
+  ref.current.end.set(10,10,0)
+  ref.current.color.setRGB(0,0,0)
+})
+// ...
+<Segments
+  limit={1000}
+  lineWidth={1.0}
+>
+  <Segment ref={ref} />
+</Segments>
+```

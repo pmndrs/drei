@@ -1,0 +1,13 @@
+---
+title: BakeShadows
+sourcecode: src/core/BakeShadows.tsx
+---
+
+Sets `gl.shadowMap.autoUpdate` to `false` while mounted and requests a single `gl.shadowMap.needsUpdate = true` afterwards. This freezes all shadow maps the moment this component comes in, which makes shadows performant again (with the downside that they are now static). Mount this component in lock-step with your models, for instance by dropping it into the same suspense boundary of a model that loads.
+
+```jsx
+<Canvas>
+  <Suspense fallback={null}>
+    <Model />
+    <BakeShadows />
+```

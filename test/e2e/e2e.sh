@@ -8,9 +8,14 @@ DIST=../../dist
 TGZ=$(realpath "$DIST/react-three-drei-0.0.0-semantic-release.tgz")
 
 kill_app() {
-  kill $(lsof -ti:$PORT) || echo "ok, no previous running process on port $PORT"
+  kill -9 $(lsof -ti:$PORT) || echo "ok, no previous running process on port $PORT"
 }
-kill_app
+
+cleanup() {
+  kill_app
+}
+cleanup || true
+trap cleanup EXIT INT TERM HUP
 
 tmp=$(mktemp -d)
 
@@ -27,17 +32,17 @@ appname=viteapp
 appdir="$tmp/$appname"
 
 # create app
-(cd $tmp; npm create vite@latest $appname -- --template react)
+(cd $tmp; npm create -y vite@latest $appname -- --template react-ts)
 
 # drei
 (cd $appdir; npm i; npm i $TGZ)
 
-# App.jsx
-cp App.jsx $appdir/src/App.jsx
+# App.tsx
+cp App.tsx $appdir/src/App.tsx
 
-# build+start+jest
-(cd $appdir; npm run build; npm run preview -- --port $PORT &)
-npx jest snapshot.test.js || (kill_app && exit 1)
+# build+start+playwright
+(cd $appdir; npm run build; npm run preview -- --host --port $PORT &)
+npx playwright test snapshot.test.js
 kill_app
 
 #
@@ -53,17 +58,17 @@ appname=nextapp
 appdir="$tmp/$appname"
 
 # create app
-(cd $tmp; npx -y create-next-app@latest $appname --js --no-eslint --no-tailwind --no-src-dir --app --import-alias "@/*")
+(cd $tmp; npx -y create-next-app@latest $appname --ts --no-eslint --no-tailwind --no-src-dir --app --import-alias "@/*")
 
 # drei
 (cd $appdir; npm i $TGZ)
 
-# App.jsx
-cp App.jsx $appdir/app/page.js
+# App.tsx
+cp App.tsx $appdir/app/page.tsx
 
-# build+start+jest
+# build+start+playwright
 (cd $appdir; npm run build; npm start -- -p $PORT &)
-npx jest snapshot.test.js || (kill_app && exit 1)
+npx playwright test snapshot.test.js
 kill_app
 
 #
@@ -79,17 +84,17 @@ appname=craapp
 appdir="$tmp/$appname"
 
 # create app
-(cd $tmp; npx create-react-app $appname)
+(cd $tmp; npx create-react-app $appname --template typescript)
 
 # drei
 (cd $appdir; npm i $TGZ)
 
-# App.jsx
-cp App.jsx $appdir/src/App.js
+# App.tsx
+cp App.tsx $appdir/src/App.tsx
 
-# build+start+jest
+# build+start+playwright
 (cd $appdir; npm run build; npx serve -s -p $PORT build &)
-npx jest snapshot.test.js || (kill_app && exit 1)
+npx playwright test snapshot.test.js
 kill_app
 
 #

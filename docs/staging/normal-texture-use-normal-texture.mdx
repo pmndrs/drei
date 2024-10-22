@@ -1,0 +1,28 @@
+---
+title: NormalTexture / useNormalTexture
+sourcecode: src/core/NormalTexture.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-normaltexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
+
+Loads normal textures from this repository: https://github.com/emmelleppi/normal-maps
+
+👉 Note: `useNormalTexture` hook is not meant to be used in production environments as it relies on third-party CDN.
+
+```jsx
+const [normalMap, url] = useNormalTexture(
+  1, // index of the normal texture - https://github.com/emmelleppi/normal-maps/blob/master/normals.json
+  // second argument is texture attributes
+  {
+    offset: [0, 0],
+    repeat: [normRepeat, normRepeat],
+    anisotropy: 8
+  }
+)
+
+return (
+  ...
+  <meshStandardMaterial normalMap={normalMap} />
+  ...
+)
+```

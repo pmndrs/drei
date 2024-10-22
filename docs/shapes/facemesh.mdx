@@ -1,0 +1,93 @@
+---
+title: Facemesh
+sourcecode: src/web/Facemesh.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shapes-facemesh--facemesh-st)
+
+Renders an oriented [MediaPipe face mesh](https://developers.google.com/mediapipe/solutions/vision/face_landmarker/web_js#handle_and_display_results):
+
+```jsx
+const faceLandmarkerResult = {
+    "faceLandmarks": [
+      [
+        { "x": 0.5760777592658997, "y": 0.8639070391654968, "z": -0.030997956171631813 },
+        { "x": 0.572094738483429, "y": 0.7886289358139038, "z": -0.07189624011516571 },
+        // ...
+      ],
+      // ...
+    ],
+    "faceBlendshapes": [
+      // ...
+    ],
+    "facialTransformationMatrixes": [
+      // ...
+    ]
+  },
+}
+const points = faceLandmarkerResult.faceLandmarks[0]
+
+<Facemesh points={points} />
+```
+
+```tsx
+export type FacemeshProps = {
+  /** an array of 468+ keypoints as returned by google/mediapipe tasks-vision, default: a sample face */
+  points?: MediaPipePoints
+  /** @deprecated an face object as returned by tensorflow/tfjs-models face-landmarks-detection */
+  face?: MediaPipeFaceMesh
+  /** constant width of the mesh, default: undefined */
+  width?: number
+  /** or constant height of the mesh, default: undefined */
+  height?: number
+  /** or constant depth of the mesh, default: 1 */
+  depth?: number
+  /** a landmarks tri supposed to be vertical, default: [159, 386, 200] (see: https://github.com/tensorflow/tfjs-models/tree/master/face-landmarks-detection#mediapipe-facemesh-keypoints) */
+  verticalTri?: [number, number, number]
+  /** a landmark index (to get the position from) or a vec3 to be the origin of the mesh. default: undefined (ie. the bbox center) */
+  origin?: number | THREE.Vector3
+  /** A facial transformation matrix, as returned by FaceLandmarkerResult.facialTransformationMatrixes (see: https://developers.google.com/mediapipe/solutions/vision/face_landmarker/web_js#handle_and_display_results) */
+  facialTransformationMatrix?: (typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.facialTransformationMatrixes)[0]
+  /** Apply position offset extracted from `facialTransformationMatrix` */
+  offset?: boolean
+  /** Offset sensitivity factor, less is more sensible */
+  offsetScalar?: number
+  /** Fface blendshapes, as returned by FaceLandmarkerResult.faceBlendshapes (see: https://developers.google.com/mediapipe/solutions/vision/face_landmarker/web_js#handle_and_display_results) */
+  faceBlendshapes?: (typeof FacemeshDatas.SAMPLE_FACELANDMARKER_RESULT.faceBlendshapes)[0]
+  /** whether to enable eyes (nb. `faceBlendshapes` is required for), default: true */
+  eyes?: boolean
+  /** Force `origin` to be the middle of the 2 eyes (nb. `eyes` is required for), default: false */
+  eyesAsOrigin?: boolean
+  /** debug mode, default: false */
+  debug?: boolean
+}
+```
+
+Ref-api:
+
+```tsx
+const api = useRef<FacemeshApi>()
+
+<Facemesh ref={api} points={points} />
+```
+
+```tsx
+type FacemeshApi = {
+  meshRef: React.RefObject<THREE.Mesh>
+  outerRef: React.RefObject<THREE.Group>
+  eyeRightRef: React.RefObject<FacemeshEyeApi>
+  eyeLeftRef: React.RefObject<FacemeshEyeApi>
+}
+```
+
+You can for example get face mesh world direction:
+
+```tsx
+api.meshRef.current.localToWorld(new THREE.Vector3(0, 0, -1))
+```
+
+or get L/R iris direction:
+
+```tsx
+api.eyeRightRef.current.irisDirRef.current.localToWorld(new THREE.Vector3(0, 0, -1))
+```

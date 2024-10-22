@@ -1,0 +1,147 @@
+---
+title: Gltf / useGLTF
+sourcecode: src/core/Gltf.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-gltf)
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="z3xdgr" />
+  </li>
+</Grid>
+
+<Intro>
+  A convenience hook that uses [`useLoader`](https://r3f.docs.pmnd.rs/api/hooks#useloader) and
+  [`GLTFLoader`](https://threejs.org/docs/#examples/en/loaders/GLTFLoader).
+</Intro>
+
+## `useGLTF` hook
+
+```ts
+useGLTF<T extends string | string[]>(
+  path: T,
+  useDraco?: boolean | string = true,
+  useMeshOpt: boolean = true,
+  extendLoader?: (loader: GLTFLoader) => void
+): T extends any[] ? (GLTF & ObjectMap)[] : GLTF & ObjectMap
+```
+
+<details>
+
+{' '}
+<summary>`GLTF`, `ObjectMap` and `GLTFLoader` being defined as follows:</summary>
+
+- [`GLTF`](https://github.com/pmndrs/three-stdlib/blob/9d656b26c80e2c356df0d016ba7fddc55da50577/src/loaders/GLTFLoader.d.ts#L25C1-L40C2):
+
+  ```ts
+  export interface GLTF {
+    animations: AnimationClip[]
+    scene: Group
+    scenes: Group[]
+    cameras: Camera[]
+    asset: {
+      copyright?: string
+      generator?: string
+      version?: string
+      minVersion?: string
+      extensions?: any
+      extras?: any
+    }
+    parser: GLTFParser
+    userData: any
+  }
+  ```
+
+- [`ObjectMap`](https://github.com/pmndrs/react-three-fiber/blob/818e383b0a06ac02b8b96fa5437bb198736ea23d/packages/fiber/src/core/utils.ts#L93) being:
+
+  ```ts
+  type ObjectMap = {
+    nodes: {
+      [name: string]: THREE.Object3D
+    }
+    materials: {
+      [name: string]: THREE.Material
+    }
+  }
+  ```
+
+- [`GLTFLoader`](https://github.com/pmndrs/three-stdlib/blob/9d656b26c80e2c356df0d016ba7fddc55da50577/src/loaders/GLTFLoader.d.ts#L42) defined here
+
+</details>
+
+### Basic
+
+```jsx
+const gltf = useGLTF(url)
+```
+
+You can also preload a model:
+
+```jsx
+useGLTF.preload(url)
+```
+
+### draco (decompression)
+
+It defaults to CDN loaded draco binaries (`https://www.gstatic.com/draco/v1/decoders/`) which are only loaded for compressed models.
+
+But you can also use your own draco binaries by passing a path:
+
+```jsx
+useGLTF(url, '/draco-gltf')
+```
+
+If you want to use your own draco decoder globally, you can pass it through:
+
+```tsx
+useGLTF.setDecoderPath(path)
+```
+
+> [!Note]
+> If you are using the CDN loaded draco binaries, you can get a small speedup in loading time by prefetching them.
+>
+> You can accomplish this by adding two `<link>` tags to your `<head>` tag, as below. The version in those URLs must exactly match what [useGLTF](src/core/useGLTF.tsx#L18) uses for this to work. If you're using create-react-app, `public/index.html` file contains the `<head>` tag.
+>
+> ```html
+> <link
+>   rel="prefetch"
+>   crossorigin="anonymous"
+>   href="https://www.gstatic.com/draco/versioned/decoders/1.5.5/draco_wasm_wrapper.js"
+> />
+> <link
+>   rel="prefetch"
+>   crossorigin="anonymous"
+>   href="https://www.gstatic.com/draco/versioned/decoders/1.5.5/draco_decoder.wasm"
+> />
+> ```
+>
+> It is recommended that you check your browser's network tab to confirm that the correct URLs are being used, and that the files do get loaded from the prefetch cache on subsequent requests.
+
+### `extendLoader`
+
+If for example your model [`facecap.glb`](https://github.com/mrdoob/three.js/blob/master/examples/models/gltf/facecap.glb) needs KTX2 textures, you can `extendLoader`:
+
+```tsx
+import { KTX2Loader } from 'three-stdlib'
+const ktx2Loader = new KTX2Loader()
+ktx2Loader.setTranscoderPath('https://unpkg.com/three@0.168.0/examples/jsm/libs/basis/')
+
+// ...
+
+const { gl } = useThree()
+useGLTF('facecap.glb', true, true, (loader) => {
+  loader.setKTX2Loader(ktx2Loader.detectSupport(gl))
+})
+```
+
+## `Gltf` component
+
+A `Gltf` component is also provided.
+
+It takes the same props as `useGLTF` (except `src` which cannot be an array):
+
+```tsx
+<Gltf src={url} />
+<Gltf src={url} useDraco='/draco-gltf' ... />
+```

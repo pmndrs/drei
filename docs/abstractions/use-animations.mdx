@@ -1,0 +1,32 @@
+---
+title: useAnimations
+sourcecode: src/core/useAnimations.ts
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-useanimations--use-animations-st)
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="pecl6" />
+  </li>
+</Grid>
+
+A hook that abstracts [AnimationMixer](https://threejs.org/docs/#api/en/animation/AnimationMixer).
+
+```jsx
+const { nodes, materials, animations } = useGLTF(url)
+const { ref, mixer, names, actions, clips } = useAnimations(animations)
+useEffect(() => {
+  actions?.jump.play()
+})
+return (
+  <mesh ref={ref} />
+```
+
+The hook can also take a pre-existing root (which can be a plain object3d or a reference to one):
+
+```jsx
+const { scene, animations } = useGLTF(url)
+const { actions } = useAnimations(animations, scene)
+return <primitive object={scene} />
+```

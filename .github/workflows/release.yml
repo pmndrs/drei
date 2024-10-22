@@ -14,16 +14,36 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  main:
+  test:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/pmndrs/playwright:drei
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - run: corepack enable
+      - uses: actions/setup-node@v4
         with:
           cache: 'yarn'
       - run: yarn install
-      - run: yarn build-storybook
+      - run: yarn build
       - run: yarn test
+
+  build-and-release:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.node-version'
+          cache: 'yarn'
+      - run: yarn install
+      - run: yarn build
+      - run: yarn build-storybook
       # semantic-release skips not configured branches(see: release.config.js) or pull-requests
       - run: yarn release
         env:

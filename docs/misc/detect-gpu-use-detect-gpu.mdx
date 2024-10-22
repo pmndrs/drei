@@ -1,0 +1,21 @@
+---
+title: DetectGPU / useDetectGPU
+sourcecode: src/core/DetectGPU.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/misc-detectgpu)
+
+This hook uses [DetectGPU by @TimvanScherpenzeel](https://github.com/TimvanScherpenzeel/detect-gpu), wrapped into suspense, to determine what tier should be assigned to the user's GPU.
+
+👉 This hook CAN be used outside the @react-three/fiber `Canvas`.
+
+```jsx
+function App() {
+  const GPUTier = useDetectGPU()
+  // show a fallback for mobile or lowest tier GPUs
+  return (
+    {(GPUTier.tier === "0" || GPUTier.isMobile) ? <Fallback /> : <Canvas>...</Canvas>
+
+<Suspense fallback={null}>
+  <App />
+```

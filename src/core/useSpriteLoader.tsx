@@ -57,7 +57,7 @@ export function useSpriteLoader<Url extends string>(
   numberOfFrames?: number | null,
   onLoad?: (texture: Texture, textureData?: any) => void,
   canvasRenderingContext2DSettings?: CanvasRenderingContext2DSettings
-): any {
+) {
   const v = useThree((state) => state.viewport)
   const spriteDataRef = React.useRef<any>(null)
   const totalFrames = React.useRef<number>(0)

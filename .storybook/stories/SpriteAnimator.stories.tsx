@@ -7,8 +7,8 @@ import { SpriteAnimator } from '../../src'
 import { useSpriteLoader } from '../../src'
 
 // Assets are loaded from the root public folder
-const SPRITE_IMAGE = '/story.png'
-const SPRITE_DATA = '/story.json'
+const SPRITE_IMAGE = 'story.png'
+const SPRITE_DATA = 'story.json'
 
 export default {
     title: 'Misc/SpriteAnimator',

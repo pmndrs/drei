@@ -1,12 +1,10 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react'
-
 import { Setup } from '../Setup'
 import { SpriteAnimator } from '../../src'
 import { useSpriteLoader } from '../../src'
 
-// Assets are loaded from the root public folder
 const SPRITE_IMAGE = 'story.png'
 const SPRITE_DATA = 'story.json'
 
@@ -110,7 +108,7 @@ export const FlyingSprite = {
             />
         )
     },
-    name: 'Flying Animation',
+    name: 'Animated Sprite',
 } satisfies Story
 
 export const StaticSprites = {

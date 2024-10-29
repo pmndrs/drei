@@ -18,9 +18,23 @@ updates:
         update-types:
           - 'minor'
           - 'patch'
+        # excluding all 0.x leading-zero package (since dependabot consider eg: 0.7.3 -> 0.8.0 minor bump / as opposed to semver)
+        exclude-patterns:
+          - 'glsl-noise'
+          - 'maath'
+          - 'stats.js'
+          - 'suspend-react'
+          - 'three-mesh-bvh'
+          - 'troika-three-text'
+          - 'tunnel-rat'
       # pkg.json "devDependencies"
       dev-deps:
         dependency-type: 'development'
         update-types:
           - 'minor'
           - 'patch'
+        # excluding all 0.x leading-zero package (since dependabot consider eg: 0.7.3 -> 0.8.0 minor bump / as opposed to semver)
+        exclude-patterns:
+          - '@types/three'
+          - 'eslint-plugin-storybook'
+          - 'three'

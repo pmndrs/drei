@@ -28,7 +28,7 @@ function SpriteScene() {
     return (
         <React.Suspense fallback={null}>
             <SpriteAnimator
-                position={[-2, 2.8, 0.01]}
+                position={[-2, 0, 0.01]}
                 fps={18}
                 scale={1.5}
                 autoPlay={true}
@@ -42,7 +42,7 @@ function SpriteScene() {
             />
 
             <SpriteAnimator
-                position={[-3, 2.8, 0.01]}
+                position={[-3, 0, 0.01]}
                 fps={0}
                 scale={1.0}
                 autoPlay={true}
@@ -56,7 +56,7 @@ function SpriteScene() {
             />
 
             <SpriteAnimator
-                position={[-1, 2.8, 0.01]}
+                position={[-1, 0, 0.01]}
                 fps={0}
                 scale={1.0}
                 autoPlay={true}
@@ -70,7 +70,7 @@ function SpriteScene() {
             />
 
             <SpriteAnimator
-                position={[0, 2.8, 0.01]}
+                position={[0, 0, 0.01]}
                 fps={0}
                 scale={1.0}
                 autoPlay={true}
@@ -119,6 +119,7 @@ export const StaticSprites = {
                 <SpriteAnimator
                     position={[-1, 0, 0.01]}
                     scale={1.0}
+                    fps={0}
                     spriteDataset={story}
                     frameName={'heart'}
                     asSprite={false}
@@ -127,6 +128,7 @@ export const StaticSprites = {
                 <SpriteAnimator
                     position={[0, 0, 0.01]}
                     scale={1.0}
+                    fps={0}
                     spriteDataset={story}
                     frameName={'sword'}
                     asSprite={false}
@@ -135,6 +137,7 @@ export const StaticSprites = {
                 <SpriteAnimator
                     position={[1, 0, 0.01]}
                     scale={1.0}
+                    fps={0}
                     spriteDataset={story}
                     frameName={'skull'}
                     asSprite={false}

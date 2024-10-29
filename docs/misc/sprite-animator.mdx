@@ -12,6 +12,35 @@ sourcecode: src/core/SpriteAnimator.tsx
 </Grid>
 
 ```tsx
+
+/** Common properties that can be safely applied to both sprite and instance components */
+type CommonMeshProps = {
+  /** Whether the object gets culled by the frustum 
+   * @default true
+   */
+  frustumCulled?: boolean
+
+  /** Override the rendering order 
+   * @default 0
+   */
+  renderOrder?: number
+
+  /** Whether the object gets rendered at all 
+   * @default true
+   */
+  visible?: boolean
+
+  /** Custom user data object to store whatever you want 
+   * @default undefined
+   */
+  userData?: any
+
+  /** Whether the object's matrix automatically updates 
+   * @default true
+   */
+  matrixAutoUpdate?: boolean
+}
+
 type SpriteAnimatorProps = {
   /** The start frame of the animation */
   startFrame?: number
@@ -120,13 +149,13 @@ type SpriteAnimatorProps = {
    */
   roundFramePosition?: boolean
 
-   /** Additional properties to be passed to the underlying mesh/instance components.
-   * These properties will be applied to sprite, Instances container, and individual Instance components.
+   /** Additional properties to be passed to both sprite and instance components.
+   * Only includes safe properties that work across both types.
    * @example { frustumCulled: false, renderOrder: 1 }
-   * @see https://threejs.org/docs/#api/en/objects/Mesh
-   * @type Partial<MeshProps>
+   * @see https://threejs.org/docs/#api/en/core/Object3D
+   * @type CommonMeshProps
    */
-  meshProps?: Partial<MeshProps>
+  meshProps?: CommonMeshProps
 
 } & JSX.IntrinsicElements['group']
 ```

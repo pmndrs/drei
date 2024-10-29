@@ -4,6 +4,14 @@ import * as THREE from 'three'
 import { Instances, Instance } from './Instances'
 import { useSpriteLoader } from './useSpriteLoader'
 
+type CommonMeshProps = {
+  frustumCulled?: boolean
+  renderOrder?: number
+  visible?: boolean
+  userData?: any
+  matrixAutoUpdate?: boolean
+}
+
 export type SpriteAnimatorProps = {
   startFrame?: number
   endFrame?: number
@@ -36,7 +44,7 @@ export type SpriteAnimatorProps = {
   /** Additional properties to be passed to the underlying mesh/instance
    * @example { frustumCulled: false, renderOrder: 1 }
    */
-  meshProps?: Partial<MeshProps>
+  meshProps?: CommonMeshProps
 } & JSX.IntrinsicElements['group']
 
 type SpriteAnimatorState = {
@@ -499,7 +507,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
         <context.Provider value={state}>
           <React.Suspense fallback={null}>
             {displayAsSprite && (
-              <sprite ref={spriteRef} scale={1.0} geometry={geometry} {...meshProps as THREE.MeshProps}>
+              <sprite ref={spriteRef} scale={1.0} geometry={geometry} {...meshProps}>
                 <spriteMaterial
                   premultipliedAlpha={false}
                   toneMapped={false}
@@ -514,7 +522,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
               <Instances
                 geometry={geometry}
                 limit={maxItems ?? 1}
-                {...meshProps as THREE.MeshProps} // Apply to Instances container as well
+                {...meshProps} // Apply to Instances container as well
               >
                 <meshBasicMaterial
                   premultipliedAlpha={false}
@@ -532,7 +540,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
                     ref={instanceItems?.length === 1 ? spriteRef : null}
                     position={item}
                     scale={1.0}
-                    {...meshProps as THREE.MeshProps} // Apply to each Instance
+                    {...meshProps} // Apply to each Instance
                   />
                 ))}
               </Instances>

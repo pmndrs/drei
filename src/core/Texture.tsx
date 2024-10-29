@@ -1,3 +1,4 @@
+import * as React from 'react'
 import { Texture as _Texture, TextureLoader } from 'three'
 import { useLoader, useThree } from '@react-three/fiber'
 import { useEffect, useLayoutEffect, useMemo } from 'react'

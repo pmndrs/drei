@@ -11,7 +11,7 @@ const SPRITE_IMAGE = '/story.png'
 const SPRITE_DATA = '/story.json'
 
 export default {
-    title: 'Components/SpriteAnimator',
+    title: 'Misc/SpriteAnimator',
     component: SpriteAnimator,
     decorators: [
         (Story) => (
@@ -90,7 +90,7 @@ function SpriteScene() {
 
 export const AllSprites = {
     render: () => <SpriteScene />,
-    name: 'All Sprites',
+    name: 'Default',
 } satisfies Story
 
 export const FlyingSprite = {

@@ -2884,7 +2884,7 @@ __metadata:
     "@storybook/theming": "npm:^8.3.6"
     "@types/react": "npm:^18.0.0"
     "@types/react-dom": "npm:^18.0.0"
-    "@types/three": "npm:^0.151.0"
+    "@types/three": "npm:^0.169.0"
     "@typescript-eslint/eslint-plugin": "npm:^5.4.0"
     "@typescript-eslint/parser": "npm:^5.4.0"
     "@use-gesture/react": "npm:^10.3.1"
@@ -2924,7 +2924,7 @@ __metadata:
     stats.js: "npm:^0.17.0"
     storybook: "npm:^8.3.6"
     suspend-react: "npm:^0.1.3"
-    three: "npm:^0.151.0"
+    three: "npm:^0.169.0"
     three-mesh-bvh: "npm:^0.7.8"
     three-stdlib: "npm:^2.33.0"
     troika-three-text: "npm:^0.50.2"
@@ -3819,7 +3819,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tweenjs/tween.js@npm:~23.1.1":
+"@tweenjs/tween.js@npm:~23.1.1, @tweenjs/tween.js@npm:~23.1.3":
   version: 23.1.3
   resolution: "@tweenjs/tween.js@npm:23.1.3"
   checksum: 10c0/811b30f5f0e7409fb41833401c501c2d6f600eb5f43039dd9067a7f70aff6dad5f5ce1233848e13f0b33a269a160d9c133f344d986cbff4f1f6b72ddecd06c89
@@ -4232,18 +4232,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/three@npm:^0.151.0":
-  version: 0.151.0
-  resolution: "@types/three@npm:0.151.0"
-  dependencies:
-    "@types/stats.js": "npm:*"
-    "@types/webxr": "npm:*"
-    fflate: "npm:~0.6.9"
-    lil-gui: "npm:~0.17.0"
-  checksum: 10c0/0a43947a7b0dbdeef6372091fe612c0f66678950aa735f8f806dec314f9ab5403ab412d47c4a4ab501caa9e8b9493d64c65f7fe8bfacffa91844238ce7fba8dc
-  languageName: node
-  linkType: hard
-
 "@types/three@npm:^0.163.0":
   version: 0.163.0
   resolution: "@types/three@npm:0.163.0"
@@ -4254,6 +4242,20 @@ __metadata:
     fflate: "npm:~0.8.2"
     meshoptimizer: "npm:~0.18.1"
   checksum: 10c0/715406a709bdcf567ba844c598c73dac07b679df942f85c578e82a33d00ae3ac67e8f6a3e030ec75ba0f639d33c65fb7ec6237c11a4a501c98569d99bc67a5b6
+  languageName: node
+  linkType: hard
+
+"@types/three@npm:^0.169.0":
+  version: 0.169.0
+  resolution: "@types/three@npm:0.169.0"
+  dependencies:
+    "@tweenjs/tween.js": "npm:~23.1.3"
+    "@types/stats.js": "npm:*"
+    "@types/webxr": "npm:*"
+    "@webgpu/types": "npm:*"
+    fflate: "npm:~0.8.2"
+    meshoptimizer: "npm:~0.18.1"
+  checksum: 10c0/d5f588dcc9df02875d46e5e6ea8ea6dc346cd1e4c0fbe7bcca4c8d9584f82ac39a951788a79fc2ffae3d5e232f99e66046adec8f93fdf51d30561a4a00c52b40
   languageName: node
   linkType: hard
 
@@ -4436,6 +4438,13 @@ __metadata:
   peerDependencies:
     vite: ^4.2.0 || ^5.0.0
   checksum: 10c0/b370c25fb47bb96f0cc51f3aadbbcfce54e40f95a4de67cf932e5ec526f139648da703725c6ea2c71a1b525eb3dd6e3e8ff877da143627cd2575de5ec4f00aa3
+  languageName: node
+  linkType: hard
+
+"@webgpu/types@npm:*":
+  version: 0.1.49
+  resolution: "@webgpu/types@npm:0.1.49"
+  checksum: 10c0/96437fd51e1d45e1d8f1b2d534bcf7bc5d40c05acc22205d3ce30ddc91bb5888b3f33c84459cad226dfe67495114902fb8243225c737c618c495a9a54fbfdcb6
   languageName: node
   linkType: hard
 
@@ -7252,7 +7261,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fflate@npm:^0.6.9, fflate@npm:~0.6.9":
+"fflate@npm:^0.6.9":
   version: 0.6.10
   resolution: "fflate@npm:0.6.10"
   checksum: 10c0/c452f720e4cb404b300fceb8ef0bdf345f18fbfd3f57f7d0974dce5f5e2ac0e8dd4b6ff4bb7061ae74fd919b9c707172f9dbd44d91149b1137199b8c705768f1
@@ -9392,13 +9401,6 @@ __metadata:
   dependencies:
     immediate: "npm:~3.0.5"
   checksum: 10c0/56dd113091978f82f9dc5081769c6f3b947852ecf9feccaf83e14a123bc630c2301439ce6182521e5fbafbde88e88ac38314327a4e0493a1bea7e0699a7af808
-  languageName: node
-  linkType: hard
-
-"lil-gui@npm:~0.17.0":
-  version: 0.17.0
-  resolution: "lil-gui@npm:0.17.0"
-  checksum: 10c0/889109145323be8496ac19b606b855447d33f937c6c2ad5c6730ca0e3333d1dcd2a9528c98d3e02fe54fdf946c582574a268a41b6fb599eccfcba740c4a84a44
   languageName: node
   linkType: hard
 
@@ -13251,10 +13253,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"three@npm:^0.151.0":
-  version: 0.151.3
-  resolution: "three@npm:0.151.3"
-  checksum: 10c0/892d2addd439e500b37669a86368c09a0a71dc404868b0347d48b5606ebd3264d2e9cce3cb85bc9ac83dc5cac8cc718ed0e9ef7cd22cad9f1233ea4c32108255
+"three@npm:^0.169.0":
+  version: 0.169.0
+  resolution: "three@npm:0.169.0"
+  checksum: 10c0/be2e20f45eaa50489cd22d366c41fa14528f00b873078f52fc6ef37140fa8e541e9805630bbe696ab9b027530c74e5cd341705266eb268b5219402fb9fa78ed4
   languageName: node
   linkType: hard
 

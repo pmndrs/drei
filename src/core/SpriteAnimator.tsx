@@ -54,7 +54,6 @@ type CommonMeshProps = {
   renderOrder?: number
   visible?: boolean
   userData?: any
-  layers?: THREE.Layers
   matrixAutoUpdate?: boolean
 }
 

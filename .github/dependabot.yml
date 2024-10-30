@@ -9,17 +9,30 @@ updates:
     directory: '/' # Location of package manifests
     schedule:
       interval: 'weekly'
+    # open-pull-requests-limit: 10
+
+    ignore:
+      - dependency-name: '@playwright/test'
 
     # https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#groups
     groups:
+    
+      # Always update react and react-dom together
+      react-packages:
+        patterns:
+          - 'react'
+          - 'react-dom'
+          
+      #
       # pkg.json "dependencies"
+      #
       prod-deps:
         dependency-type: 'production'
         update-types:
           - 'minor'
           - 'patch'
-        # excluding all 0.x leading-zero package (since dependabot consider eg: 0.7.3 -> 0.8.0 minor bump / as opposed to semver)
         exclude-patterns:
+          # Excluding all 0.x leading-zero package (since dependabot consider eg: 0.7.3 -> 0.8.0 minor bump / as opposed to semver)
           - 'glsl-noise'
           - 'maath'
           - 'stats.js'
@@ -27,14 +40,21 @@ updates:
           - 'three-mesh-bvh'
           - 'troika-three-text'
           - 'tunnel-rat'
+
+      #
       # pkg.json "devDependencies"
+      #
       dev-deps:
         dependency-type: 'development'
         update-types:
           - 'minor'
           - 'patch'
-        # excluding all 0.x leading-zero package (since dependabot consider eg: 0.7.3 -> 0.8.0 minor bump / as opposed to semver)
         exclude-patterns:
+          # Excluding all 0.x leading-zero package (since dependabot consider eg: 0.7.3 -> 0.8.0 minor bump / as opposed to semver)
           - '@types/three'
           - 'eslint-plugin-storybook'
           - 'three'
+          # Sensitive ones (we prefer handling those separately)
+          - 'react'
+          - 'react-dom'
+          - '@react-three/fiber'

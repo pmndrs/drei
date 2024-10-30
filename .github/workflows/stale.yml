@@ -18,14 +18,14 @@ jobs:
           # Issues
           #
           stale-issue-message: |
-            @{{ issue.user.login }} Thank you for contributing! We’re marking this issue as stale as a gentle reminder to revisit it and give it the attention it needs to move forward.
+            Thank you for contributing! We’re marking this issue as stale as a gentle reminder to revisit it and give it the attention it needs to move forward.
 
             Any activity, like adding an update or comment, will automatically remove the stale label so it stays on our radar.
 
             Feel free to reach out on [Discord](https://discord.com/channels/740090768164651008/741751532592038022) if you need support or feedback from the community. This issue will close automatically soon if there’s no further activity. Thank you for understanding and for being part of the project!
           
           close-issue-message: |
-            @{{ issue.user.login }} We’re closing this issue to keep our project manageable and make room for other active work, but we truly appreciate your effort and contribution.
+            We’re closing this issue to keep our project manageable and make room for other active work, but we truly appreciate your effort and contribution.
 
             If you’d like to continue working on this, please feel free to re-open it or reach out on [Discord](https://discord.link) — our community is always ready to support you. Thanks again for helping us stay organized and for understanding our approach!
 
@@ -33,13 +33,13 @@ jobs:
           # PRs
           #
           stale-pr-message: |
-            @{{ pull_request.user.login }} Thank you for your work on this pull request! We’re marking this PR as stale to encourage a final push to bring it across the finish line.
+            Thank you for your work on this pull request! We’re marking this PR as stale to encourage a final push to bring it across the finish line.
 
             Any update, comment, or change to the PR will automatically remove the stale label so it stays active in our workflow.
 
             If you need any help, don’t hesitate to connect with us on [Discord](https://discord.link) for feedback and support. This PR will close automatically soon if there’s no further activity, but we’re here to help if you’re interested in getting it merged. Thank you for your contribution!
           
           close-pr-message: |
-            @{{ pull_request.user.login }} We’re closing this pull request to help manage our workload and focus on active contributions. We really appreciate the effort you put into this, and we’d be happy to revisit it anytime you’re ready.
+            We’re closing this pull request to help manage our workload and focus on active contributions. We really appreciate the effort you put into this, and we’d be happy to revisit it anytime you’re ready.
 
             Please feel free to re-open this PR or reach out on [Discord](https://discord.com/channels/740090768164651008/741751532592038022) if you’d like to continue — our community is always here to support you. Thanks again for your contribution and for helping us stay organized!

@@ -9,145 +9,77 @@ const SPRITE_IMAGE = 'story.png'
 const SPRITE_DATA = 'story.json'
 
 export default {
-    title: 'Misc/SpriteAnimator',
-    component: SpriteAnimator,
-    decorators: [
-        (Story) => (
-            <Setup cameraPosition={new Vector3(0, 0, 5)}>
-                <Story />
-            </Setup>
-        ),
-    ],
+  title: 'Misc/SpriteAnimator',
+  component: SpriteAnimator,
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(0, 0, 5)}>
+        <Story />
+      </Setup>
+    ),
+  ],
+  args: {
+    autoPlay: true,
+    loop: true,
+    flipX: false,
+    startFrame: 0,
+    asSprite: false,
+    alphaTest: 0.01,
+  },
 } satisfies Meta<typeof SpriteAnimator>
 
 type Story = StoryObj<typeof SpriteAnimator>
 
-function SpriteScene() {
-    const { spriteObj: story } = useSpriteLoader(SPRITE_IMAGE, SPRITE_DATA, ['Fly', 'heart', 'sword', 'skull'], null)
+//
 
-    return (
-        <React.Suspense fallback={null}>
-            <SpriteAnimator
-                position={[-2, 0, 0.01]}
-                fps={18}
-                scale={1.5}
-                autoPlay={true}
-                loop={true}
-                flipX={false}
-                startFrame={0}
-                spriteDataset={story}
-                frameName={'Fly'}
-                asSprite={false}
-                alphaTest={0.01}
-            />
+function SpriteAnimatorScene1(props: React.ComponentProps<typeof SpriteAnimator>) {
+  const { spriteObj } = useSpriteLoader(SPRITE_IMAGE, SPRITE_DATA, [props.frameName!], null)
 
-            <SpriteAnimator
-                position={[-3, 0, 0.01]}
-                fps={0}
-                scale={1.0}
-                autoPlay={true}
-                loop={true}
-                flipX={false}
-                startFrame={0}
-                spriteDataset={story}
-                frameName={'sword'}
-                asSprite={false}
-                alphaTest={0.01}
-            />
+  return <SpriteAnimator {...props} spriteDataset={spriteObj} />
+}
+export const SpriteAnimatorSt1 = {
+  args: {
+    frameName: 'Fly',
+    fps: 18,
+    scale: 1.5,
+  },
+  render: (args) => <SpriteAnimatorScene1 {...args} />,
+  name: 'Animated',
+} satisfies Story
 
-            <SpriteAnimator
-                position={[-1, 0, 0.01]}
-                fps={0}
-                scale={1.0}
-                autoPlay={true}
-                loop={true}
-                flipX={false}
-                startFrame={0}
-                spriteDataset={story}
-                frameName={'heart'}
-                asSprite={false}
-                alphaTest={0.01}
-            />
+//
 
-            <SpriteAnimator
-                position={[0, 0, 0.01]}
-                fps={0}
-                scale={1.0}
-                autoPlay={true}
-                loop={true}
-                flipX={false}
-                startFrame={0}
-                spriteDataset={story}
-                frameName={'skull'}
-                asSprite={false}
-                alphaTest={0.01}
-            />
-        </React.Suspense>
-    )
+function SpriteAnimatorScene2(props: React.ComponentProps<typeof SpriteAnimator>) {
+  const { spriteObj } = useSpriteLoader(SPRITE_IMAGE, SPRITE_DATA, [props.frameName!], null)
+
+  return <SpriteAnimator {...props} spriteDataset={spriteObj} />
+}
+export const SpriteAnimatorSt2 = {
+  args: {
+    frameName: 'sword',
+    fps: 0,
+  },
+  render: (args) => <SpriteAnimatorScene2 {...args} />,
+  name: 'Static',
+} satisfies Story
+
+//
+
+function SpriteAnimatorScene3(props: React.ComponentProps<typeof SpriteAnimator>) {
+  const { spriteObj } = useSpriteLoader(SPRITE_IMAGE, SPRITE_DATA, ['Fly', 'heart', 'sword', 'skull'], null)
+
+  return (
+    <>
+      <SpriteAnimator {...props} position={[-2, 0, 0.01]} spriteDataset={spriteObj} frameName={'Fly'} fps={18} />
+      <SpriteAnimator {...props} position={[-3, 0, 0.01]} spriteDataset={spriteObj} frameName={'sword'} fps={0} />
+      <SpriteAnimator {...props} position={[-1, 0, 0.01]} spriteDataset={spriteObj} frameName={'heart'} fps={0} />
+      <SpriteAnimator {...props} position={[0, 0, 0.01]} spriteDataset={spriteObj} frameName={'skull'} fps={0} />
+    </>
+  )
 }
 
-export const AllSprites = {
-    render: () => <SpriteScene />,
-    name: 'Default',
-} satisfies Story
-
-export const FlyingSprite = {
-    render: () => {
-        const { spriteObj: story } = useSpriteLoader(SPRITE_IMAGE, SPRITE_DATA, ['Fly'], null)
-        return (
-            <SpriteAnimator
-                position={[0, 0, 0.01]}
-                fps={18}
-                scale={1.5}
-                autoPlay={true}
-                loop={true}
-                spriteDataset={story}
-                frameName={'Fly'}
-                asSprite={false}
-                alphaTest={0.01}
-            />
-        )
-    },
-    name: 'Animated Sprite',
-} satisfies Story
-
-export const StaticSprites = {
-    render: () => {
-        const { spriteObj: story } = useSpriteLoader(SPRITE_IMAGE, SPRITE_DATA, ['heart', 'sword', 'skull'], null)
-        return (
-            <>
-                <SpriteAnimator
-                    position={[-1, 0, 0.01]}
-                    scale={1.0}
-                    fps={0}
-                    autoPlay={true}
-                    spriteDataset={story}
-                    frameName={'heart'}
-                    asSprite={false}
-                    alphaTest={0.01}
-                />
-                <SpriteAnimator
-                    position={[0, 0, 0.01]}
-                    scale={1.0}
-                    fps={0}
-                    autoPlay={true}
-                    spriteDataset={story}
-                    frameName={'sword'}
-                    asSprite={false}
-                    alphaTest={0.01}
-                />
-                <SpriteAnimator
-                    position={[1, 0, 0.01]}
-                    scale={1.0}
-                    fps={0}
-                    autoPlay={true}
-                    spriteDataset={story}
-                    frameName={'skull'}
-                    asSprite={false}
-                    alphaTest={0.01}
-                />
-            </>
-        )
-    },
-    name: 'Static Sprites',
+export const SpriteAnimatorSt3 = {
+  args: {},
+  render: (args) => <SpriteAnimatorScene3 {...args} />,
+  name: 'Multiple',
 } satisfies Story

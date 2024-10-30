@@ -2975,7 +2975,7 @@ __metadata:
     hls.js: "npm:^1.5.17"
     husky: "npm:^6.0.0"
     json: "npm:^11.0.0"
-    maath: "npm:^0.10.7"
+    maath: "npm:^0.10.8"
     meshline: "npm:^3.3.1"
     prettier: "npm:^2.4.1"
     pretty-quick: "npm:^3.1.0"
@@ -9506,13 +9506,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"maath@npm:^0.10.7":
-  version: 0.10.7
-  resolution: "maath@npm:0.10.7"
+"maath@npm:^0.10.8":
+  version: 0.10.8
+  resolution: "maath@npm:0.10.8"
   peerDependencies:
-    "@types/three": ">=0.144.0"
-    three: ">=0.144.0"
-  checksum: 10c0/23fa361672258b90dec4475e347e0e482fe2b4084d4379e0da700ab8118dbacf792c4ec3016136008fff4902f26759c2a98c38d60bd6316df56aaaae98b83243
+    "@types/three": ">=0.134.0"
+    three: ">=0.134.0"
+  checksum: 10c0/fb61faac89567595f7e25f261f8a9750d0ced674fd16c77c6e486a0c4a00c572fa37969d613d017380f8ea4e8ff357d481dcd94240a104a7969bc7e95b9fe99e
   languageName: node
   linkType: hard
 

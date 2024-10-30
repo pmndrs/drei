@@ -3002,7 +3002,7 @@ __metadata:
     typescript: "npm:^5.6.3"
     utility-types: "npm:^3.11.0"
     uuid: "npm:^9.0.1"
-    vite: "npm:^4.3.6"
+    vite: "npm:^4.5.5"
     vite-plugin-glslify: "npm:^2.1.0"
     zustand: "npm:^3.7.1"
   peerDependencies:
@@ -13937,9 +13937,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^4.3.6":
-  version: 4.4.9
-  resolution: "vite@npm:4.4.9"
+"vite@npm:^4.5.5":
+  version: 4.5.5
+  resolution: "vite@npm:4.5.5"
   dependencies:
     esbuild: "npm:^0.18.10"
     fsevents: "npm:~2.3.2"
@@ -13973,7 +13973,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 10c0/80dbc632fd75b5866567c8fd605115c9d5718654dbf173f509cfd55c53f39dfbee24f62660e57fd5b11eb93f469a65abdbe6bae880ec8392bb70a5d0d7b6e6a9
+  checksum: 10c0/cde5a1d80ae61b2c0b2e2a04938e10aa8821a4c2c625f1dcd6eff179f0c9ce98a5b3c8fd62b54a81299568f7747fff4d35ffecc0e7f7ff34d76124d94a24ce9b
   languageName: node
   linkType: hard
 

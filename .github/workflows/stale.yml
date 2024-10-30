@@ -27,7 +27,7 @@ jobs:
           close-issue-message: |
             We’re closing this issue to keep our project manageable and make room for other active work, but we truly appreciate your effort and contribution.
 
-            If you’d like to continue working on this, please feel free to re-open it or reach out on [Discord](https://discord.link) — our community is always ready to support you. Thanks again for helping us stay organized and for understanding our approach!
+            If you’d like to continue working on this, please feel free to re-open it or reach out on [Discord](https://discord.com/channels/740090768164651008/741751532592038022) — our community is always ready to support you. Thanks again for helping us stay organized and for understanding our approach!
 
           #
           # PRs
@@ -37,7 +37,7 @@ jobs:
 
             Any update, comment, or change to the PR will automatically remove the stale label so it stays active in our workflow.
 
-            If you need any help, don’t hesitate to connect with us on [Discord](https://discord.link) for feedback and support. This PR will close automatically soon if there’s no further activity, but we’re here to help if you’re interested in getting it merged. Thank you for your contribution!
+            If you need any help, don’t hesitate to connect with us on [Discord](https://discord.com/channels/740090768164651008/741751532592038022) for feedback and support. This PR will close automatically soon if there’s no further activity, but we’re here to help if you’re interested in getting it merged. Thank you for your contribution!
           
           close-pr-message: |
             We’re closing this pull request to help manage our workload and focus on active contributions. We really appreciate the effort you put into this, and we’d be happy to revisit it anytime you’re ready.

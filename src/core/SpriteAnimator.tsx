@@ -7,12 +7,12 @@ import { useSpriteLoader } from './useSpriteLoader'
 import { SetStateAction } from 'react'
 
 // Frame-related types
-interface SourceSize {
+type SourceSize = {
   w: number
   h: number
 }
 
-interface FrameData {
+type FrameData = {
   frame: {
     x: number
     y: number
@@ -20,7 +20,7 @@ interface FrameData {
   sourceSize: SourceSize
 }
 
-interface MetaData {
+type MetaData = {
   version: string
   size: {
     w: number
@@ -29,12 +29,12 @@ interface MetaData {
   scale: string
 }
 
-interface SpriteData {
+type SpriteData = {
   frames: Record<string, FrameData[]> | FrameData[]
   meta: MetaData
 }
 
-interface FrameBuffer {
+type FrameBuffer = {
   key: number
   frames: Record<string, FrameData[]> | FrameData[]
   selectedFrame: string
@@ -44,7 +44,7 @@ interface FrameBuffer {
   }
 }
 
-interface AnimationEventData {
+type AnimationEventData = {
   currentFrameName: string
   currentFrame: number
 }
@@ -54,45 +54,99 @@ type CommonMeshProps = {
   renderOrder?: number
   visible?: boolean
   userData?: any
+  layers?: THREE.Layers
   matrixAutoUpdate?: boolean
 }
 
 export type SpriteAnimatorProps = {
+  /** The start frame of the animation */
   startFrame?: number
+  /** The end frame of the animation */
   endFrame?: number
+  /** The desired frames per second of the animation. If set to 0 or negative, animation will be static */
   fps?: number
+  /** The frame identifier to use, must be one of animationNames */
   frameName?: string
+  /** The URL of the texture JSON (if using JSON-Array or JSON-Hash) */
   textureDataURL?: string
+  /** The URL of the texture image */
   textureImageURL?: string
+  /** Whether or not the animation should loop */
   loop?: boolean
+  /** The number of frames of the animation (required if using plain spritesheet without JSON) */
   numberOfFrames?: number
+  /** Whether or not the animation should auto-start when all assets are loaded */
   autoPlay?: boolean
+  /** The animation names of the spritesheet (if the spritesheet -with JSON- contains more animation sequences) */
   animationNames?: Array<string>
+  /** Event callback when the animation starts or restarts
+   * @param data Animation state data containing currentFrameName and currentFrame
+   */
   onStart?: (data: AnimationEventData) => void
+  /** Event callback when the animation ends
+   * @param data Animation state data containing currentFrameName and currentFrame
+   */
   onEnd?: (data: AnimationEventData) => void
+  /** Event callback when the animation completes a loop cycle
+   * @param data Animation state data containing currentFrameName and currentFrame
+   */
   onLoopEnd?: (data: AnimationEventData) => void
+  /** Event callback fired on each frame change
+   * @param data Animation state data containing currentFrameName and currentFrame
+   */
   onFrame?: (data: AnimationEventData) => void
+  /** @deprecated Use pause={false} instead. Control when the animation runs */
   play?: boolean
+  /** Control when the animation pauses */
   pause?: boolean
+  /** Whether or not the Sprite should flip sides on the x-axis */
   flipX?: boolean
-  position?: Array<number>
+  /** Sets the alpha value to be used when running an alpha test
+   * @see https://threejs.org/docs/#api/en/materials/Material.alphaTest
+   * @default 0.0
+   */
   alphaTest?: number
+  /** Displays the texture on a Billboard component always facing the camera.
+   * If set to false, it renders on a PlaneGeometry
+   * @default true
+   */
   asSprite?: boolean
+  /** Allows for manual update of the sprite animation e.g: via ScrollControls.
+   * Value should be between 0 and 1
+   */
   offset?: number
+  /** Allows the sprite animation to start from the end towards the start */
   playBackwards?: boolean
+  /** Allows the animation to be paused after it ended so it can be restarted on demand via autoPlay */
   resetOnEnd?: boolean
-  maxItems?: number
+  /** Array of Vector3-like positions for creating multiple instances of the sprite */
   instanceItems?: (THREE.Vector3 | [number, number, number])[]
+  /** The maximum number of instances to render (for buffer size calculation)
+   * @default 1
+   */
+  maxItems?: number
+  /** Pre-parsed sprite data, usually from useSpriteLoader ready for use */
   spriteDataset?: {
     spriteTexture: THREE.Texture
     spriteData: SpriteData
   }
+  /** Configuration options for the canvas context when loading textures
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/CanvasRenderingContext2D
+   */
   canvasRenderingContext2DSettings?: CanvasRenderingContext2DSettings
+  /** Controls whether frame positions are rounded for precise pixel alignment.
+   * Enable this if you notice slight texture bleeding between frames.
+   * @default false
+   */
   roundFramePosition?: boolean
+  /** Additional properties to be passed to both simple mesh and instance components.
+   * @example { frustumCulled: false, renderOrder: 1 }
+   * @see https://threejs.org/docs/#api/en/core/Object3D
+   */
   meshProps?: CommonMeshProps
 } & JSX.IntrinsicElements['group']
 
-interface SpriteAnimatorState {
+type SpriteAnimatorState = {
   current: number | undefined
   offset: number | undefined
   imageUrl?: string

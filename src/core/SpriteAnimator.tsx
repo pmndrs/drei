@@ -79,21 +79,13 @@ export type SpriteAnimatorProps = {
   autoPlay?: boolean
   /** The animation names of the spritesheet (if the spritesheet -with JSON- contains more animation sequences) */
   animationNames?: Array<string>
-  /** Event callback when the animation starts or restarts
-   * @param data Animation state data containing currentFrameName and currentFrame
-   */
+  /** Event callback when the animation starts or restarts */
   onStart?: (data: AnimationEventData) => void
-  /** Event callback when the animation ends
-   * @param data Animation state data containing currentFrameName and currentFrame
-   */
+  /** Event callback when the animation ends */
   onEnd?: (data: AnimationEventData) => void
-  /** Event callback when the animation completes a loop cycle
-   * @param data Animation state data containing currentFrameName and currentFrame
-   */
+  /** Event callback when the animation completes a loop cycle */
   onLoopEnd?: (data: AnimationEventData) => void
-  /** Event callback fired on each frame change
-   * @param data Animation state data containing currentFrameName and currentFrame
-   */
+  /** Event callback fired on each frame change */
   onFrame?: (data: AnimationEventData) => void
   /** @deprecated Use pause={false} instead. Control when the animation runs */
   play?: boolean
@@ -103,12 +95,10 @@ export type SpriteAnimatorProps = {
   flipX?: boolean
   /** Sets the alpha value to be used when running an alpha test
    * @see https://threejs.org/docs/#api/en/materials/Material.alphaTest
-   * @default 0.0
    */
   alphaTest?: number
   /** Displays the texture on a Billboard component always facing the camera.
    * If set to false, it renders on a PlaneGeometry
-   * @default true
    */
   asSprite?: boolean
   /** Allows for manual update of the sprite animation e.g: via ScrollControls.
@@ -121,9 +111,7 @@ export type SpriteAnimatorProps = {
   resetOnEnd?: boolean
   /** Array of Vector3-like positions for creating multiple instances of the sprite */
   instanceItems?: (THREE.Vector3 | [number, number, number])[]
-  /** The maximum number of instances to render (for buffer size calculation)
-   * @default 1
-   */
+  /** The maximum number of instances to render (for buffer size calculation) */
   maxItems?: number
   /** Pre-parsed sprite data, usually from useSpriteLoader ready for use */
   spriteDataset?: {
@@ -136,7 +124,6 @@ export type SpriteAnimatorProps = {
   canvasRenderingContext2DSettings?: CanvasRenderingContext2DSettings
   /** Controls whether frame positions are rounded for precise pixel alignment.
    * Enable this if you notice slight texture bleeding between frames.
-   * @default false
    */
   roundFramePosition?: boolean
   /** Additional properties to be passed to both simple mesh and instance components.
@@ -170,7 +157,7 @@ function isSpriteData(data: SpriteData | null): data is SpriteData {
 
 const geometry = new THREE.PlaneGeometry(1, 1)
 
-export const SpriteAnimator: React.ForwardRefExoticComponent<SpriteAnimatorProps & React.RefAttributes<THREE.Group>> = React.forwardRef(
+export const SpriteAnimator =  /* @__PURE__ */ React.forwardRef<THREE.Group, SpriteAnimatorProps>(
   (
     {
       startFrame,
@@ -190,13 +177,13 @@ export const SpriteAnimator: React.ForwardRefExoticComponent<SpriteAnimatorProps
       play,
       pause,
       flipX,
-      alphaTest,
+      alphaTest = 0.0,
       children,
-      asSprite,
+      asSprite = false,
       offset,
       playBackwards,
       resetOnEnd,
-      maxItems,
+      maxItems = 1,
       instanceItems,
       spriteDataset,
       canvasRenderingContext2DSettings,
@@ -206,7 +193,7 @@ export const SpriteAnimator: React.ForwardRefExoticComponent<SpriteAnimatorProps
     },
     fref
   ) => {
-    const ref = React.useRef<THREE.Group>(new THREE.Group())
+    const ref = React.useRef(new THREE.Group())
     const spriteData = React.useRef<SpriteData | null>(null)
     const matRef = React.useRef<THREE.MeshBasicMaterial | null>(null)
     const spriteRef = React.useRef<THREE.Sprite | THREE.InstancedMesh>(null)
@@ -214,7 +201,7 @@ export const SpriteAnimator: React.ForwardRefExoticComponent<SpriteAnimatorProps
     const currentFrame = React.useRef<number>(startFrame || 0)
     const currentFrameName = React.useRef<string>(frameName || '')
     const fpsInterval = (fps ?? 30) > 0 ? 1000 / (fps || 30) : 0
-    const [spriteTexture, setSpriteTexture] = React.useState<THREE.Texture>(new THREE.Texture())
+    const [spriteTexture, setSpriteTexture] = React.useState(new THREE.Texture())
     const totalFrames = React.useRef<number>(0)
     const [aspect, setAspect] = React.useState<[number, number, number]>([1, 1, 1])
     const flipOffset = flipX ? -1 : 1

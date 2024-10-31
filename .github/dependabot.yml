@@ -13,6 +13,7 @@ updates:
 
     ignore:
       - dependency-name: '@playwright/test'
+      - dependency-name: '@mediapipe/tasks-vision'
 
     # https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#groups
     groups:
@@ -33,6 +34,7 @@ updates:
           - 'patch'
         exclude-patterns:
           # Excluding all 0.x leading-zero package (since dependabot consider eg: 0.7.3 -> 0.8.0 minor bump / as opposed to semver)
+          - '@mediapipe/tasks-vision'
           - 'glsl-noise'
           - 'maath'
           - 'stats.js'

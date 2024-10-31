@@ -15,6 +15,7 @@ jobs:
       - uses: actions/stale@v9
         with:
           operations-per-run: 3000
+          exempt-all-assignees: true
           
           #
           # Issues

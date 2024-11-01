@@ -197,11 +197,11 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
     const matRef = React.useRef<THREE.MeshBasicMaterial | null>(null)
     const spriteRef = React.useRef<THREE.Sprite | THREE.InstancedMesh>(null)
     const timerOffset = React.useRef(window.performance.now())
-    const currentFrame = React.useRef<number>(startFrame || 0)
-    const currentFrameName = React.useRef<string>(frameName || '')
+    const currentFrame = React.useRef(startFrame || 0)
+    const currentFrameName = React.useRef(frameName || '')
     const fpsInterval = (fps ?? 30) > 0 ? 1000 / (fps || 30) : 0
     const [spriteTexture, setSpriteTexture] = React.useState(new THREE.Texture())
-    const totalFrames = React.useRef<number>(0)
+    const totalFrames = React.useRef(0)
     const [aspect, setAspect] = React.useState([1, 1, 1])
     const flipOffset = flipX ? -1 : 1
     const [displayAsSprite, setDisplayAsSprite] = React.useState(asSprite ?? true)
@@ -219,15 +219,13 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
     )
 
     // utils
-    const getFirstItem = React.useCallback(
-      (param: object | null | []) => {
-        if (Array.isArray(param)) {
-          return param[0]
-        } else if (typeof param === 'object' && param !== null) {
-          const keys = Object.keys(param)
-          return frameName ? param[frameName][0] : param[keys[0]][0]
+    const getFirstFrame = React.useCallback(
+      (frames: SpriteData['frames']) => {
+        if (Array.isArray(frames)) {
+          return frames[0]
         } else {
-          return { w: 0, h: 0 }
+          const k = frameName ?? Object.keys(frames)[0]
+          return frames[k][0]
         }
       },
       [frameName]
@@ -235,8 +233,8 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
 
     // lite version for pre-loaded assets
     const parseSpriteDataLite = React.useCallback(
-      (textureData: THREE.Texture, frameData: any = null) => {
-        if (frameData === null) {
+      (textureData: THREE.Texture, data: SpriteData | null) => {
+        if (data === null) {
           if (numberOfFrames) {
             //get size from texture
             const width = textureData.image.width
@@ -257,10 +255,10 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
               },
             }
 
-            spriteData.current.frames = frameData
+            spriteData.current = data
           }
         } else {
-          spriteData.current = frameData
+          spriteData.current = data
           if (spriteData.current && Array.isArray(spriteData.current.frames)) {
             totalFrames.current = spriteData.current.frames.length
           } else if (spriteData.current && typeof spriteData.current === 'object' && frameName) {
@@ -273,7 +271,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
             currentFrame.current = totalFrames.current - 1
           }
 
-          const { w, h } = getFirstItem(spriteData.current?.frames ?? []).sourceSize
+          const { w, h } = getFirstFrame(spriteData.current?.frames ?? []).sourceSize
           const aspect = calculateAspectRatio(w, h)
 
           setAspect(aspect)
@@ -299,7 +297,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
 
         setSpriteTexture(textureData)
       },
-      [frameName, getFirstItem, instanceItems, numberOfFrames, playBackwards]
+      [frameName, getFirstFrame, instanceItems, numberOfFrames, playBackwards]
     )
 
     // modify the sprite material after json is parsed and state updated
@@ -344,7 +342,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
       loadJsonAndTexture(imageUrl, dataUrl)
     })
 
-    const parseDataRef = React.useRef((texture: THREE.Texture, data: any) => {
+    const parseDataRef = React.useRef((texture: THREE.Texture, data: SpriteData) => {
       parseSpriteDataLite(texture, data)
     })
 
@@ -428,12 +426,12 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
         }
         // modifySpritePosition()
         if (spriteData.current) {
-          const { w, h } = getFirstItem(spriteData.current.frames).sourceSize
+          const { w, h } = getFirstFrame(spriteData.current.frames).sourceSize
           const _aspect: number[] = calculateAspectRatio(w, h)
           setAspect(_aspect)
         }
       }
-    }, [frameName, fpsInterval, state, endFrame, startFrame, getFirstItem])
+    }, [frameName, fpsInterval, state, endFrame, startFrame, getFirstFrame])
 
     // run the animation on each frame
     const runAnimation = (): void => {
@@ -443,7 +441,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
         meta: { size: metaInfo },
         frames,
       } = spriteData.current
-      const { w: frameW, h: frameH } = getFirstItem(frames).sourceSize
+      const { w: frameW, h: frameH } = getFirstFrame(frames).sourceSize
       const spriteFrames = Array.isArray(frames) ? frames : frameName ? frames[frameName] : []
       const _endFrame = endFrame || spriteFrames.length - 1
 

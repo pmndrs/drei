@@ -141,7 +141,7 @@ type SpriteAnimatorState = {
   ref: React.RefObject<THREE.Group> | null | ((instance: THREE.Group) => void)
 }
 
-type Scale = number | [number, number, number] | Vector3
+type Scale = Vector3
 
 const context = React.createContext<SpriteAnimatorState | null>(null)
 
@@ -195,14 +195,14 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
     const ref = React.useRef(new THREE.Group())
     const spriteData = React.useRef<SpriteData | null>(null)
     const matRef = React.useRef<THREE.MeshBasicMaterial | null>(null)
-    const spriteRef = React.useRef<THREE.Sprite | THREE.InstancedMesh>(null)
+    const spriteRef = React.useRef<THREE.Mesh | THREE.InstancedMesh>(null)
     const timerOffset = React.useRef(window.performance.now())
     const currentFrame = React.useRef(startFrame || 0)
     const currentFrameName = React.useRef(frameName || '')
     const fpsInterval = (fps ?? 30) > 0 ? 1000 / (fps || 30) : 0
     const [spriteTexture, setSpriteTexture] = React.useState(new THREE.Texture())
     const totalFrames = React.useRef(0)
-    const [aspect, setAspect] = React.useState([1, 1, 1])
+    const [aspect, setAspect] = React.useState(new THREE.Vector3(1, 1, 1))
     const flipOffset = flipX ? -1 : 1
     const [displayAsSprite, setDisplayAsSprite] = React.useState(asSprite ?? true)
     const pauseRef = React.useRef(pause)
@@ -364,11 +364,11 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
     }, [offset])
 
     const calculateAspectRatio = (width: number, height: number) => {
+      const ret = new THREE.Vector3()
       const aspectRatio = height / width
-      if (spriteRef.current) {
-        spriteRef.current.scale.set(1, aspectRatio, 1)
-      }
-      return [1, aspectRatio, 1]
+      ret.set(1, aspectRatio, 1)
+      spriteRef.current?.scale.copy(ret)
+      return ret
     }
 
     const loadAssets = React.useCallback((textureImageURL, textureDataURL) => {
@@ -427,7 +427,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
         // modifySpritePosition()
         if (spriteData.current) {
           const { w, h } = getFirstFrame(spriteData.current.frames).sourceSize
-          const _aspect: number[] = calculateAspectRatio(w, h)
+          const _aspect = calculateAspectRatio(w, h)
           setAspect(_aspect)
         }
       }
@@ -591,44 +591,26 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
 
       if (!state.hasEnded && (autoPlay || play)) {
         runAnimation()
-        onFrame &&
-          onFrame({
-            currentFrameName: currentFrameName.current,
-            currentFrame: currentFrame.current,
-          })
+        onFrame?.({
+          currentFrameName: currentFrameName.current,
+          currentFrame: currentFrame.current,
+        })
       }
     })
 
-    function multiplyScale(initialScale: number[], newScale: Scale): number[] {
-      let _newScale: number[] | Vector3 = []
-
-      // If newScale is a single number, convert it to a Vector3
-      if (typeof newScale === 'number') {
-        _newScale = [newScale, newScale, newScale]
-      } else if (Array.isArray(newScale)) {
-        // If newScale is an array, convert it to a Vector3
-        _newScale = newScale
-      } else if (newScale instanceof THREE.Vector3) {
-        _newScale = [(newScale as THREE.Vector3).x, (newScale as THREE.Vector3).y, (newScale as THREE.Vector3).z]
-      }
-
-      // Multiply the scale values element-wise
-      const result = initialScale.map((value, index) => value * _newScale[index])
-      // Convert the result to an array of numbers
-      return result
+    function multiplyScale(initialScale = new THREE.Vector3(1, 1, 1), newScale: Scale = 1) {
+      if (typeof newScale === 'number') return initialScale.multiplyScalar(newScale)
+      if (Array.isArray(newScale)) return initialScale.multiply(new THREE.Vector3(...newScale))
+      if (newScale instanceof THREE.Vector3) return initialScale.multiply(newScale)
     }
 
     return (
-      <group
-        {...props}
-        ref={ref}
-        scale={multiplyScale(aspect ?? [1, 1, 1], props.scale ?? 1.0) as [number, number, number]}
-      >
+      <group {...props} ref={ref} scale={multiplyScale(aspect, props.scale)}>
         <context.Provider value={state}>
           <React.Suspense fallback={null}>
             {displayAsSprite && (
               <Billboard>
-                <mesh ref={spriteRef as React.RefObject<THREE.Mesh>} scale={1.0} geometry={geometry} {...meshProps}>
+                <mesh ref={spriteRef} scale={1.0} geometry={geometry} {...meshProps}>
                   <meshBasicMaterial
                     premultipliedAlpha={false}
                     toneMapped={false}
@@ -655,7 +637,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
                 {(instanceItems ?? [0]).map((item, index) => (
                   <Instance
                     key={index}
-                    ref={instanceItems?.length === 1 ? (spriteRef as React.RefObject<THREE.InstancedMesh>) : null}
+                    ref={instanceItems?.length === 1 ? spriteRef : null}
                     position={item}
                     scale={1.0}
                     {...meshProps}

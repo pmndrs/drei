@@ -5,7 +5,6 @@ import * as THREE from 'three'
 import { Instances, Instance } from './Instances'
 import { Billboard } from './Billboard'
 import { useSpriteLoader } from './useSpriteLoader'
-import { SetStateAction } from 'react'
 
 // Frame-related types
 type SourceSize = {
@@ -138,7 +137,6 @@ type SpriteAnimatorState = {
   current: number | undefined
   offset: number | undefined
   imageUrl?: string
-  reset: () => void
   hasEnded: boolean
   ref: React.RefObject<THREE.Group> | null | ((instance: THREE.Group) => void)
 }
@@ -219,20 +217,146 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
       undefined,
       canvasRenderingContext2DSettings
     )
-    //
 
-    function reset() { }
+    // utils
+    const getFirstItem = React.useCallback(
+      (param: object | null | []) => {
+        if (Array.isArray(param)) {
+          return param[0]
+        } else if (typeof param === 'object' && param !== null) {
+          const keys = Object.keys(param)
+          return frameName ? param[frameName][0] : param[keys[0]][0]
+        } else {
+          return { w: 0, h: 0 }
+        }
+      },
+      [frameName]
+    )
+
+    // lite version for pre-loaded assets
+    const parseSpriteDataLite = React.useCallback(
+      (textureData: THREE.Texture, frameData: any = null) => {
+        if (frameData === null) {
+          if (numberOfFrames) {
+            //get size from texture
+            const width = textureData.image.width
+            const height = textureData.image.height
+
+            totalFrames.current = numberOfFrames
+
+            if (playBackwards) {
+              currentFrame.current = numberOfFrames - 1
+            }
+
+            spriteData.current = {
+              frames: [],
+              meta: {
+                version: '1.0',
+                size: { w: width, h: height },
+                scale: '1',
+              },
+            }
+
+            spriteData.current.frames = frameData
+          }
+        } else {
+          spriteData.current = frameData
+          if (spriteData.current && Array.isArray(spriteData.current.frames)) {
+            totalFrames.current = spriteData.current.frames.length
+          } else if (spriteData.current && typeof spriteData.current === 'object' && frameName) {
+            totalFrames.current = spriteData.current.frames[frameName].length
+          } else {
+            totalFrames.current = 0
+          }
+
+          if (playBackwards) {
+            currentFrame.current = totalFrames.current - 1
+          }
+
+          const { w, h } = getFirstItem(spriteData.current?.frames ?? []).sourceSize
+          const aspect = calculateAspectRatio(w, h)
+
+          setAspect(aspect)
+          if (matRef.current) {
+            matRef.current.map = textureData
+          }
+        }
+
+        // buffer for instanced
+        if (instanceItems) {
+          for (var i = 0; i < instanceItems.length; i++) {
+            const keys = Object.keys(spriteData.current?.frames ?? {})
+            const randomKey = keys[Math.floor(Math.random() * keys.length)]
+
+            frameBuffer.current.push({
+              key: i,
+              frames: spriteData.current?.frames ?? [],
+              selectedFrame: randomKey,
+              offset: { x: 0, y: 0 },
+            })
+          }
+        }
+
+        setSpriteTexture(textureData)
+      },
+      [frameName, getFirstItem, instanceItems, numberOfFrames, playBackwards]
+    )
+
+    // modify the sprite material after json is parsed and state updated
+    const modifySpritePosition = React.useCallback((): void => {
+      if (!spriteData.current) return
+      const {
+        meta: { size: metaInfo },
+        frames,
+      } = spriteData.current
+
+      const { w: frameW, h: frameH } = Array.isArray(frames)
+        ? frames[0].sourceSize
+        : frameName
+        ? frames[frameName]
+          ? frames[frameName][0].sourceSize
+          : { w: 0, h: 0 }
+        : { w: 0, h: 0 }
+
+      if (matRef.current && matRef.current.map) {
+        matRef.current.map.wrapS = matRef.current.map.wrapT = THREE.RepeatWrapping
+        matRef.current.map.center.set(0, 0)
+        matRef.current.map.repeat.set((1 * flipOffset) / (metaInfo.w / frameW), 1 / (metaInfo.h / frameH))
+      }
+      //const framesH = (metaInfo.w - 1) / frameW
+      const framesV = (metaInfo.h - 1) / frameH
+      const frameOffsetY = 1 / framesV
+      if (matRef.current && matRef.current.map) {
+        matRef.current.map.offset.x = 0.0 //-matRef.current.map.repeat.x
+        matRef.current.map.offset.y = 1 - frameOffsetY
+      }
+
+      if (onStart) {
+        onStart({
+          currentFrameName: frameName ?? '',
+          currentFrame: currentFrame.current,
+        })
+      }
+    }, [flipOffset, frameName, onStart])
+
+    // Move these into refs to prevent them from triggering re-renders
+    const loadAssetsRef = React.useRef((imageUrl: string, dataUrl: string) => {
+      loadJsonAndTexture(imageUrl, dataUrl)
+    })
+
+    const parseDataRef = React.useRef((texture: THREE.Texture, data: any) => {
+      parseSpriteDataLite(texture, data)
+    })
 
     const state = React.useMemo<SpriteAnimatorState>(
       () => ({
         current: pos.current,
         offset: pos.current,
         imageUrl: textureImageURL,
-        reset: reset,
         hasEnded: false,
         ref: fref,
       }),
-      [textureImageURL, spriteDataset]
+      [textureImageURL, fref]
     )
 
     React.useImperativeHandle(fref, () => ref.current, [])
@@ -249,20 +373,24 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
       return [1, aspectRatio, 1]
     }
 
+    const loadAssets = React.useCallback((textureImageURL, textureDataURL) => {
+      loadAssetsRef.current(textureImageURL, textureDataURL)
+    }, [])
+
     // initial loads
     React.useEffect(() => {
       if (spriteDataset) {
-        parseSpriteDataLite(spriteDataset?.spriteTexture?.clone(), spriteDataset.spriteData)
+        parseDataRef.current(spriteDataset?.spriteTexture?.clone(), spriteDataset.spriteData)
       } else {
         if (textureImageURL && textureDataURL) {
-          loadJsonAndTexture(textureImageURL, textureDataURL)
+          loadAssets(textureImageURL, textureDataURL)
         }
       }
-    }, [spriteDataset])
+    }, [loadAssets, spriteDataset, textureDataURL, textureImageURL])
 
     React.useEffect(() => {
       if (spriteObj) {
-        parseSpriteDataLite(spriteObj?.spriteTexture?.clone(), spriteObj?.spriteData)
+        parseDataRef.current(spriteObj?.spriteTexture?.clone(), spriteObj?.spriteData)
       }
     }, [spriteObj])
 
@@ -278,11 +406,11 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
       } else {
         currentFrame.current = 0
       }
-    }, [playBackwards])
+    }, [playBackwards, state])
 
     React.useLayoutEffect(() => {
       modifySpritePosition()
-    }, [spriteTexture, flipX])
+    }, [spriteTexture, flipX, modifySpritePosition])
 
     React.useEffect(() => {
       if (autoPlay) {
@@ -305,110 +433,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
           setAspect(_aspect)
         }
       }
-    }, [frameName, fpsInterval])
-
-    // lite version for pre-loaded assets
-    const parseSpriteDataLite = (textureData: THREE.Texture, frameData: any = null) => {
-      if (frameData === null) {
-        if (numberOfFrames) {
-          //get size from texture
-          const width = textureData.image.width
-          const height = textureData.image.height
-
-          totalFrames.current = numberOfFrames
-
-          if (playBackwards) {
-            currentFrame.current = numberOfFrames - 1
-          }
-
-          spriteData.current = {
-            frames: [],
-            meta: {
-              version: '1.0',
-              size: { w: width, h: height },
-              scale: '1',
-            },
-          }
-
-          spriteData.current.frames = frameData
-        }
-      } else {
-        spriteData.current = frameData
-        if (spriteData.current && Array.isArray(spriteData.current.frames)) {
-          totalFrames.current = spriteData.current.frames.length
-        } else if (spriteData.current && typeof spriteData.current === 'object' && frameName) {
-          totalFrames.current = spriteData.current.frames[frameName].length
-        } else {
-          totalFrames.current = 0
-        }
-
-        if (playBackwards) {
-          currentFrame.current = totalFrames.current - 1
-        }
-
-        const { w, h } = getFirstItem(spriteData.current?.frames ?? []).sourceSize
-        const aspect = calculateAspectRatio(w, h)
-
-        setAspect(aspect)
-        if (matRef.current) {
-          matRef.current.map = textureData
-        }
-      }
-
-      // buffer for instanced
-      if (instanceItems) {
-        for (var i = 0; i < instanceItems.length; i++) {
-          const keys = Object.keys(spriteData.current?.frames ?? {})
-          const randomKey = keys[Math.floor(Math.random() * keys.length)]
-
-          frameBuffer.current.push({
-            key: i,
-            frames: spriteData.current?.frames ?? [],
-            selectedFrame: randomKey,
-            offset: { x: 0, y: 0 },
-          })
-        }
-      }
-
-      setSpriteTexture(textureData)
-    }
-
-    // modify the sprite material after json is parsed and state updated
-    const modifySpritePosition = (): void => {
-      if (!spriteData.current) return
-      const {
-        meta: { size: metaInfo },
-        frames,
-      } = spriteData.current
-
-      const { w: frameW, h: frameH } = Array.isArray(frames)
-        ? frames[0].sourceSize
-        : frameName
-          ? frames[frameName]
-            ? frames[frameName][0].sourceSize
-            : { w: 0, h: 0 }
-          : { w: 0, h: 0 }
-
-      if (matRef.current && matRef.current.map) {
-        matRef.current.map.wrapS = matRef.current.map.wrapT = THREE.RepeatWrapping
-        matRef.current.map.center.set(0, 0)
-        matRef.current.map.repeat.set((1 * flipOffset) / (metaInfo.w / frameW), 1 / (metaInfo.h / frameH))
-      }
-      //const framesH = (metaInfo.w - 1) / frameW
-      const framesV = (metaInfo.h - 1) / frameH
-      const frameOffsetY = 1 / framesV
-      if (matRef.current && matRef.current.map) {
-        matRef.current.map.offset.x = 0.0 //-matRef.current.map.repeat.x
-        matRef.current.map.offset.y = 1 - frameOffsetY
-      }
-
-      if (onStart) {
-        onStart({
-          currentFrameName: frameName ?? '',
-          currentFrame: currentFrame.current,
-        })
-      }
-    }
+    }, [frameName, fpsInterval, state, endFrame, startFrame, getFirstItem])
 
     // run the animation on each frame
     const runAnimation = (): void => {
@@ -575,18 +600,6 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
           })
       }
     })
-
-    // utils
-    const getFirstItem = (param: object | null | []) => {
-      if (Array.isArray(param)) {
-        return param[0]
-      } else if (typeof param === 'object' && param !== null) {
-        const keys = Object.keys(param)
-        return frameName ? param[frameName][0] : param[keys[0]][0]
-      } else {
-        return { w: 0, h: 0 }
-      }
-    }
 
     function multiplyScale(initialScale: number[], newScale: Scale): number[] {
       let _newScale: number[] | Vector3 = []

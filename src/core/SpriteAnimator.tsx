@@ -1,3 +1,4 @@
+/* eslint react-hooks/exhaustive-deps: 1 */
 import * as React from 'react'
 import { useFrame, Vector3 } from '@react-three/fiber'
 import * as THREE from 'three'
@@ -110,7 +111,7 @@ export type SpriteAnimatorProps = {
   /** Allows the animation to be paused after it ended so it can be restarted on demand via autoPlay */
   resetOnEnd?: boolean
   /** Array of Vector3-like positions for creating multiple instances of the sprite */
-  instanceItems?: (THREE.Vector3 | [number, number, number])[]
+  instanceItems?: (Vector3 | [number, number, number])[]
   /** The maximum number of instances to render (for buffer size calculation) */
   maxItems?: number
   /** Pre-parsed sprite data, usually from useSpriteLoader ready for use */
@@ -203,7 +204,7 @@ export const SpriteAnimator =  /* @__PURE__ */ React.forwardRef<THREE.Group, Spr
     const fpsInterval = (fps ?? 30) > 0 ? 1000 / (fps || 30) : 0
     const [spriteTexture, setSpriteTexture] = React.useState(new THREE.Texture())
     const totalFrames = React.useRef<number>(0)
-    const [aspect, setAspect] = React.useState<[number, number, number]>([1, 1, 1])
+    const [aspect, setAspect] = React.useState([1, 1, 1])
     const flipOffset = flipX ? -1 : 1
     const [displayAsSprite, setDisplayAsSprite] = React.useState(asSprite ?? true)
     const pauseRef = React.useRef(pause)
@@ -240,7 +241,7 @@ export const SpriteAnimator =  /* @__PURE__ */ React.forwardRef<THREE.Group, Spr
       pos.current = offset
     }, [offset])
 
-    const calculateAspectRatio = (width: number, height: number): SetStateAction<[number, number, number]> => {
+    const calculateAspectRatio = (width: number, height: number) => {
       const aspectRatio = height / width
       if (spriteRef.current) {
         spriteRef.current.scale.set(1, aspectRatio, 1)
@@ -300,7 +301,7 @@ export const SpriteAnimator =  /* @__PURE__ */ React.forwardRef<THREE.Group, Spr
         // modifySpritePosition()
         if (spriteData.current) {
           const { w, h } = getFirstItem(spriteData.current.frames).sourceSize
-          const _aspect = calculateAspectRatio(w, h)
+          const _aspect: number[] = calculateAspectRatio(w, h)
           setAspect(_aspect)
         }
       }
@@ -333,11 +334,14 @@ export const SpriteAnimator =  /* @__PURE__ */ React.forwardRef<THREE.Group, Spr
         }
       } else {
         spriteData.current = frameData
-        if (spriteData.current) {
-          totalFrames.current = spriteData.current.frames.length as number
+        if (spriteData.current && Array.isArray(spriteData.current.frames)) {
+          totalFrames.current = spriteData.current.frames.length
+        } else if (spriteData.current && typeof spriteData.current === 'object' && frameName) {
+          totalFrames.current = spriteData.current.frames[frameName].length
         } else {
           totalFrames.current = 0
         }
+
         if (playBackwards) {
           currentFrame.current = totalFrames.current - 1
         }
@@ -571,7 +575,7 @@ export const SpriteAnimator =  /* @__PURE__ */ React.forwardRef<THREE.Group, Spr
     })
 
     // utils
-    const getFirstItem = (param: object | null | []): any => {
+    const getFirstItem = (param: object | null | []) => {
       if (Array.isArray(param)) {
         return param[0]
       } else if (typeof param === 'object' && param !== null) {
@@ -583,7 +587,7 @@ export const SpriteAnimator =  /* @__PURE__ */ React.forwardRef<THREE.Group, Spr
     }
 
     function multiplyScale(initialScale: number[], newScale: Scale): number[] {
-      let _newScale: number[] | THREE.Vector3 = []
+      let _newScale: number[] | Vector3 = []
 
       // If newScale is a single number, convert it to a Vector3
       if (typeof newScale === 'number') {

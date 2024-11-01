@@ -158,7 +158,7 @@ function isSpriteData(data: SpriteData | null): data is SpriteData {
 
 const geometry = new THREE.PlaneGeometry(1, 1)
 
-export const SpriteAnimator =  /* @__PURE__ */ React.forwardRef<THREE.Group, SpriteAnimatorProps>(
+export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, SpriteAnimatorProps>(
   (
     {
       startFrame,
@@ -230,7 +230,7 @@ export const SpriteAnimator =  /* @__PURE__ */ React.forwardRef<THREE.Group, Spr
         imageUrl: textureImageURL,
         reset: reset,
         hasEnded: false,
-        ref: fref
+        ref: fref,
       }),
       [textureImageURL, spriteDataset]
     )
@@ -326,8 +326,8 @@ export const SpriteAnimator =  /* @__PURE__ */ React.forwardRef<THREE.Group, Spr
             meta: {
               version: '1.0',
               size: { w: width, h: height },
-              scale: '1'
-            }
+              scale: '1',
+            },
           }
 
           spriteData.current.frames = frameData
@@ -365,7 +365,7 @@ export const SpriteAnimator =  /* @__PURE__ */ React.forwardRef<THREE.Group, Spr
             key: i,
             frames: spriteData.current?.frames ?? [],
             selectedFrame: randomKey,
-            offset: { x: 0, y: 0 }
+            offset: { x: 0, y: 0 },
           })
         }
       }
@@ -378,7 +378,7 @@ export const SpriteAnimator =  /* @__PURE__ */ React.forwardRef<THREE.Group, Spr
       if (!spriteData.current) return
       const {
         meta: { size: metaInfo },
-        frames
+        frames,
       } = spriteData.current
 
       const { w: frameW, h: frameH } = Array.isArray(frames)
@@ -405,7 +405,7 @@ export const SpriteAnimator =  /* @__PURE__ */ React.forwardRef<THREE.Group, Spr
       if (onStart) {
         onStart({
           currentFrameName: frameName ?? '',
-          currentFrame: currentFrame.current
+          currentFrame: currentFrame.current,
         })
       }
     }
@@ -416,7 +416,7 @@ export const SpriteAnimator =  /* @__PURE__ */ React.forwardRef<THREE.Group, Spr
 
       const {
         meta: { size: metaInfo },
-        frames
+        frames,
       } = spriteData.current
       const { w: frameW, h: frameH } = getFirstItem(frames).sourceSize
       const spriteFrames = Array.isArray(frames) ? frames : frameName ? frames[frameName] : []
@@ -449,12 +449,12 @@ export const SpriteAnimator =  /* @__PURE__ */ React.forwardRef<THREE.Group, Spr
         if (loop) {
           onLoopEnd?.({
             currentFrameName: frameName ?? '',
-            currentFrame: currentFrame.current
+            currentFrame: currentFrame.current,
           })
         } else {
           onEnd?.({
             currentFrameName: frameName ?? '',
-            currentFrame: currentFrame.current
+            currentFrame: currentFrame.current,
           })
 
           state.hasEnded = resetOnEnd ? false : true
@@ -468,7 +468,7 @@ export const SpriteAnimator =  /* @__PURE__ */ React.forwardRef<THREE.Group, Spr
       } else if (onStartCondition) {
         onStart?.({
           currentFrameName: frameName ?? '',
-          currentFrame: currentFrame.current
+          currentFrame: currentFrame.current,
         })
       }
 
@@ -477,7 +477,7 @@ export const SpriteAnimator =  /* @__PURE__ */ React.forwardRef<THREE.Group, Spr
         if (softEnd.current === false) {
           onEnd?.({
             currentFrameName: frameName ?? '',
-            currentFrame: currentFrame.current
+            currentFrame: currentFrame.current,
           })
           softEnd.current = true
         }
@@ -518,14 +518,16 @@ export const SpriteAnimator =  /* @__PURE__ */ React.forwardRef<THREE.Group, Spr
 
       const {
         frame: { x: frameX, y: frameY },
-        sourceSize: { w: originalSizeX, h: originalSizeY }
+        sourceSize: { w: originalSizeX, h: originalSizeY },
       } = spriteFrames[targetFrame]
 
       const frameOffsetX = 1 / framesH
       const frameOffsetY = 1 / framesV
       if (matRef.current && matRef.current.map) {
         finalValX =
-          flipOffset > 0 ? frameOffsetX * (frameX / originalSizeX) : frameOffsetX * (frameX / originalSizeX) - matRef.current.map.repeat.x
+          flipOffset > 0
+            ? frameOffsetX * (frameX / originalSizeX)
+            : frameOffsetX * (frameX / originalSizeX) - matRef.current.map.repeat.x
         finalValY = Math.abs(1 - frameOffsetY) - frameOffsetY * (frameY / originalSizeY)
 
         matRef.current.map.offset.x = finalValX
@@ -569,7 +571,7 @@ export const SpriteAnimator =  /* @__PURE__ */ React.forwardRef<THREE.Group, Spr
         onFrame &&
           onFrame({
             currentFrameName: currentFrameName.current,
-            currentFrame: currentFrame.current
+            currentFrame: currentFrame.current,
           })
       }
     })
@@ -606,7 +608,11 @@ export const SpriteAnimator =  /* @__PURE__ */ React.forwardRef<THREE.Group, Spr
     }
 
     return (
-      <group {...props} ref={ref} scale={multiplyScale(aspect ?? [1, 1, 1], props.scale ?? 1.0) as [number, number, number]}>
+      <group
+        {...props}
+        ref={ref}
+        scale={multiplyScale(aspect ?? [1, 1, 1], props.scale ?? 1.0) as [number, number, number]}
+      >
         <context.Provider value={state}>
           <React.Suspense fallback={null}>
             {displayAsSprite && (

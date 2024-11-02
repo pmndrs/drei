@@ -7,7 +7,7 @@ import { Billboard } from './Billboard'
 import { useSpriteLoader } from './useSpriteLoader'
 
 // Frame-related types
-type SourceSize = {
+type Size = {
   w: number
   h: number
 }
@@ -17,31 +17,25 @@ type FrameData = {
     x: number
     y: number
   }
-  sourceSize: SourceSize
+  sourceSize: Size
 }
 
-type MetaData = {
-  version: string
-  size: {
-    w: number
-    h: number
-  }
-  scale: string
-}
+type Frames = Record<string, FrameData[]> | FrameData[]
 
 type SpriteData = {
-  frames: Record<string, FrameData[]> | FrameData[]
-  meta: MetaData
+  frames: Frames
+  meta: {
+    version: string
+    size: Size
+    scale: string
+  }
 }
 
 type FrameBuffer = {
   key: number
-  frames: Record<string, FrameData[]> | FrameData[]
+  frames: Frames
   selectedFrame: string
-  offset: {
-    x: number
-    y: number
-  }
+  offset: FrameData['frame']
 }
 
 type AnimationEventData = {
@@ -49,14 +43,9 @@ type AnimationEventData = {
   currentFrame: number
 }
 
-type CommonMeshProps = {
-  frustumCulled?: boolean
-  renderOrder?: number
-  visible?: boolean
-  userData?: any
-  layers?: THREE.Layers
-  matrixAutoUpdate?: boolean
-}
+type CommonMeshProps = React.ComponentProps<'mesh'> &
+  React.ComponentProps<typeof Instance> &
+  React.ComponentProps<typeof Instances>
 
 export type SpriteAnimatorProps = {
   /** The start frame of the animation */
@@ -110,7 +99,7 @@ export type SpriteAnimatorProps = {
   /** Allows the animation to be paused after it ended so it can be restarted on demand via autoPlay */
   resetOnEnd?: boolean
   /** Array of Vector3-like positions for creating multiple instances of the sprite */
-  instanceItems?: (Vector3 | [number, number, number])[]
+  instanceItems?: Vector3[]
   /** The maximum number of instances to render (for buffer size calculation) */
   maxItems?: number
   /** Pre-parsed sprite data, usually from useSpriteLoader ready for use */
@@ -134,8 +123,8 @@ export type SpriteAnimatorProps = {
 } & JSX.IntrinsicElements['group']
 
 type SpriteAnimatorState = {
-  current: number | undefined
-  offset: number | undefined
+  current?: number
+  offset?: number
   imageUrl?: string
   hasEnded: boolean
   ref: React.RefObject<THREE.Group> | null | ((instance: THREE.Group) => void)
@@ -145,12 +134,12 @@ type Scale = Vector3
 
 const context = React.createContext<SpriteAnimatorState | null>(null)
 
-export function useSpriteAnimator(): SpriteAnimatorState | null {
+export function useSpriteAnimator() {
   return React.useContext(context)
 }
 
 // Type guard for SpriteData
-function isSpriteData(data: SpriteData | null): data is SpriteData {
+function isSpriteData(data: SpriteData | null) {
   return data !== null && 'meta' in data && 'frames' in data
 }
 
@@ -159,23 +148,23 @@ const geometry = new THREE.PlaneGeometry(1, 1)
 export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, SpriteAnimatorProps>(
   (
     {
-      startFrame,
+      startFrame = 0,
       endFrame,
-      fps,
-      frameName,
+      fps = 30,
+      frameName = '',
       textureDataURL,
       textureImageURL,
-      loop,
+      loop = false,
       numberOfFrames,
-      autoPlay,
+      autoPlay = true,
       animationNames,
       onStart,
       onEnd,
       onLoopEnd,
       onFrame,
       play,
-      pause,
-      flipX,
+      pause = false,
+      flipX = false,
       alphaTest = 0.0,
       children,
       asSprite = false,
@@ -197,14 +186,14 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
     const matRef = React.useRef<THREE.MeshBasicMaterial | null>(null)
     const spriteRef = React.useRef<THREE.Mesh | THREE.InstancedMesh>(null)
     const timerOffset = React.useRef(window.performance.now())
-    const currentFrame = React.useRef(startFrame || 0)
-    const currentFrameName = React.useRef(frameName || '')
-    const fpsInterval = (fps ?? 30) > 0 ? 1000 / (fps || 30) : 0
+    const currentFrame = React.useRef(startFrame)
+    const currentFrameName = React.useRef(frameName)
+    const fpsInterval = fps > 0 ? 1000 / fps : 0
     const [spriteTexture, setSpriteTexture] = React.useState(new THREE.Texture())
     const totalFrames = React.useRef(0)
     const [aspect, setAspect] = React.useState(new THREE.Vector3(1, 1, 1))
     const flipOffset = flipX ? -1 : 1
-    const [displayAsSprite, setDisplayAsSprite] = React.useState(asSprite ?? true)
+    const [displayAsSprite, setDisplayAsSprite] = React.useState(asSprite)
     const pauseRef = React.useRef(pause)
     const pos = React.useRef(offset)
     const softEnd = React.useRef(false)
@@ -516,15 +505,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
       calculateFinalPosition(frameW, frameH, metaInfo, spriteFrames)
     }
 
-    const calculateFinalPosition = (
-      frameW: number,
-      frameH: number,
-      metaInfo: { w: number; h: number },
-      spriteFrames: {
-        frame: { x: number; y: number }
-        sourceSize: { w: number; h: number }
-      }[]
-    ) => {
+    const calculateFinalPosition = (frameW: number, frameH: number, metaInfo: Size, spriteFrames: FrameData[]) => {
       // get the manual update offset to find the next frame
       var _offset = offset === undefined ? state.current : offset
       const targetFrame = currentFrame.current
@@ -607,24 +588,9 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
     return (
       <group {...props} ref={ref} scale={multiplyScale(aspect, props.scale)}>
         <context.Provider value={state}>
-          <React.Suspense fallback={null}>
-            {displayAsSprite && (
-              <Billboard>
-                <mesh ref={spriteRef} scale={1.0} geometry={geometry} {...meshProps}>
-                  <meshBasicMaterial
-                    premultipliedAlpha={false}
-                    toneMapped={false}
-                    side={THREE.DoubleSide}
-                    ref={matRef}
-                    map={spriteTexture}
-                    transparent={true}
-                    alphaTest={alphaTest ?? 0.0}
-                  />
-                </mesh>
-              </Billboard>
-            )}
-            {!displayAsSprite && (
-              <Instances geometry={geometry} limit={maxItems ?? 1} {...meshProps}>
+          {displayAsSprite && (
+            <Billboard>
+              <mesh ref={spriteRef} scale={1.0} geometry={geometry} {...meshProps}>
                 <meshBasicMaterial
                   premultipliedAlpha={false}
                   toneMapped={false}
@@ -634,23 +600,34 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
                   transparent={true}
                   alphaTest={alphaTest ?? 0.0}
                 />
-                {(instanceItems ?? [0]).map((item, index) => (
-                  <Instance
-                    key={index}
-                    ref={instanceItems?.length === 1 ? spriteRef : null}
-                    position={item}
-                    scale={1.0}
-                    {...meshProps}
-                  />
-                ))}
-              </Instances>
-            )}
-          </React.Suspense>
+              </mesh>
+            </Billboard>
+          )}
+          {!displayAsSprite && (
+            <Instances geometry={geometry} limit={maxItems ?? 1} {...meshProps}>
+              <meshBasicMaterial
+                premultipliedAlpha={false}
+                toneMapped={false}
+                side={THREE.DoubleSide}
+                ref={matRef}
+                map={spriteTexture}
+                transparent={true}
+                alphaTest={alphaTest ?? 0.0}
+              />
+              {(instanceItems ?? [0]).map((item, index) => (
+                <Instance
+                  key={index}
+                  ref={instanceItems?.length === 1 ? spriteRef : null}
+                  position={item}
+                  scale={1.0}
+                  {...meshProps}
+                />
+              ))}
+            </Instances>
+          )}
           {children}
         </context.Provider>
       </group>
     )
   }
 )
-
-SpriteAnimator.displayName = 'SpriteAnimator'

@@ -105,8 +105,9 @@ export type SpriteAnimatorProps = {
   /** Pre-parsed sprite data, usually from useSpriteLoader ready for use */
   spriteDataset?: {
     spriteTexture: THREE.Texture
-    spriteData: SpriteData
-  }
+    spriteData: SpriteData | null
+    aspect: Vector3
+  } | null
   /** Configuration options for the canvas context when loading textures
    * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/CanvasRenderingContext2D
    */
@@ -155,7 +156,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
       textureDataURL,
       textureImageURL,
       loop = false,
-      numberOfFrames,
+      numberOfFrames = 1,
       autoPlay = true,
       animationNames,
       onStart,
@@ -172,7 +173,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
       playBackwards,
       resetOnEnd,
       maxItems = 1,
-      instanceItems,
+      instanceItems = [[0, 0, 0]],
       spriteDataset,
       canvasRenderingContext2DSettings,
       roundFramePosition = false,
@@ -197,7 +198,6 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
     const pauseRef = React.useRef(pause)
     const pos = React.useRef(offset)
     const softEnd = React.useRef(false)
-    const frameBuffer = React.useRef<FrameBuffer[]>([])
     const { spriteObj, loadJsonAndTexture } = useSpriteLoader(
       null,
       null,
@@ -270,27 +270,27 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
         }
 
         // buffer for instanced
-        if (instanceItems) {
-          for (var i = 0; i < instanceItems.length; i++) {
-            const keys = Object.keys(spriteData.current?.frames ?? {})
-            const randomKey = keys[Math.floor(Math.random() * keys.length)]
+        // if (instanceItems) {
+        //   for (var i = 0; i < instanceItems.length; i++) {
+        //     const keys = Object.keys(spriteData.current?.frames ?? {})
+        //     const randomKey = keys[Math.floor(Math.random() * keys.length)]
 
-            frameBuffer.current.push({
-              key: i,
-              frames: spriteData.current?.frames ?? [],
-              selectedFrame: randomKey,
-              offset: { x: 0, y: 0 },
-            })
-          }
-        }
+        //     frameBuffer.current.push({
+        //       key: i,
+        //       frames: spriteData.current?.frames ?? [],
+        //       selectedFrame: randomKey,
+        //       offset: { x: 0, y: 0 }
+        //     })
+        //   }
+        // }
 
         setSpriteTexture(textureData)
       },
-      [frameName, getFirstFrame, instanceItems, numberOfFrames, playBackwards]
+      [frameName, getFirstFrame, numberOfFrames, playBackwards]
     )
 
     // modify the sprite material after json is parsed and state updated
-    const modifySpritePosition = React.useCallback(() => {
+    const modifySpritePosition = React.useCallback((): void => {
       if (!spriteData.current) return
       const {
         meta: { size: metaInfo },
@@ -300,10 +300,10 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
       const { w: frameW, h: frameH } = Array.isArray(frames)
         ? frames[0].sourceSize
         : frameName
-        ? frames[frameName]
-          ? frames[frameName][0].sourceSize
+          ? frames[frameName]
+            ? frames[frameName][0].sourceSize
+            : { w: 0, h: 0 }
           : { w: 0, h: 0 }
-        : { w: 0, h: 0 }
 
       if (matRef.current && matRef.current.map) {
         matRef.current.map.wrapS = matRef.current.map.wrapT = THREE.RepeatWrapping
@@ -360,14 +360,18 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
       return ret
     }
 
-    const loadAssets = React.useCallback((textureImageURL, textureDataURL) => {
-      loadAssetsRef.current(textureImageURL, textureDataURL)
-    }, [])
+    const loadAssets = React.useCallback(
+      (textureImageURL, textureDataURL) => {
+        console.log('load assets')
+        loadJsonAndTexture(textureImageURL, textureDataURL)
+      },
+      [loadJsonAndTexture]
+    )
 
     // initial loads
     React.useEffect(() => {
       if (spriteDataset) {
-        parseDataRef.current(spriteDataset?.spriteTexture?.clone(), spriteDataset.spriteData)
+        parseSpriteDataLite(spriteDataset?.spriteTexture?.clone(), spriteDataset.spriteData)
       } else {
         if (textureImageURL && textureDataURL) {
           loadAssets(textureImageURL, textureDataURL)
@@ -377,9 +381,9 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
 
     React.useEffect(() => {
       if (spriteObj) {
-        parseDataRef.current(spriteObj?.spriteTexture?.clone(), spriteObj?.spriteData)
+        parseSpriteDataLite(spriteObj?.spriteTexture?.clone(), spriteObj?.spriteData)
       }
-    }, [spriteObj])
+    }, [spriteObj, parseSpriteDataLite])
 
     React.useEffect(() => {
       setDisplayAsSprite(asSprite ?? true)
@@ -423,7 +427,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
     }, [frameName, fpsInterval, state, endFrame, startFrame, getFirstFrame])
 
     // run the animation on each frame
-    const runAnimation = () => {
+    const runAnimation = (): void => {
       if (!isSpriteData(spriteData.current)) return
 
       const {
@@ -452,7 +456,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
       var manualProgressEndCondition = playBackwards ? currentFrame.current < 0 : currentFrame.current >= _endFrame
 
       if (endCondition) {
-        currentFrame.current = loop ? startFrame ?? 0 : 0
+        currentFrame.current = loop ? (startFrame ?? 0) : 0
 
         if (playBackwards) {
           currentFrame.current = _endFrame

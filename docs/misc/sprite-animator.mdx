@@ -132,7 +132,7 @@ Notes:
 <SpriteAnimator
   position={[-3.5, -2.0, 2.5]}
   startFrame={0}
-  scaleFactor={0.125}
+  meshProps={{ frustumCulled: false, scale: 2.5 }}
   autoPlay={true}
   loop={true}
   numberOfFrames={16}
@@ -148,7 +148,7 @@ const { spriteObj: statics } = useSpriteLoader('/statics.png', '/statics.json', 
 <SpriteAnimator
   position={[2, 2.8, 0.01]}
   fps={0}
-  scale={0.5}
+  meshProps={{ frustumCulled: false, scale: 2.5 }}
   autoPlay={true}
   loop={true}
   flipX={false}

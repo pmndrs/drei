@@ -290,7 +290,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
     )
 
     // modify the sprite material after json is parsed and state updated
-    const modifySpritePosition = React.useCallback((): void => {
+    const modifySpritePosition = React.useCallback(() => {
       if (!spriteData.current) return
       const {
         meta: { size: metaInfo },
@@ -423,7 +423,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
     }, [frameName, fpsInterval, state, endFrame, startFrame, getFirstFrame])
 
     // run the animation on each frame
-    const runAnimation = (): void => {
+    const runAnimation = () => {
       if (!isSpriteData(spriteData.current)) return
 
       const {

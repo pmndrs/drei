@@ -1,8 +1,7 @@
 import * as React from 'react'
-import { Canvas } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react'
 
-import { Icosahedron, OrthographicCamera, OrbitControls } from '../../src'
+import { Icosahedron, OrthographicCamera } from '../../src'
 import { Setup } from '../Setup'
 
 export default {

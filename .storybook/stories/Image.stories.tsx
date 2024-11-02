@@ -20,7 +20,7 @@ export default {
 
 type Story = StoryObj<typeof Image>
 
-function ImageScene({ texture, url, ...props }: React.ComponentProps<typeof Image>) {
+function ImageScene({ url, ...props }: React.ComponentProps<typeof Image>) {
   const texture1 = useTexture('/images/living-room-1.jpg')
   const texture2 = useTexture('/images/living-room-3.jpg')
 

@@ -14,102 +14,6 @@ sourcecode: src/core/SpriteAnimator.tsx
 </Grid>
 
 ```tsx
-
-/**
- * Source size information for a sprite frame
- */
-interface SourceSize {
-  /** Width of the source frame */
-  w: number
-  /** Height of the source frame */
-  h: number
-}
-
-/**
- * Data structure for a single frame in the sprite sheet
- */
-interface FrameData {
-  /** Position of the frame in the sprite sheet */
-  frame: {
-    /** X coordinate of the frame */
-    x: number
-    /** Y coordinate of the frame */
-    y: number
-  }
-  /** Original size of the source frame */
-  sourceSize: SourceSize
-}
-
-/**
- * Metadata for the sprite sheet
- */
-interface MetaData {
-  /** Version of the sprite sheet format */
-  version: string
-  /** Overall size of the sprite sheet */
-  size: {
-    /** Total width of the sprite sheet */
-    w: number
-    /** Total height of the sprite sheet */
-    h: number
-  }
-  /** Scale factor of the sprite sheet */
-  scale: string
-}
-
-/**
- * Complete sprite data structure
- */
-interface SpriteData {
-  /** Collection of frame data, either as an array or keyed by animation name */
-  frames: Record<string, FrameData[]> | FrameData[]
-  /** Metadata about the sprite sheet */
-  meta: MetaData
-}
-
-/**
- * Event data structure for animation callbacks
- */
-interface AnimationEventData {
-  /** Name of the current animation frame */
-  currentFrameName: string
-  /** Index of the current frame */
-  currentFrame: number
-}
-
-/**
- * Common mesh properties that can be safely applied to both mesh and instance components
- */
-type CommonMeshProps = {
-  /** Whether the object gets culled by the frustum 
-   * @default true
-   */
-  frustumCulled?: boolean
-
-  /** Override the rendering order 
-   * @default 0
-   */
-  renderOrder?: number
-
-  /** Whether the object gets rendered at all 
-   * @default true
-   */
-  visible?: boolean
-
-  /** Custom user data object to store whatever you want 
-   * @default undefined
-   */
-  userData?: any
-
-  /** Whether the object's matrix automatically updates 
-   * @default true
-   */
-  matrixAutoUpdate?: boolean
-}
-
-/**
- * Props for the SpriteAnimator component
- */
 export type SpriteAnimatorProps = {
   /** The start frame of the animation */
   startFrame?: number
@@ -119,7 +23,7 @@ export type SpriteAnimatorProps = {
 
   /** The desired frames per second of the animation. If set to 0 or negative, animation will be static */
   fps?: number
-  
+
   /** The animation names of the spritesheet (if the spritesheet -with JSON- contains more animation sequences) */
   animationNames?: Array<string>
 
@@ -138,27 +42,19 @@ export type SpriteAnimatorProps = {
   /** The number of frames of the animation (required if using plain spritesheet without JSON) */
   numberOfFrames?: number
 
-  /** Whether or not the animation should auto-start when all assets are loaded */
+  /** Animation auto-start when all assets are loaded */
   autoPlay?: boolean
 
-  /** Event callback when the animation starts or restarts
-   * @param data Animation state data containing currentFrameName and currentFrame
-   */
+  /** Event callback when the animation starts or restarts */
   onStart?: (data: AnimationEventData) => void
 
-  /** Event callback when the animation ends
-   * @param data Animation state data containing currentFrameName and currentFrame
-   */
+  /** Event callback when the animation ends */
   onEnd?: (data: AnimationEventData) => void
 
-  /** Event callback when the animation completes a loop cycle
-   * @param data Animation state data containing currentFrameName and currentFrame
-   */
+  /** Event callback when the animation completes a loop cycle */
   onLoopEnd?: (data: AnimationEventData) => void
 
-  /** Event callback fired on each frame change
-   * @param data Animation state data containing currentFrameName and currentFrame
-   */
+  /** Event callback fired on each frame change */
   onFrame?: (data: AnimationEventData) => void
 
   /** @deprecated Use pause={false} instead. Control when the animation runs */
@@ -171,13 +67,11 @@ export type SpriteAnimatorProps = {
   flipX?: boolean
 
   /** Sets the alpha value to be used when running an alpha test
-   * @see https://threejs.org/docs/#api/en/materials/Material.alphaTest
    * @default 0.0
    */
   alphaTest?: number
 
   /** Displays the texture on a Billboard component always facing the camera.
-   * If set to false, it renders on a PlaneGeometry
    * @default false
    */
   asSprite?: boolean
@@ -201,15 +95,13 @@ export type SpriteAnimatorProps = {
    */
   maxItems?: number
 
-  /** Pre-parsed sprite data, usually from useSpriteLoader ready for use */
+  /** Pre-parsed sprite data, usually from useSpriteLoader */
   spriteDataset?: {
     spriteTexture: THREE.Texture
     spriteData: SpriteData
   }
 
-  /** Configuration options for the canvas context when loading textures
-   * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/CanvasRenderingContext2D
-   */
+  /** Configuration options for the canvas context when loading textures */
   canvasRenderingContext2DSettings?: CanvasRenderingContext2DSettings
 
   /** Controls whether frame positions are rounded for precise pixel alignment.
@@ -267,12 +159,12 @@ const { spriteObj: statics } = useSpriteLoader('/statics.png', '/statics.json', 
   alphaTest={0.01}
 />
 
- ```
+```
 
 `ScrollControls` example
 
 ```jsx
-<ScrollControls damping={0.2} maxSpeed={0.5} pages={2}>
+;<ScrollControls damping={0.2} maxSpeed={0.5} pages={2}>
   <SpriteAnimator
     position={[0.0, -1.5, -1.5]}
     startFrame={0}

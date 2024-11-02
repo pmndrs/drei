@@ -43,9 +43,12 @@ type AnimationEventData = {
   currentFrame: number
 }
 
-type CommonMeshProps = React.ComponentProps<'mesh'> &
-  React.ComponentProps<typeof Instance> &
+type CommonProps<T, U, V> = Pick<T & U & V, keyof T & keyof U & keyof V>
+type CommonMeshProps = CommonProps<
+  React.ComponentProps<'mesh'>,
+  React.ComponentProps<typeof Instance>,
   React.ComponentProps<typeof Instances>
+>
 
 export type SpriteAnimatorProps = {
   /** The start frame of the animation */

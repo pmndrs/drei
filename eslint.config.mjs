@@ -1,7 +1,6 @@
 import { fixupConfigRules, fixupPluginRules } from '@eslint/compat'
 import typescriptEslint from '@typescript-eslint/eslint-plugin'
 import react from 'eslint-plugin-react'
-// import prettier from 'eslint-plugin-prettier'
 import reactHooks from 'eslint-plugin-react-hooks'
 import _import from 'eslint-plugin-import'
 import globals from 'globals'
@@ -21,15 +20,13 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ['.storybook', '.storybook/public/draco-gltf/', '**/dist/', '**/node_modules/', '**/storybook-static/'],
+    ignores: ['.storybook/public/draco-gltf/', '**/dist/', '**/node_modules/', '**/storybook-static/'],
   },
   ...fixupConfigRules(
     compat.extends(
-      //   'plugin:prettier/recommended',
-      'eslint:recommended',
+      'plugin:import/recommended',
       //   'plugin:import/errors',
       //   'plugin:import/warnings',
-      'plugin:import/recommended',
       'plugin:import/typescript',
       'plugin:react-hooks/recommended',
       'plugin:storybook/recommended',
@@ -40,7 +37,6 @@ export default [
     plugins: {
       '@typescript-eslint': typescriptEslint,
       react,
-      //   prettier: fixupPluginRules(prettier),
       'react-hooks': fixupPluginRules(reactHooks),
       import: fixupPluginRules(_import),
     },

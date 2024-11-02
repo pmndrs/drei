@@ -28,7 +28,7 @@ function Helmet() {
 
 //
 
-function LoaderScene(props: React.ComponentProps<typeof Loader>) {
+function LoaderScene(_props: React.ComponentProps<typeof Loader>) {
   return (
     <React.Suspense
       fallback={

@@ -23,7 +23,7 @@ export default {
 
 type Story = StoryObj<typeof Helper>
 
-const HelperScene1 = (props: ComponentProps<typeof Helper>) => {
+const HelperScene1 = (_props: ComponentProps<typeof Helper>) => {
   return (
     <Sphere>
       <meshBasicMaterial />
@@ -39,7 +39,7 @@ export const HelperSt1 = {
   name: 'Default',
 } satisfies Story
 
-const HelperScene2 = (props: ComponentProps<typeof Helper>) => {
+const HelperScene2 = (_props: ComponentProps<typeof Helper>) => {
   const camera = React.useRef<THREE.PerspectiveCamera>(null)
 
   useFrame(({ clock }) => {

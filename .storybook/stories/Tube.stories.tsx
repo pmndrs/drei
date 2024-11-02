@@ -21,7 +21,7 @@ export default {
 
 type Story = StoryObj<typeof Tube>
 
-function TubeScene({ args, ...props }: React.ComponentProps<typeof Tube>) {
+function TubeScene(props: React.ComponentProps<typeof Tube>) {
   // curve example from https://threejs.org/docs/#api/en/geometries/TubeGeometry
   const path = React.useMemo(() => {
     class CustomSinCurve extends THREE.Curve<THREE.Vector3> {

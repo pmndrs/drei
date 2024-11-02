@@ -1,13 +1,10 @@
 import { createPortal, useFrame } from '@react-three/fiber'
-import React, { ElementRef, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Scene } from 'three'
 import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
-import { Box, OrbitControls, PerspectiveCamera, Plane, useFBO } from '../../src'
-
-import type { Camera } from 'three'
-import type { OrbitControlsProps } from '../../src'
+import { Box, OrbitControls, PerspectiveCamera, Plane, useFBO, type OrbitControlsProps } from '../../src'
 
 export default {
   title: 'Controls/OrbitControls',

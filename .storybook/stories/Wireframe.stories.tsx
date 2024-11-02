@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { IcosahedronGeometry, SphereGeometry, Vector3 } from 'three'
+import { IcosahedronGeometry, Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'

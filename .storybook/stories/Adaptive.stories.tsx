@@ -1,12 +1,11 @@
 import React, { ComponentProps, Suspense } from 'react'
-import { Vector3 } from 'three'
+import { Vector3, type Material, type Mesh } from 'three'
 import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
 import { useGLTF, AdaptiveDpr, AdaptiveEvents, OrbitControls } from '../../src'
 
-import type { Material, Mesh } from 'three'
 import type { GLTF } from 'three-stdlib'
 
 export default {

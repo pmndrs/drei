@@ -85,7 +85,7 @@ export const SkySt2 = {
 
 function SkyScene3(props: React.ComponentProps<typeof Sky>) {
   // NOT the right way to do it...
-  const [inclination, setInclination] = React.useState(0)
+  const [, setInclination] = React.useState(0)
   useFrame(() => {
     setInclination((a) => a + 0.002)
   })

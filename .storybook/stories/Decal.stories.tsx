@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 import { Sampler, Decal, useTexture, useSurfaceSampler, PerspectiveCamera, OrbitControls } from '../../src'
-import { Euler, InstancedBufferAttribute, Matrix4, Mesh, Quaternion, Vector3 } from 'three'
+import { Euler, InstancedBufferAttribute, Matrix4, Quaternion, Vector3 } from 'three'
 import { ComponentProps } from 'react'
 
 function LoopOverInstancedBufferAttribute({ children, buffer }: { buffer?: InstancedBufferAttribute; children: any }) {
@@ -39,7 +39,7 @@ export default {
 
 type Story = StoryObj<typeof Sampler>
 
-function DecalScene(props: ComponentProps<typeof Sampler>) {
+function DecalScene(_props: ComponentProps<typeof Sampler>) {
   const ref = React.useRef<any>()
 
   const [reactMap, threeMap] = useTexture(['/decals/react.png', '/decals/three.png'])

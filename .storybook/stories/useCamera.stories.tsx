@@ -71,6 +71,6 @@ function UseCameraScene() {
 }
 
 export const UseCameraSt = {
-  render: (args) => <UseCameraScene />,
+  render: () => <UseCameraScene />,
   name: 'Default',
 } satisfies Story

@@ -79,7 +79,7 @@ function VideoTextureScene3(props: React.ComponentProps<typeof VideoTexture>) {
     <>
       <Plane
         args={[4, 2.25]}
-        onClick={async (e) => {
+        onClick={async () => {
           const mediaStream = await navigator.mediaDevices.getDisplayMedia({ video: true })
           setMediaStream(mediaStream)
         }}

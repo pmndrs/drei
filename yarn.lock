@@ -2860,7 +2860,7 @@ __metadata:
     stats.js: "npm:^0.17.0"
     storybook: "npm:^8.4.1"
     suspend-react: "npm:^0.1.3"
-    three: "npm:^0.151.0"
+    three: "npm:^0.170.0"
     three-mesh-bvh: "npm:^0.7.8"
     three-stdlib: "npm:^2.33.0"
     troika-three-text: "npm:^0.50.2"
@@ -12257,10 +12257,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"three@npm:^0.151.0":
-  version: 0.151.3
-  resolution: "three@npm:0.151.3"
-  checksum: 10c0/892d2addd439e500b37669a86368c09a0a71dc404868b0347d48b5606ebd3264d2e9cce3cb85bc9ac83dc5cac8cc718ed0e9ef7cd22cad9f1233ea4c32108255
+"three@npm:^0.170.0":
+  version: 0.170.0
+  resolution: "three@npm:0.170.0"
+  checksum: 10c0/eeaa1eccb31467654a044fb90634b3b6bb8d0768a4f029c082fb6aa22aec0d6362d0e3af74938caa1db512b7823a031b54a76e88fba6cfd535054165ea9667c9
   languageName: node
   linkType: hard
 

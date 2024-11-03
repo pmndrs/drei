@@ -10,7 +10,7 @@ const root = process.platform === 'win32' ? path.resolve('/') : '/'
 const external = (id) => !id.startsWith('.') && !id.startsWith(root)
 const extensions = ['.js', '.jsx', '.ts', '.tsx', '.json']
 
-const getBabelOptions = ({ useESModules }) => ({
+const getBabelOptions = ({ useESModules }, targets = '> 1%, not dead, not ie 11, not op_mini all') => ({
   babelrc: false,
   extensions,
   exclude: '**/node_modules/**',
@@ -29,7 +29,7 @@ const getBabelOptions = ({ useESModules }) => ({
         bugfixes: true,
         loose: true,
         modules: false,
-        targets: '> 1%, not dead, not ie 11, not op_mini all',
+        targets,
       },
     ],
     '@babel/preset-react',

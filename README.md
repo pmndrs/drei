@@ -1,5 +1,6 @@
 [![logo](docs/logo.jpg)](https://codesandbox.io/s/bfplr)
 
+[![Storybook](https://img.shields.io/static/v1?message=Storybook&style=flat&colorA=000000&colorB=000000&label=&logo=storybook&logoColor=ffffff)](https://drei.pmnd.rs/)
 [![Version](https://img.shields.io/npm/v/@react-three/drei?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)
 [![Downloads](https://img.shields.io/npm/dt/@react-three/drei.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)
 [![Discord Shield](https://img.shields.io/discord/740090768164651008?style=flat&colorA=000000&colorB=000000&label=discord&logo=discord&logoColor=ffffff)](https://discord.com/channels/740090768164651008/741751532592038022)
@@ -33,6 +34,9 @@ The `native` route of the library **does not** export `Html` or `Loader`. The de
 ## Documentation
 
 https://pmndrs.github.io/drei
+
+<details>
+  <summary>Old doc</summary>
 
 > [!WARNING]
 > Below is an archive of the anchors links with their new respective locations to the documentation website.
@@ -790,3 +794,5 @@ https://pmndrs.github.io/drei
 #### ShadowAlpha
 
 [Documentation has moved here](https://pmndrs.github.io/drei/staging/shadow-alpha)
+
+</details>

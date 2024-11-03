@@ -1,4 +1,3 @@
-import * as THREE from 'three'
 import * as React from 'react'
 import { Meta, StoryObj } from '@storybook/react'
 

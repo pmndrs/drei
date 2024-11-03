@@ -1,4 +1,4 @@
-import React, { Component, ComponentProps } from 'react'
+import React, { ComponentProps } from 'react'
 import { BufferGeometry, CatmullRomCurve3, LineBasicMaterial, LineLoop, Vector3 } from 'three'
 import { FontLoader, TextGeometry, TextGeometryParameters } from 'three-stdlib'
 import { extend, useFrame, useLoader } from '@react-three/fiber'

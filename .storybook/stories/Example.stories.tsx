@@ -1,11 +1,10 @@
-import * as THREE from 'three'
 import * as React from 'react'
 import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
-import { Example, ExampleApi, Sparkles } from '../../src'
+import { Example, ExampleApi } from '../../src'
 
 export default {
   title: 'Misc/Example',

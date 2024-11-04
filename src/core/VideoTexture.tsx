@@ -73,8 +73,11 @@ export function useVideoTexture(
 
         const texture = new THREE.VideoTexture(video)
 
-        if ('colorSpace' in texture) (texture as any).colorSpace = (gl as any).outputColorSpace
-        else texture.encoding = gl.outputEncoding
+        if ('colorSpace' in texture) {
+          texture.colorSpace = gl.outputColorSpace // r152+
+        } else {
+          ;(texture as any).encoding = gl.outputEncoding // r151-
+        }
 
         video.addEventListener(unsuspend, () => res(texture))
       }),

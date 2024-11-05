@@ -2830,7 +2830,7 @@ __metadata:
     camera-controls: "npm:^2.9.0"
     copyfiles: "npm:^2.4.1"
     cross-env: "npm:^7.0.3"
-    detect-gpu: "npm:^5.0.54"
+    detect-gpu: "npm:^5.0.55"
     eslint: "npm:^9.14.0"
     eslint-config-prettier: "npm:^9.1.0"
     eslint-import-resolver-typescript: "npm:^3.6.3"
@@ -2862,7 +2862,7 @@ __metadata:
     suspend-react: "npm:^0.1.3"
     three: "npm:^0.151.0"
     three-mesh-bvh: "npm:^0.7.8"
-    three-stdlib: "npm:^2.33.0"
+    three-stdlib: "npm:^2.34.0"
     troika-three-text: "npm:^0.50.2"
     ts-node: "npm:^10.9.2"
     tunnel-rat: "npm:^0.1.2"
@@ -5806,12 +5806,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"detect-gpu@npm:^5.0.54":
-  version: 5.0.54
-  resolution: "detect-gpu@npm:5.0.54"
+"detect-gpu@npm:^5.0.55":
+  version: 5.0.55
+  resolution: "detect-gpu@npm:5.0.55"
   dependencies:
     webgl-constants: "npm:^1.1.1"
-  checksum: 10c0/e754ceae5dab2c0f69fcf2facc1d0eda902e58d7867cbc37f5d9b0633634c46dd5299c2109c7c3b278834d22546b49328c0b9445842f53ed60615920eb6a0fe1
+  checksum: 10c0/de5ed90f7e1c8f20c69b8b2ad8aeaa0a332f231d2cd42f8e45d16b4398a2bdc66346d99abc0c8377b5a3079660c1bc390ba29c60669300873977ca4764ced587
   languageName: node
   linkType: hard
 
@@ -12496,9 +12496,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"three-stdlib@npm:^2.33.0":
-  version: 2.33.0
-  resolution: "three-stdlib@npm:2.33.0"
+"three-stdlib@npm:^2.34.0":
+  version: 2.34.0
+  resolution: "three-stdlib@npm:2.34.0"
   dependencies:
     "@types/draco3d": "npm:^1.4.0"
     "@types/offscreencanvas": "npm:^2019.6.4"
@@ -12508,7 +12508,7 @@ __metadata:
     potpack: "npm:^1.0.1"
   peerDependencies:
     three: ">=0.128.0"
-  checksum: 10c0/ba35f0d035877f189bcfe8228d0a731497ba620e28108ad61720e2cbbe5fc2826eeca3566cfe5fbb300456d74ddc81adf12496c14e53a744282d28ea27fc40dd
+  checksum: 10c0/31927b9fd1e95907d9f11810a9b36119e21c6e0e0bcaf438c3ab944582e531153cc38984db97d10ba104d8cefc34d5fc046ec4be84e5b5e3a378ab2058e9ad18
   languageName: node
   linkType: hard
 

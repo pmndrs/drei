@@ -5,12 +5,12 @@ import { useState } from 'react'
 import * as React from 'react'
 import * as THREE from 'three'
 
-type Size = {
+export type Size = {
   w: number
   h: number
 }
 
-type FrameData = {
+export type FrameData = {
   frame: {
     x: number
     y: number
@@ -28,7 +28,7 @@ type FrameData = {
   sourceSize: Size
 }
 
-type MetaData = {
+export type MetaData = {
   version: string
   size: {
     w: number
@@ -41,8 +41,10 @@ type MetaData = {
   scale: string
 }
 
-type SpriteData = {
-  frames: Record<string, FrameData[]> | FrameData[]
+type Frames = Record<string, FrameData[]> | FrameData[]
+
+export type SpriteData = {
+  frames: Frames
   meta: MetaData
 }
 

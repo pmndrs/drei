@@ -4,39 +4,9 @@ import { useFrame, Vector3 } from '@react-three/fiber'
 import * as THREE from 'three'
 import { Instances, Instance } from './Instances'
 import { Billboard } from './Billboard'
-import { useSpriteLoader } from './useSpriteLoader'
+import { FrameData, Size, SpriteData, useSpriteLoader } from './useSpriteLoader'
 
 // Frame-related types
-type Size = {
-  w: number
-  h: number
-}
-
-type FrameData = {
-  frame: {
-    x: number
-    y: number
-  }
-  sourceSize: Size
-}
-
-type Frames = Record<string, FrameData[]> | FrameData[]
-
-type SpriteData = {
-  frames: Frames
-  meta: {
-    version: string
-    size: Size
-    scale: string
-  }
-}
-
-type FrameBuffer = {
-  key: number
-  frames: Frames
-  selectedFrame: string
-  offset: FrameData['frame']
-}
 
 type AnimationEventData = {
   currentFrameName: string
@@ -244,6 +214,10 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
                 version: '1.0',
                 size: { w: width, h: height },
                 scale: '1',
+                rows: 0,
+                columns: 0,
+                frameWidth: 0,
+                frameHeight: 0,
               },
             }
 

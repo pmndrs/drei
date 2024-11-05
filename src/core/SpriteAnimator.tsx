@@ -173,8 +173,8 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
       children,
       asSprite = false,
       offset,
-      playBackwards,
-      resetOnEnd,
+      playBackwards = false,
+      resetOnEnd = false,
       maxItems = 1,
       instanceItems = [[0, 0, 0]],
       spriteDataset,
@@ -476,7 +476,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
             currentFrame: currentFrame.current,
           })
 
-          state.hasEnded = resetOnEnd ? false : true
+          state.hasEnded = !resetOnEnd
           if (resetOnEnd) {
             pauseRef.current = true
             //calculateFinalPosition(frameW, frameH, metaInfo, spriteFrames)

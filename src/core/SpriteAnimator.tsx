@@ -329,15 +329,6 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
       }
     }, [flipOffset, frameName, onStart])
 
-    // Move these into refs to prevent them from triggering re-renders
-    const loadAssetsRef = React.useRef((imageUrl: string, dataUrl: string) => {
-      loadJsonAndTexture(imageUrl, dataUrl)
-    })
-
-    const parseDataRef = React.useRef((texture: THREE.Texture, data: SpriteData) => {
-      parseSpriteDataLite(texture, data)
-    })
-
     const state = React.useMemo<SpriteAnimatorState>(
       () => ({
         current: pos.current,

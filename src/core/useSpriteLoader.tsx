@@ -54,7 +54,7 @@ type SpriteMetaDimension = {
 }
 
 // utils
-export const getFirstItem = (param: FrameData[] | Record<string, FrameData[]>) => {
+export const getFirstFrame = (param: FrameData[] | Record<string, FrameData[]>) => {
   if (Array.isArray(param)) {
     return param[0]
   } else if (typeof param === 'object' && param !== null) {
@@ -391,7 +391,7 @@ export function useSpriteLoader<Url extends string>(
         spriteDataRef.current.frames = parseFrames()
 
         totalFrames.current = Array.isArray(json.frames) ? json.frames.length : Object.keys(json.frames).length
-        const { w, h } = getFirstItem(json.frames).sourceSize
+        const { w, h } = getFirstFrame(json.frames).sourceSize
         aspect = calculateAspectRatio(w, h, aspectFactor)
       }
 

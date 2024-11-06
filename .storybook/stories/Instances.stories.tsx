@@ -1,18 +1,9 @@
 import * as React from 'react'
-import { Euler, MathUtils, Mesh, Quaternion, ShaderMaterial, Vector3 } from 'three'
-import { Meta, StoryObj } from '@storybook/react'
+import { Euler, MathUtils, Mesh, ShaderMaterial, Vector3 } from 'three'
+// import { StoryObj } from '@storybook/react'
 import { Setup } from '../Setup'
 
-import {
-  Html,
-  useGLTF,
-  Loader,
-  Instances,
-  Instance,
-  createInstances,
-  InstancedAttribute,
-  PositionMesh,
-} from '../../src'
+import { useGLTF, Instances, Instance, createInstances, InstancedAttribute } from '../../src'
 import { useFrame } from '@react-three/fiber'
 import { clamp } from 'maath/misc'
 
@@ -28,7 +19,7 @@ export default {
   ],
 }
 
-type Story = StoryObj
+// type Story = StoryObj
 
 // function Helmet() {
 
@@ -61,7 +52,7 @@ const [SuzaneInstances, SuzaneInstnace] = createInstances<SuzaneInstnaceProps>()
 
 const Suzanne = () => {
   const randomShift = React.useMemo(() => Math.random() * Math.PI, [])
-  const [_isPending, startTransition] = React.useTransition()
+  const [_isPending] = React.useTransition()
 
   const instancePosition = React.useMemo(
     () => [MathUtils.randFloatSpread(100), MathUtils.randFloatSpread(100), MathUtils.randFloatSpread(100)] as const,

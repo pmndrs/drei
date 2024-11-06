@@ -1,12 +1,11 @@
-import React, { ComponentProps, forwardRef, Suspense, useRef } from 'react'
+import React, { ComponentProps, Suspense, useRef } from 'react'
 import * as THREE from 'three'
-import { useFrame } from '@react-three/fiber'
+
 import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
 import { Float } from '../../src'
-import { float } from 'three/examples/jsm/nodes/Nodes.js'
 
 export default {
   title: 'Staging/Float',

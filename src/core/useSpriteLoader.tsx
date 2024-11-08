@@ -442,11 +442,7 @@ export function useSpriteLoader<Url extends string>(
         throw new Error('A valid texture URL must be provided')
       }
 
-      new Promise<THREE.Texture>((resolve) => {
-        textureLoader.load(validUrl, resolve)
-      }).then((texture) => {
-        parseSpriteData(null, texture)
-      })
+      textureLoader.load(validUrl, (texture) => parseSpriteData(null, texture))
     },
     [textureLoader, parseSpriteData]
   )

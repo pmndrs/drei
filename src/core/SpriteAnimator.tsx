@@ -167,7 +167,6 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
     const totalFrames = React.useRef(0)
     const [aspect, setAspect] = React.useState(new THREE.Vector3(1, 1, 1))
     const flipOffset = flipX ? -1 : 1
-    const [displayAsSprite, setDisplayAsSprite] = React.useState(asSprite)
     const pauseRef = React.useRef(pause)
     const pos = React.useRef(offset)
     const softEnd = React.useRef(false)
@@ -199,26 +198,11 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
         if (data === null) {
           if (numberOfFrames) {
             //get size from texture
-            const width = textureData.image.width
-            const height = textureData.image.height
 
             totalFrames.current = numberOfFrames
 
             if (playBackwards) {
               currentFrame.current = numberOfFrames - 1
-            }
-
-            spriteData.current = {
-              frames: [],
-              meta: {
-                version: '1.0',
-                size: { w: width, h: height },
-                scale: '1',
-                rows: 0,
-                columns: 0,
-                frameWidth: 0,
-                frameHeight: 0,
-              },
             }
 
             spriteData.current = data
@@ -328,34 +312,22 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
       return ret
     }
 
-    const loadAssets = React.useCallback(
-      (textureImageURL, textureDataURL) => {
-        console.log('load assets')
-        loadJsonAndTexture(textureImageURL, textureDataURL)
-      },
-      [loadJsonAndTexture]
-    )
-
     // initial loads
     React.useEffect(() => {
       if (spriteDataset) {
         parseSpriteDataLite(spriteDataset?.spriteTexture?.clone(), spriteDataset.spriteData)
       } else {
         if (textureImageURL && textureDataURL) {
-          loadAssets(textureImageURL, textureDataURL)
+          loadJsonAndTexture(textureImageURL, textureDataURL)
         }
       }
-    }, [loadAssets, spriteDataset, textureDataURL, textureImageURL])
+    }, [loadJsonAndTexture, spriteDataset, textureDataURL, textureImageURL])
 
     React.useEffect(() => {
       if (spriteObj) {
         parseSpriteDataLite(spriteObj?.spriteTexture?.clone(), spriteObj?.spriteData)
       }
     }, [spriteObj, parseSpriteDataLite])
-
-    React.useEffect(() => {
-      setDisplayAsSprite(asSprite ?? true)
-    }, [asSprite])
 
     // support backwards play
     React.useEffect(() => {
@@ -560,7 +532,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
     return (
       <group {...props} ref={ref} scale={multiplyScale(aspect, props.scale)}>
         <context.Provider value={state}>
-          {displayAsSprite && (
+          {asSprite && (
             <Billboard>
               <mesh ref={spriteRef} scale={1.0} geometry={geometry} {...meshProps}>
                 <meshBasicMaterial
@@ -575,7 +547,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
               </mesh>
             </Billboard>
           )}
-          {!displayAsSprite && (
+          {!asSprite && (
             <Instances geometry={geometry} limit={maxItems ?? 1} {...meshProps}>
               <meshBasicMaterial
                 premultipliedAlpha={false}

@@ -1,6 +1,5 @@
 import * as THREE from 'three'
 import * as React from 'react'
-// eslint-disable-next-line
 import { ReactThreeFiber, useFrame } from '@react-three/fiber'
 import { Points, Vector3, Spherical, Color, AdditiveBlending, ShaderMaterial } from 'three'
 import { ForwardRefComponent } from '../helpers/ts-utils'

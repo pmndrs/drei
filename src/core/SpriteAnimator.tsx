@@ -321,7 +321,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
           loadJsonAndTexture(textureImageURL, textureDataURL)
         }
       }
-    }, [loadJsonAndTexture, spriteDataset, textureDataURL, textureImageURL])
+    }, [loadJsonAndTexture, spriteDataset, textureDataURL, textureImageURL, parseSpriteDataLite])
 
     React.useEffect(() => {
       if (spriteObj) {

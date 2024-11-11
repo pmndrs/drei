@@ -411,7 +411,7 @@ export function useSpriteLoader<Url extends string>(
         aspect: aspect,
       })
     },
-    [getRowsAndColumns, numberOfFrames, parseFrames, calculateAspectRatio]
+    [getRowsAndColumns, numberOfFrames, parseFrames, calculateAspectRatio, calculateScaleRatio]
   )
 
   /**
@@ -466,9 +466,11 @@ export function useSpriteLoader<Url extends string>(
       loadStandaloneSprite()
     }
 
+    const _inputRef = inputRef.current
+
     return () => {
-      if (inputRef.current) {
-        useLoader.clear(TextureLoader, inputRef.current)
+      if (_inputRef) {
+        useLoader.clear(TextureLoader, _inputRef)
       }
     }
   }, [loadJsonAndTextureAndExecuteCallback, loadStandaloneSprite, parseSpriteData])

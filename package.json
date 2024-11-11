@@ -31,7 +31,7 @@
   "sideEffects": false,
   "scripts": {
     "build": "rimraf dist && yarn typegen && rollup -c && yarn copy",
-    "prepare": "yarn build && husky install",
+    "prepare": "yarn build && husky",
     "eslint": "eslint --fix .",
     "eslint:ci": "eslint .",
     "prettier": "prettier --check .",
@@ -113,7 +113,7 @@
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-storybook": "^0.10.2",
-    "husky": "^6.0.0",
+    "husky": "^9.1.6",
     "json": "^11.0.0",
     "prettier": "^3.3.3",
     "pretty-quick": "^4.0.0",

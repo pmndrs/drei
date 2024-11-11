@@ -2831,7 +2831,7 @@ __metadata:
     eslint-plugin-storybook: "npm:^0.10.2"
     glsl-noise: "npm:^0.0.0"
     hls.js: "npm:^1.5.17"
-    husky: "npm:^6.0.0"
+    husky: "npm:^9.1.6"
     json: "npm:^11.0.0"
     maath: "npm:^0.10.8"
     meshline: "npm:^3.3.1"
@@ -7651,12 +7651,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"husky@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "husky@npm:6.0.0"
+"husky@npm:^9.1.6":
+  version: 9.1.6
+  resolution: "husky@npm:9.1.6"
   bin:
-    husky: lib/bin.js
-  checksum: 10c0/00dca95e24f6174f150ba1ee746948a89a3ff20b460ecad7bc2e4c2a76fe5b78bef1400c84bc2bade6588392c37baf57c173f49dc123fdbc7c7a71e4d412fb67
+    husky: bin.js
+  checksum: 10c0/705673db4a247c1febd9c5df5f6a3519106cf0335845027bb50a15fba9b1f542cb2610932ede96fd08008f6d9f49db0f15560509861808b0031cdc0e7c798bac
   languageName: node
   linkType: hard
 

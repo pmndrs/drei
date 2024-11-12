@@ -55,15 +55,12 @@ type SpriteMetaDimension = {
 }
 
 // utils
-export const getFirstFrame = (param: FrameData[] | Record<string, FrameData[]>) => {
-  if (Array.isArray(param)) {
-    return param[0]
-  } else if (typeof param === 'object' && param !== null) {
-    const keys = Object.keys(param)
-
-    return param[keys[0]][0]
+export const getFirstFrame = (frames: SpriteData['frames'], frameName?: string) => {
+  if (Array.isArray(frames)) {
+    return frames[0]
   } else {
-    return { w: 0, h: 0, sourceSize: { w: 0, h: 0 } }
+    const k = frameName ?? Object.keys(frames)[0]
+    return frames[k][0]
   }
 }
 

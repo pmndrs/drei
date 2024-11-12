@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react'
 import { Setup } from '../Setup'
-import { SpriteAnimator, useSpriteLoader } from '../../src'
+import { SpriteAnimator } from '../../src'
 
 const SPRITE_IMAGE = 'story.png'
 const SPRITE_DATA = 'story.json'
@@ -32,12 +32,13 @@ type Story = StoryObj<typeof SpriteAnimator>
 //
 
 function SpriteAnimatorScene1(props: React.ComponentProps<typeof SpriteAnimator>) {
-  const { spriteObj } = useSpriteLoader(SPRITE_IMAGE, SPRITE_DATA, [props.frameName!], null)
-
-  return <SpriteAnimator {...props} spriteDataset={spriteObj} />
+  return <SpriteAnimator {...props} />
 }
 export const SpriteAnimatorSt1 = {
   args: {
+    textureImageURL: SPRITE_IMAGE,
+    textureDataURL: SPRITE_DATA,
+    animationNames: ['Fly'],
     frameName: 'Fly',
     fps: 18,
     scale: 1.5,
@@ -49,12 +50,13 @@ export const SpriteAnimatorSt1 = {
 //
 
 function SpriteAnimatorScene2(props: React.ComponentProps<typeof SpriteAnimator>) {
-  const { spriteObj } = useSpriteLoader(SPRITE_IMAGE, SPRITE_DATA, [props.frameName!], null)
-
-  return <SpriteAnimator {...props} spriteDataset={spriteObj} />
+  return <SpriteAnimator {...props} />
 }
 export const SpriteAnimatorSt2 = {
   args: {
+    textureImageURL: SPRITE_IMAGE,
+    textureDataURL: SPRITE_DATA,
+    animationNames: ['sword'],
     frameName: 'sword',
     fps: 0,
   },
@@ -65,14 +67,18 @@ export const SpriteAnimatorSt2 = {
 //
 
 function SpriteAnimatorScene3(props: React.ComponentProps<typeof SpriteAnimator>) {
-  const { spriteObj } = useSpriteLoader(SPRITE_IMAGE, SPRITE_DATA, ['Fly', 'heart', 'sword', 'skull'], null)
+  const commonProps = {
+    textureImageURL: SPRITE_IMAGE,
+    textureDataURL: SPRITE_DATA,
+    animationNames: ['Fly', 'heart', 'sword', 'skull'],
+  }
 
   return (
     <>
-      <SpriteAnimator {...props} position={[-2, 0, 0.01]} spriteDataset={spriteObj} frameName={'Fly'} fps={18} />
-      <SpriteAnimator {...props} position={[-3, 0, 0.01]} spriteDataset={spriteObj} frameName={'sword'} fps={0} />
-      <SpriteAnimator {...props} position={[-1, 0, 0.01]} spriteDataset={spriteObj} frameName={'heart'} fps={0} />
-      <SpriteAnimator {...props} position={[0, 0, 0.01]} spriteDataset={spriteObj} frameName={'skull'} fps={0} />
+      <SpriteAnimator {...props} position={[-2, 0, 0.01]} {...commonProps} frameName={'Fly'} fps={18} />
+      <SpriteAnimator {...props} position={[-3, 0, 0.01]} {...commonProps} frameName={'sword'} fps={0} />
+      <SpriteAnimator {...props} position={[-1, 0, 0.01]} {...commonProps} frameName={'heart'} fps={0} />
+      <SpriteAnimator {...props} position={[0, 0, 0.01]} {...commonProps} frameName={'skull'} fps={0} />
     </>
   )
 }

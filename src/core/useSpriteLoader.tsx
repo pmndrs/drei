@@ -1,6 +1,6 @@
 /* eslint react-hooks/exhaustive-deps: 1 */
 import { Texture, TextureLoader } from 'three'
-import { useLoader, useThree, Vector3 } from '@react-three/fiber'
+import { RootState, useLoader, useThree, Vector3 } from '@react-three/fiber'
 import { useState } from 'react'
 import * as React from 'react'
 import * as THREE from 'three'
@@ -73,13 +73,226 @@ export const checkIfFrameIsEmpty = (frameData: Uint8ClampedArray) => {
   return true
 }
 
+const calculateAspectRatio = (width: number, height: number, factor: number, viewport: RootState['viewport']) => {
+  const adaptedHeight = height * (viewport.aspect > width / height ? viewport.width / width : viewport.height / height)
+  const adaptedWidth = width * (viewport.aspect > width / height ? viewport.width / width : viewport.height / height)
+  const scaleX = adaptedWidth * factor
+  const scaleY = adaptedHeight * factor
+  const currentMaxScale = 1
+  // Calculate the maximum scale based on the aspect ratio and max scale limit
+  let finalMaxScaleW = Math.min(currentMaxScale, scaleX)
+  let finalMaxScaleH = Math.min(currentMaxScale, scaleY)
+
+  // Ensure that scaleX and scaleY do not exceed the max scale while maintaining aspect ratio
+  if (scaleX > currentMaxScale) {
+    finalMaxScaleW = currentMaxScale
+    finalMaxScaleH = (scaleY / scaleX) * currentMaxScale
+  }
+
+  return new THREE.Vector3(finalMaxScaleW, finalMaxScaleH, 1)
+}
+
+// calculate scale ratio for the frames
+const calculateScaleRatio = (frames: SpriteData['frames']) => {
+  // Helper function to calculate scale ratio for an array of frames
+  const processFrameArray = (frameArray: FrameData[]) => {
+    // Find the largest frame
+    let largestFrame: { w: number; h: number; area: number } | null = null
+
+    for (const frame of frameArray) {
+      const { w, h } = frame.frame
+      const area = w * h
+      if (!largestFrame || area > largestFrame.area) {
+        largestFrame = { w, h, area }
+      }
+    }
+
+    // Set scaleRatio property on each frame
+    const frameArr: FrameData[] = frameArray.map((frame) => {
+      const { w, h } = frame.frame
+      const area = w * h
+      const scaleRatio = largestFrame ? (area === largestFrame.area ? 1 : Math.sqrt(area / largestFrame.area)) : 1
+
+      return {
+        ...frame,
+        scaleRatio,
+      }
+    })
+
+    return frameArr
+  }
+
+  // Handle both array and record cases
+  if (Array.isArray(frames)) {
+    return processFrameArray(frames)
+  } else {
+    const result: Record<string, FrameData[]> = {}
+    for (const key in frames) {
+      result[key] = processFrameArray(frames[key])
+    }
+    return result
+  }
+}
+
+const getRowsAndColumns = (
+  texture: THREE.Texture,
+  totalFrames: number,
+  canvasRenderingContext2DSettings?: CanvasRenderingContext2DSettings
+) => {
+  if (texture.image) {
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d', canvasRenderingContext2DSettings)
+
+    if (!ctx) {
+      throw new Error('Failed to get 2d context')
+    }
+
+    canvas.width = texture.image.width
+    canvas.height = texture.image.height
+
+    ctx.drawImage(texture.image, 0, 0)
+
+    const width = texture.image.width
+    const height = texture.image.height
+
+    // Calculate rows and columns based on the number of frames and image dimensions
+    const cols = Math.round(Math.sqrt(totalFrames * (width / height)))
+    const rows = Math.round(totalFrames / cols)
+
+    const frameWidth = width / cols
+    const frameHeight = height / rows
+
+    const emptyFrames: SpriteMetaDimension[] = []
+
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        const frameIndex = row * cols + col
+
+        if (frameIndex >= totalFrames) {
+          emptyFrames.push({ row, col })
+          continue
+        }
+
+        const frameData = ctx.getImageData(col * frameWidth, row * frameHeight, frameWidth, frameHeight).data
+
+        const isEmpty = checkIfFrameIsEmpty(frameData)
+        if (isEmpty) {
+          emptyFrames.push({ row, col })
+        }
+      }
+    }
+
+    return { rows, columns: cols, frameWidth, frameHeight, emptyFrames }
+  } else {
+    return { rows: 0, columns: 0, frameWidth: 0, frameHeight: 0, emptyFrames: [] }
+  }
+}
+
+// for frame based JSON Hash sprite data
+const parseFrames = (data: SpriteData, delimiters?: AnimationNames) => {
+  const sprites: Record<string, FrameData[]> = {}
+
+  if (data) {
+    if (delimiters && Array.isArray(data['frames'])) {
+      for (let i = 0; i < delimiters.length; i++) {
+        // we convert each named animation group into an array
+        sprites[delimiters[i]] = []
+
+        for (const value of data['frames']) {
+          const frameData = value['frame']
+          const sourceWidth = value['sourceSize']['w']
+          const sourceHeight = value['sourceSize']['h']
+
+          if (
+            typeof value['filename'] === 'string' &&
+            value['filename'].toLowerCase().indexOf(delimiters[i].toLowerCase()) !== -1
+          ) {
+            sprites[delimiters[i]].push({
+              ...value,
+              frame: frameData,
+              sourceSize: { w: sourceWidth, h: sourceHeight },
+            })
+          }
+        }
+      }
+
+      for (const frame in sprites) {
+        const scaleRatioData = calculateScaleRatio(sprites[frame])
+        if (Array.isArray(scaleRatioData)) {
+          sprites[frame] = scaleRatioData
+        }
+      }
+
+      return sprites
+    } else if (delimiters && typeof data['frames'] === 'object') {
+      for (let i = 0; i < delimiters.length; i++) {
+        // we convert each named animation group into an array
+        sprites[delimiters[i]] = []
+
+        for (const innerKey in data['frames']) {
+          const value = data['frames'][innerKey]
+          const frameData = value['frame']
+          const sourceWidth = value['sourceSize']['w']
+          const sourceHeight = value['sourceSize']['h']
+
+          if (typeof innerKey === 'string' && innerKey.toLowerCase().indexOf(delimiters[i].toLowerCase()) !== -1) {
+            sprites[delimiters[i]].push({
+              ...value,
+              frame: frameData,
+              sourceSize: { w: sourceWidth, h: sourceHeight },
+            })
+          }
+        }
+      }
+      for (const frame in sprites) {
+        const scaleRatioData = calculateScaleRatio(sprites[frame])
+        if (Array.isArray(scaleRatioData)) {
+          sprites[frame] = scaleRatioData
+        }
+      }
+
+      return sprites
+    } else {
+      let spritesArr: FrameData[] = []
+
+      if (data?.frames) {
+        if (Array.isArray(data.frames)) {
+          spritesArr = data.frames.map((frame) => ({
+            ...frame,
+            x: frame.frame.x,
+            y: frame.frame.y,
+            w: frame.frame.w,
+            h: frame.frame.h,
+          }))
+        } else {
+          spritesArr = Object.values(data.frames)
+            .flat()
+            .map((frame) => ({
+              ...frame,
+              x: frame.frame.x,
+              y: frame.frame.y,
+              w: frame.frame.w,
+              h: frame.frame.h,
+            }))
+        }
+      }
+
+      return calculateScaleRatio(spritesArr)
+    }
+  }
+
+  return []
+}
+
+type AnimationNames = string[] | null
+
 export function useSpriteLoader<Url extends string>(
   /** The URL of the sprite sheet. */
   input: Url | null,
   /** The JSON data of the sprite sheet. */
   json?: string | null,
   /** The names of the animations in the sprite sheet. */
-  animationNames?: string[] | null,
+  animationNames?: AnimationNames,
   /** The number of frames in the sprite sheet. */
   numberOfFrames?: number | null,
   /** A callback that is called when the sprite sheet is loaded. */
@@ -87,7 +300,8 @@ export function useSpriteLoader<Url extends string>(
   /** The settings to use when creating the 2D context. */
   canvasRenderingContext2DSettings?: CanvasRenderingContext2DSettings
 ) {
-  const viewportRef = React.useRef(useThree((state) => state.viewport))
+  const viewport = useThree((state) => state.viewport)
+
   const spriteDataRef = React.useRef<SpriteData | null>(null)
   const totalFrames = React.useRef(0)
   const aspectFactor = 0.1
@@ -103,226 +317,6 @@ export function useSpriteLoader<Url extends string>(
     aspect: Vector3
   } | null>(null)
 
-  const calculateAspectRatio = React.useCallback((width: number, height: number, factor: number) => {
-    const adaptedHeight =
-      height *
-      (viewportRef.current.aspect > width / height
-        ? viewportRef.current.width / width
-        : viewportRef.current.height / height)
-    const adaptedWidth =
-      width *
-      (viewportRef.current.aspect > width / height
-        ? viewportRef.current.width / width
-        : viewportRef.current.height / height)
-    const scaleX = adaptedWidth * factor
-    const scaleY = adaptedHeight * factor
-    const currentMaxScale = 1
-    // Calculate the maximum scale based on the aspect ratio and max scale limit
-    let finalMaxScaleW = Math.min(currentMaxScale, scaleX)
-    let finalMaxScaleH = Math.min(currentMaxScale, scaleY)
-
-    // Ensure that scaleX and scaleY do not exceed the max scale while maintaining aspect ratio
-    if (scaleX > currentMaxScale) {
-      finalMaxScaleW = currentMaxScale
-      finalMaxScaleH = (scaleY / scaleX) * currentMaxScale
-    }
-
-    return new THREE.Vector3(finalMaxScaleW, finalMaxScaleH, 1)
-  }, [])
-
-  const getRowsAndColumns = React.useCallback(
-    (texture: THREE.Texture, totalFrames: number) => {
-      if (texture.image) {
-        const canvas = document.createElement('canvas')
-        const ctx = canvas.getContext('2d', canvasRenderingContext2DSettings)
-
-        if (!ctx) {
-          throw new Error('Failed to get 2d context')
-        }
-
-        canvas.width = texture.image.width
-        canvas.height = texture.image.height
-
-        ctx.drawImage(texture.image, 0, 0)
-
-        const width = texture.image.width
-        const height = texture.image.height
-
-        // Calculate rows and columns based on the number of frames and image dimensions
-        const cols = Math.round(Math.sqrt(totalFrames * (width / height)))
-        const rows = Math.round(totalFrames / cols)
-
-        const frameWidth = width / cols
-        const frameHeight = height / rows
-
-        const emptyFrames: SpriteMetaDimension[] = []
-
-        for (let row = 0; row < rows; row++) {
-          for (let col = 0; col < cols; col++) {
-            const frameIndex = row * cols + col
-
-            if (frameIndex >= totalFrames) {
-              emptyFrames.push({ row, col })
-              continue
-            }
-
-            const frameData = ctx.getImageData(col * frameWidth, row * frameHeight, frameWidth, frameHeight).data
-
-            const isEmpty = checkIfFrameIsEmpty(frameData)
-            if (isEmpty) {
-              emptyFrames.push({ row, col })
-            }
-          }
-        }
-
-        return { rows, columns: cols, frameWidth, frameHeight, emptyFrames }
-      } else {
-        return { rows: 0, columns: 0, frameWidth: 0, frameHeight: 0, emptyFrames: [] }
-      }
-    },
-    [canvasRenderingContext2DSettings]
-  )
-
-  // calculate scale ratio for the frames
-  const calculateScaleRatio = React.useCallback((frames: FrameData[] | Record<string, FrameData[]>) => {
-    // Helper function to calculate scale ratio for an array of frames
-    const processFrameArray = (frameArray: FrameData[]) => {
-      // Find the largest frame
-      let largestFrame: { w: number; h: number; area: number } | null = null
-
-      for (const frame of frameArray) {
-        const { w, h } = frame.frame
-        const area = w * h
-        if (!largestFrame || area > largestFrame.area) {
-          largestFrame = { w, h, area }
-        }
-      }
-
-      // Set scaleRatio property on each frame
-      const frameArr: FrameData[] = frameArray.map((frame) => {
-        const { w, h } = frame.frame
-        const area = w * h
-        const scaleRatio = largestFrame ? (area === largestFrame.area ? 1 : Math.sqrt(area / largestFrame.area)) : 1
-
-        return {
-          ...frame,
-          scaleRatio,
-        }
-      })
-
-      return frameArr
-    }
-
-    // Handle both array and record cases
-    if (Array.isArray(frames)) {
-      return processFrameArray(frames)
-    } else {
-      const result: Record<string, FrameData[]> = {}
-      for (const key in frames) {
-        result[key] = processFrameArray(frames[key])
-      }
-      return result
-    }
-  }, [])
-
-  // for frame based JSON Hash sprite data
-  const parseFrames = React.useCallback(() => {
-    const sprites: Record<string, FrameData[]> = {}
-    const data = spriteDataRef.current
-    const delimiters = animationFramesRef.current
-
-    if (data) {
-      if (delimiters && Array.isArray(data['frames'])) {
-        for (let i = 0; i < delimiters.length; i++) {
-          // we convert each named animation group into an array
-          sprites[delimiters[i]] = []
-
-          for (const value of data['frames']) {
-            const frameData = value['frame']
-            const sourceWidth = value['sourceSize']['w']
-            const sourceHeight = value['sourceSize']['h']
-
-            if (
-              typeof value['filename'] === 'string' &&
-              value['filename'].toLowerCase().indexOf(delimiters[i].toLowerCase()) !== -1
-            ) {
-              sprites[delimiters[i]].push({
-                ...value,
-                frame: frameData,
-                sourceSize: { w: sourceWidth, h: sourceHeight },
-              })
-            }
-          }
-        }
-
-        for (const frame in sprites) {
-          const scaleRatioData = calculateScaleRatio(sprites[frame])
-          if (Array.isArray(scaleRatioData)) {
-            sprites[frame] = scaleRatioData
-          }
-        }
-
-        return sprites
-      } else if (delimiters && typeof data['frames'] === 'object') {
-        for (let i = 0; i < delimiters.length; i++) {
-          // we convert each named animation group into an array
-          sprites[delimiters[i]] = []
-
-          for (const innerKey in data['frames']) {
-            const value = data['frames'][innerKey]
-            const frameData = value['frame']
-            const sourceWidth = value['sourceSize']['w']
-            const sourceHeight = value['sourceSize']['h']
-
-            if (typeof innerKey === 'string' && innerKey.toLowerCase().indexOf(delimiters[i].toLowerCase()) !== -1) {
-              sprites[delimiters[i]].push({
-                ...value,
-                frame: frameData,
-                sourceSize: { w: sourceWidth, h: sourceHeight },
-              })
-            }
-          }
-        }
-        for (const frame in sprites) {
-          const scaleRatioData = calculateScaleRatio(sprites[frame])
-          if (Array.isArray(scaleRatioData)) {
-            sprites[frame] = scaleRatioData
-          }
-        }
-
-        return sprites
-      } else {
-        let spritesArr: FrameData[] = []
-
-        if (data?.frames) {
-          if (Array.isArray(data.frames)) {
-            spritesArr = data.frames.map((frame) => ({
-              ...frame,
-              x: frame.frame.x,
-              y: frame.frame.y,
-              w: frame.frame.w,
-              h: frame.frame.h,
-            }))
-          } else {
-            spritesArr = Object.values(data.frames)
-              .flat()
-              .map((frame) => ({
-                ...frame,
-                x: frame.frame.x,
-                y: frame.frame.y,
-                w: frame.frame.w,
-                h: frame.frame.h,
-              }))
-          }
-        }
-
-        return calculateScaleRatio(spritesArr)
-      }
-    }
-
-    return []
-  }, [calculateScaleRatio, spriteDataRef])
-
   const parseSpriteData = React.useCallback(
     (json: SpriteData | null, _spriteTexture: THREE.Texture) => {
       let aspect = new THREE.Vector3(1, 1, 1)
@@ -335,7 +329,8 @@ export function useSpriteLoader<Url extends string>(
           totalFrames.current = numberOfFrames
           const { rows, columns, frameWidth, frameHeight, emptyFrames } = getRowsAndColumns(
             _spriteTexture,
-            numberOfFrames
+            numberOfFrames,
+            canvasRenderingContext2DSettings
           )
           const nonJsonFrames: SpriteData = {
             frames: [],
@@ -384,7 +379,7 @@ export function useSpriteLoader<Url extends string>(
             }
           }
 
-          aspect = calculateAspectRatio(frameWidth, frameHeight, aspectFactor)
+          aspect = calculateAspectRatio(frameWidth, frameHeight, aspectFactor, viewport)
 
           spriteDataRef.current = nonJsonFrames
         }
@@ -395,11 +390,11 @@ export function useSpriteLoader<Url extends string>(
         }
       } else if (_spriteTexture) {
         spriteDataRef.current = json
-        spriteDataRef.current.frames = parseFrames()
+        spriteDataRef.current.frames = parseFrames(spriteDataRef.current, animationFramesRef.current)
 
         totalFrames.current = Array.isArray(json.frames) ? json.frames.length : Object.keys(json.frames).length
         const { w, h } = getFirstFrame(json.frames).sourceSize
-        aspect = calculateAspectRatio(w, h, aspectFactor)
+        aspect = calculateAspectRatio(w, h, aspectFactor, viewport)
       }
 
       setSpriteData(spriteDataRef.current)
@@ -418,7 +413,7 @@ export function useSpriteLoader<Url extends string>(
         aspect: aspect,
       })
     },
-    [getRowsAndColumns, numberOfFrames, parseFrames, calculateAspectRatio, calculateScaleRatio]
+    [canvasRenderingContext2DSettings, numberOfFrames, viewport]
   )
 
   /**

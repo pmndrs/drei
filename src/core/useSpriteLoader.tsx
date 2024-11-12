@@ -17,6 +17,7 @@ export type FrameData = {
     w: number
     h: number
   }
+  scaleRatio?: number
   rotated: boolean
   trimmed: boolean
   spriteSourceSize: {
@@ -201,7 +202,7 @@ export function useSpriteLoader<Url extends string>(
       }
 
       // Set scaleRatio property on each frame
-      return frameArray.map((frame) => {
+      const frameArr: FrameData[] = frameArray.map((frame) => {
         const { w, h } = frame.frame
         const area = w * h
         const scaleRatio = largestFrame ? (area === largestFrame.area ? 1 : Math.sqrt(area / largestFrame.area)) : 1
@@ -211,14 +212,15 @@ export function useSpriteLoader<Url extends string>(
           scaleRatio,
         }
       })
+
+      return frameArr
     }
 
     // Handle both array and record cases
     if (Array.isArray(frames)) {
       return processFrameArray(frames)
     } else {
-      // Process each animation sequence separately
-      const result: Record<string, any[]> = {}
+      const result: Record<string, FrameData[]> = {}
       for (const key in frames) {
         result[key] = processFrameArray(frames[key])
       }
@@ -227,8 +229,8 @@ export function useSpriteLoader<Url extends string>(
   }, [])
 
   // for frame based JSON Hash sprite data
-  const parseFrames = React.useCallback((): any => {
-    const sprites: Record<string, any> = {}
+  const parseFrames = React.useCallback(() => {
+    const sprites: Record<string, FrameData[]> = {}
     const data = spriteDataRef.current
     const delimiters = animationFramesRef.current
 
@@ -240,10 +242,6 @@ export function useSpriteLoader<Url extends string>(
 
           for (const value of data['frames']) {
             const frameData = value['frame']
-            const x = frameData['x']
-            const y = frameData['y']
-            const width = frameData['w']
-            const height = frameData['h']
             const sourceWidth = value['sourceSize']['w']
             const sourceHeight = value['sourceSize']['h']
 
@@ -252,10 +250,7 @@ export function useSpriteLoader<Url extends string>(
               value['filename'].toLowerCase().indexOf(delimiters[i].toLowerCase()) !== -1
             ) {
               sprites[delimiters[i]].push({
-                x: x,
-                y: y,
-                w: width,
-                h: height,
+                ...value,
                 frame: frameData,
                 sourceSize: { w: sourceWidth, h: sourceHeight },
               })
@@ -264,7 +259,10 @@ export function useSpriteLoader<Url extends string>(
         }
 
         for (const frame in sprites) {
-          sprites[frame].frame = calculateScaleRatio(sprites[frame])
+          const scaleRatioData = calculateScaleRatio(sprites[frame])
+          if (Array.isArray(scaleRatioData)) {
+            sprites[frame] = scaleRatioData
+          }
         }
 
         return sprites
@@ -276,28 +274,23 @@ export function useSpriteLoader<Url extends string>(
           for (const innerKey in data['frames']) {
             const value = data['frames'][innerKey]
             const frameData = value['frame']
-            const x = frameData['x']
-            const y = frameData['y']
-            const width = frameData['w']
-            const height = frameData['h']
             const sourceWidth = value['sourceSize']['w']
             const sourceHeight = value['sourceSize']['h']
 
             if (typeof innerKey === 'string' && innerKey.toLowerCase().indexOf(delimiters[i].toLowerCase()) !== -1) {
               sprites[delimiters[i]].push({
-                x: x,
-                y: y,
-                w: width,
-                h: height,
+                ...value,
                 frame: frameData,
                 sourceSize: { w: sourceWidth, h: sourceHeight },
               })
             }
           }
         }
-
         for (const frame in sprites) {
-          sprites[frame].frame = calculateScaleRatio(sprites[frame])
+          const scaleRatioData = calculateScaleRatio(sprites[frame])
+          if (Array.isArray(scaleRatioData)) {
+            sprites[frame] = scaleRatioData
+          }
         }
 
         return sprites
@@ -306,15 +299,31 @@ export function useSpriteLoader<Url extends string>(
 
         if (data?.frames) {
           if (Array.isArray(data.frames)) {
-            spritesArr = [...data.frames]
+            spritesArr = data.frames.map((frame) => ({
+              ...frame,
+              x: frame.frame.x,
+              y: frame.frame.y,
+              w: frame.frame.w,
+              h: frame.frame.h,
+            }))
           } else {
-            spritesArr = Object.values(data.frames).flat()
+            spritesArr = Object.values(data.frames)
+              .flat()
+              .map((frame) => ({
+                ...frame,
+                x: frame.frame.x,
+                y: frame.frame.y,
+                w: frame.frame.w,
+                h: frame.frame.h,
+              }))
           }
         }
 
         return calculateScaleRatio(spritesArr)
       }
     }
+
+    return []
   }, [calculateScaleRatio, spriteDataRef])
 
   const parseSpriteData = React.useCallback(
@@ -360,6 +369,7 @@ export function useSpriteLoader<Url extends string>(
                     w: frameWidth,
                     h: frameHeight,
                   },
+                  scaleRatio: 1,
                   rotated: false,
                   trimmed: false,
                   spriteSourceSize: {

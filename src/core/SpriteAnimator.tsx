@@ -21,6 +21,8 @@ type CommonMeshProps = CommonProps<
 >
 
 export type SpriteAnimatorProps = {
+  /** The URL of the texture image */
+  textureImageURL: string
   /** The start frame of the animation */
   startFrame?: number
   /** The end frame of the animation */
@@ -31,8 +33,6 @@ export type SpriteAnimatorProps = {
   frameName?: string
   /** The URL of the texture JSON (if using JSON-Array or JSON-Hash) */
   textureDataURL?: string
-  /** The URL of the texture image */
-  textureImageURL?: string
   /** Whether or not the animation should loop */
   loop?: boolean
   /** The number of frames of the animation (required if using plain spritesheet without JSON) */
@@ -171,8 +171,8 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
     const pos = React.useRef(offset)
     const softEnd = React.useRef(false)
     const { spriteObj, loadJsonAndTexture } = useSpriteLoader(
-      null,
-      null,
+      textureImageURL,
+      textureDataURL,
       animationNames,
       numberOfFrames,
       undefined,
@@ -304,9 +304,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
       if (spriteDataset) {
         parseSpriteDataLite(spriteDataset?.spriteTexture?.clone(), spriteDataset.spriteData)
       } else {
-        if (textureImageURL && textureDataURL) {
-          loadJsonAndTexture(textureImageURL, textureDataURL)
-        }
+        loadJsonAndTexture()
       }
     }, [loadJsonAndTexture, spriteDataset, textureDataURL, textureImageURL, parseSpriteDataLite])
 

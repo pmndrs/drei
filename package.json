@@ -106,7 +106,7 @@
     "@typescript-eslint/parser": "^8.14.0",
     "@vitejs/plugin-react": "^4.3.3",
     "babel-eslint": "^10.1.0",
-    "babel-loader": "^8.1.0",
+    "babel-loader": "^9.2.1",
     "copyfiles": "^2.4.1",
     "eslint": "^9.14.0",
     "eslint-config-prettier": "^9.1.0",

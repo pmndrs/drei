@@ -101,7 +101,7 @@ type SpriteAnimatorState = {
   offset?: number
   imageUrl?: string
   hasEnded: boolean
-  ref: React.RefObject<THREE.Group> | null | ((instance: THREE.Group) => void)
+  ref: React.Ref<THREE.Group>
 }
 
 type Scale = Vector3

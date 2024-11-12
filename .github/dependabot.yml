@@ -9,7 +9,7 @@ updates:
     directory: '/' # Location of package manifests
     schedule:
       interval: 'weekly'
-    # open-pull-requests-limit: 10
+    open-pull-requests-limit: 10
 
     ignore:
       - dependency-name: '@playwright/test'

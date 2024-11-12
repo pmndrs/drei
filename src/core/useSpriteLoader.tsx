@@ -86,7 +86,7 @@ export function useSpriteLoader<Url extends string>(
   /** The number of frames in the sprite sheet. */
   numberOfFrames?: number | null,
   /** A callback that is called when the sprite sheet is loaded. */
-  onLoad?: (texture: Texture, textureData?: any) => void,
+  onLoad?: (texture: Texture, textureData?: SpriteData | null) => void,
   /** The settings to use when creating the 2D context. */
   canvasRenderingContext2DSettings?: CanvasRenderingContext2DSettings
 ) {
@@ -97,7 +97,7 @@ export function useSpriteLoader<Url extends string>(
   const inputRef = React.useRef(input)
   const jsonRef = React.useRef(json)
   const animationFramesRef = React.useRef(animationNames)
-  const [spriteData, setSpriteData] = useState<Record<string, any> | null>(null)
+  const [spriteData, setSpriteData] = useState<SpriteData | null>(null)
   const [spriteTexture, setSpriteTexture] = React.useState<THREE.Texture>(new THREE.Texture())
   const textureLoader = React.useMemo(() => new THREE.TextureLoader(), [])
   const [spriteObj, setSpriteObj] = useState<{
@@ -486,7 +486,7 @@ export function useSpriteLoader<Url extends string>(
   }, [loadJsonAndTextureAndExecuteCallback, loadStandaloneSprite, parseSpriteData])
 
   React.useLayoutEffect(() => {
-    onLoad?.(spriteTexture, spriteData)
+    onLoad?.(spriteTexture, spriteData ?? null)
   }, [spriteTexture, spriteData, onLoad])
 
   return { spriteObj, loadJsonAndTexture }

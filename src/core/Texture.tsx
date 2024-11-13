@@ -1,3 +1,4 @@
+/* eslint react-hooks/exhaustive-deps: 1 */
 import * as React from 'react'
 import { Texture as _Texture, TextureLoader } from 'three'
 import { useLoader, useThree } from '@react-three/fiber'
@@ -50,7 +51,7 @@ export function useTexture<Url extends string[] | string | Record<string, string
 
   useLayoutEffect(() => {
     onLoad?.(mappedTextures)
-  }, [mappedTextures])
+  }, [mappedTextures, onLoad])
 
   return mappedTextures
 }

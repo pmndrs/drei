@@ -76,7 +76,7 @@ export type FaceControlsProps = {
 
 export type FaceControlsApi = THREE.EventDispatcher & {
   /** Detect faces from the video */
-  detect: (video: HTMLVideoElement, time: number) => void
+  detect: (video: HTMLVideoElement, time: number) => FaceLandmarkerResult | undefined
   /** Compute the target for the camera */
   computeTarget: () => THREE.Object3D
   /** Update camera's position/rotation to the `target` */
@@ -231,8 +231,10 @@ export const FaceControls = /* @__PURE__ */ forwardRef<FaceControlsApi, FaceCont
     const faceLandmarker = useFaceLandmarker()
     const detect = useCallback<FaceControlsApi['detect']>(
       (video, time) => {
-        const faces = faceLandmarker?.detectForVideo(video, time)
-        setFaces(faces)
+        const result = faceLandmarker?.detectForVideo(video, time)
+        setFaces(result)
+
+        return result
       },
       [faceLandmarker]
     )

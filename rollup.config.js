@@ -1,16 +1,16 @@
 import path from 'path'
-import { babel } from '@rollup/plugin-babel'
-import { nodeResolve } from '@rollup/plugin-node-resolve'
+import babel from '@rollup/plugin-babel'
+import resolve from '@rollup/plugin-node-resolve'
 import json from '@rollup/plugin-json'
 import glslify from 'rollup-plugin-glslify'
 import multiInput from 'rollup-plugin-multi-input'
-import terser from '@rollup/plugin-terser'
+import { terser } from 'rollup-plugin-terser'
 
 const root = process.platform === 'win32' ? path.resolve('/') : '/'
 const external = (id) => !id.startsWith('.') && !id.startsWith(root)
 const extensions = ['.js', '.jsx', '.ts', '.tsx', '.json']
 
-const getBabelOptions = ({ useESModules }, targets = '> 1%, not dead, not ie 11, not op_mini all') => ({
+const getBabelOptions = ({ useESModules }) => ({
   babelrc: false,
   extensions,
   exclude: '**/node_modules/**',
@@ -20,24 +20,24 @@ const getBabelOptions = ({ useESModules }, targets = '> 1%, not dead, not ie 11,
       '@babel/preset-env',
       {
         include: [
-          '@babel/plugin-transform-class-properties',
-          '@babel/plugin-transform-optional-chaining',
-          '@babel/plugin-transform-nullish-coalescing-operator',
-          '@babel/plugin-transform-numeric-separator',
-          '@babel/plugin-transform-logical-assignment-operators',
+          '@babel/plugin-proposal-class-properties',
+          '@babel/plugin-proposal-optional-chaining',
+          '@babel/plugin-proposal-nullish-coalescing-operator',
+          '@babel/plugin-proposal-numeric-separator',
+          '@babel/plugin-proposal-logical-assignment-operators',
         ],
         bugfixes: true,
         loose: true,
         modules: false,
-        targets,
+        targets: '> 1%, not dead, not ie 11, not op_mini all',
       },
     ],
     '@babel/preset-react',
     '@babel/preset-typescript',
   ],
   plugins: [
-    '@babel/plugin-transform-nullish-coalescing-operator',
-    ['@babel/plugin-transform-runtime', { regenerator: false, useESModules }],
+    '@babel/plugin-proposal-nullish-coalescing-operator',
+    ['@babel/transform-runtime', { regenerator: false, useESModules }],
   ],
 })
 
@@ -51,19 +51,20 @@ export default [
       json(),
       glslify(),
       babel(getBabelOptions({ useESModules: true }, '>1%, not dead, not ie 11, not op_mini all')),
-      nodeResolve({ extensions }),
+      resolve({ extensions }),
     ],
   },
   {
     input: `./src/index.ts`,
-    output: { dir: `dist`, format: 'esm', preserveModules: true },
+    output: { dir: `dist`, format: 'esm' },
     external,
     plugins: [
       json(),
       glslify(),
       babel(getBabelOptions({ useESModules: true }, '>1%, not dead, not ie 11, not op_mini all')),
-      nodeResolve({ extensions }),
+      resolve({ extensions }),
     ],
+    preserveModules: true,
   },
   {
     input: ['src/**/*.ts', 'src/**/*.tsx', '!src/index.ts'],
@@ -76,7 +77,7 @@ export default [
       json(),
       glslify(),
       babel(getBabelOptions({ useESModules: false })),
-      nodeResolve({ extensions }),
+      resolve({ extensions }),
       terser(),
     ],
   },
@@ -84,12 +85,6 @@ export default [
     input: `./src/index.ts`,
     output: { file: `dist/index.cjs.js`, format: 'cjs' },
     external,
-    plugins: [
-      json(),
-      glslify(),
-      babel(getBabelOptions({ useESModules: false })),
-      nodeResolve({ extensions }),
-      terser(),
-    ],
+    plugins: [json(), glslify(), babel(getBabelOptions({ useESModules: false })), resolve({ extensions }), terser()],
   },
 ]

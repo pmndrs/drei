@@ -5,9 +5,6 @@ import { useState } from 'react'
 import * as React from 'react'
 import * as THREE from 'three'
 
-type AnimationNames = string[] | null
-type NumberOfFrames = number | null
-
 export type Size = {
   w: number
   h: number
@@ -55,12 +52,6 @@ export type SpriteData = {
 type SpriteMetaDimension = {
   row: number
   col: number
-}
-
-type SpriteObj = {
-  spriteTexture: THREE.Texture
-  spriteData: SpriteData | null
-  aspect: Vector3
 }
 
 // utils
@@ -293,150 +284,202 @@ const parseFrames = (data: SpriteData, delimiters?: AnimationNames) => {
   return []
 }
 
-const parseSpriteData = (
-  json: SpriteData | null,
-  texture: THREE.Texture,
-  viewport: RootState['viewport'],
-  numberOfFrames?: NumberOfFrames,
-  canvasRenderingContext2DSettings?: CanvasRenderingContext2DSettings,
-  animationNames?: AnimationNames
-) => {
-  const aspectFactor = 0.1
+type AnimationNames = string[] | null
 
-  let spriteData: SpriteData | null = null
-  let aspect = new THREE.Vector3(1, 1, 1)
-  let totalFrames: number | undefined = undefined
-
-  // if ('encoding' in texture) {
-  //   texture.encoding = 3001 // sRGBEncoding
-  // } else if ('colorSpace' in texture) {
-  //   //@ts-ignore
-  //   texture.colorSpace = THREE.SRGBColorSpace
-  // }
-
-  // sprite only case
-  if (json === null) {
-    if (texture && numberOfFrames) {
-      //get size from texture
-      const width = texture.image.width
-      const height = texture.image.height
-      totalFrames = numberOfFrames
-      const { rows, columns, frameWidth, frameHeight, emptyFrames } = getRowsAndColumns(
-        texture,
-        numberOfFrames,
-        canvasRenderingContext2DSettings
-      )
-      const nonJsonFrames: SpriteData = {
-        frames: [],
-        meta: {
-          version: '1.0',
-          size: { w: width, h: height },
-          rows,
-          columns,
-          frameWidth,
-          frameHeight,
-          scale: '1',
-        },
-      }
-
-      for (let row = 0; row < rows; row++) {
-        for (let col = 0; col < columns; col++) {
-          const isExcluded = (emptyFrames ?? []).some((coord) => coord.row === row && coord.col === col)
-
-          if (isExcluded) {
-            continue
-          }
-
-          if (Array.isArray(nonJsonFrames.frames)) {
-            nonJsonFrames.frames.push({
-              frame: {
-                x: col * frameWidth,
-                y: row * frameHeight,
-                w: frameWidth,
-                h: frameHeight,
-              },
-              scaleRatio: 1,
-              rotated: false,
-              trimmed: false,
-              spriteSourceSize: {
-                x: 0,
-                y: 0,
-                w: frameWidth,
-                h: frameHeight,
-              },
-              sourceSize: {
-                w: frameWidth,
-                h: frameHeight,
-              },
-            })
-          }
-        }
-      }
-
-      aspect = calculateAspectRatio(frameWidth, frameHeight, aspectFactor, viewport)
-
-      spriteData = nonJsonFrames
-    }
-
-    //scale ratio for standalone sprite
-    if (spriteData?.frames) {
-      spriteData.frames = calculateScaleRatio(spriteData.frames)
-    }
-  } else if (texture) {
-    spriteData = json
-    spriteData.frames = parseFrames(spriteData, animationNames)
-
-    totalFrames = Array.isArray(json.frames) ? json.frames.length : Object.keys(json.frames).length
-    const { w, h } = getFirstFrame(json.frames).sourceSize
-    aspect = calculateAspectRatio(w, h, aspectFactor, viewport)
-  }
-
-  return {
-    spriteData,
-    aspect,
-    totalFrames,
-  }
-}
-
-const textureLoader = new THREE.TextureLoader()
-
-export function useSpriteLoader(
+export function useSpriteLoader<Url extends string>(
   /** The URL of the sprite sheet. */
-  input: string,
+  input: Url | null,
   /** The JSON data of the sprite sheet. */
   json?: string | null,
   /** The names of the animations in the sprite sheet. */
   animationNames?: AnimationNames,
   /** The number of frames in the sprite sheet. */
-  numberOfFrames?: NumberOfFrames,
+  numberOfFrames?: number | null,
   /** A callback that is called when the sprite sheet is loaded. */
   onLoad?: (texture: Texture, textureData?: SpriteData | null) => void,
   /** The settings to use when creating the 2D context. */
   canvasRenderingContext2DSettings?: CanvasRenderingContext2DSettings
 ) {
   const viewport = useThree((state) => state.viewport)
-  const [spriteObj, setSpriteObj] = useState<SpriteObj | null>(null)
 
-  const loadJsonAndTexture = React.useCallback(async () => {
-    const data = json ? ((await (await fetch(json)).json()) as SpriteData) : null
-    const texture = await new Promise<Texture>((resolve) => textureLoader.load(input, resolve))
+  const spriteDataRef = React.useRef<SpriteData | null>(null)
+  const totalFrames = React.useRef(0)
+  const aspectFactor = 0.1
+  const inputRef = React.useRef(input)
+  const jsonRef = React.useRef(json)
+  const animationFramesRef = React.useRef(animationNames)
+  const [spriteData, setSpriteData] = useState<SpriteData | null>(null)
+  const [spriteTexture, setSpriteTexture] = React.useState<THREE.Texture>(new THREE.Texture())
+  const textureLoader = React.useMemo(() => new THREE.TextureLoader(), [])
+  const [spriteObj, setSpriteObj] = useState<{
+    spriteTexture: THREE.Texture
+    spriteData: SpriteData | null
+    aspect: Vector3
+  } | null>(null)
 
-    const { spriteData, aspect } = parseSpriteData(
-      data,
-      texture,
-      viewport,
-      numberOfFrames,
-      canvasRenderingContext2DSettings,
-      animationNames
-    )
-    setSpriteObj({
-      spriteTexture: texture,
-      spriteData,
-      aspect,
-    })
+  const parseSpriteData = React.useCallback(
+    (json: SpriteData | null, _spriteTexture: THREE.Texture) => {
+      let aspect = new THREE.Vector3(1, 1, 1)
+      // sprite only case
+      if (json === null) {
+        if (_spriteTexture && numberOfFrames) {
+          //get size from texture
+          const width = _spriteTexture.image.width
+          const height = _spriteTexture.image.height
+          totalFrames.current = numberOfFrames
+          const { rows, columns, frameWidth, frameHeight, emptyFrames } = getRowsAndColumns(
+            _spriteTexture,
+            numberOfFrames,
+            canvasRenderingContext2DSettings
+          )
+          const nonJsonFrames: SpriteData = {
+            frames: [],
+            meta: {
+              version: '1.0',
+              size: { w: width, h: height },
+              rows,
+              columns,
+              frameWidth,
+              frameHeight,
+              scale: '1',
+            },
+          }
 
-    onLoad?.(texture, spriteData)
-  }, [animationNames, canvasRenderingContext2DSettings, input, json, numberOfFrames, onLoad, viewport])
+          for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < columns; col++) {
+              const isExcluded = (emptyFrames ?? []).some((coord) => coord.row === row && coord.col === col)
+
+              if (isExcluded) {
+                continue
+              }
+
+              if (Array.isArray(nonJsonFrames.frames)) {
+                nonJsonFrames.frames.push({
+                  frame: {
+                    x: col * frameWidth,
+                    y: row * frameHeight,
+                    w: frameWidth,
+                    h: frameHeight,
+                  },
+                  scaleRatio: 1,
+                  rotated: false,
+                  trimmed: false,
+                  spriteSourceSize: {
+                    x: 0,
+                    y: 0,
+                    w: frameWidth,
+                    h: frameHeight,
+                  },
+                  sourceSize: {
+                    w: frameWidth,
+                    h: frameHeight,
+                  },
+                })
+              }
+            }
+          }
+
+          aspect = calculateAspectRatio(frameWidth, frameHeight, aspectFactor, viewport)
+
+          spriteDataRef.current = nonJsonFrames
+        }
+
+        //scale ratio for standalone sprite
+        if (spriteDataRef.current && spriteDataRef.current.frames) {
+          spriteDataRef.current.frames = calculateScaleRatio(spriteDataRef.current.frames)
+        }
+      } else if (_spriteTexture) {
+        spriteDataRef.current = json
+        spriteDataRef.current.frames = parseFrames(spriteDataRef.current, animationFramesRef.current)
+
+        totalFrames.current = Array.isArray(json.frames) ? json.frames.length : Object.keys(json.frames).length
+        const { w, h } = getFirstFrame(json.frames).sourceSize
+        aspect = calculateAspectRatio(w, h, aspectFactor, viewport)
+      }
+
+      setSpriteData(spriteDataRef.current)
+
+      if ('encoding' in _spriteTexture) {
+        _spriteTexture.encoding = 3001 // sRGBEncoding
+      } else if ('colorSpace' in _spriteTexture) {
+        //@ts-ignore
+        _spriteTexture.colorSpace = THREE.SRGBColorSpace
+      }
+
+      setSpriteTexture(_spriteTexture)
+      setSpriteObj({
+        spriteTexture: _spriteTexture,
+        spriteData: spriteDataRef.current,
+        aspect: aspect,
+      })
+    },
+    [canvasRenderingContext2DSettings, numberOfFrames, viewport]
+  )
+
+  /**
+   *
+   */
+  const loadJsonAndTextureAndExecuteCallback = React.useCallback(
+    (jsonUrl: string, textureUrl: string, callback: (json: SpriteData, texture: THREE.Texture) => void): void => {
+      const jsonPromise = fetch(jsonUrl).then((response) => response.json())
+      const texturePromise = new Promise<THREE.Texture>((resolve) => {
+        textureLoader.load(textureUrl, resolve)
+      })
+
+      Promise.all([jsonPromise, texturePromise]).then((response) => {
+        callback(response[0], response[1])
+      })
+    },
+    [textureLoader]
+  )
+
+  const loadStandaloneSprite = React.useCallback(
+    (textureUrl?: string) => {
+      if (!textureUrl && !inputRef.current) {
+        throw new Error('Either textureUrl or input must be provided')
+      }
+
+      const validUrl = textureUrl ?? inputRef.current
+      if (!validUrl) {
+        throw new Error('A valid texture URL must be provided')
+      }
+
+      textureLoader.load(validUrl, (texture) => parseSpriteData(null, texture))
+    },
+    [textureLoader, parseSpriteData]
+  )
+
+  const loadJsonAndTexture = React.useCallback(
+    (textureUrl: string, jsonUrl?: string) => {
+      if (jsonUrl && textureUrl) {
+        loadJsonAndTextureAndExecuteCallback(jsonUrl, textureUrl, parseSpriteData)
+      } else {
+        loadStandaloneSprite(textureUrl)
+      }
+    },
+    [loadJsonAndTextureAndExecuteCallback, loadStandaloneSprite, parseSpriteData]
+  )
+
+  React.useLayoutEffect(() => {
+    if (jsonRef.current && inputRef.current) {
+      loadJsonAndTextureAndExecuteCallback(jsonRef.current, inputRef.current, parseSpriteData)
+    } else if (inputRef.current) {
+      // only load the texture, this is an image sprite only
+      loadStandaloneSprite()
+    }
+
+    const _inputRef = inputRef.current
+
+    return () => {
+      if (_inputRef) {
+        useLoader.clear(TextureLoader, _inputRef)
+      }
+    }
+  }, [loadJsonAndTextureAndExecuteCallback, loadStandaloneSprite, parseSpriteData])
+
+  React.useLayoutEffect(() => {
+    onLoad?.(spriteTexture, spriteData ?? null)
+  }, [spriteTexture, spriteData, onLoad])
 
   return { spriteObj, loadJsonAndTexture }
 }

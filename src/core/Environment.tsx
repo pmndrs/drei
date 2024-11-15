@@ -115,7 +115,7 @@ export function EnvironmentCube({
 
 export function EnvironmentPortal({
   children,
-  near = 1,
+  near = 0.1,
   far = 1000,
   resolution = 256,
   frames = 1,
@@ -144,7 +144,12 @@ export function EnvironmentPortal({
   }, [resolution])
 
   React.useLayoutEffect(() => {
-    if (frames === 1) camera.current.update(gl, virtualScene)
+    if (frames === 1) {
+      const autoClear = gl.autoClear
+      gl.autoClear = true
+      camera.current.update(gl, virtualScene)
+      gl.autoClear = autoClear
+    }
     return setEnvProps(background, scene, defaultScene, fbo.texture, {
       blur,
       backgroundBlurriness,
@@ -158,7 +163,10 @@ export function EnvironmentPortal({
   let count = 1
   useFrame(() => {
     if (frames === Infinity || count < frames) {
+      const autoClear = gl.autoClear
+      gl.autoClear = true
       camera.current.update(gl, virtualScene)
+      gl.autoClear = autoClear
       count++
     }
   })

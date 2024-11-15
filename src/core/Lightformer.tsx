@@ -1,4 +1,4 @@
-import { applyProps, ReactThreeFiber, useThree } from '@react-three/fiber'
+import { applyProps, ReactThreeFiber } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from 'three'
 import { ForwardRefComponent } from '../helpers/ts-utils'
@@ -8,15 +8,17 @@ export type LightProps = JSX.IntrinsicElements['mesh'] & {
   map?: THREE.Texture
   toneMapped?: boolean
   color?: ReactThreeFiber.Color
-  form?: 'circle' | 'ring' | 'rect' | any
+  form?: 'circle' | 'ring' | 'rect' | 'plane' | 'box' | any
   scale?: number | [number, number, number] | [number, number]
   intensity?: number
-  target?: [number, number, number] | THREE.Vector3
+  target?: boolean | [number, number, number] | THREE.Vector3
+  light?: Partial<JSX.IntrinsicElements['pointLight']>
 }
 
 export const Lightformer: ForwardRefComponent<LightProps, THREE.Mesh> = /* @__PURE__ */ React.forwardRef(
   (
     {
+      light,
       args,
       map,
       toneMapped = false,
@@ -24,7 +26,7 @@ export const Lightformer: ForwardRefComponent<LightProps, THREE.Mesh> = /* @__PU
       form: Form = 'rect',
       intensity = 1,
       scale = 1,
-      target,
+      target = [0, 0, 0],
       children,
       ...props
     }: LightProps,
@@ -42,28 +44,31 @@ export const Lightformer: ForwardRefComponent<LightProps, THREE.Mesh> = /* @__PU
 
     // Target light
     React.useLayoutEffect(() => {
-      if (target) ref.current.lookAt(Array.isArray(target) ? new THREE.Vector3(...target) : target)
-    }, [target])
+      if (!props.rotation) ref.current.quaternion.identity()
+      if (target && !props.rotation) {
+        'boolean' === typeof target
+          ? ref.current.lookAt(0, 0, 0)
+          : ref.current.lookAt(Array.isArray(target) ? new THREE.Vector3(...target) : target)
+      }
+    }, [target, props.rotation])
 
     // Fix 2-dimensional scale
     scale = Array.isArray(scale) && scale.length === 2 ? [scale[0], scale[1], 1] : scale
-
     return (
       <mesh ref={ref} scale={scale} {...props}>
         {Form === 'circle' ? (
-          <ringGeometry args={[0, 1, 64]} />
+          <ringGeometry args={args ? (args as any) : [0, 0.5, 64]} />
         ) : Form === 'ring' ? (
-          <ringGeometry args={[0.5, 1, 64]} />
-        ) : Form === 'rect' ? (
-          <planeGeometry />
+          <ringGeometry args={args ? (args as any) : [0.25, 0.5, 64]} />
+        ) : Form === 'rect' || Form === 'plane' ? (
+          <planeGeometry args={args ? (args as any) : [1, 1]} />
+        ) : Form === 'box' ? (
+          <boxGeometry args={args ? (args as any) : [1, 1, 1]} />
         ) : (
           <Form args={args} />
         )}
-        {children ? (
-          children
-        ) : !props.material ? (
-          <meshBasicMaterial toneMapped={toneMapped} map={map} side={THREE.DoubleSide} />
-        ) : null}
+        {children ? children : <meshBasicMaterial toneMapped={toneMapped} map={map} side={THREE.DoubleSide} />}
+        {light && <pointLight castShadow {...light} />}
       </mesh>
     )
   }

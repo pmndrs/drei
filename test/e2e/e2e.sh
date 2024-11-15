@@ -71,6 +71,50 @@ cp App.tsx $appdir/app/page.tsx
 npx playwright test snapshot.test.js
 kill_app
 
+#  ██████╗     ██╗███████╗
+# ██╔════╝     ██║██╔════╝
+# ██║          ██║███████╗
+# ██║     ██   ██║╚════██║
+# ╚██████╗╚█████╔╝███████║
+#  ╚═════╝ ╚════╝ ╚══════╝
+# 
+# (using Next.js)
+#
+
+appname=cjsapp
+appdir="$tmp/$appname"
+
+# create app
+(cd $tmp; npx -y create-next-app@14 $appname --ts --no-eslint --no-tailwind --no-src-dir --app --import-alias "@/*")
+
+# drei
+(cd $appdir; npm i $TGZ)
+
+# App.tsx
+cp App.tsx $appdir/app/page.tsx
+
+# next.config.mjs
+cat <<EOF >$appdir/next.config.mjs
+console.log('🦆 CJS override (next.config.mjs)')
+import path from 'path'
+
+/** @type {import('next').NextConfig} */
+export default {
+  //
+  // We force Next to use drei's CJS version here
+  //
+  webpack: (config) => {
+    config.resolve.alias['@react-three/drei'] = path.resolve('node_modules/@react-three/drei/index.cjs.js')
+    return config
+  },
+}
+EOF
+
+# build+start+playwright
+(cd $appdir; npm run build; npm start -- -p $PORT &)
+npx playwright test snapshot.test.js
+kill_app
+
 #
 #  ██████╗██████╗  █████╗ 
 # ██╔════╝██╔══██╗██╔══██╗

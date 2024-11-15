@@ -228,16 +228,16 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
       if (!spriteData.current) return
       const {
         meta: { size: metaInfo },
-        frames
+        frames,
       } = spriteData.current
 
       const { w: frameW, h: frameH } = Array.isArray(frames)
         ? frames[0].sourceSize
         : frameName
-        ? frames[frameName]
-          ? frames[frameName][0].sourceSize
+          ? frames[frameName]
+            ? frames[frameName][0].sourceSize
+            : { w: 0, h: 0 }
           : { w: 0, h: 0 }
-        : { w: 0, h: 0 }
 
       if (matRef.current && matRef.current.map) {
         matRef.current.map.wrapS = matRef.current.map.wrapT = THREE.RepeatWrapping
@@ -255,7 +255,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
       if (onStart) {
         onStart({
           currentFrameName: frameName ?? '',
-          currentFrame: currentFrame.current
+          currentFrame: currentFrame.current,
         })
       }
     }, [flipOffset, frameName, onStart])
@@ -266,7 +266,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
         offset: pos.current,
         imageUrl: textureImageURL,
         hasEnded: false,
-        ref: fref
+        ref: fref,
       }),
       [textureImageURL, fref]
     )
@@ -345,7 +345,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
 
       const {
         meta: { size: metaInfo },
-        frames
+        frames,
       } = spriteData.current
       const { w: frameW, h: frameH } = getFirstFrame(frames, frameName).sourceSize
       const spriteFrames = Array.isArray(frames) ? frames : frameName ? frames[frameName] : []
@@ -369,7 +369,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
       var manualProgressEndCondition = playBackwards ? currentFrame.current < 0 : currentFrame.current >= _endFrame
 
       if (endCondition) {
-        currentFrame.current = loop ? startFrame ?? 0 : 0
+        currentFrame.current = loop ? (startFrame ?? 0) : 0
 
         if (playBackwards) {
           currentFrame.current = _endFrame
@@ -378,12 +378,12 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
         if (loop) {
           onLoopEnd?.({
             currentFrameName: frameName ?? '',
-            currentFrame: currentFrame.current
+            currentFrame: currentFrame.current,
           })
         } else {
           onEnd?.({
             currentFrameName: frameName ?? '',
-            currentFrame: currentFrame.current
+            currentFrame: currentFrame.current,
           })
 
           state.hasEnded = !resetOnEnd
@@ -397,7 +397,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
       } else if (onStartCondition) {
         onStart?.({
           currentFrameName: frameName ?? '',
-          currentFrame: currentFrame.current
+          currentFrame: currentFrame.current,
         })
       }
 
@@ -406,7 +406,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
         if (softEnd.current === false) {
           onEnd?.({
             currentFrameName: frameName ?? '',
-            currentFrame: currentFrame.current
+            currentFrame: currentFrame.current,
           })
           softEnd.current = true
         }
@@ -439,14 +439,16 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
 
       const {
         frame: { x: frameX, y: frameY },
-        sourceSize: { w: originalSizeX, h: originalSizeY }
+        sourceSize: { w: originalSizeX, h: originalSizeY },
       } = spriteFrames[targetFrame]
 
       const frameOffsetX = 1 / framesH
       const frameOffsetY = 1 / framesV
       if (matRef.current && matRef.current.map) {
         finalValX =
-          flipOffset > 0 ? frameOffsetX * (frameX / originalSizeX) : frameOffsetX * (frameX / originalSizeX) - matRef.current.map.repeat.x
+          flipOffset > 0
+            ? frameOffsetX * (frameX / originalSizeX)
+            : frameOffsetX * (frameX / originalSizeX) - matRef.current.map.repeat.x
         finalValY = Math.abs(1 - frameOffsetY) - frameOffsetY * (frameY / originalSizeY)
 
         matRef.current.map.offset.x = finalValX
@@ -489,7 +491,7 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
         runAnimation()
         onFrame?.({
           currentFrameName: currentFrameName.current,
-          currentFrame: currentFrame.current
+          currentFrame: currentFrame.current,
         })
       }
     })
@@ -530,7 +532,13 @@ export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, Spri
                 alphaTest={alphaTest ?? 0.0}
               />
               {(instanceItems ?? [0]).map((item, index) => (
-                <Instance key={index} ref={instanceItems?.length === 1 ? spriteRef : null} position={item} scale={1.0} {...meshProps} />
+                <Instance
+                  key={index}
+                  ref={instanceItems?.length === 1 ? spriteRef : null}
+                  position={item}
+                  scale={1.0}
+                  {...meshProps}
+                />
               ))}
             </Instances>
           )}

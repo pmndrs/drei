@@ -1,3 +1,3 @@
 yarn pretty-quick --staged
-yarn eslint:ci --quiet
+yarn eslint:ci
 yarn typecheck

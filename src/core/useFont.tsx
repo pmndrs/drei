@@ -38,12 +38,12 @@ function parseTtfArrayBuffer(ttfData: ArrayBuffer) {
   return ttfLoader.parse(ttfData) as FontData
 }
 
-async function loadFontData(font: FontInput): Promise<FontData> {
+async function loadFontData(font: FontInput) {
   if (typeof font === 'string') {
     const res = await fetch(font)
 
     if (res.headers.get('Content-Type')?.includes('application/json')) {
-      return await res.json()
+      return (await res.json()) as FontData
     } else {
       const arrayBuffer = await res.arrayBuffer()
       return parseTtfArrayBuffer(arrayBuffer)

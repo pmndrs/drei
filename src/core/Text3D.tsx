@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { extend, MeshProps, Node } from '@react-three/fiber'
 import { useMemo } from 'react'
 import { mergeVertices, TextGeometry, TextGeometryParameters } from 'three-stdlib'
-import { useFont, FontData } from './useFont'
+import { useFont } from './useFont'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 declare global {
@@ -15,7 +15,7 @@ declare global {
 }
 
 type Text3DProps = {
-  font: FontData | string
+  font: Parameters<typeof useFont>[0]
   bevelSegments?: number
   smooth?: number
 } & Omit<TextGeometryParameters, 'font'> &

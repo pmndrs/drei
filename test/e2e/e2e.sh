@@ -3,21 +3,25 @@ set -ex
 
 PORT=5188
 DIST=../../dist
+tmp=$(mktemp -d)
 
+# Build the package
 (cd $DIST; npm pack)
 TGZ=$(realpath "$DIST/react-three-drei-0.0.0-semantic-release.tgz")
+
+snapshot() {
+  local UPDATE_SNAPSHOTS=""
+  if [ "$PLAYWRIGHT_UPDATE_SNAPSHOTS" = "1" ]; then
+    UPDATE_SNAPSHOTS="--update-snapshots"
+  fi
+  npx playwright test $UPDATE_SNAPSHOTS snapshot.test.ts
+}
 
 kill_app() {
   kill -9 $(lsof -ti:$PORT) || echo "ok, no previous running process on port $PORT"
 }
-
-cleanup() {
-  kill_app
-}
-cleanup || true
-trap cleanup EXIT INT TERM HUP
-
-tmp=$(mktemp -d)
+kill_app || true
+trap kill_app EXIT INT TERM HUP
 
 #
 # ██╗   ██╗██╗████████╗███████╗
@@ -42,7 +46,7 @@ cp App.tsx $appdir/src/App.tsx
 
 # build+start+playwright
 (cd $appdir; npm run build; npm run preview -- --host --port $PORT &)
-npx playwright test snapshot.test.js
+snapshot
 kill_app
 
 #
@@ -68,7 +72,7 @@ cp App.tsx $appdir/app/page.tsx
 
 # build+start+playwright
 (cd $appdir; npm run build; npm start -- -p $PORT &)
-npx playwright test snapshot.test.js
+snapshot
 kill_app
 
 #  ██████╗     ██╗███████╗
@@ -112,7 +116,7 @@ EOF
 
 # build+start+playwright
 (cd $appdir; npm run build; npm start -- -p $PORT &)
-npx playwright test snapshot.test.js
+snapshot
 kill_app
 
 #
@@ -138,7 +142,7 @@ cp App.tsx $appdir/src/App.tsx
 
 # build+start+playwright
 (cd $appdir; npm run build; npx serve -s -p $PORT build &)
-npx playwright test snapshot.test.js
+snapshot
 kill_app
 
 #

@@ -823,16 +823,30 @@ $ yarn build
 $ yarn test
 ```
 
-#### Docker
-
-Or in the same environment as the CI:
+To update a snapshot:
 
 ```sh
-$ yarn build
-$ docker run --init --rm -v $(pwd):/app -w /app ghcr.io/pmndrs/playwright:drei sh -c "corepack enable && yarn install && yarn test"
+$ PLAYWRIGHT_UPDATE_SNAPSHOTS=1 yarn test
 ```
 
-> [!TIP]
-> If running on mac m-series, you may need to add `--platform linux/arm64` to the docker command.
+#### Docker
 
-To update a snapshot, simply remove it and relaunch the test command.
+> [!IMPORTANT]
+> Snapshots are system-dependent, so to run playwright in the same environment as the CI:
+
+```sh
+$ docker run --init --rm \
+    -v $(pwd):/app -w /app \
+    ghcr.io/pmndrs/playwright:drei \
+      sh -c "corepack enable && yarn install && yarn build && yarn test"
+```
+
+To update a snapshot:
+
+```sh
+$ docker run --init --rm \
+    -v $(pwd):/app -w /app \
+    -e PLAYWRIGHT_UPDATE_SNAPSHOTS=1 \
+    ghcr.io/pmndrs/playwright:drei \
+      sh -c "corepack enable && yarn install && yarn build && yarn test"
+```

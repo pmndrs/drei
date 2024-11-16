@@ -2844,7 +2844,7 @@ __metadata:
     "@react-three/fiber": "npm:^8.0.8"
     "@rollup/plugin-babel": "npm:^5.3.0"
     "@rollup/plugin-commonjs": "npm:^19.0.0"
-    "@rollup/plugin-json": "npm:^4.1.0"
+    "@rollup/plugin-json": "npm:^6.1.0"
     "@rollup/plugin-node-resolve": "npm:^13.0.0"
     "@storybook/addon-actions": "npm:^8.4.2"
     "@storybook/addon-controls": "npm:^8.4.2"
@@ -2990,14 +2990,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rollup/plugin-json@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "@rollup/plugin-json@npm:4.1.0"
+"@rollup/plugin-json@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "@rollup/plugin-json@npm:6.1.0"
   dependencies:
-    "@rollup/pluginutils": "npm:^3.0.8"
+    "@rollup/pluginutils": "npm:^5.1.0"
   peerDependencies:
-    rollup: ^1.20.0 || ^2.0.0
-  checksum: 10c0/9fc4a3ee60929afcb5269ebda602914d1cf5dc020808f85be90c0a5a2ba9ca26136b0284a1935984861f0549a1e1db30fc372906c14425f5da4909f0fd21e5ea
+    rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+  peerDependenciesMeta:
+    rollup:
+      optional: true
+  checksum: 10c0/9400c431b5e0cf3088ba2eb2d038809a2b0fb2a84ed004997da85582f48cd64958ed3168893c4f2c8109e38652400ed68282d0c92bf8ec07a3b2ef2e1ceab0b7
   languageName: node
   linkType: hard
 
@@ -3017,7 +3020,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rollup/pluginutils@npm:^3.0.8, @rollup/pluginutils@npm:^3.1.0":
+"@rollup/pluginutils@npm:^3.1.0":
   version: 3.1.0
   resolution: "@rollup/pluginutils@npm:3.1.0"
   dependencies:
@@ -3053,6 +3056,22 @@ __metadata:
     rollup:
       optional: true
   checksum: 10c0/4114d0dbc22623d33ee38885e90afada4d96fae92e9645693fe438f6313832377ffb6b2809d90e96cc269339a54e2c0c46a739f621d9041050b0b751020f726b
+  languageName: node
+  linkType: hard
+
+"@rollup/pluginutils@npm:^5.1.0":
+  version: 5.1.3
+  resolution: "@rollup/pluginutils@npm:5.1.3"
+  dependencies:
+    "@types/estree": "npm:^1.0.0"
+    estree-walker: "npm:^2.0.2"
+    picomatch: "npm:^4.0.2"
+  peerDependencies:
+    rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+  peerDependenciesMeta:
+    rollup:
+      optional: true
+  checksum: 10c0/ba46ad588733fb01d184ee3bc7a127d626158bc840b5874a94c129ff62689d12f16f537530709c54da6f3b71f67d705c4e09235b1dc9542e9d47ee8f2d0b8b9e
   languageName: node
   linkType: hard
 
@@ -10246,6 +10265,13 @@ __metadata:
   version: 3.0.1
   resolution: "picomatch@npm:3.0.1"
   checksum: 10c0/70ec738569f1864658378b7abdab8939d15dae0718c1df994eae3346fd33daf6a3c1ff4e0c1a0cd1e2c0319130985b63a2cff34d192f2f2acbb78aca76111736
+  languageName: node
+  linkType: hard
+
+"picomatch@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "picomatch@npm:4.0.2"
+  checksum: 10c0/7c51f3ad2bb42c776f49ebf964c644958158be30d0a510efd5a395e8d49cb5acfed5b82c0c5b365523ce18e6ab85013c9ebe574f60305892ec3fa8eee8304ccc
   languageName: node
   linkType: hard
 

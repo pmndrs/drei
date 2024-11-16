@@ -1,10 +1,10 @@
 on:
   schedule:
-    - cron: "30 8 * * *"
+    - cron: '30 8 * * *'
   workflow_dispatch: # Allows manual triggering of the workflow
 
 permissions:
-  contents: write  # Necessary for delete-branch option
+  contents: write # Necessary for delete-branch option
   issues: write
   pull-requests: write
 
@@ -16,7 +16,7 @@ jobs:
         with:
           operations-per-run: 3000
           exempt-all-assignees: true
-          
+
           #
           # Issues
           #
@@ -26,7 +26,7 @@ jobs:
             Any activity, like adding an update or comment, will automatically remove the stale label so it stays on our radar.
 
             Feel free to reach out on [Discord](https://discord.com/channels/740090768164651008/741751532592038022) if you need support or feedback from the community. This issue will close automatically soon if there’s no further activity. Thank you for understanding and for being part of the project!
-          
+
           close-issue-message: |
             We’re closing this issue to keep our project manageable and make room for other active work, but we truly appreciate your effort and contribution.
 
@@ -41,7 +41,7 @@ jobs:
             Any update, comment, or change to the PR will automatically remove the stale label so it stays active in our workflow.
 
             If you need any help, don’t hesitate to connect with us on [Discord](https://discord.com/channels/740090768164651008/741751532592038022) for feedback and support. This PR will close automatically soon if there’s no further activity, but we’re here to help if you’re interested in getting it merged. Thank you for your contribution!
-          
+
           close-pr-message: |
             We’re closing this pull request to help manage our workload and focus on active contributions. We really appreciate the effort you put into this, and we’d be happy to revisit it anytime you’re ready.
 

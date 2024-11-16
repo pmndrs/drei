@@ -17,13 +17,12 @@ updates:
 
     # https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#groups
     groups:
-    
       # Always update react and react-dom together
       react-packages:
         patterns:
           - 'react'
           - 'react-dom'
-          
+
       #
       # pkg.json "dependencies"
       #

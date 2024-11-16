@@ -33,7 +33,7 @@ export type GridMaterialType = {
   /** Fade strength, default: 1 */
   fadeStrength?: number
   /** Fade from camera (1) or origin (0), or somewhere in between, default: camera */
-  fadeFrom?: number;
+  fadeFrom?: number
   /** Material side, default: THREE.BackSide */
   side?: THREE.Side
 }

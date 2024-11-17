@@ -67,7 +67,7 @@
     "tunnel-rat": "^0.1.2",
     "utility-types": "^3.11.0",
     "uuid": "^9.0.1",
-    "zustand": "^3.7.1"
+    "zustand": "^4.5.5"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",

@@ -2905,7 +2905,7 @@ __metadata:
     uuid: "npm:^9.0.1"
     vite: "npm:^5.4.11"
     vite-plugin-glslify: "npm:^2.1.0"
-    zustand: "npm:^4.5.5"
+    zustand: "npm:^5.0.1"
   peerDependencies:
     "@react-three/fiber": ">=8.0"
     react: ">=18.0"
@@ -12829,15 +12829,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-sync-external-store@npm:1.2.2":
-  version: 1.2.2
-  resolution: "use-sync-external-store@npm:1.2.2"
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-  checksum: 10c0/23b1597c10adf15b26ade9e8c318d8cc0abc9ec0ab5fc7ca7338da92e89c2536abd150a5891bf076836c352fdfa104fc7231fb48f806fd9960e0cbe03601abaf
-  languageName: node
-  linkType: hard
-
 "util-deprecate@npm:^1.0.2, util-deprecate@npm:~1.0.1":
   version: 1.0.2
   resolution: "util-deprecate@npm:1.0.2"
@@ -13325,15 +13316,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zustand@npm:^4.5.5":
-  version: 4.5.5
-  resolution: "zustand@npm:4.5.5"
-  dependencies:
-    use-sync-external-store: "npm:1.2.2"
+"zustand@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "zustand@npm:5.0.1"
   peerDependencies:
-    "@types/react": ">=16.8"
+    "@types/react": ">=18.0.0"
     immer: ">=9.0.6"
-    react: ">=16.8"
+    react: ">=18.0.0"
+    use-sync-external-store: ">=1.2.0"
   peerDependenciesMeta:
     "@types/react":
       optional: true
@@ -13341,6 +13331,8 @@ __metadata:
       optional: true
     react:
       optional: true
-  checksum: 10c0/d04469d76b29c7e4070da269886de4efdadedd3d3824dc2a06ac4ff62e3b5877f925e927afe7382de651829872b99adec48082f1bd69fe486149be666345e626
+    use-sync-external-store:
+      optional: true
+  checksum: 10c0/b4239c8bf3988bfdaaed1c48f3958d0b047b721c4908a76bd78e73387d107963cda774541cf303c2ea89261481c995aa6666e7e77c30717ad440cdb499d9e5ca
   languageName: node
   linkType: hard

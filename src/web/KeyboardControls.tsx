@@ -1,5 +1,5 @@
 import * as React from 'react'
-import create, { StoreApi, UseBoundStore } from 'zustand'
+import { create, StoreApi, UseBoundStore } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
 
 // These are removed in Zustand v4

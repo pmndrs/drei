@@ -11,7 +11,7 @@ import {
   Environment,
   OrbitControls,
   Center,
-} from '../../src'
+} from '@react-three/drei'
 
 export default {
   title: 'Shaders/MeshTransmissionMaterial',

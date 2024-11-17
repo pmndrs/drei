@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
-import { FaceLandmarker, FaceControls, Box } from '../../src'
+import { FaceLandmarker, FaceControls, Box } from '@react-three/drei'
 import { ComponentProps } from 'react'
 
 export default {

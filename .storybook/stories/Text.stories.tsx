@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react'
 import { Setup } from '../Setup'
 import { useTurntable } from '../useTurntable'
 
-import { Text } from '../../src'
+import { Text } from '@react-three/drei'
 
 export default {
   title: 'Abstractions/Text',

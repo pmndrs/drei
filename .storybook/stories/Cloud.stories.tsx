@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
-import { Cloud, OrbitControls } from '../../src'
+import { Cloud, OrbitControls } from '@react-three/drei'
 import { ComponentProps } from 'react'
 
 export default {

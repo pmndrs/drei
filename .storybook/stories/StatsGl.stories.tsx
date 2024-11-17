@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
-import { StatsGl } from '../../src'
+import { StatsGl } from '@react-three/drei'
 
 export default {
   title: 'Misc/StatsGl',

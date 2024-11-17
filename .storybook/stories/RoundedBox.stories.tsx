@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react'
 import { Setup } from '../Setup'
 import { useTurntable } from '../useTurntable'
 
-import { RoundedBox } from '../../src'
+import { RoundedBox } from '@react-three/drei'
 
 export default {
   title: 'Shapes/RoundedBox',

@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react'
 import { Setup } from '../Setup'
 import { useTurntable } from '../useTurntable'
 
-import { Box, Center, useGLTF } from '../../src'
+import { Box, Center, useGLTF } from '@react-three/drei'
 import { ComponentProps } from 'react'
 
 export default {

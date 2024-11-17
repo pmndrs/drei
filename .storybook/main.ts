@@ -1,5 +1,6 @@
 import type { StorybookConfig } from '@storybook/react-vite'
 import { svg } from './favicon'
+import path from 'path'
 
 const config: StorybookConfig = {
   staticDirs: ['./public'],
@@ -31,6 +32,18 @@ const config: StorybookConfig = {
         return component.name === componentName
       },
     },
+  },
+
+  viteFinal: async (config) => {
+    config.resolve ??= {}
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      '@react-three/drei':
+        process.env.STORYBOOK_ENV === 'production'
+          ? path.resolve(__dirname, '../dist')
+          : path.resolve(__dirname, '../src'),
+    }
+    return config
   },
 }
 

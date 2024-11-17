@@ -5,7 +5,7 @@ import { Setup } from '../Setup'
 
 import { useFrame } from '@react-three/fiber'
 import { BufferGeometry, MeshStandardMaterial, type Mesh } from 'three'
-import { Icosahedron, Plane, ShadowAlpha } from '../../src'
+import { Icosahedron, Plane, ShadowAlpha } from '@react-three/drei'
 
 export default {
   title: 'Misc/ShadowAlpha',

@@ -12,7 +12,7 @@ import {
   SpotLightShadow,
   useDepthBuffer,
   useTexture,
-} from '../../src'
+} from '@react-three/drei'
 import { Setup } from '../Setup'
 
 export default {

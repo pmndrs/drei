@@ -4,7 +4,7 @@ import { MathUtils, NoToneMapping, Vector3 } from 'three'
 
 import { Setup } from '../Setup'
 
-import { Svg } from '../../src'
+import { Svg } from '@react-three/drei'
 
 export default {
   title: 'Abstractions/Svg',

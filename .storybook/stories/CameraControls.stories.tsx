@@ -4,7 +4,7 @@ import { Scene } from 'three'
 import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
-import { Box, CameraControls, PerspectiveCamera, Plane, useFBO } from '../../src'
+import { Box, CameraControls, PerspectiveCamera, Plane, useFBO } from '@react-three/drei'
 
 export default {
   title: 'Controls/CameraControls',

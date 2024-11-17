@@ -6,7 +6,7 @@ import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
-import { CameraShake, OrbitControls } from '../../src'
+import { CameraShake, OrbitControls } from '@react-three/drei'
 import { ComponentProps } from 'react'
 
 export default {

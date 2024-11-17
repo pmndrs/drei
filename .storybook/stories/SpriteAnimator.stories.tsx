@@ -6,6 +6,8 @@ import { SpriteAnimator, useSpriteLoader } from '../../src'
 
 const SPRITE_IMAGE = 'story.png'
 const SPRITE_DATA = 'story.json'
+const CYCLOPS_IMAGE = 'cyclops.png'
+const CYCLOPS_JSON = 'cyclops.json'
 
 export default {
   title: 'Misc/SpriteAnimator',
@@ -81,4 +83,24 @@ export const SpriteAnimatorSt3 = {
   args: {},
   render: (args) => <SpriteAnimatorScene3 {...args} />,
   name: 'Multiple',
+} satisfies Story
+
+function SpriteAnimatorScene4(props: React.ComponentProps<typeof SpriteAnimator>) {
+  const commonProps = {
+    textureImageURL: CYCLOPS_IMAGE,
+    textureDataURL: CYCLOPS_JSON,
+    animationNames: ['idle', 'attacking', 'hurt'],
+  }
+
+  return (
+    <>
+      <SpriteAnimator {...props} position={[-2, 0, 0.01]} {...commonProps} fps={18} scale={2.5} frameName={'idle'} />
+    </>
+  )
+}
+
+export const SpriteAnimatorSt4 = {
+  args: {},
+  render: (args) => <SpriteAnimatorScene4 {...args} />,
+  name: 'Image & JSON',
 } satisfies Story

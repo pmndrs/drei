@@ -3,6 +3,8 @@ title: Sprite Animator
 sourcecode: src/core/SpriteAnimator.tsx
 ---
 
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/spriteanimator--default-story)
+
 ![](https://img.shields.io/badge/-Dom only-red)
 
 <Grid cols={4}>
@@ -12,76 +14,125 @@ sourcecode: src/core/SpriteAnimator.tsx
 </Grid>
 
 ```tsx
-type Props = {
+export type SpriteAnimatorProps = {
   /** The start frame of the animation */
   startFrame?: number
+
   /** The end frame of the animation */
   endFrame?: number
-  /** The desired frames per second of the animaiton */
+
+  /** The desired frames per second of the animation. If set to 0 or negative, animation will be static */
   fps?: number
-  /** The frame identifier to use, has to be one of animationNames */
-  frameName?: string
-  /** The URL of the texture JSON (if using JSON-Array or JSON-Hash) */
-  textureDataURL?: string
-  /** The URL of the texture image */
-  textureImageURL?: string
-  /** Whether or not the animation should loop */
-  loop?: boolean
-  /** The number of frames of the animation (required if using plain spritesheet without JSON) */
-  numberOfFrames?: number
-  /** Whether or not the animation should auto-start when all assets are loaded */
-  autoPlay?: boolean
+
   /** The animation names of the spritesheet (if the spritesheet -with JSON- contains more animation sequences) */
   animationNames?: Array<string>
-  /** Event callback when the animation starts */
-  onStart?: Function
+
+  /** The frame identifier to use, must be one of animationNames */
+  frameName?: string
+
+  /** The URL of the texture JSON (if using JSON-Array or JSON-Hash) */
+  textureDataURL?: string
+
+  /** The URL of the texture image */
+  textureImageURL?: string
+
+  /** Whether or not the animation should loop */
+  loop?: boolean
+
+  /** The number of frames of the animation (required if using plain spritesheet without JSON) */
+  numberOfFrames?: number
+
+  /** Animation auto-start when all assets are loaded */
+  autoPlay?: boolean
+
+  /** Event callback when the animation starts or restarts */
+  onStart?: (data: AnimationEventData) => void
+
   /** Event callback when the animation ends */
-  onEnd?: Function
-  /** Event callback when the animation loops */
-  onLoopEnd?: Function
-  /** Event callback when each frame changes */
-  onFrame?: Function
-  /** @deprecated Control when the animation runs*/
+  onEnd?: (data: AnimationEventData) => void
+
+  /** Event callback when the animation completes a loop cycle */
+  onLoopEnd?: (data: AnimationEventData) => void
+
+  /** Event callback fired on each frame change */
+  onFrame?: (data: AnimationEventData) => void
+
+  /** @deprecated Use pause={false} instead. Control when the animation runs */
   play?: boolean
+
   /** Control when the animation pauses */
   pause?: boolean
+
   /** Whether or not the Sprite should flip sides on the x-axis */
   flipX?: boolean
-  /** Sets the alpha value to be used when running an alpha test. https://threejs.org/docs/#api/en/materials/Material.alphaTest */
+
+  /** Sets the alpha value to be used when running an alpha test
+   * @default 0.0
+   */
   alphaTest?: number
-  /** Displays the texture on a SpriteGeometry always facing the camera, if set to false, it renders on a PlaneGeometry */
+
+  /** Displays the texture on a Billboard component always facing the camera.
+   * @default false
+   */
   asSprite?: boolean
-  /** Allows for manual update of the sprite animation e.g: via ScrollControls */
+
+  /** Allows for manual update of the sprite animation e.g: via ScrollControls.
+   * Value should be between 0 and 1
+   */
   offset?: number
+
   /** Allows the sprite animation to start from the end towards the start */
-  playBackwards: boolean
-  /** Allows the animation to be paused after it ended so it can be restarted on demand via auto */
+  playBackwards?: boolean
+
+  /** Allows the animation to be paused after it ended so it can be restarted on demand via autoPlay */
   resetOnEnd?: boolean
-  /** An array of items to create instances from */
-  instanceItems?: any[]
-  /** The max number of items to instance (optional) */
+
+  /** Array of Vector3-like positions for creating multiple instances of the sprite */
+  instanceItems?: (THREE.Vector3 | [number, number, number])[]
+
+  /** The maximum number of instances to render (for buffer size calculation)
+   * @default 1
+   */
   maxItems?: number
-  /** External parsed sprite data, usually from useSpriteLoader ready for use */
-  spriteDataset?: any
-  /** Allows the configuration of the canvas options */
+
+  /** Pre-parsed sprite data, usually from useSpriteLoader */
+  spriteDataset?: {
+    spriteTexture: THREE.Texture
+    spriteData: SpriteData
+  }
+
+  /** Configuration options for the canvas context when loading textures */
   canvasRenderingContext2DSettings?: CanvasRenderingContext2DSettings
-}
+
+  /** Controls whether frame positions are rounded for precise pixel alignment.
+   * Enable this if you notice slight texture bleeding between frames.
+   * @default false
+   */
+  roundFramePosition?: boolean
+
+  /** Additional properties to be passed to both mesh and instance components.
+   * Only includes safe properties that work across both types.
+   * @example { frustumCulled: false, renderOrder: 1 }
+   * @see https://threejs.org/docs/#api/en/core/Object3D
+   */
+  meshProps?: CommonMeshProps
+} & GroupProps
 ```
 
-The SpriteAnimator component provided by drei is a powerful tool for animating sprites in a simple and efficient manner. It allows you to create sprite animations by cycling through a sequence of frames from a sprite sheet image or JSON data.
+The SpriteAnimator component provided by drei is a powerful tool for animating sprites in a simple and efficient manner. It allows you to create sprite animations by cycling through a sequence of frames from a spritesheet image and JSON data.
 
 Notes:
 
 - The SpriteAnimator component internally uses the useFrame hook from react-three-fiber (r3f) for efficient frame updates and rendering.
 - The sprites (without a JSON file) should contain equal size frames
 - Trimming of spritesheet frames is not yet supported
-- Internally uses the `useSpriteLoader` or can use data from it directly
+- Internally uses the `useSpriteLoader` or can use data from it directly (which is the recommended way of loading assets)
 
 ```jsx
 <SpriteAnimator
   position={[-3.5, -2.0, 2.5]}
   startFrame={0}
-  scaleFactor={0.125}
+  meshProps={{ frustumCulled: false, scale: 2.5 }}
   autoPlay={true}
   loop={true}
   numberOfFrames={16}
@@ -89,7 +140,28 @@ Notes:
 />
 ```
 
-ScrollControls example
+Load sprite textures via `useSpriteLoader`
+
+```jsx
+const { spriteObj: statics } = useSpriteLoader('/statics.png', '/statics.json', ['heart', 'skull', 'sword'], null)
+
+<SpriteAnimator
+  position={[2, 2.8, 0.01]}
+  fps={0}
+  meshProps={{ frustumCulled: false, scale: 2.5 }}
+  autoPlay={true}
+  loop={true}
+  flipX={false}
+  startFrame={0}
+  frameName={'sword'}
+  spriteDataset={statics}
+  asSprite={false}
+  alphaTest={0.01}
+/>
+
+```
+
+`ScrollControls` example
 
 ```jsx
 ;<ScrollControls damping={0.2} maxSpeed={0.5} pages={2}>

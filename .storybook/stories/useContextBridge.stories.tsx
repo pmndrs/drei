@@ -90,6 +90,6 @@ function UseContextBridgeStory() {
 }
 
 export const UseContextBridgeSt = {
-  render: (args) => <UseContextBridgeStory />,
+  render: () => <UseContextBridgeStory />,
   name: 'Default',
 } satisfies Story

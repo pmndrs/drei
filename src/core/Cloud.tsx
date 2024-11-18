@@ -261,7 +261,7 @@ export const CloudInstance = /* @__PURE__ */ React.forwardRef<Group, CloudProps>
             matrix: new Matrix4(),
             color: new Color(),
             rotation: index * (Math.PI / segments),
-          } as CloudState)
+          }) as CloudState
       )
     }, [segments, uuid])
 

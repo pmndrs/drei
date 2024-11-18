@@ -107,7 +107,7 @@ function PointEvent({ color, ...props }) {
       {...props}
       color={clicked ? 'hotpink' : hovered ? 'red' : color}
       onPointerOver={(e) => (e.stopPropagation(), setHover(true))}
-      onPointerOut={(e) => setHover(false)}
+      onPointerOut={() => setHover(false)}
       onClick={(e) => (e.stopPropagation(), setClick((state) => !state))}
     />
   )
@@ -156,7 +156,7 @@ export const BasicPointsInstances = {
 
 function BasicPointsInstancesSelectionScene(props: React.ComponentProps<typeof Points>) {
   const [points] = React.useState(() =>
-    Array.from({ length: 100 }, (i) => [
+    Array.from({ length: 100 }, () => [
       MathUtils.randFloatSpread(10),
       MathUtils.randFloatSpread(10),
       MathUtils.randFloatSpread(10),

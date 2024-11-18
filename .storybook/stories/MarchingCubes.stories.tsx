@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Color, Group, Vector3 } from 'three'
+import { Color, Vector3 } from 'three'
 
 import { Setup } from '../Setup'
 

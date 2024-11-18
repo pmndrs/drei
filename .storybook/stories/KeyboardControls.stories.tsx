@@ -1,6 +1,6 @@
 import { useFrame } from '@react-three/fiber'
 import * as React from 'react'
-import { useMemo, useRef } from 'react'
+import { useRef } from 'react'
 import { MathUtils, Mesh, Vector3 } from 'three'
 import { Cone, KeyboardControls, useKeyboardControls } from '../../src'
 import { Setup } from '../Setup'

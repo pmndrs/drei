@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react'
 
-import { GizmoHelper, OrbitControls, useGLTF, GizmoViewcube, TrackballControls, GizmoViewport } from '../../src'
+import { GizmoHelper, OrbitControls, useGLTF, GizmoViewcube, GizmoViewport } from '../../src'
 import { Setup } from '../Setup'
 import { ComponentProps } from 'react'
 

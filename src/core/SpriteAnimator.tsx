@@ -1,49 +1,110 @@
+/* eslint react-hooks/exhaustive-deps: 1 */
 import * as React from 'react'
 import { useFrame, Vector3 } from '@react-three/fiber'
 import * as THREE from 'three'
 import { Instances, Instance } from './Instances'
-import { useSpriteLoader } from './useSpriteLoader'
+import { Billboard } from './Billboard'
+import { FrameData, getFirstFrame, Size, SpriteData, useSpriteLoader } from './useSpriteLoader'
+
+// Frame-related types
+
+type AnimationEventData = {
+  currentFrameName: string
+  currentFrame: number
+}
+
+type CommonProps<T, U, V> = Pick<T & U & V, keyof T & keyof U & keyof V>
+type CommonMeshProps = CommonProps<
+  React.ComponentProps<'mesh'>,
+  React.ComponentProps<typeof Instance>,
+  React.ComponentProps<typeof Instances>
+>
 
 export type SpriteAnimatorProps = {
+  /** The start frame of the animation */
   startFrame?: number
+  /** The end frame of the animation */
   endFrame?: number
+  /** The desired frames per second of the animation. If set to 0 or negative, animation will be static */
   fps?: number
+  /** The frame identifier to use, must be one of animationNames */
   frameName?: string
+  /** The URL of the texture JSON (if using JSON-Array or JSON-Hash) */
   textureDataURL?: string
+  /** The URL of the texture image */
   textureImageURL?: string
+  /** Whether or not the animation should loop */
   loop?: boolean
+  /** The number of frames of the animation (required if using plain spritesheet without JSON) */
   numberOfFrames?: number
+  /** Whether or not the animation should auto-start when all assets are loaded */
   autoPlay?: boolean
+  /** The animation names of the spritesheet (if the spritesheet -with JSON- contains more animation sequences) */
   animationNames?: Array<string>
-  onStart?: Function
-  onEnd?: Function
-  onLoopEnd?: Function
-  onFrame?: Function
+  /** Event callback when the animation starts or restarts */
+  onStart?: (data: AnimationEventData) => void
+  /** Event callback when the animation ends */
+  onEnd?: (data: AnimationEventData) => void
+  /** Event callback when the animation completes a loop cycle */
+  onLoopEnd?: (data: AnimationEventData) => void
+  /** Event callback fired on each frame change */
+  onFrame?: (data: AnimationEventData) => void
+  /** @deprecated Use pause={false} instead. Control when the animation runs */
   play?: boolean
+  /** Control when the animation pauses */
   pause?: boolean
+  /** Whether or not the Sprite should flip sides on the x-axis */
   flipX?: boolean
-  position?: Array<number>
+  /** Sets the alpha value to be used when running an alpha test
+   * @see https://threejs.org/docs/#api/en/materials/Material.alphaTest
+   */
   alphaTest?: number
+  /** Displays the texture on a Billboard component always facing the camera.
+   * If set to false, it renders on a PlaneGeometry
+   */
   asSprite?: boolean
+  /** Allows for manual update of the sprite animation e.g: via ScrollControls.
+   * Value should be between 0 and 1
+   */
   offset?: number
+  /** Allows the sprite animation to start from the end towards the start */
   playBackwards?: boolean
+  /** Allows the animation to be paused after it ended so it can be restarted on demand via autoPlay */
   resetOnEnd?: boolean
+  /** Array of Vector3-like positions for creating multiple instances of the sprite */
+  instanceItems?: Vector3[]
+  /** The maximum number of instances to render (for buffer size calculation) */
   maxItems?: number
-  instanceItems?: any[]
-  spriteDataset?: any
+  /** Pre-parsed sprite data, usually from useSpriteLoader ready for use */
+  spriteDataset?: {
+    spriteTexture: THREE.Texture
+    spriteData: SpriteData | null
+    aspect: Vector3
+  } | null
+  /** Configuration options for the canvas context when loading textures
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/CanvasRenderingContext2D
+   */
   canvasRenderingContext2DSettings?: CanvasRenderingContext2DSettings
+  /** Controls whether frame positions are rounded for precise pixel alignment.
+   * Enable this if you notice slight texture bleeding between frames.
+   */
+  roundFramePosition?: boolean
+  /** Additional properties to be passed to both simple mesh and instance components.
+   * @example { frustumCulled: false, renderOrder: 1 }
+   * @see https://threejs.org/docs/#api/en/core/Object3D
+   */
+  meshProps?: CommonMeshProps
 } & JSX.IntrinsicElements['group']
 
 type SpriteAnimatorState = {
-  /** The user-defined, mutable, current goal position along the curve, it may be >1 or <0 */
-  current: number | undefined
-  /** The 0-1 normalised and damped current goal position along curve */
-  offset: number | undefined
-  hasEnded: boolean | undefined
-  ref: React.MutableRefObject<any> | undefined | null | ((instance: any) => void)
+  current?: number
+  offset?: number
+  imageUrl?: string
+  hasEnded: boolean
+  ref: React.Ref<THREE.Group>
 }
 
-type Scale = number | [number, number, number] | Vector3
+type Scale = Vector3
 
 const context = React.createContext<SpriteAnimatorState | null>(null)
 
@@ -51,57 +112,64 @@ export function useSpriteAnimator() {
   return React.useContext(context)
 }
 
-export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ React.forwardRef(
+// Type guard for SpriteData
+function isSpriteData(data: SpriteData | null) {
+  return data !== null && 'meta' in data && 'frames' in data
+}
+
+const geometry = new THREE.PlaneGeometry(1, 1)
+
+export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, SpriteAnimatorProps>(
   (
     {
-      startFrame,
+      startFrame = 0,
       endFrame,
-      fps,
-      frameName,
+      fps = 30,
+      frameName = '',
       textureDataURL,
       textureImageURL,
-      loop,
-      numberOfFrames,
-      autoPlay,
+      loop = false,
+      numberOfFrames = 1,
+      autoPlay = true,
       animationNames,
       onStart,
       onEnd,
       onLoopEnd,
       onFrame,
       play,
-      pause,
-      flipX,
-      alphaTest,
+      pause = false,
+      flipX = false,
+      alphaTest = 0.0,
       children,
-      asSprite,
+      asSprite = false,
       offset,
-      playBackwards,
-      resetOnEnd,
-      maxItems,
-      instanceItems,
+      playBackwards = false,
+      resetOnEnd = false,
+      maxItems = 1,
+      instanceItems = [[0, 0, 0]],
       spriteDataset,
       canvasRenderingContext2DSettings,
+      roundFramePosition = false,
+      meshProps = {},
       ...props
     },
     fref
   ) => {
-    const ref = React.useRef<any>()
-    const spriteData = React.useRef<any>(null)
-    const matRef = React.useRef<any>()
-    const spriteRef = React.useRef<any>()
+    const ref = React.useRef(new THREE.Group())
+    const spriteData = React.useRef<SpriteData | null>(null)
+    const matRef = React.useRef<THREE.MeshBasicMaterial | null>(null)
+    const spriteRef = React.useRef<THREE.Mesh | THREE.InstancedMesh>(null)
     const timerOffset = React.useRef(window.performance.now())
-    const currentFrame = React.useRef<number>(startFrame || 0)
-    const currentFrameName = React.useRef<string>(frameName || '')
-    const fpsInterval = 1000 / (fps || 30)
-    const [spriteTexture, setSpriteTexture] = React.useState<THREE.Texture>(new THREE.Texture())
-    const totalFrames = React.useRef<number>(0)
-    const [aspect, setAspect] = React.useState<number[] | null>([1, 1, 1])
+    const currentFrame = React.useRef(startFrame)
+    const currentFrameName = React.useRef(frameName)
+    const fpsInterval = fps > 0 ? 1000 / fps : 0
+    const [spriteTexture, setSpriteTexture] = React.useState(new THREE.Texture())
+    const totalFrames = React.useRef(0)
+    const [aspect, setAspect] = React.useState(new THREE.Vector3(1, 1, 1))
     const flipOffset = flipX ? -1 : 1
-    const [displayAsSprite, setDisplayAsSprite] = React.useState(asSprite ?? true)
     const pauseRef = React.useRef(pause)
     const pos = React.useRef(offset)
     const softEnd = React.useRef(false)
-    const frameBuffer = React.useRef<any[]>([])
     const { spriteObj, loadJsonAndTexture } = useSpriteLoader(
       null,
       null,
@@ -110,20 +178,97 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
       undefined,
       canvasRenderingContext2DSettings
     )
-    //
+    const frameNameRef = React.useRef(frameName)
 
-    function reset() {}
+    // lite version for pre-loaded assets
+    const parseSpriteDataLite = React.useCallback(
+      (textureData: THREE.Texture, data: SpriteData | null) => {
+        if (data === null) {
+          if (numberOfFrames) {
+            //get size from texture
+
+            totalFrames.current = numberOfFrames
+
+            if (playBackwards) {
+              currentFrame.current = numberOfFrames - 1
+            }
+
+            spriteData.current = data
+          }
+        } else {
+          spriteData.current = data
+          if (spriteData.current && Array.isArray(spriteData.current.frames)) {
+            totalFrames.current = spriteData.current.frames.length
+          } else if (spriteData.current && typeof spriteData.current === 'object' && frameNameRef.current) {
+            totalFrames.current = spriteData.current.frames[frameNameRef.current].length
+          } else {
+            totalFrames.current = 0
+          }
+
+          if (playBackwards) {
+            currentFrame.current = totalFrames.current - 1
+          }
+
+          const { w, h } = getFirstFrame(spriteData.current?.frames ?? [], frameNameRef.current).sourceSize
+          const aspect = calculateAspectRatio(w, h)
+
+          setAspect(aspect)
+          if (matRef.current) {
+            matRef.current.map = textureData
+          }
+        }
+
+        setSpriteTexture(textureData)
+      },
+      [numberOfFrames, playBackwards]
+    )
+
+    // modify the sprite material after json is parsed and state updated
+    const modifySpritePosition = React.useCallback((): void => {
+      if (!spriteData.current) return
+      const {
+        meta: { size: metaInfo },
+        frames,
+      } = spriteData.current
+
+      const { w: frameW, h: frameH } = Array.isArray(frames)
+        ? frames[0].sourceSize
+        : frameName
+          ? frames[frameName]
+            ? frames[frameName][0].sourceSize
+            : { w: 0, h: 0 }
+          : { w: 0, h: 0 }
+
+      if (matRef.current && matRef.current.map) {
+        matRef.current.map.wrapS = matRef.current.map.wrapT = THREE.RepeatWrapping
+        matRef.current.map.center.set(0, 0)
+        matRef.current.map.repeat.set((1 * flipOffset) / (metaInfo.w / frameW), 1 / (metaInfo.h / frameH))
+      }
+      //const framesH = (metaInfo.w - 1) / frameW
+      const framesV = (metaInfo.h - 1) / frameH
+      const frameOffsetY = 1 / framesV
+      if (matRef.current && matRef.current.map) {
+        matRef.current.map.offset.x = 0.0 //-matRef.current.map.repeat.x
+        matRef.current.map.offset.y = 1 - frameOffsetY
+      }
+
+      if (onStart) {
+        onStart({
+          currentFrameName: frameName ?? '',
+          currentFrame: currentFrame.current,
+        })
+      }
+    }, [flipOffset, frameName, onStart])
 
     const state = React.useMemo<SpriteAnimatorState>(
       () => ({
         current: pos.current,
         offset: pos.current,
         imageUrl: textureImageURL,
-        reset: reset,
         hasEnded: false,
         ref: fref,
       }),
-      [textureImageURL, spriteDataset]
+      [textureImageURL, fref]
     )
 
     React.useImperativeHandle(fref, () => ref.current, [])
@@ -132,12 +277,12 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
       pos.current = offset
     }, [offset])
 
-    const calculateAspectRatio = (width: number, height: number): number[] => {
+    const calculateAspectRatio = (width: number, height: number) => {
+      const ret = new THREE.Vector3()
       const aspectRatio = height / width
-      if (spriteRef.current) {
-        spriteRef.current.scale.set(1, aspectRatio, 1)
-      }
-      return [1, aspectRatio, 1]
+      ret.set(1, aspectRatio, 1)
+      spriteRef.current?.scale.copy(ret)
+      return ret
     }
 
     // initial loads
@@ -145,33 +290,31 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
       if (spriteDataset) {
         parseSpriteDataLite(spriteDataset?.spriteTexture?.clone(), spriteDataset.spriteData)
       } else {
-        loadJsonAndTexture(textureImageURL, textureDataURL)
+        if (textureImageURL && textureDataURL) {
+          loadJsonAndTexture(textureImageURL, textureDataURL)
+        }
       }
-    }, [spriteDataset])
+    }, [loadJsonAndTexture, spriteDataset, textureDataURL, textureImageURL, parseSpriteDataLite])
 
     React.useEffect(() => {
       if (spriteObj) {
         parseSpriteDataLite(spriteObj?.spriteTexture?.clone(), spriteObj?.spriteData)
       }
-    }, [spriteObj])
-
-    React.useEffect(() => {
-      setDisplayAsSprite(asSprite ?? true)
-    }, [asSprite])
+    }, [spriteObj, parseSpriteDataLite])
 
     // support backwards play
     React.useEffect(() => {
       state.hasEnded = false
       if (spriteData.current && playBackwards === true) {
-        currentFrame.current = spriteData.current.frames.length - 1
+        currentFrame.current = ((spriteData.current.frames.length as number) ?? 0) - 1
       } else {
         currentFrame.current = 0
       }
-    }, [playBackwards])
+    }, [playBackwards, state])
 
     React.useLayoutEffect(() => {
       modifySpritePosition()
-    }, [spriteTexture, flipX])
+    }, [spriteTexture, flipX, modifySpritePosition])
 
     React.useEffect(() => {
       if (autoPlay) {
@@ -184,124 +327,41 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
         currentFrame.current = 0
         currentFrameName.current = frameName
         state.hasEnded = false
+        if (fpsInterval <= 0) {
+          currentFrame.current = endFrame || startFrame || 0
+        }
         // modifySpritePosition()
         if (spriteData.current) {
-          const { w, h } = getFirstItem(spriteData.current.frames).sourceSize
+          const { w, h } = getFirstFrame(spriteData.current.frames, frameName).sourceSize
           const _aspect = calculateAspectRatio(w, h)
           setAspect(_aspect)
         }
       }
-    }, [frameName])
-
-    // lite version for pre-loaded assets
-    const parseSpriteDataLite = (textureData: THREE.Texture, frameData: any = null) => {
-      if (frameData === null) {
-        if (numberOfFrames) {
-          //get size from texture
-          const width = textureData.image.width
-          const height = textureData.image.height
-
-          totalFrames.current = numberOfFrames
-
-          if (playBackwards) {
-            currentFrame.current = numberOfFrames - 1
-          }
-
-          spriteData.current = {
-            frames: [],
-            meta: {
-              version: '1.0',
-              size: { w: width, h: height },
-              scale: '1',
-            },
-          }
-
-          spriteData.current.frames = frameData
-        }
-      } else {
-        spriteData.current = frameData
-        totalFrames.current = spriteData.current.frames.length
-
-        if (playBackwards) {
-          currentFrame.current = totalFrames.current - 1
-        }
-
-        const { w, h } = getFirstItem(spriteData.current.frames).sourceSize
-        const aspect = calculateAspectRatio(w, h)
-
-        setAspect(aspect)
-        if (matRef.current) {
-          matRef.current.map = textureData
-        }
-      }
-
-      // buffer for instanced
-      if (instanceItems) {
-        for (var i = 0; i < instanceItems.length; i++) {
-          const keys = Object.keys(spriteData.current.frames)
-          const randomKey = keys[Math.floor(Math.random() * keys.length)]
-
-          frameBuffer.current.push({
-            key: i,
-            frames: spriteData.current.frames,
-            selectedFrame: randomKey,
-            offset: { x: 0, y: 0 },
-          })
-        }
-      }
-
-      setSpriteTexture(textureData)
-    }
-
-    // modify the sprite material after json is parsed and state updated
-    const modifySpritePosition = (): void => {
-      if (!spriteData.current) return
-      const {
-        meta: { size: metaInfo },
-        frames,
-      } = spriteData.current
-
-      const { w: frameW, h: frameH } = Array.isArray(frames)
-        ? frames[0].sourceSize
-        : frameName
-        ? frames[frameName]
-          ? frames[frameName][0].sourceSize
-          : { w: 0, h: 0 }
-        : { w: 0, h: 0 }
-
-      matRef.current.map.wrapS = matRef.current.map.wrapT = THREE.RepeatWrapping
-      matRef.current.map.center.set(0, 0)
-      matRef.current.map.repeat.set((1 * flipOffset) / (metaInfo.w / frameW), 1 / (metaInfo.h / frameH))
-
-      //const framesH = (metaInfo.w - 1) / frameW
-      const framesV = (metaInfo.h - 1) / frameH
-      const frameOffsetY = 1 / framesV
-      matRef.current.map.offset.x = 0.0 //-matRef.current.map.repeat.x
-      matRef.current.map.offset.y = 1 - frameOffsetY
-
-      if (onStart) {
-        onStart({
-          currentFrameName: frameName,
-          currentFrame: currentFrame.current,
-        })
-      }
-    }
+    }, [frameName, fpsInterval, state, endFrame, startFrame])
 
     // run the animation on each frame
     const runAnimation = (): void => {
-      //if (!frameName) return
+      if (!isSpriteData(spriteData.current)) return
 
-      const now = window.performance.now()
-      const diff = now - timerOffset.current
       const {
         meta: { size: metaInfo },
         frames,
       } = spriteData.current
-      const { w: frameW, h: frameH } = getFirstItem(frames).sourceSize
+      const { w: frameW, h: frameH } = getFirstFrame(frames, frameName).sourceSize
       const spriteFrames = Array.isArray(frames) ? frames : frameName ? frames[frameName] : []
       const _endFrame = endFrame || spriteFrames.length - 1
 
       var _offset = offset === undefined ? state.current : offset
+
+      if (fpsInterval <= 0) {
+        currentFrame.current = endFrame || startFrame || 0
+        calculateFinalPosition(frameW, frameH, metaInfo, spriteFrames)
+        return
+      }
+
+      const now = window.performance.now()
+      const diff = now - timerOffset.current
+      if (diff <= fpsInterval) return
 
       // conditionals to support backwards play
       var endCondition = playBackwards ? currentFrame.current < 0 : currentFrame.current > _endFrame
@@ -309,7 +369,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
       var manualProgressEndCondition = playBackwards ? currentFrame.current < 0 : currentFrame.current >= _endFrame
 
       if (endCondition) {
-        currentFrame.current = loop ? startFrame ?? 0 : 0
+        currentFrame.current = loop ? (startFrame ?? 0) : 0
 
         if (playBackwards) {
           currentFrame.current = _endFrame
@@ -317,16 +377,16 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
 
         if (loop) {
           onLoopEnd?.({
-            currentFrameName: frameName,
+            currentFrameName: frameName ?? '',
             currentFrame: currentFrame.current,
           })
         } else {
           onEnd?.({
-            currentFrameName: frameName,
+            currentFrameName: frameName ?? '',
             currentFrame: currentFrame.current,
           })
 
-          state.hasEnded = resetOnEnd ? false : true
+          state.hasEnded = !resetOnEnd
           if (resetOnEnd) {
             pauseRef.current = true
             //calculateFinalPosition(frameW, frameH, metaInfo, spriteFrames)
@@ -336,7 +396,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
         if (!loop) return
       } else if (onStartCondition) {
         onStart?.({
-          currentFrameName: frameName,
+          currentFrameName: frameName ?? '',
           currentFrame: currentFrame.current,
         })
       }
@@ -345,7 +405,7 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
       if (_offset !== undefined && manualProgressEndCondition) {
         if (softEnd.current === false) {
           onEnd?.({
-            currentFrameName: frameName,
+            currentFrameName: frameName ?? '',
             currentFrame: currentFrame.current,
           })
           softEnd.current = true
@@ -362,23 +422,17 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
       calculateFinalPosition(frameW, frameH, metaInfo, spriteFrames)
     }
 
-    const calculateFinalPosition = (
-      frameW: number,
-      frameH: number,
-      metaInfo: { w: number; h: number },
-      spriteFrames: {
-        frame: { x: any; y: any }
-        sourceSize: { w: any; h: any }
-      }[]
-    ) => {
+    const calculateFinalPosition = (frameW: number, frameH: number, metaInfo: Size, spriteFrames: FrameData[]) => {
       // get the manual update offset to find the next frame
       var _offset = offset === undefined ? state.current : offset
       const targetFrame = currentFrame.current
       let finalValX = 0
       let finalValY = 0
       calculateAspectRatio(frameW, frameH)
-      const framesH = Math.round((metaInfo.w - 1) / frameW)
-      const framesV = Math.round((metaInfo.h - 1) / frameH)
+
+      const framesH = roundFramePosition ? Math.round((metaInfo.w - 1) / frameW) : (metaInfo.w - 1) / frameW
+      const framesV = roundFramePosition ? Math.round((metaInfo.h - 1) / frameH) : (metaInfo.h - 1) / frameH
+
       if (!spriteFrames[targetFrame]) {
         return
       }
@@ -390,14 +444,16 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
 
       const frameOffsetX = 1 / framesH
       const frameOffsetY = 1 / framesV
-      finalValX =
-        flipOffset > 0
-          ? frameOffsetX * (frameX / originalSizeX)
-          : frameOffsetX * (frameX / originalSizeX) - matRef.current.map.repeat.x
-      finalValY = Math.abs(1 - frameOffsetY) - frameOffsetY * (frameY / originalSizeY)
+      if (matRef.current && matRef.current.map) {
+        finalValX =
+          flipOffset > 0
+            ? frameOffsetX * (frameX / originalSizeX)
+            : frameOffsetX * (frameX / originalSizeX) - matRef.current.map.repeat.x
+        finalValY = Math.abs(1 - frameOffsetY) - frameOffsetY * (frameY / originalSizeY)
 
-      matRef.current.map.offset.x = finalValX
-      matRef.current.map.offset.y = finalValY
+        matRef.current.map.offset.x = finalValX
+        matRef.current.map.offset.y = finalValY
+      }
 
       // if manual update is active
       if (_offset !== undefined && _offset !== null) {
@@ -433,70 +489,25 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
 
       if (!state.hasEnded && (autoPlay || play)) {
         runAnimation()
-        onFrame &&
-          onFrame({
-            currentFrameName: currentFrameName.current,
-            currentFrame: currentFrame.current,
-          })
+        onFrame?.({
+          currentFrameName: currentFrameName.current,
+          currentFrame: currentFrame.current,
+        })
       }
     })
 
-    // utils
-    const getFirstItem = (param: any): any => {
-      if (Array.isArray(param)) {
-        return param[0]
-      } else if (typeof param === 'object' && param !== null) {
-        const keys = Object.keys(param)
-        return frameName ? param[frameName][0] : param[keys[0]][0]
-      } else {
-        return { w: 0, h: 0 }
-      }
-    }
-
-    function multiplyScale(initialScale: number[], newScale: Scale): number[] {
-      let _newScale: number[] = []
-
-      // If newScale is a single number, convert it to a Vector3
-      if (typeof newScale === 'number') {
-        _newScale = [newScale, newScale, newScale]
-      } else if (Array.isArray(newScale)) {
-        // If newScale is an array, convert it to a Vector3
-        _newScale = newScale
-      } else if (newScale instanceof THREE.Vector3) {
-        _newScale = [newScale.x, newScale.y, newScale.z]
-      }
-
-      // Multiply the scale values element-wise
-      const result = initialScale.map((value, index) => value * _newScale[index])
-      // Convert the result to an array of numbers
-      return result
+    function multiplyScale(initialScale = new THREE.Vector3(1, 1, 1), newScale: Scale = 1) {
+      if (typeof newScale === 'number') return initialScale.multiplyScalar(newScale)
+      if (Array.isArray(newScale)) return initialScale.multiply(new THREE.Vector3(...newScale))
+      if (newScale instanceof THREE.Vector3) return initialScale.multiply(newScale)
     }
 
     return (
-      <group
-        {...props}
-        ref={ref}
-        scale={multiplyScale(aspect ?? [1, 1, 1], props.scale ?? 1.0) as [number, number, number]}
-      >
+      <group {...props} ref={ref} scale={multiplyScale(aspect, props.scale)}>
         <context.Provider value={state}>
-          <React.Suspense fallback={null}>
-            {displayAsSprite && (
-              <sprite ref={spriteRef} scale={1.0}>
-                <spriteMaterial
-                  premultipliedAlpha={false}
-                  toneMapped={false}
-                  ref={matRef}
-                  map={spriteTexture}
-                  transparent={true}
-                  alphaTest={alphaTest ?? 0.0}
-                />
-              </sprite>
-            )}
-            {!displayAsSprite && (
-              <Instances
-                limit={maxItems ?? 1} // Optional: max amount of items (for calculating buffer size)
-              >
-                <planeGeometry args={[1, 1]} />
+          {asSprite && (
+            <Billboard>
+              <mesh ref={spriteRef} scale={1.0} geometry={geometry} {...meshProps}>
                 <meshBasicMaterial
                   premultipliedAlpha={false}
                   toneMapped={false}
@@ -506,20 +517,31 @@ export const SpriteAnimator: React.FC<SpriteAnimatorProps> = /* @__PURE__ */ Rea
                   transparent={true}
                   alphaTest={alphaTest ?? 0.0}
                 />
-
-                {(instanceItems ?? [0]).map((item, index) => {
-                  return (
-                    <Instance
-                      key={index}
-                      ref={instanceItems?.length === 1 ? spriteRef : null}
-                      position={item}
-                      scale={1.0}
-                    ></Instance>
-                  )
-                })}
-              </Instances>
-            )}
-          </React.Suspense>
+              </mesh>
+            </Billboard>
+          )}
+          {!asSprite && (
+            <Instances geometry={geometry} limit={maxItems ?? 1} {...meshProps}>
+              <meshBasicMaterial
+                premultipliedAlpha={false}
+                toneMapped={false}
+                side={THREE.DoubleSide}
+                ref={matRef}
+                map={spriteTexture}
+                transparent={true}
+                alphaTest={alphaTest ?? 0.0}
+              />
+              {(instanceItems ?? [0]).map((item, index) => (
+                <Instance
+                  key={index}
+                  ref={instanceItems?.length === 1 ? spriteRef : null}
+                  position={item}
+                  scale={1.0}
+                  {...meshProps}
+                />
+              ))}
+            </Instances>
+          )}
           {children}
         </context.Provider>
       </group>

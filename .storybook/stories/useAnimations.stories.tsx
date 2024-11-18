@@ -17,7 +17,7 @@ function UseAnimation({ animations, root, selectedAction, blendDuration }: UseAn
   const { actions } = useAnimations(animations, root)
 
   React.useEffect(() => {
-    actions[selectedAction]?.reset().fadeIn(blendDuration).play()
+    actions[selectedAction]?.reset().fadeIn(blendDuration).play() // eslint-disable-line
     return () => void actions[selectedAction]?.fadeOut(blendDuration)
   }, [actions, selectedAction, blendDuration])
 

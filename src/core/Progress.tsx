@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { DefaultLoadingManager } from 'three'
-import create from 'zustand'
+import { create } from 'zustand'
 
 type Data = {
   errors: string[]

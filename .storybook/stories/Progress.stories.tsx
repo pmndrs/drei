@@ -36,7 +36,7 @@ function CustomLoader() {
   )
 }
 
-function ProgressScene(props: React.ComponentProps<typeof Progress>) {
+function ProgressScene(_props: React.ComponentProps<typeof Progress>) {
   return (
     <React.Suspense fallback={<CustomLoader />}>
       <Shoe />

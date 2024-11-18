@@ -12,7 +12,7 @@ const points = GeometryUtils.hilbert3D(new Vector3(0), 5).map((p) => [p.x, p.y, 
 const colors = new Array(points.length).fill(0).map(() => [Math.random(), Math.random(), Math.random()]) as [
   number,
   number,
-  number
+  number,
 ][]
 
 export default {

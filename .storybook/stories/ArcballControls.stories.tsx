@@ -1,12 +1,11 @@
 import { createPortal, useFrame } from '@react-three/fiber'
 import React, { ComponentProps, useRef, useState } from 'react'
-import { Scene } from 'three'
 import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 import { ArcballControls, Box, PerspectiveCamera, Plane, useFBO } from '../../src'
 
-import type { OrthographicCamera, PerspectiveCamera as PerspectiveCameraType } from 'three'
+import { Scene, type OrthographicCamera, type PerspectiveCamera as PerspectiveCameraType } from 'three'
 
 export default {
   title: 'Controls/ArcballControls',

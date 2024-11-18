@@ -42,6 +42,11 @@ export const Decal: ForwardRefComponent<DecalProps, THREE.Mesh> = /* @__PURE__ *
   const ref = React.useRef<THREE.Mesh>(null!)
   React.useImperativeHandle(forwardRef, () => ref.current)
   const helper = React.useRef<THREE.Mesh>(null!)
+  const state = React.useRef({
+    position: new THREE.Vector3(),
+    rotation: new THREE.Euler(),
+    scale: new THREE.Vector3(1, 1, 1),
+  })
 
   React.useLayoutEffect(() => {
     const parent = mesh?.current || ref.current.parent
@@ -50,14 +55,8 @@ export const Decal: ForwardRefComponent<DecalProps, THREE.Mesh> = /* @__PURE__ *
       throw new Error('Decal must have a Mesh as parent or specify its "mesh" prop')
     }
 
-    const state = {
-      position: new THREE.Vector3(),
-      rotation: new THREE.Euler(),
-      scale: new THREE.Vector3(1, 1, 1),
-    }
-
     if (parent) {
-      applyProps(state as any, { position, scale })
+      applyProps(state.current as any, { position, scale })
 
       // Zero out the parents matrix world for this operation
       const matrixWorld = parent.matrixWorld.clone()
@@ -65,7 +64,7 @@ export const Decal: ForwardRefComponent<DecalProps, THREE.Mesh> = /* @__PURE__ *
 
       if (!rotation || typeof rotation === 'number') {
         const o = new THREE.Object3D()
-        o.position.copy(state.position)
+        o.position.copy(state.current.position)
 
         // Thanks https://x.com/N8Programs !
         const vertices = parent.geometry.attributes.position.array
@@ -100,17 +99,12 @@ export const Decal: ForwardRefComponent<DecalProps, THREE.Mesh> = /* @__PURE__ *
         o.rotateY(Math.PI)
 
         if (typeof rotation === 'number') o.rotateZ(rotation)
-        applyProps(state as any, { rotation: o.rotation })
+        applyProps(state.current as any, { rotation: o.rotation })
       } else {
-        applyProps(state as any, { rotation })
+        applyProps(state.current as any, { rotation })
       }
 
-      target.geometry = new DecalGeometry(parent, state.position, state.rotation, state.scale)
-      if (helper.current) {
-        applyProps(helper.current as any, state)
-        // Prevent the helpers from blocking rays
-        helper.current.traverse((child) => (child.raycast = () => null))
-      }
+      target.geometry = new DecalGeometry(parent, state.current.position, state.current.rotation, state.current.scale)
       // Reset parents matix-world
       parent.matrixWorld = matrixWorld
 
@@ -118,7 +112,15 @@ export const Decal: ForwardRefComponent<DecalProps, THREE.Mesh> = /* @__PURE__ *
         target.geometry.dispose()
       }
     }
-  }, [mesh, debug, ...vecToArray(position), ...vecToArray(scale), ...vecToArray(rotation)])
+  }, [mesh, ...vecToArray(position), ...vecToArray(scale), ...vecToArray(rotation)])
+
+  React.useLayoutEffect(() => {
+    if (helper.current) {
+      applyProps(helper.current as any, state.current)
+      // Prevent the helpers from blocking rays
+      helper.current.traverse((child) => (child.raycast = () => null))
+    }
+  }, [debug])
 
   // <meshStandardMaterial transparent polygonOffset polygonOffsetFactor={-10} {...props} />}
   return (

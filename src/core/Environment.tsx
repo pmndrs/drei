@@ -45,7 +45,7 @@ function setEnvProps(
 ) {
   // defaults
   sceneProps = {
-    backgroundBlurriness: sceneProps.blur ?? 0,
+    backgroundBlurriness: 0,
     backgroundIntensity: 1,
     backgroundRotation: [0, 0, 0],
     environmentIntensity: 1,
@@ -102,8 +102,7 @@ export function EnvironmentCube({
   const defaultScene = useThree((state) => state.scene)
   React.useLayoutEffect(() => {
     return setEnvProps(background, scene, defaultScene, texture, {
-      blur,
-      backgroundBlurriness,
+      backgroundBlurriness: blur ?? backgroundBlurriness,
       backgroundIntensity,
       backgroundRotation,
       environmentIntensity,
@@ -151,8 +150,7 @@ export function EnvironmentPortal({
       gl.autoClear = autoClear
     }
     return setEnvProps(background, scene, defaultScene, fbo.texture, {
-      blur,
-      backgroundBlurriness,
+      backgroundBlurriness: blur ?? backgroundBlurriness,
       backgroundIntensity,
       backgroundRotation,
       environmentIntensity,

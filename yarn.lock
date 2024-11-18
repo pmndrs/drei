@@ -2125,11 +2125,11 @@ __metadata:
   linkType: hard
 
 "@eslint/plugin-kit@npm:^0.2.0":
-  version: 0.2.2
-  resolution: "@eslint/plugin-kit@npm:0.2.2"
+  version: 0.2.3
+  resolution: "@eslint/plugin-kit@npm:0.2.3"
   dependencies:
     levn: "npm:^0.4.1"
-  checksum: 10c0/ec533ccc99f2ab003d6f64495cff853730fb7d8bc0eaf031ffccc68de7c34c74a2eda50dfa759cacfb409f014c98d306714c995348d5383c9d3140f9f80a5895
+  checksum: 10c0/89a8035976bb1780e3fa8ffe682df013bd25f7d102d991cecd3b7c297f4ce8c1a1b6805e76dd16465b5353455b670b545eff2b4ec3133e0eab81a5f9e99bd90f
   languageName: node
   linkType: hard
 
@@ -2905,7 +2905,7 @@ __metadata:
     uuid: "npm:^9.0.1"
     vite: "npm:^5.4.11"
     vite-plugin-glslify: "npm:^2.1.0"
-    zustand: "npm:^3.7.1"
+    zustand: "npm:^5.0.1"
   peerDependencies:
     "@react-three/fiber": ">=8.0"
     react: ">=18.0"
@@ -13313,5 +13313,26 @@ __metadata:
     react:
       optional: true
   checksum: 10c0/de507f09eb79039d74d282df6ffac6c7fb6b840ca3620b0392bcbe3f9049902802db5448b4002e6fcb32f903f7ec1aea14602049eb2a3a8410bfea7186d72fb7
+  languageName: node
+  linkType: hard
+
+"zustand@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "zustand@npm:5.0.1"
+  peerDependencies:
+    "@types/react": ">=18.0.0"
+    immer: ">=9.0.6"
+    react: ">=18.0.0"
+    use-sync-external-store: ">=1.2.0"
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    immer:
+      optional: true
+    react:
+      optional: true
+    use-sync-external-store:
+      optional: true
+  checksum: 10c0/b4239c8bf3988bfdaaed1c48f3958d0b047b721c4908a76bd78e73387d107963cda774541cf303c2ea89261481c995aa6666e7e77c30717ad440cdb499d9e5ca
   languageName: node
   linkType: hard

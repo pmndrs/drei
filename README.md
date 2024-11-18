@@ -796,3 +796,57 @@ https://pmndrs.github.io/drei
 [Documentation has moved here](https://pmndrs.github.io/drei/staging/shadow-alpha)
 
 </details>
+
+## Dev
+
+### INSTALL
+
+```sh
+$ corepack enable
+$ yarn install
+```
+
+### Test
+
+#### Local
+
+Pre-requisites:
+
+- ```sh
+  $ npx playwright install
+  ```
+
+To run visual tests locally:
+
+```sh
+$ yarn build
+$ yarn test
+```
+
+To update a snapshot:
+
+```sh
+$ PLAYWRIGHT_UPDATE_SNAPSHOTS=1 yarn test
+```
+
+#### Docker
+
+> [!IMPORTANT]
+> Snapshots are system-dependent, so to run playwright in the same environment as the CI:
+
+```sh
+$ docker run --init --rm \
+    -v $(pwd):/app -w /app \
+    ghcr.io/pmndrs/playwright:drei \
+      sh -c "corepack enable && yarn install && yarn build && yarn test"
+```
+
+To update a snapshot:
+
+```sh
+$ docker run --init --rm \
+    -v $(pwd):/app -w /app \
+    -e PLAYWRIGHT_UPDATE_SNAPSHOTS=1 \
+    ghcr.io/pmndrs/playwright:drei \
+      sh -c "corepack enable && yarn install && yarn build && yarn test"
+```

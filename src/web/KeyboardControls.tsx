@@ -1,5 +1,5 @@
 import * as React from 'react'
-import create, { StoreApi, UseBoundStore } from 'zustand'
+import { create, StoreApi, UseBoundStore } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
 
 // These are removed in Zustand v4
@@ -48,7 +48,7 @@ type KeyboardControlsProps = {
 type KeyboardControlsApi<T extends string = string> = [
   StoreApiWithSubscribeWithSelector<KeyboardControlsState<T>>['subscribe'],
   StoreApiWithSubscribeWithSelector<KeyboardControlsState<T>>['getState'],
-  UseBoundStore<KeyboardControlsState<T>>
+  UseBoundStore<StoreApi<KeyboardControlsState<T>>>,
 ]
 
 const context = /* @__PURE__ */ React.createContext<KeyboardControlsApi>(null!)
@@ -56,8 +56,10 @@ const context = /* @__PURE__ */ React.createContext<KeyboardControlsApi>(null!)
 export function KeyboardControls({ map, children, onChange, domElement }: KeyboardControlsProps) {
   const key = map.map((item) => item.name + item.keys).join('-')
   const useControls = React.useMemo(() => {
-    return create<KeyboardControlsState>(
-      subscribeWithSelector(() => map.reduce((prev, cur) => ({ ...prev, [cur.name]: false }), {}))
+    return create(
+      subscribeWithSelector(() =>
+        map.reduce((prev, cur) => ({ ...prev, [cur.name]: false }), {} as KeyboardControlsState)
+      )
     )
   }, [key])
   const api: KeyboardControlsApi = React.useMemo(
@@ -115,7 +117,7 @@ type Selector<T extends string = string> = (state: KeyboardControlsState<T>) => 
 
 export function useKeyboardControls<T extends string = string>(): [
   StoreApiWithSubscribeWithSelector<KeyboardControlsState<T>>['subscribe'],
-  StoreApiWithSubscribeWithSelector<KeyboardControlsState<T>>['getState']
+  StoreApiWithSubscribeWithSelector<KeyboardControlsState<T>>['getState'],
 ]
 export function useKeyboardControls<T extends string = string>(sel: Selector<T>): ReturnType<Selector<T>>
 export function useKeyboardControls<T extends string = string>(
@@ -124,7 +126,7 @@ export function useKeyboardControls<T extends string = string>(
   | ReturnType<Selector<T>>
   | [
       StoreApiWithSubscribeWithSelector<KeyboardControlsState<T>>['subscribe'],
-      StoreApiWithSubscribeWithSelector<KeyboardControlsState<T>>['getState']
+      StoreApiWithSubscribeWithSelector<KeyboardControlsState<T>>['getState'],
     ] {
   const [sub, get, store] = React.useContext<KeyboardControlsApi<T>>(context)
   if (sel) return store(sel)

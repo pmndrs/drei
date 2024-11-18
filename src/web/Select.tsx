@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { SelectionBox } from 'three-stdlib'
 import { useThree } from '@react-three/fiber'
-import shallow from 'zustand/shallow'
+import { shallow } from 'zustand/shallow'
 
 const context = /* @__PURE__ */ React.createContext<THREE.Object3D[]>([])
 

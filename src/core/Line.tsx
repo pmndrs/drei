@@ -37,12 +37,12 @@ export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = /* @_
       return p instanceof Vector3 || p instanceof Vector4
         ? [p.x, p.y, p.z]
         : p instanceof Vector2
-        ? [p.x, p.y, 0]
-        : isArray && p.length === 3
-        ? [p[0], p[1], p[2]]
-        : isArray && p.length === 2
-        ? [p[0], p[1], 0]
-        : p
+          ? [p.x, p.y, 0]
+          : isArray && p.length === 3
+            ? [p[0], p[1], p[2]]
+            : isArray && p.length === 2
+              ? [p[0], p[1], 0]
+              : p
     })
 
     geom.setPositions(pValues.flat())

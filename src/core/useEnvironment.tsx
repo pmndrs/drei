@@ -91,8 +91,8 @@ export function useEnvironment({
 
   texture.mapping = isCubemap ? CubeReflectionMapping : EquirectangularReflectionMapping
 
-  if ('colorSpace' in texture) (texture as any).colorSpace = encoding ?? isCubemap ? 'srgb' : 'srgb-linear'
-  else (texture as any).encoding = encoding ?? isCubemap ? sRGBEncoding : LinearEncoding
+  if ('colorSpace' in texture) (texture as any).colorSpace = (encoding ?? isCubemap) ? 'srgb' : 'srgb-linear'
+  else (texture as any).encoding = (encoding ?? isCubemap) ? sRGBEncoding : LinearEncoding
 
   return texture
 }
@@ -175,14 +175,14 @@ function getExtension(files: string | string[]) {
   const extension: string | false | undefined = isCubemap
     ? 'cube'
     : isGainmap
-    ? 'webp'
-    : firstEntry.startsWith('data:application/exr')
-    ? 'exr'
-    : firstEntry.startsWith('data:application/hdr')
-    ? 'hdr'
-    : firstEntry.startsWith('data:image/jpeg')
-    ? 'jpg'
-    : firstEntry.split('.').pop()?.split('?')?.shift()?.toLowerCase()
+      ? 'webp'
+      : firstEntry.startsWith('data:application/exr')
+        ? 'exr'
+        : firstEntry.startsWith('data:application/hdr')
+          ? 'hdr'
+          : firstEntry.startsWith('data:image/jpeg')
+            ? 'jpg'
+            : firstEntry.split('.').pop()?.split('?')?.shift()?.toLowerCase()
 
   return { extension, isCubemap, isGainmap }
 }
@@ -192,14 +192,14 @@ function getLoader(extension: string | undefined) {
     extension === 'cube'
       ? CubeTextureLoader
       : extension === 'hdr'
-      ? RGBELoader
-      : extension === 'exr'
-      ? EXRLoader
-      : extension === 'jpg' || extension === 'jpeg'
-      ? (HDRJPGLoader as unknown as typeof Loader)
-      : extension === 'webp'
-      ? (GainMapLoader as unknown as typeof Loader)
-      : null
+        ? RGBELoader
+        : extension === 'exr'
+          ? EXRLoader
+          : extension === 'jpg' || extension === 'jpeg'
+            ? (HDRJPGLoader as unknown as typeof Loader)
+            : extension === 'webp'
+              ? (GainMapLoader as unknown as typeof Loader)
+              : null
 
   return loader
 }

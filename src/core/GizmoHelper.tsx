@@ -146,13 +146,13 @@ export const GizmoHelper = ({
   const x = alignment.endsWith('-center')
     ? 0
     : alignment.endsWith('-left')
-    ? -size.width / 2 + marginX
-    : size.width / 2 - marginX
+      ? -size.width / 2 + marginX
+      : size.width / 2 - marginX
   const y = alignment.startsWith('center-')
     ? 0
     : alignment.startsWith('top-')
-    ? size.height / 2 - marginY
-    : -size.height / 2 + marginY
+      ? size.height / 2 - marginY
+      : -size.height / 2 + marginY
 
   return (
     <Hud renderPriority={renderPriority}>

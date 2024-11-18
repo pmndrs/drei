@@ -1,3 +1,7 @@
 dist/
 storybook-static/
+public/
 *.typeface.json
+
+# waiting for mdx3 support some day (https://github.com/prettier/prettier/issues/12209)
+*.mdx

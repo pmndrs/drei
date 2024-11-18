@@ -1,4 +1,4 @@
-import { create } from '@storybook/theming/create'
+import { create } from '@storybook/theming'
 import dreiLogo from './drei.jpeg'
 
 export default create({

@@ -39,7 +39,7 @@ export type AccumulativeShadowsProps = {
   toneMapped?: boolean
 }
 
-interface AccumulativeContext {
+export interface AccumulativeShadowsContext {
   lights: Map<any, any>
   temporal: boolean
   frames: number
@@ -73,8 +73,8 @@ declare global {
   }
 }
 
-export const accumulativeContext = /* @__PURE__ */ React.createContext<AccumulativeContext>(
-  null as unknown as AccumulativeContext
+export const accumulativeContext = /* @__PURE__ */ React.createContext<AccumulativeShadowsContext>(
+  null as unknown as AccumulativeShadowsContext
 )
 
 const SoftShadowMaterial = /* @__PURE__ */ shaderMaterial(
@@ -104,10 +104,10 @@ const SoftShadowMaterial = /* @__PURE__ */ shaderMaterial(
    }`
 )
 
-export const AccumulativeShadows: ForwardRefComponent<
-  JSX.IntrinsicElements['group'] & AccumulativeShadowsProps,
-  AccumulativeContext
-> = /* @__PURE__ */ React.forwardRef(
+export const AccumulativeShadows = /* @__PURE__ */ React.forwardRef<
+  AccumulativeShadowsContext,
+  JSX.IntrinsicElements['group'] & AccumulativeShadowsProps
+>(
   (
     {
       children,
@@ -123,8 +123,8 @@ export const AccumulativeShadows: ForwardRefComponent<
       resolution = 1024,
       toneMapped = true,
       ...props
-    }: JSX.IntrinsicElements['group'] & AccumulativeShadowsProps,
-    forwardRef: React.ForwardedRef<AccumulativeContext>
+    },
+    forwardRef
   ) => {
     extend({ SoftShadowMaterial })
 
@@ -140,7 +140,7 @@ export const AccumulativeShadows: ForwardRefComponent<
       plm.configure(gPlane.current)
     }, [])
 
-    const api = React.useMemo<AccumulativeContext>(
+    const api = React.useMemo<AccumulativeShadowsContext>(
       () => ({
         lights: new Map(),
         temporal: !!temporal,

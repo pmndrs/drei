@@ -1,4 +1,5 @@
-import React, { ComponentProps } from 'react'
+import * as React from 'react'
+import { ComponentProps } from 'react'
 import { BufferGeometry, CatmullRomCurve3, LineBasicMaterial, LineLoop, Vector3 } from 'three'
 import { FontLoader, TextGeometry, TextGeometryParameters } from 'three-stdlib'
 import { extend, useFrame, useLoader } from '@react-three/fiber'
@@ -38,7 +39,7 @@ export default {
 type Story = StoryObj<typeof CurveModifier>
 
 function CurvedText(props: ComponentProps<typeof CurveModifier>) {
-  const curveRef = React.useRef<CurveModifierRef>()
+  const curveRef = React.useRef<CurveModifierRef>(null)
   const geomRef = React.useRef<TextGeometry>(null!)
   const font = useLoader(FontLoader, '/fonts/helvetiker_regular.typeface.json')
 

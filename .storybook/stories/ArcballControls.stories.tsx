@@ -1,5 +1,6 @@
+import * as React from 'react'
 import { createPortal, useFrame } from '@react-three/fiber'
-import React, { ComponentProps, useRef, useState } from 'react'
+import { ComponentProps, useRef, useState } from 'react'
 import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
@@ -47,7 +48,7 @@ const CustomCamera = ({ ...props }: ComponentProps<typeof ArcballControls>) => {
    * we will render our scene in a render target and use it as a map.
    */
   const fbo = useFBO(400, 400)
-  const virtualCamera = useRef<OrthographicCamera | PerspectiveCameraType>()
+  const virtualCamera = useRef<PerspectiveCameraType | null>(null)
   const [virtualScene] = useState(() => new Scene())
 
   useFrame(({ gl }) => {
@@ -73,7 +74,7 @@ const CustomCamera = ({ ...props }: ComponentProps<typeof ArcballControls>) => {
 
           <PerspectiveCamera name="FBO Camera" ref={virtualCamera} position={[0, 0, 5]} />
 
-          <ArcballControls camera={virtualCamera.current} {...props} />
+          <ArcballControls camera={virtualCamera.current ?? undefined} {...props} />
 
           <color attach="background" args={['hotpink']} />
         </>,

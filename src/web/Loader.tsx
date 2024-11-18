@@ -2,14 +2,14 @@ import * as React from 'react'
 import { useProgress } from '../core/Progress'
 import { CSSProperties } from 'react'
 
-interface LoaderOptions {
+export type LoaderProps = Partial<{
   containerStyles: CSSProperties
   innerStyles: CSSProperties
   barStyles: CSSProperties
   dataStyles: CSSProperties
   dataInterpolation: (p: number) => string
   initialState: (active: boolean) => boolean
-}
+}>
 
 const defaultDataInterpolation = (p: number) => `Loading ${p.toFixed(2)}%`
 
@@ -20,7 +20,7 @@ export function Loader({
   dataStyles,
   dataInterpolation = defaultDataInterpolation,
   initialState = (active: boolean) => active,
-}: Partial<LoaderOptions>) {
+}: LoaderProps) {
   const { active, progress } = useProgress()
   const progressRef = React.useRef(0)
   const rafRef = React.useRef(0)

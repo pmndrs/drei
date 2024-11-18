@@ -38,7 +38,7 @@ function Svg() {
   const shapes = React.useMemo(
     () =>
       paths.flatMap((p) =>
-        p.toShapes(true).map((shape) => ({ shape, color: p.color, fillOpacity: p.userData.style.fillOpacity }))
+        p.toShapes(true).map((shape) => ({ shape, color: p.color, fillOpacity: p.userData?.style.fillOpacity }))
       ),
     [paths]
   )

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ComponentProps } from 'react'
+import { ComponentProps, ElementRef } from 'react'
 import * as THREE from 'three'
 import { Meta, StoryObj } from '@storybook/react'
 
@@ -30,7 +30,7 @@ function BBAnchorScene({
   drawBoundingBox: boolean
   children?: React.ReactNode
 }) {
-  const ref = React.useRef(null)
+  const ref = React.useRef<ElementRef<typeof Icosahedron>>(null!)
 
   useHelper(drawBoundingBox && ref, BoxHelper, 'cyan')
 

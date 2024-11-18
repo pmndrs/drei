@@ -1,5 +1,6 @@
+import * as React from 'react'
 import { createPortal, useFrame } from '@react-three/fiber'
-import React, { ComponentProps, useRef, useState } from 'react'
+import { ComponentProps, ElementRef, useRef, useState } from 'react'
 import { Scene } from 'three'
 import { Meta, StoryObj } from '@storybook/react'
 
@@ -47,7 +48,7 @@ const CameraControlsScene2 = (props: ComponentProps<typeof CameraControls>) => {
    * we will render our scene in a render target and use it as a map.
    */
   const fbo = useFBO(400, 400)
-  const virtualCamera = useRef<CameraControls['camera']>()
+  const virtualCamera = useRef<ElementRef<typeof PerspectiveCamera>>(null)
   const [virtualScene] = useState(() => new Scene())
   const cameraControlRef = useRef<CameraControls>(null)
 
@@ -78,7 +79,7 @@ const CameraControlsScene2 = (props: ComponentProps<typeof CameraControls>) => {
           </Box>
 
           <PerspectiveCamera name="FBO Camera" ref={virtualCamera} position={[0, 0, 5]} />
-          <CameraControls ref={cameraControlRef} camera={virtualCamera.current} {...props} />
+          <CameraControls ref={cameraControlRef} camera={virtualCamera.current ?? undefined} {...props} />
 
           {/* @ts-ignore */}
           <color attach="background" args={['hotpink']} />

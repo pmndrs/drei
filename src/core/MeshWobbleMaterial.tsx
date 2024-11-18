@@ -9,7 +9,7 @@ type WobbleMaterialType = JSX.IntrinsicElements['meshStandardMaterial'] & {
   speed?: number
 }
 
-type Props = WobbleMaterialType & {
+export type MeshWobbleMaterialProps = WobbleMaterialType & {
   speed?: number
   factor?: number
 }
@@ -26,7 +26,7 @@ interface Uniform<T> {
   value: T
 }
 
-class WobbleMaterialImpl extends MeshStandardMaterial {
+export class MeshWobbleMaterialImpl extends MeshStandardMaterial {
   _time: Uniform<number>
   _factor: Uniform<number>
 
@@ -75,9 +75,9 @@ class WobbleMaterialImpl extends MeshStandardMaterial {
   }
 }
 
-export const MeshWobbleMaterial: ForwardRefComponent<Props, WobbleMaterialImpl> = /* @__PURE__ */ React.forwardRef(
-  ({ speed = 1, ...props }: Props, ref) => {
-    const [material] = React.useState(() => new WobbleMaterialImpl())
+export const MeshWobbleMaterial = /* @__PURE__ */ React.forwardRef<MeshWobbleMaterialImpl, MeshWobbleMaterialProps>(
+  ({ speed = 1, ...props }, ref) => {
+    const [material] = React.useState(() => new MeshWobbleMaterialImpl())
     useFrame((state) => material && (material.time = state.clock.getElapsedTime() * speed))
     return <primitive object={material} ref={ref} attach="material" {...props} />
   }

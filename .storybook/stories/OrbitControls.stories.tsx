@@ -1,5 +1,6 @@
+import * as React from 'react'
 import { createPortal, useFrame } from '@react-three/fiber'
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Scene } from 'three'
 import { Meta, StoryObj } from '@storybook/react'
 

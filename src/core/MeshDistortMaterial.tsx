@@ -11,7 +11,7 @@ type DistortMaterialType = JSX.IntrinsicElements['meshPhysicalMaterial'] & {
   radius?: number
 }
 
-type Props = DistortMaterialType & {
+export type MeshDistortMaterialProps = DistortMaterialType & {
   speed?: number
   factor?: number
 }
@@ -28,7 +28,7 @@ interface Uniform<T> {
   value: T
 }
 
-class DistortMaterialImpl extends MeshPhysicalMaterial {
+export class MeshDistortMaterialImpl extends MeshPhysicalMaterial {
   _time: Uniform<number>
   _distort: Uniform<number>
   _radius: Uniform<number>
@@ -89,9 +89,9 @@ class DistortMaterialImpl extends MeshPhysicalMaterial {
   }
 }
 
-export const MeshDistortMaterial: ForwardRefComponent<Props, DistortMaterialImpl> = /* @__PURE__ */ React.forwardRef(
-  ({ speed = 1, ...props }: Props, ref) => {
-    const [material] = React.useState(() => new DistortMaterialImpl())
+export const MeshDistortMaterial = /* @__PURE__ */ React.forwardRef<MeshDistortMaterialImpl, MeshDistortMaterialProps>(
+  ({ speed = 1, ...props }, ref) => {
+    const [material] = React.useState(() => new MeshDistortMaterialImpl())
     useFrame((state) => material && (material.time = state.clock.getElapsedTime() * speed))
     return <primitive object={material} ref={ref} attach="material" {...props} />
   }

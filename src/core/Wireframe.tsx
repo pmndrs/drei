@@ -17,7 +17,7 @@ declare global {
   }
 }
 
-interface WireframeProps {
+export interface WireframeProps {
   geometry?: THREE.BufferGeometry | React.RefObject<THREE.BufferGeometry>
   simplify?: boolean
 }

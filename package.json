@@ -36,7 +36,7 @@
     "eslint:ci": "eslint .",
     "prettier": "prettier --check .",
     "prettier-fix": "prettier --write .",
-    "test": "yarn eslint:ci && (cd test/e2e; ./e2e.sh)",
+    "test": "yarn eslint:ci && yarn typecheck && yarn prettier && (cd test/e2e; ./e2e.sh)",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false --strict --jsx react",
     "typegen": "tsc --emitDeclarationOnly",
     "storybook": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider\" storybook dev -p 6006",
@@ -67,7 +67,7 @@
     "tunnel-rat": "^0.1.2",
     "utility-types": "^3.11.0",
     "uuid": "^9.0.1",
-    "zustand": "^3.7.1"
+    "zustand": "^5.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",

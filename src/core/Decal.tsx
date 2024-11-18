@@ -9,6 +9,7 @@ export type DecalProps = Omit<JSX.IntrinsicElements['mesh'], 'children'> & {
   debug?: boolean
   mesh?: React.MutableRefObject<THREE.Mesh>
   position?: FIBER.Vector3
+  /** FIBER.Euler for manual orientation or a single float for closest-vertex-normal orient */
   rotation?: FIBER.Euler | number
   scale?: FIBER.Vector3
   map?: THREE.Texture
@@ -64,9 +65,40 @@ export const Decal: ForwardRefComponent<DecalProps, THREE.Mesh> = /* @__PURE__ *
 
       if (!rotation || typeof rotation === 'number') {
         const o = new THREE.Object3D()
-
         o.position.copy(state.position)
-        o.lookAt(parent.position)
+
+        // Thanks https://x.com/N8Programs !
+        const vertices = parent.geometry.attributes.position.array
+        if (parent.geometry.attributes.normal === undefined) parent.geometry.computeVertexNormals()
+        const normal = parent.geometry.attributes.normal.array
+        let distance = Infinity
+        let closest = new THREE.Vector3()
+        let closestNormal = new THREE.Vector3()
+        const ox = o.position.x
+        const oy = o.position.y
+        const oz = o.position.z
+        const vLength = vertices.length
+        let chosenIdx = -1
+        for (let i = 0; i < vLength; i += 3) {
+          const x = vertices[i]
+          const y = vertices[i + 1]
+          const z = vertices[i + 2]
+          const xDiff = x - ox
+          const yDiff = y - oy
+          const zDiff = z - oz
+          const distSquared = xDiff * xDiff + yDiff * yDiff + zDiff * zDiff
+          if (distSquared < distance) {
+            distance = distSquared
+            chosenIdx = i
+          }
+        }
+        closestNormal.fromArray(normal, chosenIdx)
+
+        // Get vector tangent to normal
+        o.lookAt(o.position.clone().add(closestNormal))
+        o.rotateZ(Math.PI)
+        o.rotateY(Math.PI)
+
         if (typeof rotation === 'number') o.rotateZ(rotation)
         applyProps(state as any, { rotation: o.rotation })
       } else {
@@ -86,7 +118,7 @@ export const Decal: ForwardRefComponent<DecalProps, THREE.Mesh> = /* @__PURE__ *
         target.geometry.dispose()
       }
     }
-  }, [mesh, ...vecToArray(position), ...vecToArray(scale), ...vecToArray(rotation)])
+  }, [mesh, debug, ...vecToArray(position), ...vecToArray(scale), ...vecToArray(rotation)])
 
   // <meshStandardMaterial transparent polygonOffset polygonOffsetFactor={-10} {...props} />}
   return (

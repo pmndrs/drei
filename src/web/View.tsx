@@ -24,6 +24,11 @@ type CanvasSize = LegacyCanvasSize & {
   left: number
 }
 
+type CanvasBounds = CanvasSize & {
+  bottom: number
+  right: number
+}
+
 function isNonLegacyCanvasSize(size: Record<string, number>): size is CanvasSize {
   return 'top' in size
 }
@@ -66,10 +71,10 @@ export type ViewProps = {
 }
 
 function computeContainerPosition(
-    canvasSize: LegacyCanvasSize | CanvasSize,
-    trackRect: DOMRect
+  canvasSize: LegacyCanvasSize | CanvasSize,
+  trackRect: DOMRect
 ): {
-  position: CanvasSize & { bottom: number, right: number }
+  position: CanvasBounds
   isOffscreen: boolean
 } {
   const { top, left: trackLeft, bottom: trackBottom, right: trackRight, width, height } = trackRect
@@ -81,7 +86,8 @@ function computeContainerPosition(
     const right = canvasRight - trackRight
     const left = trackLeft - canvasSize.left
 
-    const isOffscreen = trackBottom < canvasSize.top || top > canvasBottom || trackRight < canvasSize.left || trackLeft > canvasRight
+    const isOffscreen =
+      trackBottom < canvasSize.top || top > canvasBottom || trackRight < canvasSize.left || trackLeft > canvasRight
 
     return { position: { width, height, left, top, bottom, right }, isOffscreen }
   }
@@ -95,10 +101,7 @@ function computeContainerPosition(
   return { position: { width, height, top, left: trackLeft, bottom, right }, isOffscreen }
 }
 
-function prepareSkissor(
-  state: RootState,
-  { left, bottom, width, height }: LegacyCanvasSize & { top: number; left: number } & { bottom: number; right: number }
-) {
+function prepareSkissor(state: RootState, { left, bottom, width, height }: CanvasBounds) {
   let autoClear
   const aspect = width / height
   if (isOrthographicCamera(state.camera)) {

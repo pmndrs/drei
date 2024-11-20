@@ -65,17 +65,33 @@ export type ViewProps = {
   track?: React.MutableRefObject<HTMLElement>
 }
 
-function computeContainerPosition(canvasSize: LegacyCanvasSize | CanvasSize, trackRect: DOMRect) {
-  const { right, top, left: trackLeft, bottom: trackBottom, width, height } = trackRect
-  const isOffscreen = trackRect.bottom < 0 || top > canvasSize.height || right < 0 || trackRect.left > canvasSize.width
+function computeContainerPosition(
+    canvasSize: LegacyCanvasSize | CanvasSize,
+    trackRect: DOMRect
+): {
+  position: CanvasSize & { bottom: number, right: number }
+  isOffscreen: boolean
+} {
+  const { top, left: trackLeft, bottom: trackBottom, right: trackRight, width, height } = trackRect
+
   if (isNonLegacyCanvasSize(canvasSize)) {
     const canvasBottom = canvasSize.top + canvasSize.height
+    const canvasRight = canvasSize.left + canvasSize.width
     const bottom = canvasBottom - trackBottom
+    const right = canvasRight - trackRight
     const left = trackLeft - canvasSize.left
+
+    const isOffscreen = trackBottom < canvasSize.top || top > canvasBottom || trackRight < canvasSize.left || trackLeft > canvasRight
+
     return { position: { width, height, left, top, bottom, right }, isOffscreen }
   }
+
   // Fall back on old behavior if r3f < 8.1.0
   const bottom = canvasSize.height - trackBottom
+  const right = canvasSize.width - trackRight
+
+  const isOffscreen = trackBottom < 0 || top > canvasSize.height || trackRight < 0 || trackLeft > canvasSize.width
+
   return { position: { width, height, top, left: trackLeft, bottom, right }, isOffscreen }
 }
 

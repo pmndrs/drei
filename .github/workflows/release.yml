@@ -29,9 +29,6 @@ jobs:
           cache: 'yarn'
       - run: yarn install
       - run: yarn build
-      - uses: pkg-size/action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: yarn test
 
   build-and-release:
@@ -52,3 +49,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - uses: pkg-size/action@v1
+        with:
+          build-command: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

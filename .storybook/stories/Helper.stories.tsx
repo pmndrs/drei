@@ -19,17 +19,23 @@ export default {
       </Setup>
     ),
   ],
+  args: {
+    hidden: false,
+  },
+  argTypes: {
+    hidden: { control: 'boolean' },
+  },
 } satisfies Meta<typeof Helper>
 
 type Story = StoryObj<typeof Helper>
 
-const HelperScene1 = (_props: ComponentProps<typeof Helper>) => {
+const HelperScene1 = (props: ComponentProps<typeof Helper>) => {
   return (
     <Sphere>
       <meshBasicMaterial />
 
-      <Helper type={BoxHelper} args={['royalblue']} />
-      <Helper type={VertexNormalsHelper} args={[1, 0xff0000]} />
+      <Helper {...props} type={BoxHelper} args={['royalblue']} />
+      <Helper {...props} type={VertexNormalsHelper} args={[1, 0xff0000]} />
     </Sphere>
   )
 }
@@ -39,7 +45,9 @@ export const HelperSt1 = {
   name: 'Default',
 } satisfies Story
 
-const HelperScene2 = (_props: ComponentProps<typeof Helper>) => {
+//
+
+const HelperScene2 = (props: ComponentProps<typeof Helper>) => {
   const camera = React.useRef<THREE.PerspectiveCamera>(null)
 
   useFrame(({ clock }) => {
@@ -57,7 +65,7 @@ const HelperScene2 = (_props: ComponentProps<typeof Helper>) => {
     <PerspectiveCamera makeDefault={false} position={[0, 3, 3]} near={1} far={4} ref={camera}>
       <meshBasicMaterial />
 
-      <Helper type={CameraHelper} />
+      <Helper {...props} type={CameraHelper} />
     </PerspectiveCamera>
   )
 }

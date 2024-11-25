@@ -39,14 +39,42 @@ export function useHelper<T extends HelperConstructor>(
 
 //
 
+/**
+ * Creates a THREE helper for the parent object.
+ *
+ * Unlike `useHelper`, you don't need to pass a ref: one for the parent will be automatically created.
+ * Internally, it uses `useHelper`
+ *
+ * @example
+ * ```jsx
+ * <Sphere>
+ *   <Helper type={BoxHelper} args={['royalblue']} hidden />
+ *   <Helper type={VertexNormalsHelper} args={[1, 0xff0000]} />
+ * </Sphere>
+ * ```
+ */
+
 export type HelperProps<T extends HelperConstructor> = {
+  /**
+   * a THREE `*Helper` class
+   *
+   * @see https://threejs.org/docs/index.html#api/en/helpers/ArrowHelper
+   */
   type: T
+  /**
+   * arguments for the helper constructor
+   */
   args?: HelperArgs<ConstructorParameters<T>>
+  /**
+   * whether the helper should be hidden
+   */
+  hidden?: boolean
 }
 
 export const Helper = <T extends HelperConstructor>({
   type: helperConstructor,
   args = [] as never,
+  hidden = false,
 }: HelperProps<T>) => {
   const thisRef = React.useRef<Object3D>(null!)
   const parentRef = React.useRef<Object3D>(null!)
@@ -55,7 +83,8 @@ export const Helper = <T extends HelperConstructor>({
     parentRef.current = thisRef.current.parent!
   })
 
-  useHelper(parentRef, helperConstructor, ...args)
+  const obj3d = hidden ? false : parentRef
+  useHelper(obj3d, helperConstructor, ...args)
 
   return <object3D ref={thisRef} />
 }

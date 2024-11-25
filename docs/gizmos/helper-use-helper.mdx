@@ -22,7 +22,11 @@ or with `Helper`:
   <boxGeometry />
   <meshBasicMaterial />
 
-  <Helper type={BoxHelper} args={['royalblue']} />
+  <Helper type={BoxHelper} args={['royalblue']} hidden />
   <Helper type={VertexNormalsHelper} args={[1, 0xff0000]} />
 </mesh>
 ```
+
+> [!TIP]
+> - it uses `useHelper` internally, with parent's (here `<mesh>`) ref
+> - `hidden` prop is available to show/hide

@@ -15,8 +15,6 @@ Render 3D text using ThreeJS's `TextGeometry`.
 
 Text3D will suspend while loading the font data. Text3D requires fonts in JSON format generated through [typeface.json](http://gero3.github.io/facetype.js), either as a path to a JSON file or a JSON object. If you face display issues try checking "Reverse font direction" in the typeface tool.
 
-Alternatively, the path can point to a font file of a type supported by [opentype.js](https://github.com/opentypejs/opentype.js) (for example OTF or TTF), in which case the conversion to the JSON format will be done automatically at load time.
-
 ```jsx
 <Text3D font={fontUrl} {...textOptions}>
   Hello world!

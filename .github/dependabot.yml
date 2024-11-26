@@ -22,6 +22,11 @@ updates:
         patterns:
           - 'react'
           - 'react-dom'
+      rollup-packages:
+        patterns:
+          - 'rollup'
+          - '@rollup/*'
+          - 'rollup-plugin-*'
 
       #
       # pkg.json "dependencies"

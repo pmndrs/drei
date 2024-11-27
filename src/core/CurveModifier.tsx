@@ -9,15 +9,15 @@ export interface CurveModifierProps {
   curve?: THREE.Curve<THREE.Vector3>
 }
 
-export type CurveModifierRef = Pick<Flow, 'moveAlongCurve'>
+export type CurveModifierRef = Flow
 
 export const CurveModifier: ForwardRefComponent<CurveModifierProps, CurveModifierRef> =
   /* @__PURE__ */ React.forwardRef(({ children, curve }: CurveModifierProps, ref) => {
     const [scene] = React.useState(() => new THREE.Scene())
     const [obj, set] = React.useState<THREE.Object3D>()
-    const modifier = React.useRef<Flow>()
+    const modifier = React.useRef<Flow>(null!)
 
-    React.useEffect(() => {
+    React.useLayoutEffect(() => {
       modifier.current = new Flow(
         scene.children[0] as THREE.Mesh<THREE.BufferGeometry, THREE.Material | THREE.Material[]>
       )
@@ -28,11 +28,7 @@ export const CurveModifier: ForwardRefComponent<CurveModifierProps, CurveModifie
       if (curve) modifier.current?.updateCurve(0, curve)
     }, [curve])
 
-    React.useImperativeHandle(ref, () => ({
-      moveAlongCurve: (val: number) => {
-        modifier.current?.moveAlongCurve(val)
-      },
-    }))
+    React.useImperativeHandle(ref, () => modifier.current)
 
     return (
       <>

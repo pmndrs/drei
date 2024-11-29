@@ -24,16 +24,18 @@ export function useVideoTexture(
   {
     unsuspend = 'loadedmetadata',
     start = true,
-    hls: hlsConfig = {},
+    hls = {},
     crossOrigin = 'anonymous',
     muted = true,
     loop = true,
     playsInline = true,
+    onVideoFrame,
     ...videoProps
   }: {
     unsuspend?: keyof HTMLVideoElementEventMap
     start?: boolean
     hls?: Parameters<typeof getHls>[0]
+    onVideoFrame: VideoFrameRequestCallback
   } & Partial<Omit<HTMLVideoElement, 'children' | 'src' | 'srcObject'>> = {}
 )
 ```
@@ -83,4 +85,37 @@ You can pass [`hls` config](https://github.com/video-dev/hls.js/blob/master/docs
 const texture = useVideoTexture('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', {
   hls: { abrEwmaFastLive: 1.0, abrEwmaSlowLive: 3.0, enableWorker: true },
 })
+```
+
+## `requestVideoFrameCallback` (rVFC)
+
+`useVideoTexture` supports [`requestVideoFrameCallback`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLVideoElement/requestVideoFrameCallback):
+
+```jsx
+useVideoTexture(src, {
+  onVideoFrame: (now, metadata) => {}
+})
+```
+
+## `<VideoTexture>` Component
+
+```tsx
+export type VideoTextureProps = {
+  children?: (texture: THREE.VideoTexture) => React.ReactNode
+  src: UseVideoTextureParams[0]
+} & UseVideoTextureParams[1]
+```
+
+You can access the texture via children's render prop:
+
+```jsx
+<VideoTexture src="/video.mp4">
+  {(texture) => <meshBasicMaterial map={texture} />}
+```
+
+or exposed via `ref`:
+
+```jsx
+const textureRef = useRef()
+<VideoTexture ref={textureRef} src="/video.mp4" />
 ```

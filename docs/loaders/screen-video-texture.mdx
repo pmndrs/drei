@@ -1,0 +1,26 @@
+---
+title: ScreenVideoTexture
+sourcecode: src/core/ScreenVideoTexture.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/misc-screenvideotexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
+
+<Intro>Create a video texture from [`getDisplayMedia`](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia)</Intro>
+
+```tsx
+export type ScreenVideoTextureProps = Omit<VideoTextureProps, 'src'> & {
+  options?: DisplayMediaStreamOptions
+}
+```
+
+```jsx
+<ScreenVideoTexture>
+  {(texture) => <meshBasicMaterial map={texture} />}
+```
+
+or exposed via `ref`:
+
+```jsx
+const textureRef = useRef()
+<ScreenVideoTexture ref={textureRef} />
+```

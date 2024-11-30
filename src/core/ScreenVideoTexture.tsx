@@ -8,7 +8,7 @@ export type ScreenVideoTextureProps = Omit<VideoTextureProps, 'src'> & {
 }
 
 /**
- * Create a video texture from `getDisplayMedia`
+ * Create a video texture from [`getDisplayMedia`](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia)
  */
 export const ScreenVideoTexture = /* @__PURE__ */ forwardRef<THREE.VideoTexture, ScreenVideoTextureProps>(
   ({ options = { video: true }, ...props }, fref) => {

@@ -1,0 +1,26 @@
+---
+title: WebcamVideoTexture
+sourcecode: src/core/WebcamVideoTexture.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/misc-webcamvideotexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
+
+<Intro>Create a video texture from [`getUserMedia`](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia)</Intro>
+
+```tsx
+export type WebcamVideoTextureProps = Omit<VideoTextureProps, 'src'> & {
+  constraints?: MediaStreamConstraints
+}
+```
+
+```jsx
+<WebcamVideoTexture>
+  {(texture) => <meshBasicMaterial map={texture} />}
+```
+
+or exposed via `ref`:
+
+```jsx
+const textureRef = useRef()
+<WebcamVideoTexture ref={textureRef} />
+```

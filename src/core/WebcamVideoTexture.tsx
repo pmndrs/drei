@@ -8,7 +8,7 @@ export type WebcamVideoTextureProps = Omit<VideoTextureProps, 'src'> & {
 }
 
 /**
- * Create a video texture from `getUserMedia`
+ * Create a video texture from [`getUserMedia`](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia)
  */
 export const WebcamVideoTexture = /* @__PURE__ */ forwardRef<THREE.VideoTexture, WebcamVideoTextureProps>(
   (

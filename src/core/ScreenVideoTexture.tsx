@@ -7,6 +7,9 @@ export type ScreenVideoTextureProps = Omit<VideoTextureProps, 'src'> & {
   options?: DisplayMediaStreamOptions
 }
 
+/**
+ * Create a video texture from `getDisplayMedia`
+ */
 export const ScreenVideoTexture = /* @__PURE__ */ forwardRef<THREE.VideoTexture, ScreenVideoTextureProps>(
   ({ options = { video: true }, ...props }, fref) => {
     const mediaStream = suspend(() => navigator.mediaDevices.getDisplayMedia(options), [])

@@ -7,6 +7,9 @@ export type WebcamVideoTextureProps = Omit<VideoTextureProps, 'src'> & {
   constraints?: MediaStreamConstraints
 }
 
+/**
+ * Create a video texture from `getUserMedia`
+ */
 export const WebcamVideoTexture = /* @__PURE__ */ forwardRef<THREE.VideoTexture, WebcamVideoTextureProps>(
   (
     {

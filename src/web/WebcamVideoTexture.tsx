@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { forwardRef, useEffect } from 'react'
 import { suspend, clear } from 'suspend-react'
-import { VideoTexture, VideoTextureProps } from './VideoTexture'
+import { VideoTexture, VideoTextureProps } from '..'
 
 export type WebcamVideoTextureProps = Omit<VideoTextureProps, 'src'> & {
   constraints?: MediaStreamConstraints

@@ -56,8 +56,6 @@ export * from './Ktx2'
 export * from './Progress'
 export * from './Texture'
 export * from './VideoTexture'
-export * from './ScreenVideoTexture'
-export * from './WebcamVideoTexture'
 export * from './useFont'
 export * from './useSpriteLoader'
 

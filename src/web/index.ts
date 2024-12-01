@@ -14,6 +14,10 @@ export * from './View'
 // Gizmos
 export * from './pivotControls'
 
+// Loaders
+export * from './ScreenVideoTexture'
+export * from './WebcamVideoTexture'
+
 // Controls
 export * from './FaceControls'
 export { DragControls } from './DragControls'

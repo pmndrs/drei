@@ -86,13 +86,17 @@ function prepareSkissor(
   let autoClear
   const aspect = width / height
   if (isOrthographicCamera(state.camera)) {
-    if (
-      state.camera.left !== width / -2 ||
-      state.camera.right !== width / 2 ||
-      state.camera.top !== height / 2 ||
-      state.camera.bottom !== height / -2
-    ) {
-      Object.assign(state.camera, { left: width / -2, right: width / 2, top: height / 2, bottom: height / -2 })
+    if (!state.camera.manual) {
+      if (
+        state.camera.left !== width / -2 ||
+        state.camera.right !== width / 2 ||
+        state.camera.top !== height / 2 ||
+        state.camera.bottom !== height / -2
+      ) {
+        Object.assign(state.camera, { left: width / -2, right: width / 2, top: height / 2, bottom: height / -2 })
+        state.camera.updateProjectionMatrix()
+      }
+    } else {
       state.camera.updateProjectionMatrix()
     }
   } else if (state.camera.aspect !== aspect) {

@@ -2866,7 +2866,7 @@ __metadata:
     camera-controls: "npm:^2.9.0"
     copyfiles: "npm:^2.4.1"
     cross-env: "npm:^7.0.3"
-    detect-gpu: "npm:^5.0.56"
+    detect-gpu: "npm:^5.0.59"
     eslint: "npm:^9.15.0"
     eslint-config-prettier: "npm:^9.1.0"
     eslint-plugin-react: "npm:^7.37.2"
@@ -5719,12 +5719,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"detect-gpu@npm:^5.0.56":
-  version: 5.0.56
-  resolution: "detect-gpu@npm:5.0.56"
+"detect-gpu@npm:^5.0.59":
+  version: 5.0.59
+  resolution: "detect-gpu@npm:5.0.59"
   dependencies:
     webgl-constants: "npm:^1.1.1"
-  checksum: 10c0/b5ef15b518782090552afbcd0fd121711172e7dc63afa9abe97b4a1e4408bfada401a6f4011a1e9e240666ad3c2bcca43b6be0f7a9794874ca227b6972d8e01c
+  checksum: 10c0/f2ff2d8755a7e05334945aa823d94ced599c7438b84da57522bb6e805617dadf38a6466f811f90c419899092dfb2d72a2dd82c9affa29039b489022325d35902
   languageName: node
   linkType: hard
 

@@ -52,7 +52,7 @@
     "@use-gesture/react": "^10.3.1",
     "camera-controls": "^2.9.0",
     "cross-env": "^7.0.3",
-    "detect-gpu": "^5.0.56",
+    "detect-gpu": "^5.0.59",
     "glsl-noise": "^0.0.0",
     "hls.js": "^1.5.17",
     "maath": "^0.10.8",

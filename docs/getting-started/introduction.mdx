@@ -5,7 +5,8 @@ nav: -1
 ---
 
 <Intro>
-  A growing collection of useful helpers and fully functional, ready-made abstractions for [@react-three/fiber](https://github.com/pmndrs/react-three-fiber).
+  A growing collection of useful helpers and fully functional, ready-made abstractions for
+  [@react-three/fiber](https://github.com/pmndrs/react-three-fiber).
 </Intro>
 
 [![logo](../logo.jpg)](https://codesandbox.io/s/bfplr)
@@ -14,6 +15,10 @@ nav: -1
 [![Downloads](https://img.shields.io/npm/dt/@react-three/drei.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)
 [![Discord Shield](https://img.shields.io/discord/740090768164651008?style=flat&colorA=000000&colorB=000000&label=discord&logo=discord&logoColor=ffffff)](https://discord.com/channels/740090768164651008/741751532592038022)
 [![Open in GitHub Codespaces](https://img.shields.io/static/v1?&message=Open%20in%20%20Codespaces&style=flat&colorA=000000&colorB=000000&label=GitHub&logo=github&logoColor=ffffff)](https://github.com/codespaces/new?template_repository=pmndrs%2Fdrei)
+
+<Entries />
+
+## INSTALL
 
 If you make a component that is generic enough to be useful to others, think about [CONTRIBUTING](CONTRIBUTING.md)!
 
@@ -37,24 +42,3 @@ import { PerspectiveCamera, PositionalAudio, ... } from '@react-three/drei/nativ
 ```
 
 The `native` route of the library **does not** export `Html` or `Loader`. The default export of the library is `web` which **does** export `Html` and `Loader`.
-
-## INSTALL
-
-```sh
-& corepack enable
-$ yarn install
-```
-
-## Tests
-
-To run visual tests in the same environment as the CI:
-
-```sh
-$ yarn build
-$ docker run --init --rm -v $(pwd):/app -w /app ghcr.io/pmndrs/playwright:main yarn test
-```
-
-> [!TIP]
-> If running on mac m-series, you may need to add `--platform linux/arm64` to the docker command.
-
-To update a snapshot, simply remove it and relaunch the test command.

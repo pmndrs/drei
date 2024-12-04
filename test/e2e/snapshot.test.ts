@@ -1,9 +1,9 @@
-const http = require('http')
-const { test, expect } = require('@playwright/test')
+import { request } from 'node:http'
+import { test, expect, Page } from '@playwright/test'
 
 const host = 'http://localhost:5188/'
 
-async function waitForEvent(page, eventName) {
+async function waitForEvent(page: Page, eventName: string) {
   await page.evaluate(
     (eventName) => new Promise((resolve) => document.addEventListener(eventName, resolve, { once: true })),
     eventName
@@ -13,11 +13,11 @@ async function waitForEvent(page, eventName) {
 function waitForServer() {
   return new Promise((resolve) => {
     function ping() {
-      const request = http.request(host, { method: 'HEAD' }, resolve)
-      request.on('error', () => {
+      const req = request(host, { method: 'HEAD' }, resolve)
+      req.on('error', () => {
         setTimeout(ping, 500) // not yet up? => re-ping in 500ms
       })
-      request.end()
+      req.end()
     }
 
     ping()

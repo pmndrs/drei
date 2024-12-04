@@ -40,7 +40,6 @@ type Props = JSX.IntrinsicElements['mesh'] & {
   onSync?: (troika: any) => void
 }
 
-// eslint-disable-next-line prettier/prettier
 export const Text: ForwardRefComponent<Props, any> = /* @__PURE__ */ React.forwardRef(
   (
     {

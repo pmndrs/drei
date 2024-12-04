@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import * as THREE from 'three'
 import * as React from 'react'
 import { useFrame, useThree } from '@react-three/fiber'

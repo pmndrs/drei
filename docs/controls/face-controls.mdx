@@ -16,7 +16,7 @@ The camera follows your face.
   </li>
 </Grid>
 
-Prerequisite: wrap into a [`FaceLandmarker`](#facelandmarker) provider
+Prerequisite: wrap into a [`FaceLandmarker`](https://drei.docs.pmnd.rs/misc/face-landmarker) provider
 
 ```tsx
 <FaceLandmarker>...</FaceLandmarker>
@@ -66,7 +66,7 @@ type FaceControlsProps = {
 ```tsx
 type FaceControlsApi = THREE.EventDispatcher & {
   /** Detect faces from the video */
-  detect: (video: HTMLVideoElement, time: number) => void
+  detect: (video: HTMLVideoElement, time: number) => FaceLandmarkerResult | undefined
   /** Compute the target for the camera */
   computeTarget: () => THREE.Object3D
   /** Update camera's position/rotation to the `target` */
@@ -84,7 +84,7 @@ type FaceControlsApi = THREE.EventDispatcher & {
 
 ## FaceControls events
 
-Two `THREE.Event`s are dispatched on FaceControls ref object:
+Two `THREE.Event`s are dispatched on `FaceControls` ref object:
 
 - `{ type: "stream", stream: MediaStream }` -- when webcam's [`.getUserMedia()`](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia) promise is resolved
 - `{ type: "videoFrame", texture: THREE.VideoTexture, time: number }` -- each time a new video frame is sent to the compositor (thanks to rVFC)
@@ -130,6 +130,10 @@ useFrame((_, delta) => {
 Or, if you want your own custom damping, use `computeTarget` method and update the camera pos/rot yourself with:
 
 ```jsx
+import * as easing from 'maath/easing'
+
+const camera = useThree((state) => state.camera)
+
 const [current] = useState(() => new THREE.Object3D())
 
 useFrame((_, delta) => {

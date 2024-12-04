@@ -3,21 +3,25 @@ set -ex
 
 PORT=5188
 DIST=../../dist
+tmp=$(mktemp -d)
 
+# Build the package
 (cd $DIST; npm pack)
 TGZ=$(realpath "$DIST/react-three-drei-0.0.0-semantic-release.tgz")
+
+snapshot() {
+  local UPDATE_SNAPSHOTS=""
+  if [ "$PLAYWRIGHT_UPDATE_SNAPSHOTS" = "1" ]; then
+    UPDATE_SNAPSHOTS="--update-snapshots"
+  fi
+  npx playwright test $UPDATE_SNAPSHOTS snapshot.test.ts
+}
 
 kill_app() {
   kill -9 $(lsof -ti:$PORT) || echo "ok, no previous running process on port $PORT"
 }
-
-cleanup() {
-  kill_app
-}
-cleanup || true
-trap cleanup EXIT INT TERM HUP
-
-tmp=$(mktemp -d)
+kill_app || true
+trap kill_app EXIT INT TERM HUP
 
 #
 # ██╗   ██╗██╗████████╗███████╗
@@ -42,7 +46,7 @@ cp App.tsx $appdir/src/App.tsx
 
 # build+start+playwright
 (cd $appdir; npm run build; npm run preview -- --host --port $PORT &)
-npx playwright test snapshot.test.js
+snapshot
 kill_app
 
 #
@@ -68,7 +72,51 @@ cp App.tsx $appdir/app/page.tsx
 
 # build+start+playwright
 (cd $appdir; npm run build; npm start -- -p $PORT &)
-npx playwright test snapshot.test.js
+snapshot
+kill_app
+
+#  ██████╗     ██╗███████╗
+# ██╔════╝     ██║██╔════╝
+# ██║          ██║███████╗
+# ██║     ██   ██║╚════██║
+# ╚██████╗╚█████╔╝███████║
+#  ╚═════╝ ╚════╝ ╚══════╝
+# 
+# (using Next.js)
+#
+
+appname=cjsapp
+appdir="$tmp/$appname"
+
+# create app
+(cd $tmp; npx -y create-next-app@14 $appname --ts --no-eslint --no-tailwind --no-src-dir --app --import-alias "@/*")
+
+# drei
+(cd $appdir; npm i $TGZ)
+
+# App.tsx
+cp App.tsx $appdir/app/page.tsx
+
+# next.config.mjs
+cat <<EOF >$appdir/next.config.mjs
+console.log('🦆 CJS override (next.config.mjs)')
+import path from 'path'
+
+/** @type {import('next').NextConfig} */
+export default {
+  //
+  // We force Next to use drei's CJS version here
+  //
+  webpack: (config) => {
+    config.resolve.alias['@react-three/drei'] = path.resolve('node_modules/@react-three/drei/index.cjs.js')
+    return config
+  },
+}
+EOF
+
+# build+start+playwright
+(cd $appdir; npm run build; npm start -- -p $PORT &)
+snapshot
 kill_app
 
 #
@@ -94,7 +142,7 @@ cp App.tsx $appdir/src/App.tsx
 
 # build+start+playwright
 (cd $appdir; npm run build; npx serve -s -p $PORT build &)
-npx playwright test snapshot.test.js
+snapshot
 kill_app
 
 #

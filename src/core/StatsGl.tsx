@@ -4,7 +4,9 @@ import * as React from 'react'
 
 import Stats from 'stats-gl'
 
-type Props = Partial<Stats> & {
+type StatsProps = ConstructorParameters<typeof Stats>[number]
+
+type Props = Partial<StatsProps> & {
   id?: string
   clearStatsGlStyle?: boolean
   showPanel?: number

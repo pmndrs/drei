@@ -128,22 +128,22 @@ kill_app
 #  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝
 #
 
-appname=craapp
-appdir="$tmp/$appname"
+# appname=craapp
+# appdir="$tmp/$appname"
 
-# create app
-(cd $tmp; npx create-react-app $appname --template typescript)
+# # create app
+# (cd $tmp; npx create-react-app $appname --template typescript)
 
-# drei
-(cd $appdir; npm i $TGZ)
+# # drei
+# (cd $appdir; npm i $TGZ)
 
-# App.tsx
-cp App.tsx $appdir/src/App.tsx
+# # App.tsx
+# cp App.tsx $appdir/src/App.tsx
 
-# build+start+playwright
-(cd $appdir; npm run build; npx serve -s -p $PORT build &)
-snapshot
-kill_app
+# # build+start+playwright
+# (cd $appdir; npm run build; npx serve -s -p $PORT build &)
+# snapshot
+# kill_app
 
 #
 # Teardown

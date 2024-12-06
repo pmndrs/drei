@@ -43,7 +43,7 @@ export type FaceControlsProps = {
   /** The camera to be controlled */
   camera?: THREE.Camera
   /** VideoTexture or WebcamVideoTexture options */
-  videoTexture: VideoTextureProps
+  videoTexture?: VideoTextureProps
   /** Disable the automatic face-detection => you should provide `faceLandmarkerResult` yourself in this case */
   manualDetect?: boolean
   /** FaceLandmarker result */

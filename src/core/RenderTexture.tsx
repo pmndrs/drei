@@ -61,7 +61,7 @@ export const RenderTexture: ForwardRefComponent<Props, THREE.Texture> = /* @__PU
       // need to transform event coordinates to local coordinates. We use r3f internals to find the
       // next Object3D.
       let parent = (fbo.texture as any)?.__r3f.parent
-      while (parent && !(parent instanceof THREE.Object3D)) {
+      while (parent && !(parent instanceof THREE.Object3D) && parent.__r3f) {
         parent = parent.__r3f.parent
       }
       if (!parent) return false

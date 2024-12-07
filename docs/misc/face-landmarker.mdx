@@ -46,3 +46,21 @@ faceLandmarkerOptions.baseOptions.modelAssetPath = modelAssetPath;
 
 <FaceLandmarker basePath={visionBasePath} options={faceLandmarkerOptions}>
 ```
+
+## instance
+
+You can get the FaceLandmarker instance through `ref`:
+
+```tsx
+const faceLandmarkerRef = useRef<ElementRef<typeof FaceLandmarker>>(null)
+
+<FaceLandmarker ref={faceLandmarkerRef}>
+  {/* ... */}
+</FaceLandmarker>
+```
+
+or using `useFaceLandmarker()` from a descendant component:
+
+```jsx
+const faceLandmarker = useFaceLandmarker()
+```

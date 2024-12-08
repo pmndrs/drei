@@ -245,7 +245,7 @@ export const CloudInstance = /* @__PURE__ */ React.forwardRef<Group, CloudProps>
 
     const parent = React.useContext(context)
     const ref = React.useRef<Group>(null!)
-    const [uuid] = React.useState(() => crypto.randomUUID())
+    const uuid = React.useId()
     const clouds: CloudState[] = React.useMemo(() => {
       return [...new Array(segments)].map(
         (_, index) =>

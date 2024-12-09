@@ -124,7 +124,7 @@
     "semantic-release": "^24.2.0",
     "serve": "^14.2.4",
     "storybook": "^8.4.4",
-    "three": "^0.151.0",
+    "three": "^0.171.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3",
     "vite": "^5.4.11",

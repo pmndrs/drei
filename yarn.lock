@@ -2328,14 +2328,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@monogrid/gainmap-js@npm:^3.0.6":
-  version: 3.0.6
-  resolution: "@monogrid/gainmap-js@npm:3.0.6"
+"@monogrid/gainmap-js@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@monogrid/gainmap-js@npm:3.1.0"
   dependencies:
     promise-worker-transferable: "npm:^1.0.4"
   peerDependencies:
     three: ">= 0.159.0"
-  checksum: 10c0/35f25e50b15fb55c4d38d08334337bbeff784a2b4a6c4069c1eaee49d1c4c27b2119e938efaa1417cfd9c99902355b0aaf8d9b9fc296748eb4cd26de81dd43f3
+  checksum: 10c0/0afae39fdca31456a57803d5751c0e5b742d8dfac53aa95b21b43fbf02ad250cd80f5ae0368071128729754b89ff1be6317e1e23be86706c0d3e227bb5f82db2
   languageName: node
   linkType: hard
 
@@ -2838,7 +2838,7 @@ __metadata:
     "@eslint/eslintrc": "npm:^3.2.0"
     "@eslint/js": "npm:^9.15.0"
     "@mediapipe/tasks-vision": "npm:0.10.17"
-    "@monogrid/gainmap-js": "npm:^3.0.6"
+    "@monogrid/gainmap-js": "npm:^3.1.0"
     "@playwright/test": "npm:^1.45.2"
     "@react-spring/three": "npm:~9.7.5"
     "@react-three/fiber": "npm:^8.0.8"
@@ -2866,7 +2866,7 @@ __metadata:
     camera-controls: "npm:^2.9.0"
     copyfiles: "npm:^2.4.1"
     cross-env: "npm:^7.0.3"
-    detect-gpu: "npm:^5.0.56"
+    detect-gpu: "npm:^5.0.61"
     eslint: "npm:^9.15.0"
     eslint-config-prettier: "npm:^9.1.0"
     eslint-plugin-react: "npm:^7.37.2"
@@ -2896,7 +2896,7 @@ __metadata:
     suspend-react: "npm:^0.1.3"
     three: "npm:^0.151.0"
     three-mesh-bvh: "npm:^0.7.8"
-    three-stdlib: "npm:^2.34.0"
+    three-stdlib: "npm:^2.35.2"
     troika-three-text: "npm:^0.52.0"
     ts-node: "npm:^10.9.2"
     tunnel-rat: "npm:^0.1.2"
@@ -2905,7 +2905,7 @@ __metadata:
     uuid: "npm:^9.0.1"
     vite: "npm:^5.4.11"
     vite-plugin-glslify: "npm:^2.1.0"
-    zustand: "npm:^5.0.1"
+    zustand: "npm:^5.0.2"
   peerDependencies:
     "@react-three/fiber": ^8 || ^9.0.0-0
     react: ^18
@@ -5719,12 +5719,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"detect-gpu@npm:^5.0.56":
-  version: 5.0.56
-  resolution: "detect-gpu@npm:5.0.56"
+"detect-gpu@npm:^5.0.61":
+  version: 5.0.61
+  resolution: "detect-gpu@npm:5.0.61"
   dependencies:
     webgl-constants: "npm:^1.1.1"
-  checksum: 10c0/b5ef15b518782090552afbcd0fd121711172e7dc63afa9abe97b4a1e4408bfada401a6f4011a1e9e240666ad3c2bcca43b6be0f7a9794874ca227b6972d8e01c
+  checksum: 10c0/48468e5fc3d72addcd5ac10e7e7d9e35fe20e8acb81de716edcae17f9c330e3259de22f00683f5f33f2b0ac485953233d5fb28034596b1cefaa67a7fa70ebc45
   languageName: node
   linkType: hard
 
@@ -12212,9 +12212,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"three-stdlib@npm:^2.34.0":
-  version: 2.34.0
-  resolution: "three-stdlib@npm:2.34.0"
+"three-stdlib@npm:^2.35.2":
+  version: 2.35.2
+  resolution: "three-stdlib@npm:2.35.2"
   dependencies:
     "@types/draco3d": "npm:^1.4.0"
     "@types/offscreencanvas": "npm:^2019.6.4"
@@ -12224,7 +12224,7 @@ __metadata:
     potpack: "npm:^1.0.1"
   peerDependencies:
     three: ">=0.128.0"
-  checksum: 10c0/31927b9fd1e95907d9f11810a9b36119e21c6e0e0bcaf438c3ab944582e531153cc38984db97d10ba104d8cefc34d5fc046ec4be84e5b5e3a378ab2058e9ad18
+  checksum: 10c0/b8326ea66106a98329e5cd937606d3214a566d28975563a73e37d2932ae8911bcb3883557016bbd8461aa7606df994c7faf2bf498469fb948c87fa35d0533802
   languageName: node
   linkType: hard
 
@@ -13331,9 +13331,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zustand@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "zustand@npm:5.0.1"
+"zustand@npm:^5.0.2":
+  version: 5.0.2
+  resolution: "zustand@npm:5.0.2"
   peerDependencies:
     "@types/react": ">=18.0.0"
     immer: ">=9.0.6"
@@ -13348,6 +13348,6 @@ __metadata:
       optional: true
     use-sync-external-store:
       optional: true
-  checksum: 10c0/b4239c8bf3988bfdaaed1c48f3958d0b047b721c4908a76bd78e73387d107963cda774541cf303c2ea89261481c995aa6666e7e77c30717ad440cdb499d9e5ca
+  checksum: 10c0/d9bb048d8129fd1aaed3fda974991b15a7c9c31ef06f78e9bf5c4b3678f249850764a6dadb8c93127257d07831995cf7a048281658a37c5d1143ad6f397fe37c
   languageName: node
   linkType: hard

@@ -4,7 +4,8 @@ import { Meta, StoryObj } from '@storybook/react'
 import { Setup } from '../Setup'
 
 import { useFrame } from '@react-three/fiber'
-import { BufferGeometry, MeshStandardMaterial, type Mesh } from 'three'
+import { BufferGeometry, MeshStandardMaterial } from 'three'
+import type { Mesh } from 'three'
 import { Icosahedron, Plane, ShadowAlpha } from '../../src'
 
 export default {

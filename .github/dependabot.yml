@@ -9,7 +9,7 @@ updates:
     directory: '/' # Location of package manifests
     schedule:
       interval: 'weekly'
-    # open-pull-requests-limit: 10
+    open-pull-requests-limit: 10
 
     ignore:
       - dependency-name: '@playwright/test'
@@ -17,13 +17,17 @@ updates:
 
     # https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#groups
     groups:
-    
       # Always update react and react-dom together
       react-packages:
         patterns:
           - 'react'
           - 'react-dom'
-          
+      rollup-packages:
+        patterns:
+          - 'rollup'
+          - '@rollup/*'
+          - 'rollup-plugin-*'
+
       #
       # pkg.json "dependencies"
       #

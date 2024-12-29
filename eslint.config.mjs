@@ -2,8 +2,6 @@ import { fixupConfigRules, fixupPluginRules } from '@eslint/compat'
 import typescriptEslint from '@typescript-eslint/eslint-plugin'
 import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
-import _import from 'eslint-plugin-import'
-import globals from 'globals'
 import tsParser from '@typescript-eslint/parser'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -20,117 +18,24 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ['.storybook/public/draco-gltf/', '**/dist/', '**/node_modules/', '**/storybook-static/'],
+    ignores: ['.storybook/public', '**/dist/', '**/node_modules/', '**/storybook-static/'],
   },
-  ...fixupConfigRules(
-    compat.extends(
-      'plugin:import/recommended',
-      //   'plugin:import/errors',
-      //   'plugin:import/warnings',
-      'plugin:import/typescript',
-      'plugin:react-hooks/recommended',
-      'plugin:storybook/recommended',
-      'prettier'
-    )
-  ),
+  ...fixupConfigRules(compat.extends('plugin:react-hooks/recommended', 'plugin:storybook/recommended', 'prettier')),
   {
     plugins: {
       '@typescript-eslint': typescriptEslint,
       react,
       'react-hooks': fixupPluginRules(reactHooks),
-      import: fixupPluginRules(_import),
     },
+
+    files: ['{src,.storybook}/**/*.{js,jsx,ts,tsx}'],
 
     languageOptions: {
-      globals: {
-        ...globals.browser,
-        ...globals['shared-node-browser'],
-        ...globals.node,
-      },
-
       parser: tsParser,
-      ecmaVersion: 5,
-      sourceType: 'module',
-
-      parserOptions: {
-        ecmaFeatures: {
-          ecmaVersion: 2018,
-          jsx: true,
-        },
-      },
-    },
-
-    settings: {
-      react: {
-        version: 'detect',
-      },
-
-      'import/extensions': ['.js', '.jsx', '.ts', '.tsx'],
-
-      'import/parsers': {
-        '@typescript-eslint/parser': ['.js', '.jsx', '.ts', '.tsx'],
-      },
-
-      'import/resolver': {
-        typescript: true,
-        node: {
-          extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
-          paths: ['src'],
-        },
-      },
     },
 
     rules: {
-      curly: ['error', 'multi-line', 'consistent'],
-      'no-console': 'off',
-      'no-empty-pattern': 'error',
-      'no-duplicate-imports': 'error',
-      'prefer-const': 'error',
-
-      'import/no-unresolved': [
-        'error',
-        {
-          commonjs: true,
-          amd: true,
-        },
-      ],
-
-      'import/export': 'error',
-      'import/named': 'off',
-      'import/no-named-as-default': 'off',
-      'import/no-named-as-default-member': 'off',
-      'import/namespace': 'off',
-      'import/default': 'off',
-      '@typescript-eslint/explicit-module-boundary-types': 'off',
-      'no-unused-vars': ['off'],
-      'react/jsx-uses-react': 'error',
-      'react/jsx-uses-vars': 'error',
       'react-hooks/exhaustive-deps': 'off',
-
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        {
-          argsIgnorePattern: '^_',
-          varsIgnorePattern: '^_',
-        },
-      ],
-
-      '@typescript-eslint/no-use-before-define': 'off',
-      '@typescript-eslint/no-empty-function': 'off',
-      '@typescript-eslint/no-empty-interface': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
-    },
-  },
-  {
-    files: ['**/src'],
-
-    languageOptions: {
-      ecmaVersion: 5,
-      sourceType: 'script',
-
-      parserOptions: {
-        project: ['./tsconfig.json', './storybook/tsconfig.json'],
-      },
     },
   },
 ]

@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Mesh, Color, DoubleSide, type PlaneGeometry, type MeshBasicMaterial } from 'three'
+import { Mesh, Color, DoubleSide } from 'three'
+import type { PlaneGeometry, MeshBasicMaterial } from 'three'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type Props = JSX.IntrinsicElements['mesh'] & {

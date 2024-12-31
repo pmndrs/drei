@@ -19,7 +19,8 @@ import { useFrame, useThree } from '@react-three/fiber'
 import type { FaceLandmarker, FaceLandmarkerResult } from '@mediapipe/tasks-vision'
 import { easing } from 'maath'
 
-import { VideoTexture, VideoTextureProps, WebcamVideoTexture } from '..'
+import { VideoTexture, VideoTextureProps } from '../core/VideoTexture'
+import { WebcamVideoTexture } from './WebcamVideoTexture'
 import { Facemesh, FacemeshApi, FacemeshProps } from './Facemesh'
 import { useFaceLandmarker } from './FaceLandmarker'
 

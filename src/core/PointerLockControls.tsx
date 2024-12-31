@@ -82,6 +82,7 @@ export const PointerLockControls: ForwardRefComponent<PointerLockControlsProps, 
       React.useEffect(() => {
         if (makeDefault) {
           const old = get().controls
+          // @ts-ignore https://github.com/three-types/three-ts-types/pull/1398
           set({ controls })
           return () => set({ controls: old })
         }

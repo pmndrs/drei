@@ -125,8 +125,8 @@ const ImageBase: ForwardRefComponent<Omit<ImageProps, 'url'>, THREE.Mesh> = /* @
       transparent,
       side,
       ...props
-    }: Omit<ImageProps, 'url'>,
-    fref: React.ForwardedRef<THREE.Mesh>
+    },
+    fref
   ) => {
     extend({ ImageMaterial: ImageMaterialImpl })
     const ref = React.useRef<THREE.Mesh>(null!)

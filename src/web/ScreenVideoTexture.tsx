@@ -1,7 +1,8 @@
 import * as React from 'react'
+import * as THREE from 'three'
 import { forwardRef, useEffect } from 'react'
 import { suspend, clear } from 'suspend-react'
-import { VideoTexture, VideoTextureProps } from '..'
+import { VideoTexture, VideoTextureProps } from '../core/VideoTexture'
 
 export type ScreenVideoTextureProps = Omit<VideoTextureProps, 'src'> & {
   options?: DisplayMediaStreamOptions

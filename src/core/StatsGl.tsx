@@ -6,7 +6,7 @@ import Stats from 'stats-gl'
 
 type StatsOptions = ConstructorParameters<typeof Stats>[0]
 
-type Props = Partial<StatsOptions> & {
+export type StatsGlProps = Partial<StatsOptions> & {
   id?: string
   clearStatsGlStyle?: boolean
   showPanel?: number
@@ -15,8 +15,8 @@ type Props = Partial<StatsOptions> & {
   ref?: React.RefObject<HTMLElement>
 }
 
-export const StatsGl: ForwardRefComponent<Props, HTMLDivElement> = /* @__PURE__ */ React.forwardRef(
-  ({ className, parent, id, clearStatsGlStyle, ...props }: Props, fref) => {
+export const StatsGl: ForwardRefComponent<StatsGlProps, HTMLDivElement> = /* @__PURE__ */ React.forwardRef(
+  ({ className, parent, id, clearStatsGlStyle, ...props }, fref) => {
     const gl = useThree((state) => state.gl)
 
     const stats = React.useMemo(() => {

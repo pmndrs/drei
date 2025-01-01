@@ -1,19 +1,17 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { useLayoutEffect, useMemo, useRef } from 'react'
-import { extend, ReactThreeFiber, useThree, useFrame } from '@react-three/fiber'
+import { extend, ReactThreeFiber, useThree, useFrame, ThreeElements } from '@react-three/fiber'
 import { MeshBVHUniformStruct, MeshBVH, SAH } from 'three-mesh-bvh'
 import { MeshRefractionMaterial as MeshRefractionMaterial_ } from '../materials/MeshRefractionMaterial'
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      meshRefractionMaterial: typeof MeshRefractionMaterial_
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    meshRefractionMaterial: typeof MeshRefractionMaterial_
   }
 }
 
-type MeshRefractionMaterialProps = JSX.IntrinsicElements['shaderMaterial'] & {
+export type MeshRefractionMaterialProps = ThreeElements['shaderMaterial'] & {
   /** Environment map */
   envMap: THREE.CubeTexture | THREE.Texture
   /** Number of ray-cast bounces, it can be expensive to have too many, 2 */
@@ -41,7 +39,7 @@ export function MeshRefractionMaterial({
 }: MeshRefractionMaterialProps) {
   extend({ MeshRefractionMaterial: MeshRefractionMaterial_ })
 
-  const material = useRef()
+  const material = useRef(null)
   const { size } = useThree()
 
   const defines = useMemo(() => {

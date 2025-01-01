@@ -12,7 +12,7 @@ import { useFrame } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from 'three'
 
-interface ShadowAlphaProps {
+export interface ShadowAlphaProps {
   opacity?: number
   alphaMap?: THREE.Texture | boolean
 }

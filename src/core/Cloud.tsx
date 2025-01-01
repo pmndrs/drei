@@ -13,16 +13,14 @@ import {
   Quaternion,
   BufferAttribute,
 } from 'three'
-import { MaterialNode, extend, applyProps, useFrame, ReactThreeFiber } from '@react-three/fiber'
+import { extend, applyProps, useFrame, ReactThreeFiber, ThreeElement, ThreeElements } from '@react-three/fiber'
 import { useTexture } from './Texture'
 import { v4 } from 'uuid'
 import { setUpdateRange } from '../helpers/deprecated'
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      cloudMaterial: MaterialNode<MeshLambertMaterial, typeof MeshLambertMaterial>
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    cloudMaterial: ThreeElement<typeof MeshLambertMaterial>
   }
 }
 
@@ -38,7 +36,7 @@ type CloudState = {
   position: Vector3
   volume: number
   length: number
-  ref: React.MutableRefObject<Group>
+  ref: React.RefObject<Group>
   speed: number
   growth: number
   opacity: number
@@ -49,7 +47,7 @@ type CloudState = {
   color: Color
 }
 
-type CloudsProps = JSX.IntrinsicElements['group'] & {
+type CloudsProps = Omit<ThreeElements['group'], 'ref'> & {
   /** Optional cloud texture, points to a default hosted on rawcdn.githack */
   texture?: string
   /** Maximum number of segments, default: 200 (make this tight to save memory!) */
@@ -62,7 +60,7 @@ type CloudsProps = JSX.IntrinsicElements['group'] & {
   frustumCulled?: boolean
 }
 
-type CloudProps = JSX.IntrinsicElements['group'] & {
+type CloudProps = Omit<ThreeElements['group'], 'ref'> & {
   /** A seeded random will show the same cloud consistently, default: Math.random() */
   seed?: number
   /** How many segments or particles the cloud will have, default: 20 */
@@ -99,7 +97,7 @@ const cpos = /* @__PURE__ */ new Vector3()
 const cquat = /* @__PURE__ */ new Quaternion()
 const scale = /* @__PURE__ */ new Vector3()
 
-const context = /* @__PURE__ */ React.createContext<React.MutableRefObject<CloudState[]>>(null!)
+const context = /* @__PURE__ */ React.createContext<React.RefObject<CloudState[]>>(null!)
 export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
   (
     { children, material = MeshLambertMaterial, texture = CLOUD_URL, range, limit = 200, frustumCulled, ...props },

@@ -1,6 +1,5 @@
-import * as THREE from 'three'
 import * as React from 'react'
-import { ReactThreeFiber, useFrame } from '@react-three/fiber'
+import { ThreeElement, useFrame } from '@react-three/fiber'
 import { Points, Vector3, Spherical, Color, AdditiveBlending, ShaderMaterial } from 'three'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 import { version } from '../helpers/constants'
@@ -48,11 +47,9 @@ class StarfieldMaterial extends ShaderMaterial {
   }
 }
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      starfieldMaterial: ReactThreeFiber.MaterialNode<StarfieldMaterial, []>
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    starfieldMaterial: ThreeElement<typeof StarfieldMaterial>
   }
 }
 
@@ -62,7 +59,7 @@ const genStar = (r: number) => {
 
 export const Stars: ForwardRefComponent<Props, Points> = /* @__PURE__ */ React.forwardRef(
   ({ radius = 100, depth = 50, count = 5000, saturation = 0, factor = 4, fade = false, speed = 1 }: Props, ref) => {
-    const material = React.useRef<StarfieldMaterial>()
+    const material = React.useRef<StarfieldMaterial>(null)
     const [position, color, size] = React.useMemo(() => {
       const positions: any[] = []
       const colors: any[] = []
@@ -85,7 +82,7 @@ export const Stars: ForwardRefComponent<Props, Points> = /* @__PURE__ */ React.f
     const [starfieldMaterial] = React.useState(() => new StarfieldMaterial())
 
     return (
-      <points ref={ref as React.MutableRefObject<Points>}>
+      <points ref={ref as React.RefObject<Points>}>
         <bufferGeometry>
           <bufferAttribute attach="attributes-position" args={[position, 3]} />
           <bufferAttribute attach="attributes-color" args={[color, 3]} />

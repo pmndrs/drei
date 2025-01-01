@@ -50,13 +50,11 @@ extend({ MyMaterial })
 type MyMaterialImpl = {
   repeats: number
   map: Texture | Texture[]
-} & JSX.IntrinsicElements['shaderMaterial']
+} & ThreeElements['shaderMaterial']
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      myMaterial: MyMaterialImpl
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    myMaterial: MyMaterialImpl
   }
 }
 

@@ -2,9 +2,12 @@
  * Original idea by https://x.com/verekia
  */
 
+import { ThreeElements } from '@react-three/fiber'
 import * as React from 'react'
 
-export function MultiMaterial(props: JSX.IntrinsicElements['group']) {
+export type MultiMaterialProps = Omit<ThreeElements['group'], 'ref'>
+
+export function MultiMaterial(props: MultiMaterialProps) {
   const group = React.useRef(null!)
   React.useLayoutEffect(() => {
     const parent = (group.current as any)?.parent

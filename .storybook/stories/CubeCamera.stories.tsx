@@ -22,11 +22,9 @@ export default {
 
 type Story = StoryObj<typeof CubeCamera>
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      axisHelper: object
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    axisHelper: object
   }
 }
 

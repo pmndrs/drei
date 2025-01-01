@@ -74,6 +74,7 @@ export function useEnvironment({
     (loader) => {
       // Gainmap requires a renderer
       if (extension === 'webp' || extension === 'jpg' || extension === 'jpeg') {
+        // @ts-expect-error
         loader.setRenderer(gl)
       }
       loader.setPath?.(path)

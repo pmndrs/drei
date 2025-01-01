@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { RGBAFormat, HalfFloatType, WebGLRenderTarget, UnsignedByteType, TextureDataType } from 'three'
-import { ReactThreeFiber, extend, useThree, useFrame } from '@react-three/fiber'
+import { extend, useThree, useFrame, ThreeElement, ThreeElements } from '@react-three/fiber'
 import { EffectComposer, RenderPass, ShaderPass, GammaCorrectionShader } from 'three-stdlib'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 import { TextureEncoding } from '../helpers/deprecated'
 
-type Props = ReactThreeFiber.Node<EffectComposer, typeof EffectComposer> & {
+export type EffectsProps = Omit<ThreeElements['effectComposer'], 'ref' | 'args'> & {
   multisamping?: number
   encoding?: TextureEncoding
   type?: TextureDataType
@@ -18,13 +18,11 @@ type Props = ReactThreeFiber.Node<EffectComposer, typeof EffectComposer> & {
   anisotropy?: number
 }
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      effectComposer: ReactThreeFiber.Node<EffectComposer, typeof EffectComposer>
-      renderPass: ReactThreeFiber.Node<RenderPass, typeof RenderPass>
-      shaderPass: ReactThreeFiber.Node<ShaderPass, typeof ShaderPass>
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    effectComposer: ThreeElement<typeof EffectComposer>
+    renderPass: ThreeElement<typeof RenderPass>
+    shaderPass: ThreeElement<typeof ShaderPass>
   }
 }
 
@@ -37,7 +35,7 @@ export const isWebGL2Available = () => {
   }
 }
 
-export const Effects: ForwardRefComponent<Props, EffectComposer> = /* @__PURE__ */ React.forwardRef(
+export const Effects: ForwardRefComponent<EffectsProps, EffectComposer> = /* @__PURE__ */ React.forwardRef(
   (
     {
       children,
@@ -52,7 +50,7 @@ export const Effects: ForwardRefComponent<Props, EffectComposer> = /* @__PURE__ 
       encoding,
       type,
       ...props
-    }: Props,
+    },
     ref
   ) => {
     React.useMemo(() => extend({ EffectComposer, RenderPass, ShaderPass }), [])

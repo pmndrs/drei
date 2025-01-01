@@ -35,9 +35,11 @@ export const useGLTF = <T extends Path>(
   useMeshopt?: UseMeshopt,
   extendLoader?: ExtendLoader
 ): T extends any[] ? (GLTF & ObjectMap)[] : GLTF & ObjectMap =>
+  // @ts-expect-error
   useLoader(GLTFLoader, path, extensions(useDraco, useMeshopt, extendLoader))
 
 useGLTF.preload = (path: Path, useDraco?: UseDraco, useMeshopt?: UseMeshopt, extendLoader?: ExtendLoader) =>
+  // @ts-expect-error
   useLoader.preload(GLTFLoader, path, extensions(useDraco, useMeshopt, extendLoader))
 
 useGLTF.clear = (path: Path) => useLoader.clear(GLTFLoader, path)

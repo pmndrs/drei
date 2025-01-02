@@ -3,11 +3,10 @@ import { RGBAFormat, HalfFloatType, WebGLRenderTarget, UnsignedByteType, Texture
 import { extend, useThree, useFrame, ThreeElement, ThreeElements } from '@react-three/fiber'
 import { EffectComposer, RenderPass, ShaderPass, GammaCorrectionShader } from 'three-stdlib'
 import { ForwardRefComponent } from '../helpers/ts-utils'
-import { TextureEncoding } from '../helpers/deprecated'
 
 export type EffectsProps = Omit<ThreeElements['effectComposer'], 'ref' | 'args'> & {
   multisamping?: number
-  encoding?: TextureEncoding
+  colorSpace?: THREE.ColorSpace
   type?: TextureDataType
   renderIndex?: number
   disableGamma?: boolean
@@ -47,7 +46,7 @@ export const Effects: ForwardRefComponent<EffectsProps, EffectComposer> = /* @__
       depthBuffer = true,
       stencilBuffer = false,
       anisotropy = 1,
-      encoding,
+      colorSpace,
       type,
       ...props
     },
@@ -67,9 +66,8 @@ export const Effects: ForwardRefComponent<EffectsProps, EffectComposer> = /* @__
       })
 
       // sRGB textures must be RGBA8 since r137 https://github.com/mrdoob/three.js/pull/23129
-      if (type === UnsignedByteType && encoding != null) {
-        if ('colorSpace' in t) (t.texture as any).colorSpace = encoding
-        else t.texture.encoding = encoding
+      if (type === UnsignedByteType && colorSpace != null) {
+        t.texture.colorSpace = colorSpace
       }
 
       t.samples = multisamping

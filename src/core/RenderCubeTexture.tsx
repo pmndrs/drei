@@ -3,7 +3,7 @@ import * as React from 'react'
 import { ComputeFunction, ReactThreeFiber, ThreeElements, createPortal, useFrame, useThree } from '@react-three/fiber'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
-export type RenderCubeTextureProps = Omit<ThreeElements['texture'], 'ref' | 'rotation'> & {
+export type RenderCubeTextureProps = Omit<ThreeElements['texture'], 'ref' | 'args' | 'rotation'> & {
   /** Optional stencil buffer, defaults to false */
   stencilBuffer?: boolean
   /** Optional depth buffer, defaults to true */

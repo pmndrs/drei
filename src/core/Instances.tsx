@@ -168,8 +168,8 @@ export const Instances: ForwardRefComponent<InstancesProps, THREE.InstancedMesh>
 
       count = Math.min(limit, range !== undefined ? range : limit, instances.length)
       parentRef.current.count = count
-      setUpdateRange(parentRef.current.instanceMatrix, { offset: 0, count: count * 16 })
-      setUpdateRange(parentRef.current.instanceColor, { offset: 0, count: count * 3 })
+      setUpdateRange(parentRef.current.instanceMatrix, { start: 0, count: count * 16 })
+      setUpdateRange(parentRef.current.instanceColor, { start: 0, count: count * 3 })
 
       for (let i = 0; i < instances.length; i++) {
         const instance = instances[i].current
@@ -278,6 +278,7 @@ export const InstancedAttribute = React.forwardRef(
       const array = Array.from({ length: parent.userData.limit }, () => value).flat()
       ref.current.array = new Float32Array(array)
       ref.current.itemSize = value.length
+      // @ts-expect-error
       ref.current.count = array.length / ref.current.itemSize
       return () => {
         delete parent.geometry.attributes[name]

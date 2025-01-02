@@ -7,11 +7,13 @@ export type CubeTextureOptions = {
 }
 
 export function useCubeTexture(files: string[], { path }: CubeTextureOptions): _CubeTexture {
+  // @ts-expect-error TODO: fix type upstream
   const [cubeTexture] = useLoader(CubeTextureLoader, [files], (loader) => loader.setPath(path))
   return cubeTexture
 }
 
 useCubeTexture.preload = (files: string[], { path }: CubeTextureOptions) =>
+  // @ts-expect-error TODO: fix type upstream
   useLoader.preload(CubeTextureLoader, [files], (loader) => loader.setPath(path))
 
 export type CubeTextureProps = CubeTextureOptions & {

@@ -98,7 +98,7 @@
     "@storybook/theming": "^8.4.4",
     "@types/react": "npm:types-react@19.0.0-rc.1",
     "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
-    "@types/three": "^0.151.0",
+    "@types/three": "^0.159.0",
     "@typescript-eslint/eslint-plugin": "^8.15.0",
     "@typescript-eslint/parser": "^8.15.0",
     "@vitejs/plugin-react": "^4.3.3",
@@ -124,7 +124,7 @@
     "semantic-release": "^24.2.0",
     "serve": "^14.2.4",
     "storybook": "^8.4.4",
-    "three": "^0.151.0",
+    "three": "^0.159.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3",
     "vite": "^5.4.11",
@@ -134,7 +134,7 @@
     "@react-three/fiber": "^9",
     "react": "^19",
     "react-dom": "^19",
-    "three": ">=0.137"
+    "three": ">=0.159"
   },
   "peerDependenciesMeta": {
     "react-dom": {

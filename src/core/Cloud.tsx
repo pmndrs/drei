@@ -181,11 +181,11 @@ export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
     React.useLayoutEffect(() => {
       const count = Math.min(limit, range !== undefined ? range : limit, clouds.current.length)
       instance.current.count = count
-      setUpdateRange(instance.current.instanceMatrix, { offset: 0, count: count * 16 })
+      setUpdateRange(instance.current.instanceMatrix, { start: 0, count: count * 16 })
       if (instance.current.instanceColor) {
-        setUpdateRange(instance.current.instanceColor, { offset: 0, count: count * 3 })
+        setUpdateRange(instance.current.instanceColor, { start: 0, count: count * 3 })
       }
-      setUpdateRange(instance.current.geometry.attributes.cloudOpacity as BufferAttribute, { offset: 0, count: count })
+      setUpdateRange(instance.current.geometry.attributes.cloudOpacity as BufferAttribute, { start: 0, count: count })
     })
 
     let imageBounds = [cloudTexture!.image.width ?? 1, cloudTexture!.image.height ?? 1]

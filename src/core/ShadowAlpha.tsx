@@ -96,7 +96,7 @@ export function ShadowAlpha({ opacity, alphaMap }: ShadowAlphaProps) {
   }, [])
 
   useFrame(() => {
-    const parent = (depthMaterialRef.current as any).__r3f?.parent
+    const parent = (depthMaterialRef.current as any).__r3f?.parent?.object
     if (parent) {
       const parentMainMaterial = parent.material
       if (parentMainMaterial) {

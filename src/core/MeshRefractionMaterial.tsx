@@ -64,7 +64,7 @@ export function MeshRefractionMaterial({
 
   useLayoutEffect(() => {
     // Get the geometry of this materials parent
-    const geometry = (material.current as any)?.__r3f?.parent?.geometry
+    const geometry = (material.current as any)?.__r3f?.parent?.object?.geometry
     // Update the BVH
     if (geometry) {
       ;(material.current as any).bvh = new MeshBVHUniformStruct()

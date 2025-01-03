@@ -415,7 +415,7 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
       ref.current.time = state.clock.getElapsedTime()
       // Render only if the buffer matches the built-in and no transmission sampler is set
       if (ref.current.buffer === fboMain.texture && !transmissionSampler) {
-        parent = (ref.current as any).__r3f.parent as THREE.Object3D
+        parent = (ref.current as any).__r3f.parent?.object as THREE.Object3D | undefined
         if (parent) {
           // Save defaults
           oldTone = state.gl.toneMapping

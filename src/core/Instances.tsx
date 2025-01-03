@@ -272,7 +272,7 @@ export const InstancedAttribute = React.forwardRef(
     const ref = React.useRef<THREE.InstancedBufferAttribute>(null!)
     React.useImperativeHandle(fref, () => ref.current, [])
     React.useLayoutEffect(() => {
-      const parent = (ref.current as any).__r3f.parent
+      const parent = (ref.current as any).__r3f.parent.object
       parent.geometry.attributes[name] = ref.current
       const value = Array.isArray(defaultValue) ? defaultValue : [defaultValue]
       const array = Array.from({ length: parent.userData.limit }, () => value).flat()
@@ -286,7 +286,7 @@ export const InstancedAttribute = React.forwardRef(
     }, [name])
     let iterations = 0
     useFrame(() => {
-      const parent = (ref.current as any).__r3f.parent
+      const parent = (ref.current as any).__r3f.parent.object
       if (parent.userData.frames === Infinity || iterations < parent.userData.frames) {
         for (let i = 0; i < parent.userData.instances.length; i++) {
           const instance = parent.userData.instances[i].current

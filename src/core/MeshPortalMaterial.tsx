@@ -117,7 +117,7 @@ export const MeshPortalMaterial: ForwardRefComponent<PortalProps, ThreeElements[
       React.useLayoutEffect(() => {
         // Since the ref above is not tied to a mesh directly (we're inside a material),
         // it has to be tied to the parent mesh here
-        parent.current = (ref.current as any)?.__r3f.parent
+        parent.current = (ref.current as any)?.__r3f.parent?.object
       }, [])
 
       React.useLayoutEffect(() => {
@@ -268,7 +268,7 @@ function ManagePortalScene({
   }, [])
 
   useFrame((state) => {
-    let parent = (material?.current as any)?.__r3f.parent
+    let parent = (material?.current as any)?.__r3f.parent?.object
     if (parent) {
       // Move portal contents along with the parent if worldUnits is true
       if (!worldUnits) {

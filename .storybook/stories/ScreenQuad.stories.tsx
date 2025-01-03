@@ -50,13 +50,11 @@ extend({ ColorShiftMaterial })
 type ColorShiftMaterialImpl = {
   time: number
   resolution: number[]
-} & JSX.IntrinsicElements['shaderMaterial']
+} & ThreeElements['shaderMaterial']
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      colorShiftMaterial: ColorShiftMaterialImpl
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    colorShiftMaterial: ColorShiftMaterialImpl
   }
 }
 

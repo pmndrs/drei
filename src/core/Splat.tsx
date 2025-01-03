@@ -6,7 +6,7 @@
 
 import * as THREE from 'three'
 import * as React from 'react'
-import { extend, useThree, useFrame, useLoader, LoaderProto } from '@react-three/fiber'
+import { extend, useThree, useFrame, useLoader, LoaderProto, ThreeElements } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
 
 export type SplatMaterialType = {
@@ -52,15 +52,13 @@ export type SharedState = {
   onProgress?: (event: ProgressEvent) => void
 }
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      splatMaterial: SplatMaterialType & JSX.IntrinsicElements['shaderMaterial']
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    splatMaterial: SplatMaterialType & ThreeElements['shaderMaterial']
   }
 }
 
-type SplatProps = {
+export type SplatProps = {
   /** Url towards a *.splat file, no support for *.ply */
   src: string
   /** Whether to use tone mapping, default: false */
@@ -71,7 +69,7 @@ type SplatProps = {
   alphaHash?: boolean
   /** Chunk size for lazy loading, prevents chokings the worker, default: 25000 (25kb) */
   chunkSize?: number
-} & JSX.IntrinsicElements['mesh']
+} & Omit<ThreeElements['mesh'], 'ref'>
 
 const SplatMaterial = /* @__PURE__ */ shaderMaterial(
   {
@@ -636,8 +634,10 @@ export function Splat({
   const camera = useThree((state) => state.camera)
 
   // Shared state, globally memoized, the same url re-uses the same daza
-  const shared = useLoader(SplatLoader as unknown as LoaderProto<unknown>, src, (loader) => {
+  const shared = useLoader(SplatLoader, src, (loader) => {
+    // @ts-expect-error
     loader.gl = gl
+    // @ts-expect-error
     loader.chunkSize = chunkSize
   }) as SharedState
 

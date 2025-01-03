@@ -24,7 +24,7 @@ export type PerformanceMonitorApi = {
   flipped: number
   fallback: boolean
   subscriptions: Map<Symbol, Partial<PerformanceMonitorHookApi>>
-  subscribe: (ref: React.MutableRefObject<Partial<PerformanceMonitorHookApi>>) => () => void
+  subscribe: (ref: React.RefObject<Partial<PerformanceMonitorHookApi>>) => () => void
 }
 
 type PerformanceMonitorProps = {

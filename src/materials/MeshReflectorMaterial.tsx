@@ -1,3 +1,4 @@
+import { ThreeElements } from '@react-three/fiber'
 import { Matrix4, MeshStandardMaterial, Texture } from 'three'
 
 type UninitializedUniform<Value> = { value: Value | null }
@@ -246,4 +247,4 @@ export type MeshReflectorMaterialProps = {
   depthToBlurRatioBias: number
   distortion: number
   mixContrast: number
-} & JSX.IntrinsicElements['meshStandardMaterial']
+} & Omit<ThreeElements['meshStandardMaterial'], 'ref'>

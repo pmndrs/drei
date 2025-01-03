@@ -48,6 +48,6 @@ export const CatmullRomLine: ForwardRefComponent<Props, Line2> = /* @__PURE__ */
       return iColors
     }, [vertexColors, segments])
 
-    return <Line ref={ref as any} points={segmentedPoints} vertexColors={interpolatedVertexColors} {...rest} />
+    return <Line ref={ref} points={segmentedPoints} vertexColors={interpolatedVertexColors} {...rest} />
   }
 )

@@ -34,11 +34,11 @@ export type ContainerProps = {
   index: number
   children?: React.ReactNode
   frames: number
-  rect: React.MutableRefObject<DOMRect>
+  rect: React.RefObject<DOMRect>
   /**
    * @deprecated You can use inline Views now, see: https://github.com/pmndrs/drei/pull/1784
    */
-  track?: React.MutableRefObject<HTMLElement>
+  track?: React.RefObject<HTMLElement>
   canvasSize: LegacyCanvasSize | CanvasSize
 }
 
@@ -62,7 +62,7 @@ export type ViewProps = {
   /** The tracking element, the view will be cut according to its whereabouts
    * @deprecated You can use inline Views now, see: https://github.com/pmndrs/drei/pull/1784
    */
-  track?: React.MutableRefObject<HTMLElement>
+  track?: React.RefObject<HTMLElement>
 }
 
 function computeContainerPosition(canvasSize: LegacyCanvasSize | CanvasSize, trackRect: DOMRect) {
@@ -283,7 +283,7 @@ const HtmlView = React.forwardRef(
   }
 )
 
-export type ViewportProps = { Port: () => JSX.Element } & React.ForwardRefExoticComponent<
+export type ViewportProps = { Port: () => React.JSX.Element } & React.ForwardRefExoticComponent<
   ViewProps & React.RefAttributes<HTMLElement | THREE.Group>
 >
 

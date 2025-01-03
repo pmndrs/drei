@@ -14,14 +14,14 @@ import {
   Texture,
   HalfFloatType,
 } from 'three'
-import { useFrame, useThree, extend } from '@react-three/fiber'
+import { useFrame, useThree, extend, ThreeElements } from '@react-three/fiber'
 
 import { BlurPass } from '../materials/BlurPass'
 import { MeshReflectorMaterialProps, MeshReflectorMaterial } from '../materials/MeshReflectorMaterial'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
-export type ReflectorProps = Omit<JSX.IntrinsicElements['mesh'], 'args' | 'children'> &
-  Pick<JSX.IntrinsicElements['planeGeometry'], 'args'> & {
+export type ReflectorProps = Omit<ThreeElements['mesh'], 'ref' | 'args' | 'children'> &
+  Pick<ThreeElements['planeGeometry'], 'args'> & {
     resolution?: number
     mixBlur?: number
     mixStrength?: number
@@ -37,17 +37,15 @@ export type ReflectorProps = Omit<JSX.IntrinsicElements['mesh'], 'args' | 'child
     mixContrast?: number
     children?: {
       (
-        Component: React.ElementType<JSX.IntrinsicElements['meshReflectorMaterial']>,
+        Component: React.ElementType<ThreeElements['meshReflectorMaterial']>,
         ComponentProps: MeshReflectorMaterialProps
-      ): JSX.Element | null
+      ): React.JSX.Element | null
     }
   }
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      meshReflectorMaterial: MeshReflectorMaterialProps
-    }
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    meshReflectorMaterial: MeshReflectorMaterialProps
   }
 }
 

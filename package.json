@@ -48,7 +48,6 @@
     "@babel/runtime": "^7.26.0",
     "@mediapipe/tasks-vision": "0.10.17",
     "@monogrid/gainmap-js": "^3.0.6",
-    "@react-spring/three": "~9.7.5",
     "@use-gesture/react": "^10.3.1",
     "camera-controls": "^2.9.0",
     "cross-env": "^7.0.3",

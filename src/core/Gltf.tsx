@@ -50,7 +50,7 @@ useGLTF.setDecoderPath = (path: string) => {
 //
 
 type CloneProps = React.ComponentProps<typeof Clone>
-type GltfRef = React.ElementRef<typeof Clone>
+type GltfRef = React.ComponentRef<typeof Clone>
 
 type GltfProps = Omit<CloneProps, 'object'> & {
   src: string // simple string, not a string[] as useGLTF supports (otherwise we should render multiple <Clone>s?)

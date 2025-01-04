@@ -27,7 +27,7 @@ export type InstanceProps = Omit<ThreeElements['positionMesh'], 'ref'> & {
   context?: React.Context<Api>
 }
 
-export type InstancedAttributeProps = Omit<ThreeElements['instancedBufferAttribute'], 'ref'> & {
+export type InstancedAttributeProps = Omit<ThreeElements['instancedBufferAttribute'], 'ref' | 'args'> & {
   name: string
   defaultValue: any
   normalized?: boolean

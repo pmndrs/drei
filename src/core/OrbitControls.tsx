@@ -26,7 +26,7 @@ export type OrbitControlsProps = Omit<
       keyEvents?: boolean | HTMLElement
     }
   >,
-  'ref'
+  'ref' | 'args'
 >
 
 export const OrbitControls: ForwardRefComponent<OrbitControlsProps, OrbitControlsImpl> =

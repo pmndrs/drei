@@ -2,7 +2,7 @@ import { ThreeElements } from '@react-three/fiber'
 import * as React from 'react'
 import { BufferAttribute, BufferGeometry } from 'three'
 
-export type ComputedAttributeProps = ThreeElements['bufferAttribute'] & {
+export type ComputedAttributeProps = Omit<ThreeElements['bufferAttribute'], 'args'> & {
   compute: (geometry: BufferGeometry) => BufferAttribute
   name: string
 }

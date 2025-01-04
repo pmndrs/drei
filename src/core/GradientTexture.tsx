@@ -16,7 +16,7 @@ export type GradientTextureProps = {
   type?: GradientType
   innerCircleRadius?: number
   outerCircleRadius?: string | number
-} & Omit<ThreeElements['texture'], 'type'>
+} & Omit<ThreeElements['texture'], 'args' | 'type'>
 
 export function GradientTexture({
   stops,
@@ -67,6 +67,5 @@ export function GradientTexture({
     return canvas
   }, [stops])
 
-  // @ts-ignore ????
   return <canvasTexture colorSpace={gl.outputColorSpace} args={[canvas]} attach="map" {...props} />
 }

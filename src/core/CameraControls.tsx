@@ -35,7 +35,7 @@ export type CameraControlsProps = Omit<
       regress?: boolean
     }
   >,
-  'ref' | keyof EventDispatcher
+  'ref' | 'args' | keyof EventDispatcher
 >
 
 export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraControlsImpl> = /* @__PURE__ */ forwardRef<

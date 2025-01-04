@@ -1,7 +1,6 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { ThreeElement, ThreeElements, extend, useFrame } from '@react-three/fiber'
-import Composer from 'react-composer'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 import { setUpdateRange } from '../helpers/deprecated'
 
@@ -224,32 +223,33 @@ export interface MergedProps extends InstancesProps {
   children: React.ReactNode
 }
 
-export const Merged: ForwardRefComponent<any, THREE.Group> = /* @__PURE__ */ React.forwardRef<THREE.Group, any>(
-  function Merged({ meshes, children, ...props }, ref) {
-    const isArray = Array.isArray(meshes)
-    // Filter out meshes from collections, which may contain non-meshes
-    if (!isArray) for (const key of Object.keys(meshes)) if (!meshes[key].isMesh) delete meshes[key]
-    return (
-      <group ref={ref}>
-        <Composer
-          components={(isArray ? meshes : Object.values(meshes)).map(({ geometry, material }) => (
-            <Instances key={geometry.uuid} geometry={geometry} material={material} {...props} />
-          ))}
-        >
-          {(args) =>
-            isArray
-              ? children(...args)
-              : children(
-                  Object.keys(meshes)
-                    .filter((key) => meshes[key].isMesh)
-                    .reduce((acc, key, i) => ({ ...acc, [key]: args[i] }), {})
-                )
-          }
-        </Composer>
-      </group>
-    )
+export const Merged: ForwardRefComponent<any, THREE.Group> = React.forwardRef<THREE.Group, any>(function Merged(
+  { meshes, children, ...rest },
+  ref
+) {
+  const instances: React.FC[] = []
+
+  if (Array.isArray(meshes)) {
+    for (const mesh of meshes) {
+      if (mesh?.isMesh) {
+        instances.push((props) => (
+          <Instances key={mesh.geometry.uuid} geometry={mesh.geometry} material={mesh.material} {...rest} {...props} />
+        ))
+      }
+    }
+  } else if (meshes != null && typeof meshes === 'object') {
+    for (const key in meshes) {
+      const mesh = meshes[key]
+      if (mesh?.isMesh) {
+        instances.push((props) => (
+          <Instances key={mesh.geometry.uuid} geometry={mesh.geometry} material={mesh.material} {...rest} {...props} />
+        ))
+      }
+    }
   }
-)
+
+  return <group ref={ref}>{children(instances)}</group>
+})
 
 /** Idea and implementation for global instances and instanced attributes by
 /*  Matias Gonzalez Fernandez https://x.com/matiNotFound

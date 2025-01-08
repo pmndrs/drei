@@ -15,43 +15,42 @@ type Props = Partial<StatsOptions> & {
   ref?: React.RefObject<HTMLElement>
 }
 
-export const StatsGl: ForwardRefComponent<Props, HTMLDivElement> = /* @__PURE__ */ React.forwardRef(
-  ({ className, parent, id, clearStatsGlStyle, ...props }: Props, fref) => {
-    const gl = useThree((state) => state.gl)
+export const StatsGl: ForwardRefComponent<Props, HTMLDivElement> = /* @__PURE__ */ React.forwardRef(function StatsGl(
+  { className, parent, id, clearStatsGlStyle, ...props },
+  fref
+) {
+  const gl = useThree((state) => state.gl)
 
-    const stats = React.useMemo(() => {
-      const stats = new Stats({
-        ...props,
+  const stats = React.useMemo(() => {
+    const stats = new Stats({
+      ...props,
+    })
+    stats.init(gl)
+    return stats
+  }, [gl])
+
+  React.useImperativeHandle(fref, () => stats.domElement, [stats])
+
+  React.useEffect(() => {
+    if (stats) {
+      const node = (parent && parent.current) || document.body
+      node?.appendChild(stats.domElement)
+      stats.domElement.querySelectorAll('canvas').forEach((canvas) => {
+        canvas.style.removeProperty('position')
       })
-      stats.init(gl)
-      return stats
-    }, [gl])
-
-    React.useImperativeHandle(fref, () => stats.domElement, [stats])
-
-    React.useEffect(() => {
-      if (stats) {
-        const node = (parent && parent.current) || document.body
-        node?.appendChild(stats.domElement)
-        stats.domElement.querySelectorAll('canvas').forEach((canvas) => {
-          canvas.style.removeProperty('position')
-        })
-        if (id) stats.domElement.id = id
-        if (clearStatsGlStyle) stats.domElement.removeAttribute('style')
-        stats.domElement.removeAttribute('style')
-        const classNames = (className ?? '').split(' ').filter((cls) => cls)
-        if (classNames.length) stats.domElement.classList.add(...classNames)
-        const end = addAfterEffect(() => stats.update())
-        return () => {
-          if (classNames.length) stats.domElement.classList.remove(...classNames)
-          node?.removeChild(stats.domElement)
-          end()
-        }
+      if (id) stats.domElement.id = id
+      if (clearStatsGlStyle) stats.domElement.removeAttribute('style')
+      stats.domElement.removeAttribute('style')
+      const classNames = (className ?? '').split(' ').filter((cls) => cls)
+      if (classNames.length) stats.domElement.classList.add(...classNames)
+      const end = addAfterEffect(() => stats.update())
+      return () => {
+        if (classNames.length) stats.domElement.classList.remove(...classNames)
+        node?.removeChild(stats.domElement)
+        end()
       }
-    }, [parent, stats, className, id, clearStatsGlStyle])
+    }
+  }, [parent, stats, className, id, clearStatsGlStyle])
 
-    return null
-  }
-)
-
-StatsGl.displayName = 'StatsGl'
+  return null
+})

@@ -2897,7 +2897,7 @@ __metadata:
     three: "npm:^0.151.0"
     three-mesh-bvh: "npm:^0.7.8"
     three-stdlib: "npm:^2.35.6"
-    troika-three-text: "npm:^0.52.0"
+    troika-three-text: "npm:^0.52.3"
     ts-node: "npm:^10.9.2"
     tunnel-rat: "npm:^0.1.2"
     typescript: "npm:^5.6.3"
@@ -12315,9 +12315,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"troika-three-text@npm:^0.52.0":
-  version: 0.52.0
-  resolution: "troika-three-text@npm:0.52.0"
+"troika-three-text@npm:^0.52.3":
+  version: 0.52.3
+  resolution: "troika-three-text@npm:0.52.3"
   dependencies:
     bidi-js: "npm:^1.0.2"
     troika-three-utils: "npm:^0.52.0"
@@ -12325,7 +12325,7 @@ __metadata:
     webgl-sdf-generator: "npm:1.1.1"
   peerDependencies:
     three: ">=0.125.0"
-  checksum: 10c0/0e979bc7dc70b12ea36965f9302a533f718f86b29ef543cfc01539328d4e0e9dfb5bb9641b2521bd4926cf7d3ab79ab20183b0e662ccb3488aa2ca5396f9b44c
+  checksum: 10c0/25c3ae9db859771896422d15d91f67e3b501ed65b6394ce4985a1bb68376c6f5d0dbc4a1da923dc96f6d760ec6544324f46123ca5d08bddbbccd0c63208d839d
   languageName: node
   linkType: hard
 

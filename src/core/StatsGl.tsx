@@ -16,7 +16,7 @@ export type StatsGlProps = Partial<StatsOptions> & {
 }
 
 export const StatsGl: ForwardRefComponent<StatsGlProps, HTMLDivElement> = /* @__PURE__ */ React.forwardRef(
-  ({ className, parent, id, clearStatsGlStyle, ...props }, fref) => {
+  function StatsGl({ className, parent, id, clearStatsGlStyle, ...props }, fref) {
     const gl = useThree((state) => state.gl)
 
     const stats = React.useMemo(() => {
@@ -53,5 +53,3 @@ export const StatsGl: ForwardRefComponent<StatsGlProps, HTMLDivElement> = /* @__
     return null
   }
 )
-
-StatsGl.displayName = 'StatsGl'

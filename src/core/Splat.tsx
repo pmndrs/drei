@@ -8,6 +8,7 @@ import * as THREE from 'three'
 import * as React from 'react'
 import { extend, useThree, useFrame, useLoader, LoaderProto, ThreeElements } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
+import { version } from '../helpers/constants'
 
 export type SplatMaterialType = {
   alphaTest?: number
@@ -174,7 +175,7 @@ const SplatMaterial = /* @__PURE__ */ shaderMaterial(
       #include <alphahash_fragment>
       gl_FragColor = diffuseColor;
       #include <tonemapping_fragment>
-      #include <${parseInt(THREE.REVISION.replace(/\D+/g, '')) >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
+      #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
     }
   `
 )

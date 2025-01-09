@@ -117,7 +117,7 @@ function isSpriteData(data: SpriteData | null) {
   return data !== null && 'meta' in data && 'frames' in data
 }
 
-const geometry = new THREE.PlaneGeometry(1, 1)
+const geometry = /* @__PURE__ */ new THREE.PlaneGeometry(1, 1)
 
 export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, SpriteAnimatorProps>(
   (

@@ -6,7 +6,7 @@
 
 import * as THREE from 'three'
 import * as React from 'react'
-import { extend, useThree, useFrame, useLoader, ThreeElements } from '@react-three/fiber'
+import { extend, useThree, useFrame, useLoader, LoaderProto, ThreeElements } from '@react-three/fiber'
 import { shaderMaterial } from './shaderMaterial'
 import { version } from '../helpers/constants'
 
@@ -636,7 +636,9 @@ export function Splat({
 
   // Shared state, globally memoized, the same url re-uses the same daza
   const shared = useLoader(SplatLoader, src, (loader) => {
+    // @ts-expect-error
     loader.gl = gl
+    // @ts-expect-error
     loader.chunkSize = chunkSize
   }) as SharedState
 

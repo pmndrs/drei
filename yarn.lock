@@ -2839,7 +2839,7 @@ __metadata:
     vite-plugin-glslify: "npm:^2.1.0"
     zustand: "npm:^5.0.1"
   peerDependencies:
-    "@react-three/fiber": 9.0.0-rc
+    "@react-three/fiber": 9.0.0-rc.2
     react: ^19
     react-dom: ^19
     three: ">=0.159"

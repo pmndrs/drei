@@ -18,7 +18,7 @@ function App() {
 
 function Scene() {
   useEffect(() => {
-    setTimeout(() => document.dispatchEvent(new Event('playright:r3f')), 10000)
+    document.dispatchEvent(new Event('playright:r3f'))
   }, [])
 
   return (

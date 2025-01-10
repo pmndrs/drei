@@ -3,6 +3,7 @@ set -ex
 
 PORT=5188
 DIST=../../dist
+R3FT=../../react-three-fiber-v9.0.0-rc.2-drei-0.tgz
 tmp=$(mktemp -d)
 
 # Build the package
@@ -39,7 +40,7 @@ appdir="$tmp/$appname"
 (cd $tmp; npm create -y vite@latest $appname -- --template react-ts)
 
 # drei
-(cd $appdir; npm i @types/react@latest @types/react-dom@latest react@latest react-dom@latest @react-three/fiber@rc $TGZ --legacy-peer-deps)
+(cd $appdir; npm i @types/react@latest @types/react-dom@latest react@latest react-dom@latest R3FT $TGZ --legacy-peer-deps)
 
 # App.tsx
 cp App.tsx $appdir/src/App.tsx

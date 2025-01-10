@@ -41,7 +41,7 @@ appdir="$tmp/$appname"
 (cd $tmp; npm create -y vite@latest $appname -- --template react-ts)
 
 # drei
-(cd $appdir; npm i @types/react@latest @types/react-dom@latest react@latest react-dom@latest R3FT $TGZ --legacy-peer-deps)
+(cd $appdir; npm i @types/react@latest @types/react-dom@latest react@latest react-dom@latest $R3FT $TGZ --legacy-peer-deps)
 
 # App.tsx
 cp App.tsx $appdir/src/App.tsx

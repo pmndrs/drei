@@ -130,7 +130,7 @@
     "vite-plugin-glslify": "^2.1.0"
   },
   "peerDependencies": {
-    "@react-three/fiber": "9.0.0-rc.2",
+    "@react-three/fiber": "9.0.0-rc",
     "react": "^19",
     "react-dom": "^19",
     "three": ">=0.159"

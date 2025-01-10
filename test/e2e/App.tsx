@@ -8,11 +8,7 @@ function App() {
   console.log('App')
 
   return (
-    <Canvas
-      camera={{ position: [1, 1, 1] }}
-      style={{ width: 300, height: 150, background: 'white' }}
-      gl={{ preserveDrawingBuffer: true }}
-    >
+    <Canvas camera={{ position: [1, 1, 1] }} style={{ width: 300, height: 150, background: 'white' }}>
       <Suspense fallback={null}>
         <Scene />
       </Suspense>

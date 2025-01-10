@@ -3,12 +3,13 @@ set -ex
 
 PORT=5188
 DIST=../../dist
-R3FT=../../react-three-fiber-v9.0.0-rc.2-drei-0.tgz
+SRC=../../src
 tmp=$(mktemp -d)
 
 # Build the package
 (cd $DIST; npm pack)
 TGZ=$(realpath "$DIST/react-three-drei-0.0.0-semantic-release.tgz")
+R3FT=$(realpath "$SRC/react-three-fiber-v9.0.0-rc.2-drei-0.tgz")
 
 snapshot() {
   local UPDATE_SNAPSHOTS=""

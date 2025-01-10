@@ -18,7 +18,7 @@ function App() {
 
 function Scene() {
   useEffect(() => {
-    requestAnimationFrame(() => document.dispatchEvent(new Event('playright:r3f')))
+    requestAnimationFrame(() => requestAnimationFrame(() => document.dispatchEvent(new Event('playright:r3f'))))
   }, [])
 
   return (

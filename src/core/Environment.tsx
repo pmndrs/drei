@@ -100,6 +100,7 @@ export function EnvironmentCube({
 }: EnvironmentProps) {
   const texture = useEnvironment(rest)
   const defaultScene = useThree((state) => state.scene)
+
   React.useLayoutEffect(() => {
     return setEnvProps(background, scene, defaultScene, texture, {
       backgroundBlurriness: blur ?? backgroundBlurriness,
@@ -109,6 +110,13 @@ export function EnvironmentCube({
       environmentRotation,
     })
   })
+
+  React.useEffect(() => {
+    return () => {
+      texture.dispose()
+    }
+  }, [texture])
+
   return null
 }
 
@@ -141,6 +149,12 @@ export function EnvironmentPortal({
     fbo.texture.type = HalfFloatType
     return fbo
   }, [resolution])
+
+  React.useEffect(() => {
+    return () => {
+      fbo.dispose()
+    }
+  }, [fbo])
 
   React.useLayoutEffect(() => {
     if (frames === 1) {
@@ -201,6 +215,12 @@ function EnvironmentGround(props: EnvironmentProps) {
   const texture = props.map || textureDefault
 
   React.useMemo(() => extend({ GroundProjectedEnvImpl }), [])
+
+  React.useEffect(() => {
+    return () => {
+      textureDefault.dispose()
+    }
+  }, [textureDefault])
 
   const args = React.useMemo<[CubeTexture | Texture]>(() => [texture], [texture])
   const height = (props.ground as any)?.height

@@ -25,6 +25,8 @@ type OutlinesProps = JSX.IntrinsicElements['group'] & {
   thickness: number
   /** Geometry crease angle (0 === no crease), default: Math.PI */
   angle: number
+  /** Clipping planes, default: null (no clipping) works the same as clipping planes on any material */
+  clippingPlanes: THREE.Plane[] | null
 }
 ```
 

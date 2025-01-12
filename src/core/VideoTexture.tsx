@@ -6,10 +6,10 @@ import { useThree } from '@react-three/fiber'
 import { suspend } from 'suspend-react'
 import { type default as Hls, Events } from 'hls.js'
 
-const IS_BROWSER =
+const IS_BROWSER = /* @__PURE__ */ (() =>
   typeof window !== 'undefined' &&
   typeof window.document?.createElement === 'function' &&
-  typeof window.navigator?.userAgent === 'string'
+  typeof window.navigator?.userAgent === 'string')()
 
 let _HLSModule: typeof import('hls.js') | null = null
 async function getHls(...args: ConstructorParameters<typeof Hls>) {

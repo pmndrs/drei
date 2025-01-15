@@ -125,8 +125,8 @@ const ImageBase: ForwardRefComponent<Omit<ImageProps, 'url'>, THREE.Mesh> = /* @
       transparent,
       side,
       ...props
-    }: Omit<ImageProps, 'url'>,
-    fref: React.ForwardedRef<THREE.Mesh>
+    },
+    fref
   ) => {
     extend({ ImageMaterial: ImageMaterialImpl })
     const ref = React.useRef<THREE.Mesh>(null!)
@@ -147,7 +147,8 @@ const ImageBase: ForwardRefComponent<Omit<ImageProps, 'url'>, THREE.Mesh> = /* @
           planeBounds[1] * ref.current.geometry.parameters.height
         )
       }
-    }, [])
+      /* eslint react-hooks/exhaustive-deps: 1 */
+    }, [planeBounds[0], planeBounds[1]])
     return (
       <mesh ref={ref} scale={Array.isArray(scale) ? [...scale, 1] : scale} {...props}>
         <planeGeometry args={[1, 1, segments, segments]} />

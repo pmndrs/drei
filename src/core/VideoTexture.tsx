@@ -1,14 +1,15 @@
+/* eslint react-hooks/exhaustive-deps: 1 */
 import * as React from 'react'
 import * as THREE from 'three'
-import { useEffect, useRef } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 import { useThree } from '@react-three/fiber'
 import { suspend } from 'suspend-react'
 import { type default as Hls, Events } from 'hls.js'
 
-const IS_BROWSER =
+const IS_BROWSER = /* @__PURE__ */ (() =>
   typeof window !== 'undefined' &&
   typeof window.document?.createElement === 'function' &&
-  typeof window.navigator?.userAgent === 'string'
+  typeof window.navigator?.userAgent === 'string')()
 
 let _HLSModule: typeof import('hls.js') | null = null
 async function getHls(...args: ConstructorParameters<typeof Hls>) {
@@ -31,11 +32,22 @@ export function useVideoTexture(
     muted = true,
     loop = true,
     playsInline = true,
+    onVideoFrame,
     ...videoProps
   }: {
+    /** Event name that will unsuspend the video */
     unsuspend?: keyof HTMLVideoElementEventMap
+    /** Auto start the video once unsuspended */
     start?: boolean
+    /** HLS config */
     hls?: Parameters<typeof getHls>[0]
+    /**
+     * request Video Frame Callback (rVFC)
+     *
+     * @see https://web.dev/requestvideoframecallback-rvfc/
+     * @see https://www.remotion.dev/docs/video-manipulation
+     * */
+    onVideoFrame?: VideoFrameRequestCallback
   } & Partial<Omit<HTMLVideoElement, 'children' | 'src' | 'srcObject'>> = {}
 ) {
   const gl = useThree((state) => state.gl)
@@ -81,6 +93,9 @@ export function useVideoTexture(
     [srcOrSrcObject]
   )
 
+  const video = texture.source.data as HTMLVideoElement
+  useVideoFrame(video, onVideoFrame)
+
   useEffect(() => {
     start && texture.image.play()
 
@@ -96,22 +111,45 @@ export function useVideoTexture(
 }
 
 //
+// VideoTexture
+//
 
-type UseVideoTexture = Parameters<typeof useVideoTexture>
+type UseVideoTextureParams = Parameters<typeof useVideoTexture>
+type VideoTexture = ReturnType<typeof useVideoTexture>
 
-export const VideoTexture = ({
-  children,
-  src,
-  ...config
-}: {
-  children?: (texture: ReturnType<typeof useVideoTexture>) => React.ReactNode
-  src: UseVideoTexture[0]
-} & UseVideoTexture[1]) => {
-  const ret = useVideoTexture(src, config)
+export type VideoTextureProps = {
+  children?: (texture: VideoTexture) => React.ReactNode
+  src: UseVideoTextureParams[0]
+} & UseVideoTextureParams[1]
 
+export const VideoTexture = /* @__PURE__ */ forwardRef<VideoTexture, VideoTextureProps>(
+  ({ children, src, ...config }, fref) => {
+    const texture = useVideoTexture(src, config)
+
+    useEffect(() => {
+      return () => void texture.dispose()
+    }, [texture])
+
+    useImperativeHandle(fref, () => texture, [texture]) // expose texture through ref
+
+    return <>{children?.(texture)}</>
+  }
+)
+
+// rVFC hook
+
+const useVideoFrame = (video: HTMLVideoElement, f?: VideoFrameRequestCallback) => {
   useEffect(() => {
-    return () => void ret.dispose()
-  }, [ret])
+    if (!f) return
+    if (!video.requestVideoFrameCallback) return
 
-  return <>{children?.(ret)}</>
+    let handle: ReturnType<(typeof video)['requestVideoFrameCallback']>
+    const callback: VideoFrameRequestCallback = (...args) => {
+      f(...args)
+      handle = video.requestVideoFrameCallback(callback)
+    }
+    video.requestVideoFrameCallback(callback)
+
+    return () => video.cancelVideoFrameCallback(handle)
+  }, [video, f])
 }

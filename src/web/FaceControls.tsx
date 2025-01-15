@@ -13,17 +13,18 @@ import {
   RefObject,
   createContext,
   useContext,
+  ElementRef,
 } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import type { FaceLandmarkerResult } from '@mediapipe/tasks-vision'
+import type { FaceLandmarker, FaceLandmarkerResult } from '@mediapipe/tasks-vision'
 import { easing } from 'maath'
-import { suspend, clear } from 'suspend-react'
 
-import { useVideoTexture } from '../core/VideoTexture'
+import { VideoTexture, VideoTextureProps } from '../core/VideoTexture'
+import { WebcamVideoTexture } from './WebcamVideoTexture'
 import { Facemesh, FacemeshApi, FacemeshProps } from './Facemesh'
 import { useFaceLandmarker } from './FaceLandmarker'
 
-type VideoTextureSrc = Parameters<typeof useVideoTexture>[0] // useVideoTexture 1st arg `src` type
+type VideoFrame = Parameters<FaceLandmarker['detectForVideo']>[0]
 
 function mean(v1: THREE.Vector3, v2: THREE.Vector3) {
   return v1.clone().add(v2).multiplyScalar(0.5)
@@ -40,55 +41,43 @@ function localToLocal(objSrc: THREE.Object3D, v: THREE.Vector3, objDst: THREE.Ob
 //
 
 export type FaceControlsProps = {
-  /** The camera to be controlled, default: global state camera */
+  /** The camera to be controlled */
   camera?: THREE.Camera
-  /** Whether to autostart the webcam, default: true */
-  autostart?: boolean
-  /** Enable/disable the webcam, default: true */
-  webcam?: boolean
-  /** A custom video URL or mediaStream, default: undefined */
-  webcamVideoTextureSrc?: VideoTextureSrc
-  /** Disable the rAF camera position/rotation update, default: false */
-  manualUpdate?: boolean
-  /** Disable the rVFC face-detection, default: false */
+  /** VideoTexture or WebcamVideoTexture options */
+  videoTexture?: VideoTextureProps
+  /** Disable the automatic face-detection => you should provide `faceLandmarkerResult` yourself in this case */
   manualDetect?: boolean
-  /** Callback function to call on "videoFrame" event, default: undefined */
-  onVideoFrame?: (e: THREE.Event) => void
+  /** FaceLandmarker result */
+  faceLandmarkerResult?: FaceLandmarkerResult
+  /** Disable the rAF camera position/rotation update */
+  manualUpdate?: boolean
   /** Reference this FaceControls instance as state's `controls` */
   makeDefault?: boolean
   /** Approximate time to reach the target. A smaller value will reach the target faster. */
   smoothTime?: number
   /** Apply position offset extracted from `facialTransformationMatrix` */
   offset?: boolean
-  /** Offset sensitivity factor, less is more sensible, default: 80 */
+  /** Offset sensitivity factor, less is more sensible */
   offsetScalar?: number
   /** Enable eye-tracking */
   eyes?: boolean
-  /** Force Facemesh's `origin` to be the middle of the 2 eyes, default: true */
+  /** Force Facemesh's `origin` to be the middle of the 2 eyes */
   eyesAsOrigin?: boolean
-  /** Constant depth of the Facemesh, default: .15 */
+  /** Constant depth of the Facemesh */
   depth?: number
-  /** Enable debug mode, default: false */
+  /** Enable debug mode */
   debug?: boolean
   /** Facemesh options, default: undefined */
   facemesh?: FacemeshProps
 }
 
 export type FaceControlsApi = THREE.EventDispatcher & {
-  /** Detect faces from the video */
-  detect: (video: HTMLVideoElement, time: number) => FaceLandmarkerResult | undefined
   /** Compute the target for the camera */
   computeTarget: () => THREE.Object3D
   /** Update camera's position/rotation to the `target` */
   update: (delta: number, target?: THREE.Object3D) => void
   /** <Facemesh> ref api */
   facemeshApiRef: RefObject<FacemeshApi>
-  /** <Webcam> ref api */
-  webcamApiRef: RefObject<WebcamApi>
-  /** Play the video */
-  play: () => void
-  /** Pause the video */
-  pause: () => void
 }
 
 const FaceControlsContext = /* @__PURE__ */ createContext({} as FaceControlsApi)
@@ -107,12 +96,11 @@ export const FaceControls = /* @__PURE__ */ forwardRef<FaceControlsApi, FaceCont
   (
     {
       camera,
-      autostart = true,
-      webcam = true,
-      webcamVideoTextureSrc,
-      manualUpdate = false,
+      videoTexture = { start: true },
       manualDetect = false,
-      onVideoFrame,
+      faceLandmarkerResult,
+      manualUpdate = false,
+      makeDefault,
       smoothTime = 0.25,
       offset = true,
       offsetScalar = 80,
@@ -121,7 +109,6 @@ export const FaceControls = /* @__PURE__ */ forwardRef<FaceControlsApi, FaceCont
       depth = 0.15,
       debug = false,
       facemesh,
-      makeDefault,
     },
     fref
   ) => {
@@ -130,8 +117,6 @@ export const FaceControls = /* @__PURE__ */ forwardRef<FaceControlsApi, FaceCont
     const set = useThree((state) => state.set)
     const get = useThree((state) => state.get)
     const explCamera = camera || defaultCamera
-
-    const webcamApiRef = useRef<WebcamApi>(null)
 
     const facemeshApiRef = useRef<FacemeshApi>(null)
 
@@ -223,67 +208,49 @@ export const FaceControls = /* @__PURE__ */ forwardRef<FaceControlsApi, FaceCont
       [explCamera, computeTarget, smoothTime, current.position, current.rotation]
     )
 
+    useFrame((_, delta) => {
+      if (manualUpdate) return
+      update(delta)
+    })
+
     //
-    // detect()
+    // onVideoFrame (only used if !manualDetect)
     //
 
-    const [faces, setFaces] = useState<FaceLandmarkerResult>()
+    const videoTextureRef = useRef<ElementRef<typeof VideoTexture>>(null)
+
+    const [_faceLandmarkerResult, setFaceLandmarkerResult] = useState<FaceLandmarkerResult>()
     const faceLandmarker = useFaceLandmarker()
-    const detect = useCallback<FaceControlsApi['detect']>(
-      (video, time) => {
-        const result = faceLandmarker?.detectForVideo(video, time)
-        setFaces(result)
-
-        return result
+    const onVideoFrame = useCallback<NonNullable<VideoTextureProps['onVideoFrame']>>(
+      (now, metadata) => {
+        const texture = videoTextureRef.current
+        if (!texture) return
+        const videoFrame = texture.source.data as VideoFrame
+        const result = faceLandmarker?.detectForVideo(videoFrame, now)
+        setFaceLandmarkerResult(result)
       },
       [faceLandmarker]
     )
 
-    useFrame((_, delta) => {
-      if (!manualUpdate) {
-        update(delta)
-      }
-    })
-
+    //
     // Ref API
+    //
+
     const api = useMemo<FaceControlsApi>(
       () =>
         Object.assign(Object.create(THREE.EventDispatcher.prototype), {
-          detect,
           computeTarget,
           update,
           facemeshApiRef,
-          webcamApiRef,
-          // shorthands
-          play: () => {
-            webcamApiRef.current?.videoTextureApiRef.current?.texture.source.data.play()
-          },
-          pause: () => {
-            webcamApiRef.current?.videoTextureApiRef.current?.texture.source.data.pause()
-          },
         }),
-      [detect, computeTarget, update]
+      [computeTarget, update]
     )
     useImperativeHandle(fref, () => api, [api])
 
     //
-    // events callbacks
+    // makeDefault (`controls` global state)
     //
 
-    useEffect(() => {
-      const onVideoFrameCb = (e: THREE.Event) => {
-        if (!manualDetect) detect(e.texture.source.data, e.time)
-        if (onVideoFrame) onVideoFrame(e)
-      }
-
-      api.addEventListener('videoFrame', onVideoFrameCb)
-
-      return () => {
-        api.removeEventListener('videoFrame', onVideoFrameCb)
-      }
-    }, [api, detect, faceLandmarker, manualDetect, onVideoFrame])
-
-    // `controls` global state
     useEffect(() => {
       if (makeDefault) {
         const old = get().controls
@@ -292,19 +259,33 @@ export const FaceControls = /* @__PURE__ */ forwardRef<FaceControlsApi, FaceCont
       }
     }, [makeDefault, api, get, set])
 
-    const points = faces?.faceLandmarks[0]
-    const facialTransformationMatrix = faces?.facialTransformationMatrixes?.[0]
-    const faceBlendshapes = faces?.faceBlendshapes?.[0]
+    //
+    //
+    //
+
+    const result = faceLandmarkerResult ?? _faceLandmarkerResult
+
+    const points = result?.faceLandmarks[0]
+    const facialTransformationMatrix = result?.facialTransformationMatrixes?.[0]
+    const faceBlendshapes = result?.faceBlendshapes?.[0]
+
+    const videoTextureProps = { onVideoFrame, ...videoTexture }
+
     return (
       <FaceControlsContext.Provider value={api}>
-        {webcam && (
+        {!manualDetect && (
           <Suspense fallback={null}>
-            <Webcam ref={webcamApiRef} autostart={autostart} videoTextureSrc={webcamVideoTextureSrc} />
+            {'src' in videoTextureProps ? (
+              <VideoTexture ref={videoTextureRef} {...videoTextureProps} />
+            ) : (
+              <WebcamVideoTexture ref={videoTextureRef} {...videoTextureProps} />
+            )}
           </Suspense>
         )}
 
         <Facemesh
           ref={facemeshApiRef}
+          children={<meshNormalMaterial side={THREE.DoubleSide} />}
           {...facemesh}
           points={points}
           depth={depth}
@@ -317,112 +298,10 @@ export const FaceControls = /* @__PURE__ */ forwardRef<FaceControlsApi, FaceCont
           debug={debug}
           rotation-z={Math.PI}
           visible={debug}
-        >
-          <meshBasicMaterial side={THREE.DoubleSide} />
-        </Facemesh>
+        />
       </FaceControlsContext.Provider>
     )
   }
 )
 
 export const useFaceControls = () => useContext(FaceControlsContext)
-
-//
-// Webcam
-//
-
-type WebcamApi = {
-  videoTextureApiRef: RefObject<VideoTextureApi>
-}
-
-type WebcamProps = {
-  videoTextureSrc?: VideoTextureSrc
-  autostart?: boolean
-}
-
-const Webcam = /* @__PURE__ */ forwardRef<WebcamApi, WebcamProps>(({ videoTextureSrc, autostart = true }, fref) => {
-  const videoTextureApiRef = useRef<VideoTextureApi>(null)
-
-  const faceControls = useFaceControls()
-
-  const stream: MediaStream | null = suspend(async () => {
-    return !videoTextureSrc
-      ? await navigator.mediaDevices.getUserMedia({
-          audio: false,
-          video: { facingMode: 'user' },
-        })
-      : Promise.resolve(null)
-  }, [videoTextureSrc])
-
-  useEffect(() => {
-    faceControls.dispatchEvent({ type: 'stream', stream })
-
-    return () => {
-      stream?.getTracks().forEach((track) => track.stop())
-      clear([videoTextureSrc])
-    }
-  }, [stream, faceControls, videoTextureSrc])
-
-  // ref-api
-  const api = useMemo<WebcamApi>(
-    () => ({
-      videoTextureApiRef,
-    }),
-    []
-  )
-  useImperativeHandle(fref, () => api, [api])
-
-  return (
-    <Suspense fallback={null}>
-      <VideoTexture ref={videoTextureApiRef} src={videoTextureSrc || stream!} start={autostart} />
-    </Suspense>
-  )
-})
-
-//
-// VideoTexture
-//
-
-type VideoTextureApi = { texture: THREE.VideoTexture }
-type VideoTextureProps = { src: VideoTextureSrc; start: boolean }
-
-const VideoTexture = /* @__PURE__ */ forwardRef<VideoTextureApi, VideoTextureProps>(({ src, start }, fref) => {
-  const texture = useVideoTexture(src, { start })
-  const video = texture.source.data
-
-  const faceControls = useFaceControls()
-  const onVideoFrame = useCallback(
-    (time: number) => {
-      faceControls.dispatchEvent({ type: 'videoFrame', texture, time })
-    },
-    [texture, faceControls]
-  )
-  useVideoFrame(video, onVideoFrame)
-
-  // ref-api
-  const api = useMemo<VideoTextureApi>(
-    () => ({
-      texture,
-    }),
-    [texture]
-  )
-  useImperativeHandle(fref, () => api, [api])
-
-  return <></>
-})
-
-const useVideoFrame = (video: HTMLVideoElement, f: (...args: any) => any) => {
-  // https://web.dev/requestvideoframecallback-rvfc/
-  // https://www.remotion.dev/docs/video-manipulation
-  useEffect(() => {
-    if (!video || !video.requestVideoFrameCallback) return
-    let handle: number
-    function callback(...args: any) {
-      f(...args)
-      handle = video.requestVideoFrameCallback(callback)
-    }
-    video.requestVideoFrameCallback(callback)
-
-    return () => video.cancelVideoFrameCallback(handle)
-  }, [video, f])
-}

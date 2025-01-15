@@ -1,12 +1,22 @@
 import * as React from 'react'
-import { Canvas } from '@react-three/fiber'
+import { Meta, StoryObj } from '@storybook/react'
 
-import { Icosahedron, OrthographicCamera, OrbitControls } from '../../src'
+import { Icosahedron, OrthographicCamera } from '../../src'
+import { Setup } from '../Setup'
 
 export default {
   title: 'Camera/OrthographicCamera',
-  component: OrthographicCameraScene,
-}
+  component: OrthographicCamera,
+  decorators: [
+    (Story) => (
+      <Setup controls={false}>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof OrthographicCamera>
+
+type Story = StoryObj<typeof OrthographicCamera>
 
 const NUM = 3
 
@@ -15,7 +25,7 @@ interface Positions {
   position: [number, number, number]
 }
 
-function OrthographicCameraScene() {
+function OrthographicCameraScene(props: React.ComponentProps<typeof OrthographicCamera>) {
   const positions = React.useMemo(() => {
     const pos: Positions[] = []
     const half = (NUM - 1) / 2
@@ -33,8 +43,9 @@ function OrthographicCameraScene() {
   }, [])
 
   return (
-    <Canvas>
-      <OrthographicCamera makeDefault position={[0, 0, 10]} zoom={40} />
+    <>
+      <OrthographicCamera {...props} />
+
       <group position={[0, 0, -10]}>
         {positions.map(({ id, position }) => (
           <Icosahedron key={id} position={position} args={[1, 1]}>
@@ -42,12 +53,16 @@ function OrthographicCameraScene() {
           </Icosahedron>
         ))}
       </group>
-      <OrbitControls />
-    </Canvas>
+    </>
   )
 }
 
-export const OrthographicCameraSceneSt = () => <OrthographicCameraScene />
-OrthographicCameraSceneSt.story = {
+export const OrthographicCameraSceneSt = {
+  args: {
+    makeDefault: true,
+    position: [0, 0, 10],
+    zoom: 40,
+  },
+  render: (args) => <OrthographicCameraScene {...args} />,
   name: 'Default',
-}
+} satisfies Story

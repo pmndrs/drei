@@ -1,0 +1,43 @@
+---
+title: Hud
+sourcecode: src/core/Hud.tsx
+---
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="py4db" />
+  </li>
+</Grid>
+
+Renders a heads-up-display (HUD). Each HUD is a scene on top of the previous. That scene is inside a React `createPortal` and is completely isolated, you can have your own cameras in there, environments, etc. The first HUD (`renderpriotity === 1`) will clear the scene and render the default scene, it needs to be the first to execute! Make sure to be explicit about the `renderpriority` of your HUDs.
+
+```tsx
+type HudProps = {
+  /** Any React node */
+  children: React.ReactNode
+  /** Render priority, default: 1 */
+  renderPriority?: number
+}
+```
+
+```jsx
+{
+  /* Renders on top of the default scene with a perspective camera */
+}
+;<Hud>
+  <PerspectiveCamera makeDefault position={[0, 0, 10]} />
+  <mesh>
+    <ringGeometry />
+  </mesh>
+</Hud>
+
+{
+  /* Renders on top of the previous HUD with an orthographic camera */
+}
+;<Hud renderPriority={2}>
+  <OrthographicCamera makeDefault position={[0, 0, 10]} />
+  <mesh>
+    <boxGeometry />
+  </mesh>
+</Hud>
+```

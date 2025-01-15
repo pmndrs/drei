@@ -1,0 +1,15 @@
+---
+title: Ktx2 / useKTX2
+sourcecode: src/core/Ktx2.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-ktx2)
+
+A convenience hook that uses `useLoader` and `KTX2Loader`
+
+```jsx
+const texture = useKTX2(url)
+const [texture1, texture2] = useKTX2([texture1, texture2])
+
+return <meshStandardMaterial map={texture} />
+```

@@ -1,0 +1,39 @@
+---
+title: Outlines
+sourcecode: src/core/Outlines.tsx
+---
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="2gh6jf" />
+  </li>
+</Grid>
+
+An ornamental component that extracts the geometry from its parent and displays an [inverted-hull outline](https://bnpr.gitbook.io/bnpr/outline/inverse-hull-method). Supported parents are `<mesh>`, `<skinnedMesh>` and `<instancedMesh>`.
+
+```tsx
+type OutlinesProps = JSX.IntrinsicElements['group'] & {
+  /** Outline color, default: black */
+  color: ReactThreeFiber.Color
+  /** Line thickness is independent of zoom, default: false */
+  screenspace: boolean
+  /** Outline opacity, default: 1 */
+  opacity: number
+  /** Outline transparency, default: false */
+  transparent: boolean
+  /** Outline thickness, default 0.05 */
+  thickness: number
+  /** Geometry crease angle (0 === no crease), default: Math.PI */
+  angle: number
+  /** Clipping planes, default: null (no clipping) works the same as clipping planes on any material */
+  clippingPlanes: THREE.Plane[] | null
+}
+```
+
+```jsx
+<mesh>
+  <boxGeometry />
+  <meshBasicMaterial />
+  <Outlines thickness={0.05} color="hotpink" />
+</mesh>
+```

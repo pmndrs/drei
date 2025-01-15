@@ -10,6 +10,7 @@ export type FloatProps = JSX.IntrinsicElements['group'] & {
   floatIntensity?: number
   children?: React.ReactNode
   floatingRange?: [number?, number?]
+  autoInvalidate?: boolean
 }
 
 export const Float: ForwardRefComponent<FloatProps, THREE.Group> = /* @__PURE__ */ React.forwardRef<
@@ -24,6 +25,7 @@ export const Float: ForwardRefComponent<FloatProps, THREE.Group> = /* @__PURE__ 
       rotationIntensity = 1,
       floatIntensity = 1,
       floatingRange = [-0.1, 0.1],
+      autoInvalidate = false,
       ...props
     },
     forwardRef
@@ -33,6 +35,9 @@ export const Float: ForwardRefComponent<FloatProps, THREE.Group> = /* @__PURE__ 
     const offset = React.useRef(Math.random() * 10000)
     useFrame((state) => {
       if (!enabled || speed === 0) return
+
+      if (autoInvalidate) state.invalidate()
+
       const t = offset.current + state.clock.getElapsedTime()
       ref.current.rotation.x = (Math.cos((t / 4) * speed) / 8) * rotationIntensity
       ref.current.rotation.y = (Math.sin((t / 4) * speed) / 8) * rotationIntensity

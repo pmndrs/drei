@@ -19,6 +19,7 @@ type Api = {
 }
 
 export type InstancesProps = JSX.IntrinsicElements['instancedMesh'] & {
+  context?: React.Context<Api>
   range?: number
   limit?: number
   frames?: number
@@ -26,6 +27,13 @@ export type InstancesProps = JSX.IntrinsicElements['instancedMesh'] & {
 
 export type InstanceProps = JSX.IntrinsicElements['positionMesh'] & {
   context?: React.Context<Api>
+}
+
+export type InstancedAttributeProps = JSX.IntrinsicElements['instancedBufferAttribute'] & {
+  name: string
+  defaultValue: any
+  normalized?: boolean
+  usage?: number
 }
 
 type InstancedMesh = Omit<THREE.InstancedMesh, 'instanceMatrix' | 'instanceColor'> & {
@@ -46,7 +54,7 @@ const _instanceWorldMatrix = /* @__PURE__ */ new THREE.Matrix4()
 const _instanceIntersects: THREE.Intersection[] = []
 const _mesh = /* @__PURE__ */ new THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>()
 
-class PositionMesh extends THREE.Group {
+export class PositionMesh extends THREE.Group {
   color: THREE.Color
   instance: React.MutableRefObject<THREE.InstancedMesh | undefined>
   instanceKey: React.MutableRefObject<JSX.IntrinsicElements['positionMesh'] | undefined>
@@ -100,6 +108,9 @@ const translation = /* @__PURE__ */ new THREE.Vector3()
 const rotation = /* @__PURE__ */ new THREE.Quaternion()
 const scale = /* @__PURE__ */ new THREE.Vector3()
 
+const isInstancedBufferAttribute = (attr: any): attr is THREE.InstancedBufferAttribute =>
+  attr.isInstancedBufferAttribute
+
 export const Instance = /* @__PURE__ */ React.forwardRef(({ context, children, ...props }: InstanceProps, ref) => {
   React.useMemo(() => extend({ PositionMesh }), [])
   const group = React.useRef<JSX.IntrinsicElements['positionMesh']>()
@@ -113,15 +124,17 @@ export const Instance = /* @__PURE__ */ React.forwardRef(({ context, children, .
   )
 })
 
-export const Instances: ForwardRefComponent<InstancesProps, InstancedMesh> = /* @__PURE__ */ React.forwardRef<
-  InstancedMesh,
+export const Instances: ForwardRefComponent<InstancesProps, THREE.InstancedMesh> = /* @__PURE__ */ React.forwardRef<
+  THREE.InstancedMesh,
   InstancesProps
->(({ children, range, limit = 1000, frames = Infinity, ...props }, ref) => {
-  const [{ context, instance }] = React.useState(() => {
-    const context = React.createContext<Api>(null!)
+>(({ context, children, range, limit = 1000, frames = Infinity, ...props }, ref) => {
+  const [{ localContext, instance }] = React.useState(() => {
+    const localContext = React.createContext<Api>(null!)
     return {
-      context,
-      instance: React.forwardRef((props: InstanceProps, ref) => <Instance context={context} {...props} ref={ref} />),
+      localContext,
+      instance: React.forwardRef((props: InstanceProps, ref) => (
+        <Instance context={localContext} {...props} ref={ref} />
+      )),
     }
   })
 
@@ -141,6 +154,14 @@ export const Instances: ForwardRefComponent<InstancesProps, InstancedMesh> = /* 
 
   let iterations = 0
   let count = 0
+
+  const attributes = React.useRef<[string, THREE.InstancedBufferAttribute][]>([])
+  React.useLayoutEffect(() => {
+    attributes.current = Object.entries(parentRef.current.geometry.attributes).filter(([_name, value]) =>
+      isInstancedBufferAttribute(value)
+    ) as [string, THREE.InstancedBufferAttribute][]
+  })
+
   useFrame(() => {
     if (frames === Infinity || iterations < frames) {
       parentRef.current.updateMatrix()
@@ -180,7 +201,7 @@ export const Instances: ForwardRefComponent<InstancesProps, InstancedMesh> = /* 
 
   return (
     <instancedMesh
-      userData={{ instances }}
+      userData={{ instances, limit, frames }}
       matrixAutoUpdate={false}
       ref={parentRef}
       args={[null as any, null as any, 0]}
@@ -202,7 +223,9 @@ export const Instances: ForwardRefComponent<InstancesProps, InstancedMesh> = /* 
         usage={THREE.DynamicDrawUsage}
       />
       {isFunctionChild(children) ? (
-        <context.Provider value={api}>{children(instance)}</context.Provider>
+        <localContext.Provider value={api}>{children(instance)}</localContext.Provider>
+      ) : context ? (
+        <context.Provider value={api}>{children}</context.Provider>
       ) : (
         <globalContext.Provider value={api}>{children}</globalContext.Provider>
       )}
@@ -239,5 +262,59 @@ export const Merged: ForwardRefComponent<any, THREE.Group> = /* @__PURE__ */ Rea
         </Composer>
       </group>
     )
+  }
+)
+
+/** Idea and implementation for global instances and instanced attributes by
+/*  Matias Gonzalez Fernandez https://x.com/matiNotFound
+/*  and Paul Henschel https://x.com/0xca0a
+*/
+export function createInstances<T = InstanceProps>() {
+  const context = React.createContext<Api>(null!)
+  return [
+    React.forwardRef<THREE.InstancedMesh, InstancesProps>((props, fref) => (
+      <Instances ref={fref} context={context} {...props} />
+    )),
+    React.forwardRef<PositionMesh & T, T & InstanceProps>((props, fref) => (
+      <Instance ref={fref} context={context} {...props} />
+    )),
+  ] as const
+}
+
+export const InstancedAttribute = React.forwardRef(
+  ({ name, defaultValue, normalized, usage = THREE.DynamicDrawUsage }: InstancedAttributeProps, fref) => {
+    const ref = React.useRef<THREE.InstancedBufferAttribute>(null!)
+    React.useImperativeHandle(fref, () => ref.current, [])
+    React.useLayoutEffect(() => {
+      const parent = (ref.current as any).__r3f.parent
+      parent.geometry.attributes[name] = ref.current
+      const value = Array.isArray(defaultValue) ? defaultValue : [defaultValue]
+      const array = Array.from({ length: parent.userData.limit }, () => value).flat()
+      ref.current.array = new Float32Array(array)
+      ref.current.itemSize = value.length
+      ref.current.count = array.length / ref.current.itemSize
+      return () => {
+        delete parent.geometry.attributes[name]
+      }
+    }, [name])
+    let iterations = 0
+    useFrame(() => {
+      const parent = (ref.current as any).__r3f.parent
+      if (parent.userData.frames === Infinity || iterations < parent.userData.frames) {
+        for (let i = 0; i < parent.userData.instances.length; i++) {
+          const instance = parent.userData.instances[i].current
+          const value = instance[name]
+          if (value !== undefined) {
+            ref.current.set(
+              Array.isArray(value) ? value : typeof value.toArray === 'function' ? value.toArray() : [value],
+              i * ref.current.itemSize
+            )
+            ref.current.needsUpdate = true
+          }
+        }
+        iterations++
+      }
+    })
+    return <instancedBufferAttribute ref={ref} usage={usage} normalized={normalized} />
   }
 )

@@ -1,16 +1,26 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { useFrame } from '@react-three/fiber'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
 import { Box, CubeCamera } from '../../src'
+import { ComponentProps } from 'react'
 
 export default {
   title: 'Camera/CubeCamera',
   component: CubeCamera,
-  decorators: [(storyFn) => <Setup cameraPosition={new THREE.Vector3(0, 10, 40)}>{storyFn()}</Setup>],
-}
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new THREE.Vector3(0, 10, 40)}>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof CubeCamera>
+
+type Story = StoryObj<typeof CubeCamera>
 
 declare global {
   namespace JSX {
@@ -20,8 +30,8 @@ declare global {
   }
 }
 
-function Sphere({ offset = 0, ...props }) {
-  const ref = React.useRef<THREE.Group>()
+function Sphere({ offset = 0, ...props }: ComponentProps<typeof CubeCamera> & { offset?: number }) {
+  const ref = React.useRef<React.ElementRef<'mesh'>>(null)
   useFrame(({ clock }) => {
     ref.current!.position.y = Math.sin(offset + clock.elapsedTime) * 5
   })
@@ -38,13 +48,13 @@ function Sphere({ offset = 0, ...props }) {
   )
 }
 
-function Scene() {
+function Scene(props: ComponentProps<typeof CubeCamera>) {
   return (
     <>
       <fog attach="fog" args={['#f0f0f0', 100, 200]} />
 
-      <Sphere position={[-10, 10, 0]} />
-      <Sphere position={[10, 9, 0]} offset={2000} />
+      <Sphere position={[-10, 10, 0]} {...props} />
+      <Sphere position={[10, 9, 0]} offset={2000} {...props} />
 
       <Box material-color="hotpink" args={[5, 5, 5]} position-y={2.5} />
 
@@ -53,5 +63,7 @@ function Scene() {
   )
 }
 
-export const DefaultStory = () => <Scene />
-DefaultStory.storyName = 'Default'
+export const DefaultStory = {
+  render: (args) => <Scene {...args} />,
+  name: 'Default',
+} satisfies Story

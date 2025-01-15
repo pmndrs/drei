@@ -1,24 +1,26 @@
-import * as THREE from 'three'
 import * as React from 'react'
 import { Vector3 } from 'three'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
-import { Example, ExampleApi, Sparkles } from '../../src'
+import { Example, ExampleApi } from '../../src'
 
 export default {
   title: 'Misc/Example',
   component: Example,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup cameraPosition={new Vector3(1, 2, 4)} cameraFov={60}>
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],
-}
+} satisfies Meta<typeof Example>
 
-export const ExampleSt = ({ fontUrl, color, bevelSize, debug }) => {
+type Story = StoryObj<typeof Example>
+
+function ExampleScene(props: React.ComponentProps<typeof Example>) {
   const apiRef = React.useRef<ExampleApi>(null)
 
   return (
@@ -27,10 +29,7 @@ export const ExampleSt = ({ fontUrl, color, bevelSize, debug }) => {
       <axesHelper />
 
       <Example
-        font={fontUrl}
-        color={color}
-        bevelSize={bevelSize}
-        debug={debug}
+        {...props}
         ref={apiRef}
         onClick={(e) => {
           if ((e as any as PointerEvent).metaKey) {
@@ -43,18 +42,23 @@ export const ExampleSt = ({ fontUrl, color, bevelSize, debug }) => {
     </>
   )
 }
-ExampleSt.args = {
-  fontUrl: '/fonts/Inter_Bold.json',
-  bevelSize: undefined,
-  color: '#cbcbcb',
-  debug: false,
-}
 
-ExampleSt.argTypes = {
-  fontUrl: { control: 'select', options: ['/fonts/Inter_Bold.json', '/fonts/helvetiker_regular.typeface.json'] },
-  bevelSize: { control: { type: 'range', min: 0, max: 0.1, step: 0.01 } },
-  color: { control: { type: 'color' } },
-  debug: { control: { type: 'boolean' } },
-}
+export const ExampleSt = {
+  render: (args) => <ExampleScene {...args} />,
 
-ExampleSt.storyName = 'Default'
+  args: {
+    font: '/fonts/Inter_Bold.json',
+    bevelSize: undefined,
+    color: '#cbcbcb',
+    debug: false,
+  },
+
+  argTypes: {
+    font: { control: 'select', options: ['/fonts/Inter_Bold.json', '/fonts/helvetiker_regular.typeface.json'] },
+    bevelSize: { control: { type: 'range', min: 0, max: 0.1, step: 0.01 } },
+    color: { control: { type: 'color' } },
+    debug: { control: { type: 'boolean' } },
+  },
+
+  name: 'Default',
+} satisfies Story

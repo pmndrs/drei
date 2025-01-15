@@ -1,16 +1,25 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
-import { OrbitControls, PositionalAudio } from '../../src'
+import { PositionalAudio } from '../../src'
 
 export default {
   title: 'Abstractions/PositionalAudio',
-  component: PositionalAudioScene,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 20)}>{storyFn()}</Setup>],
-}
+  component: PositionalAudio,
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(0, 0, 20)}>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof PositionalAudio>
 
-function PositionalAudioScene() {
+type Story = StoryObj<typeof PositionalAudio>
+
+function PositionalAudioScene(props: React.ComponentProps<typeof PositionalAudio>) {
   const args = React.useMemo(
     () => [
       {
@@ -34,24 +43,19 @@ function PositionalAudioScene() {
   )
 
   return (
-    <>
-      <React.Suspense fallback={null}>
-        <group position={[0, 0, 5]}>
-          {args.map(({ position, url }, index) => (
-            <mesh key={`0${index}`} position={position}>
-              <sphereGeometry />
-              <meshBasicMaterial wireframe color="hotpink" />
-              <PositionalAudio url={url} />
-            </mesh>
-          ))}
-        </group>
-      </React.Suspense>
-      <OrbitControls />
-    </>
+    <group position={[0, 0, 5]}>
+      {args.map(({ position, url }, index) => (
+        <mesh key={`0${index}`} position={position}>
+          <sphereGeometry />
+          <meshBasicMaterial wireframe color="hotpink" />
+          <PositionalAudio {...props} url={url} />
+        </mesh>
+      ))}
+    </group>
   )
 }
 
-export const PositionalAudioSceneSt = () => <PositionalAudioScene />
-PositionalAudioSceneSt.story = {
+export const PositionalAudioSceneSt = {
+  render: (args) => <PositionalAudioScene {...args} />,
   name: 'Default',
-}
+} satisfies Story

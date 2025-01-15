@@ -1,0 +1,36 @@
+---
+title: TransformControls
+sourcecode: src/core/TransformControls.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/gizmos-transformcontrols--transform-controls-story)
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="btsbj" />
+  </li>
+</Grid>
+
+An abstraction around [THREE.TransformControls](https://threejs.org/docs/#examples/en/controls/TransformControls).
+
+You can wrap objects which then receive a transform gizmo.
+
+```jsx
+<TransformControls mode="translate">
+  <mesh />
+</TransformControls>
+```
+
+You could also reference the object which might make it easier to exchange the target. Now the object does not have to be part of the same sub-graph. References can be plain objects or React.MutableRefObjects.
+
+```jsx
+<TransformControls object={mesh} mode="translate" />
+<mesh ref={mesh} />
+```
+
+If you are using other controls (Orbit, Trackball, etc), you will notice how they interfere, dragging one will affect the other. Default-controls will temporarily be disabled automatically when the user is pulling on the transform gizmo.
+
+```jsx
+<TransformControls mode="translate" />
+<OrbitControls makeDefault />
+```

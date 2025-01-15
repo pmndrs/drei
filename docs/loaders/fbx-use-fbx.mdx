@@ -1,0 +1,17 @@
+---
+title: Fbx / useFBX
+sourcecode: src/core/Fbx.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-fbx)
+
+A convenience hook that uses `useLoader` and `FBXLoader`:
+
+```jsx
+useFBX(url)
+
+function SuzanneFBX() {
+  let fbx = useFBX('suzanne/suzanne.fbx')
+  return <primitive object={fbx} />
+}
+```

@@ -1,112 +1,141 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
 import { GeometryUtils } from 'three-stdlib'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
 import { Line, OrbitControls, QuadraticBezierLine, CubicBezierLine, CatmullRomLine } from '../../src'
-
-export default {
-  title: 'Shapes/Line',
-  component: Line,
-}
 
 const points = GeometryUtils.hilbert3D(new Vector3(0), 5).map((p) => [p.x, p.y, p.z]) as [number, number, number][]
 
 const colors = new Array(points.length).fill(0).map(() => [Math.random(), Math.random(), Math.random()]) as [
   number,
   number,
-  number
+  number,
 ][]
 
-export function BasicLine(args) {
+export default {
+  title: 'Shapes/Line',
+  component: Line,
+  decorators: [
+    (Story) => (
+      <Setup controls={false} cameraPosition={new Vector3(0, 0, 17)}>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof Line>
+
+//
+
+function BasicLineScene(props: React.ComponentProps<typeof Line>) {
   return (
     <>
-      <Line points={points} {...args} />
+      <Line {...props} points={points} />
       <OrbitControls zoomSpeed={0.5} />
     </>
   )
 }
-BasicLine.storyName = 'Basic'
-BasicLine.args = {
-  color: 'red',
-  lineWidth: 3,
-  dashed: false,
-}
-BasicLine.argTypes = {
-  color: { control: 'color' },
-}
 
-BasicLine.decorators = [
-  (storyFn) => (
-    <Setup controls={false} cameraPosition={new Vector3(0, 0, 17)}>
-      {storyFn()}
-    </Setup>
-  ),
-]
+export const BasicLineSt = {
+  name: 'Basic',
+  render: (args) => <BasicLineScene {...args} />,
+  args: {
+    color: 'red',
+    lineWidth: 3,
+    dashed: false,
+    segments: false,
+  },
+  argTypes: {
+    color: { control: 'color' },
+    segments: { control: 'boolean' },
+  },
+} satisfies StoryObj<typeof Line>
 
-export function QuadraticBezier(args) {
+//
+
+function VertexColorsLineScene(props: React.ComponentProps<typeof Line>) {
   return (
     <>
-      <QuadraticBezierLine {...args} />
+      <Line {...props} points={points} vertexColors={colors} />
       <OrbitControls zoomSpeed={0.5} />
     </>
   )
 }
-QuadraticBezier.storyName = 'QuadraticBezier'
-QuadraticBezier.args = {
-  start: [0, 0, 0],
-  end: [4, 7, 5],
-  segments: 10,
-  color: 'red',
-  lineWidth: 2,
-  dashed: true,
-  foo: 3,
-}
-QuadraticBezier.argTypes = {
-  segments: { control: { type: 'range', min: 1, max: 20, step: 1 } },
-  color: { control: 'color' },
-}
 
-QuadraticBezier.decorators = [
-  (storyFn) => (
-    <Setup controls={false} cameraPosition={new Vector3(0, 0, 17)}>
-      {storyFn()}
-    </Setup>
-  ),
-]
+export const VertexColorsLineSt = {
+  name: 'VertexColors',
+  render: (args) => <VertexColorsLineScene {...args} />,
+  args: {
+    color: 'white',
+    lineWidth: 3,
+    dashed: false,
+    segments: false,
+  },
+  argTypes: {
+    color: { control: 'color' },
+    segments: { control: 'boolean' },
+  },
+} satisfies StoryObj<typeof Line>
 
-export function CubicBezier(args) {
+//
+
+function QuadraticBezierScene(props: React.ComponentProps<typeof QuadraticBezierLine>) {
   return (
     <>
-      <CubicBezierLine {...args} />
+      <QuadraticBezierLine {...props} />
       <OrbitControls zoomSpeed={0.5} />
     </>
   )
 }
-CubicBezier.storyName = 'CubicBezier'
-CubicBezier.args = {
-  start: [0, 0, 0],
-  end: [10, 0, 10],
-  midA: [5, 4, 0],
-  midB: [0, 0, 5],
-  segments: 10,
-  color: 'red',
-  lineWidth: 2,
-  dashed: true,
-}
-CubicBezier.argTypes = {
-  segments: { control: { type: 'range', min: 1, max: 20, step: 1 } },
-  color: { control: 'color' },
+
+export const QuadraticBezierSt = {
+  name: 'QuadraticBezier',
+  render: (args) => <QuadraticBezierScene {...args} />,
+  args: {
+    start: [0, 0, 0],
+    end: [4, 7, 5],
+    color: 'red',
+    lineWidth: 2,
+    dashed: true,
+  },
+  argTypes: {
+    segments: { control: { type: 'range', min: 1, max: 20, step: 1 } },
+    color: { control: 'color' },
+  },
+} satisfies StoryObj<typeof QuadraticBezierLine>
+
+//
+
+function CubicBezierScene(props: React.ComponentProps<typeof CubicBezierLine>) {
+  return (
+    <>
+      <CubicBezierLine {...props} />
+      <OrbitControls zoomSpeed={0.5} />
+    </>
+  )
 }
 
-CubicBezier.decorators = [
-  (storyFn) => (
-    <Setup controls={false} cameraPosition={new Vector3(0, 0, 17)}>
-      {storyFn()}
-    </Setup>
-  ),
-]
+export const CubicBezierSt = {
+  name: 'CubicBezier',
+  render: (args) => <CubicBezierScene {...args} />,
+  args: {
+    start: [0, 0, 0],
+    end: [10, 0, 10],
+    midA: [5, 4, 0],
+    midB: [0, 0, 5],
+    color: 'red',
+    lineWidth: 2,
+    dashed: true,
+  },
+  argTypes: {
+    segments: { control: { type: 'range', min: 1, max: 20, step: 1 } },
+    color: { control: 'color' },
+  },
+} satisfies StoryObj<typeof CubicBezierLine>
+
+//
 
 const catPoints = [
   [0, 0, 0] as [number, number, number],
@@ -116,61 +145,30 @@ const catPoints = [
   [0.5, 8, -1] as [number, number, number],
 ]
 
-export function CatmullRom(args) {
+function CatmullRomScene(props: React.ComponentProps<typeof CatmullRomLine>) {
   return (
     <>
-      <CatmullRomLine points={catPoints} {...args} segments={20} />
+      <CatmullRomLine {...props} points={catPoints} />
       <OrbitControls zoomSpeed={0.5} />
     </>
   )
 }
-CatmullRom.storyName = 'CatmullRom'
-CatmullRom.args = {
-  closed: false,
-  curveType: 'centripetal',
-  tension: 0.5,
-  segments: 20,
-  color: 'red',
-  lineWidth: 3,
-  dashed: true,
-}
-CatmullRom.argTypes = {
-  curveType: { control: 'select', options: ['centripetal', 'chordal', 'catmullrom'] },
-  tension: { control: { type: 'range', min: 0, max: 1, step: 0.01 } },
-  segments: { control: { type: 'range', min: 1, max: 20, step: 1 } },
-  color: { control: 'color' },
-}
 
-CatmullRom.decorators = [
-  (storyFn) => (
-    <Setup controls={false} cameraPosition={new Vector3(0, 0, 17)}>
-      {storyFn()}
-    </Setup>
-  ),
-]
-
-export function VertexColorsLine(args) {
-  return (
-    <>
-      <Line points={points} vertexColors={colors} {...args} />
-      <OrbitControls zoomSpeed={0.5} />
-    </>
-  )
-}
-VertexColorsLine.storyName = 'VertexColors'
-VertexColorsLine.args = {
-  color: 'white',
-  lineWidth: 3,
-  dashed: false,
-}
-VertexColorsLine.argTypes = {
-  color: { control: 'color' },
-}
-
-VertexColorsLine.decorators = [
-  (storyFn) => (
-    <Setup controls={false} cameraPosition={new Vector3(0, 0, 17)}>
-      {storyFn()}
-    </Setup>
-  ),
-]
+export const CatmullRomSt = {
+  name: 'CatmullRom',
+  render: (args) => <CatmullRomScene {...args} />,
+  args: {
+    closed: false,
+    curveType: 'centripetal',
+    tension: 0.5,
+    color: 'red',
+    lineWidth: 3,
+    dashed: true,
+  },
+  argTypes: {
+    curveType: { control: 'select', options: ['centripetal', 'chordal', 'catmullrom'] },
+    tension: { control: { type: 'range', min: 0, max: 1, step: 0.01 } },
+    segments: { control: { type: 'range', min: 1, max: 20, step: 1 } },
+    color: { control: 'color' },
+  },
+} satisfies StoryObj<typeof CatmullRomLine>

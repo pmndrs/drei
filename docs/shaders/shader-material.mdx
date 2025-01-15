@@ -1,0 +1,61 @@
+---
+title: shaderMaterial
+sourcecode: src/core/shaderMaterial.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shaders-shadermaterial--shader-material-story)
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="ni6v4" />
+  </li>
+</Grid>
+
+Creates a THREE.ShaderMaterial for you with easier handling of uniforms, which are automatically declared as setter/getters on the object and allowed as constructor arguments.
+
+```jsx
+import { extend } from '@react-three/fiber'
+
+const ColorShiftMaterial = shaderMaterial(
+  { time: 0, color: new THREE.Color(0.2, 0.0, 0.1) },
+  // vertex shader
+  /*glsl*/`
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  // fragment shader
+  /*glsl*/`
+    uniform float time;
+    uniform vec3 color;
+    varying vec2 vUv;
+    void main() {
+      gl_FragColor.rgba = vec4(0.5 + 0.3 * sin(vUv.yxx + time) + color, 1.0);
+    }
+  `
+)
+
+// declaratively
+extend({ ColorShiftMaterial })
+...
+<mesh>
+  <colorShiftMaterial color="hotpink" time={1} />
+</mesh>
+
+// imperatively, all uniforms are available as setter/getters and constructor args
+const material = new ColorShiftMaterial({ color: new THREE.Color("hotpink") })
+material.time = 1
+```
+
+`shaderMaterial` attaches a unique `key` property to the prototype class. If you wire it to Reacts own `key` property, you can enable hot-reload.
+
+```jsx
+import { ColorShiftMaterial } from './ColorShiftMaterial'
+
+extend({ ColorShiftMaterial })
+
+// in your component
+<colorShiftMaterial key={ColorShiftMaterial.key} color="hotpink" time={1} />
+```

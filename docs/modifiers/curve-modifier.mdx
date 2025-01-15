@@ -1,0 +1,56 @@
+---
+title: CurveModifier
+sourcecode: src/core/CurveModifier.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/modifiers-curvemodifier)
+
+Given a curve will replace the children of this component with a mesh that move along said curve calling the property `moveAlongCurve` or modifying the `uniforms.pathOffset` value on the passed ref. Uses [three's Curve Modifier](https://threejs.org/examples/#webgl_modifier_curve)
+
+```tsx
+const curveRef = useRef<CurveModifierRef>()
+const scroll = useScroll()
+
+const curve = React.useMemo(() => new THREE.CatmullRomCurve3([...handlePos], true, 'centripetal'), [handlePos])
+
+useFrame(() => {
+  if (curveRef.current) {
+    // Move continuously along the curve
+    curveRef.current.moveAlongCurve(0.001)
+    
+    // Move along the curve using the scrollbar
+    curveRef.current.uniforms.pathOffset.value = scroll.offset
+  }
+})
+
+return (
+  <CurveModifier ref={curveRef} curve={curve}>
+    <mesh>
+      <boxGeometry args={[10, 10]} />
+    </mesh>
+  </CurveModifier>
+)
+```
+
+## Reference api
+
+```tsx
+type CurveModifierRef = {
+  curveArray: Curve<any>[];
+  curveLengthArray: number[];
+  object3D: TMesh;
+  splineTexure: DataTexture;
+  uniforms: CurveModifierUniforms;
+  updateCurve<TCurve extends Curve<any>>(index: number, curve: TCurve): void;
+  moveAlongCurve(amount: number): void;
+}
+
+type CurveModifierUniforms = {
+  spineTexture: IUniform<DataTexture>;
+  pathOffset: INumericUniform;
+  pathSegment: INumericUniform;
+  spineOffset: INumericUniform;
+  spineLength: INumericUniform;
+  flow: INumericUniform;
+}
+```

@@ -1,15 +1,25 @@
-import * as React from 'react'
+import { ForwardRefComponent } from '../helpers/ts-utils'
 import { addAfterEffect, useThree } from '@react-three/fiber'
+import * as React from 'react'
+
 import Stats from 'stats-gl'
 
-type Props = Partial<Stats> & {
+type StatsOptions = ConstructorParameters<typeof Stats>[0]
+
+type Props = Partial<StatsOptions> & {
+  id?: string
+  clearStatsGlStyle?: boolean
   showPanel?: number
   className?: string
   parent?: React.RefObject<HTMLElement>
+  ref?: React.RefObject<HTMLElement>
 }
 
-export function StatsGl({ className, parent, ...props }: Props) {
-  const gl: any = useThree((state) => state.gl)
+export const StatsGl: ForwardRefComponent<Props, HTMLDivElement> = /* @__PURE__ */ React.forwardRef(function StatsGl(
+  { className, parent, id, clearStatsGlStyle, ...props },
+  fref
+) {
+  const gl = useThree((state) => state.gl)
 
   const stats = React.useMemo(() => {
     const stats = new Stats({
@@ -19,17 +29,28 @@ export function StatsGl({ className, parent, ...props }: Props) {
     return stats
   }, [gl])
 
+  React.useImperativeHandle(fref, () => stats.domElement, [stats])
+
   React.useEffect(() => {
     if (stats) {
       const node = (parent && parent.current) || document.body
-      node?.appendChild(stats.dom)
-      if (className) stats.container.classList.add(...className.split(' ').filter((cls) => cls))
+      node?.appendChild(stats.domElement)
+      stats.domElement.querySelectorAll('canvas').forEach((canvas) => {
+        canvas.style.removeProperty('position')
+      })
+      if (id) stats.domElement.id = id
+      if (clearStatsGlStyle) stats.domElement.removeAttribute('style')
+      stats.domElement.removeAttribute('style')
+      const classNames = (className ?? '').split(' ').filter((cls) => cls)
+      if (classNames.length) stats.domElement.classList.add(...classNames)
       const end = addAfterEffect(() => stats.update())
       return () => {
-        node?.removeChild(stats.dom)
+        if (classNames.length) stats.domElement.classList.remove(...classNames)
+        node?.removeChild(stats.domElement)
         end()
       }
     }
-  }, [parent, stats, className])
+  }, [parent, stats, className, id, clearStatsGlStyle])
+
   return null
-}
+})

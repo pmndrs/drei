@@ -1,13 +1,24 @@
 import * as React from 'react'
 import { Canvas } from '@react-three/fiber'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { OrbitControls, Box, useContextBridge, Text } from '../../src'
 
+function ContextBridge({
+  contexts,
+  children,
+}: { contexts: Parameters<typeof useContextBridge> } & { children?: React.ReactNode }) {
+  useContextBridge(...contexts)
+
+  return <>{children}</>
+}
+
 export default {
   title: 'Misc/useContextBridge',
-  component: useContextBridge,
-  decorators: [(storyFn) => storyFn()],
-}
+  component: ContextBridge,
+} satisfies Meta<typeof ContextBridge>
+
+type Story = StoryObj<typeof ContextBridge>
 
 type ThemeContext = { colors: { red: string; green: string; blue: string } }
 type GreetingContext = {
@@ -53,11 +64,10 @@ function Scene() {
 }
 
 function SceneWrapper() {
-  const ContextBridge = useContextBridge(ThemeContext, GreetingContext)
   return (
     <Canvas>
       {/* create the bridge inside the Canvas and forward the context */}
-      <ContextBridge>
+      <ContextBridge contexts={[ThemeContext, GreetingContext]}>
         <Scene />
         <OrbitControls enablePan={false} zoomSpeed={0.5} />
       </ContextBridge>
@@ -79,5 +89,7 @@ function UseContextBridgeStory() {
   )
 }
 
-export const UseContextBridgeSt = () => <UseContextBridgeStory />
-UseContextBridgeSt.storyName = 'Default'
+export const UseContextBridgeSt = {
+  render: () => <UseContextBridgeStory />,
+  name: 'Default',
+} satisfies Story

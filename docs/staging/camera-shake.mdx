@@ -1,0 +1,43 @@
+---
+title: CameraShake
+sourcecode: src/core/CameraShake.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-camerashake--camera-shake-story)
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="t4l0f" />
+  </li>
+  <li>
+    <Codesandbox id="0ycwe" />
+  </li>
+</Grid>
+
+A component for applying a configurable camera shake effect. Currently only supports rotational camera shake. Pass a ref to recieve the `ShakeController` API.
+
+If you use shake in combination with controls make sure to set the `makeDefault` prop on your controls, in that case you do not have to pass them via the `controls` prop.
+
+```js
+const config = {
+  maxYaw: 0.1, // Max amount camera can yaw in either direction
+  maxPitch: 0.1, // Max amount camera can pitch in either direction
+  maxRoll: 0.1, // Max amount camera can roll in either direction
+  yawFrequency: 0.1, // Frequency of the yaw rotation
+  pitchFrequency: 0.1, // Frequency of the pitch rotation
+  rollFrequency: 0.1, // Frequency of the roll rotation
+  intensity: 1, // initial intensity of the shake
+  decay: false, // should the intensity decay over time
+  decayRate: 0.65, // if decay = true this is the rate at which intensity will reduce at
+  controls: undefined, // if using orbit controls, pass a ref here so we can update the rotation
+}
+
+<CameraShake {...config} />
+```
+
+```ts
+interface ShakeController {
+  getIntensity: () => number
+  setIntensity: (val: number) => void
+}
+```

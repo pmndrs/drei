@@ -1,0 +1,44 @@
+---
+title: Splat
+sourcecode: src/core/Splat.tsx
+---
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="qp4jmf" />
+  </li>
+</Grid>
+
+A declarative abstraction around [antimatter15/splat](https://github.com/antimatter15/splat). It supports re-use, multiple splats with correct depth sorting, splats can move and behave as a regular object3d's, supports alphahash & alphatest, and stream-loading.
+
+```tsx
+type SplatProps = {
+  /** Url towards a *.splat file, no support for *.ply */
+  src: string
+  /** Whether to use tone mapping, default: false */
+  toneMapped?: boolean
+  /** Alpha test value, , default: 0 */
+  alphaTest?: number
+  /** Whether to use alpha hashing, default: false */
+  alphaHash?: boolean
+  /** Chunk size for lazy loading, prevents chokings the worker, default: 25000 (25kb) */
+  chunkSize?: number
+} & JSX.IntrinsicElements['mesh']
+```
+
+```jsx
+<Splat src="https://huggingface.co/cakewalk/splat-data/resolve/main/nike.splat" />
+```
+
+In order to depth sort multiple splats correectly you can either use alphaTest, for instance with a low value. But keep in mind that this can show a slight outline under some viewing conditions.
+
+```jsx
+<Splat alphaTest={0.1} src="foo.splat" />
+<Splat alphaTest={0.1} src="bar.splat" />
+```
+
+You can also use alphaHash, but this can be slower and create some noise, you would typically get rid of the noise in postprocessing with a TAA pass. You don't have to use alphaHash on all splats.
+
+```jsx
+<Splat alphaHash src="foo.splat" />
+```

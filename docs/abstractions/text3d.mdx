@@ -1,0 +1,39 @@
+---
+title: Text3D
+sourcecode: src/core/Text3D.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-text3d--text-3-d-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="x6obrb" />
+  </li>
+</Grid>
+
+Render 3D text using ThreeJS's `TextGeometry`.
+
+Text3D will suspend while loading the font data. Text3D requires fonts in JSON format generated through [typeface.json](http://gero3.github.io/facetype.js), either as a path to a JSON file or a JSON object. If you face display issues try checking "Reverse font direction" in the typeface tool.
+
+```jsx
+<Text3D font={fontUrl} {...textOptions}>
+  Hello world!
+  <meshNormalMaterial />
+</Text3D>
+```
+
+You can use any material. `textOptions` are options you'd pass to the `TextGeometry` constructor. Find more information about available options [here](https://threejs.org/docs/index.html?q=textg#examples/en/geometries/TextGeometry).
+
+You can align the text using the `<Center>` component.
+
+```jsx
+<Center top left>
+  <Text3D>hello</Text3D>
+</Center>
+```
+
+It adds three properties that do not exist in the original `TextGeometry`, `lineHeight`, `letterSpacing` and smooth. LetterSpacing is a factor that is `1` by default. LineHeight is in threejs units and `0` by default. Smooth merges vertices with a tolerance and calls computeVertexNormals.
+
+```jsx
+<Text3D smooth={1} lineHeight={0.5} letterSpacing={-0.025}>{`hello\nworld`}</Text3D>
+```

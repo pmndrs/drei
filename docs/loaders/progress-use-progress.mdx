@@ -1,0 +1,29 @@
+---
+title: Progress / useProgress
+sourcecode: src/core/Progress.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-progress)
+
+A convenience hook that wraps `THREE.DefaultLoadingManager`'s progress status.
+
+```jsx
+function Loader() {
+  const { active, progress, errors, item, loaded, total } = useProgress()
+  return <Html center>{progress} % loaded</Html>
+}
+
+return (
+  <Suspense fallback={<Loader />}>
+    <AsyncModels />
+  </Suspense>
+)
+```
+
+If you don't want your progress component to re-render on all changes you can be specific as to what you need, for instance if the component is supposed to collect errors only. Look into [zustand](https://github.com/react-spring/zustand) for more info about selectors.
+
+```jsx
+const errors = useProgress((state) => state.errors)
+```
+
+👉 Note that your loading component does not have to be a suspense fallback. You can use it anywhere, even in your dom tree, for instance for overlays.

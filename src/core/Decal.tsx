@@ -9,6 +9,7 @@ export type DecalProps = Omit<JSX.IntrinsicElements['mesh'], 'children'> & {
   debug?: boolean
   mesh?: React.MutableRefObject<THREE.Mesh>
   position?: FIBER.Vector3
+  /** FIBER.Euler for manual orientation or a single float for closest-vertex-normal orient */
   rotation?: FIBER.Euler | number
   scale?: FIBER.Vector3
   map?: THREE.Texture
@@ -41,6 +42,11 @@ export const Decal: ForwardRefComponent<DecalProps, THREE.Mesh> = /* @__PURE__ *
   const ref = React.useRef<THREE.Mesh>(null!)
   React.useImperativeHandle(forwardRef, () => ref.current)
   const helper = React.useRef<THREE.Mesh>(null!)
+  const state = React.useRef({
+    position: new THREE.Vector3(),
+    rotation: new THREE.Euler(),
+    scale: new THREE.Vector3(1, 1, 1),
+  })
 
   React.useLayoutEffect(() => {
     const parent = mesh?.current || ref.current.parent
@@ -49,14 +55,8 @@ export const Decal: ForwardRefComponent<DecalProps, THREE.Mesh> = /* @__PURE__ *
       throw new Error('Decal must have a Mesh as parent or specify its "mesh" prop')
     }
 
-    const state = {
-      position: new THREE.Vector3(),
-      rotation: new THREE.Euler(),
-      scale: new THREE.Vector3(1, 1, 1),
-    }
-
     if (parent) {
-      applyProps(state as any, { position, scale })
+      applyProps(state.current as any, { position, scale })
 
       // Zero out the parents matrix world for this operation
       const matrixWorld = parent.matrixWorld.clone()
@@ -64,21 +64,47 @@ export const Decal: ForwardRefComponent<DecalProps, THREE.Mesh> = /* @__PURE__ *
 
       if (!rotation || typeof rotation === 'number') {
         const o = new THREE.Object3D()
+        o.position.copy(state.current.position)
 
-        o.position.copy(state.position)
-        o.lookAt(parent.position)
+        // Thanks https://x.com/N8Programs !
+        const vertices = parent.geometry.attributes.position.array
+        if (parent.geometry.attributes.normal === undefined) parent.geometry.computeVertexNormals()
+        const normal = parent.geometry.attributes.normal.array
+        let distance = Infinity
+        let closest = new THREE.Vector3()
+        let closestNormal = new THREE.Vector3()
+        const ox = o.position.x
+        const oy = o.position.y
+        const oz = o.position.z
+        const vLength = vertices.length
+        let chosenIdx = -1
+        for (let i = 0; i < vLength; i += 3) {
+          const x = vertices[i]
+          const y = vertices[i + 1]
+          const z = vertices[i + 2]
+          const xDiff = x - ox
+          const yDiff = y - oy
+          const zDiff = z - oz
+          const distSquared = xDiff * xDiff + yDiff * yDiff + zDiff * zDiff
+          if (distSquared < distance) {
+            distance = distSquared
+            chosenIdx = i
+          }
+        }
+        closestNormal.fromArray(normal, chosenIdx)
+
+        // Get vector tangent to normal
+        o.lookAt(o.position.clone().add(closestNormal))
+        o.rotateZ(Math.PI)
+        o.rotateY(Math.PI)
+
         if (typeof rotation === 'number') o.rotateZ(rotation)
-        applyProps(state as any, { rotation: o.rotation })
+        applyProps(state.current as any, { rotation: o.rotation })
       } else {
-        applyProps(state as any, { rotation })
+        applyProps(state.current as any, { rotation })
       }
 
-      target.geometry = new DecalGeometry(parent, state.position, state.rotation, state.scale)
-      if (helper.current) {
-        applyProps(helper.current as any, state)
-        // Prevent the helpers from blocking rays
-        helper.current.traverse((child) => (child.raycast = () => null))
-      }
+      target.geometry = new DecalGeometry(parent, state.current.position, state.current.rotation, state.current.scale)
       // Reset parents matix-world
       parent.matrixWorld = matrixWorld
 
@@ -87,6 +113,14 @@ export const Decal: ForwardRefComponent<DecalProps, THREE.Mesh> = /* @__PURE__ *
       }
     }
   }, [mesh, ...vecToArray(position), ...vecToArray(scale), ...vecToArray(rotation)])
+
+  React.useLayoutEffect(() => {
+    if (helper.current) {
+      applyProps(helper.current as any, state.current)
+      // Prevent the helpers from blocking rays
+      helper.current.traverse((child) => (child.raycast = () => null))
+    }
+  }, [debug])
 
   // <meshStandardMaterial transparent polygonOffset polygonOffsetFactor={-10} {...props} />}
   return (

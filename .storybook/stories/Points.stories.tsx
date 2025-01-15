@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { MathUtils, Quaternion, Vector3 } from 'three'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
@@ -12,7 +13,16 @@ import * as misc from 'maath/misc'
 export default {
   title: 'Performance/Points',
   component: Points,
-}
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(10, 10, 10)}>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof Points>
+
+type Story = StoryObj<typeof Points>
 
 const rotationAxis = new Vector3(0, 1, 0).normalize()
 const q = new Quaternion()
@@ -52,7 +62,7 @@ extend({ MyPointsMaterial })
 // @ts-ignore
 const makeBuffer = (...args) => Float32Array.from(...args)
 
-function BasicPointsBufferScene() {
+function BasicPointsBufferScene(props: React.ComponentProps<typeof Points>) {
   const n = 10_000
   const [positionA] = React.useState(() => makeBuffer({ length: n * 3 }, () => MathUtils.randFloatSpread(5)))
   const [positionB] = React.useState(() => makeBuffer({ length: n * 3 }, () => MathUtils.randFloatSpread(10)))
@@ -74,7 +84,7 @@ function BasicPointsBufferScene() {
 
   return (
     <>
-      <Points positions={positionFinal} colors={color} sizes={size}>
+      <Points {...props} positions={positionFinal} colors={color} sizes={size}>
         {/* @ts-ignore */}
         <myPointsMaterial />
       </Points>
@@ -82,12 +92,12 @@ function BasicPointsBufferScene() {
   )
 }
 
-export function BasicPointsBuffer() {
-  return <BasicPointsBufferScene />
-}
+export const BasicPointsBuffer = {
+  render: (args) => <BasicPointsBufferScene {...args} />,
+  name: 'Buffer',
+} satisfies Story
 
-BasicPointsBuffer.storyName = 'Buffer'
-BasicPointsBuffer.decorators = [(storyFn) => <Setup cameraPosition={new Vector3(10, 10, 10)}>{storyFn()}</Setup>]
+//
 
 function PointEvent({ color, ...props }) {
   const [hovered, setHover] = React.useState(false)
@@ -97,13 +107,13 @@ function PointEvent({ color, ...props }) {
       {...props}
       color={clicked ? 'hotpink' : hovered ? 'red' : color}
       onPointerOver={(e) => (e.stopPropagation(), setHover(true))}
-      onPointerOut={(e) => setHover(false)}
+      onPointerOut={() => setHover(false)}
       onClick={(e) => (e.stopPropagation(), setClick((state) => !state))}
     />
   )
 }
 
-function BasicPointsInstancesScene() {
+function BasicPointsInstancesScene(props: React.ComponentProps<typeof Points>) {
   const [points] = React.useState(() => {
     const n = 10
     return Array.from({ length: n * n * n }, () => {
@@ -122,7 +132,7 @@ function BasicPointsInstancesScene() {
   }, [])
   return (
     <>
-      <Points>
+      <Points {...props}>
         {points.map((p) => (
           <PointEvent
             position={p as [number, number, number]}
@@ -137,16 +147,16 @@ function BasicPointsInstancesScene() {
   )
 }
 
-export function BasicPointsInstances() {
-  return <BasicPointsInstancesScene />
-}
+export const BasicPointsInstances = {
+  render: (args) => <BasicPointsInstancesScene {...args} />,
+  name: 'Instances',
+} satisfies Story
 
-BasicPointsInstances.storyName = 'Instances'
-BasicPointsInstances.decorators = [(storyFn) => <Setup cameraPosition={new Vector3(10, 10, 10)}>{storyFn()}</Setup>]
+//
 
-function BasicPointsInstancesSelectionScene() {
+function BasicPointsInstancesSelectionScene(props: React.ComponentProps<typeof Points>) {
   const [points] = React.useState(() =>
-    Array.from({ length: 100 }, (i) => [
+    Array.from({ length: 100 }, () => [
       MathUtils.randFloatSpread(10),
       MathUtils.randFloatSpread(10),
       MathUtils.randFloatSpread(10),
@@ -166,7 +176,7 @@ function BasicPointsInstancesSelectionScene() {
 
   return (
     <>
-      <Points limit={points.length} range={points.length}>
+      <Points {...props} limit={points.length} range={points.length}>
         <PointMaterial transparent vertexColors size={15} sizeAttenuation={false} depthWrite={false} />
         {points.map((position, i) => (
           <PointEvent key={i} color="orange" position={position} />
@@ -176,11 +186,7 @@ function BasicPointsInstancesSelectionScene() {
   )
 }
 
-export function BasicPointsInstancesSelection() {
-  return <BasicPointsInstancesSelectionScene />
-}
-
-BasicPointsInstancesSelection.storyName = 'Selection'
-BasicPointsInstancesSelection.decorators = [
-  (storyFn) => <Setup cameraPosition={new Vector3(10, 10, 10)}>{storyFn()}</Setup>,
-]
+export const BasicPointsInstancesSelection = {
+  render: (args) => <BasicPointsInstancesSelectionScene {...args} />,
+  name: 'Selection',
+} satisfies Story

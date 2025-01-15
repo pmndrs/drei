@@ -23,6 +23,14 @@ const config: StorybookConfig = {
 
   typescript: {
     reactDocgen: 'react-docgen-typescript',
+    reactDocgenTypescriptOptions: {
+      propFilter: (prop, component) => {
+        // Only include props that belong to the current component
+        const fileName = prop.declarations?.at(0)?.fileName // 'drei/src/core/AccumulativeShadows.tsx'
+        const componentName = fileName?.split('/').at(-1)?.split('.').at(0) // 'AccumulativeShadows'
+        return component.name === componentName
+      },
+    },
   },
 }
 

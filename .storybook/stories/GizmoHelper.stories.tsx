@@ -1,21 +1,12 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
-import { GizmoHelper, OrbitControls, useGLTF, GizmoViewcube, TrackballControls, GizmoViewport } from '../../src'
+import { Meta, StoryObj } from '@storybook/react'
+
+import { GizmoHelper, OrbitControls, useGLTF, GizmoViewcube, GizmoViewport } from '../../src'
 import { Setup } from '../Setup'
+import { ComponentProps } from 'react'
 
-export default {
-  title: 'Gizmos/GizmoHelper',
-  component: GizmoHelper,
-  decorators: [
-    (storyFn) => (
-      <Setup controls={false} cameraPosition={new Vector3(0, 0, 10)}>
-        {storyFn()}
-      </Setup>
-    ),
-  ],
-}
-
-const alignment = [
+const alignments = [
   'top-left',
   'top-right',
   'bottom-right',
@@ -25,119 +16,71 @@ const alignment = [
   'center-left',
   'center-center',
   'top-center',
-]
-const controls = ['OrbitControls', 'TrackballControls']
-const faces = ['Right', 'Left', 'Top', 'Bottom', 'Front', 'Back']
-const gizmos = ['GizmoViewcube', 'GizmoViewport']
+] as const
 
-const args = {
-  alignment: alignment[2],
-  color: 'white',
-  colorX: 'red',
-  colorY: 'green',
-  colorZ: 'blue',
-  controls: controls[0],
-  faces,
-  gizmo: gizmos[0],
-  hideNegativeAxes: false,
-  hoverColor: '#999',
-  labelColor: 'black',
-  marginX: 80,
-  marginY: 80,
-  opacity: 1,
-  strokeColor: 'gray',
-  textColor: 'black',
-}
+export default {
+  title: 'Gizmos/GizmoHelper',
+  component: GizmoHelper,
+  decorators: [
+    (Story) => (
+      <Setup controls={false} cameraPosition={new Vector3(0, 0, 10)}>
+        <Story />
+      </Setup>
+    ),
+  ],
+  args: {
+    alignment: alignments[2],
+    margin: [80, 80],
+  },
+  argTypes: {
+    alignment: {
+      control: { type: 'select' },
+      options: alignments,
+    },
+  },
+} satisfies Meta<typeof GizmoHelper>
 
-const colorArgType = { control: { type: 'color' } }
-const generalTable = { table: { categry: 'General' } }
-const helperTable = { table: { category: 'GizmoHelper' } }
-const viewcubeTable = { table: { category: 'GizmoViewcube' } }
-const viewportTable = { table: { category: 'GizmoViewport' } }
+type Story = StoryObj<typeof GizmoHelper>
 
-const argTypes = {
-  alignment: { control: { type: 'select' }, options: alignment, ...helperTable },
-  color: { ...colorArgType, ...viewcubeTable },
-  colorX: { ...colorArgType, ...viewportTable },
-  colorY: { ...colorArgType, ...viewportTable },
-  colorZ: { ...colorArgType, ...viewportTable },
-  controls: {
-    control: { type: 'select' },
-    name: 'Controls',
-    options: controls,
-    ...generalTable,
-  },
-  faces: {
-    control: { type: 'array' },
-    options: faces,
-    ...viewcubeTable,
-  },
-  gizmo: {
-    control: { type: 'select' },
-    name: 'Gizmo',
-    options: gizmos,
-    ...generalTable,
-  },
-  hideNegativeAxes: { ...viewportTable },
-  hoverColor: { ...viewportTable },
-  labelColor: { ...viewportTable },
-  marginX: { ...helperTable },
-  marginY: { ...helperTable },
-  opacity: {
-    control: { min: 0, max: 1, step: 0.01, type: 'range' },
-    ...viewcubeTable,
-  },
-  strokeColor: { ...colorArgType, ...viewcubeTable },
-  textColor: { ...colorArgType, ...viewcubeTable },
-}
-
-const GizmoHelperStoryImpl = ({
-  alignment,
-  color,
-  colorX,
-  colorY,
-  colorZ,
-  controls,
-  faces,
-  gizmo,
-  hideNegativeAxes,
-  hoverColor,
-  labelColor,
-  marginX,
-  marginY,
-  opacity,
-  strokeColor,
-  textColor,
-}) => {
+function Tokyo() {
   const { scene } = useGLTF('LittlestTokyo.glb')
 
-  return (
-    <>
-      <primitive object={scene} scale={0.01} />
-      <GizmoHelper alignment={alignment} margin={[marginX, marginY]}>
-        {gizmo === 'GizmoViewcube' ? (
-          <GizmoViewcube
-            {...{
-              color,
-              faces,
-              hoverColor,
-              opacity,
-              strokeColor,
-              textColor,
-            }}
-          />
-        ) : (
-          <GizmoViewport {...{ axisColors: [colorX, colorY, colorZ], hideNegativeAxes, labelColor }} />
-        )}
-      </GizmoHelper>
+  return <primitive object={scene} scale={0.01} />
+}
 
-      {controls === 'TrackballControls' ? <TrackballControls makeDefault /> : <OrbitControls makeDefault />}
-    </>
+const GizmoHelperScene1 = (props: ComponentProps<typeof GizmoHelper>) => {
+  return (
+    <React.Suspense fallback={null}>
+      <Tokyo />
+
+      <GizmoHelper {...props}>
+        <GizmoViewcube />
+      </GizmoHelper>
+      <OrbitControls makeDefault />
+    </React.Suspense>
   )
 }
 
-export const GizmoHelperStory = (props) => <GizmoHelperStoryImpl {...props} />
+export const GizmoHelperSt1: Story = {
+  name: 'Cube',
+  render: (args) => <GizmoHelperScene1 {...args} />,
+} satisfies Story
 
-GizmoHelperStory.args = args
-GizmoHelperStory.argTypes = argTypes
-GizmoHelperStory.storyName = 'Default'
+const GizmoHelperScene2 = (props: ComponentProps<typeof GizmoHelper>) => {
+  return (
+    <React.Suspense fallback={null}>
+      <Tokyo />
+
+      <GizmoHelper {...props}>
+        <GizmoViewport />
+      </GizmoHelper>
+
+      <OrbitControls makeDefault />
+    </React.Suspense>
+  )
+}
+
+export const GizmoHelperSt2: Story = {
+  name: 'Viewport',
+  render: (args) => <GizmoHelperScene2 {...args} />,
+} satisfies Story

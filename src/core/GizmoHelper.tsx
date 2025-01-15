@@ -4,6 +4,7 @@ import { Group, Matrix4, Object3D, OrthographicCamera as OrthographicCameraImpl,
 import { OrthographicCamera } from './OrthographicCamera'
 import { OrbitControls as OrbitControlsType } from 'three-stdlib'
 import { Hud } from './Hud'
+import { CameraControls as CameraControlsType } from './CameraControls'
 
 type GizmoHelperContext = {
   tweenCamera: (direction: Vector3) => void
@@ -22,7 +23,7 @@ const [q1, q2] = [/* @__PURE__ */ new Quaternion(), /* @__PURE__ */ new Quaterni
 const target = /* @__PURE__ */ new Vector3()
 const targetPosition = /* @__PURE__ */ new Vector3()
 
-type ControlsProto = { update(): void; target: Vector3 }
+type ControlsProto = { update(delta?: number): void; target: Vector3 }
 
 export type GizmoHelperProps = JSX.IntrinsicElements['group'] & {
   alignment?:
@@ -46,6 +47,10 @@ export type GizmoHelperProps = JSX.IntrinsicElements['group'] & {
 
 const isOrbitControls = (controls: ControlsProto): controls is OrbitControlsType => {
   return 'minPolarAngle' in (controls as OrbitControlsType)
+}
+
+const isCameraControls = (controls: CameraControlsType | ControlsProto): controls is CameraControlsType => {
+  return 'getTarget' in (controls as CameraControlsType)
 }
 
 export const GizmoHelper = ({
@@ -76,7 +81,11 @@ export const GizmoHelper = ({
   const tweenCamera = React.useCallback(
     (direction: Vector3) => {
       animating.current = true
-      if (defaultControls || onTarget) focusPoint.current = defaultControls?.target || onTarget?.()
+      if (defaultControls || onTarget) {
+        focusPoint.current =
+          onTarget?.() ||
+          (isCameraControls(defaultControls) ? defaultControls.getTarget(focusPoint.current) : defaultControls?.target)
+      }
       radius.current = mainCamera.position.distanceTo(target)
 
       // Rotate from current camera orientation
@@ -86,7 +95,6 @@ export const GizmoHelper = ({
       targetPosition.copy(direction).multiplyScalar(radius.current).add(target)
 
       dummy.lookAt(targetPosition)
-      dummy.up.copy(mainCamera.up)
 
       q2.copy(dummy.quaternion)
 
@@ -115,8 +123,12 @@ export const GizmoHelper = ({
           mainCamera.position.set(0, 0, 1).applyQuaternion(q1).multiplyScalar(radius.current).add(focusPoint.current)
           mainCamera.up.set(0, 1, 0).applyQuaternion(q1).normalize()
           mainCamera.quaternion.copy(q1)
+
+          if (isCameraControls(defaultControls))
+            defaultControls.setPosition(mainCamera.position.x, mainCamera.position.y, mainCamera.position.z)
+
           if (onUpdate) onUpdate()
-          else if (defaultControls) defaultControls.update()
+          else if (defaultControls) defaultControls.update(delta)
           invalidate()
         }
       }
@@ -134,13 +146,13 @@ export const GizmoHelper = ({
   const x = alignment.endsWith('-center')
     ? 0
     : alignment.endsWith('-left')
-    ? -size.width / 2 + marginX
-    : size.width / 2 - marginX
+      ? -size.width / 2 + marginX
+      : size.width / 2 - marginX
   const y = alignment.startsWith('center-')
     ? 0
     : alignment.startsWith('top-')
-    ? size.height / 2 - marginY
-    : -size.height / 2 + marginY
+      ? size.height / 2 - marginY
+      : -size.height / 2 + marginY
 
   return (
     <Hud renderPriority={renderPriority}>

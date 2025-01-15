@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
@@ -6,8 +7,10 @@ import { PointerLockControls, Icosahedron } from '../../src'
 
 export default {
   title: 'Controls/PointerLockControls',
-  component: PointerLockControlsScene,
-}
+  component: PointerLockControls,
+} satisfies Meta<typeof PointerLockControls>
+
+type Story = StoryObj<typeof PointerLockControls>
 
 const NUM = 2
 
@@ -46,23 +49,23 @@ function Icosahedrons() {
   )
 }
 
-function PointerLockControlsScene() {
+function PointerLockControlsScene(props: React.ComponentProps<typeof PointerLockControls>) {
   return (
-    <>
-      <Setup controls={false} camera={{ position: [0, 0, 10] }}>
-        <Icosahedrons />
-        <PointerLockControls />
-      </Setup>
-    </>
+    <Setup controls={false} camera={{ position: [0, 0, 10] }}>
+      <Icosahedrons />
+      <PointerLockControls {...props} />
+    </Setup>
   )
 }
 
-export const PointerLockControlsSceneSt = () => <PointerLockControlsScene />
-PointerLockControlsSceneSt.story = {
+export const PointerLockControlsSceneSt = {
+  render: (args) => <PointerLockControlsScene {...args} />,
   name: 'Default',
-}
+} satisfies Story
 
-function PointerLockControlsSceneWithSelector() {
+//
+
+function PointerLockControlsSceneWithSelector(props: React.ComponentProps<typeof PointerLockControls>) {
   return (
     <>
       <div
@@ -77,10 +80,12 @@ function PointerLockControlsSceneWithSelector() {
       >
         Click here to play
       </div>
+
       <Setup controls={false} camera={{ position: [0, 0, 10] }}>
         <Icosahedrons />
-        <PointerLockControls selector="#instructions" />
+        <PointerLockControls {...props} />
       </Setup>
+
       <div
         id="instructions"
         style={{
@@ -97,7 +102,10 @@ function PointerLockControlsSceneWithSelector() {
   )
 }
 
-export const PointerLockControlsSceneStWithSelector = () => <PointerLockControlsSceneWithSelector />
-PointerLockControlsSceneStWithSelector.story = {
+export const PointerLockControlsSceneStWithSelector = {
+  args: {
+    selector: '#instructions',
+  },
+  render: (args) => <PointerLockControlsSceneWithSelector {...args} />,
   name: 'With selector',
-}
+} satisfies Story

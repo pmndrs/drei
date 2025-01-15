@@ -1,20 +1,28 @@
 import * as React from 'react'
 import { useFrame } from '@react-three/fiber'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
-import { Shadow, Icosahedron, Plane, type ShadowType } from '../../src'
-import { type Mesh } from 'three'
+import { Shadow, Icosahedron, Plane } from '../../src'
 
 export default {
   title: 'Misc/Shadow',
   component: Shadow,
-  decorators: [(storyFn) => <Setup> {storyFn()}</Setup>],
-}
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof Shadow>
 
-function ShadowScene() {
-  const shadow = React.useRef<ShadowType>(null!)
-  const mesh = React.useRef<Mesh>(null!)
+type Story = StoryObj<typeof Shadow>
+
+function ShadowScene(props: React.ComponentProps<typeof Shadow>) {
+  const shadow = React.useRef<React.ElementRef<typeof Shadow>>(null!)
+  const mesh = React.useRef<React.ElementRef<typeof Icosahedron>>(null!)
 
   useFrame(({ clock }) => {
     shadow.current.scale.x = Math.sin(clock.getElapsedTime()) + 3
@@ -28,7 +36,8 @@ function ShadowScene() {
       <Icosahedron ref={mesh} args={[1, 2]} position-y={2}>
         <meshBasicMaterial color="lightblue" wireframe />
       </Icosahedron>
-      <Shadow ref={shadow} scale={[2, 2, 2]} position-y={0.1} rotation-x={-Math.PI / 2} />
+
+      <Shadow ref={shadow} {...props} />
 
       <Plane args={[4, 4]} rotation={[-Math.PI / 2, 0, 0]}>
         <meshBasicMaterial color="white" />
@@ -37,5 +46,12 @@ function ShadowScene() {
   )
 }
 
-export const ShadowSt = () => <ShadowScene />
-ShadowSt.storyName = 'Default'
+export const ShadowSt = {
+  args: {
+    scale: [2, 2, 2],
+    position: [0, 0.1, 0],
+    rotation: [-Math.PI / 2, 0, 0],
+  },
+  render: (args) => <ShadowScene {...args} />,
+  name: 'Default',
+} satisfies Story

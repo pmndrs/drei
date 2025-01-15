@@ -1,0 +1,22 @@
+---
+title: Detailed
+sourcecode: src/core/Detailed.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-detailed--detailed-st)
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="12nmp" />
+  </li>
+</Grid>
+
+A wrapper around [THREE.LOD](https://threejs.org/docs/#api/en/objects/LOD) (Level of detail).
+
+```jsx
+<Detailed distances={[0, 10, 20]} {...props}>
+  <mesh geometry={highDetail} />
+  <mesh geometry={mediumDetail} />
+  <mesh geometry={lowDetail} />
+</Detailed>
+```

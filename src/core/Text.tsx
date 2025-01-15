@@ -37,10 +37,10 @@ type Props = JSX.IntrinsicElements['mesh'] & {
   fillOpacity?: number
   sdfGlyphSize?: number
   debugSDF?: boolean
+  glyphGeometryDetail?: number
   onSync?: (troika: any) => void
 }
 
-// eslint-disable-next-line prettier/prettier
 export const Text: ForwardRefComponent<Props, any> = /* @__PURE__ */ React.forwardRef(
   (
     {

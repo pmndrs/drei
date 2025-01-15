@@ -1,20 +1,24 @@
 import { useFrame } from '@react-three/fiber'
 import * as React from 'react'
-import { useMemo, useRef } from 'react'
+import { useRef } from 'react'
 import { MathUtils, Mesh, Vector3 } from 'three'
-import { Cone, KeyboardControls, KeyboardControlsEntry, useKeyboardControls } from '../../src'
+import { Cone, KeyboardControls, useKeyboardControls } from '../../src'
 import { Setup } from '../Setup'
+import { Meta, StoryObj } from '@storybook/react'
 
 export default {
   title: 'Controls/KeyboardControls',
+  component: KeyboardControls,
   decorators: [
-    (storyFn) => (
+    (Story) => (
       <Setup cameraPosition={new Vector3(0, 10, 0)} lights={true}>
-        {storyFn()}
+        <Story />
       </Setup>
     ),
   ],
-}
+} satisfies Meta<typeof KeyboardControls>
+
+type Story = StoryObj<typeof KeyboardControls>
 
 enum Controls {
   forward = 'forward',
@@ -24,23 +28,12 @@ enum Controls {
   color = 'color',
 }
 
-export const KeyboardControlsSt = () => {
-  const map = useMemo<KeyboardControlsEntry[]>(
-    () => [
-      { name: Controls.forward, keys: ['ArrowUp', 'KeyW'] },
-      { name: Controls.back, keys: ['ArrowDown', 'KeyS'] },
-      { name: Controls.left, keys: ['ArrowLeft', 'KeyA'] },
-      { name: Controls.right, keys: ['ArrowRight', 'KeyD'] },
-      { name: Controls.color, keys: ['Space'] },
-    ],
-    []
-  )
-
+function KeyboardControlsScene(props: React.ComponentProps<typeof KeyboardControls>) {
   const [color, setColor] = React.useState('green')
 
   return (
     <KeyboardControls
-      map={map}
+      {...props}
       onChange={(name, pressed, _state) => {
         // Test onChange by toggling the color.
         if (name === Controls.color && pressed) {
@@ -52,6 +45,20 @@ export const KeyboardControlsSt = () => {
     </KeyboardControls>
   )
 }
+
+export const KeyboardControlsSt = {
+  name: 'Default',
+  render: (args) => <KeyboardControlsScene {...args} />,
+  args: {
+    map: [
+      { name: Controls.forward, keys: ['ArrowUp', 'KeyW'] },
+      { name: Controls.back, keys: ['ArrowDown', 'KeyS'] },
+      { name: Controls.left, keys: ['ArrowLeft', 'KeyA'] },
+      { name: Controls.right, keys: ['ArrowRight', 'KeyD'] },
+      { name: Controls.color, keys: ['Space'] },
+    ],
+  },
+} satisfies Story
 
 const _velocity = new Vector3()
 const speed = 10

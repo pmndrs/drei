@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import * as React from 'react'
 import { OrthographicCamera as OrthographicCameraImpl } from 'three'
 import { useThree, useFrame } from '@react-three/fiber'
-import { useFBO } from './useFBO'
+import { useFBO } from './Fbo'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 const isFunction = (node: any): node is Function => typeof node === 'function'

@@ -1,17 +1,27 @@
 import { createPortal, useFrame } from '@react-three/fiber'
-import React, { useRef, useState } from 'react'
+import React, { ComponentProps, useRef, useState } from 'react'
 import { Scene } from 'three'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 import { Box, CameraControls, PerspectiveCamera, Plane, useFBO } from '../../src'
 
-import type { Camera } from 'three'
-import type { CameraControlsProps } from '../../src'
+export default {
+  title: 'Controls/CameraControls',
+  component: CameraControls,
+  decorators: [
+    (Story) => (
+      <Setup controls={false}>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof CameraControls>
 
-const args = {}
+type Story = StoryObj<typeof CameraControls>
 
-export const CameraControlsStory = (props: CameraControlsProps) => {
-  const cameraControlRef = useRef<CameraControls | null>(null)
+function CameraControlsScene1(props: ComponentProps<typeof CameraControls>) {
+  const cameraControlRef = useRef<CameraControls>(null)
 
   return (
     <>
@@ -27,23 +37,19 @@ export const CameraControlsStory = (props: CameraControlsProps) => {
   )
 }
 
-CameraControlsStory.args = args
-CameraControlsStory.storyName = 'Default'
+export const CameraControlsSt1 = {
+  render: (args) => <CameraControlsScene1 {...args} />,
+  name: 'Default',
+} satisfies Story
 
-export default {
-  title: 'Controls/CameraControls',
-  component: CameraControls,
-  decorators: [(storyFn) => <Setup controls={false}>{storyFn()}</Setup>],
-}
-
-const CustomCamera = (props: CameraControlsProps) => {
+const CameraControlsScene2 = (props: ComponentProps<typeof CameraControls>) => {
   /**
    * we will render our scene in a render target and use it as a map.
    */
   const fbo = useFBO(400, 400)
   const virtualCamera = useRef<CameraControls['camera']>()
   const [virtualScene] = useState(() => new Scene())
-  const cameraControlRef = useRef<CameraControls | null>(null)
+  const cameraControlRef = useRef<CameraControls>(null)
 
   useFrame(({ gl }) => {
     if (virtualCamera.current) {
@@ -83,7 +89,7 @@ const CustomCamera = (props: CameraControlsProps) => {
   )
 }
 
-export const CustomCameraStory = (props: CameraControlsProps) => <CustomCamera {...props} />
-
-CustomCameraStory.args = args
-CustomCameraStory.storyName = 'Custom Camera'
+export const CameraControlsSt2 = {
+  render: (args) => <CameraControlsScene2 {...args} />,
+  name: 'Custom Camera',
+} satisfies Story

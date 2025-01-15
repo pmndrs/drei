@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { useFrame, useThree, createPortal } from '@react-three/fiber'
 import * as THREE from 'three'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
@@ -9,12 +10,20 @@ import { useCamera, OrthographicCamera } from '../../src'
 export default {
   title: 'Misc/useCamera',
   component: UseCameraScene,
-  decorators: [(storyFn) => <Setup cameraPosition={new THREE.Vector3(0, 0, 5)}>{storyFn()}</Setup>],
-}
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new THREE.Vector3(0, 0, 5)}>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof UseCameraScene>
+
+type Story = StoryObj<typeof UseCameraScene>
 
 function UseCameraScene() {
-  const virtualCam = React.useRef<THREE.Camera>(null!)
-  const ref = React.useRef<THREE.Mesh>()
+  const virtualCam = React.useRef<React.ElementRef<typeof OrthographicCamera>>(null!)
+  const ref = React.useRef<React.ElementRef<'mesh'>>(null)
 
   const [hover, setHover] = React.useState<null | number>(null)
 
@@ -58,11 +67,10 @@ function UseCameraScene() {
       <pointLight position={[10, 10, 10]} intensity={0.5} />
     </>,
     virtualScene
-  ) as unknown as JSX.Element
+  )
 }
 
-export const UseCameraSt = () => <UseCameraScene />
-
-UseCameraSt.story = {
+export const UseCameraSt = {
+  render: () => <UseCameraScene />,
   name: 'Default',
-}
+} satisfies Story

@@ -1,10 +1,43 @@
-import { useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import { Object3D } from 'three'
+import { useThree, useFrame } from '@react-three/fiber'
+import { Falsey } from 'utility-types'
 
 type HelperType = Object3D & { update: () => void; dispose: () => void }
-type HelperConstructor = new (...args: any[]) => HelperType
+type HelperConstructor = new (...args: any[]) => any
 type HelperArgs<T> = T extends [infer _, ...infer R] ? R : never
+
+export function useHelper<T extends HelperConstructor>(
+  object3D: React.MutableRefObject<Object3D> | Falsey,
+  helperConstructor: T,
+  ...args: HelperArgs<ConstructorParameters<T>>
+) {
+  const helper = React.useRef<HelperType>()
+  const scene = useThree((state) => state.scene)
+  React.useLayoutEffect(() => {
+    let currentHelper: HelperType = undefined!
+
+    if (object3D && object3D?.current && helperConstructor) {
+      helper.current = currentHelper = new (helperConstructor as any)(object3D.current, ...args)
+    }
+
+    if (currentHelper) {
+      // Prevent the helpers from blocking rays
+      currentHelper.traverse((child) => (child.raycast = () => null))
+      scene.add(currentHelper)
+      return () => {
+        helper.current = undefined
+        scene.remove(currentHelper)
+        currentHelper.dispose?.()
+      }
+    }
+  }, [scene, helperConstructor, object3D, ...args])
+
+  useFrame(() => void helper.current?.update?.())
+  return helper
+}
+
+//
 
 export type HelperProps<T extends HelperConstructor> = {
   type: T
@@ -15,33 +48,14 @@ export const Helper = <T extends HelperConstructor>({
   type: helperConstructor,
   args = [] as never,
 }: HelperProps<T>) => {
-  const objectRef = React.useRef<Object3D>(null!)
-  const helperRef = React.useRef<HelperType>()
-
-  const scene = useThree((state) => state.scene)
+  const thisRef = React.useRef<Object3D>(null!)
+  const parentRef = React.useRef<Object3D>(null!)
 
   React.useLayoutEffect(() => {
-    const parent = objectRef.current?.parent
+    parentRef.current = thisRef.current.parent!
+  })
 
-    if (!helperConstructor || !parent) return
+  useHelper(parentRef, helperConstructor, ...args)
 
-    const helper = new helperConstructor(parent, ...args)
-
-    helperRef.current = helper
-
-    // Prevent the helpers from blocking rays
-    helper.traverse((child) => (child.raycast = () => null))
-
-    scene.add(helper)
-
-    return () => {
-      helperRef.current = undefined
-      scene.remove(helper)
-      helper.dispose?.()
-    }
-  }, [scene, helperConstructor, ...args])
-
-  useFrame(() => void helperRef.current?.update?.())
-
-  return <object3D ref={objectRef} />
+  return <object3D ref={thisRef} />
 }

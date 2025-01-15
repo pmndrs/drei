@@ -39,6 +39,8 @@ export const Svg: ForwardRefComponent<SvgProps, Object3D> = /* @__PURE__ */ forw
       return () => strokeGeometries.forEach((group) => group && group.map((g) => g.dispose()))
     }, [strokeGeometries])
 
+    let renderOrder = 0
+
     return (
       <object3D ref={ref} {...props}>
         <object3D scale={[1, -1, 1]}>
@@ -48,7 +50,7 @@ export const Svg: ForwardRefComponent<SvgProps, Object3D> = /* @__PURE__ */ forw
                 path.userData?.style.fill !== undefined &&
                 path.userData.style.fill !== 'none' &&
                 SVGLoader.createShapes(path).map((shape, s) => (
-                  <mesh key={s} {...fillMeshProps}>
+                  <mesh key={s} {...fillMeshProps} renderOrder={renderOrder++}>
                     <shapeGeometry args={[shape]} />
                     <meshBasicMaterial
                       color={path.userData!.style.fill}
@@ -64,7 +66,7 @@ export const Svg: ForwardRefComponent<SvgProps, Object3D> = /* @__PURE__ */ forw
                 path.userData?.style.stroke !== undefined &&
                 path.userData.style.stroke !== 'none' &&
                 path.subPaths.map((_subPath, s) => (
-                  <mesh key={s} geometry={strokeGeometries[p]![s]} {...strokeMeshProps}>
+                  <mesh key={s} geometry={strokeGeometries[p]![s]} {...strokeMeshProps} renderOrder={renderOrder++}>
                     <meshBasicMaterial
                       color={path.userData!.style.stroke}
                       opacity={path.userData!.style.strokeOpacity}

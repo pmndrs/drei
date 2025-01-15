@@ -1,0 +1,28 @@
+---
+title: useBoxProjectedEnv
+sourcecode: src/core/useBoxProjectedEnv.tsx
+---
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="s006f" />
+  </li>
+</Grid>
+
+The cheapest possible way of getting reflections in threejs. This will box-project the current environment map onto a plane. It returns an object that you need to spread over its material. The spread object contains a ref, onBeforeCompile and customProgramCacheKey. If you combine it with drei/CubeCamera you can "film" a single frame of the environment and feed it to the material, thereby getting realistic reflections at no cost. Align it with the position and scale properties.
+
+```jsx
+const projection = useBoxProjectedEnv(
+  [0, 0, 0], // Position
+  [1, 1, 1] // Scale
+)
+
+<CubeCamera frames={1}>
+  {(texture) => (
+    <mesh>
+      <planeGeometry />
+      <meshStandardMaterial envMap={texture} {...projection} />
+    </mesh>
+  )}
+</CubeCamera>
+```

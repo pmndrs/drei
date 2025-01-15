@@ -1,0 +1,31 @@
+---
+title: CameraControls
+sourcecode: src/core/CameraControls.tsx
+---
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="sew669" />
+  </li>
+</Grid>
+
+This is an implementation of the [camera-controls](https://github.com/yomotsu/camera-controls) library.
+
+```tsx
+<CameraControls />
+```
+
+```tsx
+type CameraControlsProps = {
+  /** The camera to control, default to the state's `camera` */
+  camera?: PerspectiveCamera | OrthographicCamera
+  /** DOM element to connect to, default to the state's `gl` renderer */
+  domElement?: HTMLElement
+  /** Reference this CameraControls instance as state's `controls` */
+  makeDefault?: boolean
+  /** Events callbacks, see: https://github.com/yomotsu/camera-controls#events */
+  onStart?: (e?: { type: 'controlstart' }) => void
+  onEnd?: (e?: { type: 'controlend' }) => void
+  onChange?: (e?: { type: 'update' }) => void
+}
+```

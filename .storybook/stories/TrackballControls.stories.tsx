@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
@@ -7,9 +8,17 @@ import { Icosahedron, TrackballControls } from '../../src'
 
 export default {
   title: 'Controls/TrackballControls',
-  component: TrackballControlsScene,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 10)}>{storyFn()}</Setup>],
-}
+  component: TrackballControls,
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(0, 0, 10)}>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof TrackballControls>
+
+type Story = StoryObj<typeof TrackballControls>
 
 const NUM = 2
 
@@ -18,7 +27,7 @@ interface Positions {
   position: [number, number, number]
 }
 
-function TrackballControlsScene() {
+function TrackballControlsScene(props: React.ComponentProps<typeof TrackballControls>) {
   const positions = React.useMemo(() => {
     const pos: Positions[] = []
     const half = (NUM - 1) / 2
@@ -46,12 +55,12 @@ function TrackballControlsScene() {
           </Icosahedron>
         ))}
       </group>
-      <TrackballControls />
+      <TrackballControls {...props} />
     </>
   )
 }
 
-export const TrackballControlsSceneSt = () => <TrackballControlsScene />
-TrackballControlsSceneSt.story = {
+export const TrackballControlsSt = {
+  render: (args) => <TrackballControlsScene {...args} />,
   name: 'Default',
-}
+} satisfies Story

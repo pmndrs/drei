@@ -1,6 +1,7 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { extend, useThree, useFrame } from '@react-three/fiber'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
@@ -9,8 +10,16 @@ import { ScreenQuad, shaderMaterial } from '../../src'
 export default {
   title: 'Shapes/ScreenQuad',
   component: ScreenQuad,
-  decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
-}
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof ScreenQuad>
+
+type Story = StoryObj<typeof ScreenQuad>
 
 const ColorShiftMaterial = shaderMaterial(
   { time: 0, resolution: new THREE.Vector2() },
@@ -51,9 +60,10 @@ declare global {
   }
 }
 
-function ScreenQuadScene() {
+function ScreenQuadScene(props: React.ComponentProps<typeof ScreenQuad>) {
   const size = useThree((state) => state.size)
-  const ref = React.useRef<ColorShiftMaterialImpl>(null!)
+  const ref = React.useRef<React.ElementRef<'colorShiftMaterial'>>(null!)
+
   useFrame((state) => {
     if (ref.current.uniforms) {
       ref.current.uniforms.time.value = state.clock.elapsedTime
@@ -61,11 +71,13 @@ function ScreenQuadScene() {
   })
 
   return (
-    <ScreenQuad>
+    <ScreenQuad {...props}>
       <colorShiftMaterial ref={ref} time={0} resolution={[size.width, size.height]} />
     </ScreenQuad>
   )
 }
 
-export const ScreenQuadSt = () => <ScreenQuadScene />
-ScreenQuadSt.storyName = 'Default'
+export const ScreenQuadSt = {
+  render: (args) => <ScreenQuadScene {...args} />,
+  name: 'Default',
+} satisfies Story

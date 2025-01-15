@@ -1,0 +1,20 @@
+---
+title: useAspect
+sourcecode: src/core/useAspect.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-useaspect--default-story)
+
+This hook calculates aspect ratios (for now only what in css would be `image-size: cover` is supported). You can use it to make an image fill the screen. It is responsive and adapts to viewport resize. Just give the hook the image bounds in pixels. It returns an array: `[width, height, 1]`.
+
+```jsx
+const scale = useAspect(
+  1024,                     // Pixel-width
+  512,                      // Pixel-height
+  1                         // Optional scaling factor
+)
+return (
+  <mesh scale={scale}>
+    <planeGeometry />
+    <meshBasicMaterial map={imageTexture} />
+```

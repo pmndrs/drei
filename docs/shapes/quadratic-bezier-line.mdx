@@ -1,0 +1,43 @@
+---
+title: QuadraticBezierLine
+sourcecode: src/core/QuadraticBezierLine.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shapes-line--quadratic-bezier-st)
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="2ij9u" />
+  </li>
+</Grid>
+
+Renders a THREE.Line2 using THREE.QuadraticBezierCurve3 for interpolation.
+
+```jsx
+<QuadraticBezierLine
+  start={[0, 0, 0]}               // Starting point, can be an array or a vec3
+  end={[10, 0, 10]}               // Ending point, can be an array or a vec3
+  mid={[5, 0, 5]}                 // Optional control point, can be an array or a vec3
+  color="black"                   // Default
+  lineWidth={1}                   // In pixels (default)
+  dashed={false}                  // Default
+  vertexColors={[[0, 0, 0], ...]} // Optional array of RGB values for each point
+  {...lineProps}                  // All THREE.Line2 props are valid
+  {...materialProps}              // All THREE.LineMaterial props are valid
+/>
+```
+
+You can also update the line runtime.
+
+```jsx
+const ref = useRef()
+useFrame((state) => {
+  ref.current.setPoints(
+    [0, 0, 0],
+    [10, 0, 0],
+    // [5, 0, 0] // Optional: mid-point
+  )
+}, [])
+return <QuadraticBezierLine ref={ref} />
+}
+```

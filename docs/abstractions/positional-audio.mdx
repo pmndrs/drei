@@ -1,0 +1,23 @@
+---
+title: PositionalAudio
+sourcecode: src/core/PositionalAudio.tsx
+---
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="gkfhr" />
+  </li>
+</Grid>
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/abstractions-positionalaudio--positional-audio-scene-st) ![](https://img.shields.io/badge/-suspense-brightgreen)
+
+A wrapper around [THREE.PositionalAudio](https://threejs.org/docs/#api/en/audio/PositionalAudio). Add this to groups or meshes to tie them to a sound that plays when the camera comes near.
+
+```jsx
+<PositionalAudio
+  url="/sound.mp3"
+  distance={1}
+  loop
+  {...props} // All THREE.PositionalAudio props are valid
+/>
+```

@@ -1,0 +1,19 @@
+---
+title: Billboard
+sourcecode: src/core/Billboard.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-billboard--billboard-st)
+
+Adds a `<group />` that always faces the camera.
+
+```jsx
+<Billboard
+  follow={true}
+  lockX={false}
+  lockY={false}
+  lockZ={false} // Lock the rotation on the z axis (default=false)
+>
+  <Text fontSize={1}>I'm a billboard</Text>
+</Billboard>
+```

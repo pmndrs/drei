@@ -14,8 +14,7 @@ import {
   BufferAttribute,
 } from 'three'
 import { MaterialNode, extend, applyProps, useFrame, ReactThreeFiber } from '@react-three/fiber'
-import { useTexture } from './useTexture'
-import { v4 } from 'uuid'
+import { useTexture } from './Texture'
 import { setUpdateRange } from '../helpers/deprecated'
 
 declare global {
@@ -112,13 +111,13 @@ export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
           const opaque_fragment = parseInt(REVISION.replace(/\D+/g, '')) >= 154 ? 'opaque_fragment' : 'output_fragment'
           this.onBeforeCompile = (shader) => {
             shader.vertexShader =
-              `attribute float opacity;
+              `attribute float cloudOpacity;
                varying float vOpacity;
               ` +
               shader.vertexShader.replace(
                 '#include <fog_vertex>',
                 `#include <fog_vertex>
-                 vOpacity = opacity;
+                 vOpacity = cloudOpacity;
                 `
               )
             shader.fragmentShader =
@@ -175,7 +174,7 @@ export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
       }
 
       // Update instance
-      instance.current.geometry.attributes.opacity.needsUpdate = true
+      instance.current.geometry.attributes.cloudOpacity.needsUpdate = true
       instance.current.instanceMatrix.needsUpdate = true
       if (instance.current.instanceColor) instance.current.instanceColor.needsUpdate = true
     })
@@ -187,11 +186,11 @@ export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
       if (instance.current.instanceColor) {
         setUpdateRange(instance.current.instanceColor, { offset: 0, count: count * 3 })
       }
-      setUpdateRange(instance.current.geometry.attributes.opacity as BufferAttribute, { offset: 0, count: count })
+      setUpdateRange(instance.current.geometry.attributes.cloudOpacity as BufferAttribute, { offset: 0, count: count })
     })
 
     let imageBounds = [cloudTexture!.image.width ?? 1, cloudTexture!.image.height ?? 1]
-    let max = Math.max(imageBounds[0], imageBounds[1])
+    const max = Math.max(imageBounds[0], imageBounds[1])
     imageBounds = [imageBounds[0] / max, imageBounds[1] / max]
 
     return (
@@ -206,7 +205,11 @@ export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
           >
             <instancedBufferAttribute usage={DynamicDrawUsage} attach="instanceColor" args={[colors, 3]} />
             <planeGeometry args={[...imageBounds] as any}>
-              <instancedBufferAttribute usage={DynamicDrawUsage} attach="attributes-opacity" args={[opacities, 1]} />
+              <instancedBufferAttribute
+                usage={DynamicDrawUsage}
+                attach="attributes-cloudOpacity"
+                args={[opacities, 1]}
+              />
             </planeGeometry>
             <cloudMaterial key={material.name} map={cloudTexture} transparent depthWrite={false} />
           </instancedMesh>
@@ -242,7 +245,7 @@ export const CloudInstance = /* @__PURE__ */ React.forwardRef<Group, CloudProps>
 
     const parent = React.useContext(context)
     const ref = React.useRef<Group>(null!)
-    const [uuid] = React.useState(() => v4())
+    const uuid = React.useId()
     const clouds: CloudState[] = React.useMemo(() => {
       return [...new Array(segments)].map(
         (_, index) =>
@@ -257,7 +260,7 @@ export const CloudInstance = /* @__PURE__ */ React.forwardRef<Group, CloudProps>
             matrix: new Matrix4(),
             color: new Color(),
             rotation: index * (Math.PI / segments),
-          } as CloudState)
+          }) as CloudState
       )
     }, [segments, uuid])
 
@@ -278,7 +281,7 @@ export const CloudInstance = /* @__PURE__ */ React.forwardRef<Group, CloudProps>
 
         const distributed = distribute?.(cloud, index)
 
-        if (distributed || segments > 1)
+        if (distributed || segments > 1) {
           cloud.position.copy(cloud.bounds).multiply(
             distributed?.point ??
               ({
@@ -287,6 +290,7 @@ export const CloudInstance = /* @__PURE__ */ React.forwardRef<Group, CloudProps>
                 z: random() * 2 - 1,
               } as Vector3)
           )
+        }
         const xDiff = Math.abs(cloud.position.x)
         const yDiff = Math.abs(cloud.position.y)
         const zDiff = Math.abs(cloud.position.z)
@@ -321,10 +325,9 @@ export const CloudInstance = /* @__PURE__ */ React.forwardRef<Group, CloudProps>
 export const Cloud = /* @__PURE__ */ React.forwardRef<Group, CloudProps>((props, fref) => {
   const parent = React.useContext(context)
   if (parent) return <CloudInstance ref={fref} {...props} />
-  else
-    return (
-      <Clouds>
-        <CloudInstance ref={fref} {...props} />
-      </Clouds>
-    )
+  return (
+    <Clouds>
+      <CloudInstance ref={fref} {...props} />
+    </Clouds>
+  )
 })

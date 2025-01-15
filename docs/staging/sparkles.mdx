@@ -1,0 +1,45 @@
+---
+title: Sparkles
+sourcecode: src/core/Sparkles.tsx
+---
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="0c5hv9" />
+  </li>
+</Grid>
+
+Floating, glowing particles.
+
+```tsx
+<Sparkles
+  /** Number of particles (default: 100) */
+  count?: number
+  /** Speed of particles (default: 1) */
+  speed?: number | Float32Array
+  /** Opacity of particles (default: 1) */
+  opacity?: number | Float32Array
+  /** Color of particles (default: 100) */
+  color?: THREE.ColorRepresentation | Float32Array
+  /** Size of particles (default: randomized between 0 and 1) */
+  size?: number | Float32Array
+  /** The space the particles occupy (default: 1) */
+  scale?: number | [number, number, number] | THREE.Vector3
+  /** Movement factor (default: 1) */
+  noise?: number | [number, number, number] | THREE.Vector3 | Float32Array
+/>
+```
+
+Custom shaders are allowed. Sparkles will use the following attributes and uniforms:
+
+```glsl
+attribute float size;
+attribute float speed;
+attribute float opacity;
+attribute vec3 noise;
+attribute vec3 color;
+```
+
+```json
+{ "time": 0, "pixelRatio": 1 }
+```

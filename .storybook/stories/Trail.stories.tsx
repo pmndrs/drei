@@ -1,18 +1,27 @@
 import * as React from 'react'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 
-import { Sphere, Trail, useTrail, Html, Stats, Float, PerspectiveCamera } from '../../src'
+import { Sphere, Trail, useTrail, Float, PerspectiveCamera } from '../../src'
 import { useFrame } from '@react-three/fiber'
 import { Group, InstancedMesh, Mesh, Object3D, Vector3 } from 'three'
 
 export default {
   title: 'Misc/Trail',
   component: Trail,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(0, 0, 5)}> {storyFn()}</Setup>],
-}
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(0, 0, 5)}>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof Trail>
 
-function TrailScene() {
+type Story = StoryObj<typeof Trail>
+
+function TrailScene(props: React.ComponentProps<typeof Trail>) {
   const group = React.useRef<Group>(null!)
   const sphere = React.useRef<Mesh>(null!)
   useFrame(({ clock }) => {
@@ -27,14 +36,7 @@ function TrailScene() {
   return (
     <>
       <group ref={group}>
-        <Trail
-          width={1}
-          length={4}
-          color={'#F8D628'}
-          attenuation={(t: number) => {
-            return t * t
-          }}
-        >
+        <Trail {...props}>
           <Sphere ref={sphere} args={[0.1, 32, 32]} position-y={3}>
             <meshNormalMaterial />
           </Sphere>
@@ -47,8 +49,20 @@ function TrailScene() {
   )
 }
 
-export const TrailsSt = () => <TrailScene />
-TrailsSt.storyName = 'Default'
+export const TrailsSt = {
+  args: {
+    width: 1,
+    length: 4,
+    color: '#F8D628',
+    attenuation: (t: number) => {
+      return t * t
+    },
+  },
+  render: (args) => <TrailScene {...args} />,
+  name: 'Default',
+} satisfies Story
+
+//
 
 type InstancesTrailProps = {
   sphere: Mesh
@@ -114,22 +128,18 @@ function UseTrailScene() {
   )
 }
 
-export const UseTrailSt = () => <UseTrailScene />
-UseTrailSt.storyName = 'useTrail with Instances'
+export const UseTrailSt = {
+  render: () => <UseTrailScene />,
+  name: 'useTrail with Instances',
+} satisfies StoryObj<React.ComponentProps<typeof UseTrailScene>>
 
-function UseTrailFloat() {
+//
+
+function UseTrailFloat(props: React.ComponentProps<typeof Trail>) {
   const ref = React.useRef<Group>(null!)
   return (
     <>
-      <Trail
-        width={1}
-        length={4}
-        color={'#F8D628'}
-        attenuation={(t: number) => {
-          return t * t
-        }}
-        target={ref}
-      />
+      <Trail {...props} target={ref} />
       <Float speed={5} floatIntensity={10} ref={ref}>
         <Sphere args={[0.1, 32, 32]} position-x={0}>
           <meshNormalMaterial />
@@ -139,5 +149,15 @@ function UseTrailFloat() {
   )
 }
 
-export const TrailFloat = () => <UseTrailFloat />
-TrailFloat.storyName = 'Trail with Ref target'
+export const TrailFloat = {
+  args: {
+    width: 1,
+    length: 4,
+    color: '#F8D628',
+    attenuation: (t: number) => {
+      return t * t
+    },
+  },
+  render: (args) => <UseTrailFloat {...args} />,
+  name: 'Trail with Ref target',
+} satisfies Story

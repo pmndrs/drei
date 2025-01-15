@@ -1,0 +1,50 @@
+---
+title: Grid
+sourcecode: src/core/Grid.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/gizmos-grid--use-grid-scene-st)
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="19uq2u" />
+  </li>
+</Grid>
+
+A y-up oriented, shader-based grid implementation.
+
+```tsx
+export type GridMaterialType = {
+  /** Cell size, default: 0.5 */
+  cellSize?: number
+  /** Cell thickness, default: 0.5 */
+  cellThickness?: number
+  /** Cell color, default: black */
+  cellColor?: THREE.ColorRepresentation
+  /** Section size, default: 1 */
+  sectionSize?: number
+  /** Section thickness, default: 1 */
+  sectionThickness?: number
+  /** Section color, default: #2080ff */
+  sectionColor?: THREE.ColorRepresentation
+  /** Follow camera, default: false */
+  followCamera?: boolean
+  /** Display the grid infinitely, default: false */
+  infiniteGrid?: boolean
+  /** Fade distance, default: 100 */
+  fadeDistance?: number
+  /** Fade strength, default: 1 */
+  fadeStrength?: number
+  /** Fade from camera (1) or origin (0), or somewhere in between, default: camera */
+  fadeFrom?: number
+}
+
+export type GridProps = GridMaterialType & {
+  /** Default plane-geometry arguments */
+  args?: ConstructorParameters<typeof THREE.PlaneGeometry>
+}
+```
+
+```jsx
+<Grid />
+```

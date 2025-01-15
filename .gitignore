@@ -17,3 +17,13 @@ coverage/
 yarn-error.log
 .size-snapshot.json
 __diff_output__
+test-results
+
+# https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

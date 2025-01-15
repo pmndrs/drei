@@ -1,12 +1,22 @@
 import * as React from 'react'
-import { Canvas } from '@react-three/fiber'
+import { Meta, StoryObj } from '@storybook/react'
 
-import { Icosahedron, PerspectiveCamera, OrbitControls } from '../../src'
+import { Icosahedron, PerspectiveCamera } from '../../src'
+import { Setup } from '../Setup'
 
 export default {
   title: 'Camera/PerspectiveCamera',
-  component: PerspectiveCameraScene,
-}
+  component: PerspectiveCamera,
+  decorators: [
+    (Story) => (
+      <Setup controls={false}>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof PerspectiveCamera>
+
+type Story = StoryObj<typeof PerspectiveCamera>
 
 const NUM = 3
 
@@ -15,7 +25,7 @@ interface Positions {
   position: [number, number, number]
 }
 
-function PerspectiveCameraScene() {
+function PerspectiveCameraScene(props: React.ComponentProps<typeof PerspectiveCamera>) {
   const positions = React.useMemo(() => {
     const pos: Positions[] = []
     const half = (NUM - 1) / 2
@@ -33,8 +43,9 @@ function PerspectiveCameraScene() {
   }, [])
 
   return (
-    <Canvas>
-      <PerspectiveCamera makeDefault position={[0, 0, 10]} />
+    <>
+      <PerspectiveCamera {...props} />
+
       <group position={[0, 0, -10]}>
         {positions.map(({ id, position }) => (
           <Icosahedron key={id} position={position} args={[1, 1]}>
@@ -42,12 +53,15 @@ function PerspectiveCameraScene() {
           </Icosahedron>
         ))}
       </group>
-      <OrbitControls />
-    </Canvas>
+    </>
   )
 }
 
-export const PerspectiveCameraSceneSt = () => <PerspectiveCameraScene />
-PerspectiveCameraSceneSt.story = {
+export const PerspectiveCameraSceneSt = {
+  args: {
+    makeDefault: true,
+    position: [0, 0, 10],
+  },
+  render: (args) => <PerspectiveCameraScene {...args} />,
   name: 'Default',
-}
+} satisfies Story

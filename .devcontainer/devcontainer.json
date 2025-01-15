@@ -1,10 +1,10 @@
 {
-  "image": "mcr.microsoft.com/vscode/devcontainers/javascript-node:18",
+  "image": "mcr.microsoft.com/vscode/devcontainers/javascript-node:22",
   "hostRequirements": {
     "memory": "8gb"
   },
   "waitFor": "onCreateCommand",
-  "updateContentCommand": "yarn install",
+  "updateContentCommand": "corepack enable && yarn install",
   "postCreateCommand": "",
   "postAttachCommand": "yarn storybook -- --port 6006",
   "customizations": {

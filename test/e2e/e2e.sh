@@ -3,16 +3,25 @@ set -ex
 
 PORT=5188
 DIST=../../dist
+tmp=$(mktemp -d)
 
+# Build the package
 (cd $DIST; npm pack)
 TGZ=$(realpath "$DIST/react-three-drei-0.0.0-semantic-release.tgz")
 
-kill_app() {
-  kill $(lsof -ti:$PORT) || echo "ok, no previous running process on port $PORT"
+snapshot() {
+  local UPDATE_SNAPSHOTS=""
+  if [ "$PLAYWRIGHT_UPDATE_SNAPSHOTS" = "1" ]; then
+    UPDATE_SNAPSHOTS="--update-snapshots"
+  fi
+  npx playwright test $UPDATE_SNAPSHOTS snapshot.test.ts
 }
-kill_app
 
-tmp=$(mktemp -d)
+kill_app() {
+  kill -9 $(lsof -ti:$PORT) || echo "ok, no previous running process on port $PORT"
+}
+kill_app || true
+trap kill_app EXIT INT TERM HUP
 
 #
 # ██╗   ██╗██╗████████╗███████╗
@@ -27,17 +36,17 @@ appname=viteapp
 appdir="$tmp/$appname"
 
 # create app
-(cd $tmp; npm create vite@latest $appname -- --template react)
+(cd $tmp; npm create -y vite@latest $appname -- --template react-ts)
 
 # drei
 (cd $appdir; npm i; npm i $TGZ)
 
-# App.jsx
-cp App.jsx $appdir/src/App.jsx
+# App.tsx
+cp App.tsx $appdir/src/App.tsx
 
-# build+start+jest
-(cd $appdir; npm run build; npm run preview -- --port $PORT &)
-npx jest snapshot.test.js || (kill_app && exit 1)
+# build+start+playwright
+(cd $appdir; npm run build; npm run preview -- --host --port $PORT &)
+snapshot
 kill_app
 
 #
@@ -53,17 +62,61 @@ appname=nextapp
 appdir="$tmp/$appname"
 
 # create app
-(cd $tmp; npx -y create-next-app@latest $appname --js --no-eslint --no-tailwind --no-src-dir --app --import-alias "@/*")
+(cd $tmp; npx -y create-next-app@14 $appname --ts --no-eslint --no-tailwind --no-src-dir --app --import-alias "@/*")
 
 # drei
 (cd $appdir; npm i $TGZ)
 
-# App.jsx
-cp App.jsx $appdir/app/page.js
+# App.tsx
+cp App.tsx $appdir/app/page.tsx
 
-# build+start+jest
+# build+start+playwright
 (cd $appdir; npm run build; npm start -- -p $PORT &)
-npx jest snapshot.test.js || (kill_app && exit 1)
+snapshot
+kill_app
+
+#  ██████╗     ██╗███████╗
+# ██╔════╝     ██║██╔════╝
+# ██║          ██║███████╗
+# ██║     ██   ██║╚════██║
+# ╚██████╗╚█████╔╝███████║
+#  ╚═════╝ ╚════╝ ╚══════╝
+# 
+# (using Next.js)
+#
+
+appname=cjsapp
+appdir="$tmp/$appname"
+
+# create app
+(cd $tmp; npx -y create-next-app@14 $appname --ts --no-eslint --no-tailwind --no-src-dir --app --import-alias "@/*")
+
+# drei
+(cd $appdir; npm i $TGZ)
+
+# App.tsx
+cp App.tsx $appdir/app/page.tsx
+
+# next.config.mjs
+cat <<EOF >$appdir/next.config.mjs
+console.log('🦆 CJS override (next.config.mjs)')
+import path from 'path'
+
+/** @type {import('next').NextConfig} */
+export default {
+  //
+  // We force Next to use drei's CJS version here
+  //
+  webpack: (config) => {
+    config.resolve.alias['@react-three/drei'] = path.resolve('node_modules/@react-three/drei/index.cjs.js')
+    return config
+  },
+}
+EOF
+
+# build+start+playwright
+(cd $appdir; npm run build; npm start -- -p $PORT &)
+snapshot
 kill_app
 
 #
@@ -75,22 +128,22 @@ kill_app
 #  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝
 #
 
-appname=craapp
-appdir="$tmp/$appname"
+# appname=craapp
+# appdir="$tmp/$appname"
 
-# create app
-(cd $tmp; npx create-react-app $appname)
+# # create app
+# (cd $tmp; npx create-react-app $appname --template typescript)
 
-# drei
-(cd $appdir; npm i $TGZ)
+# # drei
+# (cd $appdir; npm i $TGZ)
 
-# App.jsx
-cp App.jsx $appdir/src/App.js
+# # App.tsx
+# cp App.tsx $appdir/src/App.tsx
 
-# build+start+jest
-(cd $appdir; npm run build; npx serve -s -p $PORT build &)
-npx jest snapshot.test.js || (kill_app && exit 1)
-kill_app
+# # build+start+playwright
+# (cd $appdir; npm run build; npx serve -s -p $PORT build &)
+# snapshot
+# kill_app
 
 #
 # Teardown

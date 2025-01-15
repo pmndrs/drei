@@ -1,0 +1,66 @@
+---
+title: FaceLandmarker
+sourcecode: src/web/FaceLandmarker.tsx
+---
+
+![](https://img.shields.io/badge/-suspense-brightgreen)
+
+A @mediapipe/tasks-vision [`FaceLandmarker`](https://developers.google.com/mediapipe/api/solutions/js/tasks-vision.facelandmarker) provider, as well as a `useFaceLandmarker` hook.
+
+```tsx
+<FaceLandmarker>{/* ... */}</FaceLandmarker>
+```
+
+It will instanciate a FaceLandmarker object with the following defaults:
+
+```tsx
+{
+  basePath: "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@x.y.z/wasm", // x.y.z will value the @mediapipe/tasks-vision version, eg: 0.10.2
+  options: {
+    baseOptions: {
+      modelAssetPath: "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
+      delegate: "GPU",
+    },
+    runningMode: "VIDEO",
+    outputFaceBlendshapes: true,
+    outputFacialTransformationMatrixes: true,
+  }
+}
+```
+
+You can override defaults, like for example self-host tasks-vision's `wasm/` and `face_landmarker.task` model in you `public/` directory:
+
+```sh
+$ ln -s ../node_modules/@mediapipe/tasks-vision/wasm/ public/tasks-vision-wasm
+$ curl https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task -o public/face_landmarker.task
+```
+
+```tsx
+import { FaceLandmarkerDefaults } from '@react-three/drei'
+
+const visionBasePath = new URL("/tasks-vision-wasm", import.meta.url).toString()
+const modelAssetPath = new URL("/face_landmarker.task", import.meta.url).toString()
+
+const faceLandmarkerOptions = { ...FaceLandmarkerDefaults.options };
+faceLandmarkerOptions.baseOptions.modelAssetPath = modelAssetPath;
+
+<FaceLandmarker basePath={visionBasePath} options={faceLandmarkerOptions}>
+```
+
+## instance
+
+You can get the FaceLandmarker instance through `ref`:
+
+```tsx
+const faceLandmarkerRef = useRef<ElementRef<typeof FaceLandmarker>>(null)
+
+<FaceLandmarker ref={faceLandmarkerRef}>
+  {/* ... */}
+</FaceLandmarker>
+```
+
+or using `useFaceLandmarker()` from a descendant component:
+
+```jsx
+const faceLandmarker = useFaceLandmarker()
+```

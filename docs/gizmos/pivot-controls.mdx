@@ -1,0 +1,85 @@
+---
+title: PivotControls
+sourcecode: src/web/pivotControls/index.tsx
+---
+
+![](https://img.shields.io/badge/-Dom only-red)
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="om2ff8" />
+  </li>
+</Grid>
+
+Controls for rotating and translating objects. These controls will stick to the object the transform and by offsetting or anchoring it forms a pivot. This control has HTML annotations for some transforms and supports `[tab]` for rounded values while dragging.
+
+```tsx
+type PivotControlsProps = {
+  /** Enables/disables the control, true */
+  enabled?: boolean
+  /** Scale of the gizmo, 1 */
+  scale?: number
+  /** Width of the gizmo lines, this is a THREE.Line2 prop, 2.5 */
+  lineWidth?: number
+  /** If fixed is true is remains constant in size, scale is now in pixels, false */
+  fixed?: boolean
+  /** Pivot does not act as a group, it won't shift contents but can offset in position */
+  offset?: [number, number, number]
+  /** Starting rotation */
+  rotation?: [number, number, number]
+  /** Starting matrix */
+  matrix?: THREE.Matrix4
+  /** Anchor point, like BBAnchor, each axis can be between -1/0/+1 */
+  anchor?: [number, number, number]
+  /** If autoTransform is true, automatically apply the local transform on drag, true */
+  autoTransform?: boolean
+  /** Allows you to switch individual axes off */
+  activeAxes?: [boolean, boolean, boolean]
+  /** Allows you to disable translation via axes arrows */
+  disableAxes?: boolean
+  /** Allows you to disable translation via axes planes */
+  disableSliders?: boolean
+  /** Allows you to disable rotation */
+  disableRotations?: boolean
+  /** Allows you to disable scaling */
+  disableScaling?: boolean
+  /** RGB colors */
+  axisColors?: [string | number, string | number, string | number]
+  /** Color of the hovered item */
+  hoveredColor?: string | number
+  /** HTML value annotations, default: false */
+  annotations?: boolean
+  /** CSS Classname applied to the HTML annotations */
+  annotationsClass?: string
+  /** Drag start event */
+  onDragStart?: () => void
+  /** Drag event */
+  onDrag?: (l: THREE.Matrix4, deltaL: THREE.Matrix4, w: THREE.Matrix4, deltaW: THREE.Matrix4) => void
+  /** Drag end event */
+  onDragEnd?: () => void
+  /** Set this to false if you want the gizmo to be visible through faces */
+  depthTest?: boolean
+  opacity?: number
+  visible?: boolean
+  userData?: { [key: string]: any }
+  children?: React.ReactNode
+}
+```
+
+```jsx
+<PivotControls>
+  <mesh />
+</PivotControls>
+```
+
+You can use Pivot as a controlled component, switch `autoTransform` off in that case and now you are responsible for applying the matrix transform yourself. You can also leave `autoTransform` on and apply the matrix to foreign objects, in that case Pivot will be able to control objects that are not parented within.
+
+```jsx
+const matrix = new THREE.Matrix4()
+return (
+  <PivotControls
+    ref={ref}
+    matrix={matrix}
+    autoTransform={false}
+    onDrag={({ matrix: matrix_ }) => matrix.copy(matrix_)}
+```

@@ -10,13 +10,14 @@ export type EdgesProps = Partial<ThreeElements['mesh']> & {
   threshold?: number
   lineWidth?: number
 } & Omit<LineMaterialParameters, 'vertexColors' | 'color'> &
-  Omit<ReactThreeFiber.Object3DNode<Line2, typeof Line2>, 'args'> &
+  Omit<ReactThreeFiber.Object3DNode<Line2, typeof Line2>, 'args' | 'geometry'> &
   Omit<ReactThreeFiber.Object3DNode<LineMaterial, [LineMaterialParameters]>, 'color' | 'vertexColors' | 'args'> & {
+    geometry?: THREE.BufferGeometry
     color?: THREE.ColorRepresentation
   }
 
 export const Edges: ForwardRefComponent<EdgesProps, EdgesRef> = /* @__PURE__ */ React.forwardRef<EdgesRef, EdgesProps>(
-  ({ threshold = 15, ...props }: EdgesProps, fref) => {
+  ({ threshold = 15, geometry: explicitGeometry, ...props }: EdgesProps, fref) => {
     const ref = React.useRef<LineSegments2>(null!)
     React.useImperativeHandle(fref, () => ref.current, [])
 
@@ -26,19 +27,20 @@ export const Edges: ForwardRefComponent<EdgesProps, EdgesRef> = /* @__PURE__ */ 
 
     React.useLayoutEffect(() => {
       const parent = ref.current.parent as THREE.Mesh
-      if (parent) {
-        const geometry = parent.geometry
-        if (geometry !== memoizedGeometry.current || threshold !== memoizedThreshold.current) {
-          memoizedGeometry.current = geometry
-          memoizedThreshold.current = threshold
-          const points = (new THREE.EdgesGeometry(geometry, threshold).attributes.position as THREE.BufferAttribute)
-            .array as Float32Array
-          ref.current.geometry.setPositions(points)
-          ref.current.geometry.attributes.instanceStart.needsUpdate = true
-          ref.current.geometry.attributes.instanceEnd.needsUpdate = true
-          ref.current.computeLineDistances()
-        }
-      }
+      const geometry = explicitGeometry ?? parent?.geometry
+      if (!geometry) return
+
+      const cached = memoizedGeometry.current === geometry && memoizedThreshold.current === threshold
+      if (cached) return
+      memoizedGeometry.current = geometry
+      memoizedThreshold.current = threshold
+
+      const points = (new THREE.EdgesGeometry(geometry, threshold).attributes.position as THREE.BufferAttribute)
+        .array as Float32Array
+      ref.current.geometry.setPositions(points)
+      ref.current.geometry.attributes.instanceStart.needsUpdate = true
+      ref.current.geometry.attributes.instanceEnd.needsUpdate = true
+      ref.current.computeLineDistances()
     })
 
     return <Line segments points={tmpPoints} ref={ref} raycast={() => null} {...props} />

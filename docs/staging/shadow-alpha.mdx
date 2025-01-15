@@ -1,0 +1,24 @@
+---
+title: ShadowAlpha
+sourcecode: src/core/ShadowAlpha.tsx
+---
+
+Makes an object's shadow respect its opacity and alphaMap.
+
+```jsx
+<mesh>
+  <geometry />
+  <material transparent opacity={0.5} />
+
+  <ShadowAlpha
+    opacity={undefined} // number. Override the opacity of the shadow.
+    alphaMap={undefined} // THREE.Texture. Override the alphaMap of the shadow
+  />
+</mesh>
+```
+
+> Note: This component uses Screendoor transparency using a dither pattern. This pattern is notacible when the camera gets close to the shadow.
+
+<details>
+  <summary>Maintenance</summary>
+</details>

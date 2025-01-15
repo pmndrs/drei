@@ -1,0 +1,32 @@
+---
+title: SpotLight
+sourcecode: src/core/SpotLight.tsx
+---
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="tx1pq" />
+  </li>
+  <li>
+    <Codesandbox id="wdzv4" />
+  </li>
+</Grid>
+
+A Volumetric spotlight.
+
+```jsx
+<SpotLight
+  distance={5}
+  angle={0.15}
+  attenuation={5}
+  anglePower={5} // Diffuse-cone anglePower (default: 5)
+/>
+```
+
+Optionally you can provide a depth-buffer which converts the spotlight into a soft particle.
+
+```jsx
+function Foo() {
+  const depthBuffer = useDepthBuffer()
+  return <SpotLight depthBuffer={depthBuffer} />
+```

@@ -1,0 +1,64 @@
+---
+title: MeshPortalMaterial
+sourcecode: src/core/MeshPortalMaterial.tsx
+---
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="9m4tpc" />
+  </li>
+  <li>
+    <Codesandbox id="qvk72r" />
+  </li>
+  <li>
+    <Codesandbox id="drc6qg" />
+  </li>
+  <li>
+    <Codesandbox id="ik11ln" />
+  </li>
+</Grid>
+
+```tsx
+export type PortalProps = JSX.IntrinsicElements['shaderMaterial'] & {
+  /** Mix the portals own scene with the world scene, 0 = world scene render,
+   *  0.5 = both scenes render, 1 = portal scene renders, defaults to 0 */
+  blend?: number
+  /** Edge fade blur, 0 = no blur (default) */
+  blur?: number
+  /** SDF resolution, the smaller the faster is the start-up time (default: 512) */
+  resolution?: number
+  /** By default portals use relative coordinates, contents are affects by the local matrix transform */
+  worldUnits?: boolean
+  /** Optional event priority, defaults to 0 */
+  eventPriority?: number
+  /** Optional render priority, defaults to 0 */
+  renderPriority?: number
+  /** Optionally diable events inside the portal, defaults to false */
+  events?: boolean
+}
+```
+
+A material that creates a portal into another scene. It is drawn onto the geometry of the mesh that it is applied to. It uses RenderTexture internally, but counteracts the perspective shift of the texture surface, the portals contents are thereby masked by it but otherwise in the same position as if they were in the original scene.
+
+```jsx
+<mesh {...props}>
+  <planeGeometry />
+  <MeshPortalMaterial>
+    <mesh>
+      <sphereGeometry />
+    </mesh>
+  </MeshPortalMaterial>
+</mesh>
+```
+
+You can optionally fade or blur the edges of the portal by providing a `blur` prop, do not forget to make the material transparent in that case. It uses SDF flood-fill to determine the shape, you can thereby blur any geometry.
+
+```jsx
+<MeshPortalMaterial transparent blur={0.5}>
+```
+
+It is also possible to _enter_ the portal. If blend is 0 your scene will render as usual, if blend is higher it will start to blend the root scene and the portal scene, if blend is 1 it will only render the portal scene. If you put a ref on the material you can transition entering the portal, for instance lerping blend if the camera is close, or on click.
+
+```jsx
+<MeshPortalMaterial blend={1}>
+```

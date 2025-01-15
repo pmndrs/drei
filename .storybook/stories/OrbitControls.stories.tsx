@@ -1,45 +1,56 @@
 import { createPortal, useFrame } from '@react-three/fiber'
 import React, { useRef, useState } from 'react'
 import { Scene } from 'three'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
-import { Box, OrbitControls, PerspectiveCamera, Plane, useFBO } from '../../src'
-
-import type { Camera } from 'three'
-import type { OrbitControlsProps } from '../../src'
-
-const args = {
-  enableDamping: true,
-  enablePan: true,
-  enableRotate: true,
-  enableZoom: true,
-  reverseOrbit: false,
-}
-
-export const OrbitControlsStory = (props: OrbitControlsProps) => (
-  <>
-    <OrbitControls {...props} />
-    <Box>
-      <meshBasicMaterial wireframe />
-    </Box>
-  </>
-)
-
-OrbitControlsStory.args = args
-OrbitControlsStory.storyName = 'Default'
+import { Box, OrbitControls, PerspectiveCamera, Plane, useFBO, type OrbitControlsProps } from '../../src'
 
 export default {
   title: 'Controls/OrbitControls',
   component: OrbitControls,
-  decorators: [(storyFn) => <Setup controls={false}>{storyFn()}</Setup>],
+  args: {
+    enableDamping: true,
+    enablePan: true,
+    enableRotate: true,
+    enableZoom: true,
+    reverseOrbit: false,
+  },
+  decorators: [
+    (Story) => (
+      <Setup controls={false}>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof OrbitControls>
+
+type Story = StoryObj<typeof OrbitControls>
+
+function OrbitControlsScene(props: React.ComponentProps<typeof OrbitControls>) {
+  return (
+    <>
+      <OrbitControls {...props} />
+      <Box>
+        <meshBasicMaterial wireframe />
+      </Box>
+    </>
+  )
 }
+
+export const OrbitControlsStory = {
+  render: (args) => <OrbitControlsScene {...args} />,
+  name: 'Default',
+} satisfies Story
+
+//
 
 const CustomCamera = (props: OrbitControlsProps) => {
   /**
    * we will render our scene in a render target and use it as a map.
    */
   const fbo = useFBO(400, 400)
-  const virtualCamera = useRef<Camera>()
+  const virtualCamera = useRef<React.ElementRef<typeof PerspectiveCamera> | null>(null)
   const [virtualScene] = useState(() => new Scene())
 
   useFrame(({ gl }) => {
@@ -64,7 +75,7 @@ const CustomCamera = (props: OrbitControlsProps) => {
           </Box>
 
           <PerspectiveCamera name="FBO Camera" ref={virtualCamera} position={[0, 0, 5]} />
-          <OrbitControls camera={virtualCamera.current} {...props} />
+          <OrbitControls camera={virtualCamera.current || undefined} {...props} />
 
           {/* @ts-ignore */}
           <color attach="background" args={['hotpink']} />
@@ -75,7 +86,7 @@ const CustomCamera = (props: OrbitControlsProps) => {
   )
 }
 
-export const CustomCameraStory = (props: OrbitControlsProps) => <CustomCamera {...props} />
-
-CustomCameraStory.args = args
-CustomCameraStory.storyName = 'Custom Camera'
+export const CustomCameraStory = {
+  render: (args) => <CustomCamera {...args} />,
+  name: 'Custom Camera',
+} satisfies Story

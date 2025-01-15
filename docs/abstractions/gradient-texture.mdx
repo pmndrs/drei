@@ -1,0 +1,45 @@
+---
+title: GradientTexture
+sourcecode: src/core/GradientTexture.tsx
+---
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="l03yb" />
+  </li>
+</Grid>
+
+A declarative THREE.Texture which attaches to "map" by default. You can use this to create gradient backgrounds.
+
+```jsx
+<mesh>
+  <planeGeometry />
+  <meshBasicMaterial>
+    <GradientTexture
+      stops={[0, 1]} // As many stops as you want
+      colors={['aquamarine', 'hotpink']} // Colors need to match the number of stops
+      size={1024} // Size is optional, default = 1024
+    />
+  </meshBasicMaterial>
+</mesh>
+```
+
+Radial gradient.
+
+```jsx
+import { GradientTexture, GradientType } from './GradientTexture'
+;<mesh>
+  <planeGeometry />
+  <meshBasicMaterial>
+    <GradientTexture
+      stops={[0, 0.5, 1]} // As many stops as you want
+      colors={['aquamarine', 'hotpink', 'yellow']} // Colors need to match the number of stops
+      size={1024} // Size (height) is optional, default = 1024
+      width={1024} // Width of the canvas producing the texture, default = 16
+      type={GradientType.Radial} // The type of the gradient, default = GradientType.Linear
+      innerCircleRadius={0} // Optional, the radius of the inner circle of the gradient, default = 0
+      outerCircleRadius={'auto'} // Optional, the radius of the outer circle of the gradient, default = auto
+    />
+  </meshBasicMaterial>
+</mesh>
+```

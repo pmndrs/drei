@@ -1,14 +1,26 @@
 import * as React from 'react'
 import { SVGLoader } from 'three-stdlib'
 import { Box3, Sphere, Vector3 } from 'three'
-import { useLoader, Canvas } from '@react-three/fiber'
+import { useLoader } from '@react-three/fiber'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { MapControls } from '../../src'
 
+import { Setup } from '../Setup'
+
 export default {
   title: 'Controls/MapControls',
-  component: MapControlsScene,
-}
+  component: MapControls,
+  decorators: [
+    (Story) => (
+      <Setup orthographic camera={{ position: [0, 0, 50], zoom: 10, up: [0, 0, 1], far: 10000 }} controls={false}>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof MapControls>
+
+type Story = StoryObj<typeof MapControls>
 
 const Cell = ({ color, shape, fillOpacity }) => (
   <mesh>
@@ -26,10 +38,7 @@ function Svg() {
   const shapes = React.useMemo(
     () =>
       paths.flatMap((p) =>
-        p.toShapes(true).map((shape) =>
-          //@ts-expect-error this issue has been raised https://github.com/mrdoob/three.js/pull/21059
-          ({ shape, color: p.color, fillOpacity: p.userData.style.fillOpacity })
-        )
+        p.toShapes(true).map((shape) => ({ shape, color: p.color, fillOpacity: p.userData.style.fillOpacity }))
       ),
     [paths]
   )
@@ -44,26 +53,27 @@ function Svg() {
   return (
     <group position={center} ref={ref}>
       {shapes.map((props) => (
-        //@ts-expect-error this issue has been raised https://github.com/mrdoob/three.js/pull/21058
         <Cell key={props.shape.uuid} {...props} />
       ))}
     </group>
   )
 }
 
-function MapControlsScene() {
+function MapControlsScene(props: React.ComponentProps<typeof MapControls>) {
   return (
-    <Canvas orthographic camera={{ position: [0, 0, 50], zoom: 10, up: [0, 0, 1], far: 10000 }}>
+    <>
       <color attach="background" args={[243, 243, 243]} />
+
       <React.Suspense fallback={null}>
         <Svg />
       </React.Suspense>
-      <MapControls />
-    </Canvas>
+
+      <MapControls {...props} />
+    </>
   )
 }
 
-export const MapControlsSceneSt = () => <MapControlsScene />
-MapControlsSceneSt.story = {
+export const MapControlsSt = {
+  render: (args) => <MapControlsScene {...args} />,
   name: 'Default',
-}
+} satisfies Story

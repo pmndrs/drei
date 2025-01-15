@@ -1,0 +1,18 @@
+---
+title: PointMaterial
+sourcecode: src/core/PointMaterial.tsx
+---
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="eq7sc" />
+  </li>
+</Grid>
+
+Antialiased round dots. It takes the same props as regular [THREE.PointsMaterial](https://threejs.org/docs/index.html?q=PointsMaterial#api/en/materials/PointsMaterial) on which it is based.
+
+```jsx
+<points>
+  <PointMaterial transparent vertexColors size={15} sizeAttenuation={false} depthWrite={false} />
+</points>
+```

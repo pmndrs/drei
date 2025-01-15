@@ -1,5 +1,3 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
-npx --no-install pretty-quick --staged
-npm run eslint:ci --quiet
+yarn pretty-quick --staged
+yarn eslint:ci
+yarn typecheck

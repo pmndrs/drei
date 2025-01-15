@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { IcosahedronGeometry, SphereGeometry, Vector3 } from 'three'
+import { IcosahedronGeometry, Vector3 } from 'three'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Setup } from '../Setup'
 import { Environment, Wireframe } from '../../src'
@@ -7,62 +8,78 @@ import { Environment, Wireframe } from '../../src'
 export default {
   title: 'Staging/Wireframe',
   component: Wireframe,
-  decorators: [(storyFn) => <Setup cameraPosition={new Vector3(2, 2, 2)}>{storyFn()}</Setup>],
-}
+  decorators: [
+    (Story) => (
+      <Setup cameraPosition={new Vector3(2, 2, 2)}>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof Wireframe>
 
-function WireframeScene() {
+type Story = StoryObj<typeof Wireframe>
+
+function WireframeScene(props: React.ComponentProps<typeof Wireframe>) {
   const geom = React.useMemo(() => new IcosahedronGeometry(1, 16), [])
 
   return (
     <>
-      <React.Suspense fallback={null}>
-        <mesh>
-          <icosahedronGeometry args={[1, 16]} />
-          <meshPhysicalMaterial color="red" roughness={0.2} metalness={1} />
+      <mesh>
+        <icosahedronGeometry args={[1, 16]} />
+        <meshPhysicalMaterial color="red" roughness={0.2} metalness={1} />
 
-          <Wireframe stroke="white" squeeze dash />
-        </mesh>
+        <Wireframe {...props} />
+      </mesh>
 
-        <mesh position={[0, 0, -2.5]}>
-          <torusKnotGeometry />
-          <meshBasicMaterial color="red" />
+      <mesh position={[0, 0, -2.5]}>
+        <torusKnotGeometry />
+        <meshBasicMaterial color="red" />
 
-          <Wireframe simplify stroke="white" squeeze dash fillMix={1} fillOpacity={0.2} />
-        </mesh>
+        <Wireframe simplify stroke="white" squeeze dash fillMix={1} fillOpacity={0.2} />
+      </mesh>
 
-        <group position={[-2.5, 0, -2.5]}>
-          <Wireframe fill="blue" geometry={geom} stroke="white" squeeze dash fillMix={1} fillOpacity={0.2} />
-        </group>
+      <group position={[-2.5, 0, -2.5]}>
+        <Wireframe fill="blue" geometry={geom} stroke="white" squeeze dash fillMix={1} fillOpacity={0.2} />
+      </group>
 
-        <mesh position={[-2.5, 0, 0]}>
-          <sphereGeometry args={[1, 16, 16]} />
-          <shaderMaterial
-            vertexShader={
-              /* glsl */ `
+      <mesh position={[-2.5, 0, 0]}>
+        <sphereGeometry args={[1, 16, 16]} />
+        <shaderMaterial
+          vertexShader={
+            /* glsl */ `
             void main() {
               gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
             }
           `
-            }
-            fragmentShader={
-              /* glsl */ `
+          }
+          fragmentShader={
+            /* glsl */ `
           
             void main() {
               float edge = getWireframe();
               gl_FragColor = vec4(1.0, 1.0, 0.0, edge);
             }
           `
-            }
-          />
+          }
+        />
 
-          <Wireframe stroke="white" squeeze dash />
-        </mesh>
+        <Wireframe stroke="white" squeeze dash />
+      </mesh>
 
-        <Environment background preset="sunset" blur={0.2} />
-      </React.Suspense>
+      <Environment background preset="sunset" blur={0.2} />
     </>
   )
 }
 
-export const WireframeSt = () => <WireframeScene />
-WireframeSt.storyName = 'Default'
+export const WireframeSt = {
+  args: {
+    stroke: 'white',
+    squeeze: true,
+    dash: true,
+  },
+  argTypes: {
+    stroke: { control: 'color' },
+  },
+  render: (args) => <WireframeScene {...args} />,
+  name: 'Default',
+} satisfies Story

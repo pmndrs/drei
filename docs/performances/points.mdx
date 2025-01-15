@@ -1,0 +1,25 @@
+---
+title: Points
+sourcecode: src/core/Points.tsx
+---
+
+A wrapper around [THREE.Points](https://threejs.org/docs/#api/en/objects/Points). It has the same api and properties as Instances.
+
+```jsx
+<Points
+  limit={1000} // Optional: max amount of items (for calculating buffer size)
+  range={1000} // Optional: draw-range
+>
+  <pointsMaterial vertexColors />
+  <Point position={[1, 2, 3]} color="red" onClick={onClick} onPointerOver={onPointerOver} ... />
+  // As many as you want, make them conditional, mount/unmount them, lazy load them, etc ...
+</Points>
+```
+
+If you just want to use buffers for position, color and size, you can use the alternative API:
+
+```jsx
+<Points positions={positionsBuffer} colors={colorsBuffer} sizes={sizesBuffer}>
+  <pointsMaterial />
+</Points>
+```

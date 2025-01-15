@@ -1,0 +1,17 @@
+---
+title: useIntersect
+sourcecode: src/core/useIntersect.tsx
+---
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="gsm1y" />
+  </li>
+</Grid>
+
+A very cheap frustum check that gives you a reference you can observe in order to know if the object has entered the view or is outside of it. This relies on [THREE.Object3D.onBeforeRender](https://threejs.org/docs/#api/en/core/Object3D.onBeforeRender) so it only works on objects that are effectively rendered, like meshes, lines, sprites. It won't work on groups, object3d's, bones, etc.
+
+```jsx
+const ref = useIntersect((visible) => console.log('object is visible', visible))
+return <mesh ref={ref} />
+```

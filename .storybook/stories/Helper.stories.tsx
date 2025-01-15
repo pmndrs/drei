@@ -3,47 +3,44 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { BoxHelper, CameraHelper } from 'three'
 import { VertexNormalsHelper } from 'three-stdlib'
+import { Meta, StoryObj } from '@storybook/react'
+
 import { Helper, PerspectiveCamera, Sphere } from '../../src'
 import { Setup } from '../Setup'
+import { ComponentProps } from 'react'
 
 export default {
   title: 'Gizmos/Helper',
   component: Helper,
-  decorators: [(storyFn) => <Setup>{storyFn()}</Setup>],
-  args: {
-    showHelper: true,
-  },
-  argTypes: {
-    showHelper: {
-      type: 'boolean',
-    },
-  },
-}
+  decorators: [
+    (Story) => (
+      <Setup>
+        <Story />
+      </Setup>
+    ),
+  ],
+} satisfies Meta<typeof Helper>
 
-type StoryProps = {
-  showHelper: boolean
-}
+type Story = StoryObj<typeof Helper>
 
-const Scene: React.FC<StoryProps> = ({ showHelper }) => {
+const HelperScene1 = (_props: ComponentProps<typeof Helper>) => {
   return (
     <Sphere>
       <meshBasicMaterial />
 
-      {showHelper && (
-        <>
-          <Helper type={BoxHelper} args={['royalblue']} />
-          <Helper type={VertexNormalsHelper} args={[1, 0xff0000]} />
-        </>
-      )}
+      <Helper type={BoxHelper} args={['royalblue']} />
+      <Helper type={VertexNormalsHelper} args={[1, 0xff0000]} />
     </Sphere>
   )
 }
 
-export const DefaultStory = (args: StoryProps) => <Scene {...args} />
-DefaultStory.storyName = 'Default'
+export const HelperSt1 = {
+  render: (args) => <HelperScene1 {...args} />,
+  name: 'Default',
+} satisfies Story
 
-const CameraScene: React.FC<StoryProps> = ({ showHelper }) => {
-  const camera = React.useRef<THREE.PerspectiveCamera>()
+const HelperScene2 = (_props: ComponentProps<typeof Helper>) => {
+  const camera = React.useRef<THREE.PerspectiveCamera>(null)
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime()
@@ -60,10 +57,12 @@ const CameraScene: React.FC<StoryProps> = ({ showHelper }) => {
     <PerspectiveCamera makeDefault={false} position={[0, 3, 3]} near={1} far={4} ref={camera}>
       <meshBasicMaterial />
 
-      {showHelper && <Helper type={CameraHelper} />}
+      <Helper type={CameraHelper} />
     </PerspectiveCamera>
   )
 }
 
-export const CameraStory = (args: StoryProps) => <CameraScene {...args} />
-CameraStory.storyName = 'Camera Helper'
+export const HelperSt2 = {
+  render: (args) => <HelperScene2 {...args} />,
+  name: 'Camera Helper',
+} satisfies Story

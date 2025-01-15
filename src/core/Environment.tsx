@@ -45,7 +45,7 @@ function setEnvProps(
 ) {
   // defaults
   sceneProps = {
-    backgroundBlurriness: sceneProps.blur ?? 0,
+    backgroundBlurriness: 0,
     backgroundIntensity: 1,
     backgroundRotation: [0, 0, 0],
     environmentIntensity: 1,
@@ -100,22 +100,29 @@ export function EnvironmentCube({
 }: EnvironmentProps) {
   const texture = useEnvironment(rest)
   const defaultScene = useThree((state) => state.scene)
+
   React.useLayoutEffect(() => {
     return setEnvProps(background, scene, defaultScene, texture, {
-      blur,
-      backgroundBlurriness,
+      backgroundBlurriness: blur ?? backgroundBlurriness,
       backgroundIntensity,
       backgroundRotation,
       environmentIntensity,
       environmentRotation,
     })
   })
+
+  React.useEffect(() => {
+    return () => {
+      texture.dispose()
+    }
+  }, [texture])
+
   return null
 }
 
 export function EnvironmentPortal({
   children,
-  near = 1,
+  near = 0.1,
   far = 1000,
   resolution = 256,
   frames = 1,
@@ -143,11 +150,21 @@ export function EnvironmentPortal({
     return fbo
   }, [resolution])
 
+  React.useEffect(() => {
+    return () => {
+      fbo.dispose()
+    }
+  }, [fbo])
+
   React.useLayoutEffect(() => {
-    if (frames === 1) camera.current.update(gl, virtualScene)
+    if (frames === 1) {
+      const autoClear = gl.autoClear
+      gl.autoClear = true
+      camera.current.update(gl, virtualScene)
+      gl.autoClear = autoClear
+    }
     return setEnvProps(background, scene, defaultScene, fbo.texture, {
-      blur,
-      backgroundBlurriness,
+      backgroundBlurriness: blur ?? backgroundBlurriness,
       backgroundIntensity,
       backgroundRotation,
       environmentIntensity,
@@ -158,7 +175,10 @@ export function EnvironmentPortal({
   let count = 1
   useFrame(() => {
     if (frames === Infinity || count < frames) {
+      const autoClear = gl.autoClear
+      gl.autoClear = true
       camera.current.update(gl, virtualScene)
+      gl.autoClear = autoClear
       count++
     }
   })
@@ -195,6 +215,12 @@ function EnvironmentGround(props: EnvironmentProps) {
   const texture = props.map || textureDefault
 
   React.useMemo(() => extend({ GroundProjectedEnvImpl }), [])
+
+  React.useEffect(() => {
+    return () => {
+      textureDefault.dispose()
+    }
+  }, [textureDefault])
 
   const args = React.useMemo<[CubeTexture | Texture]>(() => [texture], [texture])
   const height = (props.ground as any)?.height

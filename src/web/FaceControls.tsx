@@ -19,7 +19,8 @@ import { useFrame, useThree } from '@react-three/fiber'
 import type { FaceLandmarker, FaceLandmarkerResult } from '@mediapipe/tasks-vision'
 import { easing } from 'maath'
 
-import { VideoTexture, VideoTextureProps, WebcamVideoTexture } from '..'
+import { VideoTexture, VideoTextureProps } from '../core/VideoTexture'
+import { WebcamVideoTexture } from './WebcamVideoTexture'
 import { Facemesh, FacemeshApi, FacemeshProps } from './Facemesh'
 import { useFaceLandmarker } from './FaceLandmarker'
 
@@ -284,6 +285,7 @@ export const FaceControls = /* @__PURE__ */ forwardRef<FaceControlsApi, FaceCont
 
         <Facemesh
           ref={facemeshApiRef}
+          children={<meshNormalMaterial side={THREE.DoubleSide} />}
           {...facemesh}
           points={points}
           depth={depth}
@@ -296,9 +298,7 @@ export const FaceControls = /* @__PURE__ */ forwardRef<FaceControlsApi, FaceCont
           debug={debug}
           rotation-z={Math.PI}
           visible={debug}
-        >
-          <meshBasicMaterial side={THREE.DoubleSide} />
-        </Facemesh>
+        />
       </FaceControlsContext.Provider>
     )
   }

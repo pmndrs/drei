@@ -4,12 +4,12 @@ import { useThree } from '@react-three/fiber'
 import { useGesture, DragConfig } from '@use-gesture/react'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
-const initialModelPosition = new THREE.Vector3()
-const mousePosition2D = new THREE.Vector2()
-const mousePosition3D = new THREE.Vector3()
-const dragOffset = new THREE.Vector3()
-const dragPlaneNormal = new THREE.Vector3()
-const dragPlane = new THREE.Plane()
+const initialModelPosition = /* @__PURE__ */ new THREE.Vector3()
+const mousePosition2D = /* @__PURE__ */ new THREE.Vector2()
+const mousePosition3D = /* @__PURE__ */ new THREE.Vector3()
+const dragOffset = /* @__PURE__ */ new THREE.Vector3()
+const dragPlaneNormal = /* @__PURE__ */ new THREE.Vector3()
+const dragPlane = /* @__PURE__ */ new THREE.Plane()
 
 type ControlsProto = {
   enabled: boolean

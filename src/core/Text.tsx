@@ -37,6 +37,7 @@ type Props = JSX.IntrinsicElements['mesh'] & {
   fillOpacity?: number
   sdfGlyphSize?: number
   debugSDF?: boolean
+  glyphGeometryDetail?: number
   onSync?: (troika: any) => void
 }
 

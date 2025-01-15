@@ -15,7 +15,6 @@ import {
 } from 'three'
 import { MaterialNode, extend, applyProps, useFrame, ReactThreeFiber } from '@react-three/fiber'
 import { useTexture } from './Texture'
-import { v4 } from 'uuid'
 import { setUpdateRange } from '../helpers/deprecated'
 
 declare global {
@@ -246,7 +245,7 @@ export const CloudInstance = /* @__PURE__ */ React.forwardRef<Group, CloudProps>
 
     const parent = React.useContext(context)
     const ref = React.useRef<Group>(null!)
-    const [uuid] = React.useState(() => v4())
+    const uuid = React.useId()
     const clouds: CloudState[] = React.useMemo(() => {
       return [...new Array(segments)].map(
         (_, index) =>

@@ -3,7 +3,7 @@ module.exports = {
     'master',
     { name: 'alpha', prerelease: true },
     { name: 'beta', prerelease: true },
-    { name: 'canary-*', prerelease: true, channel: 'canary' },
+    { name: 'canary-*', prerelease: true, channel: 'rc' },
   ],
   plugins: [
     '@semantic-release/commit-analyzer',

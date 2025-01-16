@@ -73,7 +73,6 @@ export const MeshReflectorMaterial: ForwardRefComponent<MeshReflectorMaterialPro
       const [virtualCamera] = React.useState(() => new PerspectiveCamera())
 
       const beforeRender = React.useCallback(() => {
-        // TODO: As of R3f 7-8 this should be __r3f.parent
         const parent = (materialRef.current as any).parent || (materialRef.current as any)?.__r3f.parent?.object
         if (!parent) return
 
@@ -194,7 +193,6 @@ export const MeshReflectorMaterial: ForwardRefComponent<MeshReflectorMaterialPro
       ])
 
       useFrame(() => {
-        // TODO: As of R3f 7-8 this should be __r3f.parent
         const parent = (materialRef.current as any).parent || (materialRef.current as any)?.__r3f.parent?.object
         if (!parent) return
 

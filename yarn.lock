@@ -2773,7 +2773,7 @@ __metadata:
     "@mediapipe/tasks-vision": "npm:0.10.17"
     "@monogrid/gainmap-js": "npm:^3.0.6"
     "@playwright/test": "npm:^1.45.2"
-    "@react-three/fiber": "npm:9.0.0-rc.3"
+    "@react-three/fiber": "npm:9.0.0-rc.4"
     "@rollup/plugin-babel": "npm:^5.3.0"
     "@rollup/plugin-commonjs": "npm:^19.0.0"
     "@rollup/plugin-json": "npm:^4.1.0"
@@ -2838,7 +2838,7 @@ __metadata:
     vite-plugin-glslify: "npm:^2.1.0"
     zustand: "npm:^5.0.1"
   peerDependencies:
-    "@react-three/fiber": 9.0.0-rc.3
+    "@react-three/fiber": 9.0.0-rc.4
     react: ^19
     react-dom: ^19
     three: ">=0.159"
@@ -2848,9 +2848,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@react-three/fiber@npm:9.0.0-rc.3":
-  version: 9.0.0-rc.3
-  resolution: "@react-three/fiber@npm:9.0.0-rc.3"
+"@react-three/fiber@npm:9.0.0-rc.4":
+  version: 9.0.0-rc.4
+  resolution: "@react-three/fiber@npm:9.0.0-rc.4"
   dependencies:
     "@babel/runtime": "npm:^7.17.8"
     "@types/debounce": "npm:^1.2.1"
@@ -2871,7 +2871,7 @@ __metadata:
     expo-gl: ">=11.0"
     react: ^19.0.0
     react-dom: ^19.0.0
-    react-native: ">=0.69"
+    react-native: ">=0.78"
     three: ">=0.156"
   peerDependenciesMeta:
     expo:
@@ -2886,7 +2886,7 @@ __metadata:
       optional: true
     react-native:
       optional: true
-  checksum: 10c0/b97bdb570f584486337a6c6db5656917ca167c0acb989798102976322403938d3539961257ad5ccc0a0592124861f0f631a16b1ae5d4f3fb912a15630669b89f
+  checksum: 10c0/1fe9d5e436b92360201d43c64bd206905a3e1f841c6310bd3253674d43fe6810e3872548dc7a5cc2d3ad3fb03972092cfa0b1d9872b51f4f1b2eac14cbd1c28a
   languageName: node
   linkType: hard
 

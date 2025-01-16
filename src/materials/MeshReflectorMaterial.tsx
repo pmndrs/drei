@@ -1,4 +1,3 @@
-import { ThreeElements } from '@react-three/fiber'
 import { Matrix4, MeshStandardMaterial, Texture } from 'three'
 
 type UninitializedUniform<Value> = { value: Value | null }
@@ -231,20 +230,3 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
     this._mixContrast.value = v
   }
 }
-
-export type MeshReflectorMaterialProps = {
-  mixBlur: number
-  mixStrength: number
-  mirror: number
-  textureMatrix: Matrix4
-  tDiffuse: Texture
-  distortionMap?: Texture
-  tDiffuseBlur: Texture
-  hasBlur: boolean
-  minDepthThreshold: number
-  maxDepthThreshold: number
-  depthScale: number
-  depthToBlurRatioBias: number
-  distortion: number
-  mixContrast: number
-} & Omit<ThreeElements['meshStandardMaterial'], 'ref'>

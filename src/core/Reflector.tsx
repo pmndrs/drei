@@ -14,10 +14,10 @@ import {
   Texture,
   HalfFloatType,
 } from 'three'
-import { useFrame, useThree, extend, ThreeElements } from '@react-three/fiber'
+import { useFrame, useThree, extend, ThreeElements, ThreeElement } from '@react-three/fiber'
 
 import { BlurPass } from '../materials/BlurPass'
-import { MeshReflectorMaterialProps, MeshReflectorMaterial } from '../materials/MeshReflectorMaterial'
+import { MeshReflectorMaterial as MeshReflectorMaterialImpl } from '../materials/MeshReflectorMaterial'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type ReflectorProps = Omit<ThreeElements['mesh'], 'ref' | 'args' | 'children'> &
@@ -38,14 +38,14 @@ export type ReflectorProps = Omit<ThreeElements['mesh'], 'ref' | 'args' | 'child
     children?: {
       (
         Component: React.ElementType<ThreeElements['meshReflectorMaterial']>,
-        ComponentProps: MeshReflectorMaterialProps
+        ComponentProps: ThreeElements['meshReflectorMaterial']
       ): React.JSX.Element | null
     }
   }
 
 declare module '@react-three/fiber' {
   interface ThreeElements {
-    meshReflectorMaterial: MeshReflectorMaterialProps
+    meshReflectorMaterial: ThreeElement<typeof MeshReflectorMaterialImpl>
   }
 }
 
@@ -77,7 +77,7 @@ export const Reflector: ForwardRefComponent<ReflectorProps, Mesh> = /* @__PURE__
     },
     ref
   ) => {
-    extend({ MeshReflectorMaterial })
+    extend({ MeshReflectorMaterial: MeshReflectorMaterialImpl })
 
     React.useEffect(() => {
       console.warn(

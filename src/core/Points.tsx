@@ -164,7 +164,7 @@ export const Point: ForwardRefComponent<ThreeElements['positionPoint'], Position
 /**
  * Buffer implementation, relies on complete buffers of the correct number, leaves it to the user to update them
  */
-type PointsBuffersProps = ThreeElements['points'] & {
+export type PointsBuffersProps = ThreeElements['points'] & {
   // a buffer containing all points position
   positions: Float32Array
   colors?: Float32Array

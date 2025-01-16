@@ -27,7 +27,7 @@ export type PerformanceMonitorApi = {
   subscribe: (ref: React.RefObject<Partial<PerformanceMonitorHookApi>>) => () => void
 }
 
-type PerformanceMonitorProps = {
+export type PerformanceMonitorProps = {
   /** How much time in milliseconds to collect an average fps, 250 */
   ms?: number
   /** How many interations of averages to collect, 10 */

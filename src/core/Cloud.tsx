@@ -46,7 +46,7 @@ type CloudState = {
   color: Color
 }
 
-type CloudsProps = Omit<ThreeElements['group'], 'ref'> & {
+export type CloudsProps = Omit<ThreeElements['group'], 'ref'> & {
   /** Optional cloud texture, points to a default hosted on rawcdn.githack */
   texture?: string
   /** Maximum number of segments, default: 200 (make this tight to save memory!) */
@@ -59,7 +59,7 @@ type CloudsProps = Omit<ThreeElements['group'], 'ref'> & {
   frustumCulled?: boolean
 }
 
-type CloudProps = Omit<ThreeElements['group'], 'ref'> & {
+export type CloudProps = Omit<ThreeElements['group'], 'ref'> & {
   /** A seeded random will show the same cloud consistently, default: Math.random() */
   seed?: number
   /** How many segments or particles the cloud will have, default: 20 */

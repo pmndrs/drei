@@ -45,7 +45,7 @@ export const MarchingCubes: ForwardRefComponent<MarchingCubesProps, MarchingCube
     }
   )
 
-type MarchingCubeProps = {
+export type MarchingCubeProps = {
   strength?: number
   subtract?: number
   color?: Color
@@ -67,7 +67,7 @@ export const MarchingCube: ForwardRefComponent<MarchingCubeProps, THREE.Group> =
   }
 )
 
-type MarchingPlaneProps = {
+export type MarchingPlaneProps = {
   planeType?: 'x' | 'y' | 'z'
   strength?: number
   subtract?: number

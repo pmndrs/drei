@@ -6,7 +6,6 @@ on:
       - 'beta'
       - 'alpha'
       - 'canary-*'
-      - 'rc'
   pull_request: {}
 
 # Cancel any previous run (see: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#concurrency)

@@ -16,10 +16,10 @@ In order to preload you do this:
 useFont.preload('/fonts/helvetiker_regular.typeface.json')
 ```
 
-If the response from the URL is not a JSON, `THREE.TTFLoader` is used to try parsing the response as a standard font file.
+If the second argument, `ttfLoader`, is set to `true`, `THREE.TTFLoader` is used to try parsing the response as a font file in a standard format (TTF, OTF etc).
 However, keep in mind that the on-the-fly conversion to the JSON format will impact the loading time.
 
 ```jsx
-const font = useFont('/fonts/helvetiker_regular.ttf')
+const font = useFont('/fonts/helvetiker_regular.ttf', true)
 return <Text3D font={font.data} />
 ```

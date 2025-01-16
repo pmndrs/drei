@@ -38,29 +38,29 @@ function parseTtfArrayBuffer(ttfData: ArrayBuffer) {
   return ttfLoader.parse(ttfData) as FontData
 }
 
-async function loadFontData(font: FontInput) {
+async function loadFontData(font: FontInput, ttfLoader: boolean) {
   if (typeof font === 'string') {
     const res = await fetch(font)
 
-    if (res.headers.get('Content-Type')?.includes('application/json')) {
-      return (await res.json()) as FontData
-    } else {
+    if (ttfLoader) {
       const arrayBuffer = await res.arrayBuffer()
       return parseTtfArrayBuffer(arrayBuffer)
+    } else {
+      return (await res.json()) as FontData
     }
   } else {
     return font
   }
 }
 
-async function loader(font: FontInput) {
-  const fontData = await loadFontData(font)
+async function loader(font: FontInput, ttfLoader: boolean) {
+  const fontData = await loadFontData(font, ttfLoader)
   return parseFontData(fontData)
 }
 
-export function useFont(font: FontInput) {
-  return suspend(loader, [font])
+export function useFont(font: FontInput, ttfLoader: boolean = false) {
+  return suspend(loader, [font, ttfLoader])
 }
 
-useFont.preload = (font: FontInput) => preload(loader, [font])
-useFont.clear = (font: FontInput) => clear([font])
+useFont.preload = (font: FontInput, ttfLoader: boolean = false) => preload(loader, [font, ttfLoader])
+useFont.clear = (font: FontInput, ttfLoader: boolean = false) => clear([font, ttfLoader])

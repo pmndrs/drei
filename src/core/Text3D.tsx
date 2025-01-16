@@ -14,8 +14,11 @@ declare global {
   }
 }
 
+type UseFontParams = Parameters<typeof useFont>
+
 type Text3DProps = {
-  font: Parameters<typeof useFont>[0]
+  font: UseFontParams[0]
+  ttfLoader?: UseFontParams[1]
   bevelSegments?: number
   smooth?: number
 } & Omit<TextGeometryParameters, 'font'> &
@@ -42,6 +45,7 @@ export const Text3D: ForwardRefComponent<
   (
     {
       font: _font,
+      ttfLoader = false,
       letterSpacing = 0,
       lineHeight = 1,
       size = 1,
@@ -61,7 +65,7 @@ export const Text3D: ForwardRefComponent<
     React.useMemo(() => extend({ RenamedTextGeometry: TextGeometry }), [])
 
     const ref = React.useRef<THREE.Mesh>(null!)
-    const font = useFont(_font)
+    const font = useFont(_font, ttfLoader)
 
     const opts = useMemo(() => {
       return {

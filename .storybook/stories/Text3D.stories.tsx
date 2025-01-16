@@ -45,9 +45,18 @@ export const Text3DSt = {
   name: 'Default',
 } satisfies Story
 
+export const Text3DCustomExtSt = {
+  args: {
+    font: '/fonts/helvetiker_regular.jsonfont',
+  },
+  render: (args) => <Text3DScene {...args} />,
+  name: 'Custom Extension (JSON)',
+} satisfies Story
+
 export const Text3DTtfSt = {
   args: {
     font: '/fonts/lemon-round.ttf',
+    ttfLoader: true,
   },
   render: (args) => <Text3DScene {...args} />,
   name: 'TTF',

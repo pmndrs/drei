@@ -53,11 +53,7 @@ export function useEnvironment({
     if (extension !== 'webp' && extension !== 'jpg' && extension !== 'jpeg') return
 
     function clearGainmapTexture() {
-      useLoader.clear(
-        // @ts-expect-error
-        loader,
-        multiFile ? [files] : files
-      )
+      useLoader.clear(loader!, (multiFile ? [files] : files) as string | string[] | string[][])
     }
 
     gl.domElement.addEventListener('webglcontextlost', clearGainmapTexture, { once: true })
@@ -73,6 +69,7 @@ export function useEnvironment({
         loader.setRenderer(gl)
       }
       loader.setPath?.(path)
+      // @ts-expect-error
       if (extensions) extensions(loader)
     }
   ) as Texture | Texture[]
@@ -122,6 +119,7 @@ useEnvironment.preload = (preloadOptions?: EnvironmentLoaderPreloadOptions) => {
 
   useLoader.preload(loader, isArray(files) ? [files] : files, (loader) => {
     loader.setPath?.(path)
+    // @ts-expect-error
     if (extensions) extensions(loader)
   })
 }
@@ -176,16 +174,15 @@ function getExtension(files: string | string[]) {
 function getLoader(extension: string | undefined) {
   const loader =
     extension === 'cube'
-      ? // TODO: fix type upstream
-        (CubeTextureLoader as typeof Loader)
+      ? CubeTextureLoader
       : extension === 'hdr'
         ? RGBELoader
         : extension === 'exr'
           ? EXRLoader
           : extension === 'jpg' || extension === 'jpeg'
-            ? (HDRJPGLoader as unknown as typeof Loader)
+            ? HDRJPGLoader
             : extension === 'webp'
-              ? (GainMapLoader as unknown as typeof Loader)
+              ? GainMapLoader
               : null
 
   return loader

@@ -61,8 +61,7 @@ export const TransformControls: ForwardRefComponent<TransformControlsProps, Tran
       },
       ref
     ) => {
-      // @ts-expect-error new in @react-three/fiber@7.0.5
-      const defaultControls = useThree((state) => state.controls) as ControlsProto
+      const defaultControls = useThree((state) => state.controls) as unknown as ControlsProto | undefined
       const gl = useThree((state) => state.gl)
       const events = useThree((state) => state.events)
       const defaultCamera = useThree((state) => state.camera)

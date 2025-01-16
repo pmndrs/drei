@@ -65,7 +65,6 @@
     "tunnel-rat": "^0.1.2",
     "use-sync-external-store": "^1.4.0",
     "utility-types": "^3.11.0",
-    "uuid": "^9.0.1",
     "zustand": "^5.0.1"
   },
   "devDependencies": {

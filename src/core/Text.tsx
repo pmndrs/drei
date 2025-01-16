@@ -37,6 +37,7 @@ export type TextProps = Omit<ThreeElements['mesh'], 'ref'> & {
   fillOpacity?: number
   sdfGlyphSize?: number
   debugSDF?: boolean
+  glyphGeometryDetail?: number
   onSync?: (troika: any) => void
 }
 

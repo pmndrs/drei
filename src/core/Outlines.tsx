@@ -150,11 +150,11 @@ export function Outlines({
       mesh.renderOrder = renderOrder
 
       const parent = group.parent as THREE.Mesh & THREE.SkinnedMesh & THREE.InstancedMesh
-      applyProps(mesh as any, {
+      applyProps(mesh, {
         morphTargetInfluences: parent.morphTargetInfluences,
         morphTargetDictionary: parent.morphTargetDictionary,
       })
-      applyProps(mesh.material as any, {
+      applyProps(mesh.material, {
         transparent,
         thickness,
         color,

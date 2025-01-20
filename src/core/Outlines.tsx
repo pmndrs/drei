@@ -135,6 +135,8 @@ export function Outlines({
           group.add(mesh)
         }
         mesh.geometry = angle ? toCreasedNormals(parent.geometry, angle) : parent.geometry
+        mesh.morphTargetInfluences = parent.morphTargetInfluences
+        mesh.morphTargetDictionary = parent.morphTargetDictionary
       }
     }
   })
@@ -146,6 +148,12 @@ export function Outlines({
     const mesh = group.children[0] as THREE.Mesh<THREE.BufferGeometry, THREE.Material>
     if (mesh) {
       mesh.renderOrder = renderOrder
+
+      const parent = group.parent as THREE.Mesh & THREE.SkinnedMesh & THREE.InstancedMesh
+      applyProps(mesh as any, {
+        morphTargetInfluences: parent.morphTargetInfluences,
+        morphTargetDictionary: parent.morphTargetDictionary,
+      })
       applyProps(mesh.material as any, {
         transparent,
         thickness,

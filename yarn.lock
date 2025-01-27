@@ -2895,7 +2895,7 @@ __metadata:
     storybook: "npm:^8.4.4"
     suspend-react: "npm:^0.1.3"
     three: "npm:^0.151.0"
-    three-mesh-bvh: "npm:^0.7.8"
+    three-mesh-bvh: "npm:^0.9.0"
     three-stdlib: "npm:^2.35.6"
     troika-three-text: "npm:^0.52.0"
     ts-node: "npm:^10.9.2"
@@ -12202,12 +12202,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"three-mesh-bvh@npm:^0.7.8":
-  version: 0.7.8
-  resolution: "three-mesh-bvh@npm:0.7.8"
+"three-mesh-bvh@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "three-mesh-bvh@npm:0.9.0"
   peerDependencies:
-    three: ">= 0.151.0"
-  checksum: 10c0/0d5f7fb4c9ae9a7477c394950a68bcd3eea88e3b0ea787dac4096cfdfcca2298268d1832575288d37ae0f19f3028f3ff79e7d70e3966bc2e8da51c95ba4209b1
+    three: ">= 0.159.0"
+  checksum: 10c0/76629dd6264fe4af877745669b1947ce8f3d5cf45c613daef062c3a8964a2a61f29b9f26f004ab1a57e935307f0a6eafebd97a3e4af437f1c3429bc4b27e630e
   languageName: node
   linkType: hard
 

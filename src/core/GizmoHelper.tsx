@@ -76,6 +76,7 @@ export const GizmoHelper = ({
 
   React.useEffect(() => {
     defaultUp.current.copy(mainCamera.up)
+    dummy.up.copy(mainCamera.up)
   }, [mainCamera])
 
   const tweenCamera = React.useCallback(

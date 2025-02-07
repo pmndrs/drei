@@ -18,7 +18,7 @@ export type TrackballControlsProps = Omit<
       onEnd?: (e?: THREE.Event) => void
     }
   >,
-  'ref'
+  'ref' | 'args'
 >
 
 export const TrackballControls: ForwardRefComponent<TrackballControlsProps, TrackballControlsImpl> =

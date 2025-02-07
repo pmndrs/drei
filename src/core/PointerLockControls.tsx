@@ -5,7 +5,7 @@ import * as THREE from 'three'
 import { PointerLockControls as PointerLockControlsImpl } from 'three-stdlib'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
-export type PointerLockControlsProps = Omit<ThreeElement<typeof PointerLockControlsImpl>, 'ref'> & {
+export type PointerLockControlsProps = Omit<ThreeElement<typeof PointerLockControlsImpl>, 'ref' | 'args'> & {
   domElement?: HTMLElement
   selector?: string
   enabled?: boolean

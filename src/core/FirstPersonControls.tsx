@@ -3,7 +3,7 @@ import { EventManager, ThreeElement, useFrame, useThree } from '@react-three/fib
 import { FirstPersonControls as FirstPersonControlImpl } from 'three-stdlib'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
-export type FirstPersonControlsProps = Omit<ThreeElement<typeof FirstPersonControlImpl>, 'ref'> & {
+export type FirstPersonControlsProps = Omit<ThreeElement<typeof FirstPersonControlImpl>, 'ref' | 'args'> & {
   domElement?: HTMLElement
   makeDefault?: boolean
 }

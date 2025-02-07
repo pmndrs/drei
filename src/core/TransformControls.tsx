@@ -8,7 +8,7 @@ type ControlsProto = {
   enabled: boolean
 }
 
-export type TransformControlsProps = Omit<ThreeElement<typeof TransformControlsImpl>, 'ref'> &
+export type TransformControlsProps = Omit<ThreeElement<typeof TransformControlsImpl>, 'ref' | 'args'> &
   Omit<ThreeElements['group'], 'ref'> & {
     object?: THREE.Object3D | React.RefObject<THREE.Object3D>
     enabled?: boolean

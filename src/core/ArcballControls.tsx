@@ -20,7 +20,7 @@ export type ArcballControlsProps = Omit<
       onEnd?: (e?: Event) => void
     }
   >,
-  'ref'
+  'ref' | 'args'
 >
 
 export const ArcballControls: ForwardRefComponent<ArcballControlsProps, ArcballControlsImpl> =

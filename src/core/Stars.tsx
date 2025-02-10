@@ -79,7 +79,7 @@ export const Stars: ForwardRefComponent<Props, Points> = /* @__PURE__ */ React.f
       return [new Float32Array(positions), new Float32Array(colors), new Float32Array(sizes)]
     }, [count, depth, factor, radius, saturation])
     useFrame(
-      (state) => material.current && (material.current.uniforms.time.value = state.clock.getElapsedTime() * speed)
+      (state) => material.current && (material.current.uniforms.time.value = state.clock.elapsedTime * speed)
     )
 
     const [starfieldMaterial] = React.useState(() => new StarfieldMaterial())

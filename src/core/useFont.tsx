@@ -1,4 +1,4 @@
-import { FontLoader } from 'three-stdlib'
+import { FontLoader, TTFLoader } from 'three-stdlib'
 import { suspend, preload, clear } from 'suspend-react'
 
 export type Glyph = {
@@ -22,10 +22,7 @@ export type FontData = {
 type FontInput = string | FontData
 
 let fontLoader: FontLoader | null = null
-
-async function loadFontData(font: FontInput): Promise<FontData> {
-  return typeof font === 'string' ? await (await fetch(font)).json() : font
-}
+let ttfLoader: TTFLoader | null = null
 
 function parseFontData(fontData: FontData) {
   if (!fontLoader) {
@@ -34,14 +31,36 @@ function parseFontData(fontData: FontData) {
   return fontLoader.parse(fontData)
 }
 
-async function loader(font: FontInput) {
-  const data = await loadFontData(font)
-  return parseFontData(data)
+function parseTtfArrayBuffer(ttfData: ArrayBuffer) {
+  if (!ttfLoader) {
+    ttfLoader = new TTFLoader()
+  }
+  return ttfLoader.parse(ttfData) as FontData
 }
 
-export function useFont(font: FontInput) {
-  return suspend(loader, [font])
+async function loadFontData(font: FontInput, ttfLoader: boolean) {
+  if (typeof font === 'string') {
+    const res = await fetch(font)
+
+    if (ttfLoader) {
+      const arrayBuffer = await res.arrayBuffer()
+      return parseTtfArrayBuffer(arrayBuffer)
+    } else {
+      return (await res.json()) as FontData
+    }
+  } else {
+    return font
+  }
 }
 
-useFont.preload = (font: FontInput) => preload(loader, [font])
-useFont.clear = (font: FontInput) => clear([font])
+async function loader(font: FontInput, ttfLoader: boolean) {
+  const fontData = await loadFontData(font, ttfLoader)
+  return parseFontData(fontData)
+}
+
+export function useFont(font: FontInput, ttfLoader: boolean = false) {
+  return suspend(loader, [font, ttfLoader])
+}
+
+useFont.preload = (font: FontInput, ttfLoader: boolean = false) => preload(loader, [font, ttfLoader])
+useFont.clear = (font: FontInput, ttfLoader: boolean = false) => clear([font, ttfLoader])

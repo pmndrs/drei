@@ -16,6 +16,10 @@ export default {
       </Setup>
     ),
   ],
+  args: {
+    bevelEnabled: true,
+    bevelSize: 0.05,
+  },
 } satisfies Meta<typeof Text3D>
 
 type Story = StoryObj<typeof Text3D>
@@ -36,9 +40,24 @@ function Text3DScene(props: React.ComponentProps<typeof Text3D>) {
 export const Text3DSt = {
   args: {
     font: '/fonts/helvetiker_regular.typeface.json',
-    bevelEnabled: true,
-    bevelSize: 0.05,
   },
   render: (args) => <Text3DScene {...args} />,
   name: 'Default',
+} satisfies Story
+
+export const Text3DCustomExtSt = {
+  args: {
+    font: '/fonts/helvetiker_regular.jsonfont',
+  },
+  render: (args) => <Text3DScene {...args} />,
+  name: 'Custom Extension (JSON)',
+} satisfies Story
+
+export const Text3DTtfSt = {
+  args: {
+    font: '/fonts/lemon-round.ttf',
+    ttfLoader: true,
+  },
+  render: (args) => <Text3DScene {...args} />,
+  name: 'TTF',
 } satisfies Story

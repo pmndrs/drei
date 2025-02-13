@@ -3,15 +3,23 @@ title: useFont
 sourcecode: src/core/useFont.tsx
 ---
 
-Uses THREE.FontLoader to load a font and returns a `THREE.Font` object. It also accepts a JSON object as a parameter. You can use this to preload or share a font across multiple components.
+Uses `THREE.FontLoader` to load a font and returns a `THREE.Font` object. It also accepts a JSON object as a parameter. You can use this to preload or share a font across multiple components.
 
 ```jsx
 const font = useFont('/fonts/helvetiker_regular.typeface.json')
-return <Text3D font={font} />
+return <Text3D font={font.data} />
 ```
 
 In order to preload you do this:
 
 ```jsx
 useFont.preload('/fonts/helvetiker_regular.typeface.json')
+```
+
+If the second argument, `ttfLoader`, is set to `true`, `THREE.TTFLoader` is used to try parsing the response as a font file in a standard format (TTF, OTF etc).
+However, keep in mind that the on-the-fly conversion to the JSON format will impact the loading time.
+
+```jsx
+const font = useFont('/fonts/helvetiker_regular.ttf', true)
+return <Text3D font={font.data} />
 ```

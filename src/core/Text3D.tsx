@@ -2,9 +2,8 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { extend, MeshProps, Node } from '@react-three/fiber'
 import { useMemo } from 'react'
-import { suspend } from 'suspend-react'
-import { mergeVertices, TextGeometry, TextGeometryParameters, FontLoader } from 'three-stdlib'
-import { useFont, FontData } from './useFont'
+import { mergeVertices, TextGeometry, TextGeometryParameters } from 'three-stdlib'
+import { useFont } from './useFont'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 declare global {
@@ -15,8 +14,11 @@ declare global {
   }
 }
 
+type UseFontParams = Parameters<typeof useFont>
+
 type Text3DProps = {
-  font: FontData | string
+  font: UseFontParams[0]
+  ttfLoader?: UseFontParams[1]
   bevelSegments?: number
   smooth?: number
 } & Omit<TextGeometryParameters, 'font'> &
@@ -43,6 +45,7 @@ export const Text3D: ForwardRefComponent<
   (
     {
       font: _font,
+      ttfLoader = false,
       letterSpacing = 0,
       lineHeight = 1,
       size = 1,
@@ -62,7 +65,7 @@ export const Text3D: ForwardRefComponent<
     React.useMemo(() => extend({ RenamedTextGeometry: TextGeometry }), [])
 
     const ref = React.useRef<THREE.Mesh>(null!)
-    const font = useFont(_font)
+    const font = useFont(_font, ttfLoader)
 
     const opts = useMemo(() => {
       return {

@@ -92,7 +92,7 @@ class DistortMaterialImpl extends MeshPhysicalMaterial {
 export const MeshDistortMaterial: ForwardRefComponent<Props, DistortMaterialImpl> = /* @__PURE__ */ React.forwardRef(
   ({ speed = 1, ...props }: Props, ref) => {
     const [material] = React.useState(() => new DistortMaterialImpl())
-    useFrame((state) => material && (material.time = state.clock.getElapsedTime() * speed))
+    useFrame((state) => material && (material.time = state.clock.elapsedTime * speed))
     return <primitive object={material} ref={ref} attach="material" {...props} />
   }
 )

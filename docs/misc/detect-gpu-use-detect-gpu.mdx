@@ -14,7 +14,7 @@ function App() {
   const GPUTier = useDetectGPU()
   // show a fallback for mobile or lowest tier GPUs
   return (
-    {(GPUTier.tier === "0" || GPUTier.isMobile) ? <Fallback /> : <Canvas>...</Canvas>
+    {(GPUTier.tier === 0 || GPUTier.isMobile) ? <Fallback /> : <Canvas>...</Canvas>
 
 <Suspense fallback={null}>
   <App />

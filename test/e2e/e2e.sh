@@ -4,11 +4,10 @@ set -ex
 PORT=5188
 DIST=../../dist
 tmp=$(mktemp -d)
-VERSION=$(grep '"version"' package.json | sed -E 's/.*"version": *"([^"]*)".*/\1/')
 
 # Build the package
 (cd $DIST; npm pack)
-TGZ=$(realpath "$DIST/react-three-drei-$VERSION.tgz")
+TGZ=$(realpath "$DIST/react-three-drei-10.0.0-rc.2.tgz")
 
 snapshot() {
   local UPDATE_SNAPSHOTS=""

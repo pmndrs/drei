@@ -148,7 +148,7 @@ export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
     const pos = new Vector3()
 
     useFrame((state, delta) => {
-      t = state.clock.getElapsedTime()
+      t = state.clock.elapsedTime
       parentMatrix.copy(instance.current.matrixWorld).invert()
       state.camera.matrixWorld.decompose(cpos, cquat, scale)
 

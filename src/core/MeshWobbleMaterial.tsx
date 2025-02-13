@@ -74,6 +74,6 @@ export type WobbleMaterialProps = Omit<ThreeElements['meshStandardMaterial'], 'r
 export const MeshWobbleMaterial: ForwardRefComponent<WobbleMaterialProps, WobbleMaterialImpl> =
   /* @__PURE__ */ React.forwardRef(({ speed = 1, ...props }, ref) => {
     const [material] = React.useState(() => new WobbleMaterialImpl())
-    useFrame((state) => material && (material.time = state.clock.getElapsedTime() * speed))
+    useFrame((state) => material && (material.time = state.clock.elapsedTime * speed))
     return <primitive object={material} ref={ref} attach="material" {...props} />
   })

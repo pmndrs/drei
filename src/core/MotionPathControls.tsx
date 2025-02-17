@@ -51,7 +51,8 @@ type MotionState = {
 
 export type MotionPathRef = THREE.Group & { motion: MotionState }
 
-const isObject3DRef = (ref: any): ref is React.MutableRefObject<THREE.Object3D> => ref?.current instanceof THREE.Object3D
+const isObject3DRef = (ref: any): ref is React.MutableRefObject<THREE.Object3D> =>
+  ref?.current instanceof THREE.Object3D
 
 const MotionContext = /* @__PURE__ */ React.createContext<MotionState>(null!)
 
@@ -77,7 +78,9 @@ function Debug({ points = 50, color = 'black' }: { points?: number; color?: THRE
     }
   })
 
-  return dots.map((item, index) => <mesh key={index} material={material} geometry={geometry} position={[item.x, item.y, item.z]} />)
+  return dots.map((item, index) => (
+    <mesh key={index} material={material} geometry={geometry} position={[item.x, item.y, item.z]} />
+  ))
 }
 
 export const MotionPathControls = /* @__PURE__ */ React.forwardRef<MotionPathRef, MotionPathProps>(
@@ -123,7 +126,7 @@ export const MotionPathControls = /* @__PURE__ */ React.forwardRef<MotionPathRef
 
     React.useLayoutEffect(() => {
       path.curves = []
-      const _curves = curves.length > 0 ? curves : (ref.current as any)?.__r3f?.objects ?? []
+      const _curves = curves.length > 0 ? curves : ((ref.current as any)?.__r3f?.objects ?? [])
       for (let i = 0; i < _curves.length; i++) path.add(_curves[i])
 
       // Smoothen curve
@@ -147,7 +150,16 @@ export const MotionPathControls = /* @__PURE__ */ React.forwardRef<MotionPathRef
     useFrame((_state, delta) => {
       const lastOffset = state.offset
 
-      easing.damp(pos, 'current', offset !== undefined ? offset : state.current, damping, delta, maxSpeed, undefined, eps)
+      easing.damp(
+        pos,
+        'current',
+        offset !== undefined ? offset : state.current,
+        damping,
+        delta,
+        maxSpeed,
+        undefined,
+        eps
+      )
       state.offset = loop ? misc.repeat(pos.current, 1) : misc.clamp(pos.current, 0, 1)
 
       if (path.getCurveLengths().length > 0) {

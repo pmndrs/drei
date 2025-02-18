@@ -7,7 +7,7 @@ tmp=$(mktemp -d)
 
 # Build the package
 (cd $DIST; npm pack)
-TGZ=$(realpath "$DIST/react-three-drei-10.0.0-rc.2.tgz")
+TGZ=$(realpath "$DIST/react-three-drei-0.0.0-semantic-release.tgz")
 
 snapshot() {
   local UPDATE_SNAPSHOTS=""

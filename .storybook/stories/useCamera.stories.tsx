@@ -63,8 +63,8 @@ function UseCameraScene() {
         <boxGeometry args={[60, 60, 60]} />
       </mesh>
 
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} intensity={0.5} />
+      <ambientLight intensity={0.5 * Math.PI} />
+      <pointLight position={[10, 10, 10]} intensity={0.5 * Math.PI} />
     </>,
     virtualScene
   )

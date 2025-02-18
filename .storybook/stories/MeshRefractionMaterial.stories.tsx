@@ -74,7 +74,7 @@ function RefractionScene(props: React.ComponentProps<typeof MeshRefractionMateri
   return (
     <>
       <color attach="background" args={['#f0f0f0']} />
-      <ambientLight intensity={0.5} />
+      <ambientLight intensity={0.5 * Math.PI} />
       <spotLight position={[5, 5, -10]} angle={0.15} penumbra={1} />
       <pointLight position={[-10, -10, -10]} />
 
@@ -110,7 +110,14 @@ function RefractionScene(props: React.ComponentProps<typeof MeshRefractionMateri
         scale={12}
         position={[0, -0.5, 0]}
       >
-        <RandomizedLight amount={8} radius={10} ambient={0.5} intensity={1} position={[5, 5, -10]} bias={0.001} />
+        <RandomizedLight
+          amount={8}
+          radius={10}
+          ambient={0.5}
+          intensity={1 * Math.PI}
+          position={[5, 5, -10]}
+          bias={0.001}
+        />
       </AccumulativeShadows>
       <Environment files="https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/aerodynamics_workshop_1k.hdr" />
       <OrbitControls makeDefault autoRotate autoRotateSpeed={0.1} minPolarAngle={0} maxPolarAngle={Math.PI / 2} />

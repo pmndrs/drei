@@ -48,7 +48,7 @@ function RoundedBoxScene2(props: React.ComponentProps<typeof RoundedBox>) {
 
   return (
     <>
-      <spotLight position={[35, 35, 35]} intensity={2} />
+      <spotLight position={[35, 35, 35]} intensity={2 * Math.PI} />
       <RoundedBox ref={ref} {...props}>
         <meshPhongMaterial color="#f3f3f3" />
       </RoundedBox>

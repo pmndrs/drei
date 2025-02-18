@@ -75,8 +75,8 @@ function RefractionScene(props: React.ComponentProps<typeof MeshRefractionMateri
     <>
       <color attach="background" args={['#f0f0f0']} />
       <ambientLight intensity={0.5 * Math.PI} />
-      <spotLight position={[5, 5, -10]} angle={0.15} penumbra={1} />
-      <pointLight position={[-10, -10, -10]} />
+      <spotLight position={[5, 5, -10]} angle={0.15} penumbra={1} decay={0} />
+      <pointLight position={[-10, -10, -10]} decay={0} />
 
       <Diamond rotation={[0, 0, 0.715]} position={[0, -0.175 + 0.5, 0]} {...props} />
 

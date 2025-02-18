@@ -76,7 +76,7 @@ function ReflectorScene({
       <TorusKnot args={[0.5, 0.2, 128, 32]} ref={$box} position={[0, 1, 0]}>
         <meshPhysicalMaterial color="hotpink" />
       </TorusKnot>
-      <spotLight intensity={1 * Math.PI} position={[10, 6, 10]} penumbra={1} angle={0.3} />
+      <spotLight intensity={1 * Math.PI} position={[10, 6, 10]} penumbra={1} angle={0.3} decay={0} />
       <Environment preset="city" />
     </>
   )

@@ -26,7 +26,7 @@ export const Setup = ({
     {lights && (
       <>
         <ambientLight intensity={0.8 * Math.PI} />
-        <pointLight intensity={1 * Math.PI} position={[0, 6, 0]} />
+        <pointLight intensity={1 * Math.PI} position={[0, 6, 0]} decay={0} />
       </>
     )}
     {controls && <OrbitControls makeDefault />}

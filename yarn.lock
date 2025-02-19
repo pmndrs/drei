@@ -2773,7 +2773,7 @@ __metadata:
     "@mediapipe/tasks-vision": "npm:0.10.17"
     "@monogrid/gainmap-js": "npm:^3.0.6"
     "@playwright/test": "npm:^1.45.2"
-    "@react-three/fiber": "npm:9.0.0-rc.10"
+    "@react-three/fiber": "npm:^9.0.0"
     "@rollup/plugin-babel": "npm:^5.3.0"
     "@rollup/plugin-commonjs": "npm:^19.0.0"
     "@rollup/plugin-json": "npm:^4.1.0"
@@ -2838,7 +2838,7 @@ __metadata:
     vite-plugin-glslify: "npm:^2.1.0"
     zustand: "npm:^5.0.1"
   peerDependencies:
-    "@react-three/fiber": 9.0.0-rc.10
+    "@react-three/fiber": ^9.0.0
     react: ^19
     react-dom: ^19
     three: ">=0.159"
@@ -2848,9 +2848,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@react-three/fiber@npm:9.0.0-rc.10":
-  version: 9.0.0-rc.10
-  resolution: "@react-three/fiber@npm:9.0.0-rc.10"
+"@react-three/fiber@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@react-three/fiber@npm:9.0.0"
   dependencies:
     "@babel/runtime": "npm:^7.17.8"
     "@types/react-reconciler": "npm:^0.28.9"
@@ -2885,7 +2885,7 @@ __metadata:
       optional: true
     react-native:
       optional: true
-  checksum: 10c0/b1de0576cd60dcf6b8953cb78b1d2b7d8f0192da00b75da7c4f76ad5c265151be588dd3b0cd4c2915ef48f16e004e43a7ac023e5d8afe2f282ae8db29f48d616
+  checksum: 10c0/74df10f7a0a72af301e791c839fae24dd14c4909e4e63fe2b6e535a20718339811caef5316864fe3f67fc35a4f5af8d93016a8d59b13b8e7cc9e2e35a5fca61e
   languageName: node
   linkType: hard
 

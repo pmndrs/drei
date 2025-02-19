@@ -39,7 +39,7 @@ function Diamond({
   rotation: React.ComponentProps<'mesh'>['rotation']
   position: React.ComponentProps<'mesh'>['position']
 } & React.ComponentProps<typeof MeshRefractionMaterial>) {
-  const ref = React.useRef<React.ElementRef<'mesh'>>(null)
+  const ref = React.useRef<React.ComponentRef<'mesh'>>(null)
   const { nodes } = useGLTF('/dflat.glb') as any
   // Use a custom envmap/scene-backdrop for the diamond material
   // This way we can have a clear BG while cube-cam can still film other objects
@@ -74,9 +74,9 @@ function RefractionScene(props: React.ComponentProps<typeof MeshRefractionMateri
   return (
     <>
       <color attach="background" args={['#f0f0f0']} />
-      <ambientLight intensity={0.5} />
-      <spotLight position={[5, 5, -10]} angle={0.15} penumbra={1} />
-      <pointLight position={[-10, -10, -10]} />
+      <ambientLight intensity={0.5 * Math.PI} />
+      <spotLight position={[5, 5, -10]} angle={0.15} penumbra={1} decay={0} />
+      <pointLight position={[-10, -10, -10]} decay={0} />
 
       <Diamond rotation={[0, 0, 0.715]} position={[0, -0.175 + 0.5, 0]} {...props} />
 
@@ -110,7 +110,14 @@ function RefractionScene(props: React.ComponentProps<typeof MeshRefractionMateri
         scale={12}
         position={[0, -0.5, 0]}
       >
-        <RandomizedLight amount={8} radius={10} ambient={0.5} intensity={1} position={[5, 5, -10]} bias={0.001} />
+        <RandomizedLight
+          amount={8}
+          radius={10}
+          ambient={0.5}
+          intensity={1 * Math.PI}
+          position={[5, 5, -10]}
+          bias={0.001}
+        />
       </AccumulativeShadows>
       <Environment files="https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/aerodynamics_workshop_1k.hdr" />
       <OrbitControls makeDefault autoRotate autoRotateSpeed={0.1} minPolarAngle={0} maxPolarAngle={Math.PI / 2} />

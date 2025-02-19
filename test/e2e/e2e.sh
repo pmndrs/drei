@@ -39,7 +39,7 @@ appdir="$tmp/$appname"
 (cd $tmp; npm create -y vite $appname -- --template react-ts)
 
 # drei
-(cd $appdir; npm i @react-three/fiber@rc $TGZ)
+(cd $appdir; npm i; npm i $TGZ)
 
 # App.tsx
 cp App.tsx $appdir/src/App.tsx

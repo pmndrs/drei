@@ -4,7 +4,7 @@ import { Line2 } from 'three-stdlib'
 import { Line, LineProps } from './Line'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
-export type CatmullRomLineProps = Omit<LineProps, 'ref'> & {
+export type CatmullRomLineProps = Omit<LineProps, 'ref' | 'segments'> & {
   closed?: boolean
   curveType?: 'centripetal' | 'chordal' | 'catmullrom'
   tension?: number

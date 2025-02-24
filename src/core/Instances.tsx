@@ -218,38 +218,67 @@ export const Instances: ForwardRefComponent<InstancesProps, THREE.InstancedMesh>
   )
 })
 
-export interface MergedProps extends InstancesProps {
-  meshes: THREE.Mesh[]
-  children: React.ReactNode
+export interface MergedProps extends Omit<InstancesProps, 'children'> {
+  meshes: THREE.Mesh[] | Record<string, THREE.Object3D>
+  children: (
+    ...instances: [React.FC<InstanceProps> & Record<string, React.FC<InstanceProps>>, ...React.FC<InstanceProps>[]]
+  ) => React.ReactNode
 }
 
-export const Merged: ForwardRefComponent<any, THREE.Group> = React.forwardRef<THREE.Group, any>(function Merged(
-  { meshes, children, ...rest },
-  ref
-) {
-  const instances: React.FC[] = []
+// TODO: make this non-recursive and type-safe
+export const Merged: ForwardRefComponent<MergedProps, THREE.Group> = /* @__PURE__ */ React.forwardRef<
+  THREE.Group,
+  MergedProps
+>(function Merged({ meshes, children, ...props }, ref) {
+  const isArray = Array.isArray(meshes)
+  // Filter out meshes from collections, which may contain non-meshes
+  // @ts-expect-error
+  if (!isArray) for (const key of Object.keys(meshes)) if (!meshes[key].isMesh) delete meshes[key]
 
-  if (Array.isArray(meshes)) {
-    for (const mesh of meshes) {
-      if (mesh?.isMesh) {
-        instances.push((props) => (
-          <Instances key={mesh.geometry.uuid} geometry={mesh.geometry} material={mesh.material} {...rest} {...props} />
-        ))
-      }
-    }
-  } else if (meshes != null && typeof meshes === 'object') {
-    for (const key in meshes) {
-      const mesh = meshes[key]
-      if (mesh?.isMesh) {
-        instances.push((props) => (
-          <Instances key={mesh.geometry.uuid} geometry={mesh.geometry} material={mesh.material} {...rest} {...props} />
-        ))
-      }
-    }
+  const render = (args) =>
+    isArray
+      ? // @ts-expect-error
+        children(...args)
+      : children(
+          // @ts-expect-error
+          Object.keys(meshes)
+            // @ts-expect-error
+            .filter((key) => meshes[key].isMesh)
+            .reduce((acc, key, i) => ({ ...acc, [key]: args[i] }), {})
+        )
+
+  // @ts-expect-error
+  const components = (isArray ? meshes : Object.values(meshes)).map(({ geometry, material }) => (
+    <Instances key={geometry.uuid} geometry={geometry} material={material} {...props} />
+  ))
+
+  return <group ref={ref}>{renderRecursive(render, components)}</group>
+})
+
+// https://github.com/jamesplease/react-composer
+function renderRecursive(
+  render: Function,
+  components: Array<React.ReactElement<{ children: any }> | Function>,
+  results: unknown[] = []
+): React.ReactElement {
+  // Once components is exhausted, we can render out the results array.
+  if (!components[0]) {
+    return render(results)
   }
 
-  return <group ref={ref}>{children(instances)}</group>
-})
+  // Continue recursion for remaining items.
+  // results.concat([value]) ensures [...results, value] instead of [...results, ...value]
+  function nextRender(value) {
+    return renderRecursive(render, components.slice(1), results.concat([value]))
+  }
+
+  // Each props.components entry is either an element or function [element factory]
+  return typeof components[0] === 'function'
+    ? // When it is a function, produce an element by invoking it with "render component values".
+      components[0]({ results, render: nextRender })
+    : // When it is an element, enhance the element's props with the render prop.
+      React.cloneElement(components[0], { children: nextRender })
+}
 
 /** Idea and implementation for global instances and instanced attributes by
 /*  Matias Gonzalez Fernandez https://x.com/matiNotFound

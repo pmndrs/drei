@@ -1,60 +1,49 @@
 import * as THREE from 'three'
-import { MeshBVHUniformStruct } from 'three-mesh-bvh'
+import { type ConstructorRepresentation } from '@react-three/fiber'
+import { type MeshBVHUniformStruct } from 'three-mesh-bvh'
 
-export function shaderMaterial(
-  uniforms: {
-    [name: string]:
-      | THREE.CubeTexture
-      | THREE.Texture
-      | Int32Array
-      | Float32Array
-      | THREE.Matrix4
-      | THREE.Matrix3
-      | THREE.Quaternion
-      | THREE.Vector4
-      | THREE.Vector3
-      | THREE.Vector2
-      | THREE.Color
-      | MeshBVHUniformStruct
-      | number
-      | boolean
-      | Array<any>
-      | null
-  },
+type UniformValue =
+  | THREE.Texture
+  | THREE.TypedArray
+  | THREE.Matrix4
+  | THREE.Matrix3
+  | THREE.Quaternion
+  | THREE.Vector4
+  | THREE.Vector3
+  | THREE.Vector2
+  | THREE.Color
+  | MeshBVHUniformStruct // TODO: remove?
+  | number
+  | boolean
+  | null
+
+type Uniforms = Record<string, UniformValue | Record<string, UniformValue> | Array<UniformValue>>
+
+export function shaderMaterial<U extends Uniforms, M extends THREE.ShaderMaterial & U>(
+  uniforms: U,
   vertexShader: string,
   fragmentShader: string,
-  onInit?: (material?: THREE.ShaderMaterial) => void
+  onInit?: (material?: M) => void
 ) {
-  const material = class extends THREE.ShaderMaterial {
-    public key: string = ''
-    constructor(parameters = {}) {
-      const entries = Object.entries(uniforms)
-      // Create unforms and shaders
-      super({
-        uniforms: entries.reduce((acc, [name, value]) => {
-          const uniform = THREE.UniformsUtils.clone({ [name]: { value } })
-          return {
-            ...acc,
-            ...uniform,
-          }
-        }, {}),
-        vertexShader,
-        fragmentShader,
-      })
-      // Create getter/setters
-      entries.forEach(([name]) =>
-        Object.defineProperty(this, name, {
-          get: () => this.uniforms[name].value,
-          set: (v) => (this.uniforms[name].value = v),
-        })
-      )
+  return class extends THREE.ShaderMaterial {
+    static key = THREE.MathUtils.generateUUID()
 
-      // Assign parameters, this might include uniforms
-      Object.assign(this, parameters)
-      // Call onInit
-      if (onInit) onInit(this)
+    constructor(parameters?: THREE.ShaderMaterialParameters) {
+      super({ vertexShader, fragmentShader, ...parameters })
+
+      for (const key in uniforms) {
+        this.uniforms[key] = new THREE.Uniform(uniforms[key])
+        Object.defineProperty(this, key, {
+          get() {
+            return this.uniforms[key].value
+          },
+          set(value) {
+            this.uniforms[key].value = value
+          },
+        })
+      }
+
+      onInit?.(this as unknown as M)
     }
-  } as unknown as typeof THREE.ShaderMaterial & { key: string }
-  material.key = THREE.MathUtils.generateUUID()
-  return material
+  } as unknown as ConstructorRepresentation<M> & { key: string }
 }

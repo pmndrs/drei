@@ -19,14 +19,14 @@ type UniformValue =
 
 type Uniforms = Record<string, UniformValue | Record<string, UniformValue> | Array<UniformValue>>
 
-export function shaderMaterial<U extends Uniforms, M extends THREE.ShaderMaterial & U & { key: string }>(
+export function shaderMaterial<U extends Uniforms, M extends THREE.ShaderMaterial & U>(
   uniforms: U,
   vertexShader: string,
   fragmentShader: string,
   onInit?: (material?: M) => void
 ) {
   return class extends THREE.ShaderMaterial {
-    key = THREE.MathUtils.generateUUID()
+    static key = THREE.MathUtils.generateUUID()
 
     constructor(parameters?: THREE.ShaderMaterialParameters) {
       super({ vertexShader, fragmentShader, ...parameters })
@@ -45,5 +45,5 @@ export function shaderMaterial<U extends Uniforms, M extends THREE.ShaderMateria
 
       onInit?.(this as unknown as M)
     }
-  } as unknown as ConstructorRepresentation<M>
+  } as unknown as ConstructorRepresentation<M> & { key: string }
 }

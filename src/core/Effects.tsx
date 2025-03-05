@@ -1,12 +1,12 @@
 import * as React from 'react'
-import { RGBAFormat, HalfFloatType, WebGLRenderTarget, UnsignedByteType, TextureDataType } from 'three'
+import { RGBAFormat, HalfFloatType, WebGLRenderTarget, UnsignedByteType, TextureDataType, ColorSpace } from 'three'
 import { extend, useThree, useFrame, ThreeElement, ThreeElements } from '@react-three/fiber'
 import { EffectComposer, RenderPass, ShaderPass, GammaCorrectionShader } from 'three-stdlib'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type EffectsProps = Omit<ThreeElements['effectComposer'], 'ref' | 'args'> & {
   multisamping?: number
-  colorSpace?: THREE.ColorSpace
+  colorSpace?: ColorSpace
   type?: TextureDataType
   renderIndex?: number
   disableGamma?: boolean

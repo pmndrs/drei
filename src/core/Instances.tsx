@@ -31,6 +31,7 @@ export type InstancedAttributeProps = Omit<ThreeElements['instancedBufferAttribu
   defaultValue: any
   normalized?: boolean
   usage?: number
+  type?: 'float' | 'int' | 'uint' | 'short' | 'ushort' | 'byte'
 }
 
 type InstancedMesh = Omit<THREE.InstancedMesh, 'instanceMatrix' | 'instanceColor'> & {
@@ -297,7 +298,10 @@ export function createInstances<T = InstanceProps>() {
 }
 
 export const InstancedAttribute = React.forwardRef(
-  ({ name, defaultValue, normalized, usage = THREE.DynamicDrawUsage }: InstancedAttributeProps, fref) => {
+  (
+    { name, defaultValue, normalized, usage = THREE.DynamicDrawUsage, type = 'float' }: InstancedAttributeProps,
+    fref
+  ) => {
     const ref = React.useRef<THREE.InstancedBufferAttribute>(null!)
     React.useImperativeHandle(fref, () => ref.current, [])
     React.useLayoutEffect(() => {
@@ -305,7 +309,26 @@ export const InstancedAttribute = React.forwardRef(
       parent.geometry.attributes[name] = ref.current
       const value = Array.isArray(defaultValue) ? defaultValue : [defaultValue]
       const array = Array.from({ length: parent.userData.limit }, () => value).flat()
-      ref.current.array = new Float32Array(array)
+      switch (type) {
+        case 'float':
+          ref.current.array = new Float32Array(array)
+          break
+        case 'int':
+          ref.current.array = new Int32Array(array)
+          break
+        case 'uint':
+          ref.current.array = new Uint32Array(array)
+          break
+        case 'short':
+          ref.current.array = new Int16Array(array)
+          break
+        case 'ushort':
+          ref.current.array = new Uint16Array(array)
+          break
+        case 'byte':
+          ref.current.array = new Uint8Array(array)
+          break
+      }
       ref.current.itemSize = value.length
       // @ts-expect-error
       ref.current.count = array.length / ref.current.itemSize

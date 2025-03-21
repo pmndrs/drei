@@ -42,6 +42,7 @@ export function shaderMaterial<U extends Uniforms, M extends THREE.ShaderMateria
           },
         })
       }
+      this.uniforms = THREE.UniformsUtils.clone(this.uniforms)
 
       onInit?.(this as unknown as M)
     }

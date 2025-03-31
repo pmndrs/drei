@@ -1,14 +1,14 @@
 import * as React from 'react'
 import { Group, Quaternion } from 'three'
-import { useFrame } from '@react-three/fiber'
+import { ThreeElements, useFrame } from '@react-three/fiber'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
-export type BillboardProps = {
+export type BillboardProps = Omit<ThreeElements['group'], 'ref'> & {
   follow?: boolean
   lockX?: boolean
   lockY?: boolean
   lockZ?: boolean
-} & JSX.IntrinsicElements['group']
+}
 
 /**
  * Wraps children in a billboarded group. Sample usage:
@@ -31,7 +31,7 @@ export const Billboard: ForwardRefComponent<BillboardProps, Group> = /* @__PURE_
     if (!follow || !localRef.current) return
 
     // save previous rotation in case we're locking an axis
-    const prevRotation = localRef.current.rotation.clone()
+    const prevRotation = inner.current.rotation.clone()
 
     // always face the camera
     localRef.current.updateMatrix()
@@ -40,9 +40,9 @@ export const Billboard: ForwardRefComponent<BillboardProps, Group> = /* @__PURE_
     camera.getWorldQuaternion(inner.current.quaternion).premultiply(q.invert())
 
     // readjust any axis that is locked
-    if (lockX) localRef.current.rotation.x = prevRotation.x
-    if (lockY) localRef.current.rotation.y = prevRotation.y
-    if (lockZ) localRef.current.rotation.z = prevRotation.z
+    if (lockX) inner.current.rotation.x = prevRotation.x
+    if (lockY) inner.current.rotation.y = prevRotation.y
+    if (lockZ) inner.current.rotation.z = prevRotation.z
   })
 
   React.useImperativeHandle(fref, () => localRef.current, [])

@@ -2788,7 +2788,7 @@ __metadata:
     "@storybook/theming": "npm:^8.4.4"
     "@types/react": "npm:^19.0.2"
     "@types/react-dom": "npm:^19.0.2"
-    "@types/three": "npm:^0.159.0"
+    "@types/three": "npm:^0.175.0"
     "@typescript-eslint/eslint-plugin": "npm:^8.15.0"
     "@typescript-eslint/parser": "npm:^8.15.0"
     "@use-gesture/react": "npm:^10.3.1"
@@ -2825,7 +2825,7 @@ __metadata:
     stats.js: "npm:^0.17.0"
     storybook: "npm:^8.4.4"
     suspend-react: "npm:^0.1.3"
-    three: "npm:^0.159.0"
+    three: "npm:^0.175.0"
     three-mesh-bvh: "npm:^0.8.3"
     three-stdlib: "npm:^2.35.6"
     troika-three-text: "npm:^0.52.0"
@@ -3662,7 +3662,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tweenjs/tween.js@npm:~23.1.1":
+"@tweenjs/tween.js@npm:~23.1.1, @tweenjs/tween.js@npm:~23.1.3":
   version: 23.1.3
   resolution: "@tweenjs/tween.js@npm:23.1.3"
   checksum: 10c0/811b30f5f0e7409fb41833401c501c2d6f600eb5f43039dd9067a7f70aff6dad5f5ce1233848e13f0b33a269a160d9c133f344d986cbff4f1f6b72ddecd06c89
@@ -3863,18 +3863,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/three@npm:^0.159.0":
-  version: 0.159.0
-  resolution: "@types/three@npm:0.159.0"
-  dependencies:
-    "@types/stats.js": "npm:*"
-    "@types/webxr": "npm:*"
-    fflate: "npm:~0.6.10"
-    meshoptimizer: "npm:~0.18.1"
-  checksum: 10c0/c5ec776ba213d148f0ebcce07b7a31514b8676d20e3d19458ba46d286c87c9d95224ee9225872d18c771110563c712f0237ec5d2264ad7ab7b47f2d4c1fd93a9
-  languageName: node
-  linkType: hard
-
 "@types/three@npm:^0.163.0":
   version: 0.163.0
   resolution: "@types/three@npm:0.163.0"
@@ -3885,6 +3873,20 @@ __metadata:
     fflate: "npm:~0.8.2"
     meshoptimizer: "npm:~0.18.1"
   checksum: 10c0/715406a709bdcf567ba844c598c73dac07b679df942f85c578e82a33d00ae3ac67e8f6a3e030ec75ba0f639d33c65fb7ec6237c11a4a501c98569d99bc67a5b6
+  languageName: node
+  linkType: hard
+
+"@types/three@npm:^0.175.0":
+  version: 0.175.0
+  resolution: "@types/three@npm:0.175.0"
+  dependencies:
+    "@tweenjs/tween.js": "npm:~23.1.3"
+    "@types/stats.js": "npm:*"
+    "@types/webxr": "npm:*"
+    "@webgpu/types": "npm:*"
+    fflate: "npm:~0.8.2"
+    meshoptimizer: "npm:~0.18.1"
+  checksum: 10c0/9e4b4a0aeba942b4dc5fc3648eb7932f8b7b6c03f2f9d69549f967bb5e581bb48022d15494b4e95eac21982d107bc4db2eecfb539a34451d2876ca3bd22a001c
   languageName: node
   linkType: hard
 
@@ -4113,6 +4115,13 @@ __metadata:
   peerDependencies:
     vite: ^4.2.0 || ^5.0.0
   checksum: 10c0/b370c25fb47bb96f0cc51f3aadbbcfce54e40f95a4de67cf932e5ec526f139648da703725c6ea2c71a1b525eb3dd6e3e8ff877da143627cd2575de5ec4f00aa3
+  languageName: node
+  linkType: hard
+
+"@webgpu/types@npm:*":
+  version: 0.1.60
+  resolution: "@webgpu/types@npm:0.1.60"
+  checksum: 10c0/6dcd28680637b41258287b241e6807160c78464cd67b008c1aaafdbe78e0f1eb1bdc4cace8c8628d2d088a449643e7af71804d33261865f00967557989b0e29b
   languageName: node
   linkType: hard
 
@@ -6604,7 +6613,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fflate@npm:^0.6.9, fflate@npm:~0.6.10":
+"fflate@npm:^0.6.9":
   version: 0.6.10
   resolution: "fflate@npm:0.6.10"
   checksum: 10c0/c452f720e4cb404b300fceb8ef0bdf345f18fbfd3f57f7d0974dce5f5e2ac0e8dd4b6ff4bb7061ae74fd919b9c707172f9dbd44d91149b1137199b8c705768f1
@@ -12103,10 +12112,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"three@npm:^0.159.0":
-  version: 0.159.0
-  resolution: "three@npm:0.159.0"
-  checksum: 10c0/e5250da9e5c5dab340c8ce68aae812d00e12a238e0f6f581c5dbec399aae30f35f7eec02953147a83365f8cdf58174e39b36c8dc1c26089b141ebdd5b86b9a9b
+"three@npm:^0.175.0":
+  version: 0.175.0
+  resolution: "three@npm:0.175.0"
+  checksum: 10c0/eb47d45aaee376cfbbe7334ec4e9f3ea9cb03f9ecce5a313a08f56a01834e7f514a0c657cf2c4abeff9956079721cd542e2913fede50553d935e7fa390921452
   languageName: node
   linkType: hard
 

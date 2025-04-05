@@ -57,8 +57,8 @@ export const MeshReflectorMaterial: ForwardRefComponent<MeshReflectorMaterialPro
       const scene = useThree(({ scene }) => scene)
       blur = Array.isArray(blur) ? blur : [blur, blur]
       const hasBlur = blur[0] + blur[1] > 0
-      const blurX = blur[0];
-      const blurY = blur[1];
+      const blurX = blur[0]
+      const blurY = blur[1]
       const materialRef = React.useRef<MeshReflectorMaterialImpl>(null!)
       React.useImperativeHandle(ref, () => materialRef.current, [])
       const [reflectorPlane] = React.useState(() => new Plane())

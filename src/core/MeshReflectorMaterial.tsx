@@ -57,6 +57,8 @@ export const MeshReflectorMaterial: ForwardRefComponent<MeshReflectorMaterialPro
       const scene = useThree(({ scene }) => scene)
       blur = Array.isArray(blur) ? blur : [blur, blur]
       const hasBlur = blur[0] + blur[1] > 0
+      const blurX = blur[0];
+      const blurY = blur[1];
       const materialRef = React.useRef<MeshReflectorMaterialImpl>(null!)
       React.useImperativeHandle(ref, () => materialRef.current, [])
       const [reflectorPlane] = React.useState(() => new Plane())
@@ -146,8 +148,8 @@ export const MeshReflectorMaterial: ForwardRefComponent<MeshReflectorMaterialPro
         const blurpass = new BlurPass({
           gl,
           resolution,
-          width: blur[0],
-          height: blur[1],
+          width: blurX,
+          height: blurY,
           minDepthThreshold,
           maxDepthThreshold,
           depthScale,
@@ -176,7 +178,8 @@ export const MeshReflectorMaterial: ForwardRefComponent<MeshReflectorMaterialPro
         return [fbo1, fbo2, blurpass, reflectorProps]
       }, [
         gl,
-        blur,
+        blurX,
+        blurY,
         textureMatrix,
         resolution,
         mirror,

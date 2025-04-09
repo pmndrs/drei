@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Texture } from 'three'
-import { useLoader, useThree } from '@react-three/fiber'
+import { ConstructorRepresentation, useLoader, useThree } from '@react-three/fiber'
 import { useEffect } from 'react'
 import { KTX2Loader } from 'three-stdlib'
 import { IsObject } from './Texture'
@@ -8,10 +8,11 @@ import { IsObject } from './Texture'
 const cdn = 'https://cdn.jsdelivr.net/gh/pmndrs/drei-assets@master'
 export function useKTX2<Url extends string[] | string | Record<string, string>>(
   input: Url,
-  basisPath: string = `${cdn}/basis/`
+  basisPath: string = `${cdn}/basis/`,
+  loaderInstance: KTX2Loader | ConstructorRepresentation<KTX2Loader> = KTX2Loader
 ): Url extends any[] ? Texture[] : Url extends object ? { [key in keyof Url]: Texture } : Texture {
   const gl = useThree((state) => state.gl)
-  const textures = useLoader(KTX2Loader, IsObject(input) ? Object.values(input) : (input as any), (loader: any) => {
+  const textures = useLoader(loaderInstance, IsObject(input) ? Object.values(input) : (input as any), (loader: any) => {
     loader.detectSupport(gl)
     loader.setTranscoderPath(basisPath)
   })

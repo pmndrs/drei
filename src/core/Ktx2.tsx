@@ -6,13 +6,16 @@ import { KTX2Loader } from 'three-stdlib'
 import { IsObject } from './Texture'
 
 const cdn = 'https://cdn.jsdelivr.net/gh/pmndrs/drei-assets@master'
+const basisCdnPath = `${cdn}/basis/`
+
 export function useKTX2<Url extends string[] | string | Record<string, string>>(
   input: Url,
-  basisPath: string = `${cdn}/basis/`,
-  loaderInstance: KTX2Loader | ConstructorRepresentation<KTX2Loader> = KTX2Loader
+  loaderParam: string | KTX2Loader | ConstructorRepresentation<KTX2Loader> = basisCdnPath
 ): Url extends any[] ? Texture[] : Url extends object ? { [key in keyof Url]: Texture } : Texture {
   const gl = useThree((state) => state.gl)
-  const textures = useLoader(loaderInstance, IsObject(input) ? Object.values(input) : (input as any), (loader: any) => {
+  const basisPath = typeof loaderParam === 'string' ? loaderParam : basisCdnPath
+  const loaderInstanceOrClass = typeof loaderParam === 'string'  ? KTX2Loader : loaderParam
+  const textures = useLoader(loaderInstanceOrClass, IsObject(input) ? Object.values(input) : (input as any), (loader: any) => {
     loader.detectSupport(gl)
     loader.setTranscoderPath(basisPath)
   })
@@ -34,10 +37,13 @@ export function useKTX2<Url extends string[] | string | Record<string, string>>(
   }
 }
 
-useKTX2.preload = (url: string extends any[] ? string[] : string, basisPath: string = `${cdn}/basis/`) =>
-  useLoader.preload(KTX2Loader, url, (loader: any) => {
+useKTX2.preload = (url: string extends any[] ? string[] : string, loaderParam: string | KTX2Loader | ConstructorRepresentation<KTX2Loader> = basisCdnPath) => {
+  const basisPath = typeof loaderParam === 'string' ? loaderParam : basisCdnPath
+  const loaderInstanceOrClass = typeof loaderParam === 'string' ? KTX2Loader : loaderParam
+  useLoader.preload(loaderInstanceOrClass, url, (loader: any) => {
     loader.setTranscoderPath(basisPath)
   })
+}
 
 useKTX2.clear = (input: string | string[]) => useLoader.clear(KTX2Loader, input)
 

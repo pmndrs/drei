@@ -59,7 +59,7 @@ function GLBCubeWith_KTX2({ ...props }) {
 }
 
 function SharingKTX2LoaderInstance(props: React.ComponentProps<typeof Ktx2>) {
-  const texture = useKTX2('sample_uastc_zstd.ktx2', undefined, ktx2Loader)
+  const texture = useKTX2('sample_uastc_zstd.ktx2', ktx2Loader)
 
   return (
     <>

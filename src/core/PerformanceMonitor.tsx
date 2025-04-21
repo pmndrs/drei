@@ -30,7 +30,7 @@ export type PerformanceMonitorApi = {
 export type PerformanceMonitorProps = {
   /** How much time in milliseconds to collect an average fps, 250 */
   ms?: number
-  /** How many interations of averages to collect, 10 */
+  /** How many interactions of averages to collect, 10 */
   iterations?: number
   /** The percentage of iterations that are matched against the lower and upper bounds, 0.75 */
   threshold?: number

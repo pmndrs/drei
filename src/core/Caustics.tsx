@@ -59,7 +59,7 @@ export type CausticsProps = Omit<ThreeElements['group'], 'ref'> & {
   backsideIOR?: number
   /** The texel size, default: 0.3125 */
   worldRadius?: number
-  /** Intensity of the prjected caustics, default: 0.05 */
+  /** Intensity of the projected caustics, default: 0.05 */
   intensity?: number
   /** Caustics color, default: white */
   color?: ReactThreeFiber.Color

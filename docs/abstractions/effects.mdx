@@ -12,7 +12,7 @@ import { SSAOPass } from "three-stdlib"
 
 extend({ SSAOPass })
 
-<Effects multisamping={8} renderIndex={1} disableGamma={false} disableRenderPass={false} disableRender={false}>
+<Effects multisampling={8} renderIndex={1} disableGamma={false} disableRenderPass={false} disableRender={false}>
   <sSAOPass args={[scene, camera, 100, 100]} kernelRadius={1.2} kernelSize={0} />
 </Effects>
 ```

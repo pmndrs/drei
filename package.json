@@ -125,7 +125,7 @@
     "three": "^0.159.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3",
-    "vite": "^5.4.11",
+    "vite": "^6.2.5",
     "vite-plugin-glslify": "^2.1.0"
   },
   "peerDependencies": {

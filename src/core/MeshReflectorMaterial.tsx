@@ -73,11 +73,9 @@ export const MeshReflectorMaterial: ForwardRefComponent<MeshReflectorMaterialPro
       const [q] = React.useState(() => new Vector4())
       const [textureMatrix] = React.useState(() => new Matrix4())
       const [virtualCamera] = React.useState(() => new PerspectiveCamera())
+      const shouldUpdate = React.useRef(true)
 
-      const beforeRender = React.useCallback(() => {
-        const parent = (materialRef.current as any).parent || (materialRef.current as any)?.__r3f.parent?.object
-        if (!parent) return
-
+      const beforeRender = React.useCallback((parent) => {
         reflectorWorldPosition.setFromMatrixPosition(parent.matrixWorld)
         cameraWorldPosition.setFromMatrixPosition(camera.matrixWorld)
         rotationMatrix.extractRotation(parent.matrixWorld)
@@ -197,12 +195,12 @@ export const MeshReflectorMaterial: ForwardRefComponent<MeshReflectorMaterialPro
 
       useFrame(() => {
         const parent = (materialRef.current as any).parent || (materialRef.current as any)?.__r3f.parent?.object
-        if (!parent) return
+        if (!parent || !materialRef.current.visible || !parent.visible || !shouldUpdate.current) return
 
         parent.visible = false
         const currentXrEnabled = gl.xr.enabled
         const currentShadowAutoUpdate = gl.shadowMap.autoUpdate
-        beforeRender()
+        beforeRender(parent)
         gl.xr.enabled = false
         gl.shadowMap.autoUpdate = false
         gl.setRenderTarget(fbo1)
@@ -214,6 +212,8 @@ export const MeshReflectorMaterial: ForwardRefComponent<MeshReflectorMaterialPro
         gl.shadowMap.autoUpdate = currentShadowAutoUpdate
         parent.visible = true
         gl.setRenderTarget(null)
+
+        shouldUpdate.current = false
       })
 
       return (
@@ -227,6 +227,9 @@ export const MeshReflectorMaterial: ForwardRefComponent<MeshReflectorMaterialPro
             reflectorProps['defines-USE_DISTORTION']
           }
           ref={materialRef}
+          onBeforeRender={() => {
+            shouldUpdate.current = true
+          }}
           {...reflectorProps}
           {...props}
         />

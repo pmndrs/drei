@@ -410,7 +410,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
           /*
             This shader is from the THREE's SpriteMaterial.
             We need to turn the backing plane into a Sprite
-            (make it always face the camera) if "transfrom"
+            (make it always face the camera) if "transform"
             is false.
           */
           #include <common>

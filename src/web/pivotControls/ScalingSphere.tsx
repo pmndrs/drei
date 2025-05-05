@@ -160,11 +160,14 @@ export const ScalingSphere: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2
     [annotations, camControls, onDragEnd, position]
   )
 
-  const onPointerOut = React.useCallback((e: ThreeEvent<PointerEvent>) => {
-    e.stopPropagation()
-    setIsHovered(false)
-    onHover({ component: 'Sphere', axis, hovering: false })
-  }, [onHover, axis])
+  const onPointerOut = React.useCallback(
+    (e: ThreeEvent<PointerEvent>) => {
+      e.stopPropagation()
+      setIsHovered(false)
+      onHover({ component: 'Sphere', axis, hovering: false })
+    },
+    [onHover, axis]
+  )
 
   const { radius, matrixL } = React.useMemo(() => {
     const radius = fixed ? (lineWidth / scale) * 1.8 : scale / 22.5

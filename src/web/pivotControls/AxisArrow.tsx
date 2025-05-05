@@ -132,11 +132,14 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
     [annotations, camControls, onDragEnd]
   )
 
-  const onPointerOut = React.useCallback((e: ThreeEvent<PointerEvent>) => {
-    e.stopPropagation()
-    setIsHovered(false)
-    onHover({ component: 'Arrow', axis, hovering: false })
-  }, [onHover, axis])
+  const onPointerOut = React.useCallback(
+    (e: ThreeEvent<PointerEvent>) => {
+      e.stopPropagation()
+      setIsHovered(false)
+      onHover({ component: 'Arrow', axis, hovering: false })
+    },
+    [onHover, axis]
+  )
 
   const { cylinderLength, coneWidth, coneLength, matrixL } = React.useMemo(() => {
     const coneWidth = fixed ? (lineWidth / scale) * 1.6 : scale / 20

@@ -180,11 +180,14 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
     [annotations, camControls, onDragEnd]
   )
 
-  const onPointerOut = React.useCallback((e: any) => {
-    e.stopPropagation()
-    setIsHovered(false)
-    onHover({ component: 'Rotator', axis, hovering: false })
-  }, [onHover, axis])
+  const onPointerOut = React.useCallback(
+    (e: any) => {
+      e.stopPropagation()
+      setIsHovered(false)
+      onHover({ component: 'Rotator', axis, hovering: false })
+    },
+    [onHover, axis]
+  )
 
   const matrixL = React.useMemo(() => {
     const dir1N = dir1.clone().normalize()

@@ -160,11 +160,14 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
     [annotations, camControls, onDragEnd]
   )
 
-  const onPointerOut = React.useCallback((e: ThreeEvent<PointerEvent>) => {
-    e.stopPropagation()
-    setIsHovered(false)
-    onHover({ component: 'Slider', axis, hovering: false })
-  }, [onHover, axis])
+  const onPointerOut = React.useCallback(
+    (e: ThreeEvent<PointerEvent>) => {
+      e.stopPropagation()
+      setIsHovered(false)
+      onHover({ component: 'Slider', axis, hovering: false })
+    },
+    [onHover, axis]
+  )
 
   const matrixL = React.useMemo(() => {
     const dir1N = dir1.clone().normalize()

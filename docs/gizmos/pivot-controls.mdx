@@ -57,6 +57,8 @@ type PivotControlsProps = {
   onDrag?: (l: THREE.Matrix4, deltaL: THREE.Matrix4, w: THREE.Matrix4, deltaW: THREE.Matrix4) => void
   /** Drag end event */
   onDragEnd?: () => void
+  /** Hover even */
+  onHover?: (props: OnHoverProps) => void
   /** Set this to false if you want the gizmo to be visible through faces */
   depthTest?: boolean
   opacity?: number

@@ -7,7 +7,7 @@ import { AxisArrow } from './AxisArrow'
 import { AxisRotator } from './AxisRotator'
 import { PlaneSlider } from './PlaneSlider'
 import { ScalingSphere } from './ScalingSphere'
-import { OnDragStartProps, context } from './context'
+import { OnDragStartProps, OnHoverProps, context } from './context'
 import { calculateScaleFactor } from '../../core/calculateScaleFactor'
 
 const mL0 = /* @__PURE__ */ new THREE.Matrix4()
@@ -80,6 +80,8 @@ export type PivotControlsProps = {
   onDrag?: (l: THREE.Matrix4, deltaL: THREE.Matrix4, w: THREE.Matrix4, deltaW: THREE.Matrix4) => void
   /** Drag end event */
   onDragEnd?: () => void
+  /** Hover event */
+  onHover?: (props: OnHoverProps) => void
   /** Set this to false if you want the gizmo to be visible through faces */
   depthTest?: boolean
   opacity?: number
@@ -99,6 +101,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
       onDragStart,
       onDrag,
       onDragEnd,
+      onHover,
       autoTransform = true,
       anchor,
       disableAxes = false,
@@ -185,6 +188,10 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
         },
         onDragEnd: () => {
           if (onDragEnd) onDragEnd()
+          invalidate()
+        },
+        onHover: (props: OnHoverProps) => {
+          onHover && onHover(props)
           invalidate()
         },
         translation,

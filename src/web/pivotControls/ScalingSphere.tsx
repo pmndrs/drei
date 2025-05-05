@@ -56,6 +56,7 @@ export const ScalingSphere: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2
     onDragStart,
     onDrag,
     onDragEnd,
+    onHover,
     userData,
   } = React.useContext(context)
 
@@ -105,7 +106,10 @@ export const ScalingSphere: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2
   const onPointerMove = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation()
-      if (!isHovered) setIsHovered(true)
+      if (!isHovered) {
+        setIsHovered(true)
+        onHover({ component: 'Sphere', axis, hovering: true })
+      }
 
       if (clickInfo.current) {
         const { clickPoint, dir, mPLG, mPLGInv, offsetMultiplier } = clickInfo.current
@@ -159,7 +163,8 @@ export const ScalingSphere: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2
   const onPointerOut = React.useCallback((e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation()
     setIsHovered(false)
-  }, [])
+    onHover({ component: 'Sphere', axis, hovering: false })
+  }, [onHover, axis])
 
   const { radius, matrixL } = React.useMemo(() => {
     const radius = fixed ? (lineWidth / scale) * 1.8 : scale / 22.5

@@ -51,6 +51,7 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
     onDragStart,
     onDrag,
     onDragEnd,
+    onHover,
     userData,
   } = React.useContext(context)
 
@@ -96,7 +97,10 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
   const onPointerMove = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation()
-      if (!isHovered) setIsHovered(true)
+      if (!isHovered) {
+        setIsHovered(true)
+        onHover({ component: 'Slider', axis, hovering: true })
+      }
 
       if (clickInfo.current) {
         const { clickPoint, e1, e2, plane } = clickInfo.current
@@ -159,7 +163,8 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
   const onPointerOut = React.useCallback((e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation()
     setIsHovered(false)
-  }, [])
+    onHover({ component: 'Slider', axis, hovering: false })
+  }, [onHover, axis])
 
   const matrixL = React.useMemo(() => {
     const dir1N = dir1.clone().normalize()

@@ -53,6 +53,7 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
     onDragEnd,
     onHover,
     userData,
+    dragState,
   } = React.useContext(context)
 
   const camControls = useThree((state) => state.controls) as unknown as { enabled: boolean } | undefined
@@ -97,6 +98,9 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
   const onPointerMove = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation()
+      if (dragState.current && dragState.current.component !== 'Slider') {
+        return
+      }
       if (!isHovered) {
         setIsHovered(true)
         onHover({ component: 'Slider', axis, hovering: true })
@@ -163,6 +167,9 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
   const onPointerOut = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation()
+      if (dragState.current && dragState.current.component !== 'Slider') {
+        return
+      }
       setIsHovered(false)
       onHover({ component: 'Slider', axis, hovering: false })
     },

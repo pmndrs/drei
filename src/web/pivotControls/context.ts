@@ -33,6 +33,7 @@ export type PivotContext = {
   userData?: { [key: string]: any }
   annotations?: boolean
   annotationsClass?: string
+  dragState: React.RefObject<OnDragStartProps | null>
 }
 
 export const context = /* @__PURE__ */ React.createContext<PivotContext>(null!)

@@ -58,6 +58,7 @@ export const ScalingSphere: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2
     onDragEnd,
     onHover,
     userData,
+    dragState,
   } = React.useContext(context)
 
   const size = useThree((state) => state.size)
@@ -106,6 +107,9 @@ export const ScalingSphere: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2
   const onPointerMove = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation()
+      if (dragState.current && dragState.current.component !== 'Sphere') {
+        return
+      }
       if (!isHovered) {
         setIsHovered(true)
         onHover({ component: 'Sphere', axis, hovering: true })
@@ -163,6 +167,9 @@ export const ScalingSphere: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2
   const onPointerOut = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation()
+      if (dragState.current && dragState.current.component !== 'Sphere') {
+        return
+      }
       setIsHovered(false)
       onHover({ component: 'Sphere', axis, hovering: false })
     },

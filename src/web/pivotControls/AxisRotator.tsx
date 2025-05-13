@@ -78,6 +78,7 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
     onDragEnd,
     onHover,
     userData,
+    dragState,
   } = React.useContext(context)
 
   const camControls = useThree((state) => state.controls) as unknown as { enabled: boolean } | undefined
@@ -120,6 +121,9 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
   const onPointerMove = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation()
+      if (dragState.current && dragState.current.component !== 'Rotator') {
+        return
+      }
       if (!isHovered) {
         setIsHovered(true)
         onHover({ component: 'Rotator', axis, hovering: true })
@@ -183,6 +187,9 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
   const onPointerOut = React.useCallback(
     (e: any) => {
       e.stopPropagation()
+      if (dragState.current && dragState.current.component !== 'Rotator') {
+        return
+      }
       setIsHovered(false)
       onHover({ component: 'Rotator', axis, hovering: false })
     },

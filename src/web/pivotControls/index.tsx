@@ -164,11 +164,14 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
       invalidate()
     })
 
+    const dragState = React.useRef<OnDragStartProps | null>(null)
+
     const config = React.useMemo(
       () => ({
         onDragStart: (props: OnDragStartProps) => {
           mL0.copy(ref.current.matrix)
           mW0.copy(ref.current.matrixWorld)
+          dragState.current = props
           onDragStart && onDragStart(props)
           invalidate()
         },
@@ -187,6 +190,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
           invalidate()
         },
         onDragEnd: () => {
+          dragState.current = null
           if (onDragEnd) onDragEnd()
           invalidate()
         },
@@ -207,6 +211,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
         userData,
         annotations,
         annotationsClass,
+        dragState,
       }),
       [
         onDragStart,
@@ -227,6 +232,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
         autoTransform,
         annotations,
         annotationsClass,
+        dragState,
       ]
     )
 

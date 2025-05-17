@@ -134,3 +134,5 @@ export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraCont
 })
 
 export type CameraControls = CameraControlsImpl
+
+export { CameraControlsImpl }

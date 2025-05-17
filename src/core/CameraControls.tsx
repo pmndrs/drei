@@ -135,4 +135,5 @@ export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraCont
 
 export type CameraControls = CameraControlsImpl
 
+// class reference (useful to access static-props like ACTION)
 export { CameraControlsImpl }

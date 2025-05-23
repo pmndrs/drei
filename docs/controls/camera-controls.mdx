@@ -29,3 +29,22 @@ type CameraControlsProps = {
   onChange?: (e?: { type: 'update' }) => void
 }
 ```
+
+## Recipes
+
+### `[camera]`
+
+If you need CC to control a specific camera, make it reactive so `CameraControls` is mounted/updated "reactively" to `mycam`
+
+```tsx
+const [mycam, setMycam] = useState<THREE.PerspectiveCamera | null>();
+
+<PerspectiveCamera ref={setMycam} />
+{myCam && <CameraControls camera={myCam} />}
+```
+
+<details>
+  
+see: https://github.com/pmndrs/drei/blob/ca4e69c33e5b2eae9ad327c7319dda46de7fd4ae/src/core/CameraControls.tsx#L79-L82
+
+</detail>

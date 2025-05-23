@@ -47,4 +47,28 @@ const [mycam, setMycam] = useState<THREE.PerspectiveCamera | null>();
   
 see: https://github.com/pmndrs/drei/blob/ca4e69c33e5b2eae9ad327c7319dda46de7fd4ae/src/core/CameraControls.tsx#L79-L82
 
-</detail>
+</details>
+
+### Inputs
+
+CC has ["user inputs"](https://yomotsu.github.io/camera-controls/#md:user-input-config) options:
+
+```tsx
+import { CameraControlsImpl } from "@react-three/drei"
+
+const { ACTION } = CameraControlsImpl;
+
+<CameraControls
+  mouseButtons={{
+    left: ACTION.ROTATE,
+    middle: ACTION.DOLLY,
+    right: ACTION.TRUCK,
+    wheel: ACTION.DOLLY,
+  }}
+  touches={{
+    one: ACTION.TOUCH_ROTATE,
+    two: ACTION.TOUCH_DOLLY_TRUCK,
+    three: ACTION.TOUCH_DOLLY_TRUCK,
+  }}
+/>
+```

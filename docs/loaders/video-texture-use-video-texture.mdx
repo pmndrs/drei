@@ -119,3 +119,33 @@ or exposed via `ref`:
 const textureRef = useRef()
 <VideoTexture ref={textureRef} src="/video.mp4" />
 ```
+
+## Recipes
+
+<details>
+
+<summary>Black video texture on iOS/Safari</summary>
+
+As of 2025-05-24 (iOS 18.5), if you `start: false` the texture will be full black. To workaround this you could:
+
+```tsx
+const texture = useVideoTexture(src, { start: false });
+
+async function warmup(texture: THREE.VideoTexture) {
+  const video = texture.image as HTMLVideoElement;
+
+  await video.play();
+  setTimeout(() => {
+    video.pause();
+    video.currentTime = 0;
+  }, 0);
+}
+
+useEffect(() => {
+  warmup(texture).catch((err) => console.log("warmup failed", err));
+}, [texture]);
+```
+
+This will force WebKit to send pixels to the GPU texture.
+
+</details>

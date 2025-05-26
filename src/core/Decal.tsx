@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import * as FIBER from '@react-three/fiber'
-import { applyProps } from '@react-three/fiber'
+import { applyProps, useFrame } from '@react-three/fiber'
 import { DecalGeometry } from 'three-stdlib'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
@@ -71,7 +71,6 @@ export const Decal: ForwardRefComponent<DecalProps, THREE.Mesh> = /* @__PURE__ *
         if (parent.geometry.attributes.normal === undefined) parent.geometry.computeVertexNormals()
         const normal = parent.geometry.attributes.normal.array
         let distance = Infinity
-        let closest = new THREE.Vector3()
         let closestNormal = new THREE.Vector3()
         const ox = o.position.x
         const oy = o.position.y
@@ -116,13 +115,11 @@ export const Decal: ForwardRefComponent<DecalProps, THREE.Mesh> = /* @__PURE__ *
 
   React.useLayoutEffect(() => {
     if (helper.current) {
-      applyProps(helper.current as any, state.current)
       // Prevent the helpers from blocking rays
       helper.current.traverse((child) => (child.raycast = () => null))
     }
   }, [debug])
 
-  // <meshStandardMaterial transparent polygonOffset polygonOffsetFactor={-10} {...props} />}
   return (
     <mesh
       ref={ref}
@@ -131,6 +128,11 @@ export const Decal: ForwardRefComponent<DecalProps, THREE.Mesh> = /* @__PURE__ *
       material-polygonOffsetFactor={polygonOffsetFactor}
       material-depthTest={depthTest}
       material-map={map}
+      // These transforms affect the debug mesh as well as enable https://triplex.dev to use
+      // them to position decals with transform controls.
+      position={position}
+      rotation={rotation}
+      scale={scale}
       {...props}
     >
       {children}

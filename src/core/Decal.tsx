@@ -121,28 +121,27 @@ export const Decal: ForwardRefComponent<DecalProps, THREE.Mesh> = /* @__PURE__ *
   }, [debug])
 
   return (
-    <mesh
-      ref={ref}
-      material-transparent
-      material-polygonOffset
-      material-polygonOffsetFactor={polygonOffsetFactor}
-      material-depthTest={depthTest}
-      material-map={map}
-      // These transforms affect the debug mesh as well as enable https://triplex.dev to use
-      // them to position decals with transform controls.
-      position={position}
-      rotation={rotation}
-      scale={scale}
-      {...props}
-    >
-      {children}
-      {debug && (
-        <mesh ref={helper}>
-          <boxGeometry />
-          <meshNormalMaterial wireframe />
-          <axesHelper />
-        </mesh>
-      )}
-    </mesh>
+    <>
+      {/* We add the transforms to another object3d to keep them in the scene graph so editors like triplex.dev can pick them up.  */}
+      <group position={position} rotation={rotation} scale={scale} />
+      <mesh
+        ref={ref}
+        material-transparent
+        material-polygonOffset
+        material-polygonOffsetFactor={polygonOffsetFactor}
+        material-depthTest={depthTest}
+        material-map={map}
+        {...props}
+      >
+        {children}
+        {debug && (
+          <mesh position={position} rotation={rotation} scale={scale} ref={helper}>
+            <boxGeometry />
+            <meshNormalMaterial wireframe />
+            <axesHelper />
+          </mesh>
+        )}
+      </mesh>
+    </>
   )
 })

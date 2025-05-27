@@ -116,11 +116,16 @@ export const Decal: ForwardRefComponent<DecalProps, THREE.Mesh> = /* @__PURE__ *
 
   React.useLayoutEffect(() => {
     if (helper.current) {
-      applyProps(helper.current as any, state.current)
       // Prevent the helpers from blocking rays
       helper.current.traverse((child) => (child.raycast = () => null))
     }
   }, [debug])
+
+  FIBER.useFrame(() => {
+    if (helper.current) {
+      applyProps(helper.current as any, state.current)
+    }
+  })
 
   // <meshStandardMaterial transparent polygonOffset polygonOffsetFactor={-10} {...props} />}
   return (

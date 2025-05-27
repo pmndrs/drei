@@ -71,7 +71,6 @@ export const Decal: ForwardRefComponent<DecalProps, THREE.Mesh> = /* @__PURE__ *
         if (parent.geometry.attributes.normal === undefined) parent.geometry.computeVertexNormals()
         const normal = parent.geometry.attributes.normal.array
         let distance = Infinity
-        let closest = new THREE.Vector3()
         let closestNormal = new THREE.Vector3()
         const ox = o.position.x
         const oy = o.position.y

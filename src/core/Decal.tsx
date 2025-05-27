@@ -56,7 +56,7 @@ export const Decal: ForwardRefComponent<DecalProps, THREE.Mesh> = /* @__PURE__ *
     }
 
     if (parent) {
-      applyProps(state.current as any, { position, scale })
+      applyProps(state.current, { position, scale })
 
       // Zero out the parents matrix world for this operation
       const matrixWorld = parent.matrixWorld.clone()
@@ -99,9 +99,13 @@ export const Decal: ForwardRefComponent<DecalProps, THREE.Mesh> = /* @__PURE__ *
         o.rotateY(Math.PI)
 
         if (typeof rotation === 'number') o.rotateZ(rotation)
-        applyProps(state.current as any, { rotation: o.rotation })
+        applyProps(state.current, { rotation: o.rotation })
       } else {
-        applyProps(state.current as any, { rotation })
+        applyProps(state.current, { rotation })
+      }
+
+      if (helper.current) {
+        applyProps(helper.current, state.current)
       }
 
       target.geometry = new DecalGeometry(parent, state.current.position, state.current.rotation, state.current.scale)
@@ -121,13 +125,6 @@ export const Decal: ForwardRefComponent<DecalProps, THREE.Mesh> = /* @__PURE__ *
     }
   }, [debug])
 
-  FIBER.useFrame(() => {
-    if (helper.current) {
-      applyProps(helper.current as any, state.current)
-    }
-  })
-
-  // <meshStandardMaterial transparent polygonOffset polygonOffsetFactor={-10} {...props} />}
   return (
     <mesh
       ref={ref}

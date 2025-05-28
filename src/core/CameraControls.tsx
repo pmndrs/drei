@@ -30,10 +30,10 @@ export type CameraControlsProps = Omit<
       domElement?: HTMLElement
       makeDefault?: boolean
 
-      onControlStart?: (e?: { type: 'controlstart' }) => void
+      onControlstart?: (e?: { type: 'controlstart' }) => void
       onControl?: (e?: { type: 'control' }) => void
-      onControlEnd?: (e?: { type: 'controlend' }) => void
-      onTransitionStart?: (e?: { type: 'transitionstart' }) => void
+      onControlend?: (e?: { type: 'controlend' }) => void
+      onTransitionstart?: (e?: { type: 'transitionstart' }) => void
       onUpdate?: (e?: { type: 'update' }) => void
       onWake?: (e?: { type: 'wake' }) => void
       onRest?: (e?: { type: 'rest' }) => void
@@ -84,10 +84,10 @@ export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraCont
     camera,
     domElement,
     makeDefault,
-    onControlStart,
+    onControlstart,
     onControl,
-    onControlEnd,
-    onTransitionStart,
+    onControlend,
+    onTransitionstart,
     onUpdate,
     onWake,
     onRest,
@@ -129,7 +129,7 @@ export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraCont
     }
 
     const handleControlStart = (e: { type: 'controlstart' }) => {
-      onControlStart?.(e)
+      onControlstart?.(e)
       onStart?.(e) // backwards compatibility
     }
 
@@ -140,13 +140,13 @@ export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraCont
     }
 
     const handleControlEnd = (e: { type: 'controlend' }) => {
-      onControlEnd?.(e)
+      onControlend?.(e)
       onEnd?.(e) // backwards compatibility
     }
 
     const handleTransitionStart = (e: { type: 'transitionstart' }) => {
       invalidateAndRegress()
-      onTransitionStart?.(e)
+      onTransitionstart?.(e)
       onChange?.(e) // backwards compatibility
     }
 
@@ -198,10 +198,10 @@ export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraCont
 
     performance,
 
-    onControlStart,
+    onControlstart,
     onControl,
-    onControlEnd,
-    onTransitionStart,
+    onControlend,
+    onTransitionstart,
     onUpdate,
     onWake,
     onRest,

@@ -129,6 +129,7 @@ export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraCont
     }
 
     const handleControlstart = (e: { type: 'controlstart' }) => {
+      invalidateAndRegress()
       onControlstart?.(e)
       onStart?.(e) // backwards compatibility
     }

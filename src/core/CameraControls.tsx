@@ -39,9 +39,9 @@ export type CameraControlsProps = Omit<
       onRest?: (e?: { type: 'rest' }) => void
       onSleep?: (e?: { type: 'sleep' }) => void
 
-      /** @deprecated for OrbitControls compatibility: use `onControlStart` instead */
+      /** @deprecated for OrbitControls compatibility: use `onControlstart` instead */
       onStart?: (e?: { type: 'controlstart' }) => void
-      /** @deprecated for OrbitControls compatibility: use `onControlEnd` instead */
+      /** @deprecated for OrbitControls compatibility: use `onControlend` instead */
       onEnd?: (e?: { type: 'controlend' }) => void
       /** @deprecated for OrbitControls compatibility */
       onChange?: (e?: { type: string }) => void
@@ -128,7 +128,7 @@ export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraCont
       if (regress) performance.regress()
     }
 
-    const handleControlStart = (e: { type: 'controlstart' }) => {
+    const handleControlstart = (e: { type: 'controlstart' }) => {
       onControlstart?.(e)
       onStart?.(e) // backwards compatibility
     }
@@ -139,12 +139,12 @@ export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraCont
       onChange?.(e) // backwards compatibility
     }
 
-    const handleControlEnd = (e: { type: 'controlend' }) => {
+    const handleControlend = (e: { type: 'controlend' }) => {
       onControlend?.(e)
       onEnd?.(e) // backwards compatibility
     }
 
-    const handleTransitionStart = (e: { type: 'transitionstart' }) => {
+    const handleTransitionstart = (e: { type: 'transitionstart' }) => {
       invalidateAndRegress()
       onTransitionstart?.(e)
       onChange?.(e) // backwards compatibility
@@ -170,20 +170,20 @@ export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraCont
       onSleep?.(e)
     }
 
-    controls.addEventListener('controlstart', handleControlStart)
+    controls.addEventListener('controlstart', handleControlstart)
     controls.addEventListener('control', handleControl)
-    controls.addEventListener('controlend', handleControlEnd)
-    controls.addEventListener('transitionstart', handleTransitionStart)
+    controls.addEventListener('controlend', handleControlend)
+    controls.addEventListener('transitionstart', handleTransitionstart)
     controls.addEventListener('update', handleUpdate)
     controls.addEventListener('wake', handleWake)
     controls.addEventListener('rest', handleRest)
     controls.addEventListener('sleep', handleSleep)
 
     return () => {
-      controls.removeEventListener('controlstart', handleControlStart)
+      controls.removeEventListener('controlstart', handleControlstart)
       controls.removeEventListener('control', handleControl)
-      controls.removeEventListener('controlend', handleControlEnd)
-      controls.removeEventListener('transitionstart', handleTransitionStart)
+      controls.removeEventListener('controlend', handleControlend)
+      controls.removeEventListener('transitionstart', handleTransitionstart)
       controls.removeEventListener('update', handleUpdate)
       controls.removeEventListener('wake', handleWake)
       controls.removeEventListener('rest', handleRest)

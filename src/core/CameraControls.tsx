@@ -1,3 +1,4 @@
+/* eslint react-hooks/exhaustive-deps: 1 */
 import {
   Box3,
   EventDispatcher,
@@ -28,9 +29,23 @@ export type CameraControlsProps = Omit<
       camera?: PerspectiveCamera | OrthographicCamera
       domElement?: HTMLElement
       makeDefault?: boolean
+
+      onControlStart?: (e?: { type: 'controlstart' }) => void
+      onControl?: (e?: { type: 'control' }) => void
+      onControlEnd?: (e?: { type: 'controlend' }) => void
+      onTransitionStart?: (e?: { type: 'transitionstart' }) => void
+      onUpdate?: (e?: { type: 'update' }) => void
+      onWake?: (e?: { type: 'wake' }) => void
+      onRest?: (e?: { type: 'rest' }) => void
+      onSleep?: (e?: { type: 'sleep' }) => void
+
+      /** @deprecated for OrbitControls compatibility: use `onControlStart` instead */
       onStart?: (e?: { type: 'controlstart' }) => void
+      /** @deprecated for OrbitControls compatibility: use `onControlEnd` instead */
       onEnd?: (e?: { type: 'controlend' }) => void
-      onChange?: (e?: { type: 'update' }) => void
+      /** @deprecated for OrbitControls compatibility */
+      onChange?: (e?: { type: string }) => void
+
       events?: boolean // Wether to enable events during controls interaction
       regress?: boolean
     }
@@ -65,7 +80,24 @@ export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraCont
     extend({ CameraControlsImpl })
   }, [])
 
-  const { camera, domElement, makeDefault, onStart, onEnd, onChange, regress, ...restProps } = props
+  const {
+    camera,
+    domElement,
+    makeDefault,
+    onControlStart,
+    onControl,
+    onControlEnd,
+    onTransitionStart,
+    onUpdate,
+    onWake,
+    onRest,
+    onSleep,
+    onStart,
+    onEnd,
+    onChange,
+    regress,
+    ...restProps
+  } = props
 
   const defaultCamera = useThree((state) => state.camera)
   const gl = useThree((state) => state.gl)
@@ -91,36 +123,94 @@ export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraCont
   }, [explDomElement, controls])
 
   useEffect(() => {
-    const callback = (e) => {
+    function invalidateAndRegress() {
       invalidate()
       if (regress) performance.regress()
-      if (onChange) onChange(e)
     }
 
-    const onStartCb: CameraControlsProps['onStart'] = (e) => {
-      if (onStart) onStart(e)
+    const handleControlStart = (e: { type: 'controlstart' }) => {
+      onControlStart?.(e)
+      onStart?.(e) // backwards compatibility
     }
 
-    const onEndCb: CameraControlsProps['onEnd'] = (e) => {
-      if (onEnd) onEnd(e)
+    const handleControl = (e: { type: 'control' }) => {
+      invalidateAndRegress()
+      onControl?.(e)
+      onChange?.(e) // backwards compatibility
     }
 
-    controls.addEventListener('update', callback)
-    controls.addEventListener('controlstart', onStartCb)
-    controls.addEventListener('controlend', onEndCb)
-    controls.addEventListener('control', callback)
-    controls.addEventListener('transitionstart', callback)
-    controls.addEventListener('wake', callback)
+    const handleControlEnd = (e: { type: 'controlend' }) => {
+      onControlEnd?.(e)
+      onEnd?.(e) // backwards compatibility
+    }
+
+    const handleTransitionStart = (e: { type: 'transitionstart' }) => {
+      invalidateAndRegress()
+      onTransitionStart?.(e)
+      onChange?.(e) // backwards compatibility
+    }
+
+    const handleUpdate = (e: { type: 'update' }) => {
+      invalidateAndRegress()
+      onUpdate?.(e)
+      onChange?.(e) // backwards compatibility
+    }
+
+    const handleWake = (e: { type: 'wake' }) => {
+      invalidateAndRegress()
+      onWake?.(e)
+      onChange?.(e) // backwards compatibility
+    }
+
+    const handleRest = (e: { type: 'rest' }) => {
+      onRest?.(e)
+    }
+
+    const handleSleep = (e: { type: 'sleep' }) => {
+      onSleep?.(e)
+    }
+
+    controls.addEventListener('controlstart', handleControlStart)
+    controls.addEventListener('control', handleControl)
+    controls.addEventListener('controlend', handleControlEnd)
+    controls.addEventListener('transitionstart', handleTransitionStart)
+    controls.addEventListener('update', handleUpdate)
+    controls.addEventListener('wake', handleWake)
+    controls.addEventListener('rest', handleRest)
+    controls.addEventListener('sleep', handleSleep)
 
     return () => {
-      controls.removeEventListener('update', callback)
-      controls.removeEventListener('controlstart', onStartCb)
-      controls.removeEventListener('controlend', onEndCb)
-      controls.removeEventListener('control', callback)
-      controls.removeEventListener('transitionstart', callback)
-      controls.removeEventListener('wake', callback)
+      controls.removeEventListener('controlstart', handleControlStart)
+      controls.removeEventListener('control', handleControl)
+      controls.removeEventListener('controlend', handleControlEnd)
+      controls.removeEventListener('transitionstart', handleTransitionStart)
+      controls.removeEventListener('update', handleUpdate)
+      controls.removeEventListener('wake', handleWake)
+      controls.removeEventListener('rest', handleRest)
+      controls.removeEventListener('sleep', handleSleep)
     }
-  }, [controls, onStart, onEnd, invalidate, setEvents, regress, onChange])
+  }, [
+    controls,
+
+    invalidate,
+    setEvents,
+    regress,
+
+    performance,
+
+    onControlStart,
+    onControl,
+    onControlEnd,
+    onTransitionStart,
+    onUpdate,
+    onWake,
+    onRest,
+    onSleep,
+
+    onChange,
+    onStart,
+    onEnd,
+  ])
 
   useEffect(() => {
     if (makeDefault) {
@@ -128,6 +218,7 @@ export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraCont
       set({ controls: controls as unknown as EventDispatcher })
       return () => set({ controls: old })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [makeDefault, controls])
 
   return <primitive ref={ref} object={controls} {...restProps} />

@@ -30,18 +30,18 @@ export type CameraControlsProps = Omit<
       domElement?: HTMLElement
       makeDefault?: boolean
 
-      onControlstart?: (e?: { type: 'controlstart' }) => void
+      onControlStart?: (e?: { type: 'controlstart' }) => void
       onControl?: (e?: { type: 'control' }) => void
-      onControlend?: (e?: { type: 'controlend' }) => void
-      onTransitionstart?: (e?: { type: 'transitionstart' }) => void
+      onControlEnd?: (e?: { type: 'controlend' }) => void
+      onTransitionStart?: (e?: { type: 'transitionstart' }) => void
       onUpdate?: (e?: { type: 'update' }) => void
       onWake?: (e?: { type: 'wake' }) => void
       onRest?: (e?: { type: 'rest' }) => void
       onSleep?: (e?: { type: 'sleep' }) => void
 
-      /** @deprecated for OrbitControls compatibility: use `onControlstart` instead */
+      /** @deprecated for OrbitControls compatibility: use `onControlStart` instead */
       onStart?: (e?: { type: 'controlstart' }) => void
-      /** @deprecated for OrbitControls compatibility: use `onControlend` instead */
+      /** @deprecated for OrbitControls compatibility: use `onControlEnd` instead */
       onEnd?: (e?: { type: 'controlend' }) => void
       /** @deprecated for OrbitControls compatibility */
       onChange?: (e?: { type: string }) => void
@@ -84,10 +84,10 @@ export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraCont
     camera,
     domElement,
     makeDefault,
-    onControlstart,
+    onControlStart,
     onControl,
-    onControlend,
-    onTransitionstart,
+    onControlEnd,
+    onTransitionStart,
     onUpdate,
     onWake,
     onRest,
@@ -128,9 +128,9 @@ export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraCont
       if (regress) performance.regress()
     }
 
-    const handleControlstart = (e: { type: 'controlstart' }) => {
+    const handleControlStart = (e: { type: 'controlstart' }) => {
       invalidateAndRegress()
-      onControlstart?.(e)
+      onControlStart?.(e)
       onStart?.(e) // backwards compatibility
     }
 
@@ -140,14 +140,14 @@ export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraCont
       onChange?.(e) // backwards compatibility
     }
 
-    const handleControlend = (e: { type: 'controlend' }) => {
-      onControlend?.(e)
+    const handleControlEnd = (e: { type: 'controlend' }) => {
+      onControlEnd?.(e)
       onEnd?.(e) // backwards compatibility
     }
 
-    const handleTransitionstart = (e: { type: 'transitionstart' }) => {
+    const handleTransitionStart = (e: { type: 'transitionstart' }) => {
       invalidateAndRegress()
-      onTransitionstart?.(e)
+      onTransitionStart?.(e)
       onChange?.(e) // backwards compatibility
     }
 
@@ -171,20 +171,20 @@ export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraCont
       onSleep?.(e)
     }
 
-    controls.addEventListener('controlstart', handleControlstart)
+    controls.addEventListener('controlstart', handleControlStart)
     controls.addEventListener('control', handleControl)
-    controls.addEventListener('controlend', handleControlend)
-    controls.addEventListener('transitionstart', handleTransitionstart)
+    controls.addEventListener('controlend', handleControlEnd)
+    controls.addEventListener('transitionstart', handleTransitionStart)
     controls.addEventListener('update', handleUpdate)
     controls.addEventListener('wake', handleWake)
     controls.addEventListener('rest', handleRest)
     controls.addEventListener('sleep', handleSleep)
 
     return () => {
-      controls.removeEventListener('controlstart', handleControlstart)
+      controls.removeEventListener('controlstart', handleControlStart)
       controls.removeEventListener('control', handleControl)
-      controls.removeEventListener('controlend', handleControlend)
-      controls.removeEventListener('transitionstart', handleTransitionstart)
+      controls.removeEventListener('controlend', handleControlEnd)
+      controls.removeEventListener('transitionstart', handleTransitionStart)
       controls.removeEventListener('update', handleUpdate)
       controls.removeEventListener('wake', handleWake)
       controls.removeEventListener('rest', handleRest)
@@ -199,10 +199,10 @@ export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraCont
 
     performance,
 
-    onControlstart,
+    onControlStart,
     onControl,
-    onControlend,
-    onTransitionstart,
+    onControlEnd,
+    onTransitionStart,
     onUpdate,
     onWake,
     onRest,

@@ -24,10 +24,10 @@ type CameraControlsProps = {
   /** Reference this CameraControls instance as state's `controls` */
   makeDefault?: boolean
   /** Events callbacks, see: https://github.com/yomotsu/camera-controls#events */
-  onControlstart?: (e? { type: 'controlstart' }) => void
+  onControlStart?: (e? { type: 'controlstart' }) => void
   onControl?: (e? { type: 'control' }) => void
-  onControlend?: (e? { type: 'controlend' }) => void
-  onTransitionstart?: (e? { type: 'transitionstart' }) => void
+  onControlEnd?: (e? { type: 'controlend' }) => void
+  onTransitionStart?: (e? { type: 'transitionstart' }) => void
   onUpdate?: (e? { type: 'update' }) => void
   onWake?: (e? { type: 'wake' }) => void
   onRest?: (e? { type: 'rest' }) => void

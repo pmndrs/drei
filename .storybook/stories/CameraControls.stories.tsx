@@ -9,22 +9,17 @@ import { Box, CameraControls, PerspectiveCamera, Plane, useFBO } from '../../src
 export default {
   title: 'Controls/CameraControls',
   component: CameraControls,
-  decorators: [
-    (Story) => (
-      <Setup controls={false}>
-        <Story />
-      </Setup>
-    ),
-  ],
 } satisfies Meta<typeof CameraControls>
 
 type Story = StoryObj<typeof CameraControls>
+
+//
 
 function CameraControlsScene1(props: ComponentProps<typeof CameraControls>) {
   const cameraControlRef = useRef<CameraControls>(null)
 
   return (
-    <>
+    <Setup controls={false}>
       <CameraControls ref={cameraControlRef} {...props} />
       <Box
         onClick={() => {
@@ -33,7 +28,7 @@ function CameraControlsScene1(props: ComponentProps<typeof CameraControls>) {
       >
         <meshBasicMaterial wireframe />
       </Box>
-    </>
+    </Setup>
   )
 }
 
@@ -41,6 +36,8 @@ export const CameraControlsSt1 = {
   render: (args) => <CameraControlsScene1 {...args} />,
   name: 'Default',
 } satisfies Story
+
+//
 
 const CameraControlsScene2 = (props: ComponentProps<typeof CameraControls>) => {
   /**
@@ -90,6 +87,47 @@ const CameraControlsScene2 = (props: ComponentProps<typeof CameraControls>) => {
 }
 
 export const CameraControlsSt2 = {
-  render: (args) => <CameraControlsScene2 {...args} />,
+  render: (args) => (
+    <Setup controls={false}>
+      <CameraControlsScene2 {...args} />
+    </Setup>
+  ),
   name: 'Custom Camera',
+} satisfies Story
+
+//
+
+function CameraControlsScene3(props: ComponentProps<typeof CameraControls>) {
+  const cameraControlRef = useRef<CameraControls>(null)
+
+  return (
+    <>
+      <CameraControls
+        ref={cameraControlRef}
+        // {...props}
+        // onWake={() => console.log('wake')}
+        // onSleep={() => console.log('sleep')}
+      />
+      <Box
+        onClick={() => {
+          cameraControlRef.current?.rotate(Math.PI / 4, 0, true)
+        }}
+      >
+        <meshBasicMaterial wireframe />
+      </Box>
+    </>
+  )
+}
+
+export const CameraControlsSt3 = {
+  render: (args) => (
+    <Setup
+      controls={false}
+      frameloop="demand"
+      //
+    >
+      <CameraControlsScene3 {...args} />
+    </Setup>
+  ),
+  name: 'frameloop="demand"',
 } satisfies Story

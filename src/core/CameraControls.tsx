@@ -114,7 +114,7 @@ export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraCont
   const controls = useMemo(() => new CameraControlsImpl(explCamera), [explCamera])
 
   useFrame((state, delta) => {
-    if (controls.enabled) controls.update(delta)
+    controls.update(delta)
   }, -1)
 
   useEffect(() => {

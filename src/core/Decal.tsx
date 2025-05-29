@@ -56,7 +56,7 @@ export const Decal: ForwardRefComponent<DecalProps, THREE.Mesh> = /* @__PURE__ *
     }
 
     if (parent) {
-      applyProps(state.current as any, { position, scale })
+      applyProps(state.current, { position, scale })
 
       // Zero out the parents matrix world for this operation
       const matrixWorld = parent.matrixWorld.clone()
@@ -71,7 +71,6 @@ export const Decal: ForwardRefComponent<DecalProps, THREE.Mesh> = /* @__PURE__ *
         if (parent.geometry.attributes.normal === undefined) parent.geometry.computeVertexNormals()
         const normal = parent.geometry.attributes.normal.array
         let distance = Infinity
-        let closest = new THREE.Vector3()
         let closestNormal = new THREE.Vector3()
         const ox = o.position.x
         const oy = o.position.y
@@ -99,9 +98,13 @@ export const Decal: ForwardRefComponent<DecalProps, THREE.Mesh> = /* @__PURE__ *
         o.rotateY(Math.PI)
 
         if (typeof rotation === 'number') o.rotateZ(rotation)
-        applyProps(state.current as any, { rotation: o.rotation })
+        applyProps(state.current, { rotation: o.rotation })
       } else {
-        applyProps(state.current as any, { rotation })
+        applyProps(state.current, { rotation })
+      }
+
+      if (helper.current) {
+        applyProps(helper.current, state.current)
       }
 
       target.geometry = new DecalGeometry(parent, state.current.position, state.current.rotation, state.current.scale)
@@ -116,13 +119,11 @@ export const Decal: ForwardRefComponent<DecalProps, THREE.Mesh> = /* @__PURE__ *
 
   React.useLayoutEffect(() => {
     if (helper.current) {
-      applyProps(helper.current as any, state.current)
       // Prevent the helpers from blocking rays
       helper.current.traverse((child) => (child.raycast = () => null))
     }
   }, [debug])
 
-  // <meshStandardMaterial transparent polygonOffset polygonOffsetFactor={-10} {...props} />}
   return (
     <mesh
       ref={ref}

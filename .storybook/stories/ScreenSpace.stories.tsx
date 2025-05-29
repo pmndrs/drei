@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Box, OrbitControls, Html, ScreenSpace } from '../../src'
 import { Vector3 } from 'three'
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 

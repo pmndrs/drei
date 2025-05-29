@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { extend } from '@react-three/fiber'
 import { Texture } from 'three'
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 import { Box, shaderMaterial, useTexture } from '../../src'

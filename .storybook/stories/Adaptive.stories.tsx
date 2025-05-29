@@ -1,6 +1,6 @@
 import React, { ComponentProps, Suspense } from 'react'
 import { Vector3, type Material, type Mesh } from 'three'
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 

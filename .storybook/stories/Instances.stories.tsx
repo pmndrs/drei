@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Euler, MathUtils, Mesh, ShaderMaterial, Vector3 } from 'three'
-// import { StoryObj } from '@storybook/react'
+// import { StoryObj } from '@storybook/react-vite'
 import { Setup } from '../Setup'
 
 import { useGLTF, Instances, Instance, createInstances, InstancedAttribute } from '../../src'

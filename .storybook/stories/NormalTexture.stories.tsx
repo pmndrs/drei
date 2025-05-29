@@ -4,7 +4,7 @@ import { Mesh, Vector2, Vector3 } from 'three'
 
 import { Setup } from '../Setup'
 import { useGLTF, NormalTexture } from '../../src'
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react-vite'
 
 export default {
   title: 'Staging/NormalTexture',

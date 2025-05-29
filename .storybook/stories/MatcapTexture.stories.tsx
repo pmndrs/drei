@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Mesh, Vector3 } from 'three'
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 

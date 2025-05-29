@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react-vite'
 import * as React from 'react'
 
 import { MathUtils, RepeatWrapping } from 'three'

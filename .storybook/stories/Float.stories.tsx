@@ -1,7 +1,7 @@
 import React, { ComponentProps, Suspense, useRef } from 'react'
 import * as THREE from 'three'
 
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 

@@ -4,7 +4,7 @@ import { useRef } from 'react'
 import { MathUtils, Mesh, Vector3 } from 'three'
 import { Cone, KeyboardControls, useKeyboardControls } from '../../src'
 import { Setup } from '../Setup'
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react-vite'
 
 export default {
   title: 'Controls/KeyboardControls',

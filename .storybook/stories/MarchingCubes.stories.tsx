@@ -5,7 +5,7 @@ import { Setup } from '../Setup'
 
 import { MarchingCube, MarchingCubes, MarchingPlane, OrbitControls } from '../../src'
 import { useFrame } from '@react-three/fiber'
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react-vite'
 
 export default {
   title: 'Abstractions/MarchingCubes',

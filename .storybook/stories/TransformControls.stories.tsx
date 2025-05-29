@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Object3D } from 'three'
 import { TransformControls as TransformControlsImpl, OrbitControls as OrbitControlsImpl } from 'three-stdlib'
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 

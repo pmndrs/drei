@@ -3,7 +3,7 @@ import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'
 import { PivotControls, Box } from '../../src'
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react-vite'
 
 export default {
   title: 'Gizmos/PivotControls',

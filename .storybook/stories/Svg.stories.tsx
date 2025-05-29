@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react-vite'
 import { MathUtils, NoToneMapping, Vector3 } from 'three'
 
 import { Setup } from '../Setup'

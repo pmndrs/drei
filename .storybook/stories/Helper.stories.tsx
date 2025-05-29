@@ -3,7 +3,7 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { BoxHelper, CameraHelper } from 'three'
 import { VertexNormalsHelper } from 'three-stdlib'
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Helper, PerspectiveCamera, Sphere } from '../../src'
 import { Setup } from '../Setup'

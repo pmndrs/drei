@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { Vector3 } from 'three'
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 

@@ -2,7 +2,7 @@ import React, { ComponentProps } from 'react'
 import { BufferGeometry, CatmullRomCurve3, LineBasicMaterial, LineLoop, Vector3 } from 'three'
 import { FontLoader, TextGeometry, TextGeometryParameters } from 'three-stdlib'
 import { extend, useFrame, useLoader } from '@react-three/fiber'
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 import { CurveModifier, CurveModifierRef } from '../../src'

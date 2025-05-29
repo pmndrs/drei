@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { useFrame, useThree } from '@react-three/fiber'
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 import { useGLTF, ScrollControls, Scroll, useCursor, useIntersect } from '../../src'

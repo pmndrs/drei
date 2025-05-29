@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { useLoader } from '@react-three/fiber'
 import { RGBELoader } from 'three-stdlib'
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 import {

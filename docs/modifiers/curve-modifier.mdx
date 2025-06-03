@@ -17,7 +17,7 @@ useFrame(() => {
   if (curveRef.current) {
     // Move continuously along the curve
     curveRef.current.moveAlongCurve(0.001)
-    
+
     // Move along the curve using the scrollbar
     curveRef.current.uniforms.pathOffset.value = scroll.offset
   }
@@ -39,7 +39,7 @@ type CurveModifierRef = {
   curveArray: Curve<any>[];
   curveLengthArray: number[];
   object3D: TMesh;
-  splineTexure: DataTexture;
+  splineTexture: DataTexture;
   uniforms: CurveModifierUniforms;
   updateCurve<TCurve extends Curve<any>>(index: number, curve: TCurve): void;
   moveAlongCurve(amount: number): void;

@@ -795,6 +795,10 @@ https://pmndrs.github.io/drei
 
 [Documentation has moved here](https://pmndrs.github.io/drei/staging/shadow-alpha)
 
+#### FPVCamera
+
+[Documentation has moved here](https://pmndrs.github.io/drei/controls/FPVCamera)
+
 </details>
 
 ## Dev

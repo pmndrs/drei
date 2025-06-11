@@ -25,6 +25,9 @@ export type RoundedBoxProps = {
   creaseAngle?: number
 } & Omit<ThreeElements['mesh'], 'ref' | 'args'>
 
+export type RoundedBoxGeometryProps = Omit<RoundedBoxProps, 'children'> &
+  Omit<ThreeElements['extrudeGeometry'], 'args' | 'ref'>
+
 export const RoundedBox: ForwardRefComponent<RoundedBoxProps, Mesh> = /* @__PURE__ */ React.forwardRef<
   Mesh,
   RoundedBoxProps
@@ -41,32 +44,57 @@ export const RoundedBox: ForwardRefComponent<RoundedBoxProps, Mesh> = /* @__PURE
   },
   ref
 ) {
-  const shape = React.useMemo(() => createShape(width, height, radius), [width, height, radius])
-  const params = React.useMemo(
-    () => ({
-      depth: depth - radius * 2,
-      bevelEnabled: true,
-      bevelSegments: bevelSegments * 2,
-      steps,
-      bevelSize: radius - eps,
-      bevelThickness: radius,
-      curveSegments: smoothness,
-    }),
-    [depth, radius, smoothness]
-  )
-  const geomRef = React.useRef<ExtrudeGeometry>(null!)
-
-  React.useLayoutEffect(() => {
-    if (geomRef.current) {
-      geomRef.current.center()
-      toCreasedNormals(geomRef.current, creaseAngle)
-    }
-  }, [shape, params])
-
   return (
     <mesh ref={ref} {...rest}>
-      <extrudeGeometry ref={geomRef} args={[shape, params]} />
+      <RoundedBoxGeometry
+        args={[width, height, depth]}
+        radius={radius}
+        steps={steps}
+        smoothness={smoothness}
+        bevelSegments={bevelSegments}
+        creaseAngle={creaseAngle}
+      />
       {children}
     </mesh>
   )
 })
+
+export const RoundedBoxGeometry: ForwardRefComponent<RoundedBoxGeometryProps, ExtrudeGeometry> =
+  /* @__PURE__ */ React.forwardRef<ExtrudeGeometry, RoundedBoxGeometryProps>(function RoundedBoxGeometry(
+    {
+      args: [width = 1, height = 1, depth = 1] = [],
+      radius = 0.05,
+      steps = 1,
+      smoothness = 4,
+      bevelSegments = 4,
+      creaseAngle = 0.4,
+      ...rest
+    },
+    ref
+  ) {
+    const shape = React.useMemo(() => createShape(width, height, radius), [width, height, radius])
+    const params = React.useMemo(
+      () => ({
+        depth: depth - radius * 2,
+        bevelEnabled: true,
+        bevelSegments: bevelSegments * 2,
+        steps,
+        bevelSize: radius - eps,
+        bevelThickness: radius,
+        curveSegments: smoothness,
+      }),
+      [depth, radius, smoothness, bevelSegments, steps]
+    )
+    const geomRef = React.useRef<ExtrudeGeometry>(null!)
+
+    React.useLayoutEffect(() => {
+      if (geomRef.current) {
+        geomRef.current.center()
+        toCreasedNormals(geomRef.current, creaseAngle)
+      }
+    }, [shape, params, creaseAngle])
+
+    React.useImperativeHandle(ref, () => geomRef.current)
+
+    return <extrudeGeometry ref={geomRef} args={[shape, params]} {...rest} />
+  })

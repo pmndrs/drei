@@ -25,6 +25,9 @@ export type RoundedBoxProps = {
   creaseAngle?: number
 } & Omit<ThreeElements['mesh'], 'ref' | 'args'>
 
+export type RoundedBoxGeometryProps = Omit<RoundedBoxProps, 'children'> &
+  Omit<ThreeElements['extrudeGeometry'], 'args' | 'ref'>
+
 export const RoundedBox: ForwardRefComponent<RoundedBoxProps, Mesh> = /* @__PURE__ */ React.forwardRef<
   Mesh,
   RoundedBoxProps
@@ -41,6 +44,33 @@ export const RoundedBox: ForwardRefComponent<RoundedBoxProps, Mesh> = /* @__PURE
   },
   ref
 ) {
+  return (
+    <mesh ref={ref} {...rest}>
+      <RoundedBoxGeometry
+        args={[width, height, depth]}
+        radius={radius}
+        steps={steps}
+        smoothness={smoothness}
+        bevelSegments={bevelSegments}
+        creaseAngle={creaseAngle}
+      />
+      {children}
+    </mesh>
+  )
+})
+
+export const RoundedBoxGeometry: ForwardRefComponent<RoundedBoxGeometryProps, ExtrudeGeometry> = /* @__PURE__ */ React.forwardRef<ExtrudeGeometry, RoundedBoxGeometryProps>(function RoundedBoxGeometry(
+  {
+    args: [width = 1, height = 1, depth = 1] = [],
+    radius = 0.05,
+    steps = 1,
+    smoothness = 4,
+    bevelSegments = 4,
+    creaseAngle = 0.4,
+    ...rest
+  },
+  ref
+) {
   const shape = React.useMemo(() => createShape(width, height, radius), [width, height, radius])
   const params = React.useMemo(
     () => ({
@@ -52,7 +82,7 @@ export const RoundedBox: ForwardRefComponent<RoundedBoxProps, Mesh> = /* @__PURE
       bevelThickness: radius,
       curveSegments: smoothness,
     }),
-    [depth, radius, smoothness]
+    [depth, radius, smoothness, bevelSegments, steps]
   )
   const geomRef = React.useRef<ExtrudeGeometry>(null!)
 
@@ -61,12 +91,9 @@ export const RoundedBox: ForwardRefComponent<RoundedBoxProps, Mesh> = /* @__PURE
       geomRef.current.center()
       toCreasedNormals(geomRef.current, creaseAngle)
     }
-  }, [shape, params])
+  }, [shape, params, creaseAngle])
 
-  return (
-    <mesh ref={ref} {...rest}>
-      <extrudeGeometry ref={geomRef} args={[shape, params]} />
-      {children}
-    </mesh>
-  )
+  React.useImperativeHandle(ref, () => geomRef.current)
+
+  return <extrudeGeometry ref={geomRef} args={[shape, params]} {...rest} />
 })

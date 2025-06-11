@@ -1,6 +1,3 @@
-// TODO: ESLint thinks Caustics is executed in a loop.
-/* eslint-disable react-hooks/rules-of-hooks */
-
 /** Author: @N8Programs https://github.com/N8python
  *    https://github.com/N8python/caustics
  */

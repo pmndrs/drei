@@ -126,13 +126,13 @@ useEnvironment.preload = (preloadOptions?: EnvironmentLoaderPreloadOptions) => {
 }
 
 type EnvironmentLoaderClearOptions = Pick<EnvironmentLoaderProps, 'files' | 'preset'>
-const clearDefaultOptins = {
+const clearDefaultOptions = {
   files: defaultFiles,
   preset: undefined,
 }
 
 useEnvironment.clear = (clearOptions?: EnvironmentLoaderClearOptions) => {
-  const options = { ...clearDefaultOptins, ...clearOptions }
+  const options = { ...clearDefaultOptions, ...clearOptions }
   let { files } = options
   const { preset } = options
 

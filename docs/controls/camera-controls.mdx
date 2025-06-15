@@ -17,8 +17,8 @@ This is an implementation of the [camera-controls](https://github.com/yomotsu/ca
 
 ```tsx
 type CameraControlsProps = {
-  /** Optional CameraControls subclass, default to CameraControls official class */
-  impl?: CameraControlsClass
+  /** Optional CameraControls subclass, default to `CameraControlsImpl` official class */
+  impl?: typeof CameraControlsImpl
   /** The camera to control, default to the state's `camera` */
   camera?: PerspectiveCamera | OrthographicCamera
   /** DOM element to connect to, default to the state's `gl` renderer */

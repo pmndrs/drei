@@ -17,6 +17,8 @@ This is an implementation of the [camera-controls](https://github.com/yomotsu/ca
 
 ```tsx
 type CameraControlsProps = {
+  /** Optional CameraControls subclass, default to CameraControls official class */
+  impl?: CameraControlsClass
   /** The camera to control, default to the state's `camera` */
   camera?: PerspectiveCamera | OrthographicCamera
   /** DOM element to connect to, default to the state's `gl` renderer */
@@ -76,4 +78,19 @@ const { ACTION } = CameraControlsImpl;
     three: ACTION.TOUCH_DOLLY_TRUCK,
   }}
 />
+```
+
+### `[impl]` custom subclass
+
+You can pass a custom subclass of `CameraControlsImpl` to the `impl` prop. This allows you to override methods or add new functionality:
+
+```tsx
+class MyCameraControls extends CameraControlsImpl {
+  override rotate(...args: Parameters<CameraControlsImpl['rotate']>) {
+    console.log('my rotate', ...args)
+    return super.rotate(...args)
+  }
+}
+
+<CameraControls impl={MyCameraControls} />
 ```

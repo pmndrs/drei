@@ -26,6 +26,7 @@ export type CameraControlsProps = Omit<
   Overwrite<
     ThreeElement<typeof CameraControlsImpl>,
     {
+      impl?: typeof CameraControlsImpl
       camera?: PerspectiveCamera | OrthographicCamera
       domElement?: HTMLElement
       makeDefault?: boolean
@@ -57,6 +58,28 @@ export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraCont
   CameraControlsImpl,
   CameraControlsProps
 >((props, ref) => {
+  const {
+    impl: SubclassImpl,
+    camera,
+    domElement,
+    makeDefault,
+    onControlStart,
+    onControl,
+    onControlEnd,
+    onTransitionStart,
+    onUpdate,
+    onWake,
+    onRest,
+    onSleep,
+    onStart,
+    onEnd,
+    onChange,
+    regress,
+    ...restProps
+  } = props
+
+  const Impl = SubclassImpl ?? CameraControlsImpl
+
   // useMemo is used here instead of useEffect, otherwise the useMemo below runs first and throws
   useMemo(() => {
     // to allow for tree shaking, we only import the subset of THREE that is used by camera-controls
@@ -76,28 +99,9 @@ export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraCont
       Vector4,
     }
 
-    CameraControlsImpl.install({ THREE: subsetOfTHREE })
-    extend({ CameraControlsImpl })
-  }, [])
-
-  const {
-    camera,
-    domElement,
-    makeDefault,
-    onControlStart,
-    onControl,
-    onControlEnd,
-    onTransitionStart,
-    onUpdate,
-    onWake,
-    onRest,
-    onSleep,
-    onStart,
-    onEnd,
-    onChange,
-    regress,
-    ...restProps
-  } = props
+    Impl.install({ THREE: subsetOfTHREE })
+    extend({ CameraControlsImpl: Impl })
+  }, [Impl])
 
   const defaultCamera = useThree((state) => state.camera)
   const gl = useThree((state) => state.gl)
@@ -111,7 +115,7 @@ export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraCont
   const explCamera = camera || defaultCamera
   const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
 
-  const controls = useMemo(() => new CameraControlsImpl(explCamera), [explCamera])
+  const controls = useMemo(() => new Impl(explCamera), [Impl, explCamera])
 
   useFrame((state, delta) => {
     controls.update(delta)

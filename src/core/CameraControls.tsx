@@ -22,15 +22,11 @@ import { extend, useFrame, useThree, ReactThreeFiber, EventManager, ThreeElement
 import CameraControlsImpl from 'camera-controls'
 import { ForwardRefComponent, Overwrite } from '../helpers/ts-utils'
 
-type CameraControlsClass = {
-  new (...args: ConstructorParameters<typeof CameraControlsImpl>): CameraControlsImpl
-} & typeof CameraControlsImpl
-
 export type CameraControlsProps = Omit<
   Overwrite<
     ThreeElement<typeof CameraControlsImpl>,
     {
-      impl?: CameraControlsClass
+      impl?: typeof CameraControlsImpl
       camera?: PerspectiveCamera | OrthographicCamera
       domElement?: HTMLElement
       makeDefault?: boolean

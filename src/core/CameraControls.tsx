@@ -100,7 +100,7 @@ export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraCont
     }
 
     Impl.install({ THREE: subsetOfTHREE })
-    extend({ Impl })
+    extend({ CameraControlsImpl: Impl })
   }, [Impl])
 
   const defaultCamera = useThree((state) => state.camera)

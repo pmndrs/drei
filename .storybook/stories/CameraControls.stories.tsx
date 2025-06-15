@@ -4,7 +4,7 @@ import * as THREE from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
-import { Box, CameraControls, PerspectiveCamera, Plane, useFBO } from '../../src'
+import { Box, CameraControls, CameraControlsImpl, PerspectiveCamera, Plane, useFBO } from '../../src'
 
 export default {
   title: 'Controls/CameraControls',
@@ -130,4 +130,35 @@ export const CameraControlsSt3 = {
     </Setup>
   ),
   name: 'frameloop="demand"',
+} satisfies Story
+
+//
+
+function CameraControlsScene4(props: ComponentProps<typeof CameraControls>) {
+  const cameraControlRef = useRef<CameraControls>(null)
+
+  return (
+    <Setup controls={false}>
+      <CameraControls ref={cameraControlRef} {...props} />
+      <Box
+        onClick={() => {
+          cameraControlRef.current?.rotate(Math.PI / 4, 0, true)
+        }}
+      >
+        <meshBasicMaterial wireframe />
+      </Box>
+    </Setup>
+  )
+}
+
+class MyCameraControls extends CameraControlsImpl {
+  override rotate(...args: Parameters<CameraControlsImpl['rotate']>) {
+    console.log('rotate', ...args)
+    return super.rotate(...args)
+  }
+}
+
+export const CameraControlsSt4 = {
+  render: (args) => <CameraControlsScene4 impl={MyCameraControls} {...args} />,
+  name: 'Subclass',
 } satisfies Story

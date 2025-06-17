@@ -32,7 +32,7 @@ export function Fisheye({
   const sphere = React.useRef<THREE.Mesh>(null!)
   const cubeApi = React.useRef<RenderCubeTextureApi>(null!)
 
-  // This isn't more than a simple sphere and a fixed orthographc camera
+  // This isn't more than a simple sphere and a fixed orthographic camera
   // pointing at it. A virtual scene is portalled into the environment map
   // of its material. The cube-camera filming that scene is being synced to
   // the portals default camera with the <UpdateCubeCamera> component.
@@ -59,7 +59,7 @@ export function Fisheye({
     // Raycast from the render camera to the sphere and get the surface normal
     // of the point hit in world space of the sphere scene
     // We have to set the raycaster using the orthocam and pointer
-    // to perform sphere interscetions.
+    // to perform sphere intersections.
     state.pointer.set((event.offsetX / state.size.width) * 2 - 1, -(event.offsetY / state.size.height) * 2 + 1)
     state.raycaster.setFromCamera(state.pointer, orthoC)
     if (!state.raycaster.ray.intersectSphere(sph, normal)) return

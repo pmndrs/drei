@@ -6,6 +6,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 import { Setup } from '../Setup'
 
 import { Fbo, TorusKnot, Box, PerspectiveCamera } from '../../src'
+import { ComponentRef, useRef } from 'react'
 
 export default {
   title: 'Misc/Fbo',
@@ -35,12 +36,10 @@ function SpinningThing() {
   )
 }
 
-function FboScene(props: React.ComponentProps<typeof Fbo>) {
-  return <Fbo {...props}>{(target) => <TargetWrapper target={target} />}</Fbo>
-}
+function FboScene({ ...props }: React.ComponentProps<typeof Fbo>) {
+  const targetRef = useRef<ComponentRef<typeof Fbo>>(null)
 
-function TargetWrapper({ target }: { target: THREE.WebGLRenderTarget }) {
-  const cam = React.useRef<React.ComponentRef<typeof PerspectiveCamera>>(null!)
+  const cam = React.useRef<ComponentRef<typeof PerspectiveCamera>>(null!)
 
   const scene = React.useMemo(() => {
     const scene = new THREE.Scene()
@@ -49,18 +48,22 @@ function TargetWrapper({ target }: { target: THREE.WebGLRenderTarget }) {
   }, [])
 
   useFrame((state) => {
+    if (!targetRef.current) return
+
     cam.current.position.z = 5 + Math.sin(state.clock.getElapsedTime() * 1.5) * 2
-    state.gl.setRenderTarget(target)
+    state.gl.setRenderTarget(targetRef.current)
     state.gl.render(scene, cam.current)
     state.gl.setRenderTarget(null)
   })
 
   return (
     <>
+      <Fbo ref={targetRef} {...props} />
+
       <PerspectiveCamera ref={cam} position={[0, 0, 3]} />
       {createPortal(<SpinningThing />, scene)}
       <Box args={[3, 3, 3]}>
-        <meshStandardMaterial map={target?.texture} />
+        <meshStandardMaterial map={targetRef.current?.texture} />
       </Box>
     </>
   )

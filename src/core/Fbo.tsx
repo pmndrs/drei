@@ -2,9 +2,7 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
 import { forwardRef, useImperativeHandle } from 'react'
-
-type WebGLRenderTargetCtorParams = ConstructorParameters<typeof THREE.WebGLRenderTarget>
-type WebGLRenderTargetOptions = WebGLRenderTargetCtorParams[2]
+import { type WebGLRenderTargetOptions } from 'three'
 
 type FBOSettings = {
   /** @deprecated use `depthBuffer` instead. If set, the scene depth will be rendered into buffer.depthTexture. Default: false */
@@ -20,7 +18,7 @@ export function useFBO(
   height?: number,
   /**Settings */
   settings?: FBOSettings
-): THREE.WebGLRenderTarget {
+) {
   const size = useThree((state) => state.size)
   const viewport = useThree((state) => state.viewport)
   const _width = typeof width === 'number' ? width : size.width * viewport.dpr

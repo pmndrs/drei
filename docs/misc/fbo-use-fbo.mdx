@@ -31,8 +31,8 @@ The rendertarget is automatically disposed when unmounted.
 ```tsx
 export type FboProps = {
   children?: (renderTarget: Fbo) => React.ReactNode
-  width: UseFBOParams[0]
-  height: UseFBOParams[1]
+  width?: UseFBOParams[0]
+  height?: UseFBOParams[1]
 } & FBOSettings
 ```
 

@@ -1,27 +1,15 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
+import { forwardRef } from 'react'
+
+type WebGLRenderTargetCtorParams = ConstructorParameters<typeof THREE.WebGLRenderTarget>
+type WebGLRenderTargetOptions = WebGLRenderTargetCtorParams[2]
 
 type FBOSettings = {
-  /** Defines the count of MSAA samples. Can only be used with WebGL 2. Default: 0 */
-  samples?: number
-  /** If set, the scene depth will be rendered into buffer.depthTexture. Default: false */
+  /** @deprecated If set, the scene depth will be rendered into buffer.depthTexture. Default: false */
   depth?: boolean
-
-  // WebGLRenderTargetOptions => RenderTargetOptions
-  wrapS?: THREE.Wrapping | undefined
-  wrapT?: THREE.Wrapping | undefined
-  magFilter?: THREE.MagnificationTextureFilter | undefined
-  minFilter?: THREE.MinificationTextureFilter | undefined
-  format?: number | undefined // RGBAFormat;
-  type?: THREE.TextureDataType | undefined // UnsignedByteType;
-  anisotropy?: number | undefined // 1;
-  depthBuffer?: boolean | undefined // true;
-  stencilBuffer?: boolean | undefined // false;
-  generateMipmaps?: boolean | undefined // true;
-  depthTexture?: THREE.DepthTexture | undefined
-  colorSpace?: THREE.ColorSpace | undefined
-}
+} & WebGLRenderTargetOptions
 
 // 👇 uncomment when TS version supports function overloads
 // export function useFBO(settings?: FBOSettings)
@@ -40,6 +28,8 @@ export function useFBO(
   const _settings = (typeof width === 'number' ? settings : (width as FBOSettings)) || {}
   const { samples = 0, depth, ...targetSettings } = _settings
 
+  const depthBuffer = depth ?? _settings.depthBuffer // backwards compatibility for deprecated `depth` prop
+
   const target = React.useMemo(() => {
     const target = new THREE.WebGLRenderTarget(_width, _height, {
       minFilter: THREE.LinearFilter,
@@ -48,7 +38,7 @@ export function useFBO(
       ...targetSettings,
     })
 
-    if (depth) {
+    if (depthBuffer) {
       target.depthTexture = new THREE.DepthTexture(_width, _height, THREE.FloatType)
     }
 
@@ -68,17 +58,21 @@ export function useFBO(
   return target
 }
 
-export const Fbo = ({
-  children,
-  width,
-  height,
-  ...settings
-}: {
-  children?: (target: ReturnType<typeof useFBO>) => React.ReactNode
-  width: Parameters<typeof useFBO>[0]
-  height: Parameters<typeof useFBO>[1]
-} & FBOSettings) => {
+//
+// Fbo component
+//
+
+type UseFBOParams = Parameters<typeof useFBO>
+type Fbo = ReturnType<typeof useFBO>
+
+export type FboProps = {
+  children?: (target: Fbo) => React.ReactNode
+  width: UseFBOParams[0]
+  height: UseFBOParams[1]
+} & FBOSettings
+
+export const Fbo = /* @__PURE__ */ forwardRef<Fbo, FboProps>(({ children, width, height, ...settings }, fref) => {
   const target = useFBO(width, height, settings)
 
   return <>{children?.(target)}</>
-}
+})

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
-import { forwardRef } from 'react'
+import { forwardRef, useImperativeHandle } from 'react'
 
 type WebGLRenderTargetCtorParams = ConstructorParameters<typeof THREE.WebGLRenderTarget>
 type WebGLRenderTargetOptions = WebGLRenderTargetCtorParams[2]
@@ -67,12 +67,14 @@ type Fbo = ReturnType<typeof useFBO>
 
 export type FboProps = {
   children?: (target: Fbo) => React.ReactNode
-  width: UseFBOParams[0]
-  height: UseFBOParams[1]
+  width?: UseFBOParams[0]
+  height?: UseFBOParams[1]
 } & FBOSettings
 
 export const Fbo = /* @__PURE__ */ forwardRef<Fbo, FboProps>(({ children, width, height, ...settings }, fref) => {
   const target = useFBO(width, height, settings)
+
+  useImperativeHandle(fref, () => target, [target]) // expose target through ref
 
   return <>{children?.(target)}</>
 })

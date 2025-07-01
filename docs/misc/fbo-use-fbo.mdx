@@ -5,22 +5,17 @@ sourcecode: src/core/Fbo.tsx
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-fbo)
 
-Creates a `THREE.WebGLRenderTarget`.
+<Intro>Creates a `THREE.WebGLRenderTarget`.</Intro>
 
 ```tsx
-type FBOSettings = {
-  /** Defines the count of MSAA samples. Can only be used with WebGL 2. Default: 0 */
-  samples?: number
-  /** If set, the scene depth will be rendered into buffer.depthTexture. Default: false */
-  depth?: boolean
-} & THREE.RenderTargetOptions
+type FBOSettings = Omit<FboProps, 'width' | 'height' | 'children'>
 
 export function useFBO(
   /** Width in pixels, or settings (will render fullscreen by default) */
   width?: number | FBOSettings,
   /** Height in pixels */
   height?: number,
-  /**Settings */
+  /** Settings, see constructor's `options`: https://threejs.org/docs/#api/en/renderers/WebGLRenderTarget */
   settings?: FBOSettings
 ): THREE.WebGLRenderTarget {
 ```
@@ -30,3 +25,32 @@ const target = useFBO({ stencilBuffer: false })
 ```
 
 The rendertarget is automatically disposed when unmounted.
+
+## `<Fbo>` Component
+
+```tsx
+export type FboProps = {
+  children?: (renderTarget: Fbo) => React.ReactNode
+  width: UseFBOParams[0]
+  height: UseFBOParams[1]
+} & FBOSettings
+```
+
+You can access the renderTarget via children's render prop:
+
+```jsx
+<Fbo width={1024} height={1024} stencilBuffer={false}>
+  {(renderTarget) => (
+    <mesh>
+      <planeGeometry />
+      <meshBasicMaterial map={renderTarget.texture} />
+    </mesh>
+  )}
+```
+
+or exposed via `ref`:
+
+```jsx
+const renderTargetRef = useRef()
+<Fbo ref={renderTargetRef} />
+```

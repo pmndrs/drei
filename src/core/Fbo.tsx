@@ -7,7 +7,7 @@ type WebGLRenderTargetCtorParams = ConstructorParameters<typeof THREE.WebGLRende
 type WebGLRenderTargetOptions = WebGLRenderTargetCtorParams[2]
 
 type FBOSettings = {
-  /** @deprecated If set, the scene depth will be rendered into buffer.depthTexture. Default: false */
+  /** @deprecated use `depthBuffer` instead. If set, the scene depth will be rendered into buffer.depthTexture. Default: false */
   depth?: boolean
 } & WebGLRenderTargetOptions
 

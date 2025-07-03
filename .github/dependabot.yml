@@ -29,9 +29,9 @@ updates:
           - 'rollup-plugin-*'
       storybook-packages:
         patterns:
-          - "storybook"
-          - "@storybook/*"
-          - "eslint-plugin-storybook"
+          - 'storybook'
+          - '@storybook/*'
+          - 'eslint-plugin-storybook'
 
       #
       # pkg.json "dependencies"

@@ -2,7 +2,9 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
 import { forwardRef, useImperativeHandle } from 'react'
-import { type WebGLRenderTargetOptions } from 'three'
+
+type WebGLRenderTargetCtorParams = ConstructorParameters<typeof THREE.WebGLRenderTarget>
+type WebGLRenderTargetOptions = NonNullable<WebGLRenderTargetCtorParams[2]>
 
 type FBOSettings = {
   /** @deprecated use `depthBuffer` instead. If set, the scene depth will be rendered into buffer.depthTexture. Default: false */

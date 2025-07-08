@@ -8,10 +8,17 @@ export type OnDragStartProps = {
   directions: THREE.Vector3[]
 }
 
+export type OnHoverProps = {
+  component: 'Arrow' | 'Slider' | 'Rotator' | 'Sphere'
+  axis: 0 | 1 | 2
+  hovering: boolean
+}
+
 export type PivotContext = {
   onDragStart: (props: OnDragStartProps) => void
   onDrag: (mdW: THREE.Matrix4) => void
   onDragEnd: () => void
+  onHover: (props: OnHoverProps) => void
   translation: { current: [number, number, number] }
   translationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
   rotationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
@@ -26,6 +33,7 @@ export type PivotContext = {
   userData?: { [key: string]: any }
   annotations?: boolean
   annotationsClass?: string
+  dragState: React.RefObject<OnDragStartProps | null>
 }
 
 export const context = /* @__PURE__ */ React.createContext<PivotContext>(null!)

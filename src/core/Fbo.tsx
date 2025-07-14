@@ -2,12 +2,12 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
 import { forwardRef, useImperativeHandle } from 'react'
-import { type WebGLRenderTargetOptions } from 'three'
+import { type RenderTargetOptions } from 'three'
 
 type FBOSettings = {
   /** @deprecated use `depthBuffer` instead. If set, the scene depth will be rendered into buffer.depthTexture. Default: false */
   depth?: boolean
-} & WebGLRenderTargetOptions
+} & RenderTargetOptions
 
 // 👇 uncomment when TS version supports function overloads
 // export function useFBO(settings?: FBOSettings)

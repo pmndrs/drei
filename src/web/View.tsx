@@ -62,7 +62,7 @@ function computeContainerPosition(canvasSize: CanvasSize, trackRect: DOMRect) {
   return { position: { width, height, left, top, bottom, right }, isOffscreen }
 }
 
-function prepareSkissor(
+function prepareScissor(
   state: RootState,
   {
     left,
@@ -99,7 +99,7 @@ function prepareSkissor(
   return autoClear
 }
 
-function finishSkissor(state: RootState, autoClear: boolean) {
+function finishScissor(state: RootState, autoClear: boolean) {
   // Restore the default state
   state.gl.setScissorTest(false)
   state.gl.autoClear = autoClear
@@ -125,10 +125,10 @@ function Container({ visible = true, canvasSize, scene, index, children, frames,
       const { position, isOffscreen: _isOffscreen } = computeContainerPosition(canvasSize, rect.current)
       if (isOffscreen !== _isOffscreen) setOffscreen(_isOffscreen)
       if (visible && !isOffscreen && rect.current) {
-        const autoClear = prepareSkissor(state, position)
+        const autoClear = prepareScissor(state, position)
         // When children are present render the portalled scene, otherwise the default scene
         state.gl.render(children ? state.scene : scene, state.camera)
-        finishSkissor(state, autoClear)
+        finishScissor(state, autoClear)
       }
     }
   }, index)
@@ -138,9 +138,9 @@ function Container({ visible = true, canvasSize, scene, index, children, frames,
     if (curRect && (!visible || !isOffscreen)) {
       // If the view is not visible clear it once, but stop rendering afterwards!
       const { position } = computeContainerPosition(canvasSize, curRect)
-      const autoClear = prepareSkissor(rootState, position)
+      const autoClear = prepareScissor(rootState, position)
       clear(rootState)
-      finishSkissor(rootState, autoClear)
+      finishScissor(rootState, autoClear)
     }
   }, [visible, isOffscreen])
 
@@ -154,9 +154,9 @@ function Container({ visible = true, canvasSize, scene, index, children, frames,
     return () => {
       if (curRect) {
         const { position } = computeContainerPosition(canvasSize, curRect)
-        const autoClear = prepareSkissor(rootState, position)
+        const autoClear = prepareScissor(rootState, position)
         clear(rootState)
-        finishSkissor(rootState, autoClear)
+        finishScissor(rootState, autoClear)
       }
       rootState.setEvents({ connected: old })
     }

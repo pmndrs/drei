@@ -1,0 +1,77 @@
+---
+title: FPVCamera
+sourcecode: src/web/FPVCamera.tsx
+---
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="fpvcamdemo" />
+  </li>
+</Grid>
+
+A first-person camera system for `react-three-fiber` that mimics FPS-style movement and mouse-look controls.
+
+```tsx
+<FPVCamera />
+```
+
+```ts
+interface FPVCameraProps {
+  /** How sensitive the yaw rotation is (radians per pixel). */
+  rotationSpeed?: number
+  /** Camera height above the origin (approximate human head height). */
+  height?: number
+  /** Movement speed in world units per second. */
+  moveSpeed?: number
+}
+```
+
+## Overview
+
+This component adds immersive first-person navigation to a `THREE.PerspectiveCamera`. It captures mouse drag input to rotate the view horizontally (yaw only), and uses WASD keys (plus optional space/shift) for directional movement. 
+
+It automatically uses the default camera and renderer from `react-three-fiber`.
+
+## Controls
+
+### Mouse
+
+- **Left mouse drag**: Rotate (yaw only)
+- **Right-click**: Disabled (no context menu)
+
+### Keyboard
+
+| Key       | Action         |
+|-----------|----------------|
+| `W`       | Move forward   |
+| `S`       | Move backward  |
+| `A`       | Strafe left    |
+| `D`       | Strafe right   |
+| `Space`   | Move up        |
+| `Shift`   | Move down      |
+
+## Usage
+
+```tsx
+<Canvas>
+  <FPVCamera rotationSpeed={0.003} height={1.6} moveSpeed={3} />
+  <Scene />
+</Canvas>
+```
+
+## Notes
+
+- The camera is initially placed at `(0, height, 5)` and looks toward `(0, height, 0)`.
+- Rotation is yaw-only for stability and simplicity.
+- Keyboard input is case-insensitive and global.
+- You can control movement responsiveness using `moveSpeed` and `rotationSpeed`.
+
+<details>
+<summary>Internals</summary>
+
+- Uses `useThree()` to access camera and WebGL DOM.
+- Binds pointer event listeners directly to `gl.domElement`.
+- Tracks key states with a persistent ref to avoid unnecessary re-renders.
+- Handles cleanup of all event listeners on unmount.
+
+</details>

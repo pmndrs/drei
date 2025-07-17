@@ -11,5 +11,5 @@ export function useCursor(
       container.style.cursor = onPointerOver
       return () => void (container.style.cursor = onPointerOut)
     }
-  }, [hovered])
+  }, [hovered, onPointerOver, onPointerOut])
 }

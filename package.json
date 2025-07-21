@@ -30,7 +30,7 @@
   "react-native": "native/index.cjs.js",
   "sideEffects": false,
   "scripts": {
-    "build": "rimraf dist && yarn typegen && rollup -c && yarn copy",
+    "build": "rimraf dist && yarn typegen && rollup -c && yarn copy && yarn copy:native",
     "prepare": "yarn build && husky",
     "eslint": "eslint --fix .",
     "eslint:ci": "eslint .",
@@ -42,6 +42,7 @@
     "storybook": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider\" storybook dev -p 6006",
     "build-storybook": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider\" storybook build",
     "copy": "copyfiles package.json README.md LICENSE dist && json -I -f dist/package.json -e \"this.private=false; this.devDependencies=undefined; this.optionalDependencies=undefined; this.scripts=undefined; this.husky=undefined; this.prettier=undefined; this.jest=undefined; this['lint-staged']=undefined;\"",
+    "copy:native": "copyfiles -u 2 src/native/package.json dist/native",
     "release": "semantic-release"
   },
   "dependencies": {

@@ -55,7 +55,9 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
     onDragStart,
     onDrag,
     onDragEnd,
+    onHover,
     userData,
+    dragState,
   } = React.useContext(context)
 
   const camControls = useThree((state) => state.controls) as unknown as { enabled: boolean } | undefined
@@ -89,7 +91,13 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
   const onPointerMove = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation()
-      if (!isHovered) setIsHovered(true)
+      if (dragState.current && dragState.current.component !== 'Arrow') {
+        return
+      }
+      if (!isHovered) {
+        setIsHovered(true)
+        onHover({ component: 'Arrow', axis, hovering: true })
+      }
 
       if (clickInfo.current) {
         const { clickPoint, dir } = clickInfo.current
@@ -128,10 +136,17 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
     [annotations, camControls, onDragEnd]
   )
 
-  const onPointerOut = React.useCallback((e: ThreeEvent<PointerEvent>) => {
-    e.stopPropagation()
-    setIsHovered(false)
-  }, [])
+  const onPointerOut = React.useCallback(
+    (e: ThreeEvent<PointerEvent>) => {
+      e.stopPropagation()
+      if (dragState.current && dragState.current.component !== 'Arrow') {
+        return
+      }
+      setIsHovered(false)
+      onHover({ component: 'Arrow', axis, hovering: false })
+    },
+    [onHover, axis]
+  )
 
   const { cylinderLength, coneWidth, coneLength, matrixL } = React.useMemo(() => {
     const coneWidth = fixed ? (lineWidth / scale) * 1.6 : scale / 20

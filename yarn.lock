@@ -2809,7 +2809,7 @@ __metadata:
     "@vitejs/plugin-react": "npm:^4.3.3"
     babel-eslint: "npm:^10.1.0"
     babel-loader: "npm:^9.2.1"
-    camera-controls: "npm:^3.0.0"
+    camera-controls: "npm:^3.1.0"
     copyfiles: "npm:^2.4.1"
     cross-env: "npm:^7.0.3"
     detect-gpu: "npm:^5.0.56"
@@ -4780,12 +4780,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"camera-controls@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "camera-controls@npm:3.0.0"
+"camera-controls@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "camera-controls@npm:3.1.0"
   peerDependencies:
     three: ">=0.126.1"
-  checksum: 10c0/607ef093ee3c662b21e2cd617a1e504127f4a959da3c25a84bc0facad16a0e499b299dd39e72716fc51fd2052175d20ab5c75915d25f0241b1e55e9bb93ec7f1
+  checksum: 10c0/0b219d02127851c20ee5f6ae3cd408ffc554ca7bca89af2747e9a71ca40a80673b35e57a8d16a6fba5b3e865a4bafe06f5e5d240606a8d1e9674282d7e40e54a
   languageName: node
   linkType: hard
 

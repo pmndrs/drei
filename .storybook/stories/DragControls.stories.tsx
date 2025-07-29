@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { Box } from '../../src'
 import { Setup } from '../Setup'
 import { DragControls } from '../../src/web/DragControls'
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react-vite'
 import { ComponentProps } from 'react'
 
 export default {

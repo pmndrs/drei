@@ -161,10 +161,10 @@ export function ScrollControls({
     if (events.connected === el) {
       const containerLength = size[horizontal ? 'width' : 'height']
       const scrollLength = el[horizontal ? 'scrollWidth' : 'scrollHeight']
-      const scrollThreshold = scrollLength - containerLength
+      const scrollThreshold = Math.floor(scrollLength - containerLength)
 
       let current = 0
-      let disableScroll = true
+      let disableScroll = false
       let firstRun = true
 
       const onScroll = () => {
@@ -176,14 +176,14 @@ export function ScrollControls({
 
         if (infinite) {
           if (!disableScroll) {
-            if (current >= scrollThreshold) {
+            if (current >= scrollThreshold - 1) {
               const damp = 1 - state.offset
               el[horizontal ? 'scrollLeft' : 'scrollTop'] = 1
               scroll.current = state.offset = -damp
               disableScroll = true
             } else if (current <= 0) {
               const damp = 1 + state.offset
-              el[horizontal ? 'scrollLeft' : 'scrollTop'] = scrollLength
+              el[horizontal ? 'scrollLeft' : 'scrollTop'] = scrollThreshold - 1
               scroll.current = state.offset = damp
               disableScroll = true
             }
@@ -194,12 +194,29 @@ export function ScrollControls({
       el.addEventListener('scroll', onScroll, { passive: true })
       requestAnimationFrame(() => (firstRun = false))
 
-      const onWheel = (e) => (el.scrollLeft += e.deltaY / 2)
-      if (horizontal) el.addEventListener('wheel', onWheel, { passive: true })
+      const onWheel = e => {
+        if (horizontal) {
+          const previous = el.scrollLeft;
+          el.scrollLeft = el.scrollLeft += e.deltaY / 2;
+          if (infinite && previous === el.scrollLeft) {
+            onScroll();
+          }
+        } else if (infinite) {
+          if (el.scrollTop <= 1 && e.deltaY < 0) {
+            onScroll();
+          } else if (
+            el.scrollTop >= el.scrollHeight - el.clientHeight - 1 &&
+            e.deltaY > 0
+          ) {
+            onScroll();
+          }
+        }
+      };
+      if (horizontal || infinite) el.addEventListener('wheel', onWheel, { passive: true })
 
       return () => {
         el.removeEventListener('scroll', onScroll)
-        if (horizontal) el.removeEventListener('wheel', onWheel)
+        if (horizontal || infinite) el.removeEventListener('wheel', onWheel)
       }
     }
   }, [el, events, size, infinite, state, invalidate, horizontal, enabled])

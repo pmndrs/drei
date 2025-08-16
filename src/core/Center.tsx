@@ -35,21 +35,21 @@ export type CenterProps = Omit<ThreeElements['group'], 'ref'> & {
   disableY?: boolean
   /** Disable z-axis centering */
   disableZ?: boolean
+  /** object to compute box3 from  */
+  object?: THREE.Object3D | null
   /** See https://threejs.org/docs/index.html?q=box3#api/en/math/Box3.setFromObject */
   precise?: boolean
   /** Callback, fires in the useLayoutEffect phase, after measurement */
   onCentered?: (props: OnCenterCallbackProps) => void
   /** Optional cacheKey to keep the component from recalculating on every render */
   cacheKey?: any
-  /** instead of computing bounds from children, you can pass own box3 */
-  box3?: Box3
 }
 
 export const Center: ForwardRefComponent<CenterProps, Group> = /* @__PURE__ */ React.forwardRef<Group, CenterProps>(
   function Center(
     {
       children,
-      box3: manualBox3,
+      object,
       disable,
       disableX,
       disableY,
@@ -72,7 +72,7 @@ export const Center: ForwardRefComponent<CenterProps, Group> = /* @__PURE__ */ R
     const inner = React.useRef<Group>(null!)
     React.useLayoutEffect(() => {
       outer.current.matrixWorld.identity()
-      const box3 = manualBox3 ?? new Box3().setFromObject(inner.current, precise)
+      const box3 = new Box3().setFromObject(object ?? inner.current, precise)
       const center = new Vector3()
       const sphere = new Sphere()
       const width = box3.max.x - box3.min.x
@@ -116,11 +116,11 @@ export const Center: ForwardRefComponent<CenterProps, Group> = /* @__PURE__ */ R
       disableX,
       disableY,
       disableZ,
+      object,
       precise,
       right,
       bottom,
       back,
-      manualBox3,
     ])
 
     React.useImperativeHandle(fRef, () => ref.current, [])

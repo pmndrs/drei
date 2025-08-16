@@ -70,15 +70,10 @@ export const St2 = {
 function St3Scene() {
   const [catMesh, setCatMesh] = useState<THREE.Mesh | null>(null)
 
-  const box3 = useMemo(() => {
-    if (!catMesh) return undefined
-    return new Box3().setFromObject(catMesh)
-  }, [catMesh])
-
   return (
     <>
       <axesHelper />
-      <Center box3={box3}>
+      <Center object={catMesh}>
         <group position={[100, 100, 100]}>
           <LittlestTokyo catMeshRef={setCatMesh} />
         </group>

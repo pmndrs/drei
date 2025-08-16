@@ -1,3 +1,4 @@
+/* eslint react-hooks/exhaustive-deps: 1 */
 import { Box3, Vector3, Sphere, Group, Object3D } from 'three'
 import * as React from 'react'
 import { ThreeElements, useThree } from '@react-three/fiber'
@@ -40,12 +41,15 @@ export type CenterProps = Omit<ThreeElements['group'], 'ref'> & {
   onCentered?: (props: OnCenterCallbackProps) => void
   /** Optional cacheKey to keep the component from recalculating on every render */
   cacheKey?: any
+  /** instead of computing bounds from children, you can pass own box3 */
+  box3?: Box3
 }
 
 export const Center: ForwardRefComponent<CenterProps, Group> = /* @__PURE__ */ React.forwardRef<Group, CenterProps>(
   function Center(
     {
       children,
+      box3: manualBox3,
       disable,
       disableX,
       disableY,
@@ -68,7 +72,7 @@ export const Center: ForwardRefComponent<CenterProps, Group> = /* @__PURE__ */ R
     const inner = React.useRef<Group>(null!)
     React.useLayoutEffect(() => {
       outer.current.matrixWorld.identity()
-      const box3 = new Box3().setFromObject(inner.current, precise)
+      const box3 = manualBox3 ?? new Box3().setFromObject(inner.current, precise)
       const center = new Vector3()
       const sphere = new Sphere()
       const width = box3.max.x - box3.min.x
@@ -102,7 +106,22 @@ export const Center: ForwardRefComponent<CenterProps, Group> = /* @__PURE__ */ R
           depthAlignment: dAlign,
         })
       }
-    }, [cacheKey, onCentered, top, left, front, disable, disableX, disableY, disableZ, precise, right, bottom, back])
+    }, [
+      cacheKey,
+      onCentered,
+      top,
+      left,
+      front,
+      disable,
+      disableX,
+      disableY,
+      disableZ,
+      precise,
+      right,
+      bottom,
+      back,
+      manualBox3,
+    ])
 
     React.useImperativeHandle(fRef, () => ref.current, [])
 

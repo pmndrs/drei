@@ -2,7 +2,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Box, Center, Gltf } from '../../src'
+import { Box, Center, Cylinder, Gltf } from '../../src'
 import { Ref, useMemo, useState } from 'react'
 import { Box3, Vector3 } from 'three'
 
@@ -35,12 +35,19 @@ function LittlestTokyo({ catMeshRef }: { catMeshRef?: Ref<THREE.Mesh> }) {
   )
 }
 
+//
+
+/**
+ * `children` are centered, by default at (0,0,0)
+ */
 export const St1 = {
   render: () => (
     <>
       <axesHelper />
       <Center>
-        <group position={[100, 100, 100]}>
+        <group
+          position={[100, 100, 100]} // whatever inner position
+        >
           <LittlestTokyo />
         </group>
       </Center>
@@ -51,23 +58,47 @@ export const St1 = {
 
 //
 
+/**
+ * if `position` is set, children are centered at that position
+ */
 export const St2 = {
   render: () => (
     <>
       <axesHelper />
-      <Center top>
+      <Center position={[0, 1, 0]}>
+        <group
+          position={[100, 100, 100]} // whatever inner position
+        >
+          <LittlestTokyo />
+        </group>
+      </Center>
+    </>
+  ),
+  name: '[position]',
+} satisfies Story
+
+//
+
+/**
+ * At `top` of centered position
+ */
+export const St3 = {
+  render: () => (
+    <>
+      <axesHelper />
+      <Center position={[0, 1, 0]} top>
         <group position={[100, 100, 100]}>
           <LittlestTokyo />
         </group>
       </Center>
     </>
   ),
-  name: '[top]',
+  name: '[position][top]',
 } satisfies Story
 
 //
 
-function St3Scene() {
+function St4Scene() {
   const [catMesh, setCatMesh] = useState<THREE.Mesh | null>(null)
 
   return (
@@ -82,7 +113,37 @@ function St3Scene() {
   )
 }
 
-export const St3 = {
-  render: () => <St3Scene />,
-  name: '[box3]',
+/**
+ * An inner `object` can be specified: its bounding box will be used to center (instead of the one of `children`, by default).
+ */
+
+export const St4 = {
+  render: () => <St4Scene />,
+  name: '[object]',
+} satisfies Story
+
+//
+
+function St5Scene() {
+  const [catMesh, setCatMesh] = useState<THREE.Mesh | null>(null)
+
+  return (
+    <>
+      <axesHelper />
+      <Center object={catMesh} position={[0, 1, 0]} top>
+        <group position={[100, 100, 100]}>
+          <LittlestTokyo catMeshRef={setCatMesh} />
+        </group>
+      </Center>
+    </>
+  )
+}
+
+/**
+ * Inner "cat mesh" centered at `top` of (0,1,0) position
+ */
+
+export const St5 = {
+  render: () => <St5Scene />,
+  name: '[object][position][top]',
 } satisfies Story

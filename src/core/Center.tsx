@@ -1,3 +1,4 @@
+/* eslint react-hooks/exhaustive-deps: 1 */
 import { Box3, Vector3, Sphere, Group, Object3D } from 'three'
 import * as React from 'react'
 import { ThreeElements, useThree } from '@react-three/fiber'
@@ -34,6 +35,8 @@ export type CenterProps = Omit<ThreeElements['group'], 'ref'> & {
   disableY?: boolean
   /** Disable z-axis centering */
   disableZ?: boolean
+  /** object to compute box3 from */
+  object?: THREE.Object3D | null
   /** See https://threejs.org/docs/index.html?q=box3#api/en/math/Box3.setFromObject */
   precise?: boolean
   /** Callback, fires in the useLayoutEffect phase, after measurement */
@@ -46,6 +49,7 @@ export const Center: ForwardRefComponent<CenterProps, Group> = /* @__PURE__ */ R
   function Center(
     {
       children,
+      object,
       disable,
       disableX,
       disableY,
@@ -66,11 +70,14 @@ export const Center: ForwardRefComponent<CenterProps, Group> = /* @__PURE__ */ R
     const ref = React.useRef<Group>(null!)
     const outer = React.useRef<Group>(null!)
     const inner = React.useRef<Group>(null!)
+
+    const [box3] = React.useState(() => new Box3())
+    const [center] = React.useState(() => new Vector3())
+    const [sphere] = React.useState(() => new Sphere())
+
     React.useLayoutEffect(() => {
       outer.current.matrixWorld.identity()
-      const box3 = new Box3().setFromObject(inner.current, precise)
-      const center = new Vector3()
-      const sphere = new Sphere()
+      box3.setFromObject(object ?? inner.current, precise)
       const width = box3.max.x - box3.min.x
       const height = box3.max.y - box3.min.y
       const depth = box3.max.z - box3.min.z
@@ -87,22 +94,38 @@ export const Center: ForwardRefComponent<CenterProps, Group> = /* @__PURE__ */ R
       )
 
       // Only fire onCentered if the bounding box has changed
-      if (typeof onCentered !== 'undefined') {
-        onCentered({
-          parent: ref.current.parent!,
-          container: ref.current,
-          width,
-          height,
-          depth,
-          boundingBox: box3,
-          boundingSphere: sphere,
-          center: center,
-          verticalAlignment: vAlign,
-          horizontalAlignment: hAlign,
-          depthAlignment: dAlign,
-        })
-      }
-    }, [cacheKey, onCentered, top, left, front, disable, disableX, disableY, disableZ, precise, right, bottom, back])
+      onCentered?.({
+        parent: ref.current.parent!,
+        container: ref.current,
+        width,
+        height,
+        depth,
+        boundingBox: box3,
+        boundingSphere: sphere,
+        center: center,
+        verticalAlignment: vAlign,
+        horizontalAlignment: hAlign,
+        depthAlignment: dAlign,
+      })
+    }, [
+      cacheKey,
+      onCentered,
+      top,
+      left,
+      front,
+      disable,
+      disableX,
+      disableY,
+      disableZ,
+      object,
+      precise,
+      right,
+      bottom,
+      back,
+      box3,
+      center,
+      sphere,
+    ])
 
     React.useImperativeHandle(fRef, () => ref.current, [])
 

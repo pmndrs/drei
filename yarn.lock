@@ -2802,7 +2802,7 @@ __metadata:
     "@storybook/react-vite": "npm:^9.0.0"
     "@types/react": "npm:^19.0.2"
     "@types/react-dom": "npm:^19.0.2"
-    "@types/three": "npm:^0.159.0"
+    "@types/three": "npm:^0.161.0"
     "@typescript-eslint/eslint-plugin": "npm:^8.15.0"
     "@typescript-eslint/parser": "npm:^8.15.0"
     "@use-gesture/react": "npm:^10.3.1"
@@ -3671,15 +3671,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/three@npm:^0.159.0":
-  version: 0.159.0
-  resolution: "@types/three@npm:0.159.0"
+"@types/three@npm:^0.161.0":
+  version: 0.161.2
+  resolution: "@types/three@npm:0.161.2"
   dependencies:
     "@types/stats.js": "npm:*"
     "@types/webxr": "npm:*"
     fflate: "npm:~0.6.10"
     meshoptimizer: "npm:~0.18.1"
-  checksum: 10c0/c5ec776ba213d148f0ebcce07b7a31514b8676d20e3d19458ba46d286c87c9d95224ee9225872d18c771110563c712f0237ec5d2264ad7ab7b47f2d4c1fd93a9
+  checksum: 10c0/b8f49ee5eff1ec137444753e8f65a0d51fe493f6efeb157c2a7a0049300482d1fafef63f1c5bcfabab7568be65b569a3676d6bc9d718bc69143ab93e9638d7cd
   languageName: node
   linkType: hard
 

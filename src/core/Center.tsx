@@ -70,11 +70,14 @@ export const Center: ForwardRefComponent<CenterProps, Group> = /* @__PURE__ */ R
     const ref = React.useRef<Group>(null!)
     const outer = React.useRef<Group>(null!)
     const inner = React.useRef<Group>(null!)
+
+    const [box3] = React.useState(() => new Box3())
+    const [center] = React.useState(() => new Vector3())
+    const [sphere] = React.useState(() => new Sphere())
+
     React.useLayoutEffect(() => {
       outer.current.matrixWorld.identity()
-      const box3 = new Box3().setFromObject(object ?? inner.current, precise)
-      const center = new Vector3()
-      const sphere = new Sphere()
+      box3.setFromObject(object ?? inner.current, precise)
       const width = box3.max.x - box3.min.x
       const height = box3.max.y - box3.min.y
       const depth = box3.max.z - box3.min.z
@@ -91,21 +94,19 @@ export const Center: ForwardRefComponent<CenterProps, Group> = /* @__PURE__ */ R
       )
 
       // Only fire onCentered if the bounding box has changed
-      if (typeof onCentered !== 'undefined') {
-        onCentered({
-          parent: ref.current.parent!,
-          container: ref.current,
-          width,
-          height,
-          depth,
-          boundingBox: box3,
-          boundingSphere: sphere,
-          center: center,
-          verticalAlignment: vAlign,
-          horizontalAlignment: hAlign,
-          depthAlignment: dAlign,
-        })
-      }
+      onCentered?.({
+        parent: ref.current.parent!,
+        container: ref.current,
+        width,
+        height,
+        depth,
+        boundingBox: box3,
+        boundingSphere: sphere,
+        center: center,
+        verticalAlignment: vAlign,
+        horizontalAlignment: hAlign,
+        depthAlignment: dAlign,
+      })
     }, [
       cacheKey,
       onCentered,
@@ -121,6 +122,9 @@ export const Center: ForwardRefComponent<CenterProps, Group> = /* @__PURE__ */ R
       right,
       bottom,
       back,
+      box3,
+      center,
+      sphere,
     ])
 
     React.useImperativeHandle(fRef, () => ref.current, [])

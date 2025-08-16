@@ -151,6 +151,8 @@ function WireframeWithCustomGeo({
               fragDepth: false,
               drawBuffers: false,
               shaderTextureLOD: false,
+              clipCullDistance: false,
+              multiDraw: false,
             }}
           />
         </mesh>

@@ -72,6 +72,7 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
     fixed,
     axisColors,
     hoveredColor,
+    renderOrder,
     opacity,
     onDragStart,
     onDrag,
@@ -239,6 +240,7 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
         opacity={opacity}
         polygonOffset
         polygonOffsetFactor={-10}
+        renderOrder={renderOrder}
         fog={false}
       />
     </group>

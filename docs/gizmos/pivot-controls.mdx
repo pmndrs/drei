@@ -59,6 +59,8 @@ type PivotControlsProps = {
   onDragEnd?: () => void
   /** Set this to false if you want the gizmo to be visible through faces */
   depthTest?: boolean
+  /** Render order of pivot control - default is 500 */
+  renderOrder?: number
   opacity?: number
   visible?: boolean
   userData?: { [key: string]: any }

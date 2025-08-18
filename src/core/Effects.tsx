@@ -5,7 +5,7 @@ import { EffectComposer, RenderPass, ShaderPass, GammaCorrectionShader } from 't
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 export type EffectsProps = Omit<ThreeElements['effectComposer'], 'ref' | 'args'> & {
-  multisamping?: number
+  multisampling?: number
   colorSpace?: ColorSpace
   type?: TextureDataType
   renderIndex?: number
@@ -38,7 +38,7 @@ export const Effects: ForwardRefComponent<EffectsProps, EffectComposer> = /* @__
   (
     {
       children,
-      multisamping = 8,
+      multisampling = 8,
       renderIndex = 1,
       disableRender,
       disableGamma,
@@ -70,7 +70,7 @@ export const Effects: ForwardRefComponent<EffectsProps, EffectComposer> = /* @__
         t.texture.colorSpace = colorSpace
       }
 
-      t.samples = multisamping
+      t.samples = multisampling
       return t
     })
 

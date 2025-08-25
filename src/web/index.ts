@@ -27,3 +27,6 @@ export * from './FaceLandmarker'
 
 // Shapes
 export * from './Facemesh'
+
+//camera controls
+export * from './FPVCamera'

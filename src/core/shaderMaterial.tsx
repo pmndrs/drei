@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { type ConstructorRepresentation } from '@react-three/fiber'
 import { type MeshBVHUniformStruct } from 'three-mesh-bvh'
 
-type UniformValue =
+type UniformBaseValue =
   | THREE.Texture
   | THREE.TypedArray
   | THREE.Matrix4
@@ -16,6 +16,8 @@ type UniformValue =
   | number
   | boolean
   | null
+
+type UniformValue = UniformBaseValue | Record<string, UniformBaseValue>
 
 type Uniforms = Record<string, UniformValue | Record<string, UniformValue> | Array<UniformValue>>
 

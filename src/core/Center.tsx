@@ -36,7 +36,7 @@ export type CenterProps = Omit<ThreeElements['group'], 'ref'> & {
   /** Disable z-axis centering */
   disableZ?: boolean
   /** object to compute box3 from */
-  object?: THREE.Object3D | null
+  object?: Object3D | null
   /** See https://threejs.org/docs/index.html?q=box3#api/en/math/Box3.setFromObject */
   precise?: boolean
   /** Callback, fires in the useLayoutEffect phase, after measurement */

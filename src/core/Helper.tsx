@@ -8,7 +8,7 @@ type HelperConstructor = new (...args: any[]) => any
 type HelperArgs<T> = T extends [infer _, ...infer R] ? R : never
 
 export function useHelper<T extends HelperConstructor>(
-  object3D: React.RefObject<Object3D> | Falsey,
+  object3D: React.RefObject<Object3D | null> | Falsey,
   helperConstructor: T,
   ...args: HelperArgs<ConstructorParameters<T>>
 ) {

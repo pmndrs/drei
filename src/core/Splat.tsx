@@ -313,7 +313,7 @@ async function load(shared: SharedState) {
   shared.centerAndScaleData = new Float32Array(shared.bufferTextureWidth * shared.bufferTextureHeight * 4)
   shared.covAndColorData = new Uint32Array(shared.bufferTextureWidth * shared.bufferTextureHeight * 4)
   shared.centerAndScaleTexture = new THREE.DataTexture(
-    shared.centerAndScaleData,
+    shared.centerAndScaleData as BufferSource,
     shared.bufferTextureWidth,
     shared.bufferTextureHeight,
     THREE.RGBAFormat,
@@ -322,7 +322,7 @@ async function load(shared: SharedState) {
 
   shared.centerAndScaleTexture.needsUpdate = true
   shared.covAndColorTexture = new THREE.DataTexture(
-    shared.covAndColorData,
+    shared.covAndColorData as BufferSource,
     shared.bufferTextureWidth,
     shared.bufferTextureHeight,
     THREE.RGBAIntegerFormat,

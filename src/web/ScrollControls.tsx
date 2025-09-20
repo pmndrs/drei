@@ -52,6 +52,13 @@ export function useScroll() {
   return React.useContext(context)
 }
 
+// Helper function for pixel-perfect rounding based on device pixel ratio
+// Credit: https://github.com/chris-xinhai-li (pmndrs/drei#2380)
+function roundToPixelRatio(value: number): number {
+  const ratio = window.devicePixelRatio || 1
+  return Math.round(value * ratio) / ratio
+}
+
 export function ScrollControls({
   eps = 0.00001,
   enabled = true,
@@ -228,36 +235,56 @@ const ScrollCanvas = /* @__PURE__ */ React.forwardRef(
   }
 )
 
-const ScrollHtml: ForwardRefComponent<{ children?: React.ReactNode; style?: React.CSSProperties }, HTMLDivElement> =
-  React.forwardRef(
-    ({ children, style, ...props }: { children?: React.ReactNode; style?: React.CSSProperties }, ref) => {
-      const state = useScroll()
-      const group = React.useRef<HTMLDivElement>(null!)
-      React.useImperativeHandle(ref, () => group.current, [])
-      const { width, height } = useThree((state) => state.size)
-      const fiberState = React.useContext(fiberContext)
-      const root = React.useMemo(() => ReactDOM.createRoot(state.fixed), [state.fixed])
-      useFrame(() => {
-        if (state.delta > state.eps) {
-          group.current.style.transform = `translate3d(${
-            state.horizontal ? -width * (state.pages - 1) * state.offset : 0
-          }px,${state.horizontal ? 0 : height * (state.pages - 1) * -state.offset}px,0)`
-        }
-      })
-      root.render(
-        <div
-          ref={group}
-          style={{ ...style, position: 'absolute', top: 0, left: 0, willChange: 'transform' }}
-          {...props}
-        >
-          <context.Provider value={state}>
-            <fiberContext.Provider value={fiberState}>{children}</fiberContext.Provider>
-          </context.Provider>
-        </div>
-      )
-      return null
-    }
-  )
+const ScrollHtml: ForwardRefComponent<
+  { children?: React.ReactNode; style?: React.CSSProperties; pixelPerfect?: boolean },
+  HTMLDivElement
+> = React.forwardRef(
+  (
+    {
+      children,
+      style,
+      pixelPerfect,
+      ...props
+    }: { children?: React.ReactNode; style?: React.CSSProperties; pixelPerfect?: boolean },
+    ref
+  ) => {
+    const state = useScroll()
+    const group = React.useRef<HTMLDivElement>(null!)
+    React.useImperativeHandle(ref, () => group.current, [])
+    const { width, height } = useThree((state) => state.size)
+    const fiberState = React.useContext(fiberContext)
+    const root = React.useMemo(() => ReactDOM.createRoot(state.fixed), [state.fixed])
+
+    // Track velocity for pixelPerfect optimization
+    const prevOffset = React.useRef(state.offset)
+
+    useFrame(() => {
+      if (state.delta > state.eps) {
+        const x = state.horizontal ? -width * (state.pages - 1) * state.offset : 0
+        const y = state.horizontal ? 0 : height * (state.pages - 1) * -state.offset
+
+        // Calculate velocity by comparing current offset to previous frame
+        const velocity = Math.abs(state.offset - prevOffset.current)
+        prevOffset.current = state.offset
+
+        // Apply pixelPerfect rounding when velocity is very low (nearly stopped)
+        const shouldApplyPixelPerfect = pixelPerfect && velocity < 0.001
+        const finalX = shouldApplyPixelPerfect ? roundToPixelRatio(x) : x
+        const finalY = shouldApplyPixelPerfect ? roundToPixelRatio(y) : y
+
+        group.current.style.transform = `translate3d(${finalX}px,${finalY}px,0)`
+      }
+    })
+    root.render(
+      <div ref={group} style={{ ...style, position: 'absolute', top: 0, left: 0, willChange: 'transform' }} {...props}>
+        <context.Provider value={state}>
+          <fiberContext.Provider value={fiberState}>{children}</fiberContext.Provider>
+        </context.Provider>
+      </div>
+    )
+    return null
+  }
+)
 
 interface ScrollPropsWithFalseHtml {
   children?: React.ReactNode
@@ -269,6 +296,7 @@ interface ScrollPropsWithTrueHtml {
   children?: React.ReactNode
   html: true
   style?: React.CSSProperties
+  pixelPerfect?: boolean
 }
 
 export type ScrollProps = ScrollPropsWithFalseHtml | ScrollPropsWithTrueHtml

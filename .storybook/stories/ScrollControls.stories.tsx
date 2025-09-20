@@ -15,6 +15,7 @@ export default {
     damping: 4, // Friction, higher is faster (default: 4)
     horizontal: false, // Can also scroll horizontally (default: false)
     infinite: false, // Can also scroll infinitely (default: false)
+    pixelPerfect: true, // Round transforms to whole pixels for crisp rendering (default: false)
   },
 } satisfies Meta<typeof ScrollControls>
 
@@ -65,7 +66,7 @@ const ScrollControlsScene = (props: React.ComponentProps<typeof ScrollControls>)
         <Suzanne position={[-viewport.width / 8, -viewport.height * 1, 0]} scale={[3, 3, 3]} />
         <Suzanne position={[viewport.width / 4, -viewport.height * 2, 0]} scale={[1.5, 1.5, 1.5]} />
       </Scroll>
-      <Scroll html style={{ width: '100%', color: '#EC2D2D' }}>
+      <Scroll html pixelPerfect style={{ width: '100%', color: '#EC2D2D' }}>
         {/*
         If the canvas is 100% of viewport then:
           top: `${canvasSize.height * 1.0}px`

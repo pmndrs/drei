@@ -37,6 +37,7 @@ Allows you to tie HTML content to any object of your scene. It will be projected
   portal={domnodeRef} // Reference to target container (default=undefined)
   transform // If true, applies matrix3d transformations (default=false)
   sprite // Renders as sprite, but only in transform mode (default=false)
+  pixelPerfect // Rounds transform values to whole pixels for crisp rendering (default=false)
   calculatePosition={(el: Object3D, camera: Camera, size: { width: number; height: number }) => number[]} // Override default positioning function. (default=undefined) [ignored in transform mode]
   occlude={[ref]} // Can be true or a Ref<Object3D>[], true occludes the entire scene (default: undefined)
   onOcclude={(hidden) => null} // Callback when the visibility changes (default: undefined)
@@ -111,7 +112,15 @@ Enable shadows using the `castShadow` and `recieveShadow` prop.
 
 If transform mode is enabled, the dimensions of the rendered html will depend on the position relative to the camera, the camera fov and the distanceFactor. For example, an Html component placed at (0,0,0) and with a distanceFactor of 10, rendered inside a scene with a perspective camera positioned at (0,0,2.45) and a FOV of 75, will have the same dimensions as a "plain" html element like in [this example](https://codesandbox.io/s/drei-html-magic-number-6mzt6m).
 
-A caveat of transform mode is that on some devices and browsers, the rendered html may appear blurry, as discussed in [#859](https://github.com/pmndrs/drei/issues/859). The issue can be at least mitigated by scaling down the Html parent and scaling up the html children:
+A caveat of transform mode is that on some devices and browsers, the rendered html may appear blurry, as discussed in [#859](https://github.com/pmndrs/drei/issues/859). This can be solved using the `pixelPerfect` prop which rounds transform values to whole pixels, ensuring crisp text rendering:
+
+```jsx
+<Html transform pixelPerfect>
+  <div>Crisp text that won't blur during animations</div>
+</Html>
+```
+
+Alternatively, the issue can be mitigated by scaling down the Html parent and scaling up the html children:
 
 ```jsx
 <Html transform scale={0.5}>

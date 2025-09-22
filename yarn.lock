@@ -2824,7 +2824,7 @@ __metadata:
     eslint-config-prettier: "npm:^9.1.0"
     eslint-plugin-react: "npm:^7.37.2"
     eslint-plugin-react-hooks: "npm:^5.0.0"
-    eslint-plugin-storybook: "npm:^9.1.2"
+    eslint-plugin-storybook: "npm:^9.1.7"
     glsl-noise: "npm:^0.0.0"
     hls.js: "npm:^1.5.17"
     husky: "npm:^9.1.7"
@@ -6234,15 +6234,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-storybook@npm:^9.1.2":
-  version: 9.1.2
-  resolution: "eslint-plugin-storybook@npm:9.1.2"
+"eslint-plugin-storybook@npm:^9.1.7":
+  version: 9.1.7
+  resolution: "eslint-plugin-storybook@npm:9.1.7"
   dependencies:
     "@typescript-eslint/utils": "npm:^8.8.1"
   peerDependencies:
     eslint: ">=8"
-    storybook: ^9.1.2
-  checksum: 10c0/37a5fbe4558013de311b730a1fc76db3f995864d57b1c3d749075ad5452f05f81366d6ef270e31168613109a4038fba91cda93eea96e153a620a18ec29f4095a
+    storybook: ^9.1.7
+  checksum: 10c0/f47cd4b4c5ee297c83c3112288461b736b438956fe0ab74dcdf3d0b4ac19495ec25185354110cc041ed01f25a2871df0e5ca0eeb94d5fc330df5720149f4d251
   languageName: node
   linkType: hard
 

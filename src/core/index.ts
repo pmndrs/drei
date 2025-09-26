@@ -40,7 +40,6 @@ export * from './ArcballControls'
 export * from './TransformControls'
 export * from './PointerLockControls'
 export * from './FirstPersonControls'
-export * from './CameraControls'
 export * from './MotionPathControls'
 
 // Gizmos

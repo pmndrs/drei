@@ -19,6 +19,7 @@ export * from './ScreenVideoTexture'
 export * from './WebcamVideoTexture'
 
 // Controls
+export * from './CameraControls'
 export * from './FaceControls'
 export { DragControls } from './DragControls'
 

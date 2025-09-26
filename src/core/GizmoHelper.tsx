@@ -4,7 +4,7 @@ import { Group, Matrix4, Object3D, OrthographicCamera as OrthographicCameraImpl,
 import { OrthographicCamera } from './OrthographicCamera'
 import { OrbitControls as OrbitControlsType } from 'three-stdlib'
 import { Hud } from './Hud'
-import { CameraControls as CameraControlsType } from './CameraControls'
+import { CameraControls as CameraControlsType } from '../web/CameraControls'
 
 type GizmoHelperContext = {
   tweenCamera: (direction: Vector3) => void

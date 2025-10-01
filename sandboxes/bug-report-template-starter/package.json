@@ -1,6 +1,6 @@
 {
   "name": "@pmndrs/drei-bug-report-template-starter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A starter for the Bug Report Template on @pmndrs/drei",
   "keywords": [
     "react",
@@ -8,9 +8,9 @@
   ],
   "main": "src/index.jsx",
   "dependencies": {
-    "react": "*",
-    "react-dom": "*",
-    "@react-three/fiber": "*",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "@react-three/fiber": "^9.0.0",
     "three": "*"
   }
 }

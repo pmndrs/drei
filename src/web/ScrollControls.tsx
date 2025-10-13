@@ -236,7 +236,32 @@ const ScrollHtml: ForwardRefComponent<{ children?: React.ReactNode; style?: Reac
       React.useImperativeHandle(ref, () => group.current, [])
       const { width, height } = useThree((state) => state.size)
       const fiberState = React.useContext(fiberContext)
-      const root = React.useMemo(() => ReactDOM.createRoot(state.fixed), [state.fixed])
+      // Cache a root instance on the fixed DOM element to avoid calling
+      // ReactDOM.createRoot multiple times on the same container which
+      // triggers an error in React 19. We store the created root in a
+      // non-enumerable property on the element so repeated mounts or
+      // remounts re-use the same root instance.
+      const root = React.useMemo(() => {
+        try {
+          // If a root was previously created on this element, reuse it.
+          if (state.fixed && (state.fixed as any).__r3_root) return (state.fixed as any).__r3_root
+          const r = ReactDOM.createRoot(state.fixed)
+          try {
+            Object.defineProperty(state.fixed, '__r3_root', {
+              value: r,
+              configurable: true,
+              writable: false,
+            })
+          } catch (e) {
+            // ignore if we can't define property (very unlikely)
+            ;(state.fixed as any).__r3_root = r
+          }
+          return r
+        } catch (e) {
+          // Fallback: if createRoot fails for any reason, rethrow so devs see it.
+          throw e
+        }
+      }, [state.fixed])
       useFrame(() => {
         if (state.delta > state.eps) {
           group.current.style.transform = `translate3d(${

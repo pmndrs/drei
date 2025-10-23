@@ -6,6 +6,10 @@ import { DomEvent } from '@react-three/fiber/dist/declarations/src/core/events'
 import { easing } from 'maath'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
+type HTMLDivElementWithR3Root = HTMLDivElement & {
+  __r3_root?: ReactDOM.Root
+}
+
 export type ScrollControlsProps = {
   /** Precision, default 0.00001 */
   eps?: number
@@ -244,17 +248,18 @@ const ScrollHtml: ForwardRefComponent<{ children?: React.ReactNode; style?: Reac
       const root = React.useMemo(() => {
         try {
           // If a root was previously created on this element, reuse it.
-          if (state.fixed && (state.fixed as any).__r3_root) return (state.fixed as any).__r3_root
+          const fixedWithRoot = state.fixed as HTMLDivElementWithR3Root
+          if (fixedWithRoot && fixedWithRoot.__r3_root) return fixedWithRoot.__r3_root
           const r = ReactDOM.createRoot(state.fixed)
           try {
-            Object.defineProperty(state.fixed, '__r3_root', {
+            Object.defineProperty(fixedWithRoot, '__r3_root', {
               value: r,
               configurable: true,
               writable: false,
             })
           } catch (e) {
             // ignore if we can't define property (very unlikely)
-            ;(state.fixed as any).__r3_root = r
+            fixedWithRoot.__r3_root = r
           }
           return r
         } catch (e) {

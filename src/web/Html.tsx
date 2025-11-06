@@ -205,11 +205,14 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
         el.style.position = null!
         el.style.pointerEvents = null!
       }
-    }, [occlude])
+    }, [occlude, zIndexRange])
 
     React.useLayoutEffect(() => {
       if (group.current) {
-        const currentRoot = (root.current = ReactDOM.createRoot(el))
+        if (!root.current) {
+          root.current = ReactDOM.createRoot(el)
+        }
+
         scene.updateMatrixWorld()
         if (transform) {
           el.style.cssText = `position:absolute;top:0;left:0;pointer-events:none;overflow:hidden;`
@@ -222,8 +225,9 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
           else target.appendChild(el)
         }
         return () => {
-          if (target) target.removeChild(el)
-          currentRoot.unmount()
+          if (target && target.contains(el)) {
+            target.removeChild(el)
+          }
         }
       }
     }, [target, transform])
@@ -231,6 +235,15 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
     React.useLayoutEffect(() => {
       if (wrapperClass) el.className = wrapperClass
     }, [wrapperClass])
+
+    React.useLayoutEffect(() => {
+      return () => {
+        if (root.current) {
+          root.current.unmount()
+          root.current = null
+        }
+      }
+    }, [])
 
     const styles: React.CSSProperties = React.useMemo(() => {
       if (transform) {
@@ -277,7 +290,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
       } else {
         root.current?.render(<div ref={ref} style={styles} className={className} children={children} />)
       }
-    })
+    }, [transform, styles, transformInnerStyles, ref, className, style, children])
 
     const visible = React.useRef(true)
 

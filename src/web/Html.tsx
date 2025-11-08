@@ -225,6 +225,10 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
           else target.appendChild(el)
         }
         return () => {
+          if (root.current) {
+            root.current.unmount()
+            root.current = null
+          }
           if (target && target.contains(el)) {
             target.removeChild(el)
           }

@@ -5,7 +5,7 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
 import { HorizontalBlurShader, VerticalBlurShader } from 'three-stdlib'
-import { ForwardRefComponent } from '../utils/ts-utils'
+import { ForwardRefComponent } from '../../utils/ts-utils'
 
 export type ContactShadowsProps = Omit<ThreeElements['group'], 'ref' | 'scale'> & {
   opacity?: number

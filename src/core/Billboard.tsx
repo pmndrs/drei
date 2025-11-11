@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Group, Quaternion } from 'three'
 import { ThreeElements, useFrame } from '@react-three/fiber'
-import { ForwardRefComponent } from '../helpers/ts-utils'
+import { ForwardRefComponent } from '../utils/ts-utils'
 
 export type BillboardProps = Omit<ThreeElements['group'], 'ref'> & {
   follow?: boolean

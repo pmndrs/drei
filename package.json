@@ -31,7 +31,7 @@
   "sideEffects": false,
   "scripts": {
     "build": "rimraf dist && yarn typegen && rollup -c && yarn copy && yarn copy:native",
-    "prepare": "yarn build && husky",
+    "prepare": "husky",
     "eslint": "eslint --fix .",
     "eslint:ci": "eslint .",
     "prettier": "prettier --check .",

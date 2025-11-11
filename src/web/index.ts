@@ -2,28 +2,28 @@ export { Html } from './Html'
 export { CycleRaycast } from './CycleRaycast'
 export { useCursor } from './useCursor'
 export { Loader } from './Loader'
-export * from './ScrollControls'
-export * from './PresentationControls'
-export * from './KeyboardControls'
-export * from './Select'
+export * from '../core/controls/ScrollControls'
+export * from '../core/controls/PresentationControls'
+export * from '../core/controls/KeyboardControls'
+export * from '../core/controls/Select'
 export * from '../core'
 
 // Portal
-export * from './View'
+export * from '../core/portals/View'
 
 // Gizmos
-export * from './pivotControls'
+export * from '../core/controls/pivotControls'
 
 // Loaders
 export * from './ScreenVideoTexture'
 export * from './WebcamVideoTexture'
 
 // Controls
-export * from './FaceControls'
-export { DragControls } from './DragControls'
+export * from '../core/controls/FaceControls'
+export { DragControls } from '../core/controls/DragControls'
 
 // Misc
-export * from './FaceLandmarker'
+export * from '../external/FaceLandmarker'
 
 // Shapes
-export * from './Facemesh'
+export * from '../external/Facemesh'

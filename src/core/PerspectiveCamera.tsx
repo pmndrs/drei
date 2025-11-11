@@ -3,7 +3,7 @@ import * as React from 'react'
 import { PerspectiveCamera as PerspectiveCameraImpl } from 'three'
 import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
 import { useFBO } from './Fbo'
-import { ForwardRefComponent } from '../helpers/ts-utils'
+import { ForwardRefComponent } from '../utils/ts-utils'
 
 const isFunction = (node: any): node is Function => typeof node === 'function'
 

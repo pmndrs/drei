@@ -7,7 +7,7 @@ import {
   WireframeMaterialShaders,
   setWireframeOverride,
   useWireframeUniforms,
-} from '../materials/WireframeMaterial'
+} from '../gl/materials/WireframeMaterial'
 
 declare module '@react-three/fiber' {
   interface ThreeElements {

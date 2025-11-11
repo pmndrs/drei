@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import * as React from 'react'
 import { createPortal, ThreeElements, useFrame, useThree } from '@react-three/fiber'
 import { useFBO } from './Fbo'
-import { ForwardRefComponent } from '../helpers/ts-utils'
+import { ForwardRefComponent } from '../utils/ts-utils'
 
 export type RenderTextureProps = Omit<ThreeElements['texture'], 'ref' | 'args'> & {
   /** Optional width of the texture, defaults to viewport bounds */

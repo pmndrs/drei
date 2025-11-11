@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import * as React from 'react'
 import { extend, useFrame, ReactThreeFiber, ThreeElements, ThreeElement } from '@react-three/fiber'
 import { Line2, LineSegmentsGeometry, LineMaterial, LineMaterialParameters } from 'three-stdlib'
-import { ForwardRefComponent } from '../helpers/ts-utils'
+import { ForwardRefComponent } from '../utils/ts-utils'
 
 export type SegmentsProps = LineMaterialParameters & {
   limit?: number

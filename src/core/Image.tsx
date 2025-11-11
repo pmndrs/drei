@@ -1,10 +1,10 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { Color, extend, ThreeElements, useThree } from '@react-three/fiber'
-import { shaderMaterial } from './shaderMaterial'
+import { shaderMaterial } from '../gl/materials/shaderMaterial'
 import { useTexture } from './Texture'
-import { ForwardRefComponent } from '../helpers/ts-utils'
-import { version } from '../helpers/constants'
+import { ForwardRefComponent } from '../utils/ts-utils'
+import { version } from '../utils/constants'
 
 export type ImageProps = Omit<ThreeElements['mesh'], 'scale'> & {
   segments?: number

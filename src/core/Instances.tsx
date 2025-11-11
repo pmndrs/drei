@@ -1,8 +1,8 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { ThreeElement, ThreeElements, extend, useFrame } from '@react-three/fiber'
-import { ForwardRefComponent } from '../helpers/ts-utils'
-import { setUpdateRange } from '../helpers/deprecated'
+import { ForwardRefComponent } from '../utils/ts-utils'
+import { setUpdateRange } from '../utils/deprecated'
 
 declare module '@react-three/fiber' {
   interface ThreeElements {

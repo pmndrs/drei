@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { QuadraticBezierCurve3, Vector3 } from 'three'
 import { Line2 } from 'three-stdlib'
-import { Line, LineProps } from './Line'
-import { ForwardRefComponent } from '../helpers/ts-utils'
+import { Line, LineProps } from './shapes/Line'
+import { ForwardRefComponent } from '../utils/ts-utils'
 
 export type QuadraticBezierLineRef = Line2 & {
   setPoints(

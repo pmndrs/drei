@@ -3,7 +3,7 @@ import * as React from 'react'
 import { forwardRef, Fragment, useEffect, useMemo } from 'react'
 import { DoubleSide, Object3D } from 'three'
 import { SVGLoader } from 'three-stdlib'
-import { ForwardRefComponent } from '../helpers/ts-utils'
+import { ForwardRefComponent } from '../utils/ts-utils'
 
 export interface SvgProps extends Omit<ThreeElements['object3D'], 'ref'> {
   /** src can be a URL or SVG data */

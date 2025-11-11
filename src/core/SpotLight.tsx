@@ -18,11 +18,11 @@ import {
 } from 'three'
 import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
 import { FullScreenQuad } from 'three-stdlib'
-import { SpotLightMaterial } from '../materials/SpotLightMaterial'
+import { SpotLightMaterial } from '../gl/materials/SpotLightMaterial'
 
 // @ts-ignore
-import SpotlightShadowShader from '../helpers/glsl/DefaultSpotlightShadowShadows.glsl'
-import { ForwardRefComponent } from '../helpers/ts-utils'
+import SpotlightShadowShader from '../utils/glsl/DefaultSpotlightShadowShadows.glsl'
+import { ForwardRefComponent } from '../utils/ts-utils'
 
 export type SpotLightProps = Omit<ThreeElements['spotLight'], 'ref'> & {
   depthBuffer?: DepthTexture

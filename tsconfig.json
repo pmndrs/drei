@@ -16,7 +16,8 @@
     "outDir": "dist",
     "resolveJsonModule": true,
     "noImplicitAny": false,
-    "noImplicitThis": false
+    "noImplicitThis": false,
+    "typeRoots": ["./node_modules/@types", "./src/types"]
   },
   "include": ["./src"],
   "exclude": ["./node_modules/**/*"]

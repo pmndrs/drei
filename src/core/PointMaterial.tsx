@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { ForwardRefComponent } from '../helpers/ts-utils'
-import { version } from '../helpers/constants'
+import { ForwardRefComponent } from '../utils/ts-utils'
+import { version } from '../utils/constants'
 import { ThreeElements } from '@react-three/fiber'
 
 const opaque_fragment = version >= 154 ? 'opaque_fragment' : 'output_fragment'

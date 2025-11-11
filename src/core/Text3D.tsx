@@ -4,7 +4,7 @@ import { extend, ThreeElement, ThreeElements } from '@react-three/fiber'
 import { useMemo } from 'react'
 import { mergeVertices, TextGeometry, TextGeometryParameters } from 'three-stdlib'
 import { useFont, FontData } from './useFont'
-import { ForwardRefComponent } from '../helpers/ts-utils'
+import { ForwardRefComponent } from '../utils/ts-utils'
 
 declare module '@react-three/fiber' {
   interface ThreeElements {

@@ -15,7 +15,7 @@ import {
 } from 'three'
 import { Assign } from 'utility-types'
 import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
-import { ForwardRefComponent } from '../helpers/ts-utils'
+import { ForwardRefComponent } from '../utils/ts-utils'
 
 const v1 = /* @__PURE__ */ new Vector3()
 const v2 = /* @__PURE__ */ new Vector3()

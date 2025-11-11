@@ -3,7 +3,7 @@ import * as React from 'react'
 import { Text as TextMeshImpl, preloadFont } from 'troika-three-text'
 import { ReactThreeFiber, ThreeElements, useThree } from '@react-three/fiber'
 import { suspend } from 'suspend-react'
-import { ForwardRefComponent } from '../helpers/ts-utils'
+import { ForwardRefComponent } from '../utils/ts-utils'
 
 export type TextProps = Omit<ThreeElements['mesh'], 'ref'> & {
   children: React.ReactNode

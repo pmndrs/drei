@@ -17,8 +17,8 @@ coverage/
 yarn-error.log
 .size-snapshot.json
 __diff_output__
-test-results
-playwright-report
+test-results/
+playwright-report/
 
 # https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
 .pnp.*

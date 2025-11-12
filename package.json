@@ -37,6 +37,8 @@
     "prettier": "prettier --check .",
     "prettier-fix": "prettier --write .",
     "test": "yarn eslint:ci && yarn typecheck && yarn prettier && (cd test/e2e; ./e2e.sh)",
+    "test:report": "cd test/e2e && npx playwright show-report",
+    "test:update-snapshot": "cd test/e2e && ./update-snapshot.sh",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false --strict --jsx react",
     "typegen": "tsc --emitDeclarationOnly",
     "storybook": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider\" storybook dev -p 6006",

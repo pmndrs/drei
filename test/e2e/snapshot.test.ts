@@ -52,13 +52,15 @@ test('should match previous one', async ({ page }) => {
   // 📸 <canvas>
   const $canvas = page.locator('canvas[data-engine]')
 
-  // 👁️ Screenshot with version-aware naming (e.g., should-match-previous-one-1-linux-159.png)
-  await expect($canvas).toHaveScreenshot(`should-match-previous-one-1-linux-${THREE_VERSION}.png`)
+  // 👁️ Screenshot with version-aware naming (Playwright adds -linux suffix automatically)
+  // Final name will be: should-match-previous-one-1-159-linux.png
+  await expect($canvas).toHaveScreenshot(`should-match-previous-one-1-${THREE_VERSION}.png`)
 })
 
 test('snapshot filename should match current three.js version', () => {
   const snapshotDir = join(__dirname, 'snapshot.test.ts-snapshots')
-  const expectedPattern = new RegExp(`should-match-previous-one-1-linux-${THREE_VERSION}\\.png$`)
+  // Playwright adds platform suffix (-linux) automatically, so check for that pattern
+  const expectedPattern = new RegExp(`should-match-previous-one-1-${THREE_VERSION}-linux\\.png$`)
 
   // Check if snapshot file exists with correct version
   const files = readdirSync(snapshotDir)
@@ -67,7 +69,7 @@ test('snapshot filename should match current three.js version', () => {
   if (!matchingFile) {
     throw new Error(
       `Snapshot file with version ${THREE_VERSION} not found. ` +
-        `Expected pattern: should-match-previous-one-1-linux-${THREE_VERSION}.png\n` +
+        `Expected pattern: should-match-previous-one-1-${THREE_VERSION}-linux.png\n` +
         `Found files: ${files.join(', ')}\n` +
         `If you updated three.js version in package.json, run 'yarn test:update-snapshot' to generate a new snapshot.`
     )

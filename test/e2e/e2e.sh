@@ -107,40 +107,40 @@ kill_app
 # (using Next.js)
 #
 
-appname=cjsapp
-appdir="$tmp/$appname"
+# appname=cjsapp
+# appdir="$tmp/$appname"
 
-# create app
-(cd $tmp; npx -y create-next-app@latest $appname --ts --no-eslint --no-tailwind --no-src-dir --app --import-alias "@/*")
+# # create app
+# (cd $tmp; npx -y create-next-app@latest $appname --ts --no-eslint --no-tailwind --no-src-dir --app --import-alias "@/*")
 
-# drei
-fixedThree $THREE_VERSION "$appdir/package.json"
-(cd $appdir; npm i $TGZ)
+# # drei
+# fixedThree $THREE_VERSION "$appdir/package.json"
+# (cd $appdir; npm i $TGZ)
 
-# App.tsx
-cp App.tsx $appdir/app/page.tsx
+# # App.tsx
+# cp App.tsx $appdir/app/page.tsx
 
-# next.config.mjs
-cat <<EOF >$appdir/next.config.mjs
-console.log('🦆 CJS override (next.config.mjs)')
-import path from 'path'
+# # next.config.mjs
+# cat <<EOF >$appdir/next.config.mjs
+# console.log('🦆 CJS override (next.config.mjs)')
+# import path from 'path'
 
-/** @type {import('next').NextConfig} */
-export default {
-  //
-  // We force Next to use drei's CJS version here
-  //
-  webpack: (config) => {
-    config.resolve.alias['@react-three/drei'] = path.resolve('node_modules/@react-three/drei/index.cjs.js')
-    return config
-  },
-}
-EOF
+# /** @type {import('next').NextConfig} */
+# export default {
+#   //
+#   // We force Next to use drei's CJS version here
+#   //
+#   webpack: (config) => {
+#     config.resolve.alias['@react-three/drei'] = path.resolve('node_modules/@react-three/drei/index.cjs.js')
+#     return config
+#   },
+# }
+# EOF
 
-# build+start+playwright
-(cd $appdir; npm run build; npm start -- -p $PORT &)
-snapshot
-kill_app
+# # build+start+playwright
+# (cd $appdir; npm run build; npm start -- -p $PORT &)
+# snapshot
+# kill_app
 
 #
 #  ██████╗██████╗  █████╗ 

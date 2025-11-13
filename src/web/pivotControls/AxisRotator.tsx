@@ -77,7 +77,9 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
     onDragStart,
     onDrag,
     onDragEnd,
+    onHover,
     userData,
+    dragState,
   } = React.useContext(context)
 
   const camControls = useThree((state) => state.controls) as unknown as { enabled: boolean } | undefined
@@ -120,7 +122,13 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
   const onPointerMove = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation()
-      if (!isHovered) setIsHovered(true)
+      if (dragState.current && dragState.current.component !== 'Rotator') {
+        return
+      }
+      if (!isHovered) {
+        setIsHovered(true)
+        onHover({ component: 'Rotator', axis, hovering: true })
+      }
       if (clickInfo.current) {
         const { clickPoint, origin, e1, e2, normal, plane } = clickInfo.current
         const [min, max] = rotationLimits?.[axis] || [undefined, undefined]
@@ -177,10 +185,17 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
     [annotations, camControls, onDragEnd]
   )
 
-  const onPointerOut = React.useCallback((e: any) => {
-    e.stopPropagation()
-    setIsHovered(false)
-  }, [])
+  const onPointerOut = React.useCallback(
+    (e: any) => {
+      e.stopPropagation()
+      if (dragState.current && dragState.current.component !== 'Rotator') {
+        return
+      }
+      setIsHovered(false)
+      onHover({ component: 'Rotator', axis, hovering: false })
+    },
+    [onHover, axis]
+  )
 
   const matrixL = React.useMemo(() => {
     const dir1N = dir1.clone().normalize()

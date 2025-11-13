@@ -2,6 +2,7 @@
 set -ex
 
 PORT=5188
+export PORT
 DIST=../../dist
 tmp=$(mktemp -d)
 TEST_FAILED=0
@@ -20,10 +21,24 @@ get_three_version() {
   echo "$version"
 }
 
-THREE_VERSION=$(get_three_version)
-THREE_VERSION_FULL="0.${THREE_VERSION}"
-set +x
-echo "📦 Using three.js version: ${THREE_VERSION_FULL} (extracted from package.json peerDependencies)"
+# Allow CLI argument: "./e2e.sh 181" or "./e2e.sh 0.181"
+if [ -n "$1" ]; then
+  if echo "$1" | grep -q '^0\.'; then
+    THREE_VERSION_FULL="$1"
+    THREE_VERSION=$(echo "$1" | sed 's/^0\.//')
+  else
+    THREE_VERSION="$1"
+    THREE_VERSION_FULL="0.$1"
+  fi
+  set +x
+  echo "📦 Using three.js version: ${THREE_VERSION_FULL} (from command-line argument)"
+else
+  THREE_VERSION=$(get_three_version)
+  THREE_VERSION_FULL="0.${THREE_VERSION}"
+  set +x
+  echo "📦 Using three.js version: ${THREE_VERSION_FULL} (extracted from package.json peerDependencies)"
+fi
+export THREE_VERSION
 # Ensure browsers and system dependencies are installed
 echo "🔍 Ensuring Playwright browsers are installed..."
 set -x
@@ -51,6 +66,7 @@ snapshot() {
   if ! npx playwright test \
     --reporter=html \
     --output=$RESULTS_DIR \
+    --trace=on \
     $UPDATE_SNAPSHOTS \
     snapshot.test.ts; then
     TEST_FAILED=1
@@ -58,10 +74,16 @@ snapshot() {
 }
 
 kill_app() {
-  kill -9 $(lsof -ti:$PORT) || echo "ok, no previous running process on port $PORT"
+  pids="$(lsof -ti:$PORT || true)"
+  if [ -n "$pids" ]; then
+    kill -9 $pids || true
+  else
+    echo "ok, no previous running process on port $PORT"
+  fi
 }
 kill_app || true
 trap kill_app EXIT INT TERM HUP
+echo "ℹ️  Using PORT=$PORT"
 
 #
 # ██╗   ██╗██╗████████╗███████╗
@@ -87,7 +109,7 @@ appdir="$tmp/$appname"
 cp App.tsx $appdir/src/App.tsx
 
 # build+start+playwright
-(cd $appdir; npm run build; npm run preview -- --host --port $PORT &)
+(cd $appdir; npm run build; npm run preview -- --host --strictPort --port $PORT &)
 snapshot
 kill_app
 

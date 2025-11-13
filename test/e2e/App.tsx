@@ -21,6 +21,7 @@ function App() {
 
 function Scene() {
   const gl = useThree((state) => state.gl)
+  const camera = useThree((state) => state.camera)
 
   useEffect(() => {
     //* Runtime Three.js Information ==============================
@@ -57,8 +58,12 @@ function Scene() {
     console.groupEnd()
     //* ============================================================
 
+    // Expose a simple flag the e2e test can assert on
+    // @ts-ignore
+    window.isPerspectiveCam = (camera as any)?.isPerspectiveCamera === true
+
     document.dispatchEvent(new Event('playright:r3f'))
-  }, [gl])
+  }, [gl, camera])
 
   return (
     <>

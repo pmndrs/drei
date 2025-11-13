@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   build:
-    uses: pmndrs/docs/.github/workflows/build.yml@v2
+    uses: pmndrs/docs/.github/workflows/build.yml@v2.19.0
     with:
       mdx: 'docs'
       libname: 'Drei'

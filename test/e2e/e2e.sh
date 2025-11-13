@@ -1,6 +1,26 @@
 #!/bin/sh
 set -ex
 
+THREE_VERSION="$1"
+if [ -z "$THREE_VERSION" ]; then
+  echo "Usage: $0 <three-version>  (ex: $0 0.159.0)"
+  exit 1
+fi
+
+fixedThree() {
+  local version="$1"
+  local pkg="$2"
+
+  local tmp
+  tmp=$(mktemp)
+
+  jq --arg v "$version" '
+    .dependencies = (.dependencies // {}) |
+    .dependencies.three = $v
+  ' "$pkg" > "$tmp" \
+    && mv "$tmp" "$pkg"
+}
+
 PORT=5188
 DIST=../../dist
 tmp=$(mktemp -d)
@@ -39,6 +59,7 @@ appdir="$tmp/$appname"
 (cd $tmp; npm create -y vite $appname -- --template react-ts)
 
 # drei
+fixedThree $THREE_VERSION "$appdir/package.json"
 (cd $appdir; npm i; npm i $TGZ)
 
 # App.tsx
@@ -65,6 +86,7 @@ appdir="$tmp/$appname"
 (cd $tmp; npx -y create-next-app@latest $appname --ts --no-eslint --no-tailwind --no-src-dir --app --import-alias "@/*")
 
 # drei
+fixedThree $THREE_VERSION "$appdir/package.json"
 (cd $appdir; npm i $TGZ)
 
 # App.tsx
@@ -92,6 +114,7 @@ appdir="$tmp/$appname"
 (cd $tmp; npx -y create-next-app@latest $appname --ts --no-eslint --no-tailwind --no-src-dir --app --import-alias "@/*")
 
 # drei
+fixedThree $THREE_VERSION "$appdir/package.json"
 (cd $appdir; npm i $TGZ)
 
 # App.tsx

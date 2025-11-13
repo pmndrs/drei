@@ -105,6 +105,7 @@
     "eslint-plugin-storybook": "^9.1.2",
     "husky": "^9.1.7",
     "json": "^11.0.0",
+    "pkg-size": "^2.4.0",
     "prettier": "^3.3.3",
     "pretty-quick": "^4.0.0",
     "react": "^19.0.0",

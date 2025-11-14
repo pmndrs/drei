@@ -4,7 +4,20 @@ import { readFileSync, readdirSync, writeFileSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 
 const port = process.env.PORT || '5188'
+const runLabel = process.env.RUN_LABEL || 'run'
 const host = `http://localhost:${port}/`
+
+// Diagnostics
+// eslint-disable-next-line no-console
+console.log(
+  `[E2E] host=${host} RUN_LABEL=${runLabel} ENV.THREE_VERSION=${process.env.THREE_VERSION || 'unset'} MIN_THREE=${(() => {
+    try {
+      return getThreeVersion()
+    } catch {
+      return 'unknown'
+    }
+  })()}`
+)
 
 // Capture browser console in output
 test.beforeEach(async ({ page }) => {
@@ -50,7 +63,7 @@ function waitForServer() {
   })
 }
 
-test('should match previous one (min baseline warn-only)', async ({ page }) => {
+test(`[${runLabel}] F should match previous one (min baseline warn-only)`, async ({ page }) => {
   await waitForServer()
 
   // ⏳ "r3f" event
@@ -60,7 +73,7 @@ test('should match previous one (min baseline warn-only)', async ({ page }) => {
   // 📸 <canvas>
   const $canvas = page.locator('canvas[data-engine]')
   // Save a copy of the current render regardless of assertion result
-  const outDir = join(__dirname, 'test-results', 'snapshot-should-match-previous-one')
+  const outDir = join(__dirname, 'test-results', 'snapshot-should-match-previous-one', runLabel)
   mkdirSync(outDir, { recursive: true })
   const actualPath = join(outDir, `should-match-previous-one-1-${THREE_VERSION}-actual.png`)
   const png = await $canvas.screenshot()
@@ -82,7 +95,7 @@ test('should match previous one (min baseline warn-only)', async ({ page }) => {
 })
 
 // Blocking sanity: page loads and camera flag is set
-test('app should load and expose isPerspectiveCam', async ({ page }) => {
+test(`[${runLabel}] app should load and expose isPerspectiveCam`, async ({ page }) => {
   await waitForServer()
   await page.goto(host)
   await waitForEvent(page, 'playright:r3f')
@@ -90,7 +103,7 @@ test('app should load and expose isPerspectiveCam', async ({ page }) => {
   expect(isPerspective).toBe(true)
 })
 
-test('snapshot filename should match current three.js version', () => {
+test(`[${runLabel}] snapshot filename should match current three.js version`, () => {
   const snapshotDir = join(__dirname, 'snapshot.test.ts-snapshots')
   // Playwright adds platform suffix (-linux) automatically, so check for that pattern
   const expectedPattern = new RegExp(`should-match-previous-one-1-${THREE_VERSION}-linux\\.png$`)
@@ -102,9 +115,9 @@ test('snapshot filename should match current three.js version', () => {
   if (!matchingFile) {
     throw new Error(
       `Snapshot file with version ${THREE_VERSION} not found. ` +
-      `Expected pattern: should-match-previous-one-1-${THREE_VERSION}-linux.png\n` +
-      `Found files: ${files.join(', ')}\n` +
-      `If you updated three.js version in package.json, run 'yarn test:update-snapshot' to generate a new snapshot.`
+        `Expected pattern: should-match-previous-one-1-${THREE_VERSION}-linux.png\n` +
+        `Found files: ${files.join(', ')}\n` +
+        `If you updated three.js version in package.json, run 'yarn test:update-snapshot' to generate a new snapshot.`
     )
   }
 })

@@ -18,7 +18,16 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ['.storybook/public', '**/dist/', '**/node_modules/', '**/storybook-static/'],
+    ignores: [
+      '.storybook/public',
+      '**/dist/',
+      '**/node_modules/',
+      '**/storybook-static/',
+      // e2e artifacts
+      '**/playwright-report/**',
+      '**/test-results/**',
+      '**/blob-reports/**',
+    ],
   },
   ...fixupConfigRules(compat.extends('plugin:react-hooks/recommended', 'plugin:storybook/recommended', 'prettier')),
   {

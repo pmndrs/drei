@@ -1,12 +1,48 @@
 import * as React from 'react'
-import * as THREE from 'three'
-import { RootState, context, createPortal, useFrame, useThree } from '@react-three/fiber'
+import * as THREE from 'three/webgpu'
+import { type RootState, context, createPortal, useFrame, useThree } from '@react-three/fiber'
 import tunnel from 'tunnel-rat'
 
 const isOrthographicCamera = (def: any): def is THREE.OrthographicCamera =>
   def && (def as THREE.OrthographicCamera).isOrthographicCamera
 const col = /* @__PURE__ */ new THREE.Color()
 const tracked = /* @__PURE__ */ tunnel()
+
+// Reusable objects for performance
+const _vec2 = /* @__PURE__ */ new THREE.Vector2()
+const _savedClearColor = /* @__PURE__ */ new THREE.Color()
+let _savedClearAlpha = 1
+
+// Type for computeContainerPosition return value
+type ContainerPosition = {
+  position: {
+    width: number
+    height: number
+    left: number
+    top: number
+    bottom: number
+    right: number
+  }
+  isOffscreen: boolean
+}
+
+// Cache rect values instead of DOMRect objects for effective memoization
+type RectValues = {
+  left: number
+  top: number
+  right: number
+  bottom: number
+  width: number
+  height: number
+}
+
+// Memoization cache for computeContainerPosition
+const positionCache = new Map<string, { canvasSize: CanvasSize; result: ContainerPosition }>()
+
+// Helper to create cache key from rect values
+function getRectCacheKey(rect: RectValues, canvasSize: CanvasSize): string {
+  return `${rect.left},${rect.top},${rect.width},${rect.height},${canvasSize.left},${canvasSize.top},${canvasSize.width},${canvasSize.height}`
+}
 
 type CanvasSize = {
   top: number
@@ -52,36 +88,127 @@ export type ViewProps = {
   track?: React.RefObject<HTMLElement>
 }
 
-function computeContainerPosition(canvasSize: CanvasSize, trackRect: DOMRect) {
-  const { right, top, left: trackLeft, bottom: trackBottom, width, height } = trackRect
-  const isOffscreen = trackRect.bottom < 0 || top > canvasSize.height || right < 0 || trackRect.left > canvasSize.width
+function computeContainerPosition(canvasSize: CanvasSize, trackRect: RectValues | DOMRect): ContainerPosition {
+  // Check cache first using rect values
+  const cacheKey = getRectCacheKey(trackRect, canvasSize)
+  const cached = positionCache.get(cacheKey)
+  if (cached) {
+    return cached.result
+  }
+  const { right, top, left: trackLeft, width, height } = trackRect
 
-  const canvasBottom = canvasSize.top + canvasSize.height
-  const bottom = canvasBottom - trackBottom
-  const left = trackLeft - canvasSize.left
-  return { position: { width, height, left, top, bottom, right }, isOffscreen }
+  // Calculate position relative to canvas viewport
+  const relativeLeft = trackLeft - canvasSize.left
+  const relativeTop = top - canvasSize.top
+
+  let bottom: number
+  bottom = canvasSize.height - relativeTop - height
+
+  // Check if element is offscreen
+  const isOffscreen =
+    relativeTop + height < 0 ||
+    relativeTop > canvasSize.height ||
+    relativeLeft + width < 0 ||
+    relativeLeft > canvasSize.width
+
+  // Clamp values but maintain the original dimensions
+  const clampedLeft = Math.floor(relativeLeft)
+  const clampedBottom = Math.floor(bottom)
+  const clampedWidth = Math.floor(width)
+  const clampedHeight = Math.floor(height)
+
+  const result = {
+    position: {
+      width: Math.max(1, clampedWidth),
+      height: Math.max(1, clampedHeight),
+      left: clampedLeft,
+      top: Math.floor(relativeTop),
+      bottom: clampedBottom,
+      right: right,
+    },
+    isOffscreen,
+  }
+
+  // Cache the result with rect values as key
+  positionCache.set(cacheKey, { canvasSize: { ...canvasSize }, result })
+
+  // Clean up old cache entries if too many
+  if (positionCache.size > 100) {
+    const firstKey = positionCache.keys().next().value
+    if (firstKey) {
+      positionCache.delete(firstKey)
+    }
+  }
+
+  return result
 }
 
-function prepareSkissor(
+function isWebGPURenderer(renderer: any): boolean {
+  return renderer.backend && renderer.backend.isWebGPUBackend
+}
+
+function prepareScissor(
   state: RootState,
   {
     left,
-    bottom,
     width,
     height,
-  }: { width: number; height: number; top: number; left: number; bottom: number; right: number }
+    top,
+  }: {
+    width: number
+    height: number
+    top: number
+    left: number
+    right: number
+  }
 ) {
   let autoClear
   const aspect = width / height
+
+  // Get renderer size - reuse existing Vector2
+  const rendererSize = state.gl.getSize(_vec2)
+
+  // For WebGPU, we need to handle the coordinate system differently
+  let scissorX, scissorY, scissorWidth, scissorHeight
+
+  const visibleLeft = Math.max(0, left)
+  const visibleTop = Math.max(0, top)
+  const visibleRight = Math.min(rendererSize.x, left + width)
+  const visibleBottom = Math.min(rendererSize.y, top + height)
+
+  // Scissor coordinates must be within [0, renderTarget.dimension - 1]
+  // This prevents "Scissor rect is not contained in render target dimensions" errors
+  scissorX = Math.max(0, Math.min(rendererSize.x - 1, Math.floor(visibleLeft)))
+  scissorY = Math.max(0, Math.min(rendererSize.y - 1, Math.floor(visibleTop)))
+
+  // Scissor dimensions must not extend beyond render target edges
+  // Calculate maximum allowed dimensions from scissor position
+  const maxWidth = rendererSize.x - scissorX
+  const maxHeight = rendererSize.y - scissorY
+
+  scissorWidth = Math.max(1, Math.min(maxWidth, Math.floor(visibleRight - visibleLeft)))
+  scissorHeight = Math.max(1, Math.min(maxHeight, Math.floor(visibleBottom - visibleTop)))
+
+  const clampedLeft = scissorX
+  const clampedBottom = scissorY
+  const clampedWidth = scissorWidth
+  const clampedHeight = scissorHeight
+
   if (isOrthographicCamera(state.camera)) {
     if (!state.camera.manual) {
+      // Use original dimensions for camera, not clamped ones
       if (
         state.camera.left !== width / -2 ||
         state.camera.right !== width / 2 ||
         state.camera.top !== height / 2 ||
         state.camera.bottom !== height / -2
       ) {
-        Object.assign(state.camera, { left: width / -2, right: width / 2, top: height / 2, bottom: height / -2 })
+        Object.assign(state.camera, {
+          left: width / -2,
+          right: width / 2,
+          top: height / 2,
+          bottom: height / -2,
+        })
         state.camera.updateProjectionMatrix()
       }
     } else {
@@ -91,58 +218,108 @@ function prepareSkissor(
     state.camera.aspect = aspect
     state.camera.updateProjectionMatrix()
   }
+
   autoClear = state.gl.autoClear
   state.gl.autoClear = false
-  state.gl.setViewport(left, bottom, width, height)
-  state.gl.setScissor(left, bottom, width, height)
-  state.gl.setScissorTest(true)
+
+  const offsetX = left < 0 ? -left : 0
+  const offsetY = top < 0 ? -top : 0
+
+  state.gl.setViewport(clampedLeft - offsetX, clampedBottom - offsetY, width, height)
+
+  state.gl.setScissor(clampedLeft, clampedBottom, clampedWidth, clampedHeight)
+
+  state.gl.getClearColor(_savedClearColor)
+  _savedClearAlpha = state.gl.getClearAlpha()
+  state.gl.setClearColor(col.setRGB(0, 0, 0), 0)
+  state.gl.clear(true, false, false)
+  state.gl.setClearColor(_savedClearColor, _savedClearAlpha)
+
   return autoClear
 }
 
-function finishSkissor(state: RootState, autoClear: boolean) {
+function finishScissor(state: RootState, autoClear: boolean) {
   // Restore the default state
   state.gl.setScissorTest(false)
   state.gl.autoClear = autoClear
 }
 
 function clear(state: RootState) {
-  state.gl.getClearColor(col)
-  state.gl.setClearColor(col, state.gl.getClearAlpha())
-  state.gl.clear(true, true)
+  state.gl.clear(true, true, false)
 }
 
 function Container({ visible = true, canvasSize, scene, index, children, frames, rect, track }: ContainerProps) {
   const rootState = useThree()
   const [isOffscreen, setOffscreen] = React.useState(false)
+  const prevRectRef = React.useRef<RectValues | null>(null)
+  const frameCountRef = React.useRef(0)
+  const isWebGPU = React.useMemo(() => isWebGPURenderer(rootState.gl), [rootState.gl])
 
-  let frameCount = 0
   useFrame((state) => {
-    if (frames === Infinity || frameCount <= frames) {
-      if (track) rect.current = track.current?.getBoundingClientRect()
-      frameCount++
-    }
-    if (rect.current) {
-      const { position, isOffscreen: _isOffscreen } = computeContainerPosition(canvasSize, rect.current)
-      if (isOffscreen !== _isOffscreen) setOffscreen(_isOffscreen)
-      if (visible && !isOffscreen && rect.current) {
-        const autoClear = prepareSkissor(state, position)
-        // When children are present render the portalled scene, otherwise the default scene
-        state.gl.render(children ? state.scene : scene, state.camera)
-        finishSkissor(state, autoClear)
+    // Early return if not visible
+    if (!visible) return
+
+    // Update rect if needed
+    if (frames === Infinity || frameCountRef.current <= frames) {
+      if (track && track.current) {
+        const domRect = track.current.getBoundingClientRect()
+        const newRect: RectValues = {
+          left: domRect.left,
+          top: domRect.top,
+          right: domRect.right,
+          bottom: domRect.bottom,
+          width: domRect.width,
+          height: domRect.height,
+        }
+
+        // Check if rect actually changed
+        if (
+          !prevRectRef.current ||
+          prevRectRef.current.left !== newRect.left ||
+          prevRectRef.current.top !== newRect.top ||
+          prevRectRef.current.width !== newRect.width ||
+          prevRectRef.current.height !== newRect.height
+        ) {
+          rect.current = domRect
+          prevRectRef.current = newRect
+        }
       }
+      frameCountRef.current++
+    }
+
+    const { position, isOffscreen: _isOffscreen } = computeContainerPosition(canvasSize, rect.current)
+
+    if (isOffscreen !== _isOffscreen) setOffscreen(_isOffscreen)
+
+    if (isOffscreen) {
+      return
+    }
+
+    if (visible && !isOffscreen && rect.current) {
+      if (isWebGPU) {
+        if (index === 1) {
+          state.gl.setScissorTest(false)
+          state.gl.clear(true, true, true) // Clear color, depth, and stencil
+        }
+      }
+      const autoClear = prepareScissor(state, position)
+      clear(state)
+      // When children are present render the portalled scene, otherwise the default scene
+      state.gl.render(children ? state.scene : scene, state.camera)
+      finishScissor(state, autoClear)
     }
   }, index)
 
   React.useLayoutEffect(() => {
     const curRect = rect.current
-    if (curRect && (!visible || !isOffscreen)) {
+    if (curRect && !visible) {
       // If the view is not visible clear it once, but stop rendering afterwards!
       const { position } = computeContainerPosition(canvasSize, curRect)
-      const autoClear = prepareSkissor(rootState, position)
+      const autoClear = prepareScissor(rootState, position)
       clear(rootState)
-      finishSkissor(rootState, autoClear)
+      finishScissor(rootState, autoClear)
     }
-  }, [visible, isOffscreen])
+  }, [visible, canvasSize, rootState])
 
   React.useEffect(() => {
     if (!track) return
@@ -154,9 +331,9 @@ function Container({ visible = true, canvasSize, scene, index, children, frames,
     return () => {
       if (curRect) {
         const { position } = computeContainerPosition(canvasSize, curRect)
-        const autoClear = prepareSkissor(rootState, position)
+        const autoClear = prepareScissor(rootState, position)
         clear(rootState)
-        finishSkissor(rootState, autoClear)
+        finishScissor(rootState, autoClear)
       }
       rootState.setEvents({ connected: old })
     }
@@ -182,7 +359,7 @@ const CanvasView = /* @__PURE__ */ React.forwardRef(
     const [ready, toggle] = React.useReducer(() => true, false)
 
     const compute = React.useCallback(
-      (event, state) => {
+      (event: any, state: any) => {
         if (rect.current && track && track.current && event.target === track.current) {
           const { width, height, left, top } = rect.current
           const x = event.clientX - left
@@ -191,14 +368,17 @@ const CanvasView = /* @__PURE__ */ React.forwardRef(
           state.raycaster.setFromCamera(state.pointer, state.camera)
         }
       },
-      [rect, track]
+      [track]
     )
 
     React.useEffect(() => {
       // We need the tracking elements bounds beforehand in order to inject it into the portal
-      if (track) rect.current = track.current?.getBoundingClientRect()
-      // And now we can proceed
-      toggle()
+      if (track && track.current) {
+        rect.current = track.current.getBoundingClientRect()
+
+        // And now we can proceed
+        toggle()
+      }
     }, [track])
 
     return (
@@ -252,7 +432,26 @@ const HtmlView = /* @__PURE__ */ React.forwardRef(
   ) => {
     const uuid = React.useId()
     const ref = React.useRef<HTMLElement>(null!)
+    const rectRef = React.useRef<DOMRect | null>(null)
+
     React.useImperativeHandle(fref, () => ref.current)
+
+    // Use ResizeObserver for better performance
+    React.useEffect(() => {
+      if (!ref.current) return
+
+      const observer = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          rectRef.current = entry.target.getBoundingClientRect()
+        }
+      })
+
+      observer.observe(ref.current)
+      rectRef.current = ref.current.getBoundingClientRect()
+
+      return () => observer.disconnect()
+    }, [])
+
     return (
       <>
         {/** @ts-ignore */}
@@ -267,9 +466,9 @@ const HtmlView = /* @__PURE__ */ React.forwardRef(
   }
 )
 
-export type ViewportProps = { Port: () => React.JSX.Element } & React.ForwardRefExoticComponent<
-  ViewProps & React.RefAttributes<HTMLElement | THREE.Group>
->
+export type ViewportProps = {
+  Port: () => React.JSX.Element
+} & React.ForwardRefExoticComponent<ViewProps & React.RefAttributes<HTMLElement | THREE.Group>>
 
 export const View = /* @__PURE__ */ (() => {
   const _View = React.forwardRef((props: ViewProps, fref: React.ForwardedRef<HTMLElement | THREE.Group>) => {

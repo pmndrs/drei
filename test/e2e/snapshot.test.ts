@@ -73,7 +73,7 @@ test(`[${runLabel}] F should match previous one (min baseline warn-only)`, async
   // 📸 <canvas>
   const $canvas = page.locator('canvas[data-engine]')
   // Save a copy of the current render regardless of assertion result
-  const outDir = join(__dirname, 'test-results', 'snapshot-should-match-previous-one', runLabel)
+  const outDir = join(__dirname, 'snapshot-results', 'snapshot-should-match-previous-one', runLabel)
   mkdirSync(outDir, { recursive: true })
   const actualPath = join(outDir, `should-match-previous-one-1-${THREE_VERSION}-actual.png`)
   const png = await $canvas.screenshot()

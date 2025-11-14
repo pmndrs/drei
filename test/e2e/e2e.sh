@@ -11,7 +11,11 @@ TEST_FAILED=0
 REPORT_DIR="playwright-report"
 RESULTS_DIR="test-results"
 BLOB_ROOT="blob-reports"
+SNAPSHOT_RESULTS="snapshot-results"
+rm -rf "$RESULTS_DIR" 2>/dev/null || true
+rm -rf "$SNAPSHOT_RESULTS" 2>/dev/null || true
 mkdir -p "$REPORT_DIR" "$RESULTS_DIR"
+mkdir -p "$SNAPSHOT_RESULTS"
 # Start fresh blob collector (single flat directory)
 rm -rf "$BLOB_ROOT" 2>/dev/null || true
 mkdir -p "$BLOB_ROOT"
@@ -44,6 +48,13 @@ else
   echo "📦 Using three.js version: ${THREE_VERSION_FULL} (extracted from package.json peerDependencies)"
 fi
 export THREE_VERSION
+# Ensure baseline alias exists for Playwright's default {projectName}-{platform} suffix
+SNAP_DIR="snapshot.test.ts-snapshots"
+BASELINE="$SNAP_DIR/should-match-previous-one-1-${THREE_VERSION}-linux.png"
+ALIAS="$SNAP_DIR/should-match-previous-one-1-${THREE_VERSION}-chromium-linux.png"
+if [ -f "$BASELINE" ] && [ ! -f "$ALIAS" ]; then
+  cp "$BASELINE" "$ALIAS" || true
+fi
 # Ensure browsers and system dependencies are installed
 echo "🔍 Ensuring Playwright browsers are installed..."
 set -x
@@ -71,9 +82,15 @@ module.exports = {
   // Force discovery from the e2e directory regardless of config file location
   testDir: "${test_dir}",
   testMatch: ['snapshot.test.ts'],
+  expect: {
+    // Use shared baseline per platform, not per project (no projectName in path)
+    snapshotPathTemplate: '{testDir}/snapshot.test.ts-snapshots/{arg}-{platform}{ext}',
+  },
   projects: [
     {
-      name: "${label}",
+      // Use a stable project name so Playwright does NOT suffix snapshots with project name
+      // We prefix test titles with RUN_LABEL instead for per-run identification
+      name: "chromium",
       use: { browserName: 'chromium' },
     },
   ],

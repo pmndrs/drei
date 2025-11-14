@@ -19,6 +19,14 @@ yarn-error.log
 __diff_output__
 test-results/
 playwright-report/
+blob-reports/*
+snapshot-results/
+
+# e2e paths
+test/e2e/blob-reports/
+test/e2e/playwright-report/
+test/e2e/test-results/
+test/e2e/snapshot-results/
 
 # https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
 .pnp.*

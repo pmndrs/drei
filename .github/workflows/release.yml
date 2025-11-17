@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        three-version: ['0.159.0', '0.180.0']
+        three-version: ['0.159.0', '0.180.0', 'latest']
     # 0.159.0 is mandatory; others are informational
     continue-on-error: ${{ matrix.three-version != '0.159.0' }}
     runs-on: ubuntu-latest

@@ -2824,7 +2824,7 @@ __metadata:
     eslint-config-prettier: "npm:^9.1.0"
     eslint-plugin-react: "npm:^7.37.2"
     eslint-plugin-react-hooks: "npm:^5.0.0"
-    eslint-plugin-storybook: "npm:^9.1.2"
+    eslint-plugin-storybook: "npm:^10.0.8"
     glsl-noise: "npm:^0.0.0"
     hls.js: "npm:^1.5.17"
     husky: "npm:^9.1.7"
@@ -2844,7 +2844,7 @@ __metadata:
     serve: "npm:^14.2.4"
     stats-gl: "npm:^2.2.8"
     stats.js: "npm:^0.17.0"
-    storybook: "npm:^9.1.2"
+    storybook: "npm:^10.0.8"
     suspend-react: "npm:^0.1.3"
     three: "npm:^0.159.0"
     three-mesh-bvh: "npm:^0.8.3"
@@ -3371,6 +3371,16 @@ __metadata:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
   checksum: 10c0/fd0514fb3fa431a8b5939fe1d9fc336b253ef2c25b34792d2d4ee59e13321108d34f8bf223a0981482f54f83c5ef47ffd1a98c376ca9071011c1b8afe2b01d43
+  languageName: node
+  linkType: hard
+
+"@storybook/icons@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "@storybook/icons@npm:1.6.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
+  checksum: 10c0/bbec9201a78a730195f9cf377b15856dc414a54d04e30d16c379d062425cc617bfd0d6586ba1716012cfbdab461f0c9693a6a52920f9bd09c7b4291fb116f59c
   languageName: node
   linkType: hard
 
@@ -4567,15 +4577,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"better-opn@npm:^3.0.2":
-  version: 3.0.2
-  resolution: "better-opn@npm:3.0.2"
-  dependencies:
-    open: "npm:^8.0.4"
-  checksum: 10c0/911ef25d44da75aabfd2444ce7a4294a8000ebcac73068c04a60298b0f7c7506b60421aa4cd02ac82502fb42baaff7e4892234b51e6923eded44c5a11185f2f5
-  languageName: node
-  linkType: hard
-
 "bidi-js@npm:^1.0.2":
   version: 1.0.3
   resolution: "bidi-js@npm:1.0.3"
@@ -5530,13 +5531,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"define-lazy-prop@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "define-lazy-prop@npm:2.0.0"
-  checksum: 10c0/db6c63864a9d3b7dc9def55d52764968a5af296de87c1b2cc71d8be8142e445208071953649e0386a8cc37cfcf9a2067a47207f1eb9ff250c2a269658fdae422
-  languageName: node
-  linkType: hard
-
 "define-properties@npm:^1.1.3, define-properties@npm:^1.1.4, define-properties@npm:^1.2.0, define-properties@npm:^1.2.1":
   version: 1.2.1
   resolution: "define-properties@npm:1.2.1"
@@ -5948,17 +5942,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild-register@npm:^3.5.0":
-  version: 3.5.0
-  resolution: "esbuild-register@npm:3.5.0"
-  dependencies:
-    debug: "npm:^4.3.4"
-  peerDependencies:
-    esbuild: ">=0.12 <1"
-  checksum: 10c0/9ccd0573cb66018e4cce3c1416eed0f5f3794c7026ce469a94e2f8761335abed8e363fc8e8bb036ab9ad7e579bb4296b8568a04ae5626596c123576b0d9c9bde
-  languageName: node
-  linkType: hard
-
 "esbuild@npm:^0.18.0 || ^0.19.0 || ^0.20.0 || ^0.21.0 || ^0.22.0 || ^0.23.0 || ^0.24.0 || ^0.25.0":
   version: 0.25.5
   resolution: "esbuild@npm:0.25.5"
@@ -6234,15 +6217,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-storybook@npm:^9.1.2":
-  version: 9.1.2
-  resolution: "eslint-plugin-storybook@npm:9.1.2"
+"eslint-plugin-storybook@npm:^10.0.8":
+  version: 10.0.8
+  resolution: "eslint-plugin-storybook@npm:10.0.8"
   dependencies:
     "@typescript-eslint/utils": "npm:^8.8.1"
   peerDependencies:
     eslint: ">=8"
-    storybook: ^9.1.2
-  checksum: 10c0/37a5fbe4558013de311b730a1fc76db3f995864d57b1c3d749075ad5452f05f81366d6ef270e31168613109a4038fba91cda93eea96e153a620a18ec29f4095a
+    storybook: ^10.0.8
+  checksum: 10c0/ca2ffd85848cf45beea048e4ac6e5773051dbaa72bf485b9bd8606d1923649fc6047181ebfee8610e5017c934aef5178d5a83892a27e45f76e9f0bff2919b73c
   languageName: node
   linkType: hard
 
@@ -7792,7 +7775,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-docker@npm:^2.0.0, is-docker@npm:^2.1.1":
+"is-docker@npm:^2.0.0":
   version: 2.2.1
   resolution: "is-docker@npm:2.2.1"
   bin:
@@ -9691,17 +9674,6 @@ __metadata:
   dependencies:
     mimic-fn: "npm:^4.0.0"
   checksum: 10c0/4eef7c6abfef697dd4479345a4100c382d73c149d2d56170a54a07418c50816937ad09500e1ed1e79d235989d073a9bade8557122aee24f0576ecde0f392bb6c
-  languageName: node
-  linkType: hard
-
-"open@npm:^8.0.4":
-  version: 8.4.2
-  resolution: "open@npm:8.4.2"
-  dependencies:
-    define-lazy-prop: "npm:^2.0.0"
-    is-docker: "npm:^2.1.1"
-    is-wsl: "npm:^2.2.0"
-  checksum: 10c0/bb6b3a58401dacdb0aad14360626faf3fb7fba4b77816b373495988b724fb48941cad80c1b65d62bb31a17609b2cd91c41a181602caea597ca80dfbcc27e84c9
   languageName: node
   linkType: hard
 
@@ -11612,19 +11584,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"storybook@npm:^9.1.2":
-  version: 9.1.2
-  resolution: "storybook@npm:9.1.2"
+"storybook@npm:^10.0.8":
+  version: 10.0.8
+  resolution: "storybook@npm:10.0.8"
   dependencies:
     "@storybook/global": "npm:^5.0.0"
+    "@storybook/icons": "npm:^1.6.0"
     "@testing-library/jest-dom": "npm:^6.6.3"
     "@testing-library/user-event": "npm:^14.6.1"
     "@vitest/expect": "npm:3.2.4"
     "@vitest/mocker": "npm:3.2.4"
     "@vitest/spy": "npm:3.2.4"
-    better-opn: "npm:^3.0.2"
     esbuild: "npm:^0.18.0 || ^0.19.0 || ^0.20.0 || ^0.21.0 || ^0.22.0 || ^0.23.0 || ^0.24.0 || ^0.25.0"
-    esbuild-register: "npm:^3.5.0"
     recast: "npm:^0.23.5"
     semver: "npm:^7.6.2"
     ws: "npm:^8.18.0"
@@ -11634,8 +11605,8 @@ __metadata:
     prettier:
       optional: true
   bin:
-    storybook: ./bin/index.cjs
-  checksum: 10c0/3a575f94913f9000a3591e5c685f4eabf75fa78ce306f8b0d48e9c72e46028df31f6d15955b8a338be2bf48dadca6550b65782783d8b3cb4b737ba9f3887d007
+    storybook: ./dist/bin/dispatcher.js
+  checksum: 10c0/8389f682840646dfb435af80c2a1470f2c6dda6620f987ad481691fb0e91dafa8fe9f81343c21b66d830321ced9e0f3a7463fec1f6cc507ccad8da53e6523433
   languageName: node
   linkType: hard
 

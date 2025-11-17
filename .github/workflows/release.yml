@@ -16,6 +16,12 @@ concurrency:
 
 jobs:
   test:
+    strategy:
+      fail-fast: false
+      matrix:
+        three-version: ['0.159.0', '0.180.0']
+    # 0.159.0 is mandatory; others are informational
+    continue-on-error: ${{ matrix.three-version != '0.159.0' }}
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/pmndrs/playwright:drei
@@ -30,7 +36,10 @@ jobs:
           cache: 'yarn'
       - run: yarn install
       - run: yarn build
-      - run: yarn test
+      - run: yarn eslint:ci
+      - run: yarn typecheck
+      - run: yarn prettier
+      - run: (cd test/e2e; ./e2e.sh ${{ matrix.three-version }})
 
   build-and-release:
     needs: test

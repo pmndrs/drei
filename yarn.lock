@@ -2848,7 +2848,7 @@ __metadata:
     suspend-react: "npm:^0.1.3"
     three: "npm:^0.159.0"
     three-mesh-bvh: "npm:^0.8.3"
-    three-stdlib: "npm:^2.35.6"
+    three-stdlib: "npm:^2.36.1"
     troika-three-text: "npm:^0.52.4"
     ts-node: "npm:^10.9.2"
     tunnel-rat: "npm:^0.1.2"
@@ -12025,9 +12025,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"three-stdlib@npm:^2.35.6":
-  version: 2.35.6
-  resolution: "three-stdlib@npm:2.35.6"
+"three-stdlib@npm:^2.36.1":
+  version: 2.36.1
+  resolution: "three-stdlib@npm:2.36.1"
   dependencies:
     "@types/draco3d": "npm:^1.4.0"
     "@types/offscreencanvas": "npm:^2019.6.4"
@@ -12037,7 +12037,7 @@ __metadata:
     potpack: "npm:^1.0.1"
   peerDependencies:
     three: ">=0.128.0"
-  checksum: 10c0/cc986c41978e26416b8759ce31a190fd12226c3cd304ce159ccf2bf00faf57862d7b0d13a562c643c3d585557bdbef18f58aee82c68e46a99610b6c8aae45300
+  checksum: 10c0/6d04a3e6e1cf5a23e1d8807085609e5cfa999d342a8f4a3168432c4152e99ab555f7fd7ab22903d9639f33d8d19d2183c62931be34ad6c3ac8bd3ed879d973c2
   languageName: node
   linkType: hard
 

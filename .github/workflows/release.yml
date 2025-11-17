@@ -40,6 +40,15 @@ jobs:
       - run: yarn typecheck
       - run: yarn prettier
       - run: (cd test/e2e; ./e2e.sh ${{ matrix.three-version }})
+      - name: Upload Playwright screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-screenshots-${{ matrix.three-version }}
+          path: |
+            test/e2e/test-results/**
+          if-no-files-found: ignore
+          retention-days: 7
 
   build-and-release:
     needs: test

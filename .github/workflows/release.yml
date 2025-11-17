@@ -46,7 +46,7 @@ jobs:
         with:
           name: playwright-screenshots-${{ matrix.three-version }}
           path: |
-            test/e2e/test-results/**
+            test-results/**
           if-no-files-found: ignore
           retention-days: 7
 

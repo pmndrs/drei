@@ -16,18 +16,21 @@ concurrency:
 
 jobs:
   test:
-    strategy:
-      fail-fast: false
-      matrix:
-        three-version: ['0.159.0', '0.180.0', 'latest']
-    # 0.159.0 is mandatory; others are informational
-    continue-on-error: ${{ matrix.three-version != '0.159.0' }}
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/pmndrs/playwright:drei
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
+
+    # 0.159.0 is mandatory; others are informational
+    strategy:
+      fail-fast: false
+      matrix:
+        three-version: ['0.159.0', '0.180.0', 'latest']
+    continue-on-error: ${{ matrix.three-version != '0.159.0' }}
+    name: test (w/ three@${{ matrix['three-version'] }})
+    
     steps:
       - uses: actions/checkout@v4
       - run: corepack enable

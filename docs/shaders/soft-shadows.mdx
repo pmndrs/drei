@@ -23,7 +23,7 @@ type SoftShadowsProps = {
 }
 ```
 
-Injects percent closer soft shadows (pcss) into threes shader chunk. Mounting and unmounting this component will lead to all shaders being be re-compiled, although it will only cause overhead if SoftShadows is mounted after the scene has already rendered, if it mounts with everything else in your scene shaders will compile naturally.
+Injects percent closer soft shadows (pcss) into threes shader chunk. Mounting and unmounting this component will cause all shaders to be re-compiled, although it will only cause overhead if SoftShadows is mounted after the scene has already rendered, if it mounts with everything else in your scene shaders will compile naturally.
 
 ```jsx
 <SoftShadows />

@@ -49,13 +49,7 @@ const getIBLRadiance_patch = /* glsl */ `
 #endif
 `
 
-// FIXME Replace with `THREE.WebGLProgramParametersWithUniforms` type when able to target @types/three@0.160.0
-interface MaterialShader {
-  vertexShader: string
-  fragmentShader: string
-  defines: { [define: string]: string | number | boolean } | undefined
-  uniforms: { [uniform: string]: THREE.IUniform }
-}
+type MaterialShader = THREE.WebGLProgramParametersWithUniforms
 
 function boxProjectedEnvMap(shader: MaterialShader, envMapPosition: THREE.Vector3, envMapSize: THREE.Vector3) {
   // defines

@@ -38,16 +38,17 @@ export function Select({
   const { setEvents, camera, raycaster, gl, controls, size, get } = useThree()
   const [hovered, hover] = React.useState(false)
   const [active, dispatch] = React.useReducer(
-    // @ts-expect-error
-    (state, { object, shift }: { object?: THREE.Object3D | THREE.Object3D[]; shift?: boolean }): THREE.Object3D[] => {
+    (
+      state: THREE.Object3D[],
+      { object, shift }: { object?: THREE.Object3D | THREE.Object3D[]; shift?: boolean }
+    ): THREE.Object3D[] => {
       if (object === undefined) return []
       else if (Array.isArray(object)) return object
       else if (!shift) return state[0] === object ? [] : [object]
-      // @ts-expect-error
       else if (state.includes(object)) return state.filter((o) => o !== object)
       else return [object, ...state]
     },
-    []
+    [] as THREE.Object3D[]
   )
   React.useEffect(() => {
     if (downed) onChange?.(active)

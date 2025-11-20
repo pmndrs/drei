@@ -17,7 +17,7 @@ import {
 
 import * as React from 'react'
 import { forwardRef, useMemo, useEffect } from 'react'
-import { extend, useFrame, useThree, ReactThreeFiber, EventManager, ThreeElement } from '@react-three/fiber'
+import { extend, useFrame, useThree, EventManager, ThreeElement } from '@react-three/fiber'
 
 import CameraControlsImpl from 'camera-controls'
 import { ForwardRefComponent, Overwrite } from '../helpers/ts-utils'

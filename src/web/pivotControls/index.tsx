@@ -82,6 +82,7 @@ export type PivotControlsProps = {
   onDragEnd?: () => void
   /** Set this to false if you want the gizmo to be visible through faces */
   depthTest?: boolean
+  renderOrder?: number
   opacity?: number
   visible?: boolean
   userData?: { [key: string]: any }
@@ -115,6 +116,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
       rotationLimits,
       scaleLimits,
       depthTest = true,
+      renderOrder = 500,
       axisColors = ['#ff2060', '#20df80', '#2080ff'],
       hoveredColor = '#ffff40',
       annotations = false,
@@ -197,6 +199,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
         lineWidth,
         fixed,
         depthTest,
+        renderOrder,
         userData,
         annotations,
         annotationsClass,

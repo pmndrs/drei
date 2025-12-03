@@ -1,6 +1,26 @@
 #!/bin/sh
 set -ex
 
+THREE_VERSION="$1"
+if [ -z "$THREE_VERSION" ]; then
+  echo "Usage: $0 <three-version>  (ex: $0 0.159.0)"
+  exit 1
+fi
+
+fixedThree() {
+  local version="$1"
+  local pkg="$2"
+
+  local tmp
+  tmp=$(mktemp)
+
+  jq --arg v "$version" '
+    .dependencies = (.dependencies // {}) |
+    .dependencies.three = $v
+  ' "$pkg" > "$tmp" \
+    && mv "$tmp" "$pkg"
+}
+
 PORT=5188
 DIST=../../dist
 tmp=$(mktemp -d)
@@ -39,6 +59,7 @@ appdir="$tmp/$appname"
 (cd $tmp; npm create -y vite $appname -- --template react-ts)
 
 # drei
+fixedThree $THREE_VERSION "$appdir/package.json"
 (cd $appdir; npm i; npm i $TGZ)
 
 # App.tsx
@@ -65,6 +86,7 @@ appdir="$tmp/$appname"
 (cd $tmp; npx -y create-next-app@latest $appname --ts --no-eslint --no-tailwind --no-src-dir --app --import-alias "@/*")
 
 # drei
+fixedThree $THREE_VERSION "$appdir/package.json"
 (cd $appdir; npm i $TGZ)
 
 # App.tsx
@@ -85,39 +107,40 @@ kill_app
 # (using Next.js)
 #
 
-appname=cjsapp
-appdir="$tmp/$appname"
+# appname=cjsapp
+# appdir="$tmp/$appname"
 
-# create app
-(cd $tmp; npx -y create-next-app@latest $appname --ts --no-eslint --no-tailwind --no-src-dir --app --import-alias "@/*")
+# # create app
+# (cd $tmp; npx -y create-next-app@latest $appname --ts --no-eslint --no-tailwind --no-src-dir --app --import-alias "@/*")
 
-# drei
-(cd $appdir; npm i $TGZ)
+# # drei
+# fixedThree $THREE_VERSION "$appdir/package.json"
+# (cd $appdir; npm i $TGZ)
 
-# App.tsx
-cp App.tsx $appdir/app/page.tsx
+# # App.tsx
+# cp App.tsx $appdir/app/page.tsx
 
-# next.config.mjs
-cat <<EOF >$appdir/next.config.mjs
-console.log('🦆 CJS override (next.config.mjs)')
-import path from 'path'
+# # next.config.mjs
+# cat <<EOF >$appdir/next.config.mjs
+# console.log('🦆 CJS override (next.config.mjs)')
+# import path from 'path'
 
-/** @type {import('next').NextConfig} */
-export default {
-  //
-  // We force Next to use drei's CJS version here
-  //
-  webpack: (config) => {
-    config.resolve.alias['@react-three/drei'] = path.resolve('node_modules/@react-three/drei/index.cjs.js')
-    return config
-  },
-}
-EOF
+# /** @type {import('next').NextConfig} */
+# export default {
+#   //
+#   // We force Next to use drei's CJS version here
+#   //
+#   webpack: (config) => {
+#     config.resolve.alias['@react-three/drei'] = path.resolve('node_modules/@react-three/drei/index.cjs.js')
+#     return config
+#   },
+# }
+# EOF
 
-# build+start+playwright
-(cd $appdir; npm run build; npm start -- -p $PORT &)
-snapshot
-kill_app
+# # build+start+playwright
+# (cd $appdir; npm run build; npm start -- -p $PORT &)
+# snapshot
+# kill_app
 
 #
 #  ██████╗██████╗  █████╗ 

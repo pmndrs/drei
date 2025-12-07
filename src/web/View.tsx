@@ -1,10 +1,12 @@
 import * as React from 'react'
-import * as THREE from 'three'
+import * as THREE from 'three/webgpu'
 import { RootState, context, createPortal, useFrame, useThree } from '@react-three/fiber'
 import tunnel from 'tunnel-rat'
 
 const isOrthographicCamera = (def: any): def is THREE.OrthographicCamera =>
   def && (def as THREE.OrthographicCamera).isOrthographicCamera
+const isWebGPURenderer = (def: any): def is THREE.WebGPURenderer =>
+  def && (def as THREE.WebGPURenderer).isWebGPURenderer
 const col = /* @__PURE__ */ new THREE.Color()
 const tracked = /* @__PURE__ */ tunnel()
 
@@ -66,6 +68,7 @@ function prepareSkissor(
   state: RootState,
   {
     left,
+    top,
     bottom,
     width,
     height,
@@ -93,8 +96,13 @@ function prepareSkissor(
   }
   autoClear = state.gl.autoClear
   state.gl.autoClear = false
-  state.gl.setViewport(left, bottom, width, height)
-  state.gl.setScissor(left, bottom, width, height)
+  if(isWebGPURenderer(state.gl)) {
+    state.gl.setViewport(left, top, width, height)
+    state.gl.setScissor(left, top, width, height)
+  } else {
+    state.gl.setViewport(left, bottom, width, height)
+    state.gl.setScissor(left, bottom, width, height)
+  }
   state.gl.setScissorTest(true)
   return autoClear
 }

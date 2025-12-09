@@ -146,10 +146,12 @@ function Container({ visible = true, canvasSize, scene, index, children, frames,
     const curRect = rect.current
     if (curRect && (!visible || !isOffscreen)) {
       // If the view is not visible clear it once, but stop rendering afterwards!
-      const { position } = computeContainerPosition(canvasSize, curRect)
-      const autoClear = prepareSkissor(rootState, position)
-      clear(rootState)
-      finishSkissor(rootState, autoClear)
+      const { position, isOffscreen: _isOffscreen } = computeContainerPosition(canvasSize, curRect)
+      if(!_isOffscreen) {
+        const autoClear = prepareSkissor(rootState, position)
+        clear(rootState)
+        finishSkissor(rootState, autoClear)
+      }
     }
   }, [visible, isOffscreen])
 
@@ -162,10 +164,12 @@ function Container({ visible = true, canvasSize, scene, index, children, frames,
     rootState.setEvents({ connected: track.current })
     return () => {
       if (curRect) {
-        const { position } = computeContainerPosition(canvasSize, curRect)
-        const autoClear = prepareSkissor(rootState, position)
-        clear(rootState)
-        finishSkissor(rootState, autoClear)
+        const { position, isOffscreen: _isOffscreen } = computeContainerPosition(canvasSize, curRect)
+        if(!_isOffscreen) {
+          const autoClear = prepareSkissor(rootState, position)
+          clear(rootState)
+          finishSkissor(rootState, autoClear)
+        }
       }
       rootState.setEvents({ connected: old })
     }

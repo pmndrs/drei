@@ -280,6 +280,11 @@ export type ViewportProps = { Port: () => React.JSX.Element } & React.ForwardRef
   ViewProps & React.RefAttributes<HTMLElement | THREE.Group>
 >
 
+function ViewportTunnel() {
+  useFrame((state) => state.gl.clear(true, true, true), -1)
+  return <tracked.Out />
+}
+
 export const View = /* @__PURE__ */ (() => {
   const _View = React.forwardRef((props: ViewProps, fref: React.ForwardedRef<HTMLElement | THREE.Group>) => {
     // If we're inside a canvas we should be able to access the context store
@@ -290,7 +295,7 @@ export const View = /* @__PURE__ */ (() => {
     else return <CanvasView ref={fref as unknown as React.ForwardedRef<THREE.Group>} {...props} />
   }) as ViewportProps
 
-  _View.Port = () => <tracked.Out />
+  _View.Port = () => <ViewportTunnel />
 
   return _View
 })()

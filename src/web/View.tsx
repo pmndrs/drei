@@ -133,7 +133,7 @@ function Container({ visible = true, canvasSize, scene, index, children, frames,
     if (rect.current) {
       const { position, isOffscreen: _isOffscreen } = computeContainerPosition(canvasSize, rect.current)
       if (isOffscreen !== _isOffscreen) setOffscreen(_isOffscreen)
-      if (visible && !isOffscreen && rect.current) {
+      if (visible && !_isOffscreen && rect.current) {
         const autoClear = prepareSkissor(state, position)
         // When children are present render the portalled scene, otherwise the default scene
         state.gl.render(children ? state.scene : scene, state.camera)

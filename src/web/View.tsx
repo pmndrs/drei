@@ -55,12 +55,13 @@ export type ViewProps = {
 }
 
 function computeContainerPosition(canvasSize: CanvasSize, trackRect: DOMRect) {
-  const { right, top, left: trackLeft, bottom: trackBottom, width, height } = trackRect
-  const isOffscreen = trackRect.bottom < 0 || top > canvasSize.height || right < 0 || trackRect.left > canvasSize.width
+  const { right, top: trackTop, left: trackLeft, bottom: trackBottom, width, height } = trackRect
+  const isOffscreen = trackRect.bottom < 0 || trackTop > canvasSize.height || right < 0 || trackRect.left > canvasSize.width
 
   const canvasBottom = canvasSize.top + canvasSize.height
   const bottom = canvasBottom - trackBottom
   const left = trackLeft - canvasSize.left
+  const top = trackTop - canvasSize.top
   return { position: { width, height, left, top, bottom, right }, isOffscreen }
 }
 

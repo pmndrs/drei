@@ -14,8 +14,8 @@ class SparklesImplMaterial extends THREE.ShaderMaterial {
       vertexShader: /* glsl */ `
         uniform float pixelRatio;
         uniform float time;
-        attribute float size;  
-        attribute float speed;  
+        attribute float size;
+        attribute float speed;
         attribute float opacity;
         attribute vec3 noise;
         attribute vec3 color;
@@ -28,8 +28,8 @@ class SparklesImplMaterial extends THREE.ShaderMaterial {
           modelPosition.z += cos(time * speed + modelPosition.x * noise.y * 100.0) * 0.2;
           modelPosition.x += cos(time * speed + modelPosition.x * noise.z * 100.0) * 0.2;
           vec4 viewPosition = viewMatrix * modelPosition;
-          vec4 projectionPostion = projectionMatrix * viewPosition;
-          gl_Position = projectionPostion;
+          vec4 projectionPosition = projectionMatrix * viewPosition;
+          gl_Position = projectionPosition;
           gl_PointSize = size * 25. * pixelRatio;
           gl_PointSize *= (1.0 / - viewPosition.z);
           vColor = color;

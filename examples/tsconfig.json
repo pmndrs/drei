@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+
+    /* Path aliases */
+    "baseUrl": ".",
+    "paths": {
+      "@react-three/drei/core": ["../src/core"],
+      "@react-three/drei/legacy": ["../src/legacy"],
+      "@react-three/drei/webgpu": ["../src/webgpu"],
+      "@react-three/drei/external": ["../src/external"],
+      "@react-three/drei/experimental": ["../src/experimental"],
+      "@react-three/drei": ["../src"],
+      "#three": ["../node_modules/three"],
+      "#three-addons": ["../src/utils/three-addons"],
+      "#drei-platform": ["../src/utils/drei-platform"],
+      "@core/*": ["../src/core/*"],
+      "@legacy/*": ["../src/legacy/*"],
+      "@webgpu/*": ["../src/webgpu/*"],
+      "@external/*": ["../src/external/*"],
+      "@experimental/*": ["../src/experimental/*"],
+      "@utils/*": ["../src/utils/*"]
+    }
+  },
+  "include": ["src", "../src"]
+}
+

@@ -1,6 +1,6 @@
-import * as THREE from 'three'
+import * as THREE from '#three'
 import * as React from 'react'
-import { Color, Group } from 'three'
+import { Color, Group } from '#three'
 import { MarchingCubes as MarchingCubesImpl } from 'three-stdlib'
 import { ThreeElements, useFrame } from '@react-three/fiber'
 import { ForwardRefComponent } from '../../utils/ts-utils'

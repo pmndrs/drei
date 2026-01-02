@@ -1,4 +1,4 @@
-import * as THREE from 'three'
+import * as THREE from '#three'
 import * as React from 'react'
 
 export type OnDragStartProps = {

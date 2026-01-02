@@ -1,8 +1,8 @@
 import * as React from 'react'
-import * as THREE from 'three'
+import * as THREE from '#three'
 import { ThreeEvent, useThree } from '@react-three/fiber'
 
-import { Html } from '../../../web/Html'
+import { Html } from '@core/UI/Html'
 import { context } from './context'
 import { calculateScaleFactor } from '../../../utils/calculateScaleFactor'
 

@@ -1,10 +1,16 @@
 import * as React from 'react'
 import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
-import { Group, Matrix4, Object3D, OrthographicCamera as OrthographicCameraImpl, Quaternion, Vector3 } from 'three'
-import { OrthographicCamera } from '../../cameras/OrthographicCamera'
+import { Group, Matrix4, Object3D, OrthographicCamera as OrthographicCameraImpl, Quaternion, Vector3 } from '#three'
 import { OrbitControls as OrbitControlsType } from 'three-stdlib'
-import { Hud } from '../../portals/Hud'
-import { CameraControls as CameraControlsType } from '../../../external/CameraControls'
+
+//* Core Components --------------------------------
+import { OrthographicCamera } from '../../Cameras/OrthographicCamera'
+
+//* External Components --------------------------------
+import { CameraControls as CameraControlsType } from '../../../external/Controls/CameraControls'
+
+//* Platform Components (WebGL/WebGPU split) --------------------------------
+import { Hud } from '#drei-platform'
 
 type GizmoHelperContext = {
   tweenCamera: (direction: Vector3) => void

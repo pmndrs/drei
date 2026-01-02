@@ -1,8 +1,8 @@
 import * as React from 'react'
-import * as THREE from 'three'
+import * as THREE from '#three'
 import { ThreeEvent, useThree } from '@react-three/fiber'
-import { Line } from '../../shapes/Line'
-import { Html } from '../../../web/Html'
+import { Line } from '../../Geometry/Line'
+import { Html } from '../../UI/Html'
 import { context } from './context'
 
 const clickDir = /* @__PURE__ */ new THREE.Vector3()

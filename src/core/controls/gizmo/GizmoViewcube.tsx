@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useThree, ThreeEvent } from '@react-three/fiber'
 import { useGizmoContext } from './GizmoHelper'
-import { CanvasTexture, Vector3 } from 'three'
+import { CanvasTexture, Vector3 } from '#three'
 
 type XYZ = [number, number, number]
 type GenericProps = {

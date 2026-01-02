@@ -1,6 +1,6 @@
 import { useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
-import * as THREE from 'three'
+import * as THREE from '#three'
 
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 import { AxisArrow } from './AxisArrow'

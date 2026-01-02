@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useThree, ThreeEvent, ThreeElements } from '@react-three/fiber'
-import { CanvasTexture } from 'three'
+import { CanvasTexture } from '#three'
 import { useGizmoContext } from './GizmoHelper'
 
 type AxisProps = {

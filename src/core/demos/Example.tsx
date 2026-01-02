@@ -1,10 +1,10 @@
 /* eslint react-hooks/exhaustive-deps: 1 */
 import * as React from 'react'
-import * as THREE from 'three'
+import * as THREE from '#three'
 import type { Color } from '@react-three/fiber'
 
-import { Text3D } from '../Text3D'
-import { Center } from '../staging/Center'
+import { Text3D } from '../Geometry/Text3D'
+import { Center } from '../Staging/Center'
 
 export type ExampleProps = {
   /** Text font to use */

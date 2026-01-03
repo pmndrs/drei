@@ -1,8 +1,8 @@
 import { ReactThreeFiber, ThreeElement, useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from '#three'
-import { TrackballControls as TrackballControlsImpl } from 'three-stdlib'
-import { ForwardRefComponent, Overwrite } from '../../../utils/ts-utils'
+import { TrackballControls as TrackballControlsImpl } from 'three/examples/jsm/controls/TrackballControls.js'
+import { ForwardRefComponent, Overwrite } from '@utils/ts-utils'
 
 export type TrackballControlsProps = Omit<
   Overwrite<

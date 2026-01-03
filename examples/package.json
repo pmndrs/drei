@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "@react-three/drei": "link:..",
-    "@react-three/fiber": "^9.0.0",
+    "@react-three/fiber": "file:../lib/react-three-fiber-10.0.0-alpha.0.tgz",
+    "leva": "^0.10.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^6.28.0",

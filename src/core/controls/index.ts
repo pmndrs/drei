@@ -3,7 +3,6 @@
 export * from './ArcballControls'
 export * from './DeviceOrientationControls'
 export * from './DragControls'
-export * from './FaceControls'
 export * from './FirstPersonControls'
 export * from './FlyControls'
 export * from './KeyboardControls'
@@ -15,6 +14,5 @@ export * from './PresentationControls'
 export * from './ScrollControls'
 export * from './Select'
 export * from './TrackballControls'
-export * from './TransformControls'
 
 

@@ -1,8 +1,8 @@
 import { EventManager, ReactThreeFiber, ThreeElement, useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from '#three'
-import { MapControls as MapControlsImpl } from 'three-stdlib'
-import { ForwardRefComponent, Overwrite } from '../../../utils/ts-utils'
+import { MapControls as MapControlsImpl } from 'three/examples/jsm/controls/MapControls.js'
+import { ForwardRefComponent, Overwrite } from '@utils/ts-utils'
 
 export type MapControlsProps = Omit<
   Overwrite<

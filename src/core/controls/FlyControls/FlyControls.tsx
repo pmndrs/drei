@@ -1,8 +1,8 @@
 import { EventManager, ThreeElement, useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from '#three'
-import { FlyControls as FlyControlsImpl } from 'three-stdlib'
-import { ForwardRefComponent } from '../../../utils/ts-utils'
+import { FlyControls as FlyControlsImpl } from 'three/examples/jsm/controls/FlyControls.js'
+import { ForwardRefComponent } from '@utils/ts-utils'
 
 export type FlyControlsProps = Omit<ThreeElement<typeof FlyControlsImpl>, 'ref' | 'args'> & {
   onChange?: (e?: THREE.Event) => void

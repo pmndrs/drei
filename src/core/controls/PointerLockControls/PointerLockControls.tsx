@@ -2,8 +2,8 @@ import { EventManager, RootState, ThreeElement, useThree } from '@react-three/fi
 import { DomEvent } from '@react-three/fiber/'
 import * as React from 'react'
 import * as THREE from '#three'
-import { PointerLockControls as PointerLockControlsImpl } from 'three-stdlib'
-import { ForwardRefComponent } from '../../../utils/ts-utils'
+import { PointerLockControls as PointerLockControlsImpl } from 'three/examples/jsm/controls/PointerLockControls.js'
+import { ForwardRefComponent } from '@utils/ts-utils'
 
 export type PointerLockControlsProps = Omit<ThreeElement<typeof PointerLockControlsImpl>, 'ref' | 'args'> & {
   domElement?: HTMLElement

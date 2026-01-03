@@ -33,7 +33,7 @@ import {
 import * as React from 'react'
 import { extend, ReactThreeFiber, ThreeElements, useFrame, useThree } from '@react-three/fiber'
 import { useFBO } from '@core/Portal/Fbo'
-import { useHelper } from '@core/Helpers/useHelper'
+import { useHelper } from '@core/Gizmos/useHelper'
 import { Edges } from '@core/Geometry/Edges'
 import { ForwardRefComponent } from '@utils/ts-utils'
 

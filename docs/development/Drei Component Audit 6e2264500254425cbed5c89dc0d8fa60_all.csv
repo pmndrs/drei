@@ -126,7 +126,7 @@ FaceLandmarker,Helpers,,https://drei.docs.pmnd.rs/misc/face-landmarker,,No,,,Unk
 useTrail,Helpers,,https://drei.docs.pmnd.rs/misc/trail-use-trail,,No,,,Unknown,,Poimandres,Experimental,,,,,
 Stats,Performance,,https://drei.docs.pmnd.rs/misc/stats,,No,,,Unknown,,,,,,,,
 CycleRaycast,Misc,,https://drei.docs.pmnd.rs/misc/cycle-raycast,,No,,,Unknown,,,,,,,,
-useCamera,Helpers,,https://drei.docs.pmnd.rs/misc/use-camera,,No,,,Unknown,,,,,,,,
+useCustomRaycast,Helpers,,https://drei.docs.pmnd.rs/misc/use-camera,,No,,,Unknown,,,,,,,,
 WebcamVideoTexture,Loaders,,https://drei.docs.pmnd.rs/loaders/webcam-video-texture,,No,,,Unknown,,,,,,,,
 useCubeCamera,Helpers,,https://drei.docs.pmnd.rs/misc/cube-camera-use-cube-camera,,No,,,Unknown,,,,,,,,
 Shadow,Staging,3,https://drei.docs.pmnd.rs/staging/shadow,,Yes,,,Both,,Drei,Standard,,Component,,,Should

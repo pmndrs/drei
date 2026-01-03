@@ -25,7 +25,7 @@ Track the status of each component through the migration process.
 |-----------|-----------|---------|-------|-------|------|-------|
 | OrthographicCamera | 🟢 | 🟡 | 🟡 | 🔴 | ⚪ | Needs Fbo import fix |
 | PerspectiveCamera | 🟢 | 🟡 | 🟡 | 🔴 | ⚪ | Needs Fbo import fix |
-| useCamera | 🟢 | 🟢 | 🟢 | 🔴 | ⚪ | |
+| useCustomRaycast | 🟢 | 🟢 | 🟢 | 🔴 | ⚪ | |
 
 ### Controls (18)
 

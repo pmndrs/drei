@@ -74,7 +74,7 @@ export default function RoundedBoxDemo() {
 |-----------|-----------|---------|-------|---------|-------|------|-------|
 | OrthographicCamera | 🟢 | 🟢 | 🟡 | 🟢 | 🔴 | ⚪ | Example created |
 | PerspectiveCamera | 🟢 | 🟢 | 🟡 | 🟢 | 🔴 | ⚪ | Example created |
-| useCamera | 🟢 | 🟢 | 🟢 | 🔴 | 🔴 | ⚪ | Hook - needs example |
+| useCustomRaycast | 🟢 | 🟢 | 🟢 | 🔴 | 🔴 | ⚪ | Hook - needs example |
 
 ### Controls (19)
 

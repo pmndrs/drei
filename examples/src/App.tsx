@@ -9,7 +9,7 @@ import ComponentCatalog from './catalog/ComponentCatalog'
 // Core - Cameras
 import OrthographicCameraDemo from './demos/core/cameras/OrthographicCamera'
 import PerspectiveCameraDemo from './demos/core/cameras/PerspectiveCamera'
-
+import UseCustomRaycastDemo from './demos/core/cameras/UseCustomRaycast'
 // Core - Controls
 import OrbitControlsDemo from './demos/core/controls/OrbitControls'
 
@@ -38,6 +38,13 @@ const demos: Demo[] = [
     path: '/core/cameras/perspective',
     name: 'PerspectiveCamera',
     component: PerspectiveCameraDemo,
+    tier: 'core',
+    category: 'Cameras',
+  },
+  {
+    path: '/core/cameras/usecustomraycast',
+    name: 'UseCustomRaycast',
+    component: UseCustomRaycastDemo,
     tier: 'core',
     category: 'Cameras',
   },
@@ -180,7 +187,12 @@ function AppContent() {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
       <AppContent />
     </BrowserRouter>
   )

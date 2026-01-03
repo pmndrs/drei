@@ -47,10 +47,10 @@ export const components: ComponentEntry[] = [
     notes: 'Example created',
   },
   {
-    name: 'useCamera',
+    name: 'useCustomRaycast',
     tier: 'core',
     category: 'Cameras',
-    examplePath: '/core/cameras/usecamera',
+    examplePath: '/core/cameras/usecustomraycast',
     structure: '🟢',
     imports: '🟢',
     types: '🟢',

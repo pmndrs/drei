@@ -1,5 +1,5 @@
 import { EventManager, RootState, ThreeElement, useThree } from '@react-three/fiber'
-import { DomEvent } from '@react-three/fiber/dist/declarations/src/core/events'
+import { DomEvent } from '@react-three/fiber/'
 import * as React from 'react'
 import * as THREE from '#three'
 import { PointerLockControls as PointerLockControlsImpl } from 'three-stdlib'

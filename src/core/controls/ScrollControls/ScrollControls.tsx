@@ -2,7 +2,7 @@ import * as THREE from '#three'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
 import { context as fiberContext, RootState, useFrame, useThree } from '@react-three/fiber'
-import { DomEvent } from '@react-three/fiber/dist/declarations/src/core/events'
+import { DomEvent } from '@react-three/fiber/'
 import { easing } from 'maath'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 

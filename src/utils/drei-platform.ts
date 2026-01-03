@@ -25,14 +25,13 @@ export { Effects } from '../legacy/Abstractions/Effects'
 
 //* Platform-specific Three.js classes --------------------------------
 export { WebGLRenderTarget as RenderTarget } from 'three'
+// WebGL uses WebGLCubeRenderTarget directly
+export { WebGLCubeRenderTarget as CubeRenderTarget } from 'three'
 
 //* Portal --------------------------------
 export { RenderTexture } from '../legacy/Portal/RenderTexture'
 export { RenderCubeTexture } from '../legacy/Portal/RenderCubeTexture'
 export { Hud } from '../legacy/Portal/Hud'
-
-//* Cameras --------------------------------
-export { CubeCamera } from '../legacy/Cameras/CubeCamera'
 
 // Add more split components here as needed
 

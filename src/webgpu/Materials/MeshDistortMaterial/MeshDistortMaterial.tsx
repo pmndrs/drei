@@ -5,7 +5,7 @@ import { IUniform, MeshPhysicalMaterial, MeshPhysicalMaterialParameters } from '
 import { ThreeElements, useFrame } from '@react-three/fiber'
 // @ts-ignore
 import distort from '../helpers/glsl/distort.vert.glsl'
-import { ForwardRefComponent } from '../../utils/ts-utils'
+import { ForwardRefComponent } from '@utils/ts-utils'
 
 interface Uniform<T> {
   value: T
@@ -90,7 +90,6 @@ export type MeshDistortMaterialProps = Omit<ThreeElements['distortMaterialImpl']
 export const MeshDistortMaterial: ForwardRefComponent<MeshDistortMaterialProps, DistortMaterialImpl> =
   /* @__PURE__ */ React.forwardRef(({ speed = 1, ...props }, ref) => {
     const [material] = React.useState(() => new DistortMaterialImpl())
-    useFrame((state) => material && (material.time = state.clock.elapsedTime * speed))
+    useFrame((state) => material && (material.time = state.elapsed * speed))
     return <primitive object={material} ref={ref} attach="material" {...props} />
   })
-

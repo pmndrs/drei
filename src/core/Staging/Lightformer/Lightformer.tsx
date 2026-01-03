@@ -1,7 +1,7 @@
 import { applyProps, ReactThreeFiber, ThreeElements } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from '#three'
-import { ForwardRefComponent } from '../../../utils/ts-utils'
+import { ForwardRefComponent } from '@utils/ts-utils'
 
 export type LightProps = Omit<ThreeElements['mesh'], 'ref'> & {
   args?: any[]

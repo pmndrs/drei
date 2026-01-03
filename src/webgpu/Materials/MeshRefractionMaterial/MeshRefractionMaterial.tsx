@@ -1,170 +1,397 @@
-//* TODO: Convert GLSL shaders to TSL for WebGPU ==============================
+//* MeshRefractionMaterial - TSL WebGPU Implementation ==============================
+// Diamond/Crystal refraction material with chromatic aberration and fresnel
+// Original Author: N8Programs https://github.com/N8python/diamonds
+// TSL Conversion: drei webgpu migration - Dennis Smolek
+//
+// NOTE: This is a simplified TSL implementation. The original GLSL version uses
+// three-mesh-bvh for accurate ray-mesh intersection during total internal reflection.
+// TSL support for BVH traversal is pending - see: https://github.com/gkjohnson/three-mesh-bvh
+// This version uses an approximated multi-bounce refraction that works well for
+// convex gem-like shapes but may not be as accurate for complex concave geometry.
 
-// Author: N8Programs
-// https://github.com/N8python/diamonds
+import * as THREE from 'three/webgpu'
+import { MeshPhysicalNodeMaterial } from 'three/webgpu'
+import {
+  Fn,
+  uniform,
+  uniformTexture,
+  vec2,
+  vec3,
+  vec4,
+  float,
+  int,
+  texture,
+  positionWorld,
+  normalWorld,
+  normalize,
+  dot,
+  length,
+  refract,
+  reflect,
+  max,
+  mix,
+  pow,
+  select,
+  cameraPosition,
+  Loop,
+} from 'three/tsl'
+import * as React from 'react'
+import { extend, ThreeElements, useThree } from '@react-three/fiber'
+import { ForwardRefComponent } from '@utils/ts-utils'
 
-import * as THREE from 'three'
-import { shaderMaterial } from './shaderMaterial'
-import { MeshBVHUniformStruct, shaderStructs, shaderIntersectFunction } from 'three-mesh-bvh'
-import { version } from '../../utils/constants'
+//* Types ==============================
 
-export const MeshRefractionMaterial = /* @__PURE__ */ shaderMaterial(
-  {
-    envMap: null,
-    bounces: 3,
-    ior: 2.4,
-    correctMips: true,
-    aberrationStrength: 0.01,
-    fresnel: 0,
-    bvh: /* @__PURE__ */ new MeshBVHUniformStruct(),
-    color: /* @__PURE__ */ new THREE.Color('white'),
-    opacity: 1,
-    resolution: /* @__PURE__ */ new THREE.Vector2(),
-    viewMatrixInverse: /* @__PURE__ */ new THREE.Matrix4(),
-    projectionMatrixInverse: /* @__PURE__ */ new THREE.Matrix4(),
-  },
-  /*glsl*/ `
-  uniform mat4 viewMatrixInverse;
+export type MeshRefractionMaterialType = Omit<ThreeElements['meshPhysicalMaterial'], 'args' | 'color'> & {
+  /** Environment map for reflections/refractions */
+  envMap?: THREE.CubeTexture | THREE.Texture | null
+  /** Number of internal bounces, default: 3 */
+  bounces?: number
+  /** Index of refraction, default: 2.4 (diamond) */
+  ior?: number
+  /** Fresnel intensity, default: 0 */
+  fresnel?: number
+  /** Chromatic aberration strength, default: 0.01 */
+  aberrationStrength?: number
+  /** Use fast chromatic aberration (less accurate but faster), default: true */
+  fastChroma?: boolean
+  /** Tint color, default: white */
+  tintColor?: THREE.ColorRepresentation
+  /** Opacity, default: 1 */
+  opacity?: number
+}
 
-  varying vec3 vWorldPosition;
-  varying vec3 vNormal;
-  varying mat4 vModelMatrixInverse;
+export type MeshRefractionMaterialProps = Omit<MeshRefractionMaterialType, 'ref'>
 
-  #include <color_pars_vertex>
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    meshRefractionMaterial: MeshRefractionMaterialType
+  }
+}
 
-  void main() {
-    #include <color_vertex>
+//* TSL Helper Functions ==============================
 
-    vec4 transformedNormal = vec4(normal, 0.0);
-    vec4 transformedPosition = vec4(position, 1.0);
-    #ifdef USE_INSTANCING
-      transformedNormal = instanceMatrix * transformedNormal;
-      transformedPosition = instanceMatrix * transformedPosition;
-    #endif
+// Fresnel effect - stronger at glancing angles
+const fresnelEffect = /* @__PURE__ */ Fn((inputs: any[]) => {
+  const [viewDir, normal, power] = inputs
+  const NdotV = float(1.0).add(dot(viewDir, normal))
+  return pow(NdotV, power)
+})
 
-    #ifdef USE_INSTANCING
-      vModelMatrixInverse = inverse(modelMatrix * instanceMatrix);
-    #else
-      vModelMatrixInverse = inverse(modelMatrix);
-    #endif
+// Equirectangular UV mapping for HDR environment maps
+const equirectUv = /* @__PURE__ */ Fn((inputs: any[]) => {
+  const [direction] = inputs
+  const dir = normalize(direction)
+  // Convert direction to spherical coordinates
+  const u = float(0.5).add(dir.z.atan2(dir.x).div(float(2.0).mul(Math.PI)))
+  const v = float(0.5).sub(dir.y.asin().div(Math.PI))
+  return vec2(u, v)
+})
 
-    vWorldPosition = (modelMatrix * transformedPosition).xyz;
-    vNormal = normalize((viewMatrixInverse * vec4(normalMatrix * transformedNormal.xyz, 0.0)).xyz);
-    gl_Position = projectionMatrix * viewMatrix * modelMatrix * transformedPosition;
-  }`,
-  /*glsl*/ `
-  #define ENVMAP_TYPE_CUBE_UV
-  precision highp isampler2D;
-  precision highp usampler2D;
-  varying vec3 vWorldPosition;
-  varying vec3 vNormal;
-  varying mat4 vModelMatrixInverse;
+// Simplified total internal reflection approximation
+// Without BVH, we approximate multiple bounces using the surface normal
+// and a distance-based estimation
+const approximateRefraction = /* @__PURE__ */ Fn((inputs: any[]) => {
+  const [rayDir, normal, iorValue, bounceCount, thickness] = inputs
+  // Initial refraction at surface entry
+  const entryDir = refract(rayDir, normal, float(1.0).div(iorValue)).toVar()
 
-  #include <color_pars_fragment>
+  // Check for total internal reflection at entry
+  const entryValid = length(entryDir).greaterThan(0.0)
 
-  #ifdef ENVMAP_TYPE_CUBEM
-    uniform samplerCube envMap;
-  #else
-    uniform sampler2D envMap;
-  #endif
+  // Approximate internal path - for convex shapes, we estimate exit point
+  // using the opposite normal and accumulated bounce direction
+  const exitNormal = normal.negate().toVar()
+  const currentDir = entryDir.toVar()
 
-  uniform float bounces;
-  ${shaderStructs}
-  ${shaderIntersectFunction}
-  uniform BVH bvh;
-  uniform float ior;
-  uniform bool correctMips;
-  uniform vec2 resolution;
-  uniform float fresnel;
-  uniform mat4 modelMatrix;
-  uniform mat4 projectionMatrixInverse;
-  uniform mat4 viewMatrixInverse;
-  uniform float aberrationStrength;
-  uniform vec3 color;
-  uniform float opacity;
+  // Simulate bounces by progressively perturbing the direction
+  // This is an approximation - true accuracy requires BVH ray tracing
+  Loop(int(bounceCount), ({ i }) => {
+    const fi = float(i).add(1.0)
 
-  float fresnelFunc(vec3 viewDirection, vec3 worldNormal) {
-    return pow( 1.0 + dot( viewDirection, worldNormal), 10.0 );
+    // Try to refract out
+    const exitDir = refract(currentDir, exitNormal, iorValue)
+    const canExit = length(exitDir).greaterThan(0.0)
+
+    // If we can exit, we're done
+    // If not, reflect internally and continue
+    const reflectedDir = reflect(currentDir, exitNormal)
+
+    // Blend between exit and reflection based on whether exit is possible
+    currentDir.assign(select(canExit, exitDir, reflectedDir))
+
+    // Slightly rotate exit normal for next iteration (simulates curved surface)
+    exitNormal.assign(normalize(exitNormal.add(reflectedDir.mul(0.1).div(fi))))
+  })
+
+  // Return entry direction if refraction failed, otherwise the computed exit direction
+  return select(entryValid, currentDir, reflect(rayDir, normal))
+})
+
+//* MeshRefractionMaterial Implementation ==============================
+
+class MeshRefractionMaterialImpl extends MeshPhysicalNodeMaterial {
+  //* Private Uniform Nodes --
+  private _envMap: THREE.TextureNode
+  private _bounces: THREE.UniformNode<number>
+  private _ior: THREE.UniformNode<number>
+  private _fresnel: THREE.UniformNode<number>
+  private _aberrationStrength: THREE.UniformNode<number>
+  private _color: THREE.UniformNode<THREE.Color>
+  private _opacityValue: THREE.UniformNode<number>
+  private _resolution: THREE.UniformNode<THREE.Vector2>
+  private _thickness: THREE.UniformNode<number>
+  private _fastChroma: boolean
+
+  /** Type flag for identification */
+  readonly isMeshRefractionMaterial = true
+
+  constructor(fastChroma = true) {
+    super()
+
+    this._fastChroma = fastChroma
+
+    //* Initialize Uniforms --
+    this._envMap = uniformTexture(new THREE.Texture())
+    this._bounces = uniform(3)
+    this._ior = uniform(2.4) // Diamond IOR
+    this._fresnel = uniform(0)
+    this._aberrationStrength = uniform(0.01)
+    this._color = uniform(new THREE.Color('white'))
+    this._opacityValue = uniform(1.0)
+    this._resolution = uniform(new THREE.Vector2(1, 1))
+    this._thickness = uniform(1.0) // Approximate thickness for refraction
+
+    //* Base Material Properties --
+    this.transparent = true
+    this.side = THREE.FrontSide
+
+    this._buildRefractionShader()
   }
 
-  vec3 totalInternalReflection(vec3 ro, vec3 rd, vec3 normal, float ior, mat4 modelMatrixInverse) {
-    vec3 rayOrigin = ro;
-    vec3 rayDirection = rd;
-    rayDirection = refract(rayDirection, normal, 1.0 / ior);
-    rayOrigin = vWorldPosition + rayDirection * 0.001;
-    rayOrigin = (modelMatrixInverse * vec4(rayOrigin, 1.0)).xyz;
-    rayDirection = normalize((modelMatrixInverse * vec4(rayDirection, 0.0)).xyz);
-    for(float i = 0.0; i < bounces; i++) {
-      uvec4 faceIndices = uvec4( 0u );
-      vec3 faceNormal = vec3( 0.0, 0.0, 1.0 );
-      vec3 barycoord = vec3( 0.0 );
-      float side = 1.0;
-      float dist = 0.0;
-      bvhIntersectFirstHit( bvh, rayOrigin, rayDirection, faceIndices, faceNormal, barycoord, side, dist );
-      vec3 hitPos = rayOrigin + rayDirection * max(dist - 0.001, 0.0);
-      vec3 tempDir = refract(rayDirection, faceNormal, ior);
-      if (length(tempDir) != 0.0) {
-        rayDirection = tempDir;
-        break;
+  private _buildRefractionShader() {
+    //* Capture uniforms for closure --
+    const envMapTex = this._envMap
+    const bouncesUniform = this._bounces
+    const iorUniform = this._ior
+    const fresnelUniform = this._fresnel
+    const aberrationUniform = this._aberrationStrength
+    const colorUniform = this._color
+    const opacityUniform = this._opacityValue
+    const thicknessUniform = this._thickness
+    const fastChroma = this._fastChroma
+
+    //* Output Node - Custom refraction with chromatic aberration --
+    this.outputNode = Fn(() => {
+      const worldPos = positionWorld
+      const worldNormal = normalize(normalWorld)
+
+      // View direction (from camera to fragment)
+      const viewDir = normalize(worldPos.sub(cameraPosition))
+
+      // Base color with tint
+      const baseColor = colorUniform.toVar()
+
+      //* Sample environment map with refraction --
+      // Get refracted direction for green channel (base)
+      const refractedDirG = approximateRefraction(
+        viewDir,
+        worldNormal,
+        max(iorUniform, 1.0),
+        bouncesUniform,
+        thicknessUniform
+      )
+
+      // Chromatic aberration - offset R and B channels
+      const aberration = aberrationUniform
+      const refractedDirR = vec3(0, 0, 0).toVar()
+      const refractedDirB = vec3(0, 0, 0).toVar()
+
+      // Fast chroma just offsets the direction vector
+      // Accurate chroma recalculates refraction with different IOR
+      const useFastChroma = fastChroma
+
+      if (useFastChroma) {
+        // Fast: offset direction
+        refractedDirR.assign(normalize(refractedDirG.add(vec3(aberration.mul(0.5)))))
+        refractedDirB.assign(normalize(refractedDirG.sub(vec3(aberration.mul(0.5)))))
+      } else {
+        // Accurate: different IOR per channel
+        refractedDirR.assign(
+          approximateRefraction(
+            viewDir,
+            worldNormal,
+            max(iorUniform.mul(float(1.0).sub(aberration)), 1.0),
+            bouncesUniform,
+            thicknessUniform
+          )
+        )
+        refractedDirB.assign(
+          approximateRefraction(
+            viewDir,
+            worldNormal,
+            max(iorUniform.mul(float(1.0).add(aberration)), 1.0),
+            bouncesUniform,
+            thicknessUniform
+          )
+        )
       }
-      rayDirection = reflect(rayDirection, faceNormal);
-      rayOrigin = hitPos + rayDirection * 0.01;
-    }
-    rayDirection = normalize((modelMatrix * vec4(rayDirection, 0.0)).xyz);
-    return rayDirection;
+
+      // Sample environment map for each channel
+      // Using equirectangular mapping for 2D textures
+      const uvR = equirectUv(refractedDirR)
+      const uvG = equirectUv(refractedDirG)
+      const uvB = equirectUv(refractedDirB)
+
+      const envColorR = texture(envMapTex, uvR).r
+      const envColorG = texture(envMapTex, uvG).g
+      const envColorB = texture(envMapTex, uvB).b
+
+      const envColor = vec3(envColorR, envColorG, envColorB)
+
+      // Apply tint color
+      const tintedColor = envColor.mul(baseColor)
+
+      //* Fresnel effect --
+      // Blend toward white at glancing angles
+      const fresnelValue = fresnelEffect(viewDir, worldNormal, float(10.0)).mul(fresnelUniform)
+      const finalColor = mix(tintedColor, vec3(1.0), fresnelValue)
+
+      return vec4(finalColor, opacityUniform)
+    })()
   }
 
-  #include <common>
-  #include <cube_uv_reflection_fragment>
+  //* Uniform Accessors ==============================
 
-  #ifdef ENVMAP_TYPE_CUBEM
-    vec4 textureGradient(samplerCube envMap, vec3 rayDirection, vec3 directionCamPerfect) {
-      return textureGrad(envMap, rayDirection, dFdx(correctMips ? directionCamPerfect: rayDirection), dFdy(correctMips ? directionCamPerfect: rayDirection));
+  /** Environment map texture */
+  get envMap() {
+    return this._envMap.value as THREE.Texture
+  }
+  set envMap(v: THREE.Texture | THREE.CubeTexture | null) {
+    if (v) {
+      this._envMap.value = v
+      // Note: For full cubemap support, would need to rebuild shader
+      // Currently using equirectangular mapping for simplicity
     }
-  #else
-    vec4 textureGradient(sampler2D envMap, vec3 rayDirection, vec3 directionCamPerfect) {
-      vec2 uvv = equirectUv( rayDirection );
-      vec2 smoothUv = equirectUv( directionCamPerfect );
-      return textureGrad(envMap, uvv, dFdx(correctMips ? smoothUv : uvv), dFdy(correctMips ? smoothUv : uvv));
+  }
+
+  /** Number of internal bounces, default: 3 */
+  get bounces() {
+    return this._bounces.value as number
+  }
+  set bounces(v: number) {
+    this._bounces.value = v
+  }
+
+  /** Index of refraction, default: 2.4 (diamond) */
+  get ior() {
+    return this._ior.value as number
+  }
+  set ior(v: number) {
+    this._ior.value = v
+  }
+
+  /** Fresnel intensity, default: 0 */
+  get fresnel() {
+    return this._fresnel.value as number
+  }
+  set fresnel(v: number) {
+    this._fresnel.value = v
+  }
+
+  /** Chromatic aberration strength, default: 0.01 */
+  get aberrationStrength() {
+    return this._aberrationStrength.value as number
+  }
+  set aberrationStrength(v: number) {
+    this._aberrationStrength.value = v
+  }
+
+  /** Tint color - use tintColor to avoid base class conflict */
+  get tintColor(): THREE.Color {
+    return this._color.value as THREE.Color
+  }
+  set tintColor(v: THREE.Color | THREE.ColorRepresentation) {
+    if (v instanceof THREE.Color) this._color.value = v
+    else this._color.value = new THREE.Color(v)
+  }
+
+  /** Opacity, default: 1 */
+  get opacity() {
+    return this._opacityValue.value as number
+  }
+  set opacity(v: number) {
+    this._opacityValue.value = v
+  }
+
+  /** Resolution for screen-space calculations */
+  get resolution() {
+    return this._resolution.value as THREE.Vector2
+  }
+  set resolution(v: THREE.Vector2) {
+    this._resolution.value = v
+  }
+
+  /** Approximate thickness for refraction calculations */
+  get thickness() {
+    return this._thickness.value as number
+  }
+  set thickness(v: number) {
+    this._thickness.value = v
+  }
+}
+
+//* React Component ==============================
+
+export const MeshRefractionMaterial: ForwardRefComponent<MeshRefractionMaterialProps, MeshRefractionMaterialImpl> =
+  /* @__PURE__ */ React.forwardRef(
+    (
+      {
+        envMap,
+        bounces = 3,
+        ior = 2.4,
+        fresnel = 0,
+        aberrationStrength = 0.01,
+        fastChroma = true,
+        tintColor = 'white',
+        opacity = 1,
+        ...props
+      }: MeshRefractionMaterialProps,
+      fref
+    ) => {
+      extend({ MeshRefractionMaterial: MeshRefractionMaterialImpl })
+
+      const ref = React.useRef<MeshRefractionMaterialImpl>(null!)
+      const size = useThree((state) => state.size)
+
+      // Update resolution when size changes
+      React.useEffect(() => {
+        if (ref.current) {
+          ref.current.resolution = new THREE.Vector2(size.width, size.height)
+        }
+      }, [size])
+
+      // Update material properties
+      React.useEffect(() => {
+        if (ref.current && envMap) {
+          ref.current.envMap = envMap
+        }
+      }, [envMap])
+
+      // Forward ref
+      React.useImperativeHandle(fref, () => ref.current, [])
+
+      return (
+        <meshRefractionMaterial
+          args={[fastChroma]}
+          ref={ref as any}
+          {...props}
+          bounces={bounces}
+          ior={ior}
+          fresnel={fresnel}
+          aberrationStrength={aberrationStrength}
+          tintColor={tintColor instanceof THREE.Color ? tintColor : new THREE.Color(tintColor)}
+          opacity={opacity}
+        />
+      )
     }
-  #endif
-
-  void main() {
-    vec2 uv = gl_FragCoord.xy / resolution;
-    vec3 directionCamPerfect = (projectionMatrixInverse * vec4(uv * 2.0 - 1.0, 0.0, 1.0)).xyz;
-    directionCamPerfect = (viewMatrixInverse * vec4(directionCamPerfect, 0.0)).xyz;
-    directionCamPerfect = normalize(directionCamPerfect);
-    vec3 normal = vNormal;
-    vec3 rayOrigin = cameraPosition;
-    vec3 rayDirection = normalize(vWorldPosition - cameraPosition);
-
-    vec4 diffuseColor = vec4(color, opacity);
-    #include <color_fragment>
-
-    #ifdef CHROMATIC_ABERRATIONS
-      vec3 rayDirectionG = totalInternalReflection(rayOrigin, rayDirection, normal, max(ior, 1.0), vModelMatrixInverse);
-      #ifdef FAST_CHROMA
-        vec3 rayDirectionR = normalize(rayDirectionG + 1.0 * vec3(aberrationStrength / 2.0));
-        vec3 rayDirectionB = normalize(rayDirectionG - 1.0 * vec3(aberrationStrength / 2.0));
-      #else
-        vec3 rayDirectionR = totalInternalReflection(rayOrigin, rayDirection, normal, max(ior * (1.0 - aberrationStrength), 1.0), vModelMatrixInverse);
-        vec3 rayDirectionB = totalInternalReflection(rayOrigin, rayDirection, normal, max(ior * (1.0 + aberrationStrength), 1.0), vModelMatrixInverse);
-      #endif
-      float finalColorR = textureGradient(envMap, rayDirectionR, directionCamPerfect).r;
-      float finalColorG = textureGradient(envMap, rayDirectionG, directionCamPerfect).g;
-      float finalColorB = textureGradient(envMap, rayDirectionB, directionCamPerfect).b;
-      diffuseColor.rgb *= vec3(finalColorR, finalColorG, finalColorB);
-    #else
-      rayDirection = totalInternalReflection(rayOrigin, rayDirection, normal, max(ior, 1.0), vModelMatrixInverse);
-      diffuseColor.rgb *= textureGradient(envMap, rayDirection, directionCamPerfect).rgb;
-    #endif
-
-    vec3 viewDirection = normalize(vWorldPosition - cameraPosition);
-    float nFresnel = fresnelFunc(viewDirection, normal) * fresnel;
-    gl_FragColor = vec4(mix(diffuseColor.rgb, vec3(1.0), nFresnel), diffuseColor.a);
-
-    #include <tonemapping_fragment>
-    #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
-  }`
-)
-
+  )

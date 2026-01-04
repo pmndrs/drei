@@ -10,17 +10,26 @@ function Scene() {
       <OrbitControls makeDefault />
 
       {/* Lighting */}
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[10, 10, 5]} intensity={1} />
+      <ambientLight intensity={0.3} />
 
-      <mesh position={[0, 0, 0]}>
+      {/* Spotlight pointing down - targets (0,0,0) by default so no rotation needed */}
+      <spotLight
+        position={[0, 3, 1]}
+        intensity={10}
+        angle={0.5}
+        penumbra={0.5}
+        castShadow
+        shadow-mapSize={[1024, 1024]}
+      />
+
+      <mesh position={[0, 0.3, 0.2]} scale={0.2} castShadow>
         <sphereGeometry args={[1, 32, 32]} />
-        <meshStandardMaterial color="hotpink" />
+        <meshStandardMaterial color="#097D7D" />
       </mesh>
 
       {/* Backdrop plane */}
-      <Backdrop floor={2} segments={20}>
-        <meshStandardMaterial color="#333" />
+      <Backdrop floor={2} segments={20} receiveShadow scale={[4, 1, 1]}>
+        <meshStandardMaterial color="#ffffff" />
       </Backdrop>
     </>
   )
@@ -32,7 +41,8 @@ export default function BackdropDemo() {
       <ExampleCard demoName="Backdrop" />
 
       <div className="demo-canvas">
-        <CanvasWithToggle camera={{ position: [0, 2, 5], fov: 50 }}>
+        <CanvasWithToggle camera={{ position: [0, 1, 2], fov: 50 }} shadows={'percentage'}>
+          <color attach="background" args={['#111111']} />
           <Scene />
         </CanvasWithToggle>
       </div>

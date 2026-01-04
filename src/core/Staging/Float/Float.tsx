@@ -38,7 +38,7 @@ export const Float: ForwardRefComponent<FloatProps, THREE.Group> = /* @__PURE__ 
 
       if (autoInvalidate) state.invalidate()
 
-      const t = offset.current + state.clock.elapsedTime
+      const t = offset.current + state.elapsed
       ref.current.rotation.x = (Math.cos((t / 4) * speed) / 8) * rotationIntensity
       ref.current.rotation.y = (Math.sin((t / 4) * speed) / 8) * rotationIntensity
       ref.current.rotation.z = (Math.sin((t / 4) * speed) / 20) * rotationIntensity

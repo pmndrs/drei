@@ -6,88 +6,11 @@
   width: 100vw;
 }
 
-.sidebar {
-  width: 280px;
-  background: #1a1a1a;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid #333;
-  overflow-y: auto;
-}
-
-.sidebar-header {
-  padding: 24px 20px;
-  border-bottom: 1px solid #333;
-}
-
-.sidebar-header h1 {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
-.sidebar-header p {
-  font-size: 14px;
-  color: #888;
-}
-
 .main-content {
   flex: 1;
   overflow: auto;
   position: relative;
-}
-
-/* Navigation ============================== */
-
-.sidebar-nav {
-  flex: 1;
-  padding: 16px 0;
-}
-
-.tier-section {
-  margin-bottom: 24px;
-}
-
-.tier-title {
-  padding: 8px 20px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  color: #666;
-  text-transform: uppercase;
-}
-
-.category-section {
-  margin-bottom: 16px;
-}
-
-.category-title {
-  padding: 6px 20px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #999;
-}
-
-.demo-link {
-  display: block;
-  padding: 8px 20px 8px 32px;
-  font-size: 14px;
-  color: #ccc;
-  text-decoration: none;
-  transition: all 0.15s ease;
-  border-left: 3px solid transparent;
-}
-
-.demo-link:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: #fff;
-}
-
-.demo-link.active {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  border-left-color: #646cff;
+  background: var(--color-background);
 }
 
 /* Home Screen ============================== */
@@ -109,7 +32,7 @@
 
 .home p {
   font-size: 18px;
-  color: #666;
+  color: var(--color-muted-foreground);
   margin-bottom: 40px;
 }
 
@@ -126,12 +49,12 @@
 
 .stat strong {
   font-size: 32px;
-  color: #646cff;
+  color: var(--color-primary);
 }
 
 .stat span {
   font-size: 14px;
-  color: #888;
+  color: var(--color-muted-foreground);
 }
 
 /* Demo Container ============================== */
@@ -146,12 +69,14 @@
   position: absolute;
   top: 20px;
   left: 20px;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.85);
   color: white;
   padding: 16px 20px;
   border-radius: 8px;
   z-index: 100;
   max-width: 400px;
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border);
 }
 
 .demo-info h2 {
@@ -169,4 +94,3 @@
   width: 100%;
   height: 100%;
 }
-

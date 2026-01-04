@@ -2,8 +2,7 @@ import * as React from 'react'
 import { ThreeElement, useFrame } from '@react-three/fiber'
 import { Points, Vector3, Spherical, Color, AdditiveBlending, ShaderMaterial } from '#three'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
-import { version } from '../../../utils/constants'
-
+import { StarfieldMaterial } from '#drei-platform'
 export type StarsProps = {
   radius?: number
   depth?: number
@@ -12,45 +11,6 @@ export type StarsProps = {
   saturation?: number
   fade?: boolean
   speed?: number
-}
-
-class StarfieldMaterial extends ShaderMaterial {
-  constructor() {
-    super({
-      uniforms: { time: { value: 0.0 }, fade: { value: 1.0 } },
-      vertexShader: /* glsl */ `
-      uniform float time;
-      attribute float size;
-      varying vec3 vColor;
-      void main() {
-        vColor = color;
-        vec4 mvPosition = modelViewMatrix * vec4(position, 0.5);
-        gl_PointSize = size * (30.0 / -mvPosition.z) * (3.0 + sin(time + 100.0));
-        gl_Position = projectionMatrix * mvPosition;
-      }`,
-      fragmentShader: /* glsl */ `
-      uniform sampler2D pointTexture;
-      uniform float fade;
-      varying vec3 vColor;
-      void main() {
-        float opacity = 1.0;
-        if (fade == 1.0) {
-          float d = distance(gl_PointCoord, vec2(0.5, 0.5));
-          opacity = 1.0 / (1.0 + exp(16.0 * (d - 0.25)));
-        }
-        gl_FragColor = vec4(vColor, opacity);
-
-        #include <tonemapping_fragment>
-	      #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
-      }`,
-    })
-  }
-}
-
-declare module '@react-three/fiber' {
-  interface ThreeElements {
-    starfieldMaterial: ThreeElement<typeof StarfieldMaterial>
-  }
 }
 
 const genStar = (r: number) => {
@@ -75,7 +35,12 @@ export const Stars: ForwardRefComponent<StarsProps, Points> = /* @__PURE__ */ Re
       }
       return [new Float32Array(positions), new Float32Array(colors), new Float32Array(sizes)]
     }, [count, depth, factor, radius, saturation])
-    useFrame((state) => material.current && (material.current.uniforms.time.value = state.clock.elapsedTime * speed))
+    useFrame((state) => {
+      const starMat = material.current as StarfieldMaterial
+      if (!starMat) return
+
+      starMat.setTime(state.elapsed * speed)
+    })
 
     const [starfieldMaterial] = React.useState(() => new StarfieldMaterial())
 
@@ -91,7 +56,7 @@ export const Stars: ForwardRefComponent<StarsProps, Points> = /* @__PURE__ */ Re
           object={starfieldMaterial}
           attach="material"
           blending={AdditiveBlending}
-          uniforms-fade-value={fade}
+          fadeUniform-value={fade}
           depthWrite={false}
           transparent
           vertexColors

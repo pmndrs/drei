@@ -18,6 +18,8 @@ export { MeshRefractionMaterial } from '../legacy/Materials/MeshRefractionMateri
 export { MeshPortalMaterial } from '../legacy/Materials/MeshPortalMaterial'
 export { MeshDistortMaterial } from '../legacy/Materials/MeshDistortMaterial'
 export { MeshWobbleMaterial } from '../legacy/Materials/MeshWobbleMaterial'
+export { CloudMaterial } from '../legacy/Materials/CloudMaterial'
+export { StarfieldMaterial } from '../legacy/Materials/StarsMaterial'
 
 //* Effects & Helpers --------------------------------
 export { Outlines } from '../legacy/Materials/Outlines'

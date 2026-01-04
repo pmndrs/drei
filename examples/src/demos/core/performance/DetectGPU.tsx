@@ -1,0 +1,51 @@
+import { Canvas } from '@react-three/fiber'
+import { DetectGPU, OrbitControls } from '@react-three/drei/core'
+import { ExampleCard } from '../../../components/ExampleCard'
+
+//* DetectGPU Demo ==============================
+
+function Scene() {
+  return (
+    <>
+      <OrbitControls makeDefault />
+      
+      {/* Lighting */}
+      <ambientLight intensity={0.5} />
+      <directionalLight position={[10, 10, 5]} intensity={1} />
+
+      <mesh>
+        <boxGeometry args={[1, 1, 1]} />
+        <meshStandardMaterial color="hotpink" />
+      </mesh>
+
+      <gridHelper args={[10, 10, '#444', '#333']} position={[0, -2, 0]} />
+
+      {/* GPU detection */}
+      <DetectGPU>
+        {({ tier }) => (
+          <group>
+            <mesh position={[0, 2, 0]}>
+              <planeGeometry args={[2, 0.5]} />
+              <meshBasicMaterial color={tier === 0 ? 'red' : tier === 1 ? 'orange' : 'green'} />
+            </mesh>
+          </group>
+        )}
+      </DetectGPU>
+    </>
+  )
+}
+
+export default function DetectGPUDemo() {
+  return (
+    <div className="demo-container">
+      <ExampleCard demoName="DetectGPU" />
+
+      <div className="demo-canvas">
+        <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
+          <Scene />
+        </Canvas>
+      </div>
+    </div>
+  )
+}
+

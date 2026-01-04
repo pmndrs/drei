@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       // Alias to local drei source for live development
@@ -27,10 +28,12 @@ export default defineConfig({
       '@experimental': path.resolve(__dirname, '../src/experimental'),
       '@utils': path.resolve(__dirname, '../src/utils'),
     },
+    // Dedupe three.js to prevent multiple instances
+    // This is temporary until r3f alpha is replaced with proper peer dependencies
+    dedupe: ['three', '@react-three/fiber'],
   },
   server: {
     port: 3000,
     open: true,
   },
 })
-

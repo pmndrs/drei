@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { Vector3, Euler } from '#three'
-import { SimplexNoise } from 'three-stdlib'
+import { SimplexNoise } from 'three/examples/jsm/math/SimplexNoise.js'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 
 export interface ShakeController {
@@ -79,23 +79,26 @@ export const CameraShake: ForwardRefComponent<CameraShakeProps, ShakeController 
         }
       }, [camera, defaultControls])
 
-      useFrame((state, delta) => {
-        const shake = Math.pow(intensityRef.current, 2)
-        const yaw = maxYaw * shake * yawNoise.noise(state.clock.elapsedTime * yawFrequency, 1)
-        const pitch = maxPitch * shake * pitchNoise.noise(state.clock.elapsedTime * pitchFrequency, 1)
-        const roll = maxRoll * shake * rollNoise.noise(state.clock.elapsedTime * rollFrequency, 1)
+      useFrame(
+        (state, delta) => {
+          const shake = Math.pow(intensityRef.current, 2)
+          const yaw = maxYaw * shake * yawNoise.noise(state.elapsed * yawFrequency, 1)
+          const pitch = maxPitch * shake * pitchNoise.noise(state.elapsed * pitchFrequency, 1)
+          const roll = maxRoll * shake * rollNoise.noise(state.elapsed * rollFrequency, 1)
 
-        camera.rotation.set(
-          initialRotation.current.x + pitch,
-          initialRotation.current.y + yaw,
-          initialRotation.current.z + roll
-        )
+          camera.rotation.set(
+            initialRotation.current.x + pitch,
+            initialRotation.current.y + yaw,
+            initialRotation.current.z + roll
+          )
 
-        if (decay && intensityRef.current > 0) {
-          intensityRef.current -= decayRate * delta
-          constrainIntensity()
-        }
-      })
+          if (decay && intensityRef.current > 0) {
+            intensityRef.current -= decayRate * delta
+            constrainIntensity()
+          }
+        },
+        { before: 'render' }
+      )
 
       return null
     }

@@ -13,15 +13,11 @@ import {
   Quaternion,
   BufferAttribute,
 } from '#three'
+
+import { CloudMaterial } from '#drei-platform'
 import { extend, applyProps, useFrame, ReactThreeFiber, ThreeElement, ThreeElements } from '@react-three/fiber'
 import { useTexture } from '../../Loaders/useTexture/useTexture'
 import { setUpdateRange } from '../../../utils/deprecated'
-
-declare module '@react-three/fiber' {
-  interface ThreeElements {
-    cloudMaterial: ThreeElement<typeof MeshLambertMaterial>
-  }
-}
 
 const CLOUD_URL = 'https://rawcdn.githack.com/pmndrs/drei-assets/9225a9f1fbd449d9411125c2f419b843d0308c9f/cloud.png'
 
@@ -102,37 +98,8 @@ export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
     { children, material = MeshLambertMaterial, texture = CLOUD_URL, range, limit = 200, frustumCulled, ...props },
     fref
   ) => {
-    const CloudMaterial = React.useMemo(() => {
-      return class extends (material as typeof Material) {
-        constructor() {
-          super()
-          const opaque_fragment = parseInt(REVISION.replace(/\D+/g, '')) >= 154 ? 'opaque_fragment' : 'output_fragment'
-          this.onBeforeCompile = (shader) => {
-            shader.vertexShader =
-              `attribute float cloudOpacity;
-               varying float vOpacity;
-              ` +
-              shader.vertexShader.replace(
-                '#include <fog_vertex>',
-                `#include <fog_vertex>
-                 vOpacity = cloudOpacity;
-                `
-              )
-            shader.fragmentShader =
-              `varying float vOpacity;
-              ` +
-              shader.fragmentShader.replace(
-                `#include <${opaque_fragment}>`,
-                `#include <${opaque_fragment}>
-                 gl_FragColor = vec4(outgoingLight, diffuseColor.a * vOpacity);
-                `
-              )
-          }
-        }
-      }
-    }, [material])
-
-    extend({ CloudMaterial })
+    const cloudMaterial = React.useMemo(() => CloudMaterial(material), [material])
+    extend({ cloudMaterial })
 
     const instance = React.useRef<InstancedMesh>(null!)
     const clouds = React.useRef<CloudState[]>([])
@@ -148,7 +115,7 @@ export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
     const pos = new Vector3()
 
     useFrame((state, delta) => {
-      t = state.clock.elapsedTime
+      t = state.elapsed
       parentMatrix.copy(instance.current.matrixWorld).invert()
       state.camera.matrixWorld.decompose(cpos, cquat, scale)
 

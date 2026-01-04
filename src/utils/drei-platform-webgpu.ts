@@ -18,6 +18,8 @@ export { MeshRefractionMaterial } from '../webgpu/Materials/MeshRefractionMateri
 export { MeshPortalMaterial } from '../webgpu/Materials/MeshPortalMaterial'
 export { MeshDistortMaterial } from '../webgpu/Materials/MeshDistortMaterial'
 export { MeshWobbleMaterial } from '../webgpu/Materials/MeshWobbleMaterial'
+export { FakeCloudMaterial as CloudMaterial } from '../webgpu/Materials/FakeCloudMaterial'
+export { StarfieldMaterial } from '../webgpu/Materials/StarsMaterial'
 
 //* Effects & Helpers --------------------------------
 export { Outlines } from '../webgpu/Effects/Outlines'

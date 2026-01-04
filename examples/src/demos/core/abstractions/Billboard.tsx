@@ -1,0 +1,57 @@
+import { Canvas } from '@react-three/fiber'
+import { Billboard, OrbitControls } from '@react-three/drei/core'
+import { ExampleCard } from '../../../components/ExampleCard'
+
+//* Billboard Demo ==============================
+
+function Scene() {
+  return (
+    <>
+      <OrbitControls makeDefault />
+      
+      {/* Lighting */}
+      <ambientLight intensity={0.5} />
+      <directionalLight position={[10, 10, 5]} intensity={1} />
+
+      {/* Billboard planes that always face camera */}
+      <Billboard position={[-2, 0, 0]}>
+        <planeGeometry args={[1, 1]} />
+        <meshStandardMaterial color="hotpink" />
+      </Billboard>
+
+      <Billboard position={[0, 1, 0]}>
+        <planeGeometry args={[1, 1]} />
+        <meshStandardMaterial color="orange" />
+      </Billboard>
+
+      <Billboard position={[2, 0, 0]}>
+        <planeGeometry args={[1, 1]} />
+        <meshStandardMaterial color="lightblue" />
+      </Billboard>
+
+      {/* Reference objects */}
+      <mesh position={[0, -1.5, 0]}>
+        <boxGeometry args={[0.5, 0.5, 0.5]} />
+        <meshStandardMaterial color="#666" />
+      </mesh>
+
+      {/* Grid */}
+      <gridHelper args={[10, 10, '#444', '#333']} position={[0, -2, 0]} />
+    </>
+  )
+}
+
+export default function BillboardDemo() {
+  return (
+    <div className="demo-container">
+      <ExampleCard demoName="Billboard" />
+
+      <div className="demo-canvas">
+        <Canvas camera={{ position: [3, 3, 5], fov: 50 }}>
+          <Scene />
+        </Canvas>
+      </div>
+    </div>
+  )
+}
+

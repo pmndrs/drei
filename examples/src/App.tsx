@@ -1,55 +1,46 @@
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import './App.css'
 
 //* Component Catalog (Master Index) ==============================
 import ComponentCatalog from './catalog/ComponentCatalog'
 import { Sidebar } from './components/Sidebar'
+import { demos } from './demos/demoList'
+import { cn } from './lib/utils'
 
-import { demos, type Demo } from './demos/demoList'
-
-//* Organize Demos by Tier/Category ==============================
-
-const demosByTier = demos.reduce(
-  (acc, demo) => {
-    if (!acc[demo.tier]) acc[demo.tier] = {}
-    if (!acc[demo.tier][demo.category]) acc[demo.tier][demo.category] = []
-    acc[demo.tier][demo.category].push(demo)
-    return acc
-  },
-  {} as Record<string, Record<string, Demo[]>>
-)
+//* Home Page ==============================
 
 function Home() {
+  const tierCount = [...new Set(demos.map((d) => d.tier))].length
+
   return (
     <div className="home">
       <h1>Drei v11 Examples</h1>
       <p>Select a component from the sidebar to see it in action.</p>
+
       <div className="stats">
         <div className="stat">
           <strong>{demos.length}</strong>
           <span>Working Examples</span>
         </div>
         <div className="stat">
-          <strong>{Object.keys(demosByTier).length}</strong>
+          <strong>{tierCount}</strong>
           <span>Tiers</span>
         </div>
       </div>
-      <div style={{ marginTop: '24px' }}>
+
+      <div className="mt-8">
         <Link
           to="/catalog"
-          style={{
-            display: 'inline-block',
-            padding: '12px 24px',
-            background: '#4fc3f7',
-            color: '#000',
-            borderRadius: '8px',
-            textDecoration: 'none',
-            fontWeight: 'bold',
-          }}
+          className={cn(
+            'inline-flex items-center gap-2 px-6 py-3',
+            'bg-primary text-primary-foreground',
+            'rounded-lg font-semibold',
+            'hover:bg-primary/90 transition-colors'
+          )}
         >
           📋 View Full Component Catalog
         </Link>
-        <p style={{ marginTop: '12px', color: '#888', fontSize: '14px' }}>
+        <p className="mt-3 text-sm text-muted-foreground">
           See all 137 components with status tracking and example links
         </p>
       </div>

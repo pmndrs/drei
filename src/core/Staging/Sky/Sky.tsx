@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { ReactThreeFiber } from '@react-three/fiber'
-import { Sky as SkyImpl } from 'three-stdlib'
+import { Sky as SkyImpl } from 'three/examples/jsm/objects/Sky.js'
 import { Vector3 } from '#three'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 
@@ -41,8 +41,15 @@ export const Sky: ForwardRefComponent<SkyProps, SkyImpl> = /* @__PURE__ */ React
     }: SkyProps,
     ref
   ) => {
-    const scale = React.useMemo(() => new Vector3().setScalar(distance), [distance])
-    const [sky] = React.useState(() => new SkyImpl())
+    const [sky] = React.useState(() => {
+      const skyInstance = new SkyImpl()
+      skyInstance.scale.setScalar(distance)
+      return skyInstance
+    })
+
+    React.useLayoutEffect(() => {
+      sky.scale.setScalar(distance)
+    }, [sky, distance])
 
     return (
       <primitive
@@ -53,7 +60,6 @@ export const Sky: ForwardRefComponent<SkyProps, SkyImpl> = /* @__PURE__ */ React
         material-uniforms-rayleigh-value={rayleigh}
         material-uniforms-sunPosition-value={sunPosition}
         material-uniforms-turbidity-value={turbidity}
-        scale={scale}
         {...props}
       />
     )

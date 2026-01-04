@@ -2,4 +2,4 @@
 
 export * from './CameraShake'
 export * from './Cloud'
-export * from './Sparkles'
+// Note: Sparkles is platform-specific - see legacy/Effects and webgpu/Effects

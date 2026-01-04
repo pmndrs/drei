@@ -1,9 +1,20 @@
 import * as React from 'react'
 import * as THREE from '#three'
-import { LineSegments2 } from 'three-stdlib'
+import { LineSegments2 } from '#three-addons'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 import { Line } from '../Line/Line'
 
+export interface EdgesProps {
+  threshold?: number
+  geometry?: THREE.BufferGeometry
+  lineWidth?: number
+  color?: THREE.ColorRepresentation
+  scale?: number
+}
+
+interface EdgesRef {
+  computeLineDistances: () => void
+}
 export const Edges: ForwardRefComponent<EdgesProps, EdgesRef> = /* @__PURE__ */ React.forwardRef<EdgesRef, EdgesProps>(
   ({ threshold = 15, geometry: explicitGeometry, ...props }: EdgesProps, fref) => {
     const ref = React.useRef<LineSegments2>(null!)

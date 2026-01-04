@@ -1,4 +1,4 @@
-import { Canvas } from '@react-three/fiber'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ScreenQuad } from '@react-three/drei/core'
 import { ExampleCard } from '../../../components/ExampleCard'
 
@@ -30,11 +30,10 @@ export default function ScreenQuadDemo() {
       <ExampleCard demoName="ScreenQuad" />
 
       <div className="demo-canvas">
-        <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
+        <CanvasWithToggle camera={{ position: [0, 0, 5], fov: 50 }}>
           <Scene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )
 }
-

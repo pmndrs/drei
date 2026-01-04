@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as THREE from '#three'
 import * as FIBER from '@react-three/fiber'
 import { applyProps } from '@react-three/fiber'
-import { DecalGeometry } from 'three-stdlib'
+import { DecalGeometry } from 'three/examples/jsm/geometries/DecalGeometry.js'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 
 export type DecalProps = Omit<FIBER.ThreeElements['mesh'], 'ref' | 'children'> & {

@@ -781,7 +781,7 @@ export const components: DreiComponent[] = [
     name: 'Detailed',
     category: 'Geometry',
     title: 'Detailed',
-    description: 'Level of detail (LOD) system for optimization.',
+    description: 'Level of detail (LOD) system for optimization. (Zoom in to see the effect)',
     path: '/core/geometry/detailed',
     component: DetailedDemo,
     structure: '🟢',
@@ -802,7 +802,7 @@ export const components: DreiComponent[] = [
     imports: '🟢',
     types: '🟡',
     tests: '🔴',
-    notes: 'Utils import issue',
+    notes: 'Might Check for imports',
     rendererSupport: 'universal',
   },
   {
@@ -2228,7 +2228,9 @@ export const getByRendererSupport = (support: RendererSupport) =>
 
 // Get components needing WebGPU work
 export const getWebGPUTodo = () =>
-  components.filter((c) => (c.rendererSupport === 'dual' || c.rendererSupport === 'legacy-only') && c.webgpuStatus !== '🟢')
+  components.filter(
+    (c) => (c.rendererSupport === 'dual' || c.rendererSupport === 'legacy-only') && c.webgpuStatus !== '🟢'
+  )
 
 // Derive tier from category for backward compatibility with sidebar
 export const getTier = (c: DreiComponent): Tier => {

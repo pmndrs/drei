@@ -10,4 +10,6 @@ export * from './Effects'
 export { Cloud, Clouds, CloudInstance } from '../core/Effects/Cloud/Cloud'
 export type { CloudProps, CloudsProps } from '../core/Effects/Cloud/Cloud'
 
+// Note: Sparkles is exported from ./Effects (uses instanced quads, not Points)
+
 

@@ -1,4 +1,4 @@
-import { Canvas } from '@react-three/fiber'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { CurveModifier, OrbitControls, Line } from '@react-three/drei/core'
 import { ExampleCard } from '../../../components/ExampleCard'
 import * as THREE from 'three'
@@ -22,7 +22,7 @@ function Scene() {
   return (
     <>
       <OrbitControls makeDefault />
-      
+
       {/* Lighting */}
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
@@ -54,11 +54,10 @@ export default function CurveModifierDemo() {
             Showing curve path reference. See documentation for full implementation.
           </p>
         </div>
-        <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
+        <CanvasWithToggle camera={{ position: [0, 0, 5], fov: 50 }}>
           <Scene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )
 }
-

@@ -1,14 +1,17 @@
-import { Canvas } from '@react-three/fiber'
+import { Canvas, useTexture } from '@react-three/fiber'
 import { Decal, OrbitControls } from '@react-three/drei/core'
 import { ExampleCard } from '../../../components/ExampleCard'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 
 //* Decal Demo ==============================
 
 function Scene() {
+  const reactTexture = useTexture('/images/react.png')
+  const threeTexture = useTexture('/images/three.png')
   return (
     <>
       <OrbitControls makeDefault />
-      
+
       {/* Lighting */}
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
@@ -18,7 +21,17 @@ function Scene() {
         <sphereGeometry args={[1, 32, 32]} />
         <meshStandardMaterial color="lightblue" />
         <Decal position={[0, 0, 1]} rotation={[0, 0, 0]} scale={[0.5, 0.5, 0.5]}>
-          <meshBasicMaterial color="hotpink" transparent opacity={0.8} />
+          <meshBasicMaterial
+            map={reactTexture}
+            polygonOffset
+            depthTest={false}
+            polygonOffsetFactor={-2}
+            transparent
+            opacity={0.8}
+          />
+        </Decal>
+        <Decal position={[0, 0.3, 1]} debug rotation={[-0.2, 0, 0]} scale={[0.8, 0.8, 0.8]}>
+          <meshBasicMaterial map={threeTexture} polygonOffset polygonOffsetFactor={-1} transparent opacity={0.8} />
         </Decal>
       </mesh>
 
@@ -33,11 +46,10 @@ export default function DecalDemo() {
       <ExampleCard demoName="Decal" />
 
       <div className="demo-canvas">
-        <Canvas camera={{ position: [0, 0, 3], fov: 50 }}>
+        <CanvasWithToggle camera={{ position: [0, 0, 3], fov: 50 }}>
           <Scene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )
 }
-

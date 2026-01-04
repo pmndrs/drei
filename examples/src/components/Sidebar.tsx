@@ -1,18 +1,20 @@
 import { Link, useLocation } from 'react-router-dom'
-import { demos, type Demo } from '../demos/demoList'
+import { demos, type Demo, getTier, type Tier } from '../demos/componentRegistry'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion'
 import { cn } from '../lib/utils'
 
 //* Organize Demos by Tier/Category ==============================
+// We derive tier from category using getTier helper
 
 const demosByTier = demos.reduce(
   (acc, demo) => {
-    if (!acc[demo.tier]) acc[demo.tier] = {}
-    if (!acc[demo.tier][demo.category]) acc[demo.tier][demo.category] = []
-    acc[demo.tier][demo.category].push(demo)
+    const tier = getTier(demo)
+    if (!acc[tier]) acc[tier] = {}
+    if (!acc[tier][demo.category]) acc[tier][demo.category] = []
+    acc[tier][demo.category].push(demo)
     return acc
   },
-  {} as Record<string, Record<string, Demo[]>>
+  {} as Record<Tier, Record<string, Demo[]>>
 )
 
 //* Demo Link Component ==============================
@@ -81,6 +83,7 @@ function TierSection({ tier, categories }: { tier: string; categories: Record<st
 
 export function Sidebar() {
   const location = useLocation()
+  const tierOrder: Tier[] = ['core', 'external', 'experimental']
 
   return (
     <div className="w-72 bg-card border-r border-border flex flex-col h-screen overflow-hidden">
@@ -107,16 +110,18 @@ export function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto py-3">
-        {Object.entries(demosByTier).map(([tier, categories]) => (
-          <TierSection key={tier} tier={tier} categories={categories} />
-        ))}
+        {tierOrder.map((tier) => {
+          const categories = demosByTier[tier]
+          if (!categories || Object.keys(categories).length === 0) return null
+          return <TierSection key={tier} tier={tier} categories={categories} />
+        })}
       </nav>
 
       {/* Footer */}
       <div className="px-5 py-4 border-t border-border text-xs text-muted-foreground shrink-0">
         <div className="flex justify-between">
           <span>{demos.length} examples</span>
-          <span>{Object.keys(demosByTier).length} tiers</span>
+          <span>{tierOrder.filter((t) => demosByTier[t]).length} tiers</span>
         </div>
       </div>
     </div>

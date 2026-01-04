@@ -4,7 +4,6 @@ import * as React from 'react'
 import { IUniform, MeshPhysicalMaterial, MeshPhysicalMaterialParameters } from 'three'
 import { ThreeElements, useFrame } from '@react-three/fiber'
 // @ts-ignore
-import distort from '../helpers/glsl/distort.vert.glsl'
 import { ForwardRefComponent } from '@utils/ts-utils'
 
 interface Uniform<T> {
@@ -30,11 +29,11 @@ class DistortMaterialImpl extends MeshPhysicalMaterial {
     shader.uniforms.radius = this._radius
     shader.uniforms.distort = this._distort
 
+    // distort goes here after the uniform
     shader.vertexShader = `
       uniform float time;
       uniform float radius;
       uniform float distort;
-      ${distort}
       ${shader.vertexShader}
     `
     shader.vertexShader = shader.vertexShader.replace(

@@ -60,14 +60,27 @@ function createConfig({ isWebGPU = false, format = 'esm', multiFiles = true }) {
     // For WebGPU builds, resolve internal file overrides first
     ...(isWebGPU ? [webgpuOverrideResolver({ verbose: false })] : []),
 
-    // For WebGPU builds, alias 'three' imports to 'three/webgpu'
+    // For WebGPU builds, alias 'three' imports to 'three/webgpu' and use webgpu platform
     ...(isWebGPU
       ? [
           alias({
-            entries: [{ find: /^three$/, replacement: 'three/webgpu' }],
+            entries: [
+              { find: /^three$/, replacement: 'three/webgpu' },
+              { find: '#drei-platform', replacement: path.resolve('./src/utils/drei-platform-webgpu.ts') },
+              { find: '#three', replacement: 'three/webgpu' },
+              { find: '#three-addons', replacement: path.resolve('./src/utils/three-addons-webgpu.ts') },
+            ],
           }),
         ]
-      : []),
+      : [
+          alias({
+            entries: [
+              { find: '#drei-platform', replacement: path.resolve('./src/utils/drei-platform.ts') },
+              { find: '#three', replacement: 'three' },
+              { find: '#three-addons', replacement: path.resolve('./src/utils/three-addons.ts') },
+            ],
+          }),
+        ]),
 
     // Standard plugins
     ...(multiFiles

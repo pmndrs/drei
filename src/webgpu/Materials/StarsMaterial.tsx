@@ -1,5 +1,5 @@
 import { ThreeElement } from '@react-three/fiber'
-import { PointsNodeMaterial } from '#three'
+import { PointsNodeMaterial } from 'three/webgpu'
 import {
   Fn,
   uniform,

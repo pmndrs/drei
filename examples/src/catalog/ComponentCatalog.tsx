@@ -1,40 +1,68 @@
 import { Link } from 'react-router-dom'
-import { ComponentEntry, components, Status, Tier } from './comonentList'
+import {
+  components,
+  type DreiComponent,
+  type Status,
+  type RendererSupport,
+  type Category,
+  getTier,
+} from '../demos/componentRegistry'
 
 //* Component Catalog - Master Index ==============================
-// This file serves as the source of truth for all drei components
-// and their example/test status. Use this as your working checklist.
+// Dashboard view that reads from the unified componentRegistry.
+// This provides a visual overview of all components and their status.
 
 //* Statistics Calculation ==============================
 
 function calculateStats() {
   const total = components.length
-  const byTier = components.reduce(
+
+  // Count by renderer support type
+  const byRendererSupport = components.reduce(
     (acc, c) => {
-      acc[c.tier] = (acc[c.tier] || 0) + 1
+      acc[c.rendererSupport] = (acc[c.rendererSupport] || 0) + 1
       return acc
     },
-    {} as Record<string, number>
+    {} as Record<RendererSupport, number>
   )
 
-  const examplesComplete = components.filter((c) => c.example === '🟢').length
+  const examplesComplete = components.filter((c) => c.component !== undefined).length
   const testsComplete = components.filter((c) => c.tests === '🟢').length
   const typesClean = components.filter((c) => c.types === '🟢').length
-  const tslConverted = components.filter((c) => c.tier === 'webgpu' && c.tslConversion === '🟢').length
-  const tslTotal = components.filter((c) => c.tier === 'webgpu').length
 
-  return { total, byTier, examplesComplete, testsComplete, typesClean, tslConverted, tslTotal }
+  // TSL conversion stats - only for dual renderer components that need WebGPU work
+  const dualComponents = components.filter((c) => c.rendererSupport === 'dual')
+  const tslConverted = dualComponents.filter((c) => c.tslConversion === '🟢').length
+  const tslTotal = dualComponents.length
+
+  // WebGPU ready stats
+  const webgpuReady = components.filter(
+    (c) => c.rendererSupport === 'universal' || c.rendererSupport === 'webgpu-only' || c.webgpuStatus === '🟢'
+  ).length
+
+  return {
+    total,
+    byRendererSupport,
+    examplesComplete,
+    testsComplete,
+    typesClean,
+    tslConverted,
+    tslTotal,
+    webgpuReady,
+    universalCount: byRendererSupport.universal || 0,
+    dualCount: byRendererSupport.dual || 0,
+    legacyOnlyCount: byRendererSupport['legacy-only'] || 0,
+  }
 }
 
-//* Group by Tier and Category ==============================
+//* Group by Category ==============================
 
 function groupComponents() {
-  const grouped: Record<string, Record<string, ComponentEntry[]>> = {}
+  const grouped: Record<Category, DreiComponent[]> = {} as Record<Category, DreiComponent[]>
 
   components.forEach((c) => {
-    if (!grouped[c.tier]) grouped[c.tier] = {}
-    if (!grouped[c.tier][c.category]) grouped[c.tier][c.category] = []
-    grouped[c.tier][c.category].push(c)
+    if (!grouped[c.category]) grouped[c.category] = []
+    grouped[c.category].push(c)
   })
 
   return grouped
@@ -68,22 +96,60 @@ function StatusBadge({ status, label }: { status: Status; label?: string }) {
   )
 }
 
+//* Renderer Support Badge ==============================
+
+function RendererBadge({ support }: { support: RendererSupport }) {
+  const config: Record<RendererSupport, { color: string; label: string }> = {
+    universal: { color: '#4fc3f7', label: 'Universal' },
+    'legacy-only': { color: '#ff9800', label: 'Legacy Only' },
+    'webgpu-only': { color: '#ab47bc', label: 'WebGPU Only' },
+    dual: { color: '#66bb6a', label: 'Dual' },
+  }
+
+  const { color, label } = config[support]
+
+  return (
+    <span
+      style={{
+        display: 'inline-block',
+        padding: '2px 8px',
+        borderRadius: '4px',
+        backgroundColor: `${color}22`,
+        border: `1px solid ${color}`,
+        fontSize: '11px',
+        color: color,
+      }}
+    >
+      {label}
+    </span>
+  )
+}
+
 //* Component Row ==============================
 
-function ComponentRow({ entry }: { entry: ComponentEntry }) {
-  const hasExample = entry.example === '🟢'
+function ComponentRow({ entry }: { entry: DreiComponent }) {
+  const hasExample = entry.component !== undefined
+  const isDual = entry.rendererSupport === 'dual'
 
   return (
     <tr style={{ borderBottom: '1px solid #333' }}>
+      {/* Name with example link */}
       <td style={{ padding: '8px 12px' }}>
         {hasExample ? (
-          <Link to={entry.examplePath} style={{ color: '#4fc3f7', textDecoration: 'none' }}>
+          <Link to={entry.path} style={{ color: '#4fc3f7', textDecoration: 'none' }}>
             {entry.name}
           </Link>
         ) : (
           <span style={{ color: '#888' }}>{entry.name}</span>
         )}
       </td>
+
+      {/* Renderer Support */}
+      <td style={{ padding: '8px 12px' }}>
+        <RendererBadge support={entry.rendererSupport} />
+      </td>
+
+      {/* Base status columns */}
       <td style={{ padding: '8px 12px' }}>
         <StatusBadge status={entry.structure} label="Structure" />
       </td>
@@ -94,20 +160,22 @@ function ComponentRow({ entry }: { entry: ComponentEntry }) {
         <StatusBadge status={entry.types} label="Types" />
       </td>
       <td style={{ padding: '8px 12px' }}>
-        <StatusBadge status={entry.example} label="Example" />
+        <StatusBadge status={hasExample ? '🟢' : '🔴'} label="Example" />
       </td>
       <td style={{ padding: '8px 12px' }}>
         <StatusBadge status={entry.tests} label="Tests" />
       </td>
-      {entry.tier === 'webgpu' && (
-        <td style={{ padding: '8px 12px' }}>
-          <StatusBadge status={entry.tslConversion || '⚪'} label="TSL" />
-        </td>
-      )}
-      <td style={{ padding: '8px 12px', color: '#888', fontSize: '12px' }}>{entry.notes}</td>
+
+      {/* Renderer-specific columns (for dual) */}
+      <td style={{ padding: '8px 12px' }}>{isDual ? <StatusBadge status={entry.legacyStatus || '⚪'} label="Legacy" /> : '-'}</td>
+      <td style={{ padding: '8px 12px' }}>{isDual ? <StatusBadge status={entry.webgpuStatus || '⚪'} label="WebGPU" /> : '-'}</td>
+      <td style={{ padding: '8px 12px' }}>{isDual ? <StatusBadge status={entry.tslConversion || '⚪'} label="TSL" /> : '-'}</td>
+
+      {/* Notes and Path */}
+      <td style={{ padding: '8px 12px', color: '#888', fontSize: '12px', maxWidth: '200px' }}>{entry.notes}</td>
       <td style={{ padding: '8px 12px' }}>
         <code style={{ fontSize: '11px', color: '#666', background: '#222', padding: '2px 6px', borderRadius: '3px' }}>
-          {entry.examplePath}
+          {entry.path}
         </code>
       </td>
     </tr>
@@ -119,10 +187,25 @@ function ComponentRow({ entry }: { entry: ComponentEntry }) {
 export default function ComponentCatalog() {
   const stats = calculateStats()
   const grouped = groupComponents()
-  const tierOrder: Tier[] = ['core', 'external', 'experimental', 'legacy', 'webgpu']
+  const categoryOrder: Category[] = [
+    'Cameras',
+    'Controls',
+    'Abstractions',
+    'Effects',
+    'Geometry',
+    'Helpers',
+    'Loaders',
+    'Performance',
+    'Portal',
+    'Staging',
+    'UI',
+    'Materials',
+    'External',
+    'Experimental',
+  ]
 
   return (
-    <div style={{ padding: '32px', maxWidth: '1400px', margin: '0 auto', color: '#e0e0e0' }}>
+    <div style={{ padding: '32px', maxWidth: '1600px', margin: '0 auto', color: '#e0e0e0' }}>
       {/* Header --------------------------------- */}
       <h1 style={{ fontSize: '32px', marginBottom: '8px', color: '#fff' }}>Drei v11 Component Catalog</h1>
       <p style={{ color: '#888', marginBottom: '32px' }}>
@@ -155,80 +238,122 @@ export default function ComponentCatalog() {
           percent={(stats.typesClean / stats.total) * 100}
         />
         <StatCard
+          label="WebGPU Ready"
+          value={`${stats.webgpuReady}/${stats.total}`}
+          percent={(stats.webgpuReady / stats.total) * 100}
+        />
+        <StatCard
           label="TSL Conversions"
           value={`${stats.tslConverted}/${stats.tslTotal}`}
-          percent={(stats.tslConverted / stats.tslTotal) * 100}
+          percent={stats.tslTotal > 0 ? (stats.tslConverted / stats.tslTotal) * 100 : 0}
         />
       </div>
 
-      {/* Component Tables by Tier --------------------------------- */}
-      {tierOrder.map((tier) => {
-        if (!grouped[tier]) return null
+      {/* Renderer Support Summary --------------------------------- */}
+      <div
+        style={{
+          display: 'flex',
+          gap: '16px',
+          marginBottom: '32px',
+          flexWrap: 'wrap',
+        }}
+      >
+        <div style={{ background: '#1a1a1a', padding: '12px 20px', borderRadius: '8px', border: '1px solid #333' }}>
+          <span style={{ color: '#4fc3f7' }}>●</span> Universal: <strong>{stats.universalCount}</strong>
+        </div>
+        <div style={{ background: '#1a1a1a', padding: '12px 20px', borderRadius: '8px', border: '1px solid #333' }}>
+          <span style={{ color: '#66bb6a' }}>●</span> Dual Renderer: <strong>{stats.dualCount}</strong>
+        </div>
+        <div style={{ background: '#1a1a1a', padding: '12px 20px', borderRadius: '8px', border: '1px solid #333' }}>
+          <span style={{ color: '#ff9800' }}>●</span> Legacy Only: <strong>{stats.legacyOnlyCount}</strong>
+        </div>
+      </div>
+
+      {/* Component Tables by Category --------------------------------- */}
+      {categoryOrder.map((category) => {
+        const entries = grouped[category]
+        if (!entries || entries.length === 0) return null
 
         return (
-          <div key={tier} style={{ marginBottom: '48px' }}>
+          <div key={category} style={{ marginBottom: '48px' }}>
             <h2
               style={{
-                textTransform: 'uppercase',
-                color: getTierColor(tier),
-                borderBottom: `2px solid ${getTierColor(tier)}`,
+                color: getCategoryColor(category),
+                borderBottom: `2px solid ${getCategoryColor(category)}`,
                 paddingBottom: '8px',
                 marginBottom: '16px',
               }}
             >
-              {tier} ({Object.values(grouped[tier]).flat().length} components)
+              {category} ({entries.length} components)
             </h2>
 
-            {Object.entries(grouped[tier]).map(([category, entries]) => (
-              <div key={category} style={{ marginBottom: '24px' }}>
-                <h3 style={{ color: '#aaa', fontSize: '16px', marginBottom: '8px' }}>
-                  {category} ({entries.length})
-                </h3>
-
-                <div style={{ overflowX: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
-                    <thead>
-                      <tr style={{ background: '#1a1a1a', textAlign: 'left' }}>
-                        <th style={{ padding: '8px 12px' }}>Component</th>
-                        <th style={{ padding: '8px 12px' }}>Structure</th>
-                        <th style={{ padding: '8px 12px' }}>Imports</th>
-                        <th style={{ padding: '8px 12px' }}>Types</th>
-                        <th style={{ padding: '8px 12px' }}>Example</th>
-                        <th style={{ padding: '8px 12px' }}>Tests</th>
-                        {tier === 'webgpu' && <th style={{ padding: '8px 12px' }}>TSL</th>}
-                        <th style={{ padding: '8px 12px' }}>Notes</th>
-                        <th style={{ padding: '8px 12px' }}>Example Path</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {entries.map((entry) => (
-                        <ComponentRow key={`${entry.tier}-${entry.name}`} entry={entry} />
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            ))}
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
+                <thead>
+                  <tr style={{ background: '#1a1a1a', textAlign: 'left' }}>
+                    <th style={{ padding: '8px 12px', minWidth: '150px' }}>Component</th>
+                    <th style={{ padding: '8px 12px', minWidth: '100px' }}>Renderer</th>
+                    <th style={{ padding: '8px 12px' }}>Structure</th>
+                    <th style={{ padding: '8px 12px' }}>Imports</th>
+                    <th style={{ padding: '8px 12px' }}>Types</th>
+                    <th style={{ padding: '8px 12px' }}>Example</th>
+                    <th style={{ padding: '8px 12px' }}>Tests</th>
+                    <th style={{ padding: '8px 12px' }}>Legacy</th>
+                    <th style={{ padding: '8px 12px' }}>WebGPU</th>
+                    <th style={{ padding: '8px 12px' }}>TSL</th>
+                    <th style={{ padding: '8px 12px', minWidth: '150px' }}>Notes</th>
+                    <th style={{ padding: '8px 12px' }}>Path</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {entries.map((entry, idx) => (
+                    <ComponentRow key={`${entry.name}-${idx}`} entry={entry} />
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )
       })}
 
       {/* Legend --------------------------------- */}
       <div style={{ marginTop: '48px', padding: '16px', background: '#1a1a1a', borderRadius: '8px' }}>
-        <h3 style={{ marginBottom: '8px' }}>Legend</h3>
-        <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-          <span>
-            <StatusBadge status="🟢" /> Complete & Verified
-          </span>
-          <span>
-            <StatusBadge status="🟡" /> Needs Work
-          </span>
-          <span>
-            <StatusBadge status="🔴" /> Not Started
-          </span>
-          <span>
-            <StatusBadge status="⚪" /> N/A
-          </span>
+        <h3 style={{ marginBottom: '12px' }}>Legend</h3>
+
+        <div style={{ marginBottom: '16px' }}>
+          <h4 style={{ fontSize: '14px', color: '#888', marginBottom: '8px' }}>Status</h4>
+          <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+            <span>
+              <StatusBadge status="🟢" /> Complete & Verified
+            </span>
+            <span>
+              <StatusBadge status="🟡" /> Needs Work
+            </span>
+            <span>
+              <StatusBadge status="🔴" /> Not Started
+            </span>
+            <span>
+              <StatusBadge status="⚪" /> N/A
+            </span>
+          </div>
+        </div>
+
+        <div>
+          <h4 style={{ fontSize: '14px', color: '#888', marginBottom: '8px' }}>Renderer Support</h4>
+          <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+            <span>
+              <RendererBadge support="universal" /> Works with any renderer (no shader code)
+            </span>
+            <span>
+              <RendererBadge support="dual" /> Has both legacy and WebGPU implementations
+            </span>
+            <span>
+              <RendererBadge support="legacy-only" /> Only WebGL/legacy implementation exists
+            </span>
+            <span>
+              <RendererBadge support="webgpu-only" /> Only WebGPU/TSL implementation exists
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -261,7 +386,7 @@ function StatCard({ label, value, percent }: { label: string; value: string | nu
         >
           <div
             style={{
-              width: `${percent}%`,
+              width: `${Math.min(100, percent)}%`,
               height: '100%',
               background: percent > 80 ? '#4caf50' : percent > 50 ? '#ff9800' : '#f44336',
             }}
@@ -272,177 +397,25 @@ function StatCard({ label, value, percent }: { label: string; value: string | nu
   )
 }
 
-function getTierColor(tier: Tier): string {
-  const colors: Record<Tier, string> = {
-    core: '#4fc3f7',
-    legacy: '#ff9800',
-    webgpu: '#ab47bc',
-    external: '#66bb6a',
-    experimental: '#ef5350',
+function getCategoryColor(category: Category): string {
+  const colors: Record<Category, string> = {
+    Cameras: '#4fc3f7',
+    Controls: '#4fc3f7',
+    Abstractions: '#4fc3f7',
+    Effects: '#4fc3f7',
+    Geometry: '#4fc3f7',
+    Helpers: '#4fc3f7',
+    Loaders: '#4fc3f7',
+    Performance: '#4fc3f7',
+    Portal: '#4fc3f7',
+    Staging: '#4fc3f7',
+    UI: '#4fc3f7',
+    Materials: '#ab47bc', // Materials stand out as they need shader work
+    External: '#66bb6a',
+    Experimental: '#ef5350',
   }
-  return colors[tier]
+  return colors[category]
 }
 
-//* Workflow Instructions Section ==============================
-
-function WorkflowSection() {
-  return (
-    <div
-      style={{
-        background: '#0d1b2a',
-        border: '1px solid #1b3a4b',
-        borderRadius: '8px',
-        padding: '24px',
-        marginBottom: '32px',
-      }}
-    >
-      <h2 style={{ color: '#4fc3f7', marginBottom: '16px' }}>📋 Workflow: Example → Test</h2>
-
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
-        {/* Step 1 */}
-        <div>
-          <h3 style={{ color: '#81c784', marginBottom: '8px' }}>1. Create Example</h3>
-          <pre
-            style={{
-              background: '#0a0a0a',
-              padding: '12px',
-              borderRadius: '4px',
-              fontSize: '12px',
-              overflow: 'auto',
-            }}
-          >
-            {`// examples/src/demos/core/geometry/RoundedBox.tsx
-import { RoundedBox } from '@react-three/drei/core'
-import Scene from '../../../components/Scene'
-
-export default function RoundedBoxDemo() {
-  return (
-    <div className="demo-container">
-      <div className="demo-info">
-        <h2>RoundedBox</h2>
-        <p>Description...</p>
-      </div>
-      <div className="demo-canvas">
-        <Scene>
-          <RoundedBox args={[1, 1, 1]} radius={0.1}>
-            <meshStandardMaterial color="hotpink" />
-          </RoundedBox>
-        </Scene>
-      </div>
-    </div>
-  )
-}`}
-          </pre>
-        </div>
-
-        {/* Step 2 */}
-        <div>
-          <h3 style={{ color: '#81c784', marginBottom: '8px' }}>2. Register in App.tsx</h3>
-          <pre
-            style={{
-              background: '#0a0a0a',
-              padding: '12px',
-              borderRadius: '4px',
-              fontSize: '12px',
-              overflow: 'auto',
-            }}
-          >
-            {`// examples/src/App.tsx
-
-// Add import at top
-import RoundedBoxDemo from 
-  './demos/core/geometry/RoundedBox'
-
-// Add to demos array
-const demos: Demo[] = [
-  // ... existing demos
-  { 
-    path: '/core/geometry/roundedbox', 
-    name: 'RoundedBox', 
-    component: RoundedBoxDemo, 
-    tier: 'core', 
-    category: 'Geometry' 
-  },
-]`}
-          </pre>
-        </div>
-
-        {/* Step 3 */}
-        <div>
-          <h3 style={{ color: '#81c784', marginBottom: '8px' }}>3. Copy to Test File</h3>
-          <pre
-            style={{
-              background: '#0a0a0a',
-              padding: '12px',
-              borderRadius: '4px',
-              fontSize: '12px',
-              overflow: 'auto',
-            }}
-          >
-            {`// src/core/Geometry/RoundedBox/RoundedBox.test.tsx
-import { render } from '@testing-library/react'
-import { Canvas } from '@react-three/fiber'
-import { RoundedBox } from './RoundedBox'
-
-describe('RoundedBox', () => {
-  it('renders without crashing', () => {
-    render(
-      <Canvas>
-        <RoundedBox args={[1, 1, 1]} radius={0.1}>
-          <meshStandardMaterial />
-        </RoundedBox>
-      </Canvas>
-    )
-  })
-  
-  it('accepts custom props', () => {
-    // Add specific assertions...
-  })
-})`}
-          </pre>
-        </div>
-      </div>
-
-      {/* Quick Reference */}
-      <div style={{ marginTop: '24px', borderTop: '1px solid #1b3a4b', paddingTop: '16px' }}>
-        <h3 style={{ color: '#ffb74d', marginBottom: '8px' }}>Quick Reference</h3>
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-            gap: '16px',
-            fontSize: '13px',
-          }}
-        >
-          <div>
-            <strong>Run examples:</strong>
-            <code
-              style={{ display: 'block', background: '#0a0a0a', padding: '8px', marginTop: '4px', borderRadius: '4px' }}
-            >
-              cd examples && yarn dev
-            </code>
-          </div>
-          <div>
-            <strong>Run tests:</strong>
-            <code
-              style={{ display: 'block', background: '#0a0a0a', padding: '8px', marginTop: '4px', borderRadius: '4px' }}
-            >
-              yarn test
-            </code>
-          </div>
-          <div>
-            <strong>Update status:</strong>
-            <code
-              style={{ display: 'block', background: '#0a0a0a', padding: '8px', marginTop: '4px', borderRadius: '4px' }}
-            >
-              Edit ComponentCatalog.tsx
-            </code>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-//* Export the components array for use in other files ==============================
-export { components, type ComponentEntry, type Status, type Tier }
+//* Re-export types for convenience ==============================
+export { type DreiComponent, type Status, type RendererSupport, type Category, getTier }

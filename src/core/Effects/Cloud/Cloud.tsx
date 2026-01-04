@@ -12,6 +12,7 @@ import {
   Matrix4,
   Quaternion,
   BufferAttribute,
+  MeshStandardMaterial,
 } from '#three'
 
 import { CloudMaterial } from '#drei-platform'
@@ -98,14 +99,19 @@ export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
     { children, material = MeshLambertMaterial, texture = CLOUD_URL, range, limit = 200, frustumCulled, ...props },
     fref
   ) => {
-    const cloudMaterial = React.useMemo(() => CloudMaterial(material), [material])
-    extend({ cloudMaterial })
-
     const instance = React.useRef<InstancedMesh>(null!)
     const clouds = React.useRef<CloudState[]>([])
     const opacities = React.useMemo(() => new Float32Array(Array.from({ length: limit }, () => 1)), [limit])
     const colors = React.useMemo(() => new Float32Array(Array.from({ length: limit }, () => [1, 1, 1]).flat()), [limit])
     const cloudTexture = useTexture(texture) as Texture
+
+    const cloudMaterial = React.useMemo(() => {
+      const cloudMat = CloudMaterial(material) as MeshStandardMaterial
+      cloudMat.map = cloudTexture
+      cloudMat.transparent = true
+      cloudMat.depthWrite = false
+      return cloudMat
+    }, [cloudTexture])
 
     let t = 0
     let index = 0
@@ -167,6 +173,7 @@ export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
             ref={instance}
             args={[null as any, null as any, limit]}
             frustumCulled={frustumCulled}
+            material={cloudMaterial}
           >
             <instancedBufferAttribute usage={DynamicDrawUsage} attach="instanceColor" args={[colors, 3]} />
             <planeGeometry args={[...imageBounds] as any}>
@@ -176,7 +183,6 @@ export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
                 args={[opacities, 1]}
               />
             </planeGeometry>
-            <cloudMaterial key={material.name} map={cloudTexture} transparent depthWrite={false} />
           </instancedMesh>
         </context.Provider>
       </group>

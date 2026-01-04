@@ -21,7 +21,7 @@ import { FullScreenQuad } from 'three-stdlib'
 import { SpotLightMaterial } from '@legacy/Materials/SpotLightMaterial'
 
 // @ts-ignore
-import SpotlightShadowShader from '@utils/glsl/DefaultSpotlightShadowShadows.glsl'
+import SpotlightShadowShader from '@legacy/Materials/glsl/DefaultSpotlightShadowShadows.glsl?raw'
 import { ForwardRefComponent } from '@utils/ts-utils'
 
 export type SpotLightProps = Omit<ThreeElements['spotLight'], 'ref'> & {

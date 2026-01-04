@@ -58,7 +58,6 @@ export default function ScrollControlsDemo() {
 
       <div className="demo-canvas">
         <Canvas camera={{ position: [5, 5, 5] }}>
-          <OrbitControls makeDefault />
           <ScrollControls pages={5} distance={1}>
             <Scene />
           </ScrollControls>
@@ -67,4 +66,3 @@ export default function ScrollControlsDemo() {
     </div>
   )
 }
-

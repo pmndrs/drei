@@ -4,13 +4,13 @@ import './App.css'
 //* Component Catalog (Master Index) ==============================
 import ComponentCatalog from './catalog/ComponentCatalog'
 import { Sidebar } from './components/Sidebar'
-import { demos } from './demos/demoList'
+import { demos, getTier } from './demos/componentRegistry'
 import { cn } from './lib/utils'
 
 //* Home Page ==============================
 
 function Home() {
-  const tierCount = [...new Set(demos.map((d) => d.tier))].length
+  const tierCount = [...new Set(demos.map((d) => getTier(d)))].length
 
   return (
     <div className="home">

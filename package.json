@@ -80,7 +80,9 @@
     "build-storybook": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider\" storybook build",
     "copy": "copyfiles package.json README.md LICENSE dist && json -I -f dist/package.json -e \"this.private=false; this.devDependencies=undefined; this.optionalDependencies=undefined; this.scripts=undefined; this.husky=undefined; this.prettier=undefined; this.jest=undefined; this['lint-staged']=undefined;\"",
     "copy:native": "copyfiles -u 2 src/native/package.json dist/native",
-    "release": "semantic-release"
+    "release": "semantic-release",
+    "examples": "yarn --cwd examples dev",
+    "examples:webgpu": "yarn --cwd examples dev:webgpu"
   },
   "dependencies": {
     "@babel/runtime": "^7.26.0",

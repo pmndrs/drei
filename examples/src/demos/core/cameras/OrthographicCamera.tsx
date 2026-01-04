@@ -1,17 +1,15 @@
 import { Canvas, useFrame } from '@react-three/fiber'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { OrthographicCamera } from '@react-three/drei/core'
+import ExampleCard from '../../../components/ExampleCard'
 
 //* OrthographicCamera Demo ==============================
 
 export default function OrthographicCameraDemo() {
   return (
     <div className="demo-container">
-      <div className="demo-info">
-        <h2>OrthographicCamera</h2>
-        <p>Orthographic camera with no perspective distortion. Great for isometric views and technical drawings.</p>
-      </div>
+      <ExampleCard demoName="OrthographicCamera" />
 
       <div className="demo-canvas">
         <Canvas>
@@ -53,16 +51,24 @@ export default function OrthographicCameraDemo() {
 
 //* Animated Camera Component ==============================
 
-function AnimatedOrthoCamera() {
+function AnimatedOrthoCamera({ doAnimation = true }: { doAnimation?: boolean }) {
   const cameraRef = useRef<THREE.OrthographicCamera>(null)
 
-  useFrame((state) => {
+  const animation = useFrame((state) => {
     if (cameraRef.current) {
-      cameraRef.current.position.x = Math.sin(state.clock.elapsedTime * 0.3) * 5
-      cameraRef.current.position.z = Math.cos(state.clock.elapsedTime * 0.3) * 5
+      cameraRef.current.position.x = Math.sin(state.elapsed * 0.3) * 5
+      cameraRef.current.position.z = Math.cos(state.elapsed * 0.3) * 5
       cameraRef.current.lookAt(0, 0, 0)
     }
   })
+
+  useEffect(() => {
+    if (doAnimation) {
+      animation.resume()
+    } else {
+      animation.pause()
+    }
+  }, [doAnimation])
 
   return <OrthographicCamera ref={cameraRef} makeDefault position={[5, 5, 5]} zoom={100} near={0.1} far={1000} />
 }

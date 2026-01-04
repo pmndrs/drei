@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --mode legacy",
+    "dev:webgpu": "vite --mode webgpu",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -12,6 +13,7 @@
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-collapsible": "^1.1.12",
     "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-switch": "^1.2.6",
     "@react-three/drei": "link:..",
     "@react-three/fiber": "file:../lib/react-three-fiber-10.0.0-alpha.0.tgz",
     "class-variance-authority": "^0.7.1",

@@ -23,6 +23,7 @@
     /* Path aliases */
     "baseUrl": ".",
     "paths": {
+      "@ex/*": ["./src/*"],
       "@react-three/drei/core": ["../src/core"],
       "@react-three/drei/legacy": ["../src/legacy"],
       "@react-three/drei/webgpu": ["../src/webgpu"],

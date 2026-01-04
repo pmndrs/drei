@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { useProgress, OrbitControls } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 
 //* useProgress Demo ==============================
@@ -46,9 +46,9 @@ export default function UseProgressDemo() {
       <ExampleCard demoName="useProgress" />
 
       <div className="demo-canvas">
-        <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
+        <CanvasWithToggle camera={{ position: [0, 0, 5], fov: 50 }}>
           <Scene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )

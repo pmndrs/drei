@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { Svg, OrbitControls } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 
 //* Svg Demo ==============================
@@ -43,9 +43,9 @@ export default function SvgDemo() {
       <ExampleCard demoName="Svg" />
 
       <div className="demo-canvas">
-        <Canvas camera={{ position: [0, 0, 3], fov: 50 }}>
+        <CanvasWithToggle camera={{ position: [0, 0, 3], fov: 50 }}>
           <Scene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )

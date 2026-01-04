@@ -1,7 +1,7 @@
-import { Canvas, useTexture } from '@react-three/fiber'
+import { useTexture } from '@react-three/fiber'
 import { Decal, OrbitControls } from '@react-three/drei/core'
-import { ExampleCard } from '../../../components/ExampleCard'
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
+import { ExampleCard } from '../../../components/ExampleCard'
 
 //* Decal Demo ==============================
 

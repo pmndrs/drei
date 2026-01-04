@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { SpriteAnimator, OrbitControls } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 
 //* SpriteAnimator Demo ==============================
@@ -43,9 +43,9 @@ export default function SpriteAnimatorDemo() {
             See documentation for setup details.
           </p>
         </div>
-        <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
+        <CanvasWithToggle camera={{ position: [0, 0, 5], fov: 50 }}>
           <Scene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )

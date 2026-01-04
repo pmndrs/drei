@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { useAnimations, OrbitControls, useGLTF } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 import { useEffect } from 'react'
 
@@ -41,9 +41,9 @@ export default function UseAnimationsDemo() {
       <ExampleCard demoName="useAnimations" />
 
       <div className="demo-canvas">
-        <Canvas camera={{ position: [0, 2, 5], fov: 50 }}>
+        <CanvasWithToggle camera={{ position: [0, 2, 5], fov: 50 }}>
           <Scene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )

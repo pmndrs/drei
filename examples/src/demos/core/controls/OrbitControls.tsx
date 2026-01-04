@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 
 //* OrbitControls Demo ==============================
 
@@ -20,7 +20,7 @@ export default function OrbitControlsDemo() {
       </div>
 
       <div className="demo-canvas">
-        <Canvas camera={{ position: [5, 5, 5], fov: 50 }}>
+        <CanvasWithToggle camera={{ position: [5, 5, 5], fov: 50 }}>
           <OrbitControls makeDefault enableDamping dampingFactor={0.05} />
 
           {/* Lighting */}
@@ -42,7 +42,7 @@ export default function OrbitControlsDemo() {
 
           {/* Grid */}
           <gridHelper args={[20, 20, '#444', '#333']} position={[0, -2, 0]} />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )

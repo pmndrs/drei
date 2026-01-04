@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { useCallback, useRef, useState } from 'react'
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber'
 import {
   Grid,
   Environment,
@@ -11,6 +11,7 @@ import {
   FaceControls,
   FaceLandmarker,
 } from '@react-three/drei'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { useControls, buttonGroup, folder } from 'leva'
 import { easing } from 'maath'
 import { ExampleCard } from '../../../components/ExampleCard'
@@ -23,11 +24,11 @@ export default function FaceControlsDemo() {
       <ExampleCard demoName="FaceControls" />
 
       <div className="demo-canvas">
-        <Canvas shadows camera={{ position: [-0.6, 0.1, 0.6], near: 0.01 }}>
+        <CanvasWithToggle shadows camera={{ position: [-0.6, 0.1, 0.6], near: 0.01 }}>
           <FaceLandmarker>
             <Scene />
           </FaceLandmarker>
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )

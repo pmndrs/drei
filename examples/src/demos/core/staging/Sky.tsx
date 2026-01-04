@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { Sky, OrbitControls } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 
 //* Sky Demo ==============================
@@ -8,7 +8,7 @@ function Scene() {
   return (
     <>
       <OrbitControls makeDefault />
-      
+
       {/* Procedural sky */}
       <Sky sunPosition={[100, 20, 100]} />
 
@@ -35,11 +35,10 @@ export default function SkyDemo() {
       <ExampleCard demoName="Sky" />
 
       <div className="demo-canvas">
-        <Canvas camera={{ position: [0, 2, 5], fov: 50 }}>
+        <CanvasWithToggle camera={{ position: [0, 2, 5], fov: 50 }}>
           <Scene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )
 }
-

@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { Sampler, OrbitControls } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 import { useRef } from 'react'
 import { InstancedMesh } from 'three'
@@ -39,9 +39,9 @@ export default function SamplerDemo() {
       <ExampleCard demoName="Sampler" />
 
       <div className="demo-canvas">
-        <Canvas camera={{ position: [0, 0, 3], fov: 50 }} renderer>
+        <CanvasWithToggle camera={{ position: [0, 0, 3], fov: 50 }} renderer>
           <Scene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )

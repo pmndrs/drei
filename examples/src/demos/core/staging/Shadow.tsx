@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { Shadow, OrbitControls } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 
 //* Shadow Demo ==============================
@@ -36,9 +36,9 @@ export default function ShadowDemo() {
       <ExampleCard demoName="Shadow" />
 
       <div className="demo-canvas">
-        <Canvas camera={{ position: [0, 3, 5], fov: 50 }}>
+        <CanvasWithToggle camera={{ position: [0, 3, 5], fov: 50 }}>
           <Scene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )

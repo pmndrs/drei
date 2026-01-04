@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { Environment, OrbitControls } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 
 //* Environment Demo ==============================
@@ -8,7 +8,7 @@ function Scene() {
   return (
     <>
       <OrbitControls makeDefault />
-      
+
       {/* Environment map */}
       <Environment preset="city" />
 
@@ -29,11 +29,10 @@ export default function EnvironmentDemo() {
       <ExampleCard demoName="Environment" />
 
       <div className="demo-canvas">
-        <Canvas camera={{ position: [0, 0, 3], fov: 50 }}>
+        <CanvasWithToggle camera={{ position: [0, 0, 3], fov: 50 }}>
           <Scene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )
 }
-

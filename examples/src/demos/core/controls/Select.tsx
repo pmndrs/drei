@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { Select, OrbitControls, useSelect, Edges } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 import { useEffect, useState } from 'react'
 import * as THREE from 'three'
@@ -80,10 +80,10 @@ export default function SelectDemo() {
       <ExampleCard demoName="Select" />
 
       <div className="demo-canvas">
-        <Canvas camera={{ position: [0, 5, 5] }}>
+        <CanvasWithToggle camera={{ position: [0, 5, 5] }}>
           <OrbitControls makeDefault />
           <Scene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )

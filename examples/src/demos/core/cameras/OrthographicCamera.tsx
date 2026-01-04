@@ -1,7 +1,8 @@
-import { Canvas, useFrame } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber'
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { OrthographicCamera } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import ExampleCard from '../../../components/ExampleCard'
 
 //* OrthographicCamera Demo ==============================
@@ -12,7 +13,7 @@ export default function OrthographicCameraDemo() {
       <ExampleCard demoName="OrthographicCamera" />
 
       <div className="demo-canvas">
-        <Canvas>
+        <CanvasWithToggle>
           <AnimatedOrthoCamera />
 
           {/* Lighting */}
@@ -43,7 +44,7 @@ export default function OrthographicCameraDemo() {
 
           {/* Grid */}
           <gridHelper args={[10, 10, '#666', '#444']} />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )

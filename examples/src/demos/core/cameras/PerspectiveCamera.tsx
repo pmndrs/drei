@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { PerspectiveCamera, OrbitControls } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import CommonScene from '../../shared/CommonScene'
 
 //* PerspectiveCamera Demo ==============================
@@ -16,12 +16,12 @@ export default function PerspectiveCameraDemo() {
       </div>
 
       <div className="demo-canvas">
-        <Canvas>
+        <CanvasWithToggle>
           <PerspectiveCamera makeDefault position={[5, 5, 5]} fov={50} />
           <OrbitControls makeDefault />
 
           <CommonScene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )

@@ -1,5 +1,6 @@
-import { Canvas, useFrame } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber'
 import { KeyboardControls, useKeyboardControls, OrbitControls } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 import { useRef } from 'react'
 import * as THREE from 'three'
@@ -90,10 +91,10 @@ export default function KeyboardControlsDemo() {
             { name: Controls.jump, keys: ['Space'] },
           ]}
         >
-          <Canvas camera={{ position: [0, 5, 8] }}>
+          <CanvasWithToggle camera={{ position: [0, 5, 8] }}>
             <OrbitControls makeDefault />
             <Scene />
-          </Canvas>
+          </CanvasWithToggle>
         </KeyboardControls>
       </div>
     </div>

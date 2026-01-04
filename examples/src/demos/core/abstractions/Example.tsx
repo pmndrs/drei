@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { Example, ExampleApi, OrbitControls } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 import { useCallback, useRef } from 'react'
 
@@ -42,9 +42,9 @@ export default function ExampleDemo() {
       <ExampleCard demoName="Example" />
 
       <div className="demo-canvas">
-        <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
+        <CanvasWithToggle camera={{ position: [0, 0, 5], fov: 50 }}>
           <Scene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )

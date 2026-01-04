@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { CubeTexture, OrbitControls } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 
 //* CubeTexture Demo ==============================
@@ -8,7 +8,7 @@ function Scene() {
   return (
     <>
       <OrbitControls makeDefault />
-      
+
       {/* Lighting */}
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
@@ -38,11 +38,10 @@ export default function CubeTextureDemo() {
             See documentation for setup details.
           </p>
         </div>
-        <Canvas camera={{ position: [0, 0, 3], fov: 50 }}>
+        <CanvasWithToggle camera={{ position: [0, 0, 3], fov: 50 }}>
           <Scene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )
 }
-

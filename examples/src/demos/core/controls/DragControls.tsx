@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { DragControls, OrbitControls } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 import { useState } from 'react'
 
@@ -47,7 +47,7 @@ export default function DragControlsDemo() {
       <ExampleCard demoName="DragControls" />
 
       <div className="demo-canvas">
-        <Canvas camera={{ position: [0, 5, 5] }}>
+        <CanvasWithToggle camera={{ position: [0, 5, 5] }}>
           <OrbitControls makeDefault />
 
           {/* Lighting */}
@@ -55,7 +55,7 @@ export default function DragControlsDemo() {
           <directionalLight position={[10, 10, 5]} intensity={1} />
 
           <DraggableObjects />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )

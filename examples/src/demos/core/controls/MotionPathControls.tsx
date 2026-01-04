@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { MotionPathControls, useMotion } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 import { useEffect, useState } from 'react'
 import * as THREE from 'three'
@@ -84,9 +84,9 @@ export default function MotionPathControlsDemo() {
       <ExampleCard demoName="MotionPathControls" />
 
       <div className="demo-canvas">
-        <Canvas>
+        <CanvasWithToggle>
           <Scene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )

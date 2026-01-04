@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { ScreenSpace, OrbitControls } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 
 //* ScreenSpace Demo ==============================
@@ -38,9 +38,9 @@ export default function ScreenSpaceDemo() {
       <ExampleCard demoName="ScreenSpace" />
 
       <div className="demo-canvas">
-        <Canvas camera={{ position: [3, 3, 5], fov: 50 }}>
+        <CanvasWithToggle camera={{ position: [3, 3, 5], fov: 50 }}>
           <Scene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )

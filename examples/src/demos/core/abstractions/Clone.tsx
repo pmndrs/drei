@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { Clone, OrbitControls, useGLTF } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 
 //* Clone Demo ==============================
@@ -37,9 +37,9 @@ export default function CloneDemo() {
       <ExampleCard demoName="Clone" />
 
       <div className="demo-canvas">
-        <Canvas camera={{ position: [0, 2, 15], fov: 50 }}>
+        <CanvasWithToggle camera={{ position: [0, 2, 15], fov: 50 }}>
           <Scene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )

@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 
 //* TrailTexture Demo ==============================
@@ -36,9 +36,9 @@ export default function TrailTextureDemo() {
             See Trail demo for usage example.
           </p>
         </div>
-        <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
+        <CanvasWithToggle camera={{ position: [0, 0, 5], fov: 50 }}>
           <Scene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )

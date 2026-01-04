@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 
 //* useContextBridge Demo ==============================
@@ -37,9 +37,9 @@ export default function UseContextBridgeDemo() {
             See documentation for implementation details.
           </p>
         </div>
-        <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
+        <CanvasWithToggle camera={{ position: [0, 0, 5], fov: 50 }}>
           <Scene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )

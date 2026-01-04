@@ -1,4 +1,3 @@
-import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import { Cloud as WebGLCloud } from '@react-three/drei/legacy'
 import { Cloud as WebGPUCloud } from '@react-three/drei/webgpu'

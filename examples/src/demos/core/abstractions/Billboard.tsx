@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { Billboard, OrbitControls } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 import { DoubleSide } from 'three'
 
@@ -54,9 +54,9 @@ export default function BillboardDemo() {
       <ExampleCard demoName="Billboard" />
 
       <div className="demo-canvas">
-        <Canvas camera={{ position: [3, 3, 5], fov: 50 }}>
+        <CanvasWithToggle camera={{ position: [3, 3, 5], fov: 50 }}>
           <Scene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )

@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { ScrollControls, useScroll, OrbitControls } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 import { useFrame } from '@react-three/fiber'
 import { useRef } from 'react'
@@ -57,11 +57,11 @@ export default function ScrollControlsDemo() {
       <ExampleCard demoName="ScrollControls" />
 
       <div className="demo-canvas">
-        <Canvas camera={{ position: [5, 5, 5] }}>
+        <CanvasWithToggle camera={{ position: [5, 5, 5] }}>
           <ScrollControls pages={5} distance={1}>
             <Scene />
           </ScrollControls>
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )

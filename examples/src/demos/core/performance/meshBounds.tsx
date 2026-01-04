@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { meshBounds, OrbitControls } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 import { useState } from 'react'
 
@@ -11,7 +11,7 @@ function Scene() {
   return (
     <>
       <OrbitControls makeDefault />
-      
+
       {/* Lighting */}
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
@@ -33,11 +33,10 @@ export default function MeshBoundsDemo() {
       <ExampleCard demoName="meshBounds" />
 
       <div className="demo-canvas">
-        <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
+        <CanvasWithToggle camera={{ position: [0, 0, 5], fov: 50 }}>
           <Scene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )
 }
-

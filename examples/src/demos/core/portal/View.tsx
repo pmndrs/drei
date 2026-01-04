@@ -1,5 +1,6 @@
-import { Canvas, createPortal, useFrame } from '@react-three/fiber'
+import { createPortal, useFrame } from '@react-three/fiber'
 import { View, OrbitControls } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 import { useRef } from 'react'
 
@@ -35,7 +36,7 @@ export default function ViewDemo() {
         <div ref={view1Ref} style={{ width: '50%', height: '100%', background: '#111' }} />
         <div ref={view2Ref} style={{ width: '50%', height: '100%', background: '#111' }} />
 
-        <Canvas eventSource={document.getElementById('root')!}>
+        <CanvasWithToggle eventSource={document.getElementById('root')!}>
           <View track={view1Ref}>
             <OrbitControls />
             <ambientLight intensity={0.5} />
@@ -51,9 +52,8 @@ export default function ViewDemo() {
             <RotatingBox color="orange" />
             <gridHelper args={[5, 5]} />
           </View>
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )
 }
-

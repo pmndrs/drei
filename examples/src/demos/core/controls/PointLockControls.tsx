@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { PointerLockControls } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import CommonScene from '../../shared/CommonScene'
 import { ExampleCard } from '../../../components/ExampleCard'
 
@@ -11,11 +11,11 @@ export default function PointerLockControlsDemo() {
       <ExampleCard demoName="PointerLockControls" />
 
       <div className="demo-canvas">
-        <Canvas renderer camera={{ position: [0, 5, 5] }}>
+        <CanvasWithToggle renderer camera={{ position: [0, 5, 5] }}>
           <PointerLockControls makeDefault />
 
           <CommonScene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )

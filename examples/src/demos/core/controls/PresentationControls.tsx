@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { PresentationControls } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 
 //* PresentationControls Demo ==============================
@@ -57,9 +57,9 @@ export default function PresentationControlsDemo() {
       <ExampleCard demoName="PresentationControls" />
 
       <div className="demo-canvas">
-        <Canvas camera={{ position: [0, 2, 8] }}>
+        <CanvasWithToggle camera={{ position: [0, 2, 8] }}>
           <Scene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )

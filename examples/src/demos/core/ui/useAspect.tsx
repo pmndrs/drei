@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { useAspect, OrbitControls } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 
 //* useAspect Demo ==============================
@@ -33,9 +33,9 @@ export default function UseAspectDemo() {
       <ExampleCard demoName="useAspect" />
 
       <div className="demo-canvas">
-        <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
+        <CanvasWithToggle camera={{ position: [0, 0, 5], fov: 50 }}>
           <Scene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )

@@ -1,6 +1,7 @@
-import { Canvas, createPortal, useFrame, useThree } from '@react-three/fiber'
+import { createPortal, useFrame, useThree } from '@react-three/fiber'
 import { useMemo, useRef, useState } from 'react'
 import { OrbitControls, OrthographicCamera, useCustomRaycast } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { Mesh, OrthographicCamera as OrthographicCameraImpl, Scene, Matrix4 } from 'three'
 
 //* useCustomRaycast Demo ==============================
@@ -178,7 +179,7 @@ export default function UseCustomRaycastDemo() {
       </div>
 
       <div className="demo-canvas">
-        <Canvas camera={{ position: [5, 5, 5] }}>{mode === 'manual' ? <ManualRenderScene /> : <NormalScene />}</Canvas>
+        <CanvasWithToggle camera={{ position: [5, 5, 5] }}>{mode === 'manual' ? <ManualRenderScene /> : <NormalScene />}</CanvasWithToggle>
       </div>
     </div>
   )

@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { PivotControls, OrbitControls } from '@react-three/drei/core'
+import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 
 //* PivotControls Demo ==============================
@@ -48,10 +48,10 @@ export default function PivotControlsDemo() {
       <ExampleCard demoName="PivotControls" />
 
       <div className="demo-canvas">
-        <Canvas camera={{ position: [0, 5, 5] }}>
+        <CanvasWithToggle camera={{ position: [0, 5, 5] }}>
           <OrbitControls makeDefault />
           <Scene />
-        </Canvas>
+        </CanvasWithToggle>
       </div>
     </div>
   )

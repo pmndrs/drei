@@ -3,13 +3,14 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
 import { Canvas, CanvasProps, useThree } from '@react-three/fiber'
-
-import { OrbitControls } from '../src'
 import isChromatic from 'chromatic/isChromatic'
 import { useEffect } from 'react'
 import seedrandom from 'seedrandom'
 
+import { OrbitControls } from '../src'
+
 const IS_CHROMATIC = isChromatic()
+
 if (IS_CHROMATIC) {
   seedrandom('chromatic-seed', { global: true })
 }
@@ -62,7 +63,7 @@ function SayCheese({ pauseAt = 3000 }) {
       requestAnimationFrame(() => {
         gl.getContext().finish()
       })
-    }, 500) // Wait 500ms for font to load
+    }, 1000) // Wait 1000ms for assets (like fonts) to load
 
     return () => clearTimeout(timer)
   }, [pauseAt, clock, advance, invalidate, gl, setFrameloop])

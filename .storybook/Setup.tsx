@@ -47,7 +47,7 @@ export const Setup = ({
 )
 
 function SayCheese({ pauseAt = 3000 }) {
-  const { clock, advance, setFrameloop, invalidate, gl } = useThree()
+  const { clock, advance, setFrameloop, invalidate, gl, scene } = useThree()
 
   useEffect(() => {
     console.log(`😬 Say cheeese (shooting photo in ${pauseAt}ms)`)
@@ -56,19 +56,29 @@ function SayCheese({ pauseAt = 3000 }) {
     const timer = setTimeout(() => {
       const timestamp = pauseAt / 1000 // Convert ms to seconds
 
+      // Freeze animation
       setFrameloop('never')
       clock.elapsedTime = timestamp
+      clock.start()
+
+      // Disable auto-update for all objects that might animate
+      scene.traverse((obj) => {
+        if (obj.matrixAutoUpdate) obj.matrixAutoUpdate = false
+      })
+
       advance(timestamp)
       invalidate()
 
       // Use RAF to ensure render completes
       requestAnimationFrame(() => {
-        gl.getContext().finish()
+        requestAnimationFrame(() => {
+          gl.getContext().finish()
+        })
       })
     }, 3000) // Wait 3000 for assets (like fonts) to load
 
     return () => clearTimeout(timer)
-  }, [pauseAt, clock, advance, invalidate, gl, setFrameloop])
+  }, [pauseAt, clock, advance, invalidate, gl, scene, setFrameloop])
 
   return null
 }

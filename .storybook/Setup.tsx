@@ -1,8 +1,41 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
-import { Canvas, CanvasProps } from '@react-three/fiber'
+import { advance, Canvas, CanvasProps, invalidate, useThree } from '@react-three/fiber'
 
 import { OrbitControls } from '../src'
+import isChromatic from 'chromatic/isChromatic'
+import { useEffect } from 'react'
+import seedrandom from 'seedrandom'
+
+const IS_CHROMATIC = isChromatic()
+if (IS_CHROMATIC) {
+  seedrandom('chromatic-seed', { global: true })
+}
+
+function SayCheese({ pauseAt = 0 }) {
+  const { advance, setFrameloop, clock } = useThree()
+
+  useEffect(() => {
+    console.log(`😬 Say cheeese (shooting photo in ${pauseAt}ms)`)
+
+    function shoot() {
+      const secs = 0
+      console.log('📸 Shooting', secs)
+
+      setFrameloop('never')
+      advance(secs)
+      advance(secs) // not exactly sure why a 2nd-time, but needed 🤷‍♂️
+    }
+
+    const timeoutId = setTimeout(shoot, pauseAt)
+
+    return () => {
+      clearTimeout(timeoutId)
+    }
+  }, [])
+
+  return null
+}
 
 type Props = React.PropsWithChildren<
   CanvasProps & {
@@ -30,5 +63,7 @@ export const Setup = ({
       </>
     )}
     {controls && <OrbitControls makeDefault />}
+
+    {IS_CHROMATIC && <SayCheese />}
   </Canvas>
 )

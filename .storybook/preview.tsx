@@ -6,7 +6,6 @@ import './index.css'
 const preview: Preview = {
   parameters: {
     layout: 'fullscreen',
-    chromatic: { disableSnapshot: true },
   },
 
   tags: ['autodocs'],

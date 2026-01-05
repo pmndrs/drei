@@ -12,26 +12,16 @@ if (IS_CHROMATIC) {
   seedrandom('chromatic-seed', { global: true })
 }
 
-function SayCheese({ pauseAt = 0 }) {
-  const { advance, setFrameloop, clock } = useThree()
+function SayCheese({ pauseAt = 3000 }) {
+  const { advance, setFrameloop, gl } = useThree()
 
   useEffect(() => {
     console.log(`😬 Say cheeese (shooting photo in ${pauseAt}ms)`)
 
-    function shoot() {
-      const secs = 0
-      console.log('📸 Shooting', secs)
-
-      setFrameloop('never')
-      advance(secs)
-      advance(secs) // not exactly sure why a 2nd-time, but needed 🤷‍♂️
-    }
-
-    const timeoutId = setTimeout(shoot, pauseAt)
-
-    return () => {
-      clearTimeout(timeoutId)
-    }
+    setFrameloop('never')
+    invalidate()
+    advance(pauseAt)
+    gl.getContext().finish()
   }, [])
 
   return null

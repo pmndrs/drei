@@ -16,9 +16,6 @@ export default {
       </Setup>
     ),
   ],
-  parameters: {
-    chromatic: { disableSnapshot: false },
-  },
 } satisfies Meta<typeof Example>
 
 type Story = StoryObj<typeof Example>

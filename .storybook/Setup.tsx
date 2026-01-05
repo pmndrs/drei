@@ -59,19 +59,21 @@ function SayCheese({ pauseAt = 3000 }) {
     const timer = setTimeout(() => {
       const timestamp = pauseAt / 1000 // Convert ms to seconds
 
-      // Freeze animation
-      setFrameloop('never')
+      // Set clock time first
       clock.elapsedTime = timestamp
 
-      // Disable auto-update for all objects that might animate
+      // Freeze the frameloop BEFORE rendering
+      setFrameloop('never')
+
+      // Render one frame at the target timestamp
+      advance(timestamp)
+
+      // Disable auto-update for all objects to freeze everything
       scene.traverse((obj) => {
         obj.matrixAutoUpdate = false
         obj.updateMatrix()
         obj.updateMatrixWorld()
       })
-
-      // Render at the target timestamp
-      advance(timestamp)
 
       // Wait for render to complete
       requestAnimationFrame(() => {
@@ -81,7 +83,7 @@ function SayCheese({ pauseAt = 3000 }) {
           gl.getContext().finish()
         })
       })
-    }, 3000) // Wait 3000ms for assets to load
+    }, 5000) // Wait 5000ms for assets to load - increased for stability
 
     return () => clearTimeout(timer)
   }, [pauseAt, clock, advance, invalidate, gl, scene, camera, setFrameloop])

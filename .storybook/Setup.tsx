@@ -18,12 +18,23 @@ function SayCheese({ pauseAt = 3000 }) {
   useEffect(() => {
     console.log(`😬 Say cheeese (shooting photo in ${pauseAt}ms)`)
 
-    setFrameloop('never')
-    clock.elapsedTime = pauseAt / 1000 // Convert ms to seconds
-    advance(pauseAt / 1000)
-    invalidate()
-    gl.getContext().finish()
-  }, [pauseAt, clock, advance, invalidate, gl])
+    // Wait for Suspense/async content to load before freezing
+    let rafId: number
+    const freeze = () => {
+      setFrameloop('never')
+      clock.elapsedTime = pauseAt / 1000 // Convert ms to seconds
+      advance(pauseAt / 1000)
+      invalidate()
+      gl.getContext().finish()
+    }
+
+    // Wait a couple frames for Suspense to resolve
+    rafId = requestAnimationFrame(() => {
+      rafId = requestAnimationFrame(freeze)
+    })
+
+    return () => cancelAnimationFrame(rafId)
+  }, [pauseAt, clock, advance, invalidate, gl, setFrameloop])
 
   return null
 }

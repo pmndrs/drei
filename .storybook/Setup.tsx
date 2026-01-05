@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
-import { advance, Canvas, CanvasProps, invalidate, useThree } from '@react-three/fiber'
+import { Canvas, CanvasProps, useThree } from '@react-three/fiber'
 
 import { OrbitControls } from '../src'
 import isChromatic from 'chromatic/isChromatic'
@@ -13,16 +13,17 @@ if (IS_CHROMATIC) {
 }
 
 function SayCheese({ pauseAt = 3000 }) {
-  const { advance, setFrameloop, gl } = useThree()
+  const { clock, advance, setFrameloop, invalidate, gl } = useThree()
 
   useEffect(() => {
     console.log(`😬 Say cheeese (shooting photo in ${pauseAt}ms)`)
 
     setFrameloop('never')
+    clock.elapsedTime = pauseAt / 1000 // Convert ms to seconds
+    advance(pauseAt / 1000)
     invalidate()
-    advance(pauseAt)
     gl.getContext().finish()
-  }, [])
+  }, [pauseAt, clock, advance, invalidate, gl])
 
   return null
 }

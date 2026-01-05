@@ -65,11 +65,11 @@ function SayCheese({ pauseAt = 3000 }) {
       advance(timestamp)
 
       // Disable auto-update for all objects to freeze everything
-      scene.traverse((obj) => {
-        obj.matrixAutoUpdate = false
-        obj.updateMatrix()
-        obj.updateMatrixWorld()
-      })
+      // scene.traverse((obj) => {
+      //   obj.matrixAutoUpdate = false
+      //   obj.updateMatrix()
+      //   obj.updateMatrixWorld()
+      // })
 
       // Wait for render to complete
       requestAnimationFrame(() => {

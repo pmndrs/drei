@@ -66,12 +66,6 @@ interface Uniform<T> {
   value: T
 }
 
-interface Shader {
-  uniforms: { [uniform: string]: Uniform<any> }
-  vertexShader: string
-  fragmentShader: string
-}
-
 declare module '@react-three/fiber' {
   interface ThreeElements {
     meshTransmissionMaterial: MeshTransmissionMaterialType
@@ -121,7 +115,9 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       buffer: { value: null },
     }
 
-    this.onBeforeCompile = (shader: Shader & { defines: { [key: string]: string } }) => {
+    this.onBeforeCompile = (
+      shader: THREE.WebGLProgramParametersWithUniforms & { defines: { [key: string]: string } }
+    ) => {
       shader.uniforms = {
         ...shader.uniforms,
         ...this.uniforms,

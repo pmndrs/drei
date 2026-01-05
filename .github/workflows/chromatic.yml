@@ -14,7 +14,6 @@ jobs:
         with:
           cache: 'yarn'
       - run: yarn install
-      - uses: chromaui/action@latest
-        with:
-          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-          autoAcceptChanges: master
+      - run: yarn chromatic --exit-once-uploaded --auto-accept-changes master
+        env:
+          CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}

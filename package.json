@@ -41,6 +41,7 @@
     "typegen": "tsc --emitDeclarationOnly",
     "storybook": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider\" storybook dev -p 6006",
     "build-storybook": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider\" storybook build",
+    "chromatic": "chromatic --project-token $CHROMATIC_PROJECT_TOKEN",
     "copy": "copyfiles package.json README.md LICENSE dist && json -I -f dist/package.json -e \"this.private=false; this.devDependencies=undefined; this.optionalDependencies=undefined; this.scripts=undefined; this.husky=undefined; this.prettier=undefined; this.jest=undefined; this['lint-staged']=undefined;\"",
     "copy:native": "copyfiles -u 2 src/native/package.json dist/native",
     "release": "semantic-release"
@@ -97,6 +98,7 @@
     "@vitejs/plugin-react": "^4.3.3",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^9.2.1",
+    "chromatic": "^13.3.4",
     "copyfiles": "^2.4.1",
     "eslint": "^9.15.0",
     "eslint-config-prettier": "^9.1.0",

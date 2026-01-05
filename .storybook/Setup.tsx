@@ -52,8 +52,7 @@ function SayCheese({ pauseAt = 3000 }) {
   useEffect(() => {
     console.log(`😬 Say cheeese (shooting photo in ${pauseAt}ms)`)
 
-    // Prevent clock from auto-starting during loading
-    clock.autoStart = false
+    clock.autoStart = false // Prevent clock from auto-starting during loading
 
     // Let the scene render normally first to allow Suspense to resolve
     const timer = setTimeout(() => {

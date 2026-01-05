@@ -52,15 +52,15 @@ function SayCheese({ pauseAt = 3000 }) {
   useEffect(() => {
     console.log(`😬 Say cheeese (shooting photo in ${pauseAt}ms)`)
 
-    clock.autoStart = false // Prevent clock from auto-starting during loading
-    setFrameloop('never')
+    // Prevent clock from auto-starting during loading
+    clock.autoStart = false
 
     // Let the scene render normally first to allow Suspense to resolve
     const timer = setTimeout(() => {
       const timestamp = pauseAt / 1000 // Convert ms to seconds
 
       // Freeze animation
-
+      setFrameloop('never')
       clock.elapsedTime = timestamp
 
       // Disable auto-update for all objects that might animate

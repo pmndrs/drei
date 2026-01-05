@@ -10,10 +10,10 @@ import * as THREE from 'three'
 function MovingSphere() {
   const meshRef = useRef<THREE.Mesh>(null)
 
-  useFrame(({ clock }) => {
+  useFrame(({ elapsed }) => {
     if (meshRef.current) {
-      meshRef.current.position.x = Math.sin(clock.getElapsedTime()) * 2
-      meshRef.current.position.y = Math.cos(clock.getElapsedTime() * 1.5) * 1
+      meshRef.current.position.x = Math.sin(elapsed) * 2
+      meshRef.current.position.y = Math.cos(elapsed * 1.5) * 1
     }
   })
 

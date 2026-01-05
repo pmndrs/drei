@@ -23,7 +23,7 @@ function Scene() {
   return (
     <>
       <OrbitControls makeDefault />
-      
+
       {/* Lighting */}
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
@@ -41,11 +41,10 @@ export default function UseAnimationsDemo() {
       <ExampleCard demoName="useAnimations" />
 
       <div className="demo-canvas">
-        <CanvasWithToggle camera={{ position: [0, 2, 5], fov: 50 }}>
+        <CanvasWithToggle camera={{ position: [10, 10, 25], fov: 50 }}>
           <Scene />
         </CanvasWithToggle>
       </div>
     </div>
   )
 }
-

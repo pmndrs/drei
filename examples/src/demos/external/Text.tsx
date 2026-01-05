@@ -1,6 +1,6 @@
 import { Text, OrbitControls } from '@react-three/drei/core'
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
-import { ExampleCard } from '../../../components/ExampleCard'
+import { ExampleCard } from '../../components/ExampleCard'
 
 //* Text Demo ==============================
 
@@ -8,7 +8,7 @@ function Scene() {
   return (
     <>
       <OrbitControls makeDefault />
-      
+
       {/* Lighting */}
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
@@ -36,4 +36,3 @@ export default function TextDemo() {
     </div>
   )
 }
-

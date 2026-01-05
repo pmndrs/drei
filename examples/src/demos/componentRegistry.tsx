@@ -69,7 +69,7 @@ import HtmlDemo from './core/helpers/Html'
 import PointMaterialDemo from './core/helpers/PointMaterial'
 import PositionalAudioDemo from './core/helpers/PositionalAudio'
 import SpriteAnimatorDemo from './core/helpers/SpriteAnimator'
-import TextDemo from './core/helpers/Text'
+import TextDemo from './external/Text'
 import UseAnimationsDemo from './core/helpers/useAnimations'
 import UseContextBridgeDemo from './core/helpers/useContextBridge'
 
@@ -670,7 +670,7 @@ export const components: DreiComponent[] = [
     types: '🟡',
     tests: '🔴',
     notes: 'Needs TSL shader conversion',
-    rendererSupport: 'dual',
+    rendererSupport: 'legacy-only',
     legacyStatus: '🟢',
     webgpuStatus: '🔴',
     tslConversion: '🔴',
@@ -914,7 +914,7 @@ export const components: DreiComponent[] = [
     imports: '🟢',
     types: '🟢',
     tests: '🔴',
-    notes: '',
+    notes: 'switched from meshline, needs update for width',
     rendererSupport: 'universal',
   },
   {
@@ -928,8 +928,8 @@ export const components: DreiComponent[] = [
     imports: '🟢',
     types: '🟢',
     tests: '🔴',
-    notes: '',
-    rendererSupport: 'universal',
+    notes: 'Incorrectly in core',
+    rendererSupport: 'legacy-only',
   },
 
   //* Helpers ==============================
@@ -989,7 +989,7 @@ export const components: DreiComponent[] = [
     imports: '🟢',
     types: '🟢',
     tests: '🔴',
-    notes: '',
+    notes: 'very small on webgpu, needs concept refactor',
     rendererSupport: 'universal',
   },
   {
@@ -1017,7 +1017,7 @@ export const components: DreiComponent[] = [
     imports: '🟢',
     types: '🟢',
     tests: '🔴',
-    notes: '',
+    notes: 'SOmething weird with framecount/setup',
     rendererSupport: 'universal',
   },
   {
@@ -1385,7 +1385,7 @@ export const components: DreiComponent[] = [
     types: '🟢',
     tests: '🔴',
     notes: '',
-    rendererSupport: 'universal',
+    rendererSupport: 'legacy-only',
   },
 
   //* Portal ==============================

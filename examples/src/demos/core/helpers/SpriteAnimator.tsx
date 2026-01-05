@@ -8,7 +8,7 @@ function Scene() {
   return (
     <>
       <OrbitControls makeDefault />
-      
+
       {/* Lighting */}
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
@@ -16,13 +16,19 @@ function Scene() {
       {/* Animated sprite */}
       <SpriteAnimator
         position={[0, 0, 0]}
+        frameName="Fly"
+        fps="18"
+        scale={1.5}
         startFrame={0}
+        endFrame={5}
         autoPlay
         loop
-        numberOfFrames={8}
+        flipX={false}
+        numberOfFrames={6}
         alphaTest={0.01}
-        textureImageURL="/sprites/example.png"
-        textureDataURL="/sprites/example.json"
+        asSprite={true}
+        textureImageURL="/sprites/story.png"
+        textureDataURL="/sprites/story.json"
       />
 
       <gridHelper args={[10, 10, '#444', '#333']} position={[0, -2, 0]} />
@@ -50,4 +56,3 @@ export default function SpriteAnimatorDemo() {
     </div>
   )
 }
-

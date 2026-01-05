@@ -1,5 +1,5 @@
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
-import { Segments, OrbitControls } from '@react-three/drei/core'
+import { Segments, OrbitControls, Segment } from '@react-three/drei/core'
 import { ExampleCard } from '../../../components/ExampleCard'
 
 //* Segments Demo ==============================
@@ -23,10 +23,10 @@ function Scene() {
 
       {/* Line segments */}
       <Segments limit={100} lineWidth={3}>
-        <Segments.Segment start={segments[0]} end={segments[1]} color="hotpink" />
-        <Segments.Segment start={segments[1]} end={segments[2]} color="orange" />
-        <Segments.Segment start={segments[2]} end={segments[3]} color="yellow" />
-        <Segments.Segment start={segments[3]} end={segments[4]} color="lightblue" />
+        <Segment start={segments[0]} end={segments[1]} color="hotpink" />
+        <Segment start={segments[1]} end={segments[2]} color="orange" />
+        <Segment start={segments[2]} end={segments[3]} color="yellow" />
+        <Segment start={segments[3]} end={segments[4]} color="lightblue" />
       </Segments>
 
       <gridHelper args={[10, 10, '#444', '#333']} position={[0, -2, 0]} />

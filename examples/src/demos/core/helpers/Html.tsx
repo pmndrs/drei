@@ -8,7 +8,7 @@ function Scene() {
   return (
     <>
       <OrbitControls makeDefault />
-      
+
       {/* Lighting */}
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
@@ -18,7 +18,9 @@ function Scene() {
         <boxGeometry args={[1, 1, 1]} />
         <meshStandardMaterial color="hotpink" />
         <Html center>
-          <div style={{ background: 'white', padding: '10px', borderRadius: '5px', pointerEvents: 'none' }}>
+          <div
+            style={{ color: 'black', background: 'white', padding: '10px', borderRadius: '5px', pointerEvents: 'none' }}
+          >
             <strong>Box</strong>
           </div>
         </Html>
@@ -42,4 +44,3 @@ export default function HtmlDemo() {
     </div>
   )
 }
-

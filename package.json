@@ -95,7 +95,6 @@
     "glsl-noise": "^0.0.0",
     "hls.js": "^1.5.17",
     "maath": "^0.10.8",
-    "meshline": "^3.3.1",
     "stats-gl": "^2.2.8",
     "stats.js": "^0.17.0",
     "suspend-react": "^0.1.3",

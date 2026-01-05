@@ -18,22 +18,20 @@ function SayCheese({ pauseAt = 3000 }) {
   useEffect(() => {
     console.log(`😬 Say cheeese (shooting photo in ${pauseAt}ms)`)
 
-    // Wait for Suspense/async content to load before freezing
-    let rafId: number
-    const freeze = () => {
+    // Let the scene render normally first to allow Suspense to resolve
+    const timer = setTimeout(() => {
       setFrameloop('never')
       clock.elapsedTime = pauseAt / 1000 // Convert ms to seconds
       advance(pauseAt / 1000)
       invalidate()
-      gl.getContext().finish()
-    }
 
-    // Wait a couple frames for Suspense to resolve
-    rafId = requestAnimationFrame(() => {
-      rafId = requestAnimationFrame(freeze)
-    })
+      // Use RAF to ensure render completes
+      requestAnimationFrame(() => {
+        gl.getContext().finish()
+      })
+    }, 500) // Wait 500ms for font to load
 
-    return () => cancelAnimationFrame(rafId)
+    return () => clearTimeout(timer)
   }, [pauseAt, clock, advance, invalidate, gl, setFrameloop])
 
   return null

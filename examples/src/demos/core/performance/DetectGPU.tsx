@@ -1,4 +1,4 @@
-import { DetectGPU, OrbitControls } from '@react-three/drei/core'
+import { DetectGPU, Html, OrbitControls } from '@react-three/drei/core'
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 
@@ -22,13 +22,11 @@ function Scene() {
 
       {/* GPU detection */}
       <DetectGPU>
-        {({ tier }) => (
-          <group>
-            <mesh position={[0, 2, 0]}>
-              <planeGeometry args={[2, 0.5]} />
-              <meshBasicMaterial color={tier === 0 ? 'red' : tier === 1 ? 'orange' : 'green'} />
-            </mesh>
-          </group>
+        {({ device, fps, gpu, isMobile, tier, type }) => (
+          <Html maxWidth={600}>
+            | device {device} fps {fps} | gpu {gpu} isMobile {isMobile?.toString()} | Tier {tier.toString()} Type {type}{' '}
+            |
+          </Html>
         )}
       </DetectGPU>
     </>

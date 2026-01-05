@@ -40,6 +40,9 @@ export const Setup = ({
   </Canvas>
 )
 
+/**
+ * TODO
+ */
 function SayCheese({ pauseAt = 3000 }) {
   const { clock, advance, setFrameloop, invalidate, gl, scene, camera } = useThree()
 
@@ -71,7 +74,7 @@ function SayCheese({ pauseAt = 3000 }) {
       // Wait for render to complete
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          flushSync(() => {})
+          // flushSync(() => {})
           invalidate()
           gl.getContext().finish()
         })

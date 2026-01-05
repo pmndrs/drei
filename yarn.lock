@@ -2817,6 +2817,7 @@ __metadata:
     babel-eslint: "npm:^10.1.0"
     babel-loader: "npm:^9.2.1"
     camera-controls: "npm:^3.1.0"
+    chromatic: "npm:^13.3.4"
     copyfiles: "npm:^2.4.1"
     cross-env: "npm:^7.0.3"
     detect-gpu: "npm:^5.0.56"
@@ -4983,6 +4984,25 @@ __metadata:
     chromatic: dist/bin.js
     chromatic-cli: dist/bin.js
   checksum: 10c0/fb6022581f9d04b29b731a0696178f027cf7b37b90d34bcb6c493f158c7b66f5047b2702d06b4c5246d5ac8ae5712ff5996959b32061726f862c0ec9396adfdb
+  languageName: node
+  linkType: hard
+
+"chromatic@npm:^13.3.4":
+  version: 13.3.4
+  resolution: "chromatic@npm:13.3.4"
+  peerDependencies:
+    "@chromatic-com/cypress": ^0.*.* || ^1.0.0
+    "@chromatic-com/playwright": ^0.*.* || ^1.0.0
+  peerDependenciesMeta:
+    "@chromatic-com/cypress":
+      optional: true
+    "@chromatic-com/playwright":
+      optional: true
+  bin:
+    chroma: dist/bin.js
+    chromatic: dist/bin.js
+    chromatic-cli: dist/bin.js
+  checksum: 10c0/1800c1640dbc168b621daeca5895698cb5a0a1def50b9d1ada5ea99ce242bf1f70d15065460948b168eedea1f56422553184f4cce1d01a7816f32c60054d704d
   languageName: node
   linkType: hard
 

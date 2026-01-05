@@ -9,6 +9,7 @@ seedrandom('deterministic-random-for-storybook', { global: true }) // determinis
 const preview: Preview = {
   parameters: {
     layout: 'fullscreen',
+    chromatic: { delay: 5000 }, // Wait 5s before taking snapshot
   },
 
   tags: ['autodocs'],

@@ -7,7 +7,6 @@ import isChromatic from 'chromatic/isChromatic'
 import { useEffect } from 'react'
 
 import { OrbitControls } from '../src'
-import { flushSync } from 'react-dom'
 
 type Props = React.PropsWithChildren<
   CanvasProps & {

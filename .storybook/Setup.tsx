@@ -55,6 +55,7 @@ function SayCheese({ pauseAt = 3000 }) {
     // Let the scene render normally first to allow Suspense to resolve
     const timer = setTimeout(() => {
       const timestamp = pauseAt / 1000 // Convert ms to seconds
+
       setFrameloop('never')
       clock.elapsedTime = timestamp
       advance(timestamp)

@@ -1,5 +1,5 @@
 {
   "projectId": "Project:64a019f36ecd3751d0ada612",
   "zip": true,
-  "onlyStoryFiles": [".storybook/stories/Example.stories.tsx", ".storybook/stories/CameraShake.stories.tsx"]
+  "onlyChanged": true
 }

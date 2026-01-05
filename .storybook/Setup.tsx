@@ -40,7 +40,7 @@ export const Setup = ({
 )
 
 /**
- * TODO
+ * A helper component to wait and pause the frameloop
  */
 function SayCheese({ pauseAt = 3000 }) {
   const { clock, advance, setFrameloop, invalidate, gl, scene, camera } = useThree()

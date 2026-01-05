@@ -47,40 +47,19 @@ function SayCheese({ pauseAt = 3000 }) {
   const { clock, advance, setFrameloop, invalidate, gl, scene, camera } = useThree()
 
   useEffect(() => {
-    console.log(`😬 Say cheeese (shooting photo in ${pauseAt}ms)`)
+    // console.log(`😬 Say cheeese (shooting photo in ${pauseAt}ms)`)
 
-    // clock.autoStart = false // Prevent clock from auto-starting during loading
-
-    // Let the scene render normally first to allow Suspense to resolve
     const timer = setTimeout(() => {
-      const timestamp = pauseAt / 1000 // Convert ms to seconds
-
-      // Set clock time first
-      // clock.elapsedTime = timestamp
-
-      // Freeze the frameloop BEFORE rendering
       setFrameloop('never')
 
-      // Render one frame at the target timestamp
+      const timestamp = pauseAt / 1000 // Convert ms to seconds
       advance(timestamp, true)
-
-      // Disable auto-update for all objects to freeze everything
-      // scene.traverse((obj) => {
-      //   obj.matrixAutoUpdate = false
-      //   obj.updateMatrix()
-      //   obj.updateMatrixWorld()
-      // })
 
       // Wait for render to complete
       requestAnimationFrame(() => {
         gl.getContext().finish()
-        // requestAnimationFrame(() => {
-        //   flushSync(() => {})
-        //   invalidate()
-        //   gl.getContext().finish()
-        // })
       })
-    }, 5000) // Wait 5000ms for assets to load - increased for stability
+    }, 5000) // Let the scene render normally first to allow Suspense to resolve: wait 5000ms for assets to load
 
     return () => clearTimeout(timer)
   }, [pauseAt, clock, advance, invalidate, gl, scene, camera, setFrameloop])

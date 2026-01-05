@@ -5,8 +5,7 @@ import seedrandom from 'seedrandom'
 
 import './index.css'
 
-// Set deterministic random seed for Chromatic snapshots
-seedrandom('deterministic-random-for-storybook', { global: true })
+seedrandom('deterministic-random-for-storybook', { global: true }) // deterministic Math.random()
 
 const preview: Preview = {
   parameters: {

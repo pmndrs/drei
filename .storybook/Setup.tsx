@@ -5,16 +5,11 @@ import { Vector3 } from 'three'
 import { Canvas, CanvasProps, useThree } from '@react-three/fiber'
 import isChromatic from 'chromatic/isChromatic'
 import { useEffect } from 'react'
-import seedrandom from 'seedrandom'
 
 import { OrbitControls } from '../src'
 import { flushSync } from 'react-dom'
 
 const IS_CHROMATIC = isChromatic()
-
-if (IS_CHROMATIC) {
-  seedrandom('chromatic-seed', { global: true })
-}
 
 type Props = React.PropsWithChildren<
   CanvasProps & {

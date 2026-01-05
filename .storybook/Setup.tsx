@@ -1,3 +1,5 @@
+/* eslint react-hooks/exhaustive-deps: 1 */
+
 import * as React from 'react'
 import { Vector3 } from 'three'
 import { Canvas, CanvasProps, useThree } from '@react-three/fiber'
@@ -10,31 +12,6 @@ import seedrandom from 'seedrandom'
 const IS_CHROMATIC = isChromatic()
 if (IS_CHROMATIC) {
   seedrandom('chromatic-seed', { global: true })
-}
-
-function SayCheese({ pauseAt = 3000 }) {
-  const { clock, advance, setFrameloop, invalidate, gl } = useThree()
-
-  useEffect(() => {
-    console.log(`😬 Say cheeese (shooting photo in ${pauseAt}ms)`)
-
-    // Let the scene render normally first to allow Suspense to resolve
-    const timer = setTimeout(() => {
-      setFrameloop('never')
-      clock.elapsedTime = pauseAt / 1000 // Convert ms to seconds
-      advance(pauseAt / 1000)
-      invalidate()
-
-      // Use RAF to ensure render completes
-      requestAnimationFrame(() => {
-        gl.getContext().finish()
-      })
-    }, 500) // Wait 500ms for font to load
-
-    return () => clearTimeout(timer)
-  }, [pauseAt, clock, advance, invalidate, gl, setFrameloop])
-
-  return null
 }
 
 type Props = React.PropsWithChildren<
@@ -67,3 +44,28 @@ export const Setup = ({
     {IS_CHROMATIC && <SayCheese />}
   </Canvas>
 )
+
+function SayCheese({ pauseAt = 3000 }) {
+  const { clock, advance, setFrameloop, invalidate, gl } = useThree()
+
+  useEffect(() => {
+    console.log(`😬 Say cheeese (shooting photo in ${pauseAt}ms)`)
+
+    // Let the scene render normally first to allow Suspense to resolve
+    const timer = setTimeout(() => {
+      setFrameloop('never')
+      clock.elapsedTime = pauseAt / 1000 // Convert ms to seconds
+      advance(pauseAt / 1000)
+      invalidate()
+
+      // Use RAF to ensure render completes
+      requestAnimationFrame(() => {
+        gl.getContext().finish()
+      })
+    }, 500) // Wait 500ms for font to load
+
+    return () => clearTimeout(timer)
+  }, [pauseAt, clock, advance, invalidate, gl, setFrameloop])
+
+  return null
+}

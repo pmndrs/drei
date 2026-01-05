@@ -8,6 +8,7 @@ import { useEffect } from 'react'
 import seedrandom from 'seedrandom'
 
 import { OrbitControls } from '../src'
+import { flushSync } from 'react-dom'
 
 const IS_CHROMATIC = isChromatic()
 
@@ -75,6 +76,7 @@ function SayCheese({ pauseAt = 3000 }) {
       // Wait for render to complete
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
+          flushSync(() => {})
           invalidate()
           gl.getContext().finish()
         })

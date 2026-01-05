@@ -54,16 +54,17 @@ function SayCheese({ pauseAt = 3000 }) {
 
     // Let the scene render normally first to allow Suspense to resolve
     const timer = setTimeout(() => {
+      const timestamp = pauseAt / 1000 // Convert ms to seconds
       setFrameloop('never')
-      clock.elapsedTime = pauseAt / 1000 // Convert ms to seconds
-      advance(pauseAt / 1000)
+      clock.elapsedTime = timestamp
+      advance(timestamp)
       invalidate()
 
       // Use RAF to ensure render completes
       requestAnimationFrame(() => {
         gl.getContext().finish()
       })
-    }, 1000) // Wait 1000ms for assets (like fonts) to load
+    }, 3000) // Wait 3000 for assets (like fonts) to load
 
     return () => clearTimeout(timer)
   }, [pauseAt, clock, advance, invalidate, gl, setFrameloop])

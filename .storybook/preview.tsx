@@ -6,9 +6,7 @@ import seedrandom from 'seedrandom'
 import './index.css'
 
 // Set deterministic random seed for Chromatic snapshots
-if (isChromatic()) {
-  seedrandom('chromatic-seed', { global: true })
-}
+seedrandom('chromatic-seed', { global: true })
 
 const preview: Preview = {
   parameters: {

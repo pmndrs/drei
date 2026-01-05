@@ -9,8 +9,6 @@ import { useEffect } from 'react'
 import { OrbitControls } from '../src'
 import { flushSync } from 'react-dom'
 
-const IS_CHROMATIC = isChromatic()
-
 type Props = React.PropsWithChildren<
   CanvasProps & {
     cameraFov?: number
@@ -38,7 +36,7 @@ export const Setup = ({
     )}
     {controls && <OrbitControls makeDefault />}
 
-    {IS_CHROMATIC && <SayCheese />}
+    {isChromatic() && <SayCheese />}
   </Canvas>
 )
 

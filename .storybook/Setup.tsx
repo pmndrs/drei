@@ -64,7 +64,7 @@ function SayCheese({ pauseAt = 3000 }: { pauseAt?: number }) {
       requestAnimationFrame(() => {
         gl.getContext().finish()
       })
-    }, 5000) // Let the scene render normally first to allow Suspense to resolve: wait 5000ms for assets to load
+    }, 5000) // Let the scene render normally first to allow Suspense to resolve
 
     return () => clearTimeout(timer)
   }, [pauseAt, clock, advance, invalidate, gl, scene, camera, setFrameloop])

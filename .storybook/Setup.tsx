@@ -54,19 +54,15 @@ function SayCheese({ pauseAt = 3000 }) {
   useEffect(() => {
     // console.log(`😬 Say cheeese (shooting photo in ${pauseAt}ms)`)
 
-    const timer = setTimeout(() => {
-      setFrameloop('never')
+    setFrameloop('never')
 
-      const timestamp = pauseAt / 1000 // Convert ms to seconds
-      advance(timestamp, true)
+    const timestamp = pauseAt / 1000 // Convert ms to seconds
+    advance(timestamp, true)
 
-      // Wait for render to complete
-      requestAnimationFrame(() => {
-        gl.getContext().finish()
-      })
-    }, 5000) // Let the scene render normally first to allow Suspense to resolve: wait 5000ms for assets to load
-
-    return () => clearTimeout(timer)
+    // Wait for render to complete
+    requestAnimationFrame(() => {
+      gl.getContext().finish()
+    })
   }, [pauseAt, clock, advance, invalidate, gl, scene, camera, setFrameloop])
 
   return null

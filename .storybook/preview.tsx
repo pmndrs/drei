@@ -25,6 +25,9 @@ const preview: Preview = {
 
   parameters: {
     layout: 'fullscreen',
+    chromatic: {
+      delay: 5000, // Wait 5s for assets to load before taking snapshot
+    },
   },
 
   tags: ['autodocs'],

@@ -6,7 +6,7 @@ jobs:
   chromatic:
     runs-on: ubuntu-latest
     # Only run if the CHROMATIC_PROJECT_TOKEN secret is available
-    if: secrets.CHROMATIC_PROJECT_TOKEN != ''
+    if: ${{ secrets.CHROMATIC_PROJECT_TOKEN != '' }}
     steps:
       - uses: actions/checkout@v4
         with:

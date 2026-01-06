@@ -14,6 +14,7 @@ type Props = React.PropsWithChildren<
     cameraPosition?: Vector3
     controls?: boolean
     lights?: boolean
+    backend?: 'webgpu' | 'webgl'
   }
 >
 
@@ -23,21 +24,26 @@ export const Setup = ({
   cameraPosition = new Vector3(-5, 5, 5),
   controls = true,
   lights = true,
+  backend,
   ...restProps
-}: Props) => (
-  <Canvas shadows camera={{ position: cameraPosition, fov: cameraFov }} {...restProps}>
-    {children}
-    {lights && (
-      <>
-        <ambientLight intensity={0.8 * Math.PI} />
-        <pointLight intensity={1 * Math.PI} position={[0, 6, 0]} decay={0} />
-      </>
-    )}
-    {controls && <OrbitControls makeDefault />}
+}: Props) => {
+  console.log('Current backend in Setup:', backend)
 
-    {isChromatic() && <SayCheese />}
-  </Canvas>
-)
+  return (
+    <Canvas shadows camera={{ position: cameraPosition, fov: cameraFov }} {...restProps}>
+      {children}
+      {lights && (
+        <>
+          <ambientLight intensity={0.8 * Math.PI} />
+          <pointLight intensity={1 * Math.PI} position={[0, 6, 0]} decay={0} />
+        </>
+      )}
+      {controls && <OrbitControls makeDefault />}
+
+      {isChromatic() && <SayCheese />}
+    </Canvas>
+  )
+}
 
 /**
  * A helper component to wait and pause the frameloop

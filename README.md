@@ -802,8 +802,23 @@ https://pmndrs.github.io/drei
 
 ### INSTALL
 
+Pre-requisites:
+
+- Install [nvm](https://github.com/nvm-sh/nvm), then:
+  ```sh
+  $ nvm install
+  $ nvm use
+  $ node -v # make sure your version satisfies package.json#engines.node
+  ```
+  nb: if you want this node version to be your default nvm's one: `nvm alias default node`
+- Install yarn, with:
+  ```sh
+  $ corepack enable
+  $ corepack prepare --activate # it reads "packageManager"
+  $ yarn -v # make sure your version satisfies package.json#engines.yarn
+  ```
+
 ```sh
-$ corepack enable
 $ yarn install
 ```
 

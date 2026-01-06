@@ -10,8 +10,8 @@ export default {
   title: 'Misc/Example',
   component: Example,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new Vector3(1, 2, 4)} cameraFov={60}>
+    (Story, context) => (
+      <Setup cameraPosition={new Vector3(1, 2, 4)} cameraFov={60} backend={context.globals.backend}>
         <Story />
       </Setup>
     ),

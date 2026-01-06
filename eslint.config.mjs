@@ -2,6 +2,7 @@ import { fixupConfigRules, fixupPluginRules } from '@eslint/compat'
 import typescriptEslint from '@typescript-eslint/eslint-plugin'
 import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
+import storybook from 'eslint-plugin-storybook'
 import tsParser from '@typescript-eslint/parser'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -20,7 +21,8 @@ export default [
   {
     ignores: ['.storybook/public', '**/dist/', '**/node_modules/', '**/storybook-static/'],
   },
-  ...fixupConfigRules(compat.extends('plugin:react-hooks/recommended', 'plugin:storybook/recommended', 'prettier')),
+  ...fixupConfigRules(compat.extends('plugin:react-hooks/recommended', 'prettier')),
+  ...storybook.configs['flat/recommended'],
   {
     plugins: {
       '@typescript-eslint': typescriptEslint,

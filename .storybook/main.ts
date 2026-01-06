@@ -1,5 +1,5 @@
 import type { StorybookConfig } from '@storybook/react-vite'
-import { svg } from './favicon'
+import { svg } from './favicon.ts'
 
 const config: StorybookConfig = {
   staticDirs: ['./public'],

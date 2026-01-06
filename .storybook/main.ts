@@ -1,17 +1,27 @@
 import type { StorybookConfig } from '@storybook/react-vite'
 import { svg } from './favicon'
+import { mergeConfig } from 'vite'
+import path from 'path'
 
 const config: StorybookConfig = {
   staticDirs: ['./public'],
-  stories: ['./stories/**/*.stories.{ts,tsx}'],
+  stories: [
+    './stories/**/*.stories.{ts,tsx}',      // Remaining unmigrated stories
+    '../src/**/*.stories.{ts,tsx}',          // Co-located stories
+    // Exclude broken stories (missing components/exports)
+    '!../src/core/Gizmos/gizmo/GizmoHelper.stories.tsx',
+    '!../src/core/Portal/useCustomRaycast/useCamera.stories.tsx',
+    '!../src/core/Staging/ShadowAlpha.stories.tsx',
+    '!../src/legacy/Staging/SpotLight/Spotlight.stories.tsx',
+  ],
   addons: ['@chromatic-com/storybook', '@storybook/addon-docs'],
 
   // Favicon (inline svg https://stackoverflow.com/questions/66935329/use-inline-svg-as-favicon)
   managerHead: (head) => `
     ${head}
     <link rel="icon" href="data:image/svg+xml,${encodeURIComponent(
-      svg(process.env.NODE_ENV === 'development' ? 'development' : undefined)
-    )}">
+    svg(process.env.NODE_ENV === 'development' ? 'development' : undefined)
+  )}">
   `,
 
   framework: {
@@ -20,6 +30,29 @@ const config: StorybookConfig = {
   },
 
   docs: {},
+
+  viteFinal: async (config) => {
+    return mergeConfig(config, {
+      resolve: {
+        alias: {
+          // Storybook-specific aliases
+          '@storybook-setup': path.resolve(__dirname, './Setup.tsx'),
+          'drei': path.resolve(__dirname, './drei-exports.ts'),
+
+          // Project path aliases (from tsconfig)
+          '#three': 'three',
+          '#three-addons': path.resolve(__dirname, '../src/utils/three-addons'),
+          '#drei-platform': path.resolve(__dirname, '../src/utils/drei-platform'),
+          '@core': path.resolve(__dirname, '../src/core'),
+          '@legacy': path.resolve(__dirname, '../src/legacy'),
+          '@webgpu': path.resolve(__dirname, '../src/webgpu'),
+          '@external': path.resolve(__dirname, '../src/external'),
+          '@experimental': path.resolve(__dirname, '../src/experimental'),
+          '@utils': path.resolve(__dirname, '../src/utils'),
+        },
+      },
+    })
+  },
 
   typescript: {
     reactDocgen: 'react-docgen-typescript',

@@ -4,7 +4,6 @@ import * as React from 'react'
 import { Vector3 } from 'three'
 import { Canvas, CanvasProps, useThree } from '@react-three/fiber'
 import isChromatic from 'chromatic/isChromatic'
-import { useEffect } from 'react'
 
 import { OrbitControls } from '../src'
 
@@ -48,10 +47,10 @@ export const Setup = ({
 /**
  * A helper component to pause the frameloop at a consistent time for snapshots
  */
-function SayCheese({ pauseAt = 3000 }) {
+function SayCheese({ pauseAt = 3000 }: { pauseAt?: number }) {
   const { clock, advance, setFrameloop, invalidate, gl, scene, camera } = useThree()
 
-  useEffect(() => {
+  React.useEffect(() => {
     // console.log(`😬 Say cheeese (pausing at ${pauseAt}ms)`)
 
     // Pause the frameloop immediately (chromatic.delay handles asset loading wait)

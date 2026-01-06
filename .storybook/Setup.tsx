@@ -58,6 +58,7 @@ function SayCheese({ pauseAt = 3000 }: { pauseAt?: number }) {
 
     const timestamp = pauseAt / 1000 // Convert ms to seconds
     advance(timestamp, true)
+    advance(timestamp, true)
 
     // Wait for render to complete
     requestAnimationFrame(() => {

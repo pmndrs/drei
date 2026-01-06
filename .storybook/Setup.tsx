@@ -53,17 +53,20 @@ function SayCheese({ pauseAt = 3000 }: { pauseAt?: number }) {
   React.useEffect(() => {
     // console.log(`😬 Say cheeese (pausing at ${pauseAt}ms)`)
 
-    // Pause the frameloop immediately (chromatic.delay handles asset loading wait)
-    setFrameloop('never')
+    // Wait for assets to load before pausing the frameloop
+    const timer = setTimeout(() => {
+      setFrameloop('never')
 
-    const timestamp = pauseAt / 1000 // Convert ms to seconds
-    advance(timestamp, true)
-    advance(timestamp, true)
+      const timestamp = pauseAt / 1000 // Convert ms to seconds
+      advance(timestamp, true)
 
-    // Wait for render to complete
-    requestAnimationFrame(() => {
-      gl.getContext().finish()
-    })
+      // Wait for render to complete
+      requestAnimationFrame(() => {
+        gl.getContext().finish()
+      })
+    }, 5000) // Let the scene render normally first to allow Suspense to resolve: wait 5000ms for assets to load
+
+    return () => clearTimeout(timer)
   }, [pauseAt, clock, advance, invalidate, gl, scene, camera, setFrameloop])
 
   return null

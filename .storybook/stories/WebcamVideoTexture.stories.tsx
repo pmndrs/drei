@@ -17,6 +17,9 @@ export default {
       </Setup>
     ),
   ],
+  parameters: {
+    chromatic: { disableSnapshot: true },
+  },
 } satisfies Meta<typeof WebcamVideoTexture>
 
 type Story = StoryObj<typeof WebcamVideoTexture>

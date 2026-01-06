@@ -95,21 +95,14 @@ export const HTMLTransformSt = {
 
 function HTMLOrthographicScene(props: HtmlProps) {
   const camera = useThree((state) => state.camera)
-  const [zoomIn, setZoomIn] = React.useState(true)
 
   const initialCamera = {
     position: new THREE.Vector3(0, 0, -10),
   }
 
-  useFrame(() => {
-    zoomIn ? (camera.zoom += 0.01) : (camera.zoom -= 0.01)
+  useFrame((state) => {
+    camera.zoom = 2 + Math.sin(state.clock.getElapsedTime()) * 1
     camera.updateProjectionMatrix()
-
-    if (camera.zoom > 3) {
-      setZoomIn(false)
-    } else if (camera.zoom < 1) {
-      setZoomIn(true)
-    }
   })
 
   return (

@@ -1,4 +1,5 @@
 [![Storybook](https://img.shields.io/static/v1?message=Storybook&style=flat&colorA=000000&colorB=000000&label=&logo=storybook&logoColor=ffffff)](https://drei.pmnd.rs/)
+[![](https://img.shields.io/badge/chromatic-171c23.svg?style=flat&colorA=000000&colorB=000000&logo=chromatic&logoColor=ffffff)](https://www.chromatic.com/library?appId=64a019f36ecd3751d0ada612&branch=master)
 [![Version](https://img.shields.io/npm/v/@react-three/drei?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)
 [![Downloads](https://img.shields.io/npm/dt/@react-three/drei.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/@react-three/drei)
 [![Discord Shield](https://img.shields.io/discord/740090768164651008?style=flat&colorA=000000&colorB=000000&label=discord&logo=discord&logoColor=ffffff)](https://discord.com/channels/740090768164651008/741751532592038022)
@@ -801,8 +802,23 @@ https://pmndrs.github.io/drei
 
 ### INSTALL
 
+Pre-requisites:
+
+- Install [nvm](https://github.com/nvm-sh/nvm), then:
+  ```sh
+  $ nvm install
+  $ nvm use
+  $ node -v # make sure your version satisfies package.json#engines.node
+  ```
+  nb: if you want this node version to be your default nvm's one: `nvm alias default node`
+- Install yarn, with:
+  ```sh
+  $ corepack enable
+  $ corepack prepare --activate # it reads "packageManager"
+  $ yarn -v # make sure your version satisfies package.json#engines.yarn
+  ```
+
 ```sh
-$ corepack enable
 $ yarn install
 ```
 

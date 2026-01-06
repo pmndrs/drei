@@ -5,6 +5,9 @@ on: push
 jobs:
   chromatic:
     runs-on: ubuntu-latest
+    # Only run on the main pmndrs/drei repository, not on forks
+    # Also only run if the CHROMATIC_PROJECT_TOKEN secret is available
+    if: github.repository == 'pmndrs/drei' && secrets.CHROMATIC_PROJECT_TOKEN != ''
     steps:
       - uses: actions/checkout@v4
         with:

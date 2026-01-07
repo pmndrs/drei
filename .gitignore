@@ -1,25 +1,36 @@
-node_modules/
+# Build output
+build/
 coverage/
 dist/
-build/
-types/
+docs/
 storybook-static/
+types/
+
+# System files
+.DS_Store
+Desktop.ini
 Thumbs.db
 ehthumbs.db
-Desktop.ini
 $RECYCLE.BIN/
-.DS_Store
-.vscode
-.docz/
-package-lock.json
-coverage/
+__diff_output__
+
+# IDE/editor files
 .idea
+.vscode
+
+# Package/lock files
+package-lock.json
 yarn-error.log
 .size-snapshot.json
-__diff_output__
 test-results
 
-# https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
+# docz output
+.docz/
+
+# Node modules
+node_modules/
+
+# Yarn files (see https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored)
 .pnp.*
 .yarn/*
 !.yarn/patches

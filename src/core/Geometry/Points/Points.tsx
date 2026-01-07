@@ -147,6 +147,17 @@ const PointsInstances: ForwardRefComponent<PointsInstancesProps, THREE.Points> =
   )
 })
 
+/**
+ * Individual point instance within a Points component.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Points>
+ *   <Point position={[0, 0, 0]} color="red" />
+ *   <Point position={[1, 1, 0]} color="blue" />
+ * </Points>
+ * ```
+ */
 export const Point: ForwardRefComponent<ThreeElements['positionPoint'], PositionPoint> =
   /* @__PURE__ */ React.forwardRef(({ children, ...props }: ThreeElements['positionPoint'], ref) => {
     React.useMemo(() => extend({ PositionPoint }), [])
@@ -213,6 +224,22 @@ export const PointsBuffer: ForwardRefComponent<PointsBuffersProps, THREE.Points>
   )
 })
 
+/**
+ * High-performance point cloud renderer.
+ * Accepts either buffer data or declarative Point children.
+ *
+ * @example With buffers
+ * ```jsx
+ * <Points positions={new Float32Array([0,0,0, 1,1,0])} />
+ * ```
+ *
+ * @example Declarative
+ * ```jsx
+ * <Points>
+ *   <Point position={[0, 0, 0]} />
+ * </Points>
+ * ```
+ */
 export const Points: ForwardRefComponent<PointsBuffersProps | PointsInstancesProps, THREE.Points> =
   /* @__PURE__ */ React.forwardRef<THREE.Points, PointsBuffersProps | PointsInstancesProps>((props, forwardedRef) => {
     if ((props as PointsBuffersProps).positions instanceof Float32Array) {

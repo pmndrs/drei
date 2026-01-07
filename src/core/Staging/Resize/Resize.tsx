@@ -15,6 +15,16 @@ export type ResizeProps = Omit<ThreeElements['group'], 'ref'> & {
   precise?: boolean
 }
 
+/**
+ * Resizes children to fit within specified dimensions.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Resize width height>
+ *   <mesh />
+ * </Resize>
+ * ```
+ */
 export const Resize = /* @__PURE__ */ React.forwardRef<THREE.Group, ResizeProps>(
   ({ children, width, height, depth, box3, precise = true, ...props }, fRef) => {
     const ref = React.useRef<THREE.Group>(null!)

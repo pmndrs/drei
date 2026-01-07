@@ -108,6 +108,10 @@ const scale = /* @__PURE__ */ new THREE.Vector3()
 const isInstancedBufferAttribute = (attr: any): attr is THREE.InstancedBufferAttribute =>
   attr.isInstancedBufferAttribute
 
+/**
+ * A single instance within an Instances container.
+ * Supports transform props, colors, and events.
+ */
 export const Instance = /* @__PURE__ */ React.forwardRef(({ context, children, ...props }: InstanceProps, ref) => {
   React.useMemo(() => extend({ PositionMesh }), [])
   const group = React.useRef<PositionMesh>(null!)
@@ -121,6 +125,20 @@ export const Instance = /* @__PURE__ */ React.forwardRef(({ context, children, .
   )
 })
 
+/**
+ * Declarative wrapper for THREE.InstancedMesh. Render thousands of objects in a single draw call.
+ * Children can include Instance components that share the same geometry and material.
+ *
+ * @example Basic instances
+ * ```jsx
+ * <Instances limit={1000}>
+ *   <boxGeometry />
+ *   <meshStandardMaterial />
+ *   <Instance color="red" position={[1, 0, 0]} />
+ *   <Instance color="blue" position={[-1, 0, 0]} />
+ * </Instances>
+ * ```
+ */
 export const Instances: ForwardRefComponent<InstancesProps, THREE.InstancedMesh> = /* @__PURE__ */ React.forwardRef<
   THREE.InstancedMesh,
   InstancesProps
@@ -284,6 +302,23 @@ function renderRecursive(
 /*  Matias Gonzalez Fernandez https://x.com/matiNotFound
 /*  and Paul Henschel https://x.com/0xca0a
 */
+
+/**
+ * Creates a dedicated Instances/Instance pair for nested instancing scenarios.
+ * Returns [InstancesProvider, InstanceComponent] tuple.
+ *
+ * @example Nested instances
+ * ```jsx
+ * const [CubeInstances, Cube] = createInstances()
+ * const [SphereInstances, Sphere] = createInstances()
+ * <CubeInstances><boxGeometry />
+ *   <SphereInstances><sphereGeometry />
+ *     <Cube position={[1, 0, 0]} />
+ *     <Sphere position={[0, 1, 0]} />
+ *   </SphereInstances>
+ * </CubeInstances>
+ * ```
+ */
 export function createInstances<T = InstanceProps>() {
   const context = React.createContext<Api>(null!)
   return [
@@ -296,6 +331,20 @@ export function createInstances<T = InstanceProps>() {
   ] as const
 }
 
+/**
+ * Creates custom instanced buffer attributes for shaders.
+ * Access as vertex attributes in custom materials.
+ *
+ * @example Custom attribute
+ * ```jsx
+ * <Instances>
+ *   <boxGeometry />
+ *   <customMaterial />
+ *   <InstancedAttribute name="foo" defaultValue={1} />
+ *   <Instance foo={10} />
+ * </Instances>
+ * ```
+ */
 export const InstancedAttribute = React.forwardRef(
   ({ name, defaultValue, normalized, usage = THREE.DynamicDrawUsage }: InstancedAttributeProps, fref) => {
     const ref = React.useRef<THREE.InstancedBufferAttribute>(null!)

@@ -11,6 +11,21 @@ export type CatmullRomLineProps = Omit<LineProps, 'ref' | 'segments'> & {
   segments?: number
 }
 
+/**
+ * Renders a THREE.Line2 using THREE.CatmullRomCurve3 for interpolation.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <CatmullRomLine
+ *   points={[[0, 0, 0], [1, 1, 0], [2, 0, 0]]}
+ *   closed={false}
+ *   curveType="centripetal"
+ *   tension={0.5}
+ *   color="black"
+ *   lineWidth={1}
+ * />
+ * ```
+ */
 export const CatmullRomLine: ForwardRefComponent<CatmullRomLineProps, Line2> = /* @__PURE__ */ React.forwardRef<
   Line2,
   CatmullRomLineProps

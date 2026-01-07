@@ -1,6 +1,17 @@
 import * as React from 'react'
 import { useThree } from '@react-three/fiber'
 
+/**
+ * Automatically adjusts DPR based on the performance system.
+ * Connects to R3F's built-in performance monitoring.
+ *
+ * @param pixelated - Apply pixelated image rendering when scaling down
+ *
+ * @example
+ * ```jsx
+ * <Canvas><AdaptiveDpr pixelated /></Canvas>
+ * ```
+ */
 export function AdaptiveDpr({ pixelated }: { pixelated?: boolean }) {
   const gl = useThree((state) => state.gl)
   const active = useThree((state) => state.internal.active)

@@ -12,6 +12,29 @@ export type MaskProps = Omit<ThreeElements['mesh'], 'ref' | 'id'> & {
   depthWrite?: boolean
 }
 
+/**
+ * Stencil buffer mask - cuts out areas of the screen.
+ * Cheaper than createPortal as it doesn't require double renders.
+ * Use `useMask(id)` to apply the mask to materials.
+ *
+ * @example Define mask and apply to mesh
+ * ```jsx
+ * <Mask id={1}>
+ *   <planeGeometry />
+ * </Mask>
+ * 
+ * function MaskedMesh() {
+ *   const stencil = useMask(1)
+ *   return <mesh><meshStandardMaterial {...stencil} /></mesh>
+ * }
+ * ```
+ *
+ * @example Compound mask (multiple shapes, same id)
+ * ```jsx
+ * <Mask id={1} position={[-1, 0, 0]}><planeGeometry /></Mask>
+ * <Mask id={1} position={[1, 0, 0]}><circleGeometry /></Mask>
+ * ```
+ */
 export const Mask: ForwardRefComponent<MaskProps, THREE.Mesh> = /* @__PURE__ */ React.forwardRef(
   ({ id = 1, colorWrite = false, depthWrite = false, ...props }: MaskProps, fref: React.ForwardedRef<THREE.Mesh>) => {
     const ref = React.useRef<THREE.Mesh>(null!)
@@ -36,6 +59,11 @@ export const Mask: ForwardRefComponent<MaskProps, THREE.Mesh> = /* @__PURE__ */ 
   }
 )
 
+/**
+ * Returns stencil properties to apply to a material for masking.
+ * @param id - The mask id to match
+ * @param inverse - If true, inverts the mask (shows where mask is NOT)
+ */
 export function useMask(id: number, inverse: boolean = false) {
   return {
     stencilWrite: true,

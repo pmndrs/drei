@@ -143,6 +143,24 @@ export interface HtmlProps extends Omit<Assign<React.HTMLAttributes<HTMLDivEleme
   receiveShadow?: boolean // Receive shadow for occlusion plane
 }
 
+/**
+ * Renders HTML content in 3D space, positioned at a 3D point.
+ * Supports occlusion, transforms, sprites, and distancing.
+ *
+ * @example Basic HTML
+ * ```jsx
+ * <Html position={[0, 1, 0]}>
+ *   <h1>Hello World</h1>
+ * </Html>
+ * ```
+ *
+ * @example With transforms and center
+ * ```jsx
+ * <Html center transform occlude>
+ *   <div className="label">Annotation</div>
+ * </Html>
+ * ```
+ */
 export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__ */ React.forwardRef(
   (
     {

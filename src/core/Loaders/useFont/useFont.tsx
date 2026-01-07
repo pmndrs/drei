@@ -39,6 +39,14 @@ async function loader(font: FontInput) {
   return parseFontData(data)
 }
 
+/**
+ * Loads a font for use with Text3D or troika-three-text.
+ *
+ * @example Basic usage
+ * ```jsx
+ * const font = useFont('/fonts/helvetiker.json')
+ * ```
+ */
 export function useFont(font: FontInput) {
   return suspend(loader, [font])
 }

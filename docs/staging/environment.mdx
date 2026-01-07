@@ -1,10 +1,9 @@
 ---
 title: Environment
-sourcecode: src/core/Environment.tsx
+sourcecode: src/core/Staging/Environment/Environment.tsx
 ---
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-environment--environment-story)
-[![](https://img.shields.io/badge/-suspense-brightgreen)](https://r3f.docs.pmnd.rs/api/hooks#useloader)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-environmentmap--environmentmap-st)
 
 <Grid cols={4}>
   <li>
@@ -27,7 +26,8 @@ sourcecode: src/core/Environment.tsx
   </li>
 </Grid>
 
-Sets up a global cubemap, which affects the default `scene.environment`, and optionally `scene.background`, unless a custom scene has been passed. A selection of [presets](src/helpers/environment-assets.ts) from [HDRI Haven](https://hdrihaven.com/) are available for convenience.
+Internal component that applies a pre-existing texture as environment map.
+Sets scene.environment and optionally scene.background.
 
 ```jsx
 <Environment

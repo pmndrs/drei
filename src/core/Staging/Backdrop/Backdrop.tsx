@@ -11,6 +11,16 @@ export type BackdropProps = ThreeElements['group'] & {
   children?: React.ReactNode
 }
 
+/**
+ * A curved plane that acts as a backdrop/cyclorama for your scene.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Backdrop floor={0.25} segments={20} receiveShadow>
+ *   <meshStandardMaterial color="#353540" />
+ * </Backdrop>
+ * ```
+ */
 export function Backdrop({ children, floor = 0.25, segments = 20, receiveShadow, ...props }) {
   const ref = React.useRef<PlaneGeometry>(null!)
   React.useLayoutEffect(() => {

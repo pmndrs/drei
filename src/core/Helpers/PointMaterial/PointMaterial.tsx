@@ -34,6 +34,18 @@ export class PointMaterialImpl extends THREE.PointsMaterial {
 
 export type PointMaterialProps = Omit<ThreeElements['pointsMaterial'], 'ref'>
 
+/**
+ * Anti-aliased round point material for Points/PointCloud.
+ * Uses fragment shader to create smooth circular points.
+ *
+ * @example
+ * ```jsx
+ * <points>
+ *   <bufferGeometry />
+ *   <PointMaterial size={5} color="red" />
+ * </points>
+ * ```
+ */
 export const PointMaterial: ForwardRefComponent<PointMaterialProps, PointMaterialImpl> =
   /* @__PURE__ */ React.forwardRef<PointMaterialImpl, PointMaterialProps>((props, ref) => {
     const [material] = React.useState(() => new PointMaterialImpl(null))

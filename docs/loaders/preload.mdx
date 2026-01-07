@@ -1,0 +1,18 @@
+---
+title: Preload
+sourcecode: src/core/Loaders/Preload/Preload.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-preload--preload-st)
+
+Pre-compiles shaders to avoid jank on first render.
+Place at the end of your scene.
+
+### Basic usage
+
+```jsx
+<Canvas>
+  <Scene />
+  <Preload all />
+</Canvas>
+```

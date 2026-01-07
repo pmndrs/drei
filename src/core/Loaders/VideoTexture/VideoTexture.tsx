@@ -22,6 +22,16 @@ async function getHls(...args: ConstructorParameters<typeof Hls>) {
   return null
 }
 
+/**
+ * Creates a video texture from a URL or MediaSource object.
+ * Supports HLS streaming, auto-play, and suspense.
+ *
+ * @example Basic usage
+ * ```jsx
+ * const texture = useVideoTexture('/video.mp4')
+ * return <meshBasicMaterial map={texture} toneMapped={false} />
+ * ```
+ */
 export function useVideoTexture(
   srcOrSrcObject: HTMLVideoElement['src' | 'srcObject'],
   {
@@ -121,6 +131,16 @@ export type VideoTextureProps = {
   src: UseVideoTextureParams[0]
 } & UseVideoTextureParams[1]
 
+/**
+ * Declarative video texture component.
+ *
+ * @example With render prop
+ * ```jsx
+ * <VideoTexture src="/video.mp4">
+ *   {(texture) => <meshBasicMaterial map={texture} toneMapped={false} />}
+ * </VideoTexture>
+ * ```
+ */
 export const VideoTexture = /* @__PURE__ */ forwardRef<VideoTexture, VideoTextureProps>(
   ({ children, src, ...config }, fref) => {
     const texture = useVideoTexture(src, config)

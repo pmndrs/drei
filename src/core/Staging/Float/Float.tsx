@@ -13,6 +13,16 @@ export type FloatProps = Omit<ThreeElements['group'], 'ref'> & {
   autoInvalidate?: boolean
 }
 
+/**
+ * Makes children float up and down with configurable animation.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Float speed={1} rotationIntensity={1} floatIntensity={1}>
+ *   <mesh />
+ * </Float>
+ * ```
+ */
 export const Float: ForwardRefComponent<FloatProps, THREE.Group> = /* @__PURE__ */ React.forwardRef<
   THREE.Group,
   FloatProps

@@ -1,13 +1,13 @@
 ---
 title: FaceControls
-sourcecode: src/web/FaceControls.tsx
+sourcecode: src/external/Controls/FaceControls/FaceControls.tsx
 ---
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/controls-facecontrols)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/controls-facecontrols--facecontrols-st)
 
-<Intro>
-The camera follows your (detected) face.
-</Intro>
+The camera follows your face using MediaPipe face tracking.
+
+Pre-requisite: wrap into a `FaceLandmarker` provider:
 
 <Grid cols={4}>
   <li>
@@ -18,79 +18,36 @@ The camera follows your (detected) face.
   </li>
 </Grid>
 
-Prerequisite: wrap into a [`FaceLandmarker`](https://drei.docs.pmnd.rs/misc/face-landmarker) provider
+### Basic usage
 
-```tsx
-<FaceLandmarker>...</FaceLandmarker>
+```jsx
+<FaceLandmarker>
+  <FaceControls />
+</FaceLandmarker>
 ```
 
-```tsx
-<FaceControls />
+### With video source
+
+```jsx
+<FaceControls videoTexture={{ src: videoUrl }} />
 ```
 
-```tsx
-export type FaceControlsProps = {
-  /** The camera to be controlled */
-  camera?: THREE.Camera
-  /** VideoTexture or WebcamVideoTexture options */
-  videoTexture: VideoTextureProps
-  /** Disable the automatic face-detection => you should provide `faceLandmarkerResult` yourself in this case */
-  manualDetect?: boolean
-  /** FaceLandmarker result */
-  faceLandmarkerResult?: FaceLandmarkerResult
-  /** Disable the rAF camera position/rotation update */
-  manualUpdate?: boolean
-  /** Reference this FaceControls instance as state's `controls` */
-  makeDefault?: boolean
-  /** Approximate time to reach the target. A smaller value will reach the target faster. */
-  smoothTime?: number
-  /** Apply position offset extracted from `facialTransformationMatrix` */
-  offset?: boolean
-  /** Offset sensitivity factor, less is more sensible */
-  offsetScalar?: number
-  /** Enable eye-tracking */
-  eyes?: boolean
-  /** Force Facemesh's `origin` to be the middle of the 2 eyes */
-  eyesAsOrigin?: boolean
-  /** Constant depth of the Facemesh */
-  depth?: number
-  /** Enable debug mode */
-  debug?: boolean
-  /** Facemesh options, default: undefined */
-  facemesh?: FacemeshProps
-}
+## Props
 
-export type FaceControlsApi = THREE.EventDispatcher & {
-  /** Compute the target for the camera */
-  computeTarget: () => THREE.Object3D
-  /** Update camera's position/rotation to the `target` */
-  update: (delta: number, target?: THREE.Object3D) => void
-  /** <Facemesh> ref api */
-  facemeshApiRef: RefObject<FacemeshApi>
-}
-```
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| camera | `THREE.Camera` | - | The camera to be controlled |
+| videoTexture | `VideoTextureProps` | `{ start: true }` | VideoTexture or WebcamVideoTexture options |
+| manualDetect | `boolean` | `false` | Disable the automatic face-detection => you should provide `faceLandmarkerResult` yourself in this case |
+| faceLandmarkerResult | `FaceLandmarkerResult` | - | FaceLandmarker result |
+| manualUpdate | `boolean` | `false` | Disable the rAF camera position/rotation update |
+| makeDefault | `boolean` | - | Reference this FaceControls instance as state's `controls` |
+| smoothTime | `number` | `0.25` | Approximate time to reach the target. A smaller value will reach the target faster. |
+| offset | `boolean` | `true` | Apply position offset extracted from `facialTransformationMatrix` |
+| offsetScalar | `number` | `80` | Offset sensitivity factor, less is more sensible |
+| eyes | `boolean` | `false` | Enable eye-tracking |
+| eyesAsOrigin | `boolean` | `true` | Force Facemesh's `origin` to be the middle of the 2 eyes |
+| depth | `number` | `0.15` | Constant depth of the Facemesh |
+| debug | `boolean` | `false` | Enable debug mode |
+| facemesh | `FacemeshProps` | - | Facemesh options, default: undefined |
 
-## Breaking changes
-
-### 9.120.0
-
-<details>
-
-<summary>`FaceControls` was [simplified](https://github.com/pmndrs/drei/pull/2242).</summary>
-
-Following props were deleted:
-
-- `autostart`: now use `videoTexture.start`
-- `webcam`: instead of `webcam: false`, you can now [`manualDetect`](http://localhost:6006/?path=/story/controls-facecontrols--face-controls-st-2)
-- `webcamVideoTextureSrc`: now use `videoTexture.src` (or instantiate your own video-texture[^1] outside)
-- `onVideoFrame`: now use `videoTexture.onVideoFrame`  (or instantiate your own video-texture[^1] outside)
-
-Following api methods/fields were deleted:
-
-- `detect`: you can now [`manualDetect`](http://localhost:6006/?path=/story/controls-facecontrols--face-controls-st-2) outside and pass `faceLandmarkerResult`
-- `webcamApiRef`: if you need `videoTextureRef`, instantiate your own video-texture[^1] outside
-- `play`/`pause`: same, if you need the `video` object, instantiate your own video-texture[^1] outside
-
-[^1]: `<VideoTexture>` or `<WebcamVideoTexture>`
-
-</details>

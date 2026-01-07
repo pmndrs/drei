@@ -1,6 +1,23 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import * as React from 'react'
 
+/**
+ * Forwards contexts provided above the Canvas to be consumed within it.
+ *
+ * @example Basic usage
+ * ```jsx
+ * function SceneWrapper() {
+ *   const ContextBridge = useContextBridge(ThemeContext, GreetingContext)
+ *   return (
+ *     <Canvas>
+ *       <ContextBridge>
+ *         <Scene />
+ *       </ContextBridge>
+ *     </Canvas>
+ *   )
+ * }
+ * ```
+ */
 export function useContextBridge(...contexts: Array<React.Context<any>>) {
   const cRef = React.useRef<Array<React.Context<any>>>([])
   cRef.current = contexts.map((context) => React.useContext(context))

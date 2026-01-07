@@ -53,6 +53,44 @@ type KeyboardControlsApi<T extends string = string> = [
 
 const context = /* @__PURE__ */ React.createContext<KeyboardControlsApi>(null!)
 
+/**
+ * A rudimentary keyboard controller which distributes your defined data-model
+ * to the `useKeyboardControls` hook. It's a rather simple way to get started with keyboard input.
+ *
+ * Wrap your app into `<KeyboardControls>` then access key state reactively or transiently.
+ *
+ * @example Setup with enum
+ * ```jsx
+ * enum Controls {
+ *   forward = 'forward',
+ *   back = 'back',
+ *   left = 'left',
+ *   right = 'right',
+ * }
+ *
+ * const map = [
+ *   { name: Controls.forward, keys: ['ArrowUp', 'KeyW'] },
+ *   { name: Controls.back, keys: ['ArrowDown', 'KeyS'] },
+ * ]
+ *
+ * <KeyboardControls map={map}>
+ *   <App />
+ * </KeyboardControls>
+ * ```
+ *
+ * @example Reactive usage
+ * ```jsx
+ * const forwardPressed = useKeyboardControls((state) => state.forward)
+ * ```
+ *
+ * @example Transient usage
+ * ```jsx
+ * const [sub, get] = useKeyboardControls()
+ * useFrame(() => {
+ *   const pressed = get().back
+ * })
+ * ```
+ */
 export function KeyboardControls({ map, children, onChange, domElement }: KeyboardControlsProps) {
   const key = map.map((item) => item.name + item.keys).join('-')
   const useControls = React.useMemo(() => {

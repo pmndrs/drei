@@ -198,6 +198,18 @@ function WireframeWithoutCustomGeo({
   return <object3D ref={objectRef} />
 }
 
+/**
+ * Renders a stylized wireframe effect on a mesh.
+ * Supports backface rendering, dash patterns, and squeeze effects.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <mesh>
+ *   <boxGeometry />
+ *   <Wireframe stroke="white" squeeze />
+ * </mesh>
+ * ```
+ */
 export function Wireframe({ geometry: customGeometry, ...props }: WireframeProps & WireframeMaterialProps) {
   if (customGeometry) {
     return <WireframeWithCustomGeo geometry={customGeometry} {...props} />

@@ -119,6 +119,21 @@ function isSpriteData(data: SpriteData | null) {
 
 const geometry = /* @__PURE__ */ new THREE.PlaneGeometry(1, 1)
 
+/**
+ * Animates a sprite sheet texture across a plane.
+ * Supports auto-play, pause, loop, and frame control via ref.
+ *
+ * @example Basic sprite animation
+ * ```jsx
+ * <SpriteAnimator
+ *   spriteDataset={spriteData}
+ *   textureImageURL="/spritesheet.png"
+ *   fps={24}
+ *   autoPlay
+ *   loop
+ * />
+ * ```
+ */
 export const SpriteAnimator = /* @__PURE__ */ React.forwardRef<THREE.Group, SpriteAnimatorProps>(
   (
     {

@@ -54,6 +54,38 @@ export type CameraControlsProps = Omit<
   'ref' | 'args' | keyof EventDispatcher
 >
 
+/**
+ * This is an implementation of the [camera-controls](https://github.com/yomotsu/camera-controls) library.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <CameraControls />
+ * ```
+ *
+ * @example Control a specific camera
+ * ```jsx
+ * const [mycam, setMycam] = useState<THREE.PerspectiveCamera | null>()
+ * <PerspectiveCamera ref={setMycam} />
+ * {mycam && <CameraControls camera={mycam} />}
+ * ```
+ *
+ * @example Custom user inputs
+ * ```jsx
+ * import { CameraControlsImpl } from "@react-three/drei"
+ * const { ACTION } = CameraControlsImpl
+ *
+ * <CameraControls
+ *   mouseButtons={{
+ *     left: ACTION.ROTATE,
+ *     middle: ACTION.DOLLY,
+ *     right: ACTION.TRUCK,
+ *     wheel: ACTION.DOLLY,
+ *   }}
+ * />
+ * ```
+ *
+ * @see https://github.com/yomotsu/camera-controls
+ */
 export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraControlsImpl> = /* @__PURE__ */ forwardRef<
   CameraControlsImpl,
   CameraControlsProps

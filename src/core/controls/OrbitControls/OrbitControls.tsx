@@ -29,6 +29,20 @@ export type OrbitControlsProps = Omit<
   'ref' | 'args'
 >
 
+/**
+ * Controls that orbit around a target.
+ * Wraps THREE's [OrbitControls](https://threejs.org/docs/#examples/en/controls/OrbitControls).
+ *
+ * @example Basic usage
+ * ```jsx
+ * <OrbitControls />
+ * ```
+ *
+ * @example With options
+ * ```jsx
+ * <OrbitControls makeDefault enableDamping dampingFactor={0.05} />
+ * ```
+ */
 export const OrbitControls: ForwardRefComponent<OrbitControlsProps, OrbitControlsImpl> =
   /* @__PURE__ */ React.forwardRef<OrbitControlsImpl, OrbitControlsProps>(
     (

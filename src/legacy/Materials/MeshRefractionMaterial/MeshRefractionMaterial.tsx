@@ -6,6 +6,18 @@ import { shaderMaterial } from '@legacy/Materials/shaderMaterial'
 import { MeshBVHUniformStruct, shaderStructs, shaderIntersectFunction } from 'three-mesh-bvh'
 import { version } from '@utils/constants'
 
+/**
+ * Material for realistic diamond/gem refraction using raytracing and BVH.
+ * Supports chromatic aberration, IOR, and environment mapping.
+ *
+ * @example
+ * ```jsx
+ * <mesh>
+ *   <dodecahedronGeometry />
+ *   <MeshRefractionMaterial envMap={envMap} bounces={3} ior={2.4} />
+ * </mesh>
+ * ```
+ */
 export const MeshRefractionMaterial = /* @__PURE__ */ shaderMaterial(
   {
     envMap: null,

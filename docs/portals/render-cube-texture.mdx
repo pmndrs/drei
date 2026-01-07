@@ -1,55 +1,22 @@
 ---
 title: RenderCubeTexture
-sourcecode: src/core/RenderCubeTexture.tsx
+sourcecode: src/core/Portal/RenderCubeTexture/RenderCubeTexture.tsx
 ---
 
-This component allows you to render a live scene into a cubetexture which you can then apply to a material, for instance as an environment map (via the envMap property). The contents of it run inside a portal and are separate from the rest of the canvas, therefore you can have events in there, environment maps, etc.
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/portals-rendercubetexture--rendercubetexture-st)
 
-```tsx
-export type RenderCubeTextureProps = Omit<ThreeElements['texture'], 'rotation'> & {
-  /** Optional stencil buffer, defaults to false */
-  stencilBuffer?: boolean
-  /** Optional depth buffer, defaults to true */
-  depthBuffer?: boolean
-  /** Optional generate mipmaps, defaults to false */
-  generateMipmaps?: boolean
-  /** Optional render priority, defaults to 0 */
-  renderPriority?: number
-  /** Optional event priority, defaults to 0 */
-  eventPriority?: number
-  /** Optional frame count, defaults to Infinity. If you set it to 1, it would only render a single frame, etc */
-  frames?: number
-  /** Optional event compute, defaults to undefined */
-  compute?: ComputeFunction
-  /** Flip cubemap, see https://github.com/mrdoob/three.js/blob/master/src/renderers/WebGLCubeRenderTarget.js */
-  flip?: boolean
-  /** Cubemap resolution (for each of the 6 takes), null === full screen resolution, default: 896 */
-  resolution?: number
-  /** Children will be rendered into a portal */
-  children: React.ReactNode
-  near?: number
-  far?: number
-  position?: ReactThreeFiber.Vector3
-  rotation?: ReactThreeFiber.Euler
-  scale?: ReactThreeFiber.Vector3
-  quaternion?: ReactThreeFiber.Quaternion
-  matrix?: ReactThreeFiber.Matrix4
-  matrixAutoUpdate?: boolean
-}
+Renders children to a cube texture for environment maps.
+Contents run in a portal - isolated scene with own events/environment.
 
-export type RenderCubeTextureApi = {
-  scene: THREE.Scene
-  fbo: THREE.WebGLCubeRenderTarget
-  camera: THREE.CubeCamera
-}
-```
+### Dynamic environment map
 
 ```jsx
-const api = useRef<RenderCubeTextureApi>(null!)
-// ...
-<mesh ref={api}>
-  <sphereGeometry args={[1, 64, 64]} />
-    <meshBasicMaterial>
-      <RenderCubeTexture attach="envMap" flip>
-        <mesh />
+<mesh>
+  <sphereGeometry />
+  <meshBasicMaterial>
+    <RenderCubeTexture attach="envMap" flip>
+      <mesh><boxGeometry /></mesh>
+    </RenderCubeTexture>
+  </meshBasicMaterial>
+</mesh>
 ```

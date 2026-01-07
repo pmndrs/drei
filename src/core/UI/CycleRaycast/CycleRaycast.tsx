@@ -10,6 +10,15 @@ export type CycleRaycastProps = {
   portal?: React.RefObject<HTMLElement>
 }
 
+/**
+ * Cycles through raycasted objects on scroll/keypress.
+ * Useful for selecting objects stacked behind each other.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <CycleRaycast onChanged={(hits, cycle) => console.log(hits[cycle])} />
+ * ```
+ */
 export function CycleRaycast({
   onChanged,
   portal,

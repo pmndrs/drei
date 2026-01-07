@@ -81,6 +81,20 @@ export type OutlinesProps = Omit<ThreeElements['group'], 'ref'> & {
   renderOrder?: number
 }
 
+/**
+ * An ornamental component that extracts the geometry from its parent and displays an
+ * [inverted-hull outline](https://bnpr.gitbook.io/bnpr/outline/inverse-hull-method).
+ * Supported parents are `<mesh>`, `<skinnedMesh>` and `<instancedMesh>`.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <mesh>
+ *   <boxGeometry />
+ *   <meshBasicMaterial />
+ *   <Outlines thickness={0.05} color="hotpink" />
+ * </mesh>
+ * ```
+ */
 export function Outlines({
   color = 'black',
   opacity = 1,

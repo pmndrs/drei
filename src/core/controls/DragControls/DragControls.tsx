@@ -40,6 +40,27 @@ export type DragControlsProps = {
   dragConfig?: DragConfig
 }
 
+/**
+ * Makes objects draggable in your scene.
+ * Supports locking to specific axes, drag limits, and custom events.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <DragControls>
+ *   <mesh />
+ * </DragControls>
+ * ```
+ *
+ * @example Controlled with matrix
+ * ```jsx
+ * const matrix = new THREE.Matrix4()
+ * <DragControls
+ *   matrix={matrix}
+ *   autoTransform={false}
+ *   onDrag={(localMatrix) => matrix.copy(localMatrix)}
+ * />
+ * ```
+ */
 export const DragControls: ForwardRefComponent<DragControlsProps, THREE.Group> = React.forwardRef<
   THREE.Group,
   DragControlsProps

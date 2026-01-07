@@ -14,6 +14,18 @@ function isGeometry(object: any): object is THREE.Mesh {
   return !!object.geometry
 }
 
+/**
+ * A planar, Y-up oriented shadow-catcher that accumulates into soft shadows.
+ * Zero performance impact after all frames have accumulated.
+ * Pair with RandomizedLight for realistic raycast-like shadows and ambient occlusion.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <AccumulativeShadows temporal frames={100} scale={10}>
+ *   <RandomizedLight amount={8} position={[5, 5, -10]} />
+ * </AccumulativeShadows>
+ * ```
+ */
 export type AccumulativeShadowsProps = Omit<ThreeElements['group'], 'ref'> & {
   /** How many frames it can render, more yields cleaner results but takes more time, 40 */
   frames?: number

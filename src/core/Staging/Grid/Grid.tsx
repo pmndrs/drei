@@ -130,6 +130,15 @@ const GridMaterial = /* @__PURE__ */ shaderMaterial(
   `
 )
 
+/**
+ * Renders an infinite grid with configurable appearance.
+ * Supports cell and section lines, fading, and camera following.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Grid infiniteGrid fadeDistance={50} />
+ * ```
+ */
 export const Grid: ForwardRefComponent<GridProps, THREE.Mesh> = /* @__PURE__ */ React.forwardRef(
   (
     {

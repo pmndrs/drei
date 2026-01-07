@@ -1,0 +1,16 @@
+---
+title: NormalTexture
+sourcecode: src/external/Loaders/NormalTexture/NormalTexture.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-normaltexture--normaltexture-st)
+
+Loads a normal texture from the normals repository.
+
+### Basic usage
+
+```jsx
+<NormalTexture id={3} repeat={[4, 4]}>
+  {(texture) => <meshStandardMaterial normalMap={texture} />}
+</NormalTexture>
+```

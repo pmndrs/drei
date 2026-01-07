@@ -52,6 +52,16 @@ export { useProgress }
 
 //
 
+/**
+ * Declarative component that provides loading progress via render prop.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Progress>
+ *   {({ progress }) => <Html center>{progress}% loaded</Html>}
+ * </Progress>
+ * ```
+ */
 export function Progress({ children }: { children?: (result: Data) => React.ReactNode }) {
   const result = useProgress()
 

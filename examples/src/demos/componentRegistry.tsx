@@ -1385,7 +1385,7 @@ export const components: DreiComponent[] = [
     types: '🟢',
     tests: '🔴',
     notes: '',
-    rendererSupport: 'legacy-only',
+    rendererSupport: 'universal',
   },
 
   //* Portal ==============================

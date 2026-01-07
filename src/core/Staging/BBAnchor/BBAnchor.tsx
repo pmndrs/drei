@@ -9,6 +9,19 @@ export type BBAnchorProps = ThreeElements['group'] & {
   anchor: THREE.Vector3 | [number, number, number]
 }
 
+/**
+ * Anchors children to the bounding box of the parent mesh.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <mesh>
+ *   <boxGeometry />
+ *   <BBAnchor anchor={[1, 1, 0]}>
+ *     <Html>Top Right</Html>
+ *   </BBAnchor>
+ * </mesh>
+ * ```
+ */
 export const BBAnchor = ({ anchor, ...props }: BBAnchorProps) => {
   const ref = React.useRef<THREE.Group>(null!)
   const parentRef = React.useRef<THREE.Object3D | null>(null)

@@ -32,6 +32,21 @@ export type LineProps = Omit<
   'ref'
 >
 
+/**
+ * Renders a THREE.Line2 or THREE.LineSegments2 (depending on the value of `segments`).
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Line
+ *   points={[[0, 0, 0], [1, 0, 0], [1, 1, 0]]}
+ *   color="black"
+ *   lineWidth={1}
+ *   segments={false}
+ *   dashed={false}
+ *   vertexColors={[[0, 0, 0], [1, 0, 0]]} // Optional RGB for each point
+ * />
+ * ```
+ */
 export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = /* @__PURE__ */ React.forwardRef<
   Line2 | LineSegments2,
   LineProps

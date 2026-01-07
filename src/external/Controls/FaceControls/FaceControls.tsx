@@ -83,15 +83,22 @@ export type FaceControlsApi = THREE.EventDispatcher & {
 const FaceControlsContext = /* @__PURE__ */ createContext({} as FaceControlsApi)
 
 /**
- * The camera follows your face.
+ * The camera follows your face using MediaPipe face tracking.
  *
  * Pre-requisite: wrap into a `FaceLandmarker` provider:
  *
+ * @example Basic usage
  * ```jsx
- * <FaceLandmarker>...</FaceLandmarker>
+ * <FaceLandmarker>
+ *   <FaceControls />
+ * </FaceLandmarker>
+ * ```
+ *
+ * @example With video source
+ * ```jsx
+ * <FaceControls videoTexture={{ src: videoUrl }} />
  * ```
  */
-
 export const FaceControls = /* @__PURE__ */ forwardRef<FaceControlsApi, FaceControlsProps>(
   (
     {

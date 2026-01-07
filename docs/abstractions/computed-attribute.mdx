@@ -1,22 +1,23 @@
 ---
 title: ComputedAttribute
-sourcecode: src/core/ComputedAttribute.tsx
+sourcecode: src/core/Abstractions/ComputedAttribute/ComputedAttribute.tsx
 ---
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-sampler--sampler-weight-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-computedattribute--computedattribute-st)
 
-Create and attach an attribute declaratively.
+Create and attach a buffer attribute declaratively.
+Used exclusively as a child of a BufferGeometry.
 
-```tsx
+### Basic usage
+
+```jsx
 <sphereGeometry>
   <ComputedAttribute
-    // attribute will be added to the geometry with this name
     name="my-attribute-name"
     compute={(geometry) => {
-      // ...someLogic;
+      // ...someLogic
       return new THREE.BufferAttribute([1, 2, 3], 1)
     }}
-    // you can pass any BufferAttribute prop to this component, eg.
     usage={THREE.StaticReadUsage}
   />
 </sphereGeometry>

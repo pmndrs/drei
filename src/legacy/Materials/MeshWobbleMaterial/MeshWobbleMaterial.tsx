@@ -67,10 +67,24 @@ declare module '@react-three/fiber' {
 }
 
 export type WobbleMaterialProps = Omit<ThreeElements['meshStandardMaterial'], 'ref'> & {
+  /** Animation speed multiplier. @default 1 */
   speed?: number
+  /** Wobble intensity. @default 1 */
   factor?: number
 }
 
+/**
+ * Material that makes geometry wobble with a sine wave animation.
+ * Extends MeshStandardMaterial with animated vertex displacement.
+ *
+ * @example
+ * ```jsx
+ * <mesh>
+ *   <boxGeometry />
+ *   <MeshWobbleMaterial factor={1} speed={10} />
+ * </mesh>
+ * ```
+ */
 export const MeshWobbleMaterial: ForwardRefComponent<WobbleMaterialProps, WobbleMaterialImpl> =
   /* @__PURE__ */ React.forwardRef(({ speed = 1, ...props }, ref) => {
     const [material] = React.useState(() => new WobbleMaterialImpl())

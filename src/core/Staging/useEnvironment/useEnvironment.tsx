@@ -26,6 +26,15 @@ export type EnvironmentLoaderProps = {
 
 const defaultFiles = ['/px.png', '/nx.png', '/py.png', '/ny.png', '/pz.png', '/nz.png']
 
+/**
+ * Loads environment textures for reflections and lighting.
+ * Supports HDR files, presets, and cubemaps.
+ *
+ * @example Basic usage
+ * ```jsx
+ * const texture = useEnvironment({ preset: 'sunset' })
+ * ```
+ */
 export function useEnvironment({
   files = defaultFiles,
   path = '',

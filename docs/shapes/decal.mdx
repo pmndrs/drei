@@ -1,0 +1,55 @@
+---
+title: Decal
+sourcecode: src/core/Geometry/Decal/Decal.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/shapes-decal--decal-st)
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="ymb5d9" />
+  </li>
+</Grid>
+
+Abstraction around THREE's `DecalGeometry`. It will use its parent mesh as the decal surface by default.
+The decal box has to intersect the surface, otherwise it will not be visible.
+If you do not specify a rotation it will look at the parent's center point.
+You can also pass a single number as the rotation which allows you to spin it.
+
+### Basic usage
+
+```jsx
+<mesh>
+  <sphereGeometry />
+  <meshBasicMaterial />
+  <Decal
+    debug // Makes "bounding box" of the decal visible
+    position={[0, 0, 0]}
+    rotation={[0, 0, 0]} // Can be a vector or a single radian for spin
+    scale={1}
+  >
+    <meshBasicMaterial map={texture} polygonOffset polygonOffsetFactor={-1} />
+  </Decal>
+</mesh>
+```
+
+### With just a map (auto-creates transparent material)
+
+```jsx
+<mesh>
+  <sphereGeometry />
+  <meshBasicMaterial />
+  <Decal map={texture} />
+</mesh>
+```
+
+### Attach to external mesh
+
+```jsx
+<Decal mesh={meshRef}>
+  <meshBasicMaterial map={texture} polygonOffset polygonOffsetFactor={-1} />
+</Decal>
+```
+
+If you do not specify a material it will create a transparent meshBasicMaterial with a polygonOffsetFactor of -10.
+

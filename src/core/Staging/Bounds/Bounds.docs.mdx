@@ -1,0 +1,54 @@
+---
+title: Bounds
+sourcecode: src/core/Staging/Bounds/Bounds.tsx
+---
+
+{/* AUTO:badges */}
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="rz2g0" />
+  </li>
+  <li>
+    <Codesandbox id="42glz0" />
+  </li>
+</Grid>
+
+{/* AUTO:description */}
+
+```jsx
+const interpolateFunc = (t: number) => 1 - Math.exp(-5 * t) + 0.007 * t // Matches the default Bounds behavior
+const interpolateFunc1 = (t: number) => -t * t * t + 2 * t * t          // Start smoothly, finish linearly
+const interpolateFunc2 = (t: number) => -t * t * t + t * t + t          // Start linearly, finish smoothly
+
+<Bounds fit clip observe margin={1.2} maxDuration={1} interpolateFunc={interpolateFunc}>
+  <mesh />
+</Bounds>
+```
+
+The Bounds component also acts as a context provider, use the `useBounds` hook to refresh the bounds, fit the camera, clip near/far planes, go to camera orientations or focus objects. `refresh(object?: THREE.Object3D | THREE.Box3)` will recalculate bounds, since this can be expensive only call it when you know the view has changed. `reset` centers the view. `moveTo` changes the camera position. `lookAt` changes the camera orientation, with the respect to up-vector, if specified. `clip` sets the cameras near/far planes. `fit` centers the view for non-orthographic cameras (same as reset) or zooms the view for orthographic cameras.
+
+```jsx
+function Foo() {
+  const bounds = useBounds()
+  useEffect(() => {
+    // Calculate scene bounds
+    bounds.refresh().clip().fit()
+
+    // Or, focus a specific object or box3
+    // bounds.refresh(ref.current).clip().fit()
+    // bounds.refresh(new THREE.Box3()).clip().fit()
+
+    // Or, move the camera to a specific position, and change its orientation
+    // bounds.moveTo([0, 10, 10]).lookAt({ target: [5, 5, 0], up: [0, -1, 0] })
+
+    // For orthographic cameras, reset has to be used to center the view (fit would only change its zoom to match the bounding box)
+    // bounds.refresh().reset().clip().fit()
+  }, [...])
+}
+
+<Bounds>
+  <Foo />
+</Bounds>
+```
+

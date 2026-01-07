@@ -44,6 +44,16 @@ export function useNormalTexture(
 
 //
 
+/**
+ * Loads a normal texture from the normals repository.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <NormalTexture id={3} repeat={[4, 4]}>
+ *   {(texture) => <meshStandardMaterial normalMap={texture} />}
+ * </NormalTexture>
+ * ```
+ */
 export const NormalTexture = ({
   children,
   id,

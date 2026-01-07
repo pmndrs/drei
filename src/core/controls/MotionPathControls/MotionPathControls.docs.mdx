@@ -1,0 +1,35 @@
+---
+title: MotionPathControls
+sourcecode: src/core/Controls/MotionPathControls/MotionPathControls.tsx
+---
+
+{/* AUTO:badges */}
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="2y73c6" />
+  </li>
+</Grid>
+
+{/* AUTO:description */}
+
+{/* AUTO:example */}
+
+You can also use imperative curves:
+
+```jsx
+<MotionPathControls
+  offset={0}
+  focus={poi}
+  damping={0.2}
+  curves={[
+    new THREE.CubicBezierCurve3(
+      new THREE.Vector3(-5, -5, 0),
+      new THREE.Vector3(-10, 0, 0),
+      new THREE.Vector3(0, 3, 0),
+      new THREE.Vector3(6, 3, 0)
+    ),
+  ]}
+/>
+```
+

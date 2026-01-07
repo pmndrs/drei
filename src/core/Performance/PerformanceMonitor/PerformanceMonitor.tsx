@@ -56,6 +56,23 @@ export type PerformanceMonitorProps = {
 
 const context = /* @__PURE__ */ createContext<PerformanceMonitorApi>(null!)
 
+/**
+ * Monitors FPS and triggers callbacks when performance crosses bounds.
+ * Use to dynamically adjust quality based on device capabilities.
+ *
+ * @example Adjust DPR based on performance
+ * ```jsx
+ * const [dpr, setDpr] = useState(1.5)
+ * <Canvas dpr={dpr}>
+ *   <PerformanceMonitor onIncline={() => setDpr(2)} onDecline={() => setDpr(1)} />
+ * </Canvas>
+ * ```
+ *
+ * @example Gradual quality adjustment
+ * ```jsx
+ * <PerformanceMonitor factor={1} onChange={({ factor }) => setDpr(0.5 + 1.5 * factor)} />
+ * ```
+ */
 export function PerformanceMonitor({
   iterations = 10,
   ms = 250,

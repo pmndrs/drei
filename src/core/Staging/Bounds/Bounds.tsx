@@ -75,6 +75,18 @@ const interpolateFuncDefault = (t: number) => {
 }
 
 const context = React.createContext<BoundsApi>(null!)
+
+/**
+ * Calculates and provides the bounding box of children.
+ * Useful for camera framing and object positioning.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Bounds fit clip observe margin={1.2}>
+ *   <mesh />
+ * </Bounds>
+ * ```
+ */
 export function Bounds({
   children,
   maxDuration = 1.0,

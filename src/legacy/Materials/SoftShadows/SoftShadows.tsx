@@ -139,6 +139,15 @@ function reset(gl, scene, camera) {
   gl.compile(scene, camera)
 }
 
+/**
+ * Injects percent closer soft shadows (PCSS) into Three.js shadow shader chunks.
+ * Mounting/unmounting causes shader recompilation.
+ *
+ * @example Enable soft shadows
+ * ```jsx
+ * <SoftShadows size={25} samples={10} focus={0} />
+ * ```
+ */
 export function SoftShadows({ focus = 0, samples = 10, size = 25 }: SoftShadowsProps) {
   const gl = useThree((state) => state.gl)
   const scene = useThree((state) => state.scene)

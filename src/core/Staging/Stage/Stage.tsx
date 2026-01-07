@@ -78,6 +78,17 @@ function Refit({ radius, adjustCamera }) {
   return null
 }
 
+/**
+ * Creates a "stage" for your object with lighting and environment.
+ * Automatically centers and scales children for presentation.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Stage environment="city" intensity={0.5}>
+ *   <Model />
+ * </Stage>
+ * ```
+ */
 export function Stage({
   children,
   center,

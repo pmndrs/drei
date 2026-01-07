@@ -1,19 +1,37 @@
 ---
 title: Billboard
-sourcecode: src/core/Billboard.tsx
+sourcecode: src/core/Abstractions/Billboard/Billboard.tsx
 ---
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-billboard--billboard-st)
 
-Adds a `<group />` that always faces the camera.
+Wraps children in a group that always faces the camera (billboarding).
+Useful for labels, sprites, health bars, or any UI element that should always face the viewer.
+
+### Basic usage
 
 ```jsx
-<Billboard
-  follow={true}
-  lockX={false}
-  lockY={false}
-  lockZ={false} // Lock the rotation on the z axis (default=false)
->
-  <Text fontSize={1}>I'm a billboard</Text>
+<Billboard>
+  <Text>I'm a billboard</Text>
 </Billboard>
 ```
+
+### Lock specific axes
+
+```jsx
+<Billboard follow={true} lockY={true}>
+  <Plane args={[3, 2]} material-color="red" />
+</Billboard>
+```
+
+### Inside a group (inherits parent transforms)
+
+```jsx
+<group position={[5, 0, 0]}>
+  <Billboard>
+    <Text>Label</Text>
+  </Billboard>
+  <Box />
+</group>
+```
+

@@ -34,6 +34,24 @@ export const isWebGL2Available = () => {
   }
 }
 
+/**
+ * Abstraction around three's own [EffectComposer](https://threejs.org/docs/#examples/en/postprocessing/EffectComposer).
+ * By default it will prepend a render-pass and a gammacorrection-pass.
+ * Children are cloned, `attach` is given to them automatically. You can only use passes or effects in there.
+ *
+ * By default it creates a render target with HalfFloatType, RGBAFormat. You can change all of this to your liking.
+ *
+ * @example Basic usage
+ * ```jsx
+ * import { SSAOPass } from "three-stdlib"
+ *
+ * extend({ SSAOPass })
+ *
+ * <Effects multisamping={8} renderIndex={1} disableGamma={false} disableRenderPass={false} disableRender={false}>
+ *   <sSAOPass args={[scene, camera, 100, 100]} kernelRadius={1.2} kernelSize={0} />
+ * </Effects>
+ * ```
+ */
 export const Effects: ForwardRefComponent<EffectsProps, EffectComposer> = /* @__PURE__ */ React.forwardRef(
   (
     {

@@ -1,0 +1,33 @@
+---
+title: Edges
+sourcecode: src/core/Geometry/Edges/Edges.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/shapes-edges--edges-st)
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="ny3p4" />
+  </li>
+</Grid>
+
+Abstracts [THREE.EdgesGeometry](https://threejs.org/docs/#api/en/geometries/EdgesGeometry).
+It pulls the geometry automatically from its parent, optionally you can ungroup it and give it
+a `geometry` prop. You can give it children, for instance a custom material.
+Edges is based on `<Line>` and supports all of its props.
+
+### Basic usage
+
+```jsx
+<mesh>
+  <boxGeometry />
+  <meshBasicMaterial />
+  <Edges
+    linewidth={4}
+    scale={1.1}
+    threshold={15} // Display edges only when the angle between two faces exceeds this value (default=15 degrees)
+    color="white"
+  />
+</mesh>
+```
+

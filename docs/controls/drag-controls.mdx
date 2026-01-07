@@ -1,0 +1,28 @@
+---
+title: DragControls
+sourcecode: src/core/Controls/DragControls/DragControls.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/controls-dragcontrols--dragcontrols-st)
+
+Makes objects draggable in your scene.
+Supports locking to specific axes, drag limits, and custom events.
+
+### Basic usage
+
+```jsx
+<DragControls>
+  <mesh />
+</DragControls>
+```
+
+### Controlled with matrix
+
+```jsx
+const matrix = new THREE.Matrix4()
+<DragControls
+  matrix={matrix}
+  autoTransform={false}
+  onDrag={(localMatrix) => matrix.copy(localMatrix)}
+/>
+```

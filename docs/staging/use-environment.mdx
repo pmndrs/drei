@@ -1,47 +1,15 @@
 ---
 title: useEnvironment
-sourcecode: src/core/useEnvironment.tsx
+sourcecode: src/core/Staging/useEnvironment/useEnvironment.tsx
 ---
 
-A convenience hook to load an environment map. The props are the same as on the `<Environment />` component.
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-useenvironment--useenvironment-st)
 
-```tsx
-export type EnvironmentLoaderProps = {
-  files?: string | string[]
-  path?: string
-  preset?: PresetsType
-  extensions?: (loader: Loader) => void
-  encoding?: TextureEncoding
-```
+Loads environment textures for reflections and lighting.
+Supports HDR files, presets, and cubemaps.
 
-You can use it without properties, which will default to px, nx, py, ny, pz, nz as \*.png files inside your /public directory.
+### Basic usage
 
 ```jsx
-const cubeTexture = useEnvironment()
-```
-
-Or you can specificy from where to load the files.
-
-```jsx
-const presetTexture = useEnvironment({ preset: 'city' })
-const rgbeTexture = useEnvironment({ files: 'model.hdr' })
-const cubeTexture = useEnvironment({ files: ['px', 'nx', 'py', 'ny', 'pz', 'nz'].map((n) => `${n}.png`) })
-```
-
-In order to preload you do this:
-
-```jsx
-useEnvironment.preload({ preset: 'city' })
-useEnvironment.preload({ files: 'model.hdr' })
-useEnvironment.preload({ files: ['px', 'nx', 'py', 'ny', 'pz', 'nz'].map((n) => `${n}.png`) })
-```
-
-Keep in mind that preloading [gainmaps](https://github.com/MONOGRID/gainmap-js) is not possible, because their loader requires access to the renderer.
-
-You can also clear your environment map from the cache:
-
-```jsx
-useEnvironment.clear({ preset: 'city' })
-useEnvironment.clear({ files: 'model.hdr' })
-useEnvironment.clear({ files: ['px', 'nx', 'py', 'ny', 'pz', 'nz'].map((n) => `${n}.png`) })
+const texture = useEnvironment({ preset: 'sunset' })
 ```

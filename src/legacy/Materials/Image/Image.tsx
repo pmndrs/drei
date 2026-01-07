@@ -183,6 +183,33 @@ const ImageWithTexture: ForwardRefComponent<ImageProps, THREE.Mesh> = /* @__PURE
   }
 )
 
+/**
+ * A shader-based image component with auto-cover (similar to css/background: cover).
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Image url="/file.jpg" />
+ * ```
+ *
+ * @example With ref for animating material properties
+ * ```jsx
+ * function Foo() {
+ *   const ref = useRef()
+ *   useFrame(() => {
+ *     ref.current.material.radius = ... // between 0 and 1
+ *     ref.current.material.zoom = ... // 1 and higher
+ *     ref.current.material.grayscale = ... // between 0 and 1
+ *     ref.current.material.color.set(...) // mix-in color
+ *   })
+ *   return <Image ref={ref} url="/file.jpg" />
+ * }
+ * ```
+ *
+ * @example Transparent image
+ * ```jsx
+ * <Image url="/file.jpg" transparent opacity={0.5} />
+ * ```
+ */
 export const Image: ForwardRefComponent<ImageProps, THREE.Mesh> = /* @__PURE__ */ React.forwardRef<
   THREE.Mesh,
   ImageProps

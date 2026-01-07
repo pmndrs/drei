@@ -73,6 +73,14 @@ export const checkIfFrameIsEmpty = (frameData: Uint8ClampedArray) => {
   return true
 }
 
+/**
+ * Loads a sprite sheet and parses it for use with SpriteAnimator.
+ *
+ * @example Basic usage
+ * ```jsx
+ * const { spriteObj, texture } = useSpriteLoader('/spritesheet.png', spriteData)
+ * ```
+ */
 export function useSpriteLoader<Url extends string>(
   /** The URL of the sprite sheet. */
   input: Url | null,

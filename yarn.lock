@@ -3259,6 +3259,8 @@ __metadata:
     babel-eslint: "npm:^10.1.0"
     babel-loader: "npm:^9.2.1"
     camera-controls: "npm:^3.1.0"
+    chokidar: "npm:^3.6.0"
+    comment-parser: "npm:^1.4.1"
     copyfiles: "npm:^2.4.1"
     cross-env: "npm:^7.0.3"
     detect-gpu: "npm:^5.0.56"
@@ -3272,11 +3274,11 @@ __metadata:
     husky: "npm:^9.1.7"
     json: "npm:^11.0.0"
     maath: "npm:^0.10.8"
-    meshline: "npm:^3.3.1"
     obuild: "npm:^0.4.9"
     prettier: "npm:^3.3.3"
     pretty-quick: "npm:^4.0.0"
     react: "npm:^19.0.0"
+    react-docgen-typescript: "npm:^2.4.0"
     react-dom: "npm:^19.0.0"
     rimraf: "npm:^6.0.1"
     rolldown: "npm:1.0.0-beta.57"
@@ -5630,6 +5632,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"chokidar@npm:^3.6.0":
+  version: 3.6.0
+  resolution: "chokidar@npm:3.6.0"
+  dependencies:
+    anymatch: "npm:~3.1.2"
+    braces: "npm:~3.0.2"
+    fsevents: "npm:~2.3.2"
+    glob-parent: "npm:~5.1.2"
+    is-binary-path: "npm:~2.1.0"
+    is-glob: "npm:~4.0.1"
+    normalize-path: "npm:~3.0.0"
+    readdirp: "npm:~3.6.0"
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  checksum: 10c0/8361dcd013f2ddbe260eacb1f3cb2f2c6f2b0ad118708a343a5ed8158941a39cb8fb1d272e0f389712e74ee90ce8ba864eece9e0e62b9705cb468a2f6d917462
+  languageName: node
+  linkType: hard
+
 "chokidar@npm:^5.0.0":
   version: 5.0.0
   resolution: "chokidar@npm:5.0.0"
@@ -5835,6 +5856,13 @@ __metadata:
   version: 2.20.3
   resolution: "commander@npm:2.20.3"
   checksum: 10c0/74c781a5248c2402a0a3e966a0a2bba3c054aad144f5c023364be83265e796b20565aa9feff624132ff629aa64e16999fa40a743c10c12f7c61e96a794b99288
+  languageName: node
+  linkType: hard
+
+"comment-parser@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "comment-parser@npm:1.4.1"
+  checksum: 10c0/d6c4be3f5be058f98b24f2d557f745d8fe1cc9eb75bebbdccabd404a0e1ed41563171b16285f593011f8b6a5ec81f564fb1f2121418ac5cbf0f49255bf0840dd
   languageName: node
   linkType: hard
 
@@ -9667,15 +9695,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"meshline@npm:^3.3.1":
-  version: 3.3.1
-  resolution: "meshline@npm:3.3.1"
-  peerDependencies:
-    three: ">=0.137"
-  checksum: 10c0/95d5c7c90aca350530f37f9ea5c5e333a66ea0c50416fa6372c24a23321837a4c70d92d6a9a5942ee124484855a2d3fc8ca0656305feb8d8f86aa10513e324e4
-  languageName: node
-  linkType: hard
-
 "meshoptimizer@npm:~0.18.1":
   version: 0.18.1
   resolution: "meshoptimizer@npm:0.18.1"
@@ -11479,6 +11498,15 @@ __metadata:
   peerDependencies:
     typescript: ">= 4.3.x"
   checksum: 10c0/d31a061a21b5d4b67d4af7bc742541fd9e16254bd32861cd29c52565bc2175f40421a3550d52b6a6b0d0478e7cc408558eb0060a0bdd2957b02cfceeb0ee1e88
+  languageName: node
+  linkType: hard
+
+"react-docgen-typescript@npm:^2.4.0":
+  version: 2.4.0
+  resolution: "react-docgen-typescript@npm:2.4.0"
+  peerDependencies:
+    typescript: ">= 4.3.x"
+  checksum: 10c0/18e3e1c80d28abcdd72e62261d2f70b0904d9b088f9c2ebe485ffee5e46f5735208bc174a20ed2772112b3ca6432b5f3d5f0ac345872fe76e541f84543e49e50
   languageName: node
   linkType: hard
 

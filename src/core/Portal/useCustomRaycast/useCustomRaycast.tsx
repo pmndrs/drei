@@ -2,6 +2,18 @@ import * as React from 'react'
 import { Raycaster, Camera, Intersection } from '#three'
 import { useThree, applyProps } from '@react-three/fiber'
 
+/**
+ * Returns a raycast function for non-default cameras (HUDs, portals).
+ * Use when events/raycasting need to work with a custom camera.
+ *
+ * @param camera - The camera to raycast from
+ * @param props - Optional raycaster properties
+ *
+ * @example Custom camera raycasting
+ * ```jsx
+ * <mesh raycast={useCustomRaycast(customCamera)} />
+ * ```
+ */
 export function useCustomRaycast(camera: Camera | React.RefObject<Camera>, props?: Partial<Raycaster>) {
   const pointer = useThree((state) => state.pointer)
   const [raycast] = React.useState(() => {

@@ -8,9 +8,22 @@ export type ComputedAttributeProps = Omit<ThreeElements['bufferAttribute'], 'arg
 }
 
 /**
+ * Create and attach a buffer attribute declaratively.
  * Used exclusively as a child of a BufferGeometry.
- * Computes the BufferAttribute by calling the `compute` function
- * and attaches the attribute to the geometry.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <sphereGeometry>
+ *   <ComputedAttribute
+ *     name="my-attribute-name"
+ *     compute={(geometry) => {
+ *       // ...someLogic
+ *       return new THREE.BufferAttribute([1, 2, 3], 1)
+ *     }}
+ *     usage={THREE.StaticReadUsage}
+ *   />
+ * </sphereGeometry>
+ * ```
  */
 export const ComputedAttribute = ({ compute, name, ...props }: ComputedAttributeProps) => {
   const [bufferAttribute] = React.useState(() => new BufferAttribute(new Float32Array(0), 1))

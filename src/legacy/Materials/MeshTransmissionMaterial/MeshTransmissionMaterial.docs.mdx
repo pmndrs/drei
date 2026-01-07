@@ -1,0 +1,69 @@
+{/* AUTO:badges */}
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="hmgdjq" />
+  </li>
+</Grid>
+
+{/* AUTO:description */}
+
+Although it should be faster than MPM keep in mind that it can still be expensive as it causes an additional render pass of the scene. Low samples and low resolution will make it faster. If you use roughness consider using a tiny resolution, for instance 32x32 pixels, it will still look good but perform much faster.
+
+For performance and visual reasons the host mesh gets removed from the render-stack temporarily. If you have other objects that you don't want to see reflected in the material just add them to the parent mesh as children.
+
+{/* AUTO:example */}
+
+## Shared Buffer for Performance
+
+If each material rendering the scene on its own is too expensive you can share a buffer texture. Either by enabling `transmissionSampler` which would use the threejs-internal buffer that MeshPhysicalMaterials use. This might be faster, the downside is that no transmissive material can "see" other transparent or transmissive objects.
+
+```jsx
+<mesh geometry={torus}>
+  <MeshTransmissionMaterial transmissionSampler />
+</mesh>
+<mesh geometry={sphere}>
+  <MeshTransmissionMaterial transmissionSampler />
+</mesh>
+```
+
+Or, by passing a texture to `buffer` manually, for instance using useFBO.
+
+```jsx
+const buffer = useFBO()
+useFrame((state) => {
+  state.gl.setRenderTarget(buffer)
+  state.gl.render(state.scene, state.camera)
+  state.gl.setRenderTarget(null)
+})
+return (
+  <>
+    <mesh geometry={torus}>
+      <MeshTransmissionMaterial buffer={buffer.texture} />
+    </mesh>
+    <mesh geometry={sphere}>
+      <MeshTransmissionMaterial buffer={buffer.texture} />
+    </mesh>
+  </>
+)
+```
+
+Or a PerspectiveCamera.
+
+```jsx
+<PerspectiveCamera makeDefault fov={75} position={[10, 0, 15]} resolution={1024}>
+  {(texture) => (
+    <>
+      <mesh geometry={torus}>
+        <MeshTransmissionMaterial buffer={texture} />
+      </mesh>
+      <mesh geometry={sphere}>
+        <MeshTransmissionMaterial buffer={texture} />
+      </mesh>
+    </>
+  )}
+</PerspectiveCamera>
+```
+
+This would mimic the default MeshPhysicalMaterial behaviour, these materials won't "see" one another, but at least they would pick up on everything else, including transmissive or transparent objects.
+

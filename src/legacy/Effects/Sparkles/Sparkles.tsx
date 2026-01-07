@@ -71,6 +71,20 @@ export type SparklesProps = Omit<ThreeElements['points'], 'ref'> & {
 }
 
 //* Sparkles Component ==============================
+/**
+ * Floating, glowing particles with customizable movement and appearance.
+ * Uses Points geometry with gl_PointSize for efficient rendering.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Sparkles count={100} speed={1} opacity={1} color="white" size={1} />
+ * ```
+ *
+ * @example Custom scale and noise
+ * ```jsx
+ * <Sparkles count={200} scale={[4, 2, 4]} noise={2} />
+ * ```
+ */
 export const Sparkles: ForwardRefComponent<SparklesProps, THREE.Points> = /* @__PURE__ */ React.forwardRef<
   THREE.Points,
   SparklesProps

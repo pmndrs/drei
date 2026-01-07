@@ -45,6 +45,24 @@ export type CenterProps = Omit<ThreeElements['group'], 'ref'> & {
   cacheKey?: any
 }
 
+/**
+ * Centers children based on their bounding box.
+ * Supports alignment, offset, and automatic recalculation.
+ *
+ * @example Basic centering
+ * ```jsx
+ * <Center>
+ *   <mesh geometry={importedGeometry} />
+ * </Center>
+ * ```
+ *
+ * @example Align to bottom
+ * ```jsx
+ * <Center bottom>
+ *   <mesh geometry={model} />
+ * </Center>
+ * ```
+ */
 export const Center: ForwardRefComponent<CenterProps, Group> = /* @__PURE__ */ React.forwardRef<Group, CenterProps>(
   function Center(
     {

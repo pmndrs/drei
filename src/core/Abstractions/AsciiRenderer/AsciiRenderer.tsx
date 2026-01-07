@@ -19,6 +19,17 @@ export type AsciiRendererProps = {
   resolution?: number
 }
 
+/**
+ * Abstraction of three's [AsciiEffect](https://threejs.org/examples/?q=as#webgl_effects_ascii).
+ * Creates a DOM layer on top of the canvas and renders the scene as ASCII characters.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Canvas>
+ *   <AsciiRenderer />
+ * </Canvas>
+ * ```
+ */
 export function AsciiRenderer({
   renderIndex = 1,
   bgColor = 'black',

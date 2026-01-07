@@ -195,6 +195,17 @@ class TrailTextureImpl {
   }
 }
 
+/**
+ * Creates a texture that renders a trail effect from pointer movement.
+ *
+ * @example Basic usage
+ * ```jsx
+ * const [texture, onMove] = useTrailTexture()
+ * return <mesh onPointerMove={onMove}>
+ *   <meshBasicMaterial map={texture} />
+ * </mesh>
+ * ```
+ */
 export function useTrailTexture(config: Partial<TrailConfig> = {}): [Texture, (ThreeEvent) => void] {
   const { size, maxAge, radius, intensity, interpolate, smoothing, minForce, blend, ease } = config
   const trail = useMemo(
@@ -212,6 +223,20 @@ export type TrailTextureProps = {
   children?: (texture: ReturnType<typeof useTrailTexture>) => React.ReactNode
 } & TrailConfig
 
+/**
+ * Declarative component that creates a trail texture from pointer movement.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <TrailTexture>
+ *   {([texture, onMove]) => (
+ *     <mesh onPointerMove={onMove}>
+ *       <meshBasicMaterial map={texture} />
+ *     </mesh>
+ *   )}
+ * </TrailTexture>
+ * ```
+ */
 export const TrailTexture = ({ children, ...config }: TrailTextureProps) => {
   const ret = useTrailTexture(config)
 

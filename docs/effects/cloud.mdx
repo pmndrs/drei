@@ -1,0 +1,28 @@
+---
+title: Cloud
+sourcecode: src/core/Effects/Cloud/Cloud.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/effects-clouds--clouds-st)
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="gwthnh" />
+  </li>
+  <li>
+    <Codesandbox id="mbfzf" />
+  </li>
+</Grid>
+
+Provider component that groups all Cloud children into a single instanced draw call.
+Wrap your Cloud components with this for better performance.
+
+Use the `<Clouds>` provider to glob all clouds into a single, instanced draw call.
+
+```jsx
+<Clouds material={THREE.MeshBasicMaterial}>
+  <Cloud segments={40} bounds={[10, 2, 2]} volume={10} color="orange" />
+  <Cloud seed={1} scale={2} volume={5} color="hotpink" fade={100} />
+</Clouds>
+```
+

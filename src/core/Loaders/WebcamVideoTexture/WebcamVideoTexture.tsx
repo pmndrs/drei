@@ -9,7 +9,14 @@ export type WebcamVideoTextureProps = Omit<VideoTextureProps, 'src'> & {
 }
 
 /**
- * Create a video texture from [`getUserMedia`](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia)
+ * Creates a video texture from webcam via getUserMedia API.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <WebcamVideoTexture>
+ *   {(texture) => <meshBasicMaterial map={texture} toneMapped={false} />}
+ * </WebcamVideoTexture>
+ * ```
  */
 export const WebcamVideoTexture = /* @__PURE__ */ forwardRef<THREE.VideoTexture, WebcamVideoTextureProps>(
   (

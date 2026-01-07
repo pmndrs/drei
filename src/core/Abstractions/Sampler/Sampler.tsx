@@ -146,6 +146,42 @@ export function useSurfaceSampler(
   return buffer
 }
 
+/**
+ * Declarative abstraction around MeshSurfaceSampler & InstancedMesh.
+ * It samples points from the passed mesh and transforms an InstancedMesh's matrix
+ * to distribute instances on the points.
+ *
+ * You can either pass a Mesh and InstancedMesh as children, or use refs when you
+ * can't compose declaratively.
+ *
+ * @example With children
+ * ```jsx
+ * <Sampler
+ *   weight="normal"
+ *   transform={transformPoint}
+ *   count={16}
+ * >
+ *   <mesh>
+ *     <sphereGeometry args={[2]} />
+ *   </mesh>
+ *   <instancedMesh args={[null, null, 1000]}>
+ *     <sphereGeometry args={[0.1]} />
+ *   </instancedMesh>
+ * </Sampler>
+ * ```
+ *
+ * @example With refs
+ * ```jsx
+ * const { nodes } = useGLTF('my/mesh/url')
+ * const mesh = useRef(nodes)
+ * const instances = useRef()
+ *
+ * <instancedMesh args={[null, null, 1000]}>
+ *   <sphereGeometry args={[0.1]} />
+ * </instancedMesh>
+ * <Sampler mesh={mesh} instances={instances} />
+ * ```
+ */
 export function Sampler({ children, weight, transform, instances, mesh, count = 16, ...props }: SamplerProps) {
   const group = React.useRef<Group>(null!)
   const instancedRef = React.useRef<InstancedMesh>(null!)

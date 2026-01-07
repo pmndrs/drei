@@ -271,6 +271,26 @@ export type ViewportProps = { Port: () => React.JSX.Element } & React.ForwardRef
   ViewProps & React.RefAttributes<HTMLElement | THREE.Group>
 >
 
+/**
+ * Uses gl.scissor to create viewport segments tied to HTML tracking elements.
+ * Allows multiple views with a single canvas. Views follow their tracking elements,
+ * scroll, resize, etc. Use View.Port inside Canvas to render all views.
+ *
+ * @example Inline views with shared canvas
+ * ```jsx
+ * <main ref={container}>
+ *   <View style={{ width: 200, height: 200 }}>
+ *     <mesh /><OrbitControls />
+ *   </View>
+ *   <View className="view-2">
+ *     <mesh /><CameraControls />
+ *   </View>
+ *   <Canvas eventSource={container}>
+ *     <View.Port />
+ *   </Canvas>
+ * </main>
+ * ```
+ */
 export const View = /* @__PURE__ */ (() => {
   const _View = React.forwardRef((props: ViewProps, fref: React.ForwardedRef<HTMLElement | THREE.Group>) => {
     // If we're inside a canvas we should be able to access the context store

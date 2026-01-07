@@ -28,6 +28,28 @@ export type RoundedBoxProps = {
 export type RoundedBoxGeometryProps = Omit<RoundedBoxProps, 'children'> &
   Omit<ThreeElements['extrudeGeometry'], 'args' | 'ref'>
 
+/**
+ * A box buffer geometry with rounded corners, done with extrusion.
+ *
+ * Geometry is also available via `<RoundedBoxGeometry />` for use with `@react-three/csg`.
+ *
+ * Note: If you animate `args` every frame, memoize the `[width, height, depth]` tuple
+ * with `React.useMemo` to avoid replacing the geometry each tick.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <RoundedBox
+ *   args={[1, 1, 1]}
+ *   radius={0.05}
+ *   steps={1}
+ *   smoothness={4}
+ *   bevelSegments={4}
+ *   creaseAngle={0.4}
+ * >
+ *   <meshPhongMaterial color="#f3f3f3" wireframe />
+ * </RoundedBox>
+ * ```
+ */
 export const RoundedBox: ForwardRefComponent<RoundedBoxProps, Mesh> = /* @__PURE__ */ React.forwardRef<
   Mesh,
   RoundedBoxProps

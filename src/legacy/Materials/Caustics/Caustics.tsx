@@ -41,6 +41,24 @@ type CausticsProjectionMaterialType = THREE.MeshNormalMaterial & {
   lightViewMatrix?: THREE.Matrix4
 }
 
+/**
+ * Caustics are swirls of light that appear when light passes through transmissive surfaces.
+ * Uses raymarching to project caustics onto a catcher plane.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Caustics debug backside lightSource={[2.5, 5, -2.5]}>
+ *   <WineGlass />
+ * </Caustics>
+ * ```
+ *
+ * @example Runtime caustics
+ * ```jsx
+ * <Caustics frames={Infinity} resolution={256} lightSource={lightRef}>
+ *   <WineGlass />
+ * </Caustics>
+ * ```
+ */
 export type CausticsProps = Omit<ThreeElements['group'], 'ref'> & {
   /** How many frames it will render, set it to Infinity for runtime, default: 1 */
   frames?: number
@@ -277,6 +295,21 @@ const CAUSTICPROPS = {
 
 const causticsContext = /* @__PURE__ */ React.createContext(null)
 
+/**
+ * Renders caustics from a light source through transmissive geometry.
+ * Projects light patterns onto a receiving surface (floor, etc).
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Caustics
+ *   color="#ffffff"
+ *   position={[0, -0.5, 0]}
+ *   lightSource={[2, 2.5, -2.5]}
+ * >
+ *   <mesh castShadow geometry={bunny} />
+ * </Caustics>
+ * ```
+ */
 export const Caustics: ForwardRefComponent<CausticsProps, THREE.Group> = /* @__PURE__ */ React.forwardRef(
   (
     {

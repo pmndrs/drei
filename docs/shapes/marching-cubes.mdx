@@ -1,0 +1,18 @@
+---
+title: MarchingCubes
+sourcecode: src/experimental/Geometry/MarchingCubes/MarchingCubes.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/shapes-marchingcubes--marchingcubes-st)
+
+An abstraction for three's [MarchingCubes](https://threejs.org/examples/#webgl_marchingcubes).
+
+### Basic usage
+
+```jsx
+<MarchingCubes resolution={50} maxPolyCount={20000} enableUvs={false} enableColors={true}>
+  <MarchingCube strength={0.5} subtract={12} color={new Color('#f0f')} position={[0.5, 0.5, 0.5]} />
+  <MarchingPlane planeType="y" strength={0.5} subtract={12} />
+</MarchingCubes>
+```
+

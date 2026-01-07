@@ -38,6 +38,22 @@ export type RenderTextureProps = Omit<ThreeElements['texture'], 'ref' | 'args'> 
 
 //* RenderTexture Component ==============================
 
+/**
+ * Renders children to a texture that can be applied to materials.
+ * Contents run in a portal - isolated scene with its own events/environment.
+ *
+ * @example Render scene to a mesh texture
+ * ```jsx
+ * <mesh>
+ *   <planeGeometry />
+ *   <meshStandardMaterial>
+ *     <RenderTexture attach="map">
+ *       <mesh><boxGeometry /></mesh>
+ *     </RenderTexture>
+ *   </meshStandardMaterial>
+ * </mesh>
+ * ```
+ */
 export const RenderTexture: ForwardRefComponent<RenderTextureProps, THREE.Texture> = /* @__PURE__ */ React.forwardRef(
   (
     {

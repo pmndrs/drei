@@ -20,6 +20,15 @@ export type MapControlsProps = Omit<
   'ref' | 'args'
 >
 
+/**
+ * MapControls is intended for transforming a camera over a map - think Google Earth.
+ * Wraps THREE's [MapControls](https://threejs.org/docs/#examples/en/controls/MapControls).
+ *
+ * @example Basic usage
+ * ```jsx
+ * <MapControls enableDamping dampingFactor={0.05} />
+ * ```
+ */
 export const MapControls: ForwardRefComponent<MapControlsProps, MapControlsImpl> = /* @__PURE__ */ React.forwardRef<
   MapControlsImpl,
   MapControlsProps

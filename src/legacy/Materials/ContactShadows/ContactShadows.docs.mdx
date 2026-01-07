@@ -1,0 +1,25 @@
+---
+title: ContactShadows
+sourcecode: src/legacy/Materials/ContactShadows/ContactShadows.tsx
+---
+
+{/* AUTO:badges */}
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="qxjoj" />
+  </li>
+</Grid>
+
+{/* AUTO:description */}
+
+```jsx
+<ContactShadows opacity={1} scale={10} blur={1} far={10} resolution={256} color="#000000" />
+```
+
+Since this is a rather expensive effect you can limit the amount of frames it renders when your objects are static. For instance making it render only once:
+
+```jsx
+<ContactShadows frames={1} />
+```
+

@@ -22,6 +22,15 @@ export type ArcballControlsProps = Omit<
   'ref' | 'args'
 >
 
+/**
+ * Controls that use an arcball interaction model.
+ * Wraps THREE's [ArcballControls](https://threejs.org/docs/#examples/en/controls/ArcballControls).
+ *
+ * @example Basic usage
+ * ```jsx
+ * <ArcballControls />
+ * ```
+ */
 export const ArcballControls: ForwardRefComponent<ArcballControlsProps, ArcballControlsImpl> =
   /* @__PURE__ */ forwardRef<ArcballControlsImpl, ArcballControlsProps>(
     ({ camera, makeDefault, regress, domElement, onChange, onStart, onEnd, ...restProps }, ref) => {

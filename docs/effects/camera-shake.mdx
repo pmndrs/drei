@@ -1,0 +1,26 @@
+---
+title: CameraShake
+sourcecode: src/core/Effects/CameraShake/CameraShake.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/effects-camerashake--camerashake-st)
+
+Applies a configurable camera shake effect using simplex noise.
+Works with orbit controls when they have `makeDefault` set.
+Pass a ref to control intensity programmatically.
+
+### Basic shake
+
+```jsx
+<CameraShake maxYaw={0.1} maxPitch={0.1} maxRoll={0.1} />
+```
+
+### Decaying shake (for impacts)
+
+```jsx
+const shakeRef = useRef()
+// Trigger shake on event:
+shakeRef.current?.setIntensity(1)
+
+<CameraShake ref={shakeRef} decay decayRate={0.65} intensity={0} />
+```

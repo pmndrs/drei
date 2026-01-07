@@ -18,6 +18,17 @@ export type MarchingCubesProps = {
   enableColors?: boolean
 } & Omit<ThreeElements['group'], 'ref'>
 
+/**
+ * An abstraction for three's [MarchingCubes](https://threejs.org/examples/#webgl_marchingcubes).
+ *
+ * @example Basic usage
+ * ```jsx
+ * <MarchingCubes resolution={50} maxPolyCount={20000} enableUvs={false} enableColors={true}>
+ *   <MarchingCube strength={0.5} subtract={12} color={new Color('#f0f')} position={[0.5, 0.5, 0.5]} />
+ *   <MarchingPlane planeType="y" strength={0.5} subtract={12} />
+ * </MarchingCubes>
+ * ```
+ */
 export const MarchingCubes: ForwardRefComponent<MarchingCubesProps, MarchingCubesImpl> =
   /* @__PURE__ */ React.forwardRef(
     ({ resolution = 28, maxPolyCount = 10000, enableUvs = false, enableColors = false, children, ...props }, ref) => {

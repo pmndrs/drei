@@ -15,6 +15,26 @@ export interface EdgesProps {
 interface EdgesRef {
   computeLineDistances: () => void
 }
+/**
+ * Abstracts [THREE.EdgesGeometry](https://threejs.org/docs/#api/en/geometries/EdgesGeometry).
+ * It pulls the geometry automatically from its parent, optionally you can ungroup it and give it
+ * a `geometry` prop. You can give it children, for instance a custom material.
+ * Edges is based on `<Line>` and supports all of its props.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <mesh>
+ *   <boxGeometry />
+ *   <meshBasicMaterial />
+ *   <Edges
+ *     linewidth={4}
+ *     scale={1.1}
+ *     threshold={15} // Display edges only when the angle between two faces exceeds this value (default=15 degrees)
+ *     color="white"
+ *   />
+ * </mesh>
+ * ```
+ */
 export const Edges: ForwardRefComponent<EdgesProps, EdgesRef> = /* @__PURE__ */ React.forwardRef<EdgesRef, EdgesProps>(
   ({ threshold = 15, geometry: explicitGeometry, ...props }: EdgesProps, fref) => {
     const ref = React.useRef<LineSegments2>(null!)

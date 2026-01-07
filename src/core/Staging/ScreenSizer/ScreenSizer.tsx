@@ -13,15 +13,12 @@ export type ScreenSizerProps = Omit<ThreeElements['object3D'], 'ref'> & {
 }
 
 /**
- * Wraps children in an `Object3D` and attempts to scale from
- * world units to screen units * scale factor.
+ * Adds an `<object3D />` that scales objects to screen space.
  *
- * For example, this will render a box of roughly 1x1 pixel size,
- * independently of how far the camera is.
- *
+ * @example Basic usage
  * ```jsx
- * <ScreenSizer>
- *   <Box />
+ * <ScreenSizer scale={1}>
+ *   <Box args={[100, 100, 100]} /> // will render roughly as a 100px box
  * </ScreenSizer>
  * ```
  */

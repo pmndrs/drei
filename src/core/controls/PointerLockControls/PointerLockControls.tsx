@@ -16,6 +16,15 @@ export type PointerLockControlsProps = Omit<ThreeElement<typeof PointerLockContr
   makeDefault?: boolean
 }
 
+/**
+ * PointerLockControls implements the Pointer Lock API for first-person 3D experiences.
+ * Wraps THREE's [PointerLockControls](https://threejs.org/docs/#examples/en/controls/PointerLockControls).
+ *
+ * @example Basic usage
+ * ```jsx
+ * <PointerLockControls selector="#button" />
+ * ```
+ */
 export const PointerLockControls: ForwardRefComponent<PointerLockControlsProps, PointerLockControlsImpl> =
   /* @__PURE__ */ React.forwardRef<PointerLockControlsImpl, PointerLockControlsProps>(
     ({ domElement, selector, onChange, onLock, onUnlock, enabled = true, makeDefault, ...props }, ref) => {

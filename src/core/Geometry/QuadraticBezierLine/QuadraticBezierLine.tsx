@@ -20,6 +20,20 @@ export type QuadraticBezierLineProps = Omit<LineProps, 'points' | 'ref'> & {
 }
 
 const v = /* @__PURE__ */ new Vector3()
+
+/**
+ * Renders a THREE.Line2 using THREE.QuadraticBezierCurve3 for interpolation.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <QuadraticBezierLine
+ *   start={[0, 0, 0]}
+ *   mid={[1, 1, 0]}
+ *   end={[2, 0, 0]}
+ *   segments={20}
+ * />
+ * ```
+ */
 export const QuadraticBezierLine: ForwardRefComponent<QuadraticBezierLineProps, QuadraticBezierLineRef> =
   /* @__PURE__ */ React.forwardRef<QuadraticBezierLineRef, QuadraticBezierLineProps>(function QuadraticBezierLine(
     { start = [0, 0, 0], end = [0, 0, 0], mid, segments = 20, ...rest },

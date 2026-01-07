@@ -1,0 +1,24 @@
+---
+title: Texture / useTexture
+sourcecode: src/core/Loaders/useTexture/useTexture.tsx
+---
+
+{/* AUTO:badges */}
+
+{/* AUTO:description */}
+
+```jsx
+const texture = useTexture(url)
+const [texture1, texture2] = useTexture([texture1, texture2])
+```
+
+You can also use key: url objects:
+
+```jsx
+const props = useTexture({
+  metalnessMap: url1,
+  map: url2,
+})
+return <meshStandardMaterial {...props} />
+```
+

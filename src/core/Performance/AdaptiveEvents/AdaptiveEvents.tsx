@@ -1,6 +1,15 @@
 import * as React from 'react'
 import { useThree } from '@react-three/fiber'
 
+/**
+ * Disables pointer events when performance drops below threshold.
+ * Re-enables them when performance recovers to full (1).
+ *
+ * @example
+ * ```jsx
+ * <Canvas><AdaptiveEvents /></Canvas>
+ * ```
+ */
 export function AdaptiveEvents() {
   const get = useThree((state) => state.get)
   const setEvents = useThree((state) => state.setEvents)

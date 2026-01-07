@@ -6,15 +6,23 @@ import { DecalGeometry } from 'three/examples/jsm/geometries/DecalGeometry.js'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 
 export type DecalProps = Omit<FIBER.ThreeElements['mesh'], 'ref' | 'children'> & {
+  /** Shows a wireframe bounding box helper for positioning, default: false */
   debug?: boolean
+  /** External mesh to project the decal onto (uses parent mesh if not specified) */
   mesh?: React.RefObject<THREE.Mesh>
+  /** Position of the decal on the surface */
   position?: FIBER.Vector3
-  /** FIBER.Euler for manual orientation or a single float for closest-vertex-normal orient */
+  /** Euler for manual orientation, or a single float (radians) for spin around the surface normal */
   rotation?: FIBER.Euler | number
+  /** Scale of the decal */
   scale?: FIBER.Vector3
+  /** Texture map for the decal */
   map?: THREE.Texture
+  /** Custom material as children */
   children?: React.ReactNode
+  /** Polygon offset factor to prevent z-fighting, default: -10 */
   polygonOffsetFactor?: number
+  /** Whether to use depth testing, default: false */
   depthTest?: boolean
 }
 
@@ -32,6 +40,44 @@ function vecToArray(vec: number[] | FIBER.Vector3 | FIBER.Euler | number = [0, 0
   }
 }
 
+/**
+ * Abstraction around THREE's `DecalGeometry`. It will use its parent mesh as the decal surface by default.
+ * The decal box has to intersect the surface, otherwise it will not be visible.
+ * If you do not specify a rotation it will look at the parent's center point.
+ * You can also pass a single number as the rotation which allows you to spin it.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <mesh>
+ *   <sphereGeometry />
+ *   <meshBasicMaterial />
+ *   <Decal
+ *     debug // Makes "bounding box" of the decal visible
+ *     position={[0, 0, 0]}
+ *     rotation={[0, 0, 0]} // Can be a vector or a single radian for spin
+ *     scale={1}
+ *   >
+ *     <meshBasicMaterial map={texture} polygonOffset polygonOffsetFactor={-1} />
+ *   </Decal>
+ * </mesh>
+ * ```
+ *
+ * @example With just a map (auto-creates transparent material)
+ * ```jsx
+ * <mesh>
+ *   <sphereGeometry />
+ *   <meshBasicMaterial />
+ *   <Decal map={texture} />
+ * </mesh>
+ * ```
+ *
+ * @example Attach to external mesh
+ * ```jsx
+ * <Decal mesh={meshRef}>
+ *   <meshBasicMaterial map={texture} polygonOffset polygonOffsetFactor={-1} />
+ * </Decal>
+ * ```
+ */
 export const Decal: ForwardRefComponent<DecalProps, THREE.Mesh> = /* @__PURE__ */ React.forwardRef<
   THREE.Mesh,
   DecalProps

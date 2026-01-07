@@ -1,23 +1,21 @@
 ---
 title: CatmullRomLine
-sourcecode: src/core/CatmullRomLine.tsx
+sourcecode: src/core/Geometry/CatmullRomLine/CatmullRomLine.tsx
 ---
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shapes-line--catmull-rom-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/shapes-catmullromline--catmullromline-st)
 
 Renders a THREE.Line2 using THREE.CatmullRomCurve3 for interpolation.
 
+### Basic usage
+
 ```jsx
 <CatmullRomLine
-  points={[[0, 0, 0], ...]}       // Array of Points
-  closed={false}                  // Default
-  curveType="centripetal"         // One of "centripetal" (default), "chordal", or "catmullrom"
-  tension={0.5}                   // Default (only applies to "catmullrom" curveType)
-  color="black"                   // Default
-  lineWidth={1}                   // In pixels (default)
-  dashed={false}                  // Default
-  vertexColors={[[0, 0, 0], ...]} // Optional array of RGB values for each point
-  {...lineProps}                  // All THREE.Line2 props are valid
-  {...materialProps}              // All THREE.LineMaterial props are valid
+  points={[[0, 0, 0], [1, 1, 0], [2, 0, 0]]}
+  closed={false}
+  curveType="centripetal"
+  tension={0.5}
+  color="black"
+  lineWidth={1}
 />
 ```

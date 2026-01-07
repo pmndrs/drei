@@ -3,6 +3,16 @@ import { Object3D } from '#three'
 import { useFrame, useThree } from '@react-three/fiber'
 import { Frustum, Matrix4 } from 'three/webgpu'
 
+/**
+ * Detects when an object enters/exits the camera frustum.
+ * Fires callback when visibility changes.
+ *
+ * @example Basic usage
+ * ```jsx
+ * const ref = useIntersect((visible) => console.log('visible:', visible))
+ * return <mesh ref={ref} />
+ * ```
+ */
 export function useIntersect<T extends Object3D>(onChange: (visible: boolean) => void) {
   const { isLegacy } = useThree()
   const ref = React.useRef<T>(null!)

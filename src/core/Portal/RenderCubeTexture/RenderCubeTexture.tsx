@@ -40,6 +40,22 @@ export type RenderCubeTextureApi = {
   camera: THREE.CubeCamera
 }
 
+/**
+ * Renders children to a cube texture for environment maps.
+ * Contents run in a portal - isolated scene with own events/environment.
+ *
+ * @example Dynamic environment map
+ * ```jsx
+ * <mesh>
+ *   <sphereGeometry />
+ *   <meshBasicMaterial>
+ *     <RenderCubeTexture attach="envMap" flip>
+ *       <mesh><boxGeometry /></mesh>
+ *     </RenderCubeTexture>
+ *   </meshBasicMaterial>
+ * </mesh>
+ * ```
+ */
 export const RenderCubeTexture: ForwardRefComponent<RenderCubeTextureProps, RenderCubeTextureApi> =
   /* @__PURE__ */ React.forwardRef(
     (

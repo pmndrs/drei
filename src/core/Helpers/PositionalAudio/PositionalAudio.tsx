@@ -9,6 +9,20 @@ export type PositionalAudioProps = Omit<ThreeElements['positionalAudio'], 'ref' 
   loop?: boolean
 }
 
+/**
+ * A wrapper around [THREE.PositionalAudio](https://threejs.org/docs/#api/en/audio/PositionalAudio).
+ * Add this to groups or meshes to tie them to a sound that plays when the camera comes near.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <PositionalAudio
+ *   url="/sound.mp3"
+ *   distance={1}
+ *   loop
+ *   {...props} // All THREE.PositionalAudio props are valid
+ * />
+ * ```
+ */
 export const PositionalAudio: ForwardRefComponent<PositionalAudioProps, PositionalAudioImpl> =
   /* @__PURE__ */ React.forwardRef(({ url, distance = 1, loop = true, autoplay, ...props }, ref) => {
     const sound = React.useRef<PositionalAudioImpl>(null!)

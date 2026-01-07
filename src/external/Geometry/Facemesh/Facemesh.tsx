@@ -79,6 +79,18 @@ function mean(v1: THREE.Vector3, v2: THREE.Vector3) {
   return v1.clone().add(v2).multiplyScalar(0.5)
 }
 
+/**
+ * Renders an oriented MediaPipe face mesh from landmark data.
+ * Supports eyes, blendshapes, and facial transformation matrices.
+ *
+ * @example
+ * ```jsx
+ * const points = faceLandmarkerResult.faceLandmarks[0]
+ * <Facemesh points={points} />
+ * ```
+ *
+ * @see https://developers.google.com/mediapipe/solutions/vision/face_landmarker
+ */
 export const Facemesh = /* @__PURE__ */ React.forwardRef<FacemeshApi, FacemeshProps>(
   (
     {

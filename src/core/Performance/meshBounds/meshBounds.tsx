@@ -5,6 +5,15 @@ const _ray = /* @__PURE__ */ new Ray()
 const _sphere = /* @__PURE__ */ new Sphere()
 const _vA = /* @__PURE__ */ new Vector3()
 
+/**
+ * Fast raycasting using bounding box/sphere instead of full geometry.
+ * Assign to mesh.raycast for faster hit-testing on complex meshes.
+ *
+ * @example
+ * ```jsx
+ * <mesh raycast={meshBounds} />
+ * ```
+ */
 export function meshBounds(raycaster: Raycaster, intersects: Intersection[]) {
   const geometry = this.geometry
   const material = this.material

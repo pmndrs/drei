@@ -10,6 +10,16 @@ export function useCubeTexture(files: string[], { path }: CubeTextureOptions): _
 useCubeTexture.preload = (files: string[], { path }: CubeTextureOptions) =>
   useLoader.preload(CubeTextureLoader, [files], (loader) => loader.setPath(path))
 
+/**
+ * Loads a cube texture (6 images) for use as environment maps.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <CubeTexture files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']} path="cube/">
+ *   {(texture) => <primitive object={texture} attach="background" />}
+ * </CubeTexture>
+ * ```
+ */
 export function CubeTexture({ children, files, ...options }: CubeTextureProps) {
   const texture = useCubeTexture(files, { ...options })
   return <>{children?.(texture)}</>

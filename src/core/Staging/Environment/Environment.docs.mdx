@@ -1,0 +1,136 @@
+---
+title: Environment
+sourcecode: src/core/Staging/Environment/Environment.tsx
+---
+
+{/* AUTO:badges */}
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="t4l0f" />
+  </li>
+  <li>
+    <Codesandbox id="mih0lx" />
+  </li>
+  <li>
+    <Codesandbox id="e662p3" />
+  </li>
+  <li>
+    <Codesandbox id="lwo219" />
+  </li>
+  <li>
+    <Codesandbox id="q48jgy" />
+  </li>
+  <li>
+    <Codesandbox id="0c5hv9" />
+  </li>
+</Grid>
+
+{/* AUTO:description */}
+
+```jsx
+<Environment
+  background={false} // can be true, false or "only" (which only sets the background) (default: false)
+  backgroundBlurriness={0} // optional blur factor between 0 and 1 (default: 0, only works with three 0.146 and up)
+  backgroundIntensity={1} // optional intensity factor (default: 1, only works with three 0.163 and up)
+  backgroundRotation={[0, Math.PI / 2, 0]} // optional rotation (default: 0, only works with three 0.163 and up)
+  environmentIntensity={1} // optional intensity factor (default: 1, only works with three 0.163 and up)
+  environmentRotation={[0, Math.PI / 2, 0]} // optional rotation (default: 0, only works with three 0.163 and up)
+  files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']}
+  path="/"
+  preset={null}
+  scene={undefined} // adds the ability to pass a custom THREE.Scene, can also be a ref
+  encoding={undefined} // adds the ability to pass a custom THREE.TextureEncoding (default: THREE.sRGBEncoding for an array of files and THREE.LinearEncoding for a single texture)
+/>
+```
+
+The simplest way to use it is to provide a preset (linking towards common HDRI Haven assets hosted on github). 👉 Note: `preset` property is not meant to be used in production environments and may fail as it relies on CDNs.
+
+Current presets are
+
+- apartment: 'lebombo_1k.hdr'
+- city: 'potsdamer_platz_1k.hdr'
+- dawn: 'kiara_1_dawn_1k.hdr'
+- forest: 'forest_slope_1k.hdr'
+- lobby: 'st_fagans_interior_1k.hdr'
+- night: 'dikhololo_night_1k.hdr'
+- park: 'rooitou_park_1k.hdr'
+- studio: 'studio_small_03_1k.hdr'
+- sunset: 'venice_sunset_1k.hdr'
+- warehouse: 'empty_warehouse_01_1k.hdr'
+
+```jsx
+<Environment preset="city" />
+```
+
+Otherwise use the files property. It will use RGBELoader for _.hdr, EXRLoader for _.exr, HDRJPGLoader for [gainmap](https://github.com/MONOGRID/gainmap-js) _.jpg, GainMapLoader for gainmap _.webp, CubeTextureLoader for an array of images. Of all these, gainmap has the smallest footprint.
+
+```jsx
+<Environment files="file.hdr" />
+<Environment files="file.exr" />
+<Environment files="file.jpg" />
+<Environment files={['file.webp', 'file-gainmap.webp', 'file.json']} />
+<Environment files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']} />
+```
+
+You can also use [@pmndrs/assets](https://github.com/pmndrs/assets) to easily self host common assets. Always use dynamic imports to avoid making this part of your main bundle.
+
+```jsx
+import { suspend } from 'suspend-react'
+const city = import('@pmndrs/assets/hdri/city.exr').then((module) => module.default)
+
+<Environment files={suspend(city)} />
+```
+
+If you already have a cube texture you can pass it directly:
+
+```jsx
+<CubeCamera>{(texture) => <Environment map={texture} />}</CubeCamera>
+```
+
+If you provide children you can even render a custom environment. It will render the contents into an off-buffer and film a single frame with a cube camera (whose props you can configure: near=1, far=1000, resolution=256).
+
+```jsx
+<Environment background near={1} far={1000} resolution={256}>
+  <mesh scale={100}>
+    <sphereGeometry args={[1, 64, 64]} />
+    <meshBasicMaterial map={texture} side={THREE.BackSide} />
+  </mesh>
+</Environment>
+```
+
+You can even mix a generic HDRI environment into a custom one with either the `preset` or the `files` prop.
+
+```jsx
+return (
+  <Environment background near={1} far={1000} resolution={256} preset="warehouse">
+    <mesh />
+```
+
+Declarative environment content can also animate with the `frames` prop, the envmap can be live. Give it a low resolution and this will happen at little cost
+
+```jsx
+return (
+  <Environment frames={Infinity} resolution={256}>
+    <Float>
+      <mesh />
+    </Float>
+```
+
+Environment can also be ground projected, that is, put your model on the "ground" within the environment map.
+
+```jsx
+<Environment ground />
+```
+
+You can provide optional options to configure this projecion.
+
+```jsx
+<Environment
+  ground={{
+    height: 15, // Height of the camera that was used to create the env map (Default: 15)
+    radius: 60, // Radius of the world. (Default 60)
+    scale: 1000, // Scale of the backside projected sphere that holds the env texture (Default: 1000)
+  }}
+/>
+```

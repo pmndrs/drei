@@ -81,6 +81,35 @@ function createSpread(
   return spread
 }
 
+/**
+ * Declarative abstraction around THREE.Object3D.clone. This is useful when you want to create
+ * a shallow copy of an existing fragment (and Object3D, Groups, etc) into your scene, for instance
+ * a group from a loaded GLTF. This clone is now re-usable, but it will still refer to the original
+ * geometries and materials.
+ *
+ * @example Basic usage
+ * ```jsx
+ * const { nodes } = useGLTF(url)
+ * return <Clone object={nodes.table} />
+ * ```
+ *
+ * @example Multiple objects
+ * ```jsx
+ * <Clone object={[nodes.foo, nodes.bar]} />
+ * ```
+ *
+ * @example Dynamic inject
+ * ```jsx
+ * <Clone object={nodes.table} inject={<meshStandardMaterial color="green" />} />
+ * ```
+ *
+ * @example Conditional inject
+ * ```jsx
+ * <Clone object={nodes.table} inject={
+ *   (object) => (object.name === 'table' ? <meshStandardMaterial color="green" /> : null)
+ * } />
+ * ```
+ */
 export const Clone: ForwardRefComponent<CloneProps, THREE.Group> = /* @__PURE__ */ React.forwardRef(
   ({ isChild = false, object, children, deep, castShadow, receiveShadow, inject, keys, ...props }, forwardRef) => {
     const config = { keys, deep, inject, castShadow, receiveShadow }

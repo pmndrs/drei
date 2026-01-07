@@ -1,30 +1,15 @@
 ---
 title: Fisheye
-sourcecode: src/core/Fisheye.tsx
+sourcecode: src/core/Portal/Fisheye/Fisheye.tsx
 ---
 
-<Grid cols={4}>
-  <li>
-    <Codesandbox id="7qytdw" />
-  </li>
-</Grid>
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/portals-fisheye--fisheye-st)
 
-```tsx
-export type FisheyeProps = ThreeElements['mesh'] & {
-  /** Zoom factor, 0..1, 0 */
-  zoom?: number
-  /** Number of segments, 64 */
-  segments?: number
-  /** Cubemap resolution (for each of the 6 takes), null === full screen resolution, default: 896 */
-  resolution?: number
-  /** Children will be projected into the fisheye */
-  children: React.ReactNode
-  /** Optional render priority, defaults to 1 */
-  renderPriority?: number
-}
-```
+Renders children into a fisheye projection that fills the screen.
+Takes over system rendering with 6 cube-camera renders per frame.
+Lower resolution improves performance.
 
-This component will take over system rendering. It portals its children into a cubemap which is then projected onto a sphere. The sphere is rendered out on the screen, filling it. You can lower the resolution to increase performance. Six renders per frame are necessary to construct a full fisheye view, and since each facet of the cubemap only takes a portion of the screen full resolution is not necessary. You can also reduce the amount of segments (resulting in edgier rounds).
+### Basic fisheye
 
 ```jsx
 <Canvas camera={{ position: [0, 0, 5] }}>
@@ -32,4 +17,5 @@ This component will take over system rendering. It portals its children into a c
     <YourScene />
   </Fisheye>
   <OrbitControls />
+</Canvas>
 ```

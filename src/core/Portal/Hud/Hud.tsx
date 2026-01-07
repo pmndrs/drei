@@ -36,6 +36,25 @@ export type HudProps = {
   renderPriority?: number
 }
 
+/**
+ * Renders a heads-up-display (HUD) scene on top of the main scene.
+ * Each HUD is isolated via createPortal - can have its own camera, environment, etc.
+ * The first HUD (renderPriority=1) clears and renders the default scene first.
+ *
+ * @example Overlay HUD
+ * ```jsx
+ * <Hud>
+ *   <PerspectiveCamera makeDefault position={[0, 0, 10]} />
+ *   <mesh><ringGeometry /></mesh>
+ * </Hud>
+ * ```
+ *
+ * @example Multiple HUDs stacked
+ * ```jsx
+ * <Hud renderPriority={1}><mesh /></Hud>
+ * <Hud renderPriority={2}><mesh /></Hud>
+ * ```
+ */
 export function Hud({ children, renderPriority = 1 }: HudProps) {
   const { scene: defaultScene, camera: defaultCamera } = useThree()
   const [hudScene] = React.useState(() => new THREE.Scene())

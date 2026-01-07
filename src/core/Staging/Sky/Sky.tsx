@@ -37,6 +37,14 @@ function toVector3(value: ReactThreeFiber.Vector3): Vector3 {
   return new Vector3((value as any).x, (value as any).y, (value as any).z)
 }
 
+/**
+ * Adds a sky dome to your scene using THREE's Sky shader.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Sky sunPosition={[0, 1, 0]} />
+ * ```
+ */
 export const Sky: ForwardRefComponent<SkyProps, SkyImpl> = /* @__PURE__ */ React.forwardRef(
   (
     {

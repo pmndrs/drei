@@ -13,6 +13,14 @@ export type ShadowProps = Omit<ThreeElements['mesh'], 'ref'> & {
 
 export type ShadowType = Mesh<PlaneGeometry, MeshBasicMaterial>
 
+/**
+ * A fake shadow plane with a radial gradient texture.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Shadow color="black" opacity={0.5} position={[0, 0, 0]} />
+ * ```
+ */
 export const Shadow: ForwardRefComponent<ShadowProps, ShadowType> = /* @__PURE__ */ React.forwardRef(
   (
     { fog = false, renderOrder, depthWrite = false, colorStop = 0.0, color = 'black', opacity = 0.5, ...props },

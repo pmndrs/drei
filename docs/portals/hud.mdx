@@ -1,43 +1,26 @@
 ---
 title: Hud
-sourcecode: src/core/Hud.tsx
+sourcecode: src/core/Portal/Hud/Hud.tsx
 ---
 
-<Grid cols={4}>
-  <li>
-    <Codesandbox id="py4db" />
-  </li>
-</Grid>
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/portals-hud--hud-st)
 
-Renders a heads-up-display (HUD). Each HUD is a scene on top of the previous. That scene is inside a React `createPortal` and is completely isolated, you can have your own cameras in there, environments, etc. The first HUD (`renderpriotity === 1`) will clear the scene and render the default scene, it needs to be the first to execute! Make sure to be explicit about the `renderpriority` of your HUDs.
+Renders a heads-up-display (HUD) scene on top of the main scene.
+Each HUD is isolated via createPortal - can have its own camera, environment, etc.
+The first HUD (renderPriority=1) clears and renders the default scene first.
 
-```tsx
-type HudProps = {
-  /** Any React node */
-  children: React.ReactNode
-  /** Render priority, default: 1 */
-  renderPriority?: number
-}
-```
+### Overlay HUD
 
 ```jsx
-{
-  /* Renders on top of the default scene with a perspective camera */
-}
-;<Hud>
+<Hud>
   <PerspectiveCamera makeDefault position={[0, 0, 10]} />
-  <mesh>
-    <ringGeometry />
-  </mesh>
+  <mesh><ringGeometry /></mesh>
 </Hud>
+```
 
-{
-  /* Renders on top of the previous HUD with an orthographic camera */
-}
-;<Hud renderPriority={2}>
-  <OrthographicCamera makeDefault position={[0, 0, 10]} />
-  <mesh>
-    <boxGeometry />
-  </mesh>
-</Hud>
+### Multiple HUDs stacked
+
+```jsx
+<Hud renderPriority={1}><mesh /></Hud>
+<Hud renderPriority={2}><mesh /></Hud>
 ```

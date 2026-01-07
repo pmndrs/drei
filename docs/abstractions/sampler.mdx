@@ -1,14 +1,11 @@
 ---
 title: Sampler
-sourcecode: src/core/Sampler.tsx
+sourcecode: src/core/Abstractions/Sampler/Sampler.tsx
 ---
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-sampler--sampler-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/abstractions-sampler--sampler-st)
 
 <Grid cols={4}>
-  <li>
-    <Codesandbox id="ehflx3" />
-  </li>
   <li>
     <Codesandbox id="ehflx3" />
   </li>
@@ -18,41 +15,41 @@ sourcecode: src/core/Sampler.tsx
 </Grid>
 
 Declarative abstraction around MeshSurfaceSampler & InstancedMesh.
-It samples points from the passed mesh and transforms an InstancedMesh's matrix to distribute instances on the points.
+It samples points from the passed mesh and transforms an InstancedMesh's matrix
+to distribute instances on the points.
+
+You can either pass a Mesh and InstancedMesh as children, or use refs when you
+can't compose declaratively.
 
 Check the demos & code for more.
 
-You can either pass a Mesh and InstancedMesh as children:
+### With children
 
-```tsx
-// This simple example scatters 1000 spheres on the surface of the sphere mesh.
+```jsx
 <Sampler
-  weight={'normal'} // the name of the attribute to be used as sampling weight
-  transform={transformPoint} // a function that transforms each instance given a sample. See the examples for more.
-  count={16} // Number of samples
+  weight="normal"
+  transform={transformPoint}
+  count={16}
 >
   <mesh>
     <sphereGeometry args={[2]} />
   </mesh>
-
-  <instancedMesh args={[null, null, 1_000]}>
+  <instancedMesh args={[null, null, 1000]}>
     <sphereGeometry args={[0.1]} />
   </instancedMesh>
 </Sampler>
 ```
 
-or use refs when you can't compose declaratively:
+### With refs
 
-```tsx
+```jsx
 const { nodes } = useGLTF('my/mesh/url')
 const mesh = useRef(nodes)
 const instances = useRef()
 
-return <>
-  <instancedMesh args={[null, null, 1_000]}>
-    <sphereGeometry args={[0.1]}>
-  </instancedMesh>
-
-  <Sampler mesh={mesh} instances={instances}>
-</>
+<instancedMesh args={[null, null, 1000]}>
+  <sphereGeometry args={[0.1]} />
+</instancedMesh>
+<Sampler mesh={mesh} instances={instances} />
 ```
+

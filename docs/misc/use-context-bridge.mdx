@@ -1,17 +1,16 @@
 ---
 title: useContextBridge
-sourcecode: src/core/useContextBridge.tsx
+sourcecode: src/core/Helpers/useContextBridge/useContextBridge.tsx
 ---
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/misc-usecontextbridge--use-context-bridge-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/misc-usecontextbridge--usecontextbridge-st)
 
-Allows you to forward contexts provided above the `<Canvas />` to be consumed from within the `<Canvas />` normally
+Forwards contexts provided above the Canvas to be consumed within it.
+
+### Basic usage
 
 ```jsx
 function SceneWrapper() {
-  // bridge any number of contexts
-  // Note: These contexts must be provided by something above this SceneWrapper component
-  //       You cannot render the providers for these contexts inside this component
   const ContextBridge = useContextBridge(ThemeContext, GreetingContext)
   return (
     <Canvas>
@@ -19,15 +18,6 @@ function SceneWrapper() {
         <Scene />
       </ContextBridge>
     </Canvas>
-  )
-}
-
-function Scene() {
-  // we can now consume a context within the Canvas
-  const theme = React.useContext(ThemeContext)
-  const greeting = React.useContext(GreetingContext)
-  return (
-    //...
   )
 }
 ```

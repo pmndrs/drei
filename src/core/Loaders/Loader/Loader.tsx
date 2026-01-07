@@ -13,6 +13,15 @@ interface LoaderOptions {
 
 const defaultDataInterpolation = (p: number) => `Loading ${p.toFixed(2)}%`
 
+/**
+ * A loading progress indicator component.
+ * Displays loading progress with customizable styles.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Loader />
+ * ```
+ */
 export function Loader({
   containerStyles,
   innerStyles,

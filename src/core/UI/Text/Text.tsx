@@ -5,6 +5,24 @@ import { ReactThreeFiber, ThreeElements, useThree } from '@react-three/fiber'
 import { suspend } from 'suspend-react'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 
+/**
+ * Hi-quality text rendering with signed distance fields (SDF) and antialiasing,
+ * using troika-3d-text. All of troika's props are valid. Text is suspense-based.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Text color="black" anchorX="center" anchorY="middle">
+ *   hello world!
+ * </Text>
+ * ```
+ *
+ * @example Pre-loading characters to avoid FOUC
+ * ```jsx
+ * <Text font={fontUrl} characters="abcdefghijklmnopqrstuvwxyz0123456789!">
+ *   hello world!
+ * </Text>
+ * ```
+ */
 export type TextProps = Omit<ThreeElements['mesh'], 'ref'> & {
   children: React.ReactNode
   characters?: string

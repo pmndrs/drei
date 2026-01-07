@@ -1,7 +1,9 @@
 ---
 title: View
-sourcecode: src/web/View.tsx
+sourcecode: src/core/Portal/View/View.tsx
 ---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/portals-view--view-st)
 
 <Grid cols={4}>
   <li>
@@ -18,7 +20,9 @@ sourcecode: src/web/View.tsx
   </li>
 </Grid>
 
-Views use gl.scissor to cut the viewport into segments. You tie a view to a tracking div which then controls the position and bounds of the viewport. This allows you to have multiple views with a single, performant canvas. These views will follow their tracking elements, scroll along, resize, etc.
+Uses gl.scissor to create viewport segments tied to HTML tracking elements.
+Allows multiple views with a single canvas. Views follow their tracking elements,
+scroll, resize, etc. Use View.Port inside Canvas to render all views.
 
 It is advisable to re-connect the event system to a parent that contains both the canvas and the html content.
 This ensures that both are accessible/selectable and even allows you to mount controls or other deeper
@@ -28,34 +32,23 @@ integrations into your view.
 > canvas/react three fiber root is not fullscreen. A warning will be logged if drei is used with older
 > versions of `@react-three/fiber`.
 
-```tsx
-export type ViewProps = {
-  /** Root element type, default: div */
-  as?: string
-  /** CSS id prop */
-  id?: string
-  /** CSS classname prop */
-  className?: string
-  /** CSS style prop */
-  style?: React.CSSProperties
-  /** If the view is visible or not, default: true */
-  visible?: boolean
-  /** Views take over the render loop, optional render index (1 by default) */
-  index?: number
-  /** If you know your view is always at the same place set this to 1 to avoid needless getBoundingClientRect overhead */
-  frames?: number
-  /** The scene to render, if you leave this undefined it will render the default scene */
-  children?: React.ReactNode
-  /** The tracking element, the view will be cut according to its whereabouts
-   * @deprecated You can use inline Views now, see: https://github.com/pmndrs/drei/pull/1784
-   */
-  track?: React.RefObject<HTMLElement>
-}
+### Inline views with shared canvas
 
-export type ViewportProps = { Port: () => React.ReactNode } & React.ForwardRefExoticComponent<
-  ViewProps & React.RefAttributes<HTMLElement | THREE.Group>
->
+```jsx
+<main ref={container}>
+  <View style={{ width: 200, height: 200 }}>
+    <mesh /><OrbitControls />
+  </View>
+  <View className="view-2">
+    <mesh /><CameraControls />
+  </View>
+  <Canvas eventSource={container}>
+    <View.Port />
+  </Canvas>
+</main>
 ```
+
+## View.Port
 
 You can define as many views as you like, directly mix them into your dom graph, right where you want them to appear. `View` is an unstyled HTML DOM element (by default a div, and it takes the same properties as one). Use `View.Port` inside the canvas to output them. The canvas should ideally fill the entire screen with absolute positioning, underneath HTML or on top of it, as you prefer.
 
@@ -77,3 +70,4 @@ return (
   </main>
 )
 ```
+

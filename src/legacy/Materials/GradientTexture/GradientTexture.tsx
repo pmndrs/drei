@@ -7,6 +7,59 @@ export enum GradientType {
   Radial = 'radial',
 }
 
+export type GradientTextureProps = {
+  /** Array of color stops from 0 to 1 */
+  stops: number[]
+  /** Array of colors matching the stops */
+  colors: string[]
+  /** Size of the texture (height), default: 1024 */
+  size?: number
+  /** Width of the canvas producing the texture, default: 16 */
+  width?: number
+  /** The type of the gradient, default: GradientType.Linear */
+  type?: GradientType
+  /** The radius of the inner circle of the gradient, default: 0 */
+  innerCircleRadius?: number
+  /** The radius of the outer circle of the gradient, default: 'auto' */
+  outerCircleRadius?: number | 'auto'
+}
+
+/**
+ * A declarative THREE.Texture which attaches to "map" by default.
+ * You can use this to create gradient backgrounds.
+ *
+ * @example Linear gradient
+ * ```jsx
+ * <mesh>
+ *   <planeGeometry />
+ *   <meshBasicMaterial>
+ *     <GradientTexture
+ *       stops={[0, 1]}
+ *       colors={['aquamarine', 'hotpink']}
+ *       size={1024}
+ *     />
+ *   </meshBasicMaterial>
+ * </mesh>
+ * ```
+ *
+ * @example Radial gradient
+ * ```jsx
+ * <mesh>
+ *   <planeGeometry />
+ *   <meshBasicMaterial>
+ *     <GradientTexture
+ *       stops={[0, 0.5, 1]}
+ *       colors={['aquamarine', 'hotpink', 'yellow']}
+ *       size={1024}
+ *       width={1024}
+ *       type={GradientType.Radial}
+ *       innerCircleRadius={0}
+ *       outerCircleRadius={'auto'}
+ *     />
+ *   </meshBasicMaterial>
+ * </mesh>
+ * ```
+ */
 export function GradientTexture({
   stops,
   colors,

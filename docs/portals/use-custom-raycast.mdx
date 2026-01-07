@@ -1,0 +1,15 @@
+---
+title: useCustomRaycast
+sourcecode: src/core/Portal/useCustomRaycast/useCustomRaycast.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/portals-usecustomraycast--usecustomraycast-st)
+
+Returns a raycast function for non-default cameras (HUDs, portals).
+Use when events/raycasting need to work with a custom camera.
+
+### Custom camera raycasting
+
+```jsx
+<mesh raycast={useCustomRaycast(customCamera)} />
+```

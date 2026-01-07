@@ -146,6 +146,17 @@ const EdgeCube = ({ onClick, dimensions, position, hoverColor = colors.hover }: 
   )
 }
 
+/**
+ * A 3D cube gizmo for camera orientation. Click faces/edges/corners to rotate camera.
+ * Use inside GizmoHelper.
+ *
+ * @example
+ * ```jsx
+ * <GizmoHelper>
+ *   <GizmoViewcube faces={['Right', 'Left', 'Top', 'Bottom', 'Front', 'Back']} />
+ * </GizmoHelper>
+ * ```
+ */
 export const GizmoViewcube = (props: GenericProps) => {
   return (
     <group scale={[60, 60, 60]}>

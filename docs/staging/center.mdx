@@ -1,9 +1,9 @@
 ---
 title: Center
-sourcecode: src/core/Center.tsx
+sourcecode: src/core/Staging/Center/Center.tsx
 ---
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-center--default-story)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-center--center-st)
 
 <Grid cols={4}>
   <li>
@@ -14,52 +14,8 @@ sourcecode: src/core/Center.tsx
   </li>
 </Grid>
 
-<Intro>
-  Group `children` together and -offset them by half of their bounding box.
-</Intro>
-
-```tsx
-export type Props = ThreeElements['group'] & {
-  top?: boolean
-  right?: boolean
-  bottom?: boolean
-  left?: boolean
-  front?: boolean
-  back?: boolean
-  /** Disable all axes */
-  disable?: boolean
-  /** Disable x-axis centering */
-  disableX?: boolean
-  /** Disable y-axis centering */
-  disableY?: boolean
-  /** Disable z-axis centering */
-  disableZ?: boolean
-  /** object to compute box3 from */
-  object?: THREE.Object3D | null
-  /** Precision, defaults to true, see https://threejs.org/docs/index.html?q=box3#api/en/math/Box3.setFromObject */
-  precise?: boolean
-  /** Callback, fires in the useLayoutEffect phase, after measurement */
-  onCentered?: (props: OnCenterCallbackProps) => void
-}
-```
-
-```tsx
-type OnCenterCallbackProps = {
-  /** The next parent above <Center> */
-  parent: THREE.Object3D
-  /** The outmost container group of the <Center> component */
-  container: THREE.Object3D
-  width: number
-  height: number
-  depth: number
-  boundingBox: THREE.Box3
-  boundingSphere: THREE.Sphere
-  center: THREE.Vector3
-  verticalAlignment: number
-  horizontalAlignment: number
-  depthAlignment: number
-}
-```
+Centers children based on their bounding box.
+Supports alignment, offset, and automatic recalculation.
 
 ```jsx
 <Center top left>
@@ -76,4 +32,7 @@ function ScaledModel() {
     <Center onCentered={({ container, height }) => container.scale.setScalar(viewport.height / height)}>
       <Model />
     </Center>
+  )
+}
 ```
+

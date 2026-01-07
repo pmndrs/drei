@@ -82,6 +82,33 @@ function Debug({ points = 50, color = 'black' }: { points?: number; color?: THRE
   ))
 }
 
+/**
+ * Motion path controls, it takes a path of bezier curves or catmull-rom curves as input
+ * and animates the passed `object` along that path. It can be configured to look upon an
+ * external object for staging or presentation purposes by adding a `focus` property (ref).
+ *
+ * You can exert full control with the `useMotion` hook, it allows you to define the current
+ * position along the path for instance, or define your own lookAt.
+ *
+ * @example Declarative curves
+ * ```jsx
+ * <MotionPathControls offset={0} focus={poiRef} damping={0.2}>
+ *   <cubicBezierCurve3 v0={[-5, -5, 0]} v1={[-10, 0, 0]} v2={[0, 3, 0]} v3={[6, 3, 0]} />
+ *   <cubicBezierCurve3 v0={[6, 3, 0]} v1={[10, 5, 5]} v2={[5, 5, 5]} v3={[5, 5, 5]} />
+ * </MotionPathControls>
+ * ```
+ *
+ * @example With useMotion hook for full control
+ * ```jsx
+ * function Loop() {
+ *   const motion = useMotion()
+ *   useFrame((state, delta) => {
+ *     motion.current += delta
+ *     motion.object.current.lookAt(motion.next)
+ *   })
+ * }
+ * ```
+ */
 export const MotionPathControls = /* @__PURE__ */ React.forwardRef<MotionPathRef, MotionPathProps>(
   (
     {

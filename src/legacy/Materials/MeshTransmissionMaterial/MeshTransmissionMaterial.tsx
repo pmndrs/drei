@@ -376,6 +376,23 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
   }
 }
 
+/**
+ * Improved MeshPhysicalMaterial with chromatic aberration, noise-based blur,
+ * and ability to see other transmissive/transparent objects.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <mesh>
+ *   <sphereGeometry />
+ *   <MeshTransmissionMaterial thickness={0.5} roughness={0} />
+ * </mesh>
+ * ```
+ *
+ * @example Shared buffer for performance
+ * ```jsx
+ * <MeshTransmissionMaterial transmissionSampler />
+ * ```
+ */
 export const MeshTransmissionMaterial: ForwardRefComponent<
   MeshTransmissionMaterialProps,
   ThreeElements['meshTransmissionMaterial']

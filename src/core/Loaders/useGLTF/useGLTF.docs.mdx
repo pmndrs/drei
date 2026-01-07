@@ -1,0 +1,82 @@
+---
+title: Gltf / useGLTF
+sourcecode: src/core/Loaders/useGLTF/useGLTF.tsx
+---
+
+{/* AUTO:badges */}
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="z3xdgr" />
+  </li>
+</Grid>
+
+A convenience hook that uses [`useLoader`](https://r3f.docs.pmnd.rs/api/hooks#useloader) and [`GLTFLoader`](https://threejs.org/docs/#examples/en/loaders/GLTFLoader).
+
+## `useGLTF` hook
+
+```ts
+useGLTF<T extends string | string[]>(
+  path: T,
+  useDraco?: boolean | string = true,
+  useMeshOpt: boolean = true,
+  extendLoader?: (loader: GLTFLoader) => void
+): T extends any[] ? (GLTF & ObjectMap)[] : GLTF & ObjectMap
+```
+
+### Basic
+
+```jsx
+const gltf = useGLTF(url)
+```
+
+You can also preload a model:
+
+```jsx
+useGLTF.preload(url)
+```
+
+### draco (decompression)
+
+It defaults to CDN loaded draco binaries (`https://www.gstatic.com/draco/v1/decoders/`) which are only loaded for compressed models.
+
+But you can also use your own draco binaries by passing a path:
+
+```jsx
+useGLTF(url, '/draco-gltf')
+```
+
+If you want to use your own draco decoder globally, you can pass it through:
+
+```tsx
+useGLTF.setDecoderPath(path)
+```
+
+### `extendLoader`
+
+If for example your model [`facecap.glb`](https://github.com/mrdoob/three.js/blob/master/examples/models/gltf/facecap.glb) needs KTX2 textures, you can `extendLoader`:
+
+```tsx
+import { KTX2Loader } from 'three-stdlib'
+const ktx2Loader = new KTX2Loader()
+ktx2Loader.setTranscoderPath('https://unpkg.com/three@0.168.0/examples/jsm/libs/basis/')
+
+// ...
+
+const { gl } = useThree()
+useGLTF('facecap.glb', true, true, (loader) => {
+  loader.setKTX2Loader(ktx2Loader.detectSupport(gl))
+})
+```
+
+## `Gltf` component
+
+A `Gltf` component is also provided.
+
+It takes the same props as `useGLTF` (except `src` which cannot be an array):
+
+```tsx
+<Gltf src={url} />
+<Gltf src={url} useDraco='/draco-gltf' ... />
+```
+

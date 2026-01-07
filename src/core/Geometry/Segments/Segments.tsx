@@ -31,6 +31,18 @@ export type SegmentProps = Omit<ThreeElements['segmentObject'], 'ref' | 'start' 
 
 const context = /* @__PURE__ */ React.createContext<Api>(null!)
 
+/**
+ * High-performance line segments renderer.
+ * Renders multiple line segments efficiently with instancing.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Segments limit={1000} lineWidth={1}>
+ *   <Segment start={[0, 0, 0]} end={[1, 1, 0]} color="red" />
+ *   <Segment start={[1, 1, 0]} end={[2, 0, 0]} color="blue" />
+ * </Segments>
+ * ```
+ */
 const Segments: ForwardRefComponent<SegmentsProps, LineSegments2> = /* @__PURE__ */ React.forwardRef<
   LineSegments2,
   SegmentsProps

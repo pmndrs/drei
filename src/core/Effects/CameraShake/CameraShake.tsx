@@ -17,17 +17,45 @@ type ControlsProto = {
 }
 
 export interface CameraShakeProps {
+  /** Initial intensity of the shake (0-1). @default 1 */
   intensity?: number
+  /** Whether intensity should decay over time. @default false */
   decay?: boolean
+  /** Rate at which intensity decays (when decay=true). @default 0.65 */
   decayRate?: number
+  /** Max camera yaw rotation in radians. @default 0.1 */
   maxYaw?: number
+  /** Max camera pitch rotation in radians. @default 0.1 */
   maxPitch?: number
+  /** Max camera roll rotation in radians. @default 0.1 */
   maxRoll?: number
+  /** Frequency of yaw oscillation. @default 0.1 */
   yawFrequency?: number
+  /** Frequency of pitch oscillation. @default 0.1 */
   pitchFrequency?: number
+  /** Frequency of roll oscillation. @default 0.1 */
   rollFrequency?: number
 }
 
+/**
+ * Applies a configurable camera shake effect using simplex noise.
+ * Works with orbit controls when they have `makeDefault` set.
+ * Pass a ref to control intensity programmatically.
+ *
+ * @example Basic shake
+ * ```jsx
+ * <CameraShake maxYaw={0.1} maxPitch={0.1} maxRoll={0.1} />
+ * ```
+ *
+ * @example Decaying shake (for impacts)
+ * ```jsx
+ * const shakeRef = useRef()
+ * // Trigger shake on event:
+ * shakeRef.current?.setIntensity(1)
+ *
+ * <CameraShake ref={shakeRef} decay decayRate={0.65} intensity={0} />
+ * ```
+ */
 export const CameraShake: ForwardRefComponent<CameraShakeProps, ShakeController | undefined> =
   /* @__PURE__ */ React.forwardRef<ShakeController | undefined, CameraShakeProps>(
     (

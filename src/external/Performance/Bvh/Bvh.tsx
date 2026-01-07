@@ -66,6 +66,19 @@ export function useBVH(mesh: React.RefObject<Mesh | undefined>, options?: BVHOpt
   }, [mesh, JSON.stringify(options)])
 }
 
+/**
+ * Builds a Bounding Volume Hierarchy for faster raycasting.
+ * Useful for scenes with complex geometry.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Bvh>
+ *   <mesh>
+ *     <torusKnotGeometry args={[1, 0.3, 100, 100]} />
+ *   </mesh>
+ * </Bvh>
+ * ```
+ */
 export const Bvh: ForwardRefComponent<BvhProps, Group> = /* @__PURE__ */ React.forwardRef(
   (
     {

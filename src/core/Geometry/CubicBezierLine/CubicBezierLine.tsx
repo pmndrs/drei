@@ -12,6 +12,20 @@ export type CubicBezierLineProps = Omit<LineProps, 'points' | 'ref'> & {
   segments?: number
 }
 
+/**
+ * Renders a THREE.Line2 using THREE.CubicBezierCurve3 for interpolation.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <CubicBezierLine
+ *   start={[0, 0, 0]}
+ *   midA={[1, 1, 0]}
+ *   midB={[2, 1, 0]}
+ *   end={[3, 0, 0]}
+ *   segments={20}
+ * />
+ * ```
+ */
 export const CubicBezierLine: ForwardRefComponent<CubicBezierLineProps, Line2> = /* @__PURE__ */ React.forwardRef<
   Line2,
   CubicBezierLineProps

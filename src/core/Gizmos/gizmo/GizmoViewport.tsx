@@ -103,6 +103,17 @@ function AxisHead({
   )
 }
 
+/**
+ * A colored axis viewport gizmo for camera orientation. Click axes to rotate camera.
+ * Use inside GizmoHelper.
+ *
+ * @example
+ * ```jsx
+ * <GizmoHelper>
+ *   <GizmoViewport axisColors={['red', 'green', 'blue']} labelColor="black" />
+ * </GizmoHelper>
+ * ```
+ */
 export const GizmoViewport = ({
   hideNegativeAxes,
   hideAxisHeads,

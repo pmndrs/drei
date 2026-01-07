@@ -19,6 +19,26 @@ type UniformValue =
 
 type Uniforms = Record<string, UniformValue | Record<string, UniformValue> | Array<UniformValue>>
 
+/**
+ * Creates a ShaderMaterial class with uniforms as setter/getters and constructor args.
+ * Includes a unique `key` property for hot-reload support.
+ *
+ * @param uniforms - Default uniform values
+ * @param vertexShader - GLSL vertex shader
+ * @param fragmentShader - GLSL fragment shader
+ * @param onInit - Optional callback after material creation
+ *
+ * @example
+ * ```jsx
+ * const MyMaterial = shaderMaterial(
+ *   { time: 0, color: new THREE.Color(0.2, 0, 0.1) },
+ *   vertexShader,
+ *   fragmentShader
+ * )
+ * extend({ MyMaterial })
+ * <mesh><myMaterial key={MyMaterial.key} time={1} /></mesh>
+ * ```
+ */
 export function shaderMaterial<U extends Uniforms, M extends THREE.ShaderMaterial & U>(
   uniforms: U,
   vertexShader: string,

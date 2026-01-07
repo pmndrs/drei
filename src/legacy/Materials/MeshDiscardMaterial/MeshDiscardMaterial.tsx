@@ -12,6 +12,18 @@ declare module '@react-three/fiber' {
 
 export type MeshDiscardMaterialProps = Omit<ThreeElements['shaderMaterial'], 'ref'>
 
+/**
+ * Material that discards all fragments (renders nothing).
+ * Useful for invisible meshes that still cast shadows or interact with raycasting.
+ *
+ * @example Shadow-only mesh
+ * ```jsx
+ * <mesh castShadow>
+ *   <planeGeometry />
+ *   <MeshDiscardMaterial />
+ * </mesh>
+ * ```
+ */
 export const MeshDiscardMaterial: ForwardRefComponent<MeshDiscardMaterialProps, ShaderMaterial> =
   /* @__PURE__ */ React.forwardRef((props, fref) => {
     extend({ DiscardMaterialImpl })

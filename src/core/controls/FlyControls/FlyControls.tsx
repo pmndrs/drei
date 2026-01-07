@@ -10,6 +10,15 @@ export type FlyControlsProps = Omit<ThreeElement<typeof FlyControlsImpl>, 'ref' 
   makeDefault?: boolean
 }
 
+/**
+ * FlyControls enables a navigation similar to fly modes in DCC tools like Blender.
+ * Wraps THREE's [FlyControls](https://threejs.org/docs/#examples/en/controls/FlyControls).
+ *
+ * @example Basic usage
+ * ```jsx
+ * <FlyControls movementSpeed={2} rollSpeed={Math.PI / 6} />
+ * ```
+ */
 export const FlyControls: ForwardRefComponent<FlyControlsProps, FlyControlsImpl> = /* @__PURE__ */ React.forwardRef<
   FlyControlsImpl,
   FlyControlsProps

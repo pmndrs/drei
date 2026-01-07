@@ -2,6 +2,18 @@ import { Matrix4, MeshStandardMaterial, Texture } from 'three'
 
 type UninitializedUniform<Value> = { value: Value | null }
 
+/**
+ * Material for reflective surfaces with blur and roughness support.
+ * Extends MeshStandardMaterial with planar reflections.
+ *
+ * @example
+ * ```jsx
+ * <mesh>
+ *   <planeGeometry />
+ *   <MeshReflectorMaterial blur={[0, 0]} mixBlur={0} mixStrength={1} />
+ * </mesh>
+ * ```
+ */
 export class MeshReflectorMaterial extends MeshStandardMaterial {
   private _tDepth: UninitializedUniform<Texture> = { value: null }
   private _distortionMap: UninitializedUniform<Texture> = { value: null }

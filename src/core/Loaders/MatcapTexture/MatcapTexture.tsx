@@ -50,6 +50,16 @@ export function useMatcapTexture(
 
 //
 
+/**
+ * Loads a matcap texture from the matcaps repository.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <MatcapTexture id={111} format={1024}>
+ *   {(texture) => <meshMatcapMaterial matcap={texture} />}
+ * </MatcapTexture>
+ * ```
+ */
 export const MatcapTexture = ({
   children,
   id,

@@ -620,6 +620,27 @@ function pushDataBuffer(shared: SharedState, buffer: ArrayBufferLike, vertexCoun
   return matrices
 }
 
+/**
+ * A declarative abstraction around [antimatter15/splat](https://github.com/antimatter15/splat).
+ * It supports re-use, multiple splats with correct depth sorting, splats can move and behave
+ * as a regular object3d's, supports alphahash & alphatest, and stream-loading.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Splat src="https://huggingface.co/cakewalk/splat-data/resolve/main/nike.splat" />
+ * ```
+ *
+ * @example With alphaTest for depth sorting
+ * ```jsx
+ * <Splat alphaTest={0.1} src="foo.splat" />
+ * <Splat alphaTest={0.1} src="bar.splat" />
+ * ```
+ *
+ * @example With alphaHash (slower but no outline artifacts)
+ * ```jsx
+ * <Splat alphaHash src="foo.splat" />
+ * ```
+ */
 export function Splat({
   src,
   toneMapped = false,

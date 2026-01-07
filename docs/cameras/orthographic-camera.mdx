@@ -1,24 +1,25 @@
 ---
 title: OrthographicCamera
-sourcecode: src/core/OrthographicCamera.tsx
+sourcecode: src/core/Cameras/OrthographicCamera/OrthographicCamera.tsx
 ---
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/camera-orthographiccamera--orthographic-camera-scene-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/cameras-orthographiccamera--orthographiccamera-st)
 
-A responsive [THREE.OrthographicCamera](https://threejs.org/docs/#api/en/cameras/OrthographicCamera) that can set itself as the default.
+A responsive THREE.OrthographicCamera that can set itself as the default.
+Same API as PerspectiveCamera, including render-to-texture capability.
+
+### Set as default camera
 
 ```jsx
-<OrthographicCamera makeDefault {...props}>
-  <mesh />
-</OrthographicCamera>
+<OrthographicCamera makeDefault position={[0, 0, 10]} />
 ```
 
-You can use the OrthographicCamera to film contents into a RenderTarget, it has the same API as PerspectiveCamera.
+### Film into texture
 
 ```jsx
 <OrthographicCamera position={[0, 0, 10]}>
   {(texture) => (
-    <mesh geometry={plane}>
+    <mesh>
       <meshBasicMaterial map={texture} />
     </mesh>
   )}

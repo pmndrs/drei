@@ -5,11 +5,22 @@ import StatsImpl from 'stats.js'
 import { useEffectfulState } from '../../../utils/useEffectfulState'
 
 export type StatsProps = {
+  /** Panel to show: 0=fps, 1=ms, 2=mb, 3+=custom. @default 0 */
   showPanel?: number
+  /** CSS class for the stats element */
   className?: string
+  /** Parent element to append stats to */
   parent?: React.RefObject<HTMLElement>
 }
 
+/**
+ * Displays stats.js performance monitor (FPS, MS, MB).
+ *
+ * @example
+ * ```jsx
+ * <Canvas><Stats showPanel={0} /></Canvas>
+ * ```
+ */
 export function Stats({ showPanel = 0, className, parent }: StatsProps): null {
   const stats = useEffectfulState(() => new StatsImpl(), [])
   React.useEffect(() => {

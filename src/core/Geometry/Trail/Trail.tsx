@@ -121,6 +121,34 @@ export function useTrail(target: Object3D, settings: Partial<Settings>, pointCou
 
 //* Trail Component ==============================
 
+/**
+ * A declarative, three.MeshLine based Trails implementation.
+ * You can attach it to any mesh and it will give it a beautiful trail.
+ *
+ * If `target` is not defined, Trail will use the first `Object3D` child as the target.
+ * You can optionally define a custom meshLineMaterial to use.
+ *
+ * Inspired by [TheSpite's Codevember 2021 #9](https://spite.github.io/codevember-2021/9/)
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Trail
+ *   width={0.2}
+ *   color={'hotpink'}
+ *   length={1}
+ *   decay={1}
+ *   local={false}
+ *   stride={0}
+ *   interval={1}
+ *   attenuation={(width) => width}
+ * >
+ *   <mesh>
+ *     <sphereGeometry />
+ *     <meshBasicMaterial />
+ *   </mesh>
+ * </Trail>
+ * ```
+ */
 export const Trail: ForwardRefComponent<React.PropsWithChildren<TrailProps>, Line2> = /* @__PURE__ */ React.forwardRef<
   Line2,
   React.PropsWithChildren<TrailProps>

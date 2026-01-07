@@ -8,6 +8,18 @@ export type PreloadProps = {
   camera?: Camera
 }
 
+/**
+ * Pre-compiles shaders to avoid jank on first render.
+ * Place at the end of your scene.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Canvas>
+ *   <Scene />
+ *   <Preload all />
+ * </Canvas>
+ * ```
+ */
 export function Preload({ all, scene, camera }: PreloadProps) {
   const gl = useThree(({ gl }) => gl)
   const dCamera = useThree(({ camera }) => camera)

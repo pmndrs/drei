@@ -26,6 +26,17 @@ export const FaceLandmarkerDefaults = {
   } as FaceLandmarkerOptions,
 }
 
+/**
+ * Provides MediaPipe FaceLandmarker for face detection.
+ * Use with FaceControls or Facemesh components.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <FaceLandmarker>
+ *   <FaceControls />
+ * </FaceLandmarker>
+ * ```
+ */
 export const FaceLandmarker = forwardRef<FaceLandmarkerImpl, FaceLandmarkerProps>(
   ({ basePath = FaceLandmarkerDefaults.basePath, options = FaceLandmarkerDefaults.options, children }, fref) => {
     const opts = JSON.stringify(options)

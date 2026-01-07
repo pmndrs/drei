@@ -29,6 +29,26 @@ function extensions(useDraco: UseDraco = true, useMeshopt: UseMeshopt = true, ex
   }
 }
 
+/**
+ * Loads GLTF files with optional Draco/Meshopt compression support.
+ * Returns the loaded GLTF with all nodes, materials, and animations mapped.
+ *
+ * @example Basic usage
+ * ```jsx
+ * const { scene, nodes, materials } = useGLTF('/model.glb')
+ * return <primitive object={scene} />
+ * ```
+ *
+ * @example With Draco compression
+ * ```jsx
+ * const { scene } = useGLTF('/model.glb', true)
+ * ```
+ *
+ * @example Preloading
+ * ```jsx
+ * useGLTF.preload('/model.glb')
+ * ```
+ */
 export const useGLTF = <T extends Path>(
   path: T,
   useDraco?: UseDraco,
@@ -55,6 +75,15 @@ export type GltfProps = Omit<CloneProps, 'object'> & {
   useMeshOpt?: UseMeshopt
   extendLoader?: ExtendLoader
 }
+
+/**
+ * Declarative GLTF component that loads and renders a GLTF model.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Gltf src="/model.glb" />
+ * ```
+ */
 export const Gltf = /* @__PURE__ */ React.forwardRef<GltfRef, GltfProps>(
   ({ src, useDraco, useMeshOpt, extendLoader, ...props }, ref) => {
     const { scene } = useGLTF(src, useDraco, useMeshOpt, extendLoader)

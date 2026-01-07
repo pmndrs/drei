@@ -158,10 +158,24 @@ declare module '@react-three/fiber' {
 }
 
 export type MeshDistortMaterialProps = Omit<ThreeElements['distortMaterialImpl'], 'ref'> & {
+  /** Animation speed multiplier. @default 1 */
   speed?: number
+  /** Distortion intensity. @default 0.4 */
   factor?: number
 }
 
+/**
+ * Material that distorts geometry using simplex noise.
+ * Extends MeshPhysicalMaterial with animated vertex displacement.
+ *
+ * @example
+ * ```jsx
+ * <mesh>
+ *   <boxGeometry />
+ *   <MeshDistortMaterial distort={1} speed={10} />
+ * </mesh>
+ * ```
+ */
 export const MeshDistortMaterial: ForwardRefComponent<MeshDistortMaterialProps, DistortMaterialImpl> =
   /* @__PURE__ */ React.forwardRef(({ speed = 1, ...props }, ref) => {
     const [material] = React.useState(() => new DistortMaterialImpl())

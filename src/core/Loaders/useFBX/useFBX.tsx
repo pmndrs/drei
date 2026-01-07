@@ -5,6 +5,15 @@ import { Group } from '#three'
 
 import { Clone } from '../../Abstractions/Clone/Clone'
 
+/**
+ * Loads an FBX model using THREE's FBXLoader.
+ *
+ * @example Basic usage
+ * ```jsx
+ * const fbx = useFBX('/model.fbx')
+ * return <primitive object={fbx} />
+ * ```
+ */
 export function useFBX(path: string): Group {
   return useLoader(FBXLoader, path)
 }

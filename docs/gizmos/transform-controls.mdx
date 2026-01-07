@@ -1,19 +1,15 @@
 ---
 title: TransformControls
-sourcecode: src/core/TransformControls.tsx
+sourcecode: src/core/Gizmos/TransformControls/TransformControls.tsx
 ---
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/gizmos-transformcontrols--transform-controls-story)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/gizmos-transformcontrols--transformcontrols-st)
 
-<Grid cols={4}>
-  <li>
-    <Codesandbox id="btsbj" />
-  </li>
-</Grid>
+Abstraction around THREE.TransformControls for translate/rotate/scale gizmos.
+Wrap objects or reference them via the `object` prop.
+Auto-disables other controls (Orbit, etc.) when dragging.
 
-An abstraction around [THREE.TransformControls](https://threejs.org/docs/#examples/en/controls/TransformControls).
-
-You can wrap objects which then receive a transform gizmo.
+### Wrap object
 
 ```jsx
 <TransformControls mode="translate">
@@ -21,16 +17,9 @@ You can wrap objects which then receive a transform gizmo.
 </TransformControls>
 ```
 
-You could also reference the object which might make it easier to exchange the target. Now the object does not have to be part of the same sub-graph. References can be plain objects or React.RefObjects.
+### Reference object
 
 ```jsx
-<TransformControls object={mesh} mode="translate" />
-<mesh ref={mesh} />
-```
-
-If you are using other controls (Orbit, Trackball, etc), you will notice how they interfere, dragging one will affect the other. Default-controls will temporarily be disabled automatically when the user is pulling on the transform gizmo.
-
-```jsx
-<TransformControls mode="translate" />
-<OrbitControls makeDefault />
+<TransformControls object={meshRef} mode="rotate" />
+<mesh ref={meshRef} />
 ```

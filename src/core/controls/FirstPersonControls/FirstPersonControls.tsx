@@ -8,6 +8,15 @@ export type FirstPersonControlsProps = Omit<ThreeElement<typeof FirstPersonContr
   makeDefault?: boolean
 }
 
+/**
+ * First-person camera controls.
+ * Wraps THREE's [FirstPersonControls](https://threejs.org/docs/#examples/en/controls/FirstPersonControls).
+ *
+ * @example Basic usage
+ * ```jsx
+ * <FirstPersonControls />
+ * ```
+ */
 export const FirstPersonControls: ForwardRefComponent<FirstPersonControlsProps, FirstPersonControlImpl> =
   /* @__PURE__ */ React.forwardRef<FirstPersonControlImpl, FirstPersonControlsProps>(
     ({ domElement, makeDefault, ...props }, ref) => {

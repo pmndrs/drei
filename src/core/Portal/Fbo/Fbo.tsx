@@ -16,6 +16,21 @@ type FBOSettings = {
 
 // 👇 uncomment when TS version supports function overloads
 // export function useFBO(settings?: FBOSettings)
+
+/**
+ * Creates a THREE.WebGLRenderTarget (or THREE.RenderTarget for WebGPU).
+ * Automatically disposed when unmounted.
+ *
+ * @example Basic usage
+ * ```jsx
+ * const target = useFBO({ stencilBuffer: false })
+ * ```
+ *
+ * @example Custom resolution
+ * ```jsx
+ * const target = useFBO(1024, 1024, { samples: 8 })
+ * ```
+ */
 export function useFBO(
   /** Width in pixels, or settings (will render fullscreen by default) */
   width?: number | FBOSettings,
@@ -68,11 +83,30 @@ type UseFBOParams = Parameters<typeof useFBO>
 type Fbo = ReturnType<typeof useFBO>
 
 export type FboProps = {
+  /** Render function receiving the render target */
   children?: (target: Fbo) => React.ReactNode
+  /** Width in pixels */
   width?: UseFBOParams[0]
+  /** Height in pixels */
   height?: UseFBOParams[1]
 } & FBOSettings
 
+/**
+ * Declarative component wrapper for useFBO. Access target via render prop or ref.
+ *
+ * @example Via render prop
+ * ```jsx
+ * <Fbo width={1024} height={1024}>
+ *   {(target) => <mesh><meshBasicMaterial map={target.texture} /></mesh>}
+ * </Fbo>
+ * ```
+ *
+ * @example Via ref
+ * ```jsx
+ * const fboRef = useRef()
+ * <Fbo ref={fboRef} width={512} height={512} />
+ * ```
+ */
 export const Fbo = /* @__PURE__ */ forwardRef<Fbo, FboProps>(({ children, width, height, ...settings }, fref) => {
   const target = useFBO(width, height, settings)
 

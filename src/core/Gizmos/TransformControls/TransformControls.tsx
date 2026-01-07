@@ -32,6 +32,24 @@ export type TransformControlsProps = Omit<ThreeElement<typeof TransformControlsI
     makeDefault?: boolean
   }
 
+/**
+ * Abstraction around THREE.TransformControls for translate/rotate/scale gizmos.
+ * Wrap objects or reference them via the `object` prop.
+ * Auto-disables other controls (Orbit, etc.) when dragging.
+ *
+ * @example Wrap object
+ * ```jsx
+ * <TransformControls mode="translate">
+ *   <mesh />
+ * </TransformControls>
+ * ```
+ *
+ * @example Reference object
+ * ```jsx
+ * <TransformControls object={meshRef} mode="rotate" />
+ * <mesh ref={meshRef} />
+ * ```
+ */
 export const TransformControls: ForwardRefComponent<TransformControlsProps, TransformControlsImpl> =
   /* @__PURE__ */ React.forwardRef<TransformControlsImpl, TransformControlsProps>(
     (

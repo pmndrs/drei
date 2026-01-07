@@ -48,10 +48,36 @@ export type ScrollControlsState = {
 
 const context = /* @__PURE__ */ React.createContext<ScrollControlsState>(null!)
 
+/**
+ * Hook to access scroll state: offset (0-1), delta, range(), curve(), visible().
+ */
 export function useScroll() {
   return React.useContext(context)
 }
 
+/**
+ * Scroll controls create an HTML scroll container in front of the canvas.
+ * Everything you drop into the `<Scroll>` component will be affected.
+ *
+ * You can listen and react to scroll with the `useScroll` hook which gives you
+ * useful data like the current scroll `offset`, `delta` and functions for range
+ * finding: `range`, `curve` and `visible`.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <ScrollControls pages={3} damping={0.1}>
+ *   <SomeModel />
+ *   <Scroll>
+ *     <Foo position={[0, 0, 0]} />
+ *     <Foo position={[0, viewport.height, 0]} />
+ *   </Scroll>
+ *   <Scroll html>
+ *     <h1>html in here (optional)</h1>
+ *     <h1 style={{ top: '100vh' }}>second page</h1>
+ *   </Scroll>
+ * </ScrollControls>
+ * ```
+ */
 export function ScrollControls({
   eps = 0.00001,
   enabled = true,

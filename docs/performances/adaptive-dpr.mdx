@@ -1,10 +1,10 @@
 ---
 title: AdaptiveDpr
-sourcecode: src/core/AdaptiveDpr.tsx
+sourcecode: src/core/Performance/AdaptiveDpr/AdaptiveDpr.tsx
 ---
 
-Drop this component into your scene and it will cut the pixel-ratio on regress according to the canvas's performance min/max settings. This allows you to temporarily reduce visual quality in exchange for more performance, for instance when the camera moves (look into drei's controls regress flag). Optionally, you can set the canvas to a pixelated filter, which would be even faster.
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/performances-adaptivedpr--adaptivedpr-st)
 
-```jsx
-<AdaptiveDpr pixelated />
-```
+Automatically adjusts DPR based on the performance system.
+Connects to R3F's built-in performance monitoring.
+

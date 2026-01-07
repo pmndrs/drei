@@ -15,6 +15,15 @@ export type LightProps = Omit<ThreeElements['mesh'], 'ref'> & {
   light?: Partial<ThreeElements['pointLight']>
 }
 
+/**
+ * A shape that emits light for use inside Environment portals.
+ * Multiplies color by intensity for emissive effect.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Lightformer form="circle" intensity={2} position={[0, 5, -2]} />
+ * ```
+ */
 export const Lightformer: ForwardRefComponent<LightProps, THREE.Mesh> = /* @__PURE__ */ React.forwardRef(
   (
     {

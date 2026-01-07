@@ -21,6 +21,21 @@ export type FisheyeProps = ThreeElements['mesh'] & {
   renderPriority?: number
 }
 
+/**
+ * Renders children into a fisheye projection that fills the screen.
+ * Takes over system rendering with 6 cube-camera renders per frame.
+ * Lower resolution improves performance.
+ *
+ * @example Basic fisheye
+ * ```jsx
+ * <Canvas camera={{ position: [0, 0, 5] }}>
+ *   <Fisheye>
+ *     <YourScene />
+ *   </Fisheye>
+ *   <OrbitControls />
+ * </Canvas>
+ * ```
+ */
 export function Fisheye({
   renderPriority = 1,
   zoom = 0,

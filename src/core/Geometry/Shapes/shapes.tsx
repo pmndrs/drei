@@ -1,3 +1,14 @@
+/**
+ * @fileoverview Convenience shape components - meshes with built-in geometries.
+ * All shapes accept mesh props plus geometry-specific `args`.
+ *
+ * @example
+ * ```jsx
+ * <Box args={[1, 1, 1]}><meshStandardMaterial /></Box>
+ * <Sphere args={[1, 32, 32]}><meshStandardMaterial /></Sphere>
+ * ```
+ */
+
 import * as React from 'react'
 import * as THREE from '#three'
 import { ForwardRefComponent } from '@utils/ts-utils'

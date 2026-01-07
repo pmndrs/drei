@@ -22,6 +22,26 @@ export type OrthographicCameraProps = Omit<ThreeElements['orthographicCamera'], 
   envMap?: THREE.Texture
 }
 
+/**
+ * A responsive THREE.OrthographicCamera that can set itself as the default.
+ * Same API as PerspectiveCamera, including render-to-texture capability.
+ *
+ * @example Set as default camera
+ * ```jsx
+ * <OrthographicCamera makeDefault position={[0, 0, 10]} />
+ * ```
+ *
+ * @example Film into texture
+ * ```jsx
+ * <OrthographicCamera position={[0, 0, 10]}>
+ *   {(texture) => (
+ *     <mesh>
+ *       <meshBasicMaterial map={texture} />
+ *     </mesh>
+ *   )}
+ * </OrthographicCamera>
+ * ```
+ */
 export const OrthographicCamera: ForwardRefComponent<OrthographicCameraProps, OrthographicCameraImpl> =
   /* @__PURE__ */ React.forwardRef(
     ({ envMap, resolution = 256, frames = Infinity, children, makeDefault, ...props }, ref) => {

@@ -4,9 +4,20 @@ import { ThreeElements, useFrame } from '@react-three/fiber'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 
 export type ScreenSpaceProps = Omit<ThreeElements['group'], 'ref'> & {
+  /** Distance from camera, default: -1 */
   depth?: number
 }
 
+/**
+ * Adds a `<group />` that aligns objects to screen space.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <ScreenSpace depth={1}>
+ *   <Box>I'm in screen space</Box>
+ * </ScreenSpace>
+ * ```
+ */
 export const ScreenSpace: ForwardRefComponent<ScreenSpaceProps, Group> = /* @__PURE__ */ React.forwardRef<
   Group,
   ScreenSpaceProps

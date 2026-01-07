@@ -1,0 +1,34 @@
+---
+title: Trail
+sourcecode: src/core/Geometry/Trail/Trail.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/shapes-trail--trail-st)
+
+A declarative, three.MeshLine based Trails implementation.
+You can attach it to any mesh and it will give it a beautiful trail.
+
+If `target` is not defined, Trail will use the first `Object3D` child as the target.
+You can optionally define a custom meshLineMaterial to use.
+
+Inspired by [TheSpite's Codevember 2021 #9](https://spite.github.io/codevember-2021/9/)
+
+### Basic usage
+
+```jsx
+<Trail
+  width={0.2}
+  color={'hotpink'}
+  length={1}
+  decay={1}
+  local={false}
+  stride={0}
+  interval={1}
+  attenuation={(width) => width}
+>
+  <mesh>
+    <sphereGeometry />
+    <meshBasicMaterial />
+  </mesh>
+</Trail>
+```

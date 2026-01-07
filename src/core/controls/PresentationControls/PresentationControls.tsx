@@ -19,6 +19,29 @@ export type PresentationControlProps = {
   domElement?: HTMLElement
 }
 
+/**
+ * Semi-OrbitControls with spring-physics, polar zoom and snap-back, for presentational purposes.
+ * These controls do not turn the camera but will spin their contents. They will not suddenly
+ * come to rest when they reach limits like OrbitControls do, but rather smoothly anticipate stopping position.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <PresentationControls
+ *   enabled={true}
+ *   global={false}
+ *   cursor={true}
+ *   snap={false}
+ *   speed={1}
+ *   zoom={1}
+ *   rotation={[0, 0, 0]}
+ *   polar={[0, Math.PI / 2]}
+ *   azimuth={[-Infinity, Infinity]}
+ *   config={{ mass: 1, tension: 170, friction: 26 }}
+ * >
+ *   <mesh />
+ * </PresentationControls>
+ * ```
+ */
 export function PresentationControls({
   enabled = true,
   snap,

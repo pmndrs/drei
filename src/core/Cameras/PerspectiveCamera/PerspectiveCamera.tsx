@@ -22,6 +22,34 @@ export type PerspectiveCameraProps = Omit<ThreeElements['perspectiveCamera'], 'r
   envMap?: THREE.Texture
 }
 
+/**
+ * A responsive THREE.PerspectiveCamera that can set itself as the default.
+ * Automatically updates aspect ratio on resize unless `manual` is set.
+ * Can also film contents into a RenderTarget when children is a function.
+ *
+ * @example Set as default camera
+ * ```jsx
+ * <PerspectiveCamera makeDefault position={[0, 0, 10]} />
+ * ```
+ *
+ * @example With children that follow camera
+ * ```jsx
+ * <PerspectiveCamera makeDefault>
+ *   <mesh />
+ * </PerspectiveCamera>
+ * ```
+ *
+ * @example Film into texture (like CubeCamera)
+ * ```jsx
+ * <PerspectiveCamera position={[0, 0, 10]}>
+ *   {(texture) => (
+ *     <mesh>
+ *       <meshBasicMaterial map={texture} />
+ *     </mesh>
+ *   )}
+ * </PerspectiveCamera>
+ * ```
+ */
 export const PerspectiveCamera: ForwardRefComponent<PerspectiveCameraProps, PerspectiveCameraImpl> =
   /* @__PURE__ */ React.forwardRef(
     ({ envMap, resolution = 256, frames = Infinity, makeDefault, children, ...props }, ref) => {

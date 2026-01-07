@@ -30,9 +30,11 @@
       "@webgpu/*": ["./src/webgpu/*"],
       "@external/*": ["./src/external/*"],
       "@experimental/*": ["./src/experimental/*"],
-      "@utils/*": ["./src/utils/*"]
+      "@utils/*": ["./src/utils/*"],
+      "@storybook-setup": ["./.storybook/Setup.tsx"],
+      "drei": ["./.storybook/drei-exports.ts"]
     }
   },
-  "include": ["./src"],
+  "include": ["./src", "./.storybook"],
   "exclude": ["./node_modules/**/*", "**/*.test.ts", "**/*.test.tsx"]
 }

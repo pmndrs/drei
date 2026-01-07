@@ -22,6 +22,27 @@ export type ContactShadowsProps = Omit<ThreeElements['group'], 'ref' | 'scale'> 
   depthWrite?: boolean
 }
 
+/**
+ * A contact shadow implementation with automatic blur.
+ * Renders a shadow plane beneath your objects without needing a light to cast shadows.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <ContactShadows
+ *   opacity={1}
+ *   scale={10}
+ *   blur={1}
+ *   far={10}
+ *   resolution={256}
+ *   color="#000000"
+ * />
+ * ```
+ *
+ * @example Static shadows (limited frames)
+ * ```jsx
+ * <ContactShadows frames={1} />
+ * ```
+ */
 export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Group> = /* @__PURE__ */ React.forwardRef(
   (
     {

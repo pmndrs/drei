@@ -10,6 +10,26 @@ type Api<T extends AnimationClip> = {
   actions: { [key in T['name']]: AnimationAction | null }
 }
 
+/**
+ * A hook that abstracts [AnimationMixer](https://threejs.org/docs/#api/en/animation/AnimationMixer).
+ *
+ * @example Basic usage
+ * ```jsx
+ * const { nodes, materials, animations } = useGLTF(url)
+ * const { ref, mixer, names, actions, clips } = useAnimations(animations)
+ * useEffect(() => {
+ *   actions?.jump.play()
+ * })
+ * return <mesh ref={ref} />
+ * ```
+ *
+ * @example With a pre-existing root
+ * ```jsx
+ * const { scene, animations } = useGLTF(url)
+ * const { actions } = useAnimations(animations, scene)
+ * return <primitive object={scene} />
+ * ```
+ */
 export function useAnimations<T extends AnimationClip>(
   clips: T[],
   root?: React.RefObject<Object3D | undefined | null> | Object3D

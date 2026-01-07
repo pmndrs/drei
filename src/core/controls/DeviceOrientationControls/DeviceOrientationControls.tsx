@@ -10,6 +10,15 @@ export type DeviceOrientationControlsProps = Omit<ThreeElement<typeof DeviceOrie
   makeDefault?: boolean
 }
 
+/**
+ * Controls that use device orientation (gyroscope) to control the camera.
+ * Useful for mobile VR experiences.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <DeviceOrientationControls />
+ * ```
+ */
 export const DeviceOrientationControls: ForwardRefComponent<
   DeviceOrientationControlsProps,
   DeviceOrientationControlsImp

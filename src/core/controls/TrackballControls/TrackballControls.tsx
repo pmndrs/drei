@@ -21,6 +21,15 @@ export type TrackballControlsProps = Omit<
   'ref' | 'args'
 >
 
+/**
+ * TrackballControls is similar to OrbitControls but allows free rotation.
+ * Wraps THREE's [TrackballControls](https://threejs.org/docs/#examples/en/controls/TrackballControls).
+ *
+ * @example Basic usage
+ * ```jsx
+ * <TrackballControls />
+ * ```
+ */
 export const TrackballControls: ForwardRefComponent<TrackballControlsProps, TrackballControlsImpl> =
   /* @__PURE__ */ React.forwardRef<TrackballControlsImpl, TrackballControlsProps>(
     ({ makeDefault, camera, domElement, regress, onChange, onStart, onEnd, ...restProps }, ref) => {

@@ -1,0 +1,15 @@
+---
+title: useKTX2
+sourcecode: src/core/Loaders/useKTX2/useKTX2.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-usektx2--usektx2-st)
+
+Loads KTX2 compressed textures using THREE's KTX2Loader.
+
+### Basic usage
+
+```jsx
+const texture = useKTX2('/texture.ktx2')
+return <meshBasicMaterial map={texture} />
+```

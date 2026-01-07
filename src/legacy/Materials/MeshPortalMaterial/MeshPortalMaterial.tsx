@@ -79,6 +79,20 @@ export type PortalProps = Omit<ThreeElements['portalMaterialImpl'], 'ref' | 'ble
   events?: boolean
 }
 
+/**
+ * Material that portals into another scene rendered onto a mesh surface.
+ * Supports edge blur and smooth blending transitions into the portal.
+ *
+ * @example Basic portal
+ * ```jsx
+ * <mesh>
+ *   <planeGeometry />
+ *   <MeshPortalMaterial>
+ *     <mesh><sphereGeometry /></mesh>
+ *   </MeshPortalMaterial>
+ * </mesh>
+ * ```
+ */
 export const MeshPortalMaterial: ForwardRefComponent<PortalProps, ThreeElements['portalMaterialImpl']> =
   /* @__PURE__ */ React.forwardRef(
     (

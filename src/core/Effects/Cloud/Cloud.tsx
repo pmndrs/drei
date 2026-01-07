@@ -94,6 +94,19 @@ const cquat = /* @__PURE__ */ new Quaternion()
 const scale = /* @__PURE__ */ new Vector3()
 
 const context = /* @__PURE__ */ React.createContext<React.RefObject<CloudState[]>>(null!)
+
+/**
+ * Provider component that groups all Cloud children into a single instanced draw call.
+ * Wrap your Cloud components with this for better performance.
+ *
+ * @example Multiple clouds in one draw call
+ * ```jsx
+ * <Clouds material={THREE.MeshBasicMaterial}>
+ *   <Cloud segments={40} bounds={[10, 2, 2]} volume={10} color="orange" />
+ *   <Cloud seed={1} scale={2} volume={5} color="hotpink" fade={100} />
+ * </Clouds>
+ * ```
+ */
 export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
   (
     { children, material = MeshLambertMaterial, texture = CLOUD_URL, range, limit = 200, frustumCulled, ...props },
@@ -293,6 +306,15 @@ export const CloudInstance = /* @__PURE__ */ React.forwardRef<Group, CloudProps>
   }
 )
 
+/**
+ * Particle-based volumetric cloud. Can be used standalone or inside a Clouds provider.
+ * When used inside Clouds, all clouds share a single instanced draw call.
+ *
+ * @example Standalone cloud
+ * ```jsx
+ * <Cloud segments={40} bounds={[10, 2, 2]} volume={10} color="white" />
+ * ```
+ */
 export const Cloud = /* @__PURE__ */ React.forwardRef<Group, CloudProps>((props, fref) => {
   const parent = React.useContext(context)
   if (parent) return <CloudInstance ref={fref} {...props} />

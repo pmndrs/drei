@@ -1,0 +1,36 @@
+---
+title: Fbo / useFBO
+sourcecode: src/core/Portal/Fbo/Fbo.tsx
+---
+
+{/* AUTO:badges */}
+
+{/* AUTO:description */}
+
+```jsx
+const target = useFBO({ stencilBuffer: false })
+```
+
+The rendertarget is automatically disposed when unmounted.
+
+## `<Fbo>` Component
+
+You can access the renderTarget via children's render prop:
+
+```jsx
+<Fbo width={1024} height={1024} stencilBuffer={false}>
+  {(renderTarget) => (
+    <mesh>
+      <planeGeometry />
+      <meshBasicMaterial map={renderTarget.texture} />
+    </mesh>
+  )}
+```
+
+or exposed via `ref`:
+
+```jsx
+const renderTargetRef = useRef()
+<Fbo ref={renderTargetRef} />
+```
+

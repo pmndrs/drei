@@ -9,6 +9,19 @@ export type DetailedProps = Omit<ThreeElements['lOD'], 'ref'> & {
   distances: number[]
 }
 
+/**
+ * Abstraction of THREE's LOD (Level of Detail).
+ * Renders different children based on camera distance.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Detailed distances={[0, 50, 100]}>
+ *   <HighDetailMesh />
+ *   <MediumDetailMesh />
+ *   <LowDetailMesh />
+ * </Detailed>
+ * ```
+ */
 export const Detailed: ForwardRefComponent<DetailedProps, LOD> = /* @__PURE__ */ React.forwardRef(
   ({ children, hysteresis = 0, distances, ...props }, ref) => {
     const lodRef = React.useRef<LOD>(null!)

@@ -23,6 +23,22 @@ export type SelectProps = Omit<ThreeElements['group'], 'ref'> & {
   filter?: (selected: THREE.Object3D[]) => THREE.Object3D[]
 }
 
+/**
+ * Allows selecting/unselecting objects by clicking on them.
+ * Supports multi-select (shift key) and box selection.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Select box multiple onChange={console.log}>
+ *   <Foo />
+ *   <Bar />
+ * </Select>
+ *
+ * function Foo() {
+ *   const selected = useSelect()
+ * }
+ * ```
+ */
 export function Select({
   box,
   multiple,

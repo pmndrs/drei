@@ -89,6 +89,28 @@ export type PivotControlsProps = {
   children?: React.ReactNode
 }
 
+/**
+ * Controls for rotating, translating, and scaling objects via a pivot gizmo.
+ * The gizmo sticks to the object and forms a pivot point.
+ * Supports HTML annotations and [Tab] for rounded values while dragging.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <PivotControls>
+ *   <mesh />
+ * </PivotControls>
+ * ```
+ *
+ * @example Controlled mode (manual transform)
+ * ```jsx
+ * const matrix = new THREE.Matrix4()
+ * <PivotControls
+ *   matrix={matrix}
+ *   autoTransform={false}
+ *   onDrag={({ matrix: m }) => matrix.copy(m)}
+ * />
+ * ```
+ */
 export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group> = /* @__PURE__ */ React.forwardRef<
   THREE.Group,
   PivotControlsProps

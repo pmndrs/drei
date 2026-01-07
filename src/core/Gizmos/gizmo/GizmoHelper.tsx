@@ -18,6 +18,10 @@ type GizmoHelperContext = {
 
 const Context = /* @__PURE__ */ React.createContext<GizmoHelperContext>({} as GizmoHelperContext)
 
+/**
+ * Hook to access the GizmoHelper context for creating custom gizmos.
+ * Provides `tweenCamera(direction)` to animate camera rotation.
+ */
 export const useGizmoContext = () => {
   return React.useContext<GizmoHelperContext>(Context)
 }
@@ -59,6 +63,18 @@ const isCameraControls = (controls: CameraControlsType | ControlsProto): control
   return 'getTarget' in (controls as CameraControlsType)
 }
 
+/**
+ * Container for camera position visualization widgets (GizmoViewport, GizmoViewcube).
+ * Set `makeDefault` on your controls to enable automatic integration.
+ *
+ * @example With GizmoViewport
+ * ```jsx
+ * <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
+ *   <GizmoViewport axisColors={['red', 'green', 'blue']} labelColor="black" />
+ * </GizmoHelper>
+ * <OrbitControls makeDefault />
+ * ```
+ */
 export const GizmoHelper = ({
   alignment = 'bottom-right',
   margin = [80, 80],

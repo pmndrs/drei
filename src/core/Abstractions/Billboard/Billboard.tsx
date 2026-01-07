@@ -4,19 +4,42 @@ import { ThreeElements, useFrame } from '@react-three/fiber'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 
 export type BillboardProps = Omit<ThreeElements['group'], 'ref'> & {
+  /** Whether the billboard actively tracks the camera. Set to false to freeze the current orientation. @default true */
   follow?: boolean
+  /** Lock rotation on the X axis, preventing vertical tilting. @default false */
   lockX?: boolean
+  /** Lock rotation on the Y axis, preventing horizontal rotation. @default false */
   lockY?: boolean
+  /** Lock rotation on the Z axis, preventing roll. @default false */
   lockZ?: boolean
 }
 
 /**
- * Wraps children in a billboarded group. Sample usage:
+ * Wraps children in a group that always faces the camera (billboarding).
+ * Useful for labels, sprites, health bars, or any UI element that should always face the viewer.
  *
- * ```js
+ * @example Basic usage
+ * ```jsx
  * <Billboard>
- *   <Text>hi</Text>
+ *   <Text>I'm a billboard</Text>
  * </Billboard>
+ * ```
+ *
+ * @example Lock specific axes
+ * ```jsx
+ * <Billboard follow={true} lockY={true}>
+ *   <Plane args={[3, 2]} material-color="red" />
+ * </Billboard>
+ * ```
+ *
+ * @example Inside a group (inherits parent transforms)
+ * ```jsx
+ * <group position={[5, 0, 0]}>
+ *   <Billboard>
+ *     <Text>Label</Text>
+ *   </Billboard>
+ *   <Box />
+ * </group>
  * ```
  */
 export const Billboard: ForwardRefComponent<BillboardProps, Group> = /* @__PURE__ */ React.forwardRef<

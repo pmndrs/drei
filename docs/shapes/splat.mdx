@@ -1,0 +1,40 @@
+---
+title: Splat
+sourcecode: src/external/Geometry/Splat/Splat.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/shapes-splat--splat-st)
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="qp4jmf" />
+  </li>
+</Grid>
+
+A declarative abstraction around [antimatter15/splat](https://github.com/antimatter15/splat).
+It supports re-use, multiple splats with correct depth sorting, splats can move and behave
+as a regular object3d's, supports alphahash & alphatest, and stream-loading.
+
+### Basic usage
+
+```jsx
+<Splat src="https://huggingface.co/cakewalk/splat-data/resolve/main/nike.splat" />
+```
+
+### With alphaTest for depth sorting
+
+```jsx
+<Splat alphaTest={0.1} src="foo.splat" />
+<Splat alphaTest={0.1} src="bar.splat" />
+```
+
+### With alphaHash (slower but no outline artifacts)
+
+```jsx
+<Splat alphaHash src="foo.splat" />
+```
+
+In order to depth sort multiple splats correctly you can either use alphaTest, for instance with a low value. But keep in mind that this can show a slight outline under some viewing conditions.
+
+You can also use alphaHash, but this can be slower and create some noise, you would typically get rid of the noise in postprocessing with a TAA pass. You don't have to use alphaHash on all splats.
+

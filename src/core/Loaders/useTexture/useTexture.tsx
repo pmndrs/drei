@@ -6,6 +6,19 @@ import { useLayoutEffect, useEffect, useMemo } from 'react'
 export const IsObject = (url: unknown): url is Record<string, string> =>
   url === Object(url) && !Array.isArray(url) && typeof url !== 'function'
 
+/**
+ * Loads textures using THREE's TextureLoader with suspense support.
+ *
+ * @example Single texture
+ * ```jsx
+ * const texture = useTexture('/texture.png')
+ * ```
+ *
+ * @example Multiple textures
+ * ```jsx
+ * const [colorMap, normalMap] = useTexture(['/color.png', '/normal.png'])
+ * ```
+ */
 export function useTexture<Url extends string[] | string | Record<string, string>>(
   input: Url,
   onLoad?: (texture: MappedTextureType<Url>) => void

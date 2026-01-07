@@ -16,6 +16,15 @@ export interface SvgProps extends Omit<ThreeElements['object3D'], 'ref'> {
   strokeMeshProps?: ThreeElements['mesh']
 }
 
+/**
+ * Wrapper around the `three` [svg loader](https://threejs.org/examples/?q=sv#webgl_loader_svg) demo.
+ * Accepts an SVG url or svg raw data.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <Svg src={urlOrRawSvgString} />
+ * ```
+ */
 export const Svg: ForwardRefComponent<SvgProps, Object3D> = /* @__PURE__ */ forwardRef<Object3D, SvgProps>(
   function R3FSvg(
     { src, skipFill, skipStrokes, fillMaterial, strokeMaterial, fillMeshProps, strokeMeshProps, ...props },

@@ -1,9 +1,9 @@
 ---
 title: PresentationControls
-sourcecode: src/web/PresentationControls.tsx
+sourcecode: src/core/Controls/PresentationControls/PresentationControls.tsx
 ---
 
-![](https://img.shields.io/badge/-Dom only-red)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/controls-presentationcontrols--presentationcontrols-st)
 
 <Grid cols={4}>
   <li>
@@ -14,22 +14,26 @@ sourcecode: src/web/PresentationControls.tsx
   </li>
 </Grid>
 
-Semi-OrbitControls with spring-physics, polar zoom and snap-back, for presentational purposes. These controls do not turn the camera but will spin their contents. They will not suddenly come to rest when they reach limits like OrbitControls do, but rather smoothly anticipate stopping position.
+Semi-OrbitControls with spring-physics, polar zoom and snap-back, for presentational purposes.
+These controls do not turn the camera but will spin their contents. They will not suddenly
+come to rest when they reach limits like OrbitControls do, but rather smoothly anticipate stopping position.
+
+### Basic usage
 
 ```jsx
 <PresentationControls
-  enabled={true} // the controls can be disabled by setting this to false
-  global={false} // Spin globally or by dragging the model
-  cursor={true} // Whether to toggle cursor style on drag
-  snap={false} // Snap-back to center (can also be a spring config)
-  speed={1} // Speed factor
-  zoom={1} // Zoom factor when half the polar-max is reached
-  rotation={[0, 0, 0]} // Default rotation
-  polar={[0, Math.PI / 2]} // Vertical limits
-  azimuth={[-Infinity, Infinity]} // Horizontal limits
-  config={{ mass: 1, tension: 170, friction: 26 }} // Spring config
-  domElement={events.connected} // The DOM element events for this controller will attach to
+  enabled={true}
+  global={false}
+  cursor={true}
+  snap={false}
+  speed={1}
+  zoom={1}
+  rotation={[0, 0, 0]}
+  polar={[0, Math.PI / 2]}
+  azimuth={[-Infinity, Infinity]}
+  config={{ mass: 1, tension: 170, friction: 26 }}
 >
   <mesh />
 </PresentationControls>
 ```
+

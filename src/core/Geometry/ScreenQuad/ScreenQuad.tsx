@@ -16,6 +16,16 @@ function createScreenQuadGeometry() {
 
 export type ScreenQuadProps = Omit<ThreeElements['mesh'], 'ref' | 'args'>
 
+/**
+ * A triangle that fills the screen, useful for full-screen shaders.
+ *
+ * @example Basic usage
+ * ```jsx
+ * <ScreenQuad>
+ *   <shaderMaterial fragmentShader={shader} />
+ * </ScreenQuad>
+ * ```
+ */
 export const ScreenQuad: ForwardRefComponent<ScreenQuadProps, THREE.Mesh> = /* @__PURE__ */ React.forwardRef<
   THREE.Mesh,
   ScreenQuadProps

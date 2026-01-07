@@ -1,42 +1,9 @@
 ---
-title: CubeCamera
-sourcecode: src/core/CubeCamera.tsx
+title: useCubeCamera
+sourcecode: src/core/Cameras/CubeCamera/CubeCamera.tsx
 ---
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/camera-cubecamera--default-story)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/cameras-usecubecamera--usecubecamera-st)
 
-A [THREE.CubeCamera](https://threejs.org/docs/#api/en/cameras/CubeCamera) that returns its texture as a render-prop. It makes children invisible while rendering to the internal buffer so that they are not included in the reflection.
+React hook to manage allocation and lifecycle of a THREE.CubeCamera with a platform-agnostic cube render target.
 
-```tsx
-type Props = ThreeElements['group'] & {
-  /** Number of frames to render, Infinity */
-  frames?: number
-  /** Resolution of the FBO, 256 */
-  resolution?: number
-  /** Camera near, 0.1 */
-  near?: number
-  /** Camera far, 1000 */
-  far?: number
-  /** Custom environment map that is temporarily set as the scenes background */
-  envMap?: THREE.Texture
-  /** Custom fog that is temporarily set as the scenes fog */
-  fog?: Fog | FogExp2
-  /** The contents of CubeCamera will be hidden when filming the cube */
-  children: (tex: Texture) => React.ReactNode
-}
-```
-
-Using the `frames` prop you can control if this camera renders indefinitely or statically (a given number of times).
-If you have two static objects in the scene, make it `frames={2}` for instance, so that both objects get to "see" one another in the reflections, which takes multiple renders.
-If you have moving objects, unset the prop and use a smaller `resolution` instead.
-
-```jsx
-<CubeCamera>
-  {(texture) => (
-    <mesh>
-      <sphereGeometry />
-      <meshStandardMaterial envMap={texture} />
-    </mesh>
-  )}
-</CubeCamera>
-```

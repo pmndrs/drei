@@ -6,7 +6,7 @@
 import * as THREE from '#three'
 import * as React from 'react'
 import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
-import { RenderCubeTexture, RenderCubeTextureApi } from '../../../legacy/Portal/RenderCubeTexture/RenderCubeTexture'
+import { RenderCubeTexture, RenderCubeTextureApi } from '../RenderCubeTexture/RenderCubeTexture'
 
 export type FisheyeProps = ThreeElements['mesh'] & {
   /** Zoom factor, 0..1, 0 */
@@ -89,10 +89,12 @@ export function Fisheye({
     return undefined
   }, [])
 
-  useFrame((state) => {
-    // Take over rendering
-    if (renderPriority) state.gl.render(sphere.current, orthoC)
-  }, renderPriority)
+  useFrame(
+    ({ gl }) => {
+      if (renderPriority) gl.render(sphere.current, orthoC)
+    },
+    { phase: 'render' }
+  )
 
   return (
     <>
@@ -110,16 +112,21 @@ export function Fisheye({
 }
 
 function UpdateCubeCamera({ api }: { api: React.RefObject<RenderCubeTextureApi> }) {
+  // Get portal camera from useThree (useFrame's state.camera is buggy in portals)
+  const { camera: portalCamera } = useThree()
+
   const t = new THREE.Vector3()
   const r = new THREE.Quaternion()
   const s = new THREE.Vector3()
   const e = new THREE.Euler(0, Math.PI, 0)
-  useFrame((state) => {
-    // Read out the cameras whereabouts, state.camera is the one *within* the portal
-    state.camera.matrixWorld.decompose(t, r, s)
+
+  useFrame(() => {
+    // Read out the camera's whereabouts from portalCamera
+    portalCamera.matrixWorld.decompose(t, r, s)
     // Apply its position and rotation, flip the Y axis
     api.current.camera.position.copy(t)
     api.current.camera.quaternion.setFromEuler(e).premultiply(r)
   })
+
   return null
 }

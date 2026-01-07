@@ -28,7 +28,7 @@ type FBOSettings = {
  *
  * @example Custom resolution
  * ```jsx
- * const target = useFBO(1024, 1024, { samples: 8 })
+ * const target = useFBO(1024, 1024, { samples: 4 }) // WebGPU only supports 1 and 4
  * ```
  */
 export function useFBO(

@@ -9,6 +9,7 @@ function Scene() {
     <>
       {/* Fisheye effect */}
       <Fisheye zoom={0}>
+        <color attach="background" args={['#22CFC1']} />
         <OrbitControls />
 
         {/* Lighting */}
@@ -44,6 +45,7 @@ export default function FisheyeDemo() {
 
       <div className="demo-canvas">
         <CanvasWithToggle camera={{ position: [0, 0, 5], fov: 50 }}>
+          <color attach="background" args={['#BB2929']} />
           <Scene />
         </CanvasWithToggle>
       </div>

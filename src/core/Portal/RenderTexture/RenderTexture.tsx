@@ -1,11 +1,16 @@
 //* RenderTexture - Platform-agnostic Render-to-Texture Component ==============================
 // Renders children to a texture that can be used on other materials.
 // Uses RenderTarget from #drei-platform for WebGL/WebGPU compatibility.
+//
+// NOTE: Uses double buffering (ping-pong) for WebGPU compatibility.
+// WebGPU doesn't allow a texture to be written and read in the same command buffer submission.
+//
+// BUG WORKAROUND: We pass vScene explicitly because createPortal doesn't correctly set
+// state.scene in useFrame. This is an R3F bug that should be reported.
 
 import * as THREE from 'three'
 import * as React from 'react'
 import { createPortal, ThreeElements, useFrame, useThree } from '@react-three/fiber'
-import { useFBO } from '@core/Portal/Fbo'
 import { ForwardRefComponent } from '@utils/ts-utils'
 import { RenderTarget } from '#drei-platform'
 
@@ -38,22 +43,6 @@ export type RenderTextureProps = Omit<ThreeElements['texture'], 'ref' | 'args'> 
 
 //* RenderTexture Component ==============================
 
-/**
- * Renders children to a texture that can be applied to materials.
- * Contents run in a portal - isolated scene with its own events/environment.
- *
- * @example Render scene to a mesh texture
- * ```jsx
- * <mesh>
- *   <planeGeometry />
- *   <meshStandardMaterial>
- *     <RenderTexture attach="map">
- *       <mesh><boxGeometry /></mesh>
- *     </RenderTexture>
- *   </meshStandardMaterial>
- * </mesh>
- * ```
- */
 export const RenderTexture: ForwardRefComponent<RenderTextureProps, THREE.Texture> = /* @__PURE__ */ React.forwardRef(
   (
     {
@@ -61,7 +50,7 @@ export const RenderTexture: ForwardRefComponent<RenderTextureProps, THREE.Textur
       compute,
       width,
       height,
-      samples = 8,
+      samples = 4, // WebGPU only supports 1 and 4
       renderPriority = 0,
       eventPriority = 0,
       frames = Infinity,
@@ -72,52 +61,102 @@ export const RenderTexture: ForwardRefComponent<RenderTextureProps, THREE.Textur
     },
     forwardRef
   ) => {
-    const { size, viewport } = useThree()
-    const fbo = useFBO((width || size.width) * viewport.dpr, (height || size.height) * viewport.dpr, {
-      samples,
-      stencilBuffer,
-      depthBuffer,
-      generateMipmaps,
-    })
-    const [vScene] = React.useState(() => new THREE.Scene())
+    const { size, viewport, isLegacy } = useThree()
+    const fboWidth = (width || size.width) * viewport.dpr
+    const fboHeight = (height || size.height) * viewport.dpr
 
-    const uvCompute = React.useCallback((event: any, state: any, previous: any) => {
-      // Since this is only a texture it does not have an easy way to obtain the parent, which we
-      // need to transform event coordinates to local coordinates. We use r3f internals to find the
-      // next Object3D.
-      let parent = (fbo.texture as any)?.__r3f?.parent?.object
-      while (parent && !(parent instanceof THREE.Object3D)) {
-        parent = parent.__r3f?.parent?.object
+    // Double buffer FBOs for WebGPU compatibility
+    const fboRef = React.useRef<{ a: InstanceType<typeof RenderTarget>; b: InstanceType<typeof RenderTarget> } | null>(
+      null
+    )
+
+    if (!fboRef.current) {
+      const settings = {
+        minFilter: THREE.LinearFilter,
+        magFilter: THREE.LinearFilter,
+        type: THREE.HalfFloatType,
+        samples,
+        stencilBuffer,
+        depthBuffer,
+        generateMipmaps,
       }
-      if (!parent) return false
+      fboRef.current = {
+        a: new RenderTarget(fboWidth, fboHeight, settings),
+        b: new RenderTarget(fboWidth, fboHeight, settings),
+      }
+    }
 
-      // First we call the previous state-onion-layers compute, this is what makes it possible to nest portals
-      if (!previous.raycaster.camera) previous.events.compute(event, previous, previous.previousRoot?.getState())
+    const fboA = fboRef.current.a
+    const fboB = fboRef.current.b
 
-      // We run a quick check against the parent, if it isn't hit there's no need to raycast at all
-      const [intersection] = previous.raycaster.intersectObject(parent)
-      if (!intersection) return false
+    // WebGPU textures need flipY = false (they're not flipped like WebGL)
+    React.useLayoutEffect(() => {
+      const needsFlip = !isLegacy
+      ;(fboA.texture as THREE.Texture).flipY = !needsFlip
+      ;(fboB.texture as THREE.Texture).flipY = !needsFlip
+    }, [fboA, fboB, isLegacy])
 
-      // We take that hits uv coords, set up this layers raycaster, et voilà, we have raycasting on arbitrary surfaces
-      const uv = intersection.uv
-      if (!uv) return false
-      state.raycaster.setFromCamera(state.pointer.set(uv.x * 2 - 1, uv.y * 2 - 1), state.camera)
+    React.useLayoutEffect(() => {
+      fboA.setSize(fboWidth, fboHeight)
+      fboB.setSize(fboWidth, fboHeight)
+    }, [fboA, fboB, fboWidth, fboHeight])
+
+    React.useEffect(() => {
+      return () => {
+        if (fboRef.current) {
+          fboRef.current.a.dispose()
+          fboRef.current.b.dispose()
+          fboRef.current = null
+        }
+      }
     }, [])
 
-    React.useImperativeHandle(forwardRef, () => fbo.texture, [fbo])
+    // Track which buffer to display (0 = A, 1 = B)
+    const readBufferIndex = React.useRef(0)
+    const displayTextureRef = React.useRef<THREE.Texture>(fboA.texture as THREE.Texture)
+
+    const [vScene] = React.useState(() => new THREE.Scene())
+
+    const uvCompute = React.useCallback(
+      (event: any, state: any, previous: any) => {
+        let parent = (fboA.texture as any)?.__r3f?.parent?.object
+        while (parent && !(parent instanceof THREE.Object3D)) {
+          parent = parent.__r3f?.parent?.object
+        }
+        if (!parent) return false
+
+        if (!previous.raycaster.camera) previous.events.compute(event, previous, previous.previousRoot?.getState())
+
+        const [intersection] = previous.raycaster.intersectObject(parent)
+        if (!intersection) return false
+
+        const uv = intersection.uv
+        if (!uv) return false
+        state.raycaster.setFromCamera(state.pointer.set(uv.x * 2 - 1, uv.y * 2 - 1), state.camera)
+      },
+      [fboA]
+    )
+
+    React.useImperativeHandle(forwardRef, () => displayTextureRef.current, [])
 
     return (
       <>
         {createPortal(
-          <Container renderPriority={renderPriority} frames={frames} fbo={fbo}>
+          <Container
+            renderPriority={renderPriority}
+            frames={frames}
+            fboA={fboA}
+            fboB={fboB}
+            readBufferIndex={readBufferIndex}
+            displayTextureRef={displayTextureRef}
+          >
             {children}
-            {/* Without an element that receives pointer events state.pointer will always be 0/0 */}
             <group onPointerOver={() => null} />
           </Container>,
           vScene,
           { events: { compute: compute || uvCompute, priority: eventPriority } }
         )}
-        <primitive object={fbo.texture} {...props} />
+        <primitive object={fboA.texture} {...props} />
       </>
     )
   }
@@ -125,18 +164,28 @@ export const RenderTexture: ForwardRefComponent<RenderTextureProps, THREE.Textur
 
 //* Container Component ==============================
 // Separated to ensure useFrame receives the portal's state, not the parent's state.
+// NOTE: useThree() returns portal state correctly, useFrame does not (scheduler bug)
 
 function Container({
   frames,
   renderPriority,
   children,
-  fbo,
+  fboA,
+  fboB,
+  readBufferIndex,
+  displayTextureRef,
 }: {
   frames: number
   renderPriority: number
   children: React.ReactNode
-  fbo: InstanceType<typeof RenderTarget>
+  fboA: InstanceType<typeof RenderTarget>
+  fboB: InstanceType<typeof RenderTarget>
+  readBufferIndex: React.MutableRefObject<number>
+  displayTextureRef: React.MutableRefObject<THREE.Texture>
 }) {
+  // Get portal state from useThree (works correctly, unlike useFrame's state)
+  const { scene: portalScene, camera: portalCamera, rootScene } = useThree()
+
   let count = 0
   let oldAutoClear: boolean
   let oldXrEnabled: boolean
@@ -145,19 +194,36 @@ function Container({
 
   useFrame((state) => {
     if (frames === Infinity || count < frames) {
-      oldAutoClear = state.gl.autoClear
-      oldXrEnabled = state.gl.xr.enabled
-      oldRenderTarget = state.gl.getRenderTarget()
-      oldIsPresenting = state.gl.xr.isPresenting
-      state.gl.autoClear = true
-      state.gl.xr.enabled = false
-      state.gl.xr.isPresenting = false
-      state.gl.setRenderTarget(fbo)
-      state.gl.render(state.scene, state.camera)
-      state.gl.setRenderTarget(oldRenderTarget)
-      state.gl.autoClear = oldAutoClear
-      state.gl.xr.enabled = oldXrEnabled
-      state.gl.xr.isPresenting = oldIsPresenting
+      // Double buffer: swap which FBO we read from vs write to
+      const readFbo = readBufferIndex.current === 0 ? fboA : fboB
+      const writeFbo = readBufferIndex.current === 0 ? fboB : fboA
+
+      // Update display texture reference
+      displayTextureRef.current = readFbo.texture as THREE.Texture
+
+      // Save state
+      oldAutoClear = state.renderer.autoClear
+      oldXrEnabled = state.renderer.xr.enabled
+      oldRenderTarget = state.renderer.getRenderTarget()
+      oldIsPresenting = state.renderer.xr.isPresenting
+
+      // Render portal scene to write buffer
+      // Using portalScene/portalCamera from useThree (useFrame state has scheduler bug)
+      state.renderer.autoClear = true
+      state.renderer.xr.enabled = false
+      state.renderer.xr.isPresenting = false
+      state.renderer.setRenderTarget(writeFbo as THREE.WebGLRenderTarget)
+      state.renderer.render(portalScene, portalCamera)
+      state.renderer.setRenderTarget(oldRenderTarget as THREE.WebGLRenderTarget | null)
+
+      // Restore state
+      state.renderer.autoClear = oldAutoClear
+      state.renderer.xr.enabled = oldXrEnabled
+      state.renderer.xr.isPresenting = oldIsPresenting
+
+      // Swap buffers for next frame
+      readBufferIndex.current = readBufferIndex.current === 0 ? 1 : 0
+
       count++
     }
   }, renderPriority)

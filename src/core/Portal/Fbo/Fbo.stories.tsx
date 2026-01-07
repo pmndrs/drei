@@ -48,11 +48,11 @@ function TargetWrapper({ target }: { target: THREE.WebGLRenderTarget }) {
     return scene
   }, [])
 
-  useFrame((state) => {
-    cam.current.position.z = 5 + Math.sin(state.clock.getElapsedTime() * 1.5) * 2
-    state.gl.setRenderTarget(target)
-    state.gl.render(scene, cam.current)
-    state.gl.setRenderTarget(null)
+  useFrame(({ renderer, elapsed }) => {
+    cam.current.position.z = 5 + Math.sin(elapsed * 1.5) * 2
+    renderer.setRenderTarget(target)
+    renderer.render(scene, cam.current)
+    renderer.setRenderTarget(null)
   })
 
   return (
@@ -67,7 +67,7 @@ function TargetWrapper({ target }: { target: THREE.WebGLRenderTarget }) {
 }
 
 export const FboSt = {
-  args: { width: 512, height: 512, samples: 8, stencilBuffer: false, format: THREE.RGBAFormat },
+  args: { width: 512, height: 512, samples: 4, stencilBuffer: false, format: THREE.RGBAFormat }, // WebGPU only supports samples 1 and 4
   argTypes: {
     width: { control: 'range', min: 1, max: 2048, step: 1 },
     height: { control: 'range', min: 1, max: 2048, step: 1 },

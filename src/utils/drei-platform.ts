@@ -19,7 +19,7 @@ export { MeshPortalMaterial } from '../legacy/Materials/MeshPortalMaterial'
 export { MeshDistortMaterial } from '../legacy/Materials/MeshDistortMaterial'
 export { MeshWobbleMaterial } from '../legacy/Materials/MeshWobbleMaterial'
 export { CloudMaterial } from '../legacy/Materials/CloudMaterial'
-export { StarfieldMaterial } from '../legacy/Materials/StarsMaterial'
+// Note: StarfieldMaterial not exported here - Stars component is platform-specific (not aliased)
 // Note: SparklesMaterial not exported here - Sparkles component is platform-specific (not aliased)
 
 //* Effects & Helpers --------------------------------

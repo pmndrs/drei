@@ -1,5 +1,7 @@
-import { Stars, OrbitControls } from '@react-three/drei/core'
-import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
+import { OrbitControls } from '@react-three/drei'
+import { Stars as WebGLStars } from '@react-three/drei/legacy'
+import { Stars as WebGPUStars } from '@react-three/drei/webgpu'
+import { CanvasWithToggle, PlatformSwitch } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 
 //* Stars Demo ==============================
@@ -9,8 +11,11 @@ function Scene() {
     <>
       <OrbitControls makeDefault />
 
-      {/* Starfield */}
-      <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+      {/* Starfield - platform-specific implementation */}
+      <PlatformSwitch
+        legacy={<WebGLStars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />}
+        webgpu={<WebGPUStars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />}
+      />
 
       <ambientLight intensity={0.1} />
       <pointLight position={[10, 10, 10]} intensity={1} />

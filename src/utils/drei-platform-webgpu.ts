@@ -19,7 +19,7 @@ export { MeshPortalMaterial } from '../webgpu/Materials/MeshPortalMaterial'
 export { MeshDistortMaterial } from '../webgpu/Materials/MeshDistortMaterial'
 export { MeshWobbleMaterial } from '../webgpu/Materials/MeshWobbleMaterial'
 export { FakeCloudMaterial as CloudMaterial } from '../webgpu/Materials/FakeCloudMaterial'
-export { StarfieldMaterial } from '../webgpu/Materials/StarsMaterial'
+// Note: StarfieldMaterial not exported here - Stars component is platform-specific (not aliased)
 // Note: SparklesMaterial not exported here - Sparkles component is platform-specific (not aliased)
 
 //* Effects & Helpers --------------------------------

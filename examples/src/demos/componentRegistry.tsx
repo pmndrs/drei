@@ -1695,7 +1695,10 @@ export const components: DreiComponent[] = [
     types: '🟢',
     tests: '🔴',
     notes: '',
-    rendererSupport: 'universal',
+    rendererSupport: 'dual',
+    legacyStatus: '🟢',
+    webgpuStatus: '🟢',
+    tslConversion: '🟢',
   },
   {
     name: 'useBoxProjectedEnv',
@@ -1709,7 +1712,10 @@ export const components: DreiComponent[] = [
     types: '🟢',
     tests: '🔴',
     notes: '',
-    rendererSupport: 'universal',
+    rendererSupport: 'legacy-only',
+    legacyStatus: '🟢',
+    webgpuStatus: '🔴',
+    tslConversion: '🔴',
   },
   {
     name: 'useEnvironment',

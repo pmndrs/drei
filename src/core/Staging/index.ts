@@ -12,8 +12,6 @@ export * from './ScreenSizer'
 export * from './Shadow'
 export * from './Sky'
 export * from './Stage'
-export * from './Stars'
-export * from './useBoxProjectedEnv'
 export * from './useEnvironment'
 
 

@@ -1,7 +1,7 @@
 import * as THREE from '#three'
 import * as React from 'react'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
-import { ThreeElements } from '@react-three/fiber'
+import { ThreeElements, useThree } from '@react-three/fiber'
 
 export type MaskProps = Omit<ThreeElements['mesh'], 'ref' | 'id'> & {
   /** Each mask must have an id, you can have compound masks referring to the same id */
@@ -22,7 +22,7 @@ export type MaskProps = Omit<ThreeElements['mesh'], 'ref' | 'id'> & {
  * <Mask id={1}>
  *   <planeGeometry />
  * </Mask>
- * 
+ *
  * function MaskedMesh() {
  *   const stencil = useMask(1)
  *   return <mesh><meshStandardMaterial {...stencil} /></mesh>
@@ -35,27 +35,77 @@ export type MaskProps = Omit<ThreeElements['mesh'], 'ref' | 'id'> & {
  * <Mask id={1} position={[1, 0, 0]}><circleGeometry /></Mask>
  * ```
  */
-export const Mask: ForwardRefComponent<MaskProps, THREE.Mesh> = /* @__PURE__ */ React.forwardRef(
-  ({ id = 1, colorWrite = false, depthWrite = false, ...props }: MaskProps, fref: React.ForwardedRef<THREE.Mesh>) => {
+export const Mask: ForwardRefComponent<MaskProps, THREE.Mesh> = /* @__PURE__ */ React.forwardRef<THREE.Mesh, MaskProps>(
+  ({ id = 1, colorWrite = false, depthWrite = false, children, ...props }, fref) => {
     const ref = React.useRef<THREE.Mesh>(null!)
-    const spread = React.useMemo(
-      () => ({
-        colorWrite,
-        depthWrite,
-        stencilWrite: true,
-        stencilRef: id,
-        stencilFunc: THREE.AlwaysStencilFunc,
-        stencilFail: THREE.ReplaceStencilOp,
-        stencilZFail: THREE.ReplaceStencilOp,
-        stencilZPass: THREE.ReplaceStencilOp,
-      }),
-      [id, colorWrite, depthWrite]
-    )
-    React.useLayoutEffect(() => {
-      Object.assign(ref.current.material, spread)
-    })
+    const renderer = useThree((state) => state.renderer)
+    const stencilReady = React.useRef(false)
+    const [ready, setReady] = React.useState(false)
+
     React.useImperativeHandle(fref, () => ref.current, [])
-    return <mesh ref={ref} renderOrder={-id} {...props} />
+
+    //* Ensure stencil is enabled on the renderer ---------------------------------
+    React.useLayoutEffect(() => {
+      if (stencilReady.current) return
+
+      // Check for WebGPURenderer first (has 'backend' property)
+      if ('backend' in renderer) {
+        // WebGPU - stencil should be available, mark as ready
+        renderer.stencil = true
+        renderer.stencilWrite = true
+
+        stencilReady.current = true
+        setReady(true)
+        return
+      }
+
+      // For WebGLRenderer, check context attributes
+      const webglRenderer = renderer as THREE.WebGLRenderer
+      webglRenderer.stencil = true
+      if (webglRenderer.getContext && typeof webglRenderer.getContext === 'function') {
+        const context = webglRenderer.getContext()
+        if (context && 'getContextAttributes' in context) {
+          const attributes = context.getContextAttributes()
+          if (!attributes?.stencil) {
+            console.warn(
+              '[Mask] Stencil buffer is not enabled. Pass gl={{ stencil: true }} to Canvas for stencil masking to work.'
+            )
+          }
+        }
+        stencilReady.current = true
+        setReady(true)
+        return
+      }
+
+      // Fallback - just mark as ready
+      stencilReady.current = true
+      setReady(true)
+    }, [renderer])
+
+    // Don't render stencil material until ready
+    if (!ready) {
+      return (
+        <mesh ref={ref} renderOrder={-id} {...props}>
+          {children}
+        </mesh>
+      )
+    }
+
+    return (
+      <mesh ref={ref} renderOrder={-id} {...props}>
+        {children}
+        <meshBasicMaterial
+          colorWrite={colorWrite}
+          depthWrite={depthWrite}
+          stencilWrite={true}
+          stencilRef={id}
+          stencilFunc={THREE.AlwaysStencilFunc}
+          stencilFail={THREE.ReplaceStencilOp}
+          stencilZFail={THREE.ReplaceStencilOp}
+          stencilZPass={THREE.ReplaceStencilOp}
+        />
+      </mesh>
+    )
   }
 )
 

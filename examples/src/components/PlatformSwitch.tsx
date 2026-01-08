@@ -13,24 +13,29 @@ export function PlatformSwitch({ legacy, webgpu }: { legacy: React.ReactNode; we
 
 type SwitchCanvasProps = React.ComponentProps<typeof Canvas> & {
   asLegacy?: boolean
+  rendererParams?: React.ComponentProps<typeof Canvas>['renderer']
 }
 
-export function SwitchCanvas({ asLegacy = false, ...props }: SwitchCanvasProps) {
+export function SwitchCanvas({ asLegacy = false, rendererParams, ...props }: SwitchCanvasProps) {
   // have to be harsher to rest things not just prop switching
-  if (asLegacy) return <Canvas {...props} />
-  return <Canvas key="webgpu" renderer {...props} />
+  if (asLegacy) return <Canvas {...props} gl={rendererParams} />
+  return <Canvas key="webgpu" renderer={rendererParams} {...props} />
 }
 
 // has a UI toggle to switch the renderer and saved to local storage
 
-export function CanvasWithToggle(props: React.ComponentProps<typeof Canvas>) {
+interface CanvasWithToggleProps extends React.ComponentProps<typeof Canvas> {
+  rendererParams?: React.ComponentProps<typeof Canvas>['renderer']
+}
+
+export function CanvasWithToggle(props: CanvasWithToggleProps) {
   const [isLegacy, setIsLegacy] = useState(localStorage.getItem('isLegacy') === 'true')
   useEffect(() => {
     localStorage.setItem('isLegacy', isLegacy.toString())
   }, [isLegacy])
   return (
     <>
-      <SwitchCanvas asLegacy={isLegacy} {...props} />
+      <SwitchCanvas asLegacy={isLegacy} rendererParams={props.rendererParams} {...props} />
       <div className="absolute top-4 right-4 flex items-center space-x-2">
         <label htmlFor="legacy-toggle" className="text-sm text-foreground/70 mr-2" style={{ lineHeight: 1 }}>
           Legacy

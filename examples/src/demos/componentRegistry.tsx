@@ -117,6 +117,7 @@ import LightformerDemo from './core/staging/Lightformer'
 import ResizeDemo from './core/staging/Resize'
 import ScreenSizerDemo from './core/staging/ScreenSizer'
 import ShadowDemo from './core/staging/Shadow'
+import ContactShadowsDemo from './core/staging/ContactShadows'
 import SkyDemo from './core/staging/Sky'
 import StageDemo from './core/staging/Stage'
 import StarsDemo from './core/staging/Stars'
@@ -1846,16 +1847,17 @@ export const components: DreiComponent[] = [
     category: 'Materials',
     title: 'Contact Shadows',
     description: 'Soft contact shadows.',
-    path: '/materials/contactshadows',
+    path: '/core/staging/contactshadows',
+    component: ContactShadowsDemo,
     structure: '🟢',
     imports: '🟢',
     types: '🟡',
     tests: '🔴',
-    notes: 'High priority for WebGPU',
+    notes: 'TSL partial: opacity/blur work, color prop needs rewrite (uses multiply blend workaround)',
     rendererSupport: 'dual',
     legacyStatus: '🟢',
-    webgpuStatus: '🔴',
-    tslConversion: '🔴',
+    webgpuStatus: '🟡',
+    tslConversion: '🟡',
   },
   {
     name: 'ConvolutionMaterial',

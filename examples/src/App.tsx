@@ -58,9 +58,11 @@ function AppContent() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/catalog" element={<ComponentCatalog />} />
-          {demos.map((demo) => (
-            <Route key={demo.path} path={demo.path} element={<demo.component />} />
-          ))}
+          {demos
+            .filter((demo) => demo.component)
+            .map((demo) => (
+              <Route key={demo.path} path={demo.path} element={<demo.component />} />
+            ))}
         </Routes>
       </main>
     </div>

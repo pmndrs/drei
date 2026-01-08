@@ -3,6 +3,8 @@ import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 
 //* Shadow Demo ==============================
+// Shadow is a simple fake shadow using a radial gradient texture.
+// For dynamic contact shadows, use ContactShadows instead.
 
 function Scene() {
   return (
@@ -18,8 +20,8 @@ function Scene() {
         <meshStandardMaterial color="hotpink" />
       </mesh>
 
-      {/* Contact shadows */}
-      <Shadow position={[0, 0, 0]} opacity={0.5} scale={10} blur={2} far={4} color={'black'} />
+      {/* Simple fake shadow - just a gradient plane */}
+      <Shadow position={[0, 0.01, 0]} opacity={0.5} scale={3} color="black" />
 
       {/* Ground plane */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>

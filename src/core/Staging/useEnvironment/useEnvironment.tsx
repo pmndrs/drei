@@ -56,7 +56,7 @@ export function useEnvironment({
   const loader = getLoader(extension)
   if (!loader) throw new Error('useEnvironment: Unrecognized file extension: ' + files)
 
-  const gl = useThree((state) => state.gl)
+  const renderer = useThree((state) => state.renderer)
 
   useLayoutEffect(() => {
     // Only required for gainmap
@@ -66,8 +66,8 @@ export function useEnvironment({
       useLoader.clear(loader!, (multiFile ? [files] : files) as string | string[] | string[][])
     }
 
-    gl.domElement.addEventListener('webglcontextlost', clearGainmapTexture, { once: true })
-  }, [files, gl.domElement])
+    renderer.domElement.addEventListener('webglcontextlost', clearGainmapTexture, { once: true })
+  }, [files, renderer.domElement])
 
   const loaderResult: Texture | Texture[] = useLoader(
     loader,
@@ -75,11 +75,9 @@ export function useEnvironment({
     (loader) => {
       // Gainmap requires a renderer
       if (extension === 'webp' || extension === 'jpg' || extension === 'jpeg') {
-        // @ts-expect-error
-        loader.setRenderer(gl)
+        loader.setRenderer(renderer)
       }
       loader.setPath?.(path)
-      // @ts-expect-error
       if (extensions) extensions(loader)
     }
   ) as Texture | Texture[]
@@ -129,7 +127,6 @@ useEnvironment.preload = (preloadOptions?: EnvironmentLoaderPreloadOptions) => {
 
   useLoader.preload(loader, isArray(files) ? [files] : files, (loader) => {
     loader.setPath?.(path)
-    // @ts-expect-error
     if (extensions) extensions(loader)
   })
 }

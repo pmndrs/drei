@@ -1,10 +1,18 @@
-import { OrbitControls } from '@react-three/drei/core'
+import { OrbitControls, useEnvironment } from '@react-three/drei/core'
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
+import { useEffect } from 'react'
+import { useThree } from '@react-three/fiber'
 
 //* useEnvironment Demo ==============================
 
 function Scene() {
+  const presetTexture = useEnvironment({ preset: 'city' })
+  const { scene } = useThree()
+  useEffect(() => {
+    scene.background = presetTexture
+    scene.environment = presetTexture
+  }, [presetTexture])
   return (
     <>
       <OrbitControls makeDefault />
@@ -29,13 +37,6 @@ export default function UseEnvironmentDemo() {
       <ExampleCard demoName="useEnvironment" />
 
       <div className="demo-canvas">
-        <div style={{ padding: '20px', background: '#222', color: '#fff', textAlign: 'center' }}>
-          <p>
-            <strong>Note:</strong> useEnvironment is a hook for loading environment maps.
-            <br />
-            See Environment demo for usage example.
-          </p>
-        </div>
         <CanvasWithToggle camera={{ position: [0, 0, 3], fov: 50 }}>
           <Scene />
         </CanvasWithToggle>

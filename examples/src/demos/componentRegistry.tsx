@@ -717,7 +717,10 @@ export const components: DreiComponent[] = [
     types: '🟢',
     tests: '🔴',
     notes: '',
-    rendererSupport: 'universal',
+    rendererSupport: 'dual',
+    legacyStatus: '🟢',
+    webgpuStatus: '🟢',
+    tslConversion: '🟢',
   },
 
   //* Geometry ==============================
@@ -1578,7 +1581,10 @@ export const components: DreiComponent[] = [
     types: '🟢',
     tests: '🔴',
     notes: '',
-    rendererSupport: 'legacy-only',
+    rendererSupport: 'dual',
+    legacyStatus: '🟢',
+    webgpuStatus: '🟢',
+    tslConversion: '🟢',
   },
   {
     name: 'Lightformer',

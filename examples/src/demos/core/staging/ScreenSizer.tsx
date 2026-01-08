@@ -16,7 +16,7 @@ function Scene() {
       {/* ScreenSizer scales based on screen size */}
       <ScreenSizer>
         <mesh>
-          <boxGeometry args={[1, 1, 1]} />
+          <boxGeometry args={[100, 100, 100]} />
           <meshStandardMaterial color="hotpink" />
         </mesh>
       </ScreenSizer>

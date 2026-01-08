@@ -10,7 +10,7 @@ function Scene() {
       <OrbitControls makeDefault />
 
       {/* Environment map */}
-      <Environment preset="city" />
+      <Environment preset="city" background />
 
       {/* Reflective sphere */}
       <mesh>

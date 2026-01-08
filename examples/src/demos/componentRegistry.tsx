@@ -1578,7 +1578,7 @@ export const components: DreiComponent[] = [
     types: '🟢',
     tests: '🔴',
     notes: '',
-    rendererSupport: 'universal',
+    rendererSupport: 'legacy-only',
   },
   {
     name: 'Lightformer',

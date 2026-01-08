@@ -1,6 +1,8 @@
-import { Grid, OrbitControls } from '@react-three/drei/core'
-import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
+import { OrbitControls } from '@react-three/drei/core'
+import { CanvasWithToggle, PlatformSwitch } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
+import { Grid } from '@react-three/drei/webgpu'
+import { Grid as GridLegacy } from '@react-three/drei/legacy'
 
 //* Grid Demo ==============================
 
@@ -19,7 +21,28 @@ function Scene() {
       </mesh>
 
       {/* Infinite grid */}
-      <Grid infiniteGrid cellSize={0.5} cellThickness={0.5} sectionSize={2} sectionThickness={1} fadeDistance={30} />
+      <PlatformSwitch
+        legacy={
+          <GridLegacy
+            infiniteGrid
+            cellSize={0.5}
+            cellThickness={0.5}
+            sectionSize={2}
+            sectionThickness={1}
+            fadeDistance={30}
+          />
+        }
+        webgpu={
+          <Grid
+            infiniteGrid
+            cellSize={0.5}
+            cellThickness={0.5}
+            sectionSize={2}
+            sectionThickness={1}
+            fadeDistance={30}
+          />
+        }
+      />
     </>
   )
 }

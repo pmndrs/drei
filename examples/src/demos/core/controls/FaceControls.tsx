@@ -2,7 +2,6 @@ import * as THREE from 'three'
 import { useCallback, useRef, useState } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import {
-  Grid,
   Environment,
   CameraControls,
   PerspectiveCamera,
@@ -11,6 +10,7 @@ import {
   FaceControls,
   FaceLandmarker,
 } from '@react-three/drei'
+import { Grid } from '@react-three/drei/webgpu'
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { useControls, buttonGroup, folder } from 'leva'
 import { easing } from 'maath'

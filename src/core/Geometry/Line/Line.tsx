@@ -106,12 +106,26 @@ export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = /* @_
     lineMaterial.needsUpdate = true
   }, [dashed, lineMaterial])
 
+  const { gl } = useThree()
+
   React.useEffect(() => {
+    // Capture refs for cleanup
+    const geom = lineGeom
+    const mat = lineMaterial
+    const isWebGPU = 'isWebGPURenderer' in gl && (gl as any).isWebGPURenderer
+
     return () => {
-      lineGeom.dispose()
-      lineMaterial.dispose()
+      // WebGPU has a command buffer model where dispose() can destroy buffers
+      // while queued commands still reference them, causing errors.
+      // In WebGPU mode, we skip explicit disposal and let the browser's GC handle it.
+      // See: https://discourse.threejs.org/t/web-gpu-buffer-unlabeled-used-in-submit-while-destroyed
+      if (isWebGPU) return
+
+      // For WebGL, dispose synchronously as usual
+      geom.dispose()
+      mat.dispose()
     }
-  }, [lineGeom])
+  }, [lineGeom, lineMaterial, gl])
 
   return (
     <primitive object={line2} ref={ref} {...rest}>

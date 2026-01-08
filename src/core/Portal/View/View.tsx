@@ -5,8 +5,18 @@ import tunnel from 'tunnel-rat'
 
 const isOrthographicCamera = (def: any): def is THREE.OrthographicCamera =>
   def && (def as THREE.OrthographicCamera).isOrthographicCamera
+
+//* WebGPU Detection ==============================
+// WebGPU uses top-left origin, WebGL uses bottom-left
+const isWebGPURenderer = (def: any): boolean => !!(def as any).isWebGPURenderer
+
 const col = /* @__PURE__ */ new THREE.Color()
-const tracked = /* @__PURE__ */ tunnel()
+
+// Use a global singleton for tunnel to survive HMR
+// When HMR reloads this module, we reuse the existing tunnel instance
+const TUNNEL_KEY = '__drei_view_tunnel__'
+const tracked: ReturnType<typeof tunnel> =
+  (globalThis as any)[TUNNEL_KEY] || ((globalThis as any)[TUNNEL_KEY] = tunnel())
 
 type CanvasSize = {
   top: number
@@ -53,114 +63,157 @@ export type ViewProps = {
 }
 
 function computeContainerPosition(canvasSize: CanvasSize, trackRect: DOMRect) {
-  const { right, top, left: trackLeft, bottom: trackBottom, width, height } = trackRect
-  const isOffscreen = trackRect.bottom < 0 || top > canvasSize.height || right < 0 || trackRect.left > canvasSize.width
+  const { right, top: trackTop, left: trackLeft, bottom: trackBottom, width, height } = trackRect
+  const isOffscreen =
+    trackRect.bottom < 0 || trackTop > canvasSize.height || right < 0 || trackRect.left > canvasSize.width
 
   const canvasBottom = canvasSize.top + canvasSize.height
   const bottom = canvasBottom - trackBottom
   const left = trackLeft - canvasSize.left
+  // Calculate top relative to canvas for WebGPU coordinate system
+  const top = trackTop - canvasSize.top
   return { position: { width, height, left, top, bottom, right }, isOffscreen }
 }
 
 function prepareSkissor(
-  state: RootState,
+  renderer: THREE.WebGLRenderer | THREE.WebGPURenderer,
+  camera: THREE.Camera,
   {
     left,
+    top,
     bottom,
     width,
     height,
   }: { width: number; height: number; top: number; left: number; bottom: number; right: number }
 ) {
   let autoClear
+
+  //* Camera Setup ==============================
   const aspect = width / height
-  if (isOrthographicCamera(state.camera)) {
-    if (!state.camera.manual) {
+  if (isOrthographicCamera(camera)) {
+    if (!camera.manual) {
       if (
-        state.camera.left !== width / -2 ||
-        state.camera.right !== width / 2 ||
-        state.camera.top !== height / 2 ||
-        state.camera.bottom !== height / -2
+        camera.left !== width / -2 ||
+        camera.right !== width / 2 ||
+        camera.top !== height / 2 ||
+        camera.bottom !== height / -2
       ) {
-        Object.assign(state.camera, { left: width / -2, right: width / 2, top: height / 2, bottom: height / -2 })
-        state.camera.updateProjectionMatrix()
+        Object.assign(camera, { left: width / -2, right: width / 2, top: height / 2, bottom: height / -2 })
       }
-    } else {
-      state.camera.updateProjectionMatrix()
     }
-  } else if (state.camera.aspect !== aspect) {
-    state.camera.aspect = aspect
-    state.camera.updateProjectionMatrix()
+  } else if ((camera as THREE.PerspectiveCamera).aspect !== aspect) {
+    ;(camera as THREE.PerspectiveCamera).aspect = aspect
   }
-  autoClear = state.gl.autoClear
-  state.gl.autoClear = false
-  state.gl.setViewport(left, bottom, width, height)
-  state.gl.setScissor(left, bottom, width, height)
-  state.gl.setScissorTest(true)
+  camera.updateProjectionMatrix()
+
+  //* Scissor Setup ==============================
+  autoClear = renderer.autoClear
+  renderer.autoClear = false
+  // WebGPU uses top-left origin (use top), WebGL uses bottom-left (use bottom)
+  // Use initialEdge to determine whether to use 'top' or 'bottom' as the starting edge
+  const initialEdge = isWebGPURenderer(renderer) ? top : bottom
+  renderer.setViewport(left, initialEdge, width, height)
+  renderer.setScissor(left, initialEdge, width, height)
+  renderer.setScissorTest(true)
   return autoClear
 }
 
-function finishSkissor(state: RootState, autoClear: boolean) {
+function finishSkissor(renderer: THREE.WebGLRenderer, autoClear: boolean) {
   // Restore the default state
-  state.gl.setScissorTest(false)
-  state.gl.autoClear = autoClear
+  renderer.setScissorTest(false)
+  renderer.autoClear = autoClear
 }
 
-function clear(state: RootState) {
-  state.gl.getClearColor(col)
-  state.gl.setClearColor(col, state.gl.getClearAlpha())
-  state.gl.clear(true, true)
+function clear(renderer: THREE.WebGLRenderer | THREE.WebGPURenderer) {
+  renderer.getClearColor(col)
+  renderer.setClearColor(col, renderer.getClearAlpha())
+  renderer.clear(true, true)
 }
 
 function Container({ visible = true, canvasSize, scene, index, children, frames, rect, track }: ContainerProps) {
-  const rootState = useThree()
+  // Get portal's scene, camera, renderer, and store via useThree (works around bug where useFrame state is root state)
+  const { scene: portalScene, camera: portalCamera, renderer, get, setEvents } = useThree()
   const [isOffscreen, setOffscreen] = React.useState(false)
 
+  // Guard against rendering during unmount (prevents WebGPU buffer-after-destroy errors)
+  const mountedRef = React.useRef(true)
+  React.useEffect(() => {
+    mountedRef.current = true
+    return () => {
+      mountedRef.current = false
+    }
+  }, [])
+
   let frameCount = 0
-  useFrame((state) => {
-    if (frames === Infinity || frameCount <= frames) {
-      if (track) rect.current = track.current?.getBoundingClientRect()
-      frameCount++
-    }
-    if (rect.current) {
-      const { position, isOffscreen: _isOffscreen } = computeContainerPosition(canvasSize, rect.current)
-      if (isOffscreen !== _isOffscreen) setOffscreen(_isOffscreen)
-      if (visible && !isOffscreen && rect.current) {
-        const autoClear = prepareSkissor(state, position)
-        // When children are present render the portalled scene, otherwise the default scene
-        state.gl.render(children ? state.scene : scene, state.camera)
-        finishSkissor(state, autoClear)
+  useFrame(
+    () => {
+      // Skip rendering if component is unmounting (prevents WebGPU destroyed buffer errors)
+      if (!mountedRef.current) return
+
+      if (frames === Infinity || frameCount <= frames) {
+        if (track) rect.current = track.current?.getBoundingClientRect()
+        frameCount++
       }
-    }
-  }, index)
+      if (rect.current) {
+        const { position, isOffscreen: _isOffscreen } = computeContainerPosition(canvasSize, rect.current)
+        if (isOffscreen !== _isOffscreen) setOffscreen(_isOffscreen)
+
+        // Use fresh _isOffscreen value instead of potentially stale state
+        if (visible && !_isOffscreen && rect.current) {
+          // Use portal's scene/camera from useThree (useFrame state is root due to r3f bug)
+          const targetScene = children ? portalScene : scene
+          const targetCamera = portalCamera
+
+          const autoClear = prepareSkissor(renderer, targetCamera, position)
+
+          // Clear the scissored region before rendering (scene.background won't clear since autoClear is off)
+          if (targetScene.background) {
+            if (targetScene.background instanceof THREE.Color) {
+              renderer.setClearColor(targetScene.background, 1)
+            }
+            renderer.clear(true, true)
+          }
+          // When children are present render the portalled scene, otherwise the default scene
+          renderer.render(targetScene, targetCamera)
+          finishSkissor(renderer, autoClear)
+        }
+      }
+    },
+    { after: 'render', priority: index }
+  )
 
   React.useLayoutEffect(() => {
     const curRect = rect.current
     if (curRect && (!visible || !isOffscreen)) {
       // If the view is not visible clear it once, but stop rendering afterwards!
-      const { position } = computeContainerPosition(canvasSize, curRect)
-      const autoClear = prepareSkissor(rootState, position)
-      clear(rootState)
-      finishSkissor(rootState, autoClear)
+      const { position, isOffscreen: _isOffscreen } = computeContainerPosition(canvasSize, curRect)
+      if (!_isOffscreen) {
+        const autoClear = prepareSkissor(renderer, portalCamera, position)
+        clear(renderer)
+        finishSkissor(renderer, autoClear)
+      }
     }
-  }, [visible, isOffscreen])
+  }, [visible, isOffscreen, renderer, portalCamera, canvasSize])
 
   React.useEffect(() => {
     if (!track) return
 
     const curRect = rect.current
     // Connect the event layer to the tracking element
-    const old = rootState.get().events.connected
-    rootState.setEvents({ connected: track.current })
+    const old = get().events.connected
+    setEvents({ connected: track.current })
     return () => {
       if (curRect) {
-        const { position } = computeContainerPosition(canvasSize, curRect)
-        const autoClear = prepareSkissor(rootState, position)
-        clear(rootState)
-        finishSkissor(rootState, autoClear)
+        const { position, isOffscreen: _isOffscreen } = computeContainerPosition(canvasSize, curRect)
+        if (!_isOffscreen) {
+          const autoClear = prepareSkissor(renderer, portalCamera, position)
+          clear(renderer)
+          finishSkissor(renderer, autoClear)
+        }
       }
-      rootState.setEvents({ connected: old })
+      setEvents({ connected: old })
     }
-  }, [track])
+  }, [track, renderer, portalCamera, canvasSize, get, setEvents])
 
   return (
     <>
@@ -253,6 +306,7 @@ const HtmlView = /* @__PURE__ */ React.forwardRef(
     const uuid = React.useId()
     const ref = React.useRef<HTMLElement>(null!)
     React.useImperativeHandle(fref, () => ref.current)
+
     return (
       <>
         {/** @ts-ignore */}
@@ -272,7 +326,7 @@ export type ViewportProps = { Port: () => React.JSX.Element } & React.ForwardRef
 >
 
 /**
- * Uses gl.scissor to create viewport segments tied to HTML tracking elements.
+ * Uses renderer.scissor to create viewport segments tied to HTML tracking elements.
  * Allows multiple views with a single canvas. Views follow their tracking elements,
  * scroll, resize, etc. Use View.Port inside Canvas to render all views.
  *

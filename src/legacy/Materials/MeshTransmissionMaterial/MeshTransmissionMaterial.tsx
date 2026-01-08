@@ -4,6 +4,8 @@
  *    https://github.com/junni-inc/next.junni.co.jp/blob/master/src/ts/MainScene/World/Sections/Section2/Transparents/Transparent/shaders/transparent.fs
  */
 
+// todo: Move to experimental;
+
 import * as THREE from 'three'
 import * as React from 'react'
 import { extend, ThreeElements, useFrame } from '@react-three/fiber'
@@ -429,7 +431,7 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
     let oldTone
     let parent
     useFrame((state) => {
-      ref.current.time = state.clock.elapsedTime
+      ref.current.time = state.elapsed
       // Render only if the buffer matches the built-in and no transmission sampler is set
       if (ref.current.buffer === fboMain.texture && !transmissionSampler) {
         parent = (ref.current as any).__r3f.parent?.object as THREE.Object3D | undefined

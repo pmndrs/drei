@@ -7,7 +7,7 @@ import { Setup } from '@sb/Setup'
 import { Html, useGLTF, Loader } from 'drei'
 
 export default {
-  title: 'Misc/Loader',
+  title: 'Loaders/Loader',
   component: Loader,
   decorators: [
     (Story, context) => (

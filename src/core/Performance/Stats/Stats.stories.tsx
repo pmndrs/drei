@@ -6,7 +6,7 @@ import { Setup } from '@sb/Setup'
 import { Stats } from 'drei'
 
 export default {
-  title: 'Misc/Stats',
+  title: 'Performance/Stats',
   component: Stats,
   decorators: [
     (Story, context) => (

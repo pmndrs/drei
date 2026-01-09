@@ -16,7 +16,7 @@ const colors = new Array(points.length).fill(0).map(() => [Math.random(), Math.r
 ][]
 
 export default {
-  title: 'Shapes/Line',
+  title: 'Geometry/Line',
   component: Line,
   decorators: [
     (Story, context) => (

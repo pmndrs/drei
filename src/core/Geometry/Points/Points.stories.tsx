@@ -11,7 +11,7 @@ import * as buffer from 'maath/buffer'
 import * as misc from 'maath/misc'
 
 export default {
-  title: 'Performance/Points',
+  title: 'Geometry/Points',
   component: Points,
   decorators: [
     (Story, context) => (
@@ -70,8 +70,8 @@ function BasicPointsBufferScene(props: React.ComponentProps<typeof Points>) {
   const [color] = React.useState(() => makeBuffer({ length: n * 3 }, () => Math.random()))
   const [size] = React.useState(() => makeBuffer({ length: n }, () => Math.random() * 0.2))
 
-  useFrame(({ clock }) => {
-    const et = clock.getElapsedTime()
+  useFrame(({ elapsed }) => {
+    const et = elapsed
     const t = misc.remap(Math.sin(et), [-1, 1], [0, 1])
 
     buffer.rotate(color, { q: q.setFromAxisAngle(rotationAxis, t * 0.01) })

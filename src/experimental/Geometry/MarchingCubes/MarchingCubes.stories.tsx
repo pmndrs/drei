@@ -8,7 +8,7 @@ import { useFrame } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 export default {
-  title: 'Experimental/Geometry/MarchingCubes',
+  title: 'Geometry/MarchingCubes',
   component: MarchingCubes,
   tags: ['experimental'],
   args: {

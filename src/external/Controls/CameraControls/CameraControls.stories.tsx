@@ -8,6 +8,7 @@ import { Box, CameraControls, CameraControlsImpl, PerspectiveCamera, Plane, useF
 
 export default {
   title: 'Controls/CameraControls',
+  tags: ['external'],
   component: CameraControls,
 } satisfies Meta<typeof CameraControls>
 

@@ -6,7 +6,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 import { Setup } from '@sb/Setup'
 
 export default {
-  title: 'Abstractions/ScreenSpace',
+  title: 'UI/ScreenSpace',
   component: ScreenSpace,
   decorators: [
     (Story, context) => (

@@ -14,7 +14,7 @@ function ContextBridge({
 }
 
 export default {
-  title: 'Misc/useContextBridge',
+  title: 'Helpers/useContextBridge',
   component: ContextBridge,
 } satisfies Meta<typeof ContextBridge>
 

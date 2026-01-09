@@ -14,9 +14,14 @@ import {
   useTexture,
 } from 'drei'
 import { Setup } from '@sb/Setup'
+import { PlatformSwitch } from '@sb/components/PlatformSwitch'
+
+// Import WebGPU SpotLight for dual-platform support
+import { SpotLight as SpotLightWebGPU } from '../../../webgpu/Staging/SpotLight'
 
 export default {
   title: 'Staging/Spotlight',
+  tags: ['dual'],
   component: SpotLight,
   decorators: [
     (Story, context) => (
@@ -29,7 +34,9 @@ export default {
 
 type Story = StoryObj<typeof SpotLight>
 
-function SpotLightScene(props: React.ComponentProps<typeof SpotLight>) {
+//* Default Story - Dual Platform ==============================
+
+function SpotLightSceneLegacy(props: React.ComponentProps<typeof SpotLight>) {
   const depthBuffer = useDepthBuffer({ size: 256 })
 
   return (
@@ -49,25 +56,54 @@ function SpotLightScene(props: React.ComponentProps<typeof SpotLight>) {
   )
 }
 
+function SpotLightSceneWebGPU(props: React.ComponentProps<typeof SpotLightWebGPU>) {
+  // Note: Depth buffer soft edges not yet supported in WebGPU due to texture feedback loop
+  // Would need a proper ping-pong system with layer exclusion to avoid GPU warnings
+  // const depthBuffer = useWebGPUDepthBuffer({ size: 256 })
+
+  return (
+    <>
+      <SpotLightWebGPU position={[3, 2, 0]} color="#ff005b" {...props} />
+      <SpotLightWebGPU position={[-3, 2, 0]} color="#0EEC82" {...props} />
+
+      <mesh position-y={0.5} castShadow>
+        <boxGeometry />
+        <meshPhongMaterial />
+      </mesh>
+
+      <Plane receiveShadow rotation-x={-Math.PI / 2} args={[100, 100]}>
+        <meshPhongMaterial />
+      </Plane>
+    </>
+  )
+}
+
+function SpotLightScene(props: React.ComponentProps<typeof SpotLight>) {
+  return <PlatformSwitch legacy={<SpotLightSceneLegacy {...props} />} webgpu={<SpotLightSceneWebGPU {...props} />} />
+}
+
 export const SpotlightSt = {
   args: {
     penumbra: 0.5,
     intensity: 0.5,
     angle: 0.5,
     castShadow: true,
+    opacity: 0.7, // Reduced for softer look
+    attenuation: 5,
+    anglePower: 5,
   },
   render: (args) => <SpotLightScene {...args} />,
   name: 'Default',
 } satisfies Story
 
-//
+//* Shadows Story - Legacy Only (SpotLightShadow uses GLSL) ==============================
 
 function SpotLightShadowsScene(props: React.ComponentProps<typeof SpotLight>) {
   const wind = true
 
   const texs = useTexture([
     '/textures/grassy_cobble/grassy_cobblestone_diff_2k.jpg',
-    '/textures/grassy_cobble/grassy_cobblestone_nor_gl_2k.jpg', //
+    '/textures/grassy_cobble/grassy_cobblestone_nor_gl_2k.jpg',
     '/textures/grassy_cobble/grassy_cobblestone_rough_2k.jpg',
     '/textures/grassy_cobble/grassy_cobblestone_ao_2k.jpg',
   ])
@@ -85,20 +121,8 @@ function SpotLightShadowsScene(props: React.ComponentProps<typeof SpotLight>) {
 
   return (
     <>
-      <OrbitControls
-        makeDefault //
-        autoRotate={true}
-        autoRotateSpeed={0.5}
-        minDistance={2}
-        maxDistance={10}
-      />
-      <PerspectiveCamera
-        near={0.01} //
-        far={50}
-        position={[1, 3, 1]}
-        makeDefault
-        fov={60}
-      />
+      <OrbitControls makeDefault autoRotate={true} autoRotateSpeed={0.5} minDistance={2} maxDistance={10} />
+      <PerspectiveCamera near={0.01} far={50} position={[1, 3, 1]} makeDefault fov={60} />
 
       <Environment preset="sunset" />
 
@@ -106,7 +130,7 @@ function SpotLightShadowsScene(props: React.ComponentProps<typeof SpotLight>) {
 
       <Circle receiveShadow args={[5, 64, 64]} rotation-x={-Math.PI / 2}>
         <meshStandardMaterial
-          map={diffuse} //
+          map={diffuse}
           normalMap={normal}
           roughnessMap={roughness}
           aoMap={ao}

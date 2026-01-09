@@ -12,7 +12,8 @@ import { FaceLandmarkerResult } from '@mediapipe/tasks-vision'
 import { useFrame, useThree } from '@react-three/fiber'
 
 export default {
-  title: 'External/Controls/FaceControls',
+  title: 'Controls/FaceControls',
+  tags: ['external'],
   component: FaceControls,
   decorators: [
     (Story, context) => (

@@ -8,7 +8,8 @@ import { useTurntable } from '@sb/useTurntable'
 import { Text } from 'drei'
 
 export default {
-  title: 'Abstractions/Text',
+  title: 'UI/Text',
+  tags: ['legacyOnly'],
   component: Text,
   decorators: [
     (Story) => (

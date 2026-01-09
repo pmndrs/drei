@@ -12,5 +12,6 @@ export * from './Loaders'
 export * from './Performance'
 export * from './Portal'
 export * from './Staging'
+export * from './Textures'
 export * from './UI'
 

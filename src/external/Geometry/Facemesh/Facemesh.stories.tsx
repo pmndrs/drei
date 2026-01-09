@@ -8,7 +8,8 @@ import { Setup } from '@sb/Setup'
 import { Facemesh, FacemeshDatas } from 'drei'
 
 export default {
-  title: 'External/Shapes/Facemesh',
+  title: 'Geometry/Facemesh',
+  tags: ['external'],
   component: Facemesh,
   decorators: [
     (Story, context) => (

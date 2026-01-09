@@ -8,7 +8,7 @@ import { Billboard, Plane, Box, Cone, OrbitControls, Text, Clone, useGLTF } from
 import { ComponentProps } from 'react'
 
 export default {
-  title: 'Abstractions/Clone',
+  title: 'Helpers/Clone',
   component: Clone,
   decorators: [
     (Story, context) => (

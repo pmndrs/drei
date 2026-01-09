@@ -7,7 +7,7 @@ import { Setup } from '@sb/Setup'
 import { Shadow, Icosahedron, Plane } from 'drei'
 
 export default {
-  title: 'Misc/Shadow',
+  title: 'Staging/Shadow',
   component: Shadow,
   decorators: [
     (Story, context) => (

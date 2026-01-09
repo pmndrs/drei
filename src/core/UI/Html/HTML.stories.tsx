@@ -5,12 +5,12 @@ import { Setup } from '@sb/Setup'
 import { useTurntable } from '@sb/useTurntable'
 
 import { Icosahedron, Html, OrthographicCamera } from 'drei'
-import { HtmlProps, CalculatePosition } from '../../src/web/Html'
+import { HtmlProps, CalculatePosition } from './Html'
 import { useFrame, useThree } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 export default {
-  title: 'Misc/Html',
+  title: 'UI/Html',
   component: Html,
   decorators: [
     (Story, context) => (

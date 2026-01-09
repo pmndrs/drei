@@ -19,7 +19,7 @@ function UseAspect({
 }
 
 export default {
-  title: 'Misc/useAspect',
+  title: 'UI/useAspect',
   component: UseAspect,
   argTypes: {
     width: { control: { type: 'range', min: 0, max: 5000 } },

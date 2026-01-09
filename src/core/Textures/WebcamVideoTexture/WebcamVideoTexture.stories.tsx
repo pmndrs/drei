@@ -8,7 +8,7 @@ import { Setup } from '@sb/Setup'
 import { Plane, WebcamVideoTexture } from 'drei'
 
 export default {
-  title: 'Misc/WebcamVideoTexture',
+  title: 'Textures/WebcamVideoTexture',
   component: WebcamVideoTexture,
   decorators: [
     (Story, context) => (

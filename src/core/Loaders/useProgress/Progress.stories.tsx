@@ -7,7 +7,7 @@ import { Setup } from '@sb/Setup'
 import { Html, useGLTF, Progress } from 'drei'
 
 export default {
-  title: 'Misc/Progress',
+  title: 'Loaders/Progress',
   component: Progress,
   decorators: [
     (Story, context) => (

@@ -6,7 +6,7 @@ import { Setup } from '@sb/Setup'
 import { PositionalAudio } from 'drei'
 
 export default {
-  title: 'Abstractions/PositionalAudio',
+  title: 'Helpers/PositionalAudio',
   component: PositionalAudio,
   decorators: [
     (Story, context) => (

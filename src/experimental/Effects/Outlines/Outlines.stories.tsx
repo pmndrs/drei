@@ -6,7 +6,8 @@ import { Setup } from '@sb/Setup'
 import { Outlines } from 'drei'
 
 export default {
-  title: 'Experimental/Effects/Outlines',
+  title: 'Effects/Outlines',
+  tags: ['experimental'],
   component: Outlines,
   decorators: [
     (Story, context) => (

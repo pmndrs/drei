@@ -7,7 +7,7 @@ import { Sampler, ComputedAttribute, TransformFn } from 'drei'
 import { BufferAttribute, InstancedMesh, Mesh, Vector3 } from 'three'
 
 export default {
-  title: 'Misc/Sampler',
+  title: 'Helpers/Sampler',
   component: Sampler,
   args: {
     count: 500,

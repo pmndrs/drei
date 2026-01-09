@@ -9,11 +9,12 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { Group, Mesh, Raycaster, Vector3 } from 'three'
 
 export default {
-  title: 'External/Performance/Bvh',
+  title: 'Performance/Bvh',
+  tags: ['external', 'legacyOnly'],
   component: Bvh,
   decorators: [
     (Story, context) => (
-      <Setup renderer={context.globals.renderer} controls={false}>
+      <Setup renderer={context.globals.renderer} limitedTo={'legacy'} controls={false}>
         <Story />
       </Setup>
     ),

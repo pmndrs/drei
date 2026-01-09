@@ -6,7 +6,7 @@ import { Setup } from '@sb/Setup'
 import { TrailTexture } from 'drei'
 
 export default {
-  title: 'misc/TrailTexture',
+  title: 'Textures/TrailTexture',
   component: TrailTexture,
   decorators: [
     (Story, context) => (

@@ -17,7 +17,7 @@ import {
   Object3D,
 } from '#three'
 import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
-import { FullScreenQuad } from 'three-stdlib'
+import { FullScreenQuad } from 'three/examples/jsm/postprocessing/Pass.js'
 import { SpotLightMaterial } from '@legacy/Materials/SpotLightMaterial'
 
 // @ts-ignore
@@ -61,6 +61,102 @@ function VolumetricMesh({
   radiusTop = radiusTop === undefined ? 0.1 : radiusTop
   radiusBottom = radiusBottom === undefined ? angle * 7 : radiusBottom
 
+  //* Ping-pong depth buffer to prevent feedback loop ==============================
+  // When useDepthBuffer renders the scene to its FBO, VolumetricMesh is included.
+  // If we sample from that same depth texture, we get a feedback loop.
+  // Solution: Create our own render target with depth texture and copy via fullscreen quad.
+  // The copy is updated after the depth pass, so it's always 1 frame behind (usually unnoticeable).
+
+  const depthCopySetup = React.useMemo(() => {
+    if (!depthBuffer) return null
+
+    const width = depthBuffer.image.width
+    const height = depthBuffer.image.height
+
+    // Create render target with its own depth texture
+    const depthCopyTarget = new WebGLRenderTarget(width, height, {
+      depthBuffer: true,
+      stencilBuffer: false,
+    })
+    depthCopyTarget.depthTexture = new DepthTexture(width, height)
+    depthCopyTarget.depthTexture.format = depthBuffer.format
+    depthCopyTarget.depthTexture.type = depthBuffer.type
+
+    // Fullscreen quad to copy depth
+    const copyMaterial = new ShaderMaterial({
+      uniforms: {
+        tDepth: { value: null },
+      },
+      vertexShader: /* glsl */ `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = vec4(position.xy, 0.0, 1.0);
+        }
+      `,
+      fragmentShader: /* glsl */ `
+        uniform sampler2D tDepth;
+        varying vec2 vUv;
+        void main() {
+          gl_FragDepth = texture2D(tDepth, vUv).r;
+          gl_FragColor = vec4(0.0); // Color doesn't matter, we only care about depth
+        }
+      `,
+      depthWrite: true,
+      depthTest: false,
+    })
+
+    const copyQuad = new FullScreenQuad(copyMaterial)
+
+    return { depthCopyTarget, copyMaterial, copyQuad }
+  }, [depthBuffer])
+
+  // Cleanup on unmount
+  React.useEffect(() => {
+    return () => {
+      if (depthCopySetup) {
+        depthCopySetup.depthCopyTarget.dispose()
+        depthCopySetup.depthCopyTarget.depthTexture?.dispose()
+        depthCopySetup.copyMaterial.dispose()
+        depthCopySetup.copyQuad.dispose()
+      }
+    }
+  }, [depthCopySetup])
+
+  // Setup material uniforms
+  React.useLayoutEffect(() => {
+    const targetResolution = depthBuffer ? [size.width * dpr, size.height * dpr] : [0, 0]
+
+    if (!depthBuffer || !depthCopySetup) {
+      material.uniforms.depth.value = null
+      material.uniforms.resolution.value = [0, 0]
+      return
+    }
+
+    // Always sample from our COPY, never from the source
+    material.uniforms.depth.value = depthCopySetup.depthCopyTarget.depthTexture
+    material.uniforms.resolution.value = targetResolution
+  }, [material, depthBuffer, depthCopySetup, size.width, size.height, dpr])
+
+  // Copy depth buffer after the depth pass completes but before scene render
+  useFrame(
+    ({ gl }) => {
+      if (!depthBuffer || !depthCopySetup) return
+
+      const { depthCopyTarget, copyMaterial, copyQuad } = depthCopySetup
+
+      // Set source depth texture
+      copyMaterial.uniforms.tDepth.value = depthBuffer
+
+      // Render fullscreen quad to copy depth
+      const currentRT = gl.getRenderTarget()
+      gl.setRenderTarget(depthCopyTarget)
+      copyQuad.render(gl)
+      gl.setRenderTarget(currentRT)
+    },
+    { before: 'render' }
+  )
+
   useFrame(() => {
     material.uniforms.spotPosition.value.copy(mesh.current.getWorldPosition(vec))
     mesh.current.lookAt((mesh.current.parent as any).target.getWorldPosition(vec))
@@ -83,10 +179,9 @@ function VolumetricMesh({
           uniforms-lightColor-value={color}
           uniforms-attenuation-value={attenuation}
           uniforms-anglePower-value={anglePower}
-          uniforms-depth-value={depthBuffer}
           uniforms-cameraNear-value={camera.near}
           uniforms-cameraFar-value={camera.far}
-          uniforms-resolution-value={depthBuffer ? [size.width * dpr, size.height * dpr] : [0, 0]}
+          // NOTE: depth and resolution are managed in onBeforeRender to prevent feedback loops
         />
       </mesh>
     </>
@@ -207,9 +302,15 @@ function SpotlightShadowWithShader({
   useFrame(({ gl }, dt) => {
     uniforms.current.uTime.value += dt
 
+    // Save current render target to restore after (prevents feedback loop)
+    const currentRenderTarget = gl.getRenderTarget()
+
     gl.setRenderTarget(renderTarget)
+    gl.clear()
     fsQuad.render(gl)
-    gl.setRenderTarget(null)
+
+    // Restore previous render target instead of setting to null
+    gl.setRenderTarget(currentRenderTarget)
   })
 
   return (

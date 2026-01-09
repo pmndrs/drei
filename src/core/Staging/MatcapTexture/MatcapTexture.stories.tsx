@@ -7,7 +7,7 @@ import { Setup } from '@sb/Setup'
 import { useGLTF, MatcapTexture } from 'drei'
 
 export default {
-  title: 'Staging/MatcapTexture',
+  title: 'Textures/MatcapTexture',
   component: MatcapTexture,
   decorators: [
     (Story, context) => (

@@ -24,7 +24,7 @@ function LoopOverInstancedBufferAttribute({ children, buffer }: { buffer?: Insta
 }
 
 export default {
-  title: 'Misc/Decal',
+  title: 'Geometry/Decal',
   component: Sampler,
   decorators: [
     (Story, context) => (
@@ -71,8 +71,8 @@ function DecalScene(_props: ComponentProps<typeof Sampler>) {
       </mesh>
 
       <LoopOverInstancedBufferAttribute buffer={bufferAttribute}>
-        {({ ...props }) => (
-          <Decal mesh={ref} {...props}>
+        {({ key, ...props }) => (
+          <Decal mesh={ref} key={key} {...props}>
             <meshPhysicalMaterial
               roughness={0.2}
               transparent

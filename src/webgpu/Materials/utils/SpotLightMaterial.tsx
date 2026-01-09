@@ -14,17 +14,19 @@ import {
   texture,
   positionWorld,
   positionView,
-  normalView,
-  normalize,
+  normalLocal,
+  modelViewMatrix,
   dot,
   pow,
   distance,
   saturate,
   smoothstep,
   screenCoordinate,
+  screenSize,
   abs,
   select,
   varying,
+  normalize,
 } from 'three/tsl'
 
 //* SpotLightMaterial ==============================
@@ -62,6 +64,8 @@ export class SpotLightMaterial extends MeshBasicNodeMaterial {
     //* Material Properties --
     this.transparent = true
     this.depthWrite = false
+    this.side = THREE.FrontSide  // Match legacy default
+    // Use default NormalBlending - alpha controls transparency
 
     this._buildShader()
   }
@@ -79,6 +83,11 @@ export class SpotLightMaterial extends MeshBasicNodeMaterial {
     const resolutionUniform = this._resolution
 
     //* Vertex Data (computed as varyings) --
+    // Transform local normal to view space (matches legacy: normalMatrix * normal)
+    // modelViewMatrix's upper 3x3 transforms directions to view space
+    const viewSpaceNormal = normalize(modelViewMatrix.mul(vec4(normalLocal, 0.0)).xyz)
+    const vNormal = varying(viewSpaceNormal, 'vNormal')
+
     // Compute intensity based on distance from spotlight position
     const vIntensity = varying(
       Fn(() => {
@@ -92,116 +101,106 @@ export class SpotLightMaterial extends MeshBasicNodeMaterial {
     // View-space Z for depth comparison
     const vViewZ = varying(positionView.z, 'vViewZ')
 
-    //* Helper: Convert perspective depth to view Z --
-    // Formula: viewZ = (near * far) / ((far - near) * depth - far)
-    const perspectiveDepthToViewZ = Fn(([depth, near, far]: [any, any, any]) => {
-      const nearFar = near.mul(far)
-      const farMinusNear = far.sub(near)
-      return nearFar.div(farMinusNear.mul(depth).sub(far))
+    //* Helper: Linearize depth value --
+    // Converts normalized depth [0,1] to linear [0,1] range
+    const linearizeDepth = Fn(([depthVal, near, far]: [any, any, any]) => {
+      // For perspective projection: linear = near / (far - depth * (far - near))
+      return near.div(far.sub(depthVal.mul(far.sub(near))))
     })
 
-    //* Helper: Read depth buffer and convert to view Z --
+    //* Helper: Read depth buffer --
     const readDepth = Fn(([depthSampler, sampleUv]: [any, any]) => {
-      const fragCoordZ = texture(depthSampler, sampleUv).r
-
-      // Reconstruct view Z from depth buffer
-      const viewZ = perspectiveDepthToViewZ(fragCoordZ, cameraNearUniform, cameraFarUniform)
-
-      return viewZ
+      return texture(depthSampler, sampleUv).r
     })
 
     //* Fragment Shader --
     this.colorNode = Fn(() => {
-      // Get normal in view space, ensure Z is positive for backface handling
-      const normal = vec3(normalView.x, normalView.y, abs(normalView.z))
-
-      // Angle-based intensity: pow(dot(normal, forward), anglePower)
-      const angleIntensity = pow(dot(normalize(normal), vec3(0, 0, 1)), anglePowerUniform)
-
-      // Combine distance and angle attenuation
+      // Match legacy GLSL exactly:
+      // vec3 normal = vec3(vNormal.x, vNormal.y, abs(vNormal.z));
+      // float angleIntensity = pow(dot(normal, vec3(0, 0, 1)), anglePower);
+      const normal = vec3(vNormal.x, vNormal.y, abs(vNormal.z))
+      
+      // dot(normal, vec3(0,0,1)) is just normal.z which is abs(vNormal.z)
+      const angleIntensity = pow(abs(vNormal.z), anglePowerUniform)
+      
+      // Combine distance and angle
       const intensity = vIntensity.mul(angleIntensity).toVar()
-
+      
       //* Soft Edges (depth buffer intersection) --
-      // Only apply if resolution is set (> 0)
-      const isSoft = resolutionUniform.x.greaterThan(0.0).and(resolutionUniform.y.greaterThan(0.0))
-
-      // Compute screen UV from fragment coordinates
-      const screenUv = screenCoordinate.xy.div(resolutionUniform)
-
-      // Read scene depth and compute soft factor
-      const sceneDepth = readDepth(depthTex, screenUv)
-      const softFactor = smoothstep(float(0.0), float(1.0), vViewZ.sub(sceneDepth))
-
-      // Apply soft edges conditionally
-      intensity.assign(select(isSoft, intensity.mul(softFactor), intensity))
-
+      // TODO: Currently disabled for debugging - enable once depth buffer works
+      // The depth buffer soft edges will fade the cone where it intersects geometry
+      
+      // For now, skip soft edges entirely to keep cones visible
+      // intensity.assign(select(hasDepth, intensity.mul(softFactor), intensity))
+      
       //* Final Output --
       return vec4(lightColorUniform, intensity.mul(opacityUniform))
     })()
   }
 
   //* Uniform Accessors ==============================
+  // Note: Setters guard against undefined because super() may call them before uniforms are initialized
 
   get depth() {
-    return this._depth.value as THREE.Texture
+    return this._depth?.value as THREE.Texture
   }
   set depth(v: THREE.Texture | null) {
-    this._depth.value = v ?? new THREE.Texture()
+    if (this._depth) this._depth.value = v ?? new THREE.Texture()
   }
 
   get opacity() {
-    return this._opacity.value as number
+    return this._opacity?.value as number
   }
   set opacity(v: number) {
-    this._opacity.value = v
+    if (this._opacity) this._opacity.value = v
   }
 
   get attenuation() {
-    return this._attenuation.value as number
+    return this._attenuation?.value as number
   }
   set attenuation(v: number) {
-    this._attenuation.value = v
+    if (this._attenuation) this._attenuation.value = v
   }
 
   get anglePower() {
-    return this._anglePower.value as number
+    return this._anglePower?.value as number
   }
   set anglePower(v: number) {
-    this._anglePower.value = v
+    if (this._anglePower) this._anglePower.value = v
   }
 
   get spotPosition() {
-    return this._spotPosition.value as THREE.Vector3
+    return this._spotPosition?.value as THREE.Vector3
   }
   set spotPosition(v: THREE.Vector3) {
-    this._spotPosition.value = v
+    if (this._spotPosition) this._spotPosition.value = v
   }
 
   get lightColor() {
-    return this._lightColor.value as THREE.Color
+    return this._lightColor?.value as THREE.Color
   }
   set lightColor(v: THREE.Color) {
-    this._lightColor.value = v
+    if (this._lightColor) this._lightColor.value = v
   }
 
   get cameraNear() {
-    return this._cameraNear.value as number
+    return this._cameraNear?.value as number
   }
   set cameraNear(v: number) {
-    this._cameraNear.value = v
+    if (this._cameraNear) this._cameraNear.value = v
   }
 
   get cameraFar() {
-    return this._cameraFar.value as number
+    return this._cameraFar?.value as number
   }
   set cameraFar(v: number) {
-    this._cameraFar.value = v
+    if (this._cameraFar) this._cameraFar.value = v
   }
 
   get resolution() {
-    return this._resolution.value as THREE.Vector2
+    return this._resolution?.value as THREE.Vector2
   }
   set resolution(v: THREE.Vector2) {
-    this._resolution.value = v
+    if (this._resolution) this._resolution.value = v
   }
 }

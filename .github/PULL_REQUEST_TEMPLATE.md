@@ -25,7 +25,7 @@ To check an item, place an "x" in the box like so: "- [x] Documentation"
 Remove items that are irrelevant to your changes.
 -->
 
-- [ ] Documentation updated ([example](https://github.com/pmndrs/drei/blob/master/docs/misc/example.mdx?plain=1))
+- [ ] Documentation updated ([example](https://github.com/pmndrs/drei/blob/master/docs/helpers/example.mdx?plain=1))
 - [ ] Storybook entry added ([example](https://github.com/pmndrs/drei/blob/master/.storybook/stories/Example.stories.tsx))
 - [ ] Ready to be merged
 

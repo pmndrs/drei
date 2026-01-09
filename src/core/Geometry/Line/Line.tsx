@@ -135,6 +135,7 @@ export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = /* @_
         attach="material"
         color={color}
         vertexColors={Boolean(vertexColors)}
+        useColors={Boolean(vertexColors)}
         resolution={[size.width, size.height]}
         linewidth={linewidth ?? lineWidth ?? 1}
         dashed={dashed}

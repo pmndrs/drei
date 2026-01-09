@@ -8,7 +8,7 @@ import { Setup } from '@sb/Setup'
 import { Segment, Segments, OrbitControls } from 'drei'
 
 export default {
-  title: 'Performance/Segments',
+  title: 'Geometry/Segments',
   decorators: [
     (Story, context) => (
       <Setup renderer={context.globals.renderer} controls={false} cameraPosition={new Vector3(10, 10, 10)}>
@@ -50,9 +50,9 @@ export const BasicSegmentsSt = {
 
 function AnimatedSegments(props: React.ComponentProps<typeof Segments>) {
   const ref = React.useRef<React.ComponentRef<typeof Segment>[]>([])
-  useFrame(({ clock }) => {
+  useFrame(({ elapsed }) => {
     ref.current.forEach((r, i) => {
-      const time = clock.elapsedTime
+      const time = elapsed
       const x = Math.sin((i / 5000) * Math.PI) * 10
       const y = Math.cos((i / 5000) * Math.PI) * 10
       const z = Math.cos((i * time) / 1000)

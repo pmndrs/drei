@@ -7,11 +7,17 @@ import { Setup } from '@sb/Setup'
 import { Image, useTexture } from 'drei'
 
 export default {
-  title: 'Abstractions/Image',
+  title: 'Materials/Image',
+  tags: ['legacyOnly'],
   component: Image,
   decorators: [
     (Story, context) => (
-      <Setup renderer={context.globals.renderer} controls={false} cameraPosition={new Vector3(0, 0, 10)}>
+      <Setup
+        renderer={context.globals.renderer}
+        limitedTo={'legacy'}
+        controls={false}
+        cameraPosition={new Vector3(0, 0, 10)}
+      >
         <Story />
       </Setup>
     ),

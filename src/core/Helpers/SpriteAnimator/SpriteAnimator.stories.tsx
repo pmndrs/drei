@@ -10,7 +10,7 @@ const CYCLOPS_IMAGE = 'cyclops.png'
 const CYCLOPS_JSON = 'cyclops.json'
 
 export default {
-  title: 'Misc/SpriteAnimator',
+  title: 'Helpers/SpriteAnimator',
   component: SpriteAnimator,
   decorators: [
     (Story, context) => (

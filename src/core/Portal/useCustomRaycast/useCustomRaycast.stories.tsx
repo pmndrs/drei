@@ -9,7 +9,7 @@ import { useCustomRaycast, OrthographicCamera } from 'drei'
 
 export default {
   title: 'Portals/useCustomRaycast',
-  component: UseCameraScene,
+  component: useCustomRaycastScene,
   decorators: [
     (Story, context) => (
       <Setup renderer={context.globals.renderer} cameraPosition={new THREE.Vector3(0, 0, 5)}>
@@ -17,11 +17,11 @@ export default {
       </Setup>
     ),
   ],
-} satisfies Meta<typeof UseCameraScene>
+} satisfies Meta<typeof useCustomRaycastScene>
 
-type Story = StoryObj<typeof UseCameraScene>
+type Story = StoryObj<typeof useCustomRaycastScene>
 
-function UseCameraScene() {
+function useCustomRaycastScene() {
   const virtualCam = React.useRef<THREE.OrthographicCamera>(null!)
   const ref = React.useRef<THREE.Mesh>(null)
 
@@ -75,7 +75,7 @@ function UseCameraScene() {
   )
 }
 
-export const UseCameraSt = {
-  render: () => <UseCameraScene />,
+export const useCustomRaycastSt = {
+  render: () => <useCustomRaycastScene />,
   name: 'Default',
 } satisfies Story

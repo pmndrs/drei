@@ -8,7 +8,7 @@ import { Detailed, Icosahedron, OrbitControls } from 'drei'
 import { ComponentProps } from 'react'
 
 export default {
-  title: 'Abstractions/Detailed',
+  title: 'Performance/Detailed',
   component: Detailed,
   decorators: [
     (Story, context) => (

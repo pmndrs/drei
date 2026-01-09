@@ -7,7 +7,7 @@ import { Box, Html, ScreenSizer } from 'drei'
 import { Setup } from '@sb/Setup'
 
 export default {
-  title: 'Abstractions/ScreenSizer',
+  title: 'Staging/ScreenSizer',
   component: ScreenSizer,
   decorators: [
     (Story, context) => (

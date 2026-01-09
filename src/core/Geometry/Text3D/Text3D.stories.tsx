@@ -7,7 +7,7 @@ import { Setup } from '@sb/Setup'
 import { Text3D, Float, Center } from 'drei'
 
 export default {
-  title: 'Abstractions/Text3D',
+  title: 'Geometry/Text3D',
   component: Text3D,
   decorators: [
     (Story, context) => (

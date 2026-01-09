@@ -8,7 +8,7 @@ import { BufferGeometry, MeshStandardMaterial, type Mesh } from 'three'
 import { Icosahedron, Plane, ShadowAlpha } from 'drei'
 
 export default {
-  title: 'Misc/ShadowAlpha',
+  title: 'Staging/ShadowAlpha',
   component: ShadowAlpha,
   decorators: [
     (Story, context) => (
@@ -24,8 +24,8 @@ type Story = StoryObj<typeof ShadowAlpha>
 function ShadowAlphaScene(props: React.ComponentProps<typeof ShadowAlpha>) {
   const mesh = React.useRef<Mesh<BufferGeometry, MeshStandardMaterial>>(null!)
 
-  useFrame(({ clock }) => {
-    const time = clock.elapsedTime
+  useFrame(({ elapsed }) => {
+    const time = elapsed
     mesh.current.material.opacity = Math.sin(time * 2) * 0.5 + 0.5
   })
 

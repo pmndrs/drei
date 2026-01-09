@@ -27,7 +27,7 @@ function MeshBounds(props: React.ComponentProps<'mesh'>) {
 }
 
 export default {
-  title: 'Misc/meshBounds',
+  title: 'Performance/MeshBounds',
   component: MeshBounds,
   decorators: [
     (Story, context) => (

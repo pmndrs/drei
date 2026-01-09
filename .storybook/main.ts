@@ -11,13 +11,8 @@ const __dirname = dirname(__filename);
 const config: StorybookConfig = {
   staticDirs: ['./public'],
   stories: [
-    './stories/**/*.stories.{ts,tsx}',      // Remaining unmigrated stories
     '../src/**/*.stories.{ts,tsx}',          // Co-located stories
     // Exclude broken stories (missing components/exports)
-    '!../src/core/Gizmos/gizmo/GizmoHelper.stories.tsx',
-    '!../src/core/Portal/useCustomRaycast/useCamera.stories.tsx',
-    '!../src/core/Staging/ShadowAlpha.stories.tsx',
-    '!../src/legacy/Staging/SpotLight/Spotlight.stories.tsx',
   ],
   addons: [
     '@chromatic-com/storybook',

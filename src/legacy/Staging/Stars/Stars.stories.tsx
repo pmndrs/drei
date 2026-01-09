@@ -6,7 +6,8 @@ import { Setup } from '@sb/Setup'
 import { Stars, Plane } from 'drei'
 
 export default {
-  title: 'Legacy/Staging/Stars',
+  title: 'Staging/Stars',
+  tags: ['dual'],
   component: Stars,
   decorators: [
     (Story, context) => (

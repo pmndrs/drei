@@ -6,7 +6,7 @@ import { Setup } from '@sb/Setup'
 import { Environment, Wireframe } from 'drei'
 
 export default {
-  title: 'Staging/Wireframe',
+  title: 'Effects/Wireframe',
   component: Wireframe,
   decorators: [
     (Story, context) => (

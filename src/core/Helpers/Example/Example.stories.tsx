@@ -7,7 +7,7 @@ import { Setup } from '@sb/Setup'
 import { Example, ExampleApi } from 'drei'
 
 export default {
-  title: 'Misc/Example',
+  title: 'Helpers/Example',
   component: Example,
   decorators: [
     (Story, context) => (

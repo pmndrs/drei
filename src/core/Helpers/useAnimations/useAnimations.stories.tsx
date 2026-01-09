@@ -25,7 +25,7 @@ function UseAnimation({ animations, root, selectedAction, blendDuration }: UseAn
 }
 
 export default {
-  title: 'Abstractions/useAnimations',
+  title: 'Helpers/useAnimations',
   component: UseAnimation,
   decorators: [
     (Story, context) => (

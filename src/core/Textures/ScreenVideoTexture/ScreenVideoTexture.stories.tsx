@@ -8,7 +8,7 @@ import { Setup } from '@sb/Setup'
 import { Plane, ScreenVideoTexture } from 'drei'
 
 export default {
-  title: 'Misc/ScreenVideoTexture',
+  title: 'Textures/ScreenVideoTexture',
   component: ScreenVideoTexture,
   decorators: [
     (Story, context) => (

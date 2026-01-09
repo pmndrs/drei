@@ -8,8 +8,9 @@ import { useFrame } from '@react-three/fiber'
 import { Group, InstancedMesh, Mesh, Object3D, Vector3 } from 'three'
 
 export default {
-  title: 'Misc/Trail',
+  title: 'Effects/Trail',
   component: Trail,
+  tags: ['experimental'],
   decorators: [
     (Story, context) => (
       <Setup renderer={context.globals.renderer} cameraPosition={new Vector3(0, 0, 5)}>
@@ -24,8 +25,8 @@ type Story = StoryObj<typeof Trail>
 function TrailScene(props: React.ComponentProps<typeof Trail>) {
   const group = React.useRef<Group>(null!)
   const sphere = React.useRef<Mesh>(null!)
-  useFrame(({ clock }) => {
-    const t = clock.getElapsedTime()
+  useFrame(({ elapsed }) => {
+    const t = elapsed
 
     group.current.rotation.z = t
 
@@ -71,7 +72,7 @@ type InstancesTrailProps = {
 
 // Trail component
 function InstancesTrail({ sphere, instancesRef }: InstancesTrailProps) {
-  const trailPositions = useTrail(sphere, { length: 5, decay: 5, interval: 6 })
+  const trailPositions = useTrail(sphere, { length: 5, decay: 5, interval: 6 }, 1000)
   const n = 1000
   const oRef = React.useRef(new Object3D())
 
@@ -109,8 +110,8 @@ function UseTrailScene() {
     }
   }
 
-  useFrame(({ clock }) => {
-    const t = clock.getElapsedTime()
+  useFrame(({ elapsed }) => {
+    const t = elapsed
 
     if (!sphere) return
 

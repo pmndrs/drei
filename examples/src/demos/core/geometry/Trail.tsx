@@ -1,5 +1,6 @@
 import { useFrame } from '@react-three/fiber'
-import { Trail, OrbitControls } from '@react-three/drei/core'
+import { OrbitControls } from '@react-three/drei/core'
+import { Trail } from '@react-three/drei/experimental'
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 import { useRef } from 'react'

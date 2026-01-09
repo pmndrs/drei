@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useTexture } from '../../../core/Loaders/useTexture/useTexture'
+import { useTexture } from '../../Loaders/useTexture/useTexture'
 import { RepeatWrapping, Texture, Vector2 } from '#three'
 import { suspend } from 'suspend-react'
 

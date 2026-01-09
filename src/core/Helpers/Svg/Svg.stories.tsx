@@ -7,7 +7,7 @@ import { Setup } from '@sb/Setup'
 import { Svg } from 'drei'
 
 export default {
-  title: 'Abstractions/Svg',
+  title: 'Helpers/Svg',
   component: Svg,
   decorators: [
     (Story, context) => (

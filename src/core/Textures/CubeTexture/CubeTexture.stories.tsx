@@ -6,7 +6,7 @@ import { Setup } from '@sb/Setup'
 import { CubeTexture, Icosahedron } from 'drei'
 
 export default {
-  title: 'Abstractions/CubeTexture',
+  title: 'Textures/CubeTexture',
   component: CubeTexture,
   decorators: [
     (Story, context) => (

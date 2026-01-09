@@ -7,7 +7,7 @@ import { useGLTF, NormalTexture } from 'drei'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 export default {
-  title: 'Staging/NormalTexture',
+  title: 'Textures/NormalTexture',
   component: NormalTexture,
   decorators: [
     (Story, context) => (

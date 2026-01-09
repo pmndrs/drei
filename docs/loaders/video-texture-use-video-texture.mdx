@@ -3,7 +3,8 @@ title: VideoTexture / useVideoTexture
 sourcecode: src/core/VideoTexture.tsx
 ---
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/misc-videotexture) ![](https://img.shields.io/badge/-suspense-brightgreen)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/misc-videotexture)
+[![](https://img.shields.io/badge/-suspense-brightgreen)](https://r3f.docs.pmnd.rs/api/hooks#useloader)
 
 <Grid cols={4}>
   <li>
@@ -119,3 +120,33 @@ or exposed via `ref`:
 const textureRef = useRef()
 <VideoTexture ref={textureRef} src="/video.mp4" />
 ```
+
+## Recipes
+
+<details>
+
+<summary>Black video texture on iOS/Safari</summary>
+
+As of 2025-05-24 (iOS 18.5), if you `start: false` the texture will be full black. To workaround this you could:
+
+```tsx
+const texture = useVideoTexture(src, { start: false });
+
+async function warmup(texture: THREE.VideoTexture) {
+  const video = texture.image as HTMLVideoElement;
+
+  await video.play();
+  setTimeout(() => {
+    video.pause();
+    video.currentTime = 0;
+  }, 0);
+}
+
+useEffect(() => {
+  warmup(texture).catch((err) => console.log("warmup failed", err));
+}, [texture]);
+```
+
+This will force WebKit to send pixels to the GPU texture.
+
+</details>

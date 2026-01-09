@@ -26,6 +26,15 @@ jobs:
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
+
+    # 0.159.0 is mandatory; others are informational
+    strategy:
+      fail-fast: false
+      matrix:
+        three-version: ['0.159.0', '0.180.0', 'latest']
+    continue-on-error: ${{ matrix.three-version != '0.159.0' }}
+    name: test (w/ three@${{ matrix['three-version'] }})
+
     steps:
       - uses: actions/checkout@v4
       - run: corepack enable
@@ -34,7 +43,19 @@ jobs:
           cache: 'yarn'
       - run: yarn install
       - run: yarn build
-      - run: yarn test
+      - run: yarn eslint:ci
+      - run: yarn typecheck
+      - run: yarn prettier
+      - run: (cd test/e2e; ./e2e.sh ${{ matrix.three-version }})
+      - name: Upload Playwright screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-screenshots-${{ matrix.three-version }}
+          path: |
+            test-results/**
+          if-no-files-found: ignore
+          retention-days: 7
 
   build-and-release:
     needs: test
@@ -44,7 +65,7 @@ jobs:
       - run: corepack enable
       - uses: actions/setup-node@v4
         with:
-          node-version-file: '.node-version'
+          node-version-file: '.nvmrc'
           cache: 'yarn'
       - run: yarn install
       - run: yarn build

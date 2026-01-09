@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { Suspense } from 'react'
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 

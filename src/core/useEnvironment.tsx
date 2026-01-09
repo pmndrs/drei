@@ -6,6 +6,7 @@ import {
   Loader,
   CubeReflectionMapping,
   CubeTexture,
+  ColorSpace,
 } from 'three'
 import { RGBELoader, EXRLoader } from 'three-stdlib'
 import { GainMapLoader, HDRJPGLoader } from '@monogrid/gainmap-js'
@@ -20,7 +21,7 @@ export type EnvironmentLoaderProps = {
   path?: string
   preset?: PresetsType
   extensions?: (loader: Loader) => void
-  colorSpace?: THREE.ColorSpace
+  colorSpace?: ColorSpace
 }
 
 const defaultFiles = ['/px.png', '/nx.png', '/py.png', '/ny.png', '/pz.png', '/nz.png']

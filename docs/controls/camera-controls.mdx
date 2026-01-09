@@ -17,6 +17,8 @@ This is an implementation of the [camera-controls](https://github.com/yomotsu/ca
 
 ```tsx
 type CameraControlsProps = {
+  /** Optional CameraControls subclass, default to `CameraControlsImpl` official class */
+  impl?: typeof CameraControlsImpl
   /** The camera to control, default to the state's `camera` */
   camera?: PerspectiveCamera | OrthographicCamera
   /** DOM element to connect to, default to the state's `gl` renderer */
@@ -24,8 +26,77 @@ type CameraControlsProps = {
   /** Reference this CameraControls instance as state's `controls` */
   makeDefault?: boolean
   /** Events callbacks, see: https://github.com/yomotsu/camera-controls#events */
-  onStart?: (e?: { type: 'controlstart' }) => void
-  onEnd?: (e?: { type: 'controlend' }) => void
-  onChange?: (e?: { type: 'update' }) => void
+  onControlStart?: (e? { type: 'controlstart' }) => void
+  onControl?: (e? { type: 'control' }) => void
+  onControlEnd?: (e? { type: 'controlend' }) => void
+  onTransitionStart?: (e? { type: 'transitionstart' }) => void
+  onUpdate?: (e? { type: 'update' }) => void
+  onWake?: (e? { type: 'wake' }) => void
+  onRest?: (e? { type: 'rest' }) => void
+  onSleep?: (e? { type: 'sleep' }) => void
 }
+```
+
+## Breaking changes
+
+### 10.5.0
+
+This drei version includes camera-controls v3: see the [migration guide](https://github.com/yomotsu/camera-controls?tab=readme-ov-file#v3-migration-guide) 
+
+## Recipes
+
+### `[camera]`
+
+If you need <abbr title="CameraControls">CC</abbr> to control a specific camera, make it reactive so `CameraControls` is mounted/updated "reactively" to `mycam`
+
+```tsx
+const [mycam, setMycam] = useState<THREE.PerspectiveCamera | null>();
+
+<PerspectiveCamera ref={setMycam} />
+{mycam && <CameraControls camera={mycam} />}
+```
+
+<details>
+  
+see: https://github.com/pmndrs/drei/blob/ca4e69c33e5b2eae9ad327c7319dda46de7fd4ae/src/core/CameraControls.tsx#L79-L82
+
+</details>
+
+### Inputs
+
+<abbr title="CameraControls">CC</abbr> has ["user inputs"](https://yomotsu.github.io/camera-controls/#md:user-input-config) options:
+
+```tsx
+import { CameraControlsImpl } from "@react-three/drei"
+
+const { ACTION } = CameraControlsImpl;
+
+<CameraControls
+  mouseButtons={{
+    left: ACTION.ROTATE,
+    middle: ACTION.DOLLY,
+    right: ACTION.TRUCK,
+    wheel: ACTION.DOLLY,
+  }}
+  touches={{
+    one: ACTION.TOUCH_ROTATE,
+    two: ACTION.TOUCH_DOLLY_TRUCK,
+    three: ACTION.TOUCH_DOLLY_TRUCK,
+  }}
+/>
+```
+
+### `[impl]` custom subclass
+
+You can pass a custom subclass of `CameraControlsImpl` to the `impl` prop. This allows you to override methods or add new functionality:
+
+```tsx
+class MyCameraControls extends CameraControlsImpl {
+  override rotate(...args: Parameters<CameraControlsImpl['rotate']>) {
+    console.log('my rotate', ...args)
+    return super.rotate(...args)
+  }
+}
+
+<CameraControls impl={MyCameraControls} />
 ```

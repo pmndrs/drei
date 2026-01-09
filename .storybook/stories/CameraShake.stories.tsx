@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import { useFrame } from '@react-three/fiber'
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
@@ -42,9 +42,11 @@ type Story = StoryObj<typeof CameraShake>
 function CameraShakeScene1(props: ComponentProps<typeof CameraShake>) {
   const cube = React.useRef<THREE.Mesh>(null)
 
-  useFrame(() => {
+  useFrame(({ clock }) => {
     if (cube.current) {
-      cube.current.rotation.x = cube.current.rotation.y += 0.01
+      // Use clock time for deterministic rotation
+      const t = clock.getElapsedTime()
+      cube.current.rotation.x = cube.current.rotation.y = t * 0.3
     }
   })
 

@@ -7,7 +7,7 @@ import { useTurntable } from '../useTurntable'
 import { Icosahedron, Html, OrthographicCamera } from '../../src'
 import { HtmlProps, CalculatePosition } from '../../src/web/Html'
 import { useFrame, useThree } from '@react-three/fiber'
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react-vite'
 
 export default {
   title: 'Misc/Html',

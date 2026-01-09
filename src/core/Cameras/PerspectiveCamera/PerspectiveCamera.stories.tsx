@@ -2,14 +2,14 @@ import * as React from 'react'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Icosahedron, PerspectiveCamera } from 'drei'
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 export default {
   title: 'Camera/PerspectiveCamera',
   component: PerspectiveCamera,
   decorators: [
-    (Story) => (
-      <Setup controls={false}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} controls={false}>
         <Story />
       </Setup>
     ),

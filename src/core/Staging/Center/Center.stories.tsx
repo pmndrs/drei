@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { Box, Center, Cylinder, Gltf } from 'drei'
 import { Ref, useMemo, useState } from 'react'
@@ -10,8 +10,8 @@ export default {
   title: 'Staging/Center',
   component: Center,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new Vector3(2, 2, 2)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new Vector3(2, 2, 2)}>
         <Story />
       </Setup>
     ),

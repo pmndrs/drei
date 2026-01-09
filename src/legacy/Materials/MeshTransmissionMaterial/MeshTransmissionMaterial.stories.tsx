@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 import {
   useGLTF,
   MeshTransmissionMaterial,
@@ -17,8 +17,8 @@ export default {
   title: 'Shaders/MeshTransmissionMaterial',
   component: MeshTransmissionMaterial,
   decorators: [
-    (Story) => (
-      <Setup cameraFov={25} cameraPosition={new THREE.Vector3(15, 0, 15)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraFov={25} cameraPosition={new THREE.Vector3(15, 0, 15)}>
         <Story />
       </Setup>
     ),

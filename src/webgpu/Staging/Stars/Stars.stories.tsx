@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { Stars, Plane } from 'drei'
 
@@ -9,8 +9,8 @@ export default {
   title: 'WebGPU/Staging/Stars',
   component: Stars,
   decorators: [
-    (Story) => (
-      <Setup>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer}>
         <Story />
       </Setup>
     ),
@@ -35,4 +35,3 @@ export const StarsSt = {
   render: (args) => <StarsScene {...args} />,
   name: 'Default',
 } satisfies Story
-

@@ -3,7 +3,7 @@ import { Object3D } from 'three'
 import { TransformControls as TransformControlsImpl, OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { Box, OrbitControls, Select, TransformControls } from 'drei'
 
@@ -99,8 +99,8 @@ function TransformControlsLockScene(props: React.ComponentProps<typeof Transform
 
 export const TransformControlsLockSt = {
   decorators: [
-    (Story) => (
-      <Setup controls={false}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} controls={false}>
         <Story />
       </Setup>
     ),

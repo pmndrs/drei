@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { Gltf } from 'drei'
 
@@ -10,8 +10,8 @@ export default {
   title: 'Loaders/Gltf',
   component: Gltf,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new Vector3(0, 0, 5)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new Vector3(0, 0, 5)}>
         <Story />
       </Setup>
     ),

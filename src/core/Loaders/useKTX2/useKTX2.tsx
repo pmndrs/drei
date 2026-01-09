@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Texture } from '#three'
 import { useLoader, useThree } from '@react-three/fiber'
 import { useEffect } from 'react'
-import { KTX2Loader } from 'three-stdlib'
+import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader'
 import { IsObject } from '../useTexture/useTexture'
 
 const cdn = 'https://cdn.jsdelivr.net/gh/pmndrs/drei-assets@master'
@@ -20,9 +20,9 @@ export function useKTX2<Url extends string[] | string | Record<string, string>>(
   input: Url,
   basisPath: string = `${cdn}/basis/`
 ): Url extends any[] ? Texture[] : Url extends object ? { [key in keyof Url]: Texture } : Texture {
-  const gl = useThree((state) => state.gl)
+  const renderer = useThree((state) => state.renderer)
   const textures = useLoader(KTX2Loader, IsObject(input) ? Object.values(input) : (input as any), (loader: any) => {
-    loader.detectSupport(gl)
+    loader.detectSupport(renderer)
     loader.setTranscoderPath(basisPath)
   })
 
@@ -30,8 +30,8 @@ export function useKTX2<Url extends string[] | string | Record<string, string>>(
   // Upload the texture to the GPU immediately instead of waiting for the first render
   useEffect(() => {
     const array = Array.isArray(textures) ? textures : [textures]
-    array.forEach(gl.initTexture)
-  }, [gl, textures])
+    array.forEach((texture) => renderer.initTexture(texture))
+  }, [renderer, textures])
 
   if (IsObject(input)) {
     const keys = Object.keys(input)

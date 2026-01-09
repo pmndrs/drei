@@ -3,7 +3,7 @@ import { useState } from 'react'
 import * as THREE from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { Plane, VideoTexture, useTexture } from 'drei'
 
@@ -11,8 +11,8 @@ export default {
   title: 'Misc/VideoTexture',
   component: VideoTexture,
   decorators: [
-    (Story) => (
-      <Setup>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer}>
         <Story />
       </Setup>
     ),

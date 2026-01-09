@@ -2,14 +2,14 @@ import * as React from 'react'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Icosahedron, OrthographicCamera } from 'drei'
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 export default {
   title: 'Camera/OrthographicCamera',
   component: OrthographicCamera,
   decorators: [
-    (Story) => (
-      <Setup controls={false}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} controls={false}>
         <Story />
       </Setup>
     ),
@@ -44,7 +44,7 @@ function OrthographicCameraScene(props: React.ComponentProps<typeof Orthographic
 
   return (
     <>
-      <OrthographicCamera {...props} />
+      <OrthographicCamera {...props} makeDefault />
 
       <group position={[0, 0, -10]}>
         {positions.map(({ id, position }) => (
@@ -65,4 +65,12 @@ export const OrthographicCameraSceneSt = {
   },
   render: (args) => <OrthographicCameraScene {...args} />,
   name: 'Default',
+  parameters: {
+    code: {
+      language: 'tsx',
+      code: `
+        <OrthographicCamera makeDefault position={[0, 0, 10]} />
+      `,
+    },
+  },
 } satisfies Story

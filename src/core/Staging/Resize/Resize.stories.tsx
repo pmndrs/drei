@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { Box, Resize } from 'drei'
 
@@ -9,8 +9,8 @@ export default {
   title: 'Staging/Resize',
   component: Resize,
   decorators: [
-    (Story) => (
-      <Setup camera={{ position: [1, 1, 1], zoom: 150 }} orthographic>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} camera={{ position: [1, 1, 1], zoom: 150 }} orthographic>
         <Story />
       </Setup>
     ),

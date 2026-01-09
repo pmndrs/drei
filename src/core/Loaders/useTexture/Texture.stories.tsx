@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { Icosahedron, Texture } from 'drei'
 
@@ -9,8 +9,8 @@ export default {
   title: 'Loaders/Texture',
   component: Texture,
   decorators: [
-    (Story) => (
-      <Setup>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer}>
         <Story />
       </Setup>
     ),

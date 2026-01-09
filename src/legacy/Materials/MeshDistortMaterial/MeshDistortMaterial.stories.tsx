@@ -2,7 +2,7 @@ import * as React from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 import { MeshDistortMaterial, Icosahedron } from 'drei'
 
 export default {
@@ -21,15 +21,15 @@ export default {
     radius: { control: { type: 'range', min: 0, max: 1, step: 0.1 } },
   },
   decorators: [
-    (Story) => (
-      <Setup>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer}>
         <Story />
       </Setup>
     ),
   ],
-} satisfies Meta<typeof MeshDistortMaterial>
+} satisfies Meta<any>
 
-type Story = StoryObj<typeof MeshDistortMaterial>
+type Story = StoryObj<any>
 
 function MeshDistortMaterialScene(props: React.ComponentProps<typeof MeshDistortMaterial>) {
   return (
@@ -49,8 +49,8 @@ export const MeshDistortMaterialSt = {
 function MeshDistortMaterialRefScene(props: React.ComponentProps<typeof MeshDistortMaterial>) {
   const material = React.useRef<React.ComponentRef<typeof MeshDistortMaterial>>(null!)
 
-  useFrame(({ clock }) => {
-    material.current.distort = Math.sin(clock.getElapsedTime())
+  useFrame(({ elapsed }) => {
+    material.current.distort = Math.sin(elapsed)
   })
 
   return (

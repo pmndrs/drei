@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { Box, FirstPersonControls } from 'drei'
 
@@ -9,8 +9,8 @@ export default {
   title: 'Controls/FirstPersonControls',
   component: FirstPersonControls,
   decorators: [
-    (Story) => (
-      <Setup controls={false}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} controls={false}>
         <Story />
       </Setup>
     ),

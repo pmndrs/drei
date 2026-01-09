@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { useFrame } from '@react-three/fiber'
 import { BufferGeometry, MeshStandardMaterial, type Mesh } from 'three'
@@ -11,8 +11,8 @@ export default {
   title: 'Misc/ShadowAlpha',
   component: ShadowAlpha,
   decorators: [
-    (Story) => (
-      <Setup lights={false}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} lights={false}>
         <Story />
       </Setup>
     ),

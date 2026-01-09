@@ -3,7 +3,7 @@ import { FBXLoader } from 'three-stdlib'
 import { useLoader } from '@react-three/fiber'
 import { Group } from '#three'
 
-import { Clone } from '../../Abstractions/Clone/Clone'
+import { Clone } from '../../Helpers/Clone/Clone'
 
 /**
  * Loads an FBX model using THREE's FBXLoader.

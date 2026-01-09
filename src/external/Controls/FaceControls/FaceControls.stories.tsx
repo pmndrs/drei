@@ -4,7 +4,7 @@ import * as React from 'react'
 import { Meta, StoryObj } from '@storybook/react-vite'
 import * as easing from 'maath/easing'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { FaceLandmarker, FaceControls, Box, WebcamVideoTexture } from 'drei'
 import { ComponentProps, ComponentRef, useRef, useState } from 'react'
@@ -12,11 +12,11 @@ import { FaceLandmarkerResult } from '@mediapipe/tasks-vision'
 import { useFrame, useThree } from '@react-three/fiber'
 
 export default {
-  title: 'Controls/FaceControls',
+  title: 'External/Controls/FaceControls',
   component: FaceControls,
   decorators: [
-    (Story) => (
-      <Setup cameraFov={60}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraFov={60}>
         <Story />
       </Setup>
     ),

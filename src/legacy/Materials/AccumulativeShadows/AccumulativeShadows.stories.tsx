@@ -4,7 +4,7 @@ import { ComponentProps } from 'react'
 import { FlakesTexture } from 'three-stdlib'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { useGLTF, AccumulativeShadows, RandomizedLight, OrbitControls, Environment } from 'drei'
 
@@ -12,8 +12,8 @@ export default {
   title: 'Staging/AccumulativeShadows',
   component: AccumulativeShadows,
   decorators: [
-    (Story) => (
-      <Setup>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer}>
         <Story />
       </Setup>
     ),

@@ -4,7 +4,7 @@ import { FontLoader, TextGeometry, TextGeometryParameters } from 'three-stdlib'
 import { extend, useFrame, useLoader } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 import { CurveModifier, CurveModifierRef } from 'drei'
 
 extend({ StdText: TextGeometry })
@@ -25,8 +25,8 @@ export default {
   title: 'Modifiers/CurveModifier',
   component: CurveModifier,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={cameraPosition}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={cameraPosition}>
         <Story />
       </Setup>
     ),

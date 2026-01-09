@@ -3,15 +3,15 @@ import * as React from 'react'
 import { useRef } from 'react'
 import { MathUtils, Mesh, Vector3 } from 'three'
 import { Cone, KeyboardControls, useKeyboardControls } from 'drei'
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 export default {
   title: 'Controls/KeyboardControls',
   component: KeyboardControls,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new Vector3(0, 10, 0)} lights={true}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new Vector3(0, 10, 0)} lights={true}>
         <Story />
       </Setup>
     ),

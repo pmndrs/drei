@@ -3,7 +3,7 @@ import * as React from 'react'
 import { Suspense } from 'react'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { Plane, ScreenVideoTexture } from 'drei'
 
@@ -11,8 +11,8 @@ export default {
   title: 'Misc/ScreenVideoTexture',
   component: ScreenVideoTexture,
   decorators: [
-    (Story) => (
-      <Setup>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer}>
         <Story />
       </Setup>
     ),

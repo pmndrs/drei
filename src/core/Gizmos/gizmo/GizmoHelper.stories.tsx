@@ -3,7 +3,7 @@ import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { GizmoHelper, OrbitControls, useGLTF, GizmoViewcube, GizmoViewport } from 'drei'
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 import { ComponentProps } from 'react'
 
 const alignments = [
@@ -22,8 +22,8 @@ export default {
   title: 'Gizmos/GizmoHelper',
   component: GizmoHelper,
   decorators: [
-    (Story) => (
-      <Setup controls={false} cameraPosition={new Vector3(0, 0, 10)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} controls={false} cameraPosition={new Vector3(0, 0, 10)}>
         <Story />
       </Setup>
     ),

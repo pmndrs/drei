@@ -1,17 +1,17 @@
 import * as React from 'react'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
-import { Icosahedron } from '../../src/core/shapes'
-import { useTurntable } from '../useTurntable'
+import { Icosahedron } from 'drei'
+import { useTurntable } from '@sb/useTurntable'
 
 export default {
   title: 'Shapes/Icosahedron',
   component: Icosahedron,
   decorators: [
-    (Story) => (
-      <Setup>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer}>
         <Story />
       </Setup>
     ),

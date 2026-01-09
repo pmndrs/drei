@@ -1,17 +1,17 @@
 import * as React from 'react'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
-import { Dodecahedron } from '../../src/core/shapes'
-import { useTurntable } from '../useTurntable'
+import { Dodecahedron } from 'drei'
+import { useTurntable } from '@sb/useTurntable'
 
 export default {
   title: 'Shapes/Dodecahedron',
   component: Dodecahedron,
   decorators: [
-    (Story) => (
-      <Setup>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer}>
         <Story />
       </Setup>
     ),

@@ -3,15 +3,15 @@ import { Vector3 } from 'three'
 import { useFrame } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { Segment, Segments, OrbitControls } from 'drei'
 
 export default {
   title: 'Performance/Segments',
   decorators: [
-    (Story) => (
-      <Setup controls={false} cameraPosition={new Vector3(10, 10, 10)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} controls={false} cameraPosition={new Vector3(10, 10, 10)}>
         <Story />
       </Setup>
     ),

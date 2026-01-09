@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 import { Stage, Sphere } from 'drei'
 import { presetsObj, PresetsType } from '../../src/helpers/environment-assets'
 
@@ -12,8 +12,8 @@ export default {
   title: 'Staging/Stage',
   component: Stage,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new Vector3(0, 0, 3)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new Vector3(0, 0, 3)}>
         <Story />
       </Setup>
     ),

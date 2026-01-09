@@ -1,4 +1,5 @@
-import { Text, OrbitControls } from '@react-three/drei/core'
+import { OrbitControls } from '@react-three/drei/core'
+import { Text } from '@react-three/drei/legacy'
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../components/ExampleCard'
 

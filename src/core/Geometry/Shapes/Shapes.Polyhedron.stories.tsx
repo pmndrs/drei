@@ -1,17 +1,17 @@
 import * as React from 'react'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
-import { Polyhedron } from '../../src/core/shapes'
-import { useTurntable } from '../useTurntable'
+import { Polyhedron } from 'drei'
+import { useTurntable } from '@sb/useTurntable'
 
 export default {
   title: 'Shapes/Polyhedron',
   component: Polyhedron,
   decorators: [
-    (Story) => (
-      <Setup>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer}>
         <Story />
       </Setup>
     ),

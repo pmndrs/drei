@@ -6,15 +6,15 @@ import { VertexNormalsHelper } from 'three-stdlib'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Helper, PerspectiveCamera, Sphere } from 'drei'
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 import { ComponentProps } from 'react'
 
 export default {
   title: 'Gizmos/Helper',
   component: Helper,
   decorators: [
-    (Story) => (
-      <Setup>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer}>
         <Story />
       </Setup>
     ),
@@ -42,8 +42,8 @@ export const HelperSt1 = {
 const HelperScene2 = (_props: ComponentProps<typeof Helper>) => {
   const camera = React.useRef<THREE.PerspectiveCamera>(null)
 
-  useFrame(({ clock }) => {
-    const t = clock.getElapsedTime()
+  useFrame(({ elapsed }) => {
+    const t = elapsed
 
     if (camera.current) {
       camera.current.lookAt(0, 0, 0)

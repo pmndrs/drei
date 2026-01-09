@@ -1,17 +1,16 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { Box } from 'drei'
-import { Setup } from '@storybook-setup'
-import { DragControls } from '../../src/web/DragControls'
+import { Box, DragControls } from 'drei'
+import { Setup } from '@sb/Setup'
 import { Meta, StoryObj } from '@storybook/react-vite'
 import { ComponentProps } from 'react'
 
 export default {
-  title: 'Gizmos/DragControls',
+  title: 'Controls/DragControls',
   component: DragControls,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new THREE.Vector3(0, 0, 5)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new THREE.Vector3(0, 0, 5)}>
         <Story />
       </Setup>
     ),

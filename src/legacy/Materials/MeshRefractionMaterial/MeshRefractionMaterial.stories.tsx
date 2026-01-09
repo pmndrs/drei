@@ -4,7 +4,7 @@ import { useLoader } from '@react-three/fiber'
 import { RGBELoader } from 'three-stdlib'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 import {
   MeshRefractionMaterial,
   useGLTF,
@@ -21,8 +21,8 @@ export default {
   title: 'Shaders/MeshRefractionMaterial',
   component: MeshRefractionMaterial,
   decorators: [
-    (Story) => (
-      <Setup cameraFov={45} cameraPosition={new THREE.Vector3(-5, 0.5, 5)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraFov={45} cameraPosition={new THREE.Vector3(-5, 0.5, 5)}>
         <Story />
       </Setup>
     ),

@@ -3,16 +3,16 @@ import * as React from 'react'
 import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { Facemesh, FacemeshDatas } from 'drei'
 
 export default {
-  title: 'Shapes/Facemesh',
+  title: 'External/Shapes/Facemesh',
   component: Facemesh,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new Vector3(0, 0, 5)} cameraFov={60}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new Vector3(0, 0, 5)} cameraFov={60}>
         <Story />
       </Setup>
     ),

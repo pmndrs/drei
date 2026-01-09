@@ -1,17 +1,17 @@
 import * as React from 'react'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
-import { Torus } from '../../src/core/shapes'
-import { useTurntable } from '../useTurntable'
+import { Torus } from 'drei'
+import { useTurntable } from '@sb/useTurntable'
 
 export default {
   title: 'Shapes/Torus',
   component: Torus,
   decorators: [
-    (Story) => (
-      <Setup>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer}>
         <Story />
       </Setup>
     ),

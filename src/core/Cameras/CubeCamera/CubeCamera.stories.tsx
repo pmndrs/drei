@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { useFrame } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { Box, CubeCamera } from 'drei'
 import { ComponentProps } from 'react'
@@ -12,8 +12,8 @@ export default {
   title: 'Camera/CubeCamera',
   component: CubeCamera,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new THREE.Vector3(0, 10, 40)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new THREE.Vector3(0, 10, 40)}>
         <Story />
       </Setup>
     ),
@@ -30,8 +30,8 @@ declare module '@react-three/fiber' {
 
 function Sphere({ offset = 0, ...props }: ComponentProps<typeof CubeCamera> & { offset?: number }) {
   const ref = React.useRef<THREE.Mesh>(null!)
-  useFrame(({ clock }) => {
-    ref.current.position.y = Math.sin(offset + clock.elapsedTime) * 5
+  useFrame(({ elapsed }) => {
+    ref.current.position.y = Math.sin(offset + elapsed) * 5
   })
 
   return (

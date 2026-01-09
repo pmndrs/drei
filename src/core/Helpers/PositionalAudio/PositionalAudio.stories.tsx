@@ -2,15 +2,15 @@ import * as React from 'react'
 import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 import { PositionalAudio } from 'drei'
 
 export default {
   title: 'Abstractions/PositionalAudio',
   component: PositionalAudio,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new Vector3(0, 0, 20)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new Vector3(0, 0, 20)}>
         <Story />
       </Setup>
     ),

@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import { Mesh } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { ContactShadows, Sphere, Plane } from 'drei'
 import { ComponentProps } from 'react'
@@ -12,8 +12,8 @@ export default {
   title: 'Staging/ContactShadows',
   component: ContactShadows,
   decorators: [
-    (Story) => (
-      <Setup>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer}>
         <Story />
       </Setup>
     ),

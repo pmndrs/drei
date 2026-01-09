@@ -12,7 +12,6 @@ export * from './OrbitControls'
 export * from './PointerLockControls'
 export * from './PresentationControls'
 export * from './ScrollControls'
-export * from './Select'
 export * from './TrackballControls'
 
 

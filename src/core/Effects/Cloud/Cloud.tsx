@@ -52,6 +52,8 @@ export type CloudsProps = Omit<ThreeElements['group'], 'ref'> & {
   range?: number
   /** Which material it will override, default: MeshLambertMaterial */
   material?: typeof Material
+  /** Optional material factory function to override CloudMaterial (useful for WebGPU) */
+  materialFactory?: (baseMaterial: typeof Material) => Material
   /** Frustum culling, default: true */
   frustumCulled?: boolean
 }
@@ -109,7 +111,16 @@ const context = /* @__PURE__ */ React.createContext<React.RefObject<CloudState[]
  */
 export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
   (
-    { children, material = MeshLambertMaterial, texture = CLOUD_URL, range, limit = 200, frustumCulled, ...props },
+    {
+      children,
+      material = MeshLambertMaterial,
+      materialFactory,
+      texture = CLOUD_URL,
+      range,
+      limit = 200,
+      frustumCulled,
+      ...props
+    },
     fref
   ) => {
     const instance = React.useRef<InstancedMesh>(null!)
@@ -118,13 +129,16 @@ export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
     const colors = React.useMemo(() => new Float32Array(Array.from({ length: limit }, () => [1, 1, 1]).flat()), [limit])
     const cloudTexture = useTexture(texture) as Texture
 
+    // Use custom materialFactory if provided, otherwise use platform-aliased CloudMaterial
+    const MaterialFn = materialFactory ?? CloudMaterial
+
     const cloudMaterial = React.useMemo(() => {
-      const cloudMat = CloudMaterial(material) as MeshStandardMaterial
+      const cloudMat = MaterialFn(material) as MeshStandardMaterial
       cloudMat.map = cloudTexture
       cloudMat.transparent = true
       cloudMat.depthWrite = false
       return cloudMat
-    }, [cloudTexture])
+    }, [cloudTexture, MaterialFn, material])
 
     let t = 0
     let index = 0
@@ -309,6 +323,8 @@ export const CloudInstance = /* @__PURE__ */ React.forwardRef<Group, CloudProps>
 /**
  * Particle-based volumetric cloud. Can be used standalone or inside a Clouds provider.
  * When used inside Clouds, all clouds share a single instanced draw call.
+ * (NOTE) This is technically a dual component, however in the actual build this will export correctly
+ * See the story for advanced factory pattern usage.
  *
  * @example Standalone cloud
  * ```jsx

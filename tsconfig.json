@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "lib": ["es2019", "dom"],
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "esModuleInterop": false,
-    "allowSyntheticDefaultImports": false,
+    "target": "ES2020",
+    "lib": ["ES2020", "dom"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "jsx": "react",
     "pretty": true,
     "strict": true,
@@ -31,7 +31,7 @@
       "@external/*": ["./src/external/*"],
       "@experimental/*": ["./src/experimental/*"],
       "@utils/*": ["./src/utils/*"],
-      "@storybook-setup": ["./.storybook/Setup.tsx"],
+      "@sb/*": ["./.storybook/*"],
       "drei": ["./.storybook/drei-exports.ts"]
     }
   },

@@ -3,7 +3,7 @@ import * as THREE from 'three'
 
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { Float } from 'drei'
 
@@ -11,8 +11,8 @@ export default {
   title: 'Staging/Float',
   component: Float,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new THREE.Vector3(0, 0, 10)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new THREE.Vector3(0, 0, 10)}>
         <Story />
       </Setup>
     ),

@@ -3,7 +3,7 @@ import { ComponentProps } from 'react'
 import * as THREE from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { Icosahedron, Sphere, Html, BBAnchor, OrbitControls, useHelper } from 'drei'
 import { BoxHelper } from 'three'
@@ -12,8 +12,8 @@ export default {
   title: 'Staging/BBAnchor',
   component: BBAnchor,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new THREE.Vector3(2, 2, 2)} controls={false}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new THREE.Vector3(2, 2, 2)} controls={false}>
         <Story />
       </Setup>
     ),

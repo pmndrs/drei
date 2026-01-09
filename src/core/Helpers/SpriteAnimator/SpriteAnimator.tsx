@@ -2,9 +2,15 @@
 import * as React from 'react'
 import { ThreeElements, useFrame, Vector3 } from '@react-three/fiber'
 import * as THREE from '#three'
-import { Instances, Instance } from '../../Abstractions/Instances/Instances'
-import { Billboard } from '../../Abstractions/Billboard/Billboard'
-import { FrameData, getFirstFrame, Size, SpriteData, useSpriteLoader } from '../../Loaders/useSpriteLoader/useSpriteLoader'
+import { Instances, Instance } from '../Instances/Instances'
+import { Billboard } from '../../Staging/Billboard/Billboard'
+import {
+  FrameData,
+  getFirstFrame,
+  Size,
+  SpriteData,
+  useSpriteLoader,
+} from '../../Loaders/useSpriteLoader/useSpriteLoader'
 
 // Frame-related types
 

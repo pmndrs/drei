@@ -3,7 +3,7 @@ import React, { ComponentProps, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 import { Box, CameraControls, CameraControlsImpl, PerspectiveCamera, Plane, useFBO } from 'drei'
 
 export default {

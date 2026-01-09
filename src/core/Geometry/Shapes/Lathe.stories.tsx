@@ -2,8 +2,8 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
-import { useTurntable } from '../useTurntable'
+import { Setup } from '@sb/Setup'
+import { useTurntable } from '@sb/useTurntable'
 
 import { Lathe } from 'drei'
 
@@ -11,8 +11,8 @@ export default {
   title: 'Shapes/Lathe',
   component: Lathe,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new THREE.Vector3(-30, 30, 30)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new THREE.Vector3(-30, 30, 30)}>
         <Story />
       </Setup>
     ),

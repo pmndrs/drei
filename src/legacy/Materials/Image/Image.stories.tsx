@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { Image, useTexture } from 'drei'
 
@@ -10,8 +10,8 @@ export default {
   title: 'Abstractions/Image',
   component: Image,
   decorators: [
-    (Story) => (
-      <Setup controls={false} cameraPosition={new Vector3(0, 0, 10)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} controls={false} cameraPosition={new Vector3(0, 0, 10)}>
         <Story />
       </Setup>
     ),

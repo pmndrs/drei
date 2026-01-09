@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { useFrame, useThree } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 import { useGLTF, ScrollControls, Scroll, useCursor, useIntersect } from 'drei'
 
 export default {
@@ -110,7 +110,7 @@ const ScrollControlsSetup = ({ children }) => (
     controls={false}
     orthographic
     camera={{ zoom: 80 }}
-    gl={{ alpha: false, antialias: false, stencil: false, depth: false }}
+    rendererParams={{ alpha: false, antialias: false, stencil: false, depth: false }}
     dpr={[1, 1.5]}
   >
     {children}

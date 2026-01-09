@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 import { Sampler, Decal, useTexture, useSurfaceSampler, PerspectiveCamera, OrbitControls } from 'drei'
 import { Euler, InstancedBufferAttribute, Matrix4, Quaternion, Vector3 } from 'three'
 import { ComponentProps } from 'react'
@@ -27,8 +27,8 @@ export default {
   title: 'Misc/Decal',
   component: Sampler,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new Vector3(0, 0, 5)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new Vector3(0, 0, 5)}>
         <React.Suspense fallback={null}>
           <Story />
         </React.Suspense>

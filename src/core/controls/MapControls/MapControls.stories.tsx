@@ -6,14 +6,19 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { MapControls } from 'drei'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 export default {
   title: 'Controls/MapControls',
   component: MapControls,
   decorators: [
-    (Story) => (
-      <Setup orthographic camera={{ position: [0, 0, 50], zoom: 10, up: [0, 0, 1], far: 10000 }} controls={false}>
+    (Story, context) => (
+      <Setup
+        renderer={context.globals.renderer}
+        orthographic
+        camera={{ position: [0, 0, 50], zoom: 10, up: [0, 0, 1], far: 10000 }}
+        controls={false}
+      >
         <Story />
       </Setup>
     ),

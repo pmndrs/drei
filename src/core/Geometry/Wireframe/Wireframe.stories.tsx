@@ -2,15 +2,15 @@ import * as React from 'react'
 import { IcosahedronGeometry, Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 import { Environment, Wireframe } from 'drei'
 
 export default {
   title: 'Staging/Wireframe',
   component: Wireframe,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new Vector3(2, 2, 2)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new Vector3(2, 2, 2)}>
         <Story />
       </Setup>
     ),

@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { Sparkles, PerspectiveCamera, OrbitControls } from 'drei'
 
@@ -10,8 +10,8 @@ export default {
   title: 'Staging/Sparkles',
   component: Sparkles,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new Vector3(1, 1, 1)} controls={false}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new Vector3(1, 1, 1)} controls={false}>
         <Story />
       </Setup>
     ),

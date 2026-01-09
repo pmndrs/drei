@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { DeviceOrientationControls, Box } from 'drei'
 
@@ -9,8 +9,8 @@ export default {
   title: 'Controls/DeviceOrientationControls',
   component: DeviceOrientationControls,
   decorators: [
-    (Story) => (
-      <Setup camera={{ near: 1, far: 1100, fov: 75 }} controls={false}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} camera={{ near: 1, far: 1100, fov: 75 }} controls={false}>
         <Story />
       </Setup>
     ),

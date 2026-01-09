@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { extend, useThree, useFrame, ThreeElements } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { ScreenQuad, shaderMaterial } from 'drei'
 
@@ -11,8 +11,8 @@ export default {
   title: 'Shapes/ScreenQuad',
   component: ScreenQuad,
   decorators: [
-    (Story) => (
-      <Setup>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer}>
         <Story />
       </Setup>
     ),

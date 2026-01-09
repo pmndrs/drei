@@ -3,7 +3,7 @@ import { useLoader } from '@react-three/fiber'
 import { TextureLoader, Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { useAspect, Plane } from 'drei'
 
@@ -27,8 +27,8 @@ export default {
     factor: { control: { type: 'range', min: 0, max: 10, step: 0.01 } },
   },
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new Vector3(0, -10, 0)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new Vector3(0, -10, 0)}>
         <Story />
       </Setup>
     ),

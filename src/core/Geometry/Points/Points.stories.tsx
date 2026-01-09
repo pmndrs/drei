@@ -2,7 +2,7 @@ import * as React from 'react'
 import { MathUtils, Quaternion, Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { Point, Points, PointMaterial, shaderMaterial } from 'drei'
 import { extend, useFrame, useThree } from '@react-three/fiber'
@@ -14,8 +14,8 @@ export default {
   title: 'Performance/Points',
   component: Points,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new Vector3(10, 10, 10)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new Vector3(10, 10, 10)}>
         <Story />
       </Setup>
     ),

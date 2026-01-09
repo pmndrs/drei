@@ -2,8 +2,8 @@ import * as React from 'react'
 import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
-import { useTurntable } from '../useTurntable'
+import { Setup } from '@sb/Setup'
+import { useTurntable } from '@sb/useTurntable'
 
 import { RoundedBox, RoundedBoxGeometry } from 'drei'
 
@@ -11,8 +11,8 @@ export default {
   title: 'Shapes/RoundedBox',
   component: RoundedBox,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new Vector3(-30, 30, 30)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new Vector3(-30, 30, 30)}>
         <Story />
       </Setup>
     ),

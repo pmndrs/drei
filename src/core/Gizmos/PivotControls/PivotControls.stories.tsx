@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 import { PivotControls, Box } from 'drei'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
@@ -9,8 +9,8 @@ export default {
   title: 'Gizmos/PivotControls',
   component: PivotControls,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new Vector3(0, 0, 2.5)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new Vector3(0, 0, 2.5)}>
         <Story />
       </Setup>
     ),

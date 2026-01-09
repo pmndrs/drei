@@ -3,16 +3,16 @@ import { useFrame, useThree, createPortal, ThreeEvent } from '@react-three/fiber
 import * as THREE from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
-import { useCamera, OrthographicCamera } from 'drei'
+import { useCustomRaycast, OrthographicCamera } from 'drei'
 
 export default {
-  title: 'Misc/useCamera',
+  title: 'Portals/useCustomRaycast',
   component: UseCameraScene,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new THREE.Vector3(0, 0, 5)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new THREE.Vector3(0, 0, 5)}>
         <Story />
       </Setup>
     ),
@@ -56,7 +56,12 @@ function UseCameraScene() {
     <>
       <OrthographicCamera ref={virtualCam} makeDefault={false} position={[0, 0, 100]} zoom={2} />
 
-      <mesh ref={ref} raycast={useCamera(virtualCam)} onPointerOut={handlePointerOut} onPointerMove={handlePointerMove}>
+      <mesh
+        ref={ref}
+        raycast={useCustomRaycast(virtualCam)}
+        onPointerOut={handlePointerOut}
+        onPointerMove={handlePointerMove}
+      >
         {[...Array(6)].map((_, index) => (
           <meshLambertMaterial key={index} color="hotpink" wireframe={hover !== index} />
         ))}

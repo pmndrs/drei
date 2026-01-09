@@ -23,7 +23,7 @@ export { CloudMaterial } from '../legacy/Materials/CloudMaterial'
 // Note: SparklesMaterial not exported here - Sparkles component is platform-specific (not aliased)
 
 //* Effects & Helpers --------------------------------
-export { Outlines } from '../legacy/Materials/Outlines'
+export { Outlines } from '../experimental/Effects/Outlines'
 export { Effects } from '../legacy/Abstractions/Effects'
 
 //* Platform-specific Three.js classes --------------------------------

@@ -3,7 +3,7 @@ import { extend } from '@react-three/fiber'
 import { Texture } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 import { Box, shaderMaterial, useTexture } from 'drei'
 
 const MyMaterial = shaderMaterial(
@@ -63,8 +63,8 @@ export default {
   title: 'Shaders/shaderMaterial',
   component: ShaderMaterial,
   decorators: [
-    (Story) => (
-      <Setup>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer}>
         <Story />
       </Setup>
     ),

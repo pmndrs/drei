@@ -2,8 +2,8 @@ import * as React from 'react'
 import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
-import { useTurntable } from '../useTurntable'
+import { Setup } from '@sb/Setup'
+import { useTurntable } from '@sb/useTurntable'
 
 import { meshBounds } from 'drei'
 
@@ -30,8 +30,8 @@ export default {
   title: 'Misc/meshBounds',
   component: MeshBounds,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new Vector3(0, 0, 5)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new Vector3(0, 0, 5)}>
         <Story />
       </Setup>
     ),

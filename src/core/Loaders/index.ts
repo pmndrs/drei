@@ -2,7 +2,6 @@
 
 export * from './CubeTexture'
 export * from './Loader'
-export * from './MatcapTexture'
 export * from './Preload'
 export * from './ScreenVideoTexture'
 export * from './TrailTexture'

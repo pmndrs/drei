@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react'
 import { Scene } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 import { Box, OrbitControls, PerspectiveCamera, Plane, useFBO, type OrbitControlsProps } from 'drei'
 
 export default {
@@ -17,8 +17,8 @@ export default {
     reverseOrbit: false,
   },
   decorators: [
-    (Story) => (
-      <Setup controls={false}>
+    (Story, context) => (
+      <Setup controls={false} renderer={context.globals.renderer}>
         <Story />
       </Setup>
     ),
@@ -39,8 +39,27 @@ function OrbitControlsScene(props: React.ComponentProps<typeof OrbitControls>) {
 }
 
 export const OrbitControlsStory = {
-  render: (args) => <OrbitControlsScene {...args} />,
+  render: (args) => (
+    <>
+      <OrbitControls {...args} />
+      <Box>
+        <meshBasicMaterial wireframe />
+      </Box>
+    </>
+  ),
   name: 'Default',
+  parameters: {
+    docs: {
+      source: {
+        code: `<>
+  <OrbitControls {...args} />
+  <Box>
+    <meshBasicMaterial wireframe />
+  </Box>
+</>`,
+      },
+    },
+  },
 } satisfies Story
 
 //
@@ -53,12 +72,12 @@ const CustomCamera = (props: OrbitControlsProps) => {
   const virtualCamera = useRef<React.ComponentRef<typeof PerspectiveCamera> | null>(null)
   const [virtualScene] = useState(() => new Scene())
 
-  useFrame(({ gl }) => {
+  useFrame(({ renderer }) => {
     if (virtualCamera.current) {
-      gl.setRenderTarget(fbo)
-      gl.render(virtualScene, virtualCamera.current)
+      renderer.setRenderTarget(fbo)
+      renderer.render(virtualScene, virtualCamera.current)
 
-      gl.setRenderTarget(null)
+      renderer.setRenderTarget(null)
     }
   })
 
@@ -89,4 +108,30 @@ const CustomCamera = (props: OrbitControlsProps) => {
 export const CustomCameraStory = {
   render: (args) => <CustomCamera {...args} />,
   name: 'Custom Camera',
+  parameters: {
+    docs: {
+      source: {
+        code: `<>
+      <Plane args={[4, 4, 4]}>
+        <meshBasicMaterial map={fbo.texture} />
+      </Plane>
+
+      {createPortal(
+        <>
+          <Box>
+            <meshBasicMaterial wireframe />
+          </Box>
+
+          <PerspectiveCamera name="FBO Camera" ref={virtualCamera} position={[0, 0, 5]} />
+          <OrbitControls camera={virtualCamera.current || undefined} {...props} />
+
+          {/* @ts-ignore */}
+          <color attach="background" args={['hotpink']} />
+        </>,
+        virtualScene
+      )}
+    </>`,
+      },
+    },
+  },
 } satisfies Story

@@ -1,7 +1,12 @@
+// This file has been automatically migrated to valid ESM format by Storybook.
+import { fileURLToPath } from "node:url";
 import type { StorybookConfig } from '@storybook/react-vite'
-import { svg } from './favicon'
+import { svg } from './favicon.ts'
 import { mergeConfig } from 'vite'
-import path from 'path'
+import path, { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const config: StorybookConfig = {
   staticDirs: ['./public'],
@@ -14,7 +19,12 @@ const config: StorybookConfig = {
     '!../src/core/Staging/ShadowAlpha.stories.tsx',
     '!../src/legacy/Staging/SpotLight/Spotlight.stories.tsx',
   ],
-  addons: ['@chromatic-com/storybook', '@storybook/addon-docs'],
+  addons: [
+    '@chromatic-com/storybook',
+    '@storybook/addon-docs',
+    "@storybook/addon-vitest",
+    "storybook-addon-tag-badges",
+  ],
 
   // Favicon (inline svg https://stackoverflow.com/questions/66935329/use-inline-svg-as-favicon)
   managerHead: (head) => `
@@ -36,7 +46,7 @@ const config: StorybookConfig = {
       resolve: {
         alias: {
           // Storybook-specific aliases
-          '@storybook-setup': path.resolve(__dirname, './Setup.tsx'),
+          '@sb': path.resolve(__dirname, '.'),
           'drei': path.resolve(__dirname, './drei-exports.ts'),
 
           // Project path aliases (from tsconfig)

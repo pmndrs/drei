@@ -6,6 +6,7 @@ export * from './Abstractions'
 export * from './Materials'
 export * from './Staging'
 export * from './Effects'
+export * from './UI'
 
 //* Core Components (use platform-aliased materials) ==============================
 export { Cloud, Clouds, CloudInstance } from '../core/Effects/Cloud/Cloud'

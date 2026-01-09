@@ -13,14 +13,14 @@ import {
   useDepthBuffer,
   useTexture,
 } from 'drei'
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 export default {
   title: 'Staging/Spotlight',
   component: SpotLight,
   decorators: [
-    (Story) => (
-      <Setup lights={false}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} lights={false}>
         <Story />
       </Setup>
     ),

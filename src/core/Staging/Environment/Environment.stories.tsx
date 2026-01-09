@@ -2,19 +2,19 @@ import * as React from 'react'
 import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { Environment, ContactShadows, PerspectiveCamera, OrbitControls } from 'drei'
 
-import { presetsObj } from '../../src/helpers/environment-assets'
+import { presetsObj } from '../environment-assets'
 import { ComponentProps } from 'react'
 
 export default {
   title: 'Staging/Environment',
   component: Environment,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new Vector3(0, 0, 10)} controls={false}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new Vector3(0, 0, 10)} controls={false}>
         <Story />
       </Setup>
     ),

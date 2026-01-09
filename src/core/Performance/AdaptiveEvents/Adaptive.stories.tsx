@@ -2,7 +2,7 @@ import React, { ComponentProps, Suspense } from 'react'
 import { Vector3, type Material, type Mesh } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { useGLTF, AdaptiveDpr, AdaptiveEvents, OrbitControls } from 'drei'
 
@@ -12,8 +12,9 @@ export default {
   title: 'Performance/Adaptive',
   component: AdaptiveDpr,
   decorators: [
-    (Story) => (
+    (Story, context) => (
       <Setup
+        renderer={context.globals.renderer}
         cameraPosition={new Vector3(0, 0, 30)}
         cameraFov={50}
         shadows

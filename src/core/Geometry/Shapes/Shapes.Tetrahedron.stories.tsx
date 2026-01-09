@@ -1,17 +1,17 @@
 import * as React from 'react'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
-import { Tetrahedron } from '../../src/core/shapes'
-import { useTurntable } from '../useTurntable'
+import { Tetrahedron } from 'drei'
+import { useTurntable } from '@sb/useTurntable'
 
 export default {
   title: 'Shapes/Tetrahedron',
   component: Tetrahedron,
   decorators: [
-    (Story) => (
-      <Setup>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer}>
         <Story />
       </Setup>
     ),

@@ -3,16 +3,16 @@ import * as THREE from 'three'
 import { createPortal, useFrame } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { Fbo, TorusKnot, Box, PerspectiveCamera } from 'drei'
 
 export default {
-  title: 'Misc/Fbo',
+  title: 'Portals/Fbo',
   component: Fbo,
   decorators: [
-    (Story) => (
-      <Setup>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer}>
         <Story />
       </Setup>
     ),

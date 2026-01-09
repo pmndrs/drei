@@ -1,22 +1,23 @@
 import * as React from 'react'
 import { Color, Vector3 } from 'three'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { MarchingCube, MarchingCubes, MarchingPlane, OrbitControls } from 'drei'
 import { useFrame } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 export default {
-  title: 'Abstractions/MarchingCubes',
+  title: 'Experimental/Geometry/MarchingCubes',
   component: MarchingCubes,
+  tags: ['experimental'],
   args: {
     resolution: 40,
     maxPolyCount: 40000,
   },
   decorators: [
-    (Story) => (
-      <Setup controls={false} cameraPosition={new Vector3(0, 0, 10)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} controls={false} cameraPosition={new Vector3(0, 0, 10)}>
         <Story />
       </Setup>
     ),

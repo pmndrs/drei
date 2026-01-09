@@ -53,7 +53,7 @@ function AxisHead({
   axisHeadScale = 1,
   ...props
 }: AxisHeadProps) {
-  const gl = useThree((state) => state.gl)
+  const renderer = useThree((state) => state.renderer)
   const texture = React.useMemo(() => {
     const canvas = document.createElement('canvas')
     canvas.width = 64
@@ -94,7 +94,7 @@ function AxisHead({
     >
       <spriteMaterial
         map={texture}
-        map-anisotropy={gl.capabilities.getMaxAnisotropy() || 1}
+        map-anisotropy={renderer.getMaxAnisotropy() || 1}
         alphaTest={0.3}
         opacity={label ? 1 : 0.75}
         toneMapped={false}

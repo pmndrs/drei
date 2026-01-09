@@ -64,7 +64,7 @@ const FaceMaterial = ({
   strokeColor = colors.stroke,
   opacity = 1,
 }: FaceTypeProps) => {
-  const gl = useThree((state) => state.gl)
+  const renderer = useThree((state) => state.renderer)
   const texture = React.useMemo(() => {
     const canvas = document.createElement('canvas')
     canvas.width = 128
@@ -83,7 +83,7 @@ const FaceMaterial = ({
   return (
     <meshBasicMaterial
       map={texture}
-      map-anisotropy={gl.capabilities.getMaxAnisotropy() || 1}
+      map-anisotropy={renderer.getMaxAnisotropy() || 1}
       attach={`material-${index}`}
       color={hover ? hoverColor : 'white'}
       transparent

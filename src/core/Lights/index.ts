@@ -1,4 +1,3 @@
-//* Core Lights ==============================
+// what happend to spotlight?
 
-// No components yet - lights are scattered in other categories
-export {}
+export { }

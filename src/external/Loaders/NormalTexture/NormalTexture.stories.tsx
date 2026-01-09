@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import { Mesh, Vector2, Vector3 } from 'three'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 import { useGLTF, NormalTexture } from 'drei'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
@@ -10,8 +10,8 @@ export default {
   title: 'Staging/NormalTexture',
   component: NormalTexture,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new Vector3(0, 0, 3)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new Vector3(0, 0, 3)}>
         <Story />
       </Setup>
     ),

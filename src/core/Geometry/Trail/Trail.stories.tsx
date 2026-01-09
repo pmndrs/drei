@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { Sphere, Trail, useTrail, Float, PerspectiveCamera } from 'drei'
 import { useFrame } from '@react-three/fiber'
@@ -11,8 +11,8 @@ export default {
   title: 'Misc/Trail',
   component: Trail,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new Vector3(0, 0, 5)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new Vector3(0, 0, 5)}>
         <Story />
       </Setup>
     ),

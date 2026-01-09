@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { Detailed, Icosahedron, OrbitControls } from 'drei'
 import { ComponentProps } from 'react'
@@ -11,8 +11,8 @@ export default {
   title: 'Abstractions/Detailed',
   component: Detailed,
   decorators: [
-    (Story) => (
-      <Setup controls={false} cameraPosition={new Vector3(0, 0, 100)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} controls={false} cameraPosition={new Vector3(0, 0, 100)}>
         <Story />
       </Setup>
     ),

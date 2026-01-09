@@ -2,7 +2,7 @@ import { createPortal, useFrame } from '@react-three/fiber'
 import React, { ComponentProps, useRef, useState } from 'react'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 import { ArcballControls, Box, PerspectiveCamera, Plane, useFBO } from 'drei'
 
 import { Scene, type OrthographicCamera, type PerspectiveCamera as PerspectiveCameraType } from 'three'
@@ -11,8 +11,8 @@ export default {
   title: 'Controls/ArcballControls',
   component: ArcballControls,
   decorators: [
-    (Story) => (
-      <Setup controls={false}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} controls={false}>
         <Story />
       </Setup>
     ),

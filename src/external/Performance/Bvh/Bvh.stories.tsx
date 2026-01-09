@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 import { MeshBVHHelper } from 'three-mesh-bvh'
 
 import { useHelper, Bvh, TorusKnot, OrbitControls } from 'drei'
@@ -9,11 +9,11 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { Group, Mesh, Raycaster, Vector3 } from 'three'
 
 export default {
-  title: 'Performance/Bvh',
+  title: 'External/Performance/Bvh',
   component: Bvh,
   decorators: [
-    (Story) => (
-      <Setup controls={false}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} controls={false}>
         <Story />
       </Setup>
     ),

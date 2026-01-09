@@ -3,7 +3,7 @@ import { Vector3 } from 'three'
 import { GLTF } from 'three-stdlib'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 import { useAnimations, useGLTF, useMatcapTexture } from 'drei'
 
@@ -28,8 +28,8 @@ export default {
   title: 'Abstractions/useAnimations',
   component: UseAnimation,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new Vector3(0, 0, 3)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new Vector3(0, 0, 3)}>
         <Story />
       </Setup>
     ),

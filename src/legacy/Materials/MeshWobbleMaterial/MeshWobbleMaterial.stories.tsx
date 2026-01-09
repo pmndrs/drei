@@ -2,7 +2,7 @@ import * as React from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 import { MeshWobbleMaterial, Torus } from 'drei'
 
 export default {
@@ -19,8 +19,8 @@ export default {
     factor: { control: { type: 'range', min: 0, max: 1, step: 0.1 } },
   },
   decorators: [
-    (Story) => (
-      <Setup>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer}>
         <Story />
       </Setup>
     ),

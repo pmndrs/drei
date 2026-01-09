@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { GLTFLoader, DRACOLoader, MeshoptDecoder, GLTF } from 'three-stdlib'
 import { ObjectMap, useLoader } from '@react-three/fiber'
-import { Clone, CloneProps } from '../../Abstractions/Clone/Clone'
+import { Clone, CloneProps } from '../../Helpers/Clone/Clone'
 
 let dracoLoader: DRACOLoader | null = null
 let decoderPath: string = 'https://www.gstatic.com/draco/versioned/decoders/1.5.5/'

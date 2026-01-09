@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import { Vector3, RepeatWrapping, Vector2 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 import { MeshReflectorMaterial, useTexture, TorusKnot, Box, Environment } from 'drei'
 
 export default {
@@ -22,8 +22,8 @@ export default {
     roughness: 1,
   },
   decorators: [
-    (Story) => (
-      <Setup cameraFov={20} cameraPosition={new Vector3(-2, 2, 6)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraFov={20} cameraPosition={new Vector3(-2, 2, 6)}>
         <Story />
       </Setup>
     ),

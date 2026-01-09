@@ -1,8 +1,8 @@
 import * as React from 'react'
 import * as THREE from 'three'
 
-import { Setup } from '@storybook-setup'
-import { useTurntable } from '../useTurntable'
+import { Setup } from '@sb/Setup'
+import { useTurntable } from '@sb/useTurntable'
 
 import { Icosahedron, Html, OrthographicCamera } from 'drei'
 import { HtmlProps, CalculatePosition } from '../../src/web/Html'
@@ -13,8 +13,8 @@ export default {
   title: 'Misc/Html',
   component: Html,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new THREE.Vector3(-20, 20, -20)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new THREE.Vector3(-20, 20, -20)}>
         <Story />
       </Setup>
     ),

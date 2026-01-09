@@ -1,5 +1,6 @@
 import { useFrame } from '@react-three/fiber'
-import { AsciiRenderer, OrbitControls } from '@react-three/drei/core'
+import { OrbitControls } from '@react-three/drei/core'
+import { AsciiRenderer } from '@react-three/drei/legacy'
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 import { useRef } from 'react'
@@ -29,7 +30,7 @@ function Scene() {
   return (
     <>
       <OrbitControls makeDefault />
-      
+
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
 
@@ -53,4 +54,3 @@ export default function AsciiRendererDemo() {
     </div>
   )
 }
-

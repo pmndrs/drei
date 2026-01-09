@@ -4,14 +4,14 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Box, Html, ScreenSizer } from 'drei'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 
 export default {
   title: 'Abstractions/ScreenSizer',
   component: ScreenSizer,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new Vector3(0, 0, 10)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new Vector3(0, 0, 10)}>
         <Story />
       </Setup>
     ),

@@ -2,15 +2,15 @@ import * as React from 'react'
 import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@storybook-setup'
+import { Setup } from '@sb/Setup'
 import { Grid, Box } from 'drei'
 
 export default {
-  title: 'Gizmos/Grid',
+  title: 'Staging/Grid',
   component: Grid,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new Vector3(-5, 5, 10)}>
+    (Story, context) => (
+      <Setup renderer={context.globals.renderer} cameraPosition={new Vector3(-5, 5, 10)}>
         <Story />
       </Setup>
     ),

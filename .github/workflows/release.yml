@@ -9,6 +9,10 @@ on:
       - 'rc'
   pull_request: {}
 
+permissions:
+  contents: write
+  id-token: write
+
 # Cancel any previous run (see: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#concurrency)
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -49,4 +53,3 @@ jobs:
       - run: yarn release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

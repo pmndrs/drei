@@ -1,0 +1,6 @@
+export * from './CubeTexture'
+export * from './TrailTexture'
+export * from './VideoTexture'
+export * from './WebcamVideoTexture'
+export * from './ScreenVideoTexture'
+export * from './NormalTexture'

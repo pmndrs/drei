@@ -1,0 +1,27 @@
+---
+title: Cloud
+sourcecode: src/core/Effects/Cloud/Cloud.tsx
+---
+
+{/* AUTO:badges */}
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="gwthnh" />
+  </li>
+  <li>
+    <Codesandbox id="mbfzf" />
+  </li>
+</Grid>
+
+{/* AUTO:description */}
+
+Use the `<Clouds>` provider to glob all clouds into a single, instanced draw call.
+
+```jsx
+<Clouds material={THREE.MeshBasicMaterial}>
+  <Cloud segments={40} bounds={[10, 2, 2]} volume={10} color="orange" />
+  <Cloud seed={1} scale={2} volume={5} color="hotpink" fade={100} />
+</Clouds>
+```
+

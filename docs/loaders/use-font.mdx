@@ -1,17 +1,14 @@
 ---
 title: useFont
-sourcecode: src/core/useFont.tsx
+sourcecode: src/core/Loaders/useFont/useFont.tsx
 ---
 
-Uses THREE.FontLoader to load a font and returns a `THREE.Font` object. It also accepts a JSON object as a parameter. You can use this to preload or share a font across multiple components.
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-usefont--usefont-st)
+
+Loads a font for use with Text3D or troika-three-text.
+
+### Basic usage
 
 ```jsx
-const font = useFont('/fonts/helvetiker_regular.typeface.json')
-return <Text3D font={font} />
-```
-
-In order to preload you do this:
-
-```jsx
-useFont.preload('/fonts/helvetiker_regular.typeface.json')
+const font = useFont('/fonts/helvetiker.json')
 ```

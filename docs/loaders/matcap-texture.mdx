@@ -1,0 +1,16 @@
+---
+title: MatcapTexture
+sourcecode: src/core/Loaders/MatcapTexture/MatcapTexture.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-matcaptexture--matcaptexture-st)
+
+Loads a matcap texture from the matcaps repository.
+
+### Basic usage
+
+```jsx
+<MatcapTexture id={111} format={1024}>
+  {(texture) => <meshMatcapMaterial matcap={texture} />}
+</MatcapTexture>
+```

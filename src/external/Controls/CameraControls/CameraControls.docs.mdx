@@ -1,0 +1,39 @@
+---
+title: CameraControls
+sourcecode: src/external/Controls/CameraControls/CameraControls.tsx
+---
+
+{/* AUTO:badges */}
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="sew669" />
+  </li>
+</Grid>
+
+{/* AUTO:description */}
+
+{/* AUTO:example */}
+
+## Breaking changes
+
+### 10.5.0
+
+This drei version includes camera-controls v3: see the [migration guide](https://github.com/yomotsu/camera-controls?tab=readme-ov-file#v3-migration-guide)
+
+## Recipes
+
+### Custom subclass
+
+You can pass a custom subclass of `CameraControlsImpl` to the `impl` prop. This allows you to override methods or add new functionality:
+
+```tsx
+class MyCameraControls extends CameraControlsImpl {
+  override rotate(...args: Parameters<CameraControlsImpl['rotate']>) {
+    console.log('my rotate', ...args)
+    return super.rotate(...args)
+  }
+}
+
+<CameraControls impl={MyCameraControls} />
+```

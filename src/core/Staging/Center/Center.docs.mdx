@@ -1,0 +1,37 @@
+---
+title: Center
+sourcecode: src/core/Staging/Center/Center.tsx
+---
+
+{/* AUTO:badges */}
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="x6obrb" />
+  </li>
+  <li>
+    <Codesandbox id="v8s9ij" />
+  </li>
+</Grid>
+
+{/* AUTO:description */}
+
+```jsx
+<Center top left>
+  <mesh />
+</Center>
+```
+
+Optionally you can define `onCentered` which calls you back when contents have been measured. This would allow you to easily scale to fit. The following for instance fits a model to screen height.
+
+```jsx
+function ScaledModel() {
+  const viewport = useThree((state) => state.viewport)
+  return (
+    <Center onCentered={({ container, height }) => container.scale.setScalar(viewport.height / height)}>
+      <Model />
+    </Center>
+  )
+}
+```
+

@@ -1,0 +1,43 @@
+---
+title: Image
+sourcecode: src/legacy/Materials/Image/Image.tsx
+---
+
+{/* AUTO:badges */}
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="9s2wd9" />
+  </li>
+  <li>
+    <Codesandbox id="l4klb" />
+  </li>
+  <li>
+    <Codesandbox id="gsm1y" />
+  </li>
+  <li>
+    <Codesandbox id="x8gvs" />
+  </li>
+  <li>
+    <Codesandbox id="yjhzv" />
+  </li>
+</Grid>
+
+{/* AUTO:description */}
+
+{/* AUTO:example */}
+
+You can have custom planes, for instance a rounded-corner plane.
+
+```jsx
+import { extend } from '@react-three/fiber'
+import { Image } from '@react-three/drei'
+import { easing, geometry } from 'maath'
+
+extend({ RoundedPlaneGeometry: geometry.RoundedPlaneGeometry })
+
+<Image url="/file.jpg">
+  <roundedPlaneGeometry args={[1, 2, 0.15]} />
+</Image>
+```
+

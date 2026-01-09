@@ -1,10 +1,10 @@
 ---
 title: AdaptiveEvents
-sourcecode: src/core/AdaptiveEvents.tsx
+sourcecode: src/core/Performance/AdaptiveEvents/AdaptiveEvents.tsx
 ---
 
-Drop this component into your scene and it will switch off the raycaster while the system is in regress.
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/performances-adaptiveevents--adaptiveevents-st)
 
-```jsx
-<AdaptiveEvents />
-```
+Disables pointer events when performance drops below threshold.
+Re-enables them when performance recovers to full (1).
+

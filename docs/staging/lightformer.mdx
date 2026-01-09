@@ -1,23 +1,15 @@
 ---
 title: Lightformer
-sourcecode: src/core/Lightformer.tsx
+sourcecode: src/core/Staging/Lightformer/Lightformer.tsx
 ---
 
-<Grid cols={4}>
-  <li>
-    <Codesandbox id="lwo219" />
-  </li>
-</Grid>
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-lightformer--lightformer-st)
 
-This component draws flat rectangles, circles or rings, mimicking the look of a light-former. You can set the output `intensity`, which will effect emissiveness once you put it into an HDRI `<Environment>`, where it mostly belong. It will act like a real light without the expense, you can have as many as you want.
+A shape that emits light for use inside Environment portals.
+Multiplies color by intensity for emissive effect.
+
+### Basic usage
 
 ```jsx
-<Environment>
-  <Lightformer
-    form="rect" // circle | ring | rect (optional, default = rect)
-    intensity={1} // power level (optional = 1)
-    color="white" // (optional = white)
-    scale={[10, 5]} // Scale it any way you prefer (optional = [1, 1])
-    target={[0, 0, 0]} // Target position (optional = undefined)
-  />
+<Lightformer form="circle" intensity={2} position={[0, 5, -2]} />
 ```

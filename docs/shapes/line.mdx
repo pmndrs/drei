@@ -1,21 +1,21 @@
 ---
 title: Line
-sourcecode: src/core/Line.tsx
+sourcecode: src/core/Geometry/Line/Line.tsx
 ---
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shapes-line--basic-line-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/shapes-line--line-st)
 
 Renders a THREE.Line2 or THREE.LineSegments2 (depending on the value of `segments`).
 
+### Basic usage
+
 ```jsx
 <Line
-  points={[[0, 0, 0], ...]}       // Array of points, Array<Vector3 | Vector2 | [number, number, number] | [number, number] | number>
-  color="black"                   // Default
-  lineWidth={1}                   // In pixels (default)
-  segments                        // If true, renders a THREE.LineSegments2. Otherwise, renders a THREE.Line2
-  dashed={false}                  // Default
-  vertexColors={[[0, 0, 0], ...]} // Optional array of RGB values for each point
-  {...lineProps}                  // All THREE.Line2 props are valid
-  {...materialProps}              // All THREE.LineMaterial props are valid
+  points={[[0, 0, 0], [1, 0, 0], [1, 1, 0]]}
+  color="black"
+  lineWidth={1}
+  segments={false}
+  dashed={false}
+  vertexColors={[[0, 0, 0], [1, 0, 0]]} // Optional RGB for each point
 />
 ```

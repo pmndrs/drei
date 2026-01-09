@@ -1,63 +1,14 @@
 ---
 title: useSpriteLoader
-sourcecode: src/core/useSpriteLoader.tsx
+sourcecode: src/core/Loaders/useSpriteLoader/useSpriteLoader.tsx
 ---
 
-Loads texture and JSON files with multiple or single animations and parses them into appropriate format. These assets can be used by multiple SpriteAnimator components to save memory and loading times.
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-usespriteloader--usespriteloader-st)
 
-Returns: `{spriteTexture:Texture, spriteData:{any[], object}, aspect:Vector3}`
+Loads a sprite sheet and parses it for use with SpriteAnimator.
 
-- spriteTexture: The ThreeJS Texture
-- spriteData: A collection of the sprite frames, and some meta information (width, height)
-- aspect: Information about the aspect ratio of the sprite sheet
-
-```ts
-type Props = {
-  /** The texture url to load the sprite frames from */
-  input?: Url | null
-  /** The JSON data describing the position of the frames within the texture (optional) */
-  json?: string | null
-  /** The animation names into which the frames will be divided into (optional) */
-  animationNames?: string[] | null
-  /** The number of frames on a standalone (no JSON data) spritesheet (optional)*/
-  numberOfFrames?: number | null
-  /** The callback to call when all textures and data have been loaded and parsed */
-  onLoad?: (texture: Texture, textureData?: any) => void
-  /** Allows the configuration of the canvas options */
-  canvasRenderingContext2DSettings?: CanvasRenderingContext2DSettings
-}
-```
+### Basic usage
 
 ```jsx
-const { spriteObj } = useSpriteLoader(
-  'multiasset.png',
-  'multiasset.json',
-
-  ['orange', 'Idle Blinking', '_Bat'],
-  null
-)
-
-<SpriteAnimator
-  position={[4.5, 0.5, 0.1]}
-  autoPlay={true}
-  loop={true}
-  scale={5}
-  frameName={'_Bat'}
-  animationNames={['_Bat']}
-  spriteDataset={spriteObj}
-  alphaTest={0.01}
-  asSprite={false}
-/>
-
-<SpriteAnimator
-  position={[5.5, 0.5, 5.8]}
-  autoPlay={true}
-  loop={true}
-  scale={5}
-  frameName={'Idle Blinking'}
-  animationNames={['Idle Blinking']}
-  spriteDataset={spriteObj}
-  alphaTest={0.01}
-  asSprite={false}
-/>
+const { spriteObj, texture } = useSpriteLoader('/spritesheet.png', spriteData)
 ```

@@ -1,6 +1,6 @@
 ---
 title: Sky
-sourcecode: src/core/Sky.tsx
+sourcecode: src/core/Staging/Sky/Sky.tsx
 ---
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-sky--sky-st)
@@ -11,7 +11,7 @@ sourcecode: src/core/Sky.tsx
   </li>
 </Grid>
 
-Adds a [sky](https://threejs.org/examples/#webgl_shaders_sky) to your scene.
+Adds a sky dome to your scene using THREE's Sky shader.
 
 ```jsx
 <Sky distance={450000} sunPosition={[0, 1, 0]} inclination={0} azimuth={0.25} {...props} />

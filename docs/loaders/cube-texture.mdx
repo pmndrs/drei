@@ -1,0 +1,16 @@
+---
+title: CubeTexture
+sourcecode: src/core/Loaders/CubeTexture/CubeTexture.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-cubetexture--cubetexture-st)
+
+Loads a cube texture (6 images) for use as environment maps.
+
+### Basic usage
+
+```jsx
+<CubeTexture files={['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']} path="cube/">
+  {(texture) => <primitive object={texture} attach="background" />}
+</CubeTexture>
+```

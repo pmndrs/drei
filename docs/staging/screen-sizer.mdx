@@ -1,0 +1,16 @@
+---
+title: ScreenSizer
+sourcecode: src/core/Staging/ScreenSizer/ScreenSizer.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-screensizer--screensizer-st)
+
+Adds an `<object3D />` that scales objects to screen space.
+
+### Basic usage
+
+```jsx
+<ScreenSizer scale={1}>
+  <Box args={[100, 100, 100]} /> // will render roughly as a 100px box
+</ScreenSizer>
+```

@@ -1,0 +1,56 @@
+---
+title: ScrollControls
+sourcecode: src/core/Controls/ScrollControls/ScrollControls.tsx
+---
+
+{/* AUTO:badges */}
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="l4klb" />
+  </li>
+  <li>
+    <Codesandbox id="4m0d0" />
+  </li>
+  <li>
+    <Codesandbox id="gsm1y" />
+  </li>
+  <li>
+    <Codesandbox id="x8gvs" />
+  </li>
+  <li>
+    <Codesandbox id="yjhzv" />
+  </li>
+  <li>
+    <Codesandbox id="4jr4p" />
+  </li>
+</Grid>
+
+{/* AUTO:description */}
+
+{/* AUTO:example */}
+
+### useScroll hook
+
+```tsx
+function Foo() {
+  const data = useScroll()
+  useFrame(() => {
+    // data.offset = current scroll position, between 0 and 1, dampened
+    // data.delta = current delta, between 0 and 1, dampened
+
+    // Will be 0 when the scrollbar is at the starting position,
+    // then increase to 1 until 1 / 3 of the scroll distance is reached
+    const a = data.range(0, 1 / 3)
+    // Will start increasing when 1 / 3 of the scroll distance is reached,
+    // and reach 1 when it reaches 2 / 3rds.
+    const b = data.range(1 / 3, 1 / 3)
+    // Will move between 0-1-0 for the selected range
+    const c = data.curve(1 / 3, 1 / 3)
+    // Returns true if the offset is in range and false if it isn't
+    const d = data.visible(2 / 3, 1 / 3)
+  })
+  return <mesh />
+}
+```
+

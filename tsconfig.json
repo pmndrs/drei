@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "lib": ["es2019", "dom"],
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "esModuleInterop": false,
-    "allowSyntheticDefaultImports": false,
+    "target": "ES2020",
+    "lib": ["ES2020", "dom"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "jsx": "react",
     "pretty": true,
     "strict": true,
@@ -16,8 +16,25 @@
     "outDir": "dist",
     "resolveJsonModule": true,
     "noImplicitAny": false,
-    "noImplicitThis": false
+    "noImplicitThis": false,
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "baseUrl": ".",
+    "paths": {
+      "three/webgpu": ["./node_modules/@types/three/build/three.webgpu.d.ts"],
+      "three/tsl": ["./node_modules/@types/three/build/three.tsl.d.ts"],
+      "#three": ["./node_modules/three"],
+      "#three-addons": ["./src/utils/three-addons"],
+      "#drei-platform": ["./src/utils/drei-platform"],
+      "@core/*": ["./src/core/*"],
+      "@legacy/*": ["./src/legacy/*"],
+      "@webgpu/*": ["./src/webgpu/*"],
+      "@external/*": ["./src/external/*"],
+      "@experimental/*": ["./src/experimental/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@sb/*": ["./.storybook/*"],
+      "drei": ["./.storybook/drei-exports.ts"]
+    }
   },
-  "include": ["./src"],
-  "exclude": ["./node_modules/**/*"]
+  "include": ["./src", "./.storybook"],
+  "exclude": ["./node_modules/**/*", "**/*.test.ts", "**/*.test.tsx"]
 }

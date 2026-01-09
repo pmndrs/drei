@@ -1,43 +1,16 @@
 ---
 title: Resize
-sourcecode: src/core/Resize.tsx
+sourcecode: src/core/Staging/Resize/Resize.tsx
 ---
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-resize)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-resize--resize-st)
 
-<Grid cols={4}>
-  <li>
-    <Codesandbox id="6yg0i3" />
-  </li>
-</Grid>
+Resizes children to fit within specified dimensions.
 
-Calculates a boundary box and scales its children so the highest dimension is constrained by 1. NB: proportions are preserved.
-
-```tsx
-export type ResizeProps = ThreeElements['group'] & {
-  /** constrained by width dimension (x axis), undefined */
-  width?: boolean
-  /** constrained by height dimension (y axis), undefined */
-  height?: boolean
-  /** constrained by depth dimension (z axis), undefined */
-  depth?: boolean
-  /** You can optionally pass the Box3, otherwise will be computed, undefined */
-  box3?: THREE.Box3
-  /** See https://threejs.org/docs/index.html?q=box3#api/en/math/Box3.setFromObject */
-  precise?: boolean
-}
-```
+### Basic usage
 
 ```jsx
-<Resize>
+<Resize width height>
   <mesh />
-</Resize>
-```
-
-You can also specify the dimension to be constrained by:
-
-```jsx
-<Resize height>
-  <Box args={[70, 40, 20]}>
 </Resize>
 ```

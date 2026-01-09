@@ -1,0 +1,93 @@
+---
+title: VideoTexture / useVideoTexture
+sourcecode: src/core/Loaders/VideoTexture/VideoTexture.tsx
+---
+
+{/* AUTO:badges */}
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="39hg8" />
+  </li>
+  <li>
+    <Codesandbox id="2cemck" />
+  </li>
+</Grid>
+
+A convenience hook that returns a `THREE.VideoTexture` and integrates loading into suspense.
+
+By default it falls back until the `loadedmetadata` event. Then it starts playing the video, which, if the video is muted, is allowed in the browser without user interaction.
+
+```jsx
+const texture = useVideoTexture("/video.mp4")
+return (
+  <mesh>
+    <meshBasicMaterial map={texture} toneMapped={false} />
+```
+
+## `MediaStream`
+
+It also accepts a [`MediaStream`](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream) from eg. [`.getDisplayMedia()`](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia) or [`.getUserMedia()`](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia):
+
+```jsx
+const [stream, setStream] = useState<MediaStream | null>(null)
+
+return (
+  <mesh onClick={async () => setStream(await navigator.mediaDevices.getDisplayMedia({ video: true }))}>
+    <React.Suspense fallback={<meshBasicMaterial wireframe />}>
+      <VideoMaterial src={stream} />
+    </React.Suspense>
+```
+
+```jsx
+function VideoMaterial({ src }) {
+  const texture = useVideoTexture(src)
+
+  return <meshBasicMaterial map={texture} toneMapped={false} />
+}
+```
+
+NB: It's important to wrap `VideoMaterial` into `React.Suspense` since, `useVideoTexture(src)` here will be suspended until the user shares its screen.
+
+## HLS
+
+`useVideoTexture` supports `.m3u8` HLS manifest via [hls.js](https://github.com/video-dev/hls.js):
+
+```jsx
+const texture = useVideoTexture('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8')
+```
+
+You can pass [`hls` config](https://github.com/video-dev/hls.js/blob/master/docs/API.md#fine-tuning):
+
+```jsx
+const texture = useVideoTexture('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', {
+  hls: { abrEwmaFastLive: 1.0, abrEwmaSlowLive: 3.0, enableWorker: true },
+})
+```
+
+## `requestVideoFrameCallback` (rVFC)
+
+`useVideoTexture` supports [`requestVideoFrameCallback`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLVideoElement/requestVideoFrameCallback):
+
+```jsx
+useVideoTexture(src, {
+  onVideoFrame: (now, metadata) => {}
+})
+```
+
+## `<VideoTexture>` Component
+
+You can access the texture via children's render prop:
+
+```jsx
+<VideoTexture src="/video.mp4">
+  {(texture) => <meshBasicMaterial map={texture} />}
+```
+
+or exposed via `ref`:
+
+```jsx
+const textureRef = useRef()
+<VideoTexture ref={textureRef} src="/video.mp4" />
+```
+

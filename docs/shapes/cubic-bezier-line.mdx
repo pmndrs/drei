@@ -1,23 +1,20 @@
 ---
 title: CubicBezierLine
-sourcecode: src/core/CubicBezierLine.tsx
+sourcecode: src/core/Geometry/CubicBezierLine/CubicBezierLine.tsx
 ---
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/shapes-line--cubic-bezier-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/shapes-cubicbezierline--cubicbezierline-st)
 
 Renders a THREE.Line2 using THREE.CubicBezierCurve3 for interpolation.
 
+### Basic usage
+
 ```jsx
 <CubicBezierLine
-  start={[0, 0, 0]}               // Starting point
-  end={[10, 0, 10]}               // Ending point
-  midA={[5, 0, 0]}                // First control point
-  midB={[0, 0, 5]}                // Second control point
-  color="black"                   // Default
-  lineWidth={1}                   // In pixels (default)
-  dashed={false}                  // Default
-  vertexColors={[[0, 0, 0], ...]} // Optional array of RGB values for each point
-  {...lineProps}                  // All THREE.Line2 props are valid
-  {...materialProps}              // All THREE.LineMaterial props are valid
+  start={[0, 0, 0]}
+  midA={[1, 1, 0]}
+  midB={[2, 1, 0]}
+  end={[3, 0, 0]}
+  segments={20}
 />
 ```

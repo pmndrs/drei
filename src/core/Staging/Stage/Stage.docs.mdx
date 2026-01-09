@@ -1,0 +1,33 @@
+---
+title: Stage
+sourcecode: src/core/Staging/Stage/Stage.tsx
+---
+
+{/* AUTO:badges */}
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="57iefg" />
+  </li>
+</Grid>
+
+{/* AUTO:description */}
+
+By default it gives you contact shadows and auto-centering.
+
+```jsx
+<Stage adjustCamera intensity={0.5} shadows="contact" environment="city">
+  <mesh />
+</Stage>
+```
+
+For a little more realistic results enable accumulative shadows, which requires that the canvas, and models, can handle shadows.
+
+```jsx
+<Canvas shadows>
+  <Stage shadows="accumulative">
+    <mesh castShadow />
+  </Stage>
+</Canvas>
+```
+

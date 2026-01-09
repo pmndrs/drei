@@ -1,0 +1,19 @@
+---
+title: Detailed
+sourcecode: src/core/Geometry/Detailed/Detailed.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/shapes-detailed--detailed-st)
+
+Abstraction of THREE's LOD (Level of Detail).
+Renders different children based on camera distance.
+
+### Basic usage
+
+```jsx
+<Detailed distances={[0, 50, 100]}>
+  <HighDetailMesh />
+  <MediumDetailMesh />
+  <LowDetailMesh />
+</Detailed>
+```

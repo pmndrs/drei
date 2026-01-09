@@ -1,0 +1,21 @@
+---
+title: Splat
+sourcecode: src/external/Geometry/Splat/Splat.tsx
+---
+
+{/* AUTO:badges */}
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="qp4jmf" />
+  </li>
+</Grid>
+
+{/* AUTO:description */}
+
+{/* AUTO:example */}
+
+In order to depth sort multiple splats correctly you can either use alphaTest, for instance with a low value. But keep in mind that this can show a slight outline under some viewing conditions.
+
+You can also use alphaHash, but this can be slower and create some noise, you would typically get rid of the noise in postprocessing with a TAA pass. You don't have to use alphaHash on all splats.
+

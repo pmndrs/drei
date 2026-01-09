@@ -1,0 +1,53 @@
+---
+title: Caustics
+sourcecode: src/legacy/Materials/Caustics/Caustics.tsx
+---
+
+{/* AUTO:badges */}
+
+<Grid cols={4}>
+  <li>
+    <Codesandbox id="szj6p7" />
+  </li>
+  <li>
+    <Codesandbox id="g7wbe0" />
+  </li>
+</Grid>
+
+Caustics are swirls of light that appear when light passes through transmissive surfaces. This component uses a raymarching technique to project caustics onto a catcher plane. It is based on [github/N8python/caustics](https://github.com/N8python/caustics).
+
+{/* AUTO:description */}
+
+It will create a transparent plane that blends the caustics of the objects it receives into your scene. It will only render once and not take resources any longer!
+
+Make sure to use the `debug` flag to help you stage your contents. Like ContactShadows and AccumulativeShadows the plane faces Y up. It is recommended to use [leva](https://github.com/pmndrs/leva) to configure the props above as some can be micro fractional depending on the models (intensity, worldRadius, ior and backsideIOR especially).
+
+```jsx
+<Caustics debug backside lightSource={[2.5, 5, -2.5]}>
+  <Bottle />
+  <WineGlass>
+</Caustics>
+```
+
+Sometimes you want to combine caustics for even better visuals, or if you want to emulate multiple lightsources. Use the `causticsOnly` flag in such cases and it will use the model inside only for calculations. Since all loaders in Fiber should be cached there is no expense or memory overhead doing this.
+
+```jsx
+<Caustics backside lightSource={[2.5, 5, -2.5]} >
+  <WineGlass />
+</Caustics>
+<Caustics causticsOnly backside lightSource={[-2.5, 5, 2.5]} ior={0.79} worldRadius={0.0124}>
+  <WineGlass />
+</Caustics>
+```
+
+The light source can either be defined by prop or by reference. Use the latter if you want to control the light source, for instance in order to move or animate it. Runtime caustics with frames set to `Infinity`, a low resolution and no backside can be feasible.
+
+```jsx
+const lightSource = useRef()
+
+<Caustics frames={Infinity} resolution={256} lightSource={lightSource} >
+  <WineGlass />
+</Caustics>
+<object3d ref={lightSource} position={[2.5, 5, -2.5]} />
+```
+

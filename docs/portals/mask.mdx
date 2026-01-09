@@ -1,64 +1,28 @@
 ---
-title: Mask
-sourcecode: src/core/Mask.tsx
+title: useMask
+sourcecode: src/core/Portal/Mask/Mask.tsx
 ---
 
-<Grid cols={4}>
-  <li>
-    <Codesandbox id="7n2yru" />
-  </li>
-  <li>
-    <Codesandbox id="z3f2mw" />
-  </li>
-</Grid>
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/portals-usemask--usemask-st)
 
-Masks use the stencil buffer to cut out areas of the screen. This is usually cheaper as it doesn't require double renders or createPortal.
+Returns stencil properties to apply to a material for masking.
 
-```tsx
-<Mask
-  /** Each mask must have an id, you can have compound masks referring to the same id */
-  id: number
-  /** If colors of the masks own material will leak through, default: false */
-  colorWrite?: boolean
-  /** If depth  of the masks own material will leak through, default: false */
-  depthWrite?: boolean
-/>
-```
-
-First you need to define a mask, give it the shape that you want.
+### Define mask and apply to mesh
 
 ```jsx
 <Mask id={1}>
   <planeGeometry />
-  <meshBasicMaterial />
 </Mask>
+
+function MaskedMesh() {
+  const stencil = useMask(1)
+  return <mesh><meshStandardMaterial {...stencil} /></mesh>
+}
 ```
 
-Now refer to it with the `useMask` hook and the same id, your content will now be masked out by the geometry defined above.
+### Compound mask (multiple shapes, same id)
 
 ```jsx
-const stencil = useMask(1)
-return (
-  <mesh>
-    <torusKnotGeometry />
-    <meshStandardMaterial {...stencil} />
-```
-
-You can build compound masks with multiple shapes by re-using an id. You can also use the mask as a normal mesh by providing `colorWrite` and `depthWrite` props.
-
-```jsx
-<Mask position={[-1, 0, 0]} id={1}>
-  <planeGeometry />
-  <meshBasicMaterial />
-</Mask>
-<Mask colorWrite depthWrite position={[1, 0, 0]} id={1}>
-  <circleGeometry />
-  <meshBasicMaterial />
-</Mask>
-```
-
-Invert masks individually by providing a 2nd boolean argument to the `useMask` hook.
-
-```jsx
-const stencil = useMask(1, true)
+<Mask id={1} position={[-1, 0, 0]}><planeGeometry /></Mask>
+<Mask id={1} position={[1, 0, 0]}><circleGeometry /></Mask>
 ```

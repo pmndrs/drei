@@ -1,33 +1,19 @@
 ---
 title: BBAnchor
-sourcecode: src/core/BBAnchor.tsx
+sourcecode: src/core/Staging/BBAnchor/BBAnchor.tsx
 ---
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-bbanchor--bb-anchor-with-html)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-bbanchor--bbanchor-st)
 
-A component using AABB (Axis-aligned bounding boxes) to offset children position by specified multipliers (`anchor` property) on each axis. You can use this component to change children positioning in regard of the parent's bounding box, eg. pinning [Html](#html) component to one of the parent's corners. Multipliers determine the offset value based on the `AABB`'s size:
+Anchors children to the bounding box of the parent mesh.
 
-```
-childrenAnchor = boundingBoxPosition + (boundingBoxSize * anchor / 2)
-```
+### Basic usage
 
 ```jsx
-<BBAnchor
-  anchor // THREE.Vector3 or [number, number, number]
-  {...groupProps} // All THREE.Group props are valid
->
-  {children}
-</BBAnchor>
-```
-
-For instance, one could want the Html component to be pinned to `positive x`, `positive y`, and `positive z` corner of a [Box](#shapes) object:
-
-```jsx
-<Box>
-  <BBAnchor anchor={[1, 1, 1]}>
-    <Html center>
-      <span>Hello world!</span>
-    </Html>
+<mesh>
+  <boxGeometry />
+  <BBAnchor anchor={[1, 1, 0]}>
+    <Html>Top Right</Html>
   </BBAnchor>
-</Box>
+</mesh>
 ```

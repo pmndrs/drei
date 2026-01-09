@@ -1,0 +1,19 @@
+---
+title: ScreenSizer
+sourcecode: src/core/Staging/ScreenSizer/ScreenSizer.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-screensizer--screensizer-st)
+
+Wraps children in an `Object3D` and attempts to scale from
+world units to screen units * scale factor.
+
+For example, this will render a box of roughly 1x1 pixel size,
+independently of how far the camera is.
+
+```jsx
+<ScreenSizer>
+  <Box />
+</ScreenSizer>
+```
+

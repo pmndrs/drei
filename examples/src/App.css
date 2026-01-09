@@ -1,0 +1,96 @@
+/* Layout ============================== */
+
+.app {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+.main-content {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+  background: var(--color-background);
+}
+
+/* Home Screen ============================== */
+
+.home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 40px;
+  text-align: center;
+}
+
+.home h1 {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.home p {
+  font-size: 18px;
+  color: var(--color-muted-foreground);
+  margin-bottom: 40px;
+}
+
+.stats {
+  display: flex;
+  gap: 40px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stat strong {
+  font-size: 32px;
+  color: var(--color-primary);
+}
+
+.stat span {
+  font-size: 14px;
+  color: var(--color-muted-foreground);
+}
+
+/* Demo Container ============================== */
+
+.demo-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.demo-info {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 16px 20px;
+  border-radius: 8px;
+  z-index: 100;
+  max-width: 400px;
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border);
+}
+
+.demo-info h2 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.demo-info p {
+  font-size: 14px;
+  color: #ccc;
+  line-height: 1.5;
+}
+
+.demo-canvas {
+  width: 100%;
+  height: 100%;
+}

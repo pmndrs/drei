@@ -1,17 +1,14 @@
 ---
 title: Shadow
-sourcecode: src/core/Shadow.tsx
+sourcecode: src/core/Staging/Shadow/Shadow.tsx
 ---
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-shadow--shadow-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-shadow--shadow-st)
 
-A cheap canvas-texture-based circular gradient.
+A fake shadow plane with a radial gradient texture.
+
+### Basic usage
 
 ```jsx
-<Shadow
-  color="black"
-  colorStop={0}
-  opacity={0.5}
-  fog={false} // Reacts to fog (default=false)
-/>
+<Shadow color="black" opacity={0.5} position={[0, 0, 0]} />
 ```

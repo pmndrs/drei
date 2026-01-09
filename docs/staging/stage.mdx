@@ -1,6 +1,6 @@
 ---
 title: Stage
-sourcecode: src/core/Stage.tsx
+sourcecode: src/core/Staging/Stage/Stage.tsx
 ---
 
 [![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-stage--stage-st)
@@ -11,43 +11,8 @@ sourcecode: src/core/Stage.tsx
   </li>
 </Grid>
 
-Creates a "stage" with proper studio lighting, 0/0/0 top-centred, model-shadows, ground-shadows and optional zoom to fit. Make sure to set `makeDefault` on your controls when `adjustCamera` is true!
-
-```tsx
-type StageProps = {
-  /** Lighting setup, default: "rembrandt" */
-  preset?:
-    | 'rembrandt'
-    | 'portrait'
-    | 'upfront'
-    | 'soft'
-    | { main: [x: number, y: number, z: number]; fill: [x: number, y: number, z: number] }
-  /** Controls the ground shadows, default: "contact" */
-  shadows?: boolean | 'contact' | 'accumulative' | StageShadows
-  /** Optionally wraps and thereby centers the models using <Bounds>, can also be a margin, default: true */
-  adjustCamera?: boolean | number
-  /** The default environment, default: "city" */
-  environment?: PresetsType | Partial<EnvironmentProps>
-  /** The lighting intensity, default: 0.5 */
-  intensity?: number
-  /** To adjust centering, default: undefined */
-  center?: Partial<CenterProps>
-}
-
-type StageShadows = Partial<AccumulativeShadowsProps> &
-  Partial<RandomizedLightProps> &
-  Partial<ContactShadowsProps> & {
-    type: 'contact' | 'accumulative'
-    /** Shadow plane offset, default: 0 */
-    offset?: number
-    /** Shadow bias, default: -0.0001 */
-    bias?: number
-    /** Shadow normal bias, default: 0 */
-    normalBias?: number
-    /** Shadow map size, default: 1024 */
-    size?: number
-  }
-```
+Creates a "stage" for your object with lighting and environment.
+Automatically centers and scales children for presentation.
 
 By default it gives you contact shadows and auto-centering.
 
@@ -66,3 +31,4 @@ For a little more realistic results enable accumulative shadows, which requires 
   </Stage>
 </Canvas>
 ```
+

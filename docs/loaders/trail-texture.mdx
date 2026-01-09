@@ -1,0 +1,17 @@
+---
+title: useTrailTexture
+sourcecode: src/core/Loaders/TrailTexture/TrailTexture.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/loaders-usetrailtexture--usetrailtexture-st)
+
+Creates a texture that renders a trail effect from pointer movement.
+
+### Basic usage
+
+```jsx
+const [texture, onMove] = useTrailTexture()
+return <mesh onPointerMove={onMove}>
+  <meshBasicMaterial map={texture} />
+</mesh>
+```

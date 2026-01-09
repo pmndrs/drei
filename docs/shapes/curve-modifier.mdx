@@ -1,0 +1,39 @@
+---
+title: CurveModifier
+sourcecode: src/core/Geometry/CurveModifier/CurveModifier.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/shapes-curvemodifier--curvemodifier-st)
+
+Deforms a mesh so it follows a curve. Based on three.js Curve Modifier.
+Use the ref to move along the curve via `moveAlongCurve()` or `uniforms.pathOffset`.
+
+### Basic usage
+
+```jsx
+const curveRef = useRef()
+const curve = new THREE.CatmullRomCurve3([...points], true, 'centripetal')
+
+useFrame(() => curveRef.current?.moveAlongCurve(0.001))
+
+<CurveModifier ref={curveRef} curve={curve}>
+  <mesh>
+    <boxGeometry args={[10, 10]} />
+  </mesh>
+</CurveModifier>
+```
+
+### With scroll controls
+
+```jsx
+const curveRef = useRef()
+const scroll = useScroll()
+
+useFrame(() => {
+  curveRef.current.uniforms.pathOffset.value = scroll.offset
+})
+
+<CurveModifier ref={curveRef} curve={curve}>
+  <mesh><boxGeometry /></mesh>
+</CurveModifier>
+```

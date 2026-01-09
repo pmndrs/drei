@@ -1,12 +1,10 @@
 ---
 title: meshBounds
-sourcecode: src/core/meshBounds.tsx
+sourcecode: src/core/Performance/meshBounds/meshBounds.tsx
 ---
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-meshbounds--mesh-bounds-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/performances-meshbounds--meshbounds-st)
 
-A very fast, but often good-enough bounds-only raycast for meshes. You can use this if performance has precedence over pointer precision.
+Fast raycasting using bounding box/sphere instead of full geometry.
+Assign to mesh.raycast for faster hit-testing on complex meshes.
 
-```jsx
-<mesh raycast={meshBounds} />
-```

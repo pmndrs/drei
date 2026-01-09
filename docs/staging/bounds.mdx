@@ -1,7 +1,9 @@
 ---
 title: Bounds
-sourcecode: src/core/Bounds.tsx
+sourcecode: src/core/Staging/Bounds/Bounds.tsx
 ---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/staging-bounds--bounds-st)
 
 <Grid cols={4}>
   <li>
@@ -12,7 +14,8 @@ sourcecode: src/core/Bounds.tsx
   </li>
 </Grid>
 
-Calculates a boundary box and centers the camera accordingly. If you are using camera controls, make sure to pass them the `makeDefault` prop. `fit` fits the current view on first render. `clip` sets the cameras near/far planes. `observe` will trigger on window resize. To control the damping animation, use `maxDuration` to set the animation length in seconds, and `interpolateFunc` to define how the animation changes over time (should be an increasing function in [0, 1] interval, `interpolateFunc(0) === 0`, `interpolateFunc(1) === 1`).
+Calculates and provides the bounding box of children.
+Useful for camera framing and object positioning.
 
 ```jsx
 const interpolateFunc = (t: number) => 1 - Math.exp(-5 * t) + 0.007 * t // Matches the default Bounds behavior
@@ -49,3 +52,4 @@ function Foo() {
   <Foo />
 </Bounds>
 ```
+

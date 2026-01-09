@@ -1,0 +1,19 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+*.local
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+

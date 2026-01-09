@@ -1,0 +1,42 @@
+{
+  "name": "@react-three/drei-examples",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --mode legacy",
+    "dev:webgpu": "vite --mode webgpu",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@radix-ui/react-accordion": "^1.2.12",
+    "@radix-ui/react-collapsible": "^1.1.12",
+    "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-switch": "^1.2.6",
+    "@react-three/drei": "link:..",
+    "@react-three/fiber": "file:../lib/react-three-fiber-10.0.0-alpha.0.tgz",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "leva": "^0.10.1",
+    "lucide-react": "^0.562.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^6.28.0",
+    "tailwind-merge": "^3.4.0",
+    "three": "^0.182.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
+    "@tailwindcss/vite": "^4.1.18",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@types/three": "^0.182.0",
+    "@vitejs/plugin-react": "^4.3.3",
+    "autoprefixer": "^10.4.23",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11"
+  }
+}

@@ -1,0 +1,37 @@
+---
+title: Fbo / useFBO
+sourcecode: src/core/Portal/Fbo/Fbo.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/portals-usefbo--usefbo-st)
+
+Creates a THREE.WebGLRenderTarget (or THREE.RenderTarget for WebGPU).
+Automatically disposed when unmounted.
+
+```jsx
+const target = useFBO({ stencilBuffer: false })
+```
+
+The rendertarget is automatically disposed when unmounted.
+
+## `<Fbo>` Component
+
+You can access the renderTarget via children's render prop:
+
+```jsx
+<Fbo width={1024} height={1024} stencilBuffer={false}>
+  {(renderTarget) => (
+    <mesh>
+      <planeGeometry />
+      <meshBasicMaterial map={renderTarget.texture} />
+    </mesh>
+  )}
+```
+
+or exposed via `ref`:
+
+```jsx
+const renderTargetRef = useRef()
+<Fbo ref={renderTargetRef} />
+```
+

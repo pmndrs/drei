@@ -16,8 +16,9 @@ import {
 import { Setup } from '@sb/Setup'
 import { PlatformSwitch } from '@sb/components/PlatformSwitch'
 
-// Import WebGPU SpotLight for dual-platform support
+// Import WebGPU SpotLight and depth buffer hook for dual-platform support
 import { SpotLight as SpotLightWebGPU } from '../../../webgpu/Staging/SpotLight'
+import { useDepthBuffer as useDepthBufferWebGPU } from '../../../webgpu/Helpers/useDepthBuffer'
 
 export default {
   title: 'Staging/Spotlight',
@@ -57,14 +58,14 @@ function SpotLightSceneLegacy(props: React.ComponentProps<typeof SpotLight>) {
 }
 
 function SpotLightSceneWebGPU(props: React.ComponentProps<typeof SpotLightWebGPU>) {
-  // Note: Depth buffer soft edges not yet supported in WebGPU due to texture feedback loop
-  // Would need a proper ping-pong system with layer exclusion to avoid GPU warnings
-  // const depthBuffer = useWebGPUDepthBuffer({ size: 256 })
+  // WebGPU depth buffer with frame ordering to avoid feedback loops
+  // The spotlights hide themselves before depth capture, then show again before render
+  const depthBuffer = useDepthBufferWebGPU({ size: 256 })
 
   return (
     <>
-      <SpotLightWebGPU position={[3, 2, 0]} color="#ff005b" {...props} />
-      <SpotLightWebGPU position={[-3, 2, 0]} color="#0EEC82" {...props} />
+      <SpotLightWebGPU depthBuffer={depthBuffer} position={[3, 2, 0]} color="#ff005b" {...props} />
+      <SpotLightWebGPU depthBuffer={depthBuffer} position={[-3, 2, 0]} color="#0EEC82" {...props} />
 
       <mesh position-y={0.5} castShadow>
         <boxGeometry />
@@ -88,7 +89,7 @@ export const SpotlightSt = {
     intensity: 0.5,
     angle: 0.5,
     castShadow: true,
-    opacity: 0.7, // Reduced for softer look
+    opacity: 1,
     attenuation: 5,
     anglePower: 5,
   },

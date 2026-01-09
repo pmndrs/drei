@@ -27,3 +27,5 @@ test-results
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+build-storybook.log

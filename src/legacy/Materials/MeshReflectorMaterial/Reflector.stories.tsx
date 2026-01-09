@@ -5,6 +5,8 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'
 import { MeshReflectorMaterial, useTexture, TorusKnot, Box, Environment } from 'drei'
+import { MeshReflectorMaterial as MeshReflectorMaterialWebGPU } from '../../../webgpu/Materials/MeshReflectorMaterial'
+import { PlatformSwitch } from '@sb/components/PlatformSwitch'
 
 export default {
   title: 'Shaders/MeshReflectorMaterial',
@@ -49,24 +51,40 @@ function ReflectorScene({
     distortionMap.repeat.set(4, 4)
   }, [distortionMap])
 
-  useFrame(({ clock }) => {
-    $box.current.position.y += Math.sin(clock.getElapsedTime()) / 25
-    $box.current.rotation.y = clock.getElapsedTime() / 2
+  useFrame(({ elapsed }) => {
+    $box.current.position.y += Math.sin(elapsed) / 25
+    $box.current.rotation.y = elapsed / 2
   })
 
   return (
     <>
       <mesh rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
         <planeGeometry args={[10, 10]} />
-        <MeshReflectorMaterial
-          blur={blur}
-          depthScale={depthScale}
-          distortion={distortion}
-          distortionMap={distortionMap}
-          roughnessMap={roughnessMap}
-          normalMap={normalMap}
-          normalScale={normalScale}
-          {...props}
+        <PlatformSwitch
+          legacy={
+            <MeshReflectorMaterial
+              blur={blur}
+              depthScale={depthScale}
+              distortion={distortion}
+              distortionMap={distortionMap}
+              roughnessMap={roughnessMap}
+              normalMap={normalMap}
+              normalScale={normalScale}
+              {...props}
+            />
+          }
+          webgpu={
+            <MeshReflectorMaterialWebGPU
+              blur={blur}
+              depthScale={depthScale}
+              distortion={distortion}
+              distortionMap={distortionMap}
+              roughnessMap={roughnessMap}
+              normalMap={normalMap}
+              normalScale={normalScale}
+              {...(props as any)}
+            />
+          }
         />
       </mesh>
 

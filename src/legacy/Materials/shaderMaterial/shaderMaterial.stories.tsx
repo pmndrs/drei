@@ -40,7 +40,7 @@ const MyMaterial = shaderMaterial(
       gl_FragColor = vec4(color, 1.0);
 
       #include <tonemapping_fragment>
-      #include <encodings_fragment>
+      #include <colorspace_fragment>
     }
   `
 )
@@ -62,9 +62,10 @@ function ShaderMaterial(props: React.ComponentProps<'myMaterial'>) {
 export default {
   title: 'Shaders/shaderMaterial',
   component: ShaderMaterial,
+  tags: ['legacyOnly'],
   decorators: [
     (Story, context) => (
-      <Setup renderer={context.globals.renderer}>
+      <Setup renderer={context.globals.renderer} limitedTo={'legacy'}>
         <Story />
       </Setup>
     ),

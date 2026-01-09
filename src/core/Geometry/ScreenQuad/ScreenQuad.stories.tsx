@@ -62,7 +62,7 @@ function ScreenQuadScene(props: React.ComponentProps<typeof ScreenQuad>) {
 
   useFrame((state) => {
     if (ref.current.uniforms) {
-      ref.current.uniforms.time.value = state.clock.elapsedTime
+      ref.current.uniforms.time.value = state.elapsed
     }
   })
 

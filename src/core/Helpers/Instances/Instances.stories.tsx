@@ -63,9 +63,9 @@ const Suzanne = () => {
 
   const ref = React.useRef<React.ComponentRef<typeof SuzaneInstnace> | null>(null)
 
-  useFrame(({ clock }) => {
+  useFrame(({ elapsed }) => {
     if (ref.current) {
-      ref.current.reveal = clamp((Math.sin(randomShift + clock.getElapsedTime()) * 0.5 + 0.5) * 2, 0, 1)
+      ref.current.reveal = clamp((Math.sin(randomShift + elapsed) * 0.5 + 0.5) * 2, 0, 1)
     }
   })
 
@@ -137,8 +137,8 @@ export const CreateInstancesSt = () => {
     []
   )
 
-  useFrame(({ clock }) => {
-    suzanneMaterial.uniforms.uTime.value = clock.getElapsedTime()
+  useFrame(({ elapsed }) => {
+    suzanneMaterial.uniforms.uTime.value = elapsed
   })
 
   return (

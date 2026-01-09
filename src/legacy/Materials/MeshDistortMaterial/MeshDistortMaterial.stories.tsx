@@ -4,6 +4,8 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'
 import { MeshDistortMaterial, Icosahedron } from 'drei'
+import { MeshDistortMaterial as MeshDistortMaterialWebGPU } from '../../../webgpu/Materials/MeshDistortMaterial'
+import { PlatformSwitch } from '@sb/components/PlatformSwitch'
 
 export default {
   title: 'Shaders/MeshDistortMaterial',
@@ -34,7 +36,7 @@ type Story = StoryObj<any>
 function MeshDistortMaterialScene(props: React.ComponentProps<typeof MeshDistortMaterial>) {
   return (
     <Icosahedron args={[1, 4]}>
-      <MeshDistortMaterial {...props} />
+      <PlatformSwitch legacy={<MeshDistortMaterial {...props} />} webgpu={<MeshDistortMaterialWebGPU {...props} />} />
     </Icosahedron>
   )
 }

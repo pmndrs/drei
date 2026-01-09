@@ -39,9 +39,9 @@ function MarchingCubesScene({
   const cubeRefOne = React.useRef<React.ComponentRef<typeof MarchingCube>>(null)
   const cubeRefTwo = React.useRef<React.ComponentRef<typeof MarchingCube>>(null)
 
-  useFrame(({ clock }) => {
+  useFrame(({ elapsed }) => {
     if (!cubeRefOne.current || !cubeRefTwo.current) return
-    const time = clock.getElapsedTime()
+    const time = elapsed
     cubeRefOne.current.position.set(0.5, Math.sin(time * 0.4) * 0.5 + 0.5, 0.5)
     cubeRefTwo.current.position.set(0.5, Math.cos(time * 0.4) * 0.5 + 0.5, 0.5)
   })

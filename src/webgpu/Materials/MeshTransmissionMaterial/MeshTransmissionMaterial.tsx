@@ -466,7 +466,7 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
     let parent: THREE.Mesh | undefined
 
     useFrame((state) => {
-      ref.current.time = state.clock.elapsedTime
+      ref.current.time = state.elapsed
 
       // Render only if the buffer matches the built-in and no transmission sampler is set
       if (ref.current.buffer === fboMain.texture && !transmissionSampler) {

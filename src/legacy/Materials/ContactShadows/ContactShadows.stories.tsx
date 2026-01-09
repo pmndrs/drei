@@ -24,8 +24,8 @@ type Story = StoryObj<typeof ContactShadows>
 
 function ContactShadowsScene(props: ComponentProps<typeof ContactShadows>) {
   const mesh = React.useRef<Mesh>(null!)
-  useFrame(({ clock }) => {
-    mesh.current.position.y = Math.sin(clock.getElapsedTime()) + 2
+  useFrame(({ elapsed }) => {
+    mesh.current.position.y = Math.sin(elapsed) + 2
   })
 
   return (

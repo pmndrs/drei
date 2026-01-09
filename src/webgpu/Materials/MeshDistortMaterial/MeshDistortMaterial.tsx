@@ -1,79 +1,75 @@
-//* TODO: Convert GLSL shaders to TSL for WebGPU ==============================
-
 import * as React from 'react'
-import { IUniform, MeshPhysicalMaterial, MeshPhysicalMaterialParameters } from 'three'
+import * as THREE from 'three/webgpu'
+import { Fn, uniform, positionLocal, mx_noise_vec3, pow, float } from 'three/tsl'
 import { ThreeElements, useFrame } from '@react-three/fiber'
 // @ts-ignore
 import { ForwardRefComponent } from '@utils/ts-utils'
 
-interface Uniform<T> {
-  value: T
-}
+//* Distort Material Implementation ==============================
 
-class DistortMaterialImpl extends MeshPhysicalMaterial {
-  _time: Uniform<number>
-  _distort: Uniform<number>
-  _radius: Uniform<number>
+class DistortMaterialImplWebGPU extends THREE.MeshPhysicalNodeMaterial {
+  timeUniform: ReturnType<typeof uniform>
+  distortUniform: ReturnType<typeof uniform>
+  radiusUniform: ReturnType<typeof uniform>
 
-  constructor(parameters: MeshPhysicalMaterialParameters = {}) {
+  constructor(parameters: THREE.MeshPhysicalMaterialParameters = {}) {
     super(parameters)
     this.setValues(parameters)
-    this._time = { value: 0 }
-    this._distort = { value: 0.4 }
-    this._radius = { value: 1 }
-  }
-
-  // FIXME Use `THREE.WebGLProgramParametersWithUniforms` type when able to target @types/three@0.160.0
-  onBeforeCompile(shader: { vertexShader: string; uniforms: { [uniform: string]: IUniform } }) {
-    shader.uniforms.time = this._time
-    shader.uniforms.radius = this._radius
-    shader.uniforms.distort = this._distort
-
-    // distort goes here after the uniform
-    shader.vertexShader = `
-      uniform float time;
-      uniform float radius;
-      uniform float distort;
-      ${shader.vertexShader}
-    `
-    shader.vertexShader = shader.vertexShader.replace(
-      '#include <begin_vertex>',
-      `
-        float updateTime = time / 50.0;
-        float noise = snoise(vec3(position / 2.0 + updateTime * 5.0));
-        vec3 transformed = vec3(position * (noise * pow(distort, 2.0) + radius));
-        `
-    )
+    
+    // Create uniforms
+    this.timeUniform = uniform(0)
+    this.distortUniform = uniform(0.4)
+    this.radiusUniform = uniform(1)
+    
+    // Position shader: Apply noise-based distortion
+    this.positionNode = Fn(() => {
+      const pos = positionLocal.toVar()
+      
+      // Calculate animated time factor
+      const updateTime = this.timeUniform.div(50.0)
+      
+      // Calculate noise input: position / 2.0 + updateTime * 5.0
+      const noiseInput = pos.div(2.0).add(updateTime.mul(5.0))
+      
+      // Get noise value using MaterialX noise function
+      const noiseVec = mx_noise_vec3(noiseInput)
+      const noise = noiseVec.x // Use x component as scalar noise
+      
+      // Apply distortion: position * (noise * pow(distort, 2) + radius)
+      const distortFactor = noise.mul(pow(this.distortUniform, float(2.0))).add(this.radiusUniform)
+      
+      return pos.mul(distortFactor)
+    })()
   }
 
   get time() {
-    return this._time.value
+    return this.timeUniform.value
   }
 
   set time(v) {
-    this._time.value = v
+    this.timeUniform.value = v
   }
 
   get distort() {
-    return this._distort.value
+    return this.distortUniform.value
   }
 
   set distort(v) {
-    this._distort.value = v
+    this.distortUniform.value = v
   }
 
   get radius() {
-    return this._radius.value
+    return this.radiusUniform.value
   }
 
   set radius(v) {
-    this._radius.value = v
+    this.radiusUniform.value = v
   }
 }
 
 declare module '@react-three/fiber' {
   interface ThreeElements {
-    distortMaterialImpl: ThreeElements['meshPhysicalMaterial'] & {
+    distortMaterialImplWebGPU: ThreeElements['meshPhysicalMaterial'] & {
       time?: number
       distort?: number
       radius?: number
@@ -81,14 +77,28 @@ declare module '@react-three/fiber' {
   }
 }
 
-export type MeshDistortMaterialProps = Omit<ThreeElements['distortMaterialImpl'], 'ref'> & {
+export type MeshDistortMaterialProps = Omit<ThreeElements['distortMaterialImplWebGPU'], 'ref'> & {
+  /** Animation speed multiplier. @default 1 */
   speed?: number
+  /** Distortion intensity. @default 0.4 */
   factor?: number
 }
 
-export const MeshDistortMaterial: ForwardRefComponent<MeshDistortMaterialProps, DistortMaterialImpl> =
+/**
+ * WebGPU Material that distorts geometry using MaterialX noise.
+ * Extends MeshPhysicalNodeMaterial with animated vertex displacement.
+ *
+ * @example
+ * ```jsx
+ * <mesh>
+ *   <boxGeometry />
+ *   <MeshDistortMaterial distort={1} speed={10} />
+ * </mesh>
+ * ```
+ */
+export const MeshDistortMaterial: ForwardRefComponent<MeshDistortMaterialProps, DistortMaterialImplWebGPU> =
   /* @__PURE__ */ React.forwardRef(({ speed = 1, ...props }, ref) => {
-    const [material] = React.useState(() => new DistortMaterialImpl())
-    useFrame((state) => material && (material.time = state.elapsed * speed))
+    const [material] = React.useState(() => new DistortMaterialImplWebGPU())
+    useFrame(({ elapsed }) => material && (material.time = elapsed * speed))
     return <primitive object={material} ref={ref} attach="material" {...props} />
   })

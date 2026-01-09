@@ -3,7 +3,7 @@ import { IUniform, MeshStandardMaterial, MeshStandardMaterialParameters } from '
 import { ThreeElements, useFrame } from '@react-three/fiber'
 import { ForwardRefComponent } from '@utils/ts-utils'
 
-interface Uniform<T> {
+export interface Uniform<T> {
   value: T
 }
 
@@ -88,6 +88,6 @@ export type WobbleMaterialProps = Omit<ThreeElements['meshStandardMaterial'], 'r
 export const MeshWobbleMaterial: ForwardRefComponent<WobbleMaterialProps, WobbleMaterialImpl> =
   /* @__PURE__ */ React.forwardRef(({ speed = 1, ...props }, ref) => {
     const [material] = React.useState(() => new WobbleMaterialImpl())
-    useFrame((state) => material && (material.time = state.clock.elapsedTime * speed))
+    useFrame((state) => material && (material.time = state.elapsed * speed))
     return <primitive object={material} ref={ref} attach="material" {...props} />
   })

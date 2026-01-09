@@ -24,11 +24,11 @@ function ShadowScene(props: React.ComponentProps<typeof Shadow>) {
   const shadow = React.useRef<React.ComponentRef<typeof Shadow>>(null!)
   const mesh = React.useRef<React.ComponentRef<typeof Icosahedron>>(null!)
 
-  useFrame(({ clock }) => {
-    shadow.current.scale.x = Math.sin(clock.getElapsedTime()) + 3
-    shadow.current.scale.y = Math.sin(clock.getElapsedTime()) + 3
+  useFrame(({ elapsed }) => {
+    shadow.current.scale.x = Math.sin(elapsed) + 3
+    shadow.current.scale.y = Math.sin(elapsed) + 3
 
-    mesh.current.position.y = Math.sin(clock.getElapsedTime()) + 2.5
+    mesh.current.position.y = Math.sin(elapsed) + 2.5
   })
 
   return (

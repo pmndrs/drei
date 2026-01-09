@@ -4,6 +4,8 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'
 import { MeshWobbleMaterial, Torus } from 'drei'
+import { MeshWobbleMaterial as MeshWobbleMaterialWebGPU } from '../../../webgpu/Materials/MeshWobbleMaterial'
+import { PlatformSwitch } from '@sb/components/PlatformSwitch'
 
 export default {
   title: 'Shaders/MeshWobbleMaterial',
@@ -32,7 +34,7 @@ type Story = StoryObj<typeof MeshWobbleMaterial>
 function MeshWobbleMaterialScene(props: React.ComponentProps<typeof MeshWobbleMaterial>) {
   return (
     <Torus args={[1, 0.25, 16, 100]}>
-      <MeshWobbleMaterial {...props} />
+      <PlatformSwitch legacy={<MeshWobbleMaterial {...props} />} webgpu={<MeshWobbleMaterialWebGPU {...props} />} />
     </Torus>
   )
 }
@@ -47,9 +49,9 @@ export const MeshWobbleMaterialSt = {
 function MeshWobbleMaterialRefScene(props: React.ComponentProps<typeof MeshWobbleMaterial>) {
   const material = React.useRef<React.ComponentRef<typeof MeshWobbleMaterial>>(null)
 
-  useFrame(({ clock }) => {
+  useFrame(({ elapsed }) => {
     if (material.current === null) return
-    material.current.factor = Math.abs(Math.sin(clock.getElapsedTime())) * 2
+    material.current.factor = Math.abs(Math.sin(elapsed)) * 2
   })
 
   return (

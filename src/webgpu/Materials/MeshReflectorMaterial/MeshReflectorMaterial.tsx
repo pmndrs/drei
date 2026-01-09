@@ -1,235 +1,186 @@
-//* TODO: Convert GLSL shaders to TSL for WebGPU ==============================
+import * as React from 'react'
+import * as THREE from 'three/webgpu'
+import { useThree, useFrame, ThreeElements } from '@react-three/fiber'
+import { MeshReflectorMaterial as MeshReflectorMaterialImpl } from './MeshReflectorMaterialClass'
+import { ForwardRefComponent } from '@utils/ts-utils'
 
-import { Matrix4, MeshStandardMaterial, Texture } from 'three'
+//* Type Declarations ==============================
 
-type UninitializedUniform<Value> = { value: Value | null }
-
-export class MeshReflectorMaterial extends MeshStandardMaterial {
-  private _tDepth: UninitializedUniform<Texture> = { value: null }
-  private _distortionMap: UninitializedUniform<Texture> = { value: null }
-  private _tDiffuse: UninitializedUniform<Texture> = { value: null }
-  private _tDiffuseBlur: UninitializedUniform<Texture> = { value: null }
-  private _textureMatrix: UninitializedUniform<Matrix4> = { value: null }
-  private _hasBlur: { value: boolean } = { value: false }
-  private _mirror: { value: number } = { value: 0.0 }
-  private _mixBlur: { value: number } = { value: 0.0 }
-  private _blurStrength: { value: number } = { value: 0.5 }
-  private _minDepthThreshold: { value: number } = { value: 0.9 }
-  private _maxDepthThreshold: { value: number } = { value: 1 }
-  private _depthScale: { value: number } = { value: 0 }
-  private _depthToBlurRatioBias: { value: number } = { value: 0.25 }
-  private _distortion: { value: number } = { value: 1 }
-  private _mixContrast: { value: number } = { value: 1.0 }
-
-  constructor(parameters = {}) {
-    super(parameters)
-    this.setValues(parameters)
-  }
-  onBeforeCompile(shader) {
-    if (!shader.defines?.USE_UV) {
-      shader.defines.USE_UV = ''
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    meshReflectorMaterialWebGPU: ThreeElements['meshStandardMaterial'] & {
+      mirror?: number
+      mixBlur?: number
+      mixStrength?: number
+      minDepthThreshold?: number
+      maxDepthThreshold?: number
+      depthScale?: number
+      depthToBlurRatioBias?: number
+      distortion?: number
+      mixContrast?: number
     }
-    shader.uniforms.hasBlur = this._hasBlur
-    shader.uniforms.tDiffuse = this._tDiffuse
-    shader.uniforms.tDepth = this._tDepth
-    shader.uniforms.distortionMap = this._distortionMap
-    shader.uniforms.tDiffuseBlur = this._tDiffuseBlur
-    shader.uniforms.textureMatrix = this._textureMatrix
-    shader.uniforms.mirror = this._mirror
-    shader.uniforms.mixBlur = this._mixBlur
-    shader.uniforms.mixStrength = this._blurStrength
-    shader.uniforms.minDepthThreshold = this._minDepthThreshold
-    shader.uniforms.maxDepthThreshold = this._maxDepthThreshold
-    shader.uniforms.depthScale = this._depthScale
-    shader.uniforms.depthToBlurRatioBias = this._depthToBlurRatioBias
-    shader.uniforms.distortion = this._distortion
-    shader.uniforms.mixContrast = this._mixContrast
-    shader.vertexShader = `
-        uniform mat4 textureMatrix;
-        varying vec4 my_vUv;
-      ${shader.vertexShader}`
-    shader.vertexShader = shader.vertexShader.replace(
-      '#include <project_vertex>',
-      `#include <project_vertex>
-        my_vUv = textureMatrix * vec4( position, 1.0 );
-        gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );`
-    )
-    shader.fragmentShader = `
-        uniform sampler2D tDiffuse;
-        uniform sampler2D tDiffuseBlur;
-        uniform sampler2D tDepth;
-        uniform sampler2D distortionMap;
-        uniform float distortion;
-        uniform float cameraNear;
-			  uniform float cameraFar;
-        uniform bool hasBlur;
-        uniform float mixBlur;
-        uniform float mirror;
-        uniform float mixStrength;
-        uniform float minDepthThreshold;
-        uniform float maxDepthThreshold;
-        uniform float mixContrast;
-        uniform float depthScale;
-        uniform float depthToBlurRatioBias;
-        varying vec4 my_vUv;
-        ${shader.fragmentShader}`
-    shader.fragmentShader = shader.fragmentShader.replace(
-      '#include <emissivemap_fragment>',
-      `#include <emissivemap_fragment>
-
-      float distortionFactor = 0.0;
-      #ifdef USE_DISTORTION
-        distortionFactor = texture2D(distortionMap, vUv).r * distortion;
-      #endif
-
-      vec4 new_vUv = my_vUv;
-      new_vUv.x += distortionFactor;
-      new_vUv.y += distortionFactor;
-
-      vec4 base = texture2DProj(tDiffuse, new_vUv);
-      vec4 blur = texture2DProj(tDiffuseBlur, new_vUv);
-
-      vec4 merge = base;
-
-      #ifdef USE_NORMALMAP
-        vec2 normal_uv = vec2(0.0);
-        vec4 normalColor = texture2D(normalMap, vUv * normalScale);
-        vec3 my_normal = normalize( vec3( normalColor.r * 2.0 - 1.0, normalColor.b,  normalColor.g * 2.0 - 1.0 ) );
-        vec3 coord = new_vUv.xyz / new_vUv.w;
-        normal_uv = coord.xy + coord.z * my_normal.xz * 0.05;
-        vec4 base_normal = texture2D(tDiffuse, normal_uv);
-        vec4 blur_normal = texture2D(tDiffuseBlur, normal_uv);
-        merge = base_normal;
-        blur = blur_normal;
-      #endif
-
-      float depthFactor = 0.0001;
-      float blurFactor = 0.0;
-
-      #ifdef USE_DEPTH
-        vec4 depth = texture2DProj(tDepth, new_vUv);
-        depthFactor = smoothstep(minDepthThreshold, maxDepthThreshold, 1.0-(depth.r * depth.a));
-        depthFactor *= depthScale;
-        depthFactor = max(0.0001, min(1.0, depthFactor));
-
-        #ifdef USE_BLUR
-          blur = blur * min(1.0, depthFactor + depthToBlurRatioBias);
-          merge = merge * min(1.0, depthFactor + 0.5);
-        #else
-          merge = merge * depthFactor;
-        #endif
-
-      #endif
-
-      float reflectorRoughnessFactor = roughness;
-      #ifdef USE_ROUGHNESSMAP
-        vec4 reflectorTexelRoughness = texture2D( roughnessMap, vUv );
-        reflectorRoughnessFactor *= reflectorTexelRoughness.g;
-      #endif
-
-      #ifdef USE_BLUR
-        blurFactor = min(1.0, mixBlur * reflectorRoughnessFactor);
-        merge = mix(merge, blur, blurFactor);
-      #endif
-
-      vec4 newMerge = vec4(0.0, 0.0, 0.0, 1.0);
-      newMerge.r = (merge.r - 0.5) * mixContrast + 0.5;
-      newMerge.g = (merge.g - 0.5) * mixContrast + 0.5;
-      newMerge.b = (merge.b - 0.5) * mixContrast + 0.5;
-
-      diffuseColor.rgb = diffuseColor.rgb * ((1.0 - min(1.0, mirror)) + newMerge.rgb * mixStrength);
-      `
-    )
-  }
-  get tDiffuse(): Texture | null {
-    return this._tDiffuse.value
-  }
-  set tDiffuse(v: Texture | null) {
-    this._tDiffuse.value = v
-  }
-  get tDepth(): Texture | null {
-    return this._tDepth.value
-  }
-  set tDepth(v: Texture | null) {
-    this._tDepth.value = v
-  }
-  get distortionMap(): Texture | null {
-    return this._distortionMap.value
-  }
-  set distortionMap(v: Texture | null) {
-    this._distortionMap.value = v
-  }
-  get tDiffuseBlur(): Texture | null {
-    return this._tDiffuseBlur.value
-  }
-  set tDiffuseBlur(v: Texture | null) {
-    this._tDiffuseBlur.value = v
-  }
-  get textureMatrix(): Matrix4 | null {
-    return this._textureMatrix.value
-  }
-  set textureMatrix(v: Matrix4 | null) {
-    this._textureMatrix.value = v
-  }
-  get hasBlur(): boolean {
-    return this._hasBlur.value
-  }
-  set hasBlur(v: boolean) {
-    this._hasBlur.value = v
-  }
-  get mirror(): number {
-    return this._mirror.value
-  }
-  set mirror(v: number) {
-    this._mirror.value = v
-  }
-  get mixBlur(): number {
-    return this._mixBlur.value
-  }
-  set mixBlur(v: number) {
-    this._mixBlur.value = v
-  }
-  get mixStrength(): number {
-    return this._blurStrength.value
-  }
-  set mixStrength(v: number) {
-    this._blurStrength.value = v
-  }
-  get minDepthThreshold(): number {
-    return this._minDepthThreshold.value
-  }
-  set minDepthThreshold(v: number) {
-    this._minDepthThreshold.value = v
-  }
-  get maxDepthThreshold(): number {
-    return this._maxDepthThreshold.value
-  }
-  set maxDepthThreshold(v: number) {
-    this._maxDepthThreshold.value = v
-  }
-  get depthScale(): number {
-    return this._depthScale.value
-  }
-  set depthScale(v: number) {
-    this._depthScale.value = v
-  }
-  get depthToBlurRatioBias(): number {
-    return this._depthToBlurRatioBias.value
-  }
-  set depthToBlurRatioBias(v: number) {
-    this._depthToBlurRatioBias.value = v
-  }
-  get distortion(): number {
-    return this._distortion.value
-  }
-  set distortion(v: number) {
-    this._distortion.value = v
-  }
-  get mixContrast(): number {
-    return this._mixContrast.value
-  }
-  set mixContrast(v: number) {
-    this._mixContrast.value = v
   }
 }
 
+export type MeshReflectorMaterialProps = Omit<ThreeElements['meshStandardMaterial'], 'ref'> & {
+  resolution?: number
+  blur?: [number, number] | number
+  reflectorOffset?: number
+  mirror?: number
+  mixBlur?: number
+  mixStrength?: number
+  minDepthThreshold?: number
+  maxDepthThreshold?: number
+  depthScale?: number
+  depthToBlurRatioBias?: number
+  distortion?: number
+  mixContrast?: number
+}
+
+//* MeshReflectorMaterial Component ==============================
+
+/**
+ * WebGPU MeshReflectorMaterial - Renders planar reflections using TSL's built-in reflector() node.
+ *
+ * @example
+ * ```tsx
+ * <mesh rotation={[-Math.PI / 2, 0, 0]}>
+ *   <planeGeometry args={[10, 10]} />
+ *   <MeshReflectorMaterial
+ *     blur={[300, 100]}
+ *     resolution={1024}
+ *     mixBlur={1}
+ *     mixStrength={0.5}
+ *     mirror={0.5}
+ *   />
+ * </mesh>
+ * ```
+ */
+export const MeshReflectorMaterial: ForwardRefComponent<MeshReflectorMaterialProps, MeshReflectorMaterialImpl> =
+  /* @__PURE__ */ React.forwardRef<MeshReflectorMaterialImpl, MeshReflectorMaterialProps>(
+    (
+      {
+        mixBlur = 0,
+        mixStrength = 1,
+        resolution = 256,
+        blur = [0, 0],
+        minDepthThreshold = 0.9,
+        maxDepthThreshold = 1,
+        depthScale = 0,
+        depthToBlurRatioBias = 0.25,
+        mirror = 0,
+        distortion = 1,
+        mixContrast = 1,
+        reflectorOffset = 0,
+        ...props
+      },
+      ref
+    ) => {
+      const scene = useThree(({ scene }) => scene)
+
+      // Normalize blur to array and compute blur radius
+      const blurArray = Array.isArray(blur) ? blur : [blur, blur]
+      const hasBlur = blurArray[0] + blurArray[1] > 0
+      // Normalize blur values (typically 0-500) to 0-1 range for blurRadius
+      const blurRadius = Math.min(1, (blurArray[0] + blurArray[1]) / 1000)
+
+      //* Create Material Instance ----------------------------------------
+      const [material] = React.useState(
+        () =>
+          new MeshReflectorMaterialImpl(
+            {
+              resolution,
+              mixBlur,
+              mixStrength,
+              mirror,
+              minDepthThreshold,
+              maxDepthThreshold,
+              depthScale,
+              depthToBlurRatioBias,
+              distortion,
+              mixContrast,
+              reflectorOffset,
+            },
+            props as THREE.MeshStandardMaterialParameters
+          )
+      )
+
+      // Forward ref
+      React.useImperativeHandle(ref, () => material, [material])
+
+      // Ref to track parent mesh
+      const parentMeshRef = React.useRef<THREE.Mesh | null>(null)
+
+      //* Add Reflector Target to Scene ----------------------------------------
+      // The reflector target needs to be added to the scene for the reflection to work
+      React.useEffect(() => {
+        const target = material.reflectorTarget
+        if (target) {
+          scene.add(target)
+        }
+
+        return () => {
+          if (target) {
+            scene.remove(target)
+          }
+        }
+      }, [material, scene])
+
+      //* Sync Reflector Target with Parent Mesh ----------------------------------------
+      useFrame(() => {
+        // Find parent mesh if not already found
+        if (!parentMeshRef.current) {
+          // The material is attached to a mesh via R3F's attach="material"
+          // We need to find the parent mesh
+          const traverse = (obj: THREE.Object3D): THREE.Mesh | null => {
+            if (obj instanceof THREE.Mesh && obj.material === material) {
+              return obj
+            }
+            for (const child of obj.children) {
+              const found = traverse(child)
+              if (found) return found
+            }
+            return null
+          }
+          parentMeshRef.current = traverse(scene)
+        }
+
+        // Sync reflector target transform with parent mesh
+        const parentMesh = parentMeshRef.current
+        const target = material.reflectorTarget
+        if (parentMesh && target) {
+          // Copy the parent mesh's world transform to the reflector target
+          target.matrixAutoUpdate = false
+          target.matrix.copy(parentMesh.matrixWorld)
+        }
+      })
+
+      //* Update Uniforms When Props Change ----------------------------------------
+      React.useEffect(() => {
+        material.mirror = mirror
+        material.mixBlur = mixBlur
+        material.mixStrength = mixStrength
+        material.minDepthThreshold = minDepthThreshold
+        material.maxDepthThreshold = maxDepthThreshold
+        material.depthScale = depthScale
+        material.depthToBlurRatioBias = depthToBlurRatioBias
+        material.distortion = distortion
+        material.mixContrast = mixContrast
+        material.blurRadius = blurRadius
+      }, [
+        material,
+        mirror,
+        mixBlur,
+        mixStrength,
+        minDepthThreshold,
+        maxDepthThreshold,
+        depthScale,
+        depthToBlurRatioBias,
+        distortion,
+        mixContrast,
+        blurRadius,
+      ])
+
+      return <primitive object={material} attach="material" {...props} />
+    }
+  )

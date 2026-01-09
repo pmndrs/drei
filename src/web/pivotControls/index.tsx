@@ -7,7 +7,7 @@ import { AxisArrow } from './AxisArrow'
 import { AxisRotator } from './AxisRotator'
 import { PlaneSlider } from './PlaneSlider'
 import { ScalingSphere } from './ScalingSphere'
-import { OnDragStartProps, context } from './context'
+import { OnDragStartProps, OnHoverProps, context } from './context'
 import { calculateScaleFactor } from '../../core/calculateScaleFactor'
 
 const mL0 = /* @__PURE__ */ new THREE.Matrix4()
@@ -80,6 +80,8 @@ export type PivotControlsProps = {
   onDrag?: (l: THREE.Matrix4, deltaL: THREE.Matrix4, w: THREE.Matrix4, deltaW: THREE.Matrix4) => void
   /** Drag end event */
   onDragEnd?: () => void
+  /** Hover event */
+  onHover?: (props: OnHoverProps) => void
   /** Set this to false if you want the gizmo to be visible through faces */
   depthTest?: boolean
   renderOrder?: number
@@ -100,6 +102,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
       onDragStart,
       onDrag,
       onDragEnd,
+      onHover,
       autoTransform = true,
       anchor,
       disableAxes = false,
@@ -163,11 +166,14 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
       invalidate()
     })
 
+    const dragState = React.useRef<OnDragStartProps | null>(null)
+
     const config = React.useMemo(
       () => ({
         onDragStart: (props: OnDragStartProps) => {
           mL0.copy(ref.current.matrix)
           mW0.copy(ref.current.matrixWorld)
+          dragState.current = props
           onDragStart && onDragStart(props)
           invalidate()
         },
@@ -186,7 +192,12 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
           invalidate()
         },
         onDragEnd: () => {
+          dragState.current = null
           if (onDragEnd) onDragEnd()
+          invalidate()
+        },
+        onHover: (props: OnHoverProps) => {
+          onHover && onHover(props)
           invalidate()
         },
         translation,
@@ -203,6 +214,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
         userData,
         annotations,
         annotationsClass,
+        dragState,
       }),
       [
         onDragStart,
@@ -223,6 +235,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
         autoTransform,
         annotations,
         annotationsClass,
+        dragState,
       ]
     )
 

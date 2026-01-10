@@ -31,8 +31,8 @@ export const ComputedAttribute = ({ compute, name, ...props }: ComputedAttribute
 
   React.useLayoutEffect(() => {
     if (primitive.current) {
-      // @ts-expect-error brittle
-      const parent = (primitive.current.parent as BufferGeometry) ?? primitive.current.__r3f.parent.object
+      const prim = primitive.current as any
+      const parent = (prim.parent as BufferGeometry) ?? prim.__r3f?.parent?.object
 
       const attr = compute(parent)
       primitive.current.copy(attr)

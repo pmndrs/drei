@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as THREE from '#three'
 import { ThreeEvent, useThree } from '@react-three/fiber'
-import { Line } from '../../Geometry/Line'
+import { Line } from '#drei-platform'
 import { Html } from '../../UI/Html'
 import { context } from './context'
 

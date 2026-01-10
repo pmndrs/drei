@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { IUniform, MeshStandardMaterial, MeshStandardMaterialParameters } from 'three'
+import { IUniform, MeshStandardMaterial, MeshStandardMaterialParameters } from '#three'
 import { ThreeElements, useFrame } from '@react-three/fiber'
 import { ForwardRefComponent } from '@utils/ts-utils'
 
@@ -8,20 +8,21 @@ export interface Uniform<T> {
 }
 
 class WobbleMaterialImpl extends MeshStandardMaterial {
-  _time: Uniform<number>
-  _factor: Uniform<number>
+  readonly timeUniform: Uniform<number>
+  readonly factorUniform: Uniform<number>
+  declare readonly isMeshStandardMaterial: true
 
   constructor(parameters: MeshStandardMaterialParameters = {}) {
     super(parameters)
     this.setValues(parameters)
-    this._time = { value: 0 }
-    this._factor = { value: 1 }
+    this.timeUniform = { value: 0 }
+    this.factorUniform = { value: 1 }
   }
 
   // FIXME Use `THREE.WebGLProgramParametersWithUniforms` type when able to target @types/three@0.160.0
   onBeforeCompile(shader: { vertexShader: string; uniforms: { [uniform: string]: IUniform } }) {
-    shader.uniforms.time = this._time
-    shader.uniforms.factor = this._factor
+    shader.uniforms.time = this.timeUniform
+    shader.uniforms.factor = this.factorUniform
 
     shader.vertexShader = `
       uniform float time;
@@ -40,19 +41,19 @@ class WobbleMaterialImpl extends MeshStandardMaterial {
   }
 
   get time() {
-    return this._time.value
+    return this.timeUniform.value
   }
 
   set time(v) {
-    this._time.value = v
+    this.timeUniform.value = v
   }
 
   get factor() {
-    return this._factor.value
+    return this.factorUniform.value
   }
 
   set factor(v) {
-    this._factor.value = v
+    this.factorUniform.value = v
   }
 }
 

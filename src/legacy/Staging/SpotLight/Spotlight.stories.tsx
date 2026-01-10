@@ -2,17 +2,8 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 import * as React from 'react'
 
 import { MathUtils, RepeatWrapping } from 'three'
-import {
-  Circle,
-  Environment,
-  OrbitControls,
-  PerspectiveCamera,
-  Plane,
-  SpotLight,
-  SpotLightShadow,
-  useDepthBuffer,
-  useTexture,
-} from 'drei'
+import { Circle, Environment, OrbitControls, PerspectiveCamera, Plane, useDepthBuffer, useTexture } from 'drei'
+import { SpotLight, SpotLightShadow } from './SpotLight'
 import { Setup } from '@sb/Setup'
 import { PlatformSwitch } from '@sb/components/PlatformSwitch'
 

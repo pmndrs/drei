@@ -45,9 +45,9 @@ export type CausticsProps = Omit<ThreeElements['group'], 'ref'> & {
   /** Enables visual cues to help you stage your scene, default: false */
   debug?: boolean
   /** Will display caustics only and skip the models, default: false */
-  causticsOnly: boolean
+  causticsOnly?: boolean
   /** Will include back faces and enable the backsideIOR prop, default: false */
-  backside: boolean
+  backside?: boolean
   /** The IOR refraction index, default: 1.1 */
   ior?: number
   /** The IOR refraction index for back faces (only available when backside is enabled), default: 1.1 */
@@ -222,7 +222,7 @@ export class CausticsMaterial extends MeshBasicNodeMaterial {
     const intensity = this._intensity
 
     //* Helper: Reconstruct world position from depth --
-    const worldPosFromDepth = Fn(([depth, coord]: [any, any]) => {
+    const worldPosFromDepth = Fn(({ depth, coord }: { depth: any; coord: any }) => {
       // Convert depth to NDC z: z = depth * 2.0 - 1.0
       const z = depth.mul(2.0).sub(1.0)
 
@@ -241,13 +241,25 @@ export class CausticsMaterial extends MeshBasicNodeMaterial {
     //* Helper: Ray-plane intersection --
     // Returns t where intersection = ro + rd * t
     // t = -(dot(ro, n) + d) / dot(rd, n)
-    const planeIntersect = Fn(([ro, rd, planeN, planeD]: [any, any, any, any]) => {
+    const planeIntersect = Fn(({ ro, rd, planeN, planeD }: { ro: any; rd: any; planeN: any; planeD: any }) => {
       return negate(add(dot(ro, planeN), planeD)).div(dot(rd, planeN))
     })
 
     //* Helper: Compute refracted ray --
     const computeRefractedRay = Fn(
-      ([originPos, lightD, surfacePos, surfaceNormal, iorVal]: [any, any, any, any, any]) => {
+      ({
+        originPos,
+        lightD,
+        surfacePos,
+        surfaceNormal,
+        iorVal,
+      }: {
+        originPos: any
+        lightD: any
+        surfacePos: any
+        surfaceNormal: any
+        iorVal: any
+      }) => {
         // Refract light direction through surface
         const rayDir = refract(lightD, surfaceNormal, div(float(1.0), iorVal))
         // Offset origin slightly along refracted direction to avoid self-intersection
@@ -294,16 +306,16 @@ export class CausticsMaterial extends MeshBasicNodeMaterial {
       const depth4 = texture(depthTexture, uv4).x
 
       // Reconstruct world positions from depth
-      const pos1 = worldPosFromDepth(depth1, uv1)
-      const pos2 = worldPosFromDepth(depth2, uv2)
-      const pos3 = worldPosFromDepth(depth3, uv3)
-      const pos4 = worldPosFromDepth(depth4, uv4)
+      const pos1 = worldPosFromDepth({ depth: depth1, coord: uv1 })
+      const pos2 = worldPosFromDepth({ depth: depth2, coord: uv2 })
+      const pos3 = worldPosFromDepth({ depth: depth3, coord: uv3 })
+      const pos4 = worldPosFromDepth({ depth: depth4, coord: uv4 })
 
       // Get origin positions (at depth = 0, i.e., on the near plane)
-      const originPos1 = worldPosFromDepth(float(0.0), uv1)
-      const originPos2 = worldPosFromDepth(float(0.0), uv2)
-      const originPos3 = worldPosFromDepth(float(0.0), uv3)
-      const originPos4 = worldPosFromDepth(float(0.0), uv4)
+      const originPos1 = worldPosFromDepth({ depth: float(0.0), coord: uv1 })
+      const originPos2 = worldPosFromDepth({ depth: float(0.0), coord: uv2 })
+      const originPos3 = worldPosFromDepth({ depth: float(0.0), coord: uv3 })
+      const originPos4 = worldPosFromDepth({ depth: float(0.0), coord: uv4 })
 
       // Compute refracted ray directions
       const rayDir1 = refract(lightDir, normal1, div(float(1.0), ior))
@@ -325,10 +337,10 @@ export class CausticsMaterial extends MeshBasicNodeMaterial {
       )
 
       // Find where refracted rays intersect the light plane
-      const t1 = planeIntersect(endPos1, rayDir1, lightPlaneNormal, lightPlaneConstant)
-      const t2 = planeIntersect(endPos2, rayDir2, lightPlaneNormal, lightPlaneConstant)
-      const t3 = planeIntersect(endPos3, rayDir3, lightPlaneNormal, lightPlaneConstant)
-      const t4 = planeIntersect(endPos4, rayDir4, lightPlaneNormal, lightPlaneConstant)
+      const t1 = planeIntersect({ ro: endPos1, rd: rayDir1, planeN: lightPlaneNormal, planeD: lightPlaneConstant })
+      const t2 = planeIntersect({ ro: endPos2, rd: rayDir2, planeN: lightPlaneNormal, planeD: lightPlaneConstant })
+      const t3 = planeIntersect({ ro: endPos3, rd: rayDir3, planeN: lightPlaneNormal, planeD: lightPlaneConstant })
+      const t4 = planeIntersect({ ro: endPos4, rd: rayDir4, planeN: lightPlaneNormal, planeD: lightPlaneConstant })
 
       // Final positions on the receiving plane
       const finalPos1 = add(endPos1, mul(rayDir1, t1))
@@ -732,11 +744,7 @@ export const Caustics: ForwardRefComponent<CausticsProps, THREE.Group> = /* @__P
             blendDst={THREE.SrcAlphaFactor}
             depthWrite={false}
           />
-          {debug && (
-            <Edges>
-              <lineBasicMaterial color="#ffff00" toneMapped={false} />
-            </Edges>
-          )}
+          {debug && <Edges color="#ffff00" />}
         </mesh>
       </group>
     )

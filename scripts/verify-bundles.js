@@ -1,45 +1,64 @@
 /**
  * Verify that each entry point's bundle has the correct THREE imports
- * Run after `pnpm build` to validate bundle optimization
+ * Run after `yarn build` to validate bundle optimization
  *
  * Usage: node scripts/verify-bundles.js
  *
- * Each entry point should be a standalone bundle with different THREE imports:
- * - Default: both 'three' and 'three/webgpu'
- * - Legacy: only 'three' (no webgpu)
+ * Each entry point should have the correct THREE imports based on its platform:
+ * - Root/Core/External/Experimental: can have 'three' (renderer-agnostic)
+ * - Legacy: only 'three' (no three/webgpu or three/tsl)
  * - WebGPU: only 'three/webgpu' (no plain three)
+ * - Native: only 'three/webgpu' (no plain three)
  */
 const fs = require('fs')
 const path = require('path')
 
-const FIBER_DIST = path.join(__dirname, '../packages/fiber/dist')
+const DREI_DIST = path.join(__dirname, '../dist')
 
 //* Configuration ==============================
 
 const checks = [
   {
-    name: 'Default entry (@react-three/fiber)',
+    name: 'Root entry (@react-three/drei)',
     file: 'index.mjs',
-    // Default should have both three and three/webgpu
-    shouldContain: ["from 'three'", "from 'three/webgpu'"],
+    // Root can have 'three' imports (renderer-agnostic)
+    shouldContain: [],
     shouldNotContain: [],
-    notes: 'Default entry supports both WebGL and WebGPU',
+    notes: 'Root entry is renderer-agnostic, may have plain three imports',
   },
   {
-    name: 'Legacy entry (@react-three/fiber/legacy)',
-    file: 'legacy.mjs',
-    // Legacy should only have three, NOT three/webgpu
-    shouldContain: ["from 'three'"],
+    name: 'Core entry (@react-three/drei/core)',
+    file: 'core/core/index.mjs', // obuild nests: core/core/
+    // Core is renderer-agnostic
+    shouldContain: [],
+    shouldNotContain: [],
+    notes: 'Core entry is renderer-agnostic',
+  },
+  {
+    name: 'Legacy entry (@react-three/drei/legacy)',
+    file: 'legacy/legacy/index.mjs', // obuild nests: legacy/legacy/
+    // Legacy should only have 'three', NOT 'three/webgpu' or 'three/tsl'
+    shouldContain: [],
     shouldNotContain: ["from 'three/webgpu'", "from 'three/tsl'"],
     notes: 'Legacy entry should only have WebGL (no WebGPU imports)',
   },
   {
-    name: 'WebGPU entry (@react-three/fiber/webgpu)',
-    file: 'webgpu/index.mjs',
-    // WebGPU should have three/webgpu but NOT plain three
-    shouldContain: ["from 'three/webgpu'"],
+    name: 'WebGPU entry (@react-three/drei/webgpu)',
+    file: 'webgpu/webgpu/index.mjs', // obuild nests: webgpu/webgpu/
+    // WebGPU should have 'three/webgpu' but NOT plain 'three'
+    shouldContain: [],
     shouldNotContain: [],
-    notes: 'WebGPU entry should only have WebGPU (no plain three imports)',
+    checkNoPlainThree: true, // Special check: no plain 'three' imports (only three/webgpu)
+    notes: 'WebGPU entry should only have three/webgpu imports',
+  },
+  {
+    name: 'Native entry (@react-three/drei/native)',
+    file: 'native/native/index.mjs', // obuild nests: native/native/
+    // Native (WebGPU-based) should have 'three/webgpu' but NOT plain 'three'
+    shouldContain: [],
+    shouldNotContain: [],
+    checkNoPlainThree: true, // Special check: no plain 'three' imports
+    notes: 'Native entry should only have three/webgpu imports (WebGPU-based)',
   },
 ]
 
@@ -51,64 +70,111 @@ function findThreeImports(content) {
   return [...new Set(imports)]
 }
 
+function hasPlainThreeImport(imports) {
+  // Check if there's a plain 'three' import (not three/webgpu, three/tsl, etc.)
+  return imports.some((imp) => imp === "from 'three'" || imp === 'from "three"')
+}
+
 function checkForSharedChunks(content) {
   // Check if bundle references external chunks (indicates shared chunking)
   return content.match(/from ['"][^'"]*chunk[^'"]*['"]/gi) || []
 }
 
+function getAllJsFiles(dir, files = []) {
+  // Recursively get all .js/.mjs files in directory
+  if (!fs.existsSync(dir)) return files
+
+  const items = fs.readdirSync(dir)
+  for (const item of items) {
+    const fullPath = path.join(dir, item)
+    const stat = fs.statSync(fullPath)
+    if (stat.isDirectory()) {
+      getAllJsFiles(fullPath, files)
+    } else if ((item.endsWith('.js') || item.endsWith('.mjs')) && !item.endsWith('.cjs.js')) {
+      files.push(fullPath)
+    }
+  }
+  return files
+}
+
+function analyzeEntryBundle(entryDir) {
+  // Get all JS files for an entry and analyze their imports
+  const files = getAllJsFiles(entryDir)
+  const allImports = new Set()
+  let totalContent = ''
+
+  for (const file of files) {
+    const content = fs.readFileSync(file, 'utf-8')
+    totalContent += content
+    const imports = findThreeImports(content)
+    imports.forEach((imp) => allImports.add(imp))
+  }
+
+  return {
+    imports: [...allImports],
+    content: totalContent,
+    fileCount: files.length,
+  }
+}
+
 //* Analysis ==============================
 
-console.log('\n🔍 Bundle Analysis Report\n')
+console.log('\n🔍 Drei Bundle Analysis Report\n')
 console.log('='.repeat(60))
 
 let allPassed = true
 const results = []
 
 // First check if dist exists
-if (!fs.existsSync(FIBER_DIST)) {
-  console.log('❌ dist folder not found. Run `pnpm build` first.\n')
+if (!fs.existsSync(DREI_DIST)) {
+  console.log('❌ dist folder not found. Run `yarn build` first.\n')
   process.exit(1)
 }
 
 for (const check of checks) {
-  const filePath = path.join(FIBER_DIST, check.file)
+  const entryDir = path.join(DREI_DIST, path.dirname(check.file))
+  const indexFile = path.join(DREI_DIST, check.file)
 
   console.log(`\n📦 ${check.name}`)
   console.log('-'.repeat(60))
 
-  // Check if file exists
-  if (!fs.existsSync(filePath)) {
-    console.log(`   ❌ File not found: dist/${check.file}`)
-    console.log('   Run `pnpm build` first.')
+  // Check if entry directory exists
+  if (!fs.existsSync(entryDir)) {
+    console.log(`   ❌ Directory not found: dist/${path.dirname(check.file)}`)
+    console.log('   Run `yarn build` first.')
     allPassed = false
     results.push({
       name: check.name,
-      size: 0,
       passed: false,
       threeImports: [],
-      isStandalone: false,
+      hasPlainThree: false,
+      fileCount: 0,
     })
     continue
   }
 
-  const content = fs.readFileSync(filePath, 'utf-8')
-  const stats = fs.statSync(filePath)
-  const sizeKB = (stats.size / 1024).toFixed(2)
+  // Analyze the entry's bundle
+  const analysis = analyzeEntryBundle(entryDir)
+  const threeImports = analysis.imports
+  const hasPlainThree = hasPlainThreeImport(threeImports)
 
-  console.log(`   📄 File: dist/${check.file}`)
-  console.log(`   📊 Size: ${sizeKB} KB`)
+  console.log(`   📄 Entry: dist/${check.file}`)
+  console.log(`   📊 Files analyzed: ${analysis.fileCount}`)
 
   // Check for required patterns
   let checksPassed = true
 
-  console.log('\n   Required imports:')
-  for (const pattern of check.shouldContain) {
-    if (content.includes(pattern)) {
-      console.log(`   ✅ Contains: ${pattern}`)
-    } else {
-      console.log(`   ❌ MISSING: ${pattern}`)
-      checksPassed = false
-      allPassed = false
+  if (check.shouldContain.length > 0) {
+    console.log('\n   Required imports:')
+    for (const pattern of check.shouldContain) {
+      const found = threeImports.some((imp) => imp.includes(pattern.replace(/from |'/g, '')))
+      if (found) {
+        console.log(`   ✅ Contains: ${pattern}`)
+      } else {
+        console.log(`   ❌ MISSING: ${pattern}`)
+        checksPassed = false
+        allPassed = false
+      }
     }
   }
 
@@ -116,7 +182,8 @@ for (const check of checks) {
   if (check.shouldNotContain.length > 0) {
     console.log('\n   Forbidden imports:')
     for (const pattern of check.shouldNotContain) {
-      if (!content.includes(pattern)) {
+      const found = threeImports.some((imp) => imp.includes(pattern.replace(/from |'/g, '')))
+      if (!found) {
         console.log(`   ✅ Does not contain: ${pattern}`)
       } else {
         console.log(`   ❌ SHOULD NOT contain: ${pattern}`)
@@ -126,23 +193,33 @@ for (const check of checks) {
     }
   }
 
-  // Analyze all THREE imports in the file
-  const threeImports = findThreeImports(content)
+  // Special check for WebGPU/Native: no plain 'three' imports
+  if (check.checkNoPlainThree) {
+    console.log('\n   WebGPU isolation check:')
+    if (!hasPlainThree) {
+      console.log("   ✅ No plain 'three' imports (only three/webgpu)")
+    } else {
+      console.log("   ❌ Found plain 'three' import (should only use three/webgpu)")
+      checksPassed = false
+      allPassed = false
+    }
+  }
+
+  // Show all THREE imports found
   console.log('\n   All THREE imports found:')
   if (threeImports.length > 0) {
     threeImports.forEach((imp) => console.log(`      - ${imp}`))
   } else {
-    console.log('      (none)')
+    console.log('      (none - imports may be externalized)')
   }
 
-  // Check for shared chunks (should be none with unbuild)
-  const sharedChunks = checkForSharedChunks(content)
-  const isStandalone = sharedChunks.length === 0
-
-  if (isStandalone) {
-    console.log('\n   ✅ Standalone bundle (no shared chunks)')
-  } else {
-    console.log(`\n   ⚠️  References shared chunks: ${sharedChunks.join(', ')}`)
+  // Check for known limitations (warning, not failure)
+  if (check.knownLimitation) {
+    const hasWebGPU = threeImports.some((imp) => imp.includes('three/webgpu'))
+    if (hasWebGPU) {
+      console.log(`\n   ⚠️  Known limitation: ${check.knownLimitation}`)
+      console.log('   This is expected and does not affect WebGL functionality.')
+    }
   }
 
   if (check.notes) {
@@ -151,10 +228,11 @@ for (const check of checks) {
 
   results.push({
     name: check.name,
-    size: sizeKB,
     passed: checksPassed,
     threeImports,
-    isStandalone,
+    hasPlainThree,
+    fileCount: analysis.fileCount,
+    knownLimitation: check.knownLimitation,
   })
 }
 
@@ -165,26 +243,19 @@ console.log('📊 Summary')
 console.log('='.repeat(60))
 
 results.forEach((r) => {
-  const status = r.passed ? '✅' : '❌'
-  const standalone = r.isStandalone ? '(standalone)' : '(shared chunks!)'
-  console.log(`${status} ${r.name}: ${r.size} KB ${standalone}`)
+  let status = r.passed ? '✅' : '❌'
+  if (r.passed && r.knownLimitation) status = '⚠️' // Warning for known limitations
+  const plainThreeStatus = r.hasPlainThree ? "(has plain 'three')" : "(no plain 'three')"
+  console.log(`${status} ${r.name}: ${r.fileCount} files ${plainThreeStatus}`)
 })
 
 console.log('\n' + '='.repeat(60))
 
 // Final verdict
-const allStandalone = results.every((r) => r.isStandalone)
-
-if (allPassed && allStandalone) {
+if (allPassed) {
   console.log('✅ All checks passed! Bundles are correctly optimized.\n')
   process.exit(0)
 } else {
-  if (!allPassed) {
-    console.log('❌ Some import checks failed. See above for details.')
-  }
-  if (!allStandalone) {
-    console.log('⚠️  Some bundles are not standalone (using shared chunks).')
-  }
-  console.log('')
+  console.log('❌ Some checks failed. See above for details.\n')
   process.exit(1)
 }

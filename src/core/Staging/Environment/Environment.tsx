@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useThree, createPortal, useFrame, extend, Euler, applyProps, ThreeElement } from '@react-three/fiber'
 import { WebGLCubeRenderTarget, Texture, Scene, CubeCamera, HalfFloatType, CubeTexture } from '#three'
-import { GroundProjectedEnv as GroundProjectedEnvImpl } from 'three/examples/jsm/modifiers/GroundProjectedEnv'
+import { GroundedSkybox as GroundProjectedEnvImpl } from 'three/examples/jsm/objects/GroundedSkybox'
 import { PresetsType } from '../environment-assets'
 import { EnvironmentLoaderProps, useEnvironment } from '../useEnvironment/useEnvironment'
 
@@ -355,15 +355,19 @@ function EnvironmentGround(props: EnvironmentProps) {
     }
   }, [textureDefault])
 
-  const args = React.useMemo<[CubeTexture | Texture]>(() => [texture], [texture])
-  const height = (props.ground as any)?.height
-  const radius = (props.ground as any)?.radius
+  const height = (props.ground as any)?.height ?? 15
+  const radius = (props.ground as any)?.radius ?? 60
   const scale = (props.ground as any)?.scale ?? 1000
+
+  const args = React.useMemo<[Texture | CubeTexture, number, number]>(
+    () => [texture, height, radius],
+    [texture, height, radius]
+  )
 
   return (
     <>
       <EnvironmentMap {...props} map={texture} />
-      <groundProjectedEnvImpl args={args} scale={scale} height={height} radius={radius} />
+      <groundProjectedEnvImpl args={args} scale={scale} />
     </>
   )
 }

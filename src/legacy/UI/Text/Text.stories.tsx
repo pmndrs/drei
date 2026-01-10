@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 import { Setup } from '@sb/Setup'
 import { useTurntable } from '@sb/useTurntable'
 
-import { Text } from 'drei'
+import { Text } from './Text'
 
 export default {
   title: 'UI/Text',

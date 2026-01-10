@@ -85,7 +85,10 @@ export const Sparkles: ForwardRefComponent<SparklesProps, THREE.InstancedMesh> =
   //* Generate particle data ==============================
   const _scale = normalizeVector(scale)
   const positions = React.useMemo(
-    () => Float32Array.from(Array.from({ length: count }, () => _scale.map(THREE.MathUtils.randFloatSpread)).flat()),
+    () =>
+      Float32Array.from(
+        Array.from({ length: count }, () => _scale.map((s) => THREE.MathUtils.randFloatSpread(s))).flat()
+      ),
     [count, ..._scale]
   )
 
@@ -122,7 +125,7 @@ export const Sparkles: ForwardRefComponent<SparklesProps, THREE.InstancedMesh> =
   //* Update time uniform each frame ==============================
   useFrame((state) => {
     if (ref.current && ref.current.material) {
-      (ref.current.material as any).time = state.elapsed
+      ;(ref.current.material as any).time = state.elapsed
     }
   })
 
@@ -140,4 +143,3 @@ export const Sparkles: ForwardRefComponent<SparklesProps, THREE.InstancedMesh> =
     </instancedMesh>
   )
 })
-

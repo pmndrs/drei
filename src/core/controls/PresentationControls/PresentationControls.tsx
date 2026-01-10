@@ -3,6 +3,7 @@ import { MathUtils } from '#three'
 import { useFrame, useThree } from '@react-three/fiber'
 import { useGesture } from '@use-gesture/react'
 import { easing } from 'maath'
+import * as THREE from '#three'
 
 export type PresentationControlProps = {
   snap?: Boolean | number

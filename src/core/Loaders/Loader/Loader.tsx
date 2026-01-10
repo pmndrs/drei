@@ -2,7 +2,7 @@ import * as React from 'react'
 import { useProgress } from '../useProgress/useProgress'
 import { CSSProperties } from 'react'
 
-interface LoaderOptions {
+export interface LoaderOptions {
   containerStyles: CSSProperties
   innerStyles: CSSProperties
   barStyles: CSSProperties

@@ -4,7 +4,8 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'
 
-import { Environment, ContactShadows, PerspectiveCamera, OrbitControls } from 'drei'
+import { Environment, PerspectiveCamera, OrbitControls } from 'drei'
+import { ContactShadows } from '../../../legacy/Materials/ContactShadows/ContactShadows'
 
 import { presetsObj } from '../environment-assets'
 import { ComponentProps } from 'react'

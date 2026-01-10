@@ -3,7 +3,8 @@ import { useFrame } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'
-import { MeshDistortMaterial, Icosahedron } from 'drei'
+import { Icosahedron } from 'drei'
+import { MeshDistortMaterial } from './MeshDistortMaterial'
 import { MeshDistortMaterial as MeshDistortMaterialWebGPU } from '../../../webgpu/Materials/MeshDistortMaterial'
 import { PlatformSwitch } from '@sb/components/PlatformSwitch'
 
@@ -36,6 +37,7 @@ type Story = StoryObj<any>
 function MeshDistortMaterialScene(props: React.ComponentProps<typeof MeshDistortMaterial>) {
   return (
     <Icosahedron args={[1, 4]}>
+      {/* @ts-expect-error - TypeScript sees two different DistortMaterialImpl types due to module resolution, but they're compatible at runtime */}
       <PlatformSwitch legacy={<MeshDistortMaterial {...props} />} webgpu={<MeshDistortMaterialWebGPU {...props} />} />
     </Icosahedron>
   )

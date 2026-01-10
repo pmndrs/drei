@@ -4,7 +4,8 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'
 
-import { Image, useTexture } from 'drei'
+import { useTexture } from 'drei'
+import { Image } from './Image'
 
 export default {
   title: 'Materials/Image',

@@ -26,18 +26,10 @@ export type DecalProps = Omit<FIBER.ThreeElements['mesh'], 'ref' | 'children'> &
   depthTest?: boolean
 }
 
-function isArray(vec: any): vec is number[] {
-  return Array.isArray(vec)
-}
-
-function vecToArray(vec: number[] | FIBER.Vector3 | FIBER.Euler | number = [0, 0, 0]) {
-  if (isArray(vec)) {
-    return vec
-  } else if (vec instanceof THREE.Vector3 || vec instanceof THREE.Euler) {
-    return [vec.x, vec.y, vec.z]
-  } else {
-    return [vec, vec, vec]
-  }
+function vecToArray(vec: number[] | FIBER.Vector3 | FIBER.Euler | number = [0, 0, 0]): number[] {
+  if (Array.isArray(vec)) return vec as number[]
+  if (typeof vec === 'number') return [vec, vec, vec]
+  return [(vec as THREE.Vector3).x, (vec as THREE.Vector3).y, (vec as THREE.Vector3).z]
 }
 
 /**

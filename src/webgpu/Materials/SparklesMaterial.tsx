@@ -1,4 +1,4 @@
-import { SpriteNodeMaterial } from '#three'
+import { SpriteNodeMaterial } from 'three/webgpu'
 import {
   Fn,
   attribute,

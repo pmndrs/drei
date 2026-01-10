@@ -142,7 +142,7 @@ export function Select({
       }
     }
 
-    let previous: THREE.Mesh<THREE.BufferGeometry, THREE.Material | THREE.Material[]>[] = []
+    let previous: THREE.Object3D[] = []
     function pointerMove(event) {
       if (isDown) {
         onSelectMove(event)
@@ -150,7 +150,7 @@ export function Select({
         const allSelected = selBox
           .select()
           .sort((o) => (o as any).uuid)
-          .filter((o) => o.isMesh)
+          .filter((o) => (o as THREE.Mesh).isMesh)
         if (!shallow(allSelected, previous)) {
           previous = allSelected
           dispatch({ object: customFilter(allSelected) })

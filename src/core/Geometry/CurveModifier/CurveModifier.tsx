@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as THREE from '#three'
 import { createPortal, ThreeElements } from '@react-three/fiber'
-import { Flow } from 'three/examples/jsm/modifiers/Flow'
+import { Flow } from 'three/examples/jsm/modifiers/CurveModifier'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 
 export interface CurveModifierProps {

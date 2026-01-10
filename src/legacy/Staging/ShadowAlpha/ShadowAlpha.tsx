@@ -10,7 +10,7 @@
 
 import { useFrame } from '@react-three/fiber'
 import * as React from 'react'
-import * as THREE from 'three'
+import * as THREE from '#three'
 
 export interface ShadowAlphaProps {
     opacity?: number

@@ -4,8 +4,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'
 
-import { Billboard, Plane, Box, Cone, OrbitControls, Text, Clone, useGLTF } from 'drei'
-import { ComponentProps } from 'react'
+import { Clone, useGLTF } from 'drei'
 
 export default {
   title: 'Helpers/Clone',

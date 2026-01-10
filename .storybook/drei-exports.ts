@@ -4,5 +4,4 @@
 export * from '../src/core'
 export * from '../src/external'
 export * from '../src/experimental'
-export * from '../src/legacy'
 

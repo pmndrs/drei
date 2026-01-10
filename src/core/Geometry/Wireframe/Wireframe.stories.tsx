@@ -71,7 +71,7 @@ function WireframeScene(props: React.ComponentProps<typeof Wireframe>) {
   )
 }
 
-export const WireframeSt = {
+export const WireframeSt: Story = {
   args: {
     stroke: 'white',
     squeeze: true,
@@ -82,4 +82,4 @@ export const WireframeSt = {
   },
   render: (args) => <WireframeScene {...args} />,
   name: 'Default',
-} satisfies Story
+}

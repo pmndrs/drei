@@ -4,7 +4,8 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'
 
-import { Sparkles, PerspectiveCamera, OrbitControls } from 'drei'
+import { PerspectiveCamera, OrbitControls } from 'drei'
+import { Sparkles } from './Sparkles'
 
 export default {
   title: 'Staging/Sparkles',

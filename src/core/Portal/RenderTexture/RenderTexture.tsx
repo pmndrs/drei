@@ -8,7 +8,7 @@
 // BUG WORKAROUND: We pass vScene explicitly because createPortal doesn't correctly set
 // state.scene in useFrame. This is an R3F bug that should be reported.
 
-import * as THREE from 'three'
+import * as THREE from '#three'
 import * as React from 'react'
 import { createPortal, ThreeElements, useFrame, useThree } from '@react-three/fiber'
 import { ForwardRefComponent } from '@utils/ts-utils'

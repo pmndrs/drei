@@ -16,7 +16,7 @@ This runs the full build pipeline:
 
 1. `rimraf dist` — Clean the dist folder
 2. `yarn typegen` — Generate TypeScript declarations
-3. `obuild` — Bundle all entry points with Rolldown
+3. `obuild` — Bundle all entries with per-entry aliases
 4. `yarn copy` — Copy package.json, README, LICENSE to dist
 5. `yarn copy:native` — Copy React Native package.json
 
@@ -24,41 +24,59 @@ This runs the full build pipeline:
 
 The build produces **7 entry points** in the `dist/` folder:
 
-| Entry | Source | Purpose |
-|-------|--------|---------|
-| `index.js` | `src/index.ts` | Root — core + external + experimental |
-| `core/index.js` | `src/core/index.ts` | Renderer-agnostic components |
-| `external/index.js` | `src/external/index.ts` | Third-party library wrappers |
-| `experimental/index.js` | `src/experimental/index.ts` | Rough/unstable components |
-| `legacy/index.js` | `src/legacy/index.ts` | WebGL-only implementations |
-| `webgpu/index.js` | `src/webgpu/index.ts` | WebGPU-only implementations |
-| `native/index.js` | `src/native/index.ts` | React Native support |
+| Entry                   | Source                      | Three.js Alias | Purpose                                     |
+| ----------------------- | --------------------------- | -------------- | ------------------------------------------- |
+| `index.js`              | `src/index.ts`              | `three`        | Root — core + external + experimental       |
+| `core/index.js`         | `src/core/index.ts`         | `three`        | Renderer-agnostic components only           |
+| `external/index.js`     | `src/external/index.ts`     | `three`        | Third-party library wrappers                |
+| `experimental/index.js` | `src/experimental/index.ts` | `three`        | Rough/unstable components                   |
+| `legacy/index.js`       | `src/legacy/index.ts`       | `three`        | Core + WebGL-only implementations           |
+| `webgpu/index.js`       | `src/webgpu/index.ts`       | `three/webgpu` | Core + WebGPU-only implementations          |
+| `native/index.js`       | `src/native/index.ts`       | `three/webgpu` | Core + WebGPU for React Native (exclusions) |
 
 Each entry point gets:
+
 - ESM bundle (`.js`)
 - CommonJS bundle (`.cjs.js`)
 - TypeScript declarations (`.d.ts`)
+
+### Entry Point Exports
+
+**Important**: The `legacy`, `webgpu`, and `native` entries export ALL of core plus their platform-specific components. This means:
+
+```ts
+// These both export Box, Sphere, OrbitControls, etc.
+import { Box, MeshDistortMaterial } from '@react-three/drei/legacy' // WebGL version
+import { Box, MeshDistortMaterial } from '@react-three/drei/webgpu' // WebGPU version
+
+// The difference is the THREE.js aliasing:
+// - legacy: all #three imports → 'three' (WebGL)
+// - webgpu: all #three imports → 'three/webgpu' (WebGPU)
+```
+
+**Native exclusions**: Some components don't work on React Native and throw helpful errors:
+
+- `Html` — Requires DOM
+- `Caustics` — Not yet supported on native
 
 ### Output Structure
 
 ```
 dist/
-├── index.js              # Root ESM
+├── index.js              # Root ESM (core + external + experimental)
 ├── index.cjs.js          # Root CJS
 ├── index.d.ts            # Root types
-├── core/
-│   ├── index.js
-│   ├── index.cjs.js
-│   └── index.d.ts
-├── legacy/
+├── core/                 # Core components (renderer-agnostic)
 │   └── ...
-├── webgpu/
+├── legacy/               # Core + WebGL implementations
 │   └── ...
-├── external/
+├── webgpu/               # Core + WebGPU implementations
 │   └── ...
-├── experimental/
+├── external/             # External library wrappers
 │   └── ...
-├── native/
+├── experimental/         # Experimental components
+│   └── ...
+├── native/               # Core + WebGPU for React Native
 │   └── ...
 ├── package.json          # Cleaned for npm
 ├── README.md
@@ -69,45 +87,57 @@ dist/
 
 ## Build Configuration
 
-The build is configured in `build.config.ts` using obuild (powered by Rolldown).
+Drei uses a single `build.config.ts` with per-entry alias configuration via rolldown's `resolve.alias`:
 
-### Key Settings
+### WebGL Entries (root, core, external, experimental, legacy)
 
 ```ts
-// Entry points
-entries: [
-  { input: './src/index', name: 'index' },
-  { input: './src/core/index', name: 'core/index' },
-  { input: './src/legacy/index', name: 'legacy/index' },
-  { input: './src/webgpu/index', name: 'webgpu/index' },
-  // ...
-]
-
-// External dependencies (not bundled)
-externals: [
-  'react', 'react-dom', 'three', '@react-three/fiber',
-  // + all dependencies from package.json
-]
-
-// Rolldown options
-rolldown: {
-  alias: { '#three': 'three' },
-  treeshake: true,
-  output: { format: 'esm', preserveModules: true }
+resolve: {
+  alias: {
+    '#three': 'three',
+    '#drei-platform': './src/utils/drei-platform.ts',
+    '#three-addons': './src/utils/three-addons.ts',
+  }
 }
 ```
 
-### Platform Aliases
+### WebGPU Entries (webgpu, native)
 
-The build resolves platform aliases differently per entry:
+```ts
+resolve: {
+  alias: {
+    '#three': 'three/webgpu',
+    '#drei-platform': './src/utils/drei-platform-webgpu.ts',
+    '#three-addons': './src/utils/three-addons-webgpu.ts',
+  }
+}
+```
 
-| Entry | `#three` resolves to | `#drei-platform` resolves to |
-|-------|---------------------|------------------------------|
-| root, core, external, experimental | `three` | `drei-platform.ts` (WebGL) |
-| legacy | `three` | `drei-platform.ts` (WebGL) |
-| webgpu | `three/webgpu` | `drei-platform-webgpu.ts` |
+### Why Per-Entry Aliases?
 
-See [Platform Aliases](./PLATFORM_ALIASES.md) for details.
+When you import **anything** from `'three'`, even a simple `Vector3`, the bundler may include the WebGLRenderer in the bundle. By aliasing `#three` to `'three/webgpu'` for WebGPU builds, we ensure:
+
+- **Legacy bundle**: Only imports from `'three'` (WebGL-safe)
+- **WebGPU bundle**: Only imports from `'three/webgpu'` (no WebGLRenderer)
+
+This keeps bundle sizes optimal for each platform.
+
+---
+
+## Verifying Builds
+
+After building, verify the bundles have correct imports:
+
+```bash
+yarn build
+node scripts/verify-bundles.js
+```
+
+This checks:
+
+- ✅ Legacy: no `'three/webgpu'` or `'three/tsl'` imports
+- ✅ WebGPU: no plain `'three'` imports (only `'three/webgpu'`)
+- ✅ Native: no plain `'three'` imports (WebGPU-based)
 
 ---
 
@@ -120,6 +150,7 @@ yarn test
 ```
 
 This runs:
+
 - `yarn eslint:ci` — Linting
 - `yarn typecheck` — TypeScript type checking
 - `yarn prettier` — Code formatting check
@@ -141,22 +172,22 @@ yarn typecheck     # Check types only
 
 We use **semantic-release** for automated publishing. Releases are triggered by commits to specific branches:
 
-| Branch | Release Type | npm Tag |
-|--------|-------------|---------|
-| `master` | Production | `latest` |
-| `beta` | Prerelease | `beta` |
-| `alpha` | Prerelease | `alpha` |
-| `rc` | Prerelease | `rc` |
-| `canary-*` | Prerelease | `canary` |
+| Branch     | Release Type | npm Tag  |
+| ---------- | ------------ | -------- |
+| `master`   | Production   | `latest` |
+| `beta`     | Prerelease   | `beta`   |
+| `alpha`    | Prerelease   | `alpha`  |
+| `rc`       | Prerelease   | `rc`     |
+| `canary-*` | Prerelease   | `canary` |
 
 ### Commit Message Format
 
 Commit messages determine the version bump:
 
-| Commit Type | Example | Version Bump |
-|------------|---------|--------------|
-| `fix:` | `fix: resolve FBO memory leak` | `0.0.x` (patch) |
-| `feat:` | `feat: add MeshWobbleMaterial` | `0.x.0` (minor) |
+| Commit Type        | Example                        | Version Bump    |
+| ------------------ | ------------------------------ | --------------- |
+| `fix:`             | `fix: resolve FBO memory leak` | `0.0.x` (patch) |
+| `feat:`            | `feat: add MeshWobbleMaterial` | `0.x.0` (minor) |
 | `BREAKING CHANGE:` | `feat!: remove deprecated API` | `x.0.0` (major) |
 
 Follow the [Conventional Commits](https://www.conventionalcommits.org/) spec.
@@ -170,6 +201,7 @@ The `dist/` folder is published to npm. The copy script cleans up `package.json`
 - Removes `scripts`, `husky`, `prettier`, `jest`, `lint-staged`
 
 The published package includes:
+
 - All bundled entry points
 - TypeScript declarations
 - README and LICENSE
@@ -214,11 +246,13 @@ The `package.json` exports field defines how consumers import the package:
 ```
 
 This enables:
+
 ```ts
-import { OrbitControls } from '@react-three/drei'        // Root
-import { OrbitControls } from '@react-three/drei/core'   // Core only
-import { MeshDistortMaterial } from '@react-three/drei/legacy'  // WebGL
-import { MeshDistortMaterial } from '@react-three/drei/webgpu'  // WebGPU
+import { OrbitControls } from '@react-three/drei' // Root (core + external + experimental)
+import { OrbitControls } from '@react-three/drei/core' // Core only
+import { Box, MeshDistortMaterial } from '@react-three/drei/legacy' // Core + WebGL materials
+import { Box, MeshDistortMaterial } from '@react-three/drei/webgpu' // Core + WebGPU materials
+import { Box } from '@react-three/drei/native' // Core + WebGPU for React Native
 ```
 
 ---
@@ -228,6 +262,7 @@ import { MeshDistortMaterial } from '@react-three/drei/webgpu'  // WebGPU
 ### Build fails with alias errors
 
 Make sure the alias files exist:
+
 - `src/utils/drei-platform.ts`
 - `src/utils/drei-platform-webgpu.ts`
 - `src/utils/three-addons.ts`
@@ -243,13 +278,21 @@ yarn typegen
 
 ### Bundle size seems large
 
-Check if dependencies are being bundled instead of externalized. All `dependencies` and `peerDependencies` should be in the `externals` array in `build.config.ts`.
+Check if dependencies are being bundled instead of externalized. All `dependencies` and `peerDependencies` should be marked as external in `build.config.ts`.
 
 ### "Cannot find module" after publish
 
 Ensure the entry point is listed in both:
-1. `build.config.ts` entries
+
+1. `build.config.ts` or `build.config.webgpu.ts` entries
 2. `package.json` exports
+
+### WebGPU bundle has 'three' imports
+
+Run `node scripts/verify-bundles.js` after build to check. If it fails:
+
+1. Ensure the component uses `#three` alias, not direct `'three'` imports
+2. Check that the entry's `resolve.alias` configuration in `build.config.ts` is correct
 
 ---
 
@@ -258,4 +301,3 @@ Ensure the entry point is listed in both:
 - [Platform Aliases](./PLATFORM_ALIASES.md) — How `#three` and `#drei-platform` work
 - [Contributing](../CONTRIBUTING.md) — How to contribute
 - [Migration Guide](../MIGRATION_V10_TO_V11.md) — v11 architecture overview
-

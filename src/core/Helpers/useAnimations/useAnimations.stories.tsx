@@ -1,4 +1,5 @@
 import * as React from 'react'
+import * as THREE from 'three'
 import { Vector3 } from 'three'
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 import { Meta, StoryObj } from '@storybook/react-vite'
@@ -42,7 +43,7 @@ useGLTF.preload('ybot.glb')
 
 function UseAnimationsScene(props: React.ComponentProps<typeof UseAnimation>) {
   const root = React.useRef<React.ComponentRef<'group'>>(null)
-  const { nodes, animations } = useGLTF('ybot.glb') as GLTF & {
+  const { nodes, animations } = useGLTF('ybot.glb') as unknown as GLTF & {
     nodes: {
       YB_Body: THREE.SkinnedMesh
       YB_Joints: THREE.SkinnedMesh

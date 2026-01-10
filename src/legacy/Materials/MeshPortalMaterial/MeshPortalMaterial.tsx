@@ -3,7 +3,7 @@
 //   drcmda, https://twitter.com/0xca0a
 // https://github.com/N8python/maskBlur
 
-import * as THREE from 'three'
+import * as THREE from '#three'
 import * as React from 'react'
 import { ReactThreeFiber, ThreeElements, extend, useFrame, useThree } from '@react-three/fiber'
 import { useIntersect } from '@core/UI/useIntersect'
@@ -483,7 +483,8 @@ const makeSDFGenerator = (clientWidth, clientHeight, renderer) => {
     let ft = finalTarget
     image.minFilter = THREE.NearestFilter
     image.magFilter = THREE.NearestFilter
-    uvRender.material.uniforms.tex.value = image
+    const uvRenderMaterial = uvRender.material as THREE.ShaderMaterial
+    uvRenderMaterial.uniforms.tex.value = image
     renderer.setRenderTarget(outsideRenderTarget)
     uvRender.render(renderer)
 
@@ -493,18 +494,19 @@ const makeSDFGenerator = (clientWidth, clientHeight, renderer) => {
     for (let i = 0; i < passes; i++) {
       const offset = Math.pow(2, passes - i - 1)
       target = lastTarget === outsideRenderTarget ? outsideRenderTarget2 : outsideRenderTarget
-      jumpFloodRender.material.uniforms.level.value = i
-      jumpFloodRender.material.uniforms.maxSteps.value = passes
-      jumpFloodRender.material.uniforms.offset.value = offset
-      jumpFloodRender.material.uniforms.tex.value = lastTarget.texture
+      const jfMaterial = jumpFloodRender.material as THREE.ShaderMaterial
+      jfMaterial.uniforms.level.value = i
+      jfMaterial.uniforms.maxSteps.value = passes
+      jfMaterial.uniforms.offset.value = offset
+      jfMaterial.uniforms.tex.value = lastTarget.texture
       renderer.setRenderTarget(target)
       jumpFloodRender.render(renderer)
       lastTarget = target
     }
     renderer.setRenderTarget(outsideRenderTargetFinal)
-    distanceFieldRender.material.uniforms.tex.value = target.texture
+    ;(distanceFieldRender.material as THREE.ShaderMaterial).uniforms.tex.value = target.texture
     distanceFieldRender.render(renderer)
-    uvRenderInside.material.uniforms.tex.value = image
+    ;(uvRenderInside.material as THREE.ShaderMaterial).uniforms.tex.value = image
     renderer.setRenderTarget(insideRenderTarget)
     uvRenderInside.render(renderer)
     lastTarget = insideRenderTarget
@@ -512,19 +514,20 @@ const makeSDFGenerator = (clientWidth, clientHeight, renderer) => {
     for (let i = 0; i < passes; i++) {
       const offset = Math.pow(2, passes - i - 1)
       target = lastTarget === insideRenderTarget ? insideRenderTarget2 : insideRenderTarget
-      jumpFloodRender.material.uniforms.level.value = i
-      jumpFloodRender.material.uniforms.maxSteps.value = passes
-      jumpFloodRender.material.uniforms.offset.value = offset
-      jumpFloodRender.material.uniforms.tex.value = lastTarget.texture
+      const jfMaterial = jumpFloodRender.material as THREE.ShaderMaterial
+      jfMaterial.uniforms.level.value = i
+      jfMaterial.uniforms.maxSteps.value = passes
+      jfMaterial.uniforms.offset.value = offset
+      jfMaterial.uniforms.tex.value = lastTarget.texture
       renderer.setRenderTarget(target)
       jumpFloodRender.render(renderer)
       lastTarget = target
     }
     renderer.setRenderTarget(insideRenderTargetFinal)
-    distanceFieldRender.material.uniforms.tex.value = target.texture
+    ;(distanceFieldRender.material as THREE.ShaderMaterial).uniforms.tex.value = target.texture
     distanceFieldRender.render(renderer)
     renderer.setRenderTarget(ft)
-    compositeRender.material.uniforms.tex.value = image
+    ;(compositeRender.material as THREE.ShaderMaterial).uniforms.tex.value = image
     compositeRender.render(renderer)
     renderer.setRenderTarget(null)
     return ft

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { RGBAFormat, HalfFloatType, WebGLRenderTarget, UnsignedByteType, TextureDataType, ColorSpace } from 'three'
+import { RGBAFormat, HalfFloatType, WebGLRenderTarget, UnsignedByteType, TextureDataType, ColorSpace } from '#three'
 import { extend, useThree, useFrame, ThreeElement, ThreeElements } from '@react-three/fiber'
 import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'

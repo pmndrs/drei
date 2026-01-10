@@ -148,13 +148,14 @@ export function useSpriteLoader<Url extends string>(
           throw new Error('Failed to get 2d context')
         }
 
-        canvas.width = texture.image.width
-        canvas.height = texture.image.height
+        const img = texture.image as HTMLImageElement
+        canvas.width = img.width
+        canvas.height = img.height
 
-        ctx.drawImage(texture.image, 0, 0)
+        ctx.drawImage(img, 0, 0)
 
-        const width = texture.image.width
-        const height = texture.image.height
+        const width = img.width
+        const height = img.height
 
         // Calculate rows and columns based on the number of frames and image dimensions
         const cols = Math.round(Math.sqrt(totalFrames * (width / height)))
@@ -338,8 +339,9 @@ export function useSpriteLoader<Url extends string>(
       if (json === null) {
         if (_spriteTexture && numberOfFrames) {
           //get size from texture
-          const width = _spriteTexture.image.width
-          const height = _spriteTexture.image.height
+          const img = _spriteTexture.image as { width: number; height: number }
+          const width = img.width
+          const height = img.height
           totalFrames.current = numberOfFrames
           const { rows, columns, frameWidth, frameHeight, emptyFrames } = getRowsAndColumns(
             _spriteTexture,

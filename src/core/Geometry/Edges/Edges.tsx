@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as THREE from '#three'
 import { LineSegments2 } from '#three-addons'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
-import { Line } from '../Line/Line'
+import { Line } from '#drei-platform'
 
 export interface EdgesProps {
   threshold?: number

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ShaderMaterial } from 'three'
+import { ShaderMaterial } from '#three'
 import { extend, ThreeElements } from '@react-three/fiber'
 import { DiscardMaterial as DiscardMaterialImpl } from '@legacy/Materials/DiscardMaterial'
 import { ForwardRefComponent } from '@utils/ts-utils'

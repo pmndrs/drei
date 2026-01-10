@@ -187,7 +187,8 @@ export const Clouds = /* @__PURE__ */ React.forwardRef<Group, CloudsProps>(
       setUpdateRange(instance.current.geometry.attributes.cloudOpacity as BufferAttribute, { start: 0, count: count })
     })
 
-    let imageBounds = [cloudTexture!.image.width ?? 1, cloudTexture!.image.height ?? 1]
+    const img = cloudTexture!.image as { width?: number; height?: number }
+    let imageBounds = [img.width ?? 1, img.height ?? 1]
     const max = Math.max(imageBounds[0], imageBounds[1])
     imageBounds = [imageBounds[0] / max, imageBounds[1] / max]
 

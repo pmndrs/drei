@@ -14,7 +14,6 @@ export default {
     enablePan: true,
     enableRotate: true,
     enableZoom: true,
-    reverseOrbit: false,
   },
   decorators: [
     (Story, context) => (

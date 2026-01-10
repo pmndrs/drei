@@ -4,6 +4,7 @@ import { Box3, Sphere, Vector3 } from 'three'
 import { useLoader } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
+import * as THREE from 'three'
 import { MapControls } from 'drei'
 
 import { Setup } from '@sb/Setup'
@@ -43,7 +44,7 @@ function Svg() {
   const shapes = React.useMemo(
     () =>
       paths.flatMap((p) =>
-        p.toShapes(true).map((shape) => ({ shape, color: p.color, fillOpacity: p.userData.style.fillOpacity }))
+        p.toShapes(true).map((shape) => ({ shape, color: p.color, fillOpacity: p.userData?.style.fillOpacity ?? 1 }))
       ),
     [paths]
   )

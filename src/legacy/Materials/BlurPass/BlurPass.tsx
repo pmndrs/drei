@@ -9,7 +9,7 @@ import {
   Camera,
   Vector2,
   HalfFloatType,
-} from 'three'
+} from '#three'
 
 import { ConvolutionMaterial } from '@legacy/Materials/ConvolutionMaterial'
 

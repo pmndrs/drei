@@ -2,6 +2,19 @@ import * as React from 'react'
 import { CubeTextureLoader, CubeTexture as _CubeTexture } from '#three'
 import { useLoader } from '@react-three/fiber'
 
+//* Types ==============================
+
+interface CubeTextureOptions {
+  path: string
+}
+
+export interface CubeTextureProps extends CubeTextureOptions {
+  children?: (texture: _CubeTexture) => React.ReactNode
+  files: string[]
+}
+
+//* Hook ==============================
+
 export function useCubeTexture(files: string[], { path }: CubeTextureOptions): _CubeTexture {
   const [cubeTexture] = useLoader(CubeTextureLoader, [files], (loader) => loader.setPath(path))
   return cubeTexture

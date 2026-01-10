@@ -95,14 +95,17 @@ export const Sparkles: ForwardRefComponent<SparklesProps, THREE.Points> = /* @__
 
   const _scale = normalizeVector(scale)
   const positions = React.useMemo(
-    () => Float32Array.from(Array.from({ length: count }, () => _scale.map(THREE.MathUtils.randFloatSpread)).flat()),
+    () =>
+      Float32Array.from(
+        Array.from({ length: count }, () => _scale.map((s) => THREE.MathUtils.randFloatSpread(s))).flat()
+      ),
     [count, ..._scale]
   )
 
   const sizes = usePropAsIsOrAsAttribute<number>(count, size, Math.random)
   const opacities = usePropAsIsOrAsAttribute<number>(count, opacity)
   const speeds = usePropAsIsOrAsAttribute<number>(count, speed)
-  const noises = usePropAsIsOrAsAttribute<typeof noise>(count * 3, noise)
+  const noises = usePropAsIsOrAsAttribute<number>(count * 3, noise as number)
   const colors = usePropAsIsOrAsAttribute<THREE.ColorRepresentation>(
     color === undefined ? count * 3 : count,
     !isFloat32Array(color) ? new THREE.Color(color) : color,
@@ -130,4 +133,3 @@ export const Sparkles: ForwardRefComponent<SparklesProps, THREE.Points> = /* @__
     </points>
   )
 })
-

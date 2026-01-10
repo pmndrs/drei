@@ -34,7 +34,7 @@ export const PositionalAudio: ForwardRefComponent<PositionalAudioProps, Position
     React.useEffect(() => {
       const _sound = sound.current
       if (_sound) {
-        _sound.setBuffer(buffer)
+        _sound.setBuffer(Array.isArray(buffer) ? buffer[0] : buffer)
         _sound.setRefDistance(distance)
         _sound.setLoop(loop)
         if (autoplay && !_sound.isPlaying) _sound.play()

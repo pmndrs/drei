@@ -40,7 +40,7 @@ export default {
 type Story = StoryObj<typeof Sampler>
 
 function DecalScene(_props: ComponentProps<typeof Sampler>) {
-  const ref = React.useRef<any>()
+  const ref = React.useRef<any>(null!)
 
   const [reactMap, threeMap] = useTexture(['/decals/react.png', '/decals/three.png'])
 

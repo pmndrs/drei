@@ -2,7 +2,8 @@ import * as React from 'react'
 import { Canvas } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { OrbitControls, Box, useContextBridge, Text } from 'drei'
+import { OrbitControls, Box, useContextBridge } from 'drei'
+import { Text } from '../../../legacy/UI/Text/Text'
 
 function ContextBridge({
   contexts,

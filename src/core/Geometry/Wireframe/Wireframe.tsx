@@ -146,12 +146,6 @@ function WireframeWithCustomGeo({
             polygonOffset={true} //
             polygonOffsetFactor={-4}
             {...props}
-            extensions={{
-              derivatives: true,
-              fragDepth: false,
-              drawBuffers: false,
-              shaderTextureLOD: false,
-            }}
           />
         </mesh>
       )}

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useThree } from '@react-three/fiber'
-import * as THREE from 'three'
+import * as THREE from '#three'
 
 export enum GradientType {
   Linear = 'linear',

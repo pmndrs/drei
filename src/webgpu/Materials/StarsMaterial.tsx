@@ -1,4 +1,5 @@
-import { SpriteNodeMaterial, AdditiveBlending } from '#three'
+import { SpriteNodeMaterial } from 'three/webgpu'
+import { AdditiveBlending } from '#three'
 import {
   Fn,
   attribute,

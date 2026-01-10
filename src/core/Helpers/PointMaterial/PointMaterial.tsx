@@ -7,9 +7,9 @@ import { ThreeElements } from '@react-three/fiber'
 const opaque_fragment = version >= 154 ? 'opaque_fragment' : 'output_fragment'
 
 export class PointMaterialImpl extends THREE.PointsMaterial {
-  constructor(props) {
-    super(props)
-    this.onBeforeCompile = (shader, renderer) => {
+  constructor(props?: THREE.PointsMaterialParameters | null) {
+    super(props ?? undefined)
+    ;(this as THREE.Material).onBeforeCompile = (shader, renderer) => {
       const { isWebGL2 } = renderer.capabilities
       shader.fragmentShader = shader.fragmentShader.replace(
         `#include <${opaque_fragment}>`,

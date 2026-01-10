@@ -1,7 +1,7 @@
 // Author: N8Programs
 // https://github.com/N8python/diamonds
 
-import * as THREE from 'three'
+import * as THREE from '#three'
 import { shaderMaterial } from '@legacy/Materials/shaderMaterial'
 import { MeshBVHUniformStruct, shaderStructs, shaderIntersectFunction } from 'three-mesh-bvh'
 import { version } from '@utils/constants'

@@ -1,4 +1,4 @@
-import * as THREE from 'three'
+import * as THREE from '#three'
 import * as React from 'react'
 import { shaderMaterial } from '@legacy/Materials/shaderMaterial'
 import { extend, applyProps, ReactThreeFiber, useThree, ThreeElements } from '@react-three/fiber'

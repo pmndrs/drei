@@ -115,7 +115,7 @@ declare module '@react-three/fiber' {
 //* TSL Noise Helpers ==============================
 
 // Simple hash-based random using sine (for per-fragment randomization)
-const rand = /* @__PURE__ */ Fn(([seed, fragCoord]: [any, any]) => {
+const rand = /* @__PURE__ */ Fn(({ seed, fragCoord }: { seed: any; fragCoord: any }) => {
   return fract(sin(dot(vec3(fragCoord.xy, seed), vec3(12.9898, 78.233, 45.164))).mul(43758.5453))
 })
 
@@ -123,7 +123,17 @@ const rand = /* @__PURE__ */ Fn(([seed, fragCoord]: [any, any]) => {
 // Simulates light absorption as it travels through a transmissive medium
 
 const applyVolumeAttenuation = /* @__PURE__ */ Fn(
-  ([radiance, transmissionDistance, attenuationColor, attenuationDistance]: [any, any, any, any]) => {
+  ({
+    radiance,
+    transmissionDistance,
+    attenuationColor,
+    attenuationDistance,
+  }: {
+    radiance: any
+    transmissionDistance: any
+    attenuationColor: any
+    attenuationDistance: any
+  }) => {
     // If attenuation distance is very large (effectively infinite), no attenuation
     const isInfinite = attenuationDistance.greaterThan(1e10)
 
@@ -227,7 +237,7 @@ class MeshTransmissionMaterialImpl extends MeshPhysicalNodeMaterial {
       const runningSeed = float(0.0).toVar()
 
       // Random offset for this fragment (temporal stability)
-      const randomCoords = rand(runningSeed, fragCoord)
+      const randomCoords = rand({ seed: runningSeed, fragCoord })
       runningSeed.addAssign(1.0)
 
       // Material properties as uniforms
@@ -261,13 +271,13 @@ class MeshTransmissionMaterialImpl extends MeshPhysicalNodeMaterial {
         const fi = float(i)
 
         // Random sample direction with roughness-based spread
-        const randX = rand(runningSeed, fragCoord).sub(0.5)
+        const randX = rand({ seed: runningSeed, fragCoord }).sub(0.5)
         runningSeed.addAssign(1.0)
-        const randY = rand(runningSeed, fragCoord).sub(0.5)
+        const randY = rand({ seed: runningSeed, fragCoord }).sub(0.5)
         runningSeed.addAssign(1.0)
-        const randZ = rand(runningSeed, fragCoord).sub(0.5)
+        const randZ = rand({ seed: runningSeed, fragCoord }).sub(0.5)
         runningSeed.addAssign(1.0)
-        const randW = rand(runningSeed, fragCoord)
+        const randW = rand({ seed: runningSeed, fragCoord })
         runningSeed.addAssign(1.0)
 
         // Roughness-weighted random direction
@@ -328,12 +338,12 @@ class MeshTransmissionMaterialImpl extends MeshPhysicalNodeMaterial {
       //* Apply volume attenuation (Beer's Law) --
       // Light is absorbed as it travels through the medium
       const transmissionRayLength = thicknessVal // Simplified: use thickness as ray length
-      const attenuatedTransmission = applyVolumeAttenuation(
-        avgTransmission,
-        transmissionRayLength,
-        attenuationColorUniform,
-        attenuationDistanceUniform
-      )
+      const attenuatedTransmission = applyVolumeAttenuation({
+        radiance: avgTransmission,
+        transmissionDistance: transmissionRayLength,
+        attenuationColor: attenuationColorUniform,
+        attenuationDistance: attenuationDistanceUniform,
+      })
 
       //* Blend transmission with diffuse color --
       // Mix between material's diffuse color and transmitted light based on transmission amount

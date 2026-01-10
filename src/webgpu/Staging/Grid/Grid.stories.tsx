@@ -3,7 +3,8 @@ import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'
-import { Grid, Box } from 'drei'
+import { Box } from 'drei'
+import { Grid } from './Grid'
 
 export default {
   title: 'Staging/Grid',

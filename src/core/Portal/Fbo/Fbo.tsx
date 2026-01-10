@@ -3,10 +3,10 @@
 // WebGL uses THREE.WebGLRenderTarget, WebGPU uses THREE.RenderTarget
 
 import * as React from 'react'
-import * as THREE from 'three'
+import * as THREE from '#three'
 import { useThree } from '@react-three/fiber'
 import { forwardRef, useImperativeHandle } from 'react'
-import { type RenderTargetOptions } from 'three'
+import { type RenderTargetOptions } from '#three'
 import { RenderTarget } from '#drei-platform'
 
 type FBOSettings = {

@@ -76,10 +76,10 @@ export function useEnvironment({
     (loader) => {
       // Gainmap requires a renderer
       if (extension === 'webp' || extension === 'jpg' || extension === 'jpeg') {
-        loader.setRenderer(renderer)
+        ;(loader as any).setRenderer?.(renderer)
       }
-      loader.setPath?.(path)
-      if (extensions) extensions(loader)
+      ;(loader as any).setPath?.(path)
+      if (extensions) extensions(loader as any)
     }
   ) as Texture | Texture[]
   let texture: Texture | CubeTexture = multiFile
@@ -127,8 +127,8 @@ useEnvironment.preload = (preloadOptions?: EnvironmentLoaderPreloadOptions) => {
   if (!loader) throw new Error('useEnvironment: Unrecognized file extension: ' + files)
 
   useLoader.preload(loader, isArray(files) ? [files] : files, (loader) => {
-    loader.setPath?.(path)
-    if (extensions) extensions(loader)
+    ;(loader as any).setPath?.(path)
+    if (extensions) extensions(loader as any)
   })
 }
 

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as THREE from 'three'
+import * as THREE from '#three'
 import { Color, extend, ThreeElements, useThree } from '@react-three/fiber'
 import { shaderMaterial } from '@legacy/Materials/shaderMaterial'
 import { useTexture } from '@core/Loaders/useTexture'
@@ -171,14 +171,14 @@ const ImageBase: ForwardRefComponent<Omit<ImageProps, 'url'>, THREE.Mesh> = /* @
 )
 
 const ImageWithUrl: ForwardRefComponent<ImageProps, THREE.Mesh> = /* @__PURE__ */ React.forwardRef(
-  ({ url, ...props }: ImageProps, ref: React.ForwardedRef<THREE.Mesh>) => {
+  ({ url, ...props }, ref) => {
     const texture = useTexture(url!)
     return <ImageBase {...props} texture={texture} ref={ref} />
   }
 )
 
 const ImageWithTexture: ForwardRefComponent<ImageProps, THREE.Mesh> = /* @__PURE__ */ React.forwardRef(
-  ({ url: _url, ...props }: ImageProps, ref: React.ForwardedRef<THREE.Mesh>) => {
+  ({ url: _url, ...props }, ref) => {
     return <ImageBase {...props} ref={ref} />
   }
 )

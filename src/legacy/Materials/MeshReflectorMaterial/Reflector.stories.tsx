@@ -4,7 +4,8 @@ import { Vector3, RepeatWrapping, Vector2 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'
-import { MeshReflectorMaterial, useTexture, TorusKnot, Box, Environment } from 'drei'
+import { useTexture, TorusKnot, Box, Environment } from 'drei'
+import { MeshReflectorMaterial } from './MeshReflectorMaterial'
 import { MeshReflectorMaterial as MeshReflectorMaterialWebGPU } from '../../../webgpu/Materials/MeshReflectorMaterial'
 import { PlatformSwitch } from '@sb/components/PlatformSwitch'
 

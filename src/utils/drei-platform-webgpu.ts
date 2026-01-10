@@ -36,5 +36,15 @@ export { RenderTexture } from '@core/Portal/RenderTexture'
 export { RenderCubeTexture } from '../core/Portal/RenderCubeTexture'
 export { Hud } from '../core/Portal/Hud'
 
+//* Geometry --------------------------------
+export { Line } from '../webgpu/Geometry/Line'
+export type { LineProps } from '../webgpu/Geometry/Line'
+export { Segments, Segment, SegmentObject } from '../webgpu/Geometry/Segments'
+export type { SegmentsProps, SegmentProps } from '../webgpu/Geometry/Segments'
+
+//* Effects --------------------------------
+export { Trail, useTrail } from '../webgpu/Effects/Trail'
+export type { TrailProps } from '../webgpu/Effects/Trail'
+
 // Add more split components here as needed
 

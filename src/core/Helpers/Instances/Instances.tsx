@@ -190,9 +190,12 @@ export const Instances: ForwardRefComponent<InstancesProps, THREE.InstancedMesh>
 
       for (let i = 0; i < instances.length; i++) {
         const instance = instances[i].current
+        if (!instance) continue
+        // Cast to THREE.Group for inherited properties (TS has trouble with #three alias)
+        const obj = instance as unknown as THREE.Group
         // Multiply the inverse of the InstancedMesh world matrix or else
         // Instances will be double-transformed if <Instances> isn't at identity
-        instance.matrixWorld.decompose(translation, rotation, scale)
+        obj.matrixWorld.decompose(translation, rotation, scale)
         instanceMatrix.compose(translation, rotation, scale).premultiply(parentMatrix)
         instanceMatrix.toArray(matrices, i * 16)
         parentRef.current.instanceMatrix.needsUpdate = true
@@ -250,22 +253,17 @@ export const Merged: ForwardRefComponent<MergedProps, THREE.Group> = /* @__PURE_
 >(function Merged({ meshes, children, ...props }, ref) {
   const isArray = Array.isArray(meshes)
   // Filter out meshes from collections, which may contain non-meshes
-  // @ts-expect-error
   if (!isArray) for (const key of Object.keys(meshes)) if (!meshes[key].isMesh) delete meshes[key]
 
   const render = (args) =>
     isArray
-      ? // @ts-expect-error
-        children(...args)
+      ? children(...args)
       : children(
-          // @ts-expect-error
           Object.keys(meshes)
-            // @ts-expect-error
             .filter((key) => meshes[key].isMesh)
             .reduce((acc, key, i) => ({ ...acc, [key]: args[i] }), {})
         )
 
-  // @ts-expect-error
   const components = (isArray ? meshes : Object.values(meshes)).map(({ geometry, material }) => (
     <Instances key={geometry.uuid} geometry={geometry} material={material} {...props} />
   ))
@@ -345,8 +343,8 @@ export function createInstances<T = InstanceProps>() {
  * </Instances>
  * ```
  */
-export const InstancedAttribute = React.forwardRef(
-  ({ name, defaultValue, normalized, usage = THREE.DynamicDrawUsage }: InstancedAttributeProps, fref) => {
+export const InstancedAttribute = React.forwardRef<THREE.InstancedBufferAttribute, InstancedAttributeProps>(
+  ({ name, defaultValue, normalized, usage = THREE.DynamicDrawUsage }, fref) => {
     const ref = React.useRef<THREE.InstancedBufferAttribute>(null!)
     React.useImperativeHandle(fref, () => ref.current, [])
     React.useLayoutEffect(() => {
@@ -356,8 +354,7 @@ export const InstancedAttribute = React.forwardRef(
       const array = Array.from({ length: parent.userData.limit }, () => value).flat()
       ref.current.array = new Float32Array(array)
       ref.current.itemSize = value.length
-      // @ts-expect-error
-      ref.current.count = array.length / ref.current.itemSize
+      ;(ref.current as any).count = array.length / ref.current.itemSize
       return () => {
         delete parent.geometry.attributes[name]
       }
@@ -380,7 +377,6 @@ export const InstancedAttribute = React.forwardRef(
         iterations++
       }
     })
-    // @ts-expect-error we're abusing three API here by mutating immutable args
     return <instancedBufferAttribute ref={ref} usage={usage} normalized={normalized} />
   }
 )

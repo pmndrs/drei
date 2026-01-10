@@ -2,7 +2,7 @@
 // https://threejs.org/examples/?q=con#webgl_shadow_contact
 
 import * as React from 'react'
-import * as THREE from 'three'
+import * as THREE from '#three'
 import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
 import { HorizontalBlurShader } from 'three/examples/jsm/shaders/HorizontalBlurShader'
 import { VerticalBlurShader } from 'three/examples/jsm/shaders/VerticalBlurShader'

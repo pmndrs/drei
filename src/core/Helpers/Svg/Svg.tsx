@@ -2,7 +2,7 @@ import { useLoader, ThreeElements } from '@react-three/fiber'
 import * as React from 'react'
 import { forwardRef, Fragment, useEffect, useMemo } from 'react'
 import { DoubleSide, Object3D } from '#three'
-import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader'
+import { SVGLoader, SVGResult } from 'three/examples/jsm/loaders/SVGLoader'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 
 export interface SvgProps extends Omit<ThreeElements['object3D'], 'ref'> {
@@ -30,7 +30,8 @@ export const Svg: ForwardRefComponent<SvgProps, Object3D> = /* @__PURE__ */ forw
     { src, skipFill, skipStrokes, fillMaterial, strokeMaterial, fillMeshProps, strokeMeshProps, ...props },
     ref
   ) {
-    const svg = useLoader(SVGLoader, !src.startsWith('<svg') ? src : `data:image/svg+xml;utf8,${src}`)
+    // Single src returns single SVGResult (not array)
+    const svg = useLoader(SVGLoader, !src.startsWith('<svg') ? src : `data:image/svg+xml;utf8,${src}`) as SVGResult
 
     const strokeGeometries = useMemo(
       () =>

@@ -2,7 +2,7 @@
  *    https://github.com/N8python/caustics
  */
 
-import * as THREE from 'three'
+import * as THREE from '#three'
 import * as React from 'react'
 import { extend, ReactThreeFiber, ThreeElements, useFrame, useThree } from '@react-three/fiber'
 import { useFBO } from '@core/Portal/Fbo'
@@ -65,9 +65,9 @@ export type CausticsProps = Omit<ThreeElements['group'], 'ref'> & {
   /** Enables visual cues to help you stage your scene, default: false */
   debug?: boolean
   /** Will display caustics only and skip the models, default: false */
-  causticsOnly: boolean
+  causticsOnly?: boolean
   /** Will include back faces and enable the backsideIOR prop, default: false */
-  backside: boolean
+  backside?: boolean
   /** The IOR refraction index, default: 1.1 */
   ior?: number
   /** The IOR refraction index for back faces (only available when backside is enabled), default: 1.1 */
@@ -280,7 +280,7 @@ const CausticsMaterial = /* @__PURE__ */ shaderMaterial(
 )
 
 const NORMALPROPS = {
-  depth: true,
+  depthBuffer: true,
   minFilter: THREE.LinearFilter,
   magFilter: THREE.LinearFilter,
   type: THREE.UnsignedByteType,
@@ -532,11 +532,7 @@ export const Caustics: ForwardRefComponent<CausticsProps, THREE.Group> = /* @__P
             blendDst={THREE.SrcAlphaFactor}
             depthWrite={false}
           />
-          {debug && (
-            <Edges>
-              <lineBasicMaterial color="#ffff00" toneMapped={false} />
-            </Edges>
-          )}
+          {debug && <Edges color="#ffff00" />}
         </mesh>
       </group>
     )

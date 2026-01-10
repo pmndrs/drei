@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { CubicBezierCurve3, Vector3 } from '#three'
-import { Line2 } from '#three-addons'
-import { Line, LineProps } from '../Line'
+import { Line2 } from 'three/examples/jsm/lines/Line2.js'
+import { Line, LineProps } from '#drei-platform'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 
 export type CubicBezierLineProps = Omit<LineProps, 'points' | 'ref'> & {

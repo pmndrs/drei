@@ -3,15 +3,9 @@ import * as THREE from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'
-import {
-  useGLTF,
-  MeshTransmissionMaterial,
-  AccumulativeShadows,
-  RandomizedLight,
-  Environment,
-  OrbitControls,
-  Center,
-} from 'drei'
+import { useGLTF, Environment, OrbitControls, Center } from 'drei'
+import { MeshTransmissionMaterial } from './MeshTransmissionMaterial'
+import { AccumulativeShadows, RandomizedLight } from '../AccumulativeShadows/AccumulativeShadows'
 
 export default {
   title: 'Shaders/MeshTransmissionMaterial',

@@ -1,7 +1,6 @@
 import * as React from 'react'
-import { Object3D } from '#three'
+import { Object3D, Frustum, Matrix4 } from '#three'
 import { useFrame, useThree } from '@react-three/fiber'
-import { Frustum, Matrix4 } from 'three/webgpu'
 
 /**
  * Detects when an object enters/exits the camera frustum.

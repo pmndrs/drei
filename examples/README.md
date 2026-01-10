@@ -1,6 +1,7 @@
 # Drei v11 Examples
 
 Visual development environment for testing and developing Drei components.
+This was made before we decided on stories being stronger/core. It has some of the same, some different etc. I'm keeping it until I know all the stories have examples from here at least and this whole directory will be removed.
 
 ## Getting Started
 
@@ -78,12 +79,12 @@ import RoundedBoxDemo from './demos/core/geometry/RoundedBox'
 // Add to demos array
 const demos: Demo[] = [
   // ... existing demos
-  { 
-    path: '/core/geometry/roundedbox', 
-    name: 'RoundedBox', 
-    component: RoundedBoxDemo, 
-    tier: 'core', 
-    category: 'Geometry' 
+  {
+    path: '/core/geometry/roundedbox',
+    name: 'RoundedBox',
+    component: RoundedBoxDemo,
+    tier: 'core',
+    category: 'Geometry',
   },
 ]
 ```
@@ -99,11 +100,7 @@ The `<Scene>` component provides a ready-to-use environment:
 ```tsx
 import Scene from '../../../components/Scene'
 
-<Scene
-  camera={{ position: [5, 5, 5], fov: 50 }}
-  showGrid={true}
-  showOrbitControls={true}
->
+;<Scene camera={{ position: [5, 5, 5], fov: 50 }} showGrid={true} showOrbitControls={true}>
   {/* Your component here */}
 </Scene>
 ```
@@ -121,8 +118,8 @@ Or build your own canvas setup for specialized needs (like camera components).
 ## Next Steps
 
 After creating a working demo:
+
 1. ✅ Verify it works visually
 2. ✅ Copy the setup to the component's test file
 3. ✅ Add proper assertions to the test
 4. ✅ Update `COMPONENT_STATUS.md` with 🟢 status
-

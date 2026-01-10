@@ -57,7 +57,7 @@ useGLTF.setDecoderPath(path)
 If for example your model [`facecap.glb`](https://github.com/mrdoob/three.js/blob/master/examples/models/gltf/facecap.glb) needs KTX2 textures, you can `extendLoader`:
 
 ```tsx
-import { KTX2Loader } from 'three-stdlib'
+import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader'
 const ktx2Loader = new KTX2Loader()
 ktx2Loader.setTranscoderPath('https://unpkg.com/three@0.168.0/examples/jsm/libs/basis/')
 

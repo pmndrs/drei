@@ -6,7 +6,7 @@ import { Setup } from '@sb/Setup'
 
 import { useGLTF, AdaptiveDpr, AdaptiveEvents, OrbitControls } from 'drei'
 
-import type { GLTF } from 'three-stdlib'
+import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 
 export default {
   title: 'Performance/Adaptive',

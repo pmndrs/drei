@@ -2,7 +2,7 @@ import { useLoader, ThreeElements } from '@react-three/fiber'
 import * as React from 'react'
 import { forwardRef, Fragment, useEffect, useMemo } from 'react'
 import { DoubleSide, Object3D } from '#three'
-import { SVGLoader } from 'three-stdlib'
+import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 
 export interface SvgProps extends Omit<ThreeElements['object3D'], 'ref'> {

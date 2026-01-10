@@ -1,4 +1,4 @@
-import { FontLoader } from 'three-stdlib'
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader'
 import { suspend, preload, clear } from 'suspend-react'
 
 export type Glyph = {

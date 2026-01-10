@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { SVGLoader } from 'three-stdlib'
+import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader'
 import { Box3, Sphere, Vector3 } from 'three'
 import { useLoader } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'

@@ -109,7 +109,7 @@ class BlurNodeMaterial extends MeshBasicNodeMaterial {
     const blurAmountUniform = this._blurAmount
     const isHorizontal = this._direction === 'horizontal'
 
-    // 9-tap Gaussian blur weights (from three-stdlib blur shaders)
+    // 9-tap Gaussian blur weights (from three blur shaders)
     const weights = [0.051, 0.0918, 0.12245, 0.1531, 0.1633, 0.1531, 0.12245, 0.0918, 0.051]
 
     this.colorNode = Fn(() => {

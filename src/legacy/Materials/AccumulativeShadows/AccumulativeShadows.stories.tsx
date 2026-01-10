@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { ComponentProps } from 'react'
-import { FlakesTexture } from 'three-stdlib'
+import { FlakesTexture } from 'three/examples/jsm/textures/FlakesTexture'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'

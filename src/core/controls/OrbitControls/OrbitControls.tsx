@@ -1,8 +1,8 @@
 import { EventManager, ReactThreeFiber, ThreeElement, useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import { Camera, Event, OrthographicCamera, PerspectiveCamera } from '#three'
-import { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
-import { ForwardRefComponent, Overwrite } from '../../../utils/ts-utils'
+import { OrbitControls as OrbitControlsImpl } from 'three/addons/controls/OrbitControls.js'
+import { ForwardRefComponent, Overwrite } from '@utils/ts-utils'
 
 type ExtractCallback<T, E extends string> = T extends { addEventListener(event: E, callback: infer C): void }
   ? C

@@ -1,6 +1,6 @@
 import * as THREE from '#three'
 import * as React from 'react'
-import { SkeletonUtils } from 'three-stdlib'
+import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 import { ThreeElements } from '@react-three/fiber'
 

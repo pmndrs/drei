@@ -1,5 +1,8 @@
 import * as React from 'react'
-import { GLTFLoader, DRACOLoader, MeshoptDecoder, GLTF } from 'three-stdlib'
+import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js'
+
 import { ObjectMap, useLoader } from '@react-three/fiber'
 import { Clone, CloneProps } from '../../Helpers/Clone/Clone'
 

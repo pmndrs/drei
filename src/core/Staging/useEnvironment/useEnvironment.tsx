@@ -8,7 +8,8 @@ import {
   CubeTexture,
   ColorSpace,
 } from '#three'
-import { RGBELoader, EXRLoader } from 'three-stdlib'
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
+import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader'
 import { GainMapLoader, HDRJPGLoader } from '@monogrid/gainmap-js'
 import { presetsObj, PresetsType } from '../environment-assets'
 import { useLayoutEffect } from 'react'

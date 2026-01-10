@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from '#three'
-import { SelectionBox } from 'three-stdlib'
+import { SelectionBox } from 'three/examples/jsm/interactive/SelectionBox'
 import { ThreeElements, useThree } from '@react-three/fiber'
 import { shallow } from 'zustand/shallow'
 

@@ -1,6 +1,7 @@
 import React, { ComponentProps } from 'react'
 import { BufferGeometry, CatmullRomCurve3, LineBasicMaterial, LineLoop, Vector3 } from 'three'
-import { FontLoader, TextGeometry, TextGeometryParameters } from 'three-stdlib'
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader'
+import { TextGeometry, TextGeometryParameters } from 'three/examples/jsm/geometries/TextGeometry'
 import { extend, useFrame, useLoader } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 

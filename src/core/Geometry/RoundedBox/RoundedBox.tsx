@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Mesh, Shape, ExtrudeGeometry } from '#three'
 import { ForwardRefComponent, NamedArrayTuple } from '../../../utils/ts-utils'
-import { toCreasedNormals } from 'three-stdlib'
+import { toCreasedNormals } from 'three/examples/jsm/utils/BufferGeometryUtils'
 import { ThreeElements } from '@react-three/fiber'
 
 const eps = 0.00001

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useThree, createPortal, useFrame, extend, Euler, applyProps, ThreeElement } from '@react-three/fiber'
 import { WebGLCubeRenderTarget, Texture, Scene, CubeCamera, HalfFloatType, CubeTexture } from '#three'
-import { GroundProjectedEnv as GroundProjectedEnvImpl } from 'three-stdlib'
+import { GroundProjectedEnv as GroundProjectedEnvImpl } from 'three/examples/jsm/modifiers/GroundProjectedEnv'
 import { PresetsType } from '../environment-assets'
 import { EnvironmentLoaderProps, useEnvironment } from '../useEnvironment/useEnvironment'
 
@@ -325,7 +325,7 @@ declare module '@react-three/fiber' {
 /**
  * Internal component for ground-projected environment.
  * Projects the environment onto a ground plane, placing your model on the "ground" within the env map.
- * Uses GroundProjectedEnv from three-stdlib.
+ * Uses GroundProjectedEnv from three/examples/jsm/modifiers/GroundProjectedEnv.
  *
  * @example
  * ```jsx

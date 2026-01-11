@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as THREE from '#three'
 import { LineSegments2 } from '#three-addons'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
-import { Line } from '#drei-platform'
+import { Line, LineProps } from '#drei-platform'
 
 export interface EdgesProps {
   threshold?: number
@@ -10,6 +10,8 @@ export interface EdgesProps {
   lineWidth?: number
   color?: THREE.ColorRepresentation
   scale?: number
+  /** Optional Line component override (for storybook platform switching) */
+  LineComponent?: React.ComponentType<LineProps>
 }
 
 interface EdgesRef {
@@ -36,7 +38,8 @@ interface EdgesRef {
  * ```
  */
 export const Edges: ForwardRefComponent<EdgesProps, EdgesRef> = /* @__PURE__ */ React.forwardRef<EdgesRef, EdgesProps>(
-  ({ threshold = 15, geometry: explicitGeometry, ...props }: EdgesProps, fref) => {
+  ({ threshold = 15, geometry: explicitGeometry, LineComponent, ...props }: EdgesProps, fref) => {
+    const LineComp = LineComponent ?? Line
     const ref = React.useRef<LineSegments2>(null!)
     React.useImperativeHandle(fref, () => ref.current, [])
 
@@ -62,6 +65,6 @@ export const Edges: ForwardRefComponent<EdgesProps, EdgesRef> = /* @__PURE__ */ 
       ref.current.computeLineDistances()
     })
 
-    return <Line segments points={tmpPoints} ref={ref as any} raycast={() => null} {...props} />
+    return <LineComp segments points={tmpPoints} ref={ref as any} raycast={() => null} {...props} />
   }
 )

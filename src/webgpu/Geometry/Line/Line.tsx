@@ -55,7 +55,11 @@ export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = /* @_
   const size = useThree((state) => state.size)
   const line2 = React.useMemo(() => (segments ? new LineSegments2() : new Line2()), [segments])
 
-  const lineMaterial = React.useMemo(() => new Line2NodeMaterial(), [])
+  // Pass vertexColors to constructor so useColor is set before shader compilation
+  const lineMaterial = React.useMemo(
+    () => new Line2NodeMaterial({ vertexColors: Boolean(vertexColors) }),
+    [Boolean(vertexColors)]
+  )
   const itemSize = (vertexColors?.[0] as number[] | undefined)?.length === 4 ? 4 : 3
   const lineGeom = React.useMemo(() => {
     const geom = segments ? new LineSegmentsGeometry() : new LineGeometry()
@@ -111,8 +115,6 @@ export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = /* @_
         object={lineMaterial}
         attach="material"
         color={color}
-        vertexColors={Boolean(vertexColors)}
-        useColors={Boolean(vertexColors)}
         resolution={[size.width, size.height]}
         linewidth={linewidth ?? lineWidth ?? 1}
         dashed={dashed}

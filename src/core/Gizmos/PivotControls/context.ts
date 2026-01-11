@@ -1,5 +1,6 @@
 import * as THREE from '#three'
 import * as React from 'react'
+import { Line, LineProps } from '#drei-platform'
 
 export type OnDragStartProps = {
   component: 'Arrow' | 'Slider' | 'Rotator' | 'Sphere'
@@ -27,6 +28,11 @@ export type PivotContext = {
   userData?: { [key: string]: any }
   annotations?: boolean
   annotationsClass?: string
+  /** Optional Line component override (for storybook platform switching) */
+  LineComponent: React.ComponentType<LineProps>
 }
+
+// Default Line component
+export { Line }
 
 export const context = /* @__PURE__ */ React.createContext<PivotContext>(null!)

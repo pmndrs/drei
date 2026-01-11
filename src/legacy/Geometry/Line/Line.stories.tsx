@@ -94,7 +94,10 @@ export const VertexColorsLineSt = {
 function QuadraticBezierScene(props: React.ComponentProps<typeof QuadraticBezierLine>) {
   return (
     <>
-      <QuadraticBezierLine {...props} />
+      <PlatformSwitch
+        legacy={<QuadraticBezierLine {...props} />}
+        webgpu={<QuadraticBezierLine {...props} LineComponent={WebGPULine as any} />}
+      />
       <OrbitControls zoomSpeed={0.5} />
     </>
   )
@@ -121,7 +124,10 @@ export const QuadraticBezierSt = {
 function CubicBezierScene(props: React.ComponentProps<typeof CubicBezierLine>) {
   return (
     <>
-      <CubicBezierLine {...props} />
+      <PlatformSwitch
+        legacy={<CubicBezierLine {...props} />}
+        webgpu={<CubicBezierLine {...props} LineComponent={WebGPULine as any} />}
+      />
       <OrbitControls zoomSpeed={0.5} />
     </>
   )
@@ -158,7 +164,10 @@ const catPoints = [
 function CatmullRomScene(props: React.ComponentProps<typeof CatmullRomLine>) {
   return (
     <>
-      <CatmullRomLine {...props} points={catPoints} />
+      <PlatformSwitch
+        legacy={<CatmullRomLine {...props} points={catPoints} />}
+        webgpu={<CatmullRomLine {...props} points={catPoints} LineComponent={WebGPULine as any} />}
+      />
       <OrbitControls zoomSpeed={0.5} />
     </>
   )

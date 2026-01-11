@@ -3,7 +3,7 @@ import * as React from 'react'
 import * as THREE from '#three'
 import { ThreeElements, useThree } from '@react-three/fiber'
 
-import { Line } from '#drei-platform'
+import { Line, LineProps } from '#drei-platform'
 
 export type MediaPipeFaceMesh = typeof FacemeshDatas.SAMPLE_FACE
 
@@ -40,6 +40,8 @@ export type FacemeshProps = {
   eyesAsOrigin?: boolean
   /** debug mode, default: false */
   debug?: boolean
+  /** Optional Line component override (for storybook platform switching) */
+  LineComponent?: React.ComponentType<LineProps>
 } & Omit<ThreeElements['group'], 'ref'>
 
 export type FacemeshApi = {
@@ -108,6 +110,7 @@ export const Facemesh = /* @__PURE__ */ React.forwardRef<FacemeshApi, FacemeshPr
       eyes = true,
       eyesAsOrigin = false,
       debug = false,
+      LineComponent,
       children,
       ...props
     },
@@ -117,6 +120,8 @@ export const Facemesh = /* @__PURE__ */ React.forwardRef<FacemeshApi, FacemeshPr
       points = face.keypoints
       console.warn('Facemesh `face` prop is deprecated: use `points` instead')
     }
+
+    const LineComp = LineComponent ?? Line
 
     const offsetRef = React.useRef<THREE.Group>(null)
     const scaleRef = React.useRef<THREE.Group>(null)
@@ -300,7 +305,7 @@ export const Facemesh = /* @__PURE__ */ React.forwardRef<FacemeshApi, FacemeshPr
               {debug ? (
                 <>
                   <axesHelper args={[one]} />
-                  <Line
+                  <LineComp
                     points={[
                       [0, 0, 0],
                       [0, 0, -one],
@@ -313,8 +318,8 @@ export const Facemesh = /* @__PURE__ */ React.forwardRef<FacemeshApi, FacemeshPr
               <group ref={originRef}>
                 {eyes && faceBlendshapes && (
                   <group name="eyes">
-                    <FacemeshEye side="left" ref={eyeRightRef} debug={debug} />
-                    <FacemeshEye side="right" ref={eyeLeftRef} debug={debug} />
+                    <FacemeshEye side="left" ref={eyeRightRef} debug={debug} LineComponent={LineComp} />
+                    <FacemeshEye side="right" ref={eyeLeftRef} debug={debug} LineComponent={LineComp} />
                   </group>
                 )}
                 <mesh ref={meshRef} name="face">
@@ -338,6 +343,8 @@ export const Facemesh = /* @__PURE__ */ React.forwardRef<FacemeshApi, FacemeshPr
 export type FacemeshEyeProps = {
   side: 'left' | 'right'
   debug?: boolean
+  /** Optional Line component override (for storybook platform switching) */
+  LineComponent?: React.ComponentType<LineProps>
 }
 export type FacemeshEyeApi = {
   eyeMeshRef: React.RefObject<THREE.Group>
@@ -370,7 +377,8 @@ export const FacemeshEyeDefaults = {
 }
 
 export const FacemeshEye = /* @__PURE__ */ React.forwardRef<FacemeshEyeApi, FacemeshEyeProps>(
-  ({ side, debug = true }, fref) => {
+  ({ side, debug = true, LineComponent }, fref) => {
+    const LineComp = LineComponent ?? Line
     const eyeMeshRef = React.useRef<THREE.Group>(null)
     const irisDirRef = React.useRef<THREE.Group>(null)
 
@@ -466,7 +474,7 @@ export const FacemeshEye = /* @__PURE__ */ React.forwardRef<FacemeshEyeApi, Face
           <group ref={irisDirRef}>
             <>
               {debug && (
-                <Line
+                <LineComp
                   points={[
                     [0, 0, 0],
                     [0, 0, -2],

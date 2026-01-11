@@ -156,6 +156,72 @@ export const MyStory = {
 
 The `limitedTo` parameter is read by the `<Setup>` decorator and forces that renderer.
 
+### Component Injection Pattern
+
+Some components use platform-specific dependencies internally (like materials or sub-components). Since Storybook doesn't resolve platform aliases correctly at dev time, these components support **injection props** to override the internal implementation.
+
+#### LineComponent Injection
+
+Components using `Line` internally accept a `LineComponent` prop:
+
+```tsx
+import { PlatformSwitch } from '@sb/components/PlatformSwitch'
+import { CatmullRomLine, QuadraticBezierLine, CubicBezierLine, Edges } from 'drei'
+import { Line as WebGPULine } from '@webgpu/Geometry/Line/Line'
+
+// Bezier line components
+<PlatformSwitch
+  legacy={<CatmullRomLine points={points} />}
+  webgpu={<CatmullRomLine points={points} LineComponent={WebGPULine as any} />}
+/>
+
+// Edges component
+<PlatformSwitch
+  legacy={<Edges threshold={15} />}
+  webgpu={<Edges threshold={15} LineComponent={WebGPULine as any} />}
+/>
+
+// PivotControls (uses Line internally for gizmo lines)
+<PlatformSwitch
+  legacy={<PivotControls />}
+  webgpu={<PivotControls LineComponent={WebGPULine as any} />}
+/>
+```
+
+**Components with LineComponent prop:**
+- `CatmullRomLine`, `QuadraticBezierLine`, `CubicBezierLine`
+- `Edges`
+- `PivotControls`
+- `Facemesh`
+
+#### materialFactory Injection
+
+Components with platform-specific materials accept a `materialFactory` prop:
+
+```tsx
+import { PlatformSwitch } from '@sb/components/PlatformSwitch'
+import { Cloud, Clouds } from 'drei'
+import { CloudMaterial as LegacyCloudMaterial } from '@legacy/Materials/CloudMaterial'
+import { CloudMaterial as WebGPUCloudMaterial } from '@webgpu/Materials/CloudMaterial'
+
+<PlatformSwitch
+  legacy={<Clouds materialFactory={LegacyCloudMaterial}><Cloud /></Clouds>}
+  webgpu={<Clouds materialFactory={WebGPUCloudMaterial}><Cloud /></Clouds>}
+/>
+```
+
+**Components with materialFactory prop:**
+- `Clouds`
+
+#### Why Injection?
+
+These injection props exist because:
+1. Platform aliases (`#drei-platform`) resolve to WebGL by default in Storybook's dev server
+2. Some components use materials/sub-components that are fundamentally different between WebGL and WebGPU
+3. Injection allows the story to explicitly provide the correct implementation at runtime
+
+**Note:** End users don't need these props — the production build correctly resolves platform aliases. These are primarily for Storybook development.
+
 ---
 
 ## Tags & Badges

@@ -17,6 +17,8 @@ export type QuadraticBezierLineProps = Omit<LineProps, 'points' | 'ref'> & {
   end: Vector3 | [number, number, number]
   mid?: Vector3 | [number, number, number]
   segments?: number
+  /** Optional Line component override (for storybook platform switching) */
+  LineComponent?: React.ComponentType<LineProps>
 }
 
 const v = /* @__PURE__ */ new Vector3()
@@ -36,9 +38,10 @@ const v = /* @__PURE__ */ new Vector3()
  */
 export const QuadraticBezierLine: ForwardRefComponent<QuadraticBezierLineProps, QuadraticBezierLineRef> =
   /* @__PURE__ */ React.forwardRef<QuadraticBezierLineRef, QuadraticBezierLineProps>(function QuadraticBezierLine(
-    { start = [0, 0, 0], end = [0, 0, 0], mid, segments = 20, ...rest },
+    { start = [0, 0, 0], end = [0, 0, 0], mid, segments = 20, LineComponent, ...rest },
     forwardref
   ) {
+    const LineComp = LineComponent ?? Line
     const ref = React.useRef<QuadraticBezierLineRef>(null!)
     React.useImperativeHandle(forwardref, () => ref.current)
     const [curve] = React.useState(
@@ -76,5 +79,5 @@ export const QuadraticBezierLine: ForwardRefComponent<QuadraticBezierLineProps, 
     }, [])
 
     const points = React.useMemo(() => getPoints(start, end, mid, segments), [start, end, mid, segments])
-    return <Line ref={ref} points={points} {...rest} />
+    return <LineComp ref={ref} points={points} {...rest} />
   })

@@ -1,19 +1,14 @@
-[19:29:24.534] [INFO] storybook v10.1.11
-[19:29:25.173] [DEBUG] Getting package.json info for C:/Users/denni/Documents/GitHub/drei/package.json...
-[19:29:25.976] [WARN] Using CommonJS in your main configuration file is deprecated with Vite.
+[19:47:18.999] [INFO] storybook v10.1.11
+[19:47:19.758] [DEBUG] Getting package.json info for C:/Users/denni/Documents/GitHub/drei/package.json...
+[19:47:20.597] [WARN] Using CommonJS in your main configuration file is deprecated with Vite.
 - Refer to the migration guide at https://github.com/storybookjs/storybook/blob/next/MIGRATION.md#commonjs-with-vite-is-deprecated
-[19:29:26.926] [DEBUG] Serving static files from node_modules/@chromatic-com/storybook/assets at /addon-visual-tests-assets
-[19:29:26.926] [DEBUG] Serving static files from .storybook/public at /
-[19:29:26.927] [INFO] Starting...
-[19:29:26.937] [WARN] No story files found for the specified pattern: .storybook\stories\**\*.stories.{ts,tsx}
-[19:29:26.950] [WARN] No story files found for the specified pattern: .storybook\!..\src\core\Gizmos\gizmo\GizmoHelper.stories.tsx
-[19:29:26.950] [WARN] No story files found for the specified pattern: .storybook\!..\src\core\Portal\useCustomRaycast\useCamera.stories.tsx
-[19:29:26.951] [WARN] No story files found for the specified pattern: .storybook\!..\src\core\Staging\ShadowAlpha.stories.tsx
-[19:29:26.952] [WARN] No story files found for the specified pattern: .storybook\!..\src\legacy\Staging\SpotLight\Spotlight.stories.tsx
-[19:29:28.244] [DEBUG] Starting preview..
-[19:29:33.478] [ERROR] Failed to build the preview
-[19:29:33.485] [ERROR] [38;2;241;97;97mTypeError: glslify is not a function[39m
-    at file:///C:/Users/denni/Documents/GitHub/drei/vite.config.mts.timestamp-1767868168340-319c8355f46b4.mjs:13:22
+[19:47:21.455] [DEBUG] Serving static files from node_modules/@chromatic-com/storybook/assets at /addon-visual-tests-assets
+[19:47:21.455] [DEBUG] Serving static files from .storybook/public at /
+[19:47:21.456] [INFO] Starting...
+[19:47:22.561] [DEBUG] Starting preview..
+[19:47:27.658] [ERROR] Failed to build the preview
+[19:47:27.662] [ERROR] [38;2;241;97;97mReferenceError: dirname is not defined[39m
+    at file:///C:/Users/denni/Documents/GitHub/drei/vite.config.mts.timestamp-1768128442641-d60c58a845e9c.mjs:23:34
     at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:647:26)
     at async loadConfigFromBundledFile (file:///C:/Users/denni/Documents/GitHub/drei/node_modules/vite/dist/node/chunks/dep-CB_7IfJ-.js:66691:15)
@@ -23,5 +18,5 @@
     at async Module.start (file:///C:/Users/denni/Documents/GitHub/drei/node_modules/@storybook/builder-vite/dist/index.js:6435:17)
     at async storybookDevServer (file:///C:/Users/denni/Documents/GitHub/drei/node_modules/storybook/dist/core-server/index.js:6806:82)
     at async buildOrThrow (file:///C:/Users/denni/Documents/GitHub/drei/node_modules/storybook/dist/core-server/index.js:5555:12)
-[19:29:33.487] [WARN] Broken build, fix the error above.
+[19:47:27.664] [WARN] Broken build, fix the error above.
 You may need to refresh the browser.

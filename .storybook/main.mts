@@ -11,7 +11,7 @@ const config: StorybookConfig = {
   staticDirs: ['./public'],
   stories: [
     '../src/**/*.stories.{ts,tsx}',          // Co-located stories
-    // Exclude broken stories (missing components/exports)
+    // Exclude broken stories (missing components)
   ],
   addons: [
     '@chromatic-com/storybook',
@@ -41,7 +41,7 @@ const config: StorybookConfig = {
         alias: {
           // Storybook-specific aliases
           '@sb': path.resolve(__dirname, '.'),
-          'drei': path.resolve(__dirname, './drei-exports.ts'),
+          'drei': path.resolve(__dirname, './drei-barrel.ts'),
 
           // Project path aliases (from tsconfig)
           '#three': 'three',

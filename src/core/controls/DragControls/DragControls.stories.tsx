@@ -8,6 +8,7 @@ import { ComponentProps } from 'react'
 export default {
   title: 'Controls/DragControls',
   component: DragControls,
+  tags: ['parity'], // Enables platform parity testing (Legacy vs WebGPU)
   decorators: [
     (Story, context) => (
       <Setup renderer={context.globals.renderer} cameraPosition={new THREE.Vector3(0, 0, 5)}>

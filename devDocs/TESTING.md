@@ -29,6 +29,9 @@ yarn build && yarn test
 yarn test:lint      # ESLint + TypeScript + Prettier
 yarn test:bundles   # Bundle structure verification
 yarn test:canary    # Import verification tests
+
+# Platform parity tests (requires storybook build)
+yarn build-storybook && yarn test:parity
 ```
 
 ---
@@ -109,6 +112,33 @@ yarn test:canary
 **Location:** `test/canary/imports.test.ts`
 
 **When to run:** After build. These catch export map issues that would break users.
+
+---
+
+### `yarn test:parity`
+
+Runs platform parity tests that compare Legacy and WebGPU renders:
+
+```bash
+# Build storybook first (required)
+yarn build-storybook
+
+# Run parity tests
+yarn test:parity
+```
+
+**What it checks:**
+- Stories with the `parity` tag are rendered in both Legacy and WebGPU modes
+- Screenshots are compared using `pixelmatch`
+- Fails if pixel difference exceeds 5%
+
+**On failure:**
+- Saves diff images to `test-results/parity/`
+- Shows percentage difference in console
+
+**Location:** `test/parity/platform-parity.test.ts`
+
+**When to run:** After storybook build. CI runs this automatically on every PR.
 
 ---
 
@@ -248,9 +278,89 @@ function AnimatedComponent({ intensity = 1 }) {
 
 ---
 
-## Cross-Platform Testing (Hidden Variants)
+## Platform Parity Testing
 
-To test that Legacy (WebGL) and WebGPU renders look identical, we can create hidden story variants that Chromatic captures but don't clutter the Storybook UI.
+Platform parity tests compare Legacy (WebGL) and WebGPU renders of the same story to ensure they produce visually identical output.
+
+### How It Works
+
+1. Stories opt-in via the `parity` tag
+2. Playwright captures screenshots of each story in both renderers
+3. `pixelmatch` compares the screenshots
+4. Tests fail if difference exceeds 5% of pixels
+
+### Running Parity Tests
+
+```bash
+# Build storybook first
+yarn build-storybook
+
+# Run parity tests
+yarn test:parity
+```
+
+### Adding Stories to Parity Testing
+
+Add the `parity` tag to your story's default export:
+
+```typescript
+export default {
+  title: 'Staging/MyComponent',
+  component: MyComponent,
+  tags: ['parity'], // Enables platform parity testing
+  decorators: [...],
+} satisfies Meta<typeof MyComponent>;
+```
+
+All stories in that file will be tested for platform parity.
+
+### Configuration
+
+The parity test configuration is in `playwright.parity.config.ts`:
+
+- **Pixel threshold:** 0.1 (allows anti-aliasing differences)
+- **Max diff:** 5% (fails if more than 5% of pixels differ)
+- **Settle time:** 1000ms (waits for scene to stabilize)
+
+### Test Output
+
+On failure, the test saves images to `test-results/parity/`:
+
+- `{story-id}-legacy.png` - What Legacy rendered
+- `{story-id}-webgpu.png` - What WebGPU rendered  
+- `{story-id}-diff.png` - Visual diff (mismatched pixels in red)
+
+### CI Integration
+
+Parity tests run on every PR. On failure:
+
+1. Download the `parity-diffs` artifact from GitHub Actions
+2. View the diff images to understand the difference
+3. Either fix the component or adjust the threshold if acceptable
+
+### Currently Tested Stories
+
+Stories with the `parity` tag:
+- `Helpers/Clone` - Should be exact match
+- `Controls/DragControls` - Known slight difference (validates threshold)
+- `Shapes/Box` - Basic shape (validates animation freeze)
+
+### Troubleshooting Parity Failures
+
+**High diff percentage:**
+- Check if the component uses platform-specific code paths
+- Verify animations are frozen (Setup detects test environment automatically)
+- Some differences are expected (color precision, anti-aliasing)
+
+**Dimension mismatch:**
+- Ensure both renderers produce the same canvas size
+- Check for conditional rendering based on renderer type
+
+---
+
+## Cross-Platform Testing (Hidden Variants) - Alternative
+
+For Chromatic-based cross-platform testing (instead of Playwright parity), you can create hidden story variants.
 
 ### Creating Platform Variants
 
@@ -267,25 +377,6 @@ export const DefaultLegacy = createPlatformVariant(Default, 'legacy');
 export const DefaultWebGPU = createPlatformVariant(Default, 'webgpu');
 ```
 
-### Batch Generation
-
-For stories with many exports:
-
-```typescript
-import { generatePlatformVariants } from '@sb/Setup';
-
-// Create variants for multiple stories at once
-const variants = generatePlatformVariants({
-  Default: DefaultStory,
-  WithProps: WithPropsStory,
-  Complex: ComplexStory,
-});
-
-export const DefaultLegacy = variants.DefaultLegacy;
-export const DefaultWebGPU = variants.DefaultWebGPU;
-// ... etc
-```
-
 ### How Hidden Variants Work
 
 The variant helpers add these tags:
@@ -296,21 +387,7 @@ The variant helpers add these tags:
 
 Chromatic ignores the `!dev` tag and captures all stories, so these variants are tested but don't clutter the UI.
 
-### Chromatic Parameters
-
-```typescript
-import { withChromaticParams } from '@sb/Setup';
-
-export const LoadingStory = {
-  render: () => <Environment preset="city" />,
-  parameters: {
-    ...withChromaticParams({
-      delay: 1000,        // Wait for HDR to load
-      diffThreshold: 0.2, // Allow slight differences
-    }),
-  },
-} satisfies Story;
-```
+**Note:** Hidden variants are useful for Chromatic temporal regression (comparing each platform to its previous baseline). Use parity tests (`yarn test:parity`) to compare Legacy vs WebGPU directly.
 
 ---
 
@@ -320,25 +397,30 @@ The GitHub Actions workflow (`.github/workflows/release.yml`) runs:
 
 ```yaml
 jobs:
-  lint:     # Fast static analysis (parallel)
+  lint:       # Fast static analysis
     - yarn test:lint
 
-  test:     # Build + verify (parallel with lint)
+  test:       # Build + verify
     - yarn build
     - yarn test:bundles
     - yarn test:canary
 
-  build-and-release:  # Only after lint + test pass
+  storybook:  # Build storybook + parity tests
     - yarn build
     - yarn build-storybook
+    - yarn test:parity  # Compare Legacy vs WebGPU renders
+
+  release:    # Only after all pass
+    - yarn build
     - yarn release
 ```
 
 **Why split jobs?**
 - `lint` is fast and doesn't need `dist/`
 - `test` needs build output
-- Running them in parallel speeds up CI
-- Release only happens if both pass
+- `storybook` needs both build and storybook-static
+- Parity test failures upload diff artifacts but don't block release
+- Release only happens if all jobs pass
 
 ---
 
@@ -417,7 +499,9 @@ Fix the import in the source file and rebuild.
 | File | Purpose |
 |------|---------|
 | `vitest.config.ts` | Vitest config for canary tests |
+| `playwright.parity.config.ts` | Playwright config for parity tests |
 | `test/canary/imports.test.ts` | Canary import tests |
+| `test/parity/platform-parity.test.ts` | Platform parity tests (Legacy vs WebGPU) |
 | `scripts/verify-bundles.js` | Bundle verification script |
 | `test/e2e/` | Legacy E2E tests (may be deprecated) |
 | `.github/workflows/release.yml` | CI workflow |

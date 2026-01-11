@@ -51,8 +51,8 @@ jobs:
       - name: Canary import tests
         run: yarn test:canary
 
-  #* Build Storybook & Release ==============================
-  build-and-release:
+  #* Build Storybook & Parity Tests ==============================
+  storybook:
     needs: [lint, test]
     runs-on: ubuntu-latest
     steps:
@@ -65,6 +65,48 @@ jobs:
       - run: yarn install
       - run: yarn build
       - run: yarn build-storybook
+      
+      # Install Playwright browsers for parity tests
+      - name: Install Playwright browsers
+        run: npx playwright install chromium
+      
+      # Platform parity tests - compare Legacy vs WebGPU renders
+      - name: Run parity tests
+        id: parity
+        run: yarn test:parity
+        continue-on-error: true
+      
+      # Upload diff images on failure for debugging
+      - name: Upload parity diff images
+        if: steps.parity.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: parity-diffs
+          path: test-results/parity/
+          retention-days: 7
+      
+      # Upload Playwright HTML report for interactive viewing
+      - name: Upload Playwright report
+        if: steps.parity.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: parity-report
+          path: playwright-report/
+          retention-days: 7
+
+  #* Release ==============================
+  release:
+    needs: [lint, test, storybook]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.node-version'
+          cache: 'yarn'
+      - run: yarn install
+      - run: yarn build
       
       # semantic-release skips not configured branches (see: release.config.js) or pull-requests
       - run: yarn release

@@ -21,6 +21,7 @@ Since we were already making breaking changes, we took the opportunity to modern
 - [Build System (obuild)](#build-system-obuild) — Modern tooling, ESM-first with CJS compat
 - [Import Aliases](#import-aliases) — `#three` maps to the right renderer automatically
 - [Stories & Visual Testing](#storybook) — Every component now has stories and regression tests
+- [Testing Infrastructure](#testing) — Static analysis, bundle verification, and platform parity tests
 
 ---
 
@@ -360,7 +361,34 @@ We use **Chromatic** for visual regression testing. Stories double as visual tes
 - Stories should exercise the component's key visual states
 - Chromatic runs in CI and will flag visual diffs for review
 
-> **📝 TODO:** Document Chromatic workflow, how to review diffs, and threshold settings.
+---
+
+## Testing
+
+Drei v11 includes a comprehensive testing infrastructure covering static analysis, bundle integrity, and platform parity.
+
+**Test commands:**
+
+```bash
+yarn test           # Run all tests (requires build)
+yarn test:lint      # Static analysis (ESLint, TypeScript, Prettier)
+yarn test:bundles   # Verify THREE imports per entry point
+yarn test:canary    # Lightweight import verification
+yarn test:parity    # Compare Legacy vs WebGPU renders
+```
+
+**Platform parity tests** are particularly useful when working on dual-implementation components. They capture screenshots of stories in both Legacy and WebGPU modes and flag visual differences exceeding 5%.
+
+To add a component to parity testing, add the `parity` tag to its story:
+
+```tsx
+export default {
+  title: 'Materials/MeshDistortMaterial',
+  tags: ['parity'], // Enables Legacy vs WebGPU comparison
+} satisfies Meta;
+```
+
+See the full [Testing Guide](./TESTING.md) for details on each test type, CI integration, and troubleshooting.
 
 ---
 

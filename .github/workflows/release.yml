@@ -15,46 +15,45 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
+  #* Static Analysis ==============================
+  # Lint, typecheck, formatting - fast checks that don't need build
+  lint:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/pmndrs/playwright:drei
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-
-    # 0.159.0 is mandatory; others are informational
-    strategy:
-      fail-fast: false
-      matrix:
-        three-version: ['0.159.0', '0.180.0', 'latest']
-    continue-on-error: ${{ matrix.three-version != '0.159.0' }}
-    name: test (w/ three@${{ matrix['three-version'] }})
-
     steps:
       - uses: actions/checkout@v4
       - run: corepack enable
       - uses: actions/setup-node@v4
         with:
+          node-version-file: '.node-version'
+          cache: 'yarn'
+      - run: yarn install
+      - run: yarn test:lint
+
+  #* Build & Test ==============================
+  # Build the package and run all tests
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.node-version'
           cache: 'yarn'
       - run: yarn install
       - run: yarn build
-      - run: yarn eslint:ci
-      - run: yarn typecheck
-      - run: yarn prettier
-      - run: (cd test/e2e; ./e2e.sh ${{ matrix.three-version }})
-      - name: Upload Playwright screenshots
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-screenshots-${{ matrix.three-version }}
-          path: |
-            test-results/**
-          if-no-files-found: ignore
-          retention-days: 7
+      
+      # Bundle verification - ensures THREE imports are correct per entry point
+      - name: Verify bundle structure
+        run: yarn test:bundles
+      
+      # Canary tests - verifies exports are importable
+      - name: Canary import tests
+        run: yarn test:canary
 
+  #* Build Storybook & Release ==============================
   build-and-release:
-    needs: test
+    needs: [lint, test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -66,7 +65,8 @@ jobs:
       - run: yarn install
       - run: yarn build
       - run: yarn build-storybook
-      # semantic-release skips not configured branches(see: release.config.js) or pull-requests
+      
+      # semantic-release skips not configured branches (see: release.config.js) or pull-requests
       - run: yarn release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

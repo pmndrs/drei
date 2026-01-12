@@ -2,11 +2,11 @@ name: release
 on:
   push:
     branches:
-      - 'master'
-      - 'beta'
-      - 'alpha'
-      - 'canary-*'
-      - 'rc'
+      - "master"
+      - "beta"
+      - "alpha"
+      - "canary-*"
+      - "rc"
   pull_request: {}
 
 permissions:
@@ -28,8 +28,8 @@ jobs:
       - run: corepack enable
       - uses: actions/setup-node@v4
         with:
-          node-version-file: '.node-version'
-          cache: 'yarn'
+          node-version-file: ".node-version"
+          cache: "yarn"
       - run: yarn install
       - run: yarn test:lint
 
@@ -42,8 +42,8 @@ jobs:
       - run: corepack enable
       - uses: actions/setup-node@v4
         with:
-          node-version-file: '.node-version'
-          cache: 'yarn'
+          node-version-file: ".node-version"
+          cache: "yarn"
       - run: yarn install
       - run: yarn build
 
@@ -64,8 +64,8 @@ jobs:
       - run: corepack enable
       - uses: actions/setup-node@v4
         with:
-          node-version-file: '.node-version'
-          cache: 'yarn'
+          node-version-file: ".node-version"
+          cache: "yarn"
       - run: yarn install
       - run: yarn build
       - run: yarn build-storybook
@@ -107,8 +107,8 @@ jobs:
       - run: corepack enable
       - uses: actions/setup-node@v4
         with:
-          node-version-file: '.node-version'
-          cache: 'yarn'
+          node-version-file: ".node-version"
+          cache: "yarn"
       - run: yarn install
       - run: yarn build
 

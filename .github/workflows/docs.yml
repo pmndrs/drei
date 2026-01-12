@@ -1,37 +1,110 @@
 name: Build documentation and deploy to GitHub Pages
+
 on:
   push:
     branches: ['master']
   workflow_dispatch:
 
-# Cancel previous run (see: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#concurrency)
+# Cancel previous run
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   build:
-    uses: pmndrs/docs/.github/workflows/build.yml@v2
-    with:
-      mdx: 'docs'
-      libname: 'Drei'
-      libname_short: 'drei'
-      home_redirect: '/getting-started/introduction'
-      icon: '🥉'
-      logo: '/logo.jpg'
-      github: 'https://github.com/pmndrs/drei'
-      discord: 'https://discord.com/channels/740090768164651008/741751532592038022'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      #* Generate docs from TSDoc ==============================
+      - run: corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.node-version'
+          cache: 'yarn'
+      - run: yarn install
+      - name: Generate documentation from TSDoc
+        run: yarn docs:generate --no-backup
+
+      #* Build docs site (replicated from pmndrs/docs workflow) ==============================
+      - id: configurepages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - id: set-base-path
+        run: echo "BASE_PATH=${{ steps.configurepages.outputs.base_path }}" >> "$GITHUB_OUTPUT"
+
+      - name: Build docs site
+        run: |
+          set -ex
+          docker run --rm --init \
+            -v "./docs":/app/docs \
+            -e BASE_PATH \
+            -e DIST_DIR="docs/out$BASE_PATH" \
+            -e MDX \
+            -e NEXT_PUBLIC_LIBNAME \
+            -e NEXT_PUBLIC_LIBNAME_SHORT \
+            -e NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL \
+            -e NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF \
+            -e OUTPUT=export \
+            -e HOME_REDIRECT \
+            -e MDX_BASEURL \
+            -e SOURCECODE_BASEURL \
+            -e EDIT_BASEURL \
+            -e NEXT_PUBLIC_URL \
+            -e ICON \
+            -e LOGO \
+            -e GITHUB \
+            -e DISCORD \
+            -e THEME_PRIMARY \
+            -e THEME_SCHEME \
+            -e THEME_CONTRAST \
+            -e THEME_NOTE \
+            -e THEME_TIP \
+            -e THEME_IMPORTANT \
+            -e THEME_WARNING \
+            -e THEME_CAUTION \
+            -e CONTRIBUTORS_PAT \
+            ghcr.io/pmndrs/docs:2 npm run build
+        env:
+          BASE_PATH: ${{ steps.set-base-path.outputs.BASE_PATH }}
+          MDX: docs
+          NEXT_PUBLIC_LIBNAME: Drei
+          NEXT_PUBLIC_LIBNAME_SHORT: drei
+          NEXT_PUBLIC_LIBNAME_DOTSUFFIX_LABEL: docs
+          NEXT_PUBLIC_LIBNAME_DOTSUFFIX_HREF: https://docs.pmnd.rs
+          HOME_REDIRECT: /getting-started/introduction
+          MDX_BASEURL: 'https://github.com/${{ github.repository }}/raw/${{ github.ref_name }}/docs'
+          SOURCECODE_BASEURL: 'https://github.com/${{ github.repository }}/tree/${{ github.ref_name }}'
+          EDIT_BASEURL: 'https://github.com/${{ github.repository }}/edit/${{ github.ref_name }}/docs'
+          NEXT_PUBLIC_URL: ${{ steps.configurepages.outputs.base_url }}
+          ICON: '🥉'
+          LOGO: '/logo.jpg'
+          GITHUB: 'https://github.com/pmndrs/drei'
+          DISCORD: 'https://discord.com/channels/740090768164651008/741751532592038022'
+          THEME_PRIMARY: '#323e48'
+          THEME_SCHEME: tonalSpot
+          THEME_CONTRAST: '0'
+          THEME_NOTE: '#1f6feb'
+          THEME_TIP: '#238636'
+          THEME_IMPORTANT: '#8957e5'
+          THEME_WARNING: '#d29922'
+          THEME_CAUTION: '#da3633'
+          CONTRIBUTORS_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/out${{ steps.set-base-path.outputs.BASE_PATH }}
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
 
-    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
     permissions:
-      pages: write # to deploy to Pages
-      id-token: write # to verify the deployment originates from an appropriate source
+      pages: write
+      id-token: write
 
-    # Deploy to the github-pages environment
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

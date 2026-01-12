@@ -8,14 +8,14 @@ This guide covers the testing strategy and commands for Drei.
 
 Drei uses a multi-layered testing approach:
 
-| Test Type | Tool | What It Catches |
-|-----------|------|-----------------|
-| **Static Analysis** | ESLint, TypeScript, Prettier | Code quality, type errors, formatting |
-| **Bundle Verification** | `verify-bundles.js` | THREE import correctness per entry point |
-| **Canary Tests** | Vitest | Export map issues, import errors |
-| **Visual Regression** | Chromatic | Visual changes in components |
-| **Cross-Platform Parity** | Playwright (optional) | Legacy vs WebGPU visual differences |
-| **Storybook Tests** | Vitest + Storybook | Component behavior, interaction tests |
+| Test Type                 | Tool                         | What It Catches                          |
+| ------------------------- | ---------------------------- | ---------------------------------------- |
+| **Static Analysis**       | ESLint, TypeScript, Prettier | Code quality, type errors, formatting    |
+| **Bundle Verification**   | `verify-bundles.js`          | THREE import correctness per entry point |
+| **Canary Tests**          | Vitest                       | Export map issues, import errors         |
+| **Visual Regression**     | Chromatic                    | Visual changes in components             |
+| **Cross-Platform Parity** | Playwright (optional)        | Legacy vs WebGPU visual differences      |
+| **Storybook Tests**       | Vitest + Storybook           | Component behavior, interaction tests    |
 
 ---
 
@@ -41,6 +41,7 @@ yarn build-storybook && yarn test:parity
 ### `yarn test`
 
 Runs the full test suite:
+
 1. `yarn test:lint` - Static analysis
 2. `yarn test:bundles` - Bundle verification
 3. `yarn test:canary` - Import canary tests
@@ -68,6 +69,7 @@ yarn prettier    # Prettier check
 Runs `scripts/verify-bundles.js` to verify bundle correctness.
 
 **What it checks:**
+
 - Each entry point (`core`, `legacy`, `webgpu`, etc.) has correct THREE imports
 - `legacy/` has no `three/webgpu` or `three/tsl` imports (WebGL only)
 - `webgpu/` has no plain `three` imports (only `three/webgpu`)
@@ -104,6 +106,7 @@ yarn test:canary
 ```
 
 **What it checks:**
+
 - All entry points are importable (`index.js`, `core/index.js`, etc.)
 - Key exports exist (OrbitControls, Environment, materials, etc.)
 - CJS entry points exist (`index.cjs.js`)
@@ -128,11 +131,13 @@ yarn test:parity
 ```
 
 **What it checks:**
+
 - Stories with the `parity` tag are rendered in both Legacy and WebGPU modes
 - Screenshots are compared using `pixelmatch`
 - Fails if pixel difference exceeds 5%
 
 **On failure:**
+
 - Saves diff images to `test-results/parity/`
 - Shows percentage difference in console
 
@@ -151,6 +156,7 @@ yarn test:e2e
 ```
 
 **What it does:**
+
 - Creates a temp Vite React app, installs drei, tests rendering
 - Creates a temp Next.js app, installs drei, tests rendering
 - Creates a temp CJS Next.js app, tests CommonJS compatibility
@@ -166,16 +172,19 @@ yarn test:e2e
 Drei uses [Chromatic](https://www.chromatic.com/) for visual regression testing.
 
 **How it works:**
+
 1. Every Storybook story is a visual test
 2. Chromatic snapshots each story on every PR
 3. Visual changes are flagged for review
 
 **For contributors:**
+
 - Every component should have at least one story
 - Stories should show key visual states
 - Chromatic runs automatically in CI
 
 **Reviewing visual changes:**
+
 - Chromatic will comment on PRs with visual diffs
 - Approve expected changes, reject unexpected ones
 - See the Chromatic dashboard for detailed comparisons
@@ -220,22 +229,22 @@ function MyComponent() {
 
 ### Detected Environments
 
-| Environment | Detection Method |
-|-------------|------------------|
-| Chromatic | `CHROMATIC=true` env var, userAgent check |
-| Playwright | `PLAYWRIGHT=true` env var, `window.__playwright__` |
-| Vitest | `VITEST=true` env var, `import.meta.vitest` |
-| Cypress | `window.Cypress` |
+| Environment | Detection Method                                   |
+| ----------- | -------------------------------------------------- |
+| Chromatic   | `CHROMATIC=true` env var, userAgent check          |
+| Playwright  | `PLAYWRIGHT=true` env var, `window.__playwright__` |
+| Vitest      | `VITEST=true` env var, `import.meta.vitest`        |
+| Cypress     | `window.Cypress`                                   |
 
 ### Behavioral Flags
 
 The utility provides behavioral flags that determine what should happen in each test environment:
 
-| Flag | True When | Use For |
-|------|-----------|---------|
-| `shouldFreezeAnimations` | Chromatic, Playwright | Pause render loop for consistent snapshots |
-| `shouldDisableTransitions` | Chromatic | Disable CSS transitions |
-| `shouldSkipDelays` | Vitest | Make unit tests fast |
+| Flag                       | True When             | Use For                                    |
+| -------------------------- | --------------------- | ------------------------------------------ |
+| `shouldFreezeAnimations`   | Chromatic, Playwright | Pause render loop for consistent snapshots |
+| `shouldDisableTransitions` | Chromatic             | Disable CSS transitions                    |
+| `shouldSkipDelays`         | Vitest                | Make unit tests fast                       |
 
 ---
 
@@ -268,11 +277,11 @@ For visual tests to be deterministic, animations must be paused. The `<Setup>` c
 For components with internal animations that need test awareness:
 
 ```tsx
-import { shouldFreezeAnimations } from '@sb/Setup';
+import { shouldFreezeAnimations } from '@sb/Setup'
 
 function AnimatedComponent({ intensity = 1 }) {
-  const actualIntensity = shouldFreezeAnimations() ? 0 : intensity;
-  return <CameraShake intensity={actualIntensity} />;
+  const actualIntensity = shouldFreezeAnimations() ? 0 : intensity
+  return <CameraShake intensity={actualIntensity} />
 }
 ```
 
@@ -327,7 +336,7 @@ The parity test configuration is in `playwright.parity.config.ts`:
 On failure, the test saves images to `test-results/parity/`:
 
 - `{story-id}-legacy.png` - What Legacy rendered
-- `{story-id}-webgpu.png` - What WebGPU rendered  
+- `{story-id}-webgpu.png` - What WebGPU rendered
 - `{story-id}-diff.png` - Visual diff (mismatched pixels in red)
 
 ### CI Integration
@@ -341,6 +350,7 @@ Parity tests run on every PR. On failure:
 ### Currently Tested Stories
 
 Stories with the `parity` tag:
+
 - `Helpers/Clone` - Should be exact match
 - `Controls/DragControls` - Known slight difference (validates threshold)
 - `Shapes/Box` - Basic shape (validates animation freeze)
@@ -348,11 +358,13 @@ Stories with the `parity` tag:
 ### Troubleshooting Parity Failures
 
 **High diff percentage:**
+
 - Check if the component uses platform-specific code paths
 - Verify animations are frozen (Setup detects test environment automatically)
 - Some differences are expected (color precision, anti-aliasing)
 
 **Dimension mismatch:**
+
 - Ensure both renderers produce the same canvas size
 - Check for conditional rendering based on renderer type
 
@@ -380,8 +392,9 @@ export const DefaultWebGPU = createPlatformVariant(Default, 'webgpu');
 ### How Hidden Variants Work
 
 The variant helpers add these tags:
+
 - `!dev` - Hidden from development sidebar
-- `!autodocs` - Hidden from auto-generated docs  
+- `!autodocs` - Hidden from auto-generated docs
 - `test` - Marked as test story
 - `legacyOnly` or `webgpuOnly` - Platform badge
 
@@ -397,25 +410,26 @@ The GitHub Actions workflow (`.github/workflows/release.yml`) runs:
 
 ```yaml
 jobs:
-  lint:       # Fast static analysis
+  lint: # Fast static analysis
     - yarn test:lint
 
-  test:       # Build + verify
+  test: # Build + verify
     - yarn build
     - yarn test:bundles
     - yarn test:canary
 
-  storybook:  # Build storybook + parity tests
+  storybook: # Build storybook + parity tests
     - yarn build
     - yarn build-storybook
-    - yarn test:parity  # Compare Legacy vs WebGPU renders
+    - yarn test:parity # Compare Legacy vs WebGPU renders
 
-  release:    # Only after all pass
+  release: # Only after all pass
     - yarn build
     - yarn release
 ```
 
 **Why split jobs?**
+
 - `lint` is fast and doesn't need `dist/`
 - `test` needs build output
 - `storybook` needs both build and storybook-static
@@ -433,10 +447,10 @@ Add to `test/canary/imports.test.ts`:
 ```typescript
 describe('New Entry - @react-three/drei/newentry', () => {
   it('should export new components', async () => {
-    const mod = await importDist('newentry/index.js');
-    expect(mod.NewComponent).toBeDefined();
-  });
-});
+    const mod = await importDist('newentry/index.js')
+    expect(mod.NewComponent).toBeDefined()
+  })
+})
 ```
 
 ### Bundle Verification
@@ -474,6 +488,7 @@ yarn build && yarn test
 ### Canary tests fail with "Cannot find module"
 
 The dist structure may have changed. Check:
+
 1. `dist/` folder exists
 2. Entry point paths in `test/canary/imports.test.ts` match actual paths
 3. `package.json` exports field matches dist structure
@@ -481,6 +496,7 @@ The dist structure may have changed. Check:
 ### Bundle verification fails
 
 Check the specific entry point that failed:
+
 - **"Found plain 'three' import in webgpu/"** - A WebGPU component imports from `three` instead of `three/webgpu`
 - **"Found 'three/webgpu' import in legacy/"** - A legacy component imports WebGPU code
 
@@ -496,17 +512,16 @@ Fix the import in the source file and rebuild.
 
 ## File Reference
 
-| File | Purpose |
-|------|---------|
-| `vitest.config.ts` | Vitest config for canary tests |
-| `playwright.parity.config.ts` | Playwright config for parity tests |
-| `test/canary/imports.test.ts` | Canary import tests |
-| `test/parity/platform-parity.test.ts` | Platform parity tests (Legacy vs WebGPU) |
-| `scripts/verify-bundles.js` | Bundle verification script |
-| `test/e2e/` | Legacy E2E tests (may be deprecated) |
-| `.github/workflows/release.yml` | CI workflow |
-| `.storybook/vitest.setup.ts` | Storybook + Vitest integration |
-| `.storybook/testing.ts` | Test environment detection (`isTesting()`, etc.) |
-| `.storybook/variants.ts` | Hidden variant helpers for Chromatic |
-| `.storybook/Setup.tsx` | Story decorator with test integration |
-
+| File                                  | Purpose                                          |
+| ------------------------------------- | ------------------------------------------------ |
+| `vitest.config.ts`                    | Vitest config for canary tests                   |
+| `playwright.parity.config.ts`         | Playwright config for parity tests               |
+| `test/canary/imports.test.ts`         | Canary import tests                              |
+| `test/parity/platform-parity.test.ts` | Platform parity tests (Legacy vs WebGPU)         |
+| `scripts/verify-bundles.js`           | Bundle verification script                       |
+| `test/e2e/`                           | Legacy E2E tests (may be deprecated)             |
+| `.github/workflows/release.yml`       | CI workflow                                      |
+| `.storybook/vitest.setup.ts`          | Storybook + Vitest integration                   |
+| `.storybook/testing.ts`               | Test environment detection (`isTesting()`, etc.) |
+| `.storybook/variants.ts`              | Hidden variant helpers for Chromatic             |
+| `.storybook/Setup.tsx`                | Story decorator with test integration            |

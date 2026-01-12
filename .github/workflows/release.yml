@@ -2,12 +2,16 @@ name: release
 on:
   push:
     branches:
-      - 'master'
-      - 'beta'
-      - 'alpha'
-      - 'canary-*'
-      - 'rc'
+      - "master"
+      - "beta"
+      - "alpha"
+      - "canary-*"
+      - "rc"
   pull_request: {}
+
+permissions:
+  contents: write
+  id-token: write
 
 # Cancel any previous run (see: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#concurrency)
 concurrency:
@@ -24,8 +28,8 @@ jobs:
       - run: corepack enable
       - uses: actions/setup-node@v4
         with:
-          node-version-file: '.node-version'
-          cache: 'yarn'
+          node-version-file: ".node-version"
+          cache: "yarn"
       - run: yarn install
       - run: yarn test:lint
 
@@ -38,15 +42,15 @@ jobs:
       - run: corepack enable
       - uses: actions/setup-node@v4
         with:
-          node-version-file: '.node-version'
-          cache: 'yarn'
+          node-version-file: ".node-version"
+          cache: "yarn"
       - run: yarn install
       - run: yarn build
-      
+
       # Bundle verification - ensures THREE imports are correct per entry point
       - name: Verify bundle structure
         run: yarn test:bundles
-      
+
       # Canary tests - verifies exports are importable
       - name: Canary import tests
         run: yarn test:canary
@@ -60,22 +64,22 @@ jobs:
       - run: corepack enable
       - uses: actions/setup-node@v4
         with:
-          node-version-file: '.node-version'
-          cache: 'yarn'
+          node-version-file: ".node-version"
+          cache: "yarn"
       - run: yarn install
       - run: yarn build
       - run: yarn build-storybook
-      
+
       # Install Playwright browsers for parity tests
       - name: Install Playwright browsers
         run: npx playwright install chromium
-      
+
       # Platform parity tests - compare Legacy vs WebGPU renders
       - name: Run parity tests
         id: parity
         run: yarn test:parity
         continue-on-error: true
-      
+
       # Upload diff images on failure for debugging
       - name: Upload parity diff images
         if: steps.parity.outcome == 'failure'
@@ -84,7 +88,7 @@ jobs:
           name: parity-diffs
           path: test-results/parity/
           retention-days: 7
-      
+
       # Upload Playwright HTML report for interactive viewing
       - name: Upload Playwright report
         if: steps.parity.outcome == 'failure'
@@ -103,11 +107,11 @@ jobs:
       - run: corepack enable
       - uses: actions/setup-node@v4
         with:
-          node-version-file: '.node-version'
-          cache: 'yarn'
+          node-version-file: ".node-version"
+          cache: "yarn"
       - run: yarn install
       - run: yarn build
-      
+
       # semantic-release skips not configured branches (see: release.config.js) or pull-requests
       - run: yarn release
         env:

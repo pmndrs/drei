@@ -385,7 +385,7 @@ To add a component to parity testing, add the `parity` tag to its story:
 export default {
   title: 'Materials/MeshDistortMaterial',
   tags: ['parity'], // Enables Legacy vs WebGPU comparison
-} satisfies Meta;
+} satisfies Meta
 ```
 
 See the full [Testing Guide](./TESTING.md) for details on each test type, CI integration, and troubleshooting.

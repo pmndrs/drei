@@ -1,5 +1,8 @@
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
-import { CurveModifier, OrbitControls, Line } from '@react-three/drei/core'
+import { CurveModifier, OrbitControls } from '@react-three/drei/core'
+import { Line } from '@react-three/drei/legacy'
+import { Line as WebGPIULine } from '@react-three/drei/webgpu'
+import { PlatformSwitch } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 import * as THREE from 'three'
 
@@ -28,7 +31,10 @@ function Scene() {
       <directionalLight position={[10, 10, 5]} intensity={1} />
 
       {/* Show the curve path */}
-      <Line points={points} color="hotpink" lineWidth={2} />
+      <PlatformSwitch
+        legacy={<Line points={points} color="hotpink" lineWidth={2} />}
+        webgpu={<WebGPIULine points={points} color="hotpink" lineWidth={2} />}
+      />
 
       {/* Reference object */}
       <mesh position={[0, -1, 0]}>

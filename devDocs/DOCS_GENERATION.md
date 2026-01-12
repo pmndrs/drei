@@ -10,6 +10,8 @@ Drei uses a TSDoc-to-MDX generation system that:
 2. Generates MDX files for the pmndrs/docs documentation site
 3. Supports optional `.docs.mdx` templates for complex components
 
+> **Note:** The `docs/` folder is gitignored - documentation is generated automatically in CI when you push to `master`. Local generation is for previewing only.
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                        Build Script                             │
@@ -355,9 +357,44 @@ Press `Ctrl+C` to stop the watcher.
 
 ---
 
+## CI Integration
+
+Documentation is automatically generated and deployed when pushing to `master`:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    .github/workflows/docs.yml                    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  1. Checkout repo                                                │
+│  2. yarn install                                                 │
+│  3. yarn docs:generate --no-backup   ◄── Generates docs/        │
+│  4. Docker: ghcr.io/pmndrs/docs:2    ◄── Builds site from MDX   │
+│  5. Upload pages artifact                                        │
+│  6. Deploy to GitHub Pages                                       │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+The `docs/` folder is in `.gitignore` - it's generated fresh on each CI run, similar to how `storybook-static/` works.
+
+### Local Preview
+
+To preview docs locally before pushing:
+
+```bash
+# Generate the MDX files
+yarn docs:generate
+
+# Then run pmndrs/docs locally (see pmndrs/docs repo for instructions)
+```
+
+---
+
 ## Related Files
 
 - `scripts/generate-docs.ts` - Main generation script
 - `scripts/docs-config.ts` - Configuration and mappings
-- `docs/` - Generated MDX output directory
+- `docs/` - Generated MDX output directory (gitignored)
+- `.github/workflows/docs.yml` - CI workflow that generates and deploys docs
 

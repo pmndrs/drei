@@ -2301,18 +2301,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/compat@npm:^1.2.3":
-  version: 1.2.3
-  resolution: "@eslint/compat@npm:1.2.3"
-  peerDependencies:
-    eslint: ^9.10.0
-  peerDependenciesMeta:
-    eslint:
-      optional: true
-  checksum: 10c0/b7439e62f73b9a05abea3b54ad8edc171e299171fc4673fc5a2c84d97a584bb9487a7f0bee397342f6574bd53597819a8abe52f1ca72184378cf387275b84e32
-  languageName: node
-  linkType: hard
-
 "@eslint/config-array@npm:^0.19.0":
   version: 0.19.0
   resolution: "@eslint/config-array@npm:0.19.0"
@@ -2348,7 +2336,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:9.15.0, @eslint/js@npm:^9.15.0":
+"@eslint/js@npm:9.15.0":
   version: 9.15.0
   resolution: "@eslint/js@npm:9.15.0"
   checksum: 10c0/56552966ab1aa95332f70d0e006db5746b511c5f8b5e0c6a9b2d6764ff6d964e0b2622731877cbc4e3f0e74c5b39191290d5f48147be19175292575130d499ab
@@ -3409,9 +3397,6 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.26.0"
     "@babel/runtime": "npm:^7.26.0"
     "@chromatic-com/storybook": "npm:^4.1.3"
-    "@eslint/compat": "npm:^1.2.3"
-    "@eslint/eslintrc": "npm:^3.2.0"
-    "@eslint/js": "npm:^9.15.0"
     "@mediapipe/tasks-vision": "npm:0.10.17"
     "@monogrid/gainmap-js": "npm:^3.0.6"
     "@playwright/test": "npm:^1.45.2"

@@ -1,5 +1,11 @@
 {
-  "sandboxes": ["4nc1u", "bfplr", "1wh6f"],
-  "packages": ["dist"],
+  "sandboxes": [
+    "4nc1u",
+    "bfplr",
+    "1wh6f"
+  ],
+  "packages": [
+    "dist"
+  ],
   "node": "22"
 }

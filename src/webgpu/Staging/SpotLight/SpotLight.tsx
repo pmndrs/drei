@@ -104,7 +104,19 @@ function VolumetricMesh({
       material.depth = null
       material.resolution = new Vector2(0, 0)
     }
-  }, [material, color, opacity, attenuation, anglePower, camera.near, camera.far, depthBuffer, size.width, size.height, dpr])
+  }, [
+    material,
+    color,
+    opacity,
+    attenuation,
+    anglePower,
+    camera.near,
+    camera.far,
+    depthBuffer,
+    size.width,
+    size.height,
+    dpr,
+  ])
 
   //* Update spot position and orientation each frame --
   // Runs during default 'update' phase
@@ -163,52 +175,54 @@ function VolumetricMesh({
 
 //* SpotLight Component ==============================
 
-export const SpotLight: ForwardRefComponent<React.PropsWithChildren<SpotLightProps>, SpotLightImpl> =
-  /* @__PURE__ */ React.forwardRef(
-    (
-      {
-        // Volumetric props
-        opacity = 1,
-        radiusTop,
-        radiusBottom,
-        depthBuffer,
-        color = 'white',
-        distance = 5,
-        angle = 0.15,
-        attenuation = 5,
-        anglePower = 5,
-        volumetric = true,
-        debug = false,
-        children,
-        ...props
-      }: React.PropsWithChildren<SpotLightProps>,
-      ref: React.ForwardedRef<SpotLightImpl>
-    ) => {
-      const spotlight = React.useRef<SpotLightImpl>(null!)
-      React.useImperativeHandle(ref, () => spotlight.current, [])
+export const SpotLight: ForwardRefComponent<
+  React.PropsWithChildren<SpotLightProps>,
+  SpotLightImpl
+> = /* @__PURE__ */ React.forwardRef(
+  (
+    {
+      // Volumetric props
+      opacity = 1,
+      radiusTop,
+      radiusBottom,
+      depthBuffer,
+      color = 'white',
+      distance = 5,
+      angle = 0.15,
+      attenuation = 5,
+      anglePower = 5,
+      volumetric = true,
+      debug = false,
+      children,
+      ...props
+    }: React.PropsWithChildren<SpotLightProps>,
+    ref: React.ForwardedRef<SpotLightImpl>
+  ) => {
+    const spotlight = React.useRef<SpotLightImpl>(null!)
+    React.useImperativeHandle(ref, () => spotlight.current, [])
 
-      return (
-        <group>
-          {debug && spotlight.current && <spotLightHelper args={[spotlight.current]} />}
+    return (
+      <group>
+        {debug && spotlight.current && <spotLightHelper args={[spotlight.current]} />}
 
-          <spotLight ref={spotlight} angle={angle} color={color} distance={distance} castShadow {...props}>
-            {volumetric && (
-              <VolumetricMesh
-                opacity={opacity}
-                radiusTop={radiusTop}
-                radiusBottom={radiusBottom}
-                depthBuffer={depthBuffer}
-                color={color}
-                distance={distance}
-                angle={angle}
-                attenuation={attenuation}
-                anglePower={anglePower}
-              />
-            )}
-          </spotLight>
+        <spotLight ref={spotlight} angle={angle} color={color} distance={distance} castShadow {...props}>
+          {volumetric && (
+            <VolumetricMesh
+              opacity={opacity}
+              radiusTop={radiusTop}
+              radiusBottom={radiusBottom}
+              depthBuffer={depthBuffer}
+              color={color}
+              distance={distance}
+              angle={angle}
+              attenuation={attenuation}
+              anglePower={anglePower}
+            />
+          )}
+        </spotLight>
 
-          {children}
-        </group>
-      )
-    }
-  )
+        {children}
+      </group>
+    )
+  }
+)

@@ -76,7 +76,7 @@ function computeContainerPosition(canvasSize: CanvasSize, trackRect: DOMRect) {
 }
 
 function prepareSkissor(
-  renderer: THREE.WebGLRenderer | THREE.WebGPURenderer,
+  renderer: THREE.WebGLRenderer,
   camera: THREE.Camera,
   {
     left,
@@ -91,7 +91,7 @@ function prepareSkissor(
   //* Camera Setup ==============================
   const aspect = width / height
   if (isOrthographicCamera(camera)) {
-    if (!camera.manual) {
+    if (!(camera as any).manual) {
       if (
         camera.left !== width / -2 ||
         camera.right !== width / 2 ||
@@ -104,7 +104,7 @@ function prepareSkissor(
   } else if ((camera as THREE.PerspectiveCamera).aspect !== aspect) {
     ;(camera as THREE.PerspectiveCamera).aspect = aspect
   }
-  camera.updateProjectionMatrix()
+  ;(camera as THREE.PerspectiveCamera | THREE.OrthographicCamera).updateProjectionMatrix()
 
   //* Scissor Setup ==============================
   autoClear = renderer.autoClear
@@ -124,7 +124,7 @@ function finishSkissor(renderer: THREE.WebGLRenderer, autoClear: boolean) {
   renderer.autoClear = autoClear
 }
 
-function clear(renderer: THREE.WebGLRenderer | THREE.WebGPURenderer) {
+function clear(renderer: THREE.WebGLRenderer) {
   renderer.getClearColor(col)
   renderer.setClearColor(col, renderer.getClearAlpha())
   renderer.clear(true, true)

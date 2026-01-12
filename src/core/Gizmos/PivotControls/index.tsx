@@ -7,8 +7,9 @@ import { AxisArrow } from './AxisArrow'
 import { AxisRotator } from './AxisRotator'
 import { PlaneSlider } from './PlaneSlider'
 import { ScalingSphere } from './ScalingSphere'
-import { OnDragStartProps, context } from './context'
+import { OnDragStartProps, context, Line } from './context'
 import { calculateScaleFactor } from '../../../utils/calculateScaleFactor'
+import { LineProps } from '#drei-platform'
 
 const mL0 = /* @__PURE__ */ new THREE.Matrix4()
 const mW0 = /* @__PURE__ */ new THREE.Matrix4()
@@ -87,6 +88,8 @@ export type PivotControlsProps = {
   visible?: boolean
   userData?: { [key: string]: any }
   children?: React.ReactNode
+  /** Optional Line component override (for storybook platform switching) */
+  LineComponent?: React.ComponentType<LineProps>
 }
 
 /**
@@ -147,10 +150,12 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
       visible = true,
       userData,
       children,
+      LineComponent,
       ...props
     },
     fRef
   ) => {
+    const LineComp = LineComponent ?? Line
     const invalidate = useThree((state) => state.invalidate)
     const parentRef = React.useRef<THREE.Group>(null!)
     const ref = React.useRef<THREE.Group>(null!)
@@ -225,6 +230,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
         userData,
         annotations,
         annotationsClass,
+        LineComponent: LineComp,
       }),
       [
         onDragStart,
@@ -245,6 +251,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
         autoTransform,
         annotations,
         annotationsClass,
+        LineComp,
       ]
     )
 

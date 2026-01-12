@@ -3,6 +3,14 @@ import { Texture as _Texture, TextureLoader } from '#three'
 import { useLoader, useThree } from '@react-three/fiber'
 import { useLayoutEffect, useEffect, useMemo } from 'react'
 
+//* Types ==============================
+
+type MappedTextureType<T extends string | string[] | Record<string, string>> = T extends string[]
+  ? _Texture[]
+  : T extends Record<string, string>
+    ? { [K in keyof T]: _Texture }
+    : _Texture
+
 export const IsObject = (url: unknown): url is Record<string, string> =>
   url === Object(url) && !Array.isArray(url) && typeof url !== 'function'
 
@@ -38,10 +46,10 @@ export function useTexture<Url extends string[] | string | Record<string, string
       let textureArray: _Texture[] = []
       if (Array.isArray(textures)) {
         textureArray = textures
-      } else if (textures instanceof _Texture) {
-        textureArray = [textures]
+      } else if ((textures as _Texture).isTexture) {
+        textureArray = [textures as _Texture]
       } else if (IsObject(textures)) {
-        textureArray = Object.values(textures)
+        textureArray = Object.values(textures) as unknown as _Texture[]
       }
 
       textureArray.forEach((texture) => {

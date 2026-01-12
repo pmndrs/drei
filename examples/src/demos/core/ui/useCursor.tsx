@@ -7,7 +7,7 @@ import { useState } from 'react'
 
 function InteractiveMesh() {
   const [hovered, setHovered] = useState(false)
-  
+
   // useCursor changes cursor on hover
   useCursor(hovered)
 
@@ -23,7 +23,7 @@ function Scene() {
   return (
     <>
       <OrbitControls makeDefault />
-      
+
       {/* Lighting */}
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
@@ -48,4 +48,3 @@ export default function UseCursorDemo() {
     </div>
   )
 }
-

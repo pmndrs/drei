@@ -5,6 +5,13 @@ dist/
 docs/
 storybook-static/
 types/
+playwright-report/
+
+# Vite cache
+vite.config.*.timestamp-*
+
+# Logs
+*.log
 
 # System files
 .DS_Store

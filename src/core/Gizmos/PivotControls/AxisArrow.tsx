@@ -1,7 +1,6 @@
 import * as React from 'react'
 import * as THREE from '#three'
 import { ThreeEvent, useThree } from '@react-three/fiber'
-import { Line } from '../../Geometry/Line'
 import { Html } from '../../UI/Html'
 import { context } from './context'
 
@@ -57,6 +56,7 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
     onDrag,
     onDragEnd,
     userData,
+    LineComponent: Line,
   } = React.useContext(context)
 
   const camControls = useThree((state) => state.controls) as unknown as { enabled: boolean } | undefined

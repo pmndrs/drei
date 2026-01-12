@@ -1,4 +1,4 @@
-import * as THREE from 'three'
+import * as THREE from '#three'
 import { version } from '@utils/constants'
 
 export class SpotLightMaterial extends THREE.ShaderMaterial {

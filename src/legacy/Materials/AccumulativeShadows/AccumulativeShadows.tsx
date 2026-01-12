@@ -1,4 +1,4 @@
-import * as THREE from 'three'
+import * as THREE from '#three'
 import * as React from 'react'
 import { extend, ReactThreeFiber, ThreeElements, useFrame, useThree } from '@react-three/fiber'
 import { shaderMaterial } from '@legacy/Materials/shaderMaterial'
@@ -51,7 +51,7 @@ export type AccumulativeShadowsProps = Omit<ThreeElements['group'], 'ref'> & {
   toneMapped?: boolean
 }
 
-interface AccumulativeContext {
+export interface AccumulativeContext {
   lights: Map<any, any>
   temporal: boolean
   frames: number
@@ -65,7 +65,7 @@ interface AccumulativeContext {
   update: (frames?: number) => void
 }
 
-interface AccumulativeLightContext {
+export interface AccumulativeLightContext {
   /** Jiggles the lights */
   update: () => void
 }

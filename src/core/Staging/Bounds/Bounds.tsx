@@ -126,10 +126,13 @@ export function Bounds({
       const boxSize = box.getSize(new THREE.Vector3())
       const center = box.getCenter(new THREE.Vector3())
       const maxSize = Math.max(boxSize.x, boxSize.y, boxSize.z)
+
+      // Calculate fit distance based on camera type
+      const perspCam = camera as THREE.PerspectiveCamera
       const fitHeightDistance = isOrthographic(camera)
         ? maxSize * 4
-        : maxSize / (2 * Math.atan((Math.PI * camera.fov) / 360))
-      const fitWidthDistance = isOrthographic(camera) ? maxSize * 4 : fitHeightDistance / camera.aspect
+        : maxSize / (2 * Math.atan((Math.PI * perspCam.fov) / 360))
+      const fitWidthDistance = isOrthographic(camera) ? maxSize * 4 : fitHeightDistance / perspCam.aspect
       const distance = margin * Math.max(fitHeightDistance, fitWidthDistance)
 
       return { box, size: boxSize, center, distance }
@@ -249,8 +252,10 @@ export function Bounds({
         }
         maxHeight *= 2
         maxWidth *= 2
-        const zoomForHeight = (camera.top - camera.bottom) / maxHeight
-        const zoomForWidth = (camera.right - camera.left) / maxWidth
+        // At this point camera is guaranteed to be OrthographicCamera due to early return above
+        const orthoCam = camera as THREE.OrthographicCamera
+        const zoomForHeight = (orthoCam.top - orthoCam.bottom) / maxHeight
+        const zoomForWidth = (orthoCam.right - orthoCam.left) / maxWidth
 
         goal.current.camZoom = Math.min(zoomForHeight, zoomForWidth) / margin
 

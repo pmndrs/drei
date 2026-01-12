@@ -8,7 +8,8 @@ import {
   CubeTexture,
   ColorSpace,
 } from '#three'
-import { RGBELoader, EXRLoader } from 'three-stdlib'
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
+import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader'
 import { GainMapLoader, HDRJPGLoader } from '@monogrid/gainmap-js'
 import { presetsObj, PresetsType } from '../environment-assets'
 import { useLayoutEffect } from 'react'
@@ -75,10 +76,10 @@ export function useEnvironment({
     (loader) => {
       // Gainmap requires a renderer
       if (extension === 'webp' || extension === 'jpg' || extension === 'jpeg') {
-        loader.setRenderer(renderer)
+        ;(loader as any).setRenderer?.(renderer)
       }
-      loader.setPath?.(path)
-      if (extensions) extensions(loader)
+      ;(loader as any).setPath?.(path)
+      if (extensions) extensions(loader as any)
     }
   ) as Texture | Texture[]
   let texture: Texture | CubeTexture = multiFile
@@ -126,8 +127,8 @@ useEnvironment.preload = (preloadOptions?: EnvironmentLoaderPreloadOptions) => {
   if (!loader) throw new Error('useEnvironment: Unrecognized file extension: ' + files)
 
   useLoader.preload(loader, isArray(files) ? [files] : files, (loader) => {
-    loader.setPath?.(path)
-    if (extensions) extensions(loader)
+    ;(loader as any).setPath?.(path)
+    if (extensions) extensions(loader as any)
   })
 }
 

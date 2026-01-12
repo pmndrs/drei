@@ -11,7 +11,7 @@ import {
   Camera,
   Vector2,
   HalfFloatType,
-} from 'three'
+} from '#three'
 
 import { ConvolutionMaterial } from '@legacy/Materials/ConvolutionMaterial'
 
@@ -101,4 +101,3 @@ export class BlurPass {
     renderer.render(scene, camera)
   }
 }
-

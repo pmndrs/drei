@@ -143,7 +143,7 @@ export const CreateInstancesSt = () => {
 
   return (
     <SuzaneInstances limit={1000} geometry={SuzanneMesh.geometry} material={suzanneMaterial}>
-      <InstancedAttribute name="reveal" defaultValue={1} />
+      <InstancedAttribute name="reveal" defaultValue={[1]} />
 
       {Array.from({ length: 1000 }, (_, i) => (
         <Suzanne key={i} />

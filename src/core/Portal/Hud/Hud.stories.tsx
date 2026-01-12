@@ -7,7 +7,8 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'
 
-import { Hud, OrbitControls, PerspectiveCamera, Text } from 'drei'
+import { Hud, OrbitControls, PerspectiveCamera } from 'drei'
+import { Text } from '../../../legacy/UI/Text/Text'
 
 export default {
   title: 'Portals/Hud',
@@ -145,4 +146,3 @@ export const HudSt = {
   render: (args) => <HudScene {...args} />,
   name: 'Default',
 } satisfies Story
-

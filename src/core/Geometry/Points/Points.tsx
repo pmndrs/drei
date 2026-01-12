@@ -49,21 +49,24 @@ export class PositionPoint extends THREE.Group {
     // If the instance wasn't found or exceeds the parents draw range, bail out
     if (instanceId === -1 || instanceId > parent.geometry.drawRange.count) return
 
+    // Cast to THREE.Group for inherited properties (TS has trouble with #three alias)
+    const self = this as unknown as THREE.Group
+
     const threshold = raycaster.params.Points?.threshold ?? 1
-    _sphere.set(this.getWorldPosition(_position), threshold)
+    _sphere.set(self.getWorldPosition(_position), threshold)
     if (raycaster.ray.intersectsSphere(_sphere) === false) return
 
     _inverseMatrix.copy(parent.matrixWorld).invert()
     _ray.copy(raycaster.ray).applyMatrix4(_inverseMatrix)
 
-    const localThreshold = threshold / ((this.scale.x + this.scale.y + this.scale.z) / 3)
+    const localThreshold = threshold / ((self.scale.x + self.scale.y + self.scale.z) / 3)
     const localThresholdSq = localThreshold * localThreshold
-    const rayPointDistanceSq = _ray.distanceSqToPoint(this.position)
+    const rayPointDistanceSq = _ray.distanceSqToPoint(self.position)
 
     if (rayPointDistanceSq < localThresholdSq) {
       const intersectPoint = new THREE.Vector3()
-      _ray.closestPointToPoint(this.position, intersectPoint)
-      intersectPoint.applyMatrix4(this.matrixWorld)
+      _ray.closestPointToPoint(self.position, intersectPoint)
+      intersectPoint.applyMatrix4(self.matrixWorld)
       const distance = raycaster.ray.origin.distanceTo(intersectPoint)
       if (distance < raycaster.near || distance > raycaster.far) return
       intersects.push({

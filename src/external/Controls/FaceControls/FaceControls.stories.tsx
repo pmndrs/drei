@@ -13,7 +13,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 
 export default {
   title: 'Controls/FaceControls',
-  tags: ['external'],
+  tags: ['external', '!autodocs'], // FaceLandmarker cannot have multiple instances
   component: FaceControls,
   decorators: [
     (Story, context) => (
@@ -22,7 +22,6 @@ export default {
       </Setup>
     ),
   ],
-  tags: ['!autodocs'], // FaceLandmarker cannot have multiple instances
 } satisfies Meta<typeof FaceControls>
 
 type Story = StoryObj<typeof FaceControls>

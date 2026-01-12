@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { CatmullRomCurve3, Color, Vector3 } from '#three'
-import { Line2 } from '#three-addons'
-import { Line, LineProps } from '../Line'
+import { Line2 } from 'three/examples/jsm/lines/Line2.js'
+import { Line, LineProps } from '#drei-platform'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 
 export type CatmullRomLineProps = Omit<LineProps, 'ref' | 'segments'> & {
@@ -9,6 +9,8 @@ export type CatmullRomLineProps = Omit<LineProps, 'ref' | 'segments'> & {
   curveType?: 'centripetal' | 'chordal' | 'catmullrom'
   tension?: number
   segments?: number
+  /** Optional Line component override (for storybook platform switching) */
+  LineComponent?: React.ComponentType<LineProps>
 }
 
 /**
@@ -30,9 +32,19 @@ export const CatmullRomLine: ForwardRefComponent<CatmullRomLineProps, Line2> = /
   Line2,
   CatmullRomLineProps
 >(function CatmullRomLine(
-  { points, closed = false, curveType = 'centripetal', tension = 0.5, segments = 20, vertexColors, ...rest },
+  {
+    points,
+    closed = false,
+    curveType = 'centripetal',
+    tension = 0.5,
+    segments = 20,
+    vertexColors,
+    LineComponent,
+    ...rest
+  },
   ref
 ) {
+  const LineComp = LineComponent ?? Line
   const curve = React.useMemo(() => {
     const mappedPoints = points.map((pt) =>
       pt instanceof Vector3 ? pt : new Vector3(...(pt as [number, number, number]))
@@ -65,5 +77,5 @@ export const CatmullRomLine: ForwardRefComponent<CatmullRomLineProps, Line2> = /
     return iColors
   }, [vertexColors, segments])
 
-  return <Line ref={ref} points={segmentedPoints} vertexColors={interpolatedVertexColors} {...rest} />
+  return <LineComp ref={ref} points={segmentedPoints} vertexColors={interpolatedVertexColors} {...rest} />
 })

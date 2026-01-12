@@ -14,4 +14,3 @@ export function BakeShadows() {
   }, [gl.shadowMap])
   return null
 }
-

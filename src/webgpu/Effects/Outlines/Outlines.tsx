@@ -18,7 +18,7 @@ import {
 } from 'three/tsl'
 import * as React from 'react'
 import { extend, applyProps, ReactThreeFiber, useThree, ThreeElements } from '@react-three/fiber'
-import { toCreasedNormals } from 'three-stdlib'
+import { toCreasedNormals } from 'three/examples/jsm/utils/BufferGeometryUtils'
 
 //* Types ==============================
 

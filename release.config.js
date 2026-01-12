@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   branches: [
     'master',
     { name: 'alpha', prerelease: true },

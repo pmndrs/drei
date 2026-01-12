@@ -1,1 +1,1 @@
-export * from "./GradientTexture"
+export * from './GradientTexture'

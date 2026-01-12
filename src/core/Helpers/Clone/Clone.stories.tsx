@@ -4,12 +4,12 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'
 
-import { Billboard, Plane, Box, Cone, OrbitControls, Text, Clone, useGLTF } from 'drei'
-import { ComponentProps } from 'react'
+import { Clone, useGLTF } from 'drei'
 
 export default {
   title: 'Helpers/Clone',
   component: Clone,
+  tags: ['parity'], // Enables platform parity testing (Legacy vs WebGPU)
   decorators: [
     (Story, context) => (
       <Setup renderer={context.globals.renderer} cameraPosition={new Vector3(0, 0, 10)}>

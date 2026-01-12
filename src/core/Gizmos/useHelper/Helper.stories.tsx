@@ -2,7 +2,7 @@ import { useFrame } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from 'three'
 import { BoxHelper, CameraHelper } from 'three'
-import { VertexNormalsHelper } from 'three-stdlib'
+import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Helper, PerspectiveCamera, Sphere } from 'drei'

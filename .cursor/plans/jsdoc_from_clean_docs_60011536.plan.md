@@ -65,6 +65,7 @@ For each component with docs in `docs-original/`:
 
 - Use `{/* AUTO:badges */}`, `{/* AUTO:description */}`, `{/* AUTO:example */}` for auto-generated parts
 - Preserve Codesandbox embeds, Grid layouts, and custom hand-written sections
+
 ```javascript
 docs-original/clone.mdx          (read)
         │
@@ -72,9 +73,6 @@ docs-original/clone.mdx          (read)
         │
         └──► src/.../Clone.docs.mdx  (create template if rich content)
 ```
-
-
-
 
 ## Implementation Batches
 

@@ -1,10 +1,12 @@
+import * as React from 'react'
+import { Ref, useState } from 'react'
+import * as THREE from 'three'
+import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'
 
 import { Box, Center, Cylinder, Gltf } from 'drei'
-import { Ref, useMemo, useState } from 'react'
-import { Box3, Vector3 } from 'three'
 
 export default {
   title: 'Staging/Center',

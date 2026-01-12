@@ -3,7 +3,8 @@ import { useFrame } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'
-import { MeshWobbleMaterial, Torus } from 'drei'
+import { Torus } from 'drei'
+import { MeshWobbleMaterial } from './MeshWobbleMaterial'
 import { MeshWobbleMaterial as MeshWobbleMaterialWebGPU } from '../../../webgpu/Materials/MeshWobbleMaterial'
 import { PlatformSwitch } from '@sb/components/PlatformSwitch'
 
@@ -34,6 +35,7 @@ type Story = StoryObj<typeof MeshWobbleMaterial>
 function MeshWobbleMaterialScene(props: React.ComponentProps<typeof MeshWobbleMaterial>) {
   return (
     <Torus args={[1, 0.25, 16, 100]}>
+      {/* @ts-expect-error - TypeScript sees two different WobbleMaterialImpl types due to module resolution, but they're compatible at runtime */}
       <PlatformSwitch legacy={<MeshWobbleMaterial {...props} />} webgpu={<MeshWobbleMaterialWebGPU {...props} />} />
     </Torus>
   )

@@ -1,5 +1,5 @@
 import { Size } from '@react-three/fiber'
-import * as THREE from 'three'
+import * as THREE from '#three'
 
 const tV0 = /* @__PURE__ */ new THREE.Vector3()
 const tV1 = /* @__PURE__ */ new THREE.Vector3()

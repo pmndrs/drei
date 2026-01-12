@@ -96,4 +96,3 @@ export const RenderTextureSt = {
   render: () => <RenderTextureScene />,
   name: 'Default',
 } satisfies Story
-

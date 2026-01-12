@@ -1,131 +1,148 @@
-import { defineBuildConfig } from 'obuild'
+//* Build Configuration ==============================
+// Drei uses per-entry alias configuration for WebGL/WebGPU builds.
+// Each entry gets the correct #three alias via rolldown's resolve.alias.
+//
+// - Root, Core, External, Experimental, Legacy: #three → 'three'
+// - WebGPU, Native: #three → 'three/webgpu'
+
+import { defineBuildConfig } from 'obuild/config'
+import { resolve } from 'path'
+
+//* Internal Path Aliases ==============================
+// These resolve @core, @legacy, etc. imports to actual paths
+
+const internalAliases = {
+  '@core': resolve('./src/core'),
+  '@legacy': resolve('./src/legacy'),
+  '@webgpu': resolve('./src/webgpu'),
+  '@external': resolve('./src/external'),
+  '@experimental': resolve('./src/experimental'),
+  '@utils': resolve('./src/utils'),
+}
+
+//* Platform Alias Configurations ==============================
+
+const webglAliases = {
+  ...internalAliases,
+  '#three': 'three',
+  '#drei-platform': resolve('./src/utils/drei-platform.ts'),
+  '#three-addons': resolve('./src/utils/three-addons.ts'),
+}
+
+const webgpuAliases = {
+  ...internalAliases,
+  '#three': 'three/webgpu',
+  '#drei-platform': resolve('./src/utils/drei-platform-webgpu.ts'),
+  '#three-addons': resolve('./src/utils/three-addons-webgpu.ts'),
+}
+
+//* Shared Configuration ==============================
+
+const sharedRolldownConfig = {
+  treeshake: true,
+  output: {
+    format: 'esm' as const,
+    preserveModules: true,
+    preserveModulesRoot: 'src',
+  },
+  external: (id: string) => {
+    if (id.startsWith('three') || id.startsWith('@react-three') || id.startsWith('react')) return true
+    return false
+  },
+}
+
+//* Build Configuration ==============================
 
 export default defineBuildConfig({
+  cwd: '.',
+
   entries: [
-    //* Root entry - core + external + experimental ==============================
+    //* WebGL Entries (use plain 'three') ==============================
+
+    // Root entry - core + external + experimental
     {
-      input: './src/index',
-      name: 'index',
-      builder: 'rolldown',
-      declaration: true,
+      type: 'bundle',
+      input: './src/index.ts',
+      outDir: './dist',
+      dts: true,
+      rolldown: {
+        ...sharedRolldownConfig,
+        resolve: { alias: webglAliases },
+      },
     },
 
-    //* Core entry - production-ready, renderer-agnostic ==============================
+    // Core entry - renderer-agnostic components
     {
-      input: './src/core/index',
-      name: 'core/index',
-      builder: 'rolldown',
-      declaration: true,
+      type: 'bundle',
+      input: './src/core/index.ts',
+      outDir: './dist/core',
+      dts: true,
+      rolldown: {
+        ...sharedRolldownConfig,
+        resolve: { alias: webglAliases },
+      },
     },
 
-    //* External entry - external library wrappers ==============================
+    // External entry - third-party library wrappers
     {
-      input: './src/external/index',
-      name: 'external/index',
-      builder: 'rolldown',
-      declaration: true,
+      type: 'bundle',
+      input: './src/external/index.ts',
+      outDir: './dist/external',
+      dts: true,
+      rolldown: {
+        ...sharedRolldownConfig,
+        resolve: { alias: webglAliases },
+      },
     },
 
-    //* Experimental entry - rough/experimental components ==============================
+    // Experimental entry - rough/experimental components
     {
-      input: './src/experimental/index',
-      name: 'experimental/index',
-      builder: 'rolldown',
-      declaration: true,
+      type: 'bundle',
+      input: './src/experimental/index.ts',
+      outDir: './dist/experimental',
+      dts: true,
+      rolldown: {
+        ...sharedRolldownConfig,
+        resolve: { alias: webglAliases },
+      },
     },
 
-    //* Legacy entry - WebGL-only implementations ==============================
+    // Legacy entry - core + WebGL-only implementations
     {
-      input: './src/legacy/index',
-      name: 'legacy/index',
-      builder: 'rolldown',
-      declaration: true,
+      type: 'bundle',
+      input: './src/legacy/index.ts',
+      outDir: './dist/legacy',
+      dts: true,
+      rolldown: {
+        ...sharedRolldownConfig,
+        resolve: { alias: webglAliases },
+      },
     },
 
-    //* WebGPU entry - WebGPU-only implementations ==============================
+    //* WebGPU Entries (use 'three/webgpu') ==============================
+
+    // WebGPU entry - core + WebGPU-only implementations
     {
-      input: './src/webgpu/index',
-      name: 'webgpu/index',
-      builder: 'rolldown',
-      declaration: true,
+      type: 'bundle',
+      input: './src/webgpu/index.ts',
+      outDir: './dist/webgpu',
+      dts: true,
+      rolldown: {
+        ...sharedRolldownConfig,
+        resolve: { alias: webgpuAliases },
+      },
     },
 
-    //* Native entry - React Native support ==============================
+    // Native entry - core + WebGPU for React Native
     {
-      input: './src/native/index',
-      name: 'native/index',
-      builder: 'rolldown',
-      declaration: true,
+      type: 'bundle',
+      input: './src/native/index.ts',
+      outDir: './dist/native',
+      dts: true,
+      rolldown: {
+        ...sharedRolldownConfig,
+        resolve: { alias: webgpuAliases },
+      },
     },
   ],
-
-  // Output configuration
-  outDir: './dist',
-  clean: true,
-
-  // External dependencies - don't bundle these
-  externals: [
-    'react',
-    'react-dom',
-    'three',
-    'three/webgpu',
-    'three/tsl',
-    '@react-three/fiber',
-    '@babel/runtime',
-    '@mediapipe/tasks-vision',
-    '@monogrid/gainmap-js',
-    '@use-gesture/react',
-    'camera-controls',
-    'detect-gpu',
-    'glsl-noise',
-    'hls.js',
-    'maath',
-    'meshline',
-    'stats-gl',
-    'stats.js',
-    'suspend-react',
-    'three-mesh-bvh',
-    'three-stdlib',
-    'troika-three-text',
-    'tunnel-rat',
-    'use-sync-external-store',
-    'utility-types',
-    'zustand',
-  ],
-
-  // Rolldown-specific options
-  rolldown: {
-    // Alias configuration for #three
-    alias: {
-      // For root, core, external, experimental: #three → 'three'
-      '#three': 'three',
-    },
-
-    // Enable tree-shaking
-    treeshake: true,
-
-    // Output formats
-    output: {
-      format: 'esm',
-      preserveModules: true,
-      preserveModulesRoot: 'src',
-    },
-
-    // External handling
-    external: (id) => {
-      // External all peer dependencies and dependencies
-      if (id.startsWith('three') || id.startsWith('@react-three') || id.startsWith('react')) {
-        return true
-      }
-      return false
-    },
-  },
-
-  // TypeScript declaration generation
-  declaration: true,
-
-  // Fail on warnings
-  failOnWarn: false,
 })
-
-

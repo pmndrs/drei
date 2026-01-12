@@ -6,7 +6,17 @@
 // 3. Return B for sampling in materials
 
 import * as React from 'react'
-import { DepthTexture, DepthFormat, FloatType, RenderTarget, PlaneGeometry, Mesh, Scene, OrthographicCamera, Texture } from '#three'
+import {
+  DepthTexture,
+  DepthFormat,
+  FloatType,
+  RenderTarget,
+  PlaneGeometry,
+  Mesh,
+  Scene,
+  OrthographicCamera,
+  Texture,
+} from '#three'
 import { MeshBasicNodeMaterial } from 'three/webgpu'
 import { texture, uv, uniformTexture } from 'three/tsl'
 import { useThree, useFrame } from '@react-three/fiber'
@@ -101,7 +111,7 @@ function useDepthBuffer({ size = 256, frames = Infinity }: UseDepthBufferOptions
 
         // Step 2: Copy depth from A to B as a color texture using TSL
         // This creates a separate render pass with B as render target
-        depthUniform.value = targetA.depthTexture
+        depthUniform.value = targetA.depthTexture!
         gl.setRenderTarget(targetB as any)
         gl.render(copyScene, copyCamera)
 

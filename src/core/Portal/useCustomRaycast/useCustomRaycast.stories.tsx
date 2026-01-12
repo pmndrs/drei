@@ -75,7 +75,7 @@ function useCustomRaycastScene() {
   )
 }
 
-export const useCustomRaycastSt = {
+export const Default = {
   render: () => <useCustomRaycastScene />,
   name: 'Default',
 } satisfies Story

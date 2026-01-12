@@ -10,6 +10,8 @@ Drei uses a TSDoc-to-MDX generation system that:
 2. Generates MDX files for the pmndrs/docs documentation site
 3. Supports optional `.docs.mdx` templates for complex components
 
+> **Note:** The `docs/` folder is gitignored - documentation is generated automatically in CI when you push to `master`. Local generation is for previewing only.
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                        Build Script                             │
@@ -57,7 +59,7 @@ yarn docs:generate Billboard
 
 Add a JSDoc comment immediately before your component's `export`:
 
-```tsx
+````tsx
 /**
  * Short description of what the component does.
  * Additional context or details on a second line.
@@ -77,7 +79,7 @@ Add a JSDoc comment immediately before your component's `export`:
  * ```
  */
 export const MyComponent = ...
-```
+````
 
 ### Documenting Props
 
@@ -114,7 +116,7 @@ docs/abstractions/
 
 For a component with TSDoc but no `.docs.mdx` template, the script generates:
 
-```mdx
+````mdx
 ---
 title: Billboard
 sourcecode: src/core/Abstractions/Billboard/Billboard.tsx
@@ -131,6 +133,7 @@ Short description of what the component does.
   <Text>I'm a billboard</Text>
 </Billboard>
 ```
+````
 
 ### With options
 
@@ -139,7 +142,8 @@ Short description of what the component does.
   <Plane args={[3, 2]} />
 </Billboard>
 ```
-```
+
+````
 
 ## Extended Documentation with Templates
 
@@ -165,17 +169,17 @@ Hand-written content about events...
 ## Advanced Configuration
 
 More hand-written documentation...
-```
+````
 
 ### Available Injection Tags
 
-| Tag | Description |
-|-----|-------------|
-| `{/* AUTO:badges */}` | Storybook/suspense badges |
-| `{/* AUTO:description */}` | Component description from TSDoc |
-| `{/* AUTO:example */}` | All `@example` blocks from TSDoc |
-| `{/* AUTO:props */}` | Props table generated from types |
-| `{/* AUTO:all */}` | All of the above in default order |
+| Tag                        | Description                       |
+| -------------------------- | --------------------------------- |
+| `{/* AUTO:badges */}`      | Storybook/suspense badges         |
+| `{/* AUTO:description */}` | Component description from TSDoc  |
+| `{/* AUTO:example */}`     | All `@example` blocks from TSDoc  |
+| `{/* AUTO:props */}`       | Props table generated from types  |
+| `{/* AUTO:all */}`         | All of the above in default order |
 
 ## Configuration
 
@@ -185,10 +189,10 @@ Component categories are mapped to doc folders in `scripts/docs-config.ts`:
 
 ```ts
 export const docCategories: Record<string, string> = {
-  'Abstractions': 'abstractions',
-  'Cameras': 'cameras',
-  'Controls': 'controls',
-  'Staging': 'staging',
+  Abstractions: 'abstractions',
+  Cameras: 'cameras',
+  Controls: 'controls',
+  Staging: 'staging',
   // ...
 }
 ```
@@ -206,12 +210,12 @@ export const componentOverrides: Record<string, {...}> = {
 
 ## Supported JSDoc Tags
 
-| Tag | Usage |
-|-----|-------|
-| `@example` | Code examples with optional titles |
+| Tag        | Usage                                           |
+| ---------- | ----------------------------------------------- |
+| `@example` | Code examples with optional titles              |
 | `@default` | Default value for props (inline in description) |
-| `@see` | Links to related resources |
-| `@remarks` | Additional notes |
+| `@see`     | Links to related resources                      |
+| `@remarks` | Additional notes                                |
 
 ## Troubleshooting
 
@@ -235,25 +239,25 @@ The script couldn't find a multi-line JSDoc comment immediately before the compo
 
 Ensure your `@example` blocks follow this exact format:
 
-```tsx
+````tsx
 /**
  * @example Title here
  * ```jsx
  * <Code here />
  * ```
  */
-```
+````
 
 The code fence must use `jsx`, `tsx`, or `js` language identifier.
 
 ## Scripts Reference
 
-| Script | Description |
-|--------|-------------|
-| `yarn docs:generate` | Generate docs for all components |
+| Script                             | Description                          |
+| ---------------------------------- | ------------------------------------ |
+| `yarn docs:generate`               | Generate docs for all components     |
 | `yarn docs:generate ComponentName` | Generate docs for specific component |
-| `yarn docs:generate:watch` | Watch mode (re-generate on changes) |
-| `yarn docs:generate --no-backup` | Skip backup of existing docs |
+| `yarn docs:generate:watch`         | Watch mode (re-generate on changes)  |
+| `yarn docs:generate --no-backup`   | Skip backup of existing docs         |
 
 ---
 
@@ -297,6 +301,7 @@ yarn docs:generate:watch
 ```
 
 Output:
+
 ```
 📚 TSDoc to MDX Documentation Generator
 
@@ -320,22 +325,24 @@ Output:
 
 ### What Gets Watched
 
-| File Type | Action on Change |
-|-----------|------------------|
-| `Component.tsx` | Regenerates that component's MDX |
+| File Type            | Action on Change                       |
+| -------------------- | -------------------------------------- |
+| `Component.tsx`      | Regenerates that component's MDX       |
 | `Component.docs.mdx` | Regenerates using the updated template |
-| `*.stories.tsx` | Ignored (no docs impact) |
-| New component folder | Detected and added to watch |
+| `*.stories.tsx`      | Ignored (no docs impact)               |
+| New component folder | Detected and added to watch            |
 
 ### Example Output on Change
 
 When you save a file:
+
 ```
 🔄 Changed: core/Abstractions/Billboard/Billboard.tsx
    ✅ Updated: abstractions/billboard.mdx
 ```
 
 If using a template:
+
 ```
 🔄 Changed: core/Controls/CameraControls/CameraControls.docs.mdx
    📝 Using template: CameraControls.docs.mdx
@@ -355,9 +362,43 @@ Press `Ctrl+C` to stop the watcher.
 
 ---
 
+## CI Integration
+
+Documentation is automatically generated and deployed when pushing to `master`:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    .github/workflows/docs.yml                    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  1. Checkout repo                                                │
+│  2. yarn install                                                 │
+│  3. yarn docs:generate --no-backup   ◄── Generates docs/        │
+│  4. Docker: ghcr.io/pmndrs/docs:2    ◄── Builds site from MDX   │
+│  5. Upload pages artifact                                        │
+│  6. Deploy to GitHub Pages                                       │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+The `docs/` folder is in `.gitignore` - it's generated fresh on each CI run, similar to how `storybook-static/` works.
+
+### Local Preview
+
+To preview docs locally before pushing:
+
+```bash
+# Generate the MDX files
+yarn docs:generate
+
+# Then run pmndrs/docs locally (see pmndrs/docs repo for instructions)
+```
+
+---
+
 ## Related Files
 
 - `scripts/generate-docs.ts` - Main generation script
 - `scripts/docs-config.ts` - Configuration and mappings
-- `docs/` - Generated MDX output directory
-
+- `docs/` - Generated MDX output directory (gitignored)
+- `.github/workflows/docs.yml` - CI workflow that generates and deploys docs

@@ -1,13 +1,23 @@
 //* TODO: Convert GLSL shaders to TSL for WebGPU ==============================
 
 import * as React from 'react'
-import { useThree } from '@react-three/fiber'
-import * as THREE from 'three'
+import { ThreeElements, useThree } from '@react-three/fiber'
+import * as THREE from '#three'
 
 export enum GradientType {
   Linear = 'linear',
   Radial = 'radial',
 }
+
+export type GradientTextureProps = {
+  stops: number[]
+  colors: THREE.ColorRepresentation[]
+  size?: number
+  width?: number
+  type?: GradientType
+  innerCircleRadius?: number
+  outerCircleRadius?: number | 'auto'
+} & Omit<ThreeElements['canvasTexture'], 'args'>
 
 export function GradientTexture({
   stops,
@@ -60,4 +70,3 @@ export function GradientTexture({
 
   return <canvasTexture colorSpace={gl.outputColorSpace} args={[canvas]} attach="map" {...props} />
 }
-

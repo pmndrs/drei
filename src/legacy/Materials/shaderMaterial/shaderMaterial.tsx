@@ -1,4 +1,4 @@
-import * as THREE from 'three'
+import * as THREE from '#three'
 import { type ConstructorRepresentation } from '@react-three/fiber'
 import { type MeshBVHUniformStruct } from 'three-mesh-bvh'
 

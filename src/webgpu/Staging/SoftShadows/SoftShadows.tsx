@@ -16,7 +16,7 @@
 */
 
 import * as React from 'react'
-import * as THREE from 'three'
+import * as THREE from '#three'
 import { useThree } from '@react-three/fiber'
 
 export type SoftShadowsProps = {
@@ -161,4 +161,3 @@ export function SoftShadows({ focus = 0, samples = 10, size = 25 }: SoftShadowsP
   }, [focus, size, samples])
   return null
 }
-

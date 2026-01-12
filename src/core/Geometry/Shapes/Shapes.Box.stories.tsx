@@ -9,6 +9,7 @@ import { useTurntable } from '@sb/useTurntable'
 export default {
   title: 'Shapes/Box',
   component: Box,
+  tags: ['parity'], // Enables platform parity testing (Legacy vs WebGPU)
   decorators: [
     (Story, context) => (
       <Setup renderer={context.globals.renderer}>

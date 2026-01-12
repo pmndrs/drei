@@ -2,6 +2,16 @@
 
 Thanks for wanting to make a contribution and wanting to improve this library for everyone! This repository uses Typescript so please continue to do so, you can always reach out in the repo or the [discord](https://pmnd.rs/discord). This is a guideline, use your initiative, if you don't think it makes sense to do a step in here, don't bother it's normally okay. we're chill.
 
+## v11 Documentation
+
+Drei v11 introduced a new architecture. See these guides for details:
+
+- [Migration Guide](./MIGRATION_V10_TO_V11.md) — Overview of v11 changes
+- [Build & Publish](./building/BUILD_AND_PUBLISH.md) — How to build and release
+- [Platform Aliases](./building/PLATFORM_ALIASES.md) — How `#three` and `#drei-platform` work
+- [Storybook Guide](../.storybook/README.md) — Writing stories and platform switching
+- [Documentation Generation](./DOCS_GENERATION.md) — TSDoc to MDX generation
+
 ## How to Contribute
 
 1.  Fork and clone the repo
@@ -11,9 +21,19 @@ Thanks for wanting to make a contribution and wanting to improve this library fo
 
 You can also just [![Open in GitHub Codespaces](https://img.shields.io/static/v1?&message=Open%20in%20%20Codespaces&style=flat&colorA=000000&colorB=000000&label=GitHub&logo=github&logoColor=ffffff)](https://github.com/codespaces/new?template_repository=pmndrs%2Fdrei).
 
-## Example
+## Component Structure (v11)
 
-You'll find a sample [`Example.tsx`](src/core/Example.tsx) component and its associated [`Example.stories.tsx`](.storybook/stories/Example.stories.tsx) to start with, as well as its documentation in the [`README`](README.md#example)
+Components now use a folder structure. See [Component-as-a-Folder](./MIGRATION_V10_TO_V11.md#component-as-a-folder-caaf-structure) in the migration guide.
+
+```
+src/core/Category/ComponentName/
+  ├── index.ts
+  ├── ComponentName.tsx
+  ├── ComponentName.stories.tsx
+  └── ComponentName.docs.mdx  # optional
+```
+
+> **Note:** The old flat structure (`src/core/Example.tsx`) is deprecated. New components should use the folder structure.
 
 ## Commit Guidelines
 
@@ -21,19 +41,28 @@ Be sure your commit messages follow this specification: https://www.conventional
 
 ## Storybook
 
-If you're adding a brand new feature, you need to make sure you add a storybook entry, here's a few tips:
+Every component needs a story. See the [Storybook Guide](../.storybook/README.md) for full details on:
 
-- Make use of `@storybook/addon-controls` to show component variants & configuration
-- Keep the story simple & show the essence of the component, remember some people may be looking at using drei for the first time & it's important the stories are clear and concise.
-- Keep assets minimal (3D Models, textures) to avoid bloating the repository
-- If you think a more involved example is necessary, you can always add a codesandbox to the main README while keeping the story minimalistic
+- Platform switching (WebGL/WebGPU)
+- Tags and badges
+- Show code patterns
+- Setup and decorators
+
+Quick tips:
+
+- Use args/controls for interactive configuration
+- Keep stories simple — show the essence, not everything
+- Keep assets minimal to avoid bloating the repo
+- For platform-specific components, use tags (`legacyOnly`, `webgpuOnly`, `dual`)
 
 ## Publishing
 
-We use `semantic-release-action` to deploy the package. Because of this only certain commits will trigger the action of creating a release:
+See [Build & Publish Guide](./building/BUILD_AND_PUBLISH.md) for full details.
 
-- `fix:` will create a `0.0.x` version
-- `feat:` will create a `0.x.0` version
-- `BREAKING CHANGE:` will create a `x.0.0` version
+We use `semantic-release` to deploy the package. Commit messages determine the version bump:
 
-We release on `master`, `beta` & `alpha`. `beta` & `alpha` are configured to be prerelease. Any other commits will not fire a release.
+- `fix:` → `0.0.x` (patch)
+- `feat:` → `0.x.0` (minor)
+- `BREAKING CHANGE:` → `x.0.0` (major)
+
+Release branches: `master`, `beta`, `alpha`, `rc`, `canary-*`

@@ -22,7 +22,7 @@
     "paths": {
       "three/webgpu": ["./node_modules/@types/three/build/three.webgpu.d.ts"],
       "three/tsl": ["./node_modules/@types/three/build/three.tsl.d.ts"],
-      "#three": ["./node_modules/three"],
+      "#three": ["./node_modules/@types/three"],
       "#three-addons": ["./src/utils/three-addons"],
       "#drei-platform": ["./src/utils/drei-platform"],
       "@core/*": ["./src/core/*"],
@@ -32,7 +32,7 @@
       "@experimental/*": ["./src/experimental/*"],
       "@utils/*": ["./src/utils/*"],
       "@sb/*": ["./.storybook/*"],
-      "drei": ["./.storybook/drei-exports.ts"]
+      "drei": ["./.storybook/drei-barrel.ts"]
     }
   },
   "include": ["./src", "./.storybook"],

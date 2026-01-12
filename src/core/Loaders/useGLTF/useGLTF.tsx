@@ -1,5 +1,8 @@
 import * as React from 'react'
-import { GLTFLoader, DRACOLoader, MeshoptDecoder, GLTF } from 'three-stdlib'
+import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js'
+
 import { ObjectMap, useLoader } from '@react-three/fiber'
 import { Clone, CloneProps } from '../../Helpers/Clone/Clone'
 
@@ -24,7 +27,9 @@ function extensions(useDraco: UseDraco = true, useMeshopt: UseMeshopt = true, ex
       loader.setDRACOLoader(dracoLoader)
     }
     if (useMeshopt) {
-      loader.setMeshoptDecoder(typeof MeshoptDecoder === 'function' ? MeshoptDecoder() : MeshoptDecoder)
+      // MeshoptDecoder may be a function or an object depending on build
+      const decoder = typeof MeshoptDecoder === 'function' ? (MeshoptDecoder as () => unknown)() : MeshoptDecoder
+      loader.setMeshoptDecoder(decoder as typeof MeshoptDecoder)
     }
   }
 }
@@ -86,7 +91,8 @@ export type GltfProps = Omit<CloneProps, 'object'> & {
  */
 export const Gltf = /* @__PURE__ */ React.forwardRef<GltfRef, GltfProps>(
   ({ src, useDraco, useMeshOpt, extendLoader, ...props }, ref) => {
-    const { scene } = useGLTF(src, useDraco, useMeshOpt, extendLoader)
+    // src is a single string, so result is always GLTF & ObjectMap (not array)
+    const { scene } = useGLTF(src, useDraco, useMeshOpt, extendLoader) as GLTF & ObjectMap
 
     return <Clone ref={ref} {...props} object={scene} />
   }

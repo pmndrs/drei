@@ -6,7 +6,8 @@
 
 // todo: Move to experimental;
 
-import * as THREE from 'three'
+import * as THREE from '#three'
+import { IUniform } from '#three'
 import * as React from 'react'
 import { extend, ThreeElements, useFrame } from '@react-three/fiber'
 import { useFBO } from '@core/Portal/Fbo'
@@ -123,11 +124,19 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       buffer: { value: null },
     }
 
-    this.onBeforeCompile = (shader: Shader & { defines: { [key: string]: string } }) => {
+    this.onBeforeCompile = (shader: {
+      uniforms: { [uniform: string]: IUniform }
+      vertexShader: string
+      fragmentShader: string
+      defines?: { [key: string]: string | number | boolean }
+    }) => {
       shader.uniforms = {
         ...shader.uniforms,
         ...this.uniforms,
       }
+
+      // Initialize defines if not present
+      if (!shader.defines) shader.defines = {}
 
       // Fix for r153-r156 anisotropy chunks
       // https://github.com/mrdoob/three.js/pull/26716

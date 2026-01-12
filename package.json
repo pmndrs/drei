@@ -2,6 +2,7 @@
   "name": "@react-three/drei",
   "version": "0.0.0-semantic-release",
   "private": true,
+  "type": "module",
   "description": "useful add-ons for react-three-fiber",
   "keywords": [
     "react",
@@ -25,67 +26,65 @@
     "Josh Ellis (https://github.com/joshuaellis)",
     "Dennis Smolek (https://github.com/dennissmolek)"
   ],
-  "main": "index.cjs.js",
-  "module": "index.js",
-  "types": "index.d.ts",
-  "react-native": "native/index.cjs.js",
+  "main": "index.mjs",
+  "module": "index.mjs",
+  "types": "index.d.mts",
+  "react-native": "native/index.mjs",
   "sideEffects": false,
   "exports": {
     ".": {
-      "types": "./index.d.ts",
-      "import": "./index.js",
-      "require": "./index.cjs.js"
+      "types": "./index.d.mts",
+      "import": "./index.mjs"
     },
     "./core": {
-      "types": "./core/index.d.ts",
-      "import": "./core/index.js",
-      "require": "./core/index.cjs.js"
+      "types": "./core/core/index.d.mts",
+      "import": "./core/core/index.mjs"
     },
     "./external": {
-      "types": "./external/index.d.ts",
-      "import": "./external/index.js",
-      "require": "./external/index.cjs.js"
+      "types": "./external/external/index.d.mts",
+      "import": "./external/external/index.mjs"
     },
     "./experimental": {
-      "types": "./experimental/index.d.ts",
-      "import": "./experimental/index.js",
-      "require": "./experimental/index.cjs.js"
+      "types": "./experimental/experimental/index.d.mts",
+      "import": "./experimental/experimental/index.mjs"
     },
     "./legacy": {
-      "types": "./legacy/index.d.ts",
-      "import": "./legacy/index.js",
-      "require": "./legacy/index.cjs.js"
+      "types": "./legacy/legacy/index.d.mts",
+      "import": "./legacy/legacy/index.mjs"
     },
     "./webgpu": {
-      "types": "./webgpu/index.d.ts",
-      "import": "./webgpu/index.js",
-      "require": "./webgpu/index.cjs.js"
+      "types": "./webgpu/webgpu/index.d.mts",
+      "import": "./webgpu/webgpu/index.mjs"
     },
     "./native": {
-      "types": "./native/index.d.ts",
-      "import": "./native/index.js",
-      "require": "./native/index.cjs.js"
+      "types": "./native/native/index.d.mts",
+      "import": "./native/native/index.mjs"
     }
   },
   "scripts": {
     "build": "rimraf dist && yarn typegen && obuild && yarn copy && yarn copy:native",
-    "prepare": "husky",
-    "eslint": "eslint --fix .",
-    "eslint:ci": "eslint .",
-    "prettier": "prettier --check .",
-    "prettier-fix": "prettier --write .",
-    "test": "yarn eslint:ci && yarn typecheck && yarn prettier && (cd test/e2e; ./e2e.sh 0.180)",
-    "typecheck": "tsc --noEmit --emitDeclarationOnly false --strict --jsx react",
-    "typegen": "tsc --emitDeclarationOnly",
-    "storybook": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider\" storybook dev -p 6006",
     "build-storybook": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider\" storybook build",
     "copy": "copyfiles package.json README.md LICENSE dist && json -I -f dist/package.json -e \"this.private=false; this.devDependencies=undefined; this.optionalDependencies=undefined; this.scripts=undefined; this.husky=undefined; this.prettier=undefined; this.jest=undefined; this['lint-staged']=undefined;\"",
     "copy:native": "copyfiles -u 2 src/native/package.json dist/native",
-    "release": "semantic-release",
+    "docs:generate": "ts-node scripts/generate-docs.ts",
+    "docs:generate:watch": "ts-node scripts/generate-docs.ts --watch",
+    "eslint": "eslint --fix .",
+    "eslint:ci": "eslint .",
     "examples": "yarn --cwd examples dev",
     "examples:webgpu": "yarn --cwd examples dev:webgpu",
-    "docs:generate": "ts-node scripts/generate-docs.ts",
-    "docs:generate:watch": "ts-node scripts/generate-docs.ts --watch"
+    "prepare": "husky",
+    "prettier": "prettier --check .",
+    "prettier-fix": "prettier --write .",
+    "release": "semantic-release",
+    "storybook": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider\" storybook dev -p 6006",
+    "test": "yarn test:lint && yarn test:bundles && yarn test:canary",
+    "test:bundles": "node scripts/verify-bundles.cjs",
+    "test:canary": "vitest run --config vitest.config.ts",
+    "test:e2e": "cd test/e2e && ./e2e.sh",
+    "test:lint": "yarn eslint:ci && yarn typecheck && yarn prettier",
+    "test:parity": "playwright test --config=playwright.parity.config.ts",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false --strict --jsx react",
+    "typegen": "tsc --emitDeclarationOnly"
   },
   "dependencies": {
     "@babel/runtime": "^7.26.0",
@@ -119,9 +118,6 @@
     "@babel/preset-react": "^7.25.9",
     "@babel/preset-typescript": "^7.26.0",
     "@chromatic-com/storybook": "^4.1.3",
-    "@eslint/compat": "^1.2.3",
-    "@eslint/eslintrc": "^3.2.0",
-    "@eslint/js": "^9.15.0",
     "@playwright/test": "^1.45.2",
     "@react-three/fiber": "file:./lib/react-three-fiber-10.0.0-alpha.0.tgz",
     "@rollup/plugin-babel": "^5.3.0",
@@ -131,6 +127,7 @@
     "@storybook/addon-docs": "^10.1.11",
     "@storybook/addon-vitest": "^10.1.11",
     "@storybook/react-vite": "^10.1.11",
+    "@types/pngjs": "^6.0.5",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
     "@types/three": "^0.182.0",
@@ -152,7 +149,8 @@
     "husky": "^9.1.7",
     "json": "^11.0.0",
     "obuild": "^0.4.9",
-    "playwright": "^1.57.0",
+    "pixelmatch": "^7.1.0",
+    "pngjs": "^7.0.0",
     "prettier": "^3.3.3",
     "pretty-quick": "^4.0.0",
     "react": "^19.0.0",

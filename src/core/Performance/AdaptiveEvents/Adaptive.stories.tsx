@@ -6,7 +6,7 @@ import { Setup } from '@sb/Setup'
 
 import { useGLTF, AdaptiveDpr, AdaptiveEvents, OrbitControls } from 'drei'
 
-import type { GLTF } from 'three-stdlib'
+import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 
 export default {
   title: 'Performance/Adaptive',
@@ -39,7 +39,7 @@ function Archer() {
   const {
     nodes: { mesh_0, mesh_1, mesh_2 },
     materials: { material_0 },
-  } = useGLTF('/archer.glb') as ArcherGLTF
+  } = useGLTF('/archer.glb') as unknown as ArcherGLTF
 
   return (
     <group dispose={null}>

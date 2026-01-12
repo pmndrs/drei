@@ -1,8 +1,10 @@
 import React, { ComponentProps } from 'react'
 import { BufferGeometry, CatmullRomCurve3, LineBasicMaterial, LineLoop, Vector3 } from 'three'
-import { FontLoader, TextGeometry, TextGeometryParameters } from 'three-stdlib'
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader'
+import { TextGeometry, TextGeometryParameters } from 'three/examples/jsm/geometries/TextGeometry'
 import { extend, useFrame, useLoader } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
+import { ThreeElements } from '@react-three/fiber'
 
 import { Setup } from '@sb/Setup'
 import { CurveModifier, CurveModifierRef } from 'drei'
@@ -36,7 +38,7 @@ export default {
 type Story = StoryObj<typeof CurveModifier>
 
 function CurvedText(props: ComponentProps<typeof CurveModifier>) {
-  const curveRef = React.useRef<CurveModifierRef>()
+  const curveRef = React.useRef<CurveModifierRef>(null!)
   const geomRef = React.useRef<TextGeometry>(null!)
   const font = useLoader(FontLoader, '/fonts/helvetiker_regular.typeface.json')
 
@@ -81,7 +83,7 @@ function CurvedText(props: ComponentProps<typeof CurveModifier>) {
               {
                 font,
                 size: 2,
-                height: 0.05,
+                depth: 0.05,
                 curveSegments: 12,
                 bevelEnabled: true,
                 bevelThickness: 0.02,

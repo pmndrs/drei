@@ -47,7 +47,7 @@ const LUMA = /* @__PURE__ */ vec3(0.299, 0.587, 0.114)
 
 // Converts color to grayscale with adjustable intensity blend
 const toGrayscale = /* @__PURE__ */ Fn(
-  ([inputColor, intensity]: [ReturnType<typeof vec4>, ReturnType<typeof float>]) => {
+  ({ inputColor, intensity }: { inputColor: ReturnType<typeof vec4>; intensity: ReturnType<typeof float> }) => {
     const gray = vec3(dot(inputColor.rgb, LUMA))
     return vec4(mix(inputColor.rgb, gray, intensity), inputColor.a)
   }
@@ -58,7 +58,7 @@ const aspect = (size: any) => size.div(min(size.x, size.y))
 
 // Signed distance function for rounded rectangle (from iquilezles.org/articles/distfunctions)
 const udRoundBox = /* @__PURE__ */ Fn(
-  ([p, b, r]: [ReturnType<typeof vec2>, ReturnType<typeof vec2>, ReturnType<typeof float>]) => {
+  ({ p, b, r }: { p: ReturnType<typeof vec2>; b: ReturnType<typeof vec2>; r: ReturnType<typeof float> }) => {
     return length(max(abs(p).sub(b).add(r), float(0))).sub(r)
   }
 )
@@ -132,7 +132,11 @@ function useImageMaterial(tex: THREE.Texture, options: ImageMaterialOptions) {
       // Calculate signed distance to rounded rectangle edge
       const res = uniforms.scale.mul(uniforms.resolution)
       const halfRes = res.mul(0.5)
-      const dist = udRoundBox(uvCoord.mul(res).sub(halfRes), halfRes, uniforms.resolution.mul(uniforms.radius))
+      const dist = udRoundBox({
+        p: uvCoord.mul(res).sub(halfRes),
+        b: halfRes,
+        r: uniforms.resolution.mul(uniforms.radius),
+      })
       // Alpha is 1 inside, smoothly fades to 0 outside
       const edgeAlpha = smoothstep(float(1.0), float(0.0), dist)
 
@@ -142,7 +146,7 @@ function useImageMaterial(tex: THREE.Texture, options: ImageMaterialOptions) {
       const finalAlpha = texColor.a.mul(uniforms.opacity).mul(edgeAlpha)
       const tinted = vec4(tintedRgb, finalAlpha)
 
-      return toGrayscale(tinted, uniforms.grayscale)
+      return toGrayscale({ inputColor: tinted, intensity: uniforms.grayscale })
     })()
 
     return mat
@@ -240,20 +244,21 @@ const ImageBase: ForwardRefComponent<Omit<ImageProps, 'url'>, THREE.Mesh> = /* @
 
 //* ImageWithUrl Component ==============================
 
-const ImageWithUrl: ForwardRefComponent<ImageProps, THREE.Mesh> = /* @__PURE__ */ React.forwardRef(
-  ({ url, ...props }: ImageProps, ref: React.ForwardedRef<THREE.Mesh>) => {
-    const texture = useTexture(url!)
+const ImageWithUrl = /* @__PURE__ */ React.forwardRef<THREE.Mesh, Omit<ImageProps, 'texture'> & { url: string }>(
+  ({ url, ...props }, ref) => {
+    const texture = useTexture(url)
     return <ImageBase {...props} texture={texture} ref={ref} />
   }
 )
 
 //* ImageWithTexture Component ==============================
 
-const ImageWithTexture: ForwardRefComponent<ImageProps, THREE.Mesh> = /* @__PURE__ */ React.forwardRef(
-  ({ url: _url, ...props }: ImageProps, ref: React.ForwardedRef<THREE.Mesh>) => {
-    return <ImageBase {...props} ref={ref} />
-  }
-)
+const ImageWithTexture = /* @__PURE__ */ React.forwardRef<
+  THREE.Mesh,
+  Omit<ImageProps, 'url'> & { texture: THREE.Texture }
+>(({ url: _url, ...props }, ref) => {
+  return <ImageBase {...props} ref={ref} />
+})
 
 //* Main Image Export ==============================
 

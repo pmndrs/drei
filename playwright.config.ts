@@ -6,7 +6,7 @@ import { defineConfig, devices } from '@playwright/test'
  */
 export default defineConfig({
   testDir: './test/e2e',
-  
+
   // Run tests in files in parallel
   fullyParallel: true,
 
@@ -49,11 +49,7 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         // Enable WebGPU flag
         launchOptions: {
-          args: [
-            '--enable-unsafe-webgpu',
-            '--enable-features=Vulkan',
-            '--use-angle=vulkan',
-          ],
+          args: ['--enable-unsafe-webgpu', '--enable-features=Vulkan', '--use-angle=vulkan'],
         },
       },
     },
@@ -77,5 +73,3 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
   },
 })
-
-

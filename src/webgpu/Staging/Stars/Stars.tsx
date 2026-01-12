@@ -139,4 +139,3 @@ export const Stars: ForwardRefComponent<StarsProps, THREE.InstancedMesh> = /* @_
     )
   }
 )
-

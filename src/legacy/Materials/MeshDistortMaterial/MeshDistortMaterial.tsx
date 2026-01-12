@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { IUniform, MeshPhysicalMaterial, MeshPhysicalMaterialParameters } from 'three'
+import { IUniform, MeshPhysicalMaterial, MeshPhysicalMaterialParameters } from '#three'
 import { ThreeElements, useFrame } from '@react-three/fiber'
 import { ForwardRefComponent } from '@utils/ts-utils'
 

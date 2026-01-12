@@ -11,7 +11,7 @@ import {
   DepthFormat,
   UnsignedShortType,
   HalfFloatType,
-} from 'three'
+} from '#three'
 import { useFrame, useThree, extend, ThreeElements, ThreeElement } from '@react-three/fiber'
 
 import { BlurPass } from '@legacy/Materials/BlurPass'

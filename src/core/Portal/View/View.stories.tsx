@@ -24,7 +24,7 @@ function useHover() {
 }
 
 // Simple colored box with hover effect ---------------------------------
-function HoverBox({ color = 'royalblue', ...props }: { color?: string } & JSX.IntrinsicElements['mesh']) {
+function HoverBox({ color = 'royalblue', ...props }: { color?: string } & React.JSX.IntrinsicElements['mesh']) {
   const [hovered, spread] = useHover()
   return (
     <mesh {...props} {...spread}>
@@ -35,7 +35,7 @@ function HoverBox({ color = 'royalblue', ...props }: { color?: string } & JSX.In
 }
 
 // Parrot model from Three.js examples ---------------------------------
-function Parrot(props: JSX.IntrinsicElements['group']) {
+function Parrot(props: React.JSX.IntrinsicElements['group']) {
   const [hovered, spread] = useHover()
   const { scene } = useGLTF('https://threejs.org/examples/models/gltf/Parrot.glb')
 
@@ -130,4 +130,3 @@ export const ViewSt = {
     layout: 'fullscreen',
   },
 } satisfies Story
-

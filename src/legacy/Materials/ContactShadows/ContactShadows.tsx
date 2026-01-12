@@ -2,9 +2,10 @@
 // https://threejs.org/examples/?q=con#webgl_shadow_contact
 
 import * as React from 'react'
-import * as THREE from 'three'
+import * as THREE from '#three'
 import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
-import { HorizontalBlurShader, VerticalBlurShader } from 'three-stdlib'
+import { HorizontalBlurShader } from 'three/examples/jsm/shaders/HorizontalBlurShader'
+import { VerticalBlurShader } from 'three/examples/jsm/shaders/VerticalBlurShader'
 import { ForwardRefComponent } from '@utils/ts-utils'
 
 export type ContactShadowsProps = Omit<ThreeElements['group'], 'ref' | 'scale'> & {

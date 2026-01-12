@@ -36,5 +36,14 @@ export { RenderTexture } from '../legacy/Portal/RenderTexture'
 export { RenderCubeTexture } from '../legacy/Portal/RenderCubeTexture'
 export { Hud } from '../legacy/Portal/Hud'
 
-// Add more split components here as needed
+//* Geometry --------------------------------
+export { Line } from '../legacy/Geometry/Line'
+export type { LineProps } from '../legacy/Geometry/Line'
+export { Segments, Segment, SegmentObject } from '../legacy/Geometry/Segments'
+export type { SegmentsProps, SegmentProps } from '../legacy/Geometry/Segments'
 
+//* Effects --------------------------------
+export { Trail, useTrail } from '../legacy/Effects/Trail'
+export type { TrailProps } from '../legacy/Effects/Trail'
+
+// Add more split components here as needed

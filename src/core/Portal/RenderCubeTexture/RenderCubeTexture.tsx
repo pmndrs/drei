@@ -8,7 +8,7 @@
 // BUG WORKAROUND: We get portalScene from useThree() because createPortal doesn't
 // correctly set state.scene in useFrame. This is an R3F bug that should be reported.
 
-import * as THREE from 'three'
+import * as THREE from '#three'
 import * as React from 'react'
 import { ComputeFunction, ReactThreeFiber, ThreeElements, createPortal, useFrame, useThree } from '@react-three/fiber'
 import { ForwardRefComponent } from '@utils/ts-utils'

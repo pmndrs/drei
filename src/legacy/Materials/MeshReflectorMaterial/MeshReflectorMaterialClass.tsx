@@ -1,4 +1,4 @@
-import { Matrix4, MeshStandardMaterial, Texture } from 'three'
+import { Matrix4, MeshStandardMaterial, Texture } from '#three'
 
 type UninitializedUniform<Value> = { value: Value | null }
 
@@ -230,4 +230,3 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
     this._mixContrast.value = v
   }
 }
-

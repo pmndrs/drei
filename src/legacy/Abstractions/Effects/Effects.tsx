@@ -1,7 +1,10 @@
 import * as React from 'react'
-import { RGBAFormat, HalfFloatType, WebGLRenderTarget, UnsignedByteType, TextureDataType, ColorSpace } from 'three'
+import { RGBAFormat, HalfFloatType, WebGLRenderTarget, UnsignedByteType, TextureDataType, ColorSpace } from '#three'
 import { extend, useThree, useFrame, ThreeElement, ThreeElements } from '@react-three/fiber'
-import { EffectComposer, RenderPass, ShaderPass, GammaCorrectionShader } from 'three-stdlib'
+import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader'
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass'
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
 import { ForwardRefComponent } from '@utils/ts-utils'
 
 export type EffectsProps = Omit<ThreeElements['effectComposer'], 'ref' | 'args'> & {
@@ -43,7 +46,7 @@ export const isWebGL2Available = () => {
  *
  * @example Basic usage
  * ```jsx
- * import { SSAOPass } from "three-stdlib"
+ * import { SSAOPass } from "three/examples/jsm/postprocessing/SSAOPass"
  *
  * extend({ SSAOPass })
  *

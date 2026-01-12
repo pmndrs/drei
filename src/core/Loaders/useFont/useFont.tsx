@@ -1,4 +1,4 @@
-import { FontLoader } from 'three-stdlib'
+import { FontLoader, FontData as ThreeFontData } from 'three/examples/jsm/loaders/FontLoader'
 import { suspend, preload, clear } from 'suspend-react'
 
 export type Glyph = {
@@ -18,6 +18,11 @@ export type FontData = {
   }
   resolution: number
   underlineThickness: number
+  // Properties required by THREE's FontLoader.parse()
+  ascender?: number
+  descender?: number
+  underlinePosition?: number
+  original_font_information?: Record<string, unknown>
 }
 type FontInput = string | FontData
 
@@ -31,7 +36,8 @@ function parseFontData(fontData: FontData) {
   if (!fontLoader) {
     fontLoader = new FontLoader()
   }
-  return fontLoader.parse(fontData)
+  // Cast to THREE's FontData type which has additional optional properties
+  return fontLoader.parse(fontData as unknown as ThreeFontData)
 }
 
 async function loader(font: FontInput) {

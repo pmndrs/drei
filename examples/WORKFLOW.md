@@ -42,13 +42,13 @@ export default function RoundedBoxDemo() {
 
 ### File Location Pattern
 
-| Tier | Location |
-|------|----------|
-| core | `demos/core/[category]/ComponentName.tsx` |
-| legacy | `demos/legacy/[category]/ComponentName.tsx` |
-| webgpu | `demos/webgpu/[category]/ComponentName.tsx` |
-| external | `demos/external/ComponentName.tsx` |
-| experimental | `demos/experimental/ComponentName.tsx` |
+| Tier         | Location                                    |
+| ------------ | ------------------------------------------- |
+| core         | `demos/core/[category]/ComponentName.tsx`   |
+| legacy       | `demos/legacy/[category]/ComponentName.tsx` |
+| webgpu       | `demos/webgpu/[category]/ComponentName.tsx` |
+| external     | `demos/external/ComponentName.tsx`          |
+| experimental | `demos/experimental/ComponentName.tsx`      |
 
 ---
 
@@ -63,12 +63,12 @@ import RoundedBoxDemo from './demos/core/geometry/RoundedBox'
 // 2. Add to demos array
 const demos: Demo[] = [
   // ... existing demos
-  { 
-    path: '/core/geometry/roundedbox', 
-    name: 'RoundedBox', 
-    component: RoundedBoxDemo, 
-    tier: 'core', 
-    category: 'Geometry' 
+  {
+    path: '/core/geometry/roundedbox',
+    name: 'RoundedBox',
+    component: RoundedBoxDemo,
+    tier: 'core',
+    category: 'Geometry',
   },
 ]
 ```
@@ -120,6 +120,7 @@ describe('RoundedBox', () => {
 ### Test File Location
 
 The test goes next to the component:
+
 ```
 src/core/Geometry/RoundedBox/
 ├── RoundedBox.tsx
@@ -135,17 +136,17 @@ Edit `examples/src/ComponentCatalog.tsx`:
 
 ```tsx
 // Find the component entry and update statuses
-{ 
-  name: 'RoundedBox', 
-  tier: 'core', 
-  category: 'Geometry', 
-  examplePath: '/core/geometry/roundedbox', 
-  structure: '🟢', 
-  imports: '🟢', 
-  types: '🟢', 
+{
+  name: 'RoundedBox',
+  tier: 'core',
+  category: 'Geometry',
+  examplePath: '/core/geometry/roundedbox',
+  structure: '🟢',
+  imports: '🟢',
+  types: '🟢',
   example: '🟢',  // ← Update this
   tests: '🟢',    // ← And this
-  notes: 'Example and tests complete' 
+  notes: 'Example and tests complete'
 },
 ```
 
@@ -153,12 +154,12 @@ Edit `examples/src/ComponentCatalog.tsx`:
 
 ## Commands
 
-| Command | Description |
-|---------|-------------|
-| `yarn dev` | Run examples dev server (from examples/) |
-| `yarn test` | Run all tests (from root) |
-| `yarn test:watch` | Run tests in watch mode |
-| `yarn build` | Build drei (for verifying imports work) |
+| Command           | Description                              |
+| ----------------- | ---------------------------------------- |
+| `yarn dev`        | Run examples dev server (from examples/) |
+| `yarn test`       | Run all tests (from root)                |
+| `yarn test:watch` | Run tests in watch mode                  |
+| `yarn build`      | Build drei (for verifying imports work)  |
 
 ---
 
@@ -169,4 +170,3 @@ Edit `examples/src/ComponentCatalog.tsx`:
 - **Three imports**: Use `'three'` directly in examples (not `'#three'`)
 - **Drei imports**: Use tier-specific: `'@react-three/drei/core'`, `'@react-three/drei/legacy'`, etc.
 - **Check the catalog** at `/catalog` to see what needs work next
-

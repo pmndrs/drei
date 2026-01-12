@@ -1,6 +1,7 @@
 // takes two components and based on the active platform outputs them
 
 import { Canvas, useThree } from '@react-three/fiber'
+import React from 'react'
 import { useState, useEffect } from 'react'
 
 export function PlatformSwitch({ legacy, webgpu }: { legacy: React.ReactNode; webgpu: React.ReactNode }) {
@@ -26,22 +27,4 @@ export function SwitchCanvas({ asLegacy = false, rendererParams, ...props }: Swi
 
 interface CanvasWithToggleProps extends React.ComponentProps<typeof Canvas> {
   rendererParams?: React.ComponentProps<typeof Canvas>['renderer']
-}
-
-export function CanvasWithToggle(props: CanvasWithToggleProps) {
-  const [isLegacy, setIsLegacy] = useState(localStorage.getItem('isLegacy') === 'true')
-  useEffect(() => {
-    localStorage.setItem('isLegacy', isLegacy.toString())
-  }, [isLegacy])
-  return (
-    <>
-      <SwitchCanvas asLegacy={isLegacy} rendererParams={props.rendererParams} {...props} />
-      <div className="absolute top-4 right-4 flex items-center space-x-2 z-40">
-        <label htmlFor="legacy-toggle" className="text-sm text-foreground/70 mr-2" style={{ lineHeight: 1 }}>
-          Legacy
-        </label>
-        <Switch id="legacy-toggle" checked={isLegacy} onCheckedChange={setIsLegacy} />
-      </div>
-    </>
-  )
 }

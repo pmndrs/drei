@@ -5,7 +5,8 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'
 
-import { ScreenQuad, shaderMaterial } from 'drei'
+import { ScreenQuad } from 'drei'
+import { shaderMaterial } from '../../../legacy/Materials/shaderMaterial/shaderMaterial'
 
 export default {
   title: 'Shapes/ScreenQuad',

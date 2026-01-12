@@ -1,15 +1,47 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
-import { Canvas, CanvasProps } from '@react-three/fiber'
+import { Canvas, CanvasProps, useThree } from '@react-three/fiber'
 
 import { OrbitControls } from '../src'
+import { getTestEnvironment } from './testing'
+
+//* Types ==============================
 
 type OnlyTagProps = {
   type: 'legacy' | 'webgpu' | null
 }
 
+type SwitchCanvasProps = React.ComponentProps<typeof Canvas> & {
+  asLegacy?: boolean
+  rendererParams?: React.ComponentProps<typeof Canvas>['renderer']
+}
+
+type SetupProps = React.PropsWithChildren<
+  CanvasProps & {
+    cameraFov?: number
+    cameraPosition?: Vector3
+    controls?: boolean
+    lights?: boolean
+    floor?: boolean
+    renderer?: 'legacy' | 'webgpu'
+    limitedTo?: 'legacy' | 'webgpu' | null
+    rendererParams?: React.ComponentProps<typeof Canvas>['renderer']
+    /** Override animation freeze behavior (default: auto-detect from test environment) */
+    freezeAnimations?: boolean
+  }
+>
+
+//* Test Environment ==============================
+
+// Cache test environment detection (stable during session)
+const testEnv = getTestEnvironment()
+
+//* OnlyTag Component ==============================
+// Visual indicator for platform-specific stories
+
 const OnlyTag: React.FC<OnlyTagProps> = ({ type }) => {
   if (type !== 'legacy' && type !== 'webgpu') return null
+
   const isLegacy = type === 'legacy'
   const style: React.CSSProperties = {
     position: 'absolute',
@@ -28,6 +60,7 @@ const OnlyTag: React.FC<OnlyTagProps> = ({ type }) => {
     letterSpacing: 1,
     textTransform: 'uppercase',
   }
+
   return (
     <div style={style} data-testid="onlytag">
       {isLegacy ? 'Legacy Only' : 'WebGPU Only'}
@@ -35,30 +68,40 @@ const OnlyTag: React.FC<OnlyTagProps> = ({ type }) => {
   )
 }
 
-type SwitchCanvasProps = React.ComponentProps<typeof Canvas> & {
-  asLegacy?: boolean
-  rendererParams?: React.ComponentProps<typeof Canvas>['renderer']
+//* Scheduler Control ==============================
+// Uses R3F v10's scheduler to pause the render loop for visual testing
+
+function SchedulerPause() {
+  const { set } = useThree()
+
+  React.useEffect(() => {
+    // R3F v10 exposes `set` which can update store state including frameloop
+    // Setting frameloop to 'never' stops the scheduler completely
+    // 'demand' would allow manual advances via invalidate()
+    set({ frameloop: 'never' })
+
+    return () => {
+      // Restore on unmount (though in tests this rarely matters)
+      set({ frameloop: 'always' })
+    }
+  }, [set])
+
+  return null
 }
 
+//* SwitchCanvas Component ==============================
+// Switches between Legacy (WebGL) and WebGPU renderers
+
 export function SwitchCanvas({ asLegacy = false, rendererParams, ...props }: SwitchCanvasProps) {
-  // have to be harsher to rest things not just prop switching
+  // Key forces remount when switching renderers
   if (asLegacy) return <Canvas key="legacy" {...props} gl={rendererParams} />
-  // For WebGPU: renderer={true} triggers WebGPU mode, renderer={undefined} doesn't
+
+  // For WebGPU: renderer={true} triggers WebGPU mode
   return <Canvas key="webgpu" renderer={rendererParams ?? true} {...props} />
 }
 
-type SetupProps = React.PropsWithChildren<
-  CanvasProps & {
-    cameraFov?: number
-    cameraPosition?: Vector3
-    controls?: boolean
-    lights?: boolean
-    floor?: boolean
-    renderer?: 'legacy' | 'webgpu'
-    limitedTo?: 'legacy' | 'webgpu' | null
-    rendererParams?: React.ComponentProps<typeof Canvas>['renderer']
-  }
->
+//* Setup Component ==============================
+// Main decorator for Storybook stories - handles renderer switching, scene setup, and test environment
 
 export const Setup = ({
   children,
@@ -70,9 +113,16 @@ export const Setup = ({
   renderer = 'webgpu',
   limitedTo = null,
   rendererParams = null,
+  freezeAnimations,
   ...restProps
 }: SetupProps) => {
+  // Determine if we should use legacy renderer
   const isLegacy = limitedTo === 'legacy' || (limitedTo === null && renderer === 'legacy')
+
+  // Determine if we should freeze animations
+  // Priority: explicit prop > test environment detection
+  const shouldFreeze = freezeAnimations ?? testEnv.shouldFreezeAnimations
+
   return (
     <>
       <OnlyTag type={limitedTo} />
@@ -83,7 +133,11 @@ export const Setup = ({
         camera={{ position: cameraPosition, fov: cameraFov }}
         {...restProps}
       >
+        {/* Pause scheduler if in visual test environment */}
+        {shouldFreeze && <SchedulerPause />}
+
         {children}
+
         {lights && (
           <>
             {/* Lighting */}
@@ -92,7 +146,9 @@ export const Setup = ({
             <pointLight position={[-10, -10, -10]} color="#ff6b6b" intensity={0.5} />
           </>
         )}
+
         {controls && <OrbitControls makeDefault />}
+
         {/* Ground */}
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
           <planeGeometry args={[20, 20]} />
@@ -105,3 +161,14 @@ export const Setup = ({
     </>
   )
 }
+
+//* Re-exports ==============================
+// Export testing utilities for use in stories
+
+export { getTestEnvironment, isTesting, shouldFreezeAnimations, useTestEnvironment } from './testing'
+export {
+  createPlatformVariant,
+  createPlatformVariants,
+  withChromaticParams,
+  generatePlatformVariants,
+} from './variants'

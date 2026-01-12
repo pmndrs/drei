@@ -61,7 +61,7 @@ export const Mask: ForwardRefComponent<MaskProps, THREE.Mesh> = /* @__PURE__ */ 
 
       // For WebGLRenderer, check context attributes
       const webglRenderer = renderer as THREE.WebGLRenderer
-      webglRenderer.stencil = true
+      ;(webglRenderer as any).stencil = true
       if (webglRenderer.getContext && typeof webglRenderer.getContext === 'function') {
         const context = webglRenderer.getContext()
         if (context && 'getContextAttributes' in context) {

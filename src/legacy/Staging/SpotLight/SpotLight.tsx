@@ -20,8 +20,7 @@ import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
 import { FullScreenQuad } from 'three/examples/jsm/postprocessing/Pass.js'
 import { SpotLightMaterial } from '@legacy/Materials/SpotLightMaterial'
 
-// @ts-ignore
-import SpotlightShadowShader from '@legacy/Materials/glsl/DefaultSpotlightShadowShadows.glsl?raw'
+import SpotlightShadowShader from '@legacy/Materials/glsl/DefaultSpotlightShadowShadows'
 import { ForwardRefComponent } from '@utils/ts-utils'
 
 export type SpotLightProps = Omit<ThreeElements['spotLight'], 'ref'> & {

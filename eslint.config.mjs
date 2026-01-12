@@ -1,41 +1,45 @@
-import { fixupConfigRules, fixupPluginRules } from '@eslint/compat'
 import typescriptEslint from '@typescript-eslint/eslint-plugin'
 import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
+import storybook from 'eslint-plugin-storybook'
+import prettier from 'eslint-config-prettier'
 import tsParser from '@typescript-eslint/parser'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
-import js from '@eslint/js'
-import { FlatCompat } from '@eslint/eslintrc'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
-})
 
 export default [
+  //* Global Ignores ==============================
   {
-    ignores: ['.storybook/public', '**/dist/', '**/node_modules/', '**/storybook-static/'],
+    ignores: ['.storybook/public', '**/dist/', '**/node_modules/', '**/storybook-static/', '**/examples/'],
   },
-  ...fixupConfigRules(compat.extends('plugin:react-hooks/recommended', 'plugin:storybook/recommended', 'prettier')),
+
+  //* Storybook Rules ==============================
+  ...storybook.configs['flat/recommended'],
+
+  //* Main Config ==============================
   {
+    files: ['{src,.storybook}/**/*.{js,jsx,ts,tsx}'],
+
     plugins: {
       '@typescript-eslint': typescriptEslint,
       react,
-      'react-hooks': fixupPluginRules(reactHooks),
+      'react-hooks': reactHooks,
     },
-
-    files: ['{src,.storybook}/**/*.{js,jsx,ts,tsx}'],
 
     languageOptions: {
       parser: tsParser,
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
     },
 
     rules: {
+      // React Hooks rules
+      'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'off',
     },
   },
+
+  //* Prettier (disables conflicting rules) ==============================
+  prettier,
 ]

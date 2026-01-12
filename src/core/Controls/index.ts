@@ -13,5 +13,3 @@ export * from './PointerLockControls'
 export * from './PresentationControls'
 export * from './ScrollControls'
 export * from './TrackballControls'
-
-

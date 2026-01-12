@@ -18,7 +18,7 @@ Since we were already making breaking changes, we took the opportunity to modern
 ### What's New for Contributors
 
 - [Component-as-a-Folder](#component-as-a-folder-caaf-structure) — Each component gets its own folder with co-located files
-- [Build System (obuild)](#build-system-obuild) — Modern tooling, ESM-first with CJS compat
+- [Build System (obuild)](#build-system-obuild) — Modern tooling, ESM-only
 - [Import Aliases](#import-aliases) — `#three` maps to the right renderer automatically
 - [Stories & Visual Testing](#storybook) — Every component now has stories and regression tests
 - [Testing Infrastructure](#testing) — Static analysis, bundle verification, and platform parity tests
@@ -295,10 +295,30 @@ Drei v11 uses **obuild**, the successor to Unbuild (which powers R3F v10). It's 
 
 - Handles our complex multi-entry setup (root, core, legacy, webgpu, etc.) cleanly
 - Same API and workflow as Unbuild, so familiar patterns
-- ESM-first with CJS compatibility
 - Great support for the platform aliasing system that makes WebGL/WebGPU splitting work
 
 Build commands work the same as before: `yarn build` handles everything.
+
+### ESM-Only Package
+
+Drei v11 is **ESM-only** — we no longer ship CommonJS bundles. This aligns with the broader ecosystem shift toward ESM as the standard:
+
+- **@react-three/fiber** is ESM-first (CJS support depreciated)
+- **Three.js** is ESM-first (CJS support deprecated)
+- **[Storybook 10](https://storybook.js.org/blog/storybook-is-going-esm-only/)** is going ESM-only
+- **Modern bundlers** (Vite, esbuild, webpack 5+) all handle ESM natively
+
+ESM is the **official, standardized** module system for JavaScript. It works natively in browsers and Node.js, and forms the foundation of modern runtimes like Deno and Bun.
+
+**Why ESM-only?**
+
+- Simpler build and publish process
+- Better tree-shaking
+- No "dual package hazard" bugs
+- Smaller published package size
+- Anyone using drei already needs R3F and Three.js — both ESM — so CJS wouldn't help
+
+**If you need CJS:** Node.js supports dynamic `import()` in CommonJS files. However, if you're using drei, you're already in an ESM environment due to R3F and Three.js dependencies.
 
 For details on how the alias system works, see [Platform Aliases](./building/PLATFORM_ALIASES.md).
 
@@ -497,6 +517,19 @@ WebGPU uses a different render target API:
 ### "Cannot find module '@react-three/drei/legacy'"
 
 Make sure you're using Drei v11 and your bundler supports package.json `exports` field.
+
+### "require is not defined" or CJS-related errors
+
+Drei v11 is ESM-only. If you see CommonJS-related errors:
+
+1. **Check your bundler** — Make sure you're using a modern bundler (Vite, webpack 5+, esbuild) that supports ESM
+2. **Check your Node.js version** — Use Node.js 18+ for best ESM support
+3. **Check your test runner** — Jest and other test runners may need ESM configuration. Consider switching to Vitest which handles ESM natively.
+4. **Dynamic imports in CJS** — If you must use CommonJS, use dynamic `import()`:
+   ```js
+   // In a .cjs file
+   const drei = await import('@react-three/drei')
+   ```
 
 ### Materials look different between WebGL and WebGPU
 

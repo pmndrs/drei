@@ -161,4 +161,3 @@ export function SoftShadows({ focus = 0, samples = 10, size = 25 }: SoftShadowsP
   }, [focus, size, samples])
   return null
 }
-

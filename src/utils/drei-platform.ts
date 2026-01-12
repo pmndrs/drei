@@ -47,4 +47,3 @@ export { Trail, useTrail } from '../legacy/Effects/Trail'
 export type { TrailProps } from '../legacy/Effects/Trail'
 
 // Add more split components here as needed
-

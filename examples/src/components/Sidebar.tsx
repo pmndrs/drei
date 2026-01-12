@@ -65,9 +65,7 @@ function TierSection({ tier, categories }: { tier: string; categories: Record<st
   return (
     <div className="mb-2">
       {/* Tier Header */}
-      <div className="px-5 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground/50">
-        {tier}
-      </div>
+      <div className="px-5 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground/50">{tier}</div>
 
       {/* Categories Accordion */}
       <Accordion type="multiple" defaultValue={categoryNames} className="px-3">

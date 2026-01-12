@@ -167,9 +167,15 @@ function ComponentRow({ entry }: { entry: DreiComponent }) {
       </td>
 
       {/* Renderer-specific columns (for dual) */}
-      <td style={{ padding: '8px 12px' }}>{isDual ? <StatusBadge status={entry.legacyStatus || '⚪'} label="Legacy" /> : '-'}</td>
-      <td style={{ padding: '8px 12px' }}>{isDual ? <StatusBadge status={entry.webgpuStatus || '⚪'} label="WebGPU" /> : '-'}</td>
-      <td style={{ padding: '8px 12px' }}>{isDual ? <StatusBadge status={entry.tslConversion || '⚪'} label="TSL" /> : '-'}</td>
+      <td style={{ padding: '8px 12px' }}>
+        {isDual ? <StatusBadge status={entry.legacyStatus || '⚪'} label="Legacy" /> : '-'}
+      </td>
+      <td style={{ padding: '8px 12px' }}>
+        {isDual ? <StatusBadge status={entry.webgpuStatus || '⚪'} label="WebGPU" /> : '-'}
+      </td>
+      <td style={{ padding: '8px 12px' }}>
+        {isDual ? <StatusBadge status={entry.tslConversion || '⚪'} label="TSL" /> : '-'}
+      </td>
 
       {/* Notes and Path */}
       <td style={{ padding: '8px 12px', color: '#888', fontSize: '12px', maxWidth: '200px' }}>{entry.notes}</td>

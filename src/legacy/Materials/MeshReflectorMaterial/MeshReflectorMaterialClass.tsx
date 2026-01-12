@@ -230,4 +230,3 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
     this._mixContrast.value = v
   }
 }
-

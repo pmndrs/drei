@@ -32,7 +32,16 @@ export const CatmullRomLine: ForwardRefComponent<CatmullRomLineProps, Line2> = /
   Line2,
   CatmullRomLineProps
 >(function CatmullRomLine(
-  { points, closed = false, curveType = 'centripetal', tension = 0.5, segments = 20, vertexColors, LineComponent, ...rest },
+  {
+    points,
+    closed = false,
+    curveType = 'centripetal',
+    tension = 0.5,
+    segments = 20,
+    vertexColors,
+    LineComponent,
+    ...rest
+  },
   ref
 ) {
   const LineComp = LineComponent ?? Line

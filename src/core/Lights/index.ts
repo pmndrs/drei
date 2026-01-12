@@ -1,3 +1,3 @@
 // what happend to spotlight?
 
-export { }
+export {}

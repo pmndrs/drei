@@ -8,7 +8,7 @@ function Scene() {
   return (
     <>
       <OrbitControls makeDefault />
-      
+
       {/* Lighting */}
       <ambientLight intensity={0.5} />
 
@@ -38,4 +38,3 @@ export default function MatcapTextureDemo() {
     </div>
   )
 }
-

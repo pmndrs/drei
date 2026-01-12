@@ -6,7 +6,17 @@
 // 3. Return B for sampling in materials
 
 import * as React from 'react'
-import { DepthTexture, DepthFormat, FloatType, RenderTarget, PlaneGeometry, Mesh, Scene, OrthographicCamera, Texture } from '#three'
+import {
+  DepthTexture,
+  DepthFormat,
+  FloatType,
+  RenderTarget,
+  PlaneGeometry,
+  Mesh,
+  Scene,
+  OrthographicCamera,
+  Texture,
+} from '#three'
 import { MeshBasicNodeMaterial } from 'three/webgpu'
 import { texture, uv, uniformTexture } from 'three/tsl'
 import { useThree, useFrame } from '@react-three/fiber'

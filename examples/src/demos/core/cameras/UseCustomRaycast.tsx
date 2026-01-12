@@ -179,7 +179,9 @@ export default function UseCustomRaycastDemo() {
       </div>
 
       <div className="demo-canvas">
-        <CanvasWithToggle camera={{ position: [5, 5, 5] }}>{mode === 'manual' ? <ManualRenderScene /> : <NormalScene />}</CanvasWithToggle>
+        <CanvasWithToggle camera={{ position: [5, 5, 5] }}>
+          {mode === 'manual' ? <ManualRenderScene /> : <NormalScene />}
+        </CanvasWithToggle>
       </div>
     </div>
   )

@@ -1,8 +1,5 @@
-import { addons } from 'storybook/manager-api';
-import {
-  defaultConfig,
-  type TagBadgeParameters,
-} from 'storybook-addon-tag-badges/manager-helpers'
+import { addons } from 'storybook/manager-api'
+import { defaultConfig, type TagBadgeParameters } from 'storybook-addon-tag-badges/manager-helpers'
 import theme from './theme'
 
 addons.setConfig({
@@ -22,10 +19,12 @@ addons.setConfig({
         tooltip: 'This component can catch flies!',
       },
       display: {
-        sidebar: [{
-          type: 'component',
-          skipInherited: true,
-        }],
+        sidebar: [
+          {
+            type: 'component',
+            skipInherited: true,
+          },
+        ],
         toolbar: true,
         mdx: true,
       },
@@ -41,10 +40,12 @@ addons.setConfig({
         tooltip: 'This component only works with WebGPU renderer.',
       },
       display: {
-        sidebar: [{
-          type: 'component',
-          skipInherited: true,
-        }],
+        sidebar: [
+          {
+            type: 'component',
+            skipInherited: true,
+          },
+        ],
         toolbar: true,
         mdx: true,
       },
@@ -60,10 +61,12 @@ addons.setConfig({
         tooltip: 'This works in both, but with specific import paths',
       },
       display: {
-        sidebar: [{
-          type: 'component',
-          skipInherited: true,
-        }],
+        sidebar: [
+          {
+            type: 'component',
+            skipInherited: true,
+          },
+        ],
         toolbar: true,
         mdx: true,
       },

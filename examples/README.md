@@ -99,7 +99,6 @@ The `<Scene>` component provides a ready-to-use environment:
 
 ```tsx
 import Scene from '../../../components/Scene'
-
 ;<Scene camera={{ position: [5, 5, 5], fov: 50 }} showGrid={true} showOrbitControls={true}>
   {/* Your component here */}
 </Scene>

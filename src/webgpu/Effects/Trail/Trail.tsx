@@ -193,4 +193,3 @@ export const Trail: ForwardRefComponent<React.PropsWithChildren<TrailProps>, Lin
     </group>
   )
 })
-

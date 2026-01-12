@@ -15,29 +15,29 @@ class DistortMaterialImplWebGPU extends THREE.MeshPhysicalNodeMaterial {
   constructor(parameters: THREE.MeshPhysicalMaterialParameters = {}) {
     super(parameters)
     this.setValues(parameters)
-    
+
     // Create uniforms
     this.timeUniform = uniform(0)
     this.distortUniform = uniform(0.4)
     this.radiusUniform = uniform(1)
-    
+
     // Position shader: Apply noise-based distortion
     this.positionNode = Fn(() => {
       const pos = positionLocal.toVar()
-      
+
       // Calculate animated time factor
       const updateTime = this.timeUniform.div(50.0)
-      
+
       // Calculate noise input: position / 2.0 + updateTime * 5.0
       const noiseInput = pos.div(2.0).add(updateTime.mul(5.0))
-      
+
       // Get noise value using MaterialX noise function
       const noiseVec = mx_noise_vec3(noiseInput)
       const noise = noiseVec.x // Use x component as scalar noise
-      
+
       // Apply distortion: position * (noise * pow(distort, 2) + radius)
       const distortFactor = noise.mul(pow(this.distortUniform, float(2.0))).add(this.radiusUniform)
-      
+
       return pos.mul(distortFactor)
     })()
   }

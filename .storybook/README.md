@@ -96,6 +96,7 @@ import { ContactShadows } from '@webgpu/Staging/ContactShadows'
 ### Global Renderer Toggle
 
 There's a renderer toggle in the Storybook toolbar (CPU icon). It switches between:
+
 - **Legacy** — WebGL renderer
 - **WebGPU** — WebGPU renderer
 
@@ -110,11 +111,11 @@ import { Setup } from '@sb/Setup'
 
 decorators: [
   (Story, context) => (
-    <Setup 
-      renderer={context.globals.renderer}  // 'legacy' or 'webgpu'
-      controls={true}                       // Include OrbitControls
-      lights={true}                         // Include default lighting
-      floor={true}                          // Include grid floor
+    <Setup
+      renderer={context.globals.renderer} // 'legacy' or 'webgpu'
+      controls={true} // Include OrbitControls
+      lights={true} // Include default lighting
+      floor={true} // Include grid floor
       cameraPosition={new Vector3(0, 0, 10)}
       cameraFov={75}
     >
@@ -130,8 +131,7 @@ For components that need different JSX based on the active renderer:
 
 ```tsx
 import { PlatformSwitch } from '@sb/components/PlatformSwitch'
-
-<PlatformSwitch
+;<PlatformSwitch
   legacy={<Cloud materialFactory={LegacyCloudMaterial} />}
   webgpu={<Cloud materialFactory={WebGPUCloudMaterial} />}
 />
@@ -148,9 +148,9 @@ export const MyStory = {
   render: (args) => <MyScene {...args} />,
   name: 'WebGPU Feature',
   parameters: {
-    limitedTo: 'webgpu',  // or 'legacy'
+    limitedTo: 'webgpu', // or 'legacy'
   },
-  tags: ['webgpuOnly'],  // Shows badge in sidebar
+  tags: ['webgpuOnly'], // Shows badge in sidebar
 } satisfies Story
 ```
 
@@ -189,6 +189,7 @@ import { Line as WebGPULine } from '@webgpu/Geometry/Line/Line'
 ```
 
 **Components with LineComponent prop:**
+
 - `CatmullRomLine`, `QuadraticBezierLine`, `CubicBezierLine`
 - `Edges`
 - `PivotControls`
@@ -203,19 +204,28 @@ import { PlatformSwitch } from '@sb/components/PlatformSwitch'
 import { Cloud, Clouds } from 'drei'
 import { CloudMaterial as LegacyCloudMaterial } from '@legacy/Materials/CloudMaterial'
 import { CloudMaterial as WebGPUCloudMaterial } from '@webgpu/Materials/CloudMaterial'
-
-<PlatformSwitch
-  legacy={<Clouds materialFactory={LegacyCloudMaterial}><Cloud /></Clouds>}
-  webgpu={<Clouds materialFactory={WebGPUCloudMaterial}><Cloud /></Clouds>}
+;<PlatformSwitch
+  legacy={
+    <Clouds materialFactory={LegacyCloudMaterial}>
+      <Cloud />
+    </Clouds>
+  }
+  webgpu={
+    <Clouds materialFactory={WebGPUCloudMaterial}>
+      <Cloud />
+    </Clouds>
+  }
 />
 ```
 
 **Components with materialFactory prop:**
+
 - `Clouds`
 
 #### Why Injection?
 
 These injection props exist because:
+
 1. Platform aliases (`#drei-platform`) resolve to WebGL by default in Storybook's dev server
 2. Some components use materials/sub-components that are fundamentally different between WebGL and WebGPU
 3. Injection allows the story to explicitly provide the correct implementation at runtime
@@ -228,12 +238,12 @@ These injection props exist because:
 
 Tags control the badges shown in the Storybook sidebar and toolbar. Add them to individual stories or the default export.
 
-| Tag | Badge | When to use |
-|-----|-------|-------------|
-| `legacyOnly` | Legacy Only (yellow) | Component only works with WebGL |
-| `webgpuOnly` | WebGPU Only (blue) | Component only works with WebGPU |
-| `dual` | Dual (teal) | Works on both, but needs platform-specific imports |
-| `experimental` | Experimental (default) | Rough/unstable component |
+| Tag            | Badge                  | When to use                                        |
+| -------------- | ---------------------- | -------------------------------------------------- |
+| `legacyOnly`   | Legacy Only (yellow)   | Component only works with WebGL                    |
+| `webgpuOnly`   | WebGPU Only (blue)     | Component only works with WebGPU                   |
+| `dual`         | Dual (teal)            | Works on both, but needs platform-specific imports |
+| `experimental` | Experimental (default) | Rough/unstable component                           |
 
 ### Usage
 
@@ -358,15 +368,15 @@ export const CylinderShape = { render: () => <Cylinder /> }
 
 ## File Reference
 
-| File | Purpose |
-|------|---------|
-| `.storybook/main.ts` | Storybook config, aliases, addons |
-| `.storybook/preview.tsx` | Global decorators, renderer toggle, auto-extract config |
-| `.storybook/manager.ts` | Sidebar config, tag badges |
-| `.storybook/Setup.tsx` | Canvas decorator with renderer switching |
-| `.storybook/components/PlatformSwitch.tsx` | Runtime platform detection component |
-| `.storybook/drei-exports.ts` | Combined exports for the `drei` alias |
-| `.storybook/theme.ts` | Storybook theme |
+| File                                       | Purpose                                                 |
+| ------------------------------------------ | ------------------------------------------------------- |
+| `.storybook/main.ts`                       | Storybook config, aliases, addons                       |
+| `.storybook/preview.tsx`                   | Global decorators, renderer toggle, auto-extract config |
+| `.storybook/manager.ts`                    | Sidebar config, tag badges                              |
+| `.storybook/Setup.tsx`                     | Canvas decorator with renderer switching                |
+| `.storybook/components/PlatformSwitch.tsx` | Runtime platform detection component                    |
+| `.storybook/drei-exports.ts`               | Combined exports for the `drei` alias                   |
+| `.storybook/theme.ts`                      | Storybook theme                                         |
 
 ---
 
@@ -375,6 +385,7 @@ export const CylinderShape = { render: () => <Cylinder /> }
 ### Story shows wrong platform version
 
 Make sure you're either:
+
 1. Using `<PlatformSwitch>` to render platform-specific content
 2. Importing directly from the platform folder (`@legacy/...` or `@webgpu/...`)
 
@@ -392,4 +403,3 @@ Check if it's a dual component that needs `#drei-platform`. In Storybook, you ma
 
 - [Platform Aliases](../devDocs/building/PLATFORM_ALIASES.md) — How `#three` and `#drei-platform` work
 - [Migration Guide](../devDocs/MIGRATION_V10_TO_V11.md) — v11 architecture overview
-

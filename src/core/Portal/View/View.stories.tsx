@@ -130,4 +130,3 @@ export const ViewSt = {
     layout: 'fullscreen',
   },
 } satisfies Story
-

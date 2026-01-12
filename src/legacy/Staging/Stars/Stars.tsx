@@ -93,4 +93,3 @@ export const Stars: ForwardRefComponent<StarsProps, Points> = /* @__PURE__ */ Re
     )
   }
 )
-

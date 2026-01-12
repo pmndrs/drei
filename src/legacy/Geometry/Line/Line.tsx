@@ -126,4 +126,3 @@ export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = /* @_
     </primitive>
   )
 })
-

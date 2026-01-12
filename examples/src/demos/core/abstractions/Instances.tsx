@@ -8,7 +8,7 @@ function Scene() {
   return (
     <>
       <OrbitControls makeDefault />
-      
+
       {/* Lighting */}
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
@@ -21,11 +21,7 @@ function Scene() {
         {Array.from({ length: 100 }, (_, i) => (
           <Instance
             key={i}
-            position={[
-              (i % 10 - 4.5) * 0.5,
-              Math.floor(i / 10) * 0.5 - 2,
-              Math.sin(i * 0.5) * 2,
-            ]}
+            position={[((i % 10) - 4.5) * 0.5, Math.floor(i / 10) * 0.5 - 2, Math.sin(i * 0.5) * 2]}
             rotation={[i * 0.1, i * 0.2, 0]}
             scale={0.5 + Math.sin(i) * 0.3}
           />
@@ -50,4 +46,3 @@ export default function InstancesDemo() {
     </div>
   )
 }
-

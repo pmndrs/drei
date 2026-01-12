@@ -1,31 +1,31 @@
-import { fileURLToPath } from "node:url";
+import { fileURLToPath } from 'node:url'
 import type { StorybookConfig } from '@storybook/react-vite'
 import { svg } from './favicon.ts'
 import { mergeConfig } from 'vite'
-import path, { dirname } from 'path';
+import path, { dirname } from 'path'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 const config: StorybookConfig = {
   staticDirs: ['./public'],
   stories: [
-    '../src/**/*.stories.{ts,tsx}',          // Co-located stories
+    '../src/**/*.stories.{ts,tsx}', // Co-located stories
     // Exclude broken stories (missing components)
   ],
   addons: [
     '@chromatic-com/storybook',
     '@storybook/addon-docs',
-    "@storybook/addon-vitest",
-    "storybook-addon-tag-badges",
+    '@storybook/addon-vitest',
+    'storybook-addon-tag-badges',
   ],
 
   // Favicon (inline svg https://stackoverflow.com/questions/66935329/use-inline-svg-as-favicon)
   managerHead: (head) => `
     ${head}
     <link rel="icon" href="data:image/svg+xml,${encodeURIComponent(
-    svg(process.env.NODE_ENV === 'development' ? 'development' : undefined)
-  )}">
+      svg(process.env.NODE_ENV === 'development' ? 'development' : undefined)
+    )}">
   `,
 
   framework: {
@@ -41,7 +41,7 @@ const config: StorybookConfig = {
         alias: {
           // Storybook-specific aliases
           '@sb': path.resolve(__dirname, '.'),
-          'drei': path.resolve(__dirname, './drei-barrel.ts'),
+          drei: path.resolve(__dirname, './drei-barrel.ts'),
 
           // Project path aliases (from tsconfig)
           '#three': 'three',

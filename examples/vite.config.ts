@@ -5,7 +5,7 @@ import path from 'path'
 
 export default defineConfig(({ mode }) => {
   const isWebGPU = mode === 'webgpu'
-  
+
   console.log(`\n🎮 Running in ${isWebGPU ? 'WebGPU' : 'Legacy (WebGL)'} mode\n`)
 
   return {
@@ -24,13 +24,15 @@ export default defineConfig(({ mode }) => {
         // Ensure three resolves correctly
         '#three': isWebGPU ? 'three/webgpu' : 'three',
         // Split addons based on mode
-        '#three-addons': path.resolve(__dirname, isWebGPU 
-          ? '../src/utils/three-addons-webgpu' 
-          : '../src/utils/three-addons'),
+        '#three-addons': path.resolve(
+          __dirname,
+          isWebGPU ? '../src/utils/three-addons-webgpu' : '../src/utils/three-addons'
+        ),
         // Split drei components based on mode
-        '#drei-platform': path.resolve(__dirname, isWebGPU 
-          ? '../src/utils/drei-platform-webgpu' 
-          : '../src/utils/drei-platform'),
+        '#drei-platform': path.resolve(
+          __dirname,
+          isWebGPU ? '../src/utils/drei-platform-webgpu' : '../src/utils/drei-platform'
+        ),
         // Internal aliases for cleaner imports
         '@core': path.resolve(__dirname, '../src/core'),
         '@legacy': path.resolve(__dirname, '../src/legacy'),

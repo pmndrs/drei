@@ -10,7 +10,7 @@
 The `e2e.sh` script creates fresh React apps and installs the drei package to verify real-world integration:
 
 1. **Vite app** - ESM imports
-2. **Next.js app** - SSR/bundler compatibility  
+2. **Next.js app** - SSR/bundler compatibility
 3. **CJS Next.js app** - CommonJS compatibility
 
 Each app renders a simple scene with `<Sphere>`, `<Environment>`, and `<CameraControls>`, then takes a Playwright screenshot.
@@ -26,6 +26,7 @@ These tests are **heavyweight** (create temp apps, npm install, build). Use them
 - Troubleshooting "works in dev, breaks in production" problems
 
 For regular CI, use the lighter canary tests:
+
 ```bash
 yarn test:canary
 ```
@@ -43,6 +44,7 @@ cd test/e2e && ./e2e.sh
 ```
 
 **Requirements:**
+
 - `yarn build` must complete first
 - Shell environment (bash)
 - Node.js, npm
@@ -53,12 +55,12 @@ cd test/e2e && ./e2e.sh
 
 The new testing strategy provides:
 
-| Old (E2E) | New (Canary + Chromatic) |
-|-----------|--------------------------|
+| Old (E2E)             | New (Canary + Chromatic)     |
+| --------------------- | ---------------------------- |
 | Slow (creates 3 apps) | Fast (imports dist directly) |
-| 1 visual snapshot | 100+ stories via Chromatic |
-| Requires Docker in CI | No special containers |
-| Tests installation | Tests exports + visuals |
+| 1 visual snapshot     | 100+ stories via Chromatic   |
+| Requires Docker in CI | No special containers        |
+| Tests installation    | Tests exports + visuals      |
 
 The canary tests (`test/canary/`) catch export map issues without the overhead. Chromatic catches visual regressions across all components.
 
@@ -66,10 +68,9 @@ The canary tests (`test/canary/`) catch export map issues without the overhead. 
 
 ## Files
 
-| File | Purpose |
-|------|---------|
-| `e2e.sh` | Main test script |
-| `App.tsx` | Test scene (copied to temp apps) |
-| `snapshot.test.ts` | Playwright test |
-| `snapshot.test.ts-snapshots/` | Baseline screenshots |
-
+| File                          | Purpose                          |
+| ----------------------------- | -------------------------------- |
+| `e2e.sh`                      | Main test script                 |
+| `App.tsx`                     | Test scene (copied to temp apps) |
+| `snapshot.test.ts`            | Playwright test                  |
+| `snapshot.test.ts-snapshots/` | Baseline screenshots             |

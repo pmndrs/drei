@@ -70,4 +70,3 @@ export function GradientTexture({
 
   return <canvasTexture colorSpace={gl.outputColorSpace} args={[canvas]} attach="map" {...props} />
 }
-

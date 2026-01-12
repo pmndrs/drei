@@ -146,4 +146,3 @@ export const HudSt = {
   render: (args) => <HudScene {...args} />,
   name: 'Default',
 } satisfies Story
-

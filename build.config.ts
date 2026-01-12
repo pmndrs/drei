@@ -46,8 +46,8 @@ const sharedRolldownConfig = {
     preserveModulesRoot: 'src',
   },
   external: (id: string) => {
-    if (id.startsWith('three') || id.startsWith('@react-three') || id.startsWith('react')) return true;
-    return false;
+    if (id.startsWith('three') || id.startsWith('@react-three') || id.startsWith('react')) return true
+    return false
   },
 }
 

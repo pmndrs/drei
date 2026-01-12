@@ -449,4 +449,3 @@ class ProgressiveLightMap {
     this.scene.background = oldBg
   }
 }
-

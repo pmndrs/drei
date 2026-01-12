@@ -101,4 +101,3 @@ export class BlurPass {
     renderer.render(scene, camera)
   }
 }
-

@@ -1,1 +1,1 @@
-export * from './useDepthBuffer';
+export * from './useDepthBuffer'

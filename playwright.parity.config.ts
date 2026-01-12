@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test'
 
 /**
  * Playwright configuration for Platform Parity Testing
@@ -26,10 +26,7 @@ export default defineConfig({
   workers: 1,
 
   // Reporter configuration
-  reporter: [
-    ['list'],
-    ['html', { outputFolder: 'playwright-report', open: 'never' }],
-  ],
+  reporter: [['list'], ['html', { outputFolder: 'playwright-report', open: 'never' }]],
 
   // Timeout for each test (parity tests can take a while with many stories)
   timeout: 120_000,
@@ -56,11 +53,7 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         // Enable WebGPU flags for WebGPU renderer testing
         launchOptions: {
-          args: [
-            '--enable-unsafe-webgpu',
-            '--enable-features=Vulkan',
-            '--use-angle=vulkan',
-          ],
+          args: ['--enable-unsafe-webgpu', '--enable-features=Vulkan', '--use-angle=vulkan'],
         },
       },
     },
@@ -76,6 +69,4 @@ export default defineConfig({
 
   // Output directory for test artifacts
   outputDir: 'test-results/parity-artifacts',
-});
-
-
+})

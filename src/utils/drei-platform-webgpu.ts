@@ -47,4 +47,3 @@ export { Trail, useTrail } from '../webgpu/Effects/Trail'
 export type { TrailProps } from '../webgpu/Effects/Trail'
 
 // Add more split components here as needed
-

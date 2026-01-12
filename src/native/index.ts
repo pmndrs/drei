@@ -28,7 +28,4 @@ export * from '../webgpu'
 export const Html = createUnsupportedComponent('Html', 'HTML requires DOM which is not available on React Native')
 
 // Caustics is too complex for native currently
-export const Caustics = createUnsupportedComponent(
-  'Caustics',
-  'Caustics is not yet supported on React Native'
-)
+export const Caustics = createUnsupportedComponent('Caustics', 'Caustics is not yet supported on React Native')

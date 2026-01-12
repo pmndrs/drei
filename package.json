@@ -26,46 +26,39 @@
     "Josh Ellis (https://github.com/joshuaellis)",
     "Dennis Smolek (https://github.com/dennissmolek)"
   ],
-  "main": "index.cjs.js",
-  "module": "index.js",
-  "types": "index.d.ts",
-  "react-native": "native/index.cjs.js",
+  "main": "index.mjs",
+  "module": "index.mjs",
+  "types": "index.d.mts",
+  "react-native": "native/index.mjs",
   "sideEffects": false,
   "exports": {
     ".": {
-      "types": "./index.d.ts",
-      "import": "./index.js",
-      "require": "./index.cjs.js"
+      "types": "./index.d.mts",
+      "import": "./index.mjs"
     },
     "./core": {
-      "types": "./core/index.d.ts",
-      "import": "./core/index.js",
-      "require": "./core/index.cjs.js"
+      "types": "./core/core/index.d.mts",
+      "import": "./core/core/index.mjs"
     },
     "./external": {
-      "types": "./external/index.d.ts",
-      "import": "./external/index.js",
-      "require": "./external/index.cjs.js"
+      "types": "./external/external/index.d.mts",
+      "import": "./external/external/index.mjs"
     },
     "./experimental": {
-      "types": "./experimental/index.d.ts",
-      "import": "./experimental/index.js",
-      "require": "./experimental/index.cjs.js"
+      "types": "./experimental/experimental/index.d.mts",
+      "import": "./experimental/experimental/index.mjs"
     },
     "./legacy": {
-      "types": "./legacy/index.d.ts",
-      "import": "./legacy/index.js",
-      "require": "./legacy/index.cjs.js"
+      "types": "./legacy/legacy/index.d.mts",
+      "import": "./legacy/legacy/index.mjs"
     },
     "./webgpu": {
-      "types": "./webgpu/index.d.ts",
-      "import": "./webgpu/index.js",
-      "require": "./webgpu/index.cjs.js"
+      "types": "./webgpu/webgpu/index.d.mts",
+      "import": "./webgpu/webgpu/index.mjs"
     },
     "./native": {
-      "types": "./native/index.d.ts",
-      "import": "./native/index.js",
-      "require": "./native/index.cjs.js"
+      "types": "./native/native/index.d.mts",
+      "import": "./native/native/index.mjs"
     }
   },
   "scripts": {
@@ -85,7 +78,7 @@
     "release": "semantic-release",
     "storybook": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider\" storybook dev -p 6006",
     "test": "yarn test:lint && yarn test:bundles && yarn test:canary",
-    "test:bundles": "node scripts/verify-bundles.js",
+    "test:bundles": "node scripts/verify-bundles.cjs",
     "test:canary": "vitest run --config vitest.config.ts",
     "test:e2e": "cd test/e2e && ./e2e.sh",
     "test:lint": "yarn eslint:ci && yarn typecheck && yarn prettier",

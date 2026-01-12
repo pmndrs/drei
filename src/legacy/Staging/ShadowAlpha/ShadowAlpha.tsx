@@ -13,55 +13,55 @@ import * as React from 'react'
 import * as THREE from '#three'
 
 export interface ShadowAlphaProps {
-    opacity?: number
-    alphaMap?: THREE.Texture | boolean
+  opacity?: number
+  alphaMap?: THREE.Texture | boolean
 }
 
 export function ShadowAlpha({ opacity, alphaMap }: ShadowAlphaProps) {
-    const depthMaterialRef = React.useRef<THREE.MeshDepthMaterial>(null!)
-    const distanceMaterialRef = React.useRef<THREE.MeshDistanceMaterial>(null!)
+  const depthMaterialRef = React.useRef<THREE.MeshDepthMaterial>(null!)
+  const distanceMaterialRef = React.useRef<THREE.MeshDistanceMaterial>(null!)
 
-    const uShadowOpacity = React.useRef({
-        value: 1,
-    })
+  const uShadowOpacity = React.useRef({
+    value: 1,
+  })
 
-    const uAlphaMap = React.useRef({
-        value: null,
-    })
+  const uAlphaMap = React.useRef({
+    value: null,
+  })
 
-    const uHasAlphaMap = React.useRef({
-        value: false,
-    })
+  const uHasAlphaMap = React.useRef({
+    value: false,
+  })
 
-    React.useLayoutEffect(() => {
-        depthMaterialRef.current.onBeforeCompile = distanceMaterialRef.current.onBeforeCompile = (shader) => {
-            // Need to get the "void main" line dynamically because the lines for
-            // MeshDistanceMaterial and MeshDepthMaterial are different 🤦‍♂️
-            const mainLineStart = shader.fragmentShader.indexOf('void main')
-            let mainLine = ''
-            let ch
-            let i = mainLineStart
-            while (ch !== '\n' && i < mainLineStart + 100) {
-                ch = shader.fragmentShader.charAt(i)
-                mainLine += ch
-                i++
-            }
-            mainLine = mainLine.trim()
+  React.useLayoutEffect(() => {
+    depthMaterialRef.current.onBeforeCompile = distanceMaterialRef.current.onBeforeCompile = (shader) => {
+      // Need to get the "void main" line dynamically because the lines for
+      // MeshDistanceMaterial and MeshDepthMaterial are different 🤦‍♂️
+      const mainLineStart = shader.fragmentShader.indexOf('void main')
+      let mainLine = ''
+      let ch
+      let i = mainLineStart
+      while (ch !== '\n' && i < mainLineStart + 100) {
+        ch = shader.fragmentShader.charAt(i)
+        mainLine += ch
+        i++
+      }
+      mainLine = mainLine.trim()
 
-            shader.vertexShader = shader.vertexShader.replace(
-                'void main() {',
-                `
+      shader.vertexShader = shader.vertexShader.replace(
+        'void main() {',
+        `
         varying vec2 custom_vUv;
 
         void main() {
           custom_vUv = uv;
           
         `
-            )
+      )
 
-            shader.fragmentShader = shader.fragmentShader.replace(
-                mainLine,
-                `
+      shader.fragmentShader = shader.fragmentShader.replace(
+        mainLine,
+        `
           uniform float uShadowOpacity;
           uniform sampler2D uAlphaMap;
           uniform bool uHasAlphaMap;
@@ -87,36 +87,36 @@ export function ShadowAlpha({ opacity, alphaMap }: ShadowAlphaProps) {
             if( ( bayerDither4x4( floor( mod( gl_FragCoord.xy, 4.0 ) ) ) ) / 16.0 >= alpha ) discard;
             
           `
-            )
+      )
 
-            shader.uniforms['uShadowOpacity'] = uShadowOpacity.current
-            shader.uniforms['uAlphaMap'] = uAlphaMap.current
-            shader.uniforms['uHasAlphaMap'] = uHasAlphaMap.current
+      shader.uniforms['uShadowOpacity'] = uShadowOpacity.current
+      shader.uniforms['uAlphaMap'] = uAlphaMap.current
+      shader.uniforms['uHasAlphaMap'] = uHasAlphaMap.current
+    }
+  }, [])
+
+  useFrame(() => {
+    const parent = (depthMaterialRef.current as any).__r3f?.parent?.object
+    if (parent) {
+      const parentMainMaterial = parent.material
+      if (parentMainMaterial) {
+        uShadowOpacity.current.value = opacity ?? parentMainMaterial.opacity
+
+        if (alphaMap === false) {
+          uAlphaMap.current.value = null
+          uHasAlphaMap.current.value = false
+        } else {
+          uAlphaMap.current.value = alphaMap || parentMainMaterial.alphaMap
+          uHasAlphaMap.current.value = !!uAlphaMap.current.value
         }
-    }, [])
+      }
+    }
+  })
 
-    useFrame(() => {
-        const parent = (depthMaterialRef.current as any).__r3f?.parent?.object
-        if (parent) {
-            const parentMainMaterial = parent.material
-            if (parentMainMaterial) {
-                uShadowOpacity.current.value = opacity ?? parentMainMaterial.opacity
-
-                if (alphaMap === false) {
-                    uAlphaMap.current.value = null
-                    uHasAlphaMap.current.value = false
-                } else {
-                    uAlphaMap.current.value = alphaMap || parentMainMaterial.alphaMap
-                    uHasAlphaMap.current.value = !!uAlphaMap.current.value
-                }
-            }
-        }
-    })
-
-    return (
-        <>
-        <meshDepthMaterial ref= { depthMaterialRef } attach = "customDepthMaterial" depthPacking = { THREE.RGBADepthPacking } />
-            <meshDistanceMaterial ref={ distanceMaterialRef } attach = "customDistanceMaterial" />
-                </>
+  return (
+    <>
+      <meshDepthMaterial ref={depthMaterialRef} attach="customDepthMaterial" depthPacking={THREE.RGBADepthPacking} />
+      <meshDistanceMaterial ref={distanceMaterialRef} attach="customDistanceMaterial" />
+    </>
   )
 }

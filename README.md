@@ -6,9 +6,17 @@
 
 [![logo](docs/logo.jpg)](https://codesandbox.io/s/bfplr)
 
-> [!WARNING] > **v11 Alpha:** This package is currently in **alpha** for v11. The API, files, and features are **subject to frequent change and breaking updates** as we work toward a stable release.
+> [!WARNING]
+> **v11 Alpha** — This package is currently in **alpha** for v11. APIs, files, and features are **subject to change**.
 >
-> Be sure to check the [v11 migration guide](./devDocs/MIGRATION_v10_TO_V11.md) for more information and best practices during this period.
+> 📖 **[Migration Guide](./devDocs/MIGRATION_V10_TO_V11.md)** — Start here for upgrade instructions
+>
+> - 🐛 [Report an issue](https://github.com/pmndrs/drei/issues/new) — Found a bug? Let us know
+> - 💬 [Join the discussion](https://github.com/pmndrs/drei/discussions) — Questions or ideas
+> - 📋 [Track progress](https://github.com/pmndrs/drei/milestone/2) — See what's coming
+>
+> ⚠️ **This alpha bundles @react-three/fiber v10** until R3F v10 is published to NPM.
+> Remove any existing `@react-three/fiber` from your dependencies before testing.
 
 A growing collection of useful helpers and fully functional, ready-made abstractions for [@react-three/fiber](https://github.com/pmndrs/react-three-fiber).
 
@@ -18,9 +26,11 @@ If you make a component that is generic enough to be useful to others, think abo
 npm install @react-three/drei
 ```
 
-> [!IMPORTANT] > **v11 is ESM-only.** We no longer ship CommonJS bundles. This follows the ecosystem-wide shift to ESM as the standard — matching `@react-three/fiber`, Three.js, and [Storybook 10](https://storybook.js.org/blog/storybook-is-going-esm-only/). All modern bundlers handle ESM natively.
+> [!IMPORTANT]
+> **v11 is ESM-only.** We no longer ship CommonJS bundles. This follows the ecosystem-wide shift to ESM as the standard — matching `@react-three/fiber`, Three.js, and [Storybook 10](https://storybook.js.org/blog/storybook-is-going-esm-only/). All modern bundlers handle ESM natively.
 
-> [!NOTE] > ~~this package is using the stand-alone [`three-stdlib`](https://github.com/pmndrs/three-stdlib) instead of [`three/examples/jsm`](https://github.com/mrdoob/three.js/tree/master/examples/jsm).~~
+> [!NOTE]
+> ~~This package is using the stand-alone [`three-stdlib`](https://github.com/pmndrs/three-stdlib) instead of [`three/examples/jsm`](https://github.com/mrdoob/three.js/tree/master/examples/jsm).~~
 > Reliance on STD-Lib has been removed with v11. The threejs repo and @types folks are doing a much better job and supporting/working with core on these common assets serves us better.
 
 New scripts, components, shaders, can be addded here in this repo or in the upcoming market.

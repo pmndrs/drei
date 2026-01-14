@@ -9,19 +9,6 @@
 
 ---
 
-> ⚠️ **Bundled R3F v10**
->
-> This alpha release **bundles @react-three/fiber v10** directly until R3F v10 is published to NPM.
-> Once R3F v10 alpha is available on NPM, drei will switch to a normal peer dependency.
->
-> **What this means for you:**
->
-> - Don't install R3F separately — it's included
-> - Your project may have version conflicts if you have an existing R3F installation
-> - Remove any existing `@react-three/fiber` from your dependencies before testing
-
----
-
 ## Progress: ~90%
 
 **What's left:**

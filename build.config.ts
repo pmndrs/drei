@@ -40,6 +40,7 @@ const webgpuAliases = {
 
 const sharedRolldownConfig = {
   treeshake: true,
+  platform: 'browser' as const, // Use browser-compatible CJS interop (avoids node:module)
   output: {
     format: 'esm' as const,
     preserveModules: true,

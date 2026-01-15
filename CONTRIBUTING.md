@@ -17,7 +17,7 @@ You'll find a sample [`Example.tsx`](src/core/Example.tsx) component and its ass
 
 ## Commit Guidelines
 
-Be sure your commit messages follow this specification: https://www.conventionalcommits.org/en/v1.0.0-beta.4/
+Be sure your commit messages are clear and descriptive. While we use Changesets for versioning (so conventional commits are not strictly required), clear commit messages are still appreciated.
 
 ## Storybook
 
@@ -30,10 +30,22 @@ If you're adding a brand new feature, you need to make sure you add a storybook 
 
 ## Publishing
 
-We use `semantic-release-action` to deploy the package. Because of this only certain commits will trigger the action of creating a release:
+We use [Changesets](https://github.com/changesets/changesets) to manage versions and publishing.
 
-- `fix:` will create a `0.0.x` version
-- `feat:` will create a `0.x.0` version
-- `BREAKING CHANGE:` will create a `x.0.0` version
+### Creating a changeset
 
-We release on `master`, `beta` & `alpha`. `beta` & `alpha` are configured to be prerelease. Any other commits will not fire a release.
+When you make changes that should be published, you need to create a changeset:
+
+1. Run `yarn changeset` (or `npx changeset`)
+2. Select the type of change:
+   - `patch` for bug fixes (0.0.x)
+   - `minor` for new features (0.x.0)
+   - `major` for breaking changes (x.0.0)
+3. Provide a description of your changes
+4. Commit the generated changeset file with your PR
+
+### Release process
+
+When your PR is merged to `master`, the Changesets GitHub Action will:
+- Create a "Version Packages" PR that updates versions and changelogs
+- When the Version Packages PR is merged, it will automatically publish to npm

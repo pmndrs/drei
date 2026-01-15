@@ -13,15 +13,17 @@ Drei uses **unbuild** (which wraps Rollup) for bundling. This was chosen over al
 We initially tried Rolldown (via obuild) but encountered a critical issue: **Rolldown resolves external dependencies to absolute file paths** instead of preserving clean import specifiers.
 
 For example, with Rolldown:
+
 ```js
 // Expected output:
-import { Vector3 } from 'three';
+import { Vector3 } from 'three'
 
 // Actual Rolldown output:
-import { Vector3 } from 'C:\\Users\\...\\node_modules\\three\\build\\three.module.js';
+import { Vector3 } from 'C:\\Users\\...\\node_modules\\three\\build\\three.module.js'
 ```
 
 This causes:
+
 - **Non-portable builds** — Absolute paths don't exist on consumer machines
 - **Duplicate dependency instances** — Bundlers in consuming apps can't dedupe
 - **Runtime errors** — Multiple Three.js instances cause object identity mismatches
@@ -127,7 +129,7 @@ alias({
     { find: '#three', replacement: 'three' },
     { find: '#drei-platform', replacement: resolve('./src/utils/drei-platform.ts') },
     { find: '#three-addons', replacement: resolve('./src/utils/three-addons.ts') },
-  ]
+  ],
 })
 ```
 
@@ -139,7 +141,7 @@ alias({
     { find: '#three', replacement: 'three/webgpu' },
     { find: '#drei-platform', replacement: resolve('./src/utils/drei-platform-webgpu.ts') },
     { find: '#three-addons', replacement: resolve('./src/utils/three-addons-webgpu.ts') },
-  ]
+  ],
 })
 ```
 

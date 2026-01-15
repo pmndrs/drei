@@ -10,9 +10,9 @@
 // (e.g., C:\...\node_modules\three\...) instead of keeping clean specifiers.
 // This breaks portability and causes duplicate instances in consuming apps.
 
-import { defineBuildConfig } from 'unbuild';
-import { resolve } from 'path';
-import alias from '@rollup/plugin-alias';
+import { defineBuildConfig } from 'unbuild'
+import { resolve } from 'path'
+import alias from '@rollup/plugin-alias'
 
 //* Internal Path Aliases ==============================
 // These resolve @core, @legacy, etc. imports to actual paths
@@ -24,7 +24,7 @@ const internalAliases = [
   { find: '@external', replacement: resolve('./src/external') },
   { find: '@experimental', replacement: resolve('./src/experimental') },
   { find: '@utils', replacement: resolve('./src/utils') },
-];
+]
 
 //* Platform Alias Configurations ==============================
 
@@ -33,14 +33,14 @@ const webglAliases = [
   { find: '#three', replacement: 'three' },
   { find: '#drei-platform', replacement: resolve('./src/utils/drei-platform.ts') },
   { find: '#three-addons', replacement: resolve('./src/utils/three-addons.ts') },
-];
+]
 
 const webgpuAliases = [
   ...internalAliases,
   { find: '#three', replacement: 'three/webgpu' },
   { find: '#drei-platform', replacement: resolve('./src/utils/drei-platform-webgpu.ts') },
   { find: '#three-addons', replacement: resolve('./src/utils/three-addons-webgpu.ts') },
-];
+]
 
 //* External Dependencies ==============================
 // Peer dependencies should not be bundled
@@ -54,7 +54,7 @@ const externals = [
   /^react\//,
   'react-dom',
   /^react-dom\//,
-];
+]
 
 //* Build Configuration ==============================
 
@@ -76,8 +76,8 @@ export default defineBuildConfig([
     },
     hooks: {
       'rollup:options': (ctx, options) => {
-        options.plugins = options.plugins || [];
-        (options.plugins as any[]).unshift(alias({ entries: webglAliases }));
+        options.plugins = options.plugins || []
+        ;(options.plugins as any[]).unshift(alias({ entries: webglAliases }))
       },
     },
     externals,
@@ -98,8 +98,8 @@ export default defineBuildConfig([
     },
     hooks: {
       'rollup:options': (ctx, options) => {
-        options.plugins = options.plugins || [];
-        (options.plugins as any[]).unshift(alias({ entries: webglAliases }));
+        options.plugins = options.plugins || []
+        ;(options.plugins as any[]).unshift(alias({ entries: webglAliases }))
       },
     },
     externals,
@@ -120,8 +120,8 @@ export default defineBuildConfig([
     },
     hooks: {
       'rollup:options': (ctx, options) => {
-        options.plugins = options.plugins || [];
-        (options.plugins as any[]).unshift(alias({ entries: webglAliases }));
+        options.plugins = options.plugins || []
+        ;(options.plugins as any[]).unshift(alias({ entries: webglAliases }))
       },
     },
     externals,
@@ -142,8 +142,8 @@ export default defineBuildConfig([
     },
     hooks: {
       'rollup:options': (ctx, options) => {
-        options.plugins = options.plugins || [];
-        (options.plugins as any[]).unshift(alias({ entries: webglAliases }));
+        options.plugins = options.plugins || []
+        ;(options.plugins as any[]).unshift(alias({ entries: webglAliases }))
       },
     },
     externals,
@@ -164,8 +164,8 @@ export default defineBuildConfig([
     },
     hooks: {
       'rollup:options': (ctx, options) => {
-        options.plugins = options.plugins || [];
-        (options.plugins as any[]).unshift(alias({ entries: webglAliases }));
+        options.plugins = options.plugins || []
+        ;(options.plugins as any[]).unshift(alias({ entries: webglAliases }))
       },
     },
     externals,
@@ -188,8 +188,8 @@ export default defineBuildConfig([
     },
     hooks: {
       'rollup:options': (ctx, options) => {
-        options.plugins = options.plugins || [];
-        (options.plugins as any[]).unshift(alias({ entries: webgpuAliases }));
+        options.plugins = options.plugins || []
+        ;(options.plugins as any[]).unshift(alias({ entries: webgpuAliases }))
       },
     },
     externals,
@@ -210,10 +210,10 @@ export default defineBuildConfig([
     },
     hooks: {
       'rollup:options': (ctx, options) => {
-        options.plugins = options.plugins || [];
-        (options.plugins as any[]).unshift(alias({ entries: webgpuAliases }));
+        options.plugins = options.plugins || []
+        ;(options.plugins as any[]).unshift(alias({ entries: webgpuAliases }))
       },
     },
     externals,
   },
-]);
+])

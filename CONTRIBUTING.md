@@ -32,20 +32,6 @@ If you're adding a brand new feature, you need to make sure you add a storybook 
 
 We use [Changesets](https://github.com/changesets/changesets) to manage versions and publishing.
 
-### Creating a changeset
+When you make changes that should be published, run `yarn changeset` to create a changeset and commit it with your PR.
 
-When you make changes that should be published, you need to create a changeset:
-
-1. Run `yarn changeset` (or `npx changeset`)
-2. Select the type of change:
-   - `patch` for bug fixes (0.0.x)
-   - `minor` for new features (0.x.0)
-   - `major` for breaking changes (x.0.0)
-3. Provide a description of your changes
-4. Commit the generated changeset file with your PR
-
-### Release process
-
-When your PR is merged to `master`, the Changesets GitHub Action will:
-- Create a "Version Packages" PR that updates versions and changelogs
-- When the Version Packages PR is merged, it will automatically publish to npm
+For detailed instructions on how to create changesets and how the release process works, see [`.changeset/README.md`](.changeset/README.md).

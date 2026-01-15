@@ -28,41 +28,41 @@
   ],
   "main": "index.mjs",
   "module": "index.mjs",
-  "types": "index.d.mts",
+  "types": "index.d.ts",
   "react-native": "native/index.mjs",
   "sideEffects": false,
   "exports": {
     ".": {
-      "types": "./index.d.mts",
+      "types": "./index.d.ts",
       "import": "./index.mjs"
     },
     "./core": {
-      "types": "./core/core/index.d.mts",
-      "import": "./core/core/index.mjs"
+      "types": "./core/index.d.ts",
+      "import": "./core/index.mjs"
     },
     "./external": {
-      "types": "./external/external/index.d.mts",
-      "import": "./external/external/index.mjs"
+      "types": "./external/index.d.ts",
+      "import": "./external/index.mjs"
     },
     "./experimental": {
-      "types": "./experimental/experimental/index.d.mts",
-      "import": "./experimental/experimental/index.mjs"
+      "types": "./experimental/index.d.ts",
+      "import": "./experimental/index.mjs"
     },
     "./legacy": {
-      "types": "./legacy/legacy/index.d.mts",
-      "import": "./legacy/legacy/index.mjs"
+      "types": "./legacy/index.d.ts",
+      "import": "./legacy/index.mjs"
     },
     "./webgpu": {
-      "types": "./webgpu/webgpu/index.d.mts",
-      "import": "./webgpu/webgpu/index.mjs"
+      "types": "./webgpu/index.d.ts",
+      "import": "./webgpu/index.mjs"
     },
     "./native": {
-      "types": "./native/native/index.d.mts",
-      "import": "./native/native/index.mjs"
+      "types": "./native/index.d.ts",
+      "import": "./native/index.mjs"
     }
   },
   "scripts": {
-    "build": "rimraf dist && yarn typegen && obuild && yarn copy && yarn copy:native",
+    "build": "rimraf dist && yarn typegen && unbuild && yarn copy && yarn copy:native",
     "build-storybook": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider\" storybook build",
     "copy": "copyfiles package.json README.md LICENSE dist && json -I -f dist/package.json -e \"this.private=false; this.devDependencies=undefined; this.optionalDependencies=undefined; this.scripts=undefined; this.husky=undefined; this.prettier=undefined; this.jest=undefined; this['lint-staged']=undefined;\"",
     "copy:native": "copyfiles -u 2 src/native/package.json dist/native",
@@ -78,7 +78,7 @@
     "release": "semantic-release",
     "storybook": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider\" storybook dev -p 6006",
     "test": "yarn test:lint && yarn test:bundles && yarn test:canary",
-    "test:bundles": "node scripts/verify-bundles.cjs",
+    "test:bundles": "node scripts/verify-bundles.js",
     "test:canary": "vitest run --config vitest.config.ts",
     "test:e2e": "cd test/e2e && ./e2e.sh",
     "test:lint": "yarn eslint:ci && yarn typecheck && yarn prettier",
@@ -120,10 +120,11 @@
     "@chromatic-com/storybook": "^4.1.3",
     "@playwright/test": "^1.45.2",
     "@react-three/fiber": "^10.0.0-alpha.0",
-    "@rollup/plugin-babel": "^5.3.0",
-    "@rollup/plugin-commonjs": "^19.0.0",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^13.0.0",
+    "@rollup/plugin-alias": "^6.0.0",
+    "@rollup/plugin-babel": "^6.1.0",
+    "@rollup/plugin-commonjs": "^29.0.0",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
     "@storybook/addon-docs": "^10.1.11",
     "@storybook/addon-vitest": "^10.1.11",
     "@storybook/react-vite": "^10.1.11",
@@ -148,7 +149,6 @@
     "eslint-plugin-storybook": "^10.1.11",
     "husky": "^9.1.7",
     "json": "^11.0.0",
-    "obuild": "^0.4.9",
     "pixelmatch": "^7.1.0",
     "pngjs": "^7.0.0",
     "prettier": "^3.3.3",
@@ -157,8 +157,7 @@
     "react-docgen-typescript": "^2.4.0",
     "react-dom": "^19.0.0",
     "rimraf": "^6.0.1",
-    "rolldown": "1.0.0-beta.57",
-    "rollup": "^2.79.2",
+    "rollup": "^4",
     "rollup-plugin-glslify": "^1.3.0",
     "rollup-plugin-multi-input": "^1.5.0",
     "rollup-plugin-terser": "^7.0.2",
@@ -169,6 +168,7 @@
     "three": "^0.182.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3",
+    "unbuild": "^3.6.1",
     "vite": "^5.4.11",
     "vite-plugin-glslify": "^2.1.0",
     "vitest": "^4.0.16"
@@ -183,6 +183,9 @@
     "react-dom": {
       "optional": true
     }
+  },
+  "resolutions": {
+    "tunnel-rat/zustand": "^5.0.0"
   },
   "packageManager": "yarn@4.3.1"
 }

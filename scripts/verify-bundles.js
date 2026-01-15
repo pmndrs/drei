@@ -4,15 +4,22 @@
  *
  * Usage: node scripts/verify-bundles.js
  *
+ * Checks:
+ * - THREE imports per platform (WebGL vs WebGPU)
+ * - No bundled three.js code (should be externalized)
+ * - No absolute paths in imports (portability)
+ *
  * Each entry point should have the correct THREE imports based on its platform:
  * - Root/Core/External/Experimental: can have 'three' (renderer-agnostic)
  * - Legacy: only 'three' (no three/webgpu or three/tsl)
  * - WebGPU: only 'three/webgpu' (no plain three)
  * - Native: only 'three/webgpu' (no plain three)
  */
-const fs = require('fs')
-const path = require('path')
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const DREI_DIST = path.join(__dirname, '../dist')
 
 //* Configuration ==============================
@@ -28,7 +35,7 @@ const checks = [
   },
   {
     name: 'Core entry (@react-three/drei/core)',
-    file: 'core/core/index.mjs', // obuild nests: core/core/
+    file: 'core/index.mjs', // unbuild: flat structure
     // Core is renderer-agnostic
     shouldContain: [],
     shouldNotContain: [],
@@ -36,7 +43,7 @@ const checks = [
   },
   {
     name: 'Legacy entry (@react-three/drei/legacy)',
-    file: 'legacy/legacy/index.mjs', // obuild nests: legacy/legacy/
+    file: 'legacy/index.mjs', // unbuild: flat structure
     // Legacy should only have 'three', NOT 'three/webgpu' or 'three/tsl'
     shouldContain: [],
     shouldNotContain: ["from 'three/webgpu'", "from 'three/tsl'"],
@@ -44,7 +51,7 @@ const checks = [
   },
   {
     name: 'WebGPU entry (@react-three/drei/webgpu)',
-    file: 'webgpu/webgpu/index.mjs', // obuild nests: webgpu/webgpu/
+    file: 'webgpu/index.mjs', // unbuild: flat structure
     // WebGPU should have 'three/webgpu' but NOT plain 'three'
     shouldContain: [],
     shouldNotContain: [],
@@ -53,7 +60,7 @@ const checks = [
   },
   {
     name: 'Native entry (@react-three/drei/native)',
-    file: 'native/native/index.mjs', // obuild nests: native/native/
+    file: 'native/index.mjs', // unbuild: flat structure
     // Native (WebGPU-based) should have 'three/webgpu' but NOT plain 'three'
     shouldContain: [],
     shouldNotContain: [],
@@ -78,6 +85,35 @@ function hasPlainThreeImport(imports) {
 function checkForSharedChunks(content) {
   // Check if bundle references external chunks (indicates shared chunking)
   return content.match(/from ['"][^'"]*chunk[^'"]*['"]/gi) || []
+}
+
+function checkForBundledThree(content) {
+  // Check for signatures that indicate three.js source was bundled instead of externalized
+  // These patterns are unique to three.js core code
+  const signatures = [
+    /const REVISION = ['"][0-9]+['"]/, // Three.js version constant
+    /class WebGLRenderer/, // WebGL renderer class
+    /class Scene extends Object3D/, // Scene class definition
+  ]
+  return signatures.some((sig) => sig.test(content))
+}
+
+function checkForAbsolutePaths(content) {
+  // Check for absolute file paths in imports (indicates bundler misconfiguration)
+  // These break portability - paths like C:\Users\... won't exist on other machines
+  const absolutePathPatterns = [
+    /from ['"][A-Za-z]:[\\\/][^'"]+['"]/g, // Windows: C:\... or C:/...
+    /from ['"]\/Users\/[^'"]+['"]/g, // macOS: /Users/...
+    /from ['"]\/home\/[^'"]+['"]/g, // Linux: /home/...
+    /from ['"][^'"]*node_modules[\\\/][^'"]+['"]/g, // Any node_modules path
+  ]
+
+  const matches = []
+  for (const pattern of absolutePathPatterns) {
+    const found = content.match(pattern)
+    if (found) matches.push(...found)
+  }
+  return matches
 }
 
 function getAllJsFiles(dir, files = []) {
@@ -130,6 +166,56 @@ if (!fs.existsSync(DREI_DIST)) {
   console.log('❌ dist folder not found. Run `yarn build` first.\n')
   process.exit(1)
 }
+
+//* Global Checks ==============================
+// These run across ALL dist files to catch bundler misconfigurations
+
+console.log('\n📦 Global Bundle Integrity Checks')
+console.log('-'.repeat(60))
+
+const allDistFiles = getAllJsFiles(DREI_DIST)
+let globalChecksPassed = true
+
+// Combine all content for global checks
+let allContent = ''
+for (const file of allDistFiles) {
+  allContent += fs.readFileSync(file, 'utf-8')
+}
+
+// Check 1: No bundled three.js code
+console.log('\n   Externalization check:')
+const hasBundledThree = checkForBundledThree(allContent)
+if (!hasBundledThree) {
+  console.log('   ✅ three.js is properly externalized (not bundled)')
+} else {
+  console.log('   ❌ three.js code appears to be bundled!')
+  console.log('      This causes duplicate instances and bloated bundles.')
+  console.log('      Check that "three" is in the externals array in build.config.ts')
+  globalChecksPassed = false
+  allPassed = false
+}
+
+// Check 2: No absolute paths in imports
+console.log('\n   Portability check:')
+const absolutePaths = checkForAbsolutePaths(allContent)
+if (absolutePaths.length === 0) {
+  console.log('   ✅ No absolute paths in imports (portable)')
+} else {
+  console.log('   ❌ Found absolute paths in imports!')
+  console.log("      These break portability - paths won't exist on other machines.")
+  console.log('      Found:')
+  // Show up to 5 examples
+  absolutePaths.slice(0, 5).forEach((p) => console.log(`         ${p}`))
+  if (absolutePaths.length > 5) {
+    console.log(`         ... and ${absolutePaths.length - 5} more`)
+  }
+  globalChecksPassed = false
+  allPassed = false
+}
+
+console.log(`\n   📊 Total files analyzed: ${allDistFiles.length}`)
+
+//* Per-Entry Checks ==============================
 
 for (const check of checks) {
   const entryDir = path.join(DREI_DIST, path.dirname(check.file))
@@ -242,6 +328,12 @@ console.log('\n' + '='.repeat(60))
 console.log('📊 Summary')
 console.log('='.repeat(60))
 
+// Global checks summary
+console.log('\nGlobal checks:')
+console.log(`${globalChecksPassed ? '✅' : '❌'} Bundle integrity (externalization, portability)`)
+
+// Per-entry checks summary
+console.log('\nPer-entry checks:')
 results.forEach((r) => {
   let status = r.passed ? '✅' : '❌'
   if (r.passed && r.knownLimitation) status = '⚠️' // Warning for known limitations

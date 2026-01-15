@@ -15,12 +15,12 @@
  * - WebGPU: only 'three/webgpu' (no plain three)
  * - Native: only 'three/webgpu' (no plain three)
  */
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DREI_DIST = path.join(__dirname, '../dist');
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const DREI_DIST = path.join(__dirname, '../dist')
 
 //* Configuration ==============================
 
@@ -91,9 +91,9 @@ function checkForBundledThree(content) {
   // Check for signatures that indicate three.js source was bundled instead of externalized
   // These patterns are unique to three.js core code
   const signatures = [
-    /const REVISION = ['"][0-9]+['"]/,  // Three.js version constant
-    /class WebGLRenderer/,               // WebGL renderer class
-    /class Scene extends Object3D/,      // Scene class definition
+    /const REVISION = ['"][0-9]+['"]/, // Three.js version constant
+    /class WebGLRenderer/, // WebGL renderer class
+    /class Scene extends Object3D/, // Scene class definition
   ]
   return signatures.some((sig) => sig.test(content))
 }
@@ -102,10 +102,10 @@ function checkForAbsolutePaths(content) {
   // Check for absolute file paths in imports (indicates bundler misconfiguration)
   // These break portability - paths like C:\Users\... won't exist on other machines
   const absolutePathPatterns = [
-    /from ['"][A-Za-z]:[\\\/][^'"]+['"]/g,           // Windows: C:\... or C:/...
-    /from ['"]\/Users\/[^'"]+['"]/g,                  // macOS: /Users/...
-    /from ['"]\/home\/[^'"]+['"]/g,                   // Linux: /home/...
-    /from ['"][^'"]*node_modules[\\\/][^'"]+['"]/g,  // Any node_modules path
+    /from ['"][A-Za-z]:[\\\/][^'"]+['"]/g, // Windows: C:\... or C:/...
+    /from ['"]\/Users\/[^'"]+['"]/g, // macOS: /Users/...
+    /from ['"]\/home\/[^'"]+['"]/g, // Linux: /home/...
+    /from ['"][^'"]*node_modules[\\\/][^'"]+['"]/g, // Any node_modules path
   ]
 
   const matches = []
@@ -202,7 +202,7 @@ if (absolutePaths.length === 0) {
   console.log('   ✅ No absolute paths in imports (portable)')
 } else {
   console.log('   ❌ Found absolute paths in imports!')
-  console.log('      These break portability - paths won\'t exist on other machines.')
+  console.log("      These break portability - paths won't exist on other machines.")
   console.log('      Found:')
   // Show up to 5 examples
   absolutePaths.slice(0, 5).forEach((p) => console.log(`         ${p}`))

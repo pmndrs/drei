@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 import { Stage, Sphere } from '@react-three/drei'
-import { presetsObj, PresetsType } from '../../src/helpers/environment-assets'
+import { presetsObj, PresetsType } from '@react-three/drei/helpers/environment-assets'
 
 const environments = Object.keys(presetsObj) as Array<PresetsType>
 

@@ -19,7 +19,8 @@
     "noImplicitThis": false,
     "baseUrl": ".",
     "paths": {
-      "@react-three/drei": ["./src/index.ts"]
+      "@react-three/drei": ["./src/index.ts"],
+      "@react-three/drei/*": ["./src/*"]
     }
   },
   "include": ["./src", "./.storybook"],

@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Tetrahedron } from '../../src/core/shapes'
+import { Tetrahedron } from '@react-three/drei/core/shapes'
 import { useTurntable } from '../useTurntable'
 
 export default {

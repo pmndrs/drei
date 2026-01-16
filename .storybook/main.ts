@@ -54,6 +54,8 @@ const config: StorybookConfig = {
       config.resolve.alias = {
         ...config.resolve.alias,
         '@react-three/drei': distPath,
+        // Also handle subpath imports like @react-three/drei/web/Html
+        '@react-three/drei/': distPath + '/',
       }
       console.log('📦 Using built package from /dist for Storybook build')
     } else {

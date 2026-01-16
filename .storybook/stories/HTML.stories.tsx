@@ -5,7 +5,7 @@ import { Setup } from '../Setup'
 import { useTurntable } from '../useTurntable'
 
 import { Icosahedron, Html, OrthographicCamera } from '@react-three/drei'
-import { HtmlProps, CalculatePosition } from '../../src/web/Html'
+import { HtmlProps, CalculatePosition } from '@react-three/drei/web/Html'
 import { useFrame, useThree } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 

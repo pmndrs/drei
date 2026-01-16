@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Cone } from '../../src/core/shapes'
+import { Cone } from '@react-three/drei/core/shapes'
 import { useTurntable } from '../useTurntable'
 
 export default {

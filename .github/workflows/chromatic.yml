@@ -14,6 +14,8 @@ jobs:
         with:
           cache: 'yarn'
       - run: yarn install
+      - run: yarn build
       - run: yarn chromatic --exit-once-uploaded --auto-accept-changes master
         env:
           CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          USE_BUILT_PACKAGE: 'true'

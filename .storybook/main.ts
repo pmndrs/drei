@@ -32,6 +32,22 @@ const config: StorybookConfig = {
       },
     },
   },
+
+  async viteFinal(config) {
+    // In production build mode with USE_BUILT_PACKAGE env var, use the built package
+    if (config.mode === 'production' && process.env.USE_BUILT_PACKAGE === 'true') {
+      const path = await import('path')
+      config.resolve = config.resolve || {}
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        // Point to the built package instead of /src
+        '../../src': path.resolve(__dirname, '../dist'),
+        '../src': path.resolve(__dirname, '../dist'),
+      }
+      console.log('📦 Using built package from /dist for Storybook build')
+    }
+    return config
+  },
 }
 
 export default config

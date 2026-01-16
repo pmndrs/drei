@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Sky, Plane } from '../../src'
+import { Sky, Plane } from '@react-three/drei'
 
 export default {
   title: 'Staging/Sky',

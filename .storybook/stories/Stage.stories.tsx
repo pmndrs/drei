@@ -3,7 +3,7 @@ import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
-import { Stage, Sphere } from '../../src'
+import { Stage, Sphere } from '@react-three/drei'
 import { presetsObj, PresetsType } from '../../src/helpers/environment-assets'
 
 const environments = Object.keys(presetsObj) as Array<PresetsType>

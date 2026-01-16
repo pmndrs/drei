@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Example, ExampleApi } from '../../src'
+import { Example, ExampleApi } from '@react-three/drei'
 
 export default {
   title: 'Misc/Example',

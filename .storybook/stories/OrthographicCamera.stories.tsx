@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Icosahedron, OrthographicCamera } from '../../src'
+import { Icosahedron, OrthographicCamera } from '@react-three/drei'
 import { Setup } from '../Setup'
 
 export default {

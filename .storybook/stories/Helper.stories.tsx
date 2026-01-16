@@ -5,7 +5,7 @@ import { BoxHelper, CameraHelper } from 'three'
 import { VertexNormalsHelper } from 'three-stdlib'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Helper, PerspectiveCamera, Sphere } from '../../src'
+import { Helper, PerspectiveCamera, Sphere } from '@react-three/drei'
 import { Setup } from '../Setup'
 import { ComponentProps } from 'react'
 

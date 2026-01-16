@@ -5,7 +5,7 @@ import { extend, useFrame, useLoader } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
-import { CurveModifier, CurveModifierRef } from '../../src'
+import { CurveModifier, CurveModifierRef } from '@react-three/drei'
 
 extend({ StdText: TextGeometry })
 

@@ -2,7 +2,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Box, Center, Cylinder, Gltf } from '../../src'
+import { Box, Center, Cylinder, Gltf } from '@react-three/drei'
 import { Ref, useMemo, useState } from 'react'
 import { Box3, Vector3 } from 'three'
 

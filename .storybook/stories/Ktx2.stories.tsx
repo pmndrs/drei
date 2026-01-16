@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Box, Ktx2 } from '../../src'
+import { Box, Ktx2 } from '@react-three/drei'
 
 export default {
   title: 'Loaders/Ktx2',

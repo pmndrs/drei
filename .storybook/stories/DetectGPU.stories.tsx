@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { DetectGPU, Text } from '../../src'
+import { DetectGPU, Text } from '@react-three/drei'
 
 export default {
   title: 'Misc/DetectGPU',

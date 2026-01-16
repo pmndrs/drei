@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { useGLTF, Merged, Instance } from '../../src'
+import { useGLTF, Merged, Instance } from '@react-three/drei'
 
 export default {
   title: 'Performance/Merged',

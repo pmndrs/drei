@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
-import { Outlines } from '../../src'
+import { Outlines } from '@react-three/drei'
 
 export default {
   title: 'Abstractions/Outlines',

@@ -4,7 +4,7 @@ import { Scene } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
-import { Box, OrbitControls, PerspectiveCamera, Plane, useFBO, type OrbitControlsProps } from '../../src'
+import { Box, OrbitControls, PerspectiveCamera, Plane, useFBO, type OrbitControlsProps } from '@react-three/drei'
 
 export default {
   title: 'Controls/OrbitControls',

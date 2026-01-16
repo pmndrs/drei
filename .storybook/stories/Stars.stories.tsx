@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Stars, Plane } from '../../src'
+import { Stars, Plane } from '@react-three/drei'
 
 export default {
   title: 'Staging/Stars',

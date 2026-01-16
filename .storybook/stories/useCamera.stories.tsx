@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { useCamera, OrthographicCamera } from '../../src'
+import { useCamera, OrthographicCamera } from '@react-three/drei'
 
 export default {
   title: 'Misc/useCamera',

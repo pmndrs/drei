@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Plane, WebcamVideoTexture } from '../../src'
+import { Plane, WebcamVideoTexture } from '@react-three/drei'
 
 export default {
   title: 'Misc/WebcamVideoTexture',

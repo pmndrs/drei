@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Text3D, Float, Center } from '../../src'
+import { Text3D, Float, Center } from '@react-three/drei'
 
 export default {
   title: 'Abstractions/Text3D',

@@ -15,7 +15,7 @@ import {
   RandomizedLight,
   AccumulativeShadows,
   MeshTransmissionMaterial,
-} from '../../src'
+} from '@react-three/drei'
 
 export default {
   title: 'Shaders/MeshRefractionMaterial',

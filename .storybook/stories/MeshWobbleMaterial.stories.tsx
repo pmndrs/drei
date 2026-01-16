@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
-import { MeshWobbleMaterial, Torus } from '../../src'
+import { MeshWobbleMaterial, Torus } from '@react-three/drei'
 
 export default {
   title: 'Shaders/MeshWobbleMaterial',

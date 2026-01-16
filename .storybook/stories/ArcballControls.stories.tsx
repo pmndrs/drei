@@ -3,7 +3,7 @@ import React, { ComponentProps, useRef, useState } from 'react'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
-import { ArcballControls, Box, PerspectiveCamera, Plane, useFBO } from '../../src'
+import { ArcballControls, Box, PerspectiveCamera, Plane, useFBO } from '@react-three/drei'
 
 import { Scene, type OrthographicCamera, type PerspectiveCamera as PerspectiveCameraType } from 'three'
 

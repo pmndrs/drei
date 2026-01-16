@@ -1,5 +1,6 @@
 import type { StorybookConfig } from '@storybook/react-vite'
 import { svg } from './favicon.ts'
+import tsconfigPaths from 'vite-tsconfig-paths'
 
 const config: StorybookConfig = {
   staticDirs: ['./public'],
@@ -34,18 +35,30 @@ const config: StorybookConfig = {
   },
 
   async viteFinal(config) {
-    // In production build mode with USE_BUILT_PACKAGE env var, use the built package
-    if (config.mode === 'production' && process.env.USE_BUILT_PACKAGE === 'true') {
-      const path = await import('path')
+    const path = await import('path')
+    const { fileURLToPath } = await import('url')
+    
+    // Get __dirname equivalent in ESM
+    const __filename = fileURLToPath(import.meta.url)
+    const __dirname = path.dirname(__filename)
+    
+    // Always use vite-tsconfig-paths plugin for TypeScript path resolution
+    config.plugins = config.plugins || []
+    config.plugins.push(tsconfigPaths())
+    
+    // In production build with USE_BUILT_PACKAGE env var, override to use the built package
+    if (process.env.USE_BUILT_PACKAGE === 'true') {
+      // Override the @react-three/drei alias to point to dist instead of src
       config.resolve = config.resolve || {}
       config.resolve.alias = {
         ...config.resolve.alias,
-        // Point to the built package instead of /src
-        '../../src': path.resolve(__dirname, '../dist'),
-        '../src': path.resolve(__dirname, '../dist'),
+        '@react-three/drei': path.resolve(__dirname, '../dist'),
       }
       console.log('📦 Using built package from /dist for Storybook build')
+    } else {
+      console.log('🔧 Using source from /src for Storybook development')
     }
+    
     return config
   },
 }

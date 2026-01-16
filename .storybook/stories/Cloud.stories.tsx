@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Cloud, OrbitControls } from '../../src'
+import { Cloud, OrbitControls } from '@react-three/drei'
 import { ComponentProps } from 'react'
 
 export default {

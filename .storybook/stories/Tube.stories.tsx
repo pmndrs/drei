@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 import { Setup } from '../Setup'
 import { useTurntable } from '../useTurntable'
 
-import { Tube } from '../../src'
+import { Tube } from '@react-three/drei'
 
 export default {
   title: 'Shapes/Tube',

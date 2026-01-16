@@ -3,7 +3,7 @@ import { Euler, MathUtils, Mesh, ShaderMaterial, Vector3 } from 'three'
 // import { StoryObj } from '@storybook/react-vite'
 import { Setup } from '../Setup'
 
-import { useGLTF, Instances, Instance, createInstances, InstancedAttribute } from '../../src'
+import { useGLTF, Instances, Instance, createInstances, InstancedAttribute } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { clamp } from 'maath/misc'
 

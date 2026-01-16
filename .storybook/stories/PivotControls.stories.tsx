@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Vector3 } from 'three'
 
 import { Setup } from '../Setup'
-import { PivotControls, Box } from '../../src'
+import { PivotControls, Box } from '@react-three/drei'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 export default {

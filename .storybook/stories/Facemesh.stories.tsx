@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Facemesh, FacemeshDatas } from '../../src'
+import { Facemesh, FacemeshDatas } from '@react-three/drei'
 
 export default {
   title: 'Shapes/Facemesh',

@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Detailed, Icosahedron, OrbitControls } from '../../src'
+import { Detailed, Icosahedron, OrbitControls } from '@react-three/drei'
 import { ComponentProps } from 'react'
 
 export default {

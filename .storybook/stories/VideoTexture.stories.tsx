@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Plane, VideoTexture, useTexture } from '../../src'
+import { Plane, VideoTexture, useTexture } from '@react-three/drei'
 
 export default {
   title: 'Misc/VideoTexture',

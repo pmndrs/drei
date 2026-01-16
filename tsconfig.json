@@ -16,7 +16,11 @@
     "outDir": "dist",
     "resolveJsonModule": true,
     "noImplicitAny": false,
-    "noImplicitThis": false
+    "noImplicitThis": false,
+    "baseUrl": ".",
+    "paths": {
+      "@react-three/drei": ["./src"]
+    }
   },
   "include": ["./src"],
   "exclude": ["./node_modules/**/*"]

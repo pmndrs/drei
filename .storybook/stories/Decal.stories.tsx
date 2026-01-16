@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
-import { Sampler, Decal, useTexture, useSurfaceSampler, PerspectiveCamera, OrbitControls } from '../../src'
+import { Sampler, Decal, useTexture, useSurfaceSampler, PerspectiveCamera, OrbitControls } from '@react-three/drei'
 import { Euler, InstancedBufferAttribute, Matrix4, Quaternion, Vector3 } from 'three'
 import { ComponentProps } from 'react'
 

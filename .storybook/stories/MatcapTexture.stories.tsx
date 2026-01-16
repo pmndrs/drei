@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { useGLTF, MatcapTexture } from '../../src'
+import { useGLTF, MatcapTexture } from '@react-three/drei'
 
 export default {
   title: 'Staging/MatcapTexture',

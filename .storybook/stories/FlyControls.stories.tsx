@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Box, FlyControls } from '../../src'
+import { Box, FlyControls } from '@react-three/drei'
 
 export default {
   title: 'Controls/FlyControls',

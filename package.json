@@ -126,7 +126,8 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3",
     "vite": "^5.4.11",
-    "vite-plugin-glslify": "^2.1.0"
+    "vite-plugin-glslify": "^2.1.0",
+    "vite-tsconfig-paths": "^6.0.4"
   },
   "peerDependencies": {
     "@react-three/fiber": "^9.0.0",

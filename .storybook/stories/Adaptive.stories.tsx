@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { useGLTF, AdaptiveDpr, AdaptiveEvents, OrbitControls } from '../../src'
+import { useGLTF, AdaptiveDpr, AdaptiveEvents, OrbitControls } from '@react-three/drei'
 
 import type { GLTF } from 'three-stdlib'
 

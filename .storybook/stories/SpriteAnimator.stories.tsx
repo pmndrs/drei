@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 import { Setup } from '../Setup'
-import { SpriteAnimator, useSpriteLoader } from '../../src'
+import { SpriteAnimator, useSpriteLoader } from '@react-three/drei'
 
 const SPRITE_IMAGE = 'story.png'
 const SPRITE_DATA = 'story.json'

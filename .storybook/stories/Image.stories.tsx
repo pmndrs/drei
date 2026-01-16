@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Image, useTexture } from '../../src'
+import { Image, useTexture } from '@react-three/drei'
 
 export default {
   title: 'Abstractions/Image',

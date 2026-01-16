@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Plane, ScreenVideoTexture } from '../../src'
+import { Plane, ScreenVideoTexture } from '@react-three/drei'
 
 export default {
   title: 'Misc/ScreenVideoTexture',

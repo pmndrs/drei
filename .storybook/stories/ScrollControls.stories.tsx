@@ -4,7 +4,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
-import { useGLTF, ScrollControls, Scroll, useCursor, useIntersect } from '../../src'
+import { useGLTF, ScrollControls, Scroll, useCursor, useIntersect } from '@react-three/drei'
 
 export default {
   title: 'Controls/ScrollControls',

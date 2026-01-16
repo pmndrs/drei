@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 import { Setup } from '../Setup'
 import { useTurntable } from '../useTurntable'
 
-import { Extrude } from '../../src'
+import { Extrude } from '@react-three/drei'
 
 export default {
   title: 'Shapes/Extrude',

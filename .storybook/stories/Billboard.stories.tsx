@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Billboard, Plane, Box, Cone, OrbitControls, Text } from '../../src'
+import { Billboard, Plane, Box, Cone, OrbitControls, Text } from '@react-three/drei'
 import { ComponentProps } from 'react'
 
 export default {

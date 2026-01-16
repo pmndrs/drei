@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 import { Setup } from '../Setup'
 import { MeshBVHHelper } from 'three-mesh-bvh'
 
-import { useHelper, Bvh, TorusKnot, OrbitControls } from '../../src'
+import { useHelper, Bvh, TorusKnot, OrbitControls } from '@react-three/drei'
 import { useFrame, useThree } from '@react-three/fiber'
 import { Group, Mesh, Raycaster, Vector3 } from 'three'
 

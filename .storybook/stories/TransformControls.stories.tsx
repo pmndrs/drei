@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Box, OrbitControls, Select, TransformControls } from '../../src'
+import { Box, OrbitControls, Select, TransformControls } from '@react-three/drei'
 
 export default {
   title: 'Gizmos/TransformControls',

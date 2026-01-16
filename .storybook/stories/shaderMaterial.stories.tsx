@@ -4,7 +4,7 @@ import { Texture } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
-import { Box, shaderMaterial, useTexture } from '../../src'
+import { Box, shaderMaterial, useTexture } from '@react-three/drei'
 
 const MyMaterial = shaderMaterial(
   { map: new Texture(), repeats: 1 },

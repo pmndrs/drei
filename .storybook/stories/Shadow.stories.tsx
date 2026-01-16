@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Shadow, Icosahedron, Plane } from '../../src'
+import { Shadow, Icosahedron, Plane } from '@react-three/drei'
 
 export default {
   title: 'Misc/Shadow',

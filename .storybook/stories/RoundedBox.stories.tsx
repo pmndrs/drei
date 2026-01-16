@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 import { Setup } from '../Setup'
 import { useTurntable } from '../useTurntable'
 
-import { RoundedBox, RoundedBoxGeometry } from '../../src'
+import { RoundedBox, RoundedBoxGeometry } from '@react-three/drei'
 
 export default {
   title: 'Shapes/RoundedBox',

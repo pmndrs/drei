@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Segment, Segments, OrbitControls } from '../../src'
+import { Segment, Segments, OrbitControls } from '@react-three/drei'
 
 export default {
   title: 'Performance/Segments',

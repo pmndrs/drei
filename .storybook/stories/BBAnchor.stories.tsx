@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Icosahedron, Sphere, Html, BBAnchor, OrbitControls, useHelper } from '../../src'
+import { Icosahedron, Sphere, Html, BBAnchor, OrbitControls, useHelper } from '@react-three/drei'
 import { BoxHelper } from 'three'
 
 export default {

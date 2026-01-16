@@ -4,7 +4,7 @@ import { Vector3, RepeatWrapping, Vector2 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
-import { MeshReflectorMaterial, useTexture, TorusKnot, Box, Environment } from '../../src'
+import { MeshReflectorMaterial, useTexture, TorusKnot, Box, Environment } from '@react-three/drei'
 
 export default {
   title: 'Shaders/MeshReflectorMaterial',

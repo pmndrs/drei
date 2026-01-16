@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Line, OrbitControls, QuadraticBezierLine, CubicBezierLine, CatmullRomLine } from '../../src'
+import { Line, OrbitControls, QuadraticBezierLine, CubicBezierLine, CatmullRomLine } from '@react-three/drei'
 
 const points = GeometryUtils.hilbert3D(new Vector3(0), 5).map((p) => [p.x, p.y, p.z]) as [number, number, number][]
 

@@ -44,11 +44,11 @@ const config: StorybookConfig = {
     // Always use vite-tsconfig-paths plugin for TypeScript path resolution
     config.plugins = config.plugins || []
     config.plugins.push(tsconfigPaths())
-    
+
     // In production build with USE_BUILT_PACKAGE env var, override to use the built package
     if (process.env.USE_BUILT_PACKAGE === 'true') {
       const distPath = path.resolve(__dirname, '../dist')
-      
+
       // Override the @react-three/drei alias to point to dist instead of src
       config.resolve = config.resolve || {}
       config.resolve.alias = {
@@ -62,7 +62,7 @@ const config: StorybookConfig = {
     } else {
       console.log('🔧 Using source from /src for Storybook development')
     }
-    
+
     return config
   },
 }

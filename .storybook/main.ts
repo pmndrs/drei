@@ -4,6 +4,10 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
+// Get __dirname equivalent in ESM
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
 const config: StorybookConfig = {
   staticDirs: ['./public'],
   stories: ['./stories/**/*.stories.{ts,tsx}'],
@@ -37,10 +41,6 @@ const config: StorybookConfig = {
   },
 
   async viteFinal(config) {
-    // Get __dirname equivalent in ESM
-    const __filename = fileURLToPath(import.meta.url)
-    const __dirname = path.dirname(__filename)
-    
     // Always use vite-tsconfig-paths plugin for TypeScript path resolution
     config.plugins = config.plugins || []
     config.plugins.push(tsconfigPaths())
@@ -55,7 +55,7 @@ const config: StorybookConfig = {
         ...config.resolve.alias,
         '@react-three/drei': distPath,
         // Also handle subpath imports like @react-three/drei/web/Html
-        '@react-three/drei/': distPath + '/',
+        '@react-three/drei/': path.join(distPath, '/'),
       }
       console.log('📦 Using built package from /dist for Storybook build')
     } else {

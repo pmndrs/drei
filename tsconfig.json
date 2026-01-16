@@ -16,8 +16,13 @@
     "outDir": "dist",
     "resolveJsonModule": true,
     "noImplicitAny": false,
-    "noImplicitThis": false
+    "noImplicitThis": false,
+    "baseUrl": ".",
+    "paths": {
+      "@react-three/drei": ["./src/index.ts"],
+      "@react-three/drei/*": ["./src/*"]
+    }
   },
-  "include": ["./src"],
+  "include": ["./src", "./.storybook"],
   "exclude": ["./node_modules/**/*"]
 }

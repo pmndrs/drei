@@ -6,7 +6,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { useGLTF, AccumulativeShadows, RandomizedLight, OrbitControls, Environment } from '../../src'
+import { useGLTF, AccumulativeShadows, RandomizedLight, OrbitControls, Environment } from '@react-three/drei'
 
 export default {
   title: 'Staging/AccumulativeShadows',

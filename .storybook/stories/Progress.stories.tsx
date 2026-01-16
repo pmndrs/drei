@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Html, useGLTF, Progress } from '../../src'
+import { Html, useGLTF, Progress } from '@react-three/drei'
 
 export default {
   title: 'Misc/Progress',

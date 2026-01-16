@@ -3,7 +3,7 @@ import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
-import { Fbx, useCubeTexture } from '../../src'
+import { Fbx, useCubeTexture } from '@react-three/drei'
 
 export default {
   title: 'Loaders/Fbx',

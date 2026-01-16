@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { useAspect, Plane } from '../../src'
+import { useAspect, Plane } from '@react-three/drei'
 
 function UseAspect({
   width,

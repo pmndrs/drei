@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Box, OrbitControls, Html, ScreenSpace } from '../../src'
+import { Box, OrbitControls, Html, ScreenSpace } from '@react-three/drei'
 import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 

@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { CubeTexture, Icosahedron } from '../../src'
+import { CubeTexture, Icosahedron } from '@react-three/drei'
 
 export default {
   title: 'Abstractions/CubeTexture',

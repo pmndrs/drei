@@ -3,7 +3,7 @@ import { IcosahedronGeometry, Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
-import { Environment, Wireframe } from '../../src'
+import { Environment, Wireframe } from '@react-three/drei'
 
 export default {
   title: 'Staging/Wireframe',

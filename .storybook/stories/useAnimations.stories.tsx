@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { useAnimations, useGLTF, useMatcapTexture } from '../../src'
+import { useAnimations, useGLTF, useMatcapTexture } from '@react-three/drei'
 
 type UseAnimationHook = Parameters<typeof useAnimations>
 type UseAnimationProps = {

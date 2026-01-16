@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { ContactShadows, Sphere, Plane } from '../../src'
+import { ContactShadows, Sphere, Plane } from '@react-three/drei'
 import { ComponentProps } from 'react'
 
 export default {

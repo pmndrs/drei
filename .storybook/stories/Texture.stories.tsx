@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Icosahedron, Texture } from '../../src'
+import { Icosahedron, Texture } from '@react-three/drei'
 
 export default {
   title: 'Loaders/Texture',

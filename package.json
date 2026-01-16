@@ -41,6 +41,7 @@
     "typegen": "tsc --emitDeclarationOnly",
     "storybook": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider\" storybook dev -p 6006",
     "build-storybook": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider\" storybook build",
+    "build-storybook:prod": "yarn build && cross-env USE_BUILT_PACKAGE=true NODE_OPTIONS=\"--openssl-legacy-provider\" storybook build",
     "chromatic": "chromatic --project-token $CHROMATIC_PROJECT_TOKEN",
     "copy": "copyfiles package.json README.md LICENSE dist && json -I -f dist/package.json -e \"this.private=false; this.devDependencies=undefined; this.optionalDependencies=undefined; this.scripts=undefined; this.husky=undefined; this.prettier=undefined; this.jest=undefined; this['lint-staged']=undefined;\"",
     "copy:native": "copyfiles -u 2 src/native/package.json dist/native",
@@ -125,7 +126,8 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3",
     "vite": "^5.4.11",
-    "vite-plugin-glslify": "^2.1.0"
+    "vite-plugin-glslify": "^2.1.0",
+    "vite-tsconfig-paths": "^6.0.4"
   },
   "peerDependencies": {
     "@react-three/fiber": "^9.0.0",

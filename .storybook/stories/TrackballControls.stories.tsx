@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Icosahedron, TrackballControls } from '../../src'
+import { Icosahedron, TrackballControls } from '@react-three/drei'
 
 export default {
   title: 'Controls/TrackballControls',

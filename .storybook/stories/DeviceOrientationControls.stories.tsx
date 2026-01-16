@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { DeviceOrientationControls, Box } from '../../src'
+import { DeviceOrientationControls, Box } from '@react-three/drei'
 
 export default {
   title: 'Controls/DeviceOrientationControls',

@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { PointerLockControls, Icosahedron } from '../../src'
+import { PointerLockControls, Icosahedron } from '@react-three/drei'
 
 export default {
   title: 'Controls/PointerLockControls',

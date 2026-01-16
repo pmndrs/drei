@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Box, FirstPersonControls } from '../../src'
+import { Box, FirstPersonControls } from '@react-three/drei'
 
 export default {
   title: 'Controls/FirstPersonControls',

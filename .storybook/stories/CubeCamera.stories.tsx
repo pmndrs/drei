@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Box, CubeCamera } from '../../src'
+import { Box, CubeCamera } from '@react-three/drei'
 import { ComponentProps } from 'react'
 
 export default {

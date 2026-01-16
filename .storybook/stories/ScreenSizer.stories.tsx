@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Box, Html, ScreenSizer } from '../../src'
+import { Box, Html, ScreenSizer } from '@react-three/drei'
 
 import { Setup } from '../Setup'
 

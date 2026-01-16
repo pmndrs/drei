@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Icosahedron } from '../../src/core/shapes'
+import { Icosahedron } from '@react-three/drei/core/shapes'
 import { useTurntable } from '../useTurntable'
 
 export default {

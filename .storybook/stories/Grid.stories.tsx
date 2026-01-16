@@ -3,7 +3,7 @@ import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
-import { Grid, Box } from '../../src'
+import { Grid, Box } from '@react-three/drei'
 
 export default {
   title: 'Gizmos/Grid',

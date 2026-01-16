@@ -3,7 +3,7 @@ import * as React from 'react'
 import { Mesh, Vector2, Vector3 } from 'three'
 
 import { Setup } from '../Setup'
-import { useGLTF, NormalTexture } from '../../src'
+import { useGLTF, NormalTexture } from '@react-three/drei'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 export default {

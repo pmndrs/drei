@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Box, Resize } from '../../src'
+import { Box, Resize } from '@react-three/drei'
 
 export default {
   title: 'Staging/Resize',

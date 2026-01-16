@@ -2,7 +2,7 @@ import { useFrame } from '@react-three/fiber'
 import * as React from 'react'
 import { useRef } from 'react'
 import { MathUtils, Mesh, Vector3 } from 'three'
-import { Cone, KeyboardControls, useKeyboardControls } from '../../src'
+import { Cone, KeyboardControls, useKeyboardControls } from '@react-three/drei'
 import { Setup } from '../Setup'
 import { Meta, StoryObj } from '@storybook/react-vite'
 

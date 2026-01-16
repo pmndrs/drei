@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Box, PresentationControls } from '../../src'
+import { Box, PresentationControls } from '@react-three/drei'
 
 export default {
   title: 'Controls/PresentationControls',

@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
-import { MeshDistortMaterial, Icosahedron } from '../../src'
+import { MeshDistortMaterial, Icosahedron } from '@react-three/drei'
 
 export default {
   title: 'Shaders/MeshDistortMaterial',

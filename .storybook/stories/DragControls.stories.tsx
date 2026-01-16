@@ -1,8 +1,8 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { Box } from '../../src'
+import { Box } from '@react-three/drei'
 import { Setup } from '../Setup'
-import { DragControls } from '../../src/web/DragControls'
+import { DragControls } from '@react-three/drei/web/DragControls'
 import { Meta, StoryObj } from '@storybook/react-vite'
 import { ComponentProps } from 'react'
 

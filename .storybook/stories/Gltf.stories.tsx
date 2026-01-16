@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Gltf } from '../../src'
+import { Gltf } from '@react-three/drei'
 
 export default {
   title: 'Loaders/Gltf',

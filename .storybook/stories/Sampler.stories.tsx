@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Sampler, ComputedAttribute, TransformFn } from '../../src'
+import { Sampler, ComputedAttribute, TransformFn } from '@react-three/drei'
 import { BufferAttribute, InstancedMesh, Mesh, Vector3 } from 'three'
 
 export default {

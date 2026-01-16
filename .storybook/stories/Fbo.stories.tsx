@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Fbo, TorusKnot, Box, PerspectiveCamera } from '../../src'
+import { Fbo, TorusKnot, Box, PerspectiveCamera } from '@react-three/drei'
 
 export default {
   title: 'Misc/Fbo',

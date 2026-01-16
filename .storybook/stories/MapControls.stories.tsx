@@ -4,7 +4,7 @@ import { Box3, Sphere, Vector3 } from 'three'
 import { useLoader } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { MapControls } from '../../src'
+import { MapControls } from '@react-three/drei'
 
 import { Setup } from '../Setup'
 

@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { TrailTexture } from '../../src'
+import { TrailTexture } from '@react-three/drei'
 
 export default {
   title: 'misc/TrailTexture',

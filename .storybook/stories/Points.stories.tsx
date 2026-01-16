@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Point, Points, PointMaterial, shaderMaterial } from '../../src'
+import { Point, Points, PointMaterial, shaderMaterial } from '@react-three/drei'
 import { extend, useFrame, useThree } from '@react-three/fiber'
 
 import * as buffer from 'maath/buffer'

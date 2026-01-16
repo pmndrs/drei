@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Float } from '../../src'
+import { Float } from '@react-three/drei'
 
 export default {
   title: 'Staging/Float',

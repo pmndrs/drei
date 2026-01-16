@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Html, useGLTF, Loader } from '../../src'
+import { Html, useGLTF, Loader } from '@react-three/drei'
 
 export default {
   title: 'Misc/Loader',

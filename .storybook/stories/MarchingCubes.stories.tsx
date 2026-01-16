@@ -3,7 +3,7 @@ import { Color, Vector3 } from 'three'
 
 import { Setup } from '../Setup'
 
-import { MarchingCube, MarchingCubes, MarchingPlane, OrbitControls } from '../../src'
+import { MarchingCube, MarchingCubes, MarchingPlane, OrbitControls } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 

@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 import { Setup } from '../Setup'
 import { useTurntable } from '../useTurntable'
 
-import { Lathe } from '../../src'
+import { Lathe } from '@react-three/drei'
 
 export default {
   title: 'Shapes/Lathe',

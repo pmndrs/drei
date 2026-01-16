@@ -6,7 +6,7 @@ import * as easing from 'maath/easing'
 
 import { Setup } from '../Setup'
 
-import { FaceLandmarker, FaceControls, Box, WebcamVideoTexture } from '../../src'
+import { FaceLandmarker, FaceControls, Box, WebcamVideoTexture } from '@react-three/drei'
 import { ComponentProps, ComponentRef, useRef, useState } from 'react'
 import { FaceLandmarkerResult } from '@mediapipe/tasks-vision'
 import { useFrame, useThree } from '@react-three/fiber'

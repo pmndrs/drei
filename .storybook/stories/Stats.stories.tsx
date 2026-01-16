@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Stats } from '../../src'
+import { Stats } from '@react-three/drei'
 
 export default {
   title: 'Misc/Stats',

@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 import { Setup } from '../Setup'
 import { useTurntable } from '../useTurntable'
 
-import { meshBounds } from '../../src'
+import { meshBounds } from '@react-three/drei'
 
 function MeshBounds(props: React.ComponentProps<'mesh'>) {
   const mesh = useTurntable<React.ComponentRef<'mesh'>>()

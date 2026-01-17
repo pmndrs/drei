@@ -10,15 +10,7 @@ import * as chokidar from 'chokidar'
 import { parse as parseComment } from 'comment-parser'
 import reactDocgen from 'react-docgen-typescript'
 const { withCompilerOptions } = reactDocgen
-import {
-  docCategories,
-  tiers,
-  paths,
-  badges,
-  componentOverrides,
-  toKebabCase,
-  getDocFileName,
-} from './docs-config.js'
+import { docCategories, tiers, paths, badges, componentOverrides, toKebabCase, getDocFileName } from './docs-config.js'
 import type { InjectionTag } from './docs-config.js'
 
 //* TSDoc Extraction ==============================

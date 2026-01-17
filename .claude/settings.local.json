@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(yarn test:canary:*)",
+      "Bash(npx tsc:*)",
+      "Bash(node -c:*)",
+      "Bash(yarn vitest:*)",
+      "Bash(git checkout:*)",
+      "Bash(node --loader tsx --no-warnings:*)",
+      "Bash(dos2unix:*)",
+      "Bash(xargs:*)",
+      "Bash(node --input-type=module --eval \"import\\(''./imports.test.ts''\\).catch\\(e => console.error\\(''Import error:'', e.message\\)\\)\")",
+      "Bash(node --input-type=module --eval \"console.log\\(typeof __dirname\\)\")",
+      "Bash(node --experimental-vm-modules node_modules/vitest/vitest.mjs run:*)",
+      "Bash(git stash:*)",
+      "Bash(yarn install)"
+    ]
+  }
+}

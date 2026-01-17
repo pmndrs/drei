@@ -22,6 +22,9 @@ export default {
     ),
   ],
   tags: ['!autodocs'], // FaceLandmarker cannot have multiple instances
+  parameters: {
+    chromatic: { disableSnapshot: true },
+  },
 } satisfies Meta<typeof FaceControls>
 
 type Story = StoryObj<typeof FaceControls>

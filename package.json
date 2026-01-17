@@ -64,7 +64,7 @@
   "scripts": {
     "build": "rimraf dist && yarn typegen && unbuild && yarn copy && yarn copy:native",
     "build-storybook": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider\" storybook build",
-    "copy": "copyfiles package.json README.md LICENSE dist && json -I -f dist/package.json -e \"this.private=false; this.devDependencies=undefined; this.optionalDependencies=undefined; this.scripts=undefined; this.husky=undefined; this.prettier=undefined; this.jest=undefined; this['lint-staged']=undefined;\"",
+    "copy": "copyfiles package.json README.md LICENSE dist && json -I -f dist/package.json -e \"this.name='@react-three/drei'; this.private=false; this.devDependencies=undefined; this.optionalDependencies=undefined; this.scripts=undefined; this.husky=undefined; this.prettier=undefined; this.jest=undefined; this['lint-staged']=undefined;\"",
     "copy:native": "copyfiles -u 2 src/native/package.json dist/native",
     "docs:generate": "ts-node scripts/generate-docs.ts",
     "docs:generate:watch": "ts-node scripts/generate-docs.ts --watch",

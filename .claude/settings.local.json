@@ -13,7 +13,12 @@
       "Bash(node --input-type=module --eval \"console.log\\(typeof __dirname\\)\")",
       "Bash(node --experimental-vm-modules node_modules/vitest/vitest.mjs run:*)",
       "Bash(git stash:*)",
-      "Bash(yarn install)"
+      "Bash(yarn install)",
+      "Bash(node --version:*)",
+      "Bash(npx vitest:*)",
+      "Bash(node test-debug.mjs:*)",
+      "Bash(yarn test:bundles:*)",
+      "Bash(test:*)"
     ]
   }
 }

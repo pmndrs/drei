@@ -9,14 +9,16 @@ const __dirname = path.dirname(__filename)
 /**
  * Vitest configuration for canary tests
  *
- * These tests verify the built package works correctly:
- * - Entry point exports are accessible
- * - Bundle structure is correct
- * - No import errors from dist/
+ * Purpose: Validate the build output is functional (smoke test)
+ * - Entry points can be imported without errors
+ * - Key exports exist and are accessible
+ * - TypeScript declarations are generated
+ *
+ * Note: Uses .mjs for reliable ESM execution without TS transformation
  */
 export default defineConfig({
   test: {
-    include: ['test/canary/**/*.test.ts'],
+    include: ['test/canary/**/*.test.{ts,mjs}'],
     environment: 'node',
     globals: true,
 

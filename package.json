@@ -1,5 +1,5 @@
 {
-  "name": "@react-three/drei",
+  "name": "@react-three/drei--root",
   "version": "0.0.0-semantic-release",
   "private": true,
   "type": "module",

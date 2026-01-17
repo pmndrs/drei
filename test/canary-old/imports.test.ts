@@ -12,9 +12,13 @@
  */
 import { describe, it, expect } from 'vitest'
 import path from 'path'
-import { pathToFileURL } from 'url'
+import { pathToFileURL, fileURLToPath } from 'url'
 
 //* Helper ==============================
+
+// ESM equivalent of __dirname
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // Dynamic import from dist folder (ESM)
 async function importDist(entryPath: string) {
@@ -63,7 +67,7 @@ describe('Root Entry - @react-three/drei', () => {
 describe('Core Entry - @react-three/drei/core', () => {
   it('should export core components', async () => {
     // obuild nests: core/core/
-    const core = await importDist('core/core/index.mjs')
+    const core = await importDist('core/index.mjs')
 
     expect(core.OrbitControls).toBeDefined()
     expect(core.Environment).toBeDefined()
@@ -77,7 +81,7 @@ describe('Core Entry - @react-three/drei/core', () => {
 describe('Legacy Entry - @react-three/drei/legacy', () => {
   it('should export WebGL-specific materials', async () => {
     // obuild nests: legacy/legacy/
-    const legacy = await importDist('legacy/legacy/index.mjs')
+    const legacy = await importDist('legacy/index.mjs')
 
     // Legacy-specific materials
     expect(legacy.MeshDistortMaterial).toBeDefined()
@@ -88,7 +92,7 @@ describe('Legacy Entry - @react-three/drei/legacy', () => {
 
   it('should export legacy effects', async () => {
     // obuild nests: legacy/legacy/
-    const legacy = await importDist('legacy/legacy/index.mjs')
+    const legacy = await importDist('legacy/index.mjs')
 
     expect(legacy.Sparkles).toBeDefined()
     expect(legacy.Segments).toBeDefined()
@@ -100,7 +104,7 @@ describe('Legacy Entry - @react-three/drei/legacy', () => {
 describe('WebGPU Entry - @react-three/drei/webgpu', () => {
   it('should export WebGPU-specific materials', async () => {
     // obuild nests: webgpu/webgpu/
-    const webgpu = await importDist('webgpu/webgpu/index.mjs')
+    const webgpu = await importDist('webgpu/index.mjs')
 
     // WebGPU-specific materials (TSL-based)
     expect(webgpu.MeshTransmissionMaterial).toBeDefined()
@@ -109,7 +113,7 @@ describe('WebGPU Entry - @react-three/drei/webgpu', () => {
 
   it('should export WebGPU-specific components', async () => {
     // obuild nests: webgpu/webgpu/
-    const webgpu = await importDist('webgpu/webgpu/index.mjs')
+    const webgpu = await importDist('webgpu/index.mjs')
 
     expect(webgpu.Sparkles).toBeDefined()
     expect(webgpu.Line).toBeDefined()
@@ -121,7 +125,7 @@ describe('WebGPU Entry - @react-three/drei/webgpu', () => {
 describe('External Entry - @react-three/drei/external', () => {
   it('should export external components', async () => {
     // obuild nests: external/external/
-    const external = await importDist('external/external/index.mjs')
+    const external = await importDist('external/index.mjs')
 
     // External components should be defined (even if empty)
     expect(external).toBeDefined()
@@ -133,7 +137,7 @@ describe('External Entry - @react-three/drei/external', () => {
 describe('Experimental Entry - @react-three/drei/experimental', () => {
   it('should export experimental components', async () => {
     // obuild nests: experimental/experimental/
-    const experimental = await importDist('experimental/experimental/index.mjs')
+    const experimental = await importDist('experimental/index.mjs')
 
     // Experimental components should be defined (even if empty)
     expect(experimental).toBeDefined()
@@ -150,11 +154,11 @@ describe('TypeScript Declarations', () => {
     // obuild nests entry points in subdirectories
     const dtsFiles = [
       'index.d.mts',
-      'core/core/index.d.mts',
-      'legacy/legacy/index.d.mts',
-      'webgpu/webgpu/index.d.mts',
-      'external/external/index.d.mts',
-      'experimental/experimental/index.d.mts',
+      'core/index.d.mts',
+      'legacy/index.d.mts',
+      'webgpu/index.d.mts',
+      'external/index.d.mts',
+      'experimental/index.d.mts',
     ]
 
     for (const file of dtsFiles) {

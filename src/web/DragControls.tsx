@@ -38,6 +38,7 @@ export type DragControlsProps = {
   onDragEnd?: () => void
   children: React.ReactNode
   dragConfig?: DragConfig
+  handlers?: Partial<Parameters<typeof useGesture>[0]>
 }
 
 export const DragControls: ForwardRefComponent<DragControlsProps, THREE.Group> = React.forwardRef<
@@ -56,6 +57,7 @@ export const DragControls: ForwardRefComponent<DragControlsProps, THREE.Group> =
       onDragEnd,
       children,
       dragConfig,
+      handlers,
       ...props
     },
     fRef
@@ -150,6 +152,7 @@ export const DragControls: ForwardRefComponent<DragControlsProps, THREE.Group> =
           onDragEnd && onDragEnd()
           invalidate()
         },
+        ...(typeof handlers === 'object' ? handlers : {}),
       },
       {
         drag: {

@@ -31,6 +31,8 @@ type DragControlsProps = {
   /** Drag end event */
   onDragEnd?: () => void
   children: React.ReactNode
+  dragConfig?: DragConfig
+  handlers?: Partial<Parameters<typeof useGesture>[0]>
 }
 ```
 
@@ -51,3 +53,5 @@ return (
     autoTransform={false}
     onDrag={(localMatrix) => matrix.copy(localMatrix)}
 ```
+
+You can pass options to the underlying [@use-gesture](https://use-gesture.netlify.app/docs/gestures/#usegesture-and-gesture) call with `dragConfig` and `handlers`.

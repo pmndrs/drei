@@ -1,39 +1,9 @@
 ---
 title: Example
-sourcecode: src/core/Example.tsx
+sourcecode: src/core/Helpers/Example/Example.tsx
 ---
 
-[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.vercel.app/?path=/story/misc-example--example-st)
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/misc-example--example-st)
 
-> [!Note]
-> Solely for [`CONTRIBUTING`](CONTRIBUTING.md#example) purposes
+A simple counter example component. Click to increment, meta-click to decrement.
 
-A "counter" example.
-
-```tsx
-<Example font="/Inter_Bold.json" />
-```
-
-```tsx
-type ExampleProps = {
-  font: string
-  color?: Color
-  debug?: boolean
-  bevelSize?: number
-}
-```
-
-Ref-api:
-
-```tsx
-const api = useRef<ExampleApi>()
-
-<Example ref={api} font="/Inter_Bold.json" />
-```
-
-```tsx
-type ExampleApi = {
-  incr: (x?: number) => void
-  decr: (x?: number) => void
-}
-```

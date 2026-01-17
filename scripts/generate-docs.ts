@@ -8,46 +8,10 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as chokidar from 'chokidar'
 import { parse as parseComment } from 'comment-parser'
-import { withCompilerOptions, PropItem } from 'react-docgen-typescript'
-import {
-  docCategories,
-  tiers,
-  paths,
-  badges,
-  componentOverrides,
-  InjectionTag,
-  toKebabCase,
-  getDocFileName,
-} from './docs-config'
-
-//* Types ==============================
-
-interface ExtractedDoc {
-  name: string
-  description: string
-  examples: { title: string; code: string }[]
-  props: PropInfo[]
-  see: string[]
-  remarks: string[]
-  sourcePath: string
-  category: string
-  storyPath: string
-}
-
-interface PropInfo {
-  name: string
-  type: string
-  required: boolean
-  defaultValue: string | null
-  description: string
-}
-
-interface ProcessedComponent {
-  filePath: string
-  docsTemplatePath: string | null
-  outputPath: string
-  extracted: ExtractedDoc | null
-}
+import reactDocgen from 'react-docgen-typescript'
+const { withCompilerOptions } = reactDocgen
+import { docCategories, tiers, paths, badges, componentOverrides, toKebabCase, getDocFileName } from './docs-config.js'
+import type { InjectionTag } from './docs-config.js'
 
 //* TSDoc Extraction ==============================
 
@@ -58,10 +22,10 @@ const docgenParser = withCompilerOptions(
     savePropValueAsString: true,
     shouldExtractLiteralValuesFromEnum: true,
     shouldRemoveUndefinedFromOptional: true,
-    propFilter: (prop: PropItem) => {
+    propFilter: (prop: any) => {
       // Filter out inherited HTML/React props unless explicitly documented
       if (prop.declarations && prop.declarations.length > 0) {
-        const isFromNodeModules = prop.declarations.some((d) => d.fileName.includes('node_modules'))
+        const isFromNodeModules = prop.declarations.some((d: any) => d.fileName.includes('node_modules'))
         if (isFromNodeModules) return false
       }
       return true
@@ -678,8 +642,10 @@ function handleFileChange(filePath: string, componentMap: Map<string, ProcessedC
   console.log(`   ✅ Updated: ${path.relative(paths.docs, component.outputPath)}`)
 }
 
-// Run
-if (require.main === module) {
+// Run (ESM equivalent of require.main === module)
+import { fileURLToPath } from 'url'
+const __filename = fileURLToPath(import.meta.url)
+if (process.argv[1] === __filename) {
   main().catch(console.error)
 }
 

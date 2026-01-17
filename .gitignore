@@ -24,6 +24,7 @@ __diff_output__
 # IDE/editor files
 .idea
 .vscode
+.claude/settings.local.json
 
 # Package/lock files
 package-lock.json

@@ -26,6 +26,10 @@ __diff_output__
 .vscode
 .claude/settings.local.json
 
+# Claude Code
+.claude/
+CLAUDE.md
+
 # Package/lock files
 package-lock.json
 yarn-error.log

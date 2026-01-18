@@ -9,7 +9,7 @@ import { useFBO } from '@core/Portal/Fbo'
 import { useHelper } from '@core/Gizmos/useHelper'
 import { shaderMaterial } from '@legacy/Materials/shaderMaterial'
 import { Edges } from '@core/Geometry/Edges'
-import { FullScreenQuad } from 'three/examples/jsm/postprocessing/Pass'
+import { FullScreenQuad } from 'three/examples/jsm/postprocessing/Pass.js'
 import { ForwardRefComponent } from '@utils/ts-utils'
 import { version } from '@utils/constants'
 

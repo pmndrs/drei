@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { extend, useLoader } from '@react-three/fiber'
-import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'

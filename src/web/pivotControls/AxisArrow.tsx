@@ -52,6 +52,7 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
     axisColors,
     hoveredColor,
     opacity,
+    renderOrder,
     onDragStart,
     onDrag,
     onDragEnd,
@@ -185,11 +186,11 @@ export const AxisArrow: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2 }> 
           color={color_ as any}
           opacity={opacity}
           polygonOffset
-          renderOrder={1}
+          renderOrder={renderOrder}
           polygonOffsetFactor={-10}
           fog={false}
         />
-        <mesh raycast={() => null} position={[0, cylinderLength + coneLength / 2.0, 0]} renderOrder={500}>
+        <mesh raycast={() => null} position={[0, cylinderLength + coneLength / 2.0, 0]} renderOrder={renderOrder}>
           <coneGeometry args={[coneWidth, coneLength, 24, 1]} />
           <meshBasicMaterial
             transparent

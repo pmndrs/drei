@@ -48,6 +48,7 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
     axisColors,
     hoveredColor,
     opacity,
+    renderOrder,
     onDragStart,
     onDrag,
     onDragEnd,
@@ -209,6 +210,7 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
           onPointerOut={onPointerOut}
           scale={length}
           userData={userData}
+          renderOrder={renderOrder}
         >
           <planeGeometry />
           <meshBasicMaterial
@@ -233,6 +235,7 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
           polygonOffsetFactor={-10}
           userData={userData}
           fog={false}
+          renderOrder={renderOrder}
         />
       </group>
     </group>

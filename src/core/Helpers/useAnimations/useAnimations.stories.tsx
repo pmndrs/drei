@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { Vector3 } from 'three'
-import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
+import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'

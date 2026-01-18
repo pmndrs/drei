@@ -10,7 +10,7 @@ import { useIntersect } from '@core/UI/useIntersect'
 import { useFBO } from '@core/Portal/Fbo'
 import { RenderTexture } from '@legacy/Portal/RenderTexture'
 import { shaderMaterial } from '@legacy/Materials/shaderMaterial'
-import { FullScreenQuad } from 'three/examples/jsm/postprocessing/Pass'
+import { FullScreenQuad } from 'three/examples/jsm/postprocessing/Pass.js'
 import { version } from '@utils/constants'
 import { ForwardRefComponent } from '@utils/ts-utils'
 

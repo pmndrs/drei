@@ -2,7 +2,7 @@ import * as THREE from '#three'
 import * as React from 'react'
 import { shaderMaterial } from '@legacy/Materials/shaderMaterial'
 import { extend, applyProps, ReactThreeFiber, useThree, ThreeElements } from '@react-three/fiber'
-import { toCreasedNormals } from 'three/examples/jsm/utils/BufferGeometryUtils'
+import { toCreasedNormals } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import { version } from '@utils/constants'
 
 const OutlinesMaterial = /* @__PURE__ */ shaderMaterial(

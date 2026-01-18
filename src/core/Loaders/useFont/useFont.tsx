@@ -1,4 +1,4 @@
-import { FontLoader, FontData as ThreeFontData } from 'three/examples/jsm/loaders/FontLoader'
+import { FontLoader, FontData as ThreeFontData } from 'three/examples/jsm/loaders/FontLoader.js'
 import { suspend, preload, clear } from 'suspend-react'
 
 export type Glyph = {

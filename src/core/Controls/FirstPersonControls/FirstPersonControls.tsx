@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { EventManager, ThreeElement, useFrame, useThree } from '@react-three/fiber'
-import { FirstPersonControls as FirstPersonControlImpl } from 'three/examples/jsm/controls/FirstPersonControls'
+import { FirstPersonControls as FirstPersonControlImpl } from 'three/examples/jsm/controls/FirstPersonControls.js'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 
 export type FirstPersonControlsProps = Omit<ThreeElement<typeof FirstPersonControlImpl>, 'ref' | 'args'> & {

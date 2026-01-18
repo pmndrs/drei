@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Texture } from '#three'
 import { useLoader, useThree } from '@react-three/fiber'
 import { useEffect } from 'react'
-import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader'
+import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
 import { IsObject } from '../useTexture/useTexture'
 
 const cdn = 'https://cdn.jsdelivr.net/gh/pmndrs/drei-assets@master'

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { AsciiEffect } from 'three/examples/jsm/effects/AsciiEffect'
+import { AsciiEffect } from 'three/examples/jsm/effects/AsciiEffect.js'
 
 export type AsciiRendererProps = {
   /** Render index, default: 1 */

@@ -3036,12 +3036,8 @@ __metadata:
     "@storybook/react-vite": "npm:^10.1.11"
     "@types/react": "npm:^19.0.2"
     "@types/react-dom": "npm:^19.0.2"
-<<<<<<< HEAD
-    "@types/three": "npm:^0.161.0"
-=======
     "@types/seedrandom": "npm:^3"
-    "@types/three": "npm:^0.159.0"
->>>>>>> master
+    "@types/three": "npm:^0.161.0"
     "@typescript-eslint/eslint-plugin": "npm:^8.15.0"
     "@typescript-eslint/parser": "npm:^8.15.0"
     "@use-gesture/react": "npm:^10.3.1"

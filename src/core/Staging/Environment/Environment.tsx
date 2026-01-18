@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useThree, createPortal, useFrame, extend, Euler, applyProps, ThreeElement } from '@react-three/fiber'
 import { WebGLCubeRenderTarget, Texture, Scene, CubeCamera, HalfFloatType, CubeTexture } from '#three'
-import { GroundedSkybox as GroundProjectedEnvImpl } from 'three/examples/jsm/objects/GroundedSkybox'
+import { GroundedSkybox as GroundProjectedEnvImpl } from 'three/examples/jsm/objects/GroundedSkybox.js'
 import { PresetsType } from '../environment-assets'
 import { EnvironmentLoaderProps, useEnvironment } from '../useEnvironment/useEnvironment'
 

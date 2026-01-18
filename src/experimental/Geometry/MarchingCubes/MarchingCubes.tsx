@@ -1,7 +1,7 @@
 import * as THREE from '#three'
 import * as React from 'react'
 import { Color, Group } from '#three'
-import { MarchingCubes as MarchingCubesImpl } from 'three/examples/jsm/objects/MarchingCubes'
+import { MarchingCubes as MarchingCubesImpl } from 'three/examples/jsm/objects/MarchingCubes.js'
 import { ThreeElements, useFrame } from '@react-three/fiber'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 

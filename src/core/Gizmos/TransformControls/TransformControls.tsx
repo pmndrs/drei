@@ -1,7 +1,7 @@
 import { ReactThreeFiber, ThreeElement, ThreeElements, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from '#three'
-import { TransformControls as TransformControlsImpl } from 'three/examples/jsm/controls/TransformControls'
+import { TransformControls as TransformControlsImpl } from 'three/examples/jsm/controls/TransformControls.js'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 
 type ControlsProto = {

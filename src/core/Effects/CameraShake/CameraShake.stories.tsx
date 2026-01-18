@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { OrbitControls as OrbitControlsImpl } from 'three/examples/jsm/controls/OrbitControls'
+import { OrbitControls as OrbitControlsImpl } from 'three/examples/jsm/controls/OrbitControls.js'
 import { useFrame } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 

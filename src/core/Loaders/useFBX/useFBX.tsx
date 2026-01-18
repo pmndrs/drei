@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
 import { useLoader } from '@react-three/fiber'
 import { Group } from '#three'
 

@@ -1,10 +1,10 @@
 import * as React from 'react'
 import { RGBAFormat, HalfFloatType, WebGLRenderTarget, UnsignedByteType, TextureDataType, ColorSpace } from '#three'
 import { extend, useThree, useFrame, ThreeElement, ThreeElements } from '@react-three/fiber'
-import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader'
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass'
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
+import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js'
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { ForwardRefComponent } from '@utils/ts-utils'
 
 export type EffectsProps = Omit<ThreeElements['effectComposer'], 'ref' | 'args'> & {

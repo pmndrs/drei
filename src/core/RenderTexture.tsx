@@ -60,9 +60,9 @@ export const RenderTexture: ForwardRefComponent<RenderTextureProps, THREE.Textur
       // Since this is only a texture it does not have an easy way to obtain the parent, which we
       // need to transform event coordinates to local coordinates. We use r3f internals to find the
       // next Object3D.
-      let parent = (fbo.texture as any)?.__r3f.parent?.object
+      let parent = (fbo.texture as any)?.__r3f?.parent?.object
       while (parent && !(parent instanceof THREE.Object3D)) {
-        parent = parent.__r3f.parent?.object
+        parent = parent.?__r3f?.parent?.object
       }
       if (!parent) return false
       // First we call the previous state-onion-layers compute, this is what makes it possible to nest portals

@@ -49,7 +49,7 @@ interface AccumulativeContext {
   getMesh: () => THREE.Mesh<THREE.PlaneGeometry, SoftShadowMaterialProps & THREE.ShaderMaterial>
   /** Resets the buffers, starting from scratch */
   reset: () => void
-  /** Updates the lightmap for a number of frames accumulartively */
+  /** Updates the lightmap for a number of frames accumulatively */
   update: (frames?: number) => void
 }
 

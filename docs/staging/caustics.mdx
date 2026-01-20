@@ -30,7 +30,7 @@ type CausticsProps = ThreeElements['group'] & {
   backsideIOR?: number
   /** The texel size, default: 0.3125 */
   worldRadius?: number
-  /** Intensity of the prjected caustics, default: 0.05 */
+  /** Intensity of the projected caustics, default: 0.05 */
   intensity?: number
   /** Caustics color, default: white */
   color?: ReactThreeFiber.Color
@@ -43,7 +43,7 @@ type CausticsProps = ThreeElements['group'] & {
 
 It will create a transparent plane that blends the caustics of the objects it receives into your scene. It will only render once and not take resources any longer!
 
-Make sure to use the `debug` flag to help you stage your contents. Like ContactShadows and AccumulativeShadows the plane faces Y up. It is recommended to use [leva](https://github.com/pmndrs/leva) to configue the props above as some can be micro fractional depending on the models (intensity, worldRadius, ior and backsideIOR especially).
+Make sure to use the `debug` flag to help you stage your contents. Like ContactShadows and AccumulativeShadows the plane faces Y up. It is recommended to use [leva](https://github.com/pmndrs/leva) to configure the props above as some can be micro fractional depending on the models (intensity, worldRadius, ior and backsideIOR especially).
 
 ```jsx
 <Caustics debug backside lightSource={[2.5, 5, -2.5]}>

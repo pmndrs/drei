@@ -90,7 +90,7 @@ const SplatMaterial = /* @__PURE__ */ shaderMaterial(
     uniform float focal;
     attribute uint splatIndex;
     uniform sampler2D centerAndScaleTexture;
-    uniform usampler2D covAndColorTexture;    
+    uniform usampler2D covAndColorTexture;
 
     vec2 unpackInt16(in uint value) {
       int v = int(value);
@@ -156,8 +156,8 @@ const SplatMaterial = /* @__PURE__ */ shaderMaterial(
       vPosition = position;
 
       gl_Position = vec4(
-        vCenter 
-          + position.x * v2 / viewport * 2.0 
+        vCenter
+          + position.x * v2 / viewport * 2.0
           + position.y * v1 / viewport * 2.0, pos2d.z / pos2d.w, 1.0);
     }
     `,
@@ -634,7 +634,7 @@ export function Splat({
   const gl = useThree((state) => state.gl)
   const camera = useThree((state) => state.camera)
 
-  // Shared state, globally memoized, the same url re-uses the same daza
+  // Shared state, globally memoized, the same url re-uses the same data
   const shared = useLoader(SplatLoader, src, (loader) => {
     loader.gl = gl
     loader.chunkSize = chunkSize

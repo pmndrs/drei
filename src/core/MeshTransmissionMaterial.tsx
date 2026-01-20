@@ -140,8 +140,8 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       // Head
       shader.fragmentShader =
         /*glsl*/ `
-      uniform float chromaticAberration;         
-      uniform float anisotropicBlur;      
+      uniform float chromaticAberration;
+      uniform float anisotropicBlur;
       uniform float time;
       uniform float distortion;
       uniform float distortionScale;
@@ -254,7 +254,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
           vec3 getVolumeTransmissionRay( const in vec3 n, const in vec3 v, const in float thickness, const in float ior, const in mat4 modelMatrix ) {
             // Direction of refracted light.
             vec3 refractionVector = refract( - v, normalize( n ), 1.0 / ior );
-            // Compute rotation-independant scaling of the model matrix.
+            // Compute rotation-independent scaling of the model matrix.
             vec3 modelScale;
             modelScale.x = length( vec3( modelMatrix[ 0 ].xyz ) );
             modelScale.y = length( vec3( modelMatrix[ 1 ].xyz ) );
@@ -268,7 +268,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
             return roughness * clamp( ior * 2.0 - 2.0, 0.0, 1.0 );
           }
           vec4 getTransmissionSample( const in vec2 fragCoord, const in float roughness, const in float ior ) {
-            float framebufferLod = log2( transmissionSamplerSize.x ) * applyIorToRoughness( roughness, ior );            
+            float framebufferLod = log2( transmissionSamplerSize.x ) * applyIorToRoughness( roughness, ior );
             #ifdef USE_SAMPLER
               #ifdef texture2DLodEXT
                 return texture2DLodEXT(transmissionSamplerMap, fragCoord.xy, framebufferLod);
@@ -314,7 +314,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
       // Add refraction
       shader.fragmentShader = shader.fragmentShader.replace(
         '#include <transmission_fragment>',
-        /*glsl*/ `  
+        /*glsl*/ `
         // Improve the refraction to use the world pos
         material.transmission = _transmission;
         material.transmissionAlpha = 1.0;
@@ -327,7 +327,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
         #ifdef USE_THICKNESSMAP
           material.thickness *= texture2D( thicknessMap, vUv ).g;
         #endif
-        
+
         vec3 pos = vWorldPosition;
         float runningSeed = 0.0;
         vec3 v = normalize( cameraPosition - pos );

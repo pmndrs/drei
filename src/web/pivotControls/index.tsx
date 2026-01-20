@@ -237,7 +237,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
         ref.current.matrix = matrix
       }
       // Update gizmo scale in accordance with matrix changes
-      // Without this, there might be noticable turbulences if scaling happens fast enough
+      // Without this, there might be noticeable turbulences if scaling happens fast enough
       ref.current.updateWorldMatrix(true, true)
 
       mG.makeRotationFromEuler(gizmoRef.current.rotation)

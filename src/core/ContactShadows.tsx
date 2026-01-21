@@ -20,6 +20,7 @@ export type ContactShadowsProps = Omit<ThreeElements['group'], 'ref' | 'scale'> 
   scale?: number | [x: number, y: number]
   color?: THREE.ColorRepresentation
   depthWrite?: boolean
+  side?: THREE.Side
 }
 
 export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Group> = /* @__PURE__ */ React.forwardRef(
@@ -37,6 +38,7 @@ export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Grou
       smooth = true,
       color = '#000000',
       depthWrite = false,
+      side = THREE.FrontSide,
       renderOrder,
       ...props
     },
@@ -64,7 +66,7 @@ export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Grou
       renderTargetBlur.texture.generateMipmaps = renderTarget.texture.generateMipmaps = false
       const planeGeometry = new THREE.PlaneGeometry(width, height).rotateX(Math.PI / 2)
       const blurPlane = new THREE.Mesh(planeGeometry)
-      const depthMaterial = new THREE.MeshDepthMaterial()
+      const depthMaterial = new THREE.MeshDepthMaterial({ side })
       depthMaterial.depthTest = depthMaterial.depthWrite = false
       depthMaterial.onBeforeCompile = (shader) => {
         shader.uniforms = {
@@ -96,7 +98,7 @@ export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Grou
         verticalBlurMaterial,
         renderTargetBlur,
       ]
-    }, [resolution, width, height, scale, color])
+    }, [resolution, width, height, scale, color, side])
 
     const blurShadows = (blur) => {
       blurPlane.visible = true

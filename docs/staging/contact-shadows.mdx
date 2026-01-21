@@ -22,3 +22,13 @@ Since this is a rather expensive effect you can limit the amount of frames it re
 ```jsx
 <ContactShadows frames={1} />
 ```
+
+This component renders shadows using an orthographic camera that looks upwards along the Y axis.
+
+It replaces all the materials in your scene with a `MeshDepthMaterial`, renders the shadows, and then restores the original materials.
+
+The `side` prop of the `MeshDepthMaterial` it uses is `FrontSide` by default. If some of your meshes are not producing shadows, try setting the `side` prop to `DoubleSide`.
+
+```jsx
+<ContactShadows side={THREE.DoubleSide} />
+```

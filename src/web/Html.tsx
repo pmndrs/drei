@@ -126,6 +126,7 @@ export interface HtmlProps extends Omit<Assign<React.HTMLAttributes<HTMLDivEleme
   distanceFactor?: number
   sprite?: boolean
   transform?: boolean
+  transparent?: boolean
   zIndexRange?: Array<number>
   calculatePosition?: CalculatePosition
   as?: string
@@ -167,6 +168,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
       calculatePosition = defaultCalculatePosition,
       as = 'div',
       wrapperClass,
+      transparent=false,
       pointerEvents = 'auto',
       ...props
     }: HtmlProps,
@@ -458,6 +460,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
             {material || (
               <shaderMaterial
                 side={DoubleSide}
+                transparent={transparent}
                 vertexShader={shaders.vertexShader}
                 fragmentShader={shaders.fragmentShader}
               />

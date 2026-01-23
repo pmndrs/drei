@@ -7,7 +7,7 @@ import { AxisArrow } from './AxisArrow'
 import { AxisRotator } from './AxisRotator'
 import { PlaneSlider } from './PlaneSlider'
 import { ScalingSphere } from './ScalingSphere'
-import { OnDragStartProps, context, Line } from './context'
+import { OnDragStartProps, context, Line, resolveObject } from './context'
 import { calculateScaleFactor } from '../../../utils/calculateScaleFactor'
 import { LineProps } from '#drei-platform'
 
@@ -49,6 +49,8 @@ export type PivotControlsProps = {
 
   /** Starting matrix */
   matrix?: THREE.Matrix4
+  /** External object to attach controls to (instead of wrapping children) */
+  object?: THREE.Object3D | React.MutableRefObject<THREE.Object3D>
   /** BBAnchor, each axis can be between -1/0/+1 */
   anchor?: [number, number, number]
   /** If autoTransform is true, automatically apply the local transform on drag, true */
@@ -122,6 +124,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
     {
       enabled = true,
       matrix,
+      object,
       onDragStart,
       onDrag,
       onDragEnd,
@@ -165,13 +168,35 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
     const cameraScale = React.useRef<THREE.Vector3>(new THREE.Vector3(1, 1, 1))
     const gizmoScale = React.useRef<THREE.Vector3>(new THREE.Vector3(1, 1, 1))
 
+    // Attach to external object when provided
+    React.useEffect(() => {
+      if (object) {
+        const target = resolveObject(object)
+        if (target) {
+          const pivot = ref.current
+          const didAutoUpdate = target.matrixAutoUpdate
+          target.updateWorldMatrix(true, true)
+          target.matrixAutoUpdate = false
+          pivot.matrix.copy(target.matrix)
+          return () => {
+            if (didAutoUpdate) {
+              target.matrixAutoUpdate = true
+              target.matrix.decompose(target.position, target.quaternion, target.scale)
+            }
+          }
+        }
+      }
+    }, [object])
+
     React.useLayoutEffect(() => {
       if (!anchor) return
-      childrenRef.current.updateWorldMatrix(true, true)
+      const anchorTarget = resolveObject(object, childrenRef.current)
+      if (!anchorTarget) return
+      anchorTarget.updateWorldMatrix(true, true)
 
-      mPInv.copy(childrenRef.current.matrixWorld).invert()
+      mPInv.copy(anchorTarget.matrixWorld).invert()
       bb.makeEmpty()
-      childrenRef.current.traverse((obj: any) => {
+      anchorTarget.traverse((obj: any) => {
         if (!obj.geometry) return
         if (!obj.geometry.boundingBox) obj.geometry.computeBoundingBox()
         mL.copy(obj.matrixWorld).premultiply(mPInv)
@@ -209,6 +234,9 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
           if (autoTransform) {
             ref.current.matrix.copy(mL)
           }
+          // Update the attached object
+          const target = resolveObject(object)
+          if (target) target.matrix.copy(mL)
           onDrag && onDrag(mL, mdL, mW, mdW)
           invalidate()
         },
@@ -252,6 +280,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
         annotations,
         annotationsClass,
         LineComp,
+        object,
       ]
     )
 

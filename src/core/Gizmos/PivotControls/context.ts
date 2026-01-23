@@ -36,3 +36,12 @@ export type PivotContext = {
 export { Line }
 
 export const context = /* @__PURE__ */ React.createContext<PivotContext>(null!)
+
+export const resolveObject = (
+  object?: THREE.Object3D | React.MutableRefObject<THREE.Object3D>,
+  fallback?: THREE.Object3D
+): THREE.Object3D | undefined => {
+  if (!object) return fallback
+  if ('current' in object) return object.current
+  return object
+}

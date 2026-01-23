@@ -7,7 +7,9 @@ import { AxisArrow } from './AxisArrow'
 import { AxisRotator } from './AxisRotator'
 import { PlaneSlider } from './PlaneSlider'
 import { ScalingSphere } from './ScalingSphere'
-import { OnDragStartProps, context, Line, resolveObject } from './context'
+import { OnDragStartProps, OnHoverProps, context, Line, resolveObject } from './context'
+
+export type { OnDragStartProps, OnHoverProps } from './context'
 import { calculateScaleFactor } from '../../../utils/calculateScaleFactor'
 import { LineProps } from '#drei-platform'
 
@@ -83,6 +85,8 @@ export type PivotControlsProps = {
   onDrag?: (l: THREE.Matrix4, deltaL: THREE.Matrix4, w: THREE.Matrix4, deltaW: THREE.Matrix4) => void
   /** Drag end event */
   onDragEnd?: () => void
+  /** Hover event, fired when pointer enters/exits a gizmo component */
+  onHover?: (props: OnHoverProps) => void
   /** Set this to false if you want the gizmo to be visible through faces */
   depthTest?: boolean
   renderOrder?: number
@@ -128,6 +132,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
       onDragStart,
       onDrag,
       onDragEnd,
+      onHover,
       autoTransform = true,
       anchor,
       disableAxes = false,
@@ -165,6 +170,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
     const gizmoRef = React.useRef<THREE.Group>(null!)
     const childrenRef = React.useRef<THREE.Group>(null!)
     const translation = React.useRef<[number, number, number]>([0, 0, 0])
+    const dragState = React.useRef<OnDragStartProps | null>(null)
     const cameraScale = React.useRef<THREE.Vector3>(new THREE.Vector3(1, 1, 1))
     const gizmoScale = React.useRef<THREE.Vector3>(new THREE.Vector3(1, 1, 1))
 
@@ -218,6 +224,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
     const config = React.useMemo(
       () => ({
         onDragStart: (props: OnDragStartProps) => {
+          dragState.current = props
           mL0.copy(ref.current.matrix)
           mW0.copy(ref.current.matrixWorld)
           onDragStart && onDragStart(props)
@@ -241,9 +248,14 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
           invalidate()
         },
         onDragEnd: () => {
+          dragState.current = null
           if (onDragEnd) onDragEnd()
           invalidate()
         },
+        onHover: (props: OnHoverProps) => {
+          if (onHover) onHover(props)
+        },
+        dragState,
         translation,
         translationLimits,
         rotationLimits,
@@ -264,6 +276,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
         onDragStart,
         onDrag,
         onDragEnd,
+        onHover,
         translation,
         translationLimits,
         rotationLimits,

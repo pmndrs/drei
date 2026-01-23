@@ -15,6 +15,12 @@ type ControlsProto = {
   enabled: boolean
 }
 
+export type ExpandedDragConfig = DragConfig & {
+  /** Prevents overlapping of objects during drag (experimental) */
+  preventOverlap?: boolean
+}
+
+
 export type DragControlsProps = {
   /** If autoTransform is true, automatically apply the local transform on drag, true */
   autoTransform?: boolean
@@ -37,7 +43,7 @@ export type DragControlsProps = {
   ) => void /** Drag end event */
   onDragEnd?: () => void
   children: React.ReactNode
-  dragConfig?: DragConfig
+  dragConfig?: ExpandedDragConfig
 }
 
 /**
@@ -99,8 +105,10 @@ export const DragControls: ForwardRefComponent<DragControlsProps, THREE.Group> =
           onDragStart && onDragStart(initialModelPosition)
           invalidate()
         },
-        onDrag: ({ xy: [dragX, dragY], intentional }) => {
+        onDrag: ({ xy: [dragX, dragY], intentional, event }) => {
           if (!intentional) return
+          // bail if we suddenly start dragging because of an overlap bug
+          if (dragConfig && dragConfig.preventOverlap) event.preventDefault()
           const normalizedMouseX = ((dragX - size.left) / size.width) * 2 - 1
           const normalizedMouseY = -((dragY - size.top) / size.height) * 2 + 1
 

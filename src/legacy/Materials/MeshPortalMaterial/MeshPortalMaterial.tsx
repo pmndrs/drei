@@ -52,8 +52,8 @@ declare module '@react-three/fiber' {
   interface ThreeElements {
     portalMaterialImpl: ThreeElements['shaderMaterial'] & {
       resolution: ReactThreeFiber.Vector2
-      blur: number
-      blend: number
+      blur?: number
+      blend?: number
       size?: number
       sdf?: THREE.Texture
       map?: THREE.Texture
@@ -76,7 +76,9 @@ export type PortalProps = Omit<ThreeElements['portalMaterialImpl'], 'ref' | 'ble
   /** Optional render priority, defaults to 0 */
   renderPriority?: number
   /** Optionally diable events inside the portal, defaults to false */
-  events?: boolean
+  events?: boolean,
+  /** Optional samples, defaults to 8 */
+  samples?: number
 }
 
 /**
@@ -100,6 +102,8 @@ export const MeshPortalMaterial: ForwardRefComponent<PortalProps, ThreeElements[
         children,
         events = undefined,
         blur = 0,
+        blend = 0,
+        samples = 8,
         eventPriority = 0,
         renderPriority = 0,
         worldUnits = false,
@@ -117,7 +121,7 @@ export const MeshPortalMaterial: ForwardRefComponent<PortalProps, ThreeElements[
       const [priority, setPriority] = React.useState(0)
       useFrame(() => {
         // If blend is > 0 then the portal is being entered, the render-priority must change
-        const p = ref.current.blend > 0 ? Math.max(1, renderPriority) : 0
+        const p = (ref.current.blend ?? 0) > 0 ? Math.max(1, renderPriority) : 0
         if (priority !== p) setPriority(p)
       })
 
@@ -206,6 +210,7 @@ export const MeshPortalMaterial: ForwardRefComponent<PortalProps, ThreeElements[
             eventPriority={eventPriority}
             renderPriority={renderPriority}
             compute={compute}
+            samples={samples}
           >
             {children}
             <ManagePortalScene
@@ -294,7 +299,7 @@ function ManagePortalScene({
       // This bit is only necessary if the portal is blended, now it has a render-priority
       // and will take over the render loop
       if (priority) {
-        if (material.current?.blend > 0 && material.current?.blend < 1) {
+        if (material.current?.blend && material.current?.blend > 0 && material.current?.blend < 1) {
           // If blend is ongoing (> 0 and < 1) then we need to render both the root scene
           // and the portal scene, both will then be mixed in the quad from above
           blend.value = material.current.blend

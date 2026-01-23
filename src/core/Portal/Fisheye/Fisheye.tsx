@@ -87,7 +87,7 @@ export function Fisheye({
     state.raycaster.ray.direction.x *= -1 // flip across X to accommodate the "flip" of the env map
     state.raycaster.ray.direction.applyNormalMatrix(normalMatrix).multiplyScalar(-1)
     return undefined
-  }, [])
+  }, [width, height]) // fix things when resized #2165
 
   useFrame(
     ({ gl }) => {

@@ -232,8 +232,8 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
         if (transform) {
           el.style.cssText = `position:absolute;top:0;left:0;pointer-events:none;overflow:hidden;`
         } else {
-          const vec = calculatePosition(group.current, camera, size)
-          el.style.cssText = `position:absolute;top:0;left:0;transform:translate3d(${vec[0]}px,${vec[1]}px,0);transform-origin:0 0;`
+          // Position off-screen initially; useFrame will position correctly on first frame
+          el.style.cssText = `position:absolute;top:0;left:0;transform:translate3d(0,-9999px,0);transform-origin:0 0;`
         }
         if (target) {
           if (prepend) target.prepend(el)

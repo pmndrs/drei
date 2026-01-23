@@ -138,13 +138,25 @@ export function KeyboardControls({ map, children, onChange, domElement }: Keyboa
       if (up) fn(false)
     }
 
+    const blurHandler = () => {
+      // Reset all keys to unpressed when window loses focus
+      const resetState = map.reduce((prev, cur) => ({ ...prev, [cur.name]: false }), {} as KeyboardControlsState)
+      set(resetState)
+      // Reset pressed state in keyMap
+      Object.values(keyMap).forEach((obj: any) => {
+        obj.pressed = false
+      })
+    }
+
     const source = domElement || window
     source.addEventListener('keydown', downHandler as EventListenerOrEventListenerObject, { passive: true })
     source.addEventListener('keyup', upHandler as EventListenerOrEventListenerObject, { passive: true })
+    window.addEventListener('blur', blurHandler)
 
     return () => {
       source.removeEventListener('keydown', downHandler as EventListenerOrEventListenerObject)
       source.removeEventListener('keyup', upHandler as EventListenerOrEventListenerObject)
+      window.removeEventListener('blur', blurHandler)
     }
   }, [domElement, key])
 

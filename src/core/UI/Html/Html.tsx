@@ -16,6 +16,7 @@ import {
 import { Assign } from 'utility-types'
 import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
+import { roundEven } from '../../../utils/roundEven'
 
 const v1 = /* @__PURE__ */ new Vector3()
 const v2 = /* @__PURE__ */ new Vector3()
@@ -191,6 +192,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
     ref: React.Ref<HTMLDivElement>
   ) => {
     const { gl, camera, scene, size, raycaster, events, viewport } = useThree()
+    const forceEven = useThree((state) => (state.internal as any).forceEven) as boolean | undefined
 
     const [el] = React.useState(() => document.createElement(as))
     const root = React.useRef<ReactDOM.Root>(null)
@@ -251,13 +253,15 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
     }, [wrapperClass])
 
     const styles: React.CSSProperties = React.useMemo(() => {
+      const width = forceEven ? roundEven(size.width) : size.width
+      const height = forceEven ? roundEven(size.height) : size.height
       if (transform) {
         return {
           position: 'absolute',
           top: 0,
           left: 0,
-          width: size.width,
-          height: size.height,
+          width,
+          height,
           transformStyle: 'preserve-3d',
           pointerEvents: 'none',
         }
@@ -266,15 +270,15 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
           position: 'absolute',
           transform: center ? 'translate3d(-50%,-50%,0)' : 'none',
           ...(fullscreen && {
-            top: -size.height / 2,
-            left: -size.width / 2,
-            width: size.width,
-            height: size.height,
+            top: forceEven ? roundEven(-size.height / 2) : -size.height / 2,
+            left: forceEven ? roundEven(-size.width / 2) : -size.width / 2,
+            width,
+            height,
           }),
           ...style,
         }
       }
-    }, [style, center, fullscreen, size, transform])
+    }, [style, center, fullscreen, size, transform, forceEven])
 
     const transformInnerStyles: React.CSSProperties = React.useMemo(
       () => ({ position: 'absolute', pointerEvents }),
@@ -345,7 +349,8 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
           el.style.zIndex = `${objectZIndex(group.current, camera, zRange)}`
 
           if (transform) {
-            const [widthHalf, heightHalf] = [size.width / 2, size.height / 2]
+            const widthHalf = forceEven ? roundEven(size.width / 2) : size.width / 2
+            const heightHalf = forceEven ? roundEven(size.height / 2) : size.height / 2
             const fov = camera.projectionMatrix.elements[5] * heightHalf
             const { isOrthographicCamera, top, left, bottom, right } = camera as OrthographicCamera
             const cameraMatrix = getCameraCSSMatrix(camera.matrixWorldInverse)
@@ -358,8 +363,10 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
               matrix.elements[3] = matrix.elements[7] = matrix.elements[11] = 0
               matrix.elements[15] = 1
             }
-            el.style.width = size.width + 'px'
-            el.style.height = size.height + 'px'
+            const elWidth = forceEven ? roundEven(size.width) : size.width
+            const elHeight = forceEven ? roundEven(size.height) : size.height
+            el.style.width = elWidth + 'px'
+            el.style.height = elHeight + 'px'
             el.style.perspective = isOrthographicCamera ? '' : `${fov}px`
             if (transformOuterRef.current && transformInnerRef.current) {
               transformOuterRef.current.style.transform = `${cameraTransform}${cameraMatrix}translate(${widthHalf}px,${heightHalf}px)`
@@ -367,7 +374,9 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
             }
           } else {
             const scale = distanceFactor === undefined ? 1 : objectScale(group.current, camera) * distanceFactor
-            el.style.transform = `translate3d(${vec[0]}px,${vec[1]}px,0) scale(${scale})`
+            const x = forceEven ? roundEven(vec[0]) : vec[0]
+            const y = forceEven ? roundEven(vec[1]) : vec[1]
+            el.style.transform = `translate3d(${x}px,${y}px,0) scale(${scale})`
           }
           oldPosition.current = vec
           oldZoom.current = camera.zoom

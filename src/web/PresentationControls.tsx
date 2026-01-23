@@ -86,7 +86,7 @@ export function PresentationControls({
         return [y, x]
       },
     },
-    { target: global ? explDomElement : undefined }
+    { target: global ? explDomElement : undefined, enabled: enabled }
   )
   return (
     <group ref={ref} {...(bind?.() as any)}>

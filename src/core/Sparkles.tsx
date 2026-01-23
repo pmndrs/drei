@@ -41,7 +41,7 @@ class SparklesImplMaterial extends THREE.ShaderMaterial {
         varying float vOpacity;
         void main() {
           float distanceToCenter = distance(gl_PointCoord, vec2(0.5));
-          float strength = 0.05 / distanceToCenter - 0.1;
+          float strength = clamp(0.05 / distanceToCenter - 0.1, 0.0, 1.0);
           gl_FragColor = vec4(vColor, strength * vOpacity);
           #include <tonemapping_fragment>
           #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>

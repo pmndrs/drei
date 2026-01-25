@@ -40,6 +40,7 @@ export default defineConfig(({ mode }) => {
         '@external': path.resolve(__dirname, '../src/external'),
         '@experimental': path.resolve(__dirname, '../src/experimental'),
         '@utils': path.resolve(__dirname, '../src/utils'),
+        '@lib': path.resolve(__dirname, '../lib'),
       },
       // Dedupe three.js to prevent multiple instances
       // This is temporary until r3f alpha is replaced with proper peer dependencies

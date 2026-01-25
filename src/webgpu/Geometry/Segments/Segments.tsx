@@ -23,8 +23,8 @@ type Api = {
 
 type SegmentRef = React.RefObject<SegmentObject>
 export type SegmentProps = Omit<ThreeElements['segmentObject'], 'ref' | 'start' | 'end' | 'color'> & {
-  start: ReactThreeFiber.Vector3
-  end: ReactThreeFiber.Vector3
+  start?: ReactThreeFiber.Vector3
+  end?: ReactThreeFiber.Vector3
   color?: ReactThreeFiber.Color
 }
 
@@ -83,13 +83,13 @@ const Segments: ForwardRefComponent<SegmentsProps, LineSegments2> = /* @__PURE__
     for (let i = 0; i < limit; i++) {
       const segment = segments[i]?.current
       if (segment) {
-        positions[i * 6 + 0] = segment.start.x
-        positions[i * 6 + 1] = segment.start.y
-        positions[i * 6 + 2] = segment.start.z
+        positions[i * 6 + 0] = segment.start?.x || 0
+        positions[i * 6 + 1] = segment.start?.y || 0
+        positions[i * 6 + 2] = segment.start?.z || 0
 
-        positions[i * 6 + 3] = segment.end.x
-        positions[i * 6 + 4] = segment.end.y
-        positions[i * 6 + 5] = segment.end.z
+        positions[i * 6 + 3] = segment.end?.x || 0
+        positions[i * 6 + 4] = segment.end?.y || 0
+        positions[i * 6 + 5] = segment.end?.z || 0
 
         colors[i * 6 + 0] = segment.color.r
         colors[i * 6 + 1] = segment.color.g
@@ -129,8 +129,8 @@ declare module '@react-three/fiber' {
 
 export class SegmentObject {
   color: THREE.Color
-  start: THREE.Vector3
-  end: THREE.Vector3
+  start?: THREE.Vector3
+  end?: THREE.Vector3
   constructor() {
     this.color = new THREE.Color('red')
     this.start = new THREE.Vector3(0, 0, 0)
@@ -138,8 +138,11 @@ export class SegmentObject {
   }
 }
 
-const normPos = (pos: SegmentProps['start']): SegmentObject['start'] =>
-  pos instanceof THREE.Vector3 ? pos : new THREE.Vector3(...(typeof pos === 'number' ? [pos, pos, pos] : pos))
+const normPos = (pos: SegmentProps['start']): THREE.Vector3 => {
+  if(!pos) return new THREE.Vector3(0,0,0);
+
+  return pos instanceof THREE.Vector3 ? pos : new THREE.Vector3(...(typeof pos === 'number' ? [pos, pos, pos] : pos));
+}
 
 const Segment: ForwardRefComponent<SegmentProps, SegmentObject> = /* @__PURE__ */ React.forwardRef<
   SegmentObject,

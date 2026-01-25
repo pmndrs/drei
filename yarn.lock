@@ -3354,7 +3354,6 @@ __metadata:
     suspend-react: "npm:^0.1.3"
     three: "npm:^0.182.0"
     three-mesh-bvh: "npm:^0.8.3"
-    three-stdlib: "npm:^2.36.1"
     troika-three-text: "npm:^0.52.4"
     ts-node: "npm:^10.9.2"
     tunnel-rat: "npm:^0.1.2"
@@ -3367,7 +3366,7 @@ __metadata:
     vitest: "npm:^4.0.16"
     zustand: "npm:^5.0.1"
   peerDependencies:
-    "@react-three/fiber": ">=9.0.0"
+    "@react-three/fiber": ">=10.0.0-alpha.2"
     react: ^19
     react-dom: ^19
     three: ">=0.182"
@@ -4367,13 +4366,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/draco3d@npm:^1.4.0":
-  version: 1.4.2
-  resolution: "@types/draco3d@npm:1.4.2"
-  checksum: 10c0/2c35e375ded4667da2a222cf8651e639b7963198936225d7c60adc120f882f6e13634422bf89f59d0c897374e95155fa45f050dcd2506f21555edd7679820f2e
-  languageName: node
-  linkType: hard
-
 "@types/estree@npm:*, @types/estree@npm:1.0.6, @types/estree@npm:^1.0.6":
   version: 1.0.6
   resolution: "@types/estree@npm:1.0.6"
@@ -4420,13 +4412,6 @@ __metadata:
   version: 2.4.4
   resolution: "@types/normalize-package-data@npm:2.4.4"
   checksum: 10c0/aef7bb9b015883d6f4119c423dd28c4bdc17b0e8a0ccf112c78b4fe0e91fbc4af7c6204b04bba0e199a57d2f3fbbd5b4a14bf8739bf9d2a39b2a0aad545e0f86
-  languageName: node
-  linkType: hard
-
-"@types/offscreencanvas@npm:^2019.6.4":
-  version: 2019.7.1
-  resolution: "@types/offscreencanvas@npm:2019.7.1"
-  checksum: 10c0/c813a4dbce9b863173378734ef69806f79dfce44fde9c38f6b00649bdb17bc679400bad4eb6294944464cf1aef941d6e651ab15e9bd1e694f5ad1a1865e29d41
   languageName: node
   linkType: hard
 
@@ -4522,7 +4507,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/webxr@npm:*, @types/webxr@npm:^0.5.2":
+"@types/webxr@npm:*":
   version: 0.5.4
   resolution: "@types/webxr@npm:0.5.4"
   checksum: 10c0/6f416ee6e46374a37811f025942cd2868978ae87d2fadcad6d1b2847f1c977d2424b61ea1f751c104b6891c9a193bf616fa43292b1afb249871766a1ff90dae0
@@ -6880,13 +6865,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"draco3d@npm:^1.4.1":
-  version: 1.5.6
-  resolution: "draco3d@npm:1.5.6"
-  checksum: 10c0/597bfd10dd3ec41cd44be8836f6168b83d6eecd20787df8df354c6a9df791656892e9d475c68908dd9fb0223476b048713dbf022cbfd29b3fe8f849f4ffeb373
-  languageName: node
-  linkType: hard
-
 "duplexer2@npm:~0.1.0":
   version: 0.1.4
   resolution: "duplexer2@npm:0.1.4"
@@ -7942,13 +7920,6 @@ __metadata:
     picomatch:
       optional: true
   checksum: 10c0/e345083c4306b3aed6cb8ec551e26c36bab5c511e99ea4576a16750ddc8d3240e63826cc624f5ae17ad4dc82e68a253213b60d556c11bfad064b7607847ed07f
-  languageName: node
-  linkType: hard
-
-"fflate@npm:^0.6.9":
-  version: 0.6.10
-  resolution: "fflate@npm:0.6.10"
-  checksum: 10c0/c452f720e4cb404b300fceb8ef0bdf345f18fbfd3f57f7d0974dce5f5e2ac0e8dd4b6ff4bb7061ae74fd919b9c707172f9dbd44d91149b1137199b8c705768f1
   languageName: node
   linkType: hard
 
@@ -12281,13 +12252,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"potpack@npm:^1.0.1":
-  version: 1.0.2
-  resolution: "potpack@npm:1.0.2"
-  checksum: 10c0/670c23898a4257130858b960c2e654d3327c0f6a7e7091ff5846f213e65af8f9476320b995b8ad561a47a4d1c359c7ef347de57d22e7b02597051abb52bc85c4
-  languageName: node
-  linkType: hard
-
 "prelude-ls@npm:^1.2.1":
   version: 1.2.1
   resolution: "prelude-ls@npm:1.2.1"
@@ -14341,22 +14305,6 @@ __metadata:
   peerDependencies:
     three: ">= 0.159.0"
   checksum: 10c0/d1f052d4606498acf57e08e28d01c84157eb388d46be8e03bc839630dc4eb919d5bb5e2ed4e9113d39cbc3cda29f09212e3450e1bb21de6615ec330f2575fc28
-  languageName: node
-  linkType: hard
-
-"three-stdlib@npm:^2.36.1":
-  version: 2.36.1
-  resolution: "three-stdlib@npm:2.36.1"
-  dependencies:
-    "@types/draco3d": "npm:^1.4.0"
-    "@types/offscreencanvas": "npm:^2019.6.4"
-    "@types/webxr": "npm:^0.5.2"
-    draco3d: "npm:^1.4.1"
-    fflate: "npm:^0.6.9"
-    potpack: "npm:^1.0.1"
-  peerDependencies:
-    three: ">=0.128.0"
-  checksum: 10c0/6d04a3e6e1cf5a23e1d8807085609e5cfa999d342a8f4a3168432c4152e99ab555f7fd7ab22903d9639f33d8d19d2183c62931be34ad6c3ac8bd3ed879d973c2
   languageName: node
   linkType: hard
 

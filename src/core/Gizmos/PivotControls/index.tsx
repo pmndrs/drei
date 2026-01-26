@@ -221,6 +221,16 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
       invalidate()
     })
 
+    // When depthTest is false, controls render on top visually but raycaster still uses distance.
+    // Setting interactivePriority tells R3F's raycaster to prioritize these objects.
+    const mergedUserData = React.useMemo(
+      () => ({
+        ...userData,
+        ...(depthTest === false && { interactivePriority: 1 }),
+      }),
+      [userData, depthTest]
+    )
+
     const config = React.useMemo(
       () => ({
         onDragStart: (props: OnDragStartProps) => {
@@ -267,7 +277,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
         fixed,
         depthTest,
         renderOrder,
-        userData,
+        userData: mergedUserData,
         annotations,
         annotationsClass,
         LineComponent: LineComp,
@@ -288,7 +298,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
         ...axisColors,
         hoveredColor,
         opacity,
-        userData,
+        mergedUserData,
         autoTransform,
         annotations,
         annotationsClass,

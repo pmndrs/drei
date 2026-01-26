@@ -1,19 +1,10 @@
 import * as React from 'react'
-import * as THREE from '#three'
-import { extend, ThreeElement } from '@react-three/fiber'
+import * as THREE from 'three/webgpu'
 import {
   WireframeMaterial,
   WireframeMaterialProps,
-  WireframeMaterialShaders,
-  setWireframeOverride,
-  useWireframeUniforms,
-} from '@legacy/Materials/WireframeMaterial'
-
-declare module '@react-three/fiber' {
-  interface ThreeElements {
-    meshWireframeMaterial: ThreeElement<typeof WireframeMaterial>
-  }
-}
+  setBarycentricCoordinates,
+} from '@webgpu/Materials/WireframeMaterial'
 
 interface WireframeProps {
   geometry?: THREE.BufferGeometry | React.RefObject<THREE.BufferGeometry>
@@ -45,33 +36,6 @@ function isWireframeGeometry(geometry: any): geometry is THREE.WireframeGeometry
   return (geometry as THREE.WireframeGeometry).type === 'WireframeGeometry'
 }
 
-function getUniforms() {
-  const u = {}
-  for (const key in WireframeMaterialShaders.uniforms) {
-    u[key] = { value: WireframeMaterialShaders.uniforms[key] }
-  }
-  return u
-}
-
-function getBarycentricCoordinates(geometry: THREE.BufferGeometry, removeEdge?: boolean) {
-  const position = geometry.getAttribute('position')
-  const count = position.count
-
-  const barycentric: number[] = []
-
-  for (let i = 0; i < count; i++) {
-    const even = i % 2 === 0
-    const Q = removeEdge ? 1 : 0
-    if (even) {
-      barycentric.push(0, 0, 1, 0, 1, 0, 1, 0, Q)
-    } else {
-      barycentric.push(0, 1, 0, 0, 0, 1, 1, 0, Q)
-    }
-  }
-
-  return new THREE.BufferAttribute(Float32Array.from(barycentric), 3)
-}
-
 function getInputGeometry(
   inputGeometry: THREE.BufferGeometry | React.RefObject<THREE.BufferGeometry> | React.RefObject<THREE.Object3D>
 ) {
@@ -97,36 +61,22 @@ function getInputGeometry(
   }
 }
 
-function setBarycentricCoordinates(geometry: THREE.BufferGeometry, simplify: boolean) {
-  if (geometry.index) {
-    console.warn('Wireframe: Requires non-indexed geometry, converting to non-indexed geometry.')
-    const nonIndexedGeo = geometry.toNonIndexed()
-
-    geometry.copy(nonIndexedGeo)
-    geometry.setIndex(null)
-  }
-
-  const newBarycentric = getBarycentricCoordinates(geometry, simplify)
-
-  geometry.setAttribute('barycentric', newBarycentric)
-}
-
 function WireframeWithCustomGeo({
   geometry: customGeometry,
   simplify = false,
   ...props
 }: WireframeProps & WireframeMaterialProps) {
-  extend({ MeshWireframeMaterial: WireframeMaterial })
   const [geometry, setGeometry] = React.useState<THREE.BufferGeometry>(null!)
 
   React.useLayoutEffect(() => {
-    const geom = getInputGeometry(customGeometry!)
+    let geom = getInputGeometry(customGeometry!)
 
     if (!geom) {
       throw new Error('Wireframe: geometry prop must be a BufferGeometry or a ref to a BufferGeometry.')
     }
 
-    setBarycentricCoordinates(geom, simplify)
+    // setBarycentricCoordinates returns a new geometry if conversion was needed
+    geom = setBarycentricCoordinates(geom)
 
     if (isRef(customGeometry)) {
       setGeometry(geom)
@@ -139,14 +89,7 @@ function WireframeWithCustomGeo({
     <>
       {drawnGeo && (
         <mesh geometry={drawnGeo}>
-          <meshWireframeMaterial
-            attach="material"
-            transparent
-            side={THREE.DoubleSide}
-            polygonOffset={true} //
-            polygonOffsetFactor={-4}
-            {...props}
-          />
+          <WireframeMaterial {...props} />
         </mesh>
       )}
     </>
@@ -158,36 +101,31 @@ function WireframeWithoutCustomGeo({
   ...props
 }: Omit<WireframeProps, 'geometry'> & WireframeMaterialProps) {
   const objectRef = React.useRef<THREE.Object3D>(null!)
-  const uniforms = React.useMemo(() => getUniforms(), [WireframeMaterialShaders.uniforms])
-  useWireframeUniforms(uniforms, props)
 
   React.useLayoutEffect(() => {
-    const geom = getInputGeometry(objectRef)
+    let geom = getInputGeometry(objectRef)
 
     if (!geom) {
       throw new Error('Wireframe: Must be a child of a Mesh, Line or Points object or specify a geometry prop.')
     }
     const og = geom.clone()
 
-    setBarycentricCoordinates(geom, simplify)
+    // setBarycentricCoordinates returns a new geometry if conversion was needed
+    geom = setBarycentricCoordinates(geom)
+
+    // Update parent mesh geometry if it changed
+    const parent = objectRef.current.parent as THREE.Mesh
+    if (parent && parent.geometry !== geom) {
+      parent.geometry = geom
+    }
 
     return () => {
-      geom.copy(og)
-      og.dispose()
+      if (parent) {
+        parent.geometry.dispose()
+        parent.geometry = og
+      }
     }
   }, [simplify])
-
-  React.useLayoutEffect(() => {
-    const parentMesh = objectRef.current.parent as THREE.Mesh<THREE.BufferGeometry, THREE.Material>
-    const og = parentMesh.material.clone()
-
-    setWireframeOverride(parentMesh.material, uniforms)
-
-    return () => {
-      parentMesh.material.dispose()
-      parentMesh.material = og
-    }
-  }, [])
 
   return <object3D ref={objectRef} />
 }
@@ -195,6 +133,8 @@ function WireframeWithoutCustomGeo({
 /**
  * Renders a stylized wireframe effect on a mesh.
  * Supports backface rendering, dash patterns, and squeeze effects.
+ *
+ * WebGPU version using TSL-based WireframeMaterial.
  *
  * @example Basic usage
  * ```jsx

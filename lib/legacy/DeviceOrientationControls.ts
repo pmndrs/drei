@@ -1,4 +1,4 @@
-import { Camera, Euler, MathUtils, Quaternion, Vector3, EventDispatcher } from 'three'
+import { Camera, Euler, MathUtils, Quaternion, Vector3, EventDispatcher } from '#three'
 
 
 interface StandardControlsEventMap {

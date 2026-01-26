@@ -52,7 +52,7 @@
     "@monogrid/gainmap-js": "^3.0.6",
     "@use-gesture/react": "^10.3.1",
     "camera-controls": "^3.1.0",
-    "cross-env": "^7.0.3",
+    "cross-env": "^10.1.0",
     "detect-gpu": "^5.0.56",
     "glsl-noise": "^0.0.0",
     "hls.js": "^1.5.17",

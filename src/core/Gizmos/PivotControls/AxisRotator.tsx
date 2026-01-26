@@ -55,6 +55,8 @@ const rotMatrix = /* @__PURE__ */ new THREE.Matrix4()
 const posNew = /* @__PURE__ */ new THREE.Vector3()
 const ray = /* @__PURE__ */ new THREE.Ray()
 const intersection = /* @__PURE__ */ new THREE.Vector3()
+const viewPlane = /* @__PURE__ */ new THREE.Plane()
+const viewIntersection = /* @__PURE__ */ new THREE.Vector3()
 
 export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; axis: 0 | 1 | 2 }> = ({
   dir1,
@@ -134,9 +136,25 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
         const [min, max] = rotationLimits?.[axis] || [undefined, undefined]
 
         ray.copy(e.ray)
-        ray.intersectPlane(plane, intersection)
-        ray.direction.negate()
-        ray.intersectPlane(plane, intersection)
+
+        // Check if ray is nearly parallel to the rotation plane (camera aligned with axis)
+        const dotProduct = Math.abs(ray.direction.dot(normal))
+
+        if (dotProduct < 0.1) {
+          // Use a plane perpendicular to the view direction instead
+          viewPlane.setFromNormalAndCoplanarPoint(ray.direction.clone().negate(), origin)
+          ray.intersectPlane(viewPlane, viewIntersection)
+
+          // Project the view intersection onto the rotation plane
+          const toIntersection = viewIntersection.clone().sub(origin)
+          const projectedDist = toIntersection.dot(normal)
+          intersection.copy(viewIntersection).sub(normal.clone().multiplyScalar(projectedDist))
+        } else {
+          ray.intersectPlane(plane, intersection)
+          ray.direction.negate()
+          ray.intersectPlane(plane, intersection)
+        }
+
         let deltaAngle = calculateAngle(clickPoint, intersection, origin, e1, e2)
         let degrees = toDegrees(deltaAngle)
 

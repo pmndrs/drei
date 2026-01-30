@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   build:
-    uses: pmndrs/docs/.github/workflows/build.yml@3
+    uses: pmndrs/docs/.github/workflows/build.yml@v3
     with:
       docker_tag: '3'
       mdx: 'docs'

@@ -42,7 +42,10 @@ class RaycasterHelper extends Object3D {
     origin: [0x0eec82, 0xff005b],
   }
 
-  constructor(raycaster: Raycaster, public numberOfHitsToVisualize = 20) {
+  constructor(
+    raycaster: Raycaster,
+    public numberOfHitsToVisualize = 20
+  ) {
     super()
     this.raycaster = raycaster
 

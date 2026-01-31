@@ -174,7 +174,9 @@ function main() {
   // Summary
   const includedCount = values.length - actualExclusions.length
   console.log(`\n📊 Summary:`)
-  console.log(`   Value exports: ${values.length} total, ${includedCount} included, ${actualExclusions.length} excluded`)
+  console.log(
+    `   Value exports: ${values.length} total, ${includedCount} included, ${actualExclusions.length} excluded`
+  )
   console.log(`   Type exports: ${types.length} total`)
 
   // List what was excluded

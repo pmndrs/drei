@@ -76,7 +76,7 @@ export type PortalProps = Omit<ThreeElements['portalMaterialImpl'], 'ref' | 'ble
   /** Optional render priority, defaults to 0 */
   renderPriority?: number
   /** Optionally diable events inside the portal, defaults to false */
-  events?: boolean,
+  events?: boolean
   /** Optional samples, defaults to 8 */
   samples?: number
 }

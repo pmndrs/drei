@@ -65,8 +65,8 @@ export function shaderMaterial<U extends Uniforms, M extends THREE.ShaderMateria
       this.uniforms = THREE.UniformsUtils.clone(this.uniforms)
 
       // restore allowing props set in the constructor #2473
-            // Assign parameters, this might include uniforms
-            Object.assign(this, parameters)
+      // Assign parameters, this might include uniforms
+      Object.assign(this, parameters)
 
       onInit?.(this as unknown as M)
     }

@@ -20,7 +20,6 @@ export type ExpandedDragConfig = DragConfig & {
   preventOverlap?: boolean
 }
 
-
 export type DragControlsProps = {
   /** If autoTransform is true, automatically apply the local transform on drag, true */
   autoTransform?: boolean

@@ -266,13 +266,13 @@ const ScrollHtml: ForwardRefComponent<{ children?: React.ReactNode; style?: Reac
       const { width, height } = useThree((state) => state.size)
       const fiberState = React.useContext(fiberContext)
       const root = React.useMemo(() => {
-      let root = rootCache.get(state.fixed)
-      if (!root) {
-        root = ReactDOM.createRoot(state.fixed)
-        rootCache.set(state.fixed, root)
-      }
-      return root
-    }, [state.fixed])
+        let root = rootCache.get(state.fixed)
+        if (!root) {
+          root = ReactDOM.createRoot(state.fixed)
+          rootCache.set(state.fixed, root)
+        }
+        return root
+      }, [state.fixed])
       useFrame(() => {
         if (state.delta > state.eps) {
           group.current.style.transform = `translate3d(${

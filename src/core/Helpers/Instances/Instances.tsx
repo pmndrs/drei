@@ -30,7 +30,7 @@ export type InstancedAttributeProps = Omit<ThreeElements['instancedBufferAttribu
   name: string
   defaultValue: any
   normalized?: boolean
-  usage?: number,
+  usage?: number
   type?: 'float' | 'int' | 'uint' | 'short' | 'ushort' | 'byte'
 }
 

@@ -98,12 +98,7 @@ function OnHoverScene() {
 
   return (
     <>
-      <PivotControls
-        depthTest={false}
-        scale={0.75}
-        LineComponent={LineComponent}
-        onHover={handleHover}
-      >
+      <PivotControls depthTest={false} scale={0.75} LineComponent={LineComponent} onHover={handleHover}>
         <Box>
           <meshStandardMaterial />
         </Box>

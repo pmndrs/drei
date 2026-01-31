@@ -70,24 +70,27 @@ export function Fisheye({
   const sph = new THREE.Sphere(new THREE.Vector3(), radius)
   const normalMatrix = new THREE.Matrix3()
 
-  const compute = React.useCallback((event, state, prev) => {
-    // Raycast from the render camera to the sphere and get the surface normal
-    // of the point hit in world space of the sphere scene
-    // We have to set the raycaster using the orthocam and pointer
-    // to perform sphere interscetions.
-    state.pointer.set((event.offsetX / state.size.width) * 2 - 1, -(event.offsetY / state.size.height) * 2 + 1)
-    state.raycaster.setFromCamera(state.pointer, orthoC)
-    if (!state.raycaster.ray.intersectSphere(sph, normal)) return
-    else normal.normalize()
-    // Get the matrix for transforming normals into world space
-    normalMatrix.getNormalMatrix(cubeApi.current.camera.matrixWorld)
-    // Get the ray
-    cubeApi.current.camera.getWorldPosition(state.raycaster.ray.origin)
-    state.raycaster.ray.direction.set(0, 0, 1).reflect(normal)
-    state.raycaster.ray.direction.x *= -1 // flip across X to accommodate the "flip" of the env map
-    state.raycaster.ray.direction.applyNormalMatrix(normalMatrix).multiplyScalar(-1)
-    return undefined
-  }, [width, height]) // fix things when resized #2165
+  const compute = React.useCallback(
+    (event, state, prev) => {
+      // Raycast from the render camera to the sphere and get the surface normal
+      // of the point hit in world space of the sphere scene
+      // We have to set the raycaster using the orthocam and pointer
+      // to perform sphere interscetions.
+      state.pointer.set((event.offsetX / state.size.width) * 2 - 1, -(event.offsetY / state.size.height) * 2 + 1)
+      state.raycaster.setFromCamera(state.pointer, orthoC)
+      if (!state.raycaster.ray.intersectSphere(sph, normal)) return
+      else normal.normalize()
+      // Get the matrix for transforming normals into world space
+      normalMatrix.getNormalMatrix(cubeApi.current.camera.matrixWorld)
+      // Get the ray
+      cubeApi.current.camera.getWorldPosition(state.raycaster.ray.origin)
+      state.raycaster.ray.direction.set(0, 0, 1).reflect(normal)
+      state.raycaster.ray.direction.x *= -1 // flip across X to accommodate the "flip" of the env map
+      state.raycaster.ray.direction.applyNormalMatrix(normalMatrix).multiplyScalar(-1)
+      return undefined
+    },
+    [width, height]
+  ) // fix things when resized #2165
 
   useFrame(
     ({ gl }) => {

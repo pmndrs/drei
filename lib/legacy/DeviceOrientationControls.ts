@@ -1,21 +1,20 @@
 import { Camera, Euler, MathUtils, Quaternion, Vector3, EventDispatcher } from '#three'
 
-
 export interface StandardControlsEventMap {
   /**
    * Fires when the camera has been transformed by the controls.
    */
-  change: {};
+  change: {}
 
   /**
    * Fires when an interaction was initiated.
    */
-  start: {};
+  start: {}
 
   /**
    * Fires when an interaction has finished.
    */
-  end: {};
+  end: {}
 }
 /**
  * W3C Device Orientation control (http://w3c.github.io/deviceorientation/spec-source-orientation.html)
@@ -60,7 +59,7 @@ class DeviceOrientationControls extends EventDispatcher<StandardControlsEventMap
     alpha: number,
     beta: number,
     gamma: number,
-    orient: number,
+    orient: number
   ): void => {
     this.euler.set(beta, alpha, -gamma, 'YXZ') // 'ZXY' for the device, but 'YXZ' for us
     quaternion.setFromEuler(this.euler) // orient the device

@@ -139,9 +139,9 @@ export class SegmentObject {
 }
 
 const normPos = (pos: SegmentProps['start']): THREE.Vector3 => {
-  if(!pos) return new THREE.Vector3(0,0,0);
+  if (!pos) return new THREE.Vector3(0, 0, 0)
 
-  return pos instanceof THREE.Vector3 ? pos : new THREE.Vector3(...(typeof pos === 'number' ? [pos, pos, pos] : pos));
+  return pos instanceof THREE.Vector3 ? pos : new THREE.Vector3(...(typeof pos === 'number' ? [pos, pos, pos] : pos))
 }
 
 const Segment: ForwardRefComponent<SegmentProps, SegmentObject> = /* @__PURE__ */ React.forwardRef<

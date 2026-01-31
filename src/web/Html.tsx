@@ -84,6 +84,13 @@ function objectZIndex(el: Object3D, camera: Camera, zIndexRange: Array<number>) 
 
 const epsilon = (value: number) => (Math.abs(value) < 1e-10 ? 0 : value)
 
+// Helper function for pixel-perfect rounding based on device pixel ratio
+// Credit: https://github.com/chris-xinhai-li (pmndrs/drei#2380)
+function roundToPixelRatio(value: number): number {
+  const ratio = window.devicePixelRatio || 1
+  return Math.round(value * ratio) / ratio
+}
+
 function getCSSMatrix(matrix: Matrix4, multipliers: number[], prepend = '') {
   let matrix3d = 'matrix3d('
   for (let i = 0; i !== 16; i++) {
@@ -126,6 +133,7 @@ export interface HtmlProps extends Omit<Assign<React.HTMLAttributes<HTMLDivEleme
   distanceFactor?: number
   sprite?: boolean
   transform?: boolean
+  pixelPerfect?: boolean
   zIndexRange?: Array<number>
   calculatePosition?: CalculatePosition
   as?: string
@@ -157,6 +165,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
       distanceFactor,
       sprite = false,
       transform = false,
+      pixelPerfect = false,
       occlude,
       onOcclude,
       castShadow,
@@ -181,6 +190,9 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
     const oldPosition = React.useRef([0, 0])
     const transformOuterRef = React.useRef<HTMLDivElement>(null!)
     const transformInnerRef = React.useRef<HTMLDivElement>(null!)
+
+    // Track velocity for pixelPerfect optimization
+    const prevPosition = React.useRef([0, 0])
     // Append to the connected element, which makes HTML work with views
     const target = (portal?.current || events.connected || gl.domElement.parentNode) as HTMLElement
 
@@ -215,7 +227,10 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
           el.style.cssText = `position:absolute;top:0;left:0;pointer-events:none;overflow:hidden;`
         } else {
           const vec = calculatePosition(group.current, camera, size)
-          el.style.cssText = `position:absolute;top:0;left:0;transform:translate3d(${vec[0]}px,${vec[1]}px,0);transform-origin:0 0;`
+          // Apply pixelPerfect rounding to initial position if enabled
+          const finalX = pixelPerfect ? roundToPixelRatio(vec[0]) : vec[0]
+          const finalY = pixelPerfect ? roundToPixelRatio(vec[1]) : vec[1]
+          el.style.cssText = `position:absolute;top:0;left:0;transform:translate3d(${finalX}px,${finalY}px,0);transform-origin:0 0;`
         }
         if (target) {
           if (prepend) target.prepend(el)
@@ -287,6 +302,13 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
         group.current.updateWorldMatrix(true, false)
         const vec = transform ? oldPosition.current : calculatePosition(group.current, camera, size)
 
+        // Calculate velocity for pixelPerfect optimization
+        const velocity = pixelPerfect ? Math.sqrt(
+          Math.pow(vec[0] - prevPosition.current[0], 2) +
+          Math.pow(vec[1] - prevPosition.current[1], 2)
+        ) : 0
+        prevPosition.current = [vec[0], vec[1]]
+
         if (
           transform ||
           Math.abs(oldZoom.current - camera.zoom) > eps ||
@@ -344,12 +366,23 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
             el.style.height = size.height + 'px'
             el.style.perspective = isOrthographicCamera ? '' : `${fov}px`
             if (transformOuterRef.current && transformInnerRef.current) {
-              transformOuterRef.current.style.transform = `${cameraTransform}${cameraMatrix}translate(${widthHalf}px,${heightHalf}px)`
+              // Apply pixelPerfect rounding to camera transform when velocity is very low
+              const shouldApplyPixelPerfect = pixelPerfect && velocity < 0.001
+              const finalWidthHalf = shouldApplyPixelPerfect ? roundToPixelRatio(widthHalf) : widthHalf
+              const finalHeightHalf = shouldApplyPixelPerfect ? roundToPixelRatio(heightHalf) : heightHalf
+
+              transformOuterRef.current.style.transform = `${cameraTransform}${cameraMatrix}translate(${finalWidthHalf}px,${finalHeightHalf}px)`
               transformInnerRef.current.style.transform = getObjectCSSMatrix(matrix, 1 / ((distanceFactor || 10) / 400))
             }
           } else {
             const scale = distanceFactor === undefined ? 1 : objectScale(group.current, camera) * distanceFactor
-            el.style.transform = `translate3d(${vec[0]}px,${vec[1]}px,0) scale(${scale})`
+
+            // Apply pixelPerfect rounding when velocity is very low (nearly stopped)
+            const shouldApplyPixelPerfect = pixelPerfect && velocity < 0.001
+            const finalX = shouldApplyPixelPerfect ? roundToPixelRatio(vec[0]) : vec[0]
+            const finalY = shouldApplyPixelPerfect ? roundToPixelRatio(vec[1]) : vec[1]
+
+            el.style.transform = `translate3d(${finalX}px,${finalY}px,0) scale(${scale})`
           }
           oldPosition.current = vec
           oldZoom.current = camera.zoom

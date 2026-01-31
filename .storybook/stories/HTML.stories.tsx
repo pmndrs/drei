@@ -12,6 +12,9 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 export default {
   title: 'Misc/Html',
   component: Html,
+  args: {
+    pixelPerfect: false, // Round transforms to whole pixels for crisp rendering (default: false)
+  },
   decorators: [
     (Story) => (
       <Setup cameraPosition={new THREE.Vector3(-20, 20, -20)}>
@@ -205,4 +208,87 @@ export const HTMLOccluderSt = {
   args: {},
   render: (args) => <HTMLOccluderScene {...args} />,
   name: 'Occlusion',
+} satisfies Story
+
+//
+
+import { ScrollControls, Scroll } from '../../src'
+
+function PixelPerfectScene() {
+  return (
+    <ScrollControls pages={3} damping={0.1}>
+      <Scroll>
+        <ambientLight intensity={0.4} />
+        <directionalLight position={[5, 5, 5]} />
+
+        {/* Pixel Perfect OFF */}
+        <Icosahedron args={[2, 2]} position={[-5, 2, 0]}>
+          <meshBasicMaterial color="hotpink" wireframe />
+          <Html pixelPerfect={false} transform className="html-story-block">
+            Pixel Perfect OFF
+          </Html>
+        </Icosahedron>
+
+        <Icosahedron args={[2, 2]} position={[-5, -2, 0]}>
+          <meshBasicMaterial color="hotpink" wireframe />
+          <Html pixelPerfect={false} transform className="html-story-block">
+            Blurry when scrolling
+          </Html>
+        </Icosahedron>
+
+        {/* Pixel Perfect ON */}
+        <Icosahedron args={[2, 2]} position={[5, 2, 0]}>
+          <meshBasicMaterial color="palegreen" wireframe />
+          <Html pixelPerfect={true} transform className="html-story-block">
+            Pixel Perfect ON
+          </Html>
+        </Icosahedron>
+
+        <Icosahedron args={[2, 2]} position={[5, -2, 0]}>
+          <meshBasicMaterial color="palegreen" wireframe />
+          <Html pixelPerfect={true} transform className="html-story-block">
+            Crisp when scrolling
+          </Html>
+        </Icosahedron>
+      </Scroll>
+      <Scroll html>
+        <div
+          style={{
+            position: 'absolute',
+            top: '20px',
+            left: '20px',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            color: 'white',
+            padding: '12px',
+            borderRadius: '8px',
+            fontSize: '16px',
+            fontFamily: 'monospace',
+          }}
+        >
+          <div>Left: Pixel Perfect OFF (hotpink)</div>
+          <div>Right: Pixel Perfect ON (green)</div>
+          <div style={{ marginTop: '8px', fontSize: '12px', opacity: 0.7 }}>
+            Scroll to see the difference in text crispness
+          </div>
+        </div>
+      </Scroll>
+    </ScrollControls>
+  )
+}
+
+export const PixelPerfectSt = {
+  decorators: [
+    (Story) => (
+      <Setup
+        controls={false}
+        cameraPosition={new THREE.Vector3(0, 0, 10)}
+        gl={{ alpha: false, antialias: false, stencil: false, depth: false }}
+        dpr={[1, 1.5]}
+      >
+        <Story />
+      </Setup>
+    ),
+  ],
+  render: () => <PixelPerfectScene />,
+  name: 'Pixel Perfect Comparison',
 } satisfies Story

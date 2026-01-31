@@ -1,7 +1,7 @@
+import { ThreeElements, ThreeEvent, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from 'three'
 import { SelectionBox } from 'three-stdlib'
-import { ThreeElements, useThree } from '@react-three/fiber'
 import { shallow } from 'zustand/shallow'
 
 const context = /* @__PURE__ */ React.createContext<THREE.Object3D[]>([])
@@ -53,11 +53,11 @@ export function Select({
     if (downed) onChange?.(active)
     else onChangePointerUp?.(active)
   }, [active, downed])
-  const onClick = React.useCallback((e) => {
+  const onClick = React.useCallback((e: ThreeEvent<MouseEvent>) => {
     e.stopPropagation()
     dispatch({ object: customFilter([e.object])[0], shift: multiple && e.shiftKey })
   }, [])
-  const onPointerMissed = React.useCallback((e) => !hovered && dispatch({}), [hovered])
+  const onPointerMissed = React.useCallback((e: MouseEvent) => !hovered && dispatch({}), [hovered])
 
   const ref = React.useRef<THREE.Group>(null!)
   React.useEffect(() => {
@@ -80,13 +80,23 @@ export function Select({
 
     let isDown = false
 
-    function prepareRay(event, vec) {
-      const { offsetX, offsetY } = event
+    function prepareRay(event: PointerEvent, vec: THREE.Vector3) {
+      const canvas = gl.domElement
+      const rect = canvas.getBoundingClientRect()
+
+      // Calculate position relative to canvas, not the event target
+      // This ensures correct calculation even when pointer is over UI elements
+      const x = event.clientX - rect.left
+      const y = event.clientY - rect.top
+
       const { width, height } = size
-      vec.set((offsetX / width) * 2 - 1, -(offsetY / height) * 2 + 1)
+      const normalizedX = (x / width) * 2 - 1
+      const normalizedY = -(y / height) * 2 + 1
+
+      vec.set(normalizedX, normalizedY, -1)
     }
 
-    function onSelectStart(event) {
+    function onSelectStart(event: PointerEvent) {
       if (controls) (controls as any).enabled = false
       setEvents({ enabled: false })
       down((isDown = true))
@@ -99,7 +109,7 @@ export function Select({
       startPoint.y = event.clientY
     }
 
-    function onSelectMove(event) {
+    function onSelectMove(event: PointerEvent) {
       pointBottomRight.x = Math.max(startPoint.x, event.clientX)
       pointBottomRight.y = Math.max(startPoint.y, event.clientY)
       pointTopLeft.x = Math.min(startPoint.x, event.clientX)
@@ -119,7 +129,7 @@ export function Select({
       }
     }
 
-    function pointerDown(event) {
+    function pointerDown(event: PointerEvent) {
       if (event.shiftKey) {
         onSelectStart(event)
         prepareRay(event, selBox.startPoint)
@@ -127,7 +137,7 @@ export function Select({
     }
 
     let previous: THREE.Mesh<THREE.BufferGeometry, THREE.Material | THREE.Material[]>[] = []
-    function pointerMove(event) {
+    function pointerMove(event: PointerEvent) {
       if (isDown) {
         onSelectMove(event)
         prepareRay(event, selBox.endPoint)
@@ -142,7 +152,7 @@ export function Select({
       }
     }
 
-    function pointerUp(event) {
+    function pointerUp(event: PointerEvent) {
       if (isDown) onSelectOver()
     }
 

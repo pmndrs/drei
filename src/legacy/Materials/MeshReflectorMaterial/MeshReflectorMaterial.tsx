@@ -206,6 +206,10 @@ export const MeshReflectorMaterial: ForwardRefComponent<MeshReflectorMaterialPro
         const parent = (materialRef.current as any).parent || (materialRef.current as any)?.__r3f.parent?.object
         if (!parent) return
 
+        // TODO: Implement per-eye reflection rendering for VR support
+        // For now, skip reflection rendering during active VR session to avoid blocking XR initialization
+        if (gl.xr.isPresenting) return
+
         parent.visible = false
         const currentXrEnabled = gl.xr.enabled
         const currentShadowAutoUpdate = gl.shadowMap.autoUpdate

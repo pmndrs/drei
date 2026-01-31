@@ -112,11 +112,14 @@ export class MeshReflectorMaterial extends THREE.MeshStandardNodeMaterial {
       // Choose between blurred and unblurred based on hasBlur flag
       const reflectionColor = mix(reflectionSample.rgb, reflectionBlurred.rgb, clamp(this.hasBlurUniform, 0.0, 1.0))
 
-      // Apply contrast adjustment
+      // Clamp HDR values to [0,1] range before contrast adjustment
+      const reflectionClamped = clamp(reflectionColor, 0.0, 1.0)
+
+      // Apply contrast adjustment on clamped values
       const contrastAdjusted = vec3(
-        reflectionColor.x.sub(0.5).mul(this.mixContrastUniform).add(0.5),
-        reflectionColor.y.sub(0.5).mul(this.mixContrastUniform).add(0.5),
-        reflectionColor.z.sub(0.5).mul(this.mixContrastUniform).add(0.5)
+        reflectionClamped.x.sub(0.5).mul(this.mixContrastUniform).add(0.5),
+        reflectionClamped.y.sub(0.5).mul(this.mixContrastUniform).add(0.5),
+        reflectionClamped.z.sub(0.5).mul(this.mixContrastUniform).add(0.5)
       )
 
       // Final blend with mirror and mix strength

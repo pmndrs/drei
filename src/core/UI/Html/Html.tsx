@@ -225,11 +225,14 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
         el.style.position = null!
         el.style.pointerEvents = null!
       }
-    }, [occlude])
+    }, [occlude, zIndexRange, gl.domElement])
 
     React.useLayoutEffect(() => {
       if (group.current) {
-        const currentRoot = (root.current = ReactDOM.createRoot(el))
+        // Only create root once to prevent memory leaks from orphaned roots
+        if (!root.current) {
+          root.current = ReactDOM.createRoot(el)
+        }
         scene.updateMatrixWorld()
         if (transform) {
           el.style.cssText = `position:absolute;top:0;left:0;pointer-events:none;overflow:hidden;`
@@ -242,15 +245,32 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
           else target.appendChild(el)
         }
         return () => {
-          if (target) target.removeChild(el)
-          currentRoot.unmount()
+          // Unmount React root BEFORE removing DOM element to ensure proper event listener cleanup
+          if (root.current) {
+            root.current.unmount()
+            root.current = null
+          }
+          if (target && target.contains(el)) {
+            target.removeChild(el)
+          }
         }
       }
-    }, [target, transform])
+    }, [target, transform, el, prepend, scene])
 
     React.useLayoutEffect(() => {
       if (wrapperClass) el.className = wrapperClass
-    }, [wrapperClass])
+    }, [wrapperClass, el])
+
+    // Dedicated cleanup effect for final component unmount
+    // This ensures React root is properly unmounted even if other effects don't clean up
+    React.useLayoutEffect(() => {
+      return () => {
+        if (root.current) {
+          root.current.unmount()
+          root.current = null
+        }
+      }
+    }, [])
 
     const styles: React.CSSProperties = React.useMemo(() => {
       const width = forceEven ? roundEven(size.width) : size.width
@@ -299,7 +319,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
       } else {
         root.current?.render(<div ref={ref} style={styles} className={className} children={children} />)
       }
-    })
+    }, [transform, styles, transformInnerStyles, ref, className, style, children])
 
     const visible = React.useRef(true)
 

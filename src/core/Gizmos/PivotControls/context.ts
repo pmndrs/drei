@@ -9,10 +9,18 @@ export type OnDragStartProps = {
   directions: THREE.Vector3[]
 }
 
+export type OnHoverProps = {
+  component: 'Arrow' | 'Slider' | 'Rotator' | 'Sphere'
+  axis: 0 | 1 | 2
+  hovering: boolean
+}
+
 export type PivotContext = {
   onDragStart: (props: OnDragStartProps) => void
   onDrag: (mdW: THREE.Matrix4) => void
   onDragEnd: () => void
+  onHover: (props: OnHoverProps) => void
+  dragState: React.RefObject<OnDragStartProps | null>
   translation: { current: [number, number, number] }
   translationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
   rotationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
@@ -36,3 +44,12 @@ export type PivotContext = {
 export { Line }
 
 export const context = /* @__PURE__ */ React.createContext<PivotContext>(null!)
+
+export const resolveObject = (
+  object?: THREE.Object3D | React.MutableRefObject<THREE.Object3D>,
+  fallback?: THREE.Object3D
+): THREE.Object3D | undefined => {
+  if (!object) return fallback
+  if ('current' in object) return object.current
+  return object
+}

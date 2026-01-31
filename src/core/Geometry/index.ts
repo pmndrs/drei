@@ -14,4 +14,5 @@ export * from './RoundedBox'
 export * from './ScreenQuad'
 export * from './Shapes'
 export * from './Text3D'
-export * from './Wireframe'
+// Note: Wireframe is NOT exported from core - it has platform-specific implementations
+// Import from @react-three/drei/legacy or @react-three/drei/webgpu instead

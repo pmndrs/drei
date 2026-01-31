@@ -48,6 +48,9 @@ export type ScrollControlsState = {
 
 const context = /* @__PURE__ */ React.createContext<ScrollControlsState>(null!)
 
+// Cache for React roots to prevent "createRoot already called" errors in React 19
+const rootCache = /* @__PURE__ */ new WeakMap<HTMLElement, ReactDOM.Root>()
+
 /**
  * Hook to access scroll state: offset (0-1), delta, range(), curve(), visible().
  */
@@ -262,7 +265,14 @@ const ScrollHtml: ForwardRefComponent<{ children?: React.ReactNode; style?: Reac
       React.useImperativeHandle(ref, () => group.current, [])
       const { width, height } = useThree((state) => state.size)
       const fiberState = React.useContext(fiberContext)
-      const root = React.useMemo(() => ReactDOM.createRoot(state.fixed), [state.fixed])
+      const root = React.useMemo(() => {
+        let root = rootCache.get(state.fixed)
+        if (!root) {
+          root = ReactDOM.createRoot(state.fixed)
+          rootCache.set(state.fixed, root)
+        }
+        return root
+      }, [state.fixed])
       useFrame(() => {
         if (state.delta > state.eps) {
           group.current.style.transform = `translate3d(${

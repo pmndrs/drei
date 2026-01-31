@@ -1,7 +1,7 @@
 import { ReactThreeFiber, ThreeElement, useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from '#three'
-import { DeviceOrientationControls as DeviceOrientationControlsImp } from 'three-stdlib'
+import { DeviceOrientationControls as DeviceOrientationControlsImp } from '@lib/legacy/DeviceOrientationControls'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 
 export type DeviceOrientationControlsProps = Omit<ThreeElement<typeof DeviceOrientationControlsImp>, 'ref' | 'args'> & {

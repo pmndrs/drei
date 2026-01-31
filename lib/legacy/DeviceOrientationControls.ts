@@ -1,7 +1,7 @@
 import { Camera, Euler, MathUtils, Quaternion, Vector3, EventDispatcher } from '#three'
 
 
-interface StandardControlsEventMap {
+export interface StandardControlsEventMap {
   /**
    * Fires when the camera has been transformed by the controls.
    */

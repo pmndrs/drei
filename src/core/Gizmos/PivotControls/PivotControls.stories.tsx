@@ -30,7 +30,9 @@ function useLineComponent() {
   const gl = useThree((state) => state.gl)
   // Check if WebGPU renderer (has 'backend' property)
   const isWebGPU = 'backend' in gl
-  return isWebGPU ? WebGPULine : LegacyLine
+  // Cast needed: legacy and webgpu Line have incompatible material types
+  // but are functionally interchangeable for PivotControls usage
+  return (isWebGPU ? WebGPULine : LegacyLine) as any
 }
 
 function UsePivotScene(props: React.ComponentProps<typeof PivotControls>) {

@@ -24,6 +24,15 @@ __diff_output__
 # IDE/editor files
 .idea
 .vscode
+.claude/settings.local.json
+
+# Claude Code
+.claude/
+CLAUDE.md
+
+# Claude Code
+.claude/
+CLAUDE.md
 
 # Claude Code
 .claude/

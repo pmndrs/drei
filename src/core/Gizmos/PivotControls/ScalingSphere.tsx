@@ -57,6 +57,8 @@ export const ScalingSphere: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2
     onDragStart,
     onDrag,
     onDragEnd,
+    onHover,
+    dragState,
     userData,
   } = React.useContext(context)
 
@@ -106,7 +108,13 @@ export const ScalingSphere: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2
   const onPointerMove = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation()
-      if (!isHovered) setIsHovered(true)
+      if (!isHovered) {
+        const drag = dragState.current
+        if (drag === null || (drag.component === 'Sphere' && drag.axis === axis)) {
+          setIsHovered(true)
+          onHover({ component: 'Sphere', axis, hovering: true })
+        }
+      }
 
       if (clickInfo.current) {
         const { clickPoint, dir, mPLG, mPLGInv, offsetMultiplier } = clickInfo.current
@@ -137,7 +145,7 @@ export const ScalingSphere: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2
         onDrag(scaleMatrix)
       }
     },
-    [annotations, position, onDrag, isHovered, scaleLimits, axis]
+    [annotations, position, onDrag, onHover, dragState, isHovered, scaleLimits, axis]
   )
 
   const onPointerUp = React.useCallback(
@@ -157,10 +165,16 @@ export const ScalingSphere: React.FC<{ direction: THREE.Vector3; axis: 0 | 1 | 2
     [annotations, camControls, onDragEnd, position]
   )
 
-  const onPointerOut = React.useCallback((e: ThreeEvent<PointerEvent>) => {
-    e.stopPropagation()
-    setIsHovered(false)
-  }, [])
+  const onPointerOut = React.useCallback(
+    (e: ThreeEvent<PointerEvent>) => {
+      e.stopPropagation()
+      if (isHovered) {
+        setIsHovered(false)
+        onHover({ component: 'Sphere', axis, hovering: false })
+      }
+    },
+    [onHover, axis, isHovered]
+  )
 
   const { radius, matrixL } = React.useMemo(() => {
     const radius = fixed ? (lineWidth / scale) * 1.8 : scale / 22.5

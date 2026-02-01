@@ -1,5 +1,5 @@
-import React, { useRef } from 'react'
-import ReactDOM from 'react-dom'
+import { useRef } from 'react'
+import { createRoot } from 'react-dom/client'
 import { Canvas, useFrame } from '@react-three/fiber'
 import './styles.css'
 
@@ -21,9 +21,8 @@ function Thing() {
   )
 }
 
-ReactDOM.render(
+createRoot(document.getElementById('root')).render(
   <Canvas>
     <Thing />
-  </Canvas>,
-  document.getElementById('root')
+  </Canvas>
 )

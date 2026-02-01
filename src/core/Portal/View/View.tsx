@@ -2,6 +2,7 @@ import * as React from 'react'
 import * as THREE from '#three'
 import { RootState, context, createPortal, useFrame, useThree } from '@react-three/fiber'
 import tunnel from 'tunnel-rat'
+import { roundEven } from '../../../utils/roundEven'
 
 const isOrthographicCamera = (def: any): def is THREE.OrthographicCamera =>
   def && (def as THREE.OrthographicCamera).isOrthographicCamera
@@ -62,17 +63,29 @@ export type ViewProps = {
   track?: React.RefObject<HTMLElement>
 }
 
-function computeContainerPosition(canvasSize: CanvasSize, trackRect: DOMRect) {
+function computeContainerPosition(canvasSize: CanvasSize, trackRect: DOMRect, forceEven?: boolean) {
   const { right, top: trackTop, left: trackLeft, bottom: trackBottom, width, height } = trackRect
   const isOffscreen =
     trackRect.bottom < 0 || trackTop > canvasSize.height || right < 0 || trackRect.left > canvasSize.width
 
   const canvasBottom = canvasSize.top + canvasSize.height
-  const bottom = canvasBottom - trackBottom
-  const left = trackLeft - canvasSize.left
+  const rawBottom = canvasBottom - trackBottom
+  const rawLeft = trackLeft - canvasSize.left
   // Calculate top relative to canvas for WebGPU coordinate system
-  const top = trackTop - canvasSize.top
-  return { position: { width, height, left, top, bottom, right }, isOffscreen }
+  const rawTop = trackTop - canvasSize.top
+
+  const position = forceEven
+    ? {
+        width: roundEven(width),
+        height: roundEven(height),
+        left: roundEven(rawLeft),
+        top: roundEven(rawTop),
+        bottom: roundEven(rawBottom),
+        right: roundEven(right),
+      }
+    : { width, height, left: rawLeft, top: rawTop, bottom: rawBottom, right }
+
+  return { position, isOffscreen }
 }
 
 function prepareSkissor(
@@ -133,6 +146,7 @@ function clear(renderer: THREE.WebGLRenderer) {
 function Container({ visible = true, canvasSize, scene, index, children, frames, rect, track }: ContainerProps) {
   // Get portal's scene, camera, renderer, and store via useThree (works around bug where useFrame state is root state)
   const { scene: portalScene, camera: portalCamera, renderer, get, setEvents } = useThree()
+  const forceEven = useThree((state) => (state.internal as any).forceEven) as boolean | undefined
   const [isOffscreen, setOffscreen] = React.useState(false)
 
   // Guard against rendering during unmount (prevents WebGPU buffer-after-destroy errors)
@@ -155,7 +169,7 @@ function Container({ visible = true, canvasSize, scene, index, children, frames,
         frameCount++
       }
       if (rect.current) {
-        const { position, isOffscreen: _isOffscreen } = computeContainerPosition(canvasSize, rect.current)
+        const { position, isOffscreen: _isOffscreen } = computeContainerPosition(canvasSize, rect.current, forceEven)
         if (isOffscreen !== _isOffscreen) setOffscreen(_isOffscreen)
 
         // Use fresh _isOffscreen value instead of potentially stale state
@@ -186,14 +200,14 @@ function Container({ visible = true, canvasSize, scene, index, children, frames,
     const curRect = rect.current
     if (curRect && (!visible || !isOffscreen)) {
       // If the view is not visible clear it once, but stop rendering afterwards!
-      const { position, isOffscreen: _isOffscreen } = computeContainerPosition(canvasSize, curRect)
+      const { position, isOffscreen: _isOffscreen } = computeContainerPosition(canvasSize, curRect, forceEven)
       if (!_isOffscreen) {
         const autoClear = prepareSkissor(renderer, portalCamera, position)
         clear(renderer)
         finishSkissor(renderer, autoClear)
       }
     }
-  }, [visible, isOffscreen, renderer, portalCamera, canvasSize])
+  }, [visible, isOffscreen, renderer, portalCamera, canvasSize, forceEven])
 
   React.useEffect(() => {
     if (!track) return
@@ -204,7 +218,7 @@ function Container({ visible = true, canvasSize, scene, index, children, frames,
     setEvents({ connected: track.current })
     return () => {
       if (curRect) {
-        const { position, isOffscreen: _isOffscreen } = computeContainerPosition(canvasSize, curRect)
+        const { position, isOffscreen: _isOffscreen } = computeContainerPosition(canvasSize, curRect, forceEven)
         if (!_isOffscreen) {
           const autoClear = prepareSkissor(renderer, portalCamera, position)
           clear(renderer)
@@ -213,7 +227,7 @@ function Container({ visible = true, canvasSize, scene, index, children, frames,
       }
       setEvents({ connected: old })
     }
-  }, [track, renderer, portalCamera, canvasSize, get, setEvents])
+  }, [track, renderer, portalCamera, canvasSize, get, setEvents, forceEven])
 
   return (
     <>
@@ -231,6 +245,7 @@ const CanvasView = /* @__PURE__ */ React.forwardRef(
   ) => {
     const rect = React.useRef<DOMRect>(null!)
     const { size, scene } = useThree()
+    const forceEven = useThree((state) => (state.internal as any).forceEven) as boolean | undefined
     const [virtualScene] = React.useState(() => new THREE.Scene())
     const [ready, toggle] = React.useReducer(() => true, false)
 
@@ -273,12 +288,12 @@ const CanvasView = /* @__PURE__ */ React.forwardRef(
             {
               events: { compute, priority: index },
               size: {
-                width: rect.current?.width,
-                height: rect.current?.height,
+                width: forceEven && rect.current?.width ? roundEven(rect.current.width) : rect.current?.width,
+                height: forceEven && rect.current?.height ? roundEven(rect.current.height) : rect.current?.height,
                 // @ts-ignore
-                top: rect.current?.top,
+                top: forceEven && rect.current?.top ? roundEven(rect.current.top) : rect.current?.top,
                 // @ts-ignore
-                left: rect.current?.left,
+                left: forceEven && rect.current?.left ? roundEven(rect.current.left) : rect.current?.left,
               },
             }
           )}

@@ -31,6 +31,7 @@
       "@external/*": ["./src/external/*"],
       "@experimental/*": ["./src/experimental/*"],
       "@utils/*": ["./src/utils/*"],
+      "@lib/*": ["./lib/*"],
       "@sb/*": ["./.storybook/*"],
       "drei": ["./.storybook/drei-barrel.ts"]
     }

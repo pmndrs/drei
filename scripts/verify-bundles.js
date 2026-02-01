@@ -56,6 +56,7 @@ const checks = [
     shouldContain: [],
     shouldNotContain: [],
     checkNoPlainThree: true, // Special check: no plain 'three' imports (only three/webgpu)
+    checkNoWebGLAPIs: true, // Special check: detect WebGL-only APIs
     notes: 'WebGPU entry should only have three/webgpu imports',
   },
   {
@@ -65,6 +66,7 @@ const checks = [
     shouldContain: [],
     shouldNotContain: [],
     checkNoPlainThree: true, // Special check: no plain 'three' imports
+    checkNoWebGLAPIs: true, // Special check: detect WebGL-only APIs
     notes: 'Native entry should only have three/webgpu imports (WebGPU-based)',
   },
 ]
@@ -114,6 +116,39 @@ function checkForAbsolutePaths(content) {
     if (found) matches.push(...found)
   }
   return matches
+}
+
+function checkForWebGLOnlyAPIs(content) {
+  // WebGL-only APIs that should NOT appear in WebGPU bundles
+  // Note: WebGLRenderTarget and WebGLCubeRenderTarget are re-exported from three/webgpu
+  // for backwards compatibility, so they are NOT included here
+  const webglOnlyAPIs = [
+    'UniformsUtils',
+    'ShaderChunk',
+    'ShaderLib',
+    'WebGLRenderer',
+    'WebGLMultipleRenderTargets',
+    'WebGLArrayRenderTarget',
+  ]
+
+  const found = []
+  for (const api of webglOnlyAPIs) {
+    // Match actual code usage patterns, not just string mentions
+    // Look for: THREE.API, .API., API., API[, import { API }, , API,
+    const patterns = [
+      new RegExp(`THREE\\.${api}\\b`, 'g'), // THREE.ShaderChunk
+      new RegExp(`\\.${api}\\.`, 'g'), // .ShaderChunk.
+      new RegExp(`\\b${api}\\.`, 'g'), // ShaderChunk.
+      new RegExp(`\\b${api}\\[`, 'g'), // ShaderChunk[
+      new RegExp(`, ${api}[,}\\s]`, 'g'), // import { X, ShaderChunk } or destructuring
+      new RegExp(`{ ${api}[,}\\s]`, 'g'), // import { ShaderChunk }
+    ]
+    const hasUsage = patterns.some((pattern) => pattern.test(content))
+    if (hasUsage) {
+      found.push(api)
+    }
+  }
+  return found
 }
 
 function getAllJsFiles(dir, files = []) {
@@ -286,6 +321,20 @@ for (const check of checks) {
       console.log("   ✅ No plain 'three' imports (only three/webgpu)")
     } else {
       console.log("   ❌ Found plain 'three' import (should only use three/webgpu)")
+      checksPassed = false
+      allPassed = false
+    }
+  }
+
+  // Check for WebGL-only APIs in WebGPU bundles
+  if (check.checkNoWebGLAPIs) {
+    console.log('\n   WebGL API isolation check:')
+    const webglAPIs = checkForWebGLOnlyAPIs(analysis.content)
+    if (webglAPIs.length === 0) {
+      console.log('   ✅ No WebGL-only APIs found')
+    } else {
+      console.log('   ❌ Found WebGL-only APIs that are not available in WebGPU:')
+      webglAPIs.forEach((api) => console.log(`      - ${api}`))
       checksPassed = false
       allPassed = false
     }

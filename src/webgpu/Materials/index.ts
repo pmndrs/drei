@@ -1,8 +1,8 @@
 //* WebGPU Materials ==============================
 
-export * from '../Staging/AccumulativeShadows'
+//export * from '../Staging/AccumulativeShadows' // Waiting on TSL conversion
 export * from '../Staging/BakeShadows'
-export * from './BlurPass'
+//export * from './BlurPass' // Waiting on TSL conversion
 export * from '../Effects/Caustics'
 export * from '../Staging/ContactShadows'
 export * from './ConvolutionMaterial'
@@ -16,7 +16,7 @@ export * from './MeshRefractionMaterial'
 export * from './MeshTransmissionMaterial'
 export * from './MeshWobbleMaterial'
 export * from '../Effects/Outlines'
-export * from '../Staging/SoftShadows'
+//export * from '../Staging/SoftShadows'
 export * from './SpotLightMaterial'
 export * from './WireframeMaterial'
 export * from './FakeCloudMaterial'

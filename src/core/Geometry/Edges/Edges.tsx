@@ -14,7 +14,7 @@ export interface EdgesProps {
   LineComponent?: React.ComponentType<LineProps>
 }
 
-interface EdgesRef {
+export interface EdgesRef {
   computeLineDistances: () => void
 }
 /**

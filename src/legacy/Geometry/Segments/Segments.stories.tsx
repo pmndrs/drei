@@ -74,6 +74,7 @@ function LegacyAnimatedSegments(props: React.ComponentProps<typeof LegacySegment
       const x = Math.sin((i / 5000) * Math.PI) * 10
       const y = Math.cos((i / 5000) * Math.PI) * 10
       const z = Math.cos((i * time) / 1000)
+      if (!r.start || !r.end) return
       r.start.set(x, y, z)
       r.end.set(x + Math.sin(time + i), y + Math.cos(time + i), z)
       r.color.setRGB(x / 10, y / 10, z)
@@ -105,6 +106,7 @@ function WebGPUAnimatedSegments(props: React.ComponentProps<typeof WebGPUSegment
       const x = Math.sin((i / 5000) * Math.PI) * 10
       const y = Math.cos((i / 5000) * Math.PI) * 10
       const z = Math.cos((i * time) / 1000)
+      if (!r.start || !r.end) return
       r.start.set(x, y, z)
       r.end.set(x + Math.sin(time + i), y + Math.cos(time + i), z)
       r.color.setRGB(x / 10, y / 10, z)

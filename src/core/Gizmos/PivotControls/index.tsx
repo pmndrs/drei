@@ -7,7 +7,9 @@ import { AxisArrow } from './AxisArrow'
 import { AxisRotator } from './AxisRotator'
 import { PlaneSlider } from './PlaneSlider'
 import { ScalingSphere } from './ScalingSphere'
-import { OnDragStartProps, context, Line } from './context'
+import { OnDragStartProps, OnHoverProps, context, Line, resolveObject } from './context'
+
+export type { OnDragStartProps, OnHoverProps } from './context'
 import { calculateScaleFactor } from '../../../utils/calculateScaleFactor'
 import { LineProps } from '#drei-platform'
 
@@ -49,6 +51,8 @@ export type PivotControlsProps = {
 
   /** Starting matrix */
   matrix?: THREE.Matrix4
+  /** External object to attach controls to (instead of wrapping children) */
+  object?: THREE.Object3D | React.MutableRefObject<THREE.Object3D>
   /** BBAnchor, each axis can be between -1/0/+1 */
   anchor?: [number, number, number]
   /** If autoTransform is true, automatically apply the local transform on drag, true */
@@ -81,6 +85,8 @@ export type PivotControlsProps = {
   onDrag?: (l: THREE.Matrix4, deltaL: THREE.Matrix4, w: THREE.Matrix4, deltaW: THREE.Matrix4) => void
   /** Drag end event */
   onDragEnd?: () => void
+  /** Hover event, fired when pointer enters/exits a gizmo component */
+  onHover?: (props: OnHoverProps) => void
   /** Set this to false if you want the gizmo to be visible through faces */
   depthTest?: boolean
   renderOrder?: number
@@ -122,9 +128,11 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
     {
       enabled = true,
       matrix,
+      object,
       onDragStart,
       onDrag,
       onDragEnd,
+      onHover,
       autoTransform = true,
       anchor,
       disableAxes = false,
@@ -162,16 +170,39 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
     const gizmoRef = React.useRef<THREE.Group>(null!)
     const childrenRef = React.useRef<THREE.Group>(null!)
     const translation = React.useRef<[number, number, number]>([0, 0, 0])
+    const dragState = React.useRef<OnDragStartProps | null>(null)
     const cameraScale = React.useRef<THREE.Vector3>(new THREE.Vector3(1, 1, 1))
     const gizmoScale = React.useRef<THREE.Vector3>(new THREE.Vector3(1, 1, 1))
 
+    // Attach to external object when provided
+    React.useEffect(() => {
+      if (object) {
+        const target = resolveObject(object)
+        if (target) {
+          const pivot = ref.current
+          const didAutoUpdate = target.matrixAutoUpdate
+          target.updateWorldMatrix(true, true)
+          target.matrixAutoUpdate = false
+          pivot.matrix.copy(target.matrix)
+          return () => {
+            if (didAutoUpdate) {
+              target.matrixAutoUpdate = true
+              target.matrix.decompose(target.position, target.quaternion, target.scale)
+            }
+          }
+        }
+      }
+    }, [object])
+
     React.useLayoutEffect(() => {
       if (!anchor) return
-      childrenRef.current.updateWorldMatrix(true, true)
+      const anchorTarget = resolveObject(object, childrenRef.current)
+      if (!anchorTarget) return
+      anchorTarget.updateWorldMatrix(true, true)
 
-      mPInv.copy(childrenRef.current.matrixWorld).invert()
+      mPInv.copy(anchorTarget.matrixWorld).invert()
       bb.makeEmpty()
-      childrenRef.current.traverse((obj: any) => {
+      anchorTarget.traverse((obj: any) => {
         if (!obj.geometry) return
         if (!obj.geometry.boundingBox) obj.geometry.computeBoundingBox()
         mL.copy(obj.matrixWorld).premultiply(mPInv)
@@ -190,9 +221,20 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
       invalidate()
     })
 
+    // When depthTest is false, controls render on top visually but raycaster still uses distance.
+    // Setting interactivePriority tells R3F's raycaster to prioritize these objects.
+    const mergedUserData = React.useMemo(
+      () => ({
+        ...userData,
+        ...(depthTest === false && { interactivePriority: 1 }),
+      }),
+      [userData, depthTest]
+    )
+
     const config = React.useMemo(
       () => ({
         onDragStart: (props: OnDragStartProps) => {
+          dragState.current = props
           mL0.copy(ref.current.matrix)
           mW0.copy(ref.current.matrixWorld)
           onDragStart && onDragStart(props)
@@ -209,13 +251,21 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
           if (autoTransform) {
             ref.current.matrix.copy(mL)
           }
+          // Update the attached object
+          const target = resolveObject(object)
+          if (target) target.matrix.copy(mL)
           onDrag && onDrag(mL, mdL, mW, mdW)
           invalidate()
         },
         onDragEnd: () => {
+          dragState.current = null
           if (onDragEnd) onDragEnd()
           invalidate()
         },
+        onHover: (props: OnHoverProps) => {
+          if (onHover) onHover(props)
+        },
+        dragState,
         translation,
         translationLimits,
         rotationLimits,
@@ -227,7 +277,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
         fixed,
         depthTest,
         renderOrder,
-        userData,
+        userData: mergedUserData,
         annotations,
         annotationsClass,
         LineComponent: LineComp,
@@ -236,6 +286,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
         onDragStart,
         onDrag,
         onDragEnd,
+        onHover,
         translation,
         translationLimits,
         rotationLimits,
@@ -247,11 +298,12 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
         ...axisColors,
         hoveredColor,
         opacity,
-        userData,
+        mergedUserData,
         autoTransform,
         annotations,
         annotationsClass,
         LineComp,
+        object,
       ]
     )
 

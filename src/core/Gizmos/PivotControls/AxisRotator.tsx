@@ -55,6 +55,8 @@ const rotMatrix = /* @__PURE__ */ new THREE.Matrix4()
 const posNew = /* @__PURE__ */ new THREE.Vector3()
 const ray = /* @__PURE__ */ new THREE.Ray()
 const intersection = /* @__PURE__ */ new THREE.Vector3()
+const viewPlane = /* @__PURE__ */ new THREE.Plane()
+const viewIntersection = /* @__PURE__ */ new THREE.Vector3()
 
 export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; axis: 0 | 1 | 2 }> = ({
   dir1,
@@ -76,6 +78,8 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
     onDragStart,
     onDrag,
     onDragEnd,
+    onHover,
+    dragState,
     userData,
     LineComponent: Line,
   } = React.useContext(context)
@@ -120,15 +124,37 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
   const onPointerMove = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation()
-      if (!isHovered) setIsHovered(true)
+      if (!isHovered) {
+        const drag = dragState.current
+        if (drag === null || (drag.component === 'Rotator' && drag.axis === axis)) {
+          setIsHovered(true)
+          onHover({ component: 'Rotator', axis, hovering: true })
+        }
+      }
       if (clickInfo.current) {
         const { clickPoint, origin, e1, e2, normal, plane } = clickInfo.current
         const [min, max] = rotationLimits?.[axis] || [undefined, undefined]
 
         ray.copy(e.ray)
-        ray.intersectPlane(plane, intersection)
-        ray.direction.negate()
-        ray.intersectPlane(plane, intersection)
+
+        // Check if ray is nearly parallel to the rotation plane (camera aligned with axis)
+        const dotProduct = Math.abs(ray.direction.dot(normal))
+
+        if (dotProduct < 0.1) {
+          // Use a plane perpendicular to the view direction instead
+          viewPlane.setFromNormalAndCoplanarPoint(ray.direction.clone().negate(), origin)
+          ray.intersectPlane(viewPlane, viewIntersection)
+
+          // Project the view intersection onto the rotation plane
+          const toIntersection = viewIntersection.clone().sub(origin)
+          const projectedDist = toIntersection.dot(normal)
+          intersection.copy(viewIntersection).sub(normal.clone().multiplyScalar(projectedDist))
+        } else {
+          ray.intersectPlane(plane, intersection)
+          ray.direction.negate()
+          ray.intersectPlane(plane, intersection)
+        }
+
         let deltaAngle = calculateAngle(clickPoint, intersection, origin, e1, e2)
         let degrees = toDegrees(deltaAngle)
 
@@ -158,7 +184,7 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
         onDrag(rotMatrix)
       }
     },
-    [annotations, onDrag, isHovered, rotationLimits, axis]
+    [annotations, onDrag, onHover, dragState, isHovered, rotationLimits, axis]
   )
 
   const onPointerUp = React.useCallback(
@@ -177,10 +203,16 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
     [annotations, camControls, onDragEnd]
   )
 
-  const onPointerOut = React.useCallback((e: any) => {
-    e.stopPropagation()
-    setIsHovered(false)
-  }, [])
+  const onPointerOut = React.useCallback(
+    (e: any) => {
+      e.stopPropagation()
+      if (isHovered) {
+        setIsHovered(false)
+        onHover({ component: 'Rotator', axis, hovering: false })
+      }
+    },
+    [onHover, axis, isHovered]
+  )
 
   const matrixL = React.useMemo(() => {
     const dir1N = dir1.clone().normalize()

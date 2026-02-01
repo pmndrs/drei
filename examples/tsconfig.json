@@ -38,7 +38,8 @@
       "@webgpu/*": ["../src/webgpu/*"],
       "@external/*": ["../src/external/*"],
       "@experimental/*": ["../src/experimental/*"],
-      "@utils/*": ["../src/utils/*"]
+      "@utils/*": ["../src/utils/*"],
+      "@lib/*": ["../lib/*"]
     }
   },
   "include": ["src", "../src"]

@@ -70,6 +70,7 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
         uniform float depthScale;
         uniform float depthToBlurRatioBias;
         varying vec4 my_vUv;
+        #include <tonemapping_pars_fragment>
         ${shader.fragmentShader}`
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <emissivemap_fragment>',
@@ -129,6 +130,9 @@ export class MeshReflectorMaterial extends MeshStandardMaterial {
         blurFactor = min(1.0, mixBlur * reflectorRoughnessFactor);
         merge = mix(merge, blur, blurFactor);
       #endif
+
+      // Apply tone mapping to HDR reflection values before contrast adjustment
+      merge.rgb = toneMapping(merge.rgb);
 
       vec4 newMerge = vec4(0.0, 0.0, 0.0, 1.0);
       newMerge.r = (merge.r - 0.5) * mixContrast + 0.5;

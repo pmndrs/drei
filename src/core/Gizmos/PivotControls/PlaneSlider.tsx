@@ -51,6 +51,8 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
     onDragStart,
     onDrag,
     onDragEnd,
+    onHover,
+    dragState,
     userData,
     LineComponent: Line,
   } = React.useContext(context)
@@ -97,7 +99,13 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
   const onPointerMove = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation()
-      if (!isHovered) setIsHovered(true)
+      if (!isHovered) {
+        const drag = dragState.current
+        if (drag === null || (drag.component === 'Slider' && drag.axis === axis)) {
+          setIsHovered(true)
+          onHover({ component: 'Slider', axis, hovering: true })
+        }
+      }
 
       if (clickInfo.current) {
         const { clickPoint, e1, e2, plane } = clickInfo.current
@@ -139,7 +147,7 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
         onDrag(offsetMatrix)
       }
     },
-    [annotations, onDrag, isHovered, translation, translationLimits, axis]
+    [annotations, onDrag, onHover, dragState, isHovered, translation, translationLimits, axis]
   )
 
   const onPointerUp = React.useCallback(
@@ -157,10 +165,16 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
     [annotations, camControls, onDragEnd]
   )
 
-  const onPointerOut = React.useCallback((e: ThreeEvent<PointerEvent>) => {
-    e.stopPropagation()
-    setIsHovered(false)
-  }, [])
+  const onPointerOut = React.useCallback(
+    (e: ThreeEvent<PointerEvent>) => {
+      e.stopPropagation()
+      if (isHovered) {
+        setIsHovered(false)
+        onHover({ component: 'Slider', axis, hovering: false })
+      }
+    },
+    [onHover, axis, isHovered]
+  )
 
   const matrixL = React.useMemo(() => {
     const dir1N = dir1.clone().normalize()

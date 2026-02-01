@@ -34,6 +34,10 @@ CLAUDE.md
 .claude/
 CLAUDE.md
 
+# Claude Code
+.claude/
+CLAUDE.md
+
 # Package/lock files
 package-lock.json
 yarn-error.log

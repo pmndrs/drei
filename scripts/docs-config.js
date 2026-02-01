@@ -62,6 +62,7 @@ export const componentOverrides = {
   // Example overrides - add as needed
   // 'Html': { domOnly: true },
   // 'useGLTF': { suspense: true },
+  useKTX2: { suspense: true },
 }
 
 // File Patterns --------------------------------------

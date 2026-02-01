@@ -24,6 +24,7 @@ const internalAliases = [
   { find: '@external', replacement: resolve('./src/external') },
   { find: '@experimental', replacement: resolve('./src/experimental') },
   { find: '@utils', replacement: resolve('./src/utils') },
+  { find: '@lib', replacement: resolve('./lib') },
 ]
 
 //* Platform Alias Configurations ==============================

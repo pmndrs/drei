@@ -3366,7 +3366,7 @@ __metadata:
     vitest: "npm:^4.0.16"
     zustand: "npm:^5.0.1"
   peerDependencies:
-    "@react-three/fiber": ">=10.0.0-alpha.2"
+    "@react-three/fiber": ">=10.0.0-0"
     react: ^19
     react-dom: ^19
     three: ">=0.182"

@@ -17,7 +17,7 @@ You'll find a sample [`Example.tsx`](src/core/Example.tsx) component and its ass
 
 ## Commit Guidelines
 
-Be sure your commit messages follow this specification: https://www.conventionalcommits.org/en/v1.0.0-beta.4/
+Be sure your commit messages are clear and descriptive. While we use Changesets for versioning (so conventional commits are not strictly required), clear commit messages are still appreciated.
 
 ## Storybook
 
@@ -30,10 +30,8 @@ If you're adding a brand new feature, you need to make sure you add a storybook 
 
 ## Publishing
 
-We use `semantic-release-action` to deploy the package. Because of this only certain commits will trigger the action of creating a release:
+We use [Changesets](https://github.com/changesets/changesets) to manage versions and publishing.
 
-- `fix:` will create a `0.0.x` version
-- `feat:` will create a `0.x.0` version
-- `BREAKING CHANGE:` will create a `x.0.0` version
+When you make changes that should be published, run `yarn changeset` to create a changeset and commit it with your PR.
 
-We release on `master`, `beta` & `alpha`. `beta` & `alpha` are configured to be prerelease. Any other commits will not fire a release.
+For detailed instructions on how to create changesets and how the release process works, see [`.changeset/README.md`](.changeset/README.md).

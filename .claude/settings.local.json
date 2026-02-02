@@ -18,7 +18,9 @@
       "Bash(npx vitest:*)",
       "Bash(node test-debug.mjs:*)",
       "Bash(yarn test:bundles:*)",
-      "Bash(test:*)"
+      "Bash(test:*)",
+      "Bash(yarn typecheck:*)",
+      "Bash(yarn eslint:*)"
     ]
   }
 }

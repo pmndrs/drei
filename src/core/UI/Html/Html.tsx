@@ -17,6 +17,7 @@ import { Assign } from 'utility-types'
 import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 import { roundEven } from '../../../utils/roundEven'
+import { roundToPixelRatio } from '../../../utils/generic'
 
 const v1 = /* @__PURE__ */ new Vector3()
 const v2 = /* @__PURE__ */ new Vector3()
@@ -142,6 +143,8 @@ export interface HtmlProps extends Omit<Assign<React.HTMLAttributes<HTMLDivEleme
   geometry?: React.ReactNode // Material for occlusion plane
   castShadow?: boolean // Cast shadow for occlusion plane
   receiveShadow?: boolean // Receive shadow for occlusion plane
+  /** Snaps translate3d values to physical device pixels to prevent subpixel blurriness, default true */
+  pixelPerfect?: boolean
 }
 
 /**
@@ -187,6 +190,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
       as = 'div',
       wrapperClass,
       pointerEvents = 'auto',
+      pixelPerfect = true,
       ...props
     }: HtmlProps,
     ref: React.Ref<HTMLDivElement>
@@ -369,8 +373,12 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
           el.style.zIndex = `${objectZIndex(group.current, camera, zRange)}`
 
           if (transform) {
-            const widthHalf = forceEven ? roundEven(size.width / 2) : size.width / 2
-            const heightHalf = forceEven ? roundEven(size.height / 2) : size.height / 2
+            let widthHalf = forceEven ? roundEven(size.width / 2) : size.width / 2
+            let heightHalf = forceEven ? roundEven(size.height / 2) : size.height / 2
+            if (pixelPerfect) {
+              widthHalf = roundToPixelRatio(widthHalf)
+              heightHalf = roundToPixelRatio(heightHalf)
+            }
             const fov = camera.projectionMatrix.elements[5] * heightHalf
             const { isOrthographicCamera, top, left, bottom, right } = camera as OrthographicCamera
             const cameraMatrix = getCameraCSSMatrix(camera.matrixWorldInverse)
@@ -394,8 +402,12 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
             }
           } else {
             const scale = distanceFactor === undefined ? 1 : objectScale(group.current, camera) * distanceFactor
-            const x = forceEven ? roundEven(vec[0]) : vec[0]
-            const y = forceEven ? roundEven(vec[1]) : vec[1]
+            let x = forceEven ? roundEven(vec[0]) : vec[0]
+            let y = forceEven ? roundEven(vec[1]) : vec[1]
+            if (pixelPerfect) {
+              x = roundToPixelRatio(x)
+              y = roundToPixelRatio(y)
+            }
             el.style.transform = `translate3d(${x}px,${y}px,0) scale(${scale})`
           }
           oldPosition.current = vec

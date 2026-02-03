@@ -5,6 +5,7 @@ import { context as fiberContext, RootState, useFrame, useThree } from '@react-t
 import { DomEvent } from '@react-three/fiber/'
 import { easing } from 'maath'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
+import { roundToPixelRatio } from '../../../utils/generic'
 
 export type ScrollControlsProps = {
   /** Precision, default 0.00001 */
@@ -27,6 +28,8 @@ export type ScrollControlsProps = {
   /** If true attaches the scroll container before the canvas */
   prepend?: boolean
   enabled?: boolean
+  /** Snaps translate3d values to physical device pixels to prevent subpixel blurriness, default true */
+  pixelPerfect?: boolean
   style?: React.CSSProperties
   children: React.ReactNode
 }
@@ -44,6 +47,7 @@ export type ScrollControlsState = {
   range(from: number, distance: number, margin?: number): number
   curve(from: number, distance: number, margin?: number): number
   visible(from: number, distance: number, margin?: number): boolean
+  pixelPerfect: boolean
 }
 
 const context = /* @__PURE__ */ React.createContext<ScrollControlsState>(null!)
@@ -91,6 +95,7 @@ export function ScrollControls({
   damping = 0.25,
   maxSpeed = Infinity,
   prepend = false,
+  pixelPerfect = true,
   style = {},
   children,
 }: ScrollControlsProps) {
@@ -113,6 +118,7 @@ export function ScrollControls({
       delta: 0,
       scroll,
       pages,
+      pixelPerfect,
       // 0-1 for a range between from -> from + distance
       range(from: number, distance: number, margin: number = 0) {
         const start = from - margin
@@ -131,7 +137,7 @@ export function ScrollControls({
       },
     }
     return state
-  }, [eps, damping, horizontal, pages])
+  }, [eps, damping, horizontal, pages, pixelPerfect])
 
   React.useEffect(() => {
     el.style.position = 'absolute'
@@ -275,9 +281,13 @@ const ScrollHtml: ForwardRefComponent<{ children?: React.ReactNode; style?: Reac
       }, [state.fixed])
       useFrame(() => {
         if (state.delta > state.eps) {
-          group.current.style.transform = `translate3d(${
-            state.horizontal ? -width * (state.pages - 1) * state.offset : 0
-          }px,${state.horizontal ? 0 : height * (state.pages - 1) * -state.offset}px,0)`
+          let x = state.horizontal ? -width * (state.pages - 1) * state.offset : 0
+          let y = state.horizontal ? 0 : height * (state.pages - 1) * -state.offset
+          if (state.pixelPerfect) {
+            x = roundToPixelRatio(x)
+            y = roundToPixelRatio(y)
+          }
+          group.current.style.transform = `translate3d(${x}px,${y}px,0)`
         }
       })
       root.render(

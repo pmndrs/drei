@@ -104,6 +104,7 @@ import FisheyeDemo from './core/portal/Fisheye'
 import MaskDemo from './core/portal/Mask'
 import RenderTextureDemo from './core/portal/RenderTexture'
 import ViewDemo from './core/portal/View'
+import MeshPortalDemo from './core/portal/MeshPortal'
 
 // Core - Staging
 import BackdropDemo from './core/staging/Backdrop'
@@ -1483,6 +1484,23 @@ export const components: DreiComponent[] = [
     tests: '🔴',
     notes: '',
     rendererSupport: 'universal',
+  },
+  {
+    name: 'MeshPortal',
+    category: 'Portal',
+    title: 'Mesh Portal',
+    description: 'Portal effect through mesh.',
+    path: '/core/portal/meshportal',
+    component: MeshPortalDemo,
+    structure: '🟢',
+    imports: '🟢',
+    types: '🟢',
+    tests: '🔴',
+    notes: '',
+    rendererSupport: 'universal',
+    legacyStatus: '🟢',
+    webgpuStatus: '🔴',
+    tslConversion: '🔴',
   },
 
   //* Staging ==============================

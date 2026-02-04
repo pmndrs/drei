@@ -5,10 +5,13 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 import { Setup } from '@sb/Setup'
 import { useGLTF, Environment, OrbitControls, Center } from 'drei'
 import { MeshTransmissionMaterial } from './MeshTransmissionMaterial'
+import { MeshTransmissionMaterial as MeshTransmissionMaterialWebGPU } from '../../../webgpu/Materials/MeshTransmissionMaterial'
 import { AccumulativeShadows, RandomizedLight } from '../AccumulativeShadows/AccumulativeShadows'
+import { PlatformSwitch } from '@sb/components/PlatformSwitch'
 
 export default {
   title: 'Shaders/MeshTransmissionMaterial',
+  tags: ['dual'],
   component: MeshTransmissionMaterial,
   decorators: [
     (Story, context) => (
@@ -22,12 +25,17 @@ export default {
 type Story = StoryObj<typeof MeshTransmissionMaterial>
 
 // https://sketchfab.com/3d-models/gelatinous-cube-e08385238f4d4b59b012233a9fbdca21
-function GelatinousCube(props: React.ComponentProps<typeof MeshTransmissionMaterial>) {
+function GelatinousCube({
+  TransmissionMaterial,
+  ...props
+}: React.ComponentProps<typeof MeshTransmissionMaterial> & {
+  TransmissionMaterial: typeof MeshTransmissionMaterial
+}) {
   const { nodes, materials } = useGLTF('/gelatinous_cube.glb') as any
   return (
     <group dispose={null}>
       <mesh geometry={nodes.cube1.geometry} position={[-0.56, 0.38, -0.11]}>
-        <MeshTransmissionMaterial {...props} />
+        <TransmissionMaterial {...props} />
       </mesh>
       <mesh
         castShadow
@@ -47,25 +55,19 @@ function GelatinousCube(props: React.ComponentProps<typeof MeshTransmissionMater
   )
 }
 
-function MeshTransmissionMaterialScene(props: React.ComponentProps<typeof MeshTransmissionMaterial>) {
+function MeshTransmissionMaterialScene({
+  TransmissionMaterial,
+  ...props
+}: React.ComponentProps<typeof MeshTransmissionMaterial> & {
+  TransmissionMaterial: typeof MeshTransmissionMaterial
+}) {
   return (
     <>
       <ambientLight intensity={Math.PI} />
       <group position={[0, -2.5, 0]}>
         <Center top>
-          <GelatinousCube {...props} />
+          <GelatinousCube TransmissionMaterial={TransmissionMaterial} {...props} />
         </Center>
-        <AccumulativeShadows
-          temporal
-          frames={100}
-          alphaTest={0.9}
-          color="#3ead5d"
-          colorBlend={1}
-          opacity={0.8}
-          scale={20}
-        >
-          <RandomizedLight radius={10} ambient={0.5} intensity={1 * Math.PI} position={[2.5, 8, -2.5]} bias={0.001} />
-        </AccumulativeShadows>
       </group>
       <OrbitControls minPolarAngle={0} maxPolarAngle={Math.PI / 2} autoRotate autoRotateSpeed={0.05} makeDefault />
       <Environment
@@ -97,6 +99,16 @@ export const MeshTransmissionMaterialSt = {
     attenuationColor: '#ffffff',
     color: '#c9ffa1',
   },
-  render: (args) => <MeshTransmissionMaterialScene {...args} />,
+  render: (args) => (
+    <PlatformSwitch
+      legacy={<MeshTransmissionMaterialScene TransmissionMaterial={MeshTransmissionMaterial} {...args} />}
+      webgpu={
+        <MeshTransmissionMaterialScene
+          TransmissionMaterial={MeshTransmissionMaterialWebGPU as typeof MeshTransmissionMaterial}
+          {...args}
+        />
+      }
+    />
+  ),
   name: 'Default',
 } satisfies Story

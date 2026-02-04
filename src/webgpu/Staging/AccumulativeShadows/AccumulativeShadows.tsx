@@ -1,12 +1,19 @@
-//* TODO: Convert GLSL shaders to TSL for WebGPU ==============================
+//* AccumulativeShadows - WebGPU TSL Implementation ==============================
+// Based on "Progressive Light Map Accumulator", by [zalo](https://github.com/zalo/)
+//
+// TSL Conversion: This version uses TSL (Three Shading Language) for WebGPU compatibility
+// - SoftShadowMaterial: Converted from GLSL shaderMaterial to TSL MeshBasicNodeMaterial
+// - ProgressiveShadowMaterial: Replaces onBeforeCompile with TSL nodes
+// - Uses platform-agnostic RenderTarget from #drei-platform
 
-import * as THREE from '#three'
+import * as THREE from 'three/webgpu'
+import { MeshBasicNodeMaterial, MeshPhongNodeMaterial } from 'three/webgpu'
+import { Fn, uniform, uniformTexture, texture, uv, vec4, vec3, vec2, float, max, mix, sub, output } from 'three/tsl'
 import * as React from 'react'
-import { extend, ReactThreeFiber, ThreeElements, useFrame, useThree } from '@react-three/fiber'
-import { shaderMaterial } from '@legacy/Materials/shaderMaterial'
-import { DiscardMaterial } from '@legacy/Materials/DiscardMaterial'
+import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
+import { RenderTarget } from '#drei-platform'
+import { DiscardMaterial } from '@webgpu/Materials/DiscardMaterial'
 import { ForwardRefComponent } from '@utils/ts-utils'
-import { version } from '@utils/constants'
 
 function isLight(object: any): object is THREE.Light {
   return object.isLight
@@ -48,7 +55,7 @@ interface AccumulativeContext {
   blend: number
   count: number
   /** Returns the plane geometry onto which the shadow is cast */
-  getMesh: () => THREE.Mesh<THREE.PlaneGeometry, SoftShadowMaterialProps & THREE.ShaderMaterial>
+  getMesh: () => THREE.Mesh<THREE.PlaneGeometry, SoftShadowMaterialImpl>
   /** Resets the buffers, starting from scratch */
   reset: () => void
   /** Updates the lightmap for a number of frames accumulartively */
@@ -60,49 +67,275 @@ interface AccumulativeLightContext {
   update: () => void
 }
 
-type SoftShadowMaterialProps = {
-  map: THREE.Texture
-  color?: ReactThreeFiber.Color
-  alphaTest?: number
-  blend?: number
-}
-
-declare module '@react-three/fiber' {
-  interface ThreeElements {
-    softShadowMaterial: ThreeElements['shaderMaterial'] & SoftShadowMaterialProps
-  }
-}
-
 export const accumulativeContext = /* @__PURE__ */ React.createContext<AccumulativeContext>(
   null as unknown as AccumulativeContext
 )
 
-const SoftShadowMaterial = /* @__PURE__ */ shaderMaterial(
-  {
-    color: /* @__PURE__ */ new THREE.Color(),
-    blend: 2.0,
-    alphaTest: 0.75,
-    opacity: 0,
-    map: null,
-  },
-  `varying vec2 vUv;
-   void main() {
-     gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.);
-     vUv = uv;
-   }`,
-  `varying vec2 vUv;
-   uniform sampler2D map;
-   uniform vec3 color;
-   uniform float opacity;
-   uniform float alphaTest;
-   uniform float blend;
-   void main() {
-     vec4 sampledDiffuseColor = texture2D(map, vUv);
-     gl_FragColor = vec4(color * sampledDiffuseColor.r * blend, max(0.0, (1.0 - (sampledDiffuseColor.r + sampledDiffuseColor.g + sampledDiffuseColor.b) / alphaTest)) * opacity);
-     #include <tonemapping_fragment>
-     #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
-   }`
-)
+//* SoftShadowMaterial - TSL Implementation ==============================
+// Renders the shadow plane with texture sampling and alpha blending
+// Original GLSL:
+//   gl_FragColor = vec4(color * sampledDiffuseColor.r * blend,
+//     max(0.0, (1.0 - (r + g + b) / alphaTest)) * opacity);
+
+class SoftShadowMaterialImpl extends MeshBasicNodeMaterial {
+  private _color: THREE.UniformNode<THREE.Color>
+  private _blend: THREE.UniformNode<number>
+  private _alphaTest: THREE.UniformNode<number>
+  private _opacity: THREE.UniformNode<number>
+  private _map: ReturnType<typeof uniformTexture>
+
+  constructor() {
+    super()
+
+    this._color = uniform(new THREE.Color())
+    this._blend = uniform(2.0)
+    this._alphaTest = uniform(0.75)
+    this._opacity = uniform(0)
+    this._map = uniformTexture(new THREE.Texture())
+
+    this.transparent = true
+    this.depthWrite = false
+
+    this._buildShader()
+  }
+
+  private _buildShader() {
+    const colorUniform = this._color
+    const blendUniform = this._blend
+    const alphaTestUniform = this._alphaTest
+    const opacityUniform = this._opacity
+    const mapTex = this._map
+
+    this.colorNode = Fn(() => {
+      const texCoord = uv()
+      const sampled = texture(mapTex, texCoord)
+
+      // RGB output: color * red_channel * blend
+      const rgb = colorUniform.mul(sampled.r).mul(blendUniform)
+
+      // Alpha calculation: max(0, 1 - (r+g+b)/alphaTest) * opacity
+      const sum = sampled.r.add(sampled.g).add(sampled.b)
+      const alpha = max(float(0), float(1).sub(sum.div(alphaTestUniform))).mul(opacityUniform)
+
+      return vec4(rgb, alpha)
+    })()
+  }
+
+  get shadowColor() {
+    return this._color.value
+  }
+  set shadowColor(v: THREE.ColorRepresentation) {
+    if (v instanceof THREE.Color) {
+      this._color.value.copy(v)
+    } else {
+      this._color.value.set(v)
+    }
+  }
+
+  get blend() {
+    return this._blend.value
+  }
+  set blend(v: number) {
+    this._blend.value = v
+  }
+
+  get alphaTest() {
+    return this._alphaTest.value
+  }
+  set alphaTest(v: number) {
+    this._alphaTest.value = v
+  }
+
+  get opacity() {
+    return this._opacity.value
+  }
+  set opacity(v: number) {
+    this._opacity.value = v
+  }
+
+  get map() {
+    return this._map.value as THREE.Texture
+  }
+  set map(v: THREE.Texture) {
+    this._map.value = v
+  }
+}
+
+//* ProgressiveShadowMaterial - TSL Implementation ==============================
+// Material for UV-unwrapped shadow accumulation rendering
+// Based on Three.js official ProgressiveLightMapGPU.js implementation
+//
+// Key techniques from official implementation:
+// - vertexNode: outputs clip space directly via vec4(sub(uv, 0.5) * 2, 1, 1)
+// - outputNode: blends previous shadow map with current shading via mix()
+// - Uses 'output' node to access the material's computed shading result
+
+class ProgressiveShadowMaterial extends MeshPhongNodeMaterial {
+  private _previousShadowMap: ReturnType<typeof texture>
+  private _averagingWindow: THREE.UniformNode<number>
+
+  constructor(initialTexture: THREE.Texture) {
+    super()
+
+    // Create texture node for previous shadow map sampling
+    this._previousShadowMap = texture(initialTexture)
+    this._averagingWindow = uniform(100)
+
+    this.fog = false
+
+    this._buildShader()
+  }
+
+  private _buildShader() {
+    const previousMapTex = this._previousShadowMap
+    const averagingWindowUniform = this._averagingWindow
+
+    // Vertex: Output clip space directly from UV coordinates
+    // This is the official Three.js pattern for UV unwrapping in TSL
+    // vertexNode outputs vec4 clip coordinates directly, bypassing MVP transform
+    const uvNode = uv()
+    this.vertexNode = vec4(sub(uvNode, vec2(0.5)).mul(2), 1, 1)
+
+    // Fragment: Blend previous shadow map with current phong shading
+    // 'output' is the built-in node representing the material's computed color
+    // This pattern is from the official Three.js ProgressiveLightMapGPU.js
+    this.outputNode = vec4(mix(previousMapTex.sample(uv()), output, float(1).div(averagingWindowUniform)))
+  }
+
+  get previousShadowMap() {
+    return this._previousShadowMap.value as THREE.Texture
+  }
+  set previousShadowMap(v: THREE.Texture) {
+    this._previousShadowMap.value = v
+  }
+
+  get averagingWindow() {
+    return this._averagingWindow.value
+  }
+  set averagingWindow(v: number) {
+    this._averagingWindow.value = v
+  }
+}
+
+//* ProgressiveLightMap Class ==============================
+// Manages progressive shadow accumulation with ping-pong buffers
+// Based on Three.js official ProgressiveLightMapGPU.js pattern
+
+class ProgressiveLightMap {
+  renderer: THREE.WebGPURenderer
+  res: number
+  scene: THREE.Scene
+  object: THREE.Mesh | null
+  buffer1Active: boolean
+  progressiveLightMap1: InstanceType<typeof RenderTarget>
+  progressiveLightMap2: InstanceType<typeof RenderTarget>
+  discardMat: typeof DiscardMaterial
+  targetMat: ProgressiveShadowMaterial
+  clearColor: THREE.Color
+  clearAlpha: number
+  lights: { object: THREE.Light; intensity: number }[]
+  meshes: { object: THREE.Mesh; material: THREE.Material | THREE.Material[] }[]
+
+  constructor(renderer: THREE.WebGPURenderer, scene: THREE.Scene, res: number = 1024) {
+    this.renderer = renderer
+    this.res = res
+    this.scene = scene
+    this.buffer1Active = false
+    this.lights = []
+    this.meshes = []
+    this.object = null
+    this.clearColor = new THREE.Color()
+    this.clearAlpha = 0
+
+    // Create the Progressive LightMap Texture using platform-agnostic RenderTarget
+    const textureParams = {
+      type: THREE.HalfFloatType,
+      magFilter: THREE.NearestFilter,
+      minFilter: THREE.NearestFilter,
+    }
+    this.progressiveLightMap1 = new RenderTarget(this.res, this.res, textureParams)
+    this.progressiveLightMap2 = new RenderTarget(this.res, this.res, textureParams)
+
+    // TSL materials - vertexNode outputs clip space directly, no special camera needed
+    this.discardMat = DiscardMaterial
+    this.targetMat = new ProgressiveShadowMaterial(this.progressiveLightMap1.texture as THREE.Texture)
+  }
+
+  clear() {
+    // Save current clear color/alpha (use type assertion for WebGPU renderer compatibility)
+    ;(this.renderer as any).getClearColor(this.clearColor)
+    this.clearAlpha = this.renderer.getClearAlpha()
+    this.renderer.setClearColor('black', 1)
+    this.renderer.setRenderTarget(this.progressiveLightMap1 as THREE.RenderTarget)
+    this.renderer.clear()
+    this.renderer.setRenderTarget(this.progressiveLightMap2 as THREE.RenderTarget)
+    this.renderer.clear()
+    this.renderer.setRenderTarget(null)
+    // Restore clear color
+    ;(this.renderer as any).setClearColor(this.clearColor, this.clearAlpha)
+
+    this.lights = []
+    this.meshes = []
+    this.scene.traverse((object) => {
+      if (isGeometry(object)) {
+        this.meshes.push({ object, material: object.material })
+      } else if (isLight(object)) {
+        this.lights.push({ object, intensity: object.intensity })
+      }
+    })
+  }
+
+  prepare() {
+    this.lights.forEach((light) => (light.object.intensity = 0))
+    this.meshes.forEach((mesh) => (mesh.object.material = this.discardMat))
+  }
+
+  finish() {
+    this.lights.forEach((light) => (light.object.intensity = light.intensity))
+    this.meshes.forEach((mesh) => (mesh.object.material = mesh.material))
+  }
+
+  configure(object: THREE.Mesh) {
+    this.object = object
+  }
+
+  update(camera: THREE.Camera, blendWindow = 100) {
+    if (!this.object) return
+
+    // Set up the target material for UV-unwrapped rendering
+    this.targetMat.averagingWindow = blendWindow
+    const originalMaterial = this.object.material
+    this.object.material = this.targetMat
+
+    // Disable frustum culling temporarily (UV unwrapping may place vertices outside view)
+    const oldFrustumCulled = this.object.frustumCulled
+    this.object.frustumCulled = false
+
+    // Ping-pong two surface buffers for reading/writing
+    const activeMap = this.buffer1Active ? this.progressiveLightMap1 : this.progressiveLightMap2
+    const inactiveMap = this.buffer1Active ? this.progressiveLightMap2 : this.progressiveLightMap1
+
+    // Render the object's surface maps
+    const oldBg = this.scene.background
+    this.scene.background = null
+    this.renderer.setRenderTarget(activeMap as THREE.RenderTarget)
+    this.targetMat.previousShadowMap = inactiveMap.texture as THREE.Texture
+    this.buffer1Active = !this.buffer1Active
+
+    // Render with vertexNode outputting clip space directly from UVs
+    // The camera is still used for lighting calculations but vertex positions come from UV coords
+    this.renderer.render(this.scene, camera)
+
+    this.renderer.setRenderTarget(null)
+    this.scene.background = oldBg
+
+    // Restore original material and frustum culling
+    this.object.frustumCulled = oldFrustumCulled
+    this.object.material = originalMaterial
+  }
+}
+
+//* AccumulativeShadows Component ==============================
 
 export const AccumulativeShadows: ForwardRefComponent<AccumulativeShadowsProps, AccumulativeContext> =
   /* @__PURE__ */ React.forwardRef(
@@ -124,21 +357,28 @@ export const AccumulativeShadows: ForwardRefComponent<AccumulativeShadowsProps, 
       },
       forwardRef
     ) => {
-      extend({ SoftShadowMaterial })
-
-      const gl = useThree((state) => state.gl)
+      const gl = useThree((state) => state.gl) as unknown as THREE.WebGPURenderer
       const scene = useThree((state) => state.scene)
       const camera = useThree((state) => state.camera)
       const invalidate = useThree((state) => state.invalidate)
-      const gPlane = React.useRef<THREE.Mesh<THREE.PlaneGeometry, SoftShadowMaterialProps & THREE.ShaderMaterial>>(
-        null!
-      )
+      const gPlane = React.useRef<THREE.Mesh<THREE.PlaneGeometry, SoftShadowMaterialImpl>>(null!)
       const gLights = React.useRef<THREE.Group>(null!)
+
+      // Create TSL material for the shadow plane
+      const [softShadowMat] = React.useState(() => new SoftShadowMaterialImpl())
 
       const [plm] = React.useState(() => new ProgressiveLightMap(gl, scene, resolution))
       React.useLayoutEffect(() => {
         plm.configure(gPlane.current)
-      }, [])
+      }, [plm])
+
+      // Update material properties when props change
+      React.useEffect(() => {
+        softShadowMat.shadowColor = color
+        softShadowMat.blend = colorBlend
+        softShadowMat.map = plm.progressiveLightMap2.texture as THREE.Texture
+        softShadowMat.toneMapped = toneMapped
+      }, [softShadowMat, color, colorBlend, plm, toneMapped])
 
       const api = React.useMemo<AccumulativeContext>(
         () => ({
@@ -151,20 +391,18 @@ export const AccumulativeShadows: ForwardRefComponent<AccumulativeShadowsProps, 
           reset: () => {
             // Clear buffers, reset opacities, set frame count to 0
             plm.clear()
-            const material = gPlane.current.material
-            material.opacity = 0
-            material.alphaTest = 0
+            softShadowMat.opacity = 0
+            softShadowMat.alphaTest = 0
             api.count = 0
           },
           update: (frames = 1) => {
             // Adapt the opacity-blend ratio to the number of frames
-            const material = gPlane.current.material
             if (!api.temporal) {
-              material.opacity = opacity
-              material.alphaTest = alphaTest
+              softShadowMat.opacity = opacity
+              softShadowMat.alphaTest = alphaTest
             } else {
-              material.opacity = Math.min(opacity, material.opacity + opacity / api.blend)
-              material.alphaTest = Math.min(alphaTest, material.alphaTest + alphaTest / api.blend)
+              softShadowMat.opacity = Math.min(opacity, softShadowMat.opacity + opacity / api.blend)
+              softShadowMat.alphaTest = Math.min(alphaTest, softShadowMat.alphaTest + alphaTest / api.blend)
             }
 
             // Switch accumulative lights on
@@ -183,7 +421,7 @@ export const AccumulativeShadows: ForwardRefComponent<AccumulativeShadowsProps, 
             plm.finish()
           },
         }),
-        [plm, camera, scene, temporal, frames, blend, opacity, alphaTest]
+        [plm, camera, scene, temporal, frames, blend, opacity, alphaTest, softShadowMat]
       )
 
       React.useLayoutEffect(() => {
@@ -211,19 +449,14 @@ export const AccumulativeShadows: ForwardRefComponent<AccumulativeShadowsProps, 
           </group>
           <mesh receiveShadow ref={gPlane} scale={scale} rotation={[-Math.PI / 2, 0, 0]}>
             <planeGeometry />
-            <softShadowMaterial
-              transparent
-              depthWrite={false}
-              toneMapped={toneMapped}
-              color={color}
-              blend={colorBlend}
-              map={plm.progressiveLightMap2.texture}
-            />
+            <primitive object={softShadowMat} attach="material" />
           </mesh>
         </group>
       )
     }
   )
+
+//* RandomizedLight Component ==============================
 
 export type RandomizedLightProps = Omit<ThreeElements['group'], 'ref'> & {
   /** How many frames it will jiggle the lights, 1.
@@ -267,7 +500,7 @@ export const RandomizedLight: ForwardRefComponent<RandomizedLightProps, Accumula
         position = [0, 0, 0],
         radius = 1,
         amount = 8,
-        intensity = version >= 155 ? Math.PI : 1,
+        intensity = Math.PI,
         ambient = 0.5,
         ...props
       },
@@ -326,126 +559,3 @@ export const RandomizedLight: ForwardRefComponent<RandomizedLightProps, Accumula
       )
     }
   )
-
-// Based on "Progressive Light Map Accumulator", by [zalo](https://github.com/zalo/)
-class ProgressiveLightMap {
-  renderer: THREE.WebGLRenderer
-  res: number
-  scene: THREE.Scene
-  object: THREE.Mesh | null
-  buffer1Active: boolean
-  progressiveLightMap1: THREE.WebGLRenderTarget
-  progressiveLightMap2: THREE.WebGLRenderTarget
-  discardMat: THREE.ShaderMaterial
-  targetMat: THREE.MeshLambertMaterial
-  previousShadowMap: { value: THREE.Texture }
-  averagingWindow: { value: number }
-  clearColor: THREE.Color
-  clearAlpha: number
-  lights: { object: THREE.Light; intensity: number }[]
-  meshes: { object: THREE.Mesh; material: THREE.Material | THREE.Material[] }[]
-
-  constructor(renderer: THREE.WebGLRenderer, scene: THREE.Scene, res: number = 1024) {
-    this.renderer = renderer
-    this.res = res
-    this.scene = scene
-    this.buffer1Active = false
-    this.lights = []
-    this.meshes = []
-    this.object = null
-    this.clearColor = new THREE.Color()
-    this.clearAlpha = 0
-
-    // Create the Progressive LightMap Texture
-    const textureParams = {
-      type: THREE.HalfFloatType,
-      magFilter: THREE.NearestFilter,
-      minFilter: THREE.NearestFilter,
-    }
-    this.progressiveLightMap1 = new THREE.WebGLRenderTarget(this.res, this.res, textureParams)
-    this.progressiveLightMap2 = new THREE.WebGLRenderTarget(this.res, this.res, textureParams)
-
-    // Inject some spicy new logic into a standard phong material
-    this.discardMat = new DiscardMaterial()
-    this.targetMat = new THREE.MeshLambertMaterial({ fog: false })
-    this.previousShadowMap = { value: this.progressiveLightMap1.texture }
-    this.averagingWindow = { value: 100 }
-    this.targetMat.onBeforeCompile = (shader) => {
-      // Vertex Shader: Set Vertex Positions to the Unwrapped UV Positions
-      shader.vertexShader =
-        'varying vec2 vUv;\n' +
-        shader.vertexShader.slice(0, -1) +
-        'vUv = uv; gl_Position = vec4((uv - 0.5) * 2.0, 1.0, 1.0); }'
-
-      // Fragment Shader: Set Pixels to average in the Previous frame's Shadows
-      const bodyStart = shader.fragmentShader.indexOf('void main() {')
-      shader.fragmentShader =
-        'varying vec2 vUv;\n' +
-        shader.fragmentShader.slice(0, bodyStart) +
-        'uniform sampler2D previousShadowMap;\n	uniform float averagingWindow;\n' +
-        shader.fragmentShader.slice(bodyStart - 1, -1) +
-        `\nvec3 texelOld = texture2D(previousShadowMap, vUv).rgb;
-        gl_FragColor.rgb = mix(texelOld, gl_FragColor.rgb, 1.0/ averagingWindow);
-      }`
-
-      // Set the Previous Frame's Texture Buffer and Averaging Window
-      shader.uniforms.previousShadowMap = this.previousShadowMap
-      shader.uniforms.averagingWindow = this.averagingWindow
-    }
-  }
-
-  clear() {
-    this.renderer.getClearColor(this.clearColor)
-    this.clearAlpha = this.renderer.getClearAlpha()
-    this.renderer.setClearColor('black', 1)
-    this.renderer.setRenderTarget(this.progressiveLightMap1)
-    this.renderer.clear()
-    this.renderer.setRenderTarget(this.progressiveLightMap2)
-    this.renderer.clear()
-    this.renderer.setRenderTarget(null)
-    this.renderer.setClearColor(this.clearColor, this.clearAlpha)
-
-    this.lights = []
-    this.meshes = []
-    this.scene.traverse((object) => {
-      if (isGeometry(object)) {
-        this.meshes.push({ object, material: object.material })
-      } else if (isLight(object)) {
-        this.lights.push({ object, intensity: object.intensity })
-      }
-    })
-  }
-
-  prepare() {
-    this.lights.forEach((light) => (light.object.intensity = 0))
-    this.meshes.forEach((mesh) => (mesh.object.material = this.discardMat))
-  }
-
-  finish() {
-    this.lights.forEach((light) => (light.object.intensity = light.intensity))
-    this.meshes.forEach((mesh) => (mesh.object.material = mesh.material))
-  }
-
-  configure(object) {
-    this.object = object
-  }
-
-  update(camera, blendWindow = 100) {
-    if (!this.object) return
-    // Set each object's material to the UV Unwrapped Surface Mapping Version
-    this.averagingWindow.value = blendWindow
-    this.object.material = this.targetMat
-    // Ping-pong two surface buffers for reading/writing
-    const activeMap = this.buffer1Active ? this.progressiveLightMap1 : this.progressiveLightMap2
-    const inactiveMap = this.buffer1Active ? this.progressiveLightMap2 : this.progressiveLightMap1
-    // Render the object's surface maps
-    const oldBg = this.scene.background
-    this.scene.background = null
-    this.renderer.setRenderTarget(activeMap)
-    this.previousShadowMap.value = inactiveMap.texture
-    this.buffer1Active = !this.buffer1Active
-    this.renderer.render(this.scene, camera)
-    this.renderer.setRenderTarget(null)
-    this.scene.background = oldBg
-  }
-}

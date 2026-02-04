@@ -20,7 +20,13 @@
       "Bash(yarn test:bundles:*)",
       "Bash(test:*)",
       "Bash(yarn typecheck:*)",
-      "Bash(yarn eslint:*)"
+      "Bash(yarn eslint:*)",
+      "Bash(yarn build)",
+      "Bash(npx eslint:*)",
+      "Bash(dir /s /b \"C:\\\\Users\\\\denni\\\\.claude\\\\skills\")",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(curl:*)",
+      "WebSearch"
     ]
   }
 }

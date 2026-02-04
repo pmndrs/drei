@@ -1,11 +1,10 @@
 import * as React from 'react'
 import { Texture } from '#three'
 import { useLoader, useThree } from '@react-three/fiber'
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect } from 'react'
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
 import { IsObject } from '../useTexture/useTexture'
-
-let transcoderPath: string = 'https://cdn.jsdelivr.net/gh/pmndrs/drei-assets@master/basis/'
+import { KTX2LoaderService } from '@utils/KTX2LoaderService'
 
 type ExtendLoader = (loader: KTX2Loader) => void
 
@@ -36,12 +35,19 @@ export function useKTX2<Url extends string[] | string | Record<string, string>>(
   extendLoader?: ExtendLoader
 ): Url extends any[] ? Texture[] : Url extends object ? { [key in keyof Url]: Texture } : Texture {
   const renderer = useThree((state) => state.renderer)
+
+  // Register renderer with KTX2 service for preload support
+  useLayoutEffect(() => {
+    KTX2LoaderService.registerRenderer(renderer)
+  }, [renderer])
+
   const textures = useLoader(KTX2Loader, IsObject(input) ? Object.values(input) : (input as any), (loader) => {
     if (extendLoader) {
       extendLoader(loader)
     }
     if (basisPath) {
-      loader.setTranscoderPath(typeof basisPath === 'string' ? basisPath : transcoderPath)
+      const path = typeof basisPath === 'string' ? basisPath : KTX2LoaderService.getTranscoderPath()
+      loader.setTranscoderPath(path)
     }
     loader.detectSupport(renderer)
   })
@@ -50,7 +56,11 @@ export function useKTX2<Url extends string[] | string | Record<string, string>>(
   // Upload the texture to the GPU immediately instead of waiting for the first render
   useEffect(() => {
     const array = Array.isArray(textures) ? textures : [textures]
-    array.forEach((texture) => renderer.initTexture(texture))
+    array.forEach((texture) => {
+      if ('initTexture' in renderer) {
+        ;(renderer as any).initTexture(texture)
+      }
+    })
   }, [renderer, textures])
 
   if (IsObject(input)) {
@@ -63,24 +73,30 @@ export function useKTX2<Url extends string[] | string | Record<string, string>>(
   }
 }
 
-useKTX2.preload = (
-  url: string extends any[] ? string[] : string,
-  basisPath: boolean | string = true,
-  extendLoader?: ExtendLoader
-) =>
-  useLoader.preload(KTX2Loader, url, (loader) => {
-    if (extendLoader) {
-      extendLoader(loader)
-    }
-    if (basisPath) {
-      loader.setTranscoderPath(typeof basisPath === 'string' ? basisPath : transcoderPath)
-    }
+useKTX2.preload = (url: string | string[], basisPath: boolean | string = true, extendLoader?: ExtendLoader) => {
+  // Defer preload until renderer is available (fixes detectSupport requirement)
+  KTX2LoaderService.onReady(() => {
+    const renderer = KTX2LoaderService.getRenderer()
+    useLoader.preload(KTX2Loader, url, (loader) => {
+      if (extendLoader) {
+        extendLoader(loader)
+      }
+      if (basisPath) {
+        const path = typeof basisPath === 'string' ? basisPath : KTX2LoaderService.getTranscoderPath()
+        loader.setTranscoderPath(path)
+      }
+      // Now we can properly call detectSupport with the registered renderer
+      if (renderer) {
+        loader.detectSupport(renderer)
+      }
+    })
   })
+}
 
 useKTX2.clear = (input: string | string[]) => useLoader.clear(KTX2Loader, input)
 
 useKTX2.setTranscoderPath = (path: string) => {
-  transcoderPath = path
+  KTX2LoaderService.setTranscoderPath(path)
 }
 
 //

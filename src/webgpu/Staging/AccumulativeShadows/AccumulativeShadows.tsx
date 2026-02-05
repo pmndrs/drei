@@ -150,10 +150,15 @@ class SoftShadowMaterialImpl extends MeshBasicNodeMaterial {
     return this._opacity.value
   }
   set opacity(v: number) {
-    this._opacity.value = v
+    //  protect from super early set
+    if (!this._opacity) this._opacity = uniform(v)
+    else this._opacity.value = v
   }
 
   get map() {
+    if (!this._map) {
+      this._map = uniformTexture(new THREE.Texture())
+    }
     return this._map.value as THREE.Texture
   }
   set map(v: THREE.Texture) {

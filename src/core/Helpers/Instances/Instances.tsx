@@ -165,21 +165,15 @@ export const Instances: ForwardRefComponent<InstancesProps, THREE.InstancedMesh>
 
   React.useEffect(() => {
     // We might be a frame too late? 🤷‍♂️
-    parentRef.current.instanceMatrix.needsUpdate = true
+    if (parentRef.current) parentRef.current.instanceMatrix.needsUpdate = true
   })
 
   let iterations = 0
   let count = 0
 
-  const attributes = React.useRef<[string, THREE.InstancedBufferAttribute][]>([])
-  React.useLayoutEffect(() => {
-    attributes.current = Object.entries(parentRef.current.geometry.attributes).filter(([_name, value]) =>
-      isInstancedBufferAttribute(value)
-    ) as [string, THREE.InstancedBufferAttribute][]
-  })
-
   useFrame(() => {
     if (frames === Infinity || iterations < frames) {
+      if (!parentRef.current) return
       parentRef.current.updateMatrix()
       parentRef.current.updateMatrixWorld()
       parentMatrix.copy(parentRef.current.matrixWorld).invert()

@@ -129,6 +129,7 @@ import UseEnvironmentDemo from './core/staging/useEnvironment'
 import UseAspectDemo from './core/ui/useAspect'
 import UseCursorDemo from './core/ui/useCursor'
 import UseIntersectDemo from './core/ui/useIntersect'
+import MeshTransmissionMaterialDemo from './materials/meshTransmission'
 
 //* Types ==============================
 
@@ -1811,6 +1812,23 @@ export const components: DreiComponent[] = [
     legacyStatus: '🟢',
     webgpuStatus: '🔴',
     tslConversion: '🔴',
+  },
+  {
+    name: 'MeshTransmissionMaterial',
+    category: 'Materials',
+    title: 'Mesh Transmission Material',
+    description: 'Glass-like transmission material.',
+    path: '/materials/meshtransmissionmaterial',
+    component: MeshTransmissionMaterialDemo,
+    structure: '🟢',
+    imports: '🟢',
+    types: '🟡',
+    tests: '🔴',
+    notes: 'High priority for WebGPU',
+    rendererSupport: 'dual',
+    legacyStatus: '🟢',
+    webgpuStatus: '🟢',
+    tslConversion: '🟢',
   },
   {
     name: 'BakeShadows',

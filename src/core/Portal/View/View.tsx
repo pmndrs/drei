@@ -88,8 +88,11 @@ function computeContainerPosition(canvasSize: CanvasSize, trackRect: DOMRect, fo
   return { position, isOffscreen }
 }
 
+// Type for renderer methods used by View (works for both WebGL and WebGPU)
+type ViewRenderer = Pick<THREE.WebGLRenderer, 'autoClear' | 'setViewport' | 'setScissor' | 'setScissorTest' | 'setClearColor' | 'getClearColor' | 'getClearAlpha' | 'clear' | 'render'>
+
 function prepareSkissor(
-  renderer: THREE.WebGLRenderer,
+  renderer: ViewRenderer,
   camera: THREE.Camera,
   {
     left,
@@ -131,13 +134,13 @@ function prepareSkissor(
   return autoClear
 }
 
-function finishSkissor(renderer: THREE.WebGLRenderer, autoClear: boolean) {
+function finishSkissor(renderer: ViewRenderer, autoClear: boolean) {
   // Restore the default state
   renderer.setScissorTest(false)
   renderer.autoClear = autoClear
 }
 
-function clear(renderer: THREE.WebGLRenderer) {
+function clear(renderer: ViewRenderer) {
   renderer.getClearColor(col)
   renderer.setClearColor(col, renderer.getClearAlpha())
   renderer.clear(true, true)

@@ -256,7 +256,7 @@ const ImageWithUrl = /* @__PURE__ */ React.forwardRef<THREE.Mesh, Omit<ImageProp
 const ImageWithTexture = /* @__PURE__ */ React.forwardRef<
   THREE.Mesh,
   Omit<ImageProps, 'url'> & { texture: THREE.Texture }
->(({ url: _url, ...props }, ref) => {
+>(({ ...props }, ref) => {
   return <ImageBase {...props} ref={ref} />
 })
 

@@ -130,6 +130,7 @@ const ImageBase: ForwardRefComponent<Omit<ImageProps, 'url'>, THREE.Mesh> = /* @
     const ref = React.useRef<THREE.Mesh>(null!)
     const size = useThree((state) => state.size)
     const planeBounds = Array.isArray(scale) ? [scale[0], scale[1]] : [scale, scale]
+    // @ts-expect-error - texture.image has width/height at runtime
     const imageBounds = [texture!.image.width, texture!.image.height]
     const resolution = Math.max(size.width, size.height)
     React.useImperativeHandle(fref, () => ref.current, [])

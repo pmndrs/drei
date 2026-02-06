@@ -51,24 +51,28 @@ import {
   attenuationColor,
   attenuationDistance,
   transmission,
-  specularF90,
   uniformTexture,
+  DFGLUT,
+  screenSize,
+  screenUV,
 } from 'three/tsl'
 
-// These property nodes are used internally by PhysicalLightingModel but not exported from three/tsl types
-// @ts-ignore - Property nodes exist at runtime but not in TS types
-import { diffuseContribution, specularColorBlended } from 'three/src/nodes/core/PropertyNode.js'
-
-// Import the base lighting model and BSDF functions
+// Import the base lighting model and BRDF functions
 import PhysicalLightingModel from 'three/src/nodes/functions/PhysicalLightingModel.js'
 import { mx_fractal_noise_vec3 } from 'three/tsl'
-import F_Schlick from 'three/src/nodes/functions/BSDF/F_Schlick.js'
 
 import * as React from 'react'
-import { extend, ThreeElements, useFrame } from '@react-three/fiber'
+import { extend, ThreeElements, useFrame, useThree } from '@react-three/fiber'
 import { useFBO } from '@core/Portal/Fbo'
 import { DiscardMaterial } from '@webgpu/Materials/DiscardMaterial'
 import { ForwardRefComponent } from '@utils/ts-utils'
+
+const EnvironmentBRDF = /*@__PURE__*/ Fn((inputs: any) => {
+  const { dotNV, specularColor, specularF90, roughness } = inputs
+
+  const fab = DFGLUT({ dotNV, roughness })
+  return specularColor.mul(fab.x).add(specularF90.mul(fab.y))
+})
 
 //* Types ==============================
 
@@ -98,6 +102,8 @@ type MeshTransmissionMaterialType = Omit<
   buffer?: THREE.Texture
   /** Internals */
   time?: number
+  /** Debug mode for development (0=normal, 1-16=various debug outputs), default: 0 */
+  debugMode?: number
   /** Internals */
   args?: [samples: number, transmissionSampler: boolean]
 }
@@ -125,6 +131,7 @@ export type MeshTransmissionMaterialProps = Omit<MeshTransmissionMaterialType, '
 
 declare module '@react-three/fiber' {
   interface ThreeElements {
+    // @ts-expect-error - WebGPU version has different type than legacy version
     meshTransmissionMaterial: MeshTransmissionMaterialType
   }
 }
@@ -158,37 +165,64 @@ const applyVolumeAttenuation = /* @__PURE__ */ Fn((inputs: any[]) => {
 })
 
 /**
- * Sample the FBO buffer at a refracted position
- * Projects world-space exit point to screen UV coordinates
- * Returns the UV coordinates for sampling (texture sampling done by caller)
+ * Get volume transmission ray (matches Three.js getVolumeTransmissionRay exactly)
+ * Computes the refracted ray direction through a transmissive volume
  */
-const getRefractionUV = /* @__PURE__ */ Fn((inputs: any[]) => {
-  const [norm, viewDir, iorVal, thicknessVal, position] = inputs
-  // Get refraction direction
-  const refractionDir = refract(viewDir.negate(), norm, float(1.0).div(iorVal))
+const getVolumeTransmissionRay = /* @__PURE__ */ Fn((inputs: any[]) => {
+  const [n, v, thicknessVal, iorVal] = inputs
 
-  // Compute model scale for thickness
+  // Direction of refracted light (matches Three.js exactly)
+  const refractionVector = refract(v.negate(), normalize(n), float(1.0).div(iorVal))
+
+  // Check for total internal reflection (refract returns zero vector)
+  // normalize(zero) = NaN which breaks everything
+  const refractLen = length(refractionVector)
+  const safeRefractionVector = select(
+    refractLen.greaterThan(0.001),
+    refractionVector,
+    v.negate() // Fallback: ray goes straight through
+  )
+
+  // Compute rotation-independent scaling of the model matrix
   const modelScale = vec3(
     length(modelWorldMatrix[0].xyz),
     length(modelWorldMatrix[1].xyz),
     length(modelWorldMatrix[2].xyz)
   )
 
-  // Calculate exit point in world space
-  const transmissionRay = normalize(refractionDir).mul(thicknessVal.mul(modelScale))
-  const refractedExit = position.add(transmissionRay)
+  // The thickness is specified in local space
+  return normalize(safeRefractionVector).mul(thicknessVal.mul(modelScale))
+})
 
-  // Project to clip space
-  const clipPos = cameraProjectionMatrix.mul(cameraViewMatrix.mul(vec4(refractedExit, 1.0)))
-  const ndcPos = clipPos.xyz.div(clipPos.w)
+/**
+ * Sample the FBO buffer at a refracted position
+ * Projects world-space exit point to screen UV coordinates
+ * Matches Three.js getIBLVolumeRefraction UV calculation exactly (lines 155-160)
+ */
+const getRefractionUV = /* @__PURE__ */ Fn((inputs: any[]) => {
+  const [norm, viewDir, iorVal, thicknessVal, position] = inputs
 
-  // Convert to UV coordinates (0 to 1) and clamp to avoid out-of-bounds sampling
-  const refractionUV = vec2(
-    ndcPos.x.mul(0.5).add(0.5).clamp(0.001, 0.999),
-    ndcPos.y.negate().mul(0.5).add(0.5).clamp(0.001, 0.999)
-  )
+  // Use the same transmission ray calculation as Three.js
+  const transmissionRay = getVolumeTransmissionRay(norm, viewDir, thicknessVal, iorVal)
+  const refractedRayExit = position.add(transmissionRay)
 
-  return refractionUV
+  // Project refracted vector on the framebuffer (matches Three.js exactly)
+  const ndcPos = cameraProjectionMatrix.mul(cameraViewMatrix.mul(vec4(refractedRayExit, 1.0)))
+
+  // Handle points behind camera (negative w would flip UVs incorrectly)
+  const safeW = max(ndcPos.w, float(0.001))
+
+  // Match Three.js UV calculation (lines 157-160)
+  const refractionCoords = vec2(ndcPos.xy.div(safeW)).toVar()
+  refractionCoords.addAssign(1.0) // NDC (-1,1) -> (0,2)
+  refractionCoords.divAssign(2.0) // (0,2) -> (0,1)
+  // Flip Y for WebGPU (line 160: refractionCoords.y.oneMinus())
+  refractionCoords.assign(vec2(refractionCoords.x, refractionCoords.y.oneMinus()))
+
+  // Clamp to valid texture coordinates to avoid sampling outside FBO
+  refractionCoords.assign(refractionCoords.clamp(0.001, 0.999))
+
+  return refractionCoords
 })
 
 //* Custom Transmission Lighting Model ==============================
@@ -210,6 +244,7 @@ interface TransmissionUniforms {
   distortionScale: any
   temporalDistortion: any
   samples: number
+  debugMode: any
 }
 
 /**
@@ -226,6 +261,7 @@ class TransmissionLightingModel extends PhysicalLightingModel {
   private _distortionScale: any
   private _temporalDistortion: any
   private _samples: number
+  private _debugMode: any
 
   constructor(options: TransmissionLightingModelOptions, transmissionUniforms: TransmissionUniforms) {
     super(
@@ -246,6 +282,7 @@ class TransmissionLightingModel extends PhysicalLightingModel {
     this._distortionScale = transmissionUniforms.distortionScale
     this._temporalDistortion = transmissionUniforms.temporalDistortion
     this._samples = transmissionUniforms.samples
+    this._debugMode = transmissionUniforms.debugMode
   }
 
   start(builder: any) {
@@ -269,7 +306,7 @@ class TransmissionLightingModel extends PhysicalLightingModel {
     if (this.transmission === true) {
       const position = positionWorld
       const v = normalize(cameraPosition.sub(positionWorld))
-      const n = normalWorld
+      const n = normalWorld // Three.js uses normalWorld directly without faceforward
       const context = builder.context
 
       // Capture uniforms for the Fn closure
@@ -281,6 +318,7 @@ class TransmissionLightingModel extends PhysicalLightingModel {
       const distortionScaleUniform = this._distortionScale
       const temporalDistortionUniform = this._temporalDistortion
       const sampleCount = this._samples
+      const debugModeUniform = this._debugMode
 
       // Custom transmission calculation
       const getCustomTransmission = Fn(() => {
@@ -358,17 +396,184 @@ class TransmissionLightingModel extends PhysicalLightingModel {
         // Average samples
         const avgTransmission = transmissionAccum.div(float(sampleCount))
 
+        // ============ DEBUG OUTPUTS ============
+        // debugMode prop controls output (0=normal, 1-16=debug views)
+        // Pre-compute all debug values (TSL evaluates all branches)
+        const debugUV = getRefractionUV(n, v, ior, thickness, position)
+        const debugNdotV = n.dot(v)
+        const isNeg = debugNdotV.lessThan(0)
+        const sampleUVFlipped = vec2(screenUV.x, screenUV.y.oneMinus()).clamp(0.001, 0.999)
+        const directSampleFlipped = texture(bufferTex, sampleUVFlipped)
+        const testRay = getVolumeTransmissionRay(n, v, thickness, ior)
+        const rayLen = length(testRay)
+        const manualUV = screenCoordinate.xy.div(screenSize)
+        const noFlipUV = screenUV.clamp(0.001, 0.999)
+        const flippedUV = vec2(screenUV.x, screenUV.y.oneMinus()).clamp(0.001, 0.999)
+        const useFlipped = screenUV.x.greaterThan(0.5)
+        const splitSampleUV = select(useFlipped, flippedUV, noFlipUV)
+        const splitSample = texture(bufferTex, splitSampleUV)
+        const directSampleNoFlip = texture(bufferTex, screenUV.clamp(0.001, 0.999))
+        const centerSample = texture(bufferTex, vec2(0.5, 0.5))
+
+        // Debug 13/14/16 calculations
+        const transmissionRayDbg = getVolumeTransmissionRay(n, v, thickness, ior)
+        const refractedRayExitDbg = position.add(transmissionRayDbg)
+        const ndcPosDbg = cameraProjectionMatrix.mul(cameraViewMatrix.mul(vec4(refractedRayExitDbg, 1.0)))
+        const safeWDbg = max(ndcPosDbg.w, float(0.001))
+        const rawCoordsDbg = vec2(ndcPosDbg.xy.div(safeWDbg)).toVar()
+        rawCoordsDbg.addAssign(1.0)
+        rawCoordsDbg.divAssign(2.0)
+        rawCoordsDbg.assign(vec2(rawCoordsDbg.x, rawCoordsDbg.y.oneMinus()))
+        const outOfRange = rawCoordsDbg.x
+          .lessThan(0)
+          .or(rawCoordsDbg.x.greaterThan(1))
+          .or(rawCoordsDbg.y.lessThan(0))
+          .or(rawCoordsDbg.y.greaterThan(1))
+
+        const clipPosDbg = cameraProjectionMatrix.mul(cameraViewMatrix.mul(vec4(position, 1.0)))
+        const safeWDbg2 = max(clipPosDbg.w, float(0.001))
+        const projUVDbg = vec2(clipPosDbg.xy.div(safeWDbg2)).toVar()
+        projUVDbg.addAssign(1.0)
+        projUVDbg.divAssign(2.0)
+        projUVDbg.assign(vec2(projUVDbg.x, projUVDbg.y.oneMinus()))
+        projUVDbg.assign(projUVDbg.clamp(0.001, 0.999))
+        const projectedSample = texture(bufferTex, projUVDbg)
+
+        const wNorm = clipPosDbg.w.div(10).add(0.5).clamp(0, 1)
+        const isBehind = clipPosDbg.w.lessThan(0)
+
+        // Debug 17: Raw NDC values (before +1 /2 transformation)
+        // Shows clip space XY divided by W - should be in [-1, 1] range
+        // Red channel = (ndcX + 1) / 2, Green = (ndcY + 1) / 2
+        // If these go outside 0-1, something is wrong with projection
+        const rawNdcX = clipPosDbg.x.div(safeWDbg2)
+        const rawNdcY = clipPosDbg.y.div(safeWDbg2)
+
+        // Debug 18: Show solid magenta to confirm shader runs at all
+        // If this shows black, the issue is before our shader code
+
+        // Debug 19: Sample at screenUV but show the UV values too
+        // RGB = FBO sample, but tinted by UV (helps correlate position to sample)
+
+        // Build result using nested select (TSL runtime conditionals)
+        const result = vec4(0, 0, 0, 1).toVar()
+        result.assign(
+          select(
+            debugModeUniform.equal(1),
+            vec4(avgTransmission, float(1)),
+            select(
+              debugModeUniform.equal(2),
+              vec4(debugUV.x, debugUV.y, float(0), float(1)),
+              select(
+                debugModeUniform.equal(3),
+                vec4(select(isNeg, debugNdotV.abs(), float(0)), select(isNeg, float(0), debugNdotV), float(0), float(1)),
+                select(
+                  debugModeUniform.equal(4),
+                  vec4(v.mul(0.5).add(0.5), float(1)),
+                  select(
+                    debugModeUniform.equal(5),
+                    vec4(n.mul(0.5).add(0.5), float(1)),
+                    select(
+                      debugModeUniform.equal(6),
+                      vec4(directSampleFlipped.rgb, float(1)),
+                      select(
+                        debugModeUniform.equal(7),
+                        vec4(rayLen, rayLen, rayLen, float(1)),
+                        select(
+                          debugModeUniform.equal(8),
+                          vec4(screenUV.x, screenUV.y, float(0), float(1)),
+                          select(
+                            debugModeUniform.equal(9),
+                            vec4(screenSize.x.div(2000), screenSize.y.div(2000), float(0), float(1)),
+                            select(
+                              debugModeUniform.equal(10),
+                              vec4(manualUV.x, manualUV.y, float(0), float(1)),
+                              select(
+                                debugModeUniform.equal(11),
+                                vec4(splitSample.rgb, float(1)),
+                                select(
+                                  debugModeUniform.equal(12),
+                                  vec4(directSampleNoFlip.rgb, float(1)),
+                                  select(
+                                    debugModeUniform.equal(13),
+                                    vec4(
+                                      select(outOfRange, float(1), float(0)),
+                                      rawCoordsDbg.x.clamp(0, 1),
+                                      rawCoordsDbg.y.clamp(0, 1),
+                                      float(1)
+                                    ),
+                                    select(
+                                      debugModeUniform.equal(14),
+                                      vec4(
+                                        select(isBehind, float(1), float(0)),
+                                        wNorm,
+                                        select(isBehind, float(0), float(1)),
+                                        float(1)
+                                      ),
+                                      select(
+                                        debugModeUniform.equal(15),
+                                        vec4(centerSample.rgb, float(1)),
+                                        select(
+                                          debugModeUniform.equal(16),
+                                          vec4(projectedSample.rgb, float(1)),
+                                          select(
+                                            debugModeUniform.equal(17),
+                                            // Raw NDC as color: map [-1,1] to [0,1]
+                                            vec4(rawNdcX.add(1).div(2), rawNdcY.add(1).div(2), float(0.5), float(1)),
+                                            select(
+                                              debugModeUniform.equal(18),
+                                              // Solid magenta - if black here, shader isn't running
+                                              vec4(1, 0, 1, 1),
+                                              select(
+                                                debugModeUniform.equal(19),
+                                                // Tinted FBO sample: mix sample with UV color
+                                                vec4(
+                                                  directSampleFlipped.r.add(screenUV.x.mul(0.3)),
+                                                  directSampleFlipped.g.add(screenUV.y.mul(0.3)),
+                                                  directSampleFlipped.b,
+                                                  float(1)
+                                                ),
+                                                vec4(0, 0, 0, 1) // Placeholder for mode 0
+                                              )
+                                            )
+                                          )
+                                        )
+                                      )
+                                    )
+                                  )
+                                )
+                              )
+                            )
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+
+        // ============ NORMAL OUTPUT ============
         // Apply Beer's law attenuation
         const attenuated = applyVolumeAttenuation(avgTransmission, thickness, attenuationColor, attenuationDistance)
 
-        // Apply Fresnel (same as Three.js getIBLVolumeRefraction)
-        const NdotV = n.dot(v).clamp(0, 1)
-        const F = F_Schlick({ f0: specularColorBlended, f90: specularF90, dotVH: NdotV })
+        // Apply Fresnel using EnvironmentBRDF (proper DFG lookup table)
+        // Use abs() to handle backface normals (when viewing back side)
+        const NdotV = n.dot(v).abs().clamp(0.001, 1)
 
-        // Transmission with Fresnel and diffuse contribution
-        const transmissionWithFresnel = F.oneMinus().mul(attenuated).mul(diffuseContribution)
+        // Use fixed F0 for glass/dielectric (0.04)
+        const glassF0 = vec3(0.04)
+        const brdf = EnvironmentBRDF({ dotNV: NdotV, specularColor: glassF0, specularF90: float(1), roughness })
 
-        return vec4(transmissionWithFresnel, float(1))
+        // Final transmission: (1 - BRDF) * attenuated * diffuseColor
+        // The diffuseColor multiplication ensures proper color from the material
+        const transmissionResult = brdf.oneMinus().mul(attenuated).mul(diffuseColor.rgb)
+        const normalOutput = vec4(transmissionResult, float(1))
+
+        // Return debug output if debugMode > 0, otherwise normal output
+        return select(debugModeUniform.greaterThan(0), result, normalOutput)
       })
 
       // Set backdrop for transmission blending
@@ -398,6 +603,7 @@ class MeshTransmissionMaterialImpl extends MeshPhysicalNodeMaterial {
   private _temporalDistortion: THREE.UniformNode<number>
   private _buffer: any // Texture node
   private _transmissionValue: THREE.UniformNode<number>
+  private _debugMode: THREE.UniformNode<number>
 
   /** Type flag for identification */
   readonly isMeshTransmissionMaterial = true
@@ -418,6 +624,7 @@ class MeshTransmissionMaterialImpl extends MeshPhysicalNodeMaterial {
     this._distortion = uniform(0.0)
     this._distortionScale = uniform(0.5)
     this._temporalDistortion = uniform(0.0)
+    this._debugMode = uniform(0)
     // Create a valid 1x1 white placeholder texture - will be replaced with FBO texture
     const placeholderTexture = new THREE.DataTexture(new Uint8Array([255, 255, 255, 255]), 1, 1)
     placeholderTexture.needsUpdate = true
@@ -458,6 +665,7 @@ class MeshTransmissionMaterialImpl extends MeshPhysicalNodeMaterial {
         distortionScale: this._distortionScale,
         temporalDistortion: this._temporalDistortion,
         samples: this._samples,
+        debugMode: this._debugMode,
       }
     )
   }
@@ -511,6 +719,13 @@ class MeshTransmissionMaterialImpl extends MeshPhysicalNodeMaterial {
   }
   set temporalDistortion(v: number) {
     this._temporalDistortion.value = v
+  }
+
+  get debugMode() {
+    return this._debugMode.value
+  }
+  set debugMode(v: number) {
+    this._debugMode.value = v
   }
 
   // Expose _transmission for legacy compatibility
@@ -571,6 +786,7 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
       background,
       anisotropy,
       anisotropicBlur,
+      debugMode = 0,
       ...props
     }: MeshTransmissionMaterialProps,
     fref
@@ -580,8 +796,25 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
     const ref = React.useRef<any>(null!)
     // Create a second material instance for backside pass to avoid texture swapping conflicts
     const backsideMaterialRef = React.useRef<any>(null)
-    const fboBack = useFBO(backsideResolution || resolution)
-    const fboMain = useFBO(resolution)
+
+    // Get screen dimensions for FBO sizing
+    // IMPORTANT: FBO must match screen aspect ratio for screenUV sampling to work correctly
+    const { size, viewport } = useThree()
+    const screenWidth = size.width * viewport.dpr
+    const screenHeight = size.height * viewport.dpr
+
+    // Calculate FBO dimensions maintaining aspect ratio
+    // If resolution is set, scale down from screen size maintaining aspect
+    const fboWidth = resolution || screenWidth
+    const fboHeight = resolution
+      ? Math.round((resolution / screenWidth) * screenHeight)
+      : screenHeight
+
+    const fboBack = useFBO(
+      backsideResolution || fboWidth,
+      backsideResolution ? Math.round((backsideResolution / screenWidth) * screenHeight) : fboHeight
+    )
+    const fboMain = useFBO(fboWidth, fboHeight)
 
     // Initialize backside material on first render
     React.useEffect(() => {
@@ -613,6 +846,7 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
 
     useFrame((state) => {
       ref.current.time = state.elapsed
+      const renderer = state.renderer
       if (backsideMaterialRef.current) {
         backsideMaterialRef.current.time = state.elapsed
       }
@@ -621,60 +855,93 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
       if (ref.current.buffer === fboMain.texture && !transmissionSampler) {
         parent = (ref.current as any).__r3f?.parent?.object as THREE.Object3D | undefined
 
-        if (parent) {
-          // Save defaults
-          oldTone = state.gl.toneMapping
-          oldBg = state.scene.background
-          oldEnvMapIntensity = ref.current.envMapIntensity
+        if (!parent) return
+        // Save defaults
+        oldTone = renderer.toneMapping
+        oldBg = state.scene.background
+        oldEnvMapIntensity = ref.current.envMapIntensity
 
-          // Switch off tonemapping lest it double tone maps
-          // Save the current background and set the HDR as the new BG
-          state.gl.toneMapping = THREE.NoToneMapping
-          if (background) state.scene.background = background
+        // Switch off tonemapping lest it double tone maps
+        renderer.toneMapping = THREE.NoToneMapping
 
-          // Use discardmaterial - parent invisible but shadows still cast
-          ;(parent as any).material = DiscardMaterial
+        // Set custom background if provided
+        if (background) state.scene.background = background
 
-          if (backside && backsideMaterialRef.current) {
-            // PASS 1: Render scene to fboBack (mesh invisible via DiscardMaterial)
-            state.gl.setRenderTarget(fboBack)
-            state.gl.clear()
-            state.renderer.render(state.scene, state.camera)
+        // Use discardmaterial - parent invisible but shadows still cast
+        ;(parent as any).material = DiscardMaterial
 
-            // PASS 2: Use SEPARATE material that samples fboBack, writes to fboMain
-            // This material's buffer is permanently set to fboBack.texture
-            ;(parent as any).material = backsideMaterialRef.current
-            backsideMaterialRef.current.thickness = backsideThickness
-            backsideMaterialRef.current.side = THREE.BackSide
-            backsideMaterialRef.current.envMapIntensity = backsideEnvMapIntensity
-
-            state.gl.setRenderTarget(fboMain)
-            state.gl.clear()
-            state.renderer.render(state.scene, state.camera)
-
-            // PASS 3 prep: Switch to main material for final screen render
-            // Main material's buffer is permanently fboMain.texture
-            ;(parent as any).material = ref.current
-            ref.current.thickness = thickness
-            ref.current.side = side
-            ref.current.envMapIntensity = oldEnvMapIntensity
-          } else {
-            // NO BACKSIDE: Render scene to fboMain (mesh invisible via DiscardMaterial)
-            state.gl.setRenderTarget(fboMain)
-            state.gl.clear()
-            state.renderer.render(state.scene, state.camera)
-
-            // Switch to main material for final screen render
-            ;(parent as any).material = ref.current
-            ref.current.thickness = thickness
-            ref.current.side = side
+        // For orthographic cameras, we need to update the projection matrix
+        // to match the FBO aspect ratio, otherwise the frustum clips incorrectly
+        const camera = state.camera as any
+        const isOrtho = camera.isOrthographicCamera
+        let oldLeft: number, oldRight: number, oldTop: number, oldBottom: number
+        if (isOrtho) {
+          oldLeft = camera.left
+          oldRight = camera.right
+          oldTop = camera.top
+          oldBottom = camera.bottom
+          // Calculate the orthographic frustum for the FBO aspect ratio
+          const fboAspect = fboWidth / fboHeight
+          const screenAspect = screenWidth / screenHeight
+          if (Math.abs(fboAspect - screenAspect) > 0.001) {
+            // Adjust frustum to match FBO aspect while keeping the same view height
+            const viewHeight = oldTop - oldBottom
+            const newHalfWidth = (viewHeight * fboAspect) / 2
+            const centerX = (oldLeft + oldRight) / 2
+            camera.left = centerX - newHalfWidth
+            camera.right = centerX + newHalfWidth
+            camera.updateProjectionMatrix()
           }
-
-          // Restore state for final screen render
-          state.scene.background = oldBg
-          state.gl.setRenderTarget(null)
-          state.gl.toneMapping = oldTone
         }
+
+        if (backside && backsideMaterialRef.current) {
+          // PASS 1: Render scene to fboBack (mesh invisible via DiscardMaterial)
+          renderer.setRenderTarget(fboBack)
+          renderer.clear()
+          state.renderer.render(state.scene, state.camera)
+
+          // PASS 2: Use SEPARATE material that samples fboBack, writes to fboMain
+          // This material's buffer is permanently set to fboBack.texture
+          ;(parent as any).material = backsideMaterialRef.current
+          backsideMaterialRef.current.thickness = backsideThickness
+          backsideMaterialRef.current.side = THREE.BackSide
+          backsideMaterialRef.current.envMapIntensity = backsideEnvMapIntensity
+
+          renderer.setRenderTarget(fboMain)
+          renderer.clear()
+          state.renderer.render(state.scene, state.camera)
+
+          // PASS 3 prep: Switch to main material for final screen render
+          // Main material's buffer is permanently fboMain.texture
+          ;(parent as any).material = ref.current
+          ref.current.thickness = thickness
+          ref.current.side = side
+          ref.current.envMapIntensity = oldEnvMapIntensity
+        } else {
+          // NO BACKSIDE: Render scene to fboMain (mesh invisible via DiscardMaterial)
+          renderer.setRenderTarget(fboMain)
+          renderer.clear()
+          state.renderer.render(state.scene, state.camera)
+
+          // Switch to main material for final screen render
+          ;(parent as any).material = ref.current
+          ref.current.thickness = thickness
+          ref.current.side = side
+        }
+
+        // Restore orthographic camera if we modified it
+        if (isOrtho && Math.abs(fboWidth / fboHeight - screenWidth / screenHeight) > 0.001) {
+          camera.left = oldLeft!
+          camera.right = oldRight!
+          camera.top = oldTop!
+          camera.bottom = oldBottom!
+          camera.updateProjectionMatrix()
+        }
+
+        // Restore state for final screen render
+        state.scene.background = oldBg
+        renderer.setRenderTarget(null)
+        renderer.toneMapping = oldTone
       }
     })
 
@@ -696,6 +963,7 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
         anisotropicBlur={anisotropicBlur ?? anisotropy}
         thickness={thickness}
         side={side}
+        debugMode={debugMode}
       />
     )
   }

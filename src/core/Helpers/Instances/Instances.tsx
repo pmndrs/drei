@@ -248,20 +248,25 @@ export const Merged: ForwardRefComponent<MergedProps, THREE.Group> = /* @__PURE_
 >(function Merged({ meshes, children, ...props }, ref) {
   const isArray = Array.isArray(meshes)
   // Filter out meshes from collections, which may contain non-meshes
-  if (!isArray) for (const key of Object.keys(meshes)) if (!meshes[key].isMesh) delete meshes[key]
+  if (!isArray) for (const key of Object.keys(meshes)) if (!(meshes[key] as THREE.Mesh).isMesh) delete meshes[key]
 
-  const render = (args) =>
-    isArray
-      ? children(...args)
-      : children(
-          Object.keys(meshes)
-            .filter((key) => meshes[key].isMesh)
-            .reduce((acc, key, i) => ({ ...acc, [key]: args[i] }), {})
-        )
+  const render = (args: React.FC<InstanceProps>[]) => {
+    if (isArray) {
+      return children(...(args as [React.FC<InstanceProps> & Record<string, React.FC<InstanceProps>>, ...React.FC<InstanceProps>[]]))
+    }
+    // Build object mapping mesh keys to instance components
+    const instanceMap = {} as React.FC<InstanceProps> & Record<string, React.FC<InstanceProps>>
+    const keys = Object.keys(meshes).filter((key) => (meshes[key] as THREE.Mesh).isMesh)
+    keys.forEach((key, i) => {
+      ;(instanceMap as Record<string, React.FC<InstanceProps>>)[key] = args[i]
+    })
+    return children(instanceMap)
+  }
 
-  const components = (isArray ? meshes : Object.values(meshes)).map(({ geometry, material }) => (
-    <Instances key={geometry.uuid} geometry={geometry} material={material} {...props} />
-  ))
+  const components = (isArray ? meshes : Object.values(meshes)).map((mesh) => {
+    const { geometry, material } = mesh as THREE.Mesh
+    return <Instances key={geometry.uuid} geometry={geometry} material={material} {...props} />
+  })
 
   return <group ref={ref}>{renderRecursive(render, components)}</group>
 })
@@ -393,6 +398,7 @@ export const InstancedAttribute = React.forwardRef<THREE.InstancedBufferAttribut
         iterations++
       }
     })
+    // @ts-expect-error - args are dynamically set in useLayoutEffect, not needed for initial render
     return <instancedBufferAttribute ref={ref} usage={usage} normalized={normalized} />
   }
 )

@@ -643,11 +643,11 @@ export const MeshPortalMaterial: ForwardRefComponent<PortalProps, PortalMaterial
       return (
         // @ts-ignore - portalMaterialImpl is dynamically extended, type conflicts with legacy
         <portalMaterialImpl
-          ref={ref}
+          ref={ref as any}
           blur={blur}
           blend={0}
           resolution={[size.width * viewport.dpr, size.height * viewport.dpr]}
-          attach="material"
+          attach={'material' as any}
           {...props}
         >
           <RenderTexture

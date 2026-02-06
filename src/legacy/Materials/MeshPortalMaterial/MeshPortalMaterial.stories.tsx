@@ -47,10 +47,12 @@ function Side({ rotation = [0, 0, 0], bg = '#f0f0f0', children, index, worldUnit
     mesh.current.rotation.x = mesh.current.rotation.y += delta
   })
   return (
+    // @ts-expect-error - resolution is optional at runtime, handled by component defaults
     <PortalMaterial worldUnits={worldUnits} attach={`material-${index}`}>
       <ambientLight intensity={0.5} />
       <Environment preset="city" />
       <mesh castShadow receiveShadow rotation={rotation} geometry={(nodes.Cube as Mesh).geometry}>
+        {/* @ts-expect-error - material.aoMap exists on MeshStandardMaterial loaded from glb */}
         <meshStandardMaterial aoMapIntensity={1} aoMap={(nodes.Cube as Mesh).material.aoMap} color={bg} />
         <spotLight
           castShadow
@@ -146,10 +148,10 @@ function MeshPortalScene({
 export const MeshPortalMaterialSt = {
   render: (args) => (
     <PlatformSwitch
-      legacy={<MeshPortalScene worldUnits={args.worldUnits} PortalMaterial={MeshPortalMaterial} />}
+      legacy={<MeshPortalScene worldUnits={args.worldUnits ?? false} PortalMaterial={MeshPortalMaterial} />}
       webgpu={
         <MeshPortalScene
-          worldUnits={args.worldUnits}
+          worldUnits={args.worldUnits ?? false}
           PortalMaterial={MeshPortalMaterialWebGPU as typeof MeshPortalMaterial}
         />
       }

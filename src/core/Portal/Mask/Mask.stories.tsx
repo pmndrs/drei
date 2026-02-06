@@ -44,6 +44,7 @@ const CircularMask = (props: any) => (
 
 // Box Component ---------------------------------
 const Box = ({ args = [1, 4, 1], radius = 0.05, smoothness = 4, color = 'black', ...boxProps }) => (
+  // @ts-expect-error - spread props from parent may include ref type mismatch
   <RoundedBox args={args} radius={radius} smoothness={smoothness} {...boxProps}>
     <meshPhongMaterial color={color} />
   </RoundedBox>

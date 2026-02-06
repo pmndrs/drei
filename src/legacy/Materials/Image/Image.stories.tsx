@@ -36,6 +36,7 @@ function ImageScene({ url, ...props }: React.ComponentProps<typeof Image>) {
       <Image texture={texture1} {...props} position={[-2, -2, -1.5]} scale={[4, 4]} />
       <Image texture={texture2} {...props} position={[2, 2, -1]} scale={[4, 4]} />
 
+      {/* @ts-expect-error - Storybook file control returns array */}
       <Image url={url?.[0] || '/images/living-room-2.jpg'} {...props} />
     </>
   )

@@ -190,6 +190,7 @@ function HTMLOccluderScene(props: HtmlProps) {
         </Icosahedron>
         <Icosahedron ref={occluderRef} name="orange" args={[5, 5]} position={[0, 0, 16]}>
           <meshBasicMaterial color="orange" />
+          {/* @ts-expect-error - occluderRef type is compatible at runtime */}
           <Html {...props} position={[0, 0, -6]} className="html-story-label" occlude={[occluderRef]}>
             Raycast occlusion
           </Html>

@@ -9,7 +9,7 @@ const SPRITE_DATA = 'story.json'
 const CYCLOPS_IMAGE = 'cyclops.png'
 const CYCLOPS_JSON = 'cyclops.json'
 
-export default {
+const meta: Meta<typeof SpriteAnimator> = {
   title: 'Helpers/SpriteAnimator',
   component: SpriteAnimator,
   decorators: [
@@ -27,7 +27,9 @@ export default {
     asSprite: false,
     alphaTest: 0.01,
   },
-} satisfies Meta<typeof SpriteAnimator>
+}
+
+export default meta
 
 type Story = StoryObj<typeof SpriteAnimator>
 
@@ -38,7 +40,7 @@ function SpriteAnimatorScene1(props: React.ComponentProps<typeof SpriteAnimator>
 
   return <SpriteAnimator {...props} spriteDataset={spriteObj} />
 }
-export const SpriteAnimatorSt1 = {
+export const SpriteAnimatorSt1: Story = {
   args: {
     frameName: 'Fly',
     fps: 18,
@@ -46,7 +48,7 @@ export const SpriteAnimatorSt1 = {
   },
   render: (args) => <SpriteAnimatorScene1 {...args} />,
   name: 'Animated',
-} satisfies Story
+}
 
 //
 
@@ -55,14 +57,14 @@ function SpriteAnimatorScene2(props: React.ComponentProps<typeof SpriteAnimator>
 
   return <SpriteAnimator {...props} spriteDataset={spriteObj} />
 }
-export const SpriteAnimatorSt2 = {
+export const SpriteAnimatorSt2: Story = {
   args: {
     frameName: 'sword',
     fps: 0,
   },
   render: (args) => <SpriteAnimatorScene2 {...args} />,
   name: 'Static',
-} satisfies Story
+}
 
 //
 
@@ -79,11 +81,11 @@ function SpriteAnimatorScene3(props: React.ComponentProps<typeof SpriteAnimator>
   )
 }
 
-export const SpriteAnimatorSt3 = {
+export const SpriteAnimatorSt3: Story = {
   args: {},
   render: (args) => <SpriteAnimatorScene3 {...args} />,
   name: 'Multiple',
-} satisfies Story
+}
 
 function SpriteAnimatorScene4(props: React.ComponentProps<typeof SpriteAnimator>) {
   const commonProps = {
@@ -99,8 +101,8 @@ function SpriteAnimatorScene4(props: React.ComponentProps<typeof SpriteAnimator>
   )
 }
 
-export const SpriteAnimatorSt4 = {
+export const SpriteAnimatorSt4: Story = {
   args: {},
   render: (args) => <SpriteAnimatorScene4 {...args} />,
   name: 'Image & JSON',
-} satisfies Story
+}

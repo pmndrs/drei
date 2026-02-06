@@ -23,7 +23,7 @@ export default function App() {
     backside: true,
     backsideThickness: { value: 0.3, min: 0, max: 2 },
     samples: { value: 16, min: 1, max: 32, step: 1 },
-    resolution: { value: 1024, min: 64, max: 2048, step: 64 },
+    resolution: { value: 0, min: 0, max: 2048, step: 64 }, // 0 = fullscreen
     transmission: { value: 1, min: 0, max: 1 },
     clearcoat: { value: 0, min: 0.1, max: 1 },
     clearcoatRoughness: { value: 0.0, min: 0, max: 1 },
@@ -38,6 +38,11 @@ export default function App() {
     color: '#ff9cf5',
     shadow: '#750d57',
     autoRotate: false,
+    // Debug modes: 0=normal, 1=rawSamples, 2=UVs, 3=NdotV, 4=viewDir, 5=normal,
+    // 6=FBO(Y-flip), 7=rayLen, 8=screenUV, 9=screenSize, 10=manualUV,
+    // 11=splitFlip, 12=FBO(no-flip), 13=outOfRange, 14=clipW, 15=centerSample, 16=projectedUV
+    // 17=rawNDC, 18=solidMagenta, 19=tintedSample
+    debugMode: { value: 0, min: 0, max: 19, step: 1 },
     screenshot: button(() => {
       // Save the canvas as a *.png
       const link = document.createElement('a')

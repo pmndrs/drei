@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js'
 import { Box3, Sphere, Vector3 } from 'three'
-import { useLoader } from '@react-three/fiber'
+import { useLoader, useThree } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import * as THREE from 'three'
-import { MapControls } from 'drei'
+import { Box, Html, MapControls } from 'drei'
 
 import { Setup } from '@sb/Setup'
 
@@ -82,4 +82,35 @@ function MapControlsScene(props: React.ComponentProps<typeof MapControls>) {
 export const MapControlsSt = {
   render: (args) => <MapControlsScene {...args} />,
   name: 'Default',
+} satisfies Story
+
+//
+
+function UnstableOnChangeScene(props: React.ComponentProps<typeof MapControls>) {
+  const { camera } = useThree()
+  const [cameraX, setCameraX] = React.useState(0)
+
+  // Intentionally unstable — new function reference every render
+  const onChange = () => {
+    setCameraX(camera.position.x)
+  }
+
+  return (
+    <>
+      <Box>
+        <meshBasicMaterial wireframe />
+      </Box>
+      <Html position={[0, 2, 0]} center>
+        <div style={{ background: 'white', padding: '4px 8px', borderRadius: 4, fontFamily: 'monospace' }}>
+          x: {cameraX.toFixed(2)}
+        </div>
+      </Html>
+      <MapControls {...props} onChange={onChange} />
+    </>
+  )
+}
+
+export const UnstableOnChangeSt = {
+  render: (args) => <UnstableOnChangeScene {...args} />,
+  name: 'Unstable onChange',
 } satisfies Story

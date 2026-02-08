@@ -418,9 +418,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
             const el = transformOuterRef.current.children[0]
 
             if (el?.clientWidth && el?.clientHeight) {
-              const { isOrthographicCamera } = camera as OrthographicCamera
-
-              if (isOrthographicCamera || geometry) {
+              if (geometry) {
                 if (props.scale) {
                   if (!Array.isArray(props.scale)) {
                     occlusionMeshRef.current.scale.setScalar(1 / (props.scale as number))

@@ -36,6 +36,14 @@ useGLTF('/model.glb', true, true)
 
 ### Bug Fixes
 
+#### `Html` - Fixed Occlusion Mesh Sizing for Orthographic Cameras in Transform Mode
+
+Previously, the occlusion mesh in transform mode grouped orthographic cameras with custom geometry, falling back to `props.scale` instead of measuring the element's `clientWidth`/`clientHeight`. When no `scale` prop was provided, the mesh size was never set. Now orthographic cameras use the same `clientWidth`/`clientHeight`-based sizing as perspective cameras, since `getObjectCSSMatrix` applies the same `distanceFactor` ratio for both camera types.
+
+**Files changed:**
+
+- `src/core/UI/Html/Html.tsx`
+
 #### `useKTX2.preload()` - Fixed `detectSupport` Not Being Called
 
 Previously, `useKTX2.preload()` never called `KTX2Loader.detectSupport(renderer)`, which meant preloaded KTX2 textures might not decode correctly. This is now fixed by deferring the preload until a renderer becomes available.

@@ -89,7 +89,18 @@ function computeContainerPosition(canvasSize: CanvasSize, trackRect: DOMRect, fo
 }
 
 // Type for renderer methods used by View (works for both WebGL and WebGPU)
-type ViewRenderer = Pick<THREE.WebGLRenderer, 'autoClear' | 'setViewport' | 'setScissor' | 'setScissorTest' | 'setClearColor' | 'getClearColor' | 'getClearAlpha' | 'clear' | 'render'>
+type ViewRenderer = Pick<
+  THREE.WebGLRenderer,
+  | 'autoClear'
+  | 'setViewport'
+  | 'setScissor'
+  | 'setScissorTest'
+  | 'setClearColor'
+  | 'getClearColor'
+  | 'getClearAlpha'
+  | 'clear'
+  | 'render'
+>
 
 function prepareSkissor(
   renderer: ViewRenderer,

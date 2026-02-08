@@ -61,8 +61,8 @@ vec3 highPassRandRGB(vec2 uv) {
 
 
 vec2 vogelDiskSample(int sampleIndex, int sampleCount, float angle) {
-  const float goldenAngle = 2.399963f; // radians
-  float r = sqrt(float(sampleIndex) + 0.5f) / sqrt(float(sampleCount));
+  float goldenAngle = 2.399963;
+  float r = sqrt(float(sampleIndex) + 0.5) / sqrt(float(sampleCount));
   float theta = float(sampleIndex) * goldenAngle + angle;
   float sine = sin(theta);
   float cosine = cos(theta);
@@ -83,7 +83,7 @@ float findBlocker(sampler2D shadowMap, vec2 uv, float compare, float angle) {
   #pragma unroll_loop_start
   for(int i = 0; i < ${samples}; i ++) {
     offset = (vogelDiskSample(j, ${samples}, angle) * texelSize) * 2.0 * PENUMBRA_FILTER_SIZE;
-    depth = unpackRGBAToDepth( texture2D( shadowMap, uv + offset));
+    depth = texture2D( shadowMap, uv + offset ).r;
     if (depth < compare) {
       blockerDepthSum += depth;
       blockers++;
@@ -101,7 +101,7 @@ float findBlocker(sampler2D shadowMap, vec2 uv, float compare, float angle) {
         
 float vogelFilter(sampler2D shadowMap, vec2 uv, float zReceiver, float filterRadius, float angle) {
   float texelSize = 1.0 / float(textureSize(shadowMap, 0).x);
-  float shadow = 0.0f;
+  float shadow = 0.0;
   int j = 0;
   vec2 vogelSample = vec2(0.0);
   vec2 offset = vec2(0.0);
@@ -109,7 +109,7 @@ float vogelFilter(sampler2D shadowMap, vec2 uv, float zReceiver, float filterRad
   for (int i = 0; i < ${samples}; i++) {
     vogelSample = vogelDiskSample(j, ${samples}, angle) * texelSize;
     offset = vogelSample * (1.0 + filterRadius * float(${size}));
-    shadow += step( zReceiver, unpackRGBAToDepth( texture2D( shadowMap, uv + offset ) ) );
+    shadow += step( zReceiver, texture2D( shadowMap, uv + offset ).r );
     j++;
   }
   #pragma unroll_loop_end
@@ -118,7 +118,7 @@ float vogelFilter(sampler2D shadowMap, vec2 uv, float zReceiver, float filterRad
 
 float PCSS (sampler2D shadowMap, vec4 coords) {
   vec2 uv = coords.xy;
-  float zReceiver = coords.z; // Assumed to be eye-space z in this code
+  float zReceiver = coords.z;
   float angle = highPassRandRGB(gl_FragCoord.xy).r * PI2;
   float avgBlockerDepth = findBlocker(shadowMap, uv, zReceiver, angle);
   if (avgBlockerDepth == -1.0) {
@@ -143,6 +143,9 @@ function reset(gl, scene, camera) {
  * Injects percent closer soft shadows (PCSS) into Three.js shadow shader chunks.
  * Mounting/unmounting causes shader recompilation.
  *
+ * Note: PCSS requires BasicShadowMap to read raw depth values. This component
+ * will automatically set the shadow map type to BasicShadowMap.
+ *
  * @example Enable soft shadows
  * ```jsx
  * <SoftShadows size={25} samples={10} focus={0} />
@@ -153,16 +156,38 @@ export function SoftShadows({ focus = 0, samples = 10, size = 25 }: SoftShadowsP
   const scene = useThree((state) => state.scene)
   const camera = useThree((state) => state.camera)
   React.useEffect(() => {
-    const original = THREE.ShaderChunk.shadowmap_pars_fragment
-    THREE.ShaderChunk.shadowmap_pars_fragment = THREE.ShaderChunk.shadowmap_pars_fragment
-      .replace('#ifdef USE_SHADOWMAP', '#ifdef USE_SHADOWMAP\n' + pcss({ size, samples, focus }))
-      .replace(
-        '#if defined( SHADOWMAP_TYPE_PCF )',
-        '\nreturn PCSS(shadowMap, shadowCoord);\n#if defined( SHADOWMAP_TYPE_PCF )'
+    const originalShader = THREE.ShaderChunk.shadowmap_pars_fragment
+    const originalShadowMapType = gl.shadowMap.type
+
+    // PCSS requires BasicShadowMap to read raw depth values (sampler2D, not sampler2DShadow)
+    gl.shadowMap.type = THREE.BasicShadowMap
+
+    // Inject PCSS shader code after USE_SHADOWMAP
+    let shader = THREE.ShaderChunk.shadowmap_pars_fragment
+    shader = shader.replace('#ifdef USE_SHADOWMAP', '#ifdef USE_SHADOWMAP\n' + pcss({ size, samples, focus }))
+
+    // Replace the BASIC path's getShadow function body to use PCSS
+    // Use regex to match flexibly regardless of whitespace variations
+    const basicIfBlockRegex =
+      /if\s*\(\s*frustumTest\s*\)\s*\{\s*float\s+depth\s*=\s*texture2D\s*\(\s*shadowMap\s*,\s*shadowCoord\.xy\s*\)\.r;\s*#ifdef\s+USE_REVERSED_DEPTH_BUFFER\s*shadow\s*=\s*step\s*\(\s*depth\s*,\s*shadowCoord\.z\s*\)\s*;\s*#else\s*shadow\s*=\s*step\s*\(\s*shadowCoord\.z\s*,\s*depth\s*\)\s*;\s*#endif\s*\}/
+
+    if (basicIfBlockRegex.test(shader)) {
+      shader = shader.replace(
+        basicIfBlockRegex,
+        `if ( frustumTest ) {
+				shadow = PCSS( shadowMap, shadowCoord );
+			}`
       )
+    } else {
+      console.warn('[SoftShadows] Could not find injection point in shader!')
+    }
+
+    THREE.ShaderChunk.shadowmap_pars_fragment = shader
     reset(gl, scene, camera)
+
     return () => {
-      THREE.ShaderChunk.shadowmap_pars_fragment = original
+      THREE.ShaderChunk.shadowmap_pars_fragment = originalShader
+      gl.shadowMap.type = originalShadowMapType
       reset(gl, scene, camera)
     }
   }, [focus, size, samples])

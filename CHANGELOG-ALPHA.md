@@ -31,6 +31,7 @@ useGLTF('/model.glb', true, true)
 ```
 
 **Files changed:**
+
 - `src/core/Loaders/useGLTF/useGLTF.tsx`
 
 ### Bug Fixes
@@ -40,6 +41,7 @@ useGLTF('/model.glb', true, true)
 Previously, `useKTX2.preload()` never called `KTX2Loader.detectSupport(renderer)`, which meant preloaded KTX2 textures might not decode correctly. This is now fixed by deferring the preload until a renderer becomes available.
 
 **Files changed:**
+
 - `src/core/Loaders/useKTX2/useKTX2.tsx`
 
 ### Internal
@@ -49,10 +51,12 @@ Previously, `useKTX2.preload()` never called `KTX2Loader.detectSupport(renderer)
 Added an internal service that manages the KTX2Loader lifecycle with deferred initialization. This handles the challenge that `KTX2Loader.detectSupport(renderer)` must be called before loading, but `useLoader.preload()` runs outside React context where no renderer is available.
 
 Key behaviors:
+
 - Lazy initialization of KTX2Loader singleton
 - Queues preload callbacks when renderer isn't available yet
 - Auto-flushes queue when first hook registers the renderer
 - HMR-safe via globalThis pattern
 
 **Files added:**
+
 - `src/utils/KTX2LoaderService.ts`

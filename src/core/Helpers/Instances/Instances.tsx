@@ -252,7 +252,9 @@ export const Merged: ForwardRefComponent<MergedProps, THREE.Group> = /* @__PURE_
 
   const render = (args: React.FC<InstanceProps>[]) => {
     if (isArray) {
-      return children(...(args as [React.FC<InstanceProps> & Record<string, React.FC<InstanceProps>>, ...React.FC<InstanceProps>[]]))
+      return children(
+        ...(args as [React.FC<InstanceProps> & Record<string, React.FC<InstanceProps>>, ...React.FC<InstanceProps>[]])
+      )
     }
     // Build object mapping mesh keys to instance components
     const instanceMap = {} as React.FC<InstanceProps> & Record<string, React.FC<InstanceProps>>

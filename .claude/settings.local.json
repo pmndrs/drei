@@ -29,7 +29,12 @@
       "WebSearch",
       "mcp__plugin_context7_context7__resolve-library-id",
       "mcp__plugin_context7_context7__query-docs",
-      "Bash(yarn tsc:*)"
+      "Bash(yarn tsc:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(yarn test:lint:*)",
+      "Bash(yarn prettier-fix:*)",
+      "Bash(node -e:*)"
     ]
   }
 }

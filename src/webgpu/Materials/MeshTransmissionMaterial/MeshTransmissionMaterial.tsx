@@ -466,7 +466,12 @@ class TransmissionLightingModel extends PhysicalLightingModel {
               vec4(debugUV.x, debugUV.y, float(0), float(1)),
               select(
                 debugModeUniform.equal(3),
-                vec4(select(isNeg, debugNdotV.abs(), float(0)), select(isNeg, float(0), debugNdotV), float(0), float(1)),
+                vec4(
+                  select(isNeg, debugNdotV.abs(), float(0)),
+                  select(isNeg, float(0), debugNdotV),
+                  float(0),
+                  float(1)
+                ),
                 select(
                   debugModeUniform.equal(4),
                   vec4(v.mul(0.5).add(0.5), float(1)),
@@ -806,9 +811,7 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
     // Calculate FBO dimensions maintaining aspect ratio
     // If resolution is set, scale down from screen size maintaining aspect
     const fboWidth = resolution || screenWidth
-    const fboHeight = resolution
-      ? Math.round((resolution / screenWidth) * screenHeight)
-      : screenHeight
+    const fboHeight = resolution ? Math.round((resolution / screenWidth) * screenHeight) : screenHeight
 
     const fboBack = useFBO(
       backsideResolution || fboWidth,
@@ -865,9 +868,10 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
         renderer.toneMapping = THREE.NoToneMapping
 
         // Set custom background if provided
-        if (background) state.scene.background = background
+        if (background)
+          state.scene.background = background
 
-        // Use discardmaterial - parent invisible but shadows still cast
+          // Use discardmaterial - parent invisible but shadows still cast
         ;(parent as any).material = DiscardMaterial
 
         // For orthographic cameras, we need to update the projection matrix

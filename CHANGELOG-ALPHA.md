@@ -34,6 +34,25 @@ useGLTF('/model.glb', true, true)
 
 - `src/core/Loaders/useGLTF/useGLTF.tsx`
 
+#### `useVariants` - KHR Material Variants Hook
+
+Added a hook to interact with glTF models that use the [KHR_materials_variants](https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_materials_variants) extension. Allows switching between material variants at runtime.
+
+```tsx
+const gltf = useGLTF('model.glb')
+const { activeVariant, setVariant, variants, materials } = useVariants(gltf)
+
+// Switch variant
+setVariant('midnight')
+
+// Or pass variant directly
+useVariants(gltf, 'midnight')
+```
+
+**Files added:**
+
+- `src/core/Loaders/useVariants/useVariants.tsx`
+
 ### Bug Fixes
 
 #### `Html` - Fixed Occlusion Mesh Sizing for Orthographic Cameras in Transform Mode

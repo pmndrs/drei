@@ -28,19 +28,42 @@ export default {
 
 type Story = StoryObj<typeof Mask>
 
+//* Pivot Controls ==============================
+// In stories because of dual imports we have to pass the line component. It shouldnt need this in prod
+import { Line as LegacyLine } from '@legacy/Geometry/Line'
+import { Line as WebGPULine } from '@webgpu/Geometry/Line'
+import { useThree } from '@react-three/fiber'
+function useLineComponent() {
+  const renderer = useThree((state) => state.renderer)
+  // Check if WebGPU renderer (has 'backend' property)
+  const isWebGPU = 'backend' in renderer
+  // Cast needed: legacy and webgpu Line have incompatible material types
+  // but are functionally interchangeable for PivotControls usage
+  return (isWebGPU ? WebGPULine : LegacyLine) as any
+}
+
 //* Helper Components ==============================
 
 // Circular Mask Frame ---------------------------------
-const CircularMask = (props: any) => (
-  <group {...props}>
-    <PivotControls offset={[0, 0, 1]} activeAxes={[true, true, false]} disableRotations depthTest={false}>
-      <Frame position={[0, 0, 1]} />
-      <Mask id={1} position={[0, 0, 0.95]}>
-        <circleGeometry args={[0.8, 64]} />
-      </Mask>
-    </PivotControls>
-  </group>
-)
+const CircularMask = (props: any) => {
+  const LineComponent = useLineComponent()
+  return (
+    <group {...props}>
+      <PivotControls
+        offset={[0, 0, 1]}
+        activeAxes={[true, true, false]}
+        disableRotations
+        depthTest={false}
+        LineComponent={LineComponent}
+      >
+        <Frame position={[0, 0, 1]} />
+        <Mask id={1} position={[0, 0, 0.95]}>
+          <circleGeometry args={[0.8, 64]} />
+        </Mask>
+      </PivotControls>
+    </group>
+  )
+}
 
 // Box Component ---------------------------------
 const Box = ({ args = [1, 4, 1], radius = 0.05, smoothness = 4, color = 'black', ...boxProps }) => (

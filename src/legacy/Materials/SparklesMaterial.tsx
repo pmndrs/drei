@@ -51,6 +51,7 @@ export class SparklesMaterial extends ShaderMaterial {
           float distanceToCenter = distance(gl_PointCoord, vec2(0.5));
           float strength = clamp(0.05 / distanceToCenter - 0.1, 0.0, 1.0);
           gl_FragColor = vec4(vColor, strength * vOpacity);
+          // Note: tonemapping may shift hue (e.g. orange → yellow) compared to the WebGPU version
           #include <tonemapping_fragment>
           #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
         }

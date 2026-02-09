@@ -84,6 +84,8 @@ export class SparklesMaterial extends SpriteNodeMaterial {
     })()
 
     //* Fragment Color with Radial Glow ==============================
+    // Note: colors may appear slightly different from legacy due to tonemapping differences
+    // (legacy applies #include <tonemapping_fragment> which can shift hues, e.g. orange → yellow)
     this.colorNode = Fn(() => {
       // uv() gives us 0-1 coordinates across the quad (equivalent to gl_PointCoord)
       const quadUV = uv()

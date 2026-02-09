@@ -65,10 +65,12 @@ export type ViewProps = {
 
 function computeContainerPosition(canvasSize: CanvasSize, trackRect: DOMRect, forceEven?: boolean) {
   const { right, top: trackTop, left: trackLeft, bottom: trackBottom, width, height } = trackRect
-  const isOffscreen =
-    trackRect.bottom < 0 || trackTop > canvasSize.height || right < 0 || trackRect.left > canvasSize.width
 
   const canvasBottom = canvasSize.top + canvasSize.height
+  const canvasRight = canvasSize.left + canvasSize.width
+  const isOffscreen =
+    trackBottom < canvasSize.top || trackTop > canvasBottom || right < canvasSize.left || trackLeft > canvasRight
+
   const rawBottom = canvasBottom - trackBottom
   const rawLeft = trackLeft - canvasSize.left
   // Calculate top relative to canvas for WebGPU coordinate system

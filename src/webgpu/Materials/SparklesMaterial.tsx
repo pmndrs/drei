@@ -8,7 +8,7 @@ import {
   vec3,
   vec4,
   cameraProjectionMatrix,
-  viewportResolution,
+  screenSize,
   sin,
   cos,
   uv,
@@ -78,7 +78,7 @@ export class SparklesMaterial extends SpriteNodeMaterial {
     this.scaleNode = Fn(() => {
       const pixelSize = particleSize.mul(25.0).mul(this._pixelRatio)
       const projY = cameraProjectionMatrix.element(1).y
-      const viewportH = viewportResolution.y
+      const viewportH = screenSize.y
       const size = pixelSize.mul(2.0).div(projY.mul(viewportH))
       return vec2(size)
     })()

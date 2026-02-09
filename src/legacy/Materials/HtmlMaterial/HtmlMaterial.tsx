@@ -50,10 +50,6 @@ export const HtmlMaterial = ({ transform }: { transform: boolean }) => {
     [transform]
   )
   return (
-    <shaderMaterial
-      side={DoubleSide}
-      vertexShader={shaders.vertexShader}
-      fragmentShader={shaders.fragmentShader}
-    />
+    <shaderMaterial side={DoubleSide} vertexShader={shaders.vertexShader} fragmentShader={shaders.fragmentShader} />
   )
 }

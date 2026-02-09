@@ -26,10 +26,7 @@ type Story = StoryObj<typeof Sparkles>
 function SparklesScene(props: React.ComponentProps<typeof Sparkles>) {
   return (
     <>
-      <PlatformSwitch
-        legacy={<Sparkles {...props} />}
-        webgpu={<SparklesWebGPU {...(props as any)} />}
-      />
+      <PlatformSwitch legacy={<Sparkles {...props} />} webgpu={<SparklesWebGPU {...(props as any)} />} />
 
       <OrbitControls />
       <axesHelper />

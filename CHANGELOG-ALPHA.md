@@ -53,7 +53,46 @@ useVariants(gltf, 'midnight')
 
 - `src/core/Loaders/useVariants/useVariants.tsx`
 
+#### `PivotControls` - `onDrag` / `onDragEnd` Now Use Named Props
+
+`onDrag` and `onDragEnd` callbacks now receive a single object with named properties instead of positional arguments, consistent with `onDragStart` and `onHover`:
+
+```tsx
+<PivotControls
+  onDrag={({ local, deltaLocal, world, deltaWorld }) => {}}
+  onDragEnd={({ local }) => saveTransform(local)}
+/>
+```
+
+Previously `onDrag` passed four positional `Matrix4` args `(l, deltaL, w, deltaW)` and `onDragEnd` received no arguments.
+
+New `OnDragProps` type is exported from `@react-three/drei`.
+
+**Files changed:**
+
+- `src/core/Gizmos/PivotControls/context.ts`
+- `src/core/Gizmos/PivotControls/index.tsx`
+- `src/core/Gizmos/PivotControls/PivotControls.docs.mdx`
+
+### Deprecations
+
+#### `Stats` - Deprecated in Favor of `StatsGl`
+
+`<Stats />` (based on `stats.js`) is now deprecated. Use `<StatsGl />` instead. A console warning is emitted on mount.
+
+**Files changed:**
+
+- `src/core/Performance/Stats/Stats.tsx`
+
 ### Bug Fixes
+
+#### `View` - Fixed Offscreen Detection for Non-Fullscreen Canvases
+
+The `isOffscreen` check in `computeContainerPosition` compared tracked element coordinates against raw canvas `width`/`height`, assuming the canvas was at position `(0, 0)` in the viewport. When the canvas was offset (e.g., below a header), views would disappear prematurely during scrolling. Now uses the canvas's actual bounding edges (`canvasSize.top`, `canvasSize.left`) for correct offscreen detection.
+
+**Files changed:**
+
+- `src/core/Portal/View/View.tsx`
 
 #### `Html` - Fixed Occlusion Mesh Sizing for Orthographic Cameras in Transform Mode
 

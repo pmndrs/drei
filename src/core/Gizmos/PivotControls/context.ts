@@ -9,6 +9,13 @@ export type OnDragStartProps = {
   directions: THREE.Vector3[]
 }
 
+export type OnDragProps = {
+  local: THREE.Matrix4
+  deltaLocal: THREE.Matrix4
+  world: THREE.Matrix4
+  deltaWorld: THREE.Matrix4
+}
+
 export type OnHoverProps = {
   component: 'Arrow' | 'Slider' | 'Rotator' | 'Sphere'
   axis: 0 | 1 | 2

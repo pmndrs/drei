@@ -65,10 +65,12 @@ export type ViewProps = {
 
 function computeContainerPosition(canvasSize: CanvasSize, trackRect: DOMRect, forceEven?: boolean) {
   const { right, top: trackTop, left: trackLeft, bottom: trackBottom, width, height } = trackRect
-  const isOffscreen =
-    trackRect.bottom < 0 || trackTop > canvasSize.height || right < 0 || trackRect.left > canvasSize.width
 
   const canvasBottom = canvasSize.top + canvasSize.height
+  const canvasRight = canvasSize.left + canvasSize.width
+  const isOffscreen =
+    trackBottom < canvasSize.top || trackTop > canvasBottom || right < canvasSize.left || trackLeft > canvasRight
+
   const rawBottom = canvasBottom - trackBottom
   const rawLeft = trackLeft - canvasSize.left
   // Calculate top relative to canvas for WebGPU coordinate system
@@ -88,8 +90,22 @@ function computeContainerPosition(canvasSize: CanvasSize, trackRect: DOMRect, fo
   return { position, isOffscreen }
 }
 
+// Type for renderer methods used by View (works for both WebGL and WebGPU)
+type ViewRenderer = Pick<
+  THREE.WebGLRenderer,
+  | 'autoClear'
+  | 'setViewport'
+  | 'setScissor'
+  | 'setScissorTest'
+  | 'setClearColor'
+  | 'getClearColor'
+  | 'getClearAlpha'
+  | 'clear'
+  | 'render'
+>
+
 function prepareSkissor(
-  renderer: THREE.WebGLRenderer,
+  renderer: ViewRenderer,
   camera: THREE.Camera,
   {
     left,
@@ -131,13 +147,13 @@ function prepareSkissor(
   return autoClear
 }
 
-function finishSkissor(renderer: THREE.WebGLRenderer, autoClear: boolean) {
+function finishSkissor(renderer: ViewRenderer, autoClear: boolean) {
   // Restore the default state
   renderer.setScissorTest(false)
   renderer.autoClear = autoClear
 }
 
-function clear(renderer: THREE.WebGLRenderer) {
+function clear(renderer: ViewRenderer) {
   renderer.getClearColor(col)
   renderer.setClearColor(col, renderer.getClearAlpha())
   renderer.clear(true, true)

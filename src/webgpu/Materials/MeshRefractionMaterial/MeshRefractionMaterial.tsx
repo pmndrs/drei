@@ -58,6 +58,8 @@ export type MeshRefractionMaterialType = Omit<ThreeElements['meshPhysicalMateria
   tintColor?: THREE.ColorRepresentation
   /** Opacity, default: 1 */
   opacity?: number
+  /** Constructor args passed to the material */
+  args?: [fastChroma?: boolean]
 }
 
 export type MeshRefractionMaterialProps = Omit<MeshRefractionMaterialType, 'ref'>

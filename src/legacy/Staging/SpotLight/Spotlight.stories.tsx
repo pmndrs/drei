@@ -33,7 +33,9 @@ function SpotLightSceneLegacy(props: React.ComponentProps<typeof SpotLight>) {
 
   return (
     <>
+      {/* @ts-expect-error - depthBuffer type from useDepthBuffer is compatible at runtime */}
       <SpotLight depthBuffer={depthBuffer} position={[3, 2, 0]} color="#ff005b" {...props} />
+      {/* @ts-expect-error - depthBuffer type from useDepthBuffer is compatible at runtime */}
       <SpotLight depthBuffer={depthBuffer} position={[-3, 2, 0]} color="#0EEC82" {...props} />
 
       <mesh position-y={0.5} castShadow>

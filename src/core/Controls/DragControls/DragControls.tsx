@@ -1,23 +1,24 @@
 import * as React from 'react'
 import * as THREE from '#three'
-import { useThree } from '@react-three/fiber'
-import { useGesture, DragConfig } from '@use-gesture/react'
+import { ThreeEvent, useThree } from '@react-three/fiber'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 
 const initialModelPosition = /* @__PURE__ */ new THREE.Vector3()
-const mousePosition2D = /* @__PURE__ */ new THREE.Vector2()
 const mousePosition3D = /* @__PURE__ */ new THREE.Vector3()
 const dragOffset = /* @__PURE__ */ new THREE.Vector3()
 const dragPlaneNormal = /* @__PURE__ */ new THREE.Vector3()
 const dragPlane = /* @__PURE__ */ new THREE.Plane()
+const startPointerPos = /* @__PURE__ */ new THREE.Vector3()
 
 type ControlsProto = {
   enabled: boolean
 }
 
-export type ExpandedDragConfig = DragConfig & {
-  /** Prevents overlapping of objects during drag (experimental) */
-  preventOverlap?: boolean
+export type DragConfig = {
+  /** Minimum distance before drag starts (pixels for screen, units for 3D), default 0 */
+  threshold?: number
+  /** Ignore short taps that don't exceed threshold, default true */
+  filterTaps?: boolean
 }
 
 export type DragControlsProps = {
@@ -42,12 +43,14 @@ export type DragControlsProps = {
   ) => void /** Drag end event */
   onDragEnd?: () => void
   children: React.ReactNode
-  dragConfig?: ExpandedDragConfig
+  /** Drag configuration */
+  dragConfig?: DragConfig
 }
 
 /**
  * Makes objects draggable in your scene.
  * Supports locking to specific axes, drag limits, and custom events.
+ * Works correctly inside portals (RenderTexture, View, etc.) by using R3F's event system.
  *
  * @example Basic usage
  * ```jsx
@@ -87,106 +90,157 @@ export const DragControls: ForwardRefComponent<DragControlsProps, THREE.Group> =
     fRef
   ) => {
     const defaultControls = useThree((state) => (state as any).controls) as ControlsProto | undefined
-    const { camera, size, raycaster, invalidate } = useThree()
+    const { camera, invalidate } = useThree()
     const ref = React.useRef<THREE.Group>(null!)
 
-    const bind = useGesture(
-      {
-        onHover: ({ hovering }) => onHover && onHover(hovering ?? false),
-        onDragStart: ({ event }) => {
-          if (defaultControls) defaultControls.enabled = false
-          const { point } = event as any
+    // Drag state stored in refs to avoid re-renders during drag
+    const dragState = React.useRef({
+      active: false,
+      intentional: false, // Has moved past threshold
+      pointerId: -1,
+    })
 
-          ref.current.matrix.decompose(initialModelPosition, new THREE.Quaternion(), new THREE.Vector3())
-          mousePosition3D.copy(point)
-          dragOffset.copy(mousePosition3D).sub(initialModelPosition)
+    const threshold = dragConfig?.threshold ?? 0
+    const filterTaps = dragConfig?.filterTaps ?? true
 
+    const handlePointerDown = React.useCallback(
+      (event: ThreeEvent<PointerEvent>) => {
+        event.stopPropagation()
+        ;(event.target as HTMLElement).setPointerCapture(event.pointerId)
+
+        dragState.current.active = true
+        dragState.current.intentional = threshold === 0 // If no threshold, immediately intentional
+        dragState.current.pointerId = event.pointerId
+
+        if (defaultControls) defaultControls.enabled = false
+
+        // Get initial model position from matrix
+        ref.current.matrix.decompose(initialModelPosition, new THREE.Quaternion(), new THREE.Vector3())
+
+        // Store initial pointer intersection point
+        mousePosition3D.copy(event.point)
+        startPointerPos.copy(event.point)
+        dragOffset.copy(mousePosition3D).sub(initialModelPosition)
+
+        // Set up drag plane
+        if (!axisLock) {
+          camera.getWorldDirection(dragPlaneNormal).negate()
+        } else {
+          switch (axisLock) {
+            case 'x':
+              dragPlaneNormal.set(1, 0, 0)
+              break
+            case 'y':
+              dragPlaneNormal.set(0, 1, 0)
+              break
+            case 'z':
+              dragPlaneNormal.set(0, 0, 1)
+              break
+          }
+        }
+        dragPlane.setFromNormalAndCoplanarPoint(dragPlaneNormal, mousePosition3D)
+
+        if (dragState.current.intentional) {
           onDragStart && onDragStart(initialModelPosition)
-          invalidate()
-        },
-        onDrag: ({ xy: [dragX, dragY], intentional, event }) => {
-          if (!intentional) return
-          // bail if we suddenly start dragging because of an overlap bug
-          if (dragConfig && dragConfig.preventOverlap) event.preventDefault()
-          const normalizedMouseX = ((dragX - size.left) / size.width) * 2 - 1
-          const normalizedMouseY = -((dragY - size.top) / size.height) * 2 + 1
+        }
 
-          mousePosition2D.set(normalizedMouseX, normalizedMouseY)
-          raycaster.setFromCamera(mousePosition2D, camera)
-
-          if (!axisLock) {
-            camera.getWorldDirection(dragPlaneNormal).negate()
-          } else {
-            switch (axisLock) {
-              case 'x':
-                dragPlaneNormal.set(1, 0, 0)
-                break
-              case 'y':
-                dragPlaneNormal.set(0, 1, 0)
-                break
-              case 'z':
-                dragPlaneNormal.set(0, 0, 1)
-                break
-            }
-          }
-
-          dragPlane.setFromNormalAndCoplanarPoint(dragPlaneNormal, mousePosition3D)
-          raycaster.ray.intersectPlane(dragPlane, mousePosition3D)
-
-          const previousLocalMatrix = ref.current.matrix.clone()
-          const previousWorldMatrix = ref.current.matrixWorld.clone()
-
-          const intendedNewPosition = new THREE.Vector3(
-            mousePosition3D.x - dragOffset.x,
-            mousePosition3D.y - dragOffset.y,
-            mousePosition3D.z - dragOffset.z
-          )
-
-          if (dragLimits) {
-            intendedNewPosition.x = dragLimits[0]
-              ? Math.max(Math.min(intendedNewPosition.x, dragLimits[0][1]), dragLimits[0][0])
-              : intendedNewPosition.x
-            intendedNewPosition.y = dragLimits[1]
-              ? Math.max(Math.min(intendedNewPosition.y, dragLimits[1][1]), dragLimits[1][0])
-              : intendedNewPosition.y
-            intendedNewPosition.z = dragLimits[2]
-              ? Math.max(Math.min(intendedNewPosition.z, dragLimits[2][1]), dragLimits[2][0])
-              : intendedNewPosition.z
-          }
-
-          if (autoTransform) {
-            ref.current.matrix.setPosition(intendedNewPosition)
-
-            const deltaLocalMatrix = ref.current.matrix.clone().multiply(previousLocalMatrix.invert())
-            const deltaWorldMatrix = ref.current.matrix.clone().multiply(previousWorldMatrix.invert())
-
-            onDrag && onDrag(ref.current.matrix, deltaLocalMatrix, ref.current.matrixWorld, deltaWorldMatrix)
-          } else {
-            const tempMatrix = new THREE.Matrix4().copy(ref.current.matrix)
-            tempMatrix.setPosition(intendedNewPosition)
-
-            const deltaLocalMatrix = tempMatrix.clone().multiply(previousLocalMatrix.invert())
-            const deltaWorldMatrix = tempMatrix.clone().multiply(previousWorldMatrix.invert())
-
-            onDrag && onDrag(tempMatrix, deltaLocalMatrix, ref.current.matrixWorld, deltaWorldMatrix)
-          }
-          invalidate()
-        },
-        onDragEnd: () => {
-          if (defaultControls) defaultControls.enabled = true
-
-          onDragEnd && onDragEnd()
-          invalidate()
-        },
+        invalidate()
       },
-      {
-        drag: {
-          filterTaps: true,
-          threshold: 1,
-          ...(typeof dragConfig === 'object' ? dragConfig : {}),
-        },
-      }
+      [defaultControls, camera, axisLock, threshold, onDragStart, invalidate]
     )
+
+    const handlePointerMove = React.useCallback(
+      (event: ThreeEvent<PointerEvent>) => {
+        if (!dragState.current.active || event.pointerId !== dragState.current.pointerId) return
+
+        // Use the event's ray (already transformed for portals) to intersect our drag plane
+        const intersection = event.ray.intersectPlane(dragPlane, mousePosition3D)
+        if (!intersection) return
+
+        // Check threshold if not yet intentional
+        if (!dragState.current.intentional) {
+          const distance = mousePosition3D.distanceTo(startPointerPos)
+          if (distance < threshold) return
+
+          // Passed threshold - now it's an intentional drag
+          dragState.current.intentional = true
+          onDragStart && onDragStart(initialModelPosition)
+        }
+
+        const previousLocalMatrix = ref.current.matrix.clone()
+        const previousWorldMatrix = ref.current.matrixWorld.clone()
+
+        const intendedNewPosition = new THREE.Vector3(
+          mousePosition3D.x - dragOffset.x,
+          mousePosition3D.y - dragOffset.y,
+          mousePosition3D.z - dragOffset.z
+        )
+
+        // Apply drag limits
+        if (dragLimits) {
+          intendedNewPosition.x = dragLimits[0]
+            ? Math.max(Math.min(intendedNewPosition.x, dragLimits[0][1]), dragLimits[0][0])
+            : intendedNewPosition.x
+          intendedNewPosition.y = dragLimits[1]
+            ? Math.max(Math.min(intendedNewPosition.y, dragLimits[1][1]), dragLimits[1][0])
+            : intendedNewPosition.y
+          intendedNewPosition.z = dragLimits[2]
+            ? Math.max(Math.min(intendedNewPosition.z, dragLimits[2][1]), dragLimits[2][0])
+            : intendedNewPosition.z
+        }
+
+        if (autoTransform) {
+          ref.current.matrix.setPosition(intendedNewPosition)
+
+          const deltaLocalMatrix = ref.current.matrix.clone().multiply(previousLocalMatrix.invert())
+          const deltaWorldMatrix = ref.current.matrix.clone().multiply(previousWorldMatrix.invert())
+
+          onDrag && onDrag(ref.current.matrix, deltaLocalMatrix, ref.current.matrixWorld, deltaWorldMatrix)
+        } else {
+          const tempMatrix = new THREE.Matrix4().copy(ref.current.matrix)
+          tempMatrix.setPosition(intendedNewPosition)
+
+          const deltaLocalMatrix = tempMatrix.clone().multiply(previousLocalMatrix.invert())
+          const deltaWorldMatrix = tempMatrix.clone().multiply(previousWorldMatrix.invert())
+
+          onDrag && onDrag(tempMatrix, deltaLocalMatrix, ref.current.matrixWorld, deltaWorldMatrix)
+        }
+
+        invalidate()
+      },
+      [autoTransform, dragLimits, threshold, onDragStart, onDrag, invalidate]
+    )
+
+    const handlePointerUp = React.useCallback(
+      (event: ThreeEvent<PointerEvent>) => {
+        if (!dragState.current.active || event.pointerId !== dragState.current.pointerId) return
+        ;(event.target as HTMLElement).releasePointerCapture(event.pointerId)
+
+        const wasIntentional = dragState.current.intentional
+
+        dragState.current.active = false
+        dragState.current.intentional = false
+        dragState.current.pointerId = -1
+
+        if (defaultControls) defaultControls.enabled = true
+
+        // Only fire onDragEnd if it was an intentional drag (or filterTaps is false)
+        if (wasIntentional || !filterTaps) {
+          onDragEnd && onDragEnd()
+        }
+
+        invalidate()
+      },
+      [defaultControls, filterTaps, onDragEnd, invalidate]
+    )
+
+    const handlePointerEnter = React.useCallback(() => {
+      onHover && onHover(true)
+    }, [onHover])
+
+    const handlePointerLeave = React.useCallback(() => {
+      onHover && onHover(false)
+    }, [onHover])
 
     React.useImperativeHandle(fRef, () => ref.current, [])
 
@@ -199,7 +253,17 @@ export const DragControls: ForwardRefComponent<DragControlsProps, THREE.Group> =
     }, [matrix])
 
     return (
-      <group ref={ref} {...(bind() as any)} matrix={matrix} matrixAutoUpdate={false} {...props}>
+      <group
+        ref={ref}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerEnter={handlePointerEnter}
+        onPointerLeave={handlePointerLeave}
+        matrix={matrix}
+        matrixAutoUpdate={false}
+        {...props}
+      >
         {children}
       </group>
     )

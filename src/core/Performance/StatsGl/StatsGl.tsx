@@ -4,7 +4,7 @@ import * as React from 'react'
 
 import Stats from 'stats-gl'
 
-type StatsOptions = ConstructorParameters<typeof Stats>[0]
+export type StatsOptions = ConstructorParameters<typeof Stats>[0]
 
 export type StatsGlProps = Partial<StatsOptions> & {
   id?: string
@@ -16,7 +16,10 @@ export type StatsGlProps = Partial<StatsOptions> & {
 }
 
 /**
+/**
  * WebGL-based stats monitor using stats-gl. Shows FPS, CPU, GPU metrics.
+ *
+ * > **Note:** `StatsGl` no longer takes over the render call—safe for all advanced render loop setups!
  *
  * @example
  * ```jsx
@@ -31,6 +34,7 @@ export const StatsGl: ForwardRefComponent<StatsGlProps, HTMLDivElement> = /* @__
       const stats = new Stats({
         ...props,
       })
+      stats.init(renderer)
       return stats
     }, [renderer])
 
@@ -51,7 +55,7 @@ export const StatsGl: ForwardRefComponent<StatsGlProps, HTMLDivElement> = /* @__
           if (classNames.length) stats.domElement.classList.remove(...classNames)
           node?.removeChild(stats.domElement)
           // odd call for a final end
-          stats.end()
+          stats.dispose()
         }
       }
     }, [parent, stats, className, id, clearStatsGlStyle])
@@ -61,7 +65,7 @@ export const StatsGl: ForwardRefComponent<StatsGlProps, HTMLDivElement> = /* @__
       () => {
         stats.begin()
       },
-      { before: 'render' }
+      { before: 'update' }
     )
     useFrame(
       () => {

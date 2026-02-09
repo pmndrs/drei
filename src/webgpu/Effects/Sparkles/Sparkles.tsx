@@ -135,10 +135,10 @@ export const Sparkles: ForwardRefComponent<SparklesProps, THREE.InstancedMesh> =
     <instancedMesh
       key={`sparkles-${count}-${JSON.stringify(scale)}`}
       ref={ref}
+      // @ts-expect-error - args tuple type is compatible at runtime, material set via children
       args={[geometry, undefined, count]}
       {...props}
     >
-      {/* @ts-ignore - custom material */}
       {children ? children : <webgpuSparklesMaterial pixelRatio={dpr} />}
     </instancedMesh>
   )

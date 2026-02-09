@@ -8,7 +8,7 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { ForwardRefComponent } from '@utils/ts-utils'
 
 export type EffectsProps = Omit<ThreeElements['effectComposer'], 'ref' | 'args'> & {
-  multisamping?: number
+  multisampling?: number
   colorSpace?: ColorSpace
   type?: TextureDataType
   renderIndex?: number
@@ -50,7 +50,7 @@ export const isWebGL2Available = () => {
  *
  * extend({ SSAOPass })
  *
- * <Effects multisamping={8} renderIndex={1} disableGamma={false} disableRenderPass={false} disableRender={false}>
+ * <Effects multisampling={8} renderIndex={1} disableGamma={false} disableRenderPass={false} disableRender={false}>
  *   <sSAOPass args={[scene, camera, 100, 100]} kernelRadius={1.2} kernelSize={0} />
  * </Effects>
  * ```
@@ -59,7 +59,7 @@ export const Effects: ForwardRefComponent<EffectsProps, EffectComposer> = /* @__
   (
     {
       children,
-      multisamping = 8,
+      multisampling = 8,
       renderIndex = 1,
       disableRender,
       disableGamma,
@@ -91,7 +91,7 @@ export const Effects: ForwardRefComponent<EffectsProps, EffectComposer> = /* @__
         t.texture.colorSpace = colorSpace
       }
 
-      t.samples = multisamping
+      t.samples = multisampling
       return t
     })
 

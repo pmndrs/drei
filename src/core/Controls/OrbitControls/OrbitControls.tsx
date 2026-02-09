@@ -60,21 +60,18 @@ export const OrbitControls: ForwardRefComponent<OrbitControlsProps, OrbitControl
       },
       ref
     ) => {
-      const invalidate = useThree((state) => state.invalidate)
-      const defaultCamera = useThree((state) => state.camera)
-      const gl = useThree((state) => state.gl)
-      const events = useThree((state) => state.events) as EventManager<HTMLElement>
-      const setEvents = useThree((state) => state.setEvents)
-      const set = useThree((state) => state.set)
-      const get = useThree((state) => state.get)
-      const performance = useThree((state) => state.performance)
+      // destructure from useThree
+      const { invalidate, camera: defaultCamera, renderer, events, setEvents, set, get, performance } = useThree()
       const explCamera = (camera || defaultCamera) as OrthographicCamera | PerspectiveCamera
-      const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
+      const explDomElement = (domElement || events.connected || renderer.domElement) as HTMLElement
       const controls = React.useMemo(() => new OrbitControlsImpl(explCamera), [explCamera])
 
-      useFrame(() => {
-        if (controls.enabled) controls.update()
-      }, -1)
+      useFrame(
+        () => {
+          if (controls.enabled) controls.update()
+        },
+        { before: 'update' }
+      )
 
       React.useEffect(() => {
         if (keyEvents) {

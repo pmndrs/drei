@@ -3,7 +3,7 @@ import { Canvas } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { OrbitControls, Box, useContextBridge } from 'drei'
-import { Text } from '../../../legacy/UI/Text/Text'
+import { Text } from '../../UI/Text/Text'
 
 function ContextBridge({
   contexts,

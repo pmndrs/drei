@@ -17,7 +17,7 @@ export type GradientTextureProps = {
   type?: GradientType
   innerCircleRadius?: number
   outerCircleRadius?: number | 'auto'
-} & Omit<ThreeElements['canvasTexture'], 'args'>
+} & Omit<ThreeElements['canvasTexture'], 'args' | 'type'>
 
 export function GradientTexture({
   stops,

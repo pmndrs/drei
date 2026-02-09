@@ -96,7 +96,9 @@ export const TransformControls: ForwardRefComponent<TransformControlsProps, Tran
 
       React.useLayoutEffect(() => {
         if (object) {
-          controls.attach(object instanceof THREE.Object3D ? object : object.current)
+          controls.attach(
+            object instanceof THREE.Object3D ? object : (object as React.RefObject<THREE.Object3D>).current
+          )
         } else if (group.current instanceof THREE.Object3D) {
           controls.attach(group.current)
         }

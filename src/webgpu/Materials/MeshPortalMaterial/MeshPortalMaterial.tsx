@@ -5,7 +5,7 @@
 //   N8, https://twitter.com/N8Programs
 //   drcmda, https://twitter.com/0xca0a
 // https://github.com/N8python/maskBlur
-// TSL Conversion: drei webgpu migration
+// TSL Conversion: Dennis Smolek
 
 import * as THREE from 'three/webgpu'
 import { MeshBasicNodeMaterial, QuadMesh } from 'three/webgpu'
@@ -128,10 +128,10 @@ class PortalMaterialImpl extends MeshBasicNodeMaterial {
   }
 
   get map() {
-    return this._map.value as THREE.Texture
+    return this._map?.value as THREE.Texture
   }
   set map(v: THREE.Texture | null) {
-    this._map.value = v ?? new THREE.Texture()
+    if (this._map) this._map.value = v ?? new THREE.Texture()
   }
 
   get sdf() {
@@ -643,11 +643,11 @@ export const MeshPortalMaterial: ForwardRefComponent<PortalProps, PortalMaterial
       return (
         // @ts-ignore - portalMaterialImpl is dynamically extended, type conflicts with legacy
         <portalMaterialImpl
-          ref={ref}
+          ref={ref as any}
           blur={blur}
           blend={0}
           resolution={[size.width * viewport.dpr, size.height * viewport.dpr]}
-          attach="material"
+          attach={'material' as any}
           {...props}
         >
           <RenderTexture

@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 import { Setup } from '@sb/Setup'
 
 import { DetectGPU } from 'drei'
-import { Text } from '../../../legacy/UI/Text/Text'
+import { Text } from '../../UI/Text/Text'
 
 export default {
   title: 'Performance/DetectGPU',

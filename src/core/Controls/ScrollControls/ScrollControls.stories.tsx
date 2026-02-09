@@ -27,7 +27,7 @@ function Suzanne(props: React.ComponentProps<'group'>) {
   useCursor(hovered)
 
   const visible = React.useRef(false)
-  const meshRef = useIntersect((isVisible) => (visible.current = isVisible))
+  const meshRef = useIntersect<THREE.Mesh>((isVisible) => (visible.current = isVisible))
 
   const { height } = useThree((state) => state.viewport)
   useFrame((_state, delta) => {

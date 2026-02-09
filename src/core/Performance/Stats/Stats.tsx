@@ -22,6 +22,7 @@ export type StatsProps = {
  * ```
  */
 export function Stats({ showPanel = 0, className, parent }: StatsProps): null {
+  React.useEffect(() => void console.warn('drei: <Stats /> is deprecated, use <StatsGl /> instead.'), [])
   const stats = useEffectfulState(() => new StatsImpl(), [])
   React.useEffect(() => {
     if (stats) {

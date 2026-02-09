@@ -51,8 +51,8 @@ export const Mask: ForwardRefComponent<MaskProps, THREE.Mesh> = /* @__PURE__ */ 
       // Check for WebGPURenderer first (has 'backend' property)
       if ('backend' in renderer) {
         // WebGPU - stencil should be available, mark as ready
-        renderer.stencil = true
-        renderer.stencilWrite = true
+        ;(renderer as any).stencil = true
+        ;(renderer as any).stencilWrite = true
 
         stencilReady.current = true
         setReady(true)

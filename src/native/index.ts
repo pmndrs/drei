@@ -255,7 +255,6 @@ export type {
   EnvironmentProps,
   ExampleApi,
   ExampleProps,
-  ExpandedDragConfig,
   FboProps,
   FisheyeProps,
   FloatProps,

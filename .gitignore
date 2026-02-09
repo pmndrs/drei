@@ -27,16 +27,9 @@ __diff_output__
 .claude/settings.local.json
 
 # Claude Code
-.claude/
+.claude/*
 CLAUDE.md
 
-# Claude Code
-.claude/
-CLAUDE.md
-
-# Claude Code
-.claude/
-CLAUDE.md
 
 # Package/lock files
 package-lock.json
@@ -58,3 +51,4 @@ node_modules/
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+.claude/settings.local.json

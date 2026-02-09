@@ -1756,21 +1756,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.8.4":
-  version: 7.22.15
-  resolution: "@babel/runtime@npm:7.22.15"
-  dependencies:
-    regenerator-runtime: "npm:^0.14.0"
-  checksum: 10c0/96b74adfd1db812d06ed56d9db12acecfc844d252b93994ce4901433957bd28affba725622a4dc9e7f76384c4cb6cadc3d620d07817c8be9156eaedba5eea059
-  languageName: node
-  linkType: hard
-
 "@babel/runtime@npm:^7.26.0":
   version: 7.26.0
   resolution: "@babel/runtime@npm:7.26.0"
   dependencies:
     regenerator-runtime: "npm:^0.14.0"
   checksum: 10c0/12c01357e0345f89f4f7e8c0e81921f2a3e3e101f06e8eaa18a382b517376520cd2fa8c237726eb094dab25532855df28a7baaf1c26342b52782f6936b07c287
+  languageName: node
+  linkType: hard
+
+"@babel/runtime@npm:^7.28.6":
+  version: 7.28.6
+  resolution: "@babel/runtime@npm:7.28.6"
+  checksum: 10c0/358cf2429992ac1c466df1a21c1601d595c46930a13c1d4662fde908d44ee78ec3c183aaff513ecb01ef8c55c3624afe0309eeeb34715672dbfadb7feedb2c0d
+  languageName: node
+  linkType: hard
+
+"@babel/runtime@npm:^7.8.4":
+  version: 7.22.15
+  resolution: "@babel/runtime@npm:7.22.15"
+  dependencies:
+    regenerator-runtime: "npm:^0.14.0"
+  checksum: 10c0/96b74adfd1db812d06ed56d9db12acecfc844d252b93994ce4901433957bd28affba725622a4dc9e7f76384c4cb6cadc3d620d07817c8be9156eaedba5eea059
   languageName: node
   linkType: hard
 
@@ -2851,6 +2858,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@monogrid/gainmap-js@npm:^3.4.0":
+  version: 3.4.0
+  resolution: "@monogrid/gainmap-js@npm:3.4.0"
+  dependencies:
+    promise-worker-transferable: "npm:^1.0.4"
+  peerDependencies:
+    three: ">= 0.159.0"
+  checksum: 10c0/06104767a0f542b36e1e203fe569f78996babcdd52661f42db4f079f372b272e0849b86f84f7690b2c165a8ba931f77ad324fe82a09c9b23e26d20e76cabd3e7
+  languageName: node
+  linkType: hard
+
 "@neoconfetti/react@npm:^1.0.0":
   version: 1.0.0
   resolution: "@neoconfetti/react@npm:1.0.0"
@@ -3296,7 +3314,7 @@ __metadata:
     "@mediapipe/tasks-vision": "npm:0.10.17"
     "@monogrid/gainmap-js": "npm:^3.0.6"
     "@playwright/test": "npm:^1.45.2"
-    "@react-three/fiber": "npm:^10.0.0-alpha.0"
+    "@react-three/fiber": "npm:>=10.0.0-0"
     "@rollup/plugin-alias": "npm:^6.0.0"
     "@rollup/plugin-babel": "npm:^6.1.0"
     "@rollup/plugin-commonjs": "npm:^29.0.0"
@@ -3347,14 +3365,14 @@ __metadata:
     rollup-plugin-terser: "npm:^7.0.2"
     semantic-release: "npm:^24.2.0"
     serve: "npm:^14.2.4"
-    stats-gl: "npm:^2.2.8"
+    stats-gl: "npm:^4.0.2"
     stats.js: "npm:^0.17.0"
     storybook: "npm:^10.1.11"
     storybook-addon-tag-badges: "npm:^3.0.4"
     suspend-react: "npm:^0.1.3"
     three: "npm:^0.182.0"
     three-mesh-bvh: "npm:^0.8.3"
-    troika-three-text: "npm:^0.52.4"
+    troika-three-text: "file:./lib/troika/troika-three-text-0.52.4.tgz"
     ts-node: "npm:^10.9.2"
     tunnel-rat: "npm:^0.1.2"
     typescript: "npm:^5.6.3"
@@ -3376,18 +3394,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@react-three/fiber@npm:^10.0.0-alpha.0":
-  version: 10.0.0-alpha.0
-  resolution: "@react-three/fiber@npm:10.0.0-alpha.0"
+"@react-three/fiber@npm:>=10.0.0-0":
+  version: 10.0.0-canary.dbbe704
+  resolution: "@react-three/fiber@npm:10.0.0-canary.dbbe704"
   dependencies:
-    "@babel/runtime": "npm:^7.17.8"
+    "@babel/runtime": "npm:^7.28.6"
+    "@monogrid/gainmap-js": "npm:^3.4.0"
     dequal: "npm:^2.0.3"
     its-fine: "npm:^2.0.0"
     react-use-measure: "npm:^2.1.7"
     scheduler: "npm:^0.27.0"
     suspend-react: "npm:^0.1.3"
-    use-sync-external-store: "npm:^1.4.0"
-    zustand: "npm:^5.0.3"
+    use-sync-external-store: "npm:^1.6.0"
+    zustand: "npm:^5.0.10"
   peerDependencies:
     react: ">=19.0 <19.3"
     react-dom: ">=19.0 <19.3"
@@ -3395,7 +3414,7 @@ __metadata:
   peerDependenciesMeta:
     react-dom:
       optional: true
-  checksum: 10c0/606a1206bf769df51d9e8d9f132d63bc9045f6cc66a25805a74ea166271bf0fdace9a4091d9479cc2458b21a7e4b44d7f9e819ade12ec4619af70a3397b2cb5c
+  checksum: 10c0/659a1c274457fddf1a97ebae7684faf67c26de4c0a7c30b84498a40b454663eb58b3748cd7274916b28ec62819e39e1e85713b4eb19196c7410cf1eab14c26c6
   languageName: node
   linkType: hard
 
@@ -4277,7 +4296,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tweenjs/tween.js@npm:~23.1.1, @tweenjs/tween.js@npm:~23.1.3":
+"@tweenjs/tween.js@npm:~23.1.3":
   version: 23.1.3
   resolution: "@tweenjs/tween.js@npm:23.1.3"
   checksum: 10c0/811b30f5f0e7409fb41833401c501c2d6f600eb5f43039dd9067a7f70aff6dad5f5ce1233848e13f0b33a269a160d9c133f344d986cbff4f1f6b72ddecd06c89
@@ -4479,19 +4498,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/three@npm:^0.163.0":
-  version: 0.163.0
-  resolution: "@types/three@npm:0.163.0"
-  dependencies:
-    "@tweenjs/tween.js": "npm:~23.1.1"
-    "@types/stats.js": "npm:*"
-    "@types/webxr": "npm:*"
-    fflate: "npm:~0.8.2"
-    meshoptimizer: "npm:~0.18.1"
-  checksum: 10c0/715406a709bdcf567ba844c598c73dac07b679df942f85c578e82a33d00ae3ac67e8f6a3e030ec75ba0f639d33c65fb7ec6237c11a4a501c98569d99bc67a5b6
-  languageName: node
-  linkType: hard
-
 "@types/three@npm:^0.182.0":
   version: 0.182.0
   resolution: "@types/three@npm:0.182.0"
@@ -4504,13 +4510,6 @@ __metadata:
     fflate: "npm:~0.8.2"
     meshoptimizer: "npm:~0.22.0"
   checksum: 10c0/3578a4c847a750922545410ae54b0a785a0695da28916a0009e659d1f79b5351a3b74b1665ae538ebba812add8d758c745148a131079fd10d770b487242da857
-  languageName: node
-  linkType: hard
-
-"@types/webxr@npm:*":
-  version: 0.5.4
-  resolution: "@types/webxr@npm:0.5.4"
-  checksum: 10c0/6f416ee6e46374a37811f025942cd2868978ae87d2fadcad6d1b2847f1c977d2424b61ea1f751c104b6891c9a193bf616fa43292b1afb249871766a1ff90dae0
   languageName: node
   linkType: hard
 
@@ -10432,13 +10431,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"meshoptimizer@npm:~0.18.1":
-  version: 0.18.1
-  resolution: "meshoptimizer@npm:0.18.1"
-  checksum: 10c0/8a825c58b20b65585e8d00788843929b60c66ba4297e89afaa49f7c51ab9a0f7b9130f90cc9ad1b9b48b3d1bee3beb1bc93608acba0d73e78995c3e6e5ca436b
-  languageName: node
-  linkType: hard
-
 "meshoptimizer@npm:~0.22.0":
   version: 0.22.0
   resolution: "meshoptimizer@npm:0.22.0"
@@ -13834,12 +13826,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"stats-gl@npm:^2.2.8":
-  version: 2.2.8
-  resolution: "stats-gl@npm:2.2.8"
-  dependencies:
-    "@types/three": "npm:^0.163.0"
-  checksum: 10c0/b82d4d51098d6775272c295d67575be5df6b81d2f53fb660773e271be24998dbc771469035b62406a5d85f9b8631da4cdde32fc658fe11c4697c583b5eed242a
+"stats-gl@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "stats-gl@npm:4.0.2"
+  peerDependencies:
+    three: "*"
+  peerDependenciesMeta:
+    three:
+      optional: true
+  checksum: 10c0/32acf89565e4d3a4edd7dfd48ecd892644c8c770e74ba5875f84f0fea7f5b325f4cb7bf789d6bb7955febb71ed1dbc21db66a7573a7b9fc33c6666c23518de49
   languageName: node
   linkType: hard
 
@@ -14440,9 +14435,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"troika-three-text@npm:^0.52.4":
+"troika-three-text@file:./lib/troika/troika-three-text-0.52.4.tgz::locator=%40react-three%2Fdrei--root%40workspace%3A.":
   version: 0.52.4
-  resolution: "troika-three-text@npm:0.52.4"
+  resolution: "troika-three-text@file:./lib/troika/troika-three-text-0.52.4.tgz#./lib/troika/troika-three-text-0.52.4.tgz::hash=7f133b&locator=%40react-three%2Fdrei--root%40workspace%3A."
   dependencies:
     bidi-js: "npm:^1.0.2"
     troika-three-utils: "npm:^0.52.4"
@@ -14450,7 +14445,7 @@ __metadata:
     webgl-sdf-generator: "npm:1.1.1"
   peerDependencies:
     three: ">=0.125.0"
-  checksum: 10c0/61475643728472df1e4169ff3167c5ae740bcf4b13d2680b2a1046613b5b65e6e573fc2afcd27e517f163e6885a7dd1287307c476139a6b98a8256d26fcd50e1
+  checksum: 10c0/c389c3158116bfd41f3eebf55cfbf5c47c061d6b9ba470fd3822dbe4f16111f5afa2cc7eb9a1a3ee73a21a1dc2ed5756183a446027b2714f3728826178a536f0
   languageName: node
   linkType: hard
 
@@ -15037,7 +15032,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-sync-external-store@npm:^1.5.0":
+"use-sync-external-store@npm:^1.5.0, use-sync-external-store@npm:^1.6.0":
   version: 1.6.0
   resolution: "use-sync-external-store@npm:1.6.0"
   peerDependencies:
@@ -15664,9 +15659,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zustand@npm:^5.0.3":
-  version: 5.0.3
-  resolution: "zustand@npm:5.0.3"
+"zustand@npm:^5.0.10":
+  version: 5.0.11
+  resolution: "zustand@npm:5.0.11"
   peerDependencies:
     "@types/react": ">=18.0.0"
     immer: ">=9.0.6"
@@ -15681,6 +15676,6 @@ __metadata:
       optional: true
     use-sync-external-store:
       optional: true
-  checksum: 10c0/dad96c6c123fda088c583d5df6692e9245cd207583078dc15f93d255a67b0f346bad4535545c98852ecde93d254812a0c799579dfde2ab595016b99fbe20e4d5
+  checksum: 10c0/61836b48dac5978c9d1b8289d5162a151bee77828371b9aba6431a079b77faca0635ba53da3f7b331295fbc4e78318a109a4527f7a051cb63abfe79b69ccbecf
   languageName: node
   linkType: hard

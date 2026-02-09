@@ -69,6 +69,7 @@ function ScreenQuadScene(props: React.ComponentProps<typeof ScreenQuad>) {
 
   return (
     <ScreenQuad {...props}>
+      {/* @ts-expect-error - custom extended material */}
       <colorShiftMaterial ref={ref} time={0} resolution={[size.width, size.height]} />
     </ScreenQuad>
   )

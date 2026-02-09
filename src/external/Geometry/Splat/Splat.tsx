@@ -659,7 +659,7 @@ export function Splat({
   const gl = useThree((state) => state.gl)
   const camera = useThree((state) => state.camera)
 
-  // Shared state, globally memoized, the same url re-uses the same daza
+  // Shared state, globally memoized, the same url re-uses the same data
   const shared = useLoader(SplatLoader, src, (loader) => {
     loader.gl = gl
     loader.chunkSize = chunkSize

@@ -48,7 +48,7 @@ function PositionalAudioScene(props: React.ComponentProps<typeof PositionalAudio
         <mesh key={`0${index}`} position={position}>
           <sphereGeometry />
           <meshBasicMaterial wireframe color="hotpink" />
-          <PositionalAudio {...props} url={url} />
+          <PositionalAudio {...props} url={url} autoplay loop />
         </mesh>
       ))}
     </group>

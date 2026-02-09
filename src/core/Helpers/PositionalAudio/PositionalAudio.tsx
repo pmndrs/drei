@@ -37,7 +37,9 @@ export const PositionalAudio: ForwardRefComponent<PositionalAudioProps, Position
         _sound.setBuffer(Array.isArray(buffer) ? buffer[0] : buffer)
         _sound.setRefDistance(distance)
         _sound.setLoop(loop)
-        if (autoplay && !_sound.isPlaying) _sound.play()
+        if (autoplay && !_sound.isPlaying) {
+          _sound.play()
+        }
       }
     }, [buffer, camera, distance, loop])
 

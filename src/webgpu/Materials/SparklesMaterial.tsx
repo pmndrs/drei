@@ -13,6 +13,7 @@ import {
   cos,
   uv,
   length,
+  clamp,
 } from 'three/tsl'
 
 //* SparklesMaterial - WebGPU TSL Material for Instanced Quad Sparkles ==============================
@@ -88,8 +89,8 @@ export class SparklesMaterial extends SpriteNodeMaterial {
       const quadUV = uv()
       // Distance from center (0.5, 0.5)
       const distanceToCenter = length(quadUV.sub(vec2(0.5)))
-      // Glow strength: 0.05 / distance - 0.1 (same as legacy shader)
-      const strength = float(0.05).div(distanceToCenter).sub(0.1)
+      // Glow strength: clamp(0.05 / distance - 0.1, 0.0, 1.0) (same as legacy shader)
+      const strength = clamp(float(0.05).div(distanceToCenter).sub(0.1), 0.0, 1.0)
 
       // Final color with alpha based on strength and opacity
       return vec4(particleColor, strength.mul(particleOpacity))

@@ -77,7 +77,7 @@ export class SparklesMaterial extends SpriteNodeMaterial {
     // worldSize = pixelSize * 2.0 / (projectionMatrix[1][1] * viewportHeight)
     this.scaleNode = Fn(() => {
       const pixelSize = particleSize.mul(25.0).mul(this._pixelRatio)
-      const projY = cameraProjectionMatrix.element(1).y
+      const projY = cameraProjectionMatrix.element(float(1)).y
       const viewportH = screenSize.y
       const size = pixelSize.mul(2.0).div(projY.mul(viewportH))
       return vec2(size)

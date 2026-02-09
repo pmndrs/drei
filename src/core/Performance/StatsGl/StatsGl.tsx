@@ -4,7 +4,7 @@ import * as React from 'react'
 
 import Stats from 'stats-gl'
 
-type StatsOptions = ConstructorParameters<typeof Stats>[0]
+export type StatsOptions = ConstructorParameters<typeof Stats>[0]
 
 export type StatsGlProps = Partial<StatsOptions> & {
   id?: string

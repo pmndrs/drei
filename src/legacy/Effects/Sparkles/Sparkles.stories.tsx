@@ -3,9 +3,11 @@ import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'
+import { PlatformSwitch } from '@sb/components/PlatformSwitch'
 
 import { PerspectiveCamera, OrbitControls } from 'drei'
 import { Sparkles } from './Sparkles'
+import { Sparkles as SparklesWebGPU } from '@webgpu/Effects/Sparkles'
 
 export default {
   title: 'Staging/Sparkles',
@@ -24,7 +26,10 @@ type Story = StoryObj<typeof Sparkles>
 function SparklesScene(props: React.ComponentProps<typeof Sparkles>) {
   return (
     <>
-      <Sparkles {...props} />
+      <PlatformSwitch
+        legacy={<Sparkles {...props} />}
+        webgpu={<SparklesWebGPU {...(props as any)} />}
+      />
 
       <OrbitControls />
       <axesHelper />

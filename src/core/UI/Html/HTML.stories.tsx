@@ -249,3 +249,37 @@ export const HTMLOccluderSt = {
   render: (args) => <HTMLOccluderScene {...args} />,
   name: 'Occlusion',
 } satisfies Story
+
+//
+
+function HTMLBorderScene(props: HtmlProps) {
+  return (
+    <Icosahedron args={[5, 5]} position={[0, 0, 0]}>
+      <meshBasicMaterial color="hotpink" wireframe />
+      <Html {...props}>
+        <div
+          style={{
+            borderWidth: '4px',
+            borderStyle: 'solid',
+            borderColor: 'red',
+            borderRadius: '16px',
+            padding: '24px 32px',
+            background: 'white',
+            color: 'black',
+            fontSize: '40px',
+          }}
+        >
+          Border with radius
+        </div>
+      </Html>
+    </Icosahedron>
+  )
+}
+
+export const HTMLBorderSt = {
+  args: {
+    distanceFactor: 30,
+  },
+  render: (args) => <HTMLBorderScene {...args} />,
+  name: 'Border Radius (Firefox artifact)',
+} satisfies Story

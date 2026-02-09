@@ -7,10 +7,8 @@ import {
   vec2,
   vec3,
   vec4,
-  positionLocal,
-  positionView,
-  cameraViewMatrix,
-  modelWorldMatrix,
+  cameraProjectionMatrix,
+  viewportResolution,
   sin,
   cos,
   uv,
@@ -71,16 +69,16 @@ export class SparklesMaterial extends SpriteNodeMaterial {
       return pos
     })()
 
-    //* Scale Node - Size with distance attenuation ==============================
-    // gl_PointSize = size * 25.0 * pixelRatio * (1.0 / -viewPosition.z)
+    //* Scale Node - Size matching legacy gl_PointSize ==============================
+    // Legacy: gl_PointSize = size * 25.0 * pixelRatio * (1.0 / -viewPosition.z)
+    // For quads, the projection matrix already handles 1/-viewZ distance attenuation,
+    // so we only convert from pixel-space point size to world-space quad size:
+    // worldSize = pixelSize * 2.0 / (projectionMatrix[1][1] * viewportHeight)
     this.scaleNode = Fn(() => {
-      // Get view-space position for distance calculation
-      const worldPos = modelWorldMatrix.mul(vec4(this.positionNode, 1.0))
-      const viewPos = cameraViewMatrix.mul(worldPos)
-      // Distance attenuation: closer = larger
-      const distanceAttenuation = float(1).div(viewPos.z.negate())
-      // Scale factor (adjusted for quad vs point size difference)
-      const size = particleSize.mul(0.5).mul(this._pixelRatio).mul(distanceAttenuation)
+      const pixelSize = particleSize.mul(25.0).mul(this._pixelRatio)
+      const projY = cameraProjectionMatrix.element(1).y
+      const viewportH = viewportResolution.y
+      const size = pixelSize.mul(2.0).div(projY.mul(viewportH))
       return vec2(size)
     })()
 

@@ -3,7 +3,9 @@ import { Canvas } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { OrbitControls, Box, useContextBridge } from 'drei'
-import { Text } from '../../UI/Text/Text'
+import { PlatformSwitch } from '@sb/components/PlatformSwitch'
+import { Text as LegacyText } from '../../../legacy/UI/Text/Text'
+import { Text as WebGPUText } from '../../../webgpu/UI/Text/Text'
 
 function ContextBridge({
   contexts,
@@ -56,9 +58,18 @@ function Scene() {
       />
 
       <React.Suspense fallback={null}>
-        <Text fontSize={0.3} position-z={2}>
-          {greeting.name ? `Hello ${greeting.name}!` : 'Click a color'}
-        </Text>
+        <PlatformSwitch
+          legacy={
+            <LegacyText fontSize={0.3} position-z={2}>
+              {greeting.name ? `Hello ${greeting.name}!` : 'Click a color'}
+            </LegacyText>
+          }
+          webgpu={
+            <WebGPUText fontSize={0.3} position-z={2}>
+              {greeting.name ? `Hello ${greeting.name}!` : 'Click a color'}
+            </WebGPUText>
+          }
+        />
       </React.Suspense>
     </>
   )

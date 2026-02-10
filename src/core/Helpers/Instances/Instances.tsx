@@ -157,6 +157,7 @@ export const Instances: ForwardRefComponent<InstancesProps, THREE.InstancedMesh>
   const parentRef = React.useRef<InstancedMesh>(null!)
   React.useImperativeHandle(ref, () => parentRef.current, [])
   const [instances, setInstances] = React.useState<React.RefObject<PositionMesh>[]>([])
+  const boundsDirty = React.useRef(true)
   const [[matrices, colors]] = React.useState(() => {
     const mArray = new Float32Array(limit * 16)
     for (let i = 0; i < limit; i++) tempMatrix.identity().toArray(mArray, i * 16)
@@ -199,6 +200,11 @@ export const Instances: ForwardRefComponent<InstancesProps, THREE.InstancedMesh>
       }
       iterations++
     }
+    if (boundsDirty.current && (frames === Infinity || iterations === frames)) {
+      boundsDirty.current = false
+      if (parentRef.current.boundingBox) parentRef.current.computeBoundingBox()
+      if (parentRef.current.boundingSphere) parentRef.current.computeBoundingSphere()
+    }
   })
 
   const api = React.useMemo(
@@ -206,7 +212,11 @@ export const Instances: ForwardRefComponent<InstancesProps, THREE.InstancedMesh>
       getParent: () => parentRef,
       subscribe: (ref) => {
         setInstances((instances) => [...instances, ref])
-        return () => setInstances((instances) => instances.filter((item) => item.current !== ref.current))
+        boundsDirty.current = true
+        return () => {
+          setInstances((instances) => instances.filter((item) => item.current !== ref.current))
+          boundsDirty.current = true
+        }
       },
     }),
     []

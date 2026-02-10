@@ -3,18 +3,19 @@ import * as THREE from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'
+import { PlatformSwitch } from '@sb/components/PlatformSwitch'
 import { useGLTF, Environment, OrbitControls } from 'drei'
 import { Caustics, CausticsProps } from './Caustics'
+import { Caustics as CausticsWebGPU } from '../../../webgpu/Effects/Caustics/Caustics'
 
 export default {
   title: 'Shaders/Caustics',
   component: Caustics,
-  tags: ['legacyOnly'],
+  tags: ['dual'],
   decorators: [
     (Story, context) => (
       <Setup
         renderer={context.globals.renderer}
-        limitedTo={'legacy'}
         lights={false}
         cameraFov={45}
         cameraPosition={new THREE.Vector3(-5, 5, 5)}
@@ -27,7 +28,7 @@ export default {
 
 type Story = StoryObj<typeof Caustics>
 
-function GlassBunny({ ior, ...causticsProps }: Omit<CausticsProps, 'ref'>) {
+function BunnyMesh({ ior }: { ior?: number }) {
   const { nodes } = useGLTF('/models/bunny-transformed.glb') as any
   const bunnyMesh = Object.values(nodes).find((n: any) => n?.isMesh) as THREE.Mesh
 
@@ -38,30 +39,40 @@ function GlassBunny({ ior, ...causticsProps }: Omit<CausticsProps, 'ref'>) {
   }, [bunnyMesh])
 
   return (
-    <Caustics position={[0, -0.5, 0]} lightSource={[5, 5, 5]} ior={ior} {...causticsProps}>
-      <mesh castShadow scale={0.01} position={[0, yOffset, 0]} receiveShadow geometry={bunnyMesh.geometry} dispose={null}>
-        <meshPhysicalMaterial
-          transmission={1}
-          roughness={0}
-          thickness={3.5}
-          ior={ior ?? 1.1}
-          color="white"
-          attenuationColor="white"
-          attenuationDistance={0.5}
-        />
-      </mesh>
-    </Caustics>
+    <mesh castShadow scale={0.01} position={[0, yOffset, 0]} receiveShadow geometry={bunnyMesh.geometry} dispose={null}>
+      <meshPhysicalMaterial
+        transmission={1}
+        roughness={0}
+        thickness={3.5}
+        ior={ior ?? 1.1}
+        color="white"
+        attenuationColor="white"
+        attenuationDistance={0.5}
+      />
+    </mesh>
   )
 }
 
 function CausticsScene(props: Omit<CausticsProps, 'ref'>) {
+  const { ior, ...causticsProps } = props
   return (
     <>
       <color attach="background" args={['#f0f0f0']} />
       <spotLight position={[5, 5, 5]} angle={0.15} penumbra={1} intensity={Math.PI} castShadow />
       <ambientLight intensity={0.5 * Math.PI} />
 
-      <GlassBunny {...props} />
+      <PlatformSwitch
+        legacy={
+          <Caustics position={[0, -0.5, 0]} lightSource={[5, 5, 5]} ior={ior} {...causticsProps}>
+            <BunnyMesh ior={ior} />
+          </Caustics>
+        }
+        webgpu={
+          <CausticsWebGPU position={[0, -0.5, 0]} lightSource={[5, 5, 5]} ior={ior} {...causticsProps}>
+            <BunnyMesh ior={ior} />
+          </CausticsWebGPU>
+        }
+      />
 
       <Environment files="https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/aerodynamics_workshop_1k.hdr" />
       <OrbitControls makeDefault autoRotate autoRotateSpeed={0.1} minPolarAngle={0} maxPolarAngle={Math.PI / 2} />

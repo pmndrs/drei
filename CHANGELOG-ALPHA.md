@@ -86,6 +86,49 @@ New `OnDragProps` type is exported from `@react-three/drei`.
 
 ### Bug Fixes
 
+#### `MeshRefractionMaterial` (Legacy) - Restored React Component Wrapper
+
+The legacy `MeshRefractionMaterial` was missing its React component wrapper after the v11 restructure, exporting only the raw shader material. Restored the full component that handles:
+
+- BVH setup from parent mesh geometry for accurate ray-mesh intersection
+- Shader defines computation (CUBEUV, CHROMATIC_ABERRATIONS, FAST_CHROMA, ENVMAP_TYPE_CUBEM)
+- Per-frame camera matrix updates (viewMatrixInverse, projectionMatrixInverse)
+- Viewport resolution tracking
+- Fixed geometry index check: non-indexed geometry is no longer unnecessarily converted with `toNonIndexed()`
+
+```tsx
+// Now works as a proper React component again
+<mesh>
+  <dodecahedronGeometry />
+  <MeshRefractionMaterial envMap={envMap} bounces={3} ior={2.4} />
+</mesh>
+```
+
+**Files changed:**
+
+- `src/legacy/Materials/MeshRefractionMaterial/MeshRefractionMaterial.tsx`
+
+#### `MeshRefractionMaterial` (WebGPU) - TSL Cleanup
+
+Cleaned up the WebGPU TSL implementation:
+
+- Replaced custom `equirectUv` function with TSL built-in `equirectUV`
+- Removed unused `_resolution` and `_thickness` uniforms (dead shader code)
+- Fixed `Fn` parameter patterns to use TSL-idiomatic array destructuring
+- Resolved pre-existing TypeScript error with `args={[fastChroma]}`
+
+**Files changed:**
+
+- `src/webgpu/Materials/MeshRefractionMaterial/MeshRefractionMaterial.tsx`
+
+#### `MeshRefractionMaterial` Story - Added Dual Renderer Support
+
+Updated the Storybook story to use `PlatformSwitch` for WebGL/WebGPU dual testing, with platform-specific imports for all dependent components (Caustics, AccumulativeShadows, MeshTransmissionMaterial).
+
+**Files changed:**
+
+- `src/legacy/Materials/MeshRefractionMaterial/MeshRefractionMaterial.stories.tsx`
+
 #### `View` - Fixed Offscreen Detection for Non-Fullscreen Canvases
 
 The `isOffscreen` check in `computeContainerPosition` compared tracked element coordinates against raw canvas `width`/`height`, assuming the canvas was at position `(0, 0)` in the viewport. When the canvas was offset (e.g., below a header), views would disappear prematurely during scrolling. Now uses the canvas's actual bounding edges (`canvasSize.top`, `canvasSize.left`) for correct offscreen detection.

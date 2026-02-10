@@ -15,7 +15,6 @@ import {
   Fn,
   uniform,
   uniformTexture,
-  vec2,
   vec3,
   vec4,
   float,
@@ -33,10 +32,11 @@ import {
   pow,
   select,
   cameraPosition,
+  equirectUV,
   Loop,
 } from 'three/tsl'
 import * as React from 'react'
-import { extend, ThreeElements, useThree } from '@react-three/fiber'
+import { extend, ThreeElements } from '@react-three/fiber'
 import { ForwardRefComponent } from '@utils/ts-utils'
 
 //* Types ==============================
@@ -58,7 +58,6 @@ export type MeshRefractionMaterialType = Omit<ThreeElements['meshPhysicalMateria
   tintColor?: THREE.ColorRepresentation
   /** Opacity, default: 1 */
   opacity?: number
-  /** Constructor args passed to the material */
   args?: [fastChroma?: boolean]
 }
 
@@ -73,27 +72,15 @@ declare module '@react-three/fiber' {
 //* TSL Helper Functions ==============================
 
 // Fresnel effect - stronger at glancing angles
-const fresnelEffect = /* @__PURE__ */ Fn((inputs: any[]) => {
-  const [viewDir, normal, power] = inputs
+const fresnelEffect = /* @__PURE__ */ Fn(([viewDir, normal, power]: any[]) => {
   const NdotV = float(1.0).add(dot(viewDir, normal))
   return pow(NdotV, power)
-})
-
-// Equirectangular UV mapping for HDR environment maps
-const equirectUv = /* @__PURE__ */ Fn((inputs: any[]) => {
-  const [direction] = inputs
-  const dir = normalize(direction)
-  // Convert direction to spherical coordinates
-  const u = float(0.5).add(dir.z.atan2(dir.x).div(float(2.0).mul(Math.PI)))
-  const v = float(0.5).sub(dir.y.asin().div(Math.PI))
-  return vec2(u, v)
 })
 
 // Simplified total internal reflection approximation
 // Without BVH, we approximate multiple bounces using the surface normal
 // and a distance-based estimation
-const approximateRefraction = /* @__PURE__ */ Fn((inputs: any[]) => {
-  const [rayDir, normal, iorValue, bounceCount, thickness] = inputs
+const approximateRefraction = /* @__PURE__ */ Fn(([rayDir, normal, iorValue, bounceCount]: any[]) => {
   // Initial refraction at surface entry
   const entryDir = refract(rayDir, normal, float(1.0).div(iorValue)).toVar()
 
@@ -140,8 +127,6 @@ class MeshRefractionMaterialImpl extends MeshPhysicalNodeMaterial {
   private _aberrationStrength: THREE.UniformNode<number>
   private _color: THREE.UniformNode<THREE.Color>
   private _opacityValue: THREE.UniformNode<number>
-  private _resolution: THREE.UniformNode<THREE.Vector2>
-  private _thickness: THREE.UniformNode<number>
   private _fastChroma: boolean
 
   /** Type flag for identification */
@@ -160,8 +145,6 @@ class MeshRefractionMaterialImpl extends MeshPhysicalNodeMaterial {
     this._aberrationStrength = uniform(0.01)
     this._color = uniform(new THREE.Color('white'))
     this._opacityValue = uniform(1.0)
-    this._resolution = uniform(new THREE.Vector2(1, 1))
-    this._thickness = uniform(1.0) // Approximate thickness for refraction
 
     //* Base Material Properties --
     this.transparent = true
@@ -179,7 +162,6 @@ class MeshRefractionMaterialImpl extends MeshPhysicalNodeMaterial {
     const aberrationUniform = this._aberrationStrength
     const colorUniform = this._color
     const opacityUniform = this._opacityValue
-    const thicknessUniform = this._thickness
     const fastChroma = this._fastChroma
 
     //* Output Node - Custom refraction with chromatic aberration --
@@ -195,13 +177,7 @@ class MeshRefractionMaterialImpl extends MeshPhysicalNodeMaterial {
 
       //* Sample environment map with refraction --
       // Get refracted direction for green channel (base)
-      const refractedDirG = approximateRefraction(
-        viewDir,
-        worldNormal,
-        max(iorUniform, 1.0),
-        bouncesUniform,
-        thicknessUniform
-      )
+      const refractedDirG = approximateRefraction(viewDir, worldNormal, max(iorUniform, 1.0), bouncesUniform)
 
       // Chromatic aberration - offset R and B channels
       const aberration = aberrationUniform
@@ -223,8 +199,7 @@ class MeshRefractionMaterialImpl extends MeshPhysicalNodeMaterial {
             viewDir,
             worldNormal,
             max(iorUniform.mul(float(1.0).sub(aberration)), 1.0),
-            bouncesUniform,
-            thicknessUniform
+            bouncesUniform
           )
         )
         refractedDirB.assign(
@@ -232,17 +207,15 @@ class MeshRefractionMaterialImpl extends MeshPhysicalNodeMaterial {
             viewDir,
             worldNormal,
             max(iorUniform.mul(float(1.0).add(aberration)), 1.0),
-            bouncesUniform,
-            thicknessUniform
+            bouncesUniform
           )
         )
       }
 
-      // Sample environment map for each channel
-      // Using equirectangular mapping for 2D textures
-      const uvR = equirectUv(refractedDirR)
-      const uvG = equirectUv(refractedDirG)
-      const uvB = equirectUv(refractedDirB)
+      // Sample environment map for each channel using built-in equirectangular mapping
+      const uvR = equirectUV(refractedDirR)
+      const uvG = equirectUV(refractedDirG)
+      const uvB = equirectUV(refractedDirB)
 
       const envColorR = texture(envMapTex, uvR).r
       const envColorG = texture(envMapTex, uvG).g
@@ -325,21 +298,6 @@ class MeshRefractionMaterialImpl extends MeshPhysicalNodeMaterial {
     this._opacityValue.value = v
   }
 
-  /** Resolution for screen-space calculations */
-  get resolution() {
-    return this._resolution.value as THREE.Vector2
-  }
-  set resolution(v: THREE.Vector2) {
-    this._resolution.value = v
-  }
-
-  /** Approximate thickness for refraction calculations */
-  get thickness() {
-    return this._thickness.value as number
-  }
-  set thickness(v: number) {
-    this._thickness.value = v
-  }
 }
 
 //* React Component ==============================
@@ -363,14 +321,6 @@ export const MeshRefractionMaterial: ForwardRefComponent<MeshRefractionMaterialP
       extend({ MeshRefractionMaterial: MeshRefractionMaterialImpl })
 
       const ref = React.useRef<MeshRefractionMaterialImpl>(null!)
-      const size = useThree((state) => state.size)
-
-      // Update resolution when size changes
-      React.useEffect(() => {
-        if (ref.current) {
-          ref.current.resolution = new THREE.Vector2(size.width, size.height)
-        }
-      }, [size])
 
       // Update material properties
       React.useEffect(() => {

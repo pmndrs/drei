@@ -2,23 +2,14 @@
 // https://github.com/N8python/diamonds
 
 import * as THREE from '#three'
+import * as React from 'react'
+import { extend, ReactThreeFiber, useThree, useFrame, ThreeElements } from '@react-three/fiber'
 import { shaderMaterial } from '@legacy/Materials/shaderMaterial'
-import { MeshBVHUniformStruct, shaderStructs, shaderIntersectFunction } from 'three-mesh-bvh'
+import { MeshBVHUniformStruct, MeshBVH, SAH, shaderStructs, shaderIntersectFunction } from 'three-mesh-bvh'
 import { version } from '@utils/constants'
+import { ForwardRefComponent } from '@utils/ts-utils'
 
-/**
- * Material for realistic diamond/gem refraction using raytracing and BVH.
- * Supports chromatic aberration, IOR, and environment mapping.
- *
- * @example
- * ```jsx
- * <mesh>
- *   <dodecahedronGeometry />
- *   <MeshRefractionMaterial envMap={envMap} bounces={3} ior={2.4} />
- * </mesh>
- * ```
- */
-export const MeshRefractionMaterial = /* @__PURE__ */ shaderMaterial(
+const MeshRefractionMaterial_ = /* @__PURE__ */ shaderMaterial(
   {
     envMap: null,
     bounces: 3,
@@ -176,4 +167,113 @@ export const MeshRefractionMaterial = /* @__PURE__ */ shaderMaterial(
     #include <tonemapping_fragment>
     #include <${version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'}>
   }`
+)
+
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    meshRefractionMaterial_: ThreeElements['shaderMaterial'] & {
+      envMap?: THREE.CubeTexture | THREE.Texture | null
+      bounces?: number
+      ior?: number
+      correctMips?: boolean
+      aberrationStrength?: number
+      fresnel?: number
+      bvh?: MeshBVHUniformStruct
+      color?: ReactThreeFiber.Color
+      opacity?: number
+      resolution?: [number, number] | THREE.Vector2
+      viewMatrixInverse?: THREE.Matrix4
+      projectionMatrixInverse?: THREE.Matrix4
+    }
+  }
+}
+
+export type MeshRefractionMaterialProps = ThreeElements['shaderMaterial'] & {
+  /** Environment map */
+  envMap: THREE.CubeTexture | THREE.Texture
+  /** Number of ray-cast bounces, it can be expensive to have too many. @default 2 */
+  bounces?: number
+  /** Refraction index. @default 2.4 */
+  ior?: number
+  /** Fresnel (strip light). @default 0 */
+  fresnel?: number
+  /** RGB shift intensity, can be expensive. @default 0 */
+  aberrationStrength?: number
+  /** Color. @default 'white' */
+  color?: ReactThreeFiber.Color
+  /** If this is on it uses fewer ray casts for the RGB shift sacrificing physical accuracy. @default true */
+  fastChroma?: boolean
+}
+
+const isCubeTexture = (def: THREE.CubeTexture | THREE.Texture): def is THREE.CubeTexture =>
+  def && (def as THREE.CubeTexture).isCubeTexture
+
+/**
+ * Material for realistic diamond/gem refraction using raytracing and BVH.
+ * Supports chromatic aberration, IOR, and environment mapping.
+ *
+ * @example
+ * ```jsx
+ * <mesh>
+ *   <dodecahedronGeometry />
+ *   <MeshRefractionMaterial envMap={envMap} bounces={3} ior={2.4} />
+ * </mesh>
+ * ```
+ */
+export const MeshRefractionMaterial: ForwardRefComponent<
+  MeshRefractionMaterialProps,
+  InstanceType<typeof MeshRefractionMaterial_>
+> = /* @__PURE__ */ React.forwardRef(
+  ({ aberrationStrength = 0, fastChroma = true, envMap, ...props }: MeshRefractionMaterialProps, ref) => {
+    extend({ MeshRefractionMaterial_: MeshRefractionMaterial_ })
+
+    const material = React.useRef<InstanceType<typeof MeshRefractionMaterial_>>(null)
+    const { size } = useThree()
+
+    const defines = React.useMemo(() => {
+      const temp = {} as { [key: string]: string }
+      const isCubeMap = isCubeTexture(envMap)
+      const w = (isCubeMap ? (envMap.image as any[])[0]?.width : (envMap.image as any).width) ?? 1024
+      const cubeSize = w / 4
+      const _lodMax = Math.floor(Math.log2(cubeSize))
+      const _cubeSize = Math.pow(2, _lodMax)
+      const width = 3 * Math.max(_cubeSize, 16 * 7)
+      const height = 4 * _cubeSize
+      if (isCubeMap) temp.ENVMAP_TYPE_CUBEM = ''
+      temp.CUBEUV_TEXEL_WIDTH = `${1.0 / width}`
+      temp.CUBEUV_TEXEL_HEIGHT = `${1.0 / height}`
+      temp.CUBEUV_MAX_MIP = `${_lodMax}.0`
+      if (aberrationStrength > 0) temp.CHROMATIC_ABERRATIONS = ''
+      if (fastChroma) temp.FAST_CHROMA = ''
+      return temp
+    }, [aberrationStrength, fastChroma, envMap])
+
+    React.useLayoutEffect(() => {
+      const geometry = (material.current as any)?.__r3f?.parent?.object?.geometry
+      if (geometry) {
+        const geometryNi = geometry.index ? geometry.clone().toNonIndexed() : geometry.clone()
+        ;(material.current as any).bvh = new MeshBVHUniformStruct()
+        ;(material.current as any).bvh.updateFrom(new MeshBVH(geometryNi, { strategy: SAH }))
+      }
+    }, [])
+
+    useFrame(({ camera }) => {
+      ;(material.current as any)!.viewMatrixInverse = camera.matrixWorld
+      ;(material.current as any)!.projectionMatrixInverse = camera.projectionMatrixInverse
+    })
+
+    React.useImperativeHandle(ref, () => material.current!, [])
+
+    return (
+      <meshRefractionMaterial_
+        key={JSON.stringify(defines)}
+        defines={defines}
+        ref={material}
+        resolution={[size.width, size.height]}
+        aberrationStrength={aberrationStrength}
+        envMap={envMap}
+        {...props}
+      />
+    )
+  }
 )

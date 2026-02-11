@@ -14,7 +14,10 @@ import { MeshTransmissionMaterial } from '../MeshTransmissionMaterial/MeshTransm
 
 import { MeshRefractionMaterial as MeshRefractionMaterialWebGPU } from '../../../webgpu/Materials/MeshRefractionMaterial/MeshRefractionMaterial'
 import { Caustics as CausticsWebGPU } from '../../../webgpu/Effects/Caustics/Caustics'
-import { AccumulativeShadows as AccumulativeShadowsWebGPU, RandomizedLight as RandomizedLightWebGPU } from '../../../webgpu/Staging/AccumulativeShadows/AccumulativeShadows'
+import {
+  AccumulativeShadows as AccumulativeShadowsWebGPU,
+  RandomizedLight as RandomizedLightWebGPU,
+} from '../../../webgpu/Staging/AccumulativeShadows/AccumulativeShadows'
 import { MeshTransmissionMaterial as MeshTransmissionMaterialWebGPU } from '../../../webgpu/Materials/MeshTransmissionMaterial/MeshTransmissionMaterial'
 
 export default {

@@ -297,7 +297,6 @@ class MeshRefractionMaterialImpl extends MeshPhysicalNodeMaterial {
   set opacity(v: number) {
     this._opacityValue.value = v
   }
-
 }
 
 //* React Component ==============================

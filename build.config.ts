@@ -19,9 +19,7 @@ import replace from '@rollup/plugin-replace'
 //* Build-time Replacements ==============================
 // Read resolved dependency versions to inject at build time
 
-const mediapipeVersion = JSON.parse(
-  readFileSync('./node_modules/@mediapipe/tasks-vision/package.json', 'utf8')
-).version
+const mediapipeVersion = JSON.parse(readFileSync('./node_modules/@mediapipe/tasks-vision/package.json', 'utf8')).version
 
 const replacements = {
   preventAssignment: true,

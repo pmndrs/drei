@@ -3320,6 +3320,7 @@ __metadata:
     "@rollup/plugin-commonjs": "npm:^29.0.0"
     "@rollup/plugin-json": "npm:^6.1.0"
     "@rollup/plugin-node-resolve": "npm:^16.0.3"
+    "@rollup/plugin-replace": "npm:^6.0.3"
     "@storybook/addon-docs": "npm:^10.1.11"
     "@storybook/addon-vitest": "npm:^10.1.11"
     "@storybook/react-vite": "npm:^10.1.11"
@@ -3534,7 +3535,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rollup/plugin-replace@npm:^6.0.2":
+"@rollup/plugin-replace@npm:^6.0.2, @rollup/plugin-replace@npm:^6.0.3":
   version: 6.0.3
   resolution: "@rollup/plugin-replace@npm:6.0.3"
   dependencies:

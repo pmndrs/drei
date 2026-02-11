@@ -37,7 +37,7 @@ jobs:
 
       # Build Storybook against dist
       - name: Build Storybook (from dist)
-        run: yarn build-storybook:prod
+        run: yarn build-storybook:prod --stats-json
 
       # Run Chromatic
       - name: Publish to Chromatic

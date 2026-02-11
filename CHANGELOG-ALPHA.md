@@ -153,6 +153,16 @@ Previously, `useKTX2.preload()` never called `KTX2Loader.detectSupport(renderer)
 
 - `src/core/Loaders/useKTX2/useKTX2.tsx`
 
+### CI
+
+#### Package Size Reports on Pull Requests
+
+Added a new GitHub Actions workflow ([`pkg-size/action`](https://github.com/pkg-size/action)) that automatically comments on PRs with a package size report. Shows uncompressed and gzip sizes, sorted by size delta, with unchanged files collapsed. This is purely advisory and never blocks merges.
+
+**Files added:**
+
+- `.github/workflows/pkg-size.yml`
+
 ### Internal
 
 #### `KTX2LoaderService` - New Internal Singleton

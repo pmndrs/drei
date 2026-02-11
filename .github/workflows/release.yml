@@ -68,7 +68,7 @@ jobs:
           cache: 'yarn'
       - run: yarn install
       - run: yarn build
-      - run: yarn build-storybook
+      - run: yarn build-storybook:prod
 
       # Install Playwright browsers for parity tests
       - name: Install Playwright browsers

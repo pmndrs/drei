@@ -1,4 +1,5 @@
 import { fileURLToPath } from 'node:url'
+import { readFileSync } from 'node:fs'
 import type { StorybookConfig } from '@storybook/react-vite'
 import { svg } from './favicon.ts'
 import { mergeConfig } from 'vite'
@@ -6,6 +7,13 @@ import path, { dirname } from 'path'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
+
+const useBuiltPackage = process.env.USE_BUILT_PACKAGE === 'true'
+
+// Build-time replacements (mirrors build.config.ts)
+const mediapipeVersion = JSON.parse(
+  readFileSync(path.resolve(__dirname, '../node_modules/@mediapipe/tasks-vision/package.json'), 'utf8')
+).version
 
 const config: StorybookConfig = {
   staticDirs: ['./public'],
@@ -36,14 +44,27 @@ const config: StorybookConfig = {
   docs: {},
 
   viteFinal: async (config) => {
+    // Conditional aliasing: use built dist/ for Chromatic, source for dev
+    const dreiAlias = useBuiltPackage
+      ? path.resolve(__dirname, '../dist/index.mjs')
+      : path.resolve(__dirname, './drei-barrel.ts')
+
+    console.log(`[storybook] Using ${useBuiltPackage ? 'BUILT package (dist/)' : 'SOURCE (src/)'}`)
+
     return mergeConfig(config, {
+      define: {
+        __MEDIAPIPE_TASKS_VISION_VERSION__: JSON.stringify(mediapipeVersion),
+      },
       resolve: {
         alias: {
           // Storybook-specific aliases
           '@sb': path.resolve(__dirname, '.'),
-          drei: path.resolve(__dirname, './drei-barrel.ts'),
+          drei: dreiAlias,
+          '@react-three/drei': dreiAlias,
 
           // Project path aliases (from tsconfig)
+          // These always point to source — dist only has flat bundles,
+          // not individual component files
           '#three': 'three',
           '#three-addons': path.resolve(__dirname, '../src/utils/three-addons'),
           '#drei-platform': path.resolve(__dirname, '../src/utils/drei-platform'),

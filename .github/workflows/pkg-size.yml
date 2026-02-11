@@ -24,7 +24,7 @@ jobs:
 
       - uses: pkg-size/action@v1
         with:
-          build-command: yarn install && yarn build
+          build-command: corepack enable && yarn install && yarn build
           display-size: uncompressed,gzip
           unchanged-files: collapse
           sort-by: delta

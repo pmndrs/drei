@@ -28,7 +28,7 @@ jobs:
         with:
           build-command: yarn build
           display-size: uncompressed,gzip
-          unchanged-files: collapse
+          unchanged-files: hide
           sort-by: delta
           sort-order: desc
           hide-files: '{.yarn/**,node_modules/**}'

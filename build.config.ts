@@ -12,7 +12,19 @@
 
 import { defineBuildConfig } from 'unbuild'
 import { resolve } from 'path'
+import { readFileSync } from 'fs'
 import alias from '@rollup/plugin-alias'
+import replace from '@rollup/plugin-replace'
+
+//* Build-time Replacements ==============================
+// Read resolved dependency versions to inject at build time
+
+const mediapipeVersion = JSON.parse(readFileSync('./node_modules/@mediapipe/tasks-vision/package.json', 'utf8')).version
+
+const replacements = {
+  preventAssignment: true,
+  __MEDIAPIPE_TASKS_VISION_VERSION__: JSON.stringify(mediapipeVersion),
+}
 
 //* Internal Path Aliases ==============================
 // These resolve @core, @legacy, etc. imports to actual paths
@@ -78,7 +90,7 @@ export default defineBuildConfig([
     hooks: {
       'rollup:options': (ctx, options) => {
         options.plugins = options.plugins || []
-        ;(options.plugins as any[]).unshift(alias({ entries: webglAliases }))
+        ;(options.plugins as any[]).unshift(alias({ entries: webglAliases }), replace(replacements))
       },
     },
     externals,
@@ -100,7 +112,7 @@ export default defineBuildConfig([
     hooks: {
       'rollup:options': (ctx, options) => {
         options.plugins = options.plugins || []
-        ;(options.plugins as any[]).unshift(alias({ entries: webglAliases }))
+        ;(options.plugins as any[]).unshift(alias({ entries: webglAliases }), replace(replacements))
       },
     },
     externals,
@@ -122,7 +134,7 @@ export default defineBuildConfig([
     hooks: {
       'rollup:options': (ctx, options) => {
         options.plugins = options.plugins || []
-        ;(options.plugins as any[]).unshift(alias({ entries: webglAliases }))
+        ;(options.plugins as any[]).unshift(alias({ entries: webglAliases }), replace(replacements))
       },
     },
     externals,
@@ -144,7 +156,7 @@ export default defineBuildConfig([
     hooks: {
       'rollup:options': (ctx, options) => {
         options.plugins = options.plugins || []
-        ;(options.plugins as any[]).unshift(alias({ entries: webglAliases }))
+        ;(options.plugins as any[]).unshift(alias({ entries: webglAliases }), replace(replacements))
       },
     },
     externals,
@@ -166,7 +178,7 @@ export default defineBuildConfig([
     hooks: {
       'rollup:options': (ctx, options) => {
         options.plugins = options.plugins || []
-        ;(options.plugins as any[]).unshift(alias({ entries: webglAliases }))
+        ;(options.plugins as any[]).unshift(alias({ entries: webglAliases }), replace(replacements))
       },
     },
     externals,
@@ -190,7 +202,7 @@ export default defineBuildConfig([
     hooks: {
       'rollup:options': (ctx, options) => {
         options.plugins = options.plugins || []
-        ;(options.plugins as any[]).unshift(alias({ entries: webgpuAliases }))
+        ;(options.plugins as any[]).unshift(alias({ entries: webgpuAliases }), replace(replacements))
       },
     },
     externals,
@@ -212,7 +224,7 @@ export default defineBuildConfig([
     hooks: {
       'rollup:options': (ctx, options) => {
         options.plugins = options.plugins || []
-        ;(options.plugins as any[]).unshift(alias({ entries: webgpuAliases }))
+        ;(options.plugins as any[]).unshift(alias({ entries: webgpuAliases }), replace(replacements))
       },
     },
     externals,

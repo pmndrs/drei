@@ -143,10 +143,10 @@ export class CausticsProjectionMaterial extends MeshBasicNodeMaterial {
   }
 
   get color() {
-    return this._color.value as THREE.Color
+    return this._color?.value as THREE.Color
   }
   set color(v: THREE.Color) {
-    this._color.value = v
+    if (this._color) this._color.value = v
   }
 
   get lightProjMatrix() {

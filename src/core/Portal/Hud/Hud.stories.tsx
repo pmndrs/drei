@@ -6,9 +6,11 @@ import { useFrame } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'
+import { PlatformSwitch } from '@sb/components/PlatformSwitch'
 
 import { Hud, OrbitControls, PerspectiveCamera } from 'drei'
-import { Text } from '../../UI/Text/Text'
+import { Text as LegacyText } from '../../../legacy/UI/Text/Text'
+import { Text as WebGPUText } from '../../../webgpu/UI/Text/Text'
 
 export default {
   title: 'Portals/Hud',
@@ -126,9 +128,18 @@ function HudScene(props: React.ComponentProps<typeof Hud>) {
         <CornerBrackets />
 
         {/* Status text */}
-        <Text position={[0, -1.5, 0]} fontSize={0.12} color="#00ff88" anchorX="center" anchorY="middle">
-          HUD OVERLAY - ISOLATED SCENE
-        </Text>
+        <PlatformSwitch
+          legacy={
+            <LegacyText position={[0, -1.5, 0]} fontSize={0.12} color="#00ff88" anchorX="center" anchorY="middle">
+              HUD OVERLAY - ISOLATED SCENE
+            </LegacyText>
+          }
+          webgpu={
+            <WebGPUText position={[0, -1.5, 0]} fontSize={0.12} color="#00ff88" anchorX="center" anchorY="middle">
+              HUD OVERLAY - ISOLATED SCENE
+            </WebGPUText>
+          }
+        />
       </Hud>
     </>
   )

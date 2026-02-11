@@ -1,4 +1,5 @@
 /* eslint react-hooks/exhaustive-deps: 1 */
+declare const __MEDIAPIPE_TASKS_VISION_VERSION__: string
 import * as React from 'react'
 import { createContext, forwardRef, ReactNode, useContext, useEffect, useImperativeHandle } from 'react'
 import type { FaceLandmarker as FaceLandmarkerImpl, FaceLandmarkerOptions } from '@mediapipe/tasks-vision'
@@ -13,7 +14,7 @@ export type FaceLandmarkerProps = {
 }
 
 export const FaceLandmarkerDefaults = {
-  basePath: 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.17/wasm',
+  basePath: `https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${__MEDIAPIPE_TASKS_VISION_VERSION__}/wasm`,
   options: {
     baseOptions: {
       modelAssetPath:

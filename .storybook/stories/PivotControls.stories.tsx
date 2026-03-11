@@ -41,3 +41,15 @@ export const UsePivotSceneSt = {
   render: (args) => <UsePivotScene {...args} />,
   name: 'Default',
 } satisfies Story
+
+export const DisabledControls = {
+  args: {
+    depthTest: false,
+    scale: 0.75,
+    disableRotations: [true, false, true],
+    disableSliders: true,
+    disableScaling: false,
+  },
+  render: (args) => <UsePivotScene {...args} />,
+  name: 'Disabled controls',
+} satisfies Story

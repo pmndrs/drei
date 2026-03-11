@@ -35,14 +35,14 @@ type PivotControlsProps = {
   autoTransform?: boolean
   /** Allows you to switch individual axes off */
   activeAxes?: [boolean, boolean, boolean]
-  /** Allows you to disable translation via axes arrows */
-  disableAxes?: boolean
-  /** Allows you to disable translation via axes planes */
-  disableSliders?: boolean
-  /** Allows you to disable rotation */
-  disableRotations?: boolean
-  /** Allows you to disable scaling */
-  disableScaling?: boolean
+  /** Allows you to disable translation via axes arrows either for all axes or for individual ones */
+  disableAxes?: boolean | [boolean, boolean, boolean]
+  /** Allows you to disable translation via axes planes either for all axes or for individual ones */
+  disableSliders?: boolean | [boolean, boolean, boolean]
+  /** Allows you to disable rotation either for all axes or for individual ones */
+  disableRotations?: boolean | [boolean, boolean, boolean]
+  /** Allows you to disable scaling either for all axes or for individual ones */
+  disableScaling?: boolean | [boolean, boolean, boolean]
   /** RGB colors */
   axisColors?: [string | number, string | number, string | number]
   /** Color of the hovered item */
@@ -84,4 +84,6 @@ return (
     matrix={matrix}
     autoTransform={false}
     onDrag={({ matrix: matrix_ }) => matrix.copy(matrix_)}
+  />
+)
 ```

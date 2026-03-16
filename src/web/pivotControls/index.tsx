@@ -266,8 +266,8 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
       ? disableRotations
       : [disableRotations, disableRotations, disableRotations]
     const disableScalingFinal = Array.isArray(disableScaling)
-      ? [disableScaling, disableScaling, disableScaling]
-      : disableScaling
+      ? disableScaling
+      : [disableScaling, disableScaling, disableScaling]
 
     return (
       <context.Provider value={config}>

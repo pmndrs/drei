@@ -279,22 +279,23 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
                   {!disableAxesFinal[0] && activeAxes[0] && <AxisArrow axis={0} direction={xDir} />}
                   {!disableAxesFinal[1] && activeAxes[1] && <AxisArrow axis={1} direction={yDir} />}
                   {!disableAxesFinal[2] && activeAxes[2] && <AxisArrow axis={2} direction={zDir} />}
-                  {!disableSlidersFinal[0] && activeAxes[0] && activeAxes[1] && (
+                  {!disableSlidersFinal[2] && activeAxes[0] && activeAxes[1] && (
                     <PlaneSlider axis={2} dir1={xDir} dir2={yDir} />
                   )}
                   {!disableSlidersFinal[1] && activeAxes[0] && activeAxes[2] && (
                     <PlaneSlider axis={1} dir1={zDir} dir2={xDir} />
                   )}
-                  {!disableSlidersFinal[2] && activeAxes[2] && activeAxes[1] && (
+                  {!disableSlidersFinal[0] && activeAxes[2] && activeAxes[1] && (
                     <PlaneSlider axis={0} dir1={yDir} dir2={zDir} />
                   )}
-                  {!disableRotationsFinal[0] && activeAxes[0] && activeAxes[1] && (
+
+                  {!disableRotationsFinal[2] && activeAxes[0] && activeAxes[1] && (
                     <AxisRotator axis={2} dir1={xDir} dir2={yDir} />
                   )}
                   {!disableRotationsFinal[1] && activeAxes[0] && activeAxes[2] && (
                     <AxisRotator axis={1} dir1={zDir} dir2={xDir} />
                   )}
-                  {!disableRotationsFinal[2] && activeAxes[2] && activeAxes[1] && (
+                  {!disableRotationsFinal[0] && activeAxes[2] && activeAxes[1] && (
                     <AxisRotator axis={0} dir1={yDir} dir2={zDir} />
                   )}
                   {!disableScalingFinal[0] && activeAxes[0] && <ScalingSphere axis={0} direction={xDir} />}

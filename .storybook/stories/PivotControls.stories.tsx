@@ -48,7 +48,7 @@ export const DisabledControls = {
     scale: 0.75,
     disableRotations: [true, false, true],
     disableSliders: true,
-    disableScaling: false,
+    disableScaling: [false, false, true],
   },
   render: (args) => <UsePivotScene {...args} />,
   name: 'Disabled controls',

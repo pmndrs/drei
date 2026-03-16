@@ -61,11 +61,11 @@ export type PivotControlsProps = {
   /** Allows you to switch individual axes off */
   activeAxes?: [boolean, boolean, boolean]
 
-  /** Allows you to switch individual transformations off */
-  disableAxes?: boolean
-  disableSliders?: boolean
-  disableRotations?: boolean
-  disableScaling?: boolean
+  /** Allows you to switch individual transformations off. Either across all axes, or individually. */
+  disableAxes?: boolean | [boolean, boolean, boolean]
+  disableSliders?: boolean | [boolean, boolean, boolean]
+  disableRotations?: boolean | [boolean, boolean, boolean]
+  disableScaling?: boolean | [boolean, boolean, boolean]
 
   /** Limits */
   translationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
@@ -341,6 +341,17 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
 
     React.useImperativeHandle(fRef, () => ref.current, [])
 
+    const disableAxesFinal = Array.isArray(disableAxes) ? disableAxes : [disableAxes, disableAxes, disableAxes]
+    const disableSlidersFinal = Array.isArray(disableSliders)
+      ? disableSliders
+      : [disableSliders, disableSliders, disableSliders]
+    const disableRotationsFinal = Array.isArray(disableRotations)
+      ? disableRotations
+      : [disableRotations, disableRotations, disableRotations]
+    const disableScalingFinal = Array.isArray(disableScaling)
+      ? disableScaling
+      : [disableScaling, disableScaling, disableScaling]
+
     return (
       <context.Provider value={config}>
         <group ref={parentRef}>
@@ -348,30 +359,31 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
             <group visible={visible} ref={gizmoRef} position={offset} rotation={rotation}>
               {enabled && (
                 <>
-                  {!disableAxes && activeAxes[0] && <AxisArrow axis={0} direction={xDir} />}
-                  {!disableAxes && activeAxes[1] && <AxisArrow axis={1} direction={yDir} />}
-                  {!disableAxes && activeAxes[2] && <AxisArrow axis={2} direction={zDir} />}
-                  {!disableSliders && activeAxes[0] && activeAxes[1] && (
+                  {!disableAxesFinal[0] && activeAxes[0] && <AxisArrow axis={0} direction={xDir} />}
+                  {!disableAxesFinal[1] && activeAxes[1] && <AxisArrow axis={1} direction={yDir} />}
+                  {!disableAxesFinal[2] && activeAxes[2] && <AxisArrow axis={2} direction={zDir} />}
+                  {!disableSlidersFinal[2] && activeAxes[0] && activeAxes[1] && (
                     <PlaneSlider axis={2} dir1={xDir} dir2={yDir} />
                   )}
-                  {!disableSliders && activeAxes[0] && activeAxes[2] && (
+                  {!disableSlidersFinal[1] && activeAxes[0] && activeAxes[2] && (
                     <PlaneSlider axis={1} dir1={zDir} dir2={xDir} />
                   )}
-                  {!disableSliders && activeAxes[2] && activeAxes[1] && (
+                  {!disableSlidersFinal[0] && activeAxes[2] && activeAxes[1] && (
                     <PlaneSlider axis={0} dir1={yDir} dir2={zDir} />
                   )}
-                  {!disableRotations && activeAxes[0] && activeAxes[1] && (
+
+                  {!disableRotationsFinal[2] && activeAxes[0] && activeAxes[1] && (
                     <AxisRotator axis={2} dir1={xDir} dir2={yDir} />
                   )}
-                  {!disableRotations && activeAxes[0] && activeAxes[2] && (
+                  {!disableRotationsFinal[1] && activeAxes[0] && activeAxes[2] && (
                     <AxisRotator axis={1} dir1={zDir} dir2={xDir} />
                   )}
-                  {!disableRotations && activeAxes[2] && activeAxes[1] && (
+                  {!disableRotationsFinal[0] && activeAxes[2] && activeAxes[1] && (
                     <AxisRotator axis={0} dir1={yDir} dir2={zDir} />
                   )}
-                  {!disableScaling && activeAxes[0] && <ScalingSphere axis={0} direction={xDir} />}
-                  {!disableScaling && activeAxes[1] && <ScalingSphere axis={1} direction={yDir} />}
-                  {!disableScaling && activeAxes[2] && <ScalingSphere axis={2} direction={zDir} />}
+                  {!disableScalingFinal[0] && activeAxes[0] && <ScalingSphere axis={0} direction={xDir} />}
+                  {!disableScalingFinal[1] && activeAxes[1] && <ScalingSphere axis={1} direction={yDir} />}
+                  {!disableScalingFinal[2] && activeAxes[2] && <ScalingSphere axis={2} direction={zDir} />}
                 </>
               )}
             </group>

@@ -341,14 +341,17 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
 
     React.useImperativeHandle(fRef, () => ref.current, [])
 
-    const disableAxesFinal = Array.isArray(disableAxes) ? disableAxes : [disableAxes, disableAxes, disableAxes]
-    const disableSlidersFinal = Array.isArray(disableSliders)
+    const disableTranslationAxes = Array.isArray(disableAxes) ? disableAxes : [disableAxes, disableAxes, disableAxes]
+
+    const disablePlaneSliderAxes = Array.isArray(disableSliders)
       ? disableSliders
       : [disableSliders, disableSliders, disableSliders]
-    const disableRotationsFinal = Array.isArray(disableRotations)
+
+    const disableRotationAxes = Array.isArray(disableRotations)
       ? disableRotations
       : [disableRotations, disableRotations, disableRotations]
-    const disableScalingFinal = Array.isArray(disableScaling)
+
+    const disableScalingAxes = Array.isArray(disableScaling)
       ? disableScaling
       : [disableScaling, disableScaling, disableScaling]
 
@@ -359,31 +362,31 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
             <group visible={visible} ref={gizmoRef} position={offset} rotation={rotation}>
               {enabled && (
                 <>
-                  {!disableAxesFinal[0] && activeAxes[0] && <AxisArrow axis={0} direction={xDir} />}
-                  {!disableAxesFinal[1] && activeAxes[1] && <AxisArrow axis={1} direction={yDir} />}
-                  {!disableAxesFinal[2] && activeAxes[2] && <AxisArrow axis={2} direction={zDir} />}
-                  {!disableSlidersFinal[2] && activeAxes[0] && activeAxes[1] && (
+                  {!disableTranslationAxes[0] && activeAxes[0] && <AxisArrow axis={0} direction={xDir} />}
+                  {!disableTranslationAxes[1] && activeAxes[1] && <AxisArrow axis={1} direction={yDir} />}
+                  {!disableTranslationAxes[2] && activeAxes[2] && <AxisArrow axis={2} direction={zDir} />}
+                  {!disablePlaneSliderAxes[2] && activeAxes[0] && activeAxes[1] && (
                     <PlaneSlider axis={2} dir1={xDir} dir2={yDir} />
                   )}
-                  {!disableSlidersFinal[1] && activeAxes[0] && activeAxes[2] && (
+                  {!disablePlaneSliderAxes[1] && activeAxes[0] && activeAxes[2] && (
                     <PlaneSlider axis={1} dir1={zDir} dir2={xDir} />
                   )}
-                  {!disableSlidersFinal[0] && activeAxes[2] && activeAxes[1] && (
+                  {!disablePlaneSliderAxes[0] && activeAxes[2] && activeAxes[1] && (
                     <PlaneSlider axis={0} dir1={yDir} dir2={zDir} />
                   )}
 
-                  {!disableRotationsFinal[2] && activeAxes[0] && activeAxes[1] && (
+                  {!disableRotationAxes[2] && activeAxes[0] && activeAxes[1] && (
                     <AxisRotator axis={2} dir1={xDir} dir2={yDir} />
                   )}
-                  {!disableRotationsFinal[1] && activeAxes[0] && activeAxes[2] && (
+                  {!disableRotationAxes[1] && activeAxes[0] && activeAxes[2] && (
                     <AxisRotator axis={1} dir1={zDir} dir2={xDir} />
                   )}
-                  {!disableRotationsFinal[0] && activeAxes[2] && activeAxes[1] && (
+                  {!disableRotationAxes[0] && activeAxes[2] && activeAxes[1] && (
                     <AxisRotator axis={0} dir1={yDir} dir2={zDir} />
                   )}
-                  {!disableScalingFinal[0] && activeAxes[0] && <ScalingSphere axis={0} direction={xDir} />}
-                  {!disableScalingFinal[1] && activeAxes[1] && <ScalingSphere axis={1} direction={yDir} />}
-                  {!disableScalingFinal[2] && activeAxes[2] && <ScalingSphere axis={2} direction={zDir} />}
+                  {!disableScalingAxes[0] && activeAxes[0] && <ScalingSphere axis={0} direction={xDir} />}
+                  {!disableScalingAxes[1] && activeAxes[1] && <ScalingSphere axis={1} direction={yDir} />}
+                  {!disableScalingAxes[2] && activeAxes[2] && <ScalingSphere axis={2} direction={zDir} />}
                 </>
               )}
             </group>

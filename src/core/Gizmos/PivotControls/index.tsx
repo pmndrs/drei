@@ -275,6 +275,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
         hoveredColor,
         opacity,
         scale,
+        rotation,
         lineWidth,
         fixed,
         depthTest,

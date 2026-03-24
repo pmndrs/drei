@@ -3,6 +3,7 @@ import * as THREE from '#three'
 import { ThreeEvent, useThree } from '@react-three/fiber'
 import { Html } from '../../UI/Html'
 import { context } from './context'
+import { useHideCollapsedInputControls } from '@core/Gizmos/PivotControls/useHideCollapsedInputControls'
 
 const clickDir = /* @__PURE__ */ new THREE.Vector3()
 const intersectionDir = /* @__PURE__ */ new THREE.Vector3()
@@ -71,6 +72,7 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
     scale,
     lineWidth,
     fixed,
+    rotation,
     axisColors,
     hoveredColor,
     renderOrder,
@@ -98,6 +100,8 @@ export const AxisRotator: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
     plane: THREE.Plane
   } | null>(null)
   const [isHovered, setIsHovered] = React.useState(false)
+
+  useHideCollapsedInputControls({ objRef, dir1, dir2, rotation })
 
   const onPointerDown = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {

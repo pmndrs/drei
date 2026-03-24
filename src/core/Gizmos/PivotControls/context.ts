@@ -30,6 +30,7 @@ export type PivotContext = {
   dragState: React.RefObject<OnDragStartProps | null>
   translation: { current: [number, number, number] }
   translationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
+  rotation: [number, number, number]
   rotationLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
   scaleLimits?: [[number, number] | undefined, [number, number] | undefined, [number, number] | undefined]
   axisColors: [string | number, string | number, string | number]

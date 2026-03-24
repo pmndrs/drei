@@ -3,6 +3,7 @@ import * as THREE from '#three'
 import { ThreeEvent, useThree } from '@react-three/fiber'
 import { Html } from '../../UI/Html'
 import { context } from './context'
+import { useHideCollapsedInputControls } from '@core/Gizmos/PivotControls/useHideCollapsedInputControls'
 
 const decomposeIntoBasis = (e1: THREE.Vector3, e2: THREE.Vector3, offset: THREE.Vector3) => {
   const i1 =
@@ -46,6 +47,7 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
     fixed,
     axisColors,
     hoveredColor,
+    rotation,
     opacity,
     renderOrder,
     onDragStart,
@@ -69,6 +71,8 @@ export const PlaneSlider: React.FC<{ dir1: THREE.Vector3; dir2: THREE.Vector3; a
   const offsetX0 = React.useRef<number>(0)
   const offsetY0 = React.useRef<number>(0)
   const [isHovered, setIsHovered] = React.useState(false)
+
+  useHideCollapsedInputControls({ objRef, dir1, dir2, rotation })
 
   const onPointerDown = React.useCallback(
     (e: ThreeEvent<PointerEvent>) => {

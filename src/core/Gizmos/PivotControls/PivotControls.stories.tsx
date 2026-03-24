@@ -4,7 +4,7 @@ import { Vector3 } from 'three'
 import { useThree } from '@react-three/fiber'
 
 import { Setup } from '@sb/Setup'
-import { PivotControls, Box, Html } from 'drei'
+import { PivotControls, Box, Html, OrthographicCamera } from 'drei'
 import { Meta, StoryObj } from '@storybook/react-vite'
 import type { OnHoverProps } from './context'
 
@@ -54,6 +54,7 @@ export const UsePivotSceneSt = {
     depthTest: false,
     anchor: [-1, -1, -1],
     scale: 0.75,
+    rotation: [0, 0, 0],
   },
   render: (args) => <UsePivotScene {...args} />,
   name: 'Default',
@@ -140,4 +141,29 @@ function OnHoverScene() {
 export const OnHoverSt = {
   render: () => <OnHoverScene />,
   name: 'OnHover',
+} satisfies Story
+
+function OrthographicCameraScene(props: React.ComponentProps<typeof PivotControls>) {
+  const LineComponent = useLineComponent()
+
+  return (
+    <>
+      <OrthographicCamera makeDefault position={[0, 20, 0]} zoom={50}></OrthographicCamera>
+      <PivotControls {...props} LineComponent={LineComponent}>
+        <Box>
+          <meshStandardMaterial />
+        </Box>
+      </PivotControls>
+      <directionalLight position={[10, 10, 5]} />
+    </>
+  )
+}
+
+export const OrthographicCameraSt = {
+  args: {
+    depthTest: false,
+    rotation: [0, 0, 0],
+  },
+  render: (args) => <OrthographicCameraScene {...args} />,
+  name: 'Orthographic Camera',
 } satisfies Story

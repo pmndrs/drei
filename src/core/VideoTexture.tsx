@@ -3,7 +3,7 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 import { useThree } from '@react-three/fiber'
-import { suspend } from 'suspend-react'
+import { suspend, clear } from 'suspend-react'
 import { type default as Hls, Events } from 'hls.js'
 
 const IS_BROWSER = /* @__PURE__ */ (() =>
@@ -99,12 +99,20 @@ export function useVideoTexture(
     start && texture.image.play()
 
     return () => {
+      const video = texture.image as HTMLVideoElement
+      video.pause()
+      video.removeAttribute('src')
+      video.load()
+
       if (hlsRef.current) {
         hlsRef.current.destroy()
         hlsRef.current = null
       }
+
+      texture.dispose()
+      clear([srcOrSrcObject])
     }
-  }, [texture, start])
+  }, [texture, start, srcOrSrcObject])
 
   return texture
 }

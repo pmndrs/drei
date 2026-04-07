@@ -98,10 +98,14 @@ export function useVideoTexture(
   useEffect(() => {
     start && texture.image.play()
 
+    // NOTE: This cleanup assumes a single consumer per srcOrSrcObject. If multiple
+    // components share the same source, the first to unmount will release the video
+    // and evict the cache, leaving others with a dead texture.
     return () => {
       const video = texture.image as HTMLVideoElement
       video.pause()
       video.removeAttribute('src')
+      video.srcObject = null
       video.load()
 
       if (hlsRef.current) {
@@ -132,10 +136,6 @@ export type VideoTextureProps = {
 export const VideoTexture = /* @__PURE__ */ forwardRef<VideoTexture, VideoTextureProps>(
   ({ children, src, ...config }, fref) => {
     const texture = useVideoTexture(src, config)
-
-    useEffect(() => {
-      return () => void texture.dispose()
-    }, [texture])
 
     useImperativeHandle(fref, () => texture, [texture]) // expose texture through ref
 

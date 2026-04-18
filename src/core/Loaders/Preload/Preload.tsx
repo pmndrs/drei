@@ -1,10 +1,10 @@
-import { type Camera, type Object3D, type Scene } from '#three'
+import { type Camera, type Object3D } from '#three'
 import { useThree } from '@react-three/fiber'
 import { useLayoutEffect, useRef } from 'react'
 
 export type PreloadProps = {
   all?: boolean
-  scene?: Scene
+  scene?: Object3D
   camera?: Camera
   onDone?: () => void
 }

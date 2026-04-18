@@ -1,51 +1,74 @@
-import { Object3D, Camera, WebGLCubeRenderTarget, CubeCamera, Scene } from '#three'
-import * as React from 'react'
+import { type Camera, type Object3D, type Scene } from '#three'
 import { useThree } from '@react-three/fiber'
+import { useLayoutEffect, useRef } from 'react'
 
 export type PreloadProps = {
   all?: boolean
-  scene?: Object3D
+  scene?: Scene
   camera?: Camera
+  onDone?: () => void
 }
 
 /**
  * Pre-compiles shaders to avoid jank on first render.
  * Place at the end of your scene.
  *
- * @example Basic usage
+ * @example
  * ```jsx
- * <Canvas>
+ * const [ready, setReady] = useState(false)
+ *
+ * <Canvas style={{ opacity: ready ? 1 : 0 }}>
  *   <Scene />
- *   <Preload all />
+ *   <Preload all onDone={() => setReady(true)} />
  * </Canvas>
  * ```
  */
-export function Preload({ all, scene, camera }: PreloadProps) {
-  const gl = useThree(({ gl }) => gl)
-  const dCamera = useThree(({ camera }) => camera)
-  const dScene = useThree(({ scene }) => scene)
+
+export function Preload({ all, scene, camera, onDone }: PreloadProps) {
+  const renderer = useThree((state) => state.renderer)
+  const defaultCamera = useThree((state) => state.camera)
+  const defaultScene = useThree((state) => state.scene)
+
+  // Ref to store the original visibility and frustumCulled state of objects to restore later
+  const snapshotRef = useRef(new Map<Object3D, { visible: boolean; frustumCulled: boolean }>())
 
   // Layout effect because it must run before React commits
-  React.useLayoutEffect(() => {
-    const invisible: Object3D[] = []
-    if (all) {
-      // Find all invisible objects, store and then flip them
-      ;(scene || dScene).traverse((object) => {
-        if (object.visible === false) {
-          invisible.push(object)
+  useLayoutEffect(() => {
+    // Guard against double invocation in React StrictMode
+    if (snapshotRef.current.size > 0) return
+
+    const onPreload = async () => {
+      const targetScene = scene ?? defaultScene
+      const targetCamera = camera ?? defaultCamera
+
+      if (all) {
+        // Find all invisible objects, store and then flip them
+        targetScene.traverse((object) => {
+          snapshotRef.current.set(object, {
+            visible: object.visible,
+            frustumCulled: object.frustumCulled,
+          })
+
           object.visible = true
-        }
+          object.frustumCulled = false
+        })
+      }
+
+      // Now compile the scene
+      await renderer.compileAsync(targetScene, targetCamera)
+
+      // Flips these objects back
+      snapshotRef.current.forEach((state, object) => {
+        object.visible = state.visible
+        object.frustumCulled = state.frustumCulled
       })
+
+      // Fire the onDone callback if provided
+      onDone?.()
     }
-    // Now compile the scene
-    gl.compile(scene || dScene, camera || dCamera)
-    // And for good measure, hit it with a cube camera
-    const cubeRenderTarget = new WebGLCubeRenderTarget(128)
-    const cubeCamera = new CubeCamera(0.01, 100000, cubeRenderTarget)
-    cubeCamera.update(gl, (scene || dScene) as Scene)
-    cubeRenderTarget.dispose()
-    // Flips these objects back
-    invisible.forEach((object) => (object.visible = false))
+
+    onPreload()
   }, [])
+
   return null
 }

@@ -21,6 +21,8 @@ export type SelectProps = Omit<ThreeElements['group'], 'ref'> & {
   onChangePointerUp?: (selected: THREE.Object3D[]) => void
   /** Optional filter for filtering the selection */
   filter?: (selected: THREE.Object3D[]) => THREE.Object3D[]
+  /** Predicate deciding whether a pointerdown should start a box selection. Default: shift key held. */
+  boxSelectActivator?: (event: PointerEvent) => boolean
 }
 
 /**
@@ -48,6 +50,7 @@ export function Select({
   border = '1px solid #55aaff',
   backgroundColor = 'rgba(75, 160, 255, 0.1)',
   filter: customFilter = (item) => item,
+  boxSelectActivator = (event: PointerEvent) => event.shiftKey,
   ...props
 }: SelectProps) {
   const [downed, down] = React.useState(false)
@@ -76,6 +79,8 @@ export function Select({
   const onPointerMissed = React.useCallback((e) => !hovered && dispatch({}), [hovered])
 
   const ref = React.useRef<THREE.Group>(null!)
+  const boxSelectActivatorRef = React.useRef(boxSelectActivator)
+  boxSelectActivatorRef.current = boxSelectActivator
   React.useEffect(() => {
     if (!box || !multiple) return
 
@@ -146,7 +151,7 @@ export function Select({
     }
 
     function pointerDown(event) {
-      if (event.shiftKey) {
+      if (boxSelectActivatorRef.current(event)) {
         onSelectStart(event)
         prepareRay(event, selBox.startPoint)
       }

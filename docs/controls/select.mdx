@@ -20,3 +20,13 @@ function Foo() {
   const selected = useSelect()
 }
 ```
+
+### Customising the box-select trigger
+
+By default, box selection starts when the shift key is held. Pass `boxSelectActivator` to opt into any other interaction, such as left mouse button only:
+
+```jsx
+<Select box multiple boxSelectActivator={(event) => event.button === 0}>
+  ...
+</Select>
+```

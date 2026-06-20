@@ -11,6 +11,10 @@ import {
   Environment,
   OrbitControls,
   Center,
+  Mask,
+  useMask,
+  PivotControls,
+  Float,
 } from '../../src'
 
 export default {
@@ -18,7 +22,7 @@ export default {
   component: MeshTransmissionMaterial,
   decorators: [
     (Story) => (
-      <Setup cameraFov={25} cameraPosition={new THREE.Vector3(15, 0, 15)}>
+      <Setup cameraFov={25} cameraPosition={new THREE.Vector3(15, 0, 15)} gl={{ stencil: true }}>
         <Story />
       </Setup>
     ),
@@ -53,6 +57,28 @@ function GelatinousCube(props: React.ComponentProps<typeof MeshTransmissionMater
   )
 }
 
+function Frame(props: React.ComponentProps<'mesh'>) {
+  return (
+    <mesh {...props}>
+      <ringGeometry args={[0.785, 0.85, 64]} />
+      <meshPhongMaterial color="black" />
+    </mesh>
+  )
+}
+
+function CircularMask(props: React.ComponentProps<'group'>) {
+  return (
+    <group {...props}>
+      <PivotControls offset={[0, 0, 1]} activeAxes={[true, true, false]} disableRotations depthTest={false}>
+        <Frame position={[0, 0, 1]} />
+        <Mask id={1} position={[0, 0, 0.95]}>
+          <circleGeometry args={[0.8, 64]} />
+        </Mask>
+      </PivotControls>
+    </group>
+  )
+}
+
 function MeshTransmissionMaterialScene(props: React.ComponentProps<typeof MeshTransmissionMaterial>) {
   return (
     <>
@@ -74,6 +100,70 @@ function MeshTransmissionMaterialScene(props: React.ComponentProps<typeof MeshTr
         </AccumulativeShadows>
       </group>
       <OrbitControls minPolarAngle={0} maxPolarAngle={Math.PI / 2} autoRotate autoRotateSpeed={0.05} makeDefault />
+      <Environment
+        files="https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/dancing_hall_1k.hdr"
+        background
+        blur={1}
+      />
+    </>
+  )
+}
+
+function EmptyGelatinousCube(props: React.ComponentProps<typeof MeshTransmissionMaterial>) {
+  const { nodes, materials } = useGLTF('/gelatinous_cube.glb') as any
+
+  return (
+    <group dispose={null}>
+      <mesh geometry={nodes.cube1.geometry} position={[-0.56, 0.38, -0.11]}>
+        <MeshTransmissionMaterial {...props} />
+      </mesh>
+      <mesh
+        castShadow
+        renderOrder={-100}
+        geometry={nodes.cube2.geometry}
+        material={materials.cube_mat}
+        material-side={THREE.FrontSide}
+        position={[-0.56, 0.38, -0.11]}
+      />
+    </group>
+  )
+}
+
+function Box(props: React.ComponentProps<'mesh'>) {
+  const stencil = useMask(1)
+
+  return (
+    <Float>
+      <mesh {...props}>
+        <boxGeometry />
+        <meshStandardMaterial castShadow receiveShadow color="mediumpurple" {...stencil} />
+      </mesh>
+    </Float>
+  )
+}
+
+function MeshTransmissionMaterialWithStencilScene(props: React.ComponentProps<typeof MeshTransmissionMaterial>) {
+  return (
+    <>
+      <ambientLight intensity={Math.PI} />
+      <group position={[0, -2.5, 0]}>
+        <Center top>
+          <CircularMask position={[5, 3, 5]} rotation-y={Math.PI / 4} />
+          <EmptyGelatinousCube {...props} />
+          <Box position={[0, 3, 0]} scale={2} />
+        </Center>
+        <AccumulativeShadows
+          temporal
+          frames={100}
+          alphaTest={0.9}
+          color="#3ead5d"
+          colorBlend={1}
+          opacity={0.8}
+          scale={20}
+        >
+          <RandomizedLight radius={10} ambient={0.5} intensity={1 * Math.PI} position={[2.5, 8, -2.5]} bias={0.001} />
+        </AccumulativeShadows>
+      </group>
       <Environment
         files="https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/dancing_hall_1k.hdr"
         background
@@ -105,4 +195,29 @@ export const MeshTransmissionMaterialSt = {
   },
   render: (args) => <MeshTransmissionMaterialScene {...args} />,
   name: 'Default',
+} satisfies Story
+
+export const MeshTransmissionMaterialStencil = {
+  args: {
+    background: new THREE.Color('#839681'),
+    backside: false,
+    samples: 10,
+    resolution: 2048,
+    transmission: 1,
+    roughness: 0,
+    thickness: 0,
+    ior: 1.5,
+    chromaticAberration: 0.06,
+    anisotropy: 0.1,
+    distortion: 0.0,
+    distortionScale: 0.3,
+    temporalDistortion: 0.5,
+    clearcoat: 1,
+    attenuationDistance: 0.5,
+    attenuationColor: '#ffffff',
+    color: '#c9ffa1',
+    stencilBuffer: true,
+  },
+  render: (args) => <MeshTransmissionMaterialWithStencilScene {...args} />,
+  name: 'Stencil buffer',
 } satisfies Story

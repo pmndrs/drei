@@ -60,6 +60,7 @@ export type MeshTransmissionMaterialProps = Omit<MeshTransmissionMaterialType, '
   samples?: number
   /** Buffer scene background (can be a texture, a cubetexture or a color), default: null */
   background?: THREE.Texture | THREE.Color
+  /** Whether the render targets should have a stencil buffer, default: false */
   stencilBuffer?: boolean
 }
 
@@ -407,20 +408,9 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
     const ref = React.useRef<ThreeElements['meshTransmissionMaterial']>(null!)
     const [discardMaterial] = React.useState(() => new DiscardMaterial())
 
-    const stencilSettings = { stencilBuffer }
-    const backsideRes = backsideResolution || resolution
-
-    const fboBack = useFBO(
-      typeof backsideRes === 'number' ? backsideRes : { stencilBuffer },
-      typeof backsideRes === 'number' ? backsideRes : undefined,
-      { stencilBuffer }
-    )
-
-    const fboMain = useFBO(
-      typeof resolution === 'number' ? resolution : stencilSettings,
-      typeof resolution === 'number' ? resolution : undefined,
-      stencilSettings
-    )
+    const fboSettings = { stencilBuffer }
+    const fboBack = useFBO(backsideResolution || resolution || fboSettings, undefined, fboSettings)
+    const fboMain = useFBO(resolution || fboSettings, undefined, fboSettings)
 
     let oldBg
     let oldEnvMapIntensity

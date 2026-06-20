@@ -57,7 +57,7 @@ function GelatinousCube(props: React.ComponentProps<typeof MeshTransmissionMater
   )
 }
 
-function Frame(props) {
+function Frame(props: React.ComponentProps<'mesh'>) {
   return (
     <mesh {...props}>
       <ringGeometry args={[0.785, 0.85, 64]} />
@@ -66,7 +66,7 @@ function Frame(props) {
   )
 }
 
-function CircularMask(props) {
+function CircularMask(props: React.ComponentProps<'group'>) {
   return (
     <group {...props}>
       <PivotControls offset={[0, 0, 1]} activeAxes={[true, true, false]} disableRotations depthTest={false}>
@@ -109,7 +109,7 @@ function MeshTransmissionMaterialScene(props: React.ComponentProps<typeof MeshTr
   )
 }
 
-function EmptyGelatinousCube(props) {
+function EmptyGelatinousCube(props: React.ComponentProps<typeof MeshTransmissionMaterial>) {
   const { nodes, materials } = useGLTF('/gelatinous_cube.glb') as any
 
   return (
@@ -129,7 +129,7 @@ function EmptyGelatinousCube(props) {
   )
 }
 
-function Box(props) {
+function Box(props: React.ComponentProps<'mesh'>) {
   const stencil = useMask(1)
 
   return (

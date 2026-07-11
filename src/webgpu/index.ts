@@ -8,9 +8,10 @@
 export * from '../core'
 
 //* WebGPU-specific implementations (override core where applicable) ==============================
+export * from './Effects'
 export * from './Geometry'
 export * from './Materials'
-export * from './UI'
+export * from './Performance'
 export * from './Staging'
-export * from './Effects'
 export * from './Textures'
+export * from './UI'

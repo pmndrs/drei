@@ -1186,6 +1186,19 @@ export const components: DreiComponent[] = [
     notes: '',
     rendererSupport: 'universal',
   },
+  {
+    name: 'Inspector',
+    category: 'Performance',
+    title: 'Three.js Inspector',
+    description: 'Inspector bundled with Three.js for debugging.',
+    path: '/core/performance/inspector',
+    structure: 3,
+    imports: 3,
+    types: 3,
+    tests: 1,
+    notes: 'Example created',
+    rendererSupport: 'webgpu-only',
+  },
 
   //* Portal ==============================
   {

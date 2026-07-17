@@ -38,7 +38,6 @@ export const StatsGl: ForwardRefComponent<StatsGlProps, HTMLDivElement> = /* @__
         })
         if (id) stats.domElement.id = id
         if (clearStatsGlStyle) stats.domElement.removeAttribute('style')
-        stats.domElement.removeAttribute('style')
         const classNames = (className ?? '').split(' ').filter((cls) => cls)
         if (classNames.length) stats.domElement.classList.add(...classNames)
         const end = addAfterEffect(() => stats.update())

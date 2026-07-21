@@ -42,6 +42,29 @@ export const TrackballControls: ForwardRefComponent<TrackballControlsProps, Trac
       }, [explDomElement, regress, controls, invalidate])
 
       React.useEffect(() => {
+        // TrackballControls applies pointer deltas only inside update(), which
+        // runs in useFrame — under frameloop="demand" no frame is scheduled, so
+        // the change → invalidate chain can never start itself (change is only
+        // dispatched from update()). Kick the loop while the user interacts;
+        // damping then self-sustains through the change listener above.
+        let active = false
+        const onStart = () => {
+          active = true
+          invalidate()
+        }
+        const onEnd = () => (active = false)
+        const onMove = () => active && invalidate()
+        controls.addEventListener('start', onStart)
+        controls.addEventListener('end', onEnd)
+        explDomElement.addEventListener('pointermove', onMove, { passive: true })
+        return () => {
+          controls.removeEventListener('start', onStart)
+          controls.removeEventListener('end', onEnd)
+          explDomElement.removeEventListener('pointermove', onMove)
+        }
+      }, [explDomElement, controls, invalidate])
+
+      React.useEffect(() => {
         const callback = (e: THREE.Event) => {
           invalidate()
           if (regress) performance.regress()

@@ -437,7 +437,9 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
             parent.material = ref.current
             parent.material.buffer = fboBack.texture
             parent.material.thickness = backsideThickness
+            // Side is part of three's program cache key, so select the cached BackSide variant
             parent.material.side = THREE.BackSide
+            parent.material.needsUpdate = true
             parent.material.envMapIntensity = backsideEnvMapIntensity
           }
 
@@ -448,6 +450,8 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
           parent.material = ref.current
           parent.material.thickness = thickness
           parent.material.side = side
+          // The backside pass selected another program, so restore the configured variant
+          if (backside && side !== THREE.BackSide) parent.material.needsUpdate = true
           parent.material.buffer = fboMain.texture
           parent.material.envMapIntensity = oldEnvMapIntensity
 

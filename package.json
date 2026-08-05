@@ -118,7 +118,7 @@
     "rollup-plugin-multi-input": "^1.5.0",
     "rollup-plugin-terser": "^7.0.2",
     "seedrandom": "^3.0.5",
-    "semantic-release": "^24.2.0",
+    "semantic-release": "^25.0.9",
     "serve": "^14.2.4",
     "storybook": "^10.1.11",
     "three": "^0.159.0",

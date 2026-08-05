@@ -9,7 +9,6 @@ import * as React from 'react'
 import { extend, Instance, ThreeElements, useFrame } from '@react-three/fiber'
 import { useFBO } from './Fbo'
 import { DiscardMaterial } from '../materials/DiscardMaterial'
-import { isObjectInCameraView } from '../helpers/isObjectInCameraView'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type MeshTransmissionMaterialType = Omit<
@@ -439,12 +438,9 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
       // Render only if the buffer matches the built-in and no transmission sampler is set
       if (material.uniforms.buffer.value === fboMain.texture && !transmissionSampler) {
         parent = material.__r3f?.parent?.object as THREE.Mesh | undefined
-        if (
-          parent &&
-          material.visible &&
-          material.uniforms._transmission.value !== 0 &&
-          isObjectInCameraView(parent, state.camera)
-        ) {
+        // The buffers cannot be observed while the material is invisible or has zero
+        // transmission, so the extra render passes can be skipped
+        if (parent && material.visible && material.uniforms._transmission.value !== 0) {
           // Save defaults
           oldTone = state.gl.toneMapping
           oldBg = state.scene.background

@@ -404,8 +404,9 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
 
     const ref = React.useRef<ThreeElements['meshTransmissionMaterial']>(null!)
     const [discardMaterial] = React.useState(() => new DiscardMaterial())
-    const fboBack = useFBO(backsideResolution || resolution)
-    const fboMain = useFBO(resolution)
+    const backsideSize = backsideResolution ?? resolution
+    const fboBack = useFBO(backsideSize, backsideSize)
+    const fboMain = useFBO(resolution, resolution)
 
     let oldBg
     let oldEnvMapIntensity

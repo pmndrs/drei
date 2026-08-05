@@ -6,9 +6,10 @@
 
 import * as THREE from 'three'
 import * as React from 'react'
-import { extend, ThreeElements, useFrame } from '@react-three/fiber'
+import { extend, Instance, ThreeElements, useFrame } from '@react-three/fiber'
 import { useFBO } from './Fbo'
 import { DiscardMaterial } from '../materials/DiscardMaterial'
+import { isObjectInCameraView } from '../helpers/isObjectInCameraView'
 import { ForwardRefComponent } from '../helpers/ts-utils'
 
 type MeshTransmissionMaterialType = Omit<
@@ -37,6 +38,8 @@ type MeshTransmissionMaterialType = Omit<
   buffer?: THREE.Texture
   /** Internals */
   time?: number
+  /** Internals */
+  _transmission?: number
   /** Internals */
   args?: [samples: number, transmissionSampler: boolean]
 }
@@ -97,6 +100,9 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
     buffer: Uniform<THREE.Texture | null>
   }
 
+  /** Set by the R3F reconciler */
+  __r3f?: Instance
+
   constructor(samples = 6, transmissionSampler = false) {
     super()
 
@@ -129,7 +135,7 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
 
       // Fix for r153-r156 anisotropy chunks
       // https://github.com/mrdoob/three.js/pull/26716
-      if ((this as any).anisotropy > 0) shader.defines.USE_ANISOTROPY = ''
+      if ((this.anisotropy ?? 0) > 0) shader.defines.USE_ANISOTROPY = ''
 
       // If the transmission sampler is active inject a flag
       if (transmissionSampler) shader.defines.USE_SAMPLER = ''
@@ -408,20 +414,27 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
     const fboBack = useFBO(backsideSize, backsideSize)
     const fboMain = useFBO(resolution, resolution)
 
-    let oldBg
-    let oldEnvMapIntensity
-    let oldTone
-    let parent
+    let oldBg: THREE.Scene['background']
+    let oldEnvMapIntensity: number
+    let oldTone: THREE.ToneMapping
+    let parent: THREE.Mesh | undefined
+
     useFrame((state) => {
-      ref.current.time = state.clock.elapsedTime
+      const material = ref.current as unknown as MeshTransmissionMaterialImpl
+      material.uniforms.time.value = state.clock.elapsedTime
       // Render only if the buffer matches the built-in and no transmission sampler is set
-      if (ref.current.buffer === fboMain.texture && !transmissionSampler) {
-        parent = (ref.current as any).__r3f.parent?.object as THREE.Object3D | undefined
-        if (parent) {
+      if (material.uniforms.buffer.value === fboMain.texture && !transmissionSampler) {
+        parent = material.__r3f?.parent?.object as THREE.Mesh | undefined
+        if (
+          parent &&
+          material.visible &&
+          material.uniforms._transmission.value !== 0 &&
+          isObjectInCameraView(parent, state.camera)
+        ) {
           // Save defaults
           oldTone = state.gl.toneMapping
           oldBg = state.scene.background
-          oldEnvMapIntensity = ref.current.envMapIntensity
+          oldEnvMapIntensity = material.envMapIntensity
 
           // Switch off tonemapping lest it double tone maps
           // Save the current background and set the HDR as the new BG
@@ -435,26 +448,26 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
             state.gl.setRenderTarget(fboBack)
             state.gl.render(state.scene, state.camera)
             // And now prepare the material for the main render using the backside buffer
-            parent.material = ref.current
-            parent.material.buffer = fboBack.texture
-            parent.material.thickness = backsideThickness
+            parent.material = material
+            material.uniforms.buffer.value = fboBack.texture
+            material.uniforms.thickness.value = backsideThickness
             // Side is part of three's program cache key, so select the cached BackSide variant
-            parent.material.side = THREE.BackSide
-            parent.material.needsUpdate = true
-            parent.material.envMapIntensity = backsideEnvMapIntensity
+            material.side = THREE.BackSide
+            if (side !== THREE.BackSide) material.needsUpdate = true
+            material.envMapIntensity = backsideEnvMapIntensity
           }
 
           // Render into the main buffer
           state.gl.setRenderTarget(fboMain)
           state.gl.render(state.scene, state.camera)
 
-          parent.material = ref.current
-          parent.material.thickness = thickness
-          parent.material.side = side
+          parent.material = material
+          material.uniforms.thickness.value = thickness
+          material.side = side
           // The backside pass selected another program, so restore the configured variant
-          if (backside && side !== THREE.BackSide) parent.material.needsUpdate = true
-          parent.material.buffer = fboMain.texture
-          parent.material.envMapIntensity = oldEnvMapIntensity
+          if (backside && side !== THREE.BackSide) material.needsUpdate = true
+          material.uniforms.buffer.value = fboMain.texture
+          material.envMapIntensity = oldEnvMapIntensity
 
           // Set old state back
           state.scene.background = oldBg
@@ -471,10 +484,9 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
       <meshTransmissionMaterial
         // Samples must re-compile the shader so we memoize it
         args={[samples, transmissionSampler]}
-        ref={ref as any}
+        ref={ref}
         {...props}
         buffer={buffer || fboMain.texture}
-        // @ts-ignore
         _transmission={transmission}
         // In order for this to not incur extra cost "transmission" must be set to 0 and treated as a reserved prop.
         // This is because THREE.WebGLRenderer will check for transmission > 0 and execute extra renders.

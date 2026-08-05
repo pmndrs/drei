@@ -257,14 +257,10 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
           uniform mat4 modelMatrix;
           uniform mat4 projectionMatrix;
           varying vec3 vWorldPosition;
-          vec3 getVolumeTransmissionRay( const in vec3 n, const in vec3 v, const in float thickness, const in float ior, const in mat4 modelMatrix ) {
+          vec3 getVolumeTransmissionRay( const in vec3 n, const in vec3 v, const in float thickness, const in float ior, const in vec3 modelScale ) {
             // Direction of refracted light.
-            vec3 refractionVector = refract( - v, normalize( n ), 1.0 / ior );
-            // Compute rotation-independant scaling of the model matrix.
-            vec3 modelScale;
-            modelScale.x = length( vec3( modelMatrix[ 0 ].xyz ) );
-            modelScale.y = length( vec3( modelMatrix[ 1 ].xyz ) );
-            modelScale.z = length( vec3( modelMatrix[ 2 ].xyz ) );
+            // n is normalized once when the sample normal is built.
+            vec3 refractionVector = refract( - v, n, 1.0 / ior );
             // The thickness is specified in local space.
             return normalize( refractionVector ) * thickness * modelScale;
           }
@@ -285,22 +281,11 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
               return texture2D(buffer, fragCoord.xy);
             #endif
           }
-          vec3 applyVolumeAttenuation( const in vec3 radiance, const in float transmissionDistance, const in vec3 attenuationColor, const in float attenuationDistance ) {
-            if ( isinf( attenuationDistance ) ) {
-              // Attenuation distance is +∞, i.e. the transmitted color is not attenuated at all.
-              return radiance;
-            } else {
-              // Compute light attenuation using Beer's law.
-              vec3 attenuationCoefficient = -log( attenuationColor ) / attenuationDistance;
-              vec3 transmittance = exp( - attenuationCoefficient * transmissionDistance ); // Beer's law
-              return transmittance * radiance;
-            }
-          }
           vec4 getIBLVolumeRefraction( const in vec3 n, const in vec3 v, const in float roughness, const in vec3 diffuseColor,
-            const in vec3 specularColor, const in float specularF90, const in vec3 position, const in mat4 modelMatrix,
+            const in vec3 position, const in vec3 modelScale, const in vec3 attenuationCoefficient, const in vec3 F,
             const in mat4 viewMatrix, const in mat4 projMatrix, const in float ior, const in float thickness,
-            const in vec3 attenuationColor, const in float attenuationDistance ) {
-            vec3 transmissionRay = getVolumeTransmissionRay( n, v, thickness, ior, modelMatrix );
+            const in float attenuationDistance ) {
+            vec3 transmissionRay = getVolumeTransmissionRay( n, v, thickness, ior, modelScale );
             vec3 refractedRayExit = position + transmissionRay;
             // Project refracted vector on the framebuffer, while mapping to normalized device coordinates.
             vec4 ndcPos = projMatrix * viewMatrix * vec4( refractedRayExit, 1.0 );
@@ -309,9 +294,11 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
             refractionCoords /= 2.0;
             // Sample framebuffer to get pixel the refracted ray hits.
             vec4 transmittedLight = getTransmissionSample( refractionCoords, roughness, ior );
-            vec3 attenuatedColor = applyVolumeAttenuation( transmittedLight.rgb, length( transmissionRay ), attenuationColor, attenuationDistance );
-            // Get the specular component.
-            vec3 F = EnvironmentBRDF( n, v, specularColor, specularF90, roughness );
+            vec3 attenuatedColor = transmittedLight.rgb;
+            if ( !isinf( attenuationDistance ) ) {
+              // Apply Beer's law.
+              attenuatedColor *= exp( - attenuationCoefficient * length( transmissionRay ) );
+            }
             return vec4( ( 1.0 - F ) * attenuatedColor * diffuseColor, transmittedLight.a );
           }
         #endif\n`
@@ -334,42 +321,69 @@ class MeshTransmissionMaterialImpl extends THREE.MeshPhysicalMaterial {
           material.thickness *= texture2D( thicknessMap, vUv ).g;
         #endif
         
-        vec3 pos = vWorldPosition;
-        float runningSeed = 0.0;
-        vec3 v = normalize( cameraPosition - pos );
-        vec3 n = inverseTransformDirection( normal, viewMatrix );
-        vec3 transmission = vec3(0.0);
-        float transmissionR, transmissionB, transmissionG;
-        float randomCoords = rand(runningSeed++);
-        float thickness_smear = thickness * max(pow(roughnessFactor, 0.33), anisotropicBlur);
-        vec3 distortionNormal = vec3(0.0);
-        vec3 temporalOffset = vec3(time, -time, -time) * temporalDistortion;
-        if (distortion > 0.0) {
-          distortionNormal = distortion * vec3(snoiseFractal(vec3((pos * distortionScale + temporalOffset))), snoiseFractal(vec3(pos.zxy * distortionScale - temporalOffset)), snoiseFractal(vec3(pos.yxz * distortionScale + temporalOffset)));
-        }
-        for (float i = 0.0; i < ${samples}.0; i ++) {
-          vec3 sampleNorm = normalize(n + roughnessFactor * roughnessFactor * 2.0 * normalize(vec3(rand(runningSeed++) - 0.5, rand(runningSeed++) - 0.5, rand(runningSeed++) - 0.5)) * pow(rand(runningSeed++), 0.33) + distortionNormal);
-          transmissionR = getIBLVolumeRefraction(
-            sampleNorm, v, material.roughness, material.diffuseColor, material.specularColor, material.specularF90,
-            pos, modelMatrix, viewMatrix, projectionMatrix, material.ior, material.thickness  + thickness_smear * (i + randomCoords) / float(${samples}),
-            material.attenuationColor, material.attenuationDistance
-          ).r;
-          transmissionG = getIBLVolumeRefraction(
-            sampleNorm, v, material.roughness, material.diffuseColor, material.specularColor, material.specularF90,
-            pos, modelMatrix, viewMatrix, projectionMatrix, material.ior  * (1.0 + chromaticAberration * (i + randomCoords) / float(${samples})) , material.thickness + thickness_smear * (i + randomCoords) / float(${samples}),
-            material.attenuationColor, material.attenuationDistance
-          ).g;
-          transmissionB = getIBLVolumeRefraction(
-            sampleNorm, v, material.roughness, material.diffuseColor, material.specularColor, material.specularF90,
-            pos, modelMatrix, viewMatrix, projectionMatrix, material.ior * (1.0 + 2.0 * chromaticAberration * (i + randomCoords) / float(${samples})), material.thickness + thickness_smear * (i + randomCoords) / float(${samples}),
-            material.attenuationColor, material.attenuationDistance
-          ).b;
-          transmission.r += transmissionR;
-          transmission.g += transmissionG;
-          transmission.b += transmissionB;
-        }
-        transmission /= ${samples}.0;
-        totalDiffuse = mix( totalDiffuse, transmission.rgb, material.transmission );\n`
+        if (material.transmission != 0.0) {
+          vec3 pos = vWorldPosition;
+          float runningSeed = 0.0;
+          vec3 v = normalize( cameraPosition - pos );
+          vec3 n = inverseTransformDirection( normal, viewMatrix );
+          vec3 transmission = vec3(0.0);
+          float randomCoords = rand(runningSeed++);
+          float thickness_smear = thickness * max(pow(roughnessFactor, 0.33), anisotropicBlur);
+          vec3 distortionNormal = vec3(0.0);
+          vec3 temporalOffset = vec3(time, -time, -time) * temporalDistortion;
+
+          vec3 modelScale = vec3(
+            length( vec3( modelMatrix[ 0 ].xyz ) ),
+            length( vec3( modelMatrix[ 1 ].xyz ) ),
+            length( vec3( modelMatrix[ 2 ].xyz ) )
+          );
+
+          // Beer's-law coefficient
+          vec3 attenuationCoefficient = vec3(0.0);
+          if ( !isinf( material.attenuationDistance ) ) {
+            attenuationCoefficient = -log( material.attenuationColor ) / material.attenuationDistance;
+          }
+
+          if (distortion > 0.0) {
+            distortionNormal = distortion * vec3(snoiseFractal(vec3((pos * distortionScale + temporalOffset))), snoiseFractal(vec3(pos.zxy * distortionScale - temporalOffset)), snoiseFractal(vec3(pos.yxz * distortionScale + temporalOffset)));
+          }
+          for (float i = 0.0; i < ${samples}.0; i ++) {
+            vec3 sampleNorm;
+            if (roughnessFactor > 0.0) {
+              sampleNorm = normalize(n + roughnessFactor * roughnessFactor * 2.0 * normalize(vec3(rand(runningSeed++) - 0.5, rand(runningSeed++) - 0.5, rand(runningSeed++) - 0.5)) * pow(rand(runningSeed++), 0.33) + distortionNormal);
+            } else {
+              // Smooth surfaces skip four hashes, a pow, and a normalization per sample
+              sampleNorm = normalize(n + distortionNormal);
+            }
+            float sampleProgress = (i + randomCoords) / float(${samples});
+            float sampleThickness = material.thickness + thickness_smear * sampleProgress;
+            // Fresnel is identical for RGB; only the refracted IOR changes.
+            vec3 F = EnvironmentBRDF( sampleNorm, v, material.specularColor, material.specularF90, material.roughness );
+            if (chromaticAberration == 0.0) {
+              // With one IOR, a single framebuffer sample supplies all RGB channels
+              transmission += getIBLVolumeRefraction(
+                sampleNorm, v, material.roughness, material.diffuseColor, pos, modelScale, attenuationCoefficient, F,
+                viewMatrix, projectionMatrix, material.ior, sampleThickness, material.attenuationDistance
+              ).rgb;
+            } else {
+              float aberration = chromaticAberration * sampleProgress;
+              transmission.r += getIBLVolumeRefraction(
+                sampleNorm, v, material.roughness, material.diffuseColor, pos, modelScale, attenuationCoefficient, F,
+                viewMatrix, projectionMatrix, material.ior, sampleThickness, material.attenuationDistance
+              ).r;
+              transmission.g += getIBLVolumeRefraction(
+                sampleNorm, v, material.roughness, material.diffuseColor, pos, modelScale, attenuationCoefficient, F,
+                viewMatrix, projectionMatrix, material.ior * (1.0 + aberration), sampleThickness, material.attenuationDistance
+              ).g;
+              transmission.b += getIBLVolumeRefraction(
+                sampleNorm, v, material.roughness, material.diffuseColor, pos, modelScale, attenuationCoefficient, F,
+                viewMatrix, projectionMatrix, material.ior * (1.0 + 2.0 * aberration), sampleThickness, material.attenuationDistance
+              ).b;
+            }
+          }
+          transmission /= ${samples}.0;
+          totalDiffuse = mix( totalDiffuse, transmission, material.transmission );
+        }\n`
       )
     }
 

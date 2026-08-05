@@ -36,6 +36,7 @@ const getBabelOptions = ({ useESModules }) => ({
     '@babel/preset-typescript',
   ],
   plugins: [
+    'babel-plugin-react-compiler',
     '@babel/plugin-proposal-nullish-coalescing-operator',
     ['@babel/transform-runtime', { regenerator: false, useESModules }],
   ],

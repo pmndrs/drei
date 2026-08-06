@@ -1,0 +1,86 @@
+---
+title: HtmlTexture / useHtmlTexture
+sourcecode: src/web/HtmlTexture.tsx
+---
+
+[![](https://img.shields.io/badge/-storybook-%23ff69b4)](https://drei.pmnd.rs/?path=/story/misc-htmltexture)
+![](https://img.shields.io/badge/-experimental-orange)
+![](https://img.shields.io/badge/-visual--only-red)
+
+<Intro>
+  An experimental web-only helper that turns React DOM content into a native `THREE.HTMLTexture`.
+</Intro>
+
+`HtmlTexture` is for visual DOM-to-texture use cases. It mounts React DOM under the R3F canvas,
+creates a native `THREE.HTMLTexture` from that source element, and requests browser paints when the
+source changes.
+
+This does not replace [`Html`](#html). `Html` renders DOM as an overlay tied to the scene.
+`HtmlTexture` renders DOM/CSS output as pixels that can be used in the Three.js material pipeline.
+
+## Requirements
+
+This helper is capability-gated and returns `null` in unsupported environments. The successful path
+requires a browser and Three.js build that expose:
+
+- `THREE.HTMLTexture`
+- `canvas.requestPaint()`
+- `WebGLRenderingContext.texElementImage2D()`
+
+The browser API is experimental. In Chrome it can be tested with:
+
+```txt
+chrome://flags/#canvas-draw-element
+```
+
+## Hook
+
+```tsx
+const texture = useHtmlTexture(
+  <div className="panel">
+    <h2>Status</h2>
+    <p>Rendered by React DOM, sampled as a texture.</p>
+  </div>,
+  { width: 512, height: 256 },
+)
+
+return (
+  <mesh>
+    <planeGeometry args={[3, 1.5]} />
+    <meshBasicMaterial map={texture} />
+  </mesh>
+)
+```
+
+## Component
+
+```tsx
+<mesh>
+  <planeGeometry args={[3, 1.5]} />
+  <meshBasicMaterial>
+    <HtmlTexture attach="map" width={512} height={256}>
+      <div className="panel">
+        <h2>Status</h2>
+        <p>Rendered by React DOM, sampled as a texture.</p>
+      </div>
+    </HtmlTexture>
+  </meshBasicMaterial>
+</mesh>
+```
+
+## Status
+
+Use `onStatusChange` to observe support and paint lifecycle diagnostics:
+
+```tsx
+const texture = useHtmlTexture(children, {
+  onStatusChange: (status) => {
+    console.log(status.state, status.paintCount, status.message)
+  },
+})
+```
+
+## Interaction
+
+This helper is intentionally visual-only. The source element uses `pointer-events: none`, so native
+DOM interaction, text selection, form input, focus management, and copy/paste are out of scope.

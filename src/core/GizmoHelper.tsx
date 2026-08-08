@@ -104,12 +104,35 @@ export const GizmoHelper = ({
     [defaultControls, mainCamera, onTarget, invalidate]
   )
 
+  // Push the current tween rotation (q1) onto the main camera and the controls
+  const applyTweenRotation = React.useCallback(
+    (delta: number) => {
+      mainCamera.position.set(0, 0, 1).applyQuaternion(q1).multiplyScalar(radius.current).add(focusPoint.current)
+      mainCamera.up.set(0, 1, 0).applyQuaternion(q1).normalize()
+      mainCamera.quaternion.copy(q1)
+
+      if (isCameraControls(defaultControls))
+        defaultControls.setPosition(mainCamera.position.x, mainCamera.position.y, mainCamera.position.z)
+
+      if (onUpdate) onUpdate()
+      else if (defaultControls) defaultControls.update(delta)
+      invalidate()
+    },
+    [defaultControls, mainCamera, onUpdate, invalidate]
+  )
+
   useFrame((_, delta) => {
     if (virtualCam.current && gizmoRef.current) {
       // Animate step
       if (animating.current) {
         if (q1.angleTo(q2) < 0.01) {
           animating.current = false
+          // The final rotation needs to land on q2 exactly, otherwise the camera keeps a small
+          // residual offset off the requested axis. When that offset sits right on the orbit pole
+          // for the top/bottom views it snaps the view to a seemingly random angle, because the
+          // controls re-derive the azimuth from it (theta = atan2(offset.x, offset.z)).
+          q1.copy(q2)
+          applyTweenRotation(delta)
           // Orbit controls uses UP vector as the orbit axes,
           // so we need to reset it after the animation is done
           // moving it around for the controls to work correctly
@@ -121,16 +144,7 @@ export const GizmoHelper = ({
           // animate position by doing a slerp and then scaling the position on the unit sphere
           q1.rotateTowards(q2, step)
           // animate orientation
-          mainCamera.position.set(0, 0, 1).applyQuaternion(q1).multiplyScalar(radius.current).add(focusPoint.current)
-          mainCamera.up.set(0, 1, 0).applyQuaternion(q1).normalize()
-          mainCamera.quaternion.copy(q1)
-
-          if (isCameraControls(defaultControls))
-            defaultControls.setPosition(mainCamera.position.x, mainCamera.position.y, mainCamera.position.z)
-
-          if (onUpdate) onUpdate()
-          else if (defaultControls) defaultControls.update(delta)
-          invalidate()
+          applyTweenRotation(delta)
         }
       }
 

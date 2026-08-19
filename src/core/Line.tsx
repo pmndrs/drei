@@ -74,12 +74,11 @@ export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = /* @_
     lineMaterial.needsUpdate = true
   }, [dashed, lineMaterial])
 
-  React.useEffect(() => {
-    return () => {
-      lineGeom.dispose()
-      lineMaterial.dispose()
-    }
-  }, [lineGeom])
+  // lineGeom is rebuilt whenever points change; lineMaterial lives for the whole
+  // mount. Disposing them from one effect would dispose the still-mounted material
+  // on every points change, forcing a shader recompile. Keep the lifetimes separate.
+  React.useEffect(() => () => lineGeom.dispose(), [lineGeom])
+  React.useEffect(() => () => lineMaterial.dispose(), [lineMaterial])
 
   return (
     <primitive object={line2} ref={ref} {...rest}>

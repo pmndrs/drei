@@ -2,8 +2,20 @@ import { useLoader, ThreeElements } from '@react-three/fiber'
 import * as React from 'react'
 import { forwardRef, Fragment, useEffect, useMemo } from 'react'
 import { DoubleSide, Object3D } from '#three'
-import { SVGLoader, SVGResult } from 'three/examples/jsm/loaders/SVGLoader.js'
+import { SVGLoader, SVGResult, StrokeStyle } from 'three/examples/jsm/loaders/SVGLoader.js'
+import type { ShapePath } from '#three'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
+
+// three's StrokeStyle omits the presentation attributes SVGLoader actually
+// writes onto path.userData.style, and r185 types userData as unknown.
+type SvgPathStyle = StrokeStyle & {
+  fill?: string
+  fillOpacity?: number
+  stroke?: string
+  strokeOpacity?: number
+}
+
+const pathStyle = (path: ShapePath) => (path.userData as { style?: SvgPathStyle } | undefined)?.style
 
 export interface SvgProps extends Omit<ThreeElements['object3D'], 'ref'> {
   /** src can be a URL or SVG data */
@@ -38,9 +50,9 @@ export const Svg: ForwardRefComponent<SvgProps, Object3D> = /* @__PURE__ */ forw
         skipStrokes
           ? []
           : svg.paths.map((path) =>
-              path.userData?.style.stroke === undefined || path.userData.style.stroke === 'none'
+              pathStyle(path)?.stroke === undefined || pathStyle(path)!.stroke === 'none'
                 ? null
-                : path.subPaths.map((subPath) => SVGLoader.pointsToStroke(subPath.getPoints(), path.userData!.style))
+                : path.subPaths.map((subPath) => SVGLoader.pointsToStroke(subPath.getPoints(), pathStyle(path)!))
             ),
       [svg, skipStrokes]
     )
@@ -57,14 +69,14 @@ export const Svg: ForwardRefComponent<SvgProps, Object3D> = /* @__PURE__ */ forw
           {svg.paths.map((path, p) => (
             <Fragment key={p}>
               {!skipFill &&
-                path.userData?.style.fill !== undefined &&
-                path.userData.style.fill !== 'none' &&
+                pathStyle(path)?.fill !== undefined &&
+                pathStyle(path)!.fill !== 'none' &&
                 SVGLoader.createShapes(path).map((shape, s) => (
                   <mesh key={s} {...fillMeshProps} renderOrder={renderOrder++}>
                     <shapeGeometry args={[shape]} />
                     <meshBasicMaterial
-                      color={path.userData!.style.fill}
-                      opacity={path.userData!.style.fillOpacity}
+                      color={pathStyle(path)!.fill}
+                      opacity={pathStyle(path)!.fillOpacity}
                       transparent={true}
                       side={DoubleSide}
                       depthWrite={false}
@@ -73,13 +85,13 @@ export const Svg: ForwardRefComponent<SvgProps, Object3D> = /* @__PURE__ */ forw
                   </mesh>
                 ))}
               {!skipStrokes &&
-                path.userData?.style.stroke !== undefined &&
-                path.userData.style.stroke !== 'none' &&
+                pathStyle(path)?.stroke !== undefined &&
+                pathStyle(path)!.stroke !== 'none' &&
                 path.subPaths.map((_subPath, s) => (
                   <mesh key={s} geometry={strokeGeometries[p]![s]} {...strokeMeshProps} renderOrder={renderOrder++}>
                     <meshBasicMaterial
-                      color={path.userData!.style.stroke}
-                      opacity={path.userData!.style.strokeOpacity}
+                      color={pathStyle(path)!.stroke}
+                      opacity={pathStyle(path)!.strokeOpacity}
                       transparent={true}
                       side={DoubleSide}
                       depthWrite={false}

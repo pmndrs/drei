@@ -42,11 +42,10 @@ type Story = StoryObj<typeof CameraShake>
 function CameraShakeScene1(props: ComponentProps<typeof CameraShake>) {
   const cube = React.useRef<THREE.Mesh>(null)
 
-  useFrame(({ clock }) => {
+  useFrame((state) => {
     if (cube.current) {
-      // Use clock time for deterministic rotation
-      const t = clock.getElapsedTime()
-      cube.current.rotation.x = cube.current.rotation.y = t * 0.3
+      // Use elapsed time for deterministic rotation
+      cube.current.rotation.x = cube.current.rotation.y = state.elapsed * 0.3
     }
   })
 

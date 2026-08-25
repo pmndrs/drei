@@ -47,12 +47,12 @@ export class SparklesMaterial extends SpriteNodeMaterial {
 
     //* Read Instance Attributes ==============================
     // These come from InstancedBufferAttributes on the geometry
-    const particlePosition = attribute('particlePosition', 'vec3')
-    const particleSize = attribute('size', 'float')
-    const particleSpeed = attribute('speed', 'float')
-    const particleOpacity = attribute('opacity', 'float')
-    const particleNoise = attribute('noise', 'vec3')
-    const particleColor = attribute('color', 'vec3')
+    const particlePosition = attribute<'vec3'>('particlePosition', 'vec3')
+    const particleSize = attribute<'float'>('size', 'float')
+    const particleSpeed = attribute<'float'>('speed', 'float')
+    const particleOpacity = attribute<'float'>('opacity', 'float')
+    const particleNoise = attribute<'vec3'>('noise', 'vec3')
+    const particleColor = attribute<'vec3'>('color', 'vec3')
 
     //* Position Node - Animated particle position ==============================
     // Apply noise-based animation to the particle center position

@@ -49,9 +49,9 @@ export class StarfieldMaterial extends SpriteNodeMaterial {
 
     //* Read Instance Attributes ==============================
     // These come from InstancedBufferAttributes on the geometry
-    const particlePosition = attribute('particlePosition', 'vec3')
-    const particleSize = attribute('size', 'float')
-    const particleColor = attribute('color', 'vec3')
+    const particlePosition = attribute<'vec3'>('particlePosition', 'vec3')
+    const particleSize = attribute<'float'>('size', 'float')
+    const particleColor = attribute<'vec3'>('color', 'vec3')
 
     //* Position Node - Star center position ==============================
     // Stars don't animate position, just return the particle position

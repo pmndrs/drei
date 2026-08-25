@@ -425,7 +425,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
                   } else if ((props.scale as unknown as Vector3).isVector3) {
                     occlusionMeshRef.current.scale.copy((props.scale as unknown as Vector3).clone().divideScalar(1))
                   } else {
-                    occlusionMeshRef.current.scale.set(1 / props.scale[0], 1 / props.scale[1], 1 / props.scale[2])
+                    occlusionMeshRef.current.scale.set(1 / props.scale[0]!, 1 / props.scale[1]!, 1 / props.scale[2]!)
                   }
                 }
               } else {

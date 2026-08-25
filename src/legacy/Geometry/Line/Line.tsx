@@ -68,7 +68,7 @@ export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = /* @_
       return p
     })
 
-    geom.setPositions(pValues.flat())
+    geom.setPositions(pValues.flat() as number[])
 
     if (vertexColors) {
       // using vertexColors requires the color value to be white see #1813

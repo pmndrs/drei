@@ -5,7 +5,10 @@ import { Falsey } from 'utility-types'
 
 type HelperType = Object3D & { update: () => void; dispose: () => void }
 type HelperConstructor = new (...args: any[]) => any
-type HelperArgs<T> = T extends [infer _, ...infer R] ? R : never
+// Helpers whose constructor takes no arguments (three-mesh-bvh's BVHHelper
+// extends Group) yield an empty tuple; that must map to [], not never, or no
+// argument list is assignable at all.
+type HelperArgs<T> = T extends [infer _, ...infer R] ? R : []
 
 /**
  * Adds a helper visualization to an existing object. Auto-updates and removes on unmount.

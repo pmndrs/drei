@@ -600,15 +600,15 @@ class TransmissionLightingModel extends PhysicalLightingModel {
 
 class MeshTransmissionMaterialImpl extends MeshPhysicalNodeMaterial {
   // Custom uniforms
-  private _chromaticAberration: THREE.UniformNode<number>
-  private _anisotropicBlur: THREE.UniformNode<number>
-  private _time: THREE.UniformNode<number>
-  private _distortion: THREE.UniformNode<number>
-  private _distortionScale: THREE.UniformNode<number>
-  private _temporalDistortion: THREE.UniformNode<number>
+  private _chromaticAberration: THREE.UniformNode<'float', number>
+  private _anisotropicBlur: THREE.UniformNode<'float', number>
+  private _time: THREE.UniformNode<'float', number>
+  private _distortion: THREE.UniformNode<'float', number>
+  private _distortionScale: THREE.UniformNode<'float', number>
+  private _temporalDistortion: THREE.UniformNode<'float', number>
   private _buffer: any // Texture node
-  private _transmissionValue: THREE.UniformNode<number>
-  private _debugMode: THREE.UniformNode<number>
+  private _transmissionValue: THREE.UniformNode<'float', number>
+  private _debugMode: THREE.UniformNode<'float', number>
 
   /** Type flag for identification */
   readonly isMeshTransmissionMaterial = true

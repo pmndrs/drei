@@ -31,18 +31,18 @@ export class ConvolutionMaterial extends MeshBasicNodeMaterial {
   //* Private Uniform Nodes --
   private _inputBuffer: THREE.TextureNode
   private _depthBuffer: THREE.TextureNode
-  private _resolution: THREE.UniformNode<THREE.Vector2>
-  private _texelSize: THREE.UniformNode<THREE.Vector2>
-  private _halfTexelSize: THREE.UniformNode<THREE.Vector2>
-  private _kernel: THREE.UniformNode<number>
-  private _scale: THREE.UniformNode<number>
-  private _cameraNear: THREE.UniformNode<number>
-  private _cameraFar: THREE.UniformNode<number>
-  private _minDepthThreshold: THREE.UniformNode<number>
-  private _maxDepthThreshold: THREE.UniformNode<number>
-  private _depthScale: THREE.UniformNode<number>
-  private _depthToBlurRatioBias: THREE.UniformNode<number>
-  private _useDepth: THREE.UniformNode<number>
+  private _resolution: THREE.UniformNode<'vec2', THREE.Vector2>
+  private _texelSize: THREE.UniformNode<'vec2', THREE.Vector2>
+  private _halfTexelSize: THREE.UniformNode<'vec2', THREE.Vector2>
+  private _kernel: THREE.UniformNode<'float', number>
+  private _scale: THREE.UniformNode<'float', number>
+  private _cameraNear: THREE.UniformNode<'float', number>
+  private _cameraFar: THREE.UniformNode<'float', number>
+  private _minDepthThreshold: THREE.UniformNode<'float', number>
+  private _maxDepthThreshold: THREE.UniformNode<'float', number>
+  private _depthScale: THREE.UniformNode<'float', number>
+  private _depthToBlurRatioBias: THREE.UniformNode<'float', number>
+  private _useDepth: THREE.UniformNode<'float', number>
 
   /** Kernel weights for multi-pass blur */
   readonly kernel: Float32Array

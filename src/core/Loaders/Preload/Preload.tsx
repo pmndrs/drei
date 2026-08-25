@@ -1,4 +1,5 @@
-import { Object3D, Camera, WebGLCubeRenderTarget, CubeCamera, Scene } from '#three'
+import { Object3D, Camera, CubeCamera, Scene } from '#three'
+import { CubeRenderTarget } from '#drei-platform'
 import * as React from 'react'
 import { useThree } from '@react-three/fiber'
 
@@ -40,7 +41,7 @@ export function Preload({ all, scene, camera }: PreloadProps) {
     // Now compile the scene
     gl.compile(scene || dScene, camera || dCamera)
     // And for good measure, hit it with a cube camera
-    const cubeRenderTarget = new WebGLCubeRenderTarget(128)
+    const cubeRenderTarget = new CubeRenderTarget(128)
     const cubeCamera = new CubeCamera(0.01, 100000, cubeRenderTarget)
     cubeCamera.update(gl, (scene || dScene) as Scene)
     cubeRenderTarget.dispose()

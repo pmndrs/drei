@@ -92,21 +92,21 @@ const remap = /* @__PURE__ */ Fn((inputs: any[]) => {
 
 class WireframeMaterialImpl extends MeshBasicNodeMaterial {
   //* Private Uniform Nodes --
-  private _strokeOpacity: THREE.UniformNode<number>
-  private _fillOpacity: THREE.UniformNode<number>
-  private _fillMix: THREE.UniformNode<number>
-  private _thickness: THREE.UniformNode<number>
-  private _colorBackfaces: THREE.UniformNode<number> // Using number as bool (0/1)
-  private _dashInvert: THREE.UniformNode<number>
-  private _dash: THREE.UniformNode<number>
-  private _dashRepeats: THREE.UniformNode<number>
-  private _dashLength: THREE.UniformNode<number>
-  private _squeeze: THREE.UniformNode<number>
-  private _squeezeMin: THREE.UniformNode<number>
-  private _squeezeMax: THREE.UniformNode<number>
-  private _stroke: THREE.UniformNode<THREE.Color>
-  private _backfaceStroke: THREE.UniformNode<THREE.Color>
-  private _fill: THREE.UniformNode<THREE.Color>
+  private _strokeOpacity: THREE.UniformNode<'float', number>
+  private _fillOpacity: THREE.UniformNode<'float', number>
+  private _fillMix: THREE.UniformNode<'float', number>
+  private _thickness: THREE.UniformNode<'float', number>
+  private _colorBackfaces: THREE.UniformNode<'float', number> // Using number as bool (0/1)
+  private _dashInvert: THREE.UniformNode<'float', number>
+  private _dash: THREE.UniformNode<'float', number>
+  private _dashRepeats: THREE.UniformNode<'float', number>
+  private _dashLength: THREE.UniformNode<'float', number>
+  private _squeeze: THREE.UniformNode<'float', number>
+  private _squeezeMin: THREE.UniformNode<'float', number>
+  private _squeezeMax: THREE.UniformNode<'float', number>
+  private _stroke: THREE.UniformNode<'color', THREE.Color>
+  private _backfaceStroke: THREE.UniformNode<'color', THREE.Color>
+  private _fill: THREE.UniformNode<'color', THREE.Color>
 
   /** Type flag for identification */
   readonly isWireframeMaterial = true

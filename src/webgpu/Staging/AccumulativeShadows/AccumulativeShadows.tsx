@@ -78,10 +78,10 @@ export const accumulativeContext = /* @__PURE__ */ React.createContext<Accumulat
 //     max(0.0, (1.0 - (r + g + b) / alphaTest)) * opacity);
 
 class SoftShadowMaterialImpl extends MeshBasicNodeMaterial {
-  private _color: THREE.UniformNode<THREE.Color>
-  private _blend: THREE.UniformNode<number>
-  private _alphaTest: THREE.UniformNode<number>
-  private _opacity: THREE.UniformNode<number>
+  private _color: THREE.UniformNode<'color', THREE.Color>
+  private _blend: THREE.UniformNode<'float', number>
+  private _alphaTest: THREE.UniformNode<'float', number>
+  private _opacity: THREE.UniformNode<'float', number>
   private _map: ReturnType<typeof uniformTexture>
 
   constructor() {
@@ -177,7 +177,7 @@ class SoftShadowMaterialImpl extends MeshBasicNodeMaterial {
 
 class ProgressiveShadowMaterial extends MeshPhongNodeMaterial {
   private _previousShadowMap: ReturnType<typeof texture>
-  private _averagingWindow: THREE.UniformNode<number>
+  private _averagingWindow: THREE.UniformNode<'float', number>
 
   constructor(initialTexture: THREE.Texture) {
     super()

@@ -121,12 +121,12 @@ const approximateRefraction = /* @__PURE__ */ Fn(([rayDir, normal, iorValue, bou
 class MeshRefractionMaterialImpl extends MeshPhysicalNodeMaterial {
   //* Private Uniform Nodes --
   private _envMap: THREE.TextureNode
-  private _bounces: THREE.UniformNode<number>
-  private _ior: THREE.UniformNode<number>
-  private _fresnel: THREE.UniformNode<number>
-  private _aberrationStrength: THREE.UniformNode<number>
-  private _color: THREE.UniformNode<THREE.Color>
-  private _opacityValue: THREE.UniformNode<number>
+  private _bounces: THREE.UniformNode<'float', number>
+  private _ior: THREE.UniformNode<'float', number>
+  private _fresnel: THREE.UniformNode<'float', number>
+  private _aberrationStrength: THREE.UniformNode<'float', number>
+  private _color: THREE.UniformNode<'color', THREE.Color>
+  private _opacityValue: THREE.UniformNode<'float', number>
   private _fastChroma: boolean
 
   /** Type flag for identification */

@@ -71,9 +71,9 @@ export type CausticsProps = Omit<ThreeElements['group'], 'ref'> & {
 export class CausticsProjectionMaterial extends MeshBasicNodeMaterial {
   private _causticsTexture: TextureNode
   private _causticsTextureB: TextureNode
-  private _color: THREE.UniformNode<THREE.Color>
-  private _lightProjMatrix: THREE.UniformNode<THREE.Matrix4>
-  private _lightViewMatrix: THREE.UniformNode<THREE.Matrix4>
+  private _color: THREE.UniformNode<'color', THREE.Color>
+  private _lightProjMatrix: THREE.UniformNode<'mat4', THREE.Matrix4>
+  private _lightViewMatrix: THREE.UniformNode<'mat4', THREE.Matrix4>
 
   constructor() {
     super()
@@ -169,20 +169,20 @@ export class CausticsProjectionMaterial extends MeshBasicNodeMaterial {
 // Uses depth buffer reconstruction and area ratio calculation for intensity.
 
 export class CausticsMaterial extends MeshBasicNodeMaterial {
-  private _cameraMatrixWorld: THREE.UniformNode<THREE.Matrix4>
-  private _cameraProjectionMatrixInv: THREE.UniformNode<THREE.Matrix4>
+  private _cameraMatrixWorld: THREE.UniformNode<'mat4', THREE.Matrix4>
+  private _cameraProjectionMatrixInv: THREE.UniformNode<'mat4', THREE.Matrix4>
   private _normalTexture: TextureNode
   private _depthTexture: TextureNode
-  private _lightDir: THREE.UniformNode<THREE.Vector3>
-  private _lightPlaneNormal: THREE.UniformNode<THREE.Vector3>
-  private _lightPlaneConstant: THREE.UniformNode<number>
-  private _near: THREE.UniformNode<number>
-  private _far: THREE.UniformNode<number>
-  private _worldRadius: THREE.UniformNode<number>
-  private _ior: THREE.UniformNode<number>
-  private _resolution: THREE.UniformNode<number>
-  private _size: THREE.UniformNode<number>
-  private _intensity: THREE.UniformNode<number>
+  private _lightDir: THREE.UniformNode<'vec3', THREE.Vector3>
+  private _lightPlaneNormal: THREE.UniformNode<'vec3', THREE.Vector3>
+  private _lightPlaneConstant: THREE.UniformNode<'float', number>
+  private _near: THREE.UniformNode<'float', number>
+  private _far: THREE.UniformNode<'float', number>
+  private _worldRadius: THREE.UniformNode<'float', number>
+  private _ior: THREE.UniformNode<'float', number>
+  private _resolution: THREE.UniformNode<'float', number>
+  private _size: THREE.UniformNode<'float', number>
+  private _intensity: THREE.UniformNode<'float', number>
 
   constructor() {
     super()

@@ -71,19 +71,19 @@ export type GridProps = Omit<ThreeElements['mesh'], 'ref' | 'args'> &
 
 class GridMaterialImpl extends MeshBasicNodeMaterial {
   //* Private Uniform Nodes --
-  private _cellSize: THREE.UniformNode<number>
-  private _sectionSize: THREE.UniformNode<number>
-  private _fadeDistance: THREE.UniformNode<number>
-  private _fadeStrength: THREE.UniformNode<number>
-  private _fadeFrom: THREE.UniformNode<number>
-  private _cellThickness: THREE.UniformNode<number>
-  private _sectionThickness: THREE.UniformNode<number>
-  private _cellColor: THREE.UniformNode<THREE.Color>
-  private _sectionColor: THREE.UniformNode<THREE.Color>
-  private _infiniteGrid: THREE.UniformNode<number> // bool as 0/1
-  private _followCamera: THREE.UniformNode<number> // bool as 0/1
-  private _worldCamProjPosition: THREE.UniformNode<THREE.Vector3>
-  private _worldPlanePosition: THREE.UniformNode<THREE.Vector3>
+  private _cellSize: THREE.UniformNode<'float', number>
+  private _sectionSize: THREE.UniformNode<'float', number>
+  private _fadeDistance: THREE.UniformNode<'float', number>
+  private _fadeStrength: THREE.UniformNode<'float', number>
+  private _fadeFrom: THREE.UniformNode<'float', number>
+  private _cellThickness: THREE.UniformNode<'float', number>
+  private _sectionThickness: THREE.UniformNode<'float', number>
+  private _cellColor: THREE.UniformNode<'color', THREE.Color>
+  private _sectionColor: THREE.UniformNode<'color', THREE.Color>
+  private _infiniteGrid: THREE.UniformNode<'float', number> // bool as 0/1
+  private _followCamera: THREE.UniformNode<'float', number> // bool as 0/1
+  private _worldCamProjPosition: THREE.UniformNode<'vec3', THREE.Vector3>
+  private _worldPlanePosition: THREE.UniformNode<'vec3', THREE.Vector3>
 
   /** Type flag for identification */
   readonly isGridMaterial = true

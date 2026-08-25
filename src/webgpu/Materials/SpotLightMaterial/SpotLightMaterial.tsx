@@ -40,14 +40,14 @@ import {
 export class SpotLightMaterial extends MeshBasicNodeMaterial {
   //* Private Uniform Nodes --
   private _depth: THREE.TextureNode
-  private _opacity: THREE.UniformNode<number>
-  private _attenuation: THREE.UniformNode<number>
-  private _anglePower: THREE.UniformNode<number>
-  private _spotPosition: THREE.UniformNode<THREE.Vector3>
-  private _lightColor: THREE.UniformNode<THREE.Color>
-  private _cameraNear: THREE.UniformNode<number>
-  private _cameraFar: THREE.UniformNode<number>
-  private _resolution: THREE.UniformNode<THREE.Vector2>
+  private _opacity: THREE.UniformNode<'float', number>
+  private _attenuation: THREE.UniformNode<'float', number>
+  private _anglePower: THREE.UniformNode<'float', number>
+  private _spotPosition: THREE.UniformNode<'vec3', THREE.Vector3>
+  private _lightColor: THREE.UniformNode<'color', THREE.Color>
+  private _cameraNear: THREE.UniformNode<'float', number>
+  private _cameraFar: THREE.UniformNode<'float', number>
+  private _resolution: THREE.UniformNode<'vec2', THREE.Vector2>
 
   constructor() {
     super()

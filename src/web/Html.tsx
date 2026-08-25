@@ -172,7 +172,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
     }: HtmlProps,
     ref: React.Ref<HTMLDivElement>
   ) => {
-    const { gl, camera, scene, size, raycaster, events, viewport } = useThree()
+    const { gl, camera, scene, size, raycaster, events, viewport, invalidate } = useThree()
 
     const [el] = React.useState(() => document.createElement(as))
     const root = React.useRef<ReactDOM.Root>(null)
@@ -280,6 +280,24 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
     })
 
     const visible = React.useRef(true)
+
+    const prevOcclude = React.useRef(occlude)
+    React.useEffect(() => {
+      // The frame loop below only recomputes occlusion when the camera or the
+      // object moves. When the occlude prop itself changes (toggled on/off or
+      // new targets) nothing moves, so force one recompute on the next frame.
+      // Shallow-compare so an inline array doesn't retrigger on every render.
+      const prev = prevOcclude.current
+      const changed =
+        Array.isArray(occlude) && Array.isArray(prev)
+          ? occlude.length !== prev.length || occlude.some((item, index) => item !== prev[index])
+          : occlude !== prev
+      prevOcclude.current = occlude
+      if (changed) {
+        oldZoom.current = Infinity
+        invalidate()
+      }
+    })
 
     useFrame((gl) => {
       if (group.current) {

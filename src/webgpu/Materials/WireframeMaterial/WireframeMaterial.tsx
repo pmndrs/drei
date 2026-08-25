@@ -158,7 +158,7 @@ class WireframeMaterialImpl extends MeshBasicNodeMaterial {
     //* Varying for barycentric coordinates --
     // Read barycentric attribute and pass to fragment shader
     const barycentricAttr = attribute<'vec3'>('barycentric', 'vec3')
-    const vBarycentric = varying(barycentricAttr, 'v_barycentric')
+    const vBarycentric = varying<'vec3'>(barycentricAttr, 'v_barycentric')
 
     //* Output Node - Wireframe rendering --
     this.outputNode = Fn(() => {

@@ -27,20 +27,20 @@ export class MeshReflectorMaterial extends THREE.MeshStandardNodeMaterial {
   reflection: ReturnType<typeof reflector>
 
   //* Uniforms ----------------------------------------
-  mirrorUniform: ReturnType<typeof uniform<number>>
-  mixBlurUniform: ReturnType<typeof uniform<number>>
-  mixStrengthUniform: ReturnType<typeof uniform<number>>
-  minDepthThresholdUniform: ReturnType<typeof uniform<number>>
-  maxDepthThresholdUniform: ReturnType<typeof uniform<number>>
-  depthScaleUniform: ReturnType<typeof uniform<number>>
-  depthToBlurRatioBiasUniform: ReturnType<typeof uniform<number>>
-  distortionUniform: ReturnType<typeof uniform<number>>
-  mixContrastUniform: ReturnType<typeof uniform<number>>
-  blurRadiusUniform: ReturnType<typeof uniform<number>>
+  mirrorUniform: THREE.UniformNode<'float', number>
+  mixBlurUniform: THREE.UniformNode<'float', number>
+  mixStrengthUniform: THREE.UniformNode<'float', number>
+  minDepthThresholdUniform: THREE.UniformNode<'float', number>
+  maxDepthThresholdUniform: THREE.UniformNode<'float', number>
+  depthScaleUniform: THREE.UniformNode<'float', number>
+  depthToBlurRatioBiasUniform: THREE.UniformNode<'float', number>
+  distortionUniform: THREE.UniformNode<'float', number>
+  mixContrastUniform: THREE.UniformNode<'float', number>
+  blurRadiusUniform: THREE.UniformNode<'float', number>
 
   // Feature flags
-  hasBlurUniform: ReturnType<typeof uniform<number>>
-  hasDepthUniform: ReturnType<typeof uniform<number>>
+  hasBlurUniform: THREE.UniformNode<'float', number>
+  hasDepthUniform: THREE.UniformNode<'float', number>
 
   constructor(options: MeshReflectorMaterialOptions = {}, parameters: THREE.MeshStandardMaterialParameters = {}) {
     super()

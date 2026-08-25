@@ -150,7 +150,7 @@ class GridMaterialImpl extends MeshBasicNodeMaterial {
       return localPos
     })
 
-    const vLocalPosition = varying(computeLocalPosition(), 'vLocalPosition')
+    const vLocalPosition = varying<'vec3'>(computeLocalPosition(), 'vLocalPosition')
 
     // World position for fade distance calculation
     const computeWorldPosition = Fn(() => {
@@ -158,7 +158,7 @@ class GridMaterialImpl extends MeshBasicNodeMaterial {
       return modelWorldMatrix.mul(vec4(localPos, 1.0)).xyz
     })
 
-    const vWorldPosition = varying(computeWorldPosition(), 'vWorldPosition')
+    const vWorldPosition = varying<'vec3'>(computeWorldPosition(), 'vWorldPosition')
 
     //* Position Node: Returns LOCAL space position --
     // NodeMaterial automatically applies MVP: projectionMatrix * viewMatrix * modelMatrix * positionNode

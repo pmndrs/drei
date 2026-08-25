@@ -70,7 +70,8 @@ import { ForwardRefComponent } from '@utils/ts-utils'
 const EnvironmentBRDF = /*@__PURE__*/ Fn((inputs: any) => {
   const { dotNV, specularColor, specularF90, roughness } = inputs
 
-  const fab = DFGLUT({ dotNV, roughness })
+  // DFGLUT is declared with `any` inputs, so its vec2 result is untyped here.
+  const fab = DFGLUT({ dotNV, roughness }) as unknown as THREE.Node<'vec2'>
   return specularColor.mul(fab.x).add(specularF90.mul(fab.y))
 })
 
@@ -349,7 +350,7 @@ class TransmissionLightingModel extends PhysicalLightingModel {
         const thicknessSmear = thickness.mul(max(pow(roughness, 0.33), anisotropicBlurUniform))
 
         // Multi-sample loop with chromatic aberration
-        Loop(int(sampleCount), ({ i }) => {
+        Loop(sampleCount, ({ i }) => {
           const fi = float(i)
           const progress = fi.add(randomCoords).div(float(sampleCount))
 

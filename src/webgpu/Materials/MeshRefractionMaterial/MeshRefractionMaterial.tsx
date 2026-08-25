@@ -94,7 +94,7 @@ const approximateRefraction = /* @__PURE__ */ Fn(([rayDir, normal, iorValue, bou
 
   // Simulate bounces by progressively perturbing the direction
   // This is an approximation - true accuracy requires BVH ray tracing
-  Loop(int(bounceCount), ({ i }) => {
+  Loop({ start: 0, end: int(bounceCount), type: 'int' }, ({ i }) => {
     const fi = float(i).add(1.0)
 
     // Try to refract out

@@ -44,7 +44,12 @@ function Svg() {
   const shapes = React.useMemo(
     () =>
       paths.flatMap((p) =>
-        p.toShapes(true).map((shape) => ({ shape, color: p.color, fillOpacity: p.userData?.style.fillOpacity ?? 1 }))
+        // three dropped toShapes' isCCW parameter; userData is typed unknown in r185
+        p.toShapes().map((shape) => ({
+          shape,
+          color: p.color,
+          fillOpacity: (p.userData as { style?: { fillOpacity?: number } } | undefined)?.style?.fillOpacity ?? 1,
+        }))
       ),
     [paths]
   )

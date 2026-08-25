@@ -263,7 +263,9 @@ export class CausticsMaterial extends MeshBasicNodeMaterial {
         // Refract light direction through surface
         const rayDir = refract(lightD, surfaceNormal, div(float(1.0), iorVal))
         // Offset origin slightly along refracted direction to avoid self-intersection
-        const rayOrigin = add(surfacePos, mul(rayDir, 0.1))
+        // computeRefractedRay's inputs are `any`, so overload resolution cannot
+        // see that these are vec3; they are vec3 at runtime.
+        const rayOrigin = add(surfacePos, mul(rayDir, 0.1)) as unknown as THREE.Node<'vec3'>
         return vec4(rayOrigin, 0.0).setW(float(0.0)) // Pack origin, we'll compute dir separately
       }
     )
@@ -312,10 +314,10 @@ export class CausticsMaterial extends MeshBasicNodeMaterial {
       const pos4 = worldPosFromDepth({ depth: depth4, coord: uv4 })
 
       // Get origin positions (at depth = 0, i.e., on the near plane)
-      const originPos1 = worldPosFromDepth({ depth: float(0.0), coord: uv1 })
-      const originPos2 = worldPosFromDepth({ depth: float(0.0), coord: uv2 })
-      const originPos3 = worldPosFromDepth({ depth: float(0.0), coord: uv3 })
-      const originPos4 = worldPosFromDepth({ depth: float(0.0), coord: uv4 })
+      const originPos1 = worldPosFromDepth({ depth: float(0.0), coord: uv1 }) as unknown as THREE.Node<'vec3'>
+      const originPos2 = worldPosFromDepth({ depth: float(0.0), coord: uv2 }) as unknown as THREE.Node<'vec3'>
+      const originPos3 = worldPosFromDepth({ depth: float(0.0), coord: uv3 }) as unknown as THREE.Node<'vec3'>
+      const originPos4 = worldPosFromDepth({ depth: float(0.0), coord: uv4 }) as unknown as THREE.Node<'vec3'>
 
       // Compute refracted ray directions
       const rayDir1 = refract(lightDir, normal1, div(float(1.0), ior))

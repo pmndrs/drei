@@ -33,7 +33,8 @@ function FirstPersonControlsScene(props: React.ComponentProps<typeof FirstPerson
 export const FirstPersonControlsSt = {
   render: ({ ...args }) => <FirstPersonControlsScene {...args} />,
   args: {
-    activeLook: true,
+    // activeLook was removed from three's FirstPersonControls (r185); it no
+    // longer exists in the types or the runtime.
     autoForward: false,
     constrainVertical: false,
     enabled: true,

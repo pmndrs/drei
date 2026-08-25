@@ -205,8 +205,9 @@ class GridMaterialImpl extends MeshBasicNodeMaterial {
       const worldPosition = vWorldPosition
 
       // Calculate cell and section grid intensities
-      const g1 = getGrid(localPosition, cellSizeUniform, cellThicknessUniform)
-      const g2 = getGrid(localPosition, sectionSizeUniform, sectionThicknessUniform)
+      // getGrid is declared with `any[]` inputs, so its float return is untyped.
+      const g1 = getGrid(localPosition, cellSizeUniform, cellThicknessUniform) as unknown as THREE.Node<'float'>
+      const g2 = getGrid(localPosition, sectionSizeUniform, sectionThicknessUniform) as unknown as THREE.Node<'float'>
 
       // Fade calculation based on distance from camera projection
       const from = worldCamProjPositionUniform.mul(fadeFromUniform)

@@ -7,8 +7,8 @@ import { ForwardRefComponent } from '@utils/ts-utils'
 //* Wobble Material Implementation ==============================
 
 class WobbleMaterialImpl extends THREE.MeshStandardNodeMaterial {
-  timeUniform: ReturnType<typeof uniform>
-  factorUniform: ReturnType<typeof uniform>
+  timeUniform: THREE.UniformNode<'float', number>
+  factorUniform: THREE.UniformNode<'float', number>
 
   constructor(parameters: THREE.MeshStandardMaterialParameters = {}) {
     super(parameters)

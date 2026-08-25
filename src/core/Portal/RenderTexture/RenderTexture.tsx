@@ -211,7 +211,9 @@ function Container({
       // Using portalScene/portalCamera from useThree (useFrame state has scheduler bug)
       state.renderer.autoClear = true
       state.renderer.xr.enabled = false
-      state.renderer.xr.isPresenting = false
+      // three types WebGPU's XRManager.isPresenting readonly, but it is a plain
+      // writable field in both builds — three itself save/restores it this way.
+      ;(state.renderer.xr as { isPresenting: boolean }).isPresenting = false
       state.renderer.setRenderTarget(writeFbo as THREE.WebGLRenderTarget)
       state.renderer.render(portalScene, portalCamera)
       state.renderer.setRenderTarget(oldRenderTarget as THREE.WebGLRenderTarget | null)
@@ -219,7 +221,7 @@ function Container({
       // Restore state
       state.renderer.autoClear = oldAutoClear
       state.renderer.xr.enabled = oldXrEnabled
-      state.renderer.xr.isPresenting = oldIsPresenting
+      ;(state.renderer.xr as { isPresenting: boolean }).isPresenting = oldIsPresenting
 
       // Swap buffers for next frame
       readBufferIndex.current = readBufferIndex.current === 0 ? 1 : 0

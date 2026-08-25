@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { useThree, ThreeEvent, ThreeElements } from '@react-three/fiber'
+import { getMaxAnisotropy } from '@utils/generic'
 import { CanvasTexture } from '#three'
 import { useGizmoContext } from './GizmoHelper'
 
@@ -94,7 +95,7 @@ function AxisHead({
     >
       <spriteMaterial
         map={texture}
-        map-anisotropy={renderer.getMaxAnisotropy() || 1}
+        map-anisotropy={getMaxAnisotropy(renderer)}
         alphaTest={0.3}
         opacity={label ? 1 : 0.75}
         toneMapped={false}

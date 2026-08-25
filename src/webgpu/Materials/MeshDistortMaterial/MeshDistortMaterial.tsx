@@ -8,9 +8,9 @@ import { ForwardRefComponent } from '@utils/ts-utils'
 //* Distort Material Implementation ==============================
 
 class DistortMaterialImplWebGPU extends THREE.MeshPhysicalNodeMaterial {
-  timeUniform: ReturnType<typeof uniform>
-  distortUniform: ReturnType<typeof uniform>
-  radiusUniform: ReturnType<typeof uniform>
+  timeUniform: THREE.UniformNode<'float', number>
+  distortUniform: THREE.UniformNode<'float', number>
+  radiusUniform: THREE.UniformNode<'float', number>
 
   constructor(parameters: THREE.MeshPhysicalMaterialParameters = {}) {
     super(parameters)

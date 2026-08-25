@@ -14478,16 +14478,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"troika-three-utils@npm:^0.52.4":
-  version: 0.52.4
-  resolution: "troika-three-utils@npm:0.52.4"
-  peerDependencies:
-    three: ">=0.125.0"
-  checksum: 10c0/06de01ed332b755e5a1f376ea047f5e3585c71c98e2216822011fcf25e107fa9e28cbdd6586d3507eec45973998de80db0a2f07efba550b62623ceb58c955c98
-  languageName: node
-  linkType: hard
-
-"troika-three-utils@npm:^0.52.5":
+"troika-three-utils@npm:^0.52.4, troika-three-utils@npm:^0.52.5":
   version: 0.52.5
   resolution: "troika-three-utils@npm:0.52.5"
   peerDependencies:

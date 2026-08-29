@@ -7,7 +7,6 @@ import { PlatformSwitch } from '@sb/components/PlatformSwitch'
 
 import { Billboard, Plane, Box, Cone, OrbitControls } from 'drei'
 import { Text as LegacyText } from '../../../legacy/UI/Text/Text'
-import { Text as WebGPUText } from '../../../webgpu/UI/Text/Text'
 import { ComponentProps } from 'react'
 
 export default {
@@ -96,11 +95,7 @@ function BillboardScene2(props: ComponentProps<typeof Billboard>) {
               box
             </LegacyText>
           }
-          webgpu={
-            <WebGPUText fontSize={1} outlineWidth={'5%'} outlineColor="#000000" outlineOpacity={1}>
-              box
-            </WebGPUText>
-          }
+          webgpu={/* Text is unavailable on WebGPU until the @pmndrs/glyph migration; see #2658 */ null}
         />
       </Billboard>
       <Box position={[0.5, 1, 0.5]}>
@@ -114,11 +109,7 @@ function BillboardScene2(props: ComponentProps<typeof Billboard>) {
                 cone
               </LegacyText>
             }
-            webgpu={
-              <WebGPUText fontSize={1} outlineWidth={'5%'} outlineColor="#000000" outlineOpacity={1}>
-                cone
-              </WebGPUText>
-            }
+            webgpu={/* Text is unavailable on WebGPU until the @pmndrs/glyph migration; see #2658 */ null}
           />
         </Billboard>
         <Cone>

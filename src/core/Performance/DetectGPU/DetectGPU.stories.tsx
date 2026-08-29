@@ -7,7 +7,6 @@ import { PlatformSwitch } from '@sb/components/PlatformSwitch'
 
 import { DetectGPU } from 'drei'
 import { Text as LegacyText } from '../../../legacy/UI/Text/Text'
-import { Text as WebGPUText } from '../../../webgpu/UI/Text/Text'
 
 export default {
   title: 'Performance/DetectGPU',
@@ -31,7 +30,7 @@ function DetectGPUScene(props: React.ComponentProps<typeof DetectGPU>) {
         return (
           <PlatformSwitch
             legacy={<LegacyText maxWidth={200}>{info}</LegacyText>}
-            webgpu={<WebGPUText maxWidth={200}>{info}</WebGPUText>}
+            webgpu={/* Text is unavailable on WebGPU until the @pmndrs/glyph migration; see #2658 */ null}
           />
         )
       }}

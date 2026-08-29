@@ -4,18 +4,21 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'
 import { useTurntable } from '@sb/useTurntable'
-import { PlatformSwitch } from '@sb/components/PlatformSwitch'
 
 import { Text as LegacyText } from './Text'
-import { Text as WebGPUText } from '../../../webgpu/UI/Text/Text'
 
 export default {
   title: 'UI/Text',
-  tags: ['dual'],
+  tags: ['legacyOnly'],
   component: LegacyText,
   decorators: [
     (Story, context) => (
-      <Setup renderer={context.globals.renderer} controls={false} cameraPosition={new Vector3(0, 0, 200)}>
+      <Setup
+        renderer={context.globals.renderer}
+        limitedTo="legacy"
+        controls={false}
+        cameraPosition={new Vector3(0, 0, 200)}
+      >
         <Story />
       </Setup>
     ),
@@ -33,18 +36,9 @@ function TextScene(props: React.ComponentProps<typeof LegacyText>) {
   const ref = useTurntable()
 
   return (
-    <PlatformSwitch
-      legacy={
-        <LegacyText ref={ref} {...props}>
-          {LOREM_TEXT}
-        </LegacyText>
-      }
-      webgpu={
-        <WebGPUText ref={ref} {...(props as any)}>
-          {LOREM_TEXT}
-        </WebGPUText>
-      }
-    />
+    <LegacyText ref={ref} {...props}>
+      {LOREM_TEXT}
+    </LegacyText>
   )
 }
 
@@ -70,18 +64,9 @@ function TextOutlineScene(props: React.ComponentProps<typeof LegacyText>) {
   const ref = useTurntable()
 
   return (
-    <PlatformSwitch
-      legacy={
-        <LegacyText ref={ref} {...props}>
-          {LOREM_TEXT}
-        </LegacyText>
-      }
-      webgpu={
-        <WebGPUText ref={ref} {...(props as any)}>
-          {LOREM_TEXT}
-        </WebGPUText>
-      }
-    />
+    <LegacyText ref={ref} {...props}>
+      {LOREM_TEXT}
+    </LegacyText>
   )
 }
 
@@ -109,18 +94,9 @@ function TextStrokeScene(props: React.ComponentProps<typeof LegacyText>) {
   const ref = useTurntable()
 
   return (
-    <PlatformSwitch
-      legacy={
-        <LegacyText ref={ref} {...props}>
-          {LOREM_TEXT}
-        </LegacyText>
-      }
-      webgpu={
-        <WebGPUText ref={ref} {...(props as any)}>
-          {LOREM_TEXT}
-        </WebGPUText>
-      }
-    />
+    <LegacyText ref={ref} {...props}>
+      {LOREM_TEXT}
+    </LegacyText>
   )
 }
 
@@ -148,18 +124,9 @@ function TextShadowScene(props: React.ComponentProps<typeof LegacyText>) {
   const ref = useTurntable()
 
   return (
-    <PlatformSwitch
-      legacy={
-        <LegacyText ref={ref} {...props}>
-          {LOREM_TEXT}
-        </LegacyText>
-      }
-      webgpu={
-        <WebGPUText ref={ref} {...(props as any)}>
-          {LOREM_TEXT}
-        </WebGPUText>
-      }
-    />
+    <LegacyText ref={ref} {...props}>
+      {LOREM_TEXT}
+    </LegacyText>
   )
 }
 
@@ -193,18 +160,9 @@ function TextRtlScene(props: React.ComponentProps<typeof LegacyText>) {
     'إن عدة الشهور عند الله اثنا عشر شهرا في كتاب الله يوم خلق السماوات والارض SOME LATIN TEXT HERE منها أربعة حرم ذلك الدين القيم فلا تظلموا فيهن أنفسكم وقاتلوا المشركين كافة كما يقاتلونكم كافة واعلموا أن الله مع المتقين'
 
   return (
-    <PlatformSwitch
-      legacy={
-        <LegacyText ref={ref} {...props}>
-          {rtlText}
-        </LegacyText>
-      }
-      webgpu={
-        <WebGPUText ref={ref} {...(props as any)}>
-          {rtlText}
-        </WebGPUText>
-      }
-    />
+    <LegacyText ref={ref} {...props}>
+      {rtlText}
+    </LegacyText>
   )
 }
 
@@ -242,20 +200,10 @@ function CustomMaterialTextScene({ color, opacity }: { color: string; opacity: n
   }
 
   return (
-    <PlatformSwitch
-      legacy={
-        <LegacyText ref={ref} {...textProps}>
-          <meshBasicMaterial side={DoubleSide} color={color} transparent opacity={opacity} />
-          {LOREM_TEXT}
-        </LegacyText>
-      }
-      webgpu={
-        <WebGPUText ref={ref} {...(textProps as any)}>
-          <meshBasicMaterial side={DoubleSide} color={color} transparent opacity={opacity} />
-          {LOREM_TEXT}
-        </WebGPUText>
-      }
-    />
+    <LegacyText ref={ref} {...textProps}>
+      <meshBasicMaterial side={DoubleSide} color={color} transparent opacity={opacity} />
+      {LOREM_TEXT}
+    </LegacyText>
   )
 }
 

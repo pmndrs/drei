@@ -4,6 +4,71 @@ This changelog tracks changes made during the v11 alpha development cycle.
 
 ## Unreleased
 
+### Dependencies & Stability
+
+This is a stability-only pass: dependency updates and the fixes needed to build
+against them. No component work.
+
+#### Updated to three 0.185.1 and @react-three/fiber 10.0.0-alpha.4
+
+R3F v10 raised its `three` peer floor to `>=0.185.0`, so drei's `>=0.182` made it
+impossible to install alongside r3f alpha.4.
+
+- `three` / `@types/three` -> `^0.185.1` / `^0.185.0`; peer `three: ">=0.185"`
+- `@react-three/fiber` -> `10.0.0-alpha.4`
+- `react` / `react-dom` peers -> `>=19.0 <19.3`, matching r3f v10's tested range
+- `three-mesh-bvh` `^0.9.14`, `stats-gl` `^4.2.3`, `troika-three-text` `^0.52.5`
+
+**Files changed:** `package.json`, `yarn.lock`
+
+#### Fixed: `/webgpu` entry could not be built (#2764)
+
+`@react-three/drei/webgpu` imported `WebGLCubeRenderTarget` from `three/webgpu`,
+which does not export it — so the entry failed at build time and took dependent
+projects down with it. three r183+ renamed the WebGPU cube target to
+`CubeRenderTarget`. Three `core/` components also reached past the platform alias
+and had to be routed through `#drei-platform`.
+
+**Files changed:** `src/utils/drei-platform-webgpu.ts`,
+`src/core/Staging/Environment/Environment.tsx`,
+`src/core/Portal/RenderCubeTexture/RenderCubeTexture.tsx`,
+`src/core/Loaders/Preload/Preload.tsx`
+
+#### Removed: `Text` from the `/webgpu` entry
+
+It depended on a vendored troika fork declared as a `file:` tarball, which could
+never be published to npm. Upstream troika still ships no WebGPU build. The fork
+has been removed entirely; text returns via
+[@pmndrs/glyph](https://github.com/pmndrs/glyph), which covers both renderers.
+
+This matches `11.0.0-alpha.5`, which also exported no `Text` from `/webgpu`, so
+it is not a regression. **WebGL `Text` is unaffected** and is still exported from
+`@react-three/drei/legacy`.
+
+**Files changed:** `src/webgpu/UI/index.ts`, `src/webgpu/UI/Text/` (removed),
+`lib/troika/` (removed), `package.json`, and five stories that referenced it
+
+#### Type fixes for three 0.185 / r3f v10
+
+The bump surfaced 198 type errors; all are resolved.
+
+- `UniformNode` became generic over `<TNodeType, TValue>` (98 of them)
+- `attribute()` and `varying()` need explicit node-type arguments, or their type
+  parameter widens to `string` / `unknown` and every swizzle stops resolving
+- `Loop()` no longer accepts a bare node — use a number or `{ start, end }`
+- Added a renderer-agnostic `getMaxAnisotropy()` to `utils/generic`: WebGPU
+  exposes it on the renderer, WebGL on `.capabilities`
+- Fixed `HelperArgs<[]>` resolving to `never`, which made any zero-argument
+  helper constructor reject every argument list. Pre-existing drei bug, surfaced
+  by three-mesh-bvh 0.9.14
+
+**Behavioural changes from upstream, worth knowing:** `ShapePath.toShapes()` lost
+its `isCCW` parameter, and `FirstPersonControls.activeLook` no longer exists in
+three at all.
+
+**Files changed:** 28 files across `src/core`, `src/legacy`, `src/webgpu`,
+`src/external`, `src/utils`
+
 ### Features
 
 #### `useGLTF` - New Options API & KTX2 Support

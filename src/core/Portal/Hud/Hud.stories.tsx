@@ -10,7 +10,6 @@ import { PlatformSwitch } from '@sb/components/PlatformSwitch'
 
 import { Hud, OrbitControls, PerspectiveCamera } from 'drei'
 import { Text as LegacyText } from '../../../legacy/UI/Text/Text'
-import { Text as WebGPUText } from '../../../webgpu/UI/Text/Text'
 
 export default {
   title: 'Portals/Hud',
@@ -134,11 +133,7 @@ function HudScene(props: React.ComponentProps<typeof Hud>) {
               HUD OVERLAY - ISOLATED SCENE
             </LegacyText>
           }
-          webgpu={
-            <WebGPUText position={[0, -1.5, 0]} fontSize={0.12} color="#00ff88" anchorX="center" anchorY="middle">
-              HUD OVERLAY - ISOLATED SCENE
-            </WebGPUText>
-          }
+          webgpu={/* Text is unavailable on WebGPU until the @pmndrs/glyph migration; see #2658 */ null}
         />
       </Hud>
     </>

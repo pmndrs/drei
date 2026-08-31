@@ -9,8 +9,8 @@
     "withStory": 94,
     "withTest": 55,
     "withDocs": 46,
-    "agentOk": 1,
-    "humanOnly": 1
+    "agentOk": 2,
+    "humanOnly": 0
   },
   "components": [
     {
@@ -1555,8 +1555,8 @@
       "name": "MeshDiscardMaterial",
       "category": "Materials",
       "classification": "todo",
-      "reason": null,
-      "assignee": "human-only",
+      "reason": "The heuristic flags this human-only because the legacy file uses ShaderMaterial, but that is exactly what gets replaced. webgpu/DiscardMaterial already exists; this is a NodeMaterial with discard() in TSL plus the same thin JSX wrapper. Mechanical.",
+      "assignee": "agent-ok",
       "trees": {
         "core": false,
         "legacy": true,

@@ -116,9 +116,12 @@ function build() {
       const override = entry.name.startsWith('_') ? undefined : overrides[entry.name]
       if (override?.classification) classification = override.classification
 
-      // Delegation: a port with no raw shader code is mechanical API mapping.
+      // Delegation heuristic: a port with no raw shader code is mechanical API
+      // mapping. This is a guess from the LEGACY source, so it over-flags —
+      // a thin wrapper around a trivial shader looks hard but is not. Override
+      // it in component-overrides.json with an `assignee` plus a reason.
       const hard = !!(primary?.hasGlsl || primary?.hasOnBeforeCompile || primary?.hasShaderMaterial)
-      const assignee = classification === 'todo' ? (hard ? 'human-only' : 'agent-ok') : null
+      const assignee = classification === 'todo' ? (override?.assignee ?? (hard ? 'human-only' : 'agent-ok')) : null
 
       return {
         name: entry.name,

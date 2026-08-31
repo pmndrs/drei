@@ -69,6 +69,40 @@ three at all.
 **Files changed:** 28 files across `src/core`, `src/legacy`, `src/webgpu`,
 `src/external`, `src/utils`
 
+#### Fixed: the example app was uninstallable
+
+`yarn examples:webgpu` failed with `Couldn't find the node_modules state file`.
+`examples/package.json` still pointed `@react-three/fiber` at
+`file:../lib/react-three-fiber-10.0.0-alpha.0.tgz`, a tarball deleted in #2606
+("unbundle r3f now its on npm") — so `yarn --cwd examples install` could not
+resolve and the app has been unusable since January.
+
+- `@react-three/fiber` -> `10.0.0-alpha.4` from npm, matching the root package
+- `three` -> `^0.185.1`, `@types/three` -> `^0.185.0`, likewise
+
+Also fixed a dev-only `ReferenceError: __MEDIAPIPE_TASKS_VISION_VERSION__ is
+not defined` thrown by `FaceLandmarker` at module scope. Vite's `define` only
+reaches files under the Vite root, and drei's `src/` sits outside the examples
+root, so the constant survived into the browser. The production build was
+always correct. Now injected as a runtime global for dev.
+
+**Note:** `examples/` is a separate project. It needs its own
+`yarn --cwd examples install`.
+
+**Files changed:** `examples/package.json`, `examples/yarn.lock`,
+`examples/vite.config.ts`
+
+### Known Issues
+
+- **`Stars` does not render under WebGPU.** Confirmed during alpha.6 verification.
+  Not addressed in this release; tracked for the next alpha.
+- **`Text` is unavailable on the `/webgpu` entry** until the
+  [@pmndrs/glyph](https://github.com/pmndrs/glyph) migration. `DetectGPU`'s story
+  renders nothing under WebGPU as a result, since its only output was a text label.
+- **Raw Node ESM cannot import the built entries** — `detect-gpu` is CommonJS and
+  its named exports are unreadable without a bundler. Vite, webpack, Next and
+  vitest all handle it. Pre-existing; alpha.5 behaves identically.
+
 ### Features
 
 #### `useGLTF` - New Options API & KTX2 Support

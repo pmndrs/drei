@@ -46,3 +46,18 @@ export const GltfDracoSt = {
   render: (args) => <GltfDracoScene {...args} />,
   name: 'Local Binaries',
 } satisfies Story
+
+//
+
+function GltfKtx2Scene(props: React.ComponentProps<typeof Gltf>) {
+  return <Gltf {...props} />
+}
+
+export const GltfKtx2St = {
+  args: {
+    src: 'shrine-ktx2-draco.glb',
+    options: { draco: true, ktx2: true },
+  },
+  render: (args) => <GltfKtx2Scene {...args} />,
+  name: 'KTX2 Textures',
+} satisfies Story

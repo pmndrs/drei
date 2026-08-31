@@ -7,14 +7,13 @@ import {
   vec2,
   vec3,
   vec4,
-  positionLocal,
-  positionView,
-  cameraViewMatrix,
-  modelWorldMatrix,
+  cameraProjectionMatrix,
+  screenSize,
   sin,
   cos,
   uv,
   length,
+  clamp,
 } from 'three/tsl'
 
 //* SparklesMaterial - WebGPU TSL Material for Instanced Quad Sparkles ==============================
@@ -48,12 +47,12 @@ export class SparklesMaterial extends SpriteNodeMaterial {
 
     //* Read Instance Attributes ==============================
     // These come from InstancedBufferAttributes on the geometry
-    const particlePosition = attribute('particlePosition', 'vec3')
-    const particleSize = attribute('size', 'float')
-    const particleSpeed = attribute('speed', 'float')
-    const particleOpacity = attribute('opacity', 'float')
-    const particleNoise = attribute('noise', 'vec3')
-    const particleColor = attribute('color', 'vec3')
+    const particlePosition = attribute<'vec3'>('particlePosition', 'vec3')
+    const particleSize = attribute<'float'>('size', 'float')
+    const particleSpeed = attribute<'float'>('speed', 'float')
+    const particleOpacity = attribute<'float'>('opacity', 'float')
+    const particleNoise = attribute<'vec3'>('noise', 'vec3')
+    const particleColor = attribute<'vec3'>('color', 'vec3')
 
     //* Position Node - Animated particle position ==============================
     // Apply noise-based animation to the particle center position
@@ -71,27 +70,33 @@ export class SparklesMaterial extends SpriteNodeMaterial {
       return pos
     })()
 
-    //* Scale Node - Size with distance attenuation ==============================
-    // gl_PointSize = size * 25.0 * pixelRatio * (1.0 / -viewPosition.z)
+    //* Scale Node - Size matching legacy gl_PointSize ==============================
+    // Legacy: gl_PointSize = size * 25.0 * pixelRatio * (1.0 / -viewPosition.z)
+    // For quads, the projection matrix already handles 1/-viewZ distance attenuation,
+    // so we only convert from pixel-space point size to world-space quad size:
+    // worldSize = pixelSize * 2.0 / (projectionMatrix[1][1] * viewportHeight)
     this.scaleNode = Fn(() => {
-      // Get view-space position for distance calculation
-      const worldPos = modelWorldMatrix.mul(vec4(this.positionNode, 1.0))
-      const viewPos = cameraViewMatrix.mul(worldPos)
-      // Distance attenuation: closer = larger
-      const distanceAttenuation = float(1).div(viewPos.z.negate())
-      // Scale factor (adjusted for quad vs point size difference)
-      const size = particleSize.mul(0.5).mul(this._pixelRatio).mul(distanceAttenuation)
+      const pixelSize = particleSize.mul(25.0).mul(this._pixelRatio)
+      // three 0.185 types element() only on ArrayNodeInterface, so matrix
+      // element access is not reachable through the mat4 uniform's type.
+      const projY = (
+        cameraProjectionMatrix as unknown as { element: (i: number) => { y: ReturnType<typeof float> } }
+      ).element(1).y
+      const viewportH = screenSize.y
+      const size = pixelSize.mul(2.0).div(projY.mul(viewportH))
       return vec2(size)
     })()
 
     //* Fragment Color with Radial Glow ==============================
+    // Note: colors may appear slightly different from legacy due to tonemapping differences
+    // (legacy applies #include <tonemapping_fragment> which can shift hues, e.g. orange → yellow)
     this.colorNode = Fn(() => {
       // uv() gives us 0-1 coordinates across the quad (equivalent to gl_PointCoord)
       const quadUV = uv()
       // Distance from center (0.5, 0.5)
       const distanceToCenter = length(quadUV.sub(vec2(0.5)))
-      // Glow strength: 0.05 / distance - 0.1 (same as legacy shader)
-      const strength = float(0.05).div(distanceToCenter).sub(0.1)
+      // Glow strength: clamp(0.05 / distance - 0.1, 0.0, 1.0) (same as legacy shader)
+      const strength = clamp(float(0.05).div(distanceToCenter).sub(0.1), 0.0, 1.0)
 
       // Final color with alpha based on strength and opacity
       return vec4(particleColor, strength.mul(particleOpacity))

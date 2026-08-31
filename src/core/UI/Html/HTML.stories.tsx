@@ -6,11 +6,15 @@ import { useTurntable } from '@sb/useTurntable'
 
 import { Icosahedron, Html, OrthographicCamera } from 'drei'
 import { HtmlProps, CalculatePosition } from './Html'
+import { HtmlMaterial as HtmlMaterialLegacy } from '@legacy/Materials/HtmlMaterial'
+import { HtmlMaterial as HtmlMaterialWebGPU } from '../../../webgpu/Materials/HtmlMaterial'
+import { PlatformSwitch } from '@sb/components/PlatformSwitch'
 import { useFrame, useThree } from '@react-three/fiber'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 export default {
   title: 'UI/Html',
+  tags: ['dual'],
   component: Html,
   decorators: [
     (Story, context) => (
@@ -172,24 +176,63 @@ function HTMLOccluderScene(props: HtmlProps) {
       <group ref={turntableRef}>
         <Icosahedron name="pink" args={[5, 5]} position={[0, 0, 0]}>
           <meshBasicMaterial color="hotpink" />
-          <Html {...props} position={[0, 0, -6]} className="html-story-label" occlude="blending">
-            Blending
-          </Html>
+          <PlatformSwitch
+            legacy={
+              <Html
+                {...props}
+                position={[0, 0, -6]}
+                className="html-story-label"
+                occlude="blending"
+                material={<HtmlMaterialLegacy transform={false} />}
+              >
+                Blending
+              </Html>
+            }
+            webgpu={
+              <Html
+                {...props}
+                position={[0, 0, -6]}
+                className="html-story-label"
+                occlude="blending"
+                material={<HtmlMaterialWebGPU transform={false} />}
+              >
+                Blending
+              </Html>
+            }
+          />
         </Icosahedron>
         <Icosahedron name="yellow" args={[5, 5]} position={[16, 0, 0]}>
           <meshBasicMaterial color="yellow" />
-          <Html
-            {...props}
-            transform
-            position={[0, 0, -6]}
-            className="html-story-label html-story-label-B"
-            occlude="blending"
-          >
-            Blending w/ transform
-          </Html>
+          <PlatformSwitch
+            legacy={
+              <Html
+                {...props}
+                transform
+                position={[0, 0, -6]}
+                className="html-story-label html-story-label-B"
+                occlude="blending"
+                material={<HtmlMaterialLegacy transform={true} />}
+              >
+                Blending w/ transform
+              </Html>
+            }
+            webgpu={
+              <Html
+                {...props}
+                transform
+                position={[0, 0, -6]}
+                className="html-story-label html-story-label-B"
+                occlude="blending"
+                material={<HtmlMaterialWebGPU transform={true} />}
+              >
+                Blending w/ transform
+              </Html>
+            }
+          />
         </Icosahedron>
         <Icosahedron ref={occluderRef} name="orange" args={[5, 5]} position={[0, 0, 16]}>
           <meshBasicMaterial color="orange" />
+          {/* @ts-expect-error - occluderRef type is compatible at runtime */}
           <Html {...props} position={[0, 0, -6]} className="html-story-label" occlude={[occluderRef]}>
             Raycast occlusion
           </Html>
@@ -205,4 +248,38 @@ export const HTMLOccluderSt = {
   args: {},
   render: (args) => <HTMLOccluderScene {...args} />,
   name: 'Occlusion',
+} satisfies Story
+
+//
+
+function HTMLBorderScene(props: HtmlProps) {
+  return (
+    <Icosahedron args={[5, 5]} position={[0, 0, 0]}>
+      <meshBasicMaterial color="hotpink" wireframe />
+      <Html {...props}>
+        <div
+          style={{
+            borderWidth: '4px',
+            borderStyle: 'solid',
+            borderColor: 'red',
+            borderRadius: '16px',
+            padding: '24px 32px',
+            background: 'white',
+            color: 'black',
+            fontSize: '40px',
+          }}
+        >
+          Border with radius
+        </div>
+      </Html>
+    </Icosahedron>
+  )
+}
+
+export const HTMLBorderSt = {
+  args: {
+    distanceFactor: 30,
+  },
+  render: (args) => <HTMLBorderScene {...args} />,
+  name: 'Border Radius (Firefox artifact)',
 } satisfies Story

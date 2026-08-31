@@ -5,7 +5,7 @@ export function FakeCloudMaterial(BaseMaterial: typeof Material) {
   const mat = new BaseMaterial() as Material
   //* Read Cloud Opacity Attribute ==============================
   // TSL automatically handles varying interpolation from vertex to fragment
-  const cloudOpacity = attribute('cloudOpacity', 'float')
+  const cloudOpacity = attribute<'float'>('cloudOpacity', 'float')
 
   //* Modify Opacity Node ==============================
   // @ts-ignore - NodeMaterial properties

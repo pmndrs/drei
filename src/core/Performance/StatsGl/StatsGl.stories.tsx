@@ -15,9 +15,7 @@ export default {
       </Setup>
     ),
   ],
-} satisfies Meta<typeof StatsGl>
-
-type Story = StoryObj<typeof StatsGl>
+} as Meta<typeof StatsGl>
 
 function StatsGlScene(props: React.ComponentProps<typeof StatsGl>) {
   return (
@@ -28,7 +26,7 @@ function StatsGlScene(props: React.ComponentProps<typeof StatsGl>) {
   )
 }
 
-export const StatsGlSt = {
+export const StatsGlSt: StoryObj = {
   render: (args) => <StatsGlScene {...args} />,
   name: 'Default',
-} satisfies Story
+}

@@ -5,33 +5,40 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 import { Setup } from '@sb/Setup'
 import { useTurntable } from '@sb/useTurntable'
 
-import { Text } from './Text'
+import { Text as LegacyText } from './Text'
 
 export default {
   title: 'UI/Text',
   tags: ['legacyOnly'],
-  component: Text,
+  component: LegacyText,
   decorators: [
-    (Story) => (
-      <Setup cameraPosition={new Vector3(0, 0, 200)}>
+    (Story, context) => (
+      <Setup
+        renderer={context.globals.renderer}
+        limitedTo="legacy"
+        controls={false}
+        cameraPosition={new Vector3(0, 0, 200)}
+      >
         <Story />
       </Setup>
     ),
   ],
-} satisfies Meta<typeof Text>
+} satisfies Meta<typeof LegacyText>
 
-type Story = StoryObj<typeof Text>
+type Story = StoryObj<typeof LegacyText>
 
-function TextScene(props: React.ComponentProps<typeof Text>) {
+const LOREM_TEXT =
+  'LOREM IPSUM DOLOR SIT AMET, CONSECTETUR ADIPISCING ELIT, SED DO EIUSMOD TEMPOR INCIDIDUNT UT LABORE ET DOLORE MAGNA ALIQUA. UT ENIM AD MINIM VENIAM, QUIS NOSTRUD EXERCITATION ULLAMCO LABORIS NISI UT ALIQUIP EX EA COMMODO CONSEQUAT. DUIS AUTE IRURE DOLOR IN REPREHENDERIT IN VOLUPTATE VELIT ESSE CILLUM DOLORE EU FUGIAT NULLA PARIATUR. EXCEPTEUR SINT OCCAECAT CUPIDATAT NON PROIDENT, SUNT IN CULPA QUI OFFICIA DESERUNT MOLLIT ANIM ID EST LABORUM.'
+
+//
+
+function TextScene(props: React.ComponentProps<typeof LegacyText>) {
   const ref = useTurntable()
 
   return (
-    <Text ref={ref} {...props}>
-      LOREM IPSUM DOLOR SIT AMET, CONSECTETUR ADIPISCING ELIT, SED DO EIUSMOD TEMPOR INCIDIDUNT UT LABORE ET DOLORE
-      MAGNA ALIQUA. UT ENIM AD MINIM VENIAM, QUIS NOSTRUD EXERCITATION ULLAMCO LABORIS NISI UT ALIQUIP EX EA COMMODO
-      CONSEQUAT. DUIS AUTE IRURE DOLOR IN REPREHENDERIT IN VOLUPTATE VELIT ESSE CILLUM DOLORE EU FUGIAT NULLA PARIATUR.
-      EXCEPTEUR SINT OCCAECAT CUPIDATAT NON PROIDENT, SUNT IN CULPA QUI OFFICIA DESERUNT MOLLIT ANIM ID EST LABORUM.
-    </Text>
+    <LegacyText ref={ref} {...props}>
+      {LOREM_TEXT}
+    </LegacyText>
   )
 }
 
@@ -53,16 +60,13 @@ export const TextSt = {
 
 //
 
-function TextOutlineScene(props: React.ComponentProps<typeof Text>) {
+function TextOutlineScene(props: React.ComponentProps<typeof LegacyText>) {
   const ref = useTurntable()
 
   return (
-    <Text ref={ref} {...props}>
-      LOREM IPSUM DOLOR SIT AMET, CONSECTETUR ADIPISCING ELIT, SED DO EIUSMOD TEMPOR INCIDIDUNT UT LABORE ET DOLORE
-      MAGNA ALIQUA. UT ENIM AD MINIM VENIAM, QUIS NOSTRUD EXERCITATION ULLAMCO LABORIS NISI UT ALIQUIP EX EA COMMODO
-      CONSEQUAT. DUIS AUTE IRURE DOLOR IN REPREHENDERIT IN VOLUPTATE VELIT ESSE CILLUM DOLORE EU FUGIAT NULLA PARIATUR.
-      EXCEPTEUR SINT OCCAECAT CUPIDATAT NON PROIDENT, SUNT IN CULPA QUI OFFICIA DESERUNT MOLLIT ANIM ID EST LABORUM.
-    </Text>
+    <LegacyText ref={ref} {...props}>
+      {LOREM_TEXT}
+    </LegacyText>
   )
 }
 
@@ -86,16 +90,13 @@ export const TextOutlineSt = {
 
 //
 
-function TextStrokeScene(props: React.ComponentProps<typeof Text>) {
+function TextStrokeScene(props: React.ComponentProps<typeof LegacyText>) {
   const ref = useTurntable()
 
   return (
-    <Text ref={ref} {...props}>
-      LOREM IPSUM DOLOR SIT AMET, CONSECTETUR ADIPISCING ELIT, SED DO EIUSMOD TEMPOR INCIDIDUNT UT LABORE ET DOLORE
-      MAGNA ALIQUA. UT ENIM AD MINIM VENIAM, QUIS NOSTRUD EXERCITATION ULLAMCO LABORIS NISI UT ALIQUIP EX EA COMMODO
-      CONSEQUAT. DUIS AUTE IRURE DOLOR IN REPREHENDERIT IN VOLUPTATE VELIT ESSE CILLUM DOLORE EU FUGIAT NULLA PARIATUR.
-      EXCEPTEUR SINT OCCAECAT CUPIDATAT NON PROIDENT, SUNT IN CULPA QUI OFFICIA DESERUNT MOLLIT ANIM ID EST LABORUM.
-    </Text>
+    <LegacyText ref={ref} {...props}>
+      {LOREM_TEXT}
+    </LegacyText>
   )
 }
 
@@ -119,16 +120,13 @@ export const TextStrokeSt = {
 
 //
 
-function TextShadowScene(props: React.ComponentProps<typeof Text>) {
+function TextShadowScene(props: React.ComponentProps<typeof LegacyText>) {
   const ref = useTurntable()
 
   return (
-    <Text ref={ref} {...props}>
-      LOREM IPSUM DOLOR SIT AMET, CONSECTETUR ADIPISCING ELIT, SED DO EIUSMOD TEMPOR INCIDIDUNT UT LABORE ET DOLORE
-      MAGNA ALIQUA. UT ENIM AD MINIM VENIAM, QUIS NOSTRUD EXERCITATION ULLAMCO LABORIS NISI UT ALIQUIP EX EA COMMODO
-      CONSEQUAT. DUIS AUTE IRURE DOLOR IN REPREHENDERIT IN VOLUPTATE VELIT ESSE CILLUM DOLORE EU FUGIAT NULLA PARIATUR.
-      EXCEPTEUR SINT OCCAECAT CUPIDATAT NON PROIDENT, SUNT IN CULPA QUI OFFICIA DESERUNT MOLLIT ANIM ID EST LABORUM.
-    </Text>
+    <LegacyText ref={ref} {...props}>
+      {LOREM_TEXT}
+    </LegacyText>
   )
 }
 
@@ -155,14 +153,16 @@ export const TextShadowSt = {
 
 //
 
-function TextRtlScene(props: React.ComponentProps<typeof Text>) {
+function TextRtlScene(props: React.ComponentProps<typeof LegacyText>) {
   const ref = useTurntable()
 
+  const rtlText =
+    'إن عدة الشهور عند الله اثنا عشر شهرا في كتاب الله يوم خلق السماوات والارض SOME LATIN TEXT HERE منها أربعة حرم ذلك الدين القيم فلا تظلموا فيهن أنفسكم وقاتلوا المشركين كافة كما يقاتلونكم كافة واعلموا أن الله مع المتقين'
+
   return (
-    <Text ref={ref} {...props}>
-      إن عدة الشهور عند الله اثنا عشر شهرا في كتاب الله يوم خلق السماوات والارض SOME LATIN TEXT HERE منها أربعة حرم ذلك
-      الدين القيم فلا تظلموا فيهن أنفسكم وقاتلوا المشركين كافة كما يقاتلونكم كافة واعلموا أن الله مع المتقين
-    </Text>
+    <LegacyText ref={ref} {...props}>
+      {rtlText}
+    </LegacyText>
   )
 }
 
@@ -188,24 +188,22 @@ export const TextRtl = {
 function CustomMaterialTextScene({ color, opacity }: { color: string; opacity: number }) {
   const ref = useTurntable()
 
+  const textProps = {
+    fontSize: 12,
+    maxWidth: 200,
+    lineHeight: 1,
+    letterSpacing: 0.02,
+    textAlign: 'left' as const,
+    font: 'https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff',
+    anchorX: 'center' as const,
+    anchorY: 'middle' as const,
+  }
+
   return (
-    <Text
-      ref={ref}
-      fontSize={12}
-      maxWidth={200}
-      lineHeight={1}
-      letterSpacing={0.02}
-      textAlign={'left'}
-      font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
-      anchorX="center"
-      anchorY="middle"
-    >
+    <LegacyText ref={ref} {...textProps}>
       <meshBasicMaterial side={DoubleSide} color={color} transparent opacity={opacity} />
-      LOREM IPSUM DOLOR SIT AMET, CONSECTETUR ADIPISCING ELIT, SED DO EIUSMOD TEMPOR INCIDIDUNT UT LABORE ET DOLORE
-      MAGNA ALIQUA. UT ENIM AD MINIM VENIAM, QUIS NOSTRUD EXERCITATION ULLAMCO LABORIS NISI UT ALIQUIP EX EA COMMODO
-      CONSEQUAT. DUIS AUTE IRURE DOLOR IN REPREHENDERIT IN VOLUPTATE VELIT ESSE CILLUM DOLORE EU FUGIAT NULLA PARIATUR.
-      EXCEPTEUR SINT OCCAECAT CUPIDATAT NON PROIDENT, SUNT IN CULPA QUI OFFICIA DESERUNT MOLLIT ANIM ID EST LABORUM.
-    </Text>
+      {LOREM_TEXT}
+    </LegacyText>
   )
 }
 

@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Vector3 } from 'three'
 import { Canvas, CanvasProps, useThree } from '@react-three/fiber'
 
-import { OrbitControls } from '../src'
+import { OrbitControls } from 'drei'
 import { getTestEnvironment } from './testing'
 
 //* Types ==============================

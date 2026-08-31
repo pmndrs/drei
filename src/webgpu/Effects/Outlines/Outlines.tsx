@@ -51,11 +51,11 @@ export type OutlinesProps = Omit<ThreeElements['group'], 'ref'> & {
 
 class OutlinesMaterial extends MeshBasicNodeMaterial {
   //* Private Uniform Nodes --
-  private _screenspace: THREE.UniformNode<number> // Using number as bool (0/1)
-  private _color: THREE.UniformNode<THREE.Color>
-  private _opacityValue: THREE.UniformNode<number>
-  private _thickness: THREE.UniformNode<number>
-  private _size: THREE.UniformNode<THREE.Vector2>
+  private _screenspace: THREE.UniformNode<'float', number> // Using number as bool (0/1)
+  private _color: THREE.UniformNode<'color', THREE.Color>
+  private _opacityValue: THREE.UniformNode<'float', number>
+  private _thickness: THREE.UniformNode<'float', number>
+  private _size: THREE.UniformNode<'vec2', THREE.Vector2>
 
   /** Type flag for identification */
   readonly isOutlinesMaterial = true

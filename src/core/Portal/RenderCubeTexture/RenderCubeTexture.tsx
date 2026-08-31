@@ -12,6 +12,7 @@ import * as THREE from '#three'
 import * as React from 'react'
 import { ComputeFunction, ReactThreeFiber, ThreeElements, createPortal, useFrame, useThree } from '@react-three/fiber'
 import { ForwardRefComponent } from '@utils/ts-utils'
+import { CubeRenderTarget } from '#drei-platform'
 
 //* Types ==============================
 
@@ -47,14 +48,14 @@ export type RenderCubeTextureProps = Omit<ThreeElements['texture'], 'ref' | 'arg
 }
 
 type CubeRenderTargetPair = {
-  a: THREE.WebGLCubeRenderTarget
-  b: THREE.WebGLCubeRenderTarget
+  a: CubeRenderTarget
+  b: CubeRenderTarget
 }
 
 export type RenderCubeTextureApi = {
   scene: THREE.Scene
   /** The currently active (read) FBO */
-  fbo: THREE.WebGLCubeRenderTarget
+  fbo: CubeRenderTarget
   /** The cube camera */
   camera: THREE.CubeCamera
 }
@@ -117,12 +118,12 @@ export const RenderCubeTexture: ForwardRefComponent<RenderCubeTextureProps, Rend
           generateMipmaps,
         }
 
-        const fboA = new THREE.WebGLCubeRenderTarget(fboSize, settings)
+        const fboA = new CubeRenderTarget(fboSize, settings)
         fboA.texture.isRenderTargetTexture = !flip
         fboA.texture.flipY = true
         fboA.texture.type = THREE.HalfFloatType
 
-        const fboB = new THREE.WebGLCubeRenderTarget(fboSize, settings)
+        const fboB = new CubeRenderTarget(fboSize, settings)
         fboB.texture.isRenderTargetTexture = !flip
         fboB.texture.flipY = true
         fboB.texture.type = THREE.HalfFloatType
@@ -235,8 +236,8 @@ function DynamicTexture({
   ...props
 }: {
   displayTextureRef: React.MutableRefObject<THREE.CubeTexture>
-  fboA: THREE.WebGLCubeRenderTarget
-  fboB: THREE.WebGLCubeRenderTarget
+  fboA: CubeRenderTarget
+  fboB: CubeRenderTarget
   readBufferIndex: React.MutableRefObject<number>
 } & Omit<ThreeElements['texture'], 'ref' | 'args'>) {
   const materialRef = React.useRef<THREE.Material | null>(null)
@@ -306,8 +307,8 @@ function Container({
   renderPriority: number
   children: React.ReactNode
   camera: THREE.CubeCamera
-  fboA: THREE.WebGLCubeRenderTarget
-  fboB: THREE.WebGLCubeRenderTarget
+  fboA: CubeRenderTarget
+  fboB: CubeRenderTarget
   readBufferIndex: React.MutableRefObject<number>
   displayTextureRef: React.MutableRefObject<THREE.CubeTexture>
 }) {

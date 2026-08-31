@@ -17,10 +17,12 @@ export type Text3DProps = Omit<ThreeElements['mesh'], 'ref'> & {
   font: FontData | string
   bevelSegments?: number
   smooth?: number
-} & Omit<TextGeometryParameters, 'font'>
+  /** Depth to extrude the text (passed as `depth` to TextGeometry) */
+  height?: number
+} & Omit<TextGeometryParameters, 'font' | 'depth'>
 
 const types = ['string', 'number']
-const getTextFromChildren = (children) => {
+const getTextFromChildren = (children: React.ReactNode) => {
   let label = ''
   const rest: React.ReactNode[] = []
   React.Children.forEach(children, (child) => {
@@ -98,7 +100,7 @@ export const Text3D: ForwardRefComponent<
       return {
         font,
         size,
-        height,
+        depth: height,
         bevelThickness,
         bevelSize,
         bevelEnabled,

@@ -4,7 +4,7 @@ import * as THREE from '#three'
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 import { useThree } from '@react-three/fiber'
 import { suspend } from 'suspend-react'
-import { type default as Hls, Events } from 'hls.js'
+import type Hls from 'hls.js'
 
 const IS_BROWSER = /* @__PURE__ */ (() =>
   typeof window !== 'undefined' &&
@@ -84,11 +84,11 @@ export function useVideoTexture(
           ...videoProps,
         })
 
-        // hlsjs extension
+        // hlsjs extension (dynamically loaded only when .m3u8 is used)
         if (src && IS_BROWSER && src.endsWith('.m3u8')) {
           const hls = (hlsRef.current = await getHls(hlsConfig))
-          if (hls) {
-            hls.on(Events.MEDIA_ATTACHED, () => void hls.loadSource(src))
+          if (hls && _HLSModule) {
+            hls.on(_HLSModule.Events.MEDIA_ATTACHED, () => void hls.loadSource(src))
             hls.attachMedia(video)
           }
         }

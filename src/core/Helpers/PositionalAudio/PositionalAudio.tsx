@@ -24,7 +24,7 @@ export type PositionalAudioProps = Omit<ThreeElements['positionalAudio'], 'ref' 
  * ```
  */
 export const PositionalAudio: ForwardRefComponent<PositionalAudioProps, PositionalAudioImpl> =
-  /* @__PURE__ */ React.forwardRef(({ url, distance = 1, loop = true, autoplay, ...props }, ref) => {
+  /* @__PURE__ */ React.forwardRef(({ url, distance = 1, loop = false, autoplay, ...props }, ref) => {
     const sound = React.useRef<PositionalAudioImpl>(null!)
     React.useImperativeHandle(ref, () => sound.current, [])
     const camera = useThree(({ camera }) => camera)
@@ -37,7 +37,9 @@ export const PositionalAudio: ForwardRefComponent<PositionalAudioProps, Position
         _sound.setBuffer(Array.isArray(buffer) ? buffer[0] : buffer)
         _sound.setRefDistance(distance)
         _sound.setLoop(loop)
-        if (autoplay && !_sound.isPlaying) _sound.play()
+        if (autoplay && !_sound.isPlaying) {
+          _sound.play()
+        }
       }
     }, [buffer, camera, distance, loop])
 

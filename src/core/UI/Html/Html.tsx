@@ -10,7 +10,6 @@ import {
   PerspectiveCamera,
   OrthographicCamera,
   Raycaster,
-  DoubleSide,
   Mesh,
 } from '#three'
 import { Assign } from 'utility-types'
@@ -198,6 +197,8 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
     const { gl, camera, scene, size, raycaster, events, viewport } = useThree()
     const forceEven = useThree((state) => (state.internal as any).forceEven) as boolean | undefined
 
+    // v10 r3f frustum is available
+    const { frustum } = useThree()
     const [el] = React.useState(() => document.createElement(as))
     const root = React.useRef<ReactDOM.Root>(null)
     const group = React.useRef<Group>(null!)
@@ -236,24 +237,20 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
         // Only create root once to prevent memory leaks from orphaned roots
         if (!root.current) {
           root.current = ReactDOM.createRoot(el)
-        }
-        scene.updateMatrixWorld()
-        if (transform) {
-          el.style.cssText = `position:absolute;top:0;left:0;pointer-events:none;overflow:hidden;`
-        } else {
-          // Position off-screen initially; useFrame will position correctly on first frame
-          el.style.cssText = `position:absolute;top:0;left:0;transform:translate3d(0,-9999px,0);transform-origin:0 0;`
+          scene.updateMatrixWorld()
+          if (transform) {
+            el.style.cssText = `position:absolute;top:0;left:0;pointer-events:none;overflow:hidden;`
+          } else {
+            // Position off-screen initially; useFrame will position correctly on first frame
+            el.style.cssText = `position:absolute;top:0;left:0;transform:translate3d(0,-9999px,0);transform-origin:0 0;`
+          }
         }
         if (target) {
           if (prepend) target.prepend(el)
           else target.appendChild(el)
         }
         return () => {
-          // Unmount React root BEFORE removing DOM element to ensure proper event listener cleanup
-          if (root.current) {
-            root.current.unmount()
-            root.current = null
-          }
+          // Only remove from DOM; root lifecycle is managed by the dedicated unmount effect
           if (target && target.contains(el)) {
             target.removeChild(el)
           }
@@ -421,16 +418,14 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
             const el = transformOuterRef.current.children[0]
 
             if (el?.clientWidth && el?.clientHeight) {
-              const { isOrthographicCamera } = camera as OrthographicCamera
-
-              if (isOrthographicCamera || geometry) {
+              if (geometry) {
                 if (props.scale) {
                   if (!Array.isArray(props.scale)) {
                     occlusionMeshRef.current.scale.setScalar(1 / (props.scale as number))
                   } else if ((props.scale as unknown as Vector3).isVector3) {
                     occlusionMeshRef.current.scale.copy((props.scale as unknown as Vector3).clone().divideScalar(1))
                   } else {
-                    occlusionMeshRef.current.scale.set(1 / props.scale[0], 1 / props.scale[1], 1 / props.scale[2])
+                    occlusionMeshRef.current.scale.set(1 / props.scale[0]!, 1 / props.scale[1]!, 1 / props.scale[2]!)
                   }
                 }
               } else {
@@ -462,65 +457,12 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
       }
     })
 
-    const shaders = React.useMemo(
-      () => ({
-        vertexShader: !transform
-          ? /* glsl */ `
-          /*
-            This shader is from the THREE's SpriteMaterial.
-            We need to turn the backing plane into a Sprite
-            (make it always face the camera) if "transfrom"
-            is false.
-          */
-          #include <common>
-
-          void main() {
-            vec2 center = vec2(0., 1.);
-            float rotation = 0.0;
-
-            // This is somewhat arbitrary, but it seems to work well
-            // Need to figure out how to derive this dynamically if it even matters
-            float size = 0.03;
-
-            vec4 mvPosition = modelViewMatrix * vec4( 0.0, 0.0, 0.0, 1.0 );
-            vec2 scale;
-            scale.x = length( vec3( modelMatrix[ 0 ].x, modelMatrix[ 0 ].y, modelMatrix[ 0 ].z ) );
-            scale.y = length( vec3( modelMatrix[ 1 ].x, modelMatrix[ 1 ].y, modelMatrix[ 1 ].z ) );
-
-            bool isPerspective = isPerspectiveMatrix( projectionMatrix );
-            if ( isPerspective ) scale *= - mvPosition.z;
-
-            vec2 alignedPosition = ( position.xy - ( center - vec2( 0.5 ) ) ) * scale * size;
-            vec2 rotatedPosition;
-            rotatedPosition.x = cos( rotation ) * alignedPosition.x - sin( rotation ) * alignedPosition.y;
-            rotatedPosition.y = sin( rotation ) * alignedPosition.x + cos( rotation ) * alignedPosition.y;
-            mvPosition.xy += rotatedPosition;
-
-            gl_Position = projectionMatrix * mvPosition;
-          }
-      `
-          : undefined,
-        fragmentShader: /* glsl */ `
-        void main() {
-          gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
-        }
-      `,
-      }),
-      [transform]
-    )
-
     return (
       <group {...props} ref={group}>
         {occlude && !isRayCastOcclusion && (
           <mesh castShadow={castShadow} receiveShadow={receiveShadow} ref={occlusionMeshRef}>
             {geometry || <planeGeometry />}
-            {material || (
-              <shaderMaterial
-                side={DoubleSide}
-                vertexShader={shaders.vertexShader}
-                fragmentShader={shaders.fragmentShader}
-              />
-            )}
+            {material}
           </mesh>
         )}
       </group>

@@ -7,9 +7,9 @@ import { AxisArrow } from './AxisArrow'
 import { AxisRotator } from './AxisRotator'
 import { PlaneSlider } from './PlaneSlider'
 import { ScalingSphere } from './ScalingSphere'
-import { OnDragStartProps, OnHoverProps, context, Line, resolveObject } from './context'
+import { OnDragStartProps, OnDragProps, OnHoverProps, context, Line, resolveObject } from './context'
 
-export type { OnDragStartProps, OnHoverProps } from './context'
+export type { OnDragStartProps, OnDragProps, OnHoverProps } from './context'
 import { calculateScaleFactor } from '../../../utils/calculateScaleFactor'
 import { LineProps } from '#drei-platform'
 
@@ -21,6 +21,7 @@ const mW = /* @__PURE__ */ new THREE.Matrix4()
 const mL = /* @__PURE__ */ new THREE.Matrix4()
 const mL0Inv = /* @__PURE__ */ new THREE.Matrix4()
 const mdL = /* @__PURE__ */ new THREE.Matrix4()
+const mdW = /* @__PURE__ */ new THREE.Matrix4()
 const mG = /* @__PURE__ */ new THREE.Matrix4()
 
 const bb = /* @__PURE__ */ new THREE.Box3()
@@ -82,9 +83,9 @@ export type PivotControlsProps = {
   /** Drag start event */
   onDragStart?: (props: OnDragStartProps) => void
   /** Drag event */
-  onDrag?: (l: THREE.Matrix4, deltaL: THREE.Matrix4, w: THREE.Matrix4, deltaW: THREE.Matrix4) => void
+  onDrag?: (props: OnDragProps) => void
   /** Drag end event */
-  onDragEnd?: () => void
+  onDragEnd?: (props: OnDragProps) => void
   /** Hover event, fired when pointer enters/exits a gizmo component */
   onHover?: (props: OnHoverProps) => void
   /** Set this to false if you want the gizmo to be visible through faces */
@@ -116,7 +117,7 @@ export type PivotControlsProps = {
  * <PivotControls
  *   matrix={matrix}
  *   autoTransform={false}
- *   onDrag={({ matrix: m }) => matrix.copy(m)}
+ *   onDrag={({ local }) => matrix.copy(local)}
  * />
  * ```
  */
@@ -240,7 +241,8 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
           onDragStart && onDragStart(props)
           invalidate()
         },
-        onDrag: (mdW: THREE.Matrix4) => {
+        onDrag: (mdW_: THREE.Matrix4) => {
+          mdW.copy(mdW_)
           mP.copy(parentRef.current.matrixWorld)
           mPInv.copy(mP).invert()
           // After applying the delta
@@ -254,12 +256,12 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
           // Update the attached object
           const target = resolveObject(object)
           if (target) target.matrix.copy(mL)
-          onDrag && onDrag(mL, mdL, mW, mdW)
+          onDrag && onDrag({ local: mL, deltaLocal: mdL, world: mW, deltaWorld: mdW })
           invalidate()
         },
         onDragEnd: () => {
           dragState.current = null
-          if (onDragEnd) onDragEnd()
+          if (onDragEnd) onDragEnd({ local: mL, deltaLocal: mdL, world: mW, deltaWorld: mdW })
           invalidate()
         },
         onHover: (props: OnHoverProps) => {
@@ -318,7 +320,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
         ref.current.matrix = matrix
       }
       // Update gizmo scale in accordance with matrix changes
-      // Without this, there might be noticable turbulences if scaling happens fast enough
+      // Without this, there might be noticeable turbulences if scaling happens fast enough
       ref.current.updateWorldMatrix(true, true)
 
       mG.makeRotationFromEuler(gizmoRef.current.rotation)

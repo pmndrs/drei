@@ -157,6 +157,7 @@ export const Instances: ForwardRefComponent<InstancesProps, THREE.InstancedMesh>
   const parentRef = React.useRef<InstancedMesh>(null!)
   React.useImperativeHandle(ref, () => parentRef.current, [])
   const [instances, setInstances] = React.useState<React.RefObject<PositionMesh>[]>([])
+  const boundsDirty = React.useRef(true)
   const [[matrices, colors]] = React.useState(() => {
     const mArray = new Float32Array(limit * 16)
     for (let i = 0; i < limit; i++) tempMatrix.identity().toArray(mArray, i * 16)
@@ -165,21 +166,15 @@ export const Instances: ForwardRefComponent<InstancesProps, THREE.InstancedMesh>
 
   React.useEffect(() => {
     // We might be a frame too late? 🤷‍♂️
-    parentRef.current.instanceMatrix.needsUpdate = true
+    if (parentRef.current) parentRef.current.instanceMatrix.needsUpdate = true
   })
 
   let iterations = 0
   let count = 0
 
-  const attributes = React.useRef<[string, THREE.InstancedBufferAttribute][]>([])
-  React.useLayoutEffect(() => {
-    attributes.current = Object.entries(parentRef.current.geometry.attributes).filter(([_name, value]) =>
-      isInstancedBufferAttribute(value)
-    ) as [string, THREE.InstancedBufferAttribute][]
-  })
-
   useFrame(() => {
     if (frames === Infinity || iterations < frames) {
+      if (!parentRef.current) return
       parentRef.current.updateMatrix()
       parentRef.current.updateMatrixWorld()
       parentMatrix.copy(parentRef.current.matrixWorld).invert()
@@ -205,6 +200,11 @@ export const Instances: ForwardRefComponent<InstancesProps, THREE.InstancedMesh>
       }
       iterations++
     }
+    if (boundsDirty.current && (frames === Infinity || iterations === frames)) {
+      boundsDirty.current = false
+      if (parentRef.current.boundingBox) parentRef.current.computeBoundingBox()
+      if (parentRef.current.boundingSphere) parentRef.current.computeBoundingSphere()
+    }
   })
 
   const api = React.useMemo(
@@ -212,7 +212,11 @@ export const Instances: ForwardRefComponent<InstancesProps, THREE.InstancedMesh>
       getParent: () => parentRef,
       subscribe: (ref) => {
         setInstances((instances) => [...instances, ref])
-        return () => setInstances((instances) => instances.filter((item) => item.current !== ref.current))
+        boundsDirty.current = true
+        return () => {
+          setInstances((instances) => instances.filter((item) => item.current !== ref.current))
+          boundsDirty.current = true
+        }
       },
     }),
     []
@@ -254,20 +258,27 @@ export const Merged: ForwardRefComponent<MergedProps, THREE.Group> = /* @__PURE_
 >(function Merged({ meshes, children, ...props }, ref) {
   const isArray = Array.isArray(meshes)
   // Filter out meshes from collections, which may contain non-meshes
-  if (!isArray) for (const key of Object.keys(meshes)) if (!meshes[key].isMesh) delete meshes[key]
+  if (!isArray) for (const key of Object.keys(meshes)) if (!(meshes[key] as THREE.Mesh).isMesh) delete meshes[key]
 
-  const render = (args) =>
-    isArray
-      ? children(...args)
-      : children(
-          Object.keys(meshes)
-            .filter((key) => meshes[key].isMesh)
-            .reduce((acc, key, i) => ({ ...acc, [key]: args[i] }), {})
-        )
+  const render = (args: React.FC<InstanceProps>[]) => {
+    if (isArray) {
+      return children(
+        ...(args as [React.FC<InstanceProps> & Record<string, React.FC<InstanceProps>>, ...React.FC<InstanceProps>[]])
+      )
+    }
+    // Build object mapping mesh keys to instance components
+    const instanceMap = {} as React.FC<InstanceProps> & Record<string, React.FC<InstanceProps>>
+    const keys = Object.keys(meshes).filter((key) => (meshes[key] as THREE.Mesh).isMesh)
+    keys.forEach((key, i) => {
+      ;(instanceMap as Record<string, React.FC<InstanceProps>>)[key] = args[i]
+    })
+    return children(instanceMap)
+  }
 
-  const components = (isArray ? meshes : Object.values(meshes)).map(({ geometry, material }) => (
-    <Instances key={geometry.uuid} geometry={geometry} material={material} {...props} />
-  ))
+  const components = (isArray ? meshes : Object.values(meshes)).map((mesh) => {
+    const { geometry, material } = mesh as THREE.Mesh
+    return <Instances key={geometry.uuid} geometry={geometry} material={material} {...props} />
+  })
 
   return <group ref={ref}>{renderRecursive(render, components)}</group>
 })
@@ -399,6 +410,7 @@ export const InstancedAttribute = React.forwardRef<THREE.InstancedBufferAttribut
         iterations++
       }
     })
+    // @ts-expect-error - args are dynamically set in useLayoutEffect, not needed for initial render
     return <instancedBufferAttribute ref={ref} usage={usage} normalized={normalized} />
   }
 )

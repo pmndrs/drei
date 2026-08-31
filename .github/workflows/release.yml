@@ -28,7 +28,7 @@ jobs:
       - run: corepack enable
       - uses: actions/setup-node@v4
         with:
-          node-version-file: '.node-version'
+          node-version-file: '.nvmrc'
           cache: 'yarn'
       - run: yarn install
       - run: yarn test:lint
@@ -37,12 +37,17 @@ jobs:
   # Build the package and run all tests
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - run: corepack enable
       - uses: actions/setup-node@v4
         with:
-          node-version-file: '.node-version'
+          node-version-file: '.nvmrc'
           cache: 'yarn'
       - run: yarn install
       - run: yarn build
@@ -64,11 +69,11 @@ jobs:
       - run: corepack enable
       - uses: actions/setup-node@v4
         with:
-          node-version-file: '.node-version'
+          node-version-file: '.nvmrc'
           cache: 'yarn'
       - run: yarn install
       - run: yarn build
-      - run: yarn build-storybook
+      - run: yarn build-storybook:prod
 
       # Install Playwright browsers for parity tests
       - name: Install Playwright browsers
@@ -107,7 +112,7 @@ jobs:
       - run: corepack enable
       - uses: actions/setup-node@v4
         with:
-          node-version-file: '.node-version'
+          node-version-file: '.nvmrc'
           cache: 'yarn'
       - run: yarn install
       - run: yarn build
@@ -116,4 +121,3 @@ jobs:
       - run: yarn release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

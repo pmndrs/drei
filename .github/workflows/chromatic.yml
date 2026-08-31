@@ -1,0 +1,50 @@
+name: chromatic
+
+on:
+  push:
+    branches:
+      - master
+      - alpha
+  pull_request: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  chromatic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Chromatic needs full git history for baseline detection
+
+      - run: corepack enable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+
+      - run: yarn install
+
+      # Build the package first (dist/)
+      - name: Build package
+        run: yarn build
+
+      # Build Storybook against dist
+      - name: Build Storybook (from dist)
+        run: yarn build-storybook:prod --stats-json
+
+      # Run Chromatic
+      - name: Publish to Chromatic
+        uses: chromaui/action@latest
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          storybookBuildDir: storybook-static
+          exitZeroOnChanges: true
+          exitOnceUploaded: true
+          onlyChanged: true

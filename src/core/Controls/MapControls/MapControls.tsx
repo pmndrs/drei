@@ -47,22 +47,33 @@ export const MapControls: ForwardRefComponent<MapControlsProps, MapControlsImpl>
 
   React.useEffect(() => {
     controls.connect(explDomElement)
+    return () => void controls.dispose()
+  }, [explDomElement, controls])
+
+  React.useEffect(() => {
     const callback = (e: THREE.Event) => {
       invalidate()
       if (onChange) onChange(e)
     }
-    controls.addEventListener('change', callback)
 
-    if (onStart) controls.addEventListener('start', onStart)
-    if (onEnd) controls.addEventListener('end', onEnd)
+    const onStartCb = (e: THREE.Event) => {
+      if (onStart) onStart(e)
+    }
+
+    const onEndCb = (e: THREE.Event) => {
+      if (onEnd) onEnd(e)
+    }
+
+    controls.addEventListener('change', callback)
+    controls.addEventListener('start', onStartCb)
+    controls.addEventListener('end', onEndCb)
 
     return () => {
-      controls.dispose()
+      controls.removeEventListener('start', onStartCb)
+      controls.removeEventListener('end', onEndCb)
       controls.removeEventListener('change', callback)
-      if (onStart) controls.removeEventListener('start', onStart)
-      if (onEnd) controls.removeEventListener('end', onEnd)
     }
-  }, [onChange, onStart, onEnd, controls, invalidate, explDomElement])
+  }, [onChange, onStart, onEnd, controls, invalidate])
 
   React.useEffect(() => {
     if (makeDefault) {
@@ -73,7 +84,9 @@ export const MapControls: ForwardRefComponent<MapControlsProps, MapControlsImpl>
     }
   }, [makeDefault, controls])
 
-  useFrame(() => controls.update(), -1)
+  useFrame(() => {
+    if (controls.enabled) controls.update()
+  }, -1)
 
   return <primitive ref={ref} object={controls} enableDamping {...rest} />
 })

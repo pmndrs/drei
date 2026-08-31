@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { useThree, createPortal, useFrame, extend, Euler, applyProps, ThreeElement } from '@react-three/fiber'
-import { WebGLCubeRenderTarget, Texture, Scene, CubeCamera, HalfFloatType, CubeTexture } from '#three'
+import { Texture, Scene, CubeCamera, HalfFloatType, CubeTexture } from '#three'
+import { CubeRenderTarget } from '#drei-platform'
 import { GroundedSkybox as GroundProjectedEnvImpl } from 'three/examples/jsm/objects/GroundedSkybox.js'
 import { PresetsType } from '../environment-assets'
 import { EnvironmentLoaderProps, useEnvironment } from '../useEnvironment/useEnvironment'
@@ -259,7 +260,7 @@ export function EnvironmentPortal({
   const camera = React.useRef<CubeCamera>(null!)
   const [virtualScene] = React.useState(() => new Scene())
   const fbo = React.useMemo(() => {
-    const fbo = new WebGLCubeRenderTarget(resolution)
+    const fbo = new CubeRenderTarget(resolution)
     fbo.texture.type = HalfFloatType
     return fbo
   }, [resolution])

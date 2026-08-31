@@ -40,14 +40,14 @@ import {
 export class SpotLightMaterial extends MeshBasicNodeMaterial {
   //* Private Uniform Nodes --
   private _depth: THREE.TextureNode
-  private _opacity: THREE.UniformNode<number>
-  private _attenuation: THREE.UniformNode<number>
-  private _anglePower: THREE.UniformNode<number>
-  private _spotPosition: THREE.UniformNode<THREE.Vector3>
-  private _lightColor: THREE.UniformNode<THREE.Color>
-  private _cameraNear: THREE.UniformNode<number>
-  private _cameraFar: THREE.UniformNode<number>
-  private _resolution: THREE.UniformNode<THREE.Vector2>
+  private _opacity: THREE.UniformNode<'float', number>
+  private _attenuation: THREE.UniformNode<'float', number>
+  private _anglePower: THREE.UniformNode<'float', number>
+  private _spotPosition: THREE.UniformNode<'vec3', THREE.Vector3>
+  private _lightColor: THREE.UniformNode<'color', THREE.Color>
+  private _cameraNear: THREE.UniformNode<'float', number>
+  private _cameraFar: THREE.UniformNode<'float', number>
+  private _resolution: THREE.UniformNode<'vec2', THREE.Vector2>
 
   constructor() {
     super()
@@ -91,18 +91,18 @@ export class SpotLightMaterial extends MeshBasicNodeMaterial {
     //* VERTEX: View-space normal for angle calculation --
     // Transform local normal to view space
     // modelViewMatrix.transformDirection() properly transforms direction vectors
-    const vNormal = varying(normalize(modelViewMatrix.transformDirection(normalLocal)), 'vNormal')
+    const vNormal = varying<'vec3'>(normalize(modelViewMatrix.transformDirection(normalLocal)), 'vNormal')
 
     //* VERTEX: Distance-based intensity --
     // Fade based on distance from cone tip (spotPosition)
     // intensity = 1 - saturate(distance / attenuation)
-    const vIntensity = varying(
+    const vIntensity = varying<'float'>(
       saturate(float(1).sub(distance(positionWorld, spotPositionUniform).div(attenuationUniform))),
       'vIntensity'
     )
 
     //* VERTEX: View-space Z for depth comparison --
-    const vViewZ = varying(positionView.z, 'vViewZ')
+    const vViewZ = varying<'float'>(positionView.z, 'vViewZ')
 
     //* FRAGMENT: Final color calculation --
     this.colorNode = Fn(() => {

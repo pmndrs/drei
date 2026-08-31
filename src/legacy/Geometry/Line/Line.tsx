@@ -62,12 +62,13 @@ export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = /* @_
       if (p instanceof Vector3) return [(p as Vector3).x, (p as Vector3).y, (p as Vector3).z]
       if (p instanceof Vector4) return [(p as Vector4).x, (p as Vector4).y, (p as Vector4).z]
       if (p instanceof Vector2) return [(p as Vector2).x, (p as Vector2).y, 0]
-      if (isArray && p.length === 3) return [p[0], p[1], p[2]]
-      if (isArray && p.length === 2) return [p[0], p[1], 0]
+      // length is guarded above; FiberVector2|3 is a tuple union TS can't narrow through
+      if (isArray && p.length === 3) return [p[0]!, p[1]!, p[2]!]
+      if (isArray && p.length === 2) return [p[0]!, p[1]!, 0]
       return p
     })
 
-    geom.setPositions(pValues.flat())
+    geom.setPositions(pValues.flat() as number[])
 
     if (vertexColors) {
       // using vertexColors requires the color value to be white see #1813

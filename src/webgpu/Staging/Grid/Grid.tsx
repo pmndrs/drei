@@ -71,19 +71,19 @@ export type GridProps = Omit<ThreeElements['mesh'], 'ref' | 'args'> &
 
 class GridMaterialImpl extends MeshBasicNodeMaterial {
   //* Private Uniform Nodes --
-  private _cellSize: THREE.UniformNode<number>
-  private _sectionSize: THREE.UniformNode<number>
-  private _fadeDistance: THREE.UniformNode<number>
-  private _fadeStrength: THREE.UniformNode<number>
-  private _fadeFrom: THREE.UniformNode<number>
-  private _cellThickness: THREE.UniformNode<number>
-  private _sectionThickness: THREE.UniformNode<number>
-  private _cellColor: THREE.UniformNode<THREE.Color>
-  private _sectionColor: THREE.UniformNode<THREE.Color>
-  private _infiniteGrid: THREE.UniformNode<number> // bool as 0/1
-  private _followCamera: THREE.UniformNode<number> // bool as 0/1
-  private _worldCamProjPosition: THREE.UniformNode<THREE.Vector3>
-  private _worldPlanePosition: THREE.UniformNode<THREE.Vector3>
+  private _cellSize: THREE.UniformNode<'float', number>
+  private _sectionSize: THREE.UniformNode<'float', number>
+  private _fadeDistance: THREE.UniformNode<'float', number>
+  private _fadeStrength: THREE.UniformNode<'float', number>
+  private _fadeFrom: THREE.UniformNode<'float', number>
+  private _cellThickness: THREE.UniformNode<'float', number>
+  private _sectionThickness: THREE.UniformNode<'float', number>
+  private _cellColor: THREE.UniformNode<'color', THREE.Color>
+  private _sectionColor: THREE.UniformNode<'color', THREE.Color>
+  private _infiniteGrid: THREE.UniformNode<'float', number> // bool as 0/1
+  private _followCamera: THREE.UniformNode<'float', number> // bool as 0/1
+  private _worldCamProjPosition: THREE.UniformNode<'vec3', THREE.Vector3>
+  private _worldPlanePosition: THREE.UniformNode<'vec3', THREE.Vector3>
 
   /** Type flag for identification */
   readonly isGridMaterial = true
@@ -150,7 +150,7 @@ class GridMaterialImpl extends MeshBasicNodeMaterial {
       return localPos
     })
 
-    const vLocalPosition = varying(computeLocalPosition(), 'vLocalPosition')
+    const vLocalPosition = varying<'vec3'>(computeLocalPosition(), 'vLocalPosition')
 
     // World position for fade distance calculation
     const computeWorldPosition = Fn(() => {
@@ -158,7 +158,7 @@ class GridMaterialImpl extends MeshBasicNodeMaterial {
       return modelWorldMatrix.mul(vec4(localPos, 1.0)).xyz
     })
 
-    const vWorldPosition = varying(computeWorldPosition(), 'vWorldPosition')
+    const vWorldPosition = varying<'vec3'>(computeWorldPosition(), 'vWorldPosition')
 
     //* Position Node: Returns LOCAL space position --
     // NodeMaterial automatically applies MVP: projectionMatrix * viewMatrix * modelMatrix * positionNode
@@ -205,8 +205,9 @@ class GridMaterialImpl extends MeshBasicNodeMaterial {
       const worldPosition = vWorldPosition
 
       // Calculate cell and section grid intensities
-      const g1 = getGrid(localPosition, cellSizeUniform, cellThicknessUniform)
-      const g2 = getGrid(localPosition, sectionSizeUniform, sectionThicknessUniform)
+      // getGrid is declared with `any[]` inputs, so its float return is untyped.
+      const g1 = getGrid(localPosition, cellSizeUniform, cellThicknessUniform) as unknown as THREE.Node<'float'>
+      const g2 = getGrid(localPosition, sectionSizeUniform, sectionThicknessUniform) as unknown as THREE.Node<'float'>
 
       // Fade calculation based on distance from camera projection
       const from = worldCamProjPositionUniform.mul(fadeFromUniform)

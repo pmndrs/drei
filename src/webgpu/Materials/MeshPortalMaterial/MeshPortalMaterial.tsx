@@ -5,7 +5,7 @@
 //   N8, https://twitter.com/N8Programs
 //   drcmda, https://twitter.com/0xca0a
 // https://github.com/N8python/maskBlur
-// TSL Conversion: drei webgpu migration
+// TSL Conversion: Dennis Smolek
 
 import * as THREE from 'three/webgpu'
 import { MeshBasicNodeMaterial, QuadMesh } from 'three/webgpu'
@@ -65,12 +65,12 @@ export type PortalProps = Omit<ThreeElements['meshBasicMaterial'], 'ref'> & {
 // Blends portal texture with SDF-based alpha for smooth edges
 
 class PortalMaterialImpl extends MeshBasicNodeMaterial {
-  private _blur: THREE.UniformNode<number>
+  private _blur: THREE.UniformNode<'float', number>
   private _map: THREE.TextureNode
   private _sdf: THREE.TextureNode
-  private _blend: THREE.UniformNode<number>
-  private _size: THREE.UniformNode<number>
-  private _resolution: THREE.UniformNode<THREE.Vector2>
+  private _blend: THREE.UniformNode<'float', number>
+  private _size: THREE.UniformNode<'float', number>
+  private _resolution: THREE.UniformNode<'vec2', THREE.Vector2>
 
   constructor() {
     super()
@@ -128,10 +128,10 @@ class PortalMaterialImpl extends MeshBasicNodeMaterial {
   }
 
   get map() {
-    return this._map.value as THREE.Texture
+    return this._map?.value as THREE.Texture
   }
   set map(v: THREE.Texture | null) {
-    this._map.value = v ?? new THREE.Texture()
+    if (this._map) this._map.value = v ?? new THREE.Texture()
   }
 
   get sdf() {
@@ -170,7 +170,7 @@ class PortalMaterialImpl extends MeshBasicNodeMaterial {
 class BlendMaterial extends MeshBasicNodeMaterial {
   private _textureA: THREE.TextureNode
   private _textureB: THREE.TextureNode
-  private _blend: THREE.UniformNode<number>
+  private _blend: THREE.UniformNode<'float', number>
 
   constructor() {
     super()
@@ -222,7 +222,7 @@ class BlendMaterial extends MeshBasicNodeMaterial {
 // UV Render - packs UV coordinates based on mask
 class UVRenderMaterial extends MeshBasicNodeMaterial {
   private _tex: THREE.TextureNode
-  private _inside: THREE.UniformNode<number>
+  private _inside: THREE.UniformNode<'float', number>
 
   constructor(inside = false) {
     super()
@@ -263,8 +263,8 @@ class UVRenderMaterial extends MeshBasicNodeMaterial {
 // Jump Flood Algorithm pass
 class JumpFloodMaterial extends MeshBasicNodeMaterial {
   private _tex: THREE.TextureNode
-  private _offset: THREE.UniformNode<number>
-  private _texelSize: THREE.UniformNode<THREE.Vector2>
+  private _offset: THREE.UniformNode<'float', number>
+  private _texelSize: THREE.UniformNode<'vec2', THREE.Vector2>
 
   constructor(clientWidth: number, clientHeight: number) {
     super()
@@ -324,7 +324,7 @@ class JumpFloodMaterial extends MeshBasicNodeMaterial {
 // Distance Field render - converts JFA output to distance
 class DistanceFieldMaterial extends MeshBasicNodeMaterial {
   private _tex: THREE.TextureNode
-  private _size: THREE.UniformNode<THREE.Vector2>
+  private _size: THREE.UniformNode<'vec2', THREE.Vector2>
 
   constructor(clientWidth: number, clientHeight: number) {
     super()
@@ -643,11 +643,11 @@ export const MeshPortalMaterial: ForwardRefComponent<PortalProps, PortalMaterial
       return (
         // @ts-ignore - portalMaterialImpl is dynamically extended, type conflicts with legacy
         <portalMaterialImpl
-          ref={ref}
+          ref={ref as any}
           blur={blur}
           blend={0}
           resolution={[size.width * viewport.dpr, size.height * viewport.dpr]}
-          attach="material"
+          attach={'material' as any}
           {...props}
         >
           <RenderTexture

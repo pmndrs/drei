@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { useThree, ThreeEvent } from '@react-three/fiber'
+import { getMaxAnisotropy } from '@utils/generic'
 import { useGizmoContext } from './GizmoHelper'
 import { CanvasTexture, Vector3 } from '#three'
 
@@ -83,7 +84,7 @@ const FaceMaterial = ({
   return (
     <meshBasicMaterial
       map={texture}
-      map-anisotropy={renderer.getMaxAnisotropy() || 1}
+      map-anisotropy={getMaxAnisotropy(renderer)}
       attach={`material-${index}`}
       color={hover ? hoverColor : 'white'}
       transparent

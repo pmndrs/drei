@@ -59,6 +59,8 @@ export type CloudsProps = Omit<ThreeElements['group'], 'ref'> & {
 }
 
 export type CloudProps = Omit<ThreeElements['group'], 'ref'> & {
+  /** Optional material factory to override CloudMaterial (useful for WebGPU when used standalone) */
+  materialFactory?: (baseMaterial: typeof Material) => Material
   /** A seeded random will show the same cloud consistently, default: Math.random() */
   seed?: number
   /** How many segments or particles the cloud will have, default: 20 */
@@ -332,11 +334,11 @@ export const CloudInstance = /* @__PURE__ */ React.forwardRef<Group, CloudProps>
  * <Cloud segments={40} bounds={[10, 2, 2]} volume={10} color="white" />
  * ```
  */
-export const Cloud = /* @__PURE__ */ React.forwardRef<Group, CloudProps>((props, fref) => {
+export const Cloud = /* @__PURE__ */ React.forwardRef<Group, CloudProps>(({ materialFactory, ...props }, fref) => {
   const parent = React.useContext(context)
   if (parent) return <CloudInstance ref={fref} {...props} />
   return (
-    <Clouds>
+    <Clouds materialFactory={materialFactory}>
       <CloudInstance ref={fref} {...props} />
     </Clouds>
   )

@@ -14,7 +14,7 @@ export type ScrollControlsProps = {
   horizontal?: boolean
   /** Infinite scroll, default false (experimental!) */
   infinite?: boolean
-  /** Defines the lenght of the scroll area, each page is height:100%, default 1 */
+  /** Defines the length of the scroll area, each page is height:100%, default 1 */
   pages?: number
   /** A factor that increases scroll bar travel,default: 1 */
   distance?: number
@@ -105,6 +105,7 @@ export function ScrollControls({
   const [fixed] = React.useState(() => document.createElement('div'))
   const target = gl.domElement.parentNode! as HTMLElement
   const scroll = React.useRef(0)
+  const disableScrollUpdate = React.useRef(false)
 
   const state = React.useMemo(() => {
     const state = {
@@ -199,19 +200,23 @@ export function ScrollControls({
       const scrollThreshold = scrollLength - containerLength
 
       let current = 0
-      let disableScroll = true
+      let disableScroll = false
       let firstRun = true
 
       const onScroll = () => {
         // Prevent first scroll because it is indirectly caused by the one pixel offset
         if (!enabled || firstRun) return
+        if (disableScrollUpdate.current) {
+          disableScrollUpdate.current = false
+          return
+        }
         invalidate()
         current = el[horizontal ? 'scrollLeft' : 'scrollTop']
         scroll.current = current / scrollThreshold
 
         if (infinite) {
           if (!disableScroll) {
-            if (current >= scrollThreshold) {
+            if (current >= scrollThreshold - 1) {
               const damp = 1 - state.offset
               el[horizontal ? 'scrollLeft' : 'scrollTop'] = 1
               scroll.current = state.offset = -damp
@@ -229,12 +234,39 @@ export function ScrollControls({
       el.addEventListener('scroll', onScroll, { passive: true })
       requestAnimationFrame(() => (firstRun = false))
 
-      const onWheel = (e) => (el.scrollLeft += e.deltaY / 2)
-      if (horizontal) el.addEventListener('wheel', onWheel, { passive: true })
+      const onResize = () => {
+        if (!el) return
 
+        const scrollLength = el[horizontal ? 'scrollWidth' : 'scrollHeight']
+
+        const containerLength = el[horizontal ? 'clientWidth' : 'clientHeight']
+
+        disableScrollUpdate.current = true
+        el[horizontal ? 'scrollLeft' : 'scrollTop'] = state.offset * (scrollLength - containerLength)
+      }
+
+      const onWheel = (e) => {
+        if (horizontal) {
+          const previous = el.scrollLeft
+          el.scrollLeft += e.deltaY / 2
+          if (infinite && previous === el.scrollLeft) {
+            onScroll()
+          }
+        } else if (infinite) {
+          if (el.scrollTop <= 1 && e.deltaY < 0) {
+            onScroll()
+          } else if (el.scrollTop >= el.scrollHeight - el.clientHeight - 1 && e.deltaY > 0) {
+            onScroll()
+          }
+        }
+      }
+      if (horizontal || infinite) el.addEventListener('wheel', onWheel, { passive: true })
+
+      if (horizontal) window.addEventListener('resize', onResize)
       return () => {
         el.removeEventListener('scroll', onScroll)
-        if (horizontal) el.removeEventListener('wheel', onWheel)
+        if (horizontal || infinite) el.removeEventListener('wheel', onWheel)
+        if (horizontal) window.removeEventListener('resize', onResize)
       }
     }
   }, [el, events, size, infinite, state, invalidate, horizontal, enabled])

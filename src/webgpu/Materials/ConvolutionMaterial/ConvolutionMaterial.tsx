@@ -31,18 +31,18 @@ export class ConvolutionMaterial extends MeshBasicNodeMaterial {
   //* Private Uniform Nodes --
   private _inputBuffer: THREE.TextureNode
   private _depthBuffer: THREE.TextureNode
-  private _resolution: THREE.UniformNode<THREE.Vector2>
-  private _texelSize: THREE.UniformNode<THREE.Vector2>
-  private _halfTexelSize: THREE.UniformNode<THREE.Vector2>
-  private _kernel: THREE.UniformNode<number>
-  private _scale: THREE.UniformNode<number>
-  private _cameraNear: THREE.UniformNode<number>
-  private _cameraFar: THREE.UniformNode<number>
-  private _minDepthThreshold: THREE.UniformNode<number>
-  private _maxDepthThreshold: THREE.UniformNode<number>
-  private _depthScale: THREE.UniformNode<number>
-  private _depthToBlurRatioBias: THREE.UniformNode<number>
-  private _useDepth: THREE.UniformNode<number>
+  private _resolution: THREE.UniformNode<'vec2', THREE.Vector2>
+  private _texelSize: THREE.UniformNode<'vec2', THREE.Vector2>
+  private _halfTexelSize: THREE.UniformNode<'vec2', THREE.Vector2>
+  private _kernel: THREE.UniformNode<'float', number>
+  private _scale: THREE.UniformNode<'float', number>
+  private _cameraNear: THREE.UniformNode<'float', number>
+  private _cameraFar: THREE.UniformNode<'float', number>
+  private _minDepthThreshold: THREE.UniformNode<'float', number>
+  private _maxDepthThreshold: THREE.UniformNode<'float', number>
+  private _depthScale: THREE.UniformNode<'float', number>
+  private _depthToBlurRatioBias: THREE.UniformNode<'float', number>
+  private _useDepth: THREE.UniformNode<'float', number>
 
   /** Kernel weights for multi-pass blur */
   readonly kernel: Float32Array
@@ -98,11 +98,11 @@ export class ConvolutionMaterial extends MeshBasicNodeMaterial {
     // For fullscreen quad, UV is derived from position
 
     // Base UV coordinate
-    const baseUv = varying(uv(), 'vUv')
+    const baseUv = varying<'vec2'>(uv(), 'vUv')
 
     // Calculate texel offset based on kernel and scale
     // dUv = (texelSize * kernel + halfTexelSize) * scale
-    const dUv = varying(
+    const dUv = varying<'vec2'>(
       Fn(() => {
         return texelSizeUniform.mul(kernelUniform).add(halfTexelSizeUniform).mul(scaleUniform)
       })(),
@@ -110,10 +110,10 @@ export class ConvolutionMaterial extends MeshBasicNodeMaterial {
     )
 
     // Offset UVs for 4-tap sampling (corners of a diamond pattern)
-    const vUv0 = varying(Fn(() => vec2(baseUv.x.sub(dUv.x), baseUv.y.add(dUv.y)))(), 'vUv0')
-    const vUv1 = varying(Fn(() => vec2(baseUv.x.add(dUv.x), baseUv.y.add(dUv.y)))(), 'vUv1')
-    const vUv2 = varying(Fn(() => vec2(baseUv.x.add(dUv.x), baseUv.y.sub(dUv.y)))(), 'vUv2')
-    const vUv3 = varying(Fn(() => vec2(baseUv.x.sub(dUv.x), baseUv.y.sub(dUv.y)))(), 'vUv3')
+    const vUv0 = varying<'vec2'>(Fn(() => vec2(baseUv.x.sub(dUv.x), baseUv.y.add(dUv.y)))(), 'vUv0')
+    const vUv1 = varying<'vec2'>(Fn(() => vec2(baseUv.x.add(dUv.x), baseUv.y.add(dUv.y)))(), 'vUv1')
+    const vUv2 = varying<'vec2'>(Fn(() => vec2(baseUv.x.add(dUv.x), baseUv.y.sub(dUv.y)))(), 'vUv2')
+    const vUv3 = varying<'vec2'>(Fn(() => vec2(baseUv.x.sub(dUv.x), baseUv.y.sub(dUv.y)))(), 'vUv3')
 
     //* Fragment: Sample and blend --
     this.colorNode = Fn(() => {

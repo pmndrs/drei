@@ -3,9 +3,10 @@ import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'
+import { PlatformSwitch } from '@sb/components/PlatformSwitch'
 
 import { DetectGPU } from 'drei'
-import { Text } from '../../../legacy/UI/Text/Text'
+import { Text as LegacyText } from '../../../legacy/UI/Text/Text'
 
 export default {
   title: 'Performance/DetectGPU',
@@ -24,11 +25,15 @@ type Story = StoryObj<typeof DetectGPU>
 function DetectGPUScene(props: React.ComponentProps<typeof DetectGPU>) {
   return (
     <DetectGPU {...props}>
-      {({ device, fps, gpu, isMobile, tier, type }) => (
-        <Text maxWidth={200}>
-          | device {device} fps {fps} | gpu {gpu} isMobile {isMobile?.toString()} | Tier {tier.toString()} Type {type} |
-        </Text>
-      )}
+      {({ device, fps, gpu, isMobile, tier, type }) => {
+        const info = `| device ${device} fps ${fps} | gpu ${gpu} isMobile ${isMobile?.toString()} | Tier ${tier.toString()} Type ${type} |`
+        return (
+          <PlatformSwitch
+            legacy={<LegacyText maxWidth={200}>{info}</LegacyText>}
+            webgpu={/* Text is unavailable on WebGPU until the @pmndrs/glyph migration; see #2658 */ null}
+          />
+        )
+      }}
     </DetectGPU>
   )
 }

@@ -1,5 +1,6 @@
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
-import { Wireframe, OrbitControls } from '@react-three/drei/core'
+import { OrbitControls } from '@react-three/drei/core'
+import { Wireframe } from '@react-three/drei/legacy'
 import { ExampleCard } from '../../../components/ExampleCard'
 
 //* Wireframe Demo ==============================

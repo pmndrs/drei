@@ -52,7 +52,7 @@ export type ContactShadowsProps = Omit<ThreeElements['group'], 'ref' | 'scale'> 
 // Uses manual camera matrix uniform since TSL's built-in nodes may be bound to wrong camera
 
 class DepthNodeMaterial extends MeshBasicNodeMaterial {
-  private _opacity: THREE.UniformNode<number>
+  private _opacity: THREE.UniformNode<'float', number>
 
   constructor(opacity: number = 1) {
     super()
@@ -87,7 +87,7 @@ class DepthNodeMaterial extends MeshBasicNodeMaterial {
 
 class BlurNodeMaterial extends MeshBasicNodeMaterial {
   private _inputTexture: ReturnType<typeof uniformTexture>
-  private _blurAmount: THREE.UniformNode<number>
+  private _blurAmount: THREE.UniformNode<'float', number>
   private _direction: 'horizontal' | 'vertical'
 
   constructor(direction: 'horizontal' | 'vertical' = 'horizontal') {

@@ -3,9 +3,10 @@ import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'
+import { PlatformSwitch } from '@sb/components/PlatformSwitch'
 
 import { Billboard, Plane, Box, Cone, OrbitControls } from 'drei'
-import { Text } from '../../../legacy/UI/Text/Text'
+import { Text as LegacyText } from '../../../legacy/UI/Text/Text'
 import { ComponentProps } from 'react'
 
 export default {
@@ -88,18 +89,28 @@ function BillboardScene2(props: ComponentProps<typeof Billboard>) {
   return (
     <>
       <Billboard {...props} position={[0.5, 2.05, 0.5]}>
-        <Text fontSize={1} outlineWidth={'5%'} outlineColor="#000000" outlineOpacity={1}>
-          box
-        </Text>
+        <PlatformSwitch
+          legacy={
+            <LegacyText fontSize={1} outlineWidth={'5%'} outlineColor="#000000" outlineOpacity={1}>
+              box
+            </LegacyText>
+          }
+          webgpu={/* Text is unavailable on WebGPU until the @pmndrs/glyph migration; see #2658 */ null}
+        />
       </Billboard>
       <Box position={[0.5, 1, 0.5]}>
         <meshStandardMaterial color="red" />
       </Box>
       <group position={[-2.5, -3, -1]}>
         <Billboard {...props} position={[0, 1.05, 0]}>
-          <Text fontSize={1} outlineWidth={'5%'} outlineColor="#000000" outlineOpacity={1}>
-            cone
-          </Text>
+          <PlatformSwitch
+            legacy={
+              <LegacyText fontSize={1} outlineWidth={'5%'} outlineColor="#000000" outlineOpacity={1}>
+                cone
+              </LegacyText>
+            }
+            webgpu={/* Text is unavailable on WebGPU until the @pmndrs/glyph migration; see #2658 */ null}
+          />
         </Billboard>
         <Cone>
           <meshStandardMaterial color="green" />
@@ -119,7 +130,6 @@ export const BillboardTextStory = {
   render: (args) => <BillboardScene2 {...args} />,
   name: 'Text',
   parameters: {
-    limitedTo: 'legacy', // Read by Setup decorator - no nested decorator needed
     docs: {
       source: {
         code: `
@@ -148,5 +158,4 @@ export const BillboardTextStory = {
       },
     },
   },
-  tags: ['legacyOnly'],
 } satisfies Story

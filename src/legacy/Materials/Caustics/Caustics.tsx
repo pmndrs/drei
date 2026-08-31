@@ -74,7 +74,7 @@ export type CausticsProps = Omit<ThreeElements['group'], 'ref'> & {
   backsideIOR?: number
   /** The texel size, default: 0.3125 */
   worldRadius?: number
-  /** Intensity of the prjected caustics, default: 0.05 */
+  /** Intensity of the projected caustics, default: 0.05 */
   intensity?: number
   /** Caustics color, default: white */
   color?: ReactThreeFiber.Color
@@ -286,7 +286,12 @@ const NORMALPROPS = {
   type: THREE.UnsignedByteType,
 }
 
-const CAUSTICPROPS = {
+const CAUSTICPROPS: {
+  minFilter: THREE.MinificationTextureFilter
+  magFilter: THREE.MagnificationTextureFilter
+  type: THREE.TextureDataType
+  generateMipmaps: boolean
+} = {
   minFilter: THREE.LinearMipmapLinearFilter,
   magFilter: THREE.LinearFilter,
   type: THREE.FloatType,
@@ -341,6 +346,15 @@ export const Caustics: ForwardRefComponent<CausticsProps, THREE.Group> = /* @__P
     // Buffers for front and back faces
     const normalTarget = useFBO(resolution, resolution, NORMALPROPS)
     const normalTargetB = useFBO(resolution, resolution, NORMALPROPS)
+
+    // Check if FloatType is supported, if not, use HalfFloatType
+    if (!gl.extensions.get('OES_texture_float_linear')) {
+      console.warn(
+        '[Caustics]: `OES_texture_float_linear` extension not supported, using HalfFloatType instead of FloatType'
+      )
+      CAUSTICPROPS.type = THREE.HalfFloatType
+    }
+
     const causticsTarget = useFBO(resolution, resolution, CAUSTICPROPS)
     const causticsTargetB = useFBO(resolution, resolution, CAUSTICPROPS)
     // Normal materials for front and back faces

@@ -1,0 +1,3524 @@
+{
+  "generated": "derived from the filesystem by scripts/audit-components.js — do not hand-edit",
+  "totals": {
+    "components": 139,
+    "agnostic": 106,
+    "done": 26,
+    "todo": 2,
+    "wontPort": 5,
+    "withStory": 94,
+    "withTest": 55,
+    "withDocs": 46,
+    "agentOk": 1,
+    "humanOnly": 1
+  },
+  "components": [
+    {
+      "name": "AccumulativeShadows",
+      "category": "Materials",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": true,
+        "shaderMaterial": true
+      },
+      "paths": {
+        "legacy": "src/legacy/Materials/AccumulativeShadows",
+        "webgpu": "src/webgpu/Staging/AccumulativeShadows"
+      }
+    },
+    {
+      "name": "AdaptiveDpr",
+      "category": "Performance",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Performance/AdaptiveDpr"
+      }
+    },
+    {
+      "name": "AdaptiveEvents",
+      "category": "Performance",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Performance/AdaptiveEvents"
+      }
+    },
+    {
+      "name": "ArcballControls",
+      "category": "Controls",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Controls/ArcballControls"
+      }
+    },
+    {
+      "name": "AsciiRenderer",
+      "category": "Abstractions",
+      "classification": "wont-port",
+      "reason": "Wraps three-stdlib's AsciiEffect, a WebGL-only DOM overlay effect with no WebGPU equivalent upstream.",
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "legacy": "src/legacy/Abstractions/AsciiRenderer"
+      }
+    },
+    {
+      "name": "Backdrop",
+      "category": "Staging",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Staging/Backdrop"
+      }
+    },
+    {
+      "name": "BakeShadows",
+      "category": "Materials",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "legacy": "src/legacy/Materials/BakeShadows",
+        "webgpu": "src/webgpu/Staging/BakeShadows"
+      }
+    },
+    {
+      "name": "BBAnchor",
+      "category": "Staging",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Staging/BBAnchor"
+      }
+    },
+    {
+      "name": "Billboard",
+      "category": "Staging",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Staging/Billboard"
+      }
+    },
+    {
+      "name": "BlurPass",
+      "category": "Materials",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "legacy": "src/legacy/Materials/BlurPass",
+        "webgpu": "src/webgpu/Materials/BlurPass"
+      }
+    },
+    {
+      "name": "Bounds",
+      "category": "Staging",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Staging/Bounds"
+      }
+    },
+    {
+      "name": "Bvh",
+      "category": "Performance",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": false,
+        "webgpu": false,
+        "external": true,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "external": "src/external/Performance/Bvh"
+      }
+    },
+    {
+      "name": "CameraControls",
+      "category": "Controls",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": false,
+        "webgpu": false,
+        "external": true,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "external": "src/external/Controls/CameraControls"
+      }
+    },
+    {
+      "name": "CameraShake",
+      "category": "Effects",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Effects/CameraShake"
+      }
+    },
+    {
+      "name": "CatmullRomLine",
+      "category": "Geometry",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Geometry/CatmullRomLine"
+      }
+    },
+    {
+      "name": "Caustics",
+      "category": "Materials",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": true,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": true,
+        "shaderMaterial": true
+      },
+      "paths": {
+        "legacy": "src/legacy/Materials/Caustics",
+        "webgpu": "src/webgpu/Effects/Caustics"
+      }
+    },
+    {
+      "name": "Center",
+      "category": "Staging",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Staging/Center"
+      }
+    },
+    {
+      "name": "Clone",
+      "category": "Helpers",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": true,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Helpers/Clone"
+      }
+    },
+    {
+      "name": "Cloud",
+      "category": "Effects",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Effects/Cloud"
+      }
+    },
+    {
+      "name": "ComputedAttribute",
+      "category": "Helpers",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Helpers/ComputedAttribute"
+      }
+    },
+    {
+      "name": "ContactShadows",
+      "category": "Materials",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": true,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": true,
+        "shaderMaterial": true
+      },
+      "paths": {
+        "legacy": "src/legacy/Materials/ContactShadows",
+        "webgpu": "src/webgpu/Staging/ContactShadows"
+      }
+    },
+    {
+      "name": "ConvolutionMaterial",
+      "category": "Materials",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": true
+      },
+      "paths": {
+        "legacy": "src/legacy/Materials/ConvolutionMaterial",
+        "webgpu": "src/webgpu/Materials/ConvolutionMaterial"
+      }
+    },
+    {
+      "name": "CubeCamera",
+      "category": "Cameras",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Cameras/CubeCamera"
+      }
+    },
+    {
+      "name": "CubeTexture",
+      "category": "Textures",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Textures/CubeTexture"
+      }
+    },
+    {
+      "name": "CubicBezierLine",
+      "category": "Geometry",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Geometry/CubicBezierLine"
+      }
+    },
+    {
+      "name": "CurveModifier",
+      "category": "Geometry",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Geometry/CurveModifier"
+      }
+    },
+    {
+      "name": "CycleRaycast",
+      "category": "UI",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/UI/CycleRaycast"
+      }
+    },
+    {
+      "name": "Decal",
+      "category": "Geometry",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Geometry/Decal"
+      }
+    },
+    {
+      "name": "Detailed",
+      "category": "Geometry",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Geometry/Detailed"
+      }
+    },
+    {
+      "name": "DetectGPU",
+      "category": "Performance",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Performance/DetectGPU"
+      }
+    },
+    {
+      "name": "DeviceOrientationControls",
+      "category": "Controls",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Controls/DeviceOrientationControls"
+      }
+    },
+    {
+      "name": "DiscardMaterial",
+      "category": "Materials",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "legacy": "src/legacy/Materials/DiscardMaterial",
+        "webgpu": "src/webgpu/Materials/DiscardMaterial"
+      }
+    },
+    {
+      "name": "DragControls",
+      "category": "Controls",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Controls/DragControls"
+      }
+    },
+    {
+      "name": "Edges",
+      "category": "Geometry",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": true,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Geometry/Edges"
+      }
+    },
+    {
+      "name": "Effects",
+      "category": "Abstractions",
+      "classification": "wont-port",
+      "reason": "Wraps three-stdlib's EffectComposer, which is WebGL-only. WebGPU postprocessing goes through three's own RenderPipeline (useRenderPipeline in r3f v10), which is a different architecture rather than a port of this one.",
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "legacy": "src/legacy/Abstractions/Effects"
+      }
+    },
+    {
+      "name": "Environment",
+      "category": "Staging",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Staging/Environment"
+      }
+    },
+    {
+      "name": "Example",
+      "category": "Helpers",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Helpers/Example"
+      }
+    },
+    {
+      "name": "FaceControls",
+      "category": "Controls",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": false,
+        "webgpu": false,
+        "external": true,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "external": "src/external/Controls/FaceControls"
+      }
+    },
+    {
+      "name": "FaceLandmarker",
+      "category": "Helpers",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": false,
+        "webgpu": false,
+        "external": true,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "external": "src/external/Helpers/FaceLandmarker"
+      }
+    },
+    {
+      "name": "Facemesh",
+      "category": "Geometry",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": false,
+        "webgpu": false,
+        "external": true,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "external": "src/external/Geometry/Facemesh"
+      }
+    },
+    {
+      "name": "Fbo",
+      "category": "Portal",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Portal/Fbo"
+      }
+    },
+    {
+      "name": "FirstPersonControls",
+      "category": "Controls",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Controls/FirstPersonControls"
+      }
+    },
+    {
+      "name": "Fisheye",
+      "category": "Portal",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Portal/Fisheye"
+      }
+    },
+    {
+      "name": "Float",
+      "category": "Staging",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Staging/Float"
+      }
+    },
+    {
+      "name": "FlyControls",
+      "category": "Controls",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Controls/FlyControls"
+      }
+    },
+    {
+      "name": "GradientTexture",
+      "category": "Textures",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "legacy": "src/legacy/Textures/GradientTexture",
+        "webgpu": "src/webgpu/Textures/GradientTexture"
+      }
+    },
+    {
+      "name": "Grid",
+      "category": "Staging",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": true
+      },
+      "paths": {
+        "legacy": "src/legacy/Staging/Grid",
+        "webgpu": "src/webgpu/Staging/Grid"
+      }
+    },
+    {
+      "name": "Html",
+      "category": "UI",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/UI/Html"
+      }
+    },
+    {
+      "name": "HtmlMaterial",
+      "category": "Materials",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "legacy": "src/legacy/Materials/HtmlMaterial",
+        "webgpu": "src/webgpu/Materials/HtmlMaterial"
+      }
+    },
+    {
+      "name": "Hud",
+      "category": "Portal",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": true,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Portal/Hud",
+        "legacy": "src/legacy/Portal/Hud"
+      }
+    },
+    {
+      "name": "Image",
+      "category": "Materials",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": true,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "legacy": "src/legacy/Materials/Image",
+        "webgpu": "src/webgpu/UI/Image"
+      }
+    },
+    {
+      "name": "Instances",
+      "category": "Helpers",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Helpers/Instances"
+      }
+    },
+    {
+      "name": "KeyboardControls",
+      "category": "Controls",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Controls/KeyboardControls"
+      }
+    },
+    {
+      "name": "Lightformer",
+      "category": "Staging",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Staging/Lightformer"
+      }
+    },
+    {
+      "name": "Line",
+      "category": "Geometry",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "legacy": "src/legacy/Geometry/Line",
+        "webgpu": "src/webgpu/Geometry/Line"
+      }
+    },
+    {
+      "name": "Loader",
+      "category": "Loaders",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Loaders/Loader"
+      }
+    },
+    {
+      "name": "MapControls",
+      "category": "Controls",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Controls/MapControls"
+      }
+    },
+    {
+      "name": "MarchingCubes",
+      "category": "Geometry",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": true
+      },
+      "story": true,
+      "test": true,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "experimental": "src/experimental/Geometry/MarchingCubes"
+      }
+    },
+    {
+      "name": "Mask",
+      "category": "Portal",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Portal/Mask"
+      }
+    },
+    {
+      "name": "MatcapTexture",
+      "category": "Staging",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Staging/MatcapTexture"
+      }
+    },
+    {
+      "name": "meshBounds",
+      "category": "Performance",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Performance/meshBounds"
+      }
+    },
+    {
+      "name": "MeshDiscardMaterial",
+      "category": "Materials",
+      "classification": "todo",
+      "reason": null,
+      "assignee": "human-only",
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": true
+      },
+      "paths": {
+        "legacy": "src/legacy/Materials/MeshDiscardMaterial"
+      }
+    },
+    {
+      "name": "MeshDistortMaterial",
+      "category": "Materials",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": true,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "legacy": "src/legacy/Materials/MeshDistortMaterial",
+        "webgpu": "src/webgpu/Materials/MeshDistortMaterial"
+      }
+    },
+    {
+      "name": "MeshPortalMaterial",
+      "category": "Materials",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": true
+      },
+      "paths": {
+        "legacy": "src/legacy/Materials/MeshPortalMaterial",
+        "webgpu": "src/webgpu/Materials/MeshPortalMaterial"
+      }
+    },
+    {
+      "name": "MeshReflectorMaterial",
+      "category": "Materials",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "legacy": "src/legacy/Materials/MeshReflectorMaterial",
+        "webgpu": "src/webgpu/Materials/MeshReflectorMaterial"
+      }
+    },
+    {
+      "name": "MeshRefractionMaterial",
+      "category": "Materials",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "legacy": "src/legacy/Materials/MeshRefractionMaterial",
+        "webgpu": "src/webgpu/Materials/MeshRefractionMaterial"
+      }
+    },
+    {
+      "name": "MeshTransmissionMaterial",
+      "category": "Materials",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": true,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "legacy": "src/legacy/Materials/MeshTransmissionMaterial",
+        "webgpu": "src/webgpu/Materials/MeshTransmissionMaterial"
+      }
+    },
+    {
+      "name": "MeshWobbleMaterial",
+      "category": "Materials",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": true,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "legacy": "src/legacy/Materials/MeshWobbleMaterial",
+        "webgpu": "src/webgpu/Materials/MeshWobbleMaterial"
+      }
+    },
+    {
+      "name": "MotionPathControls",
+      "category": "Controls",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Controls/MotionPathControls"
+      }
+    },
+    {
+      "name": "NormalTexture",
+      "category": "Textures",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Textures/NormalTexture"
+      }
+    },
+    {
+      "name": "OrbitControls",
+      "category": "Controls",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Controls/OrbitControls"
+      }
+    },
+    {
+      "name": "OrthographicCamera",
+      "category": "Cameras",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Cameras/OrthographicCamera"
+      }
+    },
+    {
+      "name": "Outlines",
+      "category": "Effects",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": false,
+        "webgpu": true,
+        "external": false,
+        "experimental": true
+      },
+      "story": true,
+      "test": true,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "webgpu": "src/webgpu/Effects/Outlines",
+        "experimental": "src/experimental/Effects/Outlines"
+      }
+    },
+    {
+      "name": "PerformanceMonitor",
+      "category": "Performance",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Performance/PerformanceMonitor"
+      }
+    },
+    {
+      "name": "PerspectiveCamera",
+      "category": "Cameras",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Cameras/PerspectiveCamera"
+      }
+    },
+    {
+      "name": "PointerLockControls",
+      "category": "Controls",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Controls/PointerLockControls"
+      }
+    },
+    {
+      "name": "PointMaterial",
+      "category": "Helpers",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": true,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Helpers/PointMaterial"
+      }
+    },
+    {
+      "name": "Points",
+      "category": "Geometry",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Geometry/Points"
+      }
+    },
+    {
+      "name": "PositionalAudio",
+      "category": "Helpers",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Helpers/PositionalAudio"
+      }
+    },
+    {
+      "name": "Preload",
+      "category": "Loaders",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Loaders/Preload"
+      }
+    },
+    {
+      "name": "PresentationControls",
+      "category": "Controls",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Controls/PresentationControls"
+      }
+    },
+    {
+      "name": "QuadraticBezierLine",
+      "category": "Geometry",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Geometry/QuadraticBezierLine"
+      }
+    },
+    {
+      "name": "RenderCubeTexture",
+      "category": "Portal",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": true,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Portal/RenderCubeTexture",
+        "legacy": "src/legacy/Portal/RenderCubeTexture"
+      }
+    },
+    {
+      "name": "RenderTexture",
+      "category": "Portal",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Portal/RenderTexture"
+      }
+    },
+    {
+      "name": "Resize",
+      "category": "Staging",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Staging/Resize"
+      }
+    },
+    {
+      "name": "RoundedBox",
+      "category": "Geometry",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Geometry/RoundedBox"
+      }
+    },
+    {
+      "name": "Sampler",
+      "category": "Helpers",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Helpers/Sampler"
+      }
+    },
+    {
+      "name": "ScreenQuad",
+      "category": "Geometry",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Geometry/ScreenQuad"
+      }
+    },
+    {
+      "name": "ScreenSizer",
+      "category": "Staging",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Staging/ScreenSizer"
+      }
+    },
+    {
+      "name": "ScreenSpace",
+      "category": "UI",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/UI/ScreenSpace"
+      }
+    },
+    {
+      "name": "ScreenVideoTexture",
+      "category": "Textures",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Textures/ScreenVideoTexture"
+      }
+    },
+    {
+      "name": "ScrollControls",
+      "category": "Controls",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Controls/ScrollControls"
+      }
+    },
+    {
+      "name": "Segments",
+      "category": "Geometry",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "legacy": "src/legacy/Geometry/Segments",
+        "webgpu": "src/webgpu/Geometry/Segments"
+      }
+    },
+    {
+      "name": "Select",
+      "category": "UI",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/UI/Select"
+      }
+    },
+    {
+      "name": "shaderMaterial",
+      "category": "Materials",
+      "classification": "wont-port",
+      "reason": "A factory for GLSL ShaderMaterials. TSL's equivalent is node-graph construction, a fundamentally different authoring model — WebGPU users write TSL directly rather than calling a GLSL factory.",
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": true
+      },
+      "paths": {
+        "legacy": "src/legacy/Materials/shaderMaterial"
+      }
+    },
+    {
+      "name": "Shadow",
+      "category": "Staging",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Staging/Shadow"
+      }
+    },
+    {
+      "name": "ShadowAlpha",
+      "category": "Staging",
+      "classification": "wont-port",
+      "reason": "Patches the depth material's GLSL through onBeforeCompile to carry alpha into shadows. Same constraint as useBoxProjectedEnv — needs a new TSL implementation rather than a port.",
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": true,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "legacy": "src/legacy/Staging/ShadowAlpha"
+      }
+    },
+    {
+      "name": "Shapes",
+      "category": "Geometry",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Geometry/Shapes"
+      }
+    },
+    {
+      "name": "Sky",
+      "category": "Staging",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Staging/Sky"
+      }
+    },
+    {
+      "name": "SoftShadows",
+      "category": "Materials",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "legacy": "src/legacy/Materials/SoftShadows",
+        "webgpu": "src/webgpu/Staging/SoftShadows"
+      }
+    },
+    {
+      "name": "Sparkles",
+      "category": "Effects",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "legacy": "src/legacy/Effects/Sparkles",
+        "webgpu": "src/webgpu/Effects/Sparkles"
+      }
+    },
+    {
+      "name": "Splat",
+      "category": "Geometry",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": false,
+        "webgpu": false,
+        "external": true,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": true
+      },
+      "paths": {
+        "external": "src/external/Geometry/Splat"
+      }
+    },
+    {
+      "name": "SpotLight",
+      "category": "Staging",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": true
+      },
+      "paths": {
+        "legacy": "src/legacy/Staging/SpotLight",
+        "webgpu": "src/webgpu/Staging/SpotLight"
+      }
+    },
+    {
+      "name": "SpotLightMaterial",
+      "category": "Materials",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": true
+      },
+      "paths": {
+        "legacy": "src/legacy/Materials/SpotLightMaterial",
+        "webgpu": "src/webgpu/Materials/SpotLightMaterial"
+      }
+    },
+    {
+      "name": "SpriteAnimator",
+      "category": "Helpers",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Helpers/SpriteAnimator"
+      }
+    },
+    {
+      "name": "Stage",
+      "category": "Staging",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Staging/Stage"
+      }
+    },
+    {
+      "name": "Stars",
+      "category": "Staging",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "legacy": "src/legacy/Staging/Stars",
+        "webgpu": "src/webgpu/Staging/Stars"
+      }
+    },
+    {
+      "name": "Stats",
+      "category": "Performance",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Performance/Stats"
+      }
+    },
+    {
+      "name": "StatsGl",
+      "category": "Performance",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Performance/StatsGl"
+      }
+    },
+    {
+      "name": "Svg",
+      "category": "Helpers",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Helpers/Svg"
+      }
+    },
+    {
+      "name": "Text",
+      "category": "UI",
+      "classification": "todo",
+      "reason": "Depended on a vendored troika fork that could not be published. Returns via @pmndrs/glyph, which covers both renderers. Tracked in #2658.",
+      "assignee": "agent-ok",
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "legacy": "src/legacy/UI/Text"
+      }
+    },
+    {
+      "name": "Text3D",
+      "category": "Geometry",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Geometry/Text3D"
+      }
+    },
+    {
+      "name": "TrackballControls",
+      "category": "Controls",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Controls/TrackballControls"
+      }
+    },
+    {
+      "name": "Trail",
+      "category": "Effects",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": true
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "legacy": "src/legacy/Effects/Trail",
+        "webgpu": "src/webgpu/Effects/Trail",
+        "experimental": "src/experimental/Effects/Trail"
+      }
+    },
+    {
+      "name": "TrailTexture",
+      "category": "Textures",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Textures/TrailTexture"
+      }
+    },
+    {
+      "name": "TransformControls",
+      "category": "Gizmos",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Gizmos/TransformControls"
+      }
+    },
+    {
+      "name": "useAnimations",
+      "category": "Helpers",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Helpers/useAnimations"
+      }
+    },
+    {
+      "name": "useAspect",
+      "category": "UI",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/UI/useAspect"
+      }
+    },
+    {
+      "name": "useBoxProjectedEnv",
+      "category": "Staging",
+      "classification": "wont-port",
+      "reason": "Implemented by patching a built-in material's GLSL through onBeforeCompile. TSL has no onBeforeCompile equivalent; box-projected environment mapping on WebGPU would be a new node-based implementation, not a port.",
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": true,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "legacy": "src/legacy/Staging/useBoxProjectedEnv"
+      }
+    },
+    {
+      "name": "useContextBridge",
+      "category": "Helpers",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Helpers/useContextBridge"
+      }
+    },
+    {
+      "name": "useCursor",
+      "category": "UI",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/UI/useCursor"
+      }
+    },
+    {
+      "name": "useCustomRaycast",
+      "category": "Portal",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Portal/useCustomRaycast"
+      }
+    },
+    {
+      "name": "useDepthBuffer",
+      "category": "Helpers",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Helpers/useDepthBuffer",
+        "webgpu": "src/webgpu/Helpers/useDepthBuffer"
+      }
+    },
+    {
+      "name": "useEnvironment",
+      "category": "Staging",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Staging/useEnvironment"
+      }
+    },
+    {
+      "name": "useFBX",
+      "category": "Loaders",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Loaders/useFBX"
+      }
+    },
+    {
+      "name": "useFont",
+      "category": "Loaders",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Loaders/useFont"
+      }
+    },
+    {
+      "name": "useGLTF",
+      "category": "Loaders",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Loaders/useGLTF"
+      }
+    },
+    {
+      "name": "useHelper",
+      "category": "Gizmos",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Gizmos/useHelper"
+      }
+    },
+    {
+      "name": "useIntersect",
+      "category": "UI",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/UI/useIntersect"
+      }
+    },
+    {
+      "name": "useKTX2",
+      "category": "Loaders",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Loaders/useKTX2"
+      }
+    },
+    {
+      "name": "useProgress",
+      "category": "Loaders",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Loaders/useProgress"
+      }
+    },
+    {
+      "name": "useSpriteLoader",
+      "category": "Loaders",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Loaders/useSpriteLoader"
+      }
+    },
+    {
+      "name": "useTexture",
+      "category": "Loaders",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Loaders/useTexture"
+      }
+    },
+    {
+      "name": "useVariants",
+      "category": "Loaders",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Loaders/useVariants"
+      }
+    },
+    {
+      "name": "VideoTexture",
+      "category": "Textures",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Textures/VideoTexture"
+      }
+    },
+    {
+      "name": "View",
+      "category": "Portal",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Portal/View"
+      }
+    },
+    {
+      "name": "WebcamVideoTexture",
+      "category": "Textures",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Textures/WebcamVideoTexture"
+      }
+    },
+    {
+      "name": "Wireframe",
+      "category": "Geometry",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "legacy": "src/legacy/Geometry/Wireframe",
+        "webgpu": "src/webgpu/Geometry/Wireframe"
+      }
+    },
+    {
+      "name": "WireframeMaterial",
+      "category": "Materials",
+      "classification": "done",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": true,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": true,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "legacy": "src/legacy/Materials/WireframeMaterial",
+        "webgpu": "src/webgpu/Materials/WireframeMaterial"
+      }
+    }
+  ]
+}

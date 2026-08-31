@@ -57,9 +57,8 @@ export function PresentationControls({
   azimuth = [-Infinity, Infinity],
   damping = 0.25,
 }: PresentationControlProps) {
-  const events = useThree((state) => state.events)
-  const gl = useThree((state) => state.gl)
-  const explDomElement = domElement || events.connected || gl.domElement
+  const { events, renderer, invalidate } = useThree()
+  const explDomElement = domElement || events.connected || renderer.domElement
 
   const { size } = useThree()
   const rPolar = React.useMemo(
@@ -78,10 +77,10 @@ export function PresentationControls({
   React.useEffect(() => {
     if (global && cursor && enabled) {
       explDomElement.style.cursor = 'grab'
-      gl.domElement.style.cursor = ''
+      renderer.domElement.style.cursor = ''
       return () => {
         explDomElement.style.cursor = 'default'
-        gl.domElement.style.cursor = 'default'
+        renderer.domElement.style.cursor = 'default'
       }
     }
   }, [global, cursor, explDomElement, enabled])
@@ -89,8 +88,12 @@ export function PresentationControls({
   const [animation] = React.useState({ scale: 1, rotation: rInitial, damping })
   const ref = React.useRef<THREE.Group>(null!)
   useFrame((state, delta) => {
-    easing.damp3(ref.current.scale, animation.scale, animation.damping, delta)
-    easing.dampE(ref.current.rotation, animation.rotation as any, animation.damping, delta)
+    let changed = false
+
+    changed ||= easing.damp3(ref.current.scale, animation.scale, animation.damping, delta)
+    changed ||= easing.dampE(ref.current.rotation, animation.rotation as any, animation.damping, delta)
+
+    if (changed) state.invalidate()
   })
 
   const bind = useGesture(
@@ -99,6 +102,7 @@ export function PresentationControls({
         if (cursor && !global && enabled) explDomElement.style.cursor = last ? 'auto' : 'grab'
       },
       onDrag: ({ down, delta: [x, y], memo: [oldY, oldX] = animation.rotation || rInitial }) => {
+        invalidate()
         if (!enabled) return [y, x]
         if (cursor) explDomElement.style.cursor = down ? 'grabbing' : 'grab'
         x = MathUtils.clamp(oldX + (x / size.width) * Math.PI * speed, ...rAzimuth)
@@ -109,8 +113,11 @@ export function PresentationControls({
         animation.damping = snap && !down && typeof snap !== 'boolean' ? (snap as number) : damping
         return [y, x]
       },
+      onDragEnd: () => {
+        invalidate()
+      },
     },
-    { target: global ? explDomElement : undefined }
+    { target: global ? explDomElement : undefined, enabled }
   )
   return (
     <group ref={ref} {...(bind?.() as any)}>

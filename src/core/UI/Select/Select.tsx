@@ -96,10 +96,20 @@ export function Select({
 
     let isDown = false
 
-    function prepareRay(event, vec) {
-      const { offsetX, offsetY } = event
+    function prepareRay(event: PointerEvent, vec: THREE.Vector3) {
+      const canvas = gl.domElement
+      const rect = canvas.getBoundingClientRect()
+
+      // Calculate position relative to canvas, not the event target
+      // This ensures correct calculation even when pointer is over UI elements
+      const x = event.clientX - rect.left
+      const y = event.clientY - rect.top
+
       const { width, height } = size
-      vec.set((offsetX / width) * 2 - 1, -(offsetY / height) * 2 + 1)
+      const normalizedX = (x / width) * 2 - 1
+      const normalizedY = -(y / height) * 2 + 1
+
+      vec.set(normalizedX, normalizedY, -1)
     }
 
     function onSelectStart(event) {

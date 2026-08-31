@@ -27,12 +27,10 @@ export { Outlines } from '../webgpu/Effects/Outlines'
 
 //* Platform-specific Three.js classes --------------------------------
 export { RenderTarget } from 'three/webgpu'
-// WebGPU: CubeRenderTarget exists in three/src/renderers/common/ but isn't exported yet
-// TODO: Switch to `export { CubeRenderTarget } from 'three/webgpu'` when Three.js exports it
-export { WebGLCubeRenderTarget as CubeRenderTarget } from 'three/webgpu'
+export { CubeRenderTarget } from 'three/webgpu'
 
 //* Portal --------------------------------
-export { RenderTexture } from '@core/Portal/RenderTexture'
+export { RenderTexture } from '../core/Portal/RenderTexture'
 export { RenderCubeTexture } from '../core/Portal/RenderCubeTexture'
 export { Hud } from '../core/Portal/Hud'
 

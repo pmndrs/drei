@@ -1,4 +1,5 @@
 import { SpriteNodeMaterial } from 'three/webgpu'
+import type { Node } from 'three/webgpu'
 import { AdditiveBlending } from '#three'
 import {
   Fn,
@@ -49,9 +50,9 @@ export class StarfieldMaterial extends SpriteNodeMaterial {
 
     //* Read Instance Attributes ==============================
     // These come from InstancedBufferAttributes on the geometry
-    const particlePosition = attribute('particlePosition', 'vec3')
-    const particleSize = attribute('size', 'float')
-    const particleColor = attribute('color', 'vec3')
+    const particlePosition = attribute<'vec3'>('particlePosition', 'vec3')
+    const particleSize = attribute<'float'>('size', 'float')
+    const particleColor = attribute<'vec3'>('color', 'vec3')
 
     //* Position Node - Star center position ==============================
     // Stars don't animate position, just return the particle position
@@ -65,7 +66,7 @@ export class StarfieldMaterial extends SpriteNodeMaterial {
     // Animation amplitude reduced to prevent synchronized flash with 5000 additive stars
     this.scaleNode = Fn(() => {
       // Get view-space position for distance calculation
-      const worldPos = modelWorldMatrix.mul(vec4(this.positionNode, 1.0))
+      const worldPos = modelWorldMatrix.mul(vec4(this.positionNode as unknown as Node<'vec3'>, 1.0))
       const viewPos = cameraViewMatrix.mul(worldPos)
 
       // Distance attenuation: 30.0 / -viewPos.z

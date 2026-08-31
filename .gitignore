@@ -28,7 +28,7 @@ __diff_output__
 
 # Claude Code
 .claude/*
-CLAUDE.md
+!.claude/settings.json
 
 
 # Package/lock files
@@ -51,6 +51,5 @@ node_modules/
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
-.claude/settings.local.json
 
 build-storybook.log

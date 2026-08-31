@@ -2,6 +2,13 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
+import { readFileSync } from 'node:fs'
+
+// FaceLandmarker reads this at module scope; the root build and Storybook both
+// inject it, so the examples app has to as well or it throws on load.
+const mediapipeVersion = JSON.parse(
+  readFileSync(path.resolve(__dirname, '../node_modules/@mediapipe/tasks-vision/package.json'), 'utf8')
+).version
 
 export default defineConfig(({ mode }) => {
   const isWebGPU = mode === 'webgpu'
@@ -9,7 +16,27 @@ export default defineConfig(({ mode }) => {
   console.log(`\n🎮 Running in ${isWebGPU ? 'WebGPU' : 'Legacy (WebGL)'} mode\n`)
 
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [
+      react(),
+      tailwindcss(),
+      {
+        // `define` only reaches files under the Vite root. drei's source is
+        // outside it (served via /@fs), so in dev the constant survives as a
+        // bare identifier and throws at module scope. Setting it as a real
+        // global covers dev; `define` below still inlines it for the build.
+        name: 'drei-examples:inject-build-constants',
+        transformIndexHtml: () => [
+          {
+            tag: 'script',
+            injectTo: 'head-prepend' as const,
+            children: `globalThis.__MEDIAPIPE_TASKS_VISION_VERSION__ = ${JSON.stringify(mediapipeVersion)}`,
+          },
+        ],
+      },
+    ],
+    define: {
+      __MEDIAPIPE_TASKS_VISION_VERSION__: JSON.stringify(mediapipeVersion),
+    },
     resolve: {
       alias: {
         // Examples app internal alias

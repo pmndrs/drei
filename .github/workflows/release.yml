@@ -107,6 +107,14 @@ jobs:
   release:
     needs: [lint, test, storybook]
     runs-on: ubuntu-latest
+    # id-token is what npm trusted publishing authenticates with; issues and
+    # pull-requests are what @semantic-release/github needs to comment on
+    # released issues. Without them the release fails with a 403.
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - run: corepack enable

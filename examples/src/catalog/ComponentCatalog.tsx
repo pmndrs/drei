@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
 import {
-  components,
-  type DreiComponent,
+  componentViews,
+  statusOf,
+  type ComponentView,
   type Status,
   type RendererSupport,
   type Category,
@@ -9,16 +10,23 @@ import {
 } from '../demos/componentRegistry'
 
 //* Component Catalog - Master Index ==============================
-// Dashboard view that reads from the unified componentRegistry.
-// This provides a visual overview of all components and their status.
+// Every status shown here is DERIVED from the filesystem via
+// component-status.generated.ts. Nothing on this page is hand-maintained.
+//
+// It used to be: `structure`, `imports`, `types`, `tests`, `webgpuStatus` and
+// `tslConversion` were typed by hand in the registry, and by August 2026 the
+// dashboard reported 19 components as having no WebGPU implementation when the
+// files were on disk. Columns that cannot be derived were removed rather than
+// guessed — a blank is better than a stale green.
+
+const views = componentViews()
 
 //* Statistics Calculation ==============================
 
 function calculateStats() {
-  const total = components.length
+  const total = views.length
 
-  // Count by renderer support type
-  const byRendererSupport = components.reduce(
+  const byRendererSupport = views.reduce(
     (acc, c) => {
       acc[c.rendererSupport] = (acc[c.rendererSupport] || 0) + 1
       return acc
@@ -26,29 +34,35 @@ function calculateStats() {
     {} as Record<RendererSupport, number>
   )
 
-  const examplesComplete = components.filter((c) => c.component !== undefined).length
-  const testsComplete = components.filter((c) => c.tests === '🟢').length
-  const typesClean = components.filter((c) => c.types === '🟢').length
+  const examplesComplete = views.filter((c) => c.component !== undefined).length
+  const storiesComplete = views.filter((c) => c.story).length
+  const testsComplete = views.filter((c) => c.test).length
+  const docsComplete = views.filter((c) => c.docs).length
 
-  // TSL conversion stats - only for dual renderer components that need WebGPU work
-  const dualComponents = components.filter((c) => c.rendererSupport === 'dual')
-  const tslConverted = dualComponents.filter((c) => c.tslConversion === '🟢').length
-  const tslTotal = dualComponents.length
+  // A WebGPU implementation EXISTS. Not a claim that it works — most of these
+  // have never been rendered. See #2801.
+  const dualComponents = views.filter((c) => c.rendererSupport === 'dual')
+  const webgpuImplemented = dualComponents.filter((c) => c.webgpu).length
+  const webgpuTotal = dualComponents.length
 
-  // WebGPU ready stats
-  const webgpuReady = components.filter(
-    (c) => c.rendererSupport === 'universal' || c.rendererSupport === 'webgpu-only' || c.webgpuStatus === '🟢'
-  ).length
+  // A story that renders the WEBGPU implementation — the only components anyone
+  // has actually seen. `c.story` is true for a story in any tree, which is not
+  // the same question and reports 20 instead of 2.
+  const webgpuSeen = views.filter((c) => c.webgpuStory).length
+
+  const unknown = views.filter((c) => !c.known).length
 
   return {
     total,
     byRendererSupport,
     examplesComplete,
+    storiesComplete,
     testsComplete,
-    typesClean,
-    tslConverted,
-    tslTotal,
-    webgpuReady,
+    docsComplete,
+    webgpuImplemented,
+    webgpuTotal,
+    webgpuSeen,
+    unknown,
     universalCount: byRendererSupport.universal || 0,
     dualCount: byRendererSupport.dual || 0,
     legacyOnlyCount: byRendererSupport['legacy-only'] || 0,
@@ -58,9 +72,9 @@ function calculateStats() {
 //* Group by Category ==============================
 
 function groupComponents() {
-  const grouped: Record<Category, DreiComponent[]> = {} as Record<Category, DreiComponent[]>
+  const grouped: Record<Category, ComponentView[]> = {} as Record<Category, ComponentView[]>
 
-  components.forEach((c) => {
+  views.forEach((c) => {
     if (!grouped[c.category]) grouped[c.category] = []
     grouped[c.category].push(c)
   })
@@ -104,6 +118,7 @@ function RendererBadge({ support }: { support: RendererSupport }) {
     'legacy-only': { color: '#ff9800', label: 'Legacy Only' },
     'webgpu-only': { color: '#ab47bc', label: 'WebGPU Only' },
     dual: { color: '#66bb6a', label: 'Dual' },
+    unknown: { color: '#9e9e9e', label: 'Unknown' },
   }
 
   const { color, label } = config[support]
@@ -127,7 +142,7 @@ function RendererBadge({ support }: { support: RendererSupport }) {
 
 //* Component Row ==============================
 
-function ComponentRow({ entry }: { entry: DreiComponent }) {
+function ComponentRow({ entry }: { entry: ComponentView }) {
   const hasExample = entry.component !== undefined
   const isDual = entry.rendererSupport === 'dual'
 
@@ -142,6 +157,12 @@ function ComponentRow({ entry }: { entry: DreiComponent }) {
         ) : (
           <span style={{ color: '#888' }}>{entry.name}</span>
         )}
+        {!entry.known && (
+          <span title="No audit record — registry and filesystem disagree" style={{ color: '#f44336' }}>
+            {' '}
+            ⚠
+          </span>
+        )}
       </td>
 
       {/* Renderer Support */}
@@ -149,36 +170,35 @@ function ComponentRow({ entry }: { entry: DreiComponent }) {
         <RendererBadge support={entry.rendererSupport} />
       </td>
 
-      {/* Base status columns */}
+      {/* Coverage — all derived from the filesystem */}
       <td style={{ padding: '8px 12px' }}>
-        <StatusBadge status={entry.structure} label="Structure" />
+        <StatusBadge status={statusOf(hasExample)} label="Example" />
       </td>
       <td style={{ padding: '8px 12px' }}>
-        <StatusBadge status={entry.imports} label="Imports" />
+        <StatusBadge status={statusOf(entry.story)} label="Story" />
       </td>
       <td style={{ padding: '8px 12px' }}>
-        <StatusBadge status={entry.types} label="Types" />
+        <StatusBadge status={statusOf(entry.test)} label="Test" />
       </td>
       <td style={{ padding: '8px 12px' }}>
-        <StatusBadge status={hasExample ? '🟢' : '🔴'} label="Example" />
-      </td>
-      <td style={{ padding: '8px 12px' }}>
-        <StatusBadge status={entry.tests} label="Tests" />
+        <StatusBadge status={statusOf(entry.docs)} label="Docs" />
       </td>
 
-      {/* Renderer-specific columns (for dual) */}
+      {/* Which renderer trees the component exists in */}
       <td style={{ padding: '8px 12px' }}>
-        {isDual ? <StatusBadge status={entry.legacyStatus || '⚪'} label="Legacy" /> : '-'}
+        {isDual ? <StatusBadge status={statusOf(entry.legacy)} label="Legacy" /> : '-'}
       </td>
       <td style={{ padding: '8px 12px' }}>
-        {isDual ? <StatusBadge status={entry.webgpuStatus || '⚪'} label="WebGPU" /> : '-'}
+        {isDual ? <StatusBadge status={statusOf(entry.webgpu)} label="WebGPU implementation exists" /> : '-'}
       </td>
       <td style={{ padding: '8px 12px' }}>
-        {isDual ? <StatusBadge status={entry.tslConversion || '⚪'} label="TSL" /> : '-'}
+        {entry.webgpu ? <StatusBadge status={statusOf(entry.webgpuStory)} label="Story renders WebGPU" /> : '-'}
       </td>
 
       {/* Notes and Path */}
-      <td style={{ padding: '8px 12px', color: '#888', fontSize: '12px', maxWidth: '200px' }}>{entry.notes}</td>
+      <td style={{ padding: '8px 12px', color: '#888', fontSize: '12px', maxWidth: '200px' }}>
+        {entry.reason ?? entry.notes}
+      </td>
       <td style={{ padding: '8px 12px' }}>
         <code style={{ fontSize: '11px', color: '#666', background: '#222', padding: '2px 6px', borderRadius: '3px' }}>
           {entry.path}
@@ -214,9 +234,28 @@ export default function ComponentCatalog() {
     <div style={{ padding: '32px', maxWidth: '1600px', margin: '0 auto', color: '#e0e0e0' }}>
       {/* Header --------------------------------- */}
       <h1 style={{ fontSize: '32px', marginBottom: '8px', color: '#fff' }}>Drei v11 Component Catalog</h1>
-      <p style={{ color: '#888', marginBottom: '32px' }}>
-        Master index of all components. Click component names to view working examples.
+      <p style={{ color: '#888', marginBottom: stats.unknown > 0 ? '12px' : '32px' }}>
+        Master index of all components. Click component names to view working examples. Every status column is derived
+        from the filesystem by <code>yarn audit:components</code> — nothing here is hand-maintained.
       </p>
+
+      {stats.unknown > 0 && (
+        <div
+          style={{
+            marginBottom: '32px',
+            padding: '12px 16px',
+            borderRadius: '4px',
+            border: '1px solid #f44336',
+            backgroundColor: '#f4433622',
+            color: '#f44336',
+            fontSize: '14px',
+          }}
+        >
+          <strong>{stats.unknown}</strong> {stats.unknown === 1 ? 'entry has' : 'entries have'} no audit record — the
+          registry names a component the filesystem does not have. Marked ⚠ below. Run{' '}
+          <code>yarn audit:components</code> and reconcile the names.
+        </div>
+      )}
 
       {/* Stats Overview --------------------------------- */}
       <div
@@ -234,24 +273,29 @@ export default function ComponentCatalog() {
           percent={(stats.examplesComplete / stats.total) * 100}
         />
         <StatCard
+          label="Stories"
+          value={`${stats.storiesComplete}/${stats.total}`}
+          percent={(stats.storiesComplete / stats.total) * 100}
+        />
+        <StatCard
           label="Tests"
           value={`${stats.testsComplete}/${stats.total}`}
           percent={(stats.testsComplete / stats.total) * 100}
         />
         <StatCard
-          label="Types Clean"
-          value={`${stats.typesClean}/${stats.total}`}
-          percent={(stats.typesClean / stats.total) * 100}
+          label="Docs"
+          value={`${stats.docsComplete}/${stats.total}`}
+          percent={(stats.docsComplete / stats.total) * 100}
         />
         <StatCard
-          label="WebGPU Ready"
-          value={`${stats.webgpuReady}/${stats.total}`}
-          percent={(stats.webgpuReady / stats.total) * 100}
+          label="WebGPU implemented"
+          value={`${stats.webgpuImplemented}/${stats.webgpuTotal}`}
+          percent={stats.webgpuTotal > 0 ? (stats.webgpuImplemented / stats.webgpuTotal) * 100 : 0}
         />
         <StatCard
-          label="TSL Conversions"
-          value={`${stats.tslConverted}/${stats.tslTotal}`}
-          percent={stats.tslTotal > 0 ? (stats.tslConverted / stats.tslTotal) * 100 : 0}
+          label="WebGPU with a story"
+          value={`${stats.webgpuSeen}/${stats.webgpuImplemented}`}
+          percent={stats.webgpuImplemented > 0 ? (stats.webgpuSeen / stats.webgpuImplemented) * 100 : 0}
         />
       </div>
 
@@ -299,14 +343,17 @@ export default function ComponentCatalog() {
                   <tr style={{ background: '#1a1a1a', textAlign: 'left' }}>
                     <th style={{ padding: '8px 12px', minWidth: '150px' }}>Component</th>
                     <th style={{ padding: '8px 12px', minWidth: '100px' }}>Renderer</th>
-                    <th style={{ padding: '8px 12px' }}>Structure</th>
-                    <th style={{ padding: '8px 12px' }}>Imports</th>
-                    <th style={{ padding: '8px 12px' }}>Types</th>
                     <th style={{ padding: '8px 12px' }}>Example</th>
-                    <th style={{ padding: '8px 12px' }}>Tests</th>
+                    <th style={{ padding: '8px 12px' }}>Story</th>
+                    <th style={{ padding: '8px 12px' }}>Test</th>
+                    <th style={{ padding: '8px 12px' }}>Docs</th>
                     <th style={{ padding: '8px 12px' }}>Legacy</th>
-                    <th style={{ padding: '8px 12px' }}>WebGPU</th>
-                    <th style={{ padding: '8px 12px' }}>TSL</th>
+                    <th style={{ padding: '8px 12px' }} title="A src/webgpu/ file exists — not a claim that it works">
+                      WebGPU
+                    </th>
+                    <th style={{ padding: '8px 12px' }} title="A story that renders the WebGPU implementation">
+                      WebGPU story
+                    </th>
                     <th style={{ padding: '8px 12px', minWidth: '150px' }}>Notes</th>
                     <th style={{ padding: '8px 12px' }}>Path</th>
                   </tr>
@@ -424,4 +471,4 @@ function getCategoryColor(category: Category): string {
 }
 
 //* Re-export types for convenience ==============================
-export { type DreiComponent, type Status, type RendererSupport, type Category, getTier }
+export { type ComponentView, type Status, type RendererSupport, type Category, getTier }

@@ -1,4 +1,4 @@
-import { getComponent, type Status, type RendererSupport } from '../demos/componentRegistry'
+import { getComponent, statusOf, type Status, type RendererSupport } from '../demos/componentRegistry'
 
 //* Status Badge Component ==============================
 
@@ -46,6 +46,7 @@ function RendererBadge({ support }: { support: RendererSupport }) {
     'legacy-only': { color: '#ff9800', label: 'Legacy Only' },
     'webgpu-only': { color: '#ab47bc', label: 'WebGPU Only' },
     dual: { color: '#66bb6a', label: 'Dual' },
+    unknown: { color: '#9e9e9e', label: 'Unknown' },
   }
 
   const { color, label } = config[support]
@@ -85,21 +86,29 @@ export const ExampleCard = ({ demoName, showStatus = false }: { demoName: string
 
       {showStatus && (
         <>
-          {/* Base Status */}
+          {/* Coverage — every one of these is derived from the filesystem */}
           <div className="demo-status" style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '8px' }}>
-            <StatusBadge status={component.structure} label="Structure" />
-            <StatusBadge status={component.imports} label="Imports" />
-            <StatusBadge status={component.types} label="Types" />
-            <StatusBadge status={component.tests} label="Tests" />
+            <StatusBadge status={statusOf(component.story)} label="Story" />
+            <StatusBadge status={statusOf(component.test)} label="Test" />
+            <StatusBadge status={statusOf(component.docs)} label="Docs" />
           </div>
 
-          {/* Renderer-specific status for dual components */}
+          {/* Which renderer trees the component actually exists in */}
           {isDual && (
             <div className="demo-status" style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '8px' }}>
-              <StatusBadge status={component.legacyStatus || '⚪'} label="Legacy" />
-              <StatusBadge status={component.webgpuStatus || '⚪'} label="WebGPU" />
-              <StatusBadge status={component.tslConversion || '⚪'} label="TSL" />
+              <StatusBadge status={statusOf(component.legacy)} label="Legacy" />
+              <StatusBadge status={statusOf(component.webgpu)} label="WebGPU" />
             </div>
+          )}
+
+          {!component.known && (
+            <p style={{ fontSize: '12px', color: '#f44336', marginTop: '8px' }}>
+              No audit record for “{component.name}” — the registry and the filesystem disagree.
+            </p>
+          )}
+
+          {component.reason && (
+            <p style={{ fontSize: '12px', color: '#ff9800', marginTop: '8px' }}>Not ported: {component.reason}</p>
           )}
         </>
       )}

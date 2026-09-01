@@ -34,6 +34,41 @@ divergent from the real 975-line implementation.
 
 Tracked in #2806.
 
+#### The component dashboards can no longer drift
+
+Four hand-maintained files claimed to describe conversion state and disagreed
+with each other and with the filesystem. The examples dashboard had `tests`
+wrong on **55 of 140** entries and `webgpuStatus` wrong on **19 of 33** — it
+reported `AccumulativeShadows`, `BakeShadows`, `BlurPass`, `Caustics` and 15
+others as having no WebGPU implementation while the files were on disk.
+
+`scripts/audit-components.js` now also emits `component-status.generated.ts`,
+and the dashboard reads it. The registry keeps only what a human has to write —
+identity, prose, and which demo to render. **799 lines of hand-typed status were
+deleted from it**, and `yarn test:components` fails if the generated file goes
+stale.
+
+Deleted outright as dead code: `.storybook/componentRegistry.tsx` (2,031 lines),
+`.storybook/catalog/ComponentCatalog.tsx` (427) and
+`.storybook/components/ExampleCard.tsx` (116). Nothing imported them, they were
+not in the TypeScript program, and they imported `../demos/componentRegistry` —
+a path that does not exist.
+
+Columns that cannot be derived (`structure`, `imports`, `types`) were removed
+rather than guessed. Added a `WebGPU story` column, because the aggregate
+`story` flag is true for a story in _any_ tree and so reported 20 of 29 WebGPU
+components as covered when the real number is **2**. An entry the audit does not
+recognise now renders a visible warning instead of a confident zero.
+
+**Files changed:** `scripts/audit-components.js`, `component-status.generated.ts`,
+`component-status.json`, `examples/src/demos/componentRegistry.tsx`,
+`examples/src/catalog/ComponentCatalog.tsx`,
+`examples/src/components/ExampleCard.tsx`, `.prettierignore`,
+`.storybook/componentRegistry.tsx`, `.storybook/catalog/ComponentCatalog.tsx`,
+`.storybook/components/ExampleCard.tsx`
+
+Tracked in #2806.
+
 ## 11.0.0-alpha.6
 
 Published 2026-08-31.

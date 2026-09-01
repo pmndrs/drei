@@ -1,7 +1,7 @@
-import { BBAnchor, Html, Icosahedron, OrbitControls, Text, Text3D, useHelper } from '@react-three/drei/core'
+// `Text` is legacy-only and was never exported from core; it and `Text3D` were unused here.
+import { BBAnchor, Html, Icosahedron, OrbitControls, useHelper } from '@react-three/drei/core'
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
-import { ComponentProps } from 'react'
 import { Mesh, BoxHelper, IcosahedronGeometry } from 'three'
 import { useRef } from 'react'
 

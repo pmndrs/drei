@@ -9,6 +9,7 @@
     "withStory": 96,
     "webgpuImplemented": 29,
     "webgpuWithStory": 3,
+    "webgpuExercised": 17,
     "withTestFile": 55,
     "withRealTest": 0,
     "withDocs": 47,
@@ -32,17 +33,20 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "legacy": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         },
         "webgpu": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -71,12 +75,14 @@
       "story": false,
       "test": false,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -104,12 +110,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -137,12 +145,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -170,12 +180,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": true,
       "coverageByTree": {
         "legacy": {
           "story": false,
           "test": true,
-          "docs": true
+          "docs": true,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -203,12 +215,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -236,17 +250,20 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         },
         "webgpu": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -275,12 +292,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -308,12 +327,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -341,17 +362,20 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         },
         "webgpu": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -380,12 +404,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": true,
-          "docs": true
+          "docs": true,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -413,12 +439,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "external": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -446,12 +474,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "external": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -479,12 +509,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -512,12 +544,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -545,17 +579,20 @@
       "story": true,
       "test": true,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "legacy": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         },
         "webgpu": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -584,12 +621,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -617,12 +656,14 @@
       "story": true,
       "test": true,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": true,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -650,12 +691,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -683,12 +726,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -716,17 +761,20 @@
       "story": true,
       "test": true,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "legacy": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         },
         "webgpu": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -755,17 +803,20 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         },
         "webgpu": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -794,12 +845,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -827,12 +880,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -860,12 +915,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -893,12 +950,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -926,12 +985,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -959,12 +1020,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -992,12 +1055,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -1025,12 +1090,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -1058,12 +1125,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -1091,17 +1160,20 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         },
         "webgpu": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -1130,12 +1202,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -1163,12 +1237,14 @@
       "story": true,
       "test": true,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": true,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -1196,12 +1272,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -1229,12 +1307,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -1262,12 +1342,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -1295,12 +1377,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "external": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -1328,12 +1412,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "external": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -1361,12 +1447,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "external": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -1394,12 +1482,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -1427,12 +1517,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -1460,12 +1552,14 @@
       "story": true,
       "test": true,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -1493,12 +1587,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -1526,12 +1622,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -1559,12 +1657,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -1592,12 +1692,14 @@
       "story": false,
       "test": false,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -1625,12 +1727,14 @@
       "story": false,
       "test": false,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -1658,17 +1762,20 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": true,
       "coverageByTree": {
         "legacy": {
           "story": false,
           "test": true,
-          "docs": true
+          "docs": true,
+          "exercised": false
         },
         "webgpu": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -1697,17 +1804,20 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": false
         },
         "webgpu": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -1736,12 +1846,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -1769,17 +1881,20 @@
       "story": false,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         },
         "webgpu": {
           "story": false,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -1808,17 +1923,20 @@
       "story": true,
       "test": true,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         },
         "legacy": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -1847,17 +1965,20 @@
       "story": true,
       "test": true,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "legacy": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         },
         "webgpu": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -1886,12 +2007,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -1919,12 +2042,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -1952,12 +2077,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -1985,17 +2112,20 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         },
         "webgpu": {
           "story": false,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -2024,12 +2154,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -2057,12 +2189,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -2090,12 +2224,14 @@
       "story": true,
       "test": true,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "experimental": {
           "story": true,
           "test": true,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -2123,12 +2259,14 @@
       "story": true,
       "test": true,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -2156,12 +2294,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -2189,12 +2329,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -2222,12 +2364,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -2255,17 +2399,20 @@
       "story": true,
       "test": true,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         },
         "webgpu": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -2294,17 +2441,20 @@
       "story": true,
       "test": true,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         },
         "webgpu": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -2333,17 +2483,20 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         },
         "webgpu": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -2372,17 +2525,20 @@
       "story": true,
       "test": true,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         },
         "webgpu": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -2411,17 +2567,20 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "legacy": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         },
         "webgpu": {
           "story": false,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -2450,17 +2609,20 @@
       "story": true,
       "test": true,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         },
         "webgpu": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -2489,12 +2651,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": true,
-          "docs": true
+          "docs": true,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -2522,12 +2686,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -2555,12 +2721,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -2588,12 +2756,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -2621,17 +2791,20 @@
       "story": true,
       "test": true,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "webgpu": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         },
         "experimental": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -2660,12 +2833,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": true,
-          "docs": true
+          "docs": true,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -2693,12 +2868,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -2726,12 +2903,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -2759,12 +2938,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -2792,12 +2973,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -2825,12 +3008,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -2858,12 +3043,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -2891,12 +3078,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -2924,12 +3113,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -2957,12 +3148,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -2990,17 +3183,20 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         },
         "legacy": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -3029,12 +3225,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -3062,12 +3260,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -3095,12 +3295,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -3128,12 +3330,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -3161,12 +3365,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -3194,12 +3400,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -3227,12 +3435,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -3260,12 +3470,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -3293,12 +3505,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -3326,17 +3540,20 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         },
         "webgpu": {
           "story": false,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -3365,12 +3582,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -3398,12 +3617,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -3431,12 +3652,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -3464,12 +3687,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -3497,12 +3722,14 @@
       "story": false,
       "test": false,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -3530,12 +3757,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -3563,17 +3792,20 @@
       "story": true,
       "test": true,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         },
         "webgpu": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -3602,17 +3834,20 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "legacy": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         },
         "webgpu": {
           "story": false,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -3641,12 +3876,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": true,
       "coverageByTree": {
         "external": {
           "story": false,
           "test": true,
-          "docs": true
+          "docs": true,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -3674,17 +3911,20 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         },
         "webgpu": {
           "story": false,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -3713,17 +3953,20 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         },
         "webgpu": {
           "story": false,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -3752,12 +3995,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -3785,12 +4030,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -3818,17 +4065,20 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "legacy": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         },
         "webgpu": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -3857,12 +4107,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -3890,12 +4142,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -3923,12 +4177,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -3956,12 +4212,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "legacy": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -3989,12 +4247,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -4022,12 +4282,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -4055,22 +4317,26 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": false
         },
         "webgpu": {
           "story": false,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": false
         },
         "experimental": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -4100,12 +4366,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -4133,12 +4401,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -4166,12 +4436,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -4199,12 +4471,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -4232,12 +4506,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -4265,12 +4541,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -4298,12 +4576,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -4331,12 +4611,14 @@
       "story": true,
       "test": true,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -4364,17 +4646,20 @@
       "story": false,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": false
         },
         "webgpu": {
           "story": false,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -4403,12 +4688,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -4436,12 +4723,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": true,
-          "docs": true
+          "docs": true,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -4469,12 +4758,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -4502,12 +4793,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": true,
-          "docs": true
+          "docs": true,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -4535,12 +4828,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -4568,12 +4863,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -4601,12 +4898,14 @@
       "story": false,
       "test": false,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -4634,12 +4933,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": true,
-          "docs": true
+          "docs": true,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -4667,12 +4968,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -4700,12 +5003,14 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": false,
           "test": true,
-          "docs": true
+          "docs": true,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -4733,12 +5038,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -4766,12 +5073,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -4799,12 +5108,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": true,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": true
+          "docs": true,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -4832,12 +5143,14 @@
       "story": true,
       "test": false,
       "testAsserts": false,
+      "exercised": true,
       "docs": false,
       "coverageByTree": {
         "core": {
           "story": true,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -4865,17 +5178,20 @@
       "story": false,
       "test": false,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": false
         },
         "webgpu": {
           "story": false,
           "test": false,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {
@@ -4904,17 +5220,20 @@
       "story": false,
       "test": true,
       "testAsserts": false,
+      "exercised": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         },
         "webgpu": {
           "story": false,
           "test": true,
-          "docs": false
+          "docs": false,
+          "exercised": false
         }
       },
       "shaderRisk": {

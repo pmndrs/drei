@@ -33,6 +33,33 @@ const OVERRIDES = path.join(ROOT, 'component-overrides.json')
 /** Trees that hold components, in entry-point terms. */
 const TREES = ['core', 'legacy', 'webgpu', 'external', 'experimental']
 
+/**
+ * Every `*.stories.tsx` in the tree, with its source. Used to answer "is this
+ * component rendered by ANY story", which is not the same as "does it have a
+ * co-located story" — 14 WebGPU components are rendered from `legacy/` stories
+ * via `PlatformSwitch`. Counting only co-located files reported the gap as 27
+ * when it is 12.
+ */
+const ALL_STORIES = (() => {
+  const found = []
+  const walk = (dir) => {
+    if (!fs.existsSync(dir)) return
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      const p = path.join(dir, e.name)
+      if (e.isDirectory()) walk(p)
+      else if (e.name.endsWith('.stories.tsx')) found.push({ path: p, source: fs.readFileSync(p, 'utf8') })
+    }
+  }
+  walk(SRC)
+  return found
+})()
+
+/** True if any story outside `dir` imports `<tree>/.../<name>`. */
+function exercisedByForeignStory(name, tree, dir) {
+  const re = new RegExp(`${tree}/[A-Za-z/]*${name}'`)
+  return ALL_STORIES.some((s) => !s.path.startsWith(dir) && re.test(s.source))
+}
+
 /** True if a test file actually asserts something. A placeholder is not a test. */
 function hasAssertions(file) {
   return /\bexpect\(|\bassert[.(]|toBe|toEqual|toThrow|\brender\(/.test(read(file))
@@ -127,6 +154,8 @@ function inspect(component, tree) {
         : path.join(dir, `${name}.test.tsx`)
     ),
     docs: fs.existsSync(path.join(dir, `${name}.docs.mdx`)),
+    // Rendered by a story ANYWHERE, not just a co-located one.
+    exercised: fs.existsSync(path.join(dir, `${name}.stories.tsx`)) || exercisedByForeignStory(name, tree, dir),
     // import style — `#three` is the platform alias, bare `three` is not portable
     usesAlias: /from '#three/.test(source),
     usesBareThree: /from 'three'/.test(source),
@@ -195,13 +224,17 @@ function build() {
         story: Object.values(t).some((x) => x.story),
         test: Object.values(t).some((x) => x.test),
         testAsserts: Object.values(t).some((x) => x.testAsserts),
+        exercised: Object.values(t).some((x) => x.exercised),
         docs: Object.values(t).some((x) => x.docs),
         // Per-tree, because the aggregate above hides the thing that matters:
         // `Grid` and `MeshDistortMaterial` both report `story: true`, but only
         // Grid's story renders the WebGPU implementation. Aggregating says 20
         // of 29 WebGPU components have a story; the real number is 2.
         coverageByTree: Object.fromEntries(
-          Object.entries(t).map(([tree, x]) => [tree, { story: x.story, test: x.test, docs: x.docs }])
+          Object.entries(t).map(([tree, x]) => [
+            tree,
+            { story: x.story, test: x.test, docs: x.docs, exercised: x.exercised },
+          ])
         ),
         shaderRisk: {
           glsl: !!primary?.hasGlsl,
@@ -225,6 +258,7 @@ function build() {
       withStory: count((c) => c.story),
       webgpuImplemented: count((c) => c.trees.webgpu),
       webgpuWithStory: count((c) => c.coverageByTree?.webgpu?.story),
+      webgpuExercised: count((c) => c.coverageByTree?.webgpu?.exercised),
       withTestFile: count((c) => c.test),
       withRealTest: count((c) => c.testAsserts),
       withDocs: count((c) => c.docs),
@@ -267,6 +301,8 @@ function emitTs(status) {
     // A story that renders the WebGPU implementation specifically. This is the
     // number that matters and the aggregate `story` hides it.
     webgpuStory: !!c.coverageByTree?.webgpu?.story,
+    /** Rendered by a story anywhere — many come from legacy stories via PlatformSwitch. */
+    webgpuExercised: !!c.coverageByTree?.webgpu?.exercised,
     legacyStory: !!c.coverageByTree?.legacy?.story,
     assignee: c.assignee,
     reason: c.reason,
@@ -295,8 +331,10 @@ export interface ComponentStatus {
   docs: boolean
   legacy: boolean
   webgpu: boolean
-  /** A story that renders the WebGPU implementation. Not the same as \`story\`. */
+  /** A story CO-LOCATED in src/webgpu. Not the same as \`story\`. */
   webgpuStory: boolean
+  /** Rendered by a story anywhere, including legacy stories via PlatformSwitch. */
+  webgpuExercised: boolean
   legacyStory: boolean
   assignee: 'agent-ok' | 'human-only' | null
   reason: string | null
@@ -359,7 +397,11 @@ if (args.includes('--summary')) {
   console.log(`\n  stories    ${String(t.withStory).padStart(3)} / ${t.components}`)
   console.log(`  test files ${String(t.withTestFile).padStart(3)} / ${t.components}`)
   console.log(`  REAL tests ${String(t.withRealTest).padStart(3)} / ${t.components}   (the rest assert nothing)`)
-  console.log(`  docs       ${String(t.withDocs).padStart(3)} / ${t.components}\n`)
+  console.log(`  docs       ${String(t.withDocs).padStart(3)} / ${t.components}`)
+  console.log(
+    `\n  webgpu     ${String(t.webgpuImplemented).padStart(3)} implemented · ${t.webgpuExercised} rendered by some story · ${t.webgpuWithStory} with a co-located one`
+  )
+  console.log(`             (a story proves it mounts, not that WebGPU works — see #2801)\n`)
   const todo = status.components.filter((c) => c.classification === 'todo')
   if (todo.length) {
     console.log('  still to port:')

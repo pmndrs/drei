@@ -12,8 +12,11 @@ export default {
   // This is the src/webgpu implementation, so it cannot run on the WebGL
   // renderer — pin it rather than letting the toolbar toggle break it.
   decorators: [
-    (Story) => (
-      <Setup renderer="webgpu" limitedTo="webgpu" cameraPosition={new Vector3(0, 2, 6)}>
+    (Story, context) => (
+      // `limitedTo` is what actually pins the renderer — Setup computes
+      // isLegacy = limitedTo === 'legacy' || (limitedTo === null && renderer === 'legacy')
+      // so this stays on WebGPU whatever the toolbar says.
+      <Setup renderer={context.globals.renderer} limitedTo="webgpu" cameraPosition={new Vector3(0, 2, 6)}>
         <Story />
       </Setup>
     ),

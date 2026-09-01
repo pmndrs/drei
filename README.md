@@ -20,7 +20,7 @@
 
 A growing collection of useful helpers and fully functional, ready-made abstractions for [@react-three/fiber](https://github.com/pmndrs/react-three-fiber).
 
-If you make a component that is generic enough to be useful to others, think about [CONTRIBUTING](CONTRIBUTING.md)!
+If you make a component that is generic enough to be useful to others, think about [CONTRIBUTING](devDocs/CONTRIBUTING.md)!
 
 ```bash
 npm install @react-three/drei
@@ -68,7 +68,7 @@ import { MeshDistortMaterial, Fbo } from '@react-three/drei/webgpu' // WebGPU on
 - **/legacy**: WebGL-specific implementations (GLSL materials, WebGLRenderTarget)
 - **/webgpu**: WebGPU-specific implementations (TSL materials, WebGPU render targets)
 
-See [MIGRATION_V10_TO_V11.md](MIGRATION_V10_TO_V11.md) for details.
+See [MIGRATION_V10_TO_V11.md](devDocs/MIGRATION_V10_TO_V11.md) for details.
 
 ## React-native
 

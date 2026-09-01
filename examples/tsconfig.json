@@ -16,6 +16,14 @@
 
     /* Linting */
     "strict": true,
+    /* Match the root tsconfig. drei's source is pulled in through the `../src`
+       path aliases so that the examples app stays a live testbed — you edit
+       drei source and see it here immediately. But it has never been written
+       against `noImplicitAny`, so checking it under stricter rules than its own
+       project uses produces ~90 errors that root considers fine. Align, so the
+       two checkers agree about the same files. See #2808. */
+    "noImplicitAny": false,
+    "noImplicitThis": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,

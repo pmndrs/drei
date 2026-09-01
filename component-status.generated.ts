@@ -36,7 +36,7 @@ export const componentStatus: Record<string, ComponentStatus> = {
   "BakeShadows": {"name":"BakeShadows","category":"Materials","classification":"implemented","rendererSupport":"dual","story":false,"test":true,"testAsserts":false,"docs":false,"legacy":true,"webgpu":true,"webgpuStory":false,"legacyStory":false,"assignee":null,"reason":null},
   "BBAnchor": {"name":"BBAnchor","category":"Staging","classification":"agnostic","rendererSupport":"universal","story":true,"test":false,"testAsserts":false,"docs":false,"legacy":false,"webgpu":false,"webgpuStory":false,"legacyStory":false,"assignee":null,"reason":null},
   "Billboard": {"name":"Billboard","category":"Staging","classification":"agnostic","rendererSupport":"universal","story":true,"test":false,"testAsserts":false,"docs":true,"legacy":false,"webgpu":false,"webgpuStory":false,"legacyStory":false,"assignee":null,"reason":null},
-  "BlurPass": {"name":"BlurPass","category":"Materials","classification":"implemented","rendererSupport":"dual","story":false,"test":true,"testAsserts":false,"docs":false,"legacy":true,"webgpu":true,"webgpuStory":false,"legacyStory":false,"assignee":null,"reason":null},
+  "BlurPass": {"name":"BlurPass","category":"Materials","classification":"todo","rendererSupport":"dual","story":false,"test":true,"testAsserts":false,"docs":false,"legacy":true,"webgpu":true,"webgpuStory":false,"legacyStory":false,"assignee":"agent-ok","reason":"src/webgpu/Materials/BlurPass is still the WebGL implementation — its own first line says 'TODO: Convert GLSL shaders to TSL for WebGPU'. It imports the legacy GLSL ConvolutionMaterial plus WebGLRenderer, which three/webgpu does not export, so it is deliberately excluded from the /webgpu barrel. A TSL ConvolutionMaterial already exists next to it, which is why this is agent-ok rather than human-only. Tracked in #2811."},
   "Bounds": {"name":"Bounds","category":"Staging","classification":"agnostic","rendererSupport":"universal","story":false,"test":true,"testAsserts":false,"docs":true,"legacy":false,"webgpu":false,"webgpuStory":false,"legacyStory":false,"assignee":null,"reason":null},
   "Bvh": {"name":"Bvh","category":"Performance","classification":"agnostic","rendererSupport":"universal","story":true,"test":false,"testAsserts":false,"docs":false,"legacy":false,"webgpu":false,"webgpuStory":false,"legacyStory":false,"assignee":null,"reason":null},
   "CameraControls": {"name":"CameraControls","category":"Controls","classification":"agnostic","rendererSupport":"universal","story":true,"test":false,"testAsserts":false,"docs":true,"legacy":false,"webgpu":false,"webgpuStory":false,"legacyStory":false,"assignee":null,"reason":null},
@@ -175,8 +175,8 @@ export const componentStatus: Record<string, ComponentStatus> = {
 export const componentStatusTotals = {
   "components": 143,
   "agnostic": 110,
-  "implemented": 26,
-  "todo": 2,
+  "implemented": 25,
+  "todo": 3,
   "wontPort": 5,
   "withStory": 96,
   "webgpuImplemented": 29,
@@ -184,7 +184,7 @@ export const componentStatusTotals = {
   "withTestFile": 55,
   "withRealTest": 0,
   "withDocs": 47,
-  "agentOk": 2,
+  "agentOk": 3,
   "humanOnly": 0
 } as const
 

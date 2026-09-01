@@ -103,6 +103,33 @@ made `done` and the aggregate `story` flag misleading — third instance.
 
 Tracked in #2802.
 
+#### `.storybook` was declared in tsconfig but never typechecked
+
+`include: ["./src", "./.storybook"]` looked right. TypeScript's wildcard
+expansion skips entries beginning with a dot, so only the 6 `.storybook` files
+reachable as imports from `src/` were in the program — 13 files on disk, 6
+checked. That is how three files importing a non-existent path survived (removed
+in #2806).
+
+Globs are now explicit, and three real problems surfaced immediately:
+
+- **`preview.tsx` declared `globalTypes` and `initialGlobals` twice.** A `backend`
+  toolbar (webgl/webgpu, default webgl) arrived from master's #2593 during the
+  master → v11-working merge, alongside v11's own `renderer` toolbar. Duplicate
+  keys mean the last wins, so **`backend` never existed at runtime**. Nothing
+  reads `globals.backend`; `context.globals.renderer` is used throughout the
+  stories. The dead half is removed.
+- `main.mts` imports `./favicon.ts` with an extension — allowed now via
+  `allowImportingTsExtensions`, which is valid because `emitDeclarationOnly` is on.
+- `theme.ts` tripped TS4082; annotated with `ThemeVars` explicitly.
+
+Verified: `yarn test` passes, `yarn build-storybook` succeeds, and all **203
+stories across 123 files** still render.
+
+**Files changed:** `tsconfig.json`, `.storybook/preview.tsx`, `.storybook/theme.ts`
+
+Tracked in #2807.
+
 ## 11.0.0-alpha.6
 
 Published 2026-08-31.

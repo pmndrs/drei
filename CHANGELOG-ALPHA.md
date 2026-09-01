@@ -4,6 +4,40 @@ This changelog tracks changes made during the v11 alpha development cycle.
 
 ## Unreleased
 
+### Internal
+
+#### The component audit was under-reporting, and `done` was misleading
+
+`scripts/audit-components.js` discovered components only by the
+Component-as-a-Folder convention (`<Name>/<Name>.tsx`), so four root-exported
+public components were invisible to it: `PivotControls` (implementation lives in
+`index.tsx`) and `GizmoHelper` / `GizmoViewport` / `GizmoViewcube` (three
+components sharing a lowercase `gizmo/` folder). The real count is **143**, not 139. Discovery now understands all three layouts; new components should still use
+the convention.
+
+Renamed the `done` classification to `implemented`. It is derived purely from
+"a file exists under `src/webgpu/`" and never meant the component works — while
+it was called `done`, seven `done` components had open bug reports and none of
+them had a story.
+
+Removed `## Progress: ~90%` from the migration guide. It said `~90%` for six
+months while the number of WebGPU components with a story was two. Progress now
+points at the generated status and the GitHub milestones. Also corrected the
+claim that "every component now has stories and regression tests".
+
+Deleted `MeshTransmissionMaterial copy.tsx` — 226 lines, unreferenced, and
+divergent from the real 975-line implementation.
+
+**Files changed:** `scripts/audit-components.js`, `component-status.json`,
+`CLAUDE.md`, `devDocs/MIGRATION_V10_TO_V11.md`,
+`src/webgpu/Materials/MeshTransmissionMaterial/MeshTransmissionMaterial copy.tsx`
+
+Tracked in #2806.
+
+## 11.0.0-alpha.6
+
+Published 2026-08-31.
+
 ### Dependencies & Stability
 
 This is a stability-only pass: dependency updates and the fixes needed to build

@@ -1,14 +1,14 @@
 {
   "generated": "derived from the filesystem by scripts/audit-components.js — do not hand-edit",
   "totals": {
-    "components": 139,
-    "agnostic": 106,
-    "done": 26,
+    "components": 143,
+    "agnostic": 110,
+    "implemented": 26,
     "todo": 2,
     "wontPort": 5,
-    "withStory": 94,
+    "withStory": 96,
     "withTest": 55,
-    "withDocs": 46,
+    "withDocs": 47,
     "agentOk": 2,
     "humanOnly": 0
   },
@@ -16,7 +16,7 @@
     {
       "name": "AccumulativeShadows",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -167,7 +167,7 @@
     {
       "name": "BakeShadows",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -243,7 +243,7 @@
     {
       "name": "BlurPass",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -394,7 +394,7 @@
     {
       "name": "Caustics",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -520,7 +520,7 @@
     {
       "name": "ContactShadows",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -546,7 +546,7 @@
     {
       "name": "ConvolutionMaterial",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -797,7 +797,7 @@
     {
       "name": "DiscardMaterial",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -1146,9 +1146,84 @@
       }
     },
     {
+      "name": "GizmoHelper",
+      "category": "Gizmos",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Gizmos/gizmo"
+      }
+    },
+    {
+      "name": "GizmoViewcube",
+      "category": "Gizmos",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Gizmos/gizmo"
+      }
+    },
+    {
+      "name": "GizmoViewport",
+      "category": "Gizmos",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": false,
+      "docs": false,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Gizmos/gizmo"
+      }
+    },
+    {
       "name": "GradientTexture",
       "category": "Textures",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -1174,7 +1249,7 @@
     {
       "name": "Grid",
       "category": "Staging",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -1225,7 +1300,7 @@
     {
       "name": "HtmlMaterial",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -1277,7 +1352,7 @@
     {
       "name": "Image",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -1378,7 +1453,7 @@
     {
       "name": "Line",
       "category": "Geometry",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -1579,7 +1654,7 @@
     {
       "name": "MeshDistortMaterial",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -1605,7 +1680,7 @@
     {
       "name": "MeshPortalMaterial",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -1631,7 +1706,7 @@
     {
       "name": "MeshReflectorMaterial",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -1657,7 +1732,7 @@
     {
       "name": "MeshRefractionMaterial",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -1683,7 +1758,7 @@
     {
       "name": "MeshTransmissionMaterial",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -1709,7 +1784,7 @@
     {
       "name": "MeshWobbleMaterial",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -1906,6 +1981,31 @@
       },
       "paths": {
         "core": "src/core/Cameras/PerspectiveCamera"
+      }
+    },
+    {
+      "name": "PivotControls",
+      "category": "Gizmos",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "docs": true,
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Gizmos/PivotControls"
       }
     },
     {
@@ -2337,7 +2437,7 @@
     {
       "name": "Segments",
       "category": "Geometry",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -2513,7 +2613,7 @@
     {
       "name": "SoftShadows",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -2539,7 +2639,7 @@
     {
       "name": "Sparkles",
       "category": "Effects",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -2590,7 +2690,7 @@
     {
       "name": "SpotLight",
       "category": "Staging",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -2616,7 +2716,7 @@
     {
       "name": "SpotLightMaterial",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -2692,7 +2792,7 @@
     {
       "name": "Stars",
       "category": "Staging",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -3471,7 +3571,7 @@
     {
       "name": "Wireframe",
       "category": "Geometry",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -3497,7 +3597,7 @@
     {
       "name": "WireframeMaterial",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {

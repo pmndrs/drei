@@ -32,7 +32,27 @@ const OVERRIDES = path.join(ROOT, 'component-overrides.json')
 /** Trees that hold components, in entry-point terms. */
 const TREES = ['core', 'legacy', 'webgpu', 'external', 'experimental']
 
-/** A leaf component folder is one containing `<Name>.tsx` matching its own name. */
+/** True if a file only re-exports — `export * from './x'`, comments, blank lines. */
+function isBarrel(file) {
+  const body = read(file)
+    .split('\n')
+    .filter((l) => l.trim() && !/^\s*(\/\/|\/\*|\*)/.test(l))
+  return body.length > 0 && body.every((l) => /^\s*export \* from/.test(l))
+}
+
+/**
+ * Find components in a tree. Three layouts occur in this repo, and missing any
+ * of them silently under-reports — the audit claimed 139 components while
+ * PivotControls, GizmoHelper, GizmoViewport and GizmoViewcube (all root-exported
+ * public API) were invisible to it.
+ *
+ *   A. `<Name>/<Name>.tsx`     — Component-as-a-Folder, the convention
+ *   B. `<Name>/index.tsx`      — implementation in the index (PivotControls)
+ *   C. `<lowercase>/<Name>.tsx` — several components sharing a folder (gizmo/)
+ *
+ * A and B are keyed on the folder name; C on the file name. New components
+ * should use layout A — B and C exist to describe what is already here.
+ */
 function findComponents(tree) {
   const base = path.join(SRC, tree)
   if (!fs.existsSync(base)) return []
@@ -41,11 +61,28 @@ function findComponents(tree) {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
       if (!entry.isDirectory()) continue
       const full = path.join(dir, entry.name)
+
+      // A — folder named for its implementation
       const impl = path.join(full, `${entry.name}.tsx`)
       const implTs = path.join(full, `${entry.name}.ts`)
       if (fs.existsSync(impl) || fs.existsSync(implTs)) {
         found.push({ name: entry.name, dir: full, file: fs.existsSync(impl) ? impl : implTs })
+      } else {
+        // B — implementation lives in index.tsx. A pure re-export barrel is not one.
+        const index = path.join(full, 'index.tsx')
+        if (fs.existsSync(index) && !isBarrel(index)) {
+          found.push({ name: entry.name, dir: full, file: index })
+        }
       }
+
+      // C — a lowercase folder holding several PascalCase components
+      if (/^[a-z]/.test(entry.name)) {
+        for (const f of fs.readdirSync(full)) {
+          if (!/^[A-Z][A-Za-z0-9]*\.tsx$/.test(f)) continue
+          found.push({ name: f.replace(/\.tsx$/, ''), dir: full, file: path.join(full, f) })
+        }
+      }
+
       walk(full)
     }
   }
@@ -109,8 +146,12 @@ function build() {
 
       // Classification is derived unless an override says otherwise.
       let classification
+      // `implemented` means a src/webgpu/ implementation EXISTS. It does not mean
+      // the component works — nothing here renders anything. It was called `done`
+      // and got read as a completion signal while 7 `done` components had open
+      // bug reports and no story.
       if (inCore || t.external || t.experimental) classification = 'agnostic'
-      else if (inWebgpu) classification = 'done'
+      else if (inWebgpu) classification = 'implemented'
       else classification = 'todo'
 
       const override = entry.name.startsWith('_') ? undefined : overrides[entry.name]
@@ -155,7 +196,7 @@ function build() {
     totals: {
       components: components.length,
       agnostic: count((c) => c.classification === 'agnostic'),
-      done: count((c) => c.classification === 'done'),
+      implemented: count((c) => c.classification === 'implemented'),
       todo: count((c) => c.classification === 'todo'),
       wontPort: count((c) => c.classification === 'wont-port'),
       withStory: count((c) => c.story),
@@ -202,7 +243,9 @@ if (args.includes('--summary')) {
   const t = status.totals
   console.log(`\n${t.components} components\n`)
   console.log(`  agnostic   ${String(t.agnostic).padStart(3)}   works on both renderers`)
-  console.log(`  done       ${String(t.done).padStart(3)}   has a WebGPU implementation`)
+  console.log(
+    `  implemented${String(t.implemented).padStart(3)}   a src/webgpu/ file exists — NOT a claim that it works`
+  )
   console.log(`  todo       ${String(t.todo).padStart(3)}   ${t.agentOk} agent-ok / ${t.humanOnly} human-only`)
   console.log(`  wont-port  ${String(t.wontPort).padStart(3)}`)
   console.log(`\n  stories    ${String(t.withStory).padStart(3)} / ${t.components}`)

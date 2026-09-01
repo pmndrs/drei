@@ -10,7 +10,7 @@ v11 supports **two renderers from one codebase**. That single fact drives the wh
 
 | Tree                | Contains                                               | Import via                       |
 | ------------------- | ------------------------------------------------------ | -------------------------------- |
-| `src/core/`         | Renderer-agnostic. Works on both. ~106 components.     | `@react-three/drei`              |
+| `src/core/`         | Renderer-agnostic. Works on both. ~110 components.     | `@react-three/drei`              |
 | `src/legacy/`       | WebGL-only. GLSL, `ShaderMaterial`, `onBeforeCompile`. | `@react-three/drei/legacy`       |
 | `src/webgpu/`       | WebGPU-only. TSL, `NodeMaterial`.                      | `@react-three/drei/webgpu`       |
 | `src/external/`     | Wrappers around third-party libs.                      | `@react-three/drei/external`     |
@@ -54,7 +54,17 @@ src/core/Staging/Environment/
 └── Environment.docs.mdx   # optional; feeds the generated docs
 ```
 
-`scripts/audit-components.js` discovers components by this convention — a folder whose name matches a `.tsx`/`.ts` inside it. Deviating makes a component invisible to the audit.
+`scripts/audit-components.js` discovers components by this convention — a folder whose name matches a `.tsx`/`.ts` inside it. **Use it for anything new.**
+
+Two older layouts also exist and the audit now understands both, because it previously did not and silently under-reported: `PivotControls`, `GizmoHelper`, `GizmoViewport` and `GizmoViewcube` are all root-exported public API and none of them appeared in `component-status.json`.
+
+| Layout                                                         | Example                       | Keyed on    |
+| -------------------------------------------------------------- | ----------------------------- | ----------- |
+| `<Name>/<Name>.tsx`                                            | `Environment/Environment.tsx` | folder name |
+| `<Name>/index.tsx` — implementation in the index               | `PivotControls/index.tsx`     | folder name |
+| `<lowercase>/<Name>.tsx` — several components sharing a folder | `gizmo/GizmoHelper.tsx`       | file name   |
+
+A folder whose `index.tsx` only re-exports is a barrel, not a component. Don't add new instances of the last two layouts — they describe what is already here.
 
 ## Component status is derived, never hand-written
 

@@ -8,7 +8,7 @@
     "wontPort": 5,
     "withStory": 96,
     "webgpuImplemented": 29,
-    "webgpuWithStory": 2,
+    "webgpuWithStory": 3,
     "withTestFile": 55,
     "withRealTest": 0,
     "withDocs": 47,
@@ -40,7 +40,7 @@
           "docs": true
         },
         "webgpu": {
-          "story": false,
+          "story": true,
           "test": false,
           "docs": false
         }

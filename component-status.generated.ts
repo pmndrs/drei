@@ -27,7 +27,7 @@ export interface ComponentStatus {
 }
 
 export const componentStatus: Record<string, ComponentStatus> = {
-  "AccumulativeShadows": {"name":"AccumulativeShadows","category":"Materials","classification":"implemented","rendererSupport":"dual","story":true,"test":false,"testAsserts":false,"docs":true,"legacy":true,"webgpu":true,"webgpuStory":false,"legacyStory":true,"assignee":null,"reason":null},
+  "AccumulativeShadows": {"name":"AccumulativeShadows","category":"Materials","classification":"implemented","rendererSupport":"dual","story":true,"test":false,"testAsserts":false,"docs":true,"legacy":true,"webgpu":true,"webgpuStory":true,"legacyStory":true,"assignee":null,"reason":null},
   "AdaptiveDpr": {"name":"AdaptiveDpr","category":"Performance","classification":"agnostic","rendererSupport":"universal","story":false,"test":false,"testAsserts":false,"docs":false,"legacy":false,"webgpu":false,"webgpuStory":false,"legacyStory":false,"assignee":null,"reason":null},
   "AdaptiveEvents": {"name":"AdaptiveEvents","category":"Performance","classification":"agnostic","rendererSupport":"universal","story":false,"test":true,"testAsserts":false,"docs":false,"legacy":false,"webgpu":false,"webgpuStory":false,"legacyStory":false,"assignee":null,"reason":null},
   "ArcballControls": {"name":"ArcballControls","category":"Controls","classification":"agnostic","rendererSupport":"universal","story":true,"test":false,"testAsserts":false,"docs":false,"legacy":false,"webgpu":false,"webgpuStory":false,"legacyStory":false,"assignee":null,"reason":null},
@@ -180,7 +180,7 @@ export const componentStatusTotals = {
   "wontPort": 5,
   "withStory": 96,
   "webgpuImplemented": 29,
-  "webgpuWithStory": 2,
+  "webgpuWithStory": 3,
   "withTestFile": 55,
   "withRealTest": 0,
   "withDocs": 47,

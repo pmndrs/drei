@@ -20,8 +20,8 @@
     "clsx": "^2.1.1",
     "leva": "^0.10.1",
     "lucide-react": "^0.562.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
     "react-router-dom": "^6.28.0",
     "tailwind-merge": "^3.4.0",
     "three": "^0.185.1"
@@ -29,8 +29,8 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
     "@tailwindcss/vite": "^4.1.18",
-    "@types/react": "^19.0.2",
-    "@types/react-dom": "^19.0.2",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
     "@types/three": "^0.185.0",
     "@vitejs/plugin-react": "^4.3.3",
     "autoprefixer": "^10.4.23",

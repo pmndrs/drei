@@ -9,7 +9,8 @@
     "withStory": 96,
     "webgpuImplemented": 29,
     "webgpuWithStory": 2,
-    "withTest": 55,
+    "withTestFile": 55,
+    "withRealTest": 0,
     "withDocs": 47,
     "agentOk": 2,
     "humanOnly": 0
@@ -30,6 +31,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "legacy": {
@@ -68,6 +70,7 @@
       },
       "story": false,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -100,6 +103,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -132,6 +136,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -164,6 +169,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "legacy": {
@@ -196,6 +202,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -228,6 +235,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
@@ -266,6 +274,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -298,6 +307,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -330,6 +340,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
@@ -368,6 +379,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -400,6 +412,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "external": {
@@ -432,6 +445,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "external": {
@@ -464,6 +478,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -496,6 +511,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -528,6 +544,7 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "legacy": {
@@ -566,6 +583,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -598,6 +616,7 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -630,6 +649,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -662,6 +682,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -694,6 +715,7 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "legacy": {
@@ -732,6 +754,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
@@ -770,6 +793,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -802,6 +826,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -834,6 +859,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -866,6 +892,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -898,6 +925,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -930,6 +958,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -962,6 +991,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -994,6 +1024,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -1026,6 +1057,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -1058,6 +1090,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
@@ -1096,6 +1129,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -1128,6 +1162,7 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -1160,6 +1195,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
@@ -1192,6 +1228,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -1224,6 +1261,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -1256,6 +1294,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "external": {
@@ -1288,6 +1327,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "external": {
@@ -1320,6 +1360,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "external": {
@@ -1352,6 +1393,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -1384,6 +1426,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -1416,6 +1459,7 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -1448,6 +1492,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -1480,6 +1525,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -1512,6 +1558,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -1544,6 +1591,7 @@
       },
       "story": false,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -1576,6 +1624,7 @@
       },
       "story": false,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -1608,6 +1657,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "legacy": {
@@ -1646,6 +1696,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
@@ -1684,6 +1735,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -1716,6 +1768,7 @@
       },
       "story": false,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
@@ -1754,6 +1807,7 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -1792,6 +1846,7 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "legacy": {
@@ -1830,6 +1885,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -1862,6 +1918,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -1894,6 +1951,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -1926,6 +1984,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
@@ -1964,6 +2023,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -1996,6 +2056,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -2028,6 +2089,7 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "experimental": {
@@ -2060,6 +2122,7 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -2092,6 +2155,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -2124,6 +2188,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -2156,6 +2221,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
@@ -2188,6 +2254,7 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
@@ -2226,6 +2293,7 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
@@ -2264,6 +2332,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
@@ -2302,6 +2371,7 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
@@ -2340,6 +2410,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "legacy": {
@@ -2378,6 +2449,7 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
@@ -2416,6 +2488,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -2448,6 +2521,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -2480,6 +2554,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -2512,6 +2587,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -2544,6 +2620,7 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "webgpu": {
@@ -2582,6 +2659,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -2614,6 +2692,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -2646,6 +2725,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -2678,6 +2758,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -2710,6 +2791,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -2742,6 +2824,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -2774,6 +2857,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -2806,6 +2890,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -2838,6 +2923,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -2870,6 +2956,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -2902,6 +2989,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -2940,6 +3028,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -2972,6 +3061,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -3004,6 +3094,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -3036,6 +3127,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -3068,6 +3160,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -3100,6 +3193,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -3132,6 +3226,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -3164,6 +3259,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -3196,6 +3292,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -3228,6 +3325,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
@@ -3266,6 +3364,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -3298,6 +3397,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
@@ -3330,6 +3430,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -3362,6 +3463,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
@@ -3394,6 +3496,7 @@
       },
       "story": false,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -3426,6 +3529,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -3458,6 +3562,7 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
@@ -3496,6 +3601,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "legacy": {
@@ -3534,6 +3640,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "external": {
@@ -3566,6 +3673,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
@@ -3604,6 +3712,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
@@ -3642,6 +3751,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -3674,6 +3784,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -3706,6 +3817,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "legacy": {
@@ -3744,6 +3856,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -3776,6 +3889,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -3808,6 +3922,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -3840,6 +3955,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "legacy": {
@@ -3872,6 +3988,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -3904,6 +4021,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -3936,6 +4054,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
@@ -3980,6 +4099,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -4012,6 +4132,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -4044,6 +4165,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -4076,6 +4198,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -4108,6 +4231,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
@@ -4140,6 +4264,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -4172,6 +4297,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -4204,6 +4330,7 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -4236,6 +4363,7 @@
       },
       "story": false,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -4274,6 +4402,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -4306,6 +4435,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -4338,6 +4468,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -4370,6 +4501,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -4402,6 +4534,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -4434,6 +4567,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -4466,6 +4600,7 @@
       },
       "story": false,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -4498,6 +4633,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -4530,6 +4666,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -4562,6 +4699,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -4594,6 +4732,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -4626,6 +4765,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -4658,6 +4798,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": true,
       "coverageByTree": {
         "core": {
@@ -4690,6 +4831,7 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "core": {
@@ -4722,6 +4864,7 @@
       },
       "story": false,
       "test": false,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {
@@ -4760,6 +4903,7 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
       "docs": false,
       "coverageByTree": {
         "legacy": {

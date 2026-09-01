@@ -36,7 +36,11 @@ function calculateStats() {
 
   const examplesComplete = views.filter((c) => c.component !== undefined).length
   const storiesComplete = views.filter((c) => c.story).length
-  const testsComplete = views.filter((c) => c.test).length
+  // A test FILE, versus a test that asserts anything. All 64 co-located test
+  // files are `it('TODO: Add tests after Phase 2', () => {})`, so counting files
+  // as coverage reports 55 where the truth is 0.
+  const testFiles = views.filter((c) => c.test).length
+  const testsComplete = views.filter((c) => c.testAsserts).length
   const docsComplete = views.filter((c) => c.docs).length
 
   // A WebGPU implementation EXISTS. Not a claim that it works — most of these
@@ -57,6 +61,7 @@ function calculateStats() {
     byRendererSupport,
     examplesComplete,
     storiesComplete,
+    testFiles,
     testsComplete,
     docsComplete,
     webgpuImplemented,
@@ -178,7 +183,10 @@ function ComponentRow({ entry }: { entry: ComponentView }) {
         <StatusBadge status={statusOf(entry.story)} label="Story" />
       </td>
       <td style={{ padding: '8px 12px' }}>
-        <StatusBadge status={statusOf(entry.test)} label="Test" />
+        <StatusBadge
+          status={entry.testAsserts ? '🟢' : entry.test ? '🟡' : '🔴'}
+          label={entry.testAsserts ? 'Test asserts' : entry.test ? 'Test file exists but asserts nothing' : 'No test'}
+        />
       </td>
       <td style={{ padding: '8px 12px' }}>
         <StatusBadge status={statusOf(entry.docs)} label="Docs" />
@@ -278,9 +286,14 @@ export default function ComponentCatalog() {
           percent={(stats.storiesComplete / stats.total) * 100}
         />
         <StatCard
-          label="Tests"
+          label="Tests that assert"
           value={`${stats.testsComplete}/${stats.total}`}
           percent={(stats.testsComplete / stats.total) * 100}
+        />
+        <StatCard
+          label="Test files (mostly empty)"
+          value={`${stats.testFiles}/${stats.total}`}
+          percent={(stats.testFiles / stats.total) * 100}
         />
         <StatCard
           label="Docs"

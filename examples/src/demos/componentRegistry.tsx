@@ -1474,6 +1474,7 @@ const UNKNOWN: Omit<ComponentStatus, 'name' | 'category'> = {
   rendererSupport: 'unknown',
   story: false,
   test: false,
+  testAsserts: false,
   docs: false,
   legacy: false,
   webgpu: false,

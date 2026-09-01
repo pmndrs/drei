@@ -69,6 +69,40 @@ recognise now renders a visible warning instead of a confident zero.
 
 Tracked in #2806.
 
+#### All 64 co-located test files assert nothing
+
+`src/**/*.test.ts` looked like coverage. Every one of the 64 files is:
+
+```ts
+describe('Backdrop', () => {
+  it('TODO: Add tests after Phase 2', () => {
+    // Placeholder test - will implement after migration complete
+  })
+})
+```
+
+Zero `expect`, zero `assert`, zero `render` — in all 64. Wiring them into CI
+as-is would have added 64 always-green tests, which is worse than not running
+them.
+
+The audit now distinguishes a test _file_ from a test that _asserts_:
+
+```
+  test files  55 / 143
+  REAL tests   0 / 143   (the rest assert nothing)
+```
+
+The dashboard shows 🟡 for "file exists but asserts nothing" rather than the 🟢
+it was showing for 55 components. This is the same "a file exists" mistake that
+made `done` and the aggregate `story` flag misleading — third instance.
+
+**Files changed:** `scripts/audit-components.js`, `component-status.generated.ts`,
+`component-status.json`, `examples/src/catalog/ComponentCatalog.tsx`,
+`examples/src/components/ExampleCard.tsx`,
+`examples/src/demos/componentRegistry.tsx`
+
+Tracked in #2802.
+
 ## 11.0.0-alpha.6
 
 Published 2026-08-31.

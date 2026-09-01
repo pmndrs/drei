@@ -89,7 +89,12 @@ export const ExampleCard = ({ demoName, showStatus = false }: { demoName: string
           {/* Coverage — every one of these is derived from the filesystem */}
           <div className="demo-status" style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '8px' }}>
             <StatusBadge status={statusOf(component.story)} label="Story" />
-            <StatusBadge status={statusOf(component.test)} label="Test" />
+            <StatusBadge
+              status={component.testAsserts ? '🟢' : component.test ? '🟡' : '🔴'}
+              label={
+                component.testAsserts ? 'Test' : component.test ? 'Test file exists but asserts nothing' : 'No test'
+              }
+            />
             <StatusBadge status={statusOf(component.docs)} label="Docs" />
           </div>
 

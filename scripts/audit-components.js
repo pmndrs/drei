@@ -33,6 +33,11 @@ const OVERRIDES = path.join(ROOT, 'component-overrides.json')
 /** Trees that hold components, in entry-point terms. */
 const TREES = ['core', 'legacy', 'webgpu', 'external', 'experimental']
 
+/** True if a test file actually asserts something. A placeholder is not a test. */
+function hasAssertions(file) {
+  return /\bexpect\(|\bassert[.(]|toBe|toEqual|toThrow|\brender\(/.test(read(file))
+}
+
 /** True if a file only re-exports — `export * from './x'`, comments, blank lines. */
 function isBarrel(file) {
   const body = read(file)
@@ -112,6 +117,15 @@ function inspect(component, tree) {
     path: rel,
     story: fs.existsSync(path.join(dir, `${name}.stories.tsx`)),
     test: fs.existsSync(path.join(dir, `${name}.test.ts`)) || fs.existsSync(path.join(dir, `${name}.test.tsx`)),
+    // A test file that asserts nothing is not a test. All 64 co-located test
+    // files were `it('TODO: Add tests after Phase 2', () => {})` — counting
+    // them as coverage is the same "a file exists" mistake that made `done`
+    // mean nothing. Report both so the gap is visible instead of flattering.
+    testAsserts: hasAssertions(
+      fs.existsSync(path.join(dir, `${name}.test.ts`))
+        ? path.join(dir, `${name}.test.ts`)
+        : path.join(dir, `${name}.test.tsx`)
+    ),
     docs: fs.existsSync(path.join(dir, `${name}.docs.mdx`)),
     // import style — `#three` is the platform alias, bare `three` is not portable
     usesAlias: /from '#three/.test(source),
@@ -180,6 +194,7 @@ function build() {
         },
         story: Object.values(t).some((x) => x.story),
         test: Object.values(t).some((x) => x.test),
+        testAsserts: Object.values(t).some((x) => x.testAsserts),
         docs: Object.values(t).some((x) => x.docs),
         // Per-tree, because the aggregate above hides the thing that matters:
         // `Grid` and `MeshDistortMaterial` both report `story: true`, but only
@@ -210,7 +225,8 @@ function build() {
       withStory: count((c) => c.story),
       webgpuImplemented: count((c) => c.trees.webgpu),
       webgpuWithStory: count((c) => c.coverageByTree?.webgpu?.story),
-      withTest: count((c) => c.test),
+      withTestFile: count((c) => c.test),
+      withRealTest: count((c) => c.testAsserts),
       withDocs: count((c) => c.docs),
       agentOk: count((c) => c.assignee === 'agent-ok'),
       humanOnly: count((c) => c.assignee === 'human-only'),
@@ -243,6 +259,8 @@ function emitTs(status) {
     rendererSupport: rendererSupport(c),
     story: c.story,
     test: c.test,
+    /** The test file asserts something. `test` alone only means a file exists. */
+    testAsserts: c.testAsserts,
     docs: c.docs,
     legacy: c.trees.legacy,
     webgpu: c.trees.webgpu,
@@ -272,6 +290,8 @@ export interface ComponentStatus {
   rendererSupport: RendererSupport
   story: boolean
   test: boolean
+  /** The test file asserts something. \`test\` alone only means a file exists. */
+  testAsserts: boolean
   docs: boolean
   legacy: boolean
   webgpu: boolean
@@ -337,7 +357,8 @@ if (args.includes('--summary')) {
   console.log(`  todo       ${String(t.todo).padStart(3)}   ${t.agentOk} agent-ok / ${t.humanOnly} human-only`)
   console.log(`  wont-port  ${String(t.wontPort).padStart(3)}`)
   console.log(`\n  stories    ${String(t.withStory).padStart(3)} / ${t.components}`)
-  console.log(`  tests      ${String(t.withTest).padStart(3)} / ${t.components}`)
+  console.log(`  test files ${String(t.withTestFile).padStart(3)} / ${t.components}`)
+  console.log(`  REAL tests ${String(t.withRealTest).padStart(3)} / ${t.components}   (the rest assert nothing)`)
   console.log(`  docs       ${String(t.withDocs).padStart(3)} / ${t.components}\n`)
   const todo = status.components.filter((c) => c.classification === 'todo')
   if (todo.length) {

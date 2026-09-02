@@ -23,10 +23,5 @@
   "Text": {
     "classification": "todo",
     "reason": "Depended on a vendored troika fork that could not be published. Returns via @pmndrs/glyph, which covers both renderers. Tracked in #2658."
-  },
-  "BlurPass": {
-    "classification": "todo",
-    "assignee": "agent-ok",
-    "reason": "src/webgpu/Materials/BlurPass is still the WebGL implementation — its own first line says 'TODO: Convert GLSL shaders to TSL for WebGPU'. It imports the legacy GLSL ConvolutionMaterial plus WebGLRenderer, which three/webgpu does not export, so it is deliberately excluded from the /webgpu barrel. A TSL ConvolutionMaterial already exists next to it, which is why this is agent-ok rather than human-only. Tracked in #2811."
   }
 }

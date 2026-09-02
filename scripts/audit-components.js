@@ -29,6 +29,7 @@ const SRC = path.join(ROOT, 'src')
 const OUT = path.join(ROOT, 'component-status.json')
 const OUT_TS = path.join(ROOT, 'component-status.generated.ts')
 const OVERRIDES = path.join(ROOT, 'component-overrides.json')
+const REGISTRY = path.join(ROOT, 'examples/src/demos/componentRegistry.tsx')
 
 /** Trees that hold components, in entry-point terms. */
 const TREES = ['core', 'legacy', 'webgpu', 'external', 'experimental']
@@ -71,6 +72,21 @@ function isBarrel(file) {
     .split('\n')
     .filter((l) => l.trim() && !/^\s*(\/\/|\/\*|\*)/.test(l))
   return body.length > 0 && body.every((l) => /^\s*export \* from/.test(l))
+}
+
+/**
+ * Source with comments and whitespace removed, for comparing a WebGPU file
+ * against its legacy twin. Two files that differ only in comments are the same
+ * file — `webgpu/Staging/BakeShadows` was a verbatim copy of the legacy one,
+ * carrying a WebGL-only API (`renderer.shadowMap.autoUpdate`, which
+ * WebGPURenderer does not have) into the /webgpu entry as a silent no-op.
+ */
+function normalizeSource(source) {
+  return source
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/^\s*\/\/.*$/gm, '')
+    .replace(/\s+/g, ' ')
+    .trim()
 }
 
 /**
@@ -142,6 +158,8 @@ function inspect(component, tree) {
     tree,
     category,
     path: rel,
+    // Held in memory for copy detection only — never persisted.
+    normalized: normalizeSource(source),
     story: fs.existsSync(path.join(dir, `${name}.stories.tsx`)),
     test: fs.existsSync(path.join(dir, `${name}.test.ts`)) || fs.existsSync(path.join(dir, `${name}.test.tsx`)),
     // A test file that asserts nothing is not a test. All 64 co-located test
@@ -205,6 +223,14 @@ function build() {
       // mapping. This is a guess from the LEGACY source, so it over-flags —
       // a thin wrapper around a trivial shader looks hard but is not. Override
       // it in component-overrides.json with an `assignee` plus a reason.
+      // A src/webgpu/ file identical to its legacy twin is a copy, not a port.
+      // It usually means the file was created so the /webgpu barrel had
+      // something to export. That is worse than a missing component: it looks
+      // implemented, ships from the entry point, and silently does nothing when
+      // the API it calls does not exist on WebGPURenderer.
+      const twin = t.legacy ?? t.core
+      const webgpuIsCopy = !!(t.webgpu && twin && t.webgpu.normalized === twin.normalized)
+
       const hard = !!(primary?.hasGlsl || primary?.hasOnBeforeCompile || primary?.hasShaderMaterial)
       const assignee = classification === 'todo' ? (override?.assignee ?? (hard ? 'human-only' : 'agent-ok')) : null
 
@@ -226,6 +252,7 @@ function build() {
         testAsserts: Object.values(t).some((x) => x.testAsserts),
         exercised: Object.values(t).some((x) => x.exercised),
         docs: Object.values(t).some((x) => x.docs),
+        webgpuIsCopy,
         // Per-tree, because the aggregate above hides the thing that matters:
         // `Grid` and `MeshDistortMaterial` both report `story: true`, but only
         // Grid's story renders the WebGPU implementation. Aggregating says 20
@@ -259,6 +286,7 @@ function build() {
       webgpuImplemented: count((c) => c.trees.webgpu),
       webgpuWithStory: count((c) => c.coverageByTree?.webgpu?.story),
       webgpuExercised: count((c) => c.coverageByTree?.webgpu?.exercised),
+      webgpuCopies: count((c) => c.webgpuIsCopy),
       withTestFile: count((c) => c.test),
       withRealTest: count((c) => c.testAsserts),
       withDocs: count((c) => c.docs),
@@ -303,6 +331,8 @@ function emitTs(status) {
     webgpuStory: !!c.coverageByTree?.webgpu?.story,
     /** Rendered by a story anywhere — many come from legacy stories via PlatformSwitch. */
     webgpuExercised: !!c.coverageByTree?.webgpu?.exercised,
+    /** The src/webgpu/ file is identical to its legacy twin — a copy, not a port. */
+    webgpuIsCopy: !!c.webgpuIsCopy,
     legacyStory: !!c.coverageByTree?.legacy?.story,
     assignee: c.assignee,
     reason: c.reason,
@@ -335,6 +365,8 @@ export interface ComponentStatus {
   webgpuStory: boolean
   /** Rendered by a story anywhere, including legacy stories via PlatformSwitch. */
   webgpuExercised: boolean
+  /** The src/webgpu/ file is identical to its legacy twin — a copy, not a port. */
+  webgpuIsCopy: boolean
   legacyStory: boolean
   assignee: 'agent-ok' | 'human-only' | null
   reason: string | null
@@ -351,6 +383,53 @@ export function statusFor(name: string): ComponentStatus | undefined {
   return componentStatus[name]
 }
 `
+}
+
+/**
+ * A WebGPU file identical to its legacy twin has to be acknowledged. Either it
+ * is genuinely renderer-agnostic and belongs in `core/`, or it is an unported
+ * copy and its classification must say `todo`. Silence is the failure mode this
+ * catches: `BakeShadows` sat exported from `/webgpu` for months reading as
+ * `implemented` while calling `renderer.shadowMap.autoUpdate`, which
+ * WebGPURenderer does not have.
+ */
+function checkCopies(status) {
+  return status.components
+    .filter((c) => c.webgpuIsCopy && c.classification !== 'todo' && c.classification !== 'wont-port')
+    .map(
+      (c) =>
+        `"${c.name}" — src/webgpu is byte-identical to its legacy twin, so it is a copy, not a port, ` +
+        `but it is classified "${c.classification}". Either port it and classify it "todo" in ` +
+        `component-overrides.json with a reason, or move it to core/ if it is genuinely agnostic.`
+    )
+}
+
+/**
+ * The examples dashboard renders one row per registry entry, so anything the
+ * registry omits is invisible there and every "x / total" it prints is over the
+ * registry rather than over the library. That drifts in one direction only —
+ * the audit is generated, the registry is hand-written — and nothing caught it:
+ * the dashboard warns about registry names the audit does not know (a set that
+ * is empty) and never about audited components the registry has dropped.
+ */
+function checkRegistry(status) {
+  if (!fs.existsSync(REGISTRY)) return []
+  const source = read(REGISTRY)
+  const names = [...source.matchAll(/^\s*name: '([A-Za-z0-9_]+)',/gm)].map((m) => m[1])
+  const known = new Set(status.components.map((c) => c.name))
+  const problems = []
+
+  const seen = new Set()
+  const dupes = new Set()
+  for (const n of names) (seen.has(n) ? dupes : seen).add(n)
+  for (const n of dupes) problems.push(`registry lists "${n}" more than once — it is counted twice in every stat`)
+
+  for (const n of seen) if (!known.has(n)) problems.push(`registry entry "${n}" has no audit record`)
+  for (const c of status.components)
+    if (!seen.has(c.name))
+      problems.push(`"${c.name}" is missing from the examples registry — invisible on the dashboard`)
+
+  return problems
 }
 
 function checkOverrides(status) {
@@ -371,7 +450,7 @@ const args = process.argv.slice(2)
 const status = build()
 
 if (args.includes('--check')) {
-  const problems = checkOverrides(status)
+  const problems = [...checkOverrides(status), ...checkCopies(status), ...checkRegistry(status)]
   const stale = fs.existsSync(OUT) && read(OUT).trim() !== JSON.stringify(status, null, 2).trim()
   if (stale) problems.push('component-status.json is out of date — run `node scripts/audit-components.js`')
   const staleTs = fs.existsSync(OUT_TS) && read(OUT_TS).trim() !== emitTs(status).trim()
@@ -402,6 +481,12 @@ if (args.includes('--summary')) {
     `\n  webgpu     ${String(t.webgpuImplemented).padStart(3)} implemented · ${t.webgpuExercised} rendered by some story · ${t.webgpuWithStory} with a co-located one`
   )
   console.log(`             (a story proves it mounts, not that WebGPU works — see #2801)\n`)
+  const copies = status.components.filter((c) => c.webgpuIsCopy)
+  if (copies.length) {
+    console.log('  copies, not ports (src/webgpu identical to the legacy twin):')
+    for (const c of copies) console.log(`    ${c.name}  (${c.classification})`)
+    console.log()
+  }
   const todo = status.components.filter((c) => c.classification === 'todo')
   if (todo.length) {
     console.log('  still to port:')

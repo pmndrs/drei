@@ -45,14 +45,26 @@ function calculateStats() {
 
   // A WebGPU implementation EXISTS. Not a claim that it works — most of these
   // have never been rendered. See #2801.
-  const dualComponents = views.filter((c) => c.rendererSupport === 'dual')
-  const webgpuImplemented = dualComponents.filter((c) => c.webgpu).length
-  const webgpuTotal = dualComponents.length
+  //
+  // Counted over every component with a src/webgpu/ file, NOT over
+  // `rendererSupport === 'dual'`. A component is only `dual` *because* it has a
+  // WebGPU implementation, so that denominator can only ever read N/N — it
+  // showed a permanent 27/27 — and it silently dropped `Outlines` and
+  // `HtmlMaterial`, which have WebGPU implementations but no legacy twin.
+  const webgpuImplemented = views.filter((c) => c.webgpu).length
 
-  // A story that renders the WEBGPU implementation — the only components anyone
-  // has actually seen. `c.story` is true for a story in any tree, which is not
-  // the same question and reports 20 instead of 2.
-  const webgpuSeen = views.filter((c) => c.webgpuStory).length
+  // Two different questions, and conflating them has now gone wrong twice.
+  // `story` is true for a story in ANY tree, which reported 20 of 29 as covered.
+  // `webgpuStory` is a story CO-LOCATED in src/webgpu, which is 3 — but 17
+  // components really are rendered under WebGPU, most through a legacy story's
+  // PlatformSwitch branch. `webgpuExercised` is that number, and it is the one
+  // that answers "has anyone seen this run".
+  const webgpuExercised = views.filter((c) => c.webgpuExercised).length
+  const webgpuColocated = views.filter((c) => c.webgpuStory).length
+
+  // A src/webgpu/ file identical to its legacy twin: shipped from the /webgpu
+  // entry, reads as implemented, and calls WebGL-only APIs that no-op there.
+  const webgpuCopies = views.filter((c) => c.webgpuIsCopy).length
 
   const unknown = views.filter((c) => !c.known).length
 
@@ -65,8 +77,9 @@ function calculateStats() {
     testsComplete,
     docsComplete,
     webgpuImplemented,
-    webgpuTotal,
-    webgpuSeen,
+    webgpuExercised,
+    webgpuColocated,
+    webgpuCopies,
     unknown,
     universalCount: byRendererSupport.universal || 0,
     dualCount: byRendererSupport.dual || 0,
@@ -197,10 +210,38 @@ function ComponentRow({ entry }: { entry: ComponentView }) {
         {isDual ? <StatusBadge status={statusOf(entry.legacy)} label="Legacy" /> : '-'}
       </td>
       <td style={{ padding: '8px 12px' }}>
-        {isDual ? <StatusBadge status={statusOf(entry.webgpu)} label="WebGPU implementation exists" /> : '-'}
+        {/* A copy of the legacy file is not an implementation, however much it
+            looks like one from the file tree. Say so on the row. */}
+        {isDual ? (
+          <StatusBadge
+            status={entry.webgpuIsCopy ? '🟡' : statusOf(entry.webgpu)}
+            label={
+              entry.webgpuIsCopy ? 'Identical to the legacy file — a copy, not a port' : 'WebGPU implementation exists'
+            }
+          />
+        ) : (
+          '-'
+        )}
       </td>
       <td style={{ padding: '8px 12px' }}>
-        {entry.webgpu ? <StatusBadge status={statusOf(entry.webgpuStory)} label="Story renders WebGPU" /> : '-'}
+        {/* Green only for a co-located story. Amber means it is rendered, but
+            through another tree's story via PlatformSwitch — real coverage,
+            weaker than its own. Showing only the co-located count understates
+            this by roughly 6x. */}
+        {entry.webgpu ? (
+          <StatusBadge
+            status={entry.webgpuStory ? '🟢' : entry.webgpuExercised ? '🟡' : '🔴'}
+            label={
+              entry.webgpuStory
+                ? 'Has its own WebGPU story'
+                : entry.webgpuExercised
+                  ? 'Rendered by another tree\u2019s story via PlatformSwitch'
+                  : 'Never rendered under WebGPU'
+            }
+          />
+        ) : (
+          '-'
+        )}
       </td>
 
       {/* Notes and Path */}
@@ -300,16 +341,18 @@ export default function ComponentCatalog() {
           value={`${stats.docsComplete}/${stats.total}`}
           percent={(stats.docsComplete / stats.total) * 100}
         />
+        <StatCard label="WebGPU implementations" value={stats.webgpuImplemented} />
         <StatCard
-          label="WebGPU implemented"
-          value={`${stats.webgpuImplemented}/${stats.webgpuTotal}`}
-          percent={stats.webgpuTotal > 0 ? (stats.webgpuImplemented / stats.webgpuTotal) * 100 : 0}
+          label="Rendered under WebGPU"
+          value={`${stats.webgpuExercised}/${stats.webgpuImplemented}`}
+          percent={stats.webgpuImplemented > 0 ? (stats.webgpuExercised / stats.webgpuImplemented) * 100 : 0}
         />
         <StatCard
-          label="WebGPU with a story"
-          value={`${stats.webgpuSeen}/${stats.webgpuImplemented}`}
-          percent={stats.webgpuImplemented > 0 ? (stats.webgpuSeen / stats.webgpuImplemented) * 100 : 0}
+          label="With a co-located story"
+          value={`${stats.webgpuColocated}/${stats.webgpuImplemented}`}
+          percent={stats.webgpuImplemented > 0 ? (stats.webgpuColocated / stats.webgpuImplemented) * 100 : 0}
         />
+        <StatCard label="Copies, not ports" value={stats.webgpuCopies} />
       </div>
 
       {/* Renderer Support Summary --------------------------------- */}
@@ -361,10 +404,16 @@ export default function ComponentCatalog() {
                     <th style={{ padding: '8px 12px' }}>Test</th>
                     <th style={{ padding: '8px 12px' }}>Docs</th>
                     <th style={{ padding: '8px 12px' }}>Legacy</th>
-                    <th style={{ padding: '8px 12px' }} title="A src/webgpu/ file exists — not a claim that it works">
+                    <th
+                      style={{ padding: '8px 12px' }}
+                      title="A src/webgpu/ file exists — not a claim that it works. Amber: identical to the legacy file, so a copy rather than a port."
+                    >
                       WebGPU
                     </th>
-                    <th style={{ padding: '8px 12px' }} title="A story that renders the WebGPU implementation">
+                    <th
+                      style={{ padding: '8px 12px' }}
+                      title="Green: its own co-located story. Amber: rendered through another tree's story via PlatformSwitch. Red: never rendered under WebGPU."
+                    >
                       WebGPU story
                     </th>
                     <th style={{ padding: '8px 12px', minWidth: '150px' }}>Notes</th>

@@ -6,6 +6,64 @@ This changelog tracks changes made during the v11 alpha development cycle.
 
 ### Internal
 
+#### The dashboard could not see five components, and counted two twice
+
+`examples/src/demos/componentRegistry.tsx` listed `MeshPortalMaterial` and
+`MeshTransmissionMaterial` twice each — the second copy of each had no demo, and
+the two `MeshTransmissionMaterial` entries shared a `path`, so one was an
+unreachable route. It also omitted `HtmlMaterial`, `ShadowAlpha`, `Shapes`,
+`useDepthBuffer` and `useVariants`, all exported public API. The dashboard
+therefore rendered 140 rows and printed every statistic over 140 while the
+library has 143.
+
+Nothing caught it. The `unknown` banner warns about registry entries the audit
+does not recognise — a set that is empty — and never about audited components
+the registry has dropped, which is the direction that actually drifts, because
+the audit is generated and the registry is written by hand.
+`audit-components.js --check` now fails on a missing entry, a duplicate entry,
+and an entry with no audit record.
+
+Two WebGPU stat cards were replaced. **"WebGPU implemented 27/27"** counted over
+components whose `rendererSupport` is `dual` — and a component is only `dual`
+_because_ it has a WebGPU implementation, so that card could only ever read
+100%. It also silently dropped `Outlines` and `HtmlMaterial`, which have WebGPU
+implementations but no legacy twin. It now counts every component with a
+`src/webgpu/` file: **29**.
+
+**"WebGPU with a story 3/27"** used `webgpuStory`, meaning a story co-located in
+`src/webgpu/`. But **17** components are genuinely rendered under WebGPU, most
+through a legacy story's `PlatformSwitch` branch, and `webgpuExercised` already
+held that number. This is the second time the two were conflated, in opposite
+directions: the card started on the aggregate `story` flag and reported 20, was
+corrected to the co-located count and reported 3. Both are now shown, and the
+per-row badge distinguishes them — green for a component's own story, amber for
+one rendered through another tree's.
+
+**Files changed:** `scripts/audit-components.js`,
+`examples/src/demos/componentRegistry.tsx`,
+`examples/src/catalog/ComponentCatalog.tsx`, `component-status.json`,
+`component-status.generated.ts`
+
+#### The audit can now tell a copy from a port
+
+A file under `src/webgpu/` identical to its legacy twin once comments are
+stripped is a copy, not a port. That is worse than a missing component: it reads
+as implemented, ships from the `/webgpu` entry, and silently does nothing when
+the API it calls does not exist on `WebGPURenderer`. `BakeShadows` sat that way
+since #2599, calling `renderer.shadowMap.autoUpdate` — which
+`WebGPURenderer.shadowMap` does not have.
+
+`--check` now fails when such a component is classified anything other than
+`todo` or `wont-port`, so it has to be ported or acknowledged in
+`component-overrides.json`. The new `webgpuIsCopy` field appears in the summary
+and on the dashboard. Two components match today, `BakeShadows` and `BlurPass`,
+both already classified `todo`.
+
+**Files changed:** `scripts/audit-components.js`, `component-status.json`,
+`component-status.generated.ts`, `examples/src/catalog/ComponentCatalog.tsx`
+
+Tracked in #2665, #2811.
+
 #### Three files claimed a conversion state they did not have
 
 `src/webgpu/Staging/BakeShadows/BakeShadows.tsx` and

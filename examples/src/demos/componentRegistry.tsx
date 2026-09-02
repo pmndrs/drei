@@ -671,6 +671,14 @@ export const components: DreiComponent[] = [
     component: WireframeDemo,
     notes: 'Incorrectly in core',
   },
+  {
+    name: 'Shapes',
+    category: 'Geometry',
+    title: 'Shapes',
+    description: 'Declarative wrappers for the built-in three.js geometries.',
+    path: '/core/geometry/shapes',
+    notes: '',
+  },
 
   //* Helpers ==============================
   {
@@ -760,6 +768,14 @@ export const components: DreiComponent[] = [
     title: 'useHelper',
     description: 'Attach Three.js helpers to objects.',
     path: '/core/helpers/usehelper',
+    notes: '',
+  },
+  {
+    name: 'useDepthBuffer',
+    category: 'Helpers',
+    title: 'useDepthBuffer',
+    description: 'Renders the scene depth into a render target for other effects to sample.',
+    path: '/core/helpers/usedepthbuffer',
     notes: '',
   },
 
@@ -897,6 +913,14 @@ export const components: DreiComponent[] = [
     description: 'Use webcam feed as texture.',
     path: '/core/loaders/webcamvideotexture',
     component: WebcamVideoTextureDemo,
+    notes: '',
+  },
+  {
+    name: 'useVariants',
+    category: 'Loaders',
+    title: 'useVariants',
+    description: 'Switch between KHR_materials_variants material sets on a loaded glTF.',
+    path: '/core/loaders/usevariants',
     notes: '',
   },
 
@@ -1183,6 +1207,14 @@ export const components: DreiComponent[] = [
     component: UseEnvironmentDemo,
     notes: '',
   },
+  {
+    name: 'ShadowAlpha',
+    category: 'Staging',
+    title: 'Shadow Alpha',
+    description: "Carries a material's alpha into the shadow it casts.",
+    path: '/staging/shadowalpha',
+    notes: "Legacy only — patches the depth material's GLSL via onBeforeCompile, which TSL has no equivalent for.",
+  },
 
   //* UI ==============================
   {
@@ -1305,19 +1337,19 @@ export const components: DreiComponent[] = [
     notes: 'Low priority',
   },
   {
+    name: 'HtmlMaterial',
+    category: 'Materials',
+    title: 'Html Material',
+    description: 'Material used by Html occlusion to blend DOM content into the scene.',
+    path: '/materials/htmlmaterial',
+    notes: 'Internal to Html occlude="blending", but exported from both entries.',
+  },
+  {
     name: 'MeshDistortMaterial',
     category: 'Materials',
     title: 'Mesh Distort Material',
     description: 'Noise-based vertex distortion.',
     path: '/materials/meshdistortmaterial',
-    notes: 'High priority',
-  },
-  {
-    name: 'MeshPortalMaterial',
-    category: 'Materials',
-    title: 'Mesh Portal Material',
-    description: 'Portal effect through mesh.',
-    path: '/materials/meshportalmaterial',
     notes: 'High priority',
   },
   {
@@ -1334,14 +1366,6 @@ export const components: DreiComponent[] = [
     title: 'Mesh Refraction Material',
     description: 'Refraction through glass-like materials.',
     path: '/materials/meshrefractionmaterial',
-    notes: 'High priority',
-  },
-  {
-    name: 'MeshTransmissionMaterial',
-    category: 'Materials',
-    title: 'Mesh Transmission Material',
-    description: 'Glass-like transmission material.',
-    path: '/materials/meshtransmissionmaterial',
     notes: 'High priority',
   },
   {
@@ -1479,6 +1503,8 @@ const UNKNOWN: Omit<ComponentStatus, 'name' | 'category'> = {
   legacy: false,
   webgpu: false,
   webgpuStory: false,
+  webgpuExercised: false,
+  webgpuIsCopy: false,
   legacyStory: false,
   assignee: null,
   reason: null,

@@ -10,6 +10,7 @@
     "webgpuImplemented": 29,
     "webgpuWithStory": 3,
     "webgpuExercised": 17,
+    "webgpuCopies": 2,
     "withTestFile": 55,
     "withRealTest": 0,
     "withDocs": 47,
@@ -35,6 +36,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -77,6 +79,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -112,6 +115,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -147,6 +151,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -182,6 +187,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -217,6 +223,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -252,6 +259,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": true,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -294,6 +302,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -329,6 +338,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -364,6 +374,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": true,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -406,6 +417,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -441,6 +453,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "external": {
           "story": true,
@@ -476,6 +489,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "external": {
           "story": true,
@@ -511,6 +525,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -546,6 +561,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -581,6 +597,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -623,6 +640,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -658,6 +676,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -693,6 +712,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -728,6 +748,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -763,6 +784,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -805,6 +827,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -847,6 +870,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -882,6 +906,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -917,6 +942,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -952,6 +978,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -987,6 +1014,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -1022,6 +1050,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1057,6 +1086,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1092,6 +1122,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1127,6 +1158,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1162,6 +1194,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -1204,6 +1237,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1239,6 +1273,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1274,6 +1309,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -1309,6 +1345,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1344,6 +1381,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1379,6 +1417,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "external": {
           "story": true,
@@ -1414,6 +1453,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "external": {
           "story": false,
@@ -1449,6 +1489,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "external": {
           "story": true,
@@ -1484,6 +1525,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1519,6 +1561,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1554,6 +1597,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1589,6 +1633,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1624,6 +1669,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1659,6 +1705,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1694,6 +1741,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -1729,6 +1777,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -1764,6 +1813,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -1806,6 +1856,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -1848,6 +1899,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1883,6 +1935,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -1925,6 +1978,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1967,6 +2021,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -2009,6 +2064,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -2044,6 +2100,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -2079,6 +2136,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -2114,6 +2172,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -2156,6 +2215,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -2191,6 +2251,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -2226,6 +2287,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "experimental": {
           "story": true,
@@ -2261,6 +2323,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -2296,6 +2359,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -2331,6 +2395,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -2366,6 +2431,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -2401,6 +2467,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -2443,6 +2510,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -2485,6 +2553,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -2527,6 +2596,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -2569,6 +2639,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -2611,6 +2682,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -2653,6 +2725,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -2688,6 +2761,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -2723,6 +2797,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -2758,6 +2833,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -2793,6 +2869,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "webgpu": {
           "story": false,
@@ -2835,6 +2912,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -2870,6 +2948,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -2905,6 +2984,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -2940,6 +3020,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -2975,6 +3056,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -3010,6 +3092,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3045,6 +3128,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3080,6 +3164,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -3115,6 +3200,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3150,6 +3236,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -3185,6 +3272,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -3227,6 +3315,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3262,6 +3351,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3297,6 +3387,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3332,6 +3423,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3367,6 +3459,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3402,6 +3495,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3437,6 +3531,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3472,6 +3567,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3507,6 +3603,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3542,6 +3639,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -3584,6 +3682,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -3619,6 +3718,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -3654,6 +3754,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3689,6 +3790,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -3724,6 +3826,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -3759,6 +3862,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3794,6 +3898,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -3836,6 +3941,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -3878,6 +3984,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "external": {
           "story": false,
@@ -3913,6 +4020,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -3955,6 +4063,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -3997,6 +4106,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4032,6 +4142,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4067,6 +4178,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -4109,6 +4221,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4144,6 +4257,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4179,6 +4293,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4214,6 +4329,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -4249,6 +4365,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4284,6 +4401,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4319,6 +4437,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -4368,6 +4487,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4403,6 +4523,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4438,6 +4559,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4473,6 +4595,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4508,6 +4631,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -4543,6 +4667,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4578,6 +4703,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -4613,6 +4739,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4648,6 +4775,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -4690,6 +4818,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -4725,6 +4854,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -4760,6 +4890,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -4795,6 +4926,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -4830,6 +4962,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -4865,6 +4998,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -4900,6 +5034,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -4935,6 +5070,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -4970,6 +5106,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -5005,6 +5142,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -5040,6 +5178,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -5075,6 +5214,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -5110,6 +5250,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -5145,6 +5286,7 @@
       "testAsserts": false,
       "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -5180,6 +5322,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -5222,6 +5365,7 @@
       "testAsserts": false,
       "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": false,

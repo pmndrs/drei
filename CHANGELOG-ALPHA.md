@@ -4,6 +4,59 @@ This changelog tracks changes made during the v11 alpha development cycle.
 
 ## Unreleased
 
+### Features
+
+#### WebGPU `BlurPass` is a real TSL pass
+
+`src/webgpu/Materials/BlurPass/BlurPass.tsx` was still the WebGL implementation —
+its first line said so. It imported `WebGLRenderTarget` and `WebGLRenderer` from
+`#three` and pulled in the legacy GLSL `ConvolutionMaterial`, so it could not be
+exported from the `/webgpu` barrel without breaking the entry point the way #2764
+did. The export sat commented out.
+
+Converted:
+
+- `WebGLRenderTarget` → `RenderTarget` from `three/webgpu`. `three/webgpu`
+  exports no `WebGLRenderer` at all, so `render()` now takes the common
+  `Renderer` base that `WebGPURenderer` extends.
+- The hand-rolled `Scene` + `Camera` + fullscreen-triangle `Mesh` is now a
+  `QuadMesh`, three's own post-processing helper, driven with
+  `quad.render(renderer)`.
+- Drives the TSL `ConvolutionMaterial` next door instead of the legacy GLSL one.
+  The GLSL `USE_DEPTH` define becomes the material's `useDepth` uniform, and the
+  `uniforms.*.value` writes become the material's typed accessors.
+- Added `setSize()` and `dispose()`.
+
+While wiring it up: the TSL `ConvolutionMaterial` declared a
+`depthToBlurRatioBias` uniform and then hard-coded `0.25` in its place, so the
+prop `BlurPass` forwards was inert. The uniform is now actually read. Its default
+is `0.25`, so nothing changes for existing callers.
+
+The WebGPU `MeshReflectorMaterial` does not consume `BlurPass` — it blurs through
+TSL's `reflector()` node — so nothing downstream changed shape. The only consumer
+of any `BlurPass` is the legacy `MeshReflectorMaterial`, which uses the legacy one
+and was not touched.
+
+Barrel export in `src/webgpu/Materials/index.ts` is uncommented. `yarn build` and
+`yarn test:bundles` pass; the `/webgpu` entry now exports `BlurPass` and contains
+no `WebGLRenderer` reference.
+
+Added `BlurPass.stories.tsx` (`webgpuOnly`, `limitedTo="webgpu"`): an offscreen
+scene of primitives rendered to a target, shown beside the same target after the
+blur.
+
+Dropped the `BlurPass` entry from `component-overrides.json`. It pinned the
+component to `todo` with a reason describing the pre-conversion state, which
+would have outlived the conversion; the derived status now stands on its own.
+`component-status.json` is regenerated centrally and is not touched here.
+
+**Files changed:** `src/webgpu/Materials/BlurPass/BlurPass.tsx`,
+`src/webgpu/Materials/BlurPass/BlurPass.stories.tsx`,
+`src/webgpu/Materials/ConvolutionMaterial/ConvolutionMaterial.tsx`,
+`src/webgpu/Materials/index.ts`, `component-overrides.json`
+
+Closes #2811.
+
 ### Internal
 
 #### Three files claimed a conversion state they did not have
@@ -14,7 +67,8 @@ This changelog tracks changes made during the v11 alpha development cycle.
 Neither file contains a shader of any kind — `BakeShadows` is thirteen lines
 toggling `shadowMap.autoUpdate`, `GradientTexture` paints a 2D canvas. The
 banner made two finished components read as unported in every triage pass.
-Removed from both; `BlurPass` keeps it, where it is accurate.
+Removed from both; `BlurPass` kept it, where it was accurate at the time — it
+has since been converted, see _WebGPU `BlurPass` is a real TSL pass_ above.
 
 Deleted `src/webgpu/Staging/SoftShadows/SoftShadows.stub.tsx`. It threw
 "It uses ShaderChunk to inject PCSS shaders which is WebGL-only", but nothing

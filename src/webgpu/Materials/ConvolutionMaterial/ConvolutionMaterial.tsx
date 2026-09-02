@@ -92,6 +92,7 @@ export class ConvolutionMaterial extends MeshBasicNodeMaterial {
     const minDepthThresholdUniform = this._minDepthThreshold
     const maxDepthThresholdUniform = this._maxDepthThreshold
     const depthScaleUniform = this._depthScale
+    const depthToBlurRatioBiasUniform = this._depthToBlurRatioBias
     const useDepthUniform = this._useDepth
 
     //* Vertex: Compute offset UVs as varyings --
@@ -127,8 +128,9 @@ export class ConvolutionMaterial extends MeshBasicNodeMaterial {
       const rawDepth = float(1.0).sub(depthSample.r.mul(depthSample.a))
       const smoothedDepth = smoothstep(minDepthThresholdUniform, maxDepthThresholdUniform, rawDepth)
       const scaledDepth = smoothedDepth.mul(depthScaleUniform)
-      // Clamp and add bias: max(0, min(1, scaledDepth + 0.25))
-      const clampedDepth = max(float(0.0), min(float(1.0), scaledDepth.add(0.25)))
+      // Clamp and add bias: max(0, min(1, scaledDepth + depthToBlurRatioBias))
+      // (the bias defaults to 0.25, which is what the GLSL version hard-coded)
+      const clampedDepth = max(float(0.0), min(float(1.0), scaledDepth.add(depthToBlurRatioBiasUniform)))
 
       depthFactor.assign(select(isUsingDepth, clampedDepth, float(0.0)))
 

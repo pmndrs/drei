@@ -28,11 +28,6 @@
     "assignee": "agent-ok",
     "reason": "The heuristic flags this human-only because the legacy file uses ShaderMaterial, but that is exactly what gets replaced. webgpu/DiscardMaterial already exists; this is a NodeMaterial with discard() in TSL plus the same thin JSX wrapper. Mechanical."
   },
-  "BlurPass": {
-    "classification": "todo",
-    "assignee": "agent-ok",
-    "reason": "src/webgpu/Materials/BlurPass is still the WebGL implementation — its own first line says 'TODO: Convert GLSL shaders to TSL for WebGPU'. It imports the legacy GLSL ConvolutionMaterial plus WebGLRenderer, which three/webgpu does not export, so it is deliberately excluded from the /webgpu barrel. A TSL ConvolutionMaterial already exists next to it, which is why this is agent-ok rather than human-only. Tracked in #2811."
-  },
   "BakeShadows": {
     "classification": "todo",
     "assignee": "agent-ok",

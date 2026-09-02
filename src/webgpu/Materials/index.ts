@@ -1,10 +1,7 @@
 //* WebGPU Materials ==============================
 
 export * from '../Staging/BakeShadows'
-// BlurPass is deliberately NOT exported: it is still the WebGL implementation.
-// It imports @legacy/Materials/ConvolutionMaterial (GLSL ShaderMaterial) and
-// WebGLRenderer, which three/webgpu does not export. Tracked in #2811.
-//export * from './BlurPass'
+export * from './BlurPass'
 export * from '../Effects/Caustics'
 export * from '../Staging/ContactShadows'
 export * from './ConvolutionMaterial'

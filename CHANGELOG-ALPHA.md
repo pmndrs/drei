@@ -6,6 +6,30 @@ This changelog tracks changes made during the v11 alpha development cycle.
 
 ### Internal
 
+#### Three files claimed a conversion state they did not have
+
+`src/webgpu/Staging/BakeShadows/BakeShadows.tsx` and
+`src/webgpu/Textures/GradientTexture/GradientTexture.tsx` both opened with
+`//* TODO: Convert GLSL shaders to TSL for WebGPU`, copy-pasted from a template.
+Neither file contains a shader of any kind — `BakeShadows` is thirteen lines
+toggling `shadowMap.autoUpdate`, `GradientTexture` paints a 2D canvas. The
+banner made two finished components read as unported in every triage pass.
+Removed from both; `BlurPass` keeps it, where it is accurate.
+
+Deleted `src/webgpu/Staging/SoftShadows/SoftShadows.stub.tsx`. It threw
+"It uses ShaderChunk to inject PCSS shaders which is WebGL-only", but nothing
+imported it and the claim was no longer true: `index.ts` exports
+`SoftShadows.tsx`, which drives `PCSSShadowNode.ts` — 162 lines of TSL. Its own
+comment said the stub would be replaced when the component was converted; the
+conversion happened and the stub stayed, reading as a won't-port marker for a
+component that had been ported.
+
+**Files changed:** `src/webgpu/Staging/BakeShadows/BakeShadows.tsx`,
+`src/webgpu/Textures/GradientTexture/GradientTexture.tsx`,
+`src/webgpu/Staging/SoftShadows/SoftShadows.stub.tsx`
+
+Tracked in #2664, #2665.
+
 #### The component audit was under-reporting, and `done` was misleading
 
 `scripts/audit-components.js` discovered components only by the

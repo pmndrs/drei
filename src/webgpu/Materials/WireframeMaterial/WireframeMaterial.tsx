@@ -90,7 +90,7 @@ const remap = /* @__PURE__ */ Fn((inputs: any[]) => {
 
 //* WireframeMaterial Implementation ==============================
 
-class WireframeMaterialImpl extends MeshBasicNodeMaterial {
+export class WireframeMaterialImpl extends MeshBasicNodeMaterial {
   //* Private Uniform Nodes --
   private _strokeOpacity: THREE.UniformNode<'float', number>
   private _fillOpacity: THREE.UniformNode<'float', number>

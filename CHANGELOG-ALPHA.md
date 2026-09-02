@@ -4,6 +4,47 @@ This changelog tracks changes made during the v11 alpha development cycle.
 
 ## Unreleased
 
+### Fixed
+
+#### `BakeShadows` was a silent no-op on WebGPU
+
+`src/webgpu/Staging/BakeShadows/BakeShadows.tsx` was byte-identical to the
+WebGL implementation — copied wholesale in `a49d950b` so the `/webgpu` barrel
+had something to export, never ported. It set `renderer.shadowMap.autoUpdate`
+and `.needsUpdate`, but `WebGPURenderer.shadowMap` is a plain config object
+(`{ enabled, transmitted, type }`, `three/src/renderers/common/Renderer.js`)
+with no update flags. Nothing threw and shadows kept re-rendering every frame,
+which is the one thing the component exists to prevent.
+
+WebGPU moved shadow-update control onto the light: `ShadowNode.updateBefore()`
+reads `shadow.needsUpdate || shadow.autoUpdate` and clears `needsUpdate` itself
+once the map has been drawn. The port now traverses the scene for
+shadow-casting lights and sets `shadow.autoUpdate = false`,
+`shadow.needsUpdate = true` — which buys exactly one more shadow render, no
+frame counting needed. Prior flags are recorded per light and restored on
+unmount rather than blindly set to `true`. The scan runs per frame so lights
+that mount later (a suspended GLTF, a conditional light) are picked up; each
+shadow is only touched the first time it is seen, so a frozen light is never
+re-armed. Dropped the deprecated `state.gl` access — the renderer is not needed
+at all now.
+
+Added `BakeShadows.stories.tsx`: a box orbiting over a receiving plane, pinned
+to WebGPU with `limitedTo="webgpu"` and tagged `webgpuOnly`. The component
+renders nothing, so a shadow that should be moving is the only way to see
+whether it works.
+
+Dropped the now-stale `BakeShadows` entry from `component-overrides.json`,
+which pinned it to `todo` on the grounds that it was a copy rather than a port.
+`component-status.json` / `component-status.generated.ts` need regenerating
+(`yarn audit:components`) to pick up the new story and the dropped override.
+
+**Files changed:** `src/webgpu/Staging/BakeShadows/BakeShadows.tsx`,
+`src/webgpu/Staging/BakeShadows/BakeShadows.stories.tsx`,
+`src/webgpu/Staging/BakeShadows/BakeShadows.test.ts`,
+`component-overrides.json`
+
+Fixes #2665.
+
 ### Internal
 
 #### Three files claimed a conversion state they did not have

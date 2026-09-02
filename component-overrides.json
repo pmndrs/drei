@@ -32,10 +32,5 @@
     "classification": "todo",
     "assignee": "agent-ok",
     "reason": "src/webgpu/Materials/BlurPass is still the WebGL implementation — its own first line says 'TODO: Convert GLSL shaders to TSL for WebGPU'. It imports the legacy GLSL ConvolutionMaterial plus WebGLRenderer, which three/webgpu does not export, so it is deliberately excluded from the /webgpu barrel. A TSL ConvolutionMaterial already exists next to it, which is why this is agent-ok rather than human-only. Tracked in #2811."
-  },
-  "BakeShadows": {
-    "classification": "todo",
-    "assignee": "agent-ok",
-    "reason": "src/webgpu/Staging/BakeShadows is byte-identical to the legacy file (copied in #2599 so the /webgpu barrel had something to export) and is a silent no-op there: WebGPURenderer.shadowMap is { enabled, transmitted, type } with no autoUpdate/needsUpdate (three/src/renderers/common/Renderer.js:703). WebGPU controls this per-light via light.shadow.autoUpdate/needsUpdate (ShadowNode.js:855), so the port traverses the scene rather than touching the renderer. Tracked in #2665."
   }
 }

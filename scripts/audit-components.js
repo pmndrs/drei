@@ -179,9 +179,13 @@ function inspect(component, tree) {
     usesBareThree: /from 'three'/.test(source),
     usesTsl: /from 'three\/tsl'/.test(source),
     // the patterns that make a WebGPU port hard or impossible
-    hasGlsl: /\bglsl`|from 'glslify'|glsl-noise/.test(source),
+    hasGlsl: /\bglsl`|from 'glslify'|glsl-noise|gl_FragColor|gl_Position|\bvarying vec|\buniform sampler/.test(source),
     hasOnBeforeCompile: /onBeforeCompile/.test(source),
     hasShaderMaterial: /\bShaderMaterial\b/.test(source),
+    // Members three's WebGPU Renderer does not have at all — verified against
+    // node_modules/three/src/renderers/common/Renderer.js. Reaching for these
+    // from a renderer-agnostic tree is a runtime failure on WebGPU.
+    hasWebglOnlyApi: /\.capabilities\b|\.extensions\b|isWebGL2/.test(source),
   }
 }
 
@@ -228,6 +232,16 @@ function build() {
       // something to export. That is worse than a missing component: it looks
       // implemented, ships from the entry point, and silently does nothing when
       // the API it calls does not exist on WebGPURenderer.
+      // A component in core/external/experimental claims to work on both
+      // renderers. GLSL, onBeforeCompile and ShaderMaterial are WebGL-only, and
+      // NodeMaterial never calls onBeforeCompile at all — so it does not throw,
+      // it silently does nothing. core/Helpers/PointMaterial patches
+      // PointsMaterial's fragment shader this way and ships from the ROOT entry.
+      const agnosticTrees = [t.core, t.external, t.experimental].filter(Boolean)
+      const rendererSpecific = agnosticTrees.some(
+        (x) => x.hasGlsl || x.hasOnBeforeCompile || x.hasShaderMaterial || x.hasWebglOnlyApi
+      )
+
       const twin = t.legacy ?? t.core
       const webgpuIsCopy = !!(t.webgpu && twin && t.webgpu.normalized === twin.normalized)
 
@@ -253,6 +267,7 @@ function build() {
         exercised: Object.values(t).some((x) => x.exercised),
         docs: Object.values(t).some((x) => x.docs),
         webgpuIsCopy,
+        agnosticButNot: classification === 'agnostic' && rendererSpecific,
         // Per-tree, because the aggregate above hides the thing that matters:
         // `Grid` and `MeshDistortMaterial` both report `story: true`, but only
         // Grid's story renders the WebGPU implementation. Aggregating says 20
@@ -287,6 +302,7 @@ function build() {
       webgpuWithStory: count((c) => c.coverageByTree?.webgpu?.story),
       webgpuExercised: count((c) => c.coverageByTree?.webgpu?.exercised),
       webgpuCopies: count((c) => c.webgpuIsCopy),
+      agnosticButNot: count((c) => c.agnosticButNot),
       withTestFile: count((c) => c.test),
       withRealTest: count((c) => c.testAsserts),
       withDocs: count((c) => c.docs),
@@ -333,6 +349,8 @@ function emitTs(status) {
     webgpuExercised: !!c.coverageByTree?.webgpu?.exercised,
     /** The src/webgpu/ file is identical to its legacy twin — a copy, not a port. */
     webgpuIsCopy: !!c.webgpuIsCopy,
+    /** Classified agnostic but the source is WebGL-only. Ships from the root entry. */
+    agnosticButNot: !!c.agnosticButNot,
     legacyStory: !!c.coverageByTree?.legacy?.story,
     assignee: c.assignee,
     reason: c.reason,
@@ -367,6 +385,8 @@ export interface ComponentStatus {
   webgpuExercised: boolean
   /** The src/webgpu/ file is identical to its legacy twin — a copy, not a port. */
   webgpuIsCopy: boolean
+  /** Classified agnostic but the source is WebGL-only. Ships from the root entry. */
+  agnosticButNot: boolean
   legacyStory: boolean
   assignee: 'agent-ok' | 'human-only' | null
   reason: string | null
@@ -432,6 +452,26 @@ function checkRegistry(status) {
   return problems
 }
 
+/**
+ * `agnostic` means "lives in core/external/experimental, therefore works on both
+ * renderers". That is an assumption about a directory, not a fact about the code.
+ * `core/Helpers/PointMaterial` patches PointsMaterial's fragment shader through
+ * `onBeforeCompile`, which NodeMaterial never calls — so on WebGPU it does not
+ * throw, it silently renders square points instead of round ones, from the ROOT
+ * entry, which is the entry that claims to work everywhere.
+ */
+function checkAgnostic(status) {
+  return status.components
+    .filter((c) => c.agnosticButNot)
+    .map(
+      (c) =>
+        `"${c.name}" is classified agnostic but its core/external/experimental source is WebGL-only ` +
+        `(GLSL, onBeforeCompile, ShaderMaterial, or a renderer member three/webgpu does not have). ` +
+        `It ships from the root entry claiming to work on both. Classify it in component-overrides.json ` +
+        `with a reason, or give it a renderer-split implementation.`
+    )
+}
+
 function checkOverrides(status) {
   const overrides = fs.existsSync(OVERRIDES) ? JSON.parse(read(OVERRIDES)) : {}
   const known = new Set(status.components.map((c) => c.name))
@@ -450,7 +490,12 @@ const args = process.argv.slice(2)
 const status = build()
 
 if (args.includes('--check')) {
-  const problems = [...checkOverrides(status), ...checkCopies(status), ...checkRegistry(status)]
+  const problems = [
+    ...checkOverrides(status),
+    ...checkCopies(status),
+    ...checkAgnostic(status),
+    ...checkRegistry(status),
+  ]
   const stale = fs.existsSync(OUT) && read(OUT).trim() !== JSON.stringify(status, null, 2).trim()
   if (stale) problems.push('component-status.json is out of date — run `node scripts/audit-components.js`')
   const staleTs = fs.existsSync(OUT_TS) && read(OUT_TS).trim() !== emitTs(status).trim()
@@ -481,6 +526,12 @@ if (args.includes('--summary')) {
     `\n  webgpu     ${String(t.webgpuImplemented).padStart(3)} implemented · ${t.webgpuExercised} rendered by some story · ${t.webgpuWithStory} with a co-located one`
   )
   console.log(`             (a story proves it mounts, not that WebGPU works — see #2801)\n`)
+  const leaks = status.components.filter((c) => c.agnosticButNot)
+  if (leaks.length) {
+    console.log('  agnostic in name only (WebGL-only source, ships from the root entry):')
+    for (const c of leaks) console.log(`    ${c.name}  (${c.category})`)
+    console.log()
+  }
   const copies = status.components.filter((c) => c.webgpuIsCopy)
   if (copies.length) {
     console.log('  copies, not ports (src/webgpu identical to the legacy twin):')

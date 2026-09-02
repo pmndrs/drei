@@ -23,5 +23,25 @@
   "Text": {
     "classification": "todo",
     "reason": "Depended on a vendored troika fork that could not be published. Returns via @pmndrs/glyph, which covers both renderers. Tracked in #2658."
+  },
+  "PointMaterial": {
+    "classification": "todo",
+    "assignee": "human-only",
+    "reason": "Lives in core/ and is exported from the root entry, but patches PointsMaterial fragment GLSL through onBeforeCompile, which NodeMaterial never calls. On WebGPU the points render as hard squares instead of antialiased circles — silently, with no error. Also reads renderer.capabilities, which three/webgpu Renderer does not have. Needs a TSL implementation. Tracked in #2818."
+  },
+  "Outlines": {
+    "classification": "todo",
+    "assignee": "human-only",
+    "reason": "Broken on WebGPU through both entries. The root entry exports experimental/Effects/Outlines, a GLSL ShaderMaterial that cannot compile there; the /webgpu entry exports the TSL version, which throws on every construction because an accessor fires during super() (#2813). Tracked in #2818 and #2813."
+  },
+  "Splat": {
+    "classification": "todo",
+    "assignee": "human-only",
+    "reason": "Root-exported from external/ and classified agnostic, but it is a raw GLSL ShaderMaterial and types THREE.WebGLRenderer into its public surface. The upstream technique is WebGL-only, so this is probably wont-port — but that needs deciding and writing down, plus a runtime error, rather than being left misclassified. Tracked in #2818."
+  },
+  "Preload": {
+    "classification": "todo",
+    "assignee": "agent-ok",
+    "reason": "Calls gl.compile(), which on the WebGPU renderer is a getter aliasing compileAsync — it returns a promise nobody awaits, so preloading never happens. Not detectable by the agnostic check, because compile exists on both renderers and only the semantics differ. Tracked in #2809 and #2818."
   }
 }

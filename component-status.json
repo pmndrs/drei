@@ -2,20 +2,21 @@
   "generated": "derived from the filesystem by scripts/audit-components.js — do not hand-edit",
   "totals": {
     "components": 143,
-    "agnostic": 110,
+    "agnostic": 106,
     "implemented": 27,
-    "todo": 1,
+    "todo": 5,
     "wontPort": 5,
     "withStory": 104,
     "webgpuImplemented": 30,
     "webgpuWithStory": 15,
     "webgpuExercised": 29,
     "webgpuCopies": 0,
+    "agnosticButNot": 0,
     "withTestFile": 55,
     "withRealTest": 0,
     "withDocs": 47,
-    "agentOk": 1,
-    "humanOnly": 0
+    "agentOk": 2,
+    "humanOnly": 3
   },
   "components": [
     {
@@ -37,6 +38,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -52,7 +54,7 @@
         }
       },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": true,
         "shaderMaterial": true
       },
@@ -80,6 +82,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -116,6 +119,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -152,6 +156,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -188,6 +193,7 @@
       "exercised": false,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -224,6 +230,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -260,6 +267,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -303,6 +311,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -339,6 +348,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -375,6 +385,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -418,6 +429,7 @@
       "exercised": false,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -454,6 +466,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "external": {
           "story": true,
@@ -490,6 +503,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "external": {
           "story": true,
@@ -526,6 +540,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -562,6 +577,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -598,6 +614,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -613,7 +630,7 @@
         }
       },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": true,
         "shaderMaterial": true
       },
@@ -641,6 +658,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -677,6 +695,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -713,6 +732,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -749,6 +769,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -785,6 +806,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -828,6 +850,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -843,7 +866,7 @@
         }
       },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": false,
         "shaderMaterial": true
       },
@@ -871,6 +894,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -907,6 +931,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -943,6 +968,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -979,6 +1005,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1015,6 +1042,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -1051,6 +1079,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1087,6 +1116,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1123,6 +1153,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1159,6 +1190,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1195,6 +1227,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -1210,7 +1243,7 @@
         }
       },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": false,
         "shaderMaterial": false
       },
@@ -1238,6 +1271,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1274,6 +1308,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1310,6 +1345,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -1346,6 +1382,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1382,6 +1419,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1418,6 +1456,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "external": {
           "story": true,
@@ -1454,6 +1493,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "external": {
           "story": false,
@@ -1490,6 +1530,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "external": {
           "story": true,
@@ -1526,6 +1567,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1562,6 +1604,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1598,6 +1641,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1634,6 +1678,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1670,6 +1715,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1706,6 +1752,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1742,6 +1789,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -1778,6 +1826,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -1814,6 +1863,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -1857,6 +1907,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -1872,7 +1923,7 @@
         }
       },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": false,
         "shaderMaterial": true
       },
@@ -1900,6 +1951,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -1936,6 +1988,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -1951,7 +2004,7 @@
         }
       },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": false,
         "shaderMaterial": false
       },
@@ -1979,6 +2032,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -2022,6 +2076,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -2037,7 +2092,7 @@
         }
       },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": false,
         "shaderMaterial": false
       },
@@ -2065,6 +2120,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -2101,6 +2157,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -2137,6 +2194,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -2173,6 +2231,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -2216,6 +2275,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -2252,6 +2312,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -2288,6 +2349,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "experimental": {
           "story": true,
@@ -2324,6 +2386,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -2360,6 +2423,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -2396,6 +2460,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -2432,6 +2497,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -2475,6 +2541,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -2518,6 +2585,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -2533,7 +2601,7 @@
         }
       },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": false,
         "shaderMaterial": true
       },
@@ -2561,6 +2629,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -2604,6 +2673,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -2619,7 +2689,7 @@
         }
       },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": false,
         "shaderMaterial": false
       },
@@ -2647,6 +2717,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -2662,7 +2733,7 @@
         }
       },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": true,
         "shaderMaterial": false
       },
@@ -2690,6 +2761,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -2733,6 +2805,7 @@
       "exercised": false,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -2769,6 +2842,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -2805,6 +2879,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -2841,6 +2916,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -2861,9 +2937,9 @@
     {
       "name": "Outlines",
       "category": "Effects",
-      "classification": "agnostic",
-      "reason": null,
-      "assignee": null,
+      "classification": "todo",
+      "reason": "Broken on WebGPU through both entries. The root entry exports experimental/Effects/Outlines, a GLSL ShaderMaterial that cannot compile there; the /webgpu entry exports the TSL version, which throws on every construction because an accessor fires during super() (#2813). Tracked in #2818 and #2813.",
+      "assignee": "human-only",
       "trees": {
         "core": false,
         "legacy": false,
@@ -2877,6 +2953,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "webgpu": {
           "story": true,
@@ -2920,6 +2997,7 @@
       "exercised": false,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -2956,6 +3034,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -2992,6 +3071,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3028,6 +3108,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3048,9 +3129,9 @@
     {
       "name": "PointMaterial",
       "category": "Helpers",
-      "classification": "agnostic",
-      "reason": null,
-      "assignee": null,
+      "classification": "todo",
+      "reason": "Lives in core/ and is exported from the root entry, but patches PointsMaterial fragment GLSL through onBeforeCompile, which NodeMaterial never calls. On WebGPU the points render as hard squares instead of antialiased circles — silently, with no error. Also reads renderer.capabilities, which three/webgpu Renderer does not have. Needs a TSL implementation. Tracked in #2818.",
+      "assignee": "human-only",
       "trees": {
         "core": true,
         "legacy": false,
@@ -3064,6 +3145,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -3073,7 +3155,7 @@
         }
       },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": true,
         "shaderMaterial": false
       },
@@ -3100,6 +3182,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3136,6 +3219,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3156,9 +3240,9 @@
     {
       "name": "Preload",
       "category": "Loaders",
-      "classification": "agnostic",
-      "reason": null,
-      "assignee": null,
+      "classification": "todo",
+      "reason": "Calls gl.compile(), which on the WebGPU renderer is a getter aliasing compileAsync — it returns a promise nobody awaits, so preloading never happens. Not detectable by the agnostic check, because compile exists on both renderers and only the semantics differ. Tracked in #2809 and #2818.",
+      "assignee": "agent-ok",
       "trees": {
         "core": true,
         "legacy": false,
@@ -3172,6 +3256,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -3208,6 +3293,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3244,6 +3330,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -3280,6 +3367,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -3323,6 +3411,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3359,6 +3448,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3395,6 +3485,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3431,6 +3522,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3467,6 +3559,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3503,6 +3596,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3539,6 +3633,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3575,6 +3670,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3611,6 +3707,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3647,6 +3744,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -3690,6 +3788,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -3726,6 +3825,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -3762,6 +3862,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3798,6 +3899,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -3807,7 +3909,7 @@
         }
       },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": true,
         "shaderMaterial": false
       },
@@ -3834,6 +3936,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -3870,6 +3973,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -3906,6 +4010,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -3949,6 +4054,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -3976,9 +4082,9 @@
     {
       "name": "Splat",
       "category": "Geometry",
-      "classification": "agnostic",
-      "reason": null,
-      "assignee": null,
+      "classification": "todo",
+      "reason": "Root-exported from external/ and classified agnostic, but it is a raw GLSL ShaderMaterial and types THREE.WebGLRenderer into its public surface. The upstream technique is WebGL-only, so this is probably wont-port — but that needs deciding and writing down, plus a runtime error, rather than being left misclassified. Tracked in #2818.",
+      "assignee": "human-only",
       "trees": {
         "core": false,
         "legacy": false,
@@ -3992,6 +4098,7 @@
       "exercised": false,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "external": {
           "story": false,
@@ -4001,7 +4108,7 @@
         }
       },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": false,
         "shaderMaterial": true
       },
@@ -4028,6 +4135,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -4043,7 +4151,7 @@
         }
       },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": false,
         "shaderMaterial": true
       },
@@ -4071,6 +4179,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -4086,7 +4195,7 @@
         }
       },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": false,
         "shaderMaterial": true
       },
@@ -4114,6 +4223,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4150,6 +4260,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4186,6 +4297,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -4229,6 +4341,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4265,6 +4378,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4301,6 +4415,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4337,6 +4452,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": true,
@@ -4373,6 +4489,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4409,6 +4526,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4445,6 +4563,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -4495,6 +4614,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4531,6 +4651,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4567,6 +4688,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4603,6 +4725,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4639,6 +4762,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -4648,7 +4772,7 @@
         }
       },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": true,
         "shaderMaterial": false
       },
@@ -4675,6 +4799,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4711,6 +4836,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -4747,6 +4873,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -4783,6 +4910,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -4826,6 +4954,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -4862,6 +4991,7 @@
       "exercised": false,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -4898,6 +5028,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -4934,6 +5065,7 @@
       "exercised": false,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -4970,6 +5102,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -5006,6 +5139,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -5042,6 +5176,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -5078,6 +5213,7 @@
       "exercised": false,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -5114,6 +5250,7 @@
       "exercised": false,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -5150,6 +5287,7 @@
       "exercised": false,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": false,
@@ -5186,6 +5324,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -5222,6 +5361,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -5258,6 +5398,7 @@
       "exercised": true,
       "docs": true,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -5294,6 +5435,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "core": {
           "story": true,
@@ -5330,6 +5472,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -5373,6 +5516,7 @@
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
+      "agnosticButNot": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -5388,7 +5532,7 @@
         }
       },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": true,
         "shaderMaterial": false
       },

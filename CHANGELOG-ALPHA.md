@@ -135,6 +135,42 @@ Closes #2811.
 
 ### Internal
 
+#### "Agnostic" was an assumption about a directory, and four components broke it
+
+110 of 143 components are classified `agnostic` — they live in `core/`,
+`external/` or `experimental/`, so they are assumed to work on both renderers.
+Nothing had ever checked that. Four of them are WebGL-only, and all four ship
+from the **root** entry, the one that claims to work everywhere.
+
+`core/Helpers/PointMaterial` patches `PointsMaterial`'s fragment GLSL through
+`onBeforeCompile`, which `NodeMaterial` never calls — so on WebGPU points render
+as hard squares instead of antialiased circles, with no error. It also reads
+`renderer.capabilities`, which the WebGPU `Renderer` does not have at all; that
+would throw, except the callback never fires.
+
+`Outlines` is broken on WebGPU through **both** entries: the root entry exports
+`experimental/Effects/Outlines`, a GLSL `ShaderMaterial`, while `/webgpu`
+exports the TSL version that throws on every construction (#2813).
+
+`external/Geometry/Splat` types `THREE.WebGLRenderer` into its public surface and
+is raw GLSL. `core/Loaders/Preload` calls `gl.compile()`, a getter aliasing
+`compileAsync` on WebGPU (#2809).
+
+`--check` now fails on `agnosticButNot`: a component classified `agnostic` whose
+`core`/`external`/`experimental` source contains GLSL, `onBeforeCompile`,
+`ShaderMaterial`, or a renderer member `three/webgpu` lacks. GLSL detection was
+widened to catch a raw shader body in a template literal, which is how the
+`experimental/Outlines` case had stayed invisible.
+
+The check finds three of the four. `Preload` is the limit of it — `compile`
+exists on both renderers and only the semantics differ, which grep cannot see.
+The other 106 agnostic components have not been read one by one for that class.
+
+**Files changed:** `scripts/audit-components.js`, `component-overrides.json`,
+`component-status.json`, `component-status.generated.ts`
+
+Tracked in #2818.
+
 #### The dashboard could not see five components, and counted two twice
 
 `examples/src/demos/componentRegistry.tsx` listed `MeshPortalMaterial` and

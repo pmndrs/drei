@@ -4,6 +4,43 @@ This changelog tracks changes made during the v11 alpha development cycle.
 
 ## Unreleased
 
+### Features
+
+#### `MeshDiscardMaterial` now has a WebGPU implementation
+
+`src/webgpu/Materials/DiscardMaterial` already held the TSL material — a
+`MeshBasicNodeMaterial` whose `fragmentNode` calls `Discard()` — but only as a
+process-wide singleton that `MeshTransmissionMaterial` and `AccumulativeShadows`
+swap onto a mesh for the duration of an FBO pass. There was no JSX wrapper, and
+nothing named `MeshDiscardMaterial` was exported from `/webgpu` at all;
+importing the legacy one into a WebGPU app hands `WebGPURenderer` a GLSL
+`ShaderMaterial`.
+
+Added `<MeshDiscardMaterial />` for the WebGPU entry. To give each element its
+own material without duplicating the TSL, `DiscardMaterial.tsx` now exports the
+constructible `DiscardNodeMaterial` class and the existing `DiscardMaterial`
+export is an instance of it — unchanged in type and behaviour for its current
+callers.
+
+The prop surface is `meshBasicMaterial` rather than legacy's `shaderMaterial`,
+because that is what the underlying material actually is; the props that do
+anything (`side`, `transparent`, `opacity`, `depthWrite`, `colorWrite`, …) are
+common to both. Ref behaviour matches: a `ForwardRefComponent` handing back the
+material instance.
+
+`src/native/index.ts` is generated from the built `/webgpu` declarations and
+still predates this export, so `MeshDiscardMaterial` is not yet re-exported for
+React Native — `yarn generate:native` will pick it up.
+
+**Files changed:**
+`src/webgpu/Materials/MeshDiscardMaterial/MeshDiscardMaterial.tsx`,
+`src/webgpu/Materials/MeshDiscardMaterial/MeshDiscardMaterial.stories.tsx`,
+`src/webgpu/Materials/MeshDiscardMaterial/index.ts`,
+`src/webgpu/Materials/DiscardMaterial/DiscardMaterial.tsx`,
+`src/webgpu/Materials/index.ts`
+
+Tracked in #2660.
+
 ### Internal
 
 #### Three files claimed a conversion state they did not have

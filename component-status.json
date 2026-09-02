@@ -3,18 +3,18 @@
   "totals": {
     "components": 143,
     "agnostic": 110,
-    "implemented": 24,
-    "todo": 4,
+    "implemented": 26,
+    "todo": 2,
     "wontPort": 5,
-    "withStory": 96,
-    "webgpuImplemented": 29,
-    "webgpuWithStory": 3,
-    "webgpuExercised": 17,
-    "webgpuCopies": 2,
+    "withStory": 98,
+    "webgpuImplemented": 30,
+    "webgpuWithStory": 5,
+    "webgpuExercised": 19,
+    "webgpuCopies": 1,
     "withTestFile": 55,
     "withRealTest": 0,
     "withDocs": 47,
-    "agentOk": 4,
+    "agentOk": 2,
     "humanOnly": 0
   },
   "components": [
@@ -244,9 +244,9 @@
     {
       "name": "BakeShadows",
       "category": "Materials",
-      "classification": "todo",
-      "reason": "src/webgpu/Staging/BakeShadows is byte-identical to the legacy file (copied in #2599 so the /webgpu barrel had something to export) and is a silent no-op there: WebGPURenderer.shadowMap is { enabled, transmitted, type } with no autoUpdate/needsUpdate (three/src/renderers/common/Renderer.js:703). WebGPU controls this per-light via light.shadow.autoUpdate/needsUpdate (ShadowNode.js:855), so the port traverses the scene rather than touching the renderer. Tracked in #2665.",
-      "assignee": "agent-ok",
+      "classification": "implemented",
+      "reason": null,
+      "assignee": null,
       "trees": {
         "core": false,
         "legacy": true,
@@ -254,12 +254,12 @@
         "external": false,
         "experimental": false
       },
-      "story": false,
+      "story": true,
       "test": true,
       "testAsserts": false,
-      "exercised": false,
+      "exercised": true,
       "docs": false,
-      "webgpuIsCopy": true,
+      "webgpuIsCopy": false,
       "coverageByTree": {
         "legacy": {
           "story": false,
@@ -268,10 +268,10 @@
           "exercised": false
         },
         "webgpu": {
-          "story": false,
+          "story": true,
           "test": true,
           "docs": false,
-          "exercised": false
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -2416,20 +2416,20 @@
     {
       "name": "MeshDiscardMaterial",
       "category": "Materials",
-      "classification": "todo",
-      "reason": "The heuristic flags this human-only because the legacy file uses ShaderMaterial, but that is exactly what gets replaced. webgpu/DiscardMaterial already exists; this is a NodeMaterial with discard() in TSL plus the same thin JSX wrapper. Mechanical.",
-      "assignee": "agent-ok",
+      "classification": "implemented",
+      "reason": null,
+      "assignee": null,
       "trees": {
         "core": false,
         "legacy": true,
-        "webgpu": false,
+        "webgpu": true,
         "external": false,
         "experimental": false
       },
-      "story": false,
+      "story": true,
       "test": true,
       "testAsserts": false,
-      "exercised": false,
+      "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
       "coverageByTree": {
@@ -2438,6 +2438,12 @@
           "test": true,
           "docs": false,
           "exercised": false
+        },
+        "webgpu": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -2446,7 +2452,8 @@
         "shaderMaterial": true
       },
       "paths": {
-        "legacy": "src/legacy/Materials/MeshDiscardMaterial"
+        "legacy": "src/legacy/Materials/MeshDiscardMaterial",
+        "webgpu": "src/webgpu/Materials/MeshDiscardMaterial"
       }
     },
     {

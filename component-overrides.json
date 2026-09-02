@@ -24,10 +24,6 @@
     "classification": "todo",
     "reason": "Depended on a vendored troika fork that could not be published. Returns via @pmndrs/glyph, which covers both renderers. Tracked in #2658."
   },
-  "MeshDiscardMaterial": {
-    "assignee": "agent-ok",
-    "reason": "The heuristic flags this human-only because the legacy file uses ShaderMaterial, but that is exactly what gets replaced. webgpu/DiscardMaterial already exists; this is a NodeMaterial with discard() in TSL plus the same thin JSX wrapper. Mechanical."
-  },
   "BlurPass": {
     "classification": "todo",
     "assignee": "agent-ok",

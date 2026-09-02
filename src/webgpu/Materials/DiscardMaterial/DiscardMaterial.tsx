@@ -14,6 +14,20 @@ const discardFragment = /* @__PURE__ */ Fn(() => {
   return vec4(0, 0, 0, 0)
 })
 
-export const DiscardMaterial = /* @__PURE__ */ new MeshBasicNodeMaterial({
-  fragmentNode: discardFragment(),
-})
+/**
+ * Constructible form of the discard material.
+ *
+ * `DiscardMaterial` below is a process-wide singleton that internal consumers
+ * (MeshTransmissionMaterial, AccumulativeShadows) swap onto a mesh for the
+ * duration of an FBO pass. Anything that needs its own instance — notably the
+ * `<MeshDiscardMaterial />` JSX wrapper, where each element owns its material —
+ * constructs this class instead.
+ */
+export class DiscardNodeMaterial extends MeshBasicNodeMaterial {
+  constructor() {
+    super()
+    this.fragmentNode = discardFragment()
+  }
+}
+
+export const DiscardMaterial = /* @__PURE__ */ new DiscardNodeMaterial()

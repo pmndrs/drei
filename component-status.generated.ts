@@ -35,7 +35,7 @@ export const componentStatus: Record<string, ComponentStatus> = {
   "ArcballControls": {"name":"ArcballControls","category":"Controls","classification":"agnostic","rendererSupport":"universal","story":true,"test":false,"testAsserts":false,"docs":false,"legacy":false,"webgpu":false,"webgpuStory":false,"webgpuExercised":false,"legacyStory":false,"assignee":null,"reason":null},
   "AsciiRenderer": {"name":"AsciiRenderer","category":"Abstractions","classification":"wont-port","rendererSupport":"legacy-only","story":false,"test":true,"testAsserts":false,"docs":true,"legacy":true,"webgpu":false,"webgpuStory":false,"webgpuExercised":false,"legacyStory":false,"assignee":null,"reason":"Wraps three-stdlib's AsciiEffect, a WebGL-only DOM overlay effect with no WebGPU equivalent upstream."},
   "Backdrop": {"name":"Backdrop","category":"Staging","classification":"agnostic","rendererSupport":"universal","story":false,"test":true,"testAsserts":false,"docs":false,"legacy":false,"webgpu":false,"webgpuStory":false,"webgpuExercised":false,"legacyStory":false,"assignee":null,"reason":null},
-  "BakeShadows": {"name":"BakeShadows","category":"Materials","classification":"implemented","rendererSupport":"dual","story":false,"test":true,"testAsserts":false,"docs":false,"legacy":true,"webgpu":true,"webgpuStory":false,"webgpuExercised":false,"legacyStory":false,"assignee":null,"reason":null},
+  "BakeShadows": {"name":"BakeShadows","category":"Materials","classification":"todo","rendererSupport":"dual","story":false,"test":true,"testAsserts":false,"docs":false,"legacy":true,"webgpu":true,"webgpuStory":false,"webgpuExercised":false,"legacyStory":false,"assignee":"agent-ok","reason":"src/webgpu/Staging/BakeShadows is byte-identical to the legacy file (copied in #2599 so the /webgpu barrel had something to export) and is a silent no-op there: WebGPURenderer.shadowMap is { enabled, transmitted, type } with no autoUpdate/needsUpdate (three/src/renderers/common/Renderer.js:703). WebGPU controls this per-light via light.shadow.autoUpdate/needsUpdate (ShadowNode.js:855), so the port traverses the scene rather than touching the renderer. Tracked in #2665."},
   "BBAnchor": {"name":"BBAnchor","category":"Staging","classification":"agnostic","rendererSupport":"universal","story":true,"test":false,"testAsserts":false,"docs":false,"legacy":false,"webgpu":false,"webgpuStory":false,"webgpuExercised":false,"legacyStory":false,"assignee":null,"reason":null},
   "Billboard": {"name":"Billboard","category":"Staging","classification":"agnostic","rendererSupport":"universal","story":true,"test":false,"testAsserts":false,"docs":true,"legacy":false,"webgpu":false,"webgpuStory":false,"webgpuExercised":false,"legacyStory":false,"assignee":null,"reason":null},
   "BlurPass": {"name":"BlurPass","category":"Materials","classification":"todo","rendererSupport":"dual","story":false,"test":true,"testAsserts":false,"docs":false,"legacy":true,"webgpu":true,"webgpuStory":false,"webgpuExercised":false,"legacyStory":false,"assignee":"agent-ok","reason":"src/webgpu/Materials/BlurPass is still the WebGL implementation — its own first line says 'TODO: Convert GLSL shaders to TSL for WebGPU'. It imports the legacy GLSL ConvolutionMaterial plus WebGLRenderer, which three/webgpu does not export, so it is deliberately excluded from the /webgpu barrel. A TSL ConvolutionMaterial already exists next to it, which is why this is agent-ok rather than human-only. Tracked in #2811."},
@@ -177,8 +177,8 @@ export const componentStatus: Record<string, ComponentStatus> = {
 export const componentStatusTotals = {
   "components": 143,
   "agnostic": 110,
-  "implemented": 25,
-  "todo": 3,
+  "implemented": 24,
+  "todo": 4,
   "wontPort": 5,
   "withStory": 96,
   "webgpuImplemented": 29,
@@ -187,7 +187,7 @@ export const componentStatusTotals = {
   "withTestFile": 55,
   "withRealTest": 0,
   "withDocs": 47,
-  "agentOk": 3,
+  "agentOk": 4,
   "humanOnly": 0
 } as const
 

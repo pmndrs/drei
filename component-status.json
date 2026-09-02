@@ -3,8 +3,8 @@
   "totals": {
     "components": 143,
     "agnostic": 110,
-    "implemented": 25,
-    "todo": 3,
+    "implemented": 24,
+    "todo": 4,
     "wontPort": 5,
     "withStory": 96,
     "webgpuImplemented": 29,
@@ -13,7 +13,7 @@
     "withTestFile": 55,
     "withRealTest": 0,
     "withDocs": 47,
-    "agentOk": 3,
+    "agentOk": 4,
     "humanOnly": 0
   },
   "components": [
@@ -237,9 +237,9 @@
     {
       "name": "BakeShadows",
       "category": "Materials",
-      "classification": "implemented",
-      "reason": null,
-      "assignee": null,
+      "classification": "todo",
+      "reason": "src/webgpu/Staging/BakeShadows is byte-identical to the legacy file (copied in #2599 so the /webgpu barrel had something to export) and is a silent no-op there: WebGPURenderer.shadowMap is { enabled, transmitted, type } with no autoUpdate/needsUpdate (three/src/renderers/common/Renderer.js:703). WebGPU controls this per-light via light.shadow.autoUpdate/needsUpdate (ShadowNode.js:855), so the port traverses the scene rather than touching the renderer. Tracked in #2665.",
+      "assignee": "agent-ok",
       "trees": {
         "core": false,
         "legacy": true,

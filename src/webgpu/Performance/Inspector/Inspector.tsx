@@ -4,9 +4,12 @@ import type { Inspector as ThreeInspector } from 'three/examples/jsm/inspector/I
 import type { WebGPURenderer } from 'three/webgpu'
 import type { InspectorSession } from './inspector-runtime'
 
-// Apply saved browser settings before importing modules can create their renderer.
+// Turbopack dev evaluates the Inspector/Settings import cycle before Inspector's
+// Three namespace is assigned, causing an undefined REVISION read. Loading Settings
+// first initializes Inspector's imports before that read and applies saved settings
+// before renderer creation. The browser guard keeps this initialization out of SSR.
 if (typeof window !== 'undefined') {
-  await import('./inspector-runtime')
+  await import('three/examples/jsm/inspector/tabs/Settings.js')
 }
 
 // null means the inspector is attaching. undefined means there is no provider.

@@ -3,27 +3,26 @@ import * as THREE from 'three/webgpu'
 import { Fn, uniform, mat3, cos, sin, float, positionLocal, normalLocal } from 'three/tsl'
 import { ThreeElements, useFrame } from '@react-three/fiber'
 import { ForwardRefComponent } from '@utils/ts-utils'
+import { withUniforms } from '@utils/withUniforms'
 
 //* Wobble Material Implementation ==============================
 
-class WobbleMaterialImpl extends THREE.MeshStandardNodeMaterial {
-  timeUniform: THREE.UniformNode<'float', number>
-  factorUniform: THREE.UniformNode<'float', number>
-
+class WobbleMaterialImpl extends withUniforms(THREE.MeshStandardNodeMaterial, {
+  /** Animation time, advanced by the component each frame */
+  time: () => uniform(0),
+  /** Wobble strength */
+  factor: () => uniform(1),
+}) {
   constructor(parameters: THREE.MeshStandardMaterialParameters = {}) {
     super(parameters)
-    this.setValues(parameters)
-
-    // Create uniforms for time and wobble factor
-    this.timeUniform = uniform(0)
-    this.factorUniform = uniform(1)
+    const { time, factor } = this.uniforms
 
     // Position shader: Apply rotation based on time and position.y
     this.positionNode = Fn(() => {
       const pos = positionLocal.toVar()
 
       // Calculate rotation angle (theta)
-      const theta = sin(this.timeUniform.add(pos.y)).div(2.0).mul(this.factorUniform)
+      const theta = sin(time.add(pos.y)).div(2.0).mul(factor)
       const c = cos(theta)
       const s = sin(theta)
 
@@ -40,7 +39,7 @@ class WobbleMaterialImpl extends THREE.MeshStandardNodeMaterial {
       const norm = normalLocal.toVar()
 
       // Calculate same rotation angle
-      const theta = sin(this.timeUniform.add(pos.y)).div(2.0).mul(this.factorUniform)
+      const theta = sin(time.add(pos.y)).div(2.0).mul(factor)
       const c = cos(theta)
       const s = sin(theta)
 
@@ -50,22 +49,6 @@ class WobbleMaterialImpl extends THREE.MeshStandardNodeMaterial {
       // Apply rotation to normal
       return norm.mul(rotMatrix)
     })()
-  }
-
-  get time() {
-    return this.timeUniform.value
-  }
-
-  set time(v) {
-    this.timeUniform.value = v
-  }
-
-  get factor() {
-    return this.factorUniform.value
-  }
-
-  set factor(v) {
-    this.factorUniform.value = v
   }
 }
 

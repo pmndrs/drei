@@ -3,23 +3,18 @@
 // Original Author: N8Programs https://github.com/N8python/diamonds
 // TSL Conversion: drei webgpu migration - Dennis Smolek
 //
-// NOTE: This is a simplified TSL implementation. The original GLSL version uses
-// three-mesh-bvh for accurate ray-mesh intersection during total internal reflection.
-// TSL support for BVH traversal is pending - see: https://github.com/gkjohnson/three-mesh-bvh
-// This version uses an approximated multi-bounce refraction that works well for
-// convex gem-like shapes but may not be as accurate for complex concave geometry.
+// Approximates multiple refraction bounces for convex gem shapes.
+// Concave geometry may be inaccurate because rays do not intersect the mesh.
 
 import * as THREE from 'three/webgpu'
-import { MeshPhysicalNodeMaterial } from 'three/webgpu'
+import { MeshPhysicalNodeMaterial, type Node } from 'three/webgpu'
 import {
   Fn,
   uniform,
-  uniformTexture,
   vec3,
   vec4,
   float,
   int,
-  texture,
   positionWorld,
   normalWorld,
   normalize,
@@ -34,10 +29,15 @@ import {
   cameraPosition,
   equirectUV,
   Loop,
+  materialReference,
+  context,
+  materialIOR,
+  materialOpacity,
 } from 'three/tsl'
 import * as React from 'react'
 import { extend, ThreeElements } from '@react-three/fiber'
 import { ForwardRefComponent } from '@utils/ts-utils'
+import { withUniforms } from '@utils/withUniforms'
 
 //* Types ==============================
 
@@ -118,15 +118,16 @@ const approximateRefraction = /* @__PURE__ */ Fn(([rayDir, normal, iorValue, bou
 
 //* MeshRefractionMaterial Implementation ==============================
 
-class MeshRefractionMaterialImpl extends MeshPhysicalNodeMaterial {
-  //* Private Uniform Nodes --
-  private _envMap: THREE.TextureNode
-  private _bounces: THREE.UniformNode<'float', number>
-  private _ior: THREE.UniformNode<'float', number>
-  private _fresnel: THREE.UniformNode<'float', number>
-  private _aberrationStrength: THREE.UniformNode<'float', number>
-  private _color: THREE.UniformNode<'color', THREE.Color>
-  private _opacityValue: THREE.UniformNode<'float', number>
+class MeshRefractionMaterialImpl extends withUniforms(MeshPhysicalNodeMaterial, {
+  /** Number of internal bounces, default: 3 */
+  bounces: () => uniform(3),
+  /** Fresnel intensity, default: 0 */
+  fresnel: () => uniform(0),
+  /** Chromatic aberration strength, default: 0.01 */
+  aberrationStrength: () => uniform(0.01),
+  /** Tint applied to the refracted environment, default: white */
+  tintColor: () => uniform(new THREE.Color('white')),
+}) {
   private _fastChroma: boolean
 
   /** Type flag for identification */
@@ -137,16 +138,13 @@ class MeshRefractionMaterialImpl extends MeshPhysicalNodeMaterial {
 
     this._fastChroma = fastChroma
 
-    //* Initialize Uniforms --
-    this._envMap = uniformTexture(new THREE.Texture())
-    this._bounces = uniform(3)
-    this._ior = uniform(2.4) // Diamond IOR
-    this._fresnel = uniform(0)
-    this._aberrationStrength = uniform(0.01)
-    this._color = uniform(new THREE.Color('white'))
-    this._opacityValue = uniform(1.0)
-
     //* Base Material Properties --
+    this.ior = 2.4 // Diamond IOR
+    // A texture reference requires a placeholder until an environment is assigned.
+    this.envMap = new THREE.Texture()
+    // The custom output replaces three's lighting entirely. Skipping it also keeps
+    // the placeholder envMap out of the PBR environment path.
+    this.lights = false
     this.transparent = true
     this.side = THREE.FrontSide
 
@@ -154,15 +152,11 @@ class MeshRefractionMaterialImpl extends MeshPhysicalNodeMaterial {
   }
 
   private _buildRefractionShader() {
-    //* Capture uniforms for closure --
-    const envMapTex = this._envMap
-    const bouncesUniform = this._bounces
-    const iorUniform = this._ior
-    const fresnelUniform = this._fresnel
-    const aberrationUniform = this._aberrationStrength
-    const colorUniform = this._color
-    const opacityUniform = this._opacityValue
+    const { bounces, fresnel, aberrationStrength, tintColor } = this.uniforms
     const fastChroma = this._fastChroma
+    // Each sample needs its own reference node: a texture node caches its UV per node
+    const envSample = (uvNode: any) =>
+      context(materialReference('envMap', 'texture', this), { getUV: () => uvNode }) as unknown as Node<'vec4'>
 
     //* Output Node - Custom refraction with chromatic aberration --
     this.outputNode = Fn(() => {
@@ -173,53 +167,38 @@ class MeshRefractionMaterialImpl extends MeshPhysicalNodeMaterial {
       const viewDir = normalize(worldPos.sub(cameraPosition))
 
       // Base color with tint
-      const baseColor = colorUniform.toVar()
+      const baseColor = tintColor.toVar()
 
       //* Sample environment map with refraction --
       // Get refracted direction for green channel (base)
-      const refractedDirG = approximateRefraction(viewDir, worldNormal, max(iorUniform, 1.0), bouncesUniform)
+      const iorValue = max(materialIOR, 1.0)
+      const refractedDirG = approximateRefraction(viewDir, worldNormal, iorValue, bounces)
 
       // Chromatic aberration - offset R and B channels
-      const aberration = aberrationUniform
+      const aberration = aberrationStrength
       const refractedDirR = vec3(0, 0, 0).toVar()
       const refractedDirB = vec3(0, 0, 0).toVar()
 
       // Fast chroma just offsets the direction vector
       // Accurate chroma recalculates refraction with different IOR
-      const useFastChroma = fastChroma
-
-      if (useFastChroma) {
+      if (fastChroma) {
         // Fast: offset direction
         refractedDirR.assign(normalize(refractedDirG.add(vec3(aberration.mul(0.5)))))
         refractedDirB.assign(normalize(refractedDirG.sub(vec3(aberration.mul(0.5)))))
       } else {
         // Accurate: different IOR per channel
         refractedDirR.assign(
-          approximateRefraction(
-            viewDir,
-            worldNormal,
-            max(iorUniform.mul(float(1.0).sub(aberration)), 1.0),
-            bouncesUniform
-          )
+          approximateRefraction(viewDir, worldNormal, max(materialIOR.mul(float(1.0).sub(aberration)), 1.0), bounces)
         )
         refractedDirB.assign(
-          approximateRefraction(
-            viewDir,
-            worldNormal,
-            max(iorUniform.mul(float(1.0).add(aberration)), 1.0),
-            bouncesUniform
-          )
+          approximateRefraction(viewDir, worldNormal, max(materialIOR.mul(float(1.0).add(aberration)), 1.0), bounces)
         )
       }
 
       // Sample environment map for each channel using built-in equirectangular mapping
-      const uvR = equirectUV(refractedDirR)
-      const uvG = equirectUV(refractedDirG)
-      const uvB = equirectUV(refractedDirB)
-
-      const envColorR = texture(envMapTex, uvR).r
-      const envColorG = texture(envMapTex, uvG).g
-      const envColorB = texture(envMapTex, uvB).b
+      const envColorR = envSample(equirectUV(refractedDirR)).r
+      const envColorG = envSample(equirectUV(refractedDirG)).g
+      const envColorB = envSample(equirectUV(refractedDirB)).b
 
       const envColor = vec3(envColorR, envColorG, envColorB)
 
@@ -228,74 +207,11 @@ class MeshRefractionMaterialImpl extends MeshPhysicalNodeMaterial {
 
       //* Fresnel effect --
       // Blend toward white at glancing angles
-      const fresnelValue = fresnelEffect(viewDir, worldNormal, float(10.0)).mul(fresnelUniform)
+      const fresnelValue = fresnelEffect(viewDir, worldNormal, float(10.0)).mul(fresnel)
       const finalColor = mix(tintedColor, vec3(1.0), fresnelValue)
 
-      return vec4(finalColor, opacityUniform)
+      return vec4(finalColor, materialOpacity)
     })()
-  }
-
-  //* Uniform Accessors ==============================
-
-  /** Environment map texture */
-  get envMap() {
-    return this._envMap.value as THREE.Texture
-  }
-  set envMap(v: THREE.Texture | THREE.CubeTexture | null) {
-    if (v) {
-      this._envMap.value = v
-      // Note: For full cubemap support, would need to rebuild shader
-      // Currently using equirectangular mapping for simplicity
-    }
-  }
-
-  /** Number of internal bounces, default: 3 */
-  get bounces() {
-    return this._bounces.value as number
-  }
-  set bounces(v: number) {
-    this._bounces.value = v
-  }
-
-  /** Index of refraction, default: 2.4 (diamond) */
-  get ior() {
-    return this._ior.value as number
-  }
-  set ior(v: number) {
-    this._ior.value = v
-  }
-
-  /** Fresnel intensity, default: 0 */
-  get fresnel() {
-    return this._fresnel.value as number
-  }
-  set fresnel(v: number) {
-    this._fresnel.value = v
-  }
-
-  /** Chromatic aberration strength, default: 0.01 */
-  get aberrationStrength() {
-    return this._aberrationStrength.value as number
-  }
-  set aberrationStrength(v: number) {
-    this._aberrationStrength.value = v
-  }
-
-  /** Tint color - use tintColor to avoid base class conflict */
-  get tintColor(): THREE.Color {
-    return this._color.value as THREE.Color
-  }
-  set tintColor(v: THREE.Color | THREE.ColorRepresentation) {
-    if (v instanceof THREE.Color) this._color.value = v
-    else this._color.value = new THREE.Color(v)
-  }
-
-  /** Opacity, default: 1 */
-  get opacity() {
-    return this._opacityValue.value as number
-  }
-  set opacity(v: number) {
-    this._opacityValue.value = v
   }
 }
 

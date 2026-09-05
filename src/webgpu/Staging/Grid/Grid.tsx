@@ -31,6 +31,7 @@ import {
 } from 'three/tsl'
 import { extend, ThreeElements, useFrame } from '@react-three/fiber'
 import { ForwardRefComponent } from '@utils/ts-utils'
+import { withUniforms } from '@utils/withUniforms'
 
 //* Types ==============================
 
@@ -69,42 +70,39 @@ export type GridProps = Omit<ThreeElements['mesh'], 'ref' | 'args'> &
 
 //* GridMaterial Implementation ==============================
 
-class GridMaterialImpl extends MeshBasicNodeMaterial {
-  //* Private Uniform Nodes --
-  private _cellSize: THREE.UniformNode<'float', number>
-  private _sectionSize: THREE.UniformNode<'float', number>
-  private _fadeDistance: THREE.UniformNode<'float', number>
-  private _fadeStrength: THREE.UniformNode<'float', number>
-  private _fadeFrom: THREE.UniformNode<'float', number>
-  private _cellThickness: THREE.UniformNode<'float', number>
-  private _sectionThickness: THREE.UniformNode<'float', number>
-  private _cellColor: THREE.UniformNode<'color', THREE.Color>
-  private _sectionColor: THREE.UniformNode<'color', THREE.Color>
-  private _infiniteGrid: THREE.UniformNode<'float', number> // bool as 0/1
-  private _followCamera: THREE.UniformNode<'float', number> // bool as 0/1
-  private _worldCamProjPosition: THREE.UniformNode<'vec3', THREE.Vector3>
-  private _worldPlanePosition: THREE.UniformNode<'vec3', THREE.Vector3>
-
+class GridMaterialImpl extends withUniforms(MeshBasicNodeMaterial, {
+  /** Cell size, default: 0.5 */
+  cellSize: () => uniform(0.5),
+  /** Section size, default: 1 */
+  sectionSize: () => uniform(1.0),
+  /** Fade distance, default: 100 */
+  fadeDistance: () => uniform(100.0),
+  /** Fade strength, default: 1 */
+  fadeStrength: () => uniform(1.0),
+  /** Fade from camera (1) or origin (0), default: 1 */
+  fadeFrom: () => uniform(1.0),
+  /** Cell thickness, default: 0.5 */
+  cellThickness: () => uniform(0.5),
+  /** Section thickness, default: 1 */
+  sectionThickness: () => uniform(1.0),
+  /** Cell color, default: black */
+  cellColor: () => uniform(new THREE.Color('#000000')),
+  /** Section color, default: #2080ff */
+  sectionColor: () => uniform(new THREE.Color('#2080ff')),
+  /** Display the grid infinitely */
+  infiniteGrid: () => uniform(false),
+  /** Follow camera position */
+  followCamera: () => uniform(false),
+  /** Camera projection position on plane (set by component) */
+  worldCamProjPosition: () => uniform(new THREE.Vector3()),
+  /** Plane world position (set by component) */
+  worldPlanePosition: () => uniform(new THREE.Vector3()),
+}) {
   /** Type flag for identification */
   readonly isGridMaterial = true
 
   constructor() {
     super()
-
-    //* Initialize Uniforms --
-    this._cellSize = uniform(0.5)
-    this._sectionSize = uniform(1.0)
-    this._fadeDistance = uniform(100.0)
-    this._fadeStrength = uniform(1.0)
-    this._fadeFrom = uniform(1.0)
-    this._cellThickness = uniform(0.5)
-    this._sectionThickness = uniform(1.0)
-    this._cellColor = uniform(new THREE.Color('#000000'))
-    this._sectionColor = uniform(new THREE.Color('#2080ff'))
-    this._infiniteGrid = uniform(0.0) // false
-    this._followCamera = uniform(0.0) // false
-    this._worldCamProjPosition = uniform(new THREE.Vector3())
-    this._worldPlanePosition = uniform(new THREE.Vector3())
 
     //* Base Material Properties --
     this.transparent = true
@@ -115,19 +113,21 @@ class GridMaterialImpl extends MeshBasicNodeMaterial {
 
   private _buildGridShader() {
     //* Capture uniforms for closure --
-    const cellSizeUniform = this._cellSize
-    const sectionSizeUniform = this._sectionSize
-    const fadeDistanceUniform = this._fadeDistance
-    const fadeStrengthUniform = this._fadeStrength
-    const fadeFromUniform = this._fadeFrom
-    const cellThicknessUniform = this._cellThickness
-    const sectionThicknessUniform = this._sectionThickness
-    const cellColorUniform = this._cellColor
-    const sectionColorUniform = this._sectionColor
-    const infiniteGridUniform = this._infiniteGrid
-    const followCameraUniform = this._followCamera
-    const worldCamProjPositionUniform = this._worldCamProjPosition
-    const worldPlanePositionUniform = this._worldPlanePosition
+    const {
+      cellSize: cellSizeUniform,
+      sectionSize: sectionSizeUniform,
+      fadeDistance: fadeDistanceUniform,
+      fadeStrength: fadeStrengthUniform,
+      fadeFrom: fadeFromUniform,
+      cellThickness: cellThicknessUniform,
+      sectionThickness: sectionThicknessUniform,
+      cellColor: cellColorUniform,
+      sectionColor: sectionColorUniform,
+      infiniteGrid: infiniteGridUniform,
+      followCamera: followCameraUniform,
+      worldCamProjPosition: worldCamProjPositionUniform,
+      worldPlanePosition: worldPlanePositionUniform,
+    } = this.uniforms
 
     //* Varyings: Pass position data to fragment shader --
     // Compute local and world positions consistently with positionNode
@@ -138,14 +138,12 @@ class GridMaterialImpl extends MeshBasicNodeMaterial {
       let localPos = vec3(pos.x, pos.z, pos.y).toVar()
 
       // Scale for infinite grid
-      const isInfinite = infiniteGridUniform.greaterThan(0.5)
       const scaleFactor = float(1.0).add(fadeDistanceUniform)
-      localPos.assign(select(isInfinite, localPos.mul(scaleFactor), localPos))
+      localPos.assign(select(infiniteGridUniform, localPos.mul(scaleFactor), localPos))
 
       // Offset for followCamera
-      const isFollowCamera = followCameraUniform.greaterThan(0.5)
       const cameraOffset = worldCamProjPositionUniform.sub(worldPlanePositionUniform)
-      localPos.assign(select(isFollowCamera, localPos.add(cameraOffset), localPos))
+      localPos.assign(select(followCameraUniform, localPos.add(cameraOffset), localPos))
 
       return localPos
     })
@@ -168,15 +166,13 @@ class GridMaterialImpl extends MeshBasicNodeMaterial {
       let localPos = vec3(pos.x, pos.z, pos.y).toVar()
 
       // Scale for infinite grid effect
-      const isInfinite = infiniteGridUniform.greaterThan(0.5)
       const scaleFactor = float(1.0).add(fadeDistanceUniform)
-      localPos.assign(select(isInfinite, localPos.mul(scaleFactor), localPos))
+      localPos.assign(select(infiniteGridUniform, localPos.mul(scaleFactor), localPos))
 
       // For followCamera, offset the local position
       // This approximation works when the grid has no rotation (identity model matrix)
-      const isFollowCamera = followCameraUniform.greaterThan(0.5)
       const cameraOffset = worldCamProjPositionUniform.sub(worldPlanePositionUniform)
-      localPos.assign(select(isFollowCamera, localPos.add(cameraOffset), localPos))
+      localPos.assign(select(followCameraUniform, localPos.add(cameraOffset), localPos))
 
       return localPos
     })()
@@ -229,114 +225,6 @@ class GridMaterialImpl extends MeshBasicNodeMaterial {
 
       return vec4(gridColor, finalAlpha)
     })()
-  }
-
-  //* Uniform Accessors ==============================
-
-  /** Cell size, default: 0.5 */
-  get cellSize() {
-    return this._cellSize.value as number
-  }
-  set cellSize(v: number) {
-    this._cellSize.value = v
-  }
-
-  /** Section size, default: 1 */
-  get sectionSize() {
-    return this._sectionSize.value as number
-  }
-  set sectionSize(v: number) {
-    this._sectionSize.value = v
-  }
-
-  /** Fade distance, default: 100 */
-  get fadeDistance() {
-    return this._fadeDistance.value as number
-  }
-  set fadeDistance(v: number) {
-    this._fadeDistance.value = v
-  }
-
-  /** Fade strength, default: 1 */
-  get fadeStrength() {
-    return this._fadeStrength.value as number
-  }
-  set fadeStrength(v: number) {
-    this._fadeStrength.value = v
-  }
-
-  /** Fade from camera (1) or origin (0), default: 1 */
-  get fadeFrom() {
-    return this._fadeFrom.value as number
-  }
-  set fadeFrom(v: number) {
-    this._fadeFrom.value = v
-  }
-
-  /** Cell thickness, default: 0.5 */
-  get cellThickness() {
-    return this._cellThickness.value as number
-  }
-  set cellThickness(v: number) {
-    this._cellThickness.value = v
-  }
-
-  /** Section thickness, default: 1 */
-  get sectionThickness() {
-    return this._sectionThickness.value as number
-  }
-  set sectionThickness(v: number) {
-    this._sectionThickness.value = v
-  }
-
-  /** Cell color */
-  get cellColor(): THREE.Color {
-    return this._cellColor.value as THREE.Color
-  }
-  set cellColor(v: THREE.Color | THREE.ColorRepresentation) {
-    if (v instanceof THREE.Color) this._cellColor.value = v
-    else this._cellColor.value = new THREE.Color(v)
-  }
-
-  /** Section color */
-  get sectionColor(): THREE.Color {
-    return this._sectionColor.value as THREE.Color
-  }
-  set sectionColor(v: THREE.Color | THREE.ColorRepresentation) {
-    if (v instanceof THREE.Color) this._sectionColor.value = v
-    else this._sectionColor.value = new THREE.Color(v)
-  }
-
-  /** Display the grid infinitely */
-  get infiniteGrid() {
-    return this._infiniteGrid.value > 0.5
-  }
-  set infiniteGrid(v: boolean) {
-    this._infiniteGrid.value = v ? 1.0 : 0.0
-  }
-
-  /** Follow camera position */
-  get followCamera() {
-    return this._followCamera.value > 0.5
-  }
-  set followCamera(v: boolean) {
-    this._followCamera.value = v ? 1.0 : 0.0
-  }
-
-  /** Camera projection position on plane (set by component) */
-  get worldCamProjPosition(): THREE.Vector3 {
-    return this._worldCamProjPosition.value as THREE.Vector3
-  }
-  set worldCamProjPosition(v: THREE.Vector3) {
-    this._worldCamProjPosition.value = v
-  }
-
-  /** Plane world position (set by component) */
-  get worldPlanePosition(): THREE.Vector3 {
-    return this._worldPlanePosition.value as THREE.Vector3
-  }
-  set worldPlanePosition(v: THREE.Vector3) {
-    this._worldPlanePosition.value = v
   }
 }
 

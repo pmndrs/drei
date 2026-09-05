@@ -3,20 +3,16 @@
 // https://threejs.org/examples/?q=con#webgl_shadow_contact
 //
 // TSL Conversion: Dennis Smolek
-// This version uses TSL (Three Shading Language) for WebGPU compatibility
 //
-// TODO: KNOWN LIMITATIONS - Needs human rewrite:
-// - Color prop is NOT functional (ignored) - legacy uses alpha blending with colored shadows,
-//   this version uses MultiplyBlending on white background which only supports grayscale shadows
-// - The proper fix requires getting transparent render targets working in WebGPU,
-//   or implementing a different compositing approach for colored shadows
+// The color prop is ignored. Multiplicative blending over white supports grayscale shadows only.
 
 import * as React from 'react'
 import * as THREE from 'three/webgpu'
 import { MeshBasicNodeMaterial } from 'three/webgpu'
-import { Fn, uniform, uniformTexture, texture, uv, vec4, vec3, vec2, float, depth } from 'three/tsl'
+import { Fn, uniform, uniformTexture, uv, vec4, vec2, float } from 'three/tsl'
 import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
 import { ForwardRefComponent } from '@utils/ts-utils'
+import { withUniforms } from '@utils/withUniforms'
 
 //* Types ==============================
 
@@ -51,19 +47,20 @@ export type ContactShadowsProps = Omit<ThreeElements['group'], 'ref' | 'scale'> 
 // Custom depth material that mimics MeshDepthMaterial behavior
 // Uses manual camera matrix uniform since TSL's built-in nodes may be bound to wrong camera
 
-class DepthNodeMaterial extends MeshBasicNodeMaterial {
-  private _opacity: THREE.UniformNode<'float', number>
-
+class DepthNodeMaterial extends withUniforms(MeshBasicNodeMaterial, {
+  /** Shadow strength, 1 = full darkening, 0 = none */
+  shadowOpacity: () => uniform(1),
+}) {
   constructor(opacity: number = 1) {
     super()
-    this._opacity = uniform(opacity)
+    this.shadowOpacity = opacity
     this.depthTest = false
     this.depthWrite = false
     this._buildShader()
   }
 
   private _buildShader() {
-    const opacityUniform = this._opacity
+    const { shadowOpacity } = this.uniforms
 
     // Multiply blend: gray shadows on white background
     // opacity 1 -> gray 0.3 (70% darkening)
@@ -71,31 +68,27 @@ class DepthNodeMaterial extends MeshBasicNodeMaterial {
     // TODO: Color support needs proper implementation - current multiply blend
     // approach doesn't correctly support colored shadows
     this.colorNode = Fn(() => {
-      const shadowStrength = opacityUniform.mul(0.7)
+      const shadowStrength = shadowOpacity.mul(0.7)
       const gray = float(1.0).sub(shadowStrength)
       return vec4(gray, gray, gray, 1.0)
     })()
-  }
-
-  set shadowOpacity(value: number) {
-    this._opacity.value = value
   }
 }
 
 //* TSL Blur Material ==============================
 // Gaussian blur material using TSL nodes
 
-class BlurNodeMaterial extends MeshBasicNodeMaterial {
-  private _inputTexture: ReturnType<typeof uniformTexture>
-  private _blurAmount: THREE.UniformNode<'float', number>
+class BlurNodeMaterial extends withUniforms(MeshBasicNodeMaterial, {
+  /** Texture to blur */
+  inputTexture: () => uniformTexture(new THREE.Texture()),
+  /** Per-tap UV offset */
+  blurAmount: () => uniform(0.0),
+}) {
   private _direction: 'horizontal' | 'vertical'
 
   constructor(direction: 'horizontal' | 'vertical' = 'horizontal') {
     super()
 
-    // Use uniformTexture for proper TSL texture handling
-    this._inputTexture = uniformTexture(new THREE.Texture())
-    this._blurAmount = uniform(0.0)
     this._direction = direction
 
     this.depthTest = false
@@ -105,8 +98,7 @@ class BlurNodeMaterial extends MeshBasicNodeMaterial {
   }
 
   private _buildShader() {
-    const inputTex = this._inputTexture
-    const blurAmountUniform = this._blurAmount
+    const { inputTexture: inputTex, blurAmount: blurAmountUniform } = this.uniforms
     const isHorizontal = this._direction === 'horizontal'
 
     // 9-tap Gaussian blur weights (from three blur shaders)
@@ -122,20 +114,12 @@ class BlurNodeMaterial extends MeshBasicNodeMaterial {
         const sampleUV = isHorizontal ? texCoord.add(vec2(offset, 0.0)) : texCoord.add(vec2(0.0, offset))
 
         // Sample texture using the uniformTexture node
-        const sampledColor = texture(inputTex, sampleUV)
+        const sampledColor = inputTex.sample(sampleUV)
         result.addAssign(sampledColor.mul(weights[i]))
       }
 
       return result
     })()
-  }
-
-  set inputTexture(value: THREE.Texture) {
-    this._inputTexture.value = value
-  }
-
-  set blurAmount(value: number) {
-    this._blurAmount.value = value
   }
 }
 

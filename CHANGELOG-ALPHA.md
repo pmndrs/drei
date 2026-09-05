@@ -4,6 +4,19 @@ This changelog tracks changes made during the v11 alpha development cycle.
 
 ## Unreleased
 
+### Fixes
+
+#### Fix WebGPU node material constructors
+
+Fixed constructor crashes by exposing custom uniforms through `withUniforms`
+without overriding Three's built-in properties (#2765, #2813). R3F props update
+the instance's shader uniforms. Use separate material instances for independent uniforms.
+
+Also fixed portal blur mask generation and cleanup.
+
+**Files changed:** `src/utils/withUniforms.ts`, `src/webgpu/Materials`,
+`src/webgpu/Effects`, `src/webgpu/Staging`, `src/webgpu/index.ts`
+
 ### Features
 
 #### `MeshDiscardMaterial` now has a WebGPU implementation

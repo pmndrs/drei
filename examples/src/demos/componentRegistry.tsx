@@ -989,6 +989,15 @@ export const components: DreiComponent[] = [
     notes: '',
   },
 
+  {
+    name: 'Inspector',
+    category: 'Performance',
+    title: 'Three.js Inspector',
+    description: 'Profile WebGPU rendering and edit scene parameters with Three.js Inspector.',
+    path: '/core/performance/inspector',
+    notes: 'R3F v10. Examples are available in Storybook under Performance/Inspector.',
+  },
+
   //* Portal ==============================
   {
     name: 'Fisheye',

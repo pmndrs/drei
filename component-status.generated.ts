@@ -87,6 +87,7 @@ export const componentStatus: Record<string, ComponentStatus> = {
   "HtmlMaterial": {"name":"HtmlMaterial","category":"Materials","classification":"implemented","rendererSupport":"dual","story":false,"test":false,"testAsserts":false,"docs":false,"legacy":true,"webgpu":true,"webgpuStory":false,"webgpuExercised":true,"webgpuIsCopy":false,"agnosticButNot":false,"legacyStory":false,"assignee":null,"reason":null},
   "Hud": {"name":"Hud","category":"Portal","classification":"agnostic","rendererSupport":"universal","story":true,"test":true,"testAsserts":false,"docs":false,"legacy":true,"webgpu":false,"webgpuStory":false,"webgpuExercised":false,"webgpuIsCopy":false,"agnosticButNot":false,"legacyStory":false,"assignee":null,"reason":null},
   "Image": {"name":"Image","category":"Materials","classification":"implemented","rendererSupport":"dual","story":true,"test":true,"testAsserts":false,"docs":true,"legacy":true,"webgpu":true,"webgpuStory":true,"webgpuExercised":true,"webgpuIsCopy":false,"agnosticButNot":false,"legacyStory":true,"assignee":null,"reason":null},
+  "Inspector": {"name":"Inspector","category":"Performance","classification":"implemented","rendererSupport":"webgpu-only","story":true,"test":false,"testAsserts":false,"docs":true,"legacy":false,"webgpu":true,"webgpuStory":true,"webgpuExercised":true,"webgpuIsCopy":false,"agnosticButNot":false,"legacyStory":false,"assignee":null,"reason":null},
   "Instances": {"name":"Instances","category":"Helpers","classification":"agnostic","rendererSupport":"universal","story":true,"test":false,"testAsserts":false,"docs":true,"legacy":false,"webgpu":false,"webgpuStory":false,"webgpuExercised":false,"webgpuIsCopy":false,"agnosticButNot":false,"legacyStory":false,"assignee":null,"reason":null},
   "KeyboardControls": {"name":"KeyboardControls","category":"Controls","classification":"agnostic","rendererSupport":"universal","story":true,"test":false,"testAsserts":false,"docs":true,"legacy":false,"webgpu":false,"webgpuStory":false,"webgpuExercised":false,"webgpuIsCopy":false,"agnosticButNot":false,"legacyStory":false,"assignee":null,"reason":null},
   "Lightformer": {"name":"Lightformer","category":"Staging","classification":"agnostic","rendererSupport":"universal","story":false,"test":true,"testAsserts":false,"docs":false,"legacy":false,"webgpu":false,"webgpuStory":false,"webgpuExercised":false,"webgpuIsCopy":false,"agnosticButNot":false,"legacyStory":false,"assignee":null,"reason":null},
@@ -179,20 +180,20 @@ export const componentStatus: Record<string, ComponentStatus> = {
 }
 
 export const componentStatusTotals = {
-  "components": 143,
+  "components": 144,
   "agnostic": 106,
-  "implemented": 27,
+  "implemented": 28,
   "todo": 5,
   "wontPort": 5,
-  "withStory": 104,
-  "webgpuImplemented": 30,
-  "webgpuWithStory": 15,
-  "webgpuExercised": 29,
+  "withStory": 105,
+  "webgpuImplemented": 31,
+  "webgpuWithStory": 16,
+  "webgpuExercised": 30,
   "webgpuCopies": 0,
   "agnosticButNot": 0,
   "withTestFile": 55,
   "withRealTest": 0,
-  "withDocs": 47,
+  "withDocs": 48,
   "agentOk": 2,
   "humanOnly": 3
 } as const

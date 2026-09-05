@@ -4,6 +4,21 @@ This changelog tracks changes made during the v11 alpha development cycle.
 
 ## Unreleased
 
+### Features
+
+#### Three.js Inspector for R3F v10
+
+Added WebGPU `<Inspector>` and `useInspectorControls`, continuing the design from
+#2753. The inspector loads on the client before Canvas creation, profiles through R3F v10 frame phases,
+supports regular `frameloop="always"` rendering, and restores the previous inspector on unmount.
+Demand and manual rendering are not supported yet.
+The panel mounts beside the scene's event source so UI drags can bubble normally without
+triggering scene or camera input on that source.
+Controls use Three's built-in editors and support nested folders, colors, sliders, selects, and reactive values.
+
+**Files changed:** `src/webgpu/Performance/Inspector`, `src/webgpu/index.ts`,
+`scripts/generate-native-exports.ts`, `examples/src/demos/componentRegistry.tsx`
+
 ### Fixes
 
 #### Fix WebGPU node material constructors

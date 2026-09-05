@@ -15,10 +15,13 @@ import {
   cameraProjectionMatrix,
   normalize,
   select,
+  materialColor,
+  materialOpacity,
 } from 'three/tsl'
 import * as React from 'react'
 import { extend, applyProps, ReactThreeFiber, useThree, ThreeElements } from '@react-three/fiber'
 import { toCreasedNormals } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
+import { withUniforms } from '@utils/withUniforms'
 
 //* Types ==============================
 
@@ -49,28 +52,22 @@ export type OutlinesProps = Omit<ThreeElements['group'], 'ref'> & {
 
 //* OutlinesMaterial Implementation ==============================
 
-class OutlinesMaterial extends MeshBasicNodeMaterial {
-  //* Private Uniform Nodes --
-  private _screenspace: THREE.UniformNode<'float', number> // Using number as bool (0/1)
-  private _color: THREE.UniformNode<'color', THREE.Color>
-  private _opacityValue: THREE.UniformNode<'float', number>
-  private _thickness: THREE.UniformNode<'float', number>
-  private _size: THREE.UniformNode<'vec2', THREE.Vector2>
-
+class OutlinesMaterial extends withUniforms(MeshBasicNodeMaterial, {
+  /** Whether thickness is constant in screen pixels */
+  screenspace: () => uniform(false),
+  /** Outline thickness */
+  thickness: () => uniform(0.05),
+  /** Drawing-buffer size, for screenspace thickness */
+  size: () => uniform(new THREE.Vector2(1, 1)),
+}) {
   /** Type flag for identification */
   readonly isOutlinesMaterial = true
 
   constructor() {
     super()
 
-    //* Initialize Uniforms --
-    this._screenspace = uniform(0.0) // false
-    this._color = uniform(new THREE.Color('black'))
-    this._opacityValue = uniform(1.0)
-    this._thickness = uniform(0.05)
-    this._size = uniform(new THREE.Vector2(1, 1))
-
     //* Base Material Properties --
+    this.color.set('black')
     this.side = THREE.BackSide
     this.transparent = false
 
@@ -78,12 +75,7 @@ class OutlinesMaterial extends MeshBasicNodeMaterial {
   }
 
   private _buildOutlineShader() {
-    //* Capture uniforms for closure --
-    const screenspaceUniform = this._screenspace
-    const colorUniform = this._color
-    const opacityUniform = this._opacityValue
-    const thicknessUniform = this._thickness
-    const sizeUniform = this._size
+    const { screenspace, thickness, size } = this.uniforms
 
     //* Position Node - Vertex expansion along normals --
     // This creates the outline effect by pushing vertices outward
@@ -92,12 +84,11 @@ class OutlinesMaterial extends MeshBasicNodeMaterial {
       const normal = normalLocal.toVar()
 
       // Check if screenspace mode
-      const isScreenspace = screenspaceUniform.greaterThan(0.5)
 
       //* Screenspace mode --
       // Thickness is constant in screen pixels regardless of distance
       // Simply offset position along normal in local space
-      const screenspacePos = position.add(normal.mul(thicknessUniform))
+      const screenspacePos = position.add(normal.mul(thickness))
 
       //* World-space mode --
       // Thickness varies with distance - we need to compute in clip space
@@ -107,64 +98,19 @@ class OutlinesMaterial extends MeshBasicNodeMaterial {
 
       // Normalize the clip-space normal in XY and scale by thickness
       // The offset is proportional to clipPosition.w to maintain consistent screen-space size
-      const offset = normalize(clipNormal.xy).mul(thicknessUniform).div(sizeUniform).mul(clipPos.w).mul(2.0)
+      const offset = normalize(clipNormal.xy).mul(thickness).div(size).mul(clipPos.w).mul(2.0)
 
       // For world-space mode, we need to compute the offset in local space
       // by working backwards from the desired clip-space offset
       // This is an approximation that works well for most cases
-      const worldOffset = normal.mul(thicknessUniform)
+      const worldOffset = normal.mul(thickness)
 
       // Select based on mode
-      return select(isScreenspace, screenspacePos, position.add(worldOffset))
+      return select(screenspace, screenspacePos, position.add(worldOffset))
     })()
 
-    //* Output Node - Simple color output --
-    this.outputNode = Fn(() => {
-      return vec4(colorUniform, opacityUniform)
-    })()
-  }
-
-  //* Uniform Accessors ==============================
-
-  /** Whether to use screenspace thickness */
-  get screenspace() {
-    return this._screenspace.value > 0.5
-  }
-  set screenspace(v: boolean) {
-    this._screenspace.value = v ? 1.0 : 0.0
-  }
-
-  /** Outline color */
-  get color(): THREE.Color {
-    return this._color.value as THREE.Color
-  }
-  set color(v: THREE.Color | THREE.ColorRepresentation) {
-    if (v instanceof THREE.Color) this._color.value = v
-    else this._color.value = new THREE.Color(v)
-  }
-
-  /** Outline opacity */
-  get opacity() {
-    return this._opacityValue.value as number
-  }
-  set opacity(v: number) {
-    this._opacityValue.value = v
-  }
-
-  /** Outline thickness */
-  get thickness() {
-    return this._thickness.value as number
-  }
-  set thickness(v: number) {
-    this._thickness.value = v
-  }
-
-  /** Screen size for screenspace calculations */
-  get size(): THREE.Vector2 {
-    return this._size.value as THREE.Vector2
-  }
-  set size(v: THREE.Vector2) {
-    this._size.value = v
+    //* Output Node - Flat colour from three's own color/opacity --
+    this.outputNode = Fn(() => vec4(materialColor, materialOpacity))()
   }
 }
 

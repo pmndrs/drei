@@ -6,7 +6,7 @@ import {
   setBarycentricCoordinates,
 } from '@webgpu/Materials/WireframeMaterial'
 
-interface WireframeProps {
+export interface WireframeProps {
   geometry?: THREE.BufferGeometry | React.RefObject<THREE.BufferGeometry>
   simplify?: boolean
 }

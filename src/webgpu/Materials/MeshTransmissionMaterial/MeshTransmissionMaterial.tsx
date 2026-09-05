@@ -17,7 +17,6 @@ import { MeshPhysicalNodeMaterial } from 'three/webgpu'
 import {
   Fn,
   uniform,
-  texture,
   vec2,
   vec3,
   vec4,
@@ -66,6 +65,7 @@ import { extend, ThreeElements, useFrame, useThree } from '@react-three/fiber'
 import { useFBO } from '@core/Portal/Fbo'
 import { DiscardMaterial } from '@webgpu/Materials/DiscardMaterial'
 import { ForwardRefComponent } from '@utils/ts-utils'
+import { withUniforms } from '@utils/withUniforms'
 
 const EnvironmentBRDF = /*@__PURE__*/ Fn((inputs: any) => {
   const { dotNV, specularColor, specularF90, roughness } = inputs
@@ -237,7 +237,7 @@ interface TransmissionLightingModelOptions {
 }
 
 interface TransmissionUniforms {
-  bufferTex: any
+  bufferTex: THREE.TextureNode
   chromaticAberration: any
   anisotropicBlur: any
   timeUniform: any
@@ -254,7 +254,7 @@ interface TransmissionUniforms {
  * instead of Three.js's built-in viewportMipTexture
  */
 class TransmissionLightingModel extends PhysicalLightingModel {
-  private _bufferTex: any
+  private _bufferTex: THREE.TextureNode
   private _chromaticAberration: any
   private _anisotropicBlur: any
   private _timeUniform: any
@@ -383,10 +383,10 @@ class TransmissionLightingModel extends PhysicalLightingModel {
           const uvG = getRefractionUV(sampleNorm, v, iorG, sampleThickness, position)
           const uvB = getRefractionUV(sampleNorm, v, iorB, sampleThickness, position)
 
-          // Sample the buffer texture at each UV - texture() reads from the uniform directly
-          const sampleR = texture(bufferTex, uvR)
-          const sampleG = texture(bufferTex, uvG)
-          const sampleB = texture(bufferTex, uvB)
+          // Each sample uses the instance-owned buffer node at its own UV.
+          const sampleR = bufferTex.sample(uvR)
+          const sampleG = bufferTex.sample(uvG)
+          const sampleB = bufferTex.sample(uvB)
 
           // Accumulate RGB channels
           transmissionAccum.x.addAssign(sampleR.r)
@@ -404,7 +404,7 @@ class TransmissionLightingModel extends PhysicalLightingModel {
         const debugNdotV = n.dot(v)
         const isNeg = debugNdotV.lessThan(0)
         const sampleUVFlipped = vec2(screenUV.x, screenUV.y.oneMinus()).clamp(0.001, 0.999)
-        const directSampleFlipped = texture(bufferTex, sampleUVFlipped)
+        const directSampleFlipped = bufferTex.sample(sampleUVFlipped)
         const testRay = getVolumeTransmissionRay(n, v, thickness, ior)
         const rayLen = length(testRay)
         const manualUV = screenCoordinate.xy.div(screenSize)
@@ -412,9 +412,9 @@ class TransmissionLightingModel extends PhysicalLightingModel {
         const flippedUV = vec2(screenUV.x, screenUV.y.oneMinus()).clamp(0.001, 0.999)
         const useFlipped = screenUV.x.greaterThan(0.5)
         const splitSampleUV = select(useFlipped, flippedUV, noFlipUV)
-        const splitSample = texture(bufferTex, splitSampleUV)
-        const directSampleNoFlip = texture(bufferTex, screenUV.clamp(0.001, 0.999))
-        const centerSample = texture(bufferTex, vec2(0.5, 0.5))
+        const splitSample = bufferTex.sample(splitSampleUV)
+        const directSampleNoFlip = bufferTex.sample(screenUV.clamp(0.001, 0.999))
+        const centerSample = bufferTex.sample(vec2(0.5, 0.5))
 
         // Debug 13/14/16 calculations
         const transmissionRayDbg = getVolumeTransmissionRay(n, v, thickness, ior)
@@ -438,7 +438,7 @@ class TransmissionLightingModel extends PhysicalLightingModel {
         projUVDbg.divAssign(2.0)
         projUVDbg.assign(vec2(projUVDbg.x, projUVDbg.y.oneMinus()))
         projUVDbg.assign(projUVDbg.clamp(0.001, 0.999))
-        const projectedSample = texture(bufferTex, projUVDbg)
+        const projectedSample = bufferTex.sample(projUVDbg)
 
         const wNorm = clipPosDbg.w.div(10).add(0.5).clamp(0, 1)
         const isBehind = clipPosDbg.w.lessThan(0)
@@ -599,18 +599,31 @@ class TransmissionLightingModel extends PhysicalLightingModel {
 
 //* MeshTransmissionMaterial Implementation ==============================
 
-class MeshTransmissionMaterialImpl extends MeshPhysicalNodeMaterial {
-  // Custom uniforms
-  private _chromaticAberration: THREE.UniformNode<'float', number>
-  private _anisotropicBlur: THREE.UniformNode<'float', number>
-  private _time: THREE.UniformNode<'float', number>
-  private _distortion: THREE.UniformNode<'float', number>
-  private _distortionScale: THREE.UniformNode<'float', number>
-  private _temporalDistortion: THREE.UniformNode<'float', number>
-  private _buffer: any // Texture node
-  private _transmissionValue: THREE.UniformNode<'float', number>
-  private _debugMode: THREE.UniformNode<'float', number>
+/** 1x1 white texture standing in until the component supplies its FBO texture */
+function createPlaceholderTexture() {
+  const placeholder = new THREE.DataTexture(new Uint8Array([255, 255, 255, 255]), 1, 1)
+  placeholder.needsUpdate = true
+  return placeholder
+}
 
+class MeshTransmissionMaterialImpl extends withUniforms(MeshPhysicalNodeMaterial, {
+  /** Chromatic aberration, default: 0.05 */
+  chromaticAberration: () => uniform(0.05),
+  /** Anisotropic blur, default: 0.1 */
+  anisotropicBlur: () => uniform(0.1),
+  /** Elapsed time, drives the temporal distortion */
+  time: () => uniform(0),
+  /** Distortion, default: 0 */
+  distortion: () => uniform(0),
+  /** Distortion scale, default: 0.5 */
+  distortionScale: () => uniform(0.5),
+  /** Temporal distortion (speed of movement), default: 0 */
+  temporalDistortion: () => uniform(0),
+  /** The scene rendered into a texture (use it to share a texture between materials) */
+  buffer: () => uniformTexture(createPlaceholderTexture()),
+  /** Debug mode for development (0 = normal, 1-19 = various debug outputs), default: 0 */
+  debugMode: () => uniform(0),
+}) {
   /** Type flag for identification */
   readonly isMeshTransmissionMaterial = true
 
@@ -623,24 +636,7 @@ class MeshTransmissionMaterialImpl extends MeshPhysicalNodeMaterial {
     this._samples = samples
     this._transmissionSampler = transmissionSampler
 
-    // Initialize custom uniforms
-    this._chromaticAberration = uniform(0.05)
-    this._anisotropicBlur = uniform(0.1)
-    this._time = uniform(0)
-    this._distortion = uniform(0.0)
-    this._distortionScale = uniform(0.5)
-    this._temporalDistortion = uniform(0.0)
-    this._debugMode = uniform(0)
-    // Create a valid 1x1 white placeholder texture - will be replaced with FBO texture
-    const placeholderTexture = new THREE.DataTexture(new Uint8Array([255, 255, 255, 255]), 1, 1)
-    placeholderTexture.needsUpdate = true
-    this._buffer = uniformTexture(placeholderTexture)
-    this._transmissionValue = uniform(1.0)
-
-    // Base material setup
-    // Set a small transmission value to enable the transmission code path
-    // but we handle the actual transmission ourselves
-    this.transmission = transmissionSampler ? 1 : 0.001
+    this.transmission = 1
     this.roughness = 0
     this.thickness = 0
     this.ior = 1.5
@@ -648,12 +644,24 @@ class MeshTransmissionMaterialImpl extends MeshPhysicalNodeMaterial {
   }
 
   setupLightingModel(/* builder */) {
-    if (this._transmissionSampler) {
-      // Use default Three.js transmission (built-in sampler)
+    // Three's built-in transmission sampler, or nothing to transmit: use the default
+    // lighting model. With transmission at 0 three does not fill the transmission
+    // property nodes, so the custom model must not read them.
+    if (this._transmissionSampler || !this.useTransmission) {
       return super.setupLightingModel()
     }
 
     // Use our custom lighting model with FBO-based transmission
+    const {
+      buffer,
+      chromaticAberration,
+      anisotropicBlur,
+      time,
+      distortion,
+      distortionScale,
+      temporalDistortion,
+      debugMode,
+    } = this.uniforms
     return new TransmissionLightingModel(
       {
         clearcoat: this.useClearcoat,
@@ -663,93 +671,17 @@ class MeshTransmissionMaterialImpl extends MeshPhysicalNodeMaterial {
         dispersion: this.useDispersion,
       },
       {
-        bufferTex: this._buffer,
-        chromaticAberration: this._chromaticAberration,
-        anisotropicBlur: this._anisotropicBlur,
-        timeUniform: this._time,
-        distortion: this._distortion,
-        distortionScale: this._distortionScale,
-        temporalDistortion: this._temporalDistortion,
+        bufferTex: buffer,
+        chromaticAberration,
+        anisotropicBlur,
+        timeUniform: time,
+        distortion,
+        distortionScale,
+        temporalDistortion,
         samples: this._samples,
-        debugMode: this._debugMode,
+        debugMode,
       }
     )
-  }
-
-  //* Property Accessors ==============================
-
-  get time() {
-    return this._time.value
-  }
-  set time(v: number) {
-    this._time.value = v
-  }
-
-  get buffer() {
-    return this._buffer.value
-  }
-  set buffer(v: THREE.Texture) {
-    this._buffer.value = v
-  }
-
-  get chromaticAberration() {
-    return this._chromaticAberration.value
-  }
-  set chromaticAberration(v: number) {
-    this._chromaticAberration.value = v
-  }
-
-  get anisotropicBlur() {
-    return this._anisotropicBlur.value
-  }
-  set anisotropicBlur(v: number) {
-    this._anisotropicBlur.value = v
-  }
-
-  get distortion() {
-    return this._distortion.value
-  }
-  set distortion(v: number) {
-    this._distortion.value = v
-  }
-
-  get distortionScale() {
-    return this._distortionScale.value
-  }
-  set distortionScale(v: number) {
-    this._distortionScale.value = v
-  }
-
-  get temporalDistortion() {
-    return this._temporalDistortion.value
-  }
-  set temporalDistortion(v: number) {
-    this._temporalDistortion.value = v
-  }
-
-  get debugMode() {
-    return this._debugMode.value
-  }
-  set debugMode(v: number) {
-    this._debugMode.value = v
-  }
-
-  // Expose _transmission for legacy compatibility
-  // This stores the user's intended transmission value, separate from the base class's transmission
-  // which is kept at 0.001 to enable the transmission code path without triggering Three's internal rendering
-  get _transmission() {
-    if (!this._transmissionValue) {
-      this._transmissionValue = uniform(1.0)
-    }
-    return this._transmissionValue.value
-  }
-  set _transmission(v: number) {
-    if (!this._transmissionValue) {
-      this._transmissionValue = uniform(1.0)
-    }
-    this._transmissionValue.value = v
-    // Note: Do NOT set this.transmission here - it causes infinite recursion
-    // The base class transmission is set in constructor and stays constant
   }
 }
 
@@ -823,7 +755,7 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
     // Initialize backside material on first render
     React.useEffect(() => {
       if (backside && ref.current && !backsideMaterialRef.current) {
-        // Create a clone for backside pass - this has its own buffer uniform
+        // Create a separate instance with its own buffer uniform
         backsideMaterialRef.current = new MeshTransmissionMaterialImpl(samples, transmissionSampler)
         // Copy properties
         backsideMaterialRef.current.buffer = fboBack.texture
@@ -960,14 +892,11 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
         ref={ref as any}
         {...props}
         buffer={buffer || fboMain.texture}
-        // @ts-ignore
-        _transmission={transmission}
-        // In order for this to not incur extra cost "transmission" must be set to 0 and treated as a reserved prop.
-        // This is because THREE.WebGLRenderer will check for transmission > 0 and execute extra renders.
-        // The exception is when transmissionSampler is set, in which case we are using three's built in sampler.
+        transmission={transmission}
         anisotropicBlur={anisotropicBlur ?? anisotropy}
         thickness={thickness}
         side={side}
+        // @ts-expect-error - the element type comes from the legacy augmentation, which has no debugMode
         debugMode={debugMode}
       />
     )

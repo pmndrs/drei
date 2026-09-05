@@ -6,23 +6,14 @@ import './index.css'
 
 seedrandom('deterministic-random-for-storybook', { global: true }) // deterministic Math.random()
 
+// NOTE: there used to be a second `globalTypes`/`initialGlobals` pair here
+// declaring a `backend` toolbar (webgl/webgpu, defaulting to webgl). It arrived
+// from master's #2593 when master was merged into v11-working, alongside v11's
+// own `renderer` toolbar. Duplicate keys in one object literal mean the last
+// wins, so `backend` never existed at runtime — and nothing reads
+// `globals.backend`, while `context.globals.renderer` is used across the
+// stories. Removed. See #2807.
 const preview: Preview = {
-  globalTypes: {
-    backend: {
-      description: 'Backend to use by the renderer',
-      toolbar: {
-        icon: 'cpu',
-        items: [
-          { value: 'webgl', title: 'WebGL' },
-          { value: 'webgpu', title: 'WebGPU' },
-        ],
-      },
-    },
-  },
-  initialGlobals: {
-    backend: 'webgl',
-  },
-
   parameters: {
     layout: 'fullscreen',
     docs: {

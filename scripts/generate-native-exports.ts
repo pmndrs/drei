@@ -29,6 +29,8 @@ const WEBGPU_DTS = path.join(ROOT, 'dist/webgpu/index.d.ts')
 const NATIVE_EXCLUSIONS: Record<string, string> = {
   // DOM-dependent components
   Html: 'requires DOM which is not available on React Native',
+  Inspector: 'requires the browser-only Three inspector UI',
+  useInspectorControls: 'requires the browser-only Three inspector UI',
 
   // Controls requiring DOM pointer/keyboard events
   ArcballControls: 'requires DOM pointer events not available on React Native',

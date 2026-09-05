@@ -1,5 +1,3 @@
-//* TODO: Convert GLSL shaders to TSL for WebGPU ==============================
-
 import * as React from 'react'
 import { ThreeElements, useThree } from '@react-three/fiber'
 import * as THREE from '#three'

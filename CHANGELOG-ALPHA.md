@@ -4,6 +4,412 @@ This changelog tracks changes made during the v11 alpha development cycle.
 
 ## Unreleased
 
+### Features
+
+#### Three.js Inspector for R3F v10
+
+Added WebGPU `<Inspector>` and `useInspectorControls`, continuing the design from
+#2753. The inspector loads on the client before Canvas creation, profiles through R3F v10 frame phases,
+supports regular `frameloop="always"` rendering, and restores the previous inspector on unmount.
+Demand and manual rendering are not supported yet.
+The panel mounts beside the scene's event source so UI drags can bubble normally without
+triggering scene or camera input on that source.
+Controls use Three's built-in editors and support nested folders, colors, sliders, selects, and reactive values.
+
+**Files changed:** `src/webgpu/Performance/Inspector`, `src/webgpu/index.ts`,
+`scripts/generate-native-exports.ts`, `examples/src/demos/componentRegistry.tsx`
+
+### Fixes
+
+#### Fix WebGPU node material constructors
+
+Fixed constructor crashes by exposing custom uniforms through `withUniforms`
+without overriding Three's built-in properties (#2765, #2813). R3F props update
+the instance's shader uniforms. Use separate material instances for independent uniforms.
+
+Also fixed portal blur mask generation and cleanup.
+
+**Files changed:** `src/utils/withUniforms.ts`, `src/webgpu/Materials`,
+`src/webgpu/Effects`, `src/webgpu/Staging`, `src/webgpu/index.ts`
+
+### Features
+
+#### `MeshDiscardMaterial` now has a WebGPU implementation
+
+`src/webgpu/Materials/DiscardMaterial` already held the TSL material — a
+`MeshBasicNodeMaterial` whose `fragmentNode` calls `Discard()` — but only as a
+process-wide singleton that `MeshTransmissionMaterial` and `AccumulativeShadows`
+swap onto a mesh for the duration of an FBO pass. There was no JSX wrapper, and
+nothing named `MeshDiscardMaterial` was exported from `/webgpu` at all;
+importing the legacy one into a WebGPU app hands `WebGPURenderer` a GLSL
+`ShaderMaterial`.
+
+Added `<MeshDiscardMaterial />` for the WebGPU entry. To give each element its
+own material without duplicating the TSL, `DiscardMaterial.tsx` now exports the
+constructible `DiscardNodeMaterial` class and the existing `DiscardMaterial`
+export is an instance of it — unchanged in type and behaviour for its current
+callers.
+
+The prop surface is `meshBasicMaterial` rather than legacy's `shaderMaterial`,
+because that is what the underlying material actually is; the props that do
+anything (`side`, `transparent`, `opacity`, `depthWrite`, `colorWrite`, …) are
+common to both. Ref behaviour matches: a `ForwardRefComponent` handing back the
+material instance.
+
+`src/native/index.ts` is generated from the built `/webgpu` declarations and
+still predates this export, so `MeshDiscardMaterial` is not yet re-exported for
+React Native — `yarn generate:native` will pick it up.
+
+**Files changed:**
+`src/webgpu/Materials/MeshDiscardMaterial/MeshDiscardMaterial.tsx`,
+`src/webgpu/Materials/MeshDiscardMaterial/MeshDiscardMaterial.stories.tsx`,
+`src/webgpu/Materials/MeshDiscardMaterial/index.ts`,
+`src/webgpu/Materials/DiscardMaterial/DiscardMaterial.tsx`,
+`src/webgpu/Materials/index.ts`
+
+Tracked in #2660.
+
+### Fixed
+
+#### `BakeShadows` was a silent no-op on WebGPU
+
+`src/webgpu/Staging/BakeShadows/BakeShadows.tsx` was byte-identical to the
+WebGL implementation — copied wholesale in `a49d950b` so the `/webgpu` barrel
+had something to export, never ported. It set `renderer.shadowMap.autoUpdate`
+and `.needsUpdate`, but `WebGPURenderer.shadowMap` is a plain config object
+(`{ enabled, transmitted, type }`, `three/src/renderers/common/Renderer.js`)
+with no update flags. Nothing threw and shadows kept re-rendering every frame,
+which is the one thing the component exists to prevent.
+
+WebGPU moved shadow-update control onto the light: `ShadowNode.updateBefore()`
+reads `shadow.needsUpdate || shadow.autoUpdate` and clears `needsUpdate` itself
+once the map has been drawn. The port now traverses the scene for
+shadow-casting lights and sets `shadow.autoUpdate = false`,
+`shadow.needsUpdate = true` — which buys exactly one more shadow render, no
+frame counting needed. Prior flags are recorded per light and restored on
+unmount rather than blindly set to `true`. The scan runs per frame so lights
+that mount later (a suspended GLTF, a conditional light) are picked up; each
+shadow is only touched the first time it is seen, so a frozen light is never
+re-armed. Dropped the deprecated `state.gl` access — the renderer is not needed
+at all now.
+
+Added `BakeShadows.stories.tsx`: a box orbiting over a receiving plane, pinned
+to WebGPU with `limitedTo="webgpu"` and tagged `webgpuOnly`. The component
+renders nothing, so a shadow that should be moving is the only way to see
+whether it works.
+
+Dropped the now-stale `BakeShadows` entry from `component-overrides.json`,
+which pinned it to `todo` on the grounds that it was a copy rather than a port.
+`component-status.json` / `component-status.generated.ts` need regenerating
+(`yarn audit:components`) to pick up the new story and the dropped override.
+
+**Files changed:** `src/webgpu/Staging/BakeShadows/BakeShadows.tsx`,
+`src/webgpu/Staging/BakeShadows/BakeShadows.stories.tsx`,
+`src/webgpu/Staging/BakeShadows/BakeShadows.test.ts`,
+`component-overrides.json`
+
+Fixes #2665.
+
+#### WebGPU `BlurPass` is a real TSL pass
+
+`src/webgpu/Materials/BlurPass/BlurPass.tsx` was still the WebGL implementation —
+its first line said so. It imported `WebGLRenderTarget` and `WebGLRenderer` from
+`#three` and pulled in the legacy GLSL `ConvolutionMaterial`, so it could not be
+exported from the `/webgpu` barrel without breaking the entry point the way #2764
+did. The export sat commented out.
+
+Converted:
+
+- `WebGLRenderTarget` → `RenderTarget` from `three/webgpu`. `three/webgpu`
+  exports no `WebGLRenderer` at all, so `render()` now takes the common
+  `Renderer` base that `WebGPURenderer` extends.
+- The hand-rolled `Scene` + `Camera` + fullscreen-triangle `Mesh` is now a
+  `QuadMesh`, three's own post-processing helper, driven with
+  `quad.render(renderer)`.
+- Drives the TSL `ConvolutionMaterial` next door instead of the legacy GLSL one.
+  The GLSL `USE_DEPTH` define becomes the material's `useDepth` uniform, and the
+  `uniforms.*.value` writes become the material's typed accessors.
+- Added `setSize()` and `dispose()`.
+
+While wiring it up: the TSL `ConvolutionMaterial` declared a
+`depthToBlurRatioBias` uniform and then hard-coded `0.25` in its place, so the
+prop `BlurPass` forwards was inert. The uniform is now actually read. Its default
+is `0.25`, so nothing changes for existing callers.
+
+The WebGPU `MeshReflectorMaterial` does not consume `BlurPass` — it blurs through
+TSL's `reflector()` node — so nothing downstream changed shape. The only consumer
+of any `BlurPass` is the legacy `MeshReflectorMaterial`, which uses the legacy one
+and was not touched.
+
+Barrel export in `src/webgpu/Materials/index.ts` is uncommented. `yarn build` and
+`yarn test:bundles` pass; the `/webgpu` entry now exports `BlurPass` and contains
+no `WebGLRenderer` reference.
+
+Added `BlurPass.stories.tsx` (`webgpuOnly`, `limitedTo="webgpu"`): an offscreen
+scene of primitives rendered to a target, shown beside the same target after the
+blur.
+
+Dropped the `BlurPass` entry from `component-overrides.json`. It pinned the
+component to `todo` with a reason describing the pre-conversion state, which
+would have outlived the conversion; the derived status now stands on its own.
+`component-status.json` is regenerated centrally and is not touched here.
+
+**Files changed:** `src/webgpu/Materials/BlurPass/BlurPass.tsx`,
+`src/webgpu/Materials/BlurPass/BlurPass.stories.tsx`,
+`src/webgpu/Materials/ConvolutionMaterial/ConvolutionMaterial.tsx`,
+`src/webgpu/Materials/index.ts`, `component-overrides.json`
+
+Closes #2811.
+
+### Internal
+
+#### "Agnostic" was an assumption about a directory, and four components broke it
+
+110 of 143 components are classified `agnostic` — they live in `core/`,
+`external/` or `experimental/`, so they are assumed to work on both renderers.
+Nothing had ever checked that. Four of them are WebGL-only, and all four ship
+from the **root** entry, the one that claims to work everywhere.
+
+`core/Helpers/PointMaterial` patches `PointsMaterial`'s fragment GLSL through
+`onBeforeCompile`, which `NodeMaterial` never calls — so on WebGPU points render
+as hard squares instead of antialiased circles, with no error. It also reads
+`renderer.capabilities`, which the WebGPU `Renderer` does not have at all; that
+would throw, except the callback never fires.
+
+`Outlines` is broken on WebGPU through **both** entries: the root entry exports
+`experimental/Effects/Outlines`, a GLSL `ShaderMaterial`, while `/webgpu`
+exports the TSL version that throws on every construction (#2813).
+
+`external/Geometry/Splat` types `THREE.WebGLRenderer` into its public surface and
+is raw GLSL. `core/Loaders/Preload` calls `gl.compile()`, a getter aliasing
+`compileAsync` on WebGPU (#2809).
+
+`--check` now fails on `agnosticButNot`: a component classified `agnostic` whose
+`core`/`external`/`experimental` source contains GLSL, `onBeforeCompile`,
+`ShaderMaterial`, or a renderer member `three/webgpu` lacks. GLSL detection was
+widened to catch a raw shader body in a template literal, which is how the
+`experimental/Outlines` case had stayed invisible.
+
+The check finds three of the four. `Preload` is the limit of it — `compile`
+exists on both renderers and only the semantics differ, which grep cannot see.
+The other 106 agnostic components have not been read one by one for that class.
+
+**Files changed:** `scripts/audit-components.js`, `component-overrides.json`,
+`component-status.json`, `component-status.generated.ts`
+
+Tracked in #2818.
+
+#### The dashboard could not see five components, and counted two twice
+
+`examples/src/demos/componentRegistry.tsx` listed `MeshPortalMaterial` and
+`MeshTransmissionMaterial` twice each — the second copy of each had no demo, and
+the two `MeshTransmissionMaterial` entries shared a `path`, so one was an
+unreachable route. It also omitted `HtmlMaterial`, `ShadowAlpha`, `Shapes`,
+`useDepthBuffer` and `useVariants`, all exported public API. The dashboard
+therefore rendered 140 rows and printed every statistic over 140 while the
+library has 143.
+
+Nothing caught it. The `unknown` banner warns about registry entries the audit
+does not recognise — a set that is empty — and never about audited components
+the registry has dropped, which is the direction that actually drifts, because
+the audit is generated and the registry is written by hand.
+`audit-components.js --check` now fails on a missing entry, a duplicate entry,
+and an entry with no audit record.
+
+Two WebGPU stat cards were replaced. **"WebGPU implemented 27/27"** counted over
+components whose `rendererSupport` is `dual` — and a component is only `dual`
+_because_ it has a WebGPU implementation, so that card could only ever read
+100%. It also silently dropped `Outlines` and `HtmlMaterial`, which have WebGPU
+implementations but no legacy twin. It now counts every component with a
+`src/webgpu/` file: **29**.
+
+**"WebGPU with a story 3/27"** used `webgpuStory`, meaning a story co-located in
+`src/webgpu/`. But **17** components are genuinely rendered under WebGPU, most
+through a legacy story's `PlatformSwitch` branch, and `webgpuExercised` already
+held that number. This is the second time the two were conflated, in opposite
+directions: the card started on the aggregate `story` flag and reported 20, was
+corrected to the co-located count and reported 3. Both are now shown, and the
+per-row badge distinguishes them — green for a component's own story, amber for
+one rendered through another tree's.
+
+**Files changed:** `scripts/audit-components.js`,
+`examples/src/demos/componentRegistry.tsx`,
+`examples/src/catalog/ComponentCatalog.tsx`, `component-status.json`,
+`component-status.generated.ts`
+
+#### The audit can now tell a copy from a port
+
+A file under `src/webgpu/` identical to its legacy twin once comments are
+stripped is a copy, not a port. That is worse than a missing component: it reads
+as implemented, ships from the `/webgpu` entry, and silently does nothing when
+the API it calls does not exist on `WebGPURenderer`. `BakeShadows` sat that way
+since #2599, calling `renderer.shadowMap.autoUpdate` — which
+`WebGPURenderer.shadowMap` does not have.
+
+`--check` now fails when such a component is classified anything other than
+`todo` or `wont-port`, so it has to be ported or acknowledged in
+`component-overrides.json`. The new `webgpuIsCopy` field appears in the summary
+and on the dashboard. Two components match today, `BakeShadows` and `BlurPass`,
+both already classified `todo`.
+
+**Files changed:** `scripts/audit-components.js`, `component-status.json`,
+`component-status.generated.ts`, `examples/src/catalog/ComponentCatalog.tsx`
+
+Tracked in #2665, #2811.
+
+#### Three files claimed a conversion state they did not have
+
+`src/webgpu/Staging/BakeShadows/BakeShadows.tsx` and
+`src/webgpu/Textures/GradientTexture/GradientTexture.tsx` both opened with
+`//* TODO: Convert GLSL shaders to TSL for WebGPU`, copy-pasted from a template.
+Neither file contains a shader of any kind — `BakeShadows` is thirteen lines
+toggling `shadowMap.autoUpdate`, `GradientTexture` paints a 2D canvas. The
+banner made two finished components read as unported in every triage pass.
+Removed from both; `BlurPass` kept it, where it was accurate at the time — it
+has since been converted, see _WebGPU `BlurPass` is a real TSL pass_ above.
+
+Deleted `src/webgpu/Staging/SoftShadows/SoftShadows.stub.tsx`. It threw
+"It uses ShaderChunk to inject PCSS shaders which is WebGL-only", but nothing
+imported it and the claim was no longer true: `index.ts` exports
+`SoftShadows.tsx`, which drives `PCSSShadowNode.ts` — 162 lines of TSL. Its own
+comment said the stub would be replaced when the component was converted; the
+conversion happened and the stub stayed, reading as a won't-port marker for a
+component that had been ported.
+
+**Files changed:** `src/webgpu/Staging/BakeShadows/BakeShadows.tsx`,
+`src/webgpu/Textures/GradientTexture/GradientTexture.tsx`,
+`src/webgpu/Staging/SoftShadows/SoftShadows.stub.tsx`
+
+Tracked in #2664, #2665.
+
+#### The component audit was under-reporting, and `done` was misleading
+
+`scripts/audit-components.js` discovered components only by the
+Component-as-a-Folder convention (`<Name>/<Name>.tsx`), so four root-exported
+public components were invisible to it: `PivotControls` (implementation lives in
+`index.tsx`) and `GizmoHelper` / `GizmoViewport` / `GizmoViewcube` (three
+components sharing a lowercase `gizmo/` folder). The real count is **143**, not 139. Discovery now understands all three layouts; new components should still use
+the convention.
+
+Renamed the `done` classification to `implemented`. It is derived purely from
+"a file exists under `src/webgpu/`" and never meant the component works — while
+it was called `done`, seven `done` components had open bug reports and none of
+them had a story.
+
+Removed `## Progress: ~90%` from the migration guide. It said `~90%` for six
+months while the number of WebGPU components with a story was two. Progress now
+points at the generated status and the GitHub milestones. Also corrected the
+claim that "every component now has stories and regression tests".
+
+Deleted `MeshTransmissionMaterial copy.tsx` — 226 lines, unreferenced, and
+divergent from the real 975-line implementation.
+
+**Files changed:** `scripts/audit-components.js`, `component-status.json`,
+`CLAUDE.md`, `devDocs/MIGRATION_V10_TO_V11.md`,
+`src/webgpu/Materials/MeshTransmissionMaterial/MeshTransmissionMaterial copy.tsx`
+
+Tracked in #2806.
+
+#### The component dashboards can no longer drift
+
+Four hand-maintained files claimed to describe conversion state and disagreed
+with each other and with the filesystem. The examples dashboard had `tests`
+wrong on **55 of 140** entries and `webgpuStatus` wrong on **19 of 33** — it
+reported `AccumulativeShadows`, `BakeShadows`, `BlurPass`, `Caustics` and 15
+others as having no WebGPU implementation while the files were on disk.
+
+`scripts/audit-components.js` now also emits `component-status.generated.ts`,
+and the dashboard reads it. The registry keeps only what a human has to write —
+identity, prose, and which demo to render. **799 lines of hand-typed status were
+deleted from it**, and `yarn test:components` fails if the generated file goes
+stale.
+
+Deleted outright as dead code: `.storybook/componentRegistry.tsx` (2,031 lines),
+`.storybook/catalog/ComponentCatalog.tsx` (427) and
+`.storybook/components/ExampleCard.tsx` (116). Nothing imported them, they were
+not in the TypeScript program, and they imported `../demos/componentRegistry` —
+a path that does not exist.
+
+Columns that cannot be derived (`structure`, `imports`, `types`) were removed
+rather than guessed. Added a `WebGPU story` column, because the aggregate
+`story` flag is true for a story in _any_ tree and so reported 20 of 29 WebGPU
+components as covered when the real number is **2**. An entry the audit does not
+recognise now renders a visible warning instead of a confident zero.
+
+**Files changed:** `scripts/audit-components.js`, `component-status.generated.ts`,
+`component-status.json`, `examples/src/demos/componentRegistry.tsx`,
+`examples/src/catalog/ComponentCatalog.tsx`,
+`examples/src/components/ExampleCard.tsx`, `.prettierignore`,
+`.storybook/componentRegistry.tsx`, `.storybook/catalog/ComponentCatalog.tsx`,
+`.storybook/components/ExampleCard.tsx`
+
+Tracked in #2806.
+
+#### All 64 co-located test files assert nothing
+
+`src/**/*.test.ts` looked like coverage. Every one of the 64 files is:
+
+```ts
+describe('Backdrop', () => {
+  it('TODO: Add tests after Phase 2', () => {
+    // Placeholder test - will implement after migration complete
+  })
+})
+```
+
+Zero `expect`, zero `assert`, zero `render` — in all 64. Wiring them into CI
+as-is would have added 64 always-green tests, which is worse than not running
+them.
+
+The audit now distinguishes a test _file_ from a test that _asserts_:
+
+```
+  test files  55 / 143
+  REAL tests   0 / 143   (the rest assert nothing)
+```
+
+The dashboard shows 🟡 for "file exists but asserts nothing" rather than the 🟢
+it was showing for 55 components. This is the same "a file exists" mistake that
+made `done` and the aggregate `story` flag misleading — third instance.
+
+**Files changed:** `scripts/audit-components.js`, `component-status.generated.ts`,
+`component-status.json`, `examples/src/catalog/ComponentCatalog.tsx`,
+`examples/src/components/ExampleCard.tsx`,
+`examples/src/demos/componentRegistry.tsx`
+
+Tracked in #2802.
+
+#### `.storybook` was declared in tsconfig but never typechecked
+
+`include: ["./src", "./.storybook"]` looked right. TypeScript's wildcard
+expansion skips entries beginning with a dot, so only the 6 `.storybook` files
+reachable as imports from `src/` were in the program — 13 files on disk, 6
+checked. That is how three files importing a non-existent path survived (removed
+in #2806).
+
+Globs are now explicit, and three real problems surfaced immediately:
+
+- **`preview.tsx` declared `globalTypes` and `initialGlobals` twice.** A `backend`
+  toolbar (webgl/webgpu, default webgl) arrived from master's #2593 during the
+  master → v11-working merge, alongside v11's own `renderer` toolbar. Duplicate
+  keys mean the last wins, so **`backend` never existed at runtime**. Nothing
+  reads `globals.backend`; `context.globals.renderer` is used throughout the
+  stories. The dead half is removed.
+- `main.mts` imports `./favicon.ts` with an extension — allowed now via
+  `allowImportingTsExtensions`, which is valid because `emitDeclarationOnly` is on.
+- `theme.ts` tripped TS4082; annotated with `ThemeVars` explicitly.
+
+Verified: `yarn test` passes, `yarn build-storybook` succeeds, and all **203
+stories across 123 files** still render.
+
+**Files changed:** `tsconfig.json`, `.storybook/preview.tsx`, `.storybook/theme.ts`
+
+Tracked in #2807.
+
+## 11.0.0-alpha.6
+
+Published 2026-08-31.
+
 ### Dependencies & Stability
 
 This is a stability-only pass: dependency updates and the fixes needed to build

@@ -1,22 +1,28 @@
 {
   "generated": "derived from the filesystem by scripts/audit-components.js — do not hand-edit",
   "totals": {
-    "components": 139,
+    "components": 144,
     "agnostic": 106,
-    "done": 26,
-    "todo": 2,
+    "implemented": 28,
+    "todo": 5,
     "wontPort": 5,
-    "withStory": 94,
-    "withTest": 55,
-    "withDocs": 46,
-    "agentOk": 1,
-    "humanOnly": 1
+    "withStory": 105,
+    "webgpuImplemented": 31,
+    "webgpuWithStory": 16,
+    "webgpuExercised": 30,
+    "webgpuCopies": 0,
+    "agnosticButNot": 0,
+    "withTestFile": 55,
+    "withRealTest": 0,
+    "withDocs": 48,
+    "agentOk": 2,
+    "humanOnly": 3
   },
   "components": [
     {
       "name": "AccumulativeShadows",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -28,9 +34,27 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        },
+        "webgpu": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": true,
         "shaderMaterial": true
       },
@@ -54,7 +78,19 @@
       },
       "story": false,
       "test": false,
+      "testAsserts": false,
+      "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": false,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -79,7 +115,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -104,7 +152,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -129,7 +189,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": false,
+          "test": true,
+          "docs": true,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -154,7 +226,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -167,7 +251,7 @@
     {
       "name": "BakeShadows",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -177,9 +261,27 @@
         "external": false,
         "experimental": false
       },
-      "story": false,
+      "story": true,
       "test": true,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        },
+        "webgpu": {
+          "story": true,
+          "test": true,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -205,7 +307,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -230,7 +344,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -243,7 +369,7 @@
     {
       "name": "BlurPass",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -253,9 +379,27 @@
         "external": false,
         "experimental": false
       },
-      "story": false,
+      "story": true,
       "test": true,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        },
+        "webgpu": {
+          "story": true,
+          "test": true,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -281,7 +425,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": true,
+          "docs": true,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -306,7 +462,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "external": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -331,7 +499,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "external": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -356,7 +536,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -381,7 +573,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -394,7 +598,7 @@
     {
       "name": "Caustics",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -406,9 +610,27 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        },
+        "webgpu": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": true,
         "shaderMaterial": true
       },
@@ -432,7 +654,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -457,7 +691,19 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": true,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -482,7 +728,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -507,7 +765,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -520,7 +790,7 @@
     {
       "name": "ContactShadows",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -532,7 +802,25 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        },
+        "webgpu": {
+          "story": true,
+          "test": true,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": true,
@@ -546,7 +834,7 @@
     {
       "name": "ConvolutionMaterial",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -556,11 +844,29 @@
         "external": false,
         "experimental": false
       },
-      "story": false,
+      "story": true,
       "test": true,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        },
+        "webgpu": {
+          "story": true,
+          "test": true,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": false,
         "shaderMaterial": true
       },
@@ -584,7 +890,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -609,7 +927,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -634,7 +964,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -659,7 +1001,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -684,7 +1038,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -709,7 +1075,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -734,7 +1112,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -759,7 +1149,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -784,7 +1186,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -797,7 +1211,7 @@
     {
       "name": "DiscardMaterial",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -807,11 +1221,29 @@
         "external": false,
         "experimental": false
       },
-      "story": false,
+      "story": true,
       "test": true,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        },
+        "webgpu": {
+          "story": true,
+          "test": true,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": false,
         "shaderMaterial": false
       },
@@ -835,7 +1267,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -860,7 +1304,19 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": true,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -885,7 +1341,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -910,7 +1378,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -935,7 +1415,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -960,7 +1452,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "external": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -985,7 +1489,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "external": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1010,7 +1526,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "external": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1035,7 +1563,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1060,7 +1600,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1085,7 +1637,19 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": true,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1110,7 +1674,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1135,7 +1711,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1146,9 +1734,120 @@
       }
     },
     {
+      "name": "GizmoHelper",
+      "category": "Gizmos",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "testAsserts": false,
+      "exercised": true,
+      "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Gizmos/gizmo"
+      }
+    },
+    {
+      "name": "GizmoViewcube",
+      "category": "Gizmos",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": false,
+      "testAsserts": false,
+      "exercised": false,
+      "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": false,
+          "docs": false,
+          "exercised": false
+        }
+      },
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Gizmos/gizmo"
+      }
+    },
+    {
+      "name": "GizmoViewport",
+      "category": "Gizmos",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": false,
+      "test": false,
+      "testAsserts": false,
+      "exercised": false,
+      "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": false,
+          "docs": false,
+          "exercised": false
+        }
+      },
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Gizmos/gizmo"
+      }
+    },
+    {
       "name": "GradientTexture",
       "category": "Textures",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -1158,9 +1857,27 @@
         "external": false,
         "experimental": false
       },
-      "story": false,
+      "story": true,
       "test": true,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": false,
+          "test": true,
+          "docs": true,
+          "exercised": false
+        },
+        "webgpu": {
+          "story": true,
+          "test": true,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1174,7 +1891,7 @@
     {
       "name": "Grid",
       "category": "Staging",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -1186,9 +1903,27 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": false,
+          "test": false,
+          "docs": false,
+          "exercised": false
+        },
+        "webgpu": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": false,
         "shaderMaterial": true
       },
@@ -1212,7 +1947,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1225,7 +1972,7 @@
     {
       "name": "HtmlMaterial",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -1237,9 +1984,27 @@
       },
       "story": false,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": false,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        },
+        "webgpu": {
+          "story": false,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": false,
         "shaderMaterial": false
       },
@@ -1263,7 +2028,25 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        },
+        "legacy": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1277,7 +2060,7 @@
     {
       "name": "Image",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -1289,15 +2072,70 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        },
+        "webgpu": {
+          "story": true,
+          "test": true,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": false,
         "shaderMaterial": false
       },
       "paths": {
         "legacy": "src/legacy/Materials/Image",
         "webgpu": "src/webgpu/UI/Image"
+      }
+    },
+    {
+      "name": "Inspector",
+      "category": "Performance",
+      "classification": "implemented",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": false,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "testAsserts": false,
+      "exercised": true,
+      "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "webgpu": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "webgpu": "src/webgpu/Performance/Inspector"
       }
     },
     {
@@ -1315,7 +2153,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1340,7 +2190,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1365,7 +2227,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1378,7 +2252,7 @@
     {
       "name": "Line",
       "category": "Geometry",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -1390,7 +2264,25 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        },
+        "webgpu": {
+          "story": false,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1416,7 +2308,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1441,7 +2345,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1466,7 +2382,19 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "experimental": {
+          "story": true,
+          "test": true,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1491,7 +2419,19 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": true,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1516,7 +2456,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1541,7 +2493,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1554,32 +2518,7 @@
     {
       "name": "MeshDiscardMaterial",
       "category": "Materials",
-      "classification": "todo",
-      "reason": null,
-      "assignee": "human-only",
-      "trees": {
-        "core": false,
-        "legacy": true,
-        "webgpu": false,
-        "external": false,
-        "experimental": false
-      },
-      "story": false,
-      "test": true,
-      "docs": false,
-      "shaderRisk": {
-        "glsl": false,
-        "onBeforeCompile": false,
-        "shaderMaterial": true
-      },
-      "paths": {
-        "legacy": "src/legacy/Materials/MeshDiscardMaterial"
-      }
-    },
-    {
-      "name": "MeshDistortMaterial",
-      "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -1591,7 +2530,69 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        },
+        "webgpu": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": true
+      },
+      "paths": {
+        "legacy": "src/legacy/Materials/MeshDiscardMaterial",
+        "webgpu": "src/webgpu/Materials/MeshDiscardMaterial"
+      }
+    },
+    {
+      "name": "MeshDistortMaterial",
+      "category": "Materials",
+      "classification": "implemented",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": true,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": true,
+      "testAsserts": false,
+      "exercised": true,
+      "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        },
+        "webgpu": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": true,
@@ -1605,7 +2606,7 @@
     {
       "name": "MeshPortalMaterial",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -1617,9 +2618,27 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        },
+        "webgpu": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": false,
         "shaderMaterial": true
       },
@@ -1631,7 +2650,7 @@
     {
       "name": "MeshReflectorMaterial",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -1643,7 +2662,25 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        },
+        "webgpu": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1657,7 +2694,7 @@
     {
       "name": "MeshRefractionMaterial",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -1669,9 +2706,27 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        },
+        "webgpu": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": false,
         "shaderMaterial": false
       },
@@ -1683,7 +2738,7 @@
     {
       "name": "MeshTransmissionMaterial",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -1695,9 +2750,27 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        },
+        "webgpu": {
+          "story": false,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": true,
         "shaderMaterial": false
       },
@@ -1709,7 +2782,7 @@
     {
       "name": "MeshWobbleMaterial",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -1721,7 +2794,25 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        },
+        "webgpu": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": true,
@@ -1747,7 +2838,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": true,
+          "docs": true,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1772,7 +2875,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1797,7 +2912,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1822,7 +2949,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1835,9 +2974,9 @@
     {
       "name": "Outlines",
       "category": "Effects",
-      "classification": "agnostic",
-      "reason": null,
-      "assignee": null,
+      "classification": "todo",
+      "reason": "Broken on WebGPU through both entries. The root entry exports experimental/Effects/Outlines, a GLSL ShaderMaterial that cannot compile there; the /webgpu entry exports the TSL version, which throws on every construction because an accessor fires during super() (#2813). Tracked in #2818 and #2813.",
+      "assignee": "human-only",
       "trees": {
         "core": false,
         "legacy": false,
@@ -1847,7 +2986,25 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "webgpu": {
+          "story": true,
+          "test": true,
+          "docs": false,
+          "exercised": true
+        },
+        "experimental": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1873,7 +3030,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": true,
+          "docs": true,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1898,7 +3067,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1906,6 +3087,43 @@
       },
       "paths": {
         "core": "src/core/Cameras/PerspectiveCamera"
+      }
+    },
+    {
+      "name": "PivotControls",
+      "category": "Gizmos",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": true,
+        "legacy": false,
+        "webgpu": false,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "testAsserts": false,
+      "exercised": true,
+      "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "core": "src/core/Gizmos/PivotControls"
       }
     },
     {
@@ -1923,7 +3141,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1936,9 +3166,9 @@
     {
       "name": "PointMaterial",
       "category": "Helpers",
-      "classification": "agnostic",
-      "reason": null,
-      "assignee": null,
+      "classification": "todo",
+      "reason": "Lives in core/ and is exported from the root entry, but patches PointsMaterial fragment GLSL through onBeforeCompile, which NodeMaterial never calls. On WebGPU the points render as hard squares instead of antialiased circles — silently, with no error. Also reads renderer.capabilities, which three/webgpu Renderer does not have. Needs a TSL implementation. Tracked in #2818.",
+      "assignee": "human-only",
       "trees": {
         "core": true,
         "legacy": false,
@@ -1948,9 +3178,21 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": true,
         "shaderMaterial": false
       },
@@ -1973,7 +3215,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -1998,7 +3252,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2011,9 +3277,9 @@
     {
       "name": "Preload",
       "category": "Loaders",
-      "classification": "agnostic",
-      "reason": null,
-      "assignee": null,
+      "classification": "todo",
+      "reason": "Calls gl.compile(), which on the WebGPU renderer is a getter aliasing compileAsync — it returns a promise nobody awaits, so preloading never happens. Not detectable by the agnostic check, because compile exists on both renderers and only the semantics differ. Tracked in #2809 and #2818.",
+      "assignee": "agent-ok",
       "trees": {
         "core": true,
         "legacy": false,
@@ -2023,7 +3289,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2048,7 +3326,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2073,7 +3363,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2098,7 +3400,25 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        },
+        "legacy": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2124,7 +3444,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2149,7 +3481,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2174,7 +3518,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2199,7 +3555,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2224,7 +3592,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2249,7 +3629,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2274,7 +3666,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2299,7 +3703,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2324,7 +3740,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2337,7 +3765,7 @@
     {
       "name": "Segments",
       "category": "Geometry",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -2349,7 +3777,25 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        },
+        "webgpu": {
+          "story": false,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2375,7 +3821,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2400,7 +3858,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2425,7 +3895,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2450,9 +3932,21 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": true,
         "shaderMaterial": false
       },
@@ -2475,7 +3969,19 @@
       },
       "story": false,
       "test": false,
+      "testAsserts": false,
+      "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": false,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2500,7 +4006,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2513,7 +4031,7 @@
     {
       "name": "SoftShadows",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -2525,7 +4043,25 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        },
+        "webgpu": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2539,7 +4075,7 @@
     {
       "name": "Sparkles",
       "category": "Effects",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -2551,7 +4087,25 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        },
+        "webgpu": {
+          "story": false,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2565,9 +4119,9 @@
     {
       "name": "Splat",
       "category": "Geometry",
-      "classification": "agnostic",
-      "reason": null,
-      "assignee": null,
+      "classification": "todo",
+      "reason": "Root-exported from external/ and classified agnostic, but it is a raw GLSL ShaderMaterial and types THREE.WebGLRenderer into its public surface. The upstream technique is WebGL-only, so this is probably wont-port — but that needs deciding and writing down, plus a runtime error, rather than being left misclassified. Tracked in #2818.",
+      "assignee": "human-only",
       "trees": {
         "core": false,
         "legacy": false,
@@ -2577,9 +4131,21 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "external": {
+          "story": false,
+          "test": true,
+          "docs": true,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": false,
         "shaderMaterial": true
       },
@@ -2590,7 +4156,7 @@
     {
       "name": "SpotLight",
       "category": "Staging",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -2602,9 +4168,27 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        },
+        "webgpu": {
+          "story": false,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": false,
         "shaderMaterial": true
       },
@@ -2616,7 +4200,7 @@
     {
       "name": "SpotLightMaterial",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -2628,9 +4212,27 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        },
+        "webgpu": {
+          "story": false,
+          "test": false,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": false,
         "shaderMaterial": true
       },
@@ -2654,7 +4256,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2679,7 +4293,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2692,7 +4318,7 @@
     {
       "name": "Stars",
       "category": "Staging",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -2704,7 +4330,25 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        },
+        "webgpu": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2730,7 +4374,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2755,7 +4411,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2780,7 +4448,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2805,7 +4485,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2830,7 +4522,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2855,7 +4559,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2880,7 +4596,31 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": false,
+          "test": false,
+          "docs": false,
+          "exercised": false
+        },
+        "webgpu": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        },
+        "experimental": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2907,7 +4647,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2932,7 +4684,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2957,7 +4721,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -2982,7 +4758,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -3007,9 +4795,21 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": true,
         "shaderMaterial": false
       },
@@ -3032,7 +4832,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -3057,7 +4869,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -3082,7 +4906,19 @@
       },
       "story": true,
       "test": true,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": true,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -3107,7 +4943,25 @@
       },
       "story": false,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": false,
+          "docs": false,
+          "exercised": false
+        },
+        "webgpu": {
+          "story": false,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -3133,7 +4987,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -3158,7 +5024,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": true,
+          "docs": true,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -3183,7 +5061,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -3208,7 +5098,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": true,
+          "docs": true,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -3233,7 +5135,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -3258,7 +5172,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -3283,7 +5209,19 @@
       },
       "story": false,
       "test": false,
+      "testAsserts": false,
+      "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": false,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -3308,7 +5246,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": true,
+          "docs": true,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -3333,7 +5283,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -3358,7 +5320,19 @@
       },
       "story": false,
       "test": true,
+      "testAsserts": false,
+      "exercised": false,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": false,
+          "test": true,
+          "docs": true,
+          "exercised": false
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -3383,7 +5357,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -3408,7 +5394,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -3433,7 +5431,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -3458,7 +5468,19 @@
       },
       "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "core": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -3471,7 +5493,7 @@
     {
       "name": "Wireframe",
       "category": "Geometry",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -3481,9 +5503,27 @@
         "external": false,
         "experimental": false
       },
-      "story": false,
+      "story": true,
       "test": false,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": false,
+          "test": false,
+          "docs": false,
+          "exercised": false
+        },
+        "webgpu": {
+          "story": true,
+          "test": false,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
         "glsl": false,
         "onBeforeCompile": false,
@@ -3497,7 +5537,7 @@
     {
       "name": "WireframeMaterial",
       "category": "Materials",
-      "classification": "done",
+      "classification": "implemented",
       "reason": null,
       "assignee": null,
       "trees": {
@@ -3507,11 +5547,29 @@
         "external": false,
         "experimental": false
       },
-      "story": false,
+      "story": true,
       "test": true,
+      "testAsserts": false,
+      "exercised": true,
       "docs": false,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "legacy": {
+          "story": false,
+          "test": true,
+          "docs": false,
+          "exercised": false
+        },
+        "webgpu": {
+          "story": true,
+          "test": true,
+          "docs": false,
+          "exercised": true
+        }
+      },
       "shaderRisk": {
-        "glsl": false,
+        "glsl": true,
         "onBeforeCompile": true,
         "shaderMaterial": false
       },

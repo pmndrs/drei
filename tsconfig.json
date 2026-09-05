@@ -13,6 +13,7 @@
     "declaration": true,
     "removeComments": true,
     "emitDeclarationOnly": true,
+    "allowImportingTsExtensions": true,
     "outDir": "dist",
     "resolveJsonModule": true,
     "noImplicitAny": false,
@@ -36,6 +37,7 @@
       "drei": ["./.storybook/drei-barrel.ts"]
     }
   },
-  "include": ["./src", "./.storybook"],
+  "//": "TypeScript's wildcard expansion skips entries beginning with a dot, so './.storybook' pulled in only the files reachable as imports from src/. Three files with broken imports lived there unchecked for months. Globs are explicit for that reason — see #2807.",
+  "include": ["./src", "./.storybook/**/*.ts", "./.storybook/**/*.tsx", "./.storybook/**/*.mts"],
   "exclude": ["./node_modules/**/*", "**/*.test.ts", "**/*.test.tsx"]
 }

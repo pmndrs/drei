@@ -1,6 +1,7 @@
 import * as THREE from 'three/webgpu'
-import { Fn, uniform, vec4, vec3, float, mix, clamp, reflector } from 'three/tsl'
+import { Fn, uniform, vec4, vec3, float, mix, clamp, select, reflector } from 'three/tsl'
 import { hashBlur } from 'three/examples/jsm/tsl/display/hashBlur.js'
+import { withUniforms } from '@utils/withUniforms'
 
 //* MeshReflectorMaterial TSL Implementation ==============================
 
@@ -18,29 +19,38 @@ export interface MeshReflectorMaterialOptions {
   reflectorOffset?: number
 }
 
-/**
- * WebGPU TSL-based reflector material extending MeshStandardNodeMaterial.
- * Uses the built-in reflector() TSL node for proper planar reflections.
- */
-export class MeshReflectorMaterial extends THREE.MeshStandardNodeMaterial {
+/** Planar reflections with optional blur, distortion, and contrast. */
+export class MeshReflectorMaterial extends withUniforms(THREE.MeshStandardNodeMaterial, {
+  /** Mirror strength, 0 = base material only, 1 = pure reflection */
+  mirror: () => uniform(0),
+  /** Positive values enable the blurred reflection sample */
+  mixBlur: () => uniform(0),
+  /** Strength of the reflection added on top of the base colour */
+  mixStrength: () => uniform(1),
+  /** Lower depth threshold for depth-based blur */
+  minDepthThreshold: () => uniform(0.9),
+  /** Upper depth threshold for depth-based blur */
+  maxDepthThreshold: () => uniform(1),
+  /** Depth scale for depth-based blur, 0 = disabled */
+  depthScale: () => uniform(0),
+  /** Bias added to the depth-to-blur ratio */
+  depthToBlurRatioBias: () => uniform(0.25),
+  /** Distortion strength */
+  distortion: () => uniform(1),
+  /** Contrast applied to the (clamped) reflection colour */
+  mixContrast: () => uniform(1),
+  /** Blur radius in the 0-1 range, scaled to 0.01-0.15 in the shader */
+  blurRadius: () => uniform(0.1),
+}) {
   //* Reflector Node ----------------------------------------
   reflection: ReturnType<typeof reflector>
 
-  //* Uniforms ----------------------------------------
-  mirrorUniform: THREE.UniformNode<'float', number>
-  mixBlurUniform: THREE.UniformNode<'float', number>
-  mixStrengthUniform: THREE.UniformNode<'float', number>
-  minDepthThresholdUniform: THREE.UniformNode<'float', number>
-  maxDepthThresholdUniform: THREE.UniformNode<'float', number>
-  depthScaleUniform: THREE.UniformNode<'float', number>
-  depthToBlurRatioBiasUniform: THREE.UniformNode<'float', number>
-  distortionUniform: THREE.UniformNode<'float', number>
-  mixContrastUniform: THREE.UniformNode<'float', number>
-  blurRadiusUniform: THREE.UniformNode<'float', number>
-
-  // Feature flags
-  hasBlurUniform: THREE.UniformNode<'float', number>
-  hasDepthUniform: THREE.UniformNode<'float', number>
+  /**
+   * Add this target to the scene and align it with the reflective surface.
+   */
+  get reflectorTarget(): THREE.Object3D {
+    return this.reflection?.target
+  }
 
   constructor(options: MeshReflectorMaterialOptions = {}, parameters: THREE.MeshStandardMaterialParameters = {}) {
     super()
@@ -75,141 +85,54 @@ export class MeshReflectorMaterial extends THREE.MeshStandardNodeMaterial {
     })
 
     //* Initialize Uniforms ----------------------------------------
-    this.mirrorUniform = uniform(mirror)
-    this.mixBlurUniform = uniform(mixBlur)
-    this.mixStrengthUniform = uniform(mixStrength)
-    this.minDepthThresholdUniform = uniform(minDepthThreshold)
-    this.maxDepthThresholdUniform = uniform(maxDepthThreshold)
-    this.depthScaleUniform = uniform(depthScale)
-    this.depthToBlurRatioBiasUniform = uniform(depthToBlurRatioBias)
-    this.distortionUniform = uniform(distortion)
-    this.mixContrastUniform = uniform(mixContrast)
-
-    // Blur radius (0-1 range, will be scaled)
-    this.blurRadiusUniform = uniform(0.1)
-
-    // Feature flags
-    this.hasBlurUniform = uniform(mixBlur > 0 ? 1 : 0)
-    this.hasDepthUniform = uniform(depthScale > 0 ? 1 : 0)
+    this.mirror = mirror
+    this.mixBlur = mixBlur
+    this.mixStrength = mixStrength
+    this.minDepthThreshold = minDepthThreshold
+    this.maxDepthThreshold = maxDepthThreshold
+    this.depthScale = depthScale
+    this.depthToBlurRatioBias = depthToBlurRatioBias
+    this.distortion = distortion
+    this.mixContrast = mixContrast
 
     //* Setup TSL Nodes ----------------------------------------
     this.setupNodes()
   }
 
   private setupNodes() {
+    const { mirror, mixBlur, mixStrength, mixContrast, blurRadius } = this.uniforms
+
     //* Color Node - Reflection Blending ----------------------------------------
     this.colorNode = Fn(() => {
       // Sample the reflection directly
       const reflectionSample = this.reflection.sample(this.reflection.uvNode!)
 
       // Apply blur using hashBlur
-      const blurRadius = mix(float(0.01), float(0.15), this.blurRadiusUniform)
-      const reflectionBlurred = hashBlur(this.reflection, blurRadius, {
+      const radius = mix(float(0.01), float(0.15), blurRadius)
+      const reflectionBlurred = hashBlur(this.reflection, radius, {
         repeats: float(20),
         premultipliedAlpha: false,
       } as any)
 
-      // Choose between blurred and unblurred based on hasBlur flag
-      const reflectionColor = mix(reflectionSample.rgb, reflectionBlurred.rgb, clamp(this.hasBlurUniform, 0.0, 1.0))
+      // Choose between blurred and unblurred: any mixBlur > 0 enables the blur
+      const reflectionColor = select(mixBlur.greaterThan(0), reflectionBlurred.rgb, reflectionSample.rgb)
 
       // Clamp HDR values to [0,1] range before contrast adjustment
       const reflectionClamped = clamp(reflectionColor, 0.0, 1.0)
 
       // Apply contrast adjustment on clamped values
       const contrastAdjusted = vec3(
-        reflectionClamped.x.sub(0.5).mul(this.mixContrastUniform).add(0.5),
-        reflectionClamped.y.sub(0.5).mul(this.mixContrastUniform).add(0.5),
-        reflectionClamped.z.sub(0.5).mul(this.mixContrastUniform).add(0.5)
+        reflectionClamped.x.sub(0.5).mul(mixContrast).add(0.5),
+        reflectionClamped.y.sub(0.5).mul(mixContrast).add(0.5),
+        reflectionClamped.z.sub(0.5).mul(mixContrast).add(0.5)
       )
 
       // Final blend with mirror and mix strength
-      const mirrorClamped = clamp(this.mirrorUniform, 0.0, 1.0)
+      const mirrorClamped = clamp(mirror, 0.0, 1.0)
 
       // Output: blend reflection with base color
       // (1 - mirror) gives base material influence, + reflection * mixStrength adds reflection
-      return vec4(vec3(1.0).sub(vec3(mirrorClamped)).add(contrastAdjusted.mul(this.mixStrengthUniform)), 1.0)
+      return vec4(vec3(1.0).sub(vec3(mirrorClamped)).add(contrastAdjusted.mul(mixStrength)), 1.0)
     })()
-  }
-
-  //* Getters and Setters ----------------------------------------
-
-  get mirror(): number {
-    return this.mirrorUniform.value
-  }
-  set mirror(v: number) {
-    this.mirrorUniform.value = v
-  }
-
-  get mixBlur(): number {
-    return this.mixBlurUniform.value
-  }
-  set mixBlur(v: number) {
-    this.mixBlurUniform.value = v
-    this.hasBlurUniform.value = v > 0 ? 1 : 0
-  }
-
-  get mixStrength(): number {
-    return this.mixStrengthUniform.value
-  }
-  set mixStrength(v: number) {
-    this.mixStrengthUniform.value = v
-  }
-
-  get minDepthThreshold(): number {
-    return this.minDepthThresholdUniform.value
-  }
-  set minDepthThreshold(v: number) {
-    this.minDepthThresholdUniform.value = v
-  }
-
-  get maxDepthThreshold(): number {
-    return this.maxDepthThresholdUniform.value
-  }
-  set maxDepthThreshold(v: number) {
-    this.maxDepthThresholdUniform.value = v
-  }
-
-  get depthScale(): number {
-    return this.depthScaleUniform.value
-  }
-  set depthScale(v: number) {
-    this.depthScaleUniform.value = v
-    this.hasDepthUniform.value = v > 0 ? 1 : 0
-  }
-
-  get depthToBlurRatioBias(): number {
-    return this.depthToBlurRatioBiasUniform.value
-  }
-  set depthToBlurRatioBias(v: number) {
-    this.depthToBlurRatioBiasUniform.value = v
-  }
-
-  get distortion(): number {
-    return this.distortionUniform.value
-  }
-  set distortion(v: number) {
-    this.distortionUniform.value = v
-  }
-
-  get mixContrast(): number {
-    return this.mixContrastUniform.value
-  }
-  set mixContrast(v: number) {
-    this.mixContrastUniform.value = v
-  }
-
-  get blurRadius(): number {
-    return this.blurRadiusUniform.value
-  }
-  set blurRadius(v: number) {
-    this.blurRadiusUniform.value = v
-  }
-
-  /**
-   * Get the reflector target mesh that needs to be added to the scene.
-   * The target should be positioned and rotated to match the reflective surface.
-   */
-  get reflectorTarget(): THREE.Object3D {
-    return this.reflection.target
   }
 }

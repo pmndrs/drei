@@ -9,15 +9,25 @@
 
 ---
 
-## Progress: ~90%
+## Progress
 
-**What's left:**
+Do not record progress here. A percentage typed into a document is wrong the day
+after it is written — this line said `~90%` for six months while the number of
+components with a WebGPU story was two.
 
-- [ ] A few components still need WebGPU implementations
-- [ ] Full build and test shakedowns
-- [ ] Open issue and PR processing
-- [ ] Documentation polish and examples
-- [ ] Final peer dependency coordination with R3F v10
+Current state is derived from the filesystem:
+
+```bash
+yarn audit:components          # regenerate component-status.json
+node scripts/audit-components.js --summary
+```
+
+Remaining work is tracked in GitHub milestones, in the order it has to happen:
+**v11 alpha.7 — Visibility & Gating** → **v11 alpha.8 — WebGPU Correctness** →
+**v11 beta.1 — Surface & Docs**.
+
+Note that `implemented` in `component-status.json` means only that a file exists
+under `src/webgpu/`. It is not a claim that the component works.
 
 ---
 
@@ -39,7 +49,7 @@ Since we were already making breaking changes, we took the opportunity to modern
 - [Component-as-a-Folder](#component-as-a-folder-caaf-structure) — Each component gets its own folder with co-located files
 - [Build System (obuild)](#build-system-obuild) — Modern tooling, ESM-only
 - [Import Aliases](#import-aliases) — `#three` maps to the right renderer automatically
-- [Stories & Visual Testing](#storybook) — Every component now has stories and regression tests
+- [Stories & Visual Testing](#storybook) — Co-located stories and a pixel-diff parity harness (coverage is uneven; see `yarn audit:components --summary`)
 - [Testing Infrastructure](#testing) — Static analysis, bundle verification, and platform parity tests
 
 ---

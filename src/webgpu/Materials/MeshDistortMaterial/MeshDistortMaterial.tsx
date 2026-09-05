@@ -4,29 +4,28 @@ import { Fn, uniform, positionLocal, mx_noise_vec3, pow, float } from 'three/tsl
 import { ThreeElements, useFrame } from '@react-three/fiber'
 // @ts-ignore
 import { ForwardRefComponent } from '@utils/ts-utils'
+import { withUniforms } from '@utils/withUniforms'
 
 //* Distort Material Implementation ==============================
 
-class DistortMaterialImplWebGPU extends THREE.MeshPhysicalNodeMaterial {
-  timeUniform: THREE.UniformNode<'float', number>
-  distortUniform: THREE.UniformNode<'float', number>
-  radiusUniform: THREE.UniformNode<'float', number>
-
+class DistortMaterialImplWebGPU extends withUniforms(THREE.MeshPhysicalNodeMaterial, {
+  /** Animation time, advanced by the component each frame */
+  time: () => uniform(0),
+  /** Distortion intensity */
+  distort: () => uniform(0.4),
+  /** Base scale the distortion is added to */
+  radius: () => uniform(1),
+}) {
   constructor(parameters: THREE.MeshPhysicalMaterialParameters = {}) {
     super(parameters)
-    this.setValues(parameters)
-
-    // Create uniforms
-    this.timeUniform = uniform(0)
-    this.distortUniform = uniform(0.4)
-    this.radiusUniform = uniform(1)
+    const { time, distort, radius } = this.uniforms
 
     // Position shader: Apply noise-based distortion
     this.positionNode = Fn(() => {
       const pos = positionLocal.toVar()
 
       // Calculate animated time factor
-      const updateTime = this.timeUniform.div(50.0)
+      const updateTime = time.div(50.0)
 
       // Calculate noise input: position / 2.0 + updateTime * 5.0
       const noiseInput = pos.div(2.0).add(updateTime.mul(5.0))
@@ -36,34 +35,10 @@ class DistortMaterialImplWebGPU extends THREE.MeshPhysicalNodeMaterial {
       const noise = noiseVec.x // Use x component as scalar noise
 
       // Apply distortion: position * (noise * pow(distort, 2) + radius)
-      const distortFactor = noise.mul(pow(this.distortUniform, float(2.0))).add(this.radiusUniform)
+      const distortFactor = noise.mul(pow(distort, float(2.0))).add(radius)
 
       return pos.mul(distortFactor)
     })()
-  }
-
-  get time() {
-    return this.timeUniform.value
-  }
-
-  set time(v) {
-    this.timeUniform.value = v
-  }
-
-  get distort() {
-    return this.distortUniform.value
-  }
-
-  set distort(v) {
-    this.distortUniform.value = v
-  }
-
-  get radius() {
-    return this.radiusUniform.value
-  }
-
-  set radius(v) {
-    this.radiusUniform.value = v
   }
 }
 

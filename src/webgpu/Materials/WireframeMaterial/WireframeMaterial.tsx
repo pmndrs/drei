@@ -11,7 +11,6 @@ import { MeshBasicNodeMaterial } from 'three/webgpu'
 import {
   Fn,
   uniform,
-  vec3,
   vec4,
   float,
   attribute,
@@ -29,6 +28,7 @@ import {
 import * as React from 'react'
 import { extend, ThreeElements } from '@react-three/fiber'
 import { ForwardRefComponent } from '@utils/ts-utils'
+import { withUniforms } from '@utils/withUniforms'
 
 //* Types ==============================
 
@@ -90,46 +90,43 @@ const remap = /* @__PURE__ */ Fn((inputs: any[]) => {
 
 //* WireframeMaterial Implementation ==============================
 
-class WireframeMaterialImpl extends MeshBasicNodeMaterial {
-  //* Private Uniform Nodes --
-  private _strokeOpacity: THREE.UniformNode<'float', number>
-  private _fillOpacity: THREE.UniformNode<'float', number>
-  private _fillMix: THREE.UniformNode<'float', number>
-  private _thickness: THREE.UniformNode<'float', number>
-  private _colorBackfaces: THREE.UniformNode<'float', number> // Using number as bool (0/1)
-  private _dashInvert: THREE.UniformNode<'float', number>
-  private _dash: THREE.UniformNode<'float', number>
-  private _dashRepeats: THREE.UniformNode<'float', number>
-  private _dashLength: THREE.UniformNode<'float', number>
-  private _squeeze: THREE.UniformNode<'float', number>
-  private _squeezeMin: THREE.UniformNode<'float', number>
-  private _squeezeMax: THREE.UniformNode<'float', number>
-  private _stroke: THREE.UniformNode<'color', THREE.Color>
-  private _backfaceStroke: THREE.UniformNode<'color', THREE.Color>
-  private _fill: THREE.UniformNode<'color', THREE.Color>
-
+export class WireframeMaterialImpl extends withUniforms(MeshBasicNodeMaterial, {
+  /** Stroke (edge) opacity, default: 1 */
+  strokeOpacity: () => uniform(1.0),
+  /** Fill opacity (background), default: 0.25 */
+  fillOpacity: () => uniform(0.25),
+  /** Mix factor between material color and fill color, default: 0 */
+  fillMix: () => uniform(0.0),
+  /** Edge thickness 0-1, default: 0.05 */
+  thickness: () => uniform(0.05),
+  /** Use different color for backfaces, default: false */
+  colorBackfaces: () => uniform(false),
+  /** Invert dash pattern, default: true */
+  dashInvert: () => uniform(true),
+  /** Enable dashed lines, default: false */
+  dash: () => uniform(false),
+  /** Number of dash repeats, default: 4 */
+  dashRepeats: () => uniform(4.0),
+  /** Dash length 0-1, default: 0.5 */
+  dashLength: () => uniform(0.5),
+  /** Squeeze thickness toward line center, default: false */
+  squeeze: () => uniform(false),
+  /** Minimum squeeze factor, default: 0.2 */
+  squeezeMin: () => uniform(0.2),
+  /** Maximum squeeze factor, default: 1 */
+  squeezeMax: () => uniform(1.0),
+  /** Stroke (edge) color */
+  stroke: () => uniform(new THREE.Color('#ff0000')),
+  /** Backface stroke color */
+  backfaceStroke: () => uniform(new THREE.Color('#0000ff')),
+  /** Fill (background) color */
+  fill: () => uniform(new THREE.Color('#00ff00')),
+}) {
   /** Type flag for identification */
   readonly isWireframeMaterial = true
 
   constructor() {
     super()
-
-    //* Initialize Uniforms --
-    this._strokeOpacity = uniform(1.0)
-    this._fillOpacity = uniform(0.25)
-    this._fillMix = uniform(0.0)
-    this._thickness = uniform(0.05)
-    this._colorBackfaces = uniform(0.0) // false
-    this._dashInvert = uniform(1.0) // true
-    this._dash = uniform(0.0) // false
-    this._dashRepeats = uniform(4.0)
-    this._dashLength = uniform(0.5)
-    this._squeeze = uniform(0.0) // false
-    this._squeezeMin = uniform(0.2)
-    this._squeezeMax = uniform(1.0)
-    this._stroke = uniform(new THREE.Color('#ff0000'))
-    this._backfaceStroke = uniform(new THREE.Color('#0000ff'))
-    this._fill = uniform(new THREE.Color('#00ff00'))
 
     //* Base Material Properties --
     this.transparent = true
@@ -140,20 +137,22 @@ class WireframeMaterialImpl extends MeshBasicNodeMaterial {
 
   private _buildWireframeShader() {
     //* Capture uniforms for closure --
-    const strokeOpacityUniform = this._strokeOpacity
-    const fillOpacityUniform = this._fillOpacity
-    const thicknessUniform = this._thickness
-    const colorBackfacesUniform = this._colorBackfaces
-    const dashInvertUniform = this._dashInvert
-    const dashUniform = this._dash
-    const dashRepeatsUniform = this._dashRepeats
-    const dashLengthUniform = this._dashLength
-    const squeezeUniform = this._squeeze
-    const squeezeMinUniform = this._squeezeMin
-    const squeezeMaxUniform = this._squeezeMax
-    const strokeUniform = this._stroke
-    const backfaceStrokeUniform = this._backfaceStroke
-    const fillUniform = this._fill
+    const {
+      strokeOpacity: strokeOpacityUniform,
+      fillOpacity: fillOpacityUniform,
+      thickness: thicknessUniform,
+      colorBackfaces: colorBackfacesUniform,
+      dashInvert: dashInvertUniform,
+      dash: dashUniform,
+      dashRepeats: dashRepeatsUniform,
+      dashLength: dashLengthUniform,
+      squeeze: squeezeUniform,
+      squeezeMin: squeezeMinUniform,
+      squeezeMax: squeezeMaxUniform,
+      stroke: strokeUniform,
+      backfaceStroke: backfaceStrokeUniform,
+      fill: fillUniform,
+    } = this.uniforms
 
     //* Varying for barycentric coordinates --
     // Read barycentric attribute and pass to fragment shader
@@ -182,25 +181,22 @@ class WireframeMaterialImpl extends MeshBasicNodeMaterial {
 
       //* Squeeze effect --
       // Shrink thickness toward center of line segment
-      const squeezeEnabled = squeezeUniform.greaterThan(0.5)
       const squeezeFactor = mix(squeezeMinUniform, squeezeMaxUniform, float(1.0).sub(sin(positionAlong.mul(Math.PI))))
-      computedThickness.assign(select(squeezeEnabled, computedThickness.mul(squeezeFactor), computedThickness))
+      computedThickness.assign(select(squeezeUniform, computedThickness.mul(squeezeFactor), computedThickness))
 
       //* Dash pattern --
-      const dashEnabled = dashUniform.greaterThan(0.5)
-      const dashInverted = dashInvertUniform.greaterThan(0.5)
 
       // Calculate dash offset based on invert setting
       const baseOffset = float(1.0).div(dashRepeatsUniform).mul(dashLengthUniform).mul(0.5)
       const additionalOffset = float(1.0).div(dashRepeatsUniform).mul(0.5)
-      const dashOffset = select(dashInverted, baseOffset, baseOffset.add(additionalOffset))
+      const dashOffset = select(dashInvertUniform, baseOffset, baseOffset.add(additionalOffset))
 
       // Create repeating dash pattern
       const pattern = fract(positionAlong.add(dashOffset).mul(dashRepeatsUniform))
       const dashMask = float(1.0).sub(aastep(dashLengthUniform, pattern))
 
       // Apply dash to thickness (when dash is enabled)
-      computedThickness.assign(select(dashEnabled, computedThickness.mul(dashMask), computedThickness))
+      computedThickness.assign(select(dashUniform, computedThickness.mul(dashMask), computedThickness))
 
       //* Anti-aliased edge detection --
       // 1 at edges, 0 in center
@@ -208,9 +204,8 @@ class WireframeMaterialImpl extends MeshBasicNodeMaterial {
 
       //* Color composition --
       // Select stroke color based on front/back face
-      const useBackfaceColor = colorBackfacesUniform.greaterThan(0.5)
       const isFrontFace = frontFacing
-      const currentStroke = select(useBackfaceColor.and(isFrontFace.not()), backfaceStrokeUniform, strokeUniform)
+      const currentStroke = select(colorBackfacesUniform.and(isFrontFace.not()), backfaceStrokeUniform, strokeUniform)
 
       // Stroke color with edge-based alpha
       const colorStroke = vec4(currentStroke, edge)
@@ -223,131 +218,6 @@ class WireframeMaterialImpl extends MeshBasicNodeMaterial {
 
       return outColor
     })()
-  }
-
-  //* Uniform Accessors ==============================
-
-  /** Stroke (edge) opacity, default: 1 */
-  get strokeOpacity() {
-    return this._strokeOpacity.value as number
-  }
-  set strokeOpacity(v: number) {
-    this._strokeOpacity.value = v
-  }
-
-  /** Fill opacity (background), default: 0.25 */
-  get fillOpacity() {
-    return this._fillOpacity.value as number
-  }
-  set fillOpacity(v: number) {
-    this._fillOpacity.value = v
-  }
-
-  /** Mix factor between material color and fill color, default: 0 */
-  get fillMix() {
-    return this._fillMix.value as number
-  }
-  set fillMix(v: number) {
-    this._fillMix.value = v
-  }
-
-  /** Edge thickness 0-1, default: 0.05 */
-  get thickness() {
-    return this._thickness.value as number
-  }
-  set thickness(v: number) {
-    this._thickness.value = v
-  }
-
-  /** Use different color for backfaces */
-  get colorBackfaces() {
-    return this._colorBackfaces.value > 0.5
-  }
-  set colorBackfaces(v: boolean) {
-    this._colorBackfaces.value = v ? 1.0 : 0.0
-  }
-
-  /** Invert dash pattern */
-  get dashInvert() {
-    return this._dashInvert.value > 0.5
-  }
-  set dashInvert(v: boolean) {
-    this._dashInvert.value = v ? 1.0 : 0.0
-  }
-
-  /** Enable dashed lines */
-  get dash() {
-    return this._dash.value > 0.5
-  }
-  set dash(v: boolean) {
-    this._dash.value = v ? 1.0 : 0.0
-  }
-
-  /** Number of dash repeats, default: 4 */
-  get dashRepeats() {
-    return this._dashRepeats.value as number
-  }
-  set dashRepeats(v: number) {
-    this._dashRepeats.value = v
-  }
-
-  /** Dash length 0-1, default: 0.5 */
-  get dashLength() {
-    return this._dashLength.value as number
-  }
-  set dashLength(v: number) {
-    this._dashLength.value = v
-  }
-
-  /** Squeeze thickness toward line center */
-  get squeeze() {
-    return this._squeeze.value > 0.5
-  }
-  set squeeze(v: boolean) {
-    this._squeeze.value = v ? 1.0 : 0.0
-  }
-
-  /** Minimum squeeze factor, default: 0.2 */
-  get squeezeMin() {
-    return this._squeezeMin.value as number
-  }
-  set squeezeMin(v: number) {
-    this._squeezeMin.value = v
-  }
-
-  /** Maximum squeeze factor, default: 1 */
-  get squeezeMax() {
-    return this._squeezeMax.value as number
-  }
-  set squeezeMax(v: number) {
-    this._squeezeMax.value = v
-  }
-
-  /** Stroke (edge) color */
-  get stroke(): THREE.Color {
-    return this._stroke.value as THREE.Color
-  }
-  set stroke(v: THREE.Color | THREE.ColorRepresentation) {
-    if (v instanceof THREE.Color) this._stroke.value = v
-    else this._stroke.value = new THREE.Color(v)
-  }
-
-  /** Backface stroke color */
-  get backfaceStroke(): THREE.Color {
-    return this._backfaceStroke.value as THREE.Color
-  }
-  set backfaceStroke(v: THREE.Color | THREE.ColorRepresentation) {
-    if (v instanceof THREE.Color) this._backfaceStroke.value = v
-    else this._backfaceStroke.value = new THREE.Color(v)
-  }
-
-  /** Fill (background) color */
-  get fill(): THREE.Color {
-    return this._fill.value as THREE.Color
-  }
-  set fill(v: THREE.Color | THREE.ColorRepresentation) {
-    if (v instanceof THREE.Color) this._fill.value = v
-    else this._fill.value = new THREE.Color(v)
   }
 }
 
@@ -448,9 +318,9 @@ export const WireframeMaterial: ForwardRefComponent<WireframeMaterialProps, Wire
           squeeze={squeeze}
           squeezeMin={squeezeMin}
           squeezeMax={squeezeMax}
-          stroke={stroke instanceof THREE.Color ? stroke : new THREE.Color(stroke)}
-          backfaceStroke={backfaceStroke instanceof THREE.Color ? backfaceStroke : new THREE.Color(backfaceStroke)}
-          fill={fill instanceof THREE.Color ? fill : new THREE.Color(fill)}
+          stroke={stroke}
+          backfaceStroke={backfaceStroke}
+          fill={fill}
         />
       )
     }

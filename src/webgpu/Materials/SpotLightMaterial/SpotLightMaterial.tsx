@@ -22,7 +22,6 @@ import {
   normalLocal,
   modelViewMatrix,
   screenCoordinate,
-  texture,
   normalize,
   distance,
   saturate,
@@ -31,37 +30,32 @@ import {
   smoothstep,
   varying,
   select,
-  log2,
-  exp2,
+  materialOpacity,
 } from 'three/tsl'
+import { withUniforms } from '@utils/withUniforms'
 
 //* SpotLightMaterial ==============================
 
-export class SpotLightMaterial extends MeshBasicNodeMaterial {
-  //* Private Uniform Nodes --
-  private _depth: THREE.TextureNode
-  private _opacity: THREE.UniformNode<'float', number>
-  private _attenuation: THREE.UniformNode<'float', number>
-  private _anglePower: THREE.UniformNode<'float', number>
-  private _spotPosition: THREE.UniformNode<'vec3', THREE.Vector3>
-  private _lightColor: THREE.UniformNode<'color', THREE.Color>
-  private _cameraNear: THREE.UniformNode<'float', number>
-  private _cameraFar: THREE.UniformNode<'float', number>
-  private _resolution: THREE.UniformNode<'vec2', THREE.Vector2>
-
+export class SpotLightMaterial extends withUniforms(MeshBasicNodeMaterial, {
+  /** Scene depth (in the R channel) for soft intersection with scene geometry */
+  depth: () => uniformTexture(new THREE.Texture()),
+  /** Distance attenuation factor, default: 5 */
+  attenuation: () => uniform(5),
+  /** Angle falloff power - higher = sharper edges, default: 5 */
+  anglePower: () => uniform(5),
+  /** World position of the cone tip */
+  spotPosition: () => uniform(new THREE.Vector3(0, 0, 0)),
+  /** Light color, default: white */
+  lightColor: () => uniform(new THREE.Color('white')),
+  /** Camera near plane, for depth reconstruction */
+  cameraNear: () => uniform(0.1),
+  /** Camera far plane, for depth reconstruction */
+  cameraFar: () => uniform(100),
+  /** Drawing-buffer size in pixels. Zero disables depth-based soft edges. */
+  resolution: () => uniform(new THREE.Vector2(0, 0)),
+}) {
   constructor() {
     super()
-
-    //* Initialize Uniforms --
-    this._depth = uniformTexture(new THREE.Texture())
-    this._opacity = uniform(1)
-    this._attenuation = uniform(5)
-    this._anglePower = uniform(5)
-    this._spotPosition = uniform(new THREE.Vector3(0, 0, 0))
-    this._lightColor = uniform(new THREE.Color('white'))
-    this._cameraNear = uniform(0.1)
-    this._cameraFar = uniform(100)
-    this._resolution = uniform(new THREE.Vector2(0, 0))
 
     //* Material Settings --
     // As per John Chapman's article:
@@ -78,15 +72,16 @@ export class SpotLightMaterial extends MeshBasicNodeMaterial {
   //* Build TSL Shader ==============================
   private _buildShader() {
     // Capture uniforms for closure
-    const depthTex = this._depth
-    const opacityUniform = this._opacity
-    const attenuationUniform = this._attenuation
-    const anglePowerUniform = this._anglePower
-    const spotPositionUniform = this._spotPosition
-    const lightColorUniform = this._lightColor
-    const cameraNearUniform = this._cameraNear
-    const cameraFarUniform = this._cameraFar
-    const resolutionUniform = this._resolution
+    const {
+      depth: depthTex,
+      attenuation: attenuationUniform,
+      anglePower: anglePowerUniform,
+      spotPosition: spotPositionUniform,
+      lightColor: lightColorUniform,
+      cameraNear: cameraNearUniform,
+      cameraFar: cameraFarUniform,
+      resolution: resolutionUniform,
+    } = this.uniforms
 
     //* VERTEX: View-space normal for angle calculation --
     // Transform local normal to view space
@@ -124,7 +119,7 @@ export class SpotLightMaterial extends MeshBasicNodeMaterial {
         screenCoordinate.x.div(resolutionUniform.x),
         float(1).sub(screenCoordinate.y.div(resolutionUniform.y))
       )
-      const sampledDepth = texture(depthTex, screenUV).r
+      const sampledDepth = depthTex.sample(screenUV).r
 
       // Convert sampled depth to view Z using Three.js perspectiveDepthToViewZ formula:
       // viewZ = (near * far) / ((far - near) * depth - far)
@@ -142,73 +137,8 @@ export class SpotLightMaterial extends MeshBasicNodeMaterial {
       // Apply soft edges only when depth buffer is provided
       intensity.assign(select(hasDepth, intensity.mul(softFactor), intensity))
 
-      // Output: color with intensity-based alpha
-      return vec4(lightColorUniform, intensity.mul(opacityUniform))
+      // Output: color with intensity-based alpha, scaled by three's own opacity
+      return vec4(lightColorUniform, intensity.mul(materialOpacity))
     })()
-  }
-
-  //* Uniform Accessors ==============================
-
-  get depth() {
-    return this._depth?.value as THREE.Texture
-  }
-  set depth(v: THREE.Texture | null) {
-    if (this._depth) this._depth.value = v ?? new THREE.Texture()
-  }
-
-  get opacity() {
-    return this._opacity?.value as number
-  }
-  set opacity(v: number) {
-    if (this._opacity) this._opacity.value = v
-  }
-
-  get attenuation() {
-    return this._attenuation?.value as number
-  }
-  set attenuation(v: number) {
-    if (this._attenuation) this._attenuation.value = v
-  }
-
-  get anglePower() {
-    return this._anglePower?.value as number
-  }
-  set anglePower(v: number) {
-    if (this._anglePower) this._anglePower.value = v
-  }
-
-  get spotPosition() {
-    return this._spotPosition?.value as THREE.Vector3
-  }
-  set spotPosition(v: THREE.Vector3) {
-    if (this._spotPosition) this._spotPosition.value = v
-  }
-
-  get lightColor() {
-    return this._lightColor?.value as THREE.Color
-  }
-  set lightColor(v: THREE.Color) {
-    if (this._lightColor) this._lightColor.value = v
-  }
-
-  get cameraNear() {
-    return this._cameraNear?.value as number
-  }
-  set cameraNear(v: number) {
-    if (this._cameraNear) this._cameraNear.value = v
-  }
-
-  get cameraFar() {
-    return this._cameraFar?.value as number
-  }
-  set cameraFar(v: number) {
-    if (this._cameraFar) this._cameraFar.value = v
-  }
-
-  get resolution() {
-    return this._resolution?.value as THREE.Vector2
-  }
-  set resolution(v: THREE.Vector2) {
-    if (this._resolution) this._resolution.value = v
   }
 }

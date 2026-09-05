@@ -16,6 +16,14 @@
 
     /* Linting */
     "strict": true,
+    /* Match the root tsconfig. drei's source is pulled in through the `../src`
+       path aliases so that the examples app stays a live testbed — you edit
+       drei source and see it here immediately. But it has never been written
+       against `noImplicitAny`, so checking it under stricter rules than its own
+       project uses produces ~90 errors that root considers fine. Align, so the
+       two checkers agree about the same files. See #2808. */
+    "noImplicitAny": false,
+    "noImplicitThis": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
@@ -30,7 +38,9 @@
       "@react-three/drei/external": ["../src/external"],
       "@react-three/drei/experimental": ["../src/experimental"],
       "@react-three/drei": ["../src"],
-      "#three": ["../node_modules/three"],
+      "three/webgpu": ["../node_modules/@types/three/build/three.webgpu.d.ts"],
+      "three/tsl": ["../node_modules/@types/three/build/three.tsl.d.ts"],
+      "#three": ["../node_modules/@types/three"],
       "#three-addons": ["../src/utils/three-addons"],
       "#drei-platform": ["../src/utils/drei-platform"],
       "@core/*": ["../src/core/*"],
@@ -42,5 +52,9 @@
       "@lib/*": ["../lib/*"]
     }
   },
-  "include": ["src", "../src"]
+  /* Only this app. drei's own source is typechecked by the root tsconfig, which
+     has the correct #three -> @types/three mapping and drei's compiler options.
+     Re-checking it here under different, stricter settings produced ~900 errors
+     that were entirely configuration noise. See #2808. */
+  "include": ["src"]
 }

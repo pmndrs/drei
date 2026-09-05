@@ -52,6 +52,7 @@ const config: StorybookConfig = {
     console.log(`[storybook] Using ${useBuiltPackage ? 'BUILT package (dist/)' : 'SOURCE (src/)'}`)
 
     return mergeConfig(config, {
+      build: { target: 'es2022' },
       define: {
         __MEDIAPIPE_TASKS_VISION_VERSION__: JSON.stringify(mediapipeVersion),
       },

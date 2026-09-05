@@ -1,20 +1,20 @@
 {
   "generated": "derived from the filesystem by scripts/audit-components.js — do not hand-edit",
   "totals": {
-    "components": 143,
+    "components": 144,
     "agnostic": 106,
-    "implemented": 27,
+    "implemented": 28,
     "todo": 5,
     "wontPort": 5,
-    "withStory": 104,
-    "webgpuImplemented": 30,
-    "webgpuWithStory": 15,
-    "webgpuExercised": 29,
+    "withStory": 105,
+    "webgpuImplemented": 31,
+    "webgpuWithStory": 16,
+    "webgpuExercised": 30,
     "webgpuCopies": 0,
     "agnosticButNot": 0,
     "withTestFile": 55,
     "withRealTest": 0,
-    "withDocs": 47,
+    "withDocs": 48,
     "agentOk": 2,
     "humanOnly": 3
   },
@@ -2099,6 +2099,43 @@
       "paths": {
         "legacy": "src/legacy/Materials/Image",
         "webgpu": "src/webgpu/UI/Image"
+      }
+    },
+    {
+      "name": "Inspector",
+      "category": "Performance",
+      "classification": "implemented",
+      "reason": null,
+      "assignee": null,
+      "trees": {
+        "core": false,
+        "legacy": false,
+        "webgpu": true,
+        "external": false,
+        "experimental": false
+      },
+      "story": true,
+      "test": false,
+      "testAsserts": false,
+      "exercised": true,
+      "docs": true,
+      "webgpuIsCopy": false,
+      "agnosticButNot": false,
+      "coverageByTree": {
+        "webgpu": {
+          "story": true,
+          "test": false,
+          "docs": true,
+          "exercised": true
+        }
+      },
+      "shaderRisk": {
+        "glsl": false,
+        "onBeforeCompile": false,
+        "shaderMaterial": false
+      },
+      "paths": {
+        "webgpu": "src/webgpu/Performance/Inspector"
       }
     },
     {

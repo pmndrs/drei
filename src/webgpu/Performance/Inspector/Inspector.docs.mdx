@@ -1,0 +1,101 @@
+---
+title: Inspector
+sourcecode: src/webgpu/Performance/Inspector/Inspector.tsx
+---
+
+{/* AUTO:badges */}
+
+Wrap a scene with Three.js's inspector and add reactive controls to its Parameters tab.
+Requires **React Three Fiber v10**, a WebGPU renderer (including its WebGL fallback), and
+the default **`frameloop="always"`**.
+
+```tsx
+'use client'
+
+import { Canvas } from '@react-three/fiber'
+import { Inspector, useInspectorControls } from '@react-three/drei/webgpu'
+
+function Scene() {
+  const { color, wireframe } = useInspectorControls({
+    color: { value: '#ff8c42', color: true },
+    wireframe: { value: false },
+  }, { title: 'Material' })
+
+  return (
+    <mesh>
+      <boxGeometry />
+      <meshBasicMaterial color={color} wireframe={wireframe} />
+    </mesh>
+  )
+}
+
+function App() {
+  return (
+    <Canvas renderer={true}>
+      <Inspector hide={false}>
+        <Scene />
+      </Inspector>
+    </Canvas>
+  )
+}
+```
+
+`hide` hides the UI while keeping profiling and controls initialized. Mount one Inspector per
+renderer. It preserves the canvas's event target, render pipeline, animation loop, and
+`frameloop` setting. R3F v10's `start` and `finish` phases bracket the work being profiled.
+Only regular continuous rendering is supported for now. Using `frameloop="demand"` or
+`frameloop="never"` throws an error; Inspector does not switch the canvas's mode automatically.
+Manual `advance()`, shared renderers, XR, and custom frame scheduling are outside the current
+profiling scope.
+
+The panel is inserted as a sibling of the canvas's connected event source (the Canvas wrapper
+by default). Inspector events bubble normally to Three's document listeners without passing
+through the scene's event source. Custom `eventSource` elements must have a parent; `document`
+and `document.body` are not supported. Camera controls should listen on that same scene event
+source or the canvas, rather than a shared ancestor containing the Inspector.
+
+Import Inspector alongside the component that creates Canvas. On the client, module-level
+`await` loads Three's saved settings, including **Force WebGL**, before that component runs.
+The browser-only import is skipped on the server. In Next.js, use a `'use client'` component.
+Your bundler must support top-level `await`.
+For Vite configurations targeting older browsers, set `build.target` to `'es2022'` or newer.
+The built WebGPU entry also loads these settings when imported for other components,
+even if no Inspector panel is mounted.
+
+Do not lazy-load Inspector into an already initialized Canvas. A saved Force WebGL setting
+must be applied before renderer initialization. Lazy-loading the entire Canvas component
+together with its Inspector import preserves that order.
+
+### Controls
+
+`useInspectorControls(schema, { title, collapsed })` returns the current values. Numbers with
+`min` and `max` become sliders, and a single bound becomes a clamped number input. Booleans
+become checkboxes and strings become text inputs. Use `color: true` for colors and `options`
+for a select menu. String colors come back as `#rrggbb` strings and `Color` instances as fresh
+clones. Nest controls inside `{ schema: { ... }, label, collapsed }` to create folders.
+
+```tsx
+const { speed, material } = useInspectorControls({
+  speed: { value: 1, min: 0, max: 4, step: 0.1, label: 'Spin speed' },
+  material: {
+    label: 'Material',
+    schema: {
+      color: { value: '#ff8c42', color: true },
+      wireframe: { value: false },
+    },
+  },
+})
+```
+
+Schema values are initial defaults. To replace the schema or reset its values, remount the
+component using the hook. `onChange` callbacks use the latest render. Changing the group title
+or collapsed state preserves edits. UI changes update React state. Controls use Three's built-in editors. Drei removes the group
+and clears its callbacks on unmount. Three's numeric drag listeners remain subject to its
+upstream disposal limitation.
+
+Three r185 does not provide an inspector disposal API. Drei removes its panel and controls,
+restores the previous renderer inspector and console handler, and waits for pending timestamp
+readbacks. It reuses the inspector on remount within the same renderer; Three's own global UI
+listeners remain subject to that upstream limitation.
+
+Based on the component and controls design in [PR #2753](https://github.com/pmndrs/drei/pull/2753).

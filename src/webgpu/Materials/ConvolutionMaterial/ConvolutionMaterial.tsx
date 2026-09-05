@@ -5,66 +5,48 @@
 
 import * as THREE from 'three/webgpu'
 import { MeshBasicNodeMaterial } from 'three/webgpu'
-import {
-  Fn,
-  uniform,
-  uniformTexture,
-  vec2,
-  vec4,
-  float,
-  texture,
-  uv,
-  positionLocal,
-  mix,
-  smoothstep,
-  max,
-  min,
-  varying,
-  select,
-} from 'three/tsl'
+import { Fn, uniform, uniformTexture, vec2, float, uv, mix, smoothstep, max, min, varying, select } from 'three/tsl'
+import { withUniforms } from '@utils/withUniforms'
 
 //* ConvolutionMaterial ==============================
 // Samples 4 offset positions around each pixel and averages them for blur.
 // Optionally adjusts blur based on depth buffer for depth-of-field effects.
 
-export class ConvolutionMaterial extends MeshBasicNodeMaterial {
-  //* Private Uniform Nodes --
-  private _inputBuffer: THREE.TextureNode
-  private _depthBuffer: THREE.TextureNode
-  private _resolution: THREE.UniformNode<'vec2', THREE.Vector2>
-  private _texelSize: THREE.UniformNode<'vec2', THREE.Vector2>
-  private _halfTexelSize: THREE.UniformNode<'vec2', THREE.Vector2>
-  private _kernel: THREE.UniformNode<'float', number>
-  private _scale: THREE.UniformNode<'float', number>
-  private _cameraNear: THREE.UniformNode<'float', number>
-  private _cameraFar: THREE.UniformNode<'float', number>
-  private _minDepthThreshold: THREE.UniformNode<'float', number>
-  private _maxDepthThreshold: THREE.UniformNode<'float', number>
-  private _depthScale: THREE.UniformNode<'float', number>
-  private _depthToBlurRatioBias: THREE.UniformNode<'float', number>
-  private _useDepth: THREE.UniformNode<'float', number>
-
+export class ConvolutionMaterial extends withUniforms(MeshBasicNodeMaterial, {
+  /** Input color buffer to blur */
+  inputBuffer: () => uniformTexture(new THREE.Texture()),
+  /** Depth buffer for depth-aware blur */
+  depthBuffer: () => uniformTexture(new THREE.Texture()),
+  /** Render resolution */
+  resolution: () => uniform(new THREE.Vector2()),
+  /** Texel size (1/resolution) */
+  texelSize: () => uniform(new THREE.Vector2()),
+  /** Half texel size for offset calculations */
+  halfTexelSize: () => uniform(new THREE.Vector2()),
+  /** Kernel offset multiplier (changes per blur pass) */
+  kernelValue: () => uniform(0.0),
+  /** Scale factor for blur spread */
+  scale: () => uniform(1.0),
+  /** Camera near plane for depth calculations */
+  cameraNear: () => uniform(0.0),
+  /** Camera far plane for depth calculations */
+  cameraFar: () => uniform(1.0),
+  /** Minimum depth threshold for blur (objects closer than this get less blur) */
+  minDepthThreshold: () => uniform(0.0),
+  /** Maximum depth threshold for blur (objects farther than this get full blur) */
+  maxDepthThreshold: () => uniform(1.0),
+  /** Scale factor for depth-based blur adjustment */
+  depthScale: () => uniform(0.0),
+  /** Bias added to depth-to-blur ratio */
+  depthToBlurRatioBias: () => uniform(0.25),
+  /** Enable depth-based blur */
+  useDepth: () => uniform(false),
+}) {
   /** Kernel weights for multi-pass blur */
   readonly kernel: Float32Array
 
   constructor(texelSize = new THREE.Vector2()) {
     super()
-
-    //* Initialize Uniforms --
-    this._inputBuffer = uniformTexture(new THREE.Texture())
-    this._depthBuffer = uniformTexture(new THREE.Texture())
-    this._resolution = uniform(new THREE.Vector2())
-    this._texelSize = uniform(new THREE.Vector2())
-    this._halfTexelSize = uniform(new THREE.Vector2())
-    this._kernel = uniform(0.0)
-    this._scale = uniform(1.0)
-    this._cameraNear = uniform(0.0)
-    this._cameraFar = uniform(1.0)
-    this._minDepthThreshold = uniform(0.0)
-    this._maxDepthThreshold = uniform(1.0)
-    this._depthScale = uniform(0.0)
-    this._depthToBlurRatioBias = uniform(0.25)
-    this._useDepth = uniform(0.0) // 0 = no depth, 1 = use depth
 
     //* Material Properties --
     this.blending = THREE.NoBlending
@@ -83,17 +65,19 @@ export class ConvolutionMaterial extends MeshBasicNodeMaterial {
 
   private _buildShader() {
     //* Capture uniforms for closure --
-    const inputBufferTex = this._inputBuffer
-    const depthBufferTex = this._depthBuffer
-    const texelSizeUniform = this._texelSize
-    const halfTexelSizeUniform = this._halfTexelSize
-    const kernelUniform = this._kernel
-    const scaleUniform = this._scale
-    const minDepthThresholdUniform = this._minDepthThreshold
-    const maxDepthThresholdUniform = this._maxDepthThreshold
-    const depthScaleUniform = this._depthScale
-    const depthToBlurRatioBiasUniform = this._depthToBlurRatioBias
-    const useDepthUniform = this._useDepth
+    const {
+      inputBuffer: inputBufferTex,
+      depthBuffer: depthBufferTex,
+      texelSize: texelSizeUniform,
+      halfTexelSize: halfTexelSizeUniform,
+      kernelValue: kernelUniform,
+      scale: scaleUniform,
+      minDepthThreshold: minDepthThresholdUniform,
+      maxDepthThreshold: maxDepthThresholdUniform,
+      depthScale: depthScaleUniform,
+      depthToBlurRatioBias: depthToBlurRatioBiasUniform,
+      useDepth: useDepthUniform,
+    } = this.uniforms
 
     //* Vertex: Compute offset UVs as varyings --
     // For fullscreen quad, UV is derived from position
@@ -123,8 +107,7 @@ export class ConvolutionMaterial extends MeshBasicNodeMaterial {
 
       // Depth-based blur adjustment
       // depthFactor = smoothstep(min, max, 1 - (depth.r * depth.a)) * depthScale
-      const isUsingDepth = useDepthUniform.greaterThan(0.5)
-      const depthSample = texture(depthBufferTex, baseUv)
+      const depthSample = depthBufferTex.sample(baseUv)
       const rawDepth = float(1.0).sub(depthSample.r.mul(depthSample.a))
       const smoothedDepth = smoothstep(minDepthThresholdUniform, maxDepthThresholdUniform, rawDepth)
       const scaledDepth = smoothedDepth.mul(depthScaleUniform)
@@ -132,15 +115,15 @@ export class ConvolutionMaterial extends MeshBasicNodeMaterial {
       // (the bias defaults to 0.25, which is what the GLSL version hard-coded)
       const clampedDepth = max(float(0.0), min(float(1.0), scaledDepth.add(depthToBlurRatioBiasUniform)))
 
-      depthFactor.assign(select(isUsingDepth, clampedDepth, float(0.0)))
+      depthFactor.assign(select(useDepthUniform, clampedDepth, float(0.0)))
 
       //* Sample 4 corners with depth-adjusted UV interpolation --
       // When depthFactor = 0, sample at offset UV
       // When depthFactor = 1, sample at center UV (less blur for near objects)
-      const sample0 = texture(inputBufferTex, mix(vUv0, baseUv, depthFactor))
-      const sample1 = texture(inputBufferTex, mix(vUv1, baseUv, depthFactor))
-      const sample2 = texture(inputBufferTex, mix(vUv2, baseUv, depthFactor))
-      const sample3 = texture(inputBufferTex, mix(vUv3, baseUv, depthFactor))
+      const sample0 = inputBufferTex.sample(mix(vUv0, baseUv, depthFactor))
+      const sample1 = inputBufferTex.sample(mix(vUv1, baseUv, depthFactor))
+      const sample2 = inputBufferTex.sample(mix(vUv2, baseUv, depthFactor))
+      const sample3 = inputBufferTex.sample(mix(vUv3, baseUv, depthFactor))
 
       // Average the 4 samples
       const sum = sample0.add(sample1).add(sample2).add(sample3)
@@ -152,126 +135,12 @@ export class ConvolutionMaterial extends MeshBasicNodeMaterial {
 
   /** Set texel size for blur calculations */
   setTexelSize(x: number, y: number) {
-    this._texelSize.value.set(x, y)
-    this._halfTexelSize.value.set(x * 0.5, y * 0.5)
+    this.uniforms.texelSize.value.set(x, y)
+    this.uniforms.halfTexelSize.value.set(x * 0.5, y * 0.5)
   }
 
   /** Set render resolution */
   setResolution(resolution: THREE.Vector2) {
-    this._resolution.value.copy(resolution)
-  }
-
-  //* Uniform Accessors ==============================
-
-  /** Input color buffer to blur */
-  get inputBuffer() {
-    return this._inputBuffer.value as THREE.Texture
-  }
-  set inputBuffer(v: THREE.Texture | null) {
-    this._inputBuffer.value = v ?? new THREE.Texture()
-  }
-
-  /** Depth buffer for depth-aware blur */
-  get depthBuffer() {
-    return this._depthBuffer.value as THREE.Texture
-  }
-  set depthBuffer(v: THREE.Texture | null) {
-    this._depthBuffer.value = v ?? new THREE.Texture()
-  }
-
-  /** Render resolution */
-  get resolution() {
-    return this._resolution.value as THREE.Vector2
-  }
-  set resolution(v: THREE.Vector2) {
-    this._resolution.value = v
-  }
-
-  /** Texel size (1/resolution) */
-  get texelSize() {
-    return this._texelSize.value as THREE.Vector2
-  }
-  set texelSize(v: THREE.Vector2) {
-    this._texelSize.value = v
-  }
-
-  /** Half texel size for offset calculations */
-  get halfTexelSize() {
-    return this._halfTexelSize.value as THREE.Vector2
-  }
-  set halfTexelSize(v: THREE.Vector2) {
-    this._halfTexelSize.value = v
-  }
-
-  /** Kernel offset multiplier (changes per blur pass) */
-  get kernelValue() {
-    return this._kernel.value as number
-  }
-  set kernelValue(v: number) {
-    this._kernel.value = v
-  }
-
-  /** Scale factor for blur spread */
-  get scale() {
-    return this._scale.value as number
-  }
-  set scale(v: number) {
-    this._scale.value = v
-  }
-
-  /** Camera near plane for depth calculations */
-  get cameraNear() {
-    return this._cameraNear.value as number
-  }
-  set cameraNear(v: number) {
-    this._cameraNear.value = v
-  }
-
-  /** Camera far plane for depth calculations */
-  get cameraFar() {
-    return this._cameraFar.value as number
-  }
-  set cameraFar(v: number) {
-    this._cameraFar.value = v
-  }
-
-  /** Minimum depth threshold for blur (objects closer than this get less blur) */
-  get minDepthThreshold() {
-    return this._minDepthThreshold.value as number
-  }
-  set minDepthThreshold(v: number) {
-    this._minDepthThreshold.value = v
-  }
-
-  /** Maximum depth threshold for blur (objects farther than this get full blur) */
-  get maxDepthThreshold() {
-    return this._maxDepthThreshold.value as number
-  }
-  set maxDepthThreshold(v: number) {
-    this._maxDepthThreshold.value = v
-  }
-
-  /** Scale factor for depth-based blur adjustment */
-  get depthScale() {
-    return this._depthScale.value as number
-  }
-  set depthScale(v: number) {
-    this._depthScale.value = v
-  }
-
-  /** Bias added to depth-to-blur ratio */
-  get depthToBlurRatioBias() {
-    return this._depthToBlurRatioBias.value as number
-  }
-  set depthToBlurRatioBias(v: number) {
-    this._depthToBlurRatioBias.value = v
-  }
-
-  /** Enable/disable depth-based blur (0 = off, 1 = on) */
-  get useDepth() {
-    return this._useDepth.value > 0.5
-  }
-  set useDepth(v: boolean) {
-    this._useDepth.value = v ? 1.0 : 0.0
+    this.uniforms.resolution.value.copy(resolution)
   }
 }

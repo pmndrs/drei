@@ -4,7 +4,7 @@
 // TSL Conversion: drei webgpu migration
 
 import * as THREE from 'three/webgpu'
-import { MeshBasicNodeMaterial, MeshNormalNodeMaterial, QuadMesh, TextureNode, Renderer } from 'three/webgpu'
+import { MeshBasicNodeMaterial, MeshNormalNodeMaterial, QuadMesh, Renderer } from 'three/webgpu'
 import {
   Fn,
   uniform,
@@ -14,7 +14,6 @@ import {
   vec3,
   vec4,
   float,
-  texture,
   positionWorld,
   normalWorld,
   normalize,
@@ -29,6 +28,7 @@ import {
   sub,
   div,
   negate,
+  materialColor,
 } from 'three/tsl'
 import * as React from 'react'
 import { extend, ReactThreeFiber, ThreeElements, useFrame, useThree } from '@react-three/fiber'
@@ -36,6 +36,7 @@ import { useFBO } from '@core/Portal/Fbo'
 import { useHelper } from '@core/Gizmos/useHelper'
 import { Edges } from '@core/Geometry/Edges'
 import { ForwardRefComponent } from '@utils/ts-utils'
+import { withUniforms } from '@utils/withUniforms'
 
 //* Types ==============================
 
@@ -66,24 +67,20 @@ export type CausticsProps = Omit<ThreeElements['group'], 'ref'> & {
 
 //* CausticsProjectionMaterial ==============================
 // Projects pre-computed caustics textures onto receiving geometry
-// Samples two caustics textures (front/back faces) and combines with color
+// Combines front and back caustics textures with the material color.
 
-export class CausticsProjectionMaterial extends MeshBasicNodeMaterial {
-  private _causticsTexture: TextureNode
-  private _causticsTextureB: TextureNode
-  private _color: THREE.UniformNode<'color', THREE.Color>
-  private _lightProjMatrix: THREE.UniformNode<'mat4', THREE.Matrix4>
-  private _lightViewMatrix: THREE.UniformNode<'mat4', THREE.Matrix4>
-
+export class CausticsProjectionMaterial extends withUniforms(MeshBasicNodeMaterial, {
+  /** Front-face caustics, rendered by CausticsMaterial */
+  causticsTexture: () => uniformTexture(new THREE.Texture()),
+  /** Back-face caustics, rendered by CausticsMaterial when `backside` is enabled */
+  causticsTextureB: () => uniformTexture(new THREE.Texture()),
+  /** Projection matrix of the light camera */
+  lightProjMatrix: () => uniform(new THREE.Matrix4()),
+  /** View matrix (matrixWorldInverse) of the light camera */
+  lightViewMatrix: () => uniform(new THREE.Matrix4()),
+}) {
   constructor() {
     super()
-
-    // Initialize uniforms - use uniformTexture for textures that will be updated
-    this._causticsTexture = uniformTexture(new THREE.Texture())
-    this._causticsTextureB = uniformTexture(new THREE.Texture())
-    this._color = uniform(new THREE.Color(1, 1, 1))
-    this._lightProjMatrix = uniform(new THREE.Matrix4())
-    this._lightViewMatrix = uniform(new THREE.Matrix4())
 
     // Blending setup for additive caustics
     this.transparent = true
@@ -96,11 +93,7 @@ export class CausticsProjectionMaterial extends MeshBasicNodeMaterial {
   }
 
   private _buildShader() {
-    const causticsTexture = this._causticsTexture
-    const causticsTextureB = this._causticsTextureB
-    const colorUniform = this._color
-    const lightProjMatrix = this._lightProjMatrix
-    const lightViewMatrix = this._lightViewMatrix
+    const { causticsTexture, causticsTextureB, lightProjMatrix, lightViewMatrix } = this.uniforms
 
     // Fragment: Project world position into light space, sample caustics
     this.colorNode = Fn(() => {
@@ -118,49 +111,12 @@ export class CausticsProjectionMaterial extends MeshBasicNodeMaterial {
       const lightUv = xyz.mul(0.5).add(0.5).xy
 
       // Sample front and back caustics textures
-      const front = texture(causticsTexture, lightUv).rgb
-      const back = texture(causticsTextureB, lightUv).rgb
+      const front = causticsTexture.sample(lightUv).rgb
+      const back = causticsTextureB.sample(lightUv).rgb
 
-      // Combine caustics with color
-      return vec4(add(front, back).mul(colorUniform), 1.0)
+      // Combine caustics with three's own material color
+      return vec4(add(front, back).mul(materialColor), 1.0)
     })()
-  }
-
-  //* Uniform Accessors ==============================
-
-  get causticsTexture() {
-    return this._causticsTexture.value as THREE.Texture
-  }
-  set causticsTexture(v: THREE.Texture) {
-    this._causticsTexture.value = v
-  }
-
-  get causticsTextureB() {
-    return this._causticsTextureB.value as THREE.Texture
-  }
-  set causticsTextureB(v: THREE.Texture) {
-    this._causticsTextureB.value = v
-  }
-
-  get color() {
-    return this._color?.value as THREE.Color
-  }
-  set color(v: THREE.Color) {
-    if (this._color) this._color.value = v
-  }
-
-  get lightProjMatrix() {
-    return this._lightProjMatrix.value as THREE.Matrix4
-  }
-  set lightProjMatrix(v: THREE.Matrix4) {
-    this._lightProjMatrix.value = v
-  }
-
-  get lightViewMatrix() {
-    return this._lightViewMatrix.value as THREE.Matrix4
-  }
-  set lightViewMatrix(v: THREE.Matrix4) {
-    this._lightViewMatrix.value = v
   }
 }
 
@@ -168,58 +124,56 @@ export class CausticsProjectionMaterial extends MeshBasicNodeMaterial {
 // Computes caustics intensity via ray refraction through surface normals.
 // Uses depth buffer reconstruction and area ratio calculation for intensity.
 
-export class CausticsMaterial extends MeshBasicNodeMaterial {
-  private _cameraMatrixWorld: THREE.UniformNode<'mat4', THREE.Matrix4>
-  private _cameraProjectionMatrixInv: THREE.UniformNode<'mat4', THREE.Matrix4>
-  private _normalTexture: TextureNode
-  private _depthTexture: TextureNode
-  private _lightDir: THREE.UniformNode<'vec3', THREE.Vector3>
-  private _lightPlaneNormal: THREE.UniformNode<'vec3', THREE.Vector3>
-  private _lightPlaneConstant: THREE.UniformNode<'float', number>
-  private _near: THREE.UniformNode<'float', number>
-  private _far: THREE.UniformNode<'float', number>
-  private _worldRadius: THREE.UniformNode<'float', number>
-  private _ior: THREE.UniformNode<'float', number>
-  private _resolution: THREE.UniformNode<'float', number>
-  private _size: THREE.UniformNode<'float', number>
-  private _intensity: THREE.UniformNode<'float', number>
-
+export class CausticsMaterial extends withUniforms(MeshBasicNodeMaterial, {
+  /** World matrix of the light camera */
+  cameraMatrixWorld: () => uniform(new THREE.Matrix4()),
+  /** Inverse projection matrix of the light camera, for depth reconstruction */
+  cameraProjectionMatrixInv: () => uniform(new THREE.Matrix4()),
+  /** World-space normals of the refractive geometry, rendered by CausticsNormalMaterial */
+  normalTexture: () => uniformTexture(new THREE.Texture()),
+  /** Depth of the refractive geometry, from the same render target as `normalTexture` */
+  depthTexture: () => uniformTexture(new THREE.Texture()),
+  /** Direction light travels in (inverse of the light position direction) */
+  lightDir: () => uniform(new THREE.Vector3(0, 1, 0)),
+  /** Normal of the receiving plane in light space */
+  lightPlaneNormal: () => uniform(new THREE.Vector3(0, 1, 0)),
+  /** Plane constant of the receiving plane */
+  lightPlaneConstant: () => uniform(0),
+  /** Light camera near plane */
+  near: () => uniform(0.1),
+  /** Light camera far plane */
+  far: () => uniform(100),
+  /** The texel size in world units */
+  worldRadius: () => uniform(1 / 40),
+  /** Refraction index of the surface */
+  ior: () => uniform(1.1),
+  /** Buffer resolution in pixels */
+  resolution: () => uniform(1024),
+  /** Half-extent of the light camera frustum */
+  size: () => uniform(10),
+  /** Intensity of the projected caustics */
+  intensity: () => uniform(0.5),
+}) {
   constructor() {
     super()
-
-    // Initialize all uniforms - use uniformTexture for textures that will be updated
-    this._cameraMatrixWorld = uniform(new THREE.Matrix4())
-    this._cameraProjectionMatrixInv = uniform(new THREE.Matrix4())
-    this._normalTexture = uniformTexture(new THREE.Texture())
-    this._depthTexture = uniformTexture(new THREE.Texture())
-    this._lightDir = uniform(new THREE.Vector3(0, 1, 0))
-    this._lightPlaneNormal = uniform(new THREE.Vector3(0, 1, 0))
-    this._lightPlaneConstant = uniform(0)
-    this._near = uniform(0.1)
-    this._far = uniform(100)
-    this._worldRadius = uniform(1 / 40)
-    this._ior = uniform(1.1)
-    this._resolution = uniform(1024)
-    this._size = uniform(10)
-    this._intensity = uniform(0.5)
-
     this._buildShader()
   }
 
   private _buildShader() {
-    // Capture uniforms for closure
-    const cameraMatrixWorld = this._cameraMatrixWorld
-    const cameraProjectionMatrixInv = this._cameraProjectionMatrixInv
-    const normalTexture = this._normalTexture
-    const depthTexture = this._depthTexture
-    const lightDir = this._lightDir
-    const lightPlaneNormal = this._lightPlaneNormal
-    const lightPlaneConstant = this._lightPlaneConstant
-    const worldRadius = this._worldRadius
-    const ior = this._ior
-    const resolution = this._resolution
-    const size = this._size
-    const intensity = this._intensity
+    const {
+      cameraMatrixWorld,
+      cameraProjectionMatrixInv,
+      normalTexture,
+      depthTexture,
+      lightDir,
+      lightPlaneNormal,
+      lightPlaneConstant,
+      worldRadius,
+      ior,
+      resolution,
+      size,
+      intensity,
+    } = this.uniforms
 
     //* Helper: Reconstruct world position from depth --
     const worldPosFromDepth = Fn(({ depth, coord }: { depth: any; coord: any }) => {
@@ -263,8 +217,7 @@ export class CausticsMaterial extends MeshBasicNodeMaterial {
         // Refract light direction through surface
         const rayDir = refract(lightD, surfaceNormal, div(float(1.0), iorVal))
         // Offset origin slightly along refracted direction to avoid self-intersection
-        // computeRefractedRay's inputs are `any`, so overload resolution cannot
-        // see that these are vec3; they are vec3 at runtime.
+        // The untyped function inputs require an explicit vec3 result.
         const rayOrigin = add(surfacePos, mul(rayDir, 0.1)) as unknown as THREE.Node<'vec3'>
         return vec4(rayOrigin, 0.0).setW(float(0.0)) // Pack origin, we'll compute dir separately
       }
@@ -275,7 +228,7 @@ export class CausticsMaterial extends MeshBasicNodeMaterial {
       const baseUv = uv()
 
       // Sample center depth for early-out check
-      const centerDepth = texture(depthTexture, baseUv).x
+      const centerDepth = depthTexture.sample(baseUv).x
 
       // Calculate sample radius based on world radius and resolution
       // causticTexelSize = (1.0 / resolution) * size * 2.0
@@ -296,16 +249,16 @@ export class CausticsMaterial extends MeshBasicNodeMaterial {
       const uv4 = add(baseUv, mul(offset4, sampleRadius))
 
       // Sample normals and convert from [0,1] to [-1,1]
-      const normal1 = sub(mul(texture(normalTexture, uv1).rgb, 2.0), 1.0)
-      const normal2 = sub(mul(texture(normalTexture, uv2).rgb, 2.0), 1.0)
-      const normal3 = sub(mul(texture(normalTexture, uv3).rgb, 2.0), 1.0)
-      const normal4 = sub(mul(texture(normalTexture, uv4).rgb, 2.0), 1.0)
+      const normal1 = sub(mul(normalTexture.sample(uv1).rgb, 2.0), 1.0)
+      const normal2 = sub(mul(normalTexture.sample(uv2).rgb, 2.0), 1.0)
+      const normal3 = sub(mul(normalTexture.sample(uv3).rgb, 2.0), 1.0)
+      const normal4 = sub(mul(normalTexture.sample(uv4).rgb, 2.0), 1.0)
 
       // Sample depths
-      const depth1 = texture(depthTexture, uv1).x
-      const depth2 = texture(depthTexture, uv2).x
-      const depth3 = texture(depthTexture, uv3).x
-      const depth4 = texture(depthTexture, uv4).x
+      const depth1 = depthTexture.sample(uv1).x
+      const depth2 = depthTexture.sample(uv2).x
+      const depth3 = depthTexture.sample(uv3).x
+      const depth4 = depthTexture.sample(uv4).x
 
       // Reconstruct world positions from depth
       const pos1 = worldPosFromDepth({ depth: depth1, coord: uv1 })
@@ -374,106 +327,6 @@ export class CausticsMaterial extends MeshBasicNodeMaterial {
       return vec4(vec3(finalCaustic), 1.0)
     })()
   }
-
-  //* Uniform Accessors ==============================
-
-  get cameraMatrixWorld() {
-    return this._cameraMatrixWorld.value as THREE.Matrix4
-  }
-  set cameraMatrixWorld(v: THREE.Matrix4) {
-    this._cameraMatrixWorld.value = v
-  }
-
-  get cameraProjectionMatrixInv() {
-    return this._cameraProjectionMatrixInv.value as THREE.Matrix4
-  }
-  set cameraProjectionMatrixInv(v: THREE.Matrix4) {
-    this._cameraProjectionMatrixInv.value = v
-  }
-
-  get normalTexture() {
-    return this._normalTexture.value as THREE.Texture
-  }
-  set normalTexture(v: THREE.Texture | null) {
-    this._normalTexture.value = v ?? new THREE.Texture()
-  }
-
-  get depthTexture() {
-    return this._depthTexture.value as THREE.Texture
-  }
-  set depthTexture(v: THREE.Texture | null) {
-    this._depthTexture.value = v ?? new THREE.Texture()
-  }
-
-  get lightDir() {
-    return this._lightDir.value as THREE.Vector3
-  }
-  set lightDir(v: THREE.Vector3) {
-    this._lightDir.value = v
-  }
-
-  get lightPlaneNormal() {
-    return this._lightPlaneNormal.value as THREE.Vector3
-  }
-  set lightPlaneNormal(v: THREE.Vector3) {
-    this._lightPlaneNormal.value = v
-  }
-
-  get lightPlaneConstant() {
-    return this._lightPlaneConstant.value as number
-  }
-  set lightPlaneConstant(v: number) {
-    this._lightPlaneConstant.value = v
-  }
-
-  get near() {
-    return this._near.value as number
-  }
-  set near(v: number) {
-    this._near.value = v
-  }
-
-  get far() {
-    return this._far.value as number
-  }
-  set far(v: number) {
-    this._far.value = v
-  }
-
-  get worldRadius() {
-    return this._worldRadius.value as number
-  }
-  set worldRadius(v: number) {
-    this._worldRadius.value = v
-  }
-
-  get ior() {
-    return this._ior.value as number
-  }
-  set ior(v: number) {
-    this._ior.value = v
-  }
-
-  get resolution() {
-    return this._resolution.value as number
-  }
-  set resolution(v: number) {
-    this._resolution.value = v
-  }
-
-  get size() {
-    return this._size.value as number
-  }
-  set size(v: number) {
-    this._size.value = v
-  }
-
-  get intensity() {
-    return this._intensity.value as number
-  }
-  set intensity(v: number) {
-    this._intensity.value = v
-  }
 }
 
 //* CausticsNormalMaterial ==============================
@@ -485,30 +338,10 @@ export class CausticsNormalMaterial extends MeshNormalNodeMaterial {
     super()
     this.side = side
 
-    // Override normal output to transform to world space
-    // Original GLSL: normal = inverseTransformDirection(normal, viewMatrix)
-    // In TSL we can use normalWorld directly or transform normalView
     this.normalNode = Fn(() => {
-      // normalWorld gives us the world-space normal directly
       return normalize(normalWorld)
     })()
   }
-}
-
-//* FBO Configuration ==============================
-
-const NORMAL_FBO_PROPS = {
-  depthBuffer: true,
-  minFilter: THREE.LinearFilter,
-  magFilter: THREE.LinearFilter,
-  type: THREE.UnsignedByteType,
-}
-
-const CAUSTIC_FBO_PROPS = {
-  minFilter: THREE.LinearMipmapLinearFilter,
-  magFilter: THREE.LinearFilter,
-  type: THREE.FloatType,
-  generateMipmaps: true,
 }
 
 //* React Component ==============================
@@ -546,10 +379,30 @@ export const Caustics: ForwardRefComponent<CausticsProps, THREE.Group> = /* @__P
     const helper = useHelper(debug && camera, THREE.CameraHelper)
 
     // FBOs for front and back face normals/caustics
-    const normalTarget = useFBO(resolution, resolution, NORMAL_FBO_PROPS)
-    const normalTargetB = useFBO(resolution, resolution, NORMAL_FBO_PROPS)
-    const causticsTarget = useFBO(resolution, resolution, CAUSTIC_FBO_PROPS)
-    const causticsTargetB = useFBO(resolution, resolution, CAUSTIC_FBO_PROPS)
+    const normalTarget = useFBO(resolution, resolution, {
+      depthBuffer: true,
+      minFilter: THREE.LinearFilter,
+      magFilter: THREE.LinearFilter,
+      type: THREE.UnsignedByteType,
+    })
+    const normalTargetB = useFBO(resolution, resolution, {
+      depthBuffer: true,
+      minFilter: THREE.LinearFilter,
+      magFilter: THREE.LinearFilter,
+      type: THREE.UnsignedByteType,
+    })
+    const causticsTarget = useFBO(resolution, resolution, {
+      minFilter: THREE.LinearMipmapLinearFilter,
+      magFilter: THREE.LinearFilter,
+      type: THREE.FloatType,
+      generateMipmaps: true,
+    })
+    const causticsTargetB = useFBO(resolution, resolution, {
+      minFilter: THREE.LinearMipmapLinearFilter,
+      magFilter: THREE.LinearFilter,
+      type: THREE.FloatType,
+      generateMipmaps: true,
+    })
 
     // Normal materials for front and back faces
     const [normalMat] = React.useState(() => new CausticsNormalMaterial(THREE.FrontSide))
@@ -703,7 +556,7 @@ export const Caustics: ForwardRefComponent<CausticsProps, THREE.Group> = /* @__P
         plane.current.material.lightProjMatrix = camera.current.projectionMatrix
         plane.current.material.lightViewMatrix = camera.current.matrixWorldInverse
         causticsMaterial.normalTexture = normalTarget.texture
-        causticsMaterial.depthTexture = normalTarget.depthTexture
+        causticsMaterial.depthTexture = normalTarget.depthTexture!
         gl.setRenderTarget(causticsTarget)
         gl.clear()
         // TODO: R3F v10 will have proper WebGPU renderer types
@@ -712,7 +565,7 @@ export const Caustics: ForwardRefComponent<CausticsProps, THREE.Group> = /* @__P
         // Render back face caustics (if enabled)
         causticsMaterial.ior = backsideIOR
         causticsMaterial.normalTexture = normalTargetB.texture
-        causticsMaterial.depthTexture = normalTargetB.depthTexture
+        causticsMaterial.depthTexture = normalTargetB.depthTexture!
         gl.setRenderTarget(causticsTargetB)
         gl.clear()
         // TODO: R3F v10 will have proper WebGPU renderer types

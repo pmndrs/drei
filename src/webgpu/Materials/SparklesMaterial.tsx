@@ -5,7 +5,6 @@ import {
   uniform,
   float,
   vec2,
-  vec3,
   vec4,
   cameraProjectionMatrix,
   screenSize,
@@ -15,6 +14,7 @@ import {
   length,
   clamp,
 } from 'three/tsl'
+import { withUniforms } from '@utils/withUniforms'
 
 //* SparklesMaterial - WebGPU TSL Material for Instanced Quad Sparkles ==============================
 // Based on https://webgpufundamentals.org/webgpu/lessons/webgpu-points.html
@@ -25,24 +25,17 @@ import {
 // - Vertex shader: positions quad corners, applies size & distance attenuation, animates
 // - Fragment shader: uses quad UV for radial glow effect (like gl_PointCoord)
 
-export class SparklesMaterial extends SpriteNodeMaterial {
-  // Uniforms exposed for external updates
-  private _time = uniform(0)
-  private _pixelRatio = uniform(1)
-
-  // @ts-ignore - NodeMaterial properties from parent class
-  declare positionNode: ReturnType<typeof Fn>
-  // @ts-ignore - NodeMaterial properties from parent class
-  declare scaleNode: ReturnType<typeof Fn>
-  // @ts-ignore - NodeMaterial properties from parent class
-  declare colorNode: ReturnType<typeof Fn>
-
+export class SparklesMaterial extends withUniforms(SpriteNodeMaterial, {
+  /** Animation time, advanced by the component each frame */
+  time: () => uniform(0),
+  /** Device pixel ratio, scales the point size */
+  pixelRatio: () => uniform(1),
+}) {
   constructor() {
     super()
+    const { time, pixelRatio } = this.uniforms
 
-    // @ts-ignore - Material properties
     this.transparent = true
-    // @ts-ignore - Material properties
     this.depthWrite = false
 
     //* Read Instance Attributes ==============================
@@ -61,11 +54,11 @@ export class SparklesMaterial extends SpriteNodeMaterial {
 
       // Apply animated noise displacement (same as legacy)
       // modelPosition.y += sin(time * speed + modelPosition.x * noise.x * 100.0) * 0.2
-      pos.y.addAssign(sin(this._time.mul(particleSpeed).add(pos.x.mul(particleNoise.x).mul(100))).mul(0.2))
+      pos.y.addAssign(sin(time.mul(particleSpeed).add(pos.x.mul(particleNoise.x).mul(100))).mul(0.2))
       // modelPosition.z += cos(time * speed + modelPosition.x * noise.y * 100.0) * 0.2
-      pos.z.addAssign(cos(this._time.mul(particleSpeed).add(pos.x.mul(particleNoise.y).mul(100))).mul(0.2))
+      pos.z.addAssign(cos(time.mul(particleSpeed).add(pos.x.mul(particleNoise.y).mul(100))).mul(0.2))
       // modelPosition.x += cos(time * speed + modelPosition.x * noise.z * 100.0) * 0.2
-      pos.x.addAssign(cos(this._time.mul(particleSpeed).add(pos.x.mul(particleNoise.z).mul(100))).mul(0.2))
+      pos.x.addAssign(cos(time.mul(particleSpeed).add(pos.x.mul(particleNoise.z).mul(100))).mul(0.2))
 
       return pos
     })()
@@ -76,7 +69,7 @@ export class SparklesMaterial extends SpriteNodeMaterial {
     // so we only convert from pixel-space point size to world-space quad size:
     // worldSize = pixelSize * 2.0 / (projectionMatrix[1][1] * viewportHeight)
     this.scaleNode = Fn(() => {
-      const pixelSize = particleSize.mul(25.0).mul(this._pixelRatio)
+      const pixelSize = particleSize.mul(25.0).mul(pixelRatio)
       // three 0.185 types element() only on ArrayNodeInterface, so matrix
       // element access is not reachable through the mat4 uniform's type.
       const projY = (
@@ -101,21 +94,5 @@ export class SparklesMaterial extends SpriteNodeMaterial {
       // Final color with alpha based on strength and opacity
       return vec4(particleColor, strength.mul(particleOpacity))
     })()
-  }
-
-  //* Uniform Accessors --------------------------------
-
-  get time() {
-    return this._time.value as number
-  }
-  set time(value) {
-    this._time.value = value
-  }
-
-  get pixelRatio() {
-    return this._pixelRatio.value as number
-  }
-  set pixelRatio(value) {
-    this._pixelRatio.value = value
   }
 }

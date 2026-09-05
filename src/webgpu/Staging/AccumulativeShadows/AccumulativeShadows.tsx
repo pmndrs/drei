@@ -1,19 +1,30 @@
 //* AccumulativeShadows - WebGPU TSL Implementation ==============================
 // Based on "Progressive Light Map Accumulator", by [zalo](https://github.com/zalo/)
-//
-// TSL Conversion: This version uses TSL (Three Shading Language) for WebGPU compatibility
-// - SoftShadowMaterial: Converted from GLSL shaderMaterial to TSL MeshBasicNodeMaterial
-// - ProgressiveShadowMaterial: Replaces onBeforeCompile with TSL nodes
-// - Uses platform-agnostic RenderTarget from #drei-platform
 
 import * as THREE from 'three/webgpu'
-import { MeshBasicNodeMaterial, MeshPhongNodeMaterial } from 'three/webgpu'
-import { Fn, uniform, uniformTexture, texture, uv, vec4, vec3, vec2, float, max, mix, sub, output } from 'three/tsl'
+import { MeshBasicNodeMaterial, MeshPhongNodeMaterial, type Node } from 'three/webgpu'
+import {
+  Fn,
+  uniform,
+  uniformTexture,
+  uv,
+  vec4,
+  vec2,
+  float,
+  max,
+  mix,
+  sub,
+  output,
+  context,
+  materialReference,
+  materialAlphaTest,
+} from 'three/tsl'
 import * as React from 'react'
 import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
 import { RenderTarget } from '#drei-platform'
 import { DiscardMaterial } from '@webgpu/Materials/DiscardMaterial'
 import { ForwardRefComponent } from '@utils/ts-utils'
+import { withUniforms } from '@utils/withUniforms'
 
 function isLight(object: any): object is THREE.Light {
   return object.isLight
@@ -73,96 +84,47 @@ export const accumulativeContext = /* @__PURE__ */ React.createContext<Accumulat
 
 //* SoftShadowMaterial - TSL Implementation ==============================
 // Renders the shadow plane with texture sampling and alpha blending
-// Original GLSL:
-//   gl_FragColor = vec4(color * sampledDiffuseColor.r * blend,
-//     max(0.0, (1.0 - (r + g + b) / alphaTest)) * opacity);
 
-class SoftShadowMaterialImpl extends MeshBasicNodeMaterial {
-  private _color: THREE.UniformNode<'color', THREE.Color>
-  private _blend: THREE.UniformNode<'float', number>
-  private _alphaTest: THREE.UniformNode<'float', number>
-  private _opacity: THREE.UniformNode<'float', number>
-  private _map: ReturnType<typeof uniformTexture>
-
+class SoftShadowMaterialImpl extends withUniforms(MeshBasicNodeMaterial, {
+  /** Shadow color, black */
+  shadowColor: () => uniform(new THREE.Color()),
+  /** Colorblend, how much colors turn to black, 0 is black */
+  blend: () => uniform(2.0),
+}) {
   constructor() {
     super()
 
-    this._color = uniform(new THREE.Color())
-    this._blend = uniform(2.0)
-    this._alphaTest = uniform(0.75)
-    this._opacity = uniform(0)
-    this._map = uniformTexture(new THREE.Texture())
-
+    //* Base Material Properties --
     this.transparent = true
     this.depthWrite = false
+    // Fade in the shadow as frames accumulate.
+    this.opacity = 0
+    this.alphaTest = 0.75
+    // A texture reference requires a placeholder until the light map is attached.
+    this.map = new THREE.Texture()
+    // alphaTest controls shadow softness. Keep the discard threshold at zero
+    // so partially transparent fragments survive.
+    this.alphaTestNode = float(0)
 
     this._buildShader()
   }
 
   private _buildShader() {
-    const colorUniform = this._color
-    const blendUniform = this._blend
-    const alphaTestUniform = this._alphaTest
-    const opacityUniform = this._opacity
-    const mapTex = this._map
+    const { shadowColor, blend } = this.uniforms
+    const map = materialReference('map', 'texture', this)
 
     this.colorNode = Fn(() => {
-      const texCoord = uv()
-      const sampled = texture(mapTex, texCoord)
+      const sampled = context(map, { getUV: () => uv() }) as unknown as Node<'vec4'>
 
       // RGB output: color * red_channel * blend
-      const rgb = colorUniform.mul(sampled.r).mul(blendUniform)
+      const rgb = shadowColor.mul(sampled.r).mul(blend)
 
-      // Alpha calculation: max(0, 1 - (r+g+b)/alphaTest) * opacity
+      // The light map controls alpha. NodeMaterial applies opacity.
       const sum = sampled.r.add(sampled.g).add(sampled.b)
-      const alpha = max(float(0), float(1).sub(sum.div(alphaTestUniform))).mul(opacityUniform)
+      const alpha = max(float(0), float(1).sub(sum.div(materialAlphaTest)))
 
       return vec4(rgb, alpha)
     })()
-  }
-
-  get shadowColor() {
-    return this._color.value
-  }
-  set shadowColor(v: THREE.ColorRepresentation) {
-    if (v instanceof THREE.Color) {
-      this._color.value.copy(v)
-    } else {
-      this._color.value.set(v)
-    }
-  }
-
-  get blend() {
-    return this._blend.value
-  }
-  set blend(v: number) {
-    this._blend.value = v
-  }
-
-  get alphaTest() {
-    return this._alphaTest.value
-  }
-  set alphaTest(v: number) {
-    this._alphaTest.value = v
-  }
-
-  get opacity() {
-    return this._opacity.value
-  }
-  set opacity(v: number) {
-    //  protect from super early set
-    if (!this._opacity) this._opacity = uniform(v)
-    else this._opacity.value = v
-  }
-
-  get map() {
-    if (!this._map) {
-      this._map = uniformTexture(new THREE.Texture())
-    }
-    return this._map.value as THREE.Texture
-  }
-  set map(v: THREE.Texture) {
-    this._map.value = v
   }
 }
 
@@ -175,25 +137,23 @@ class SoftShadowMaterialImpl extends MeshBasicNodeMaterial {
 // - outputNode: blends previous shadow map with current shading via mix()
 // - Uses 'output' node to access the material's computed shading result
 
-class ProgressiveShadowMaterial extends MeshPhongNodeMaterial {
-  private _previousShadowMap: ReturnType<typeof texture>
-  private _averagingWindow: THREE.UniformNode<'float', number>
-
+class ProgressiveShadowMaterial extends withUniforms(MeshPhongNodeMaterial, {
+  /** Accumulation buffer from the previous frame, blended with the current shading */
+  previousShadowMap: () => uniformTexture(new THREE.Texture()),
+  /** Mix 1/averagingWindow of the new shading into the accumulated frames */
+  averagingWindow: () => uniform(100),
+}) {
   constructor(initialTexture: THREE.Texture) {
     super()
 
-    // Create texture node for previous shadow map sampling
-    this._previousShadowMap = texture(initialTexture)
-    this._averagingWindow = uniform(100)
-
+    this.previousShadowMap = initialTexture
     this.fog = false
 
     this._buildShader()
   }
 
   private _buildShader() {
-    const previousMapTex = this._previousShadowMap
-    const averagingWindowUniform = this._averagingWindow
+    const { previousShadowMap, averagingWindow } = this.uniforms
 
     // Vertex: Output clip space directly from UV coordinates
     // This is the official Three.js pattern for UV unwrapping in TSL
@@ -204,21 +164,7 @@ class ProgressiveShadowMaterial extends MeshPhongNodeMaterial {
     // Fragment: Blend previous shadow map with current phong shading
     // 'output' is the built-in node representing the material's computed color
     // This pattern is from the official Three.js ProgressiveLightMapGPU.js
-    this.outputNode = vec4(mix(previousMapTex.sample(uv()), output, float(1).div(averagingWindowUniform)))
-  }
-
-  get previousShadowMap() {
-    return this._previousShadowMap.value as THREE.Texture
-  }
-  set previousShadowMap(v: THREE.Texture) {
-    this._previousShadowMap.value = v
-  }
-
-  get averagingWindow() {
-    return this._averagingWindow.value
-  }
-  set averagingWindow(v: number) {
-    this._averagingWindow.value = v
+    this.outputNode = vec4(mix(previousShadowMap.sample(uv()), output, float(1).div(averagingWindow)))
   }
 }
 
@@ -379,7 +325,7 @@ export const AccumulativeShadows: ForwardRefComponent<AccumulativeShadowsProps, 
 
       // Update material properties when props change
       React.useEffect(() => {
-        softShadowMat.shadowColor = color
+        softShadowMat.shadowColor.set(color)
         softShadowMat.blend = colorBlend
         softShadowMat.map = plm.progressiveLightMap2.texture as THREE.Texture
         softShadowMat.toneMapped = toneMapped

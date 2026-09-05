@@ -16,6 +16,7 @@ import {
   exp,
   select,
 } from 'three/tsl'
+import { withUniforms } from '@utils/withUniforms'
 
 //* StarfieldMaterial - WebGPU TSL Material for Instanced Quad Stars ==============================
 // Based on https://webgpufundamentals.org/webgpu/lessons/webgpu-points.html
@@ -26,26 +27,18 @@ import {
 // - Vertex shader: positions quad center, applies size with distance attenuation & time animation
 // - Fragment shader: uses quad UV for circular fade effect (like gl_PointCoord)
 
-export class StarfieldMaterial extends SpriteNodeMaterial {
-  //* Uniforms ==============================
-  private _time = uniform(0.0)
-  private _fade = uniform(1.0)
-
-  // @ts-ignore - NodeMaterial properties from parent class
-  declare positionNode: ReturnType<typeof Fn>
-  // @ts-ignore - NodeMaterial properties from parent class
-  declare scaleNode: ReturnType<typeof Fn>
-  // @ts-ignore - NodeMaterial properties from parent class
-  declare colorNode: ReturnType<typeof Fn>
-
+export class StarfieldMaterial extends withUniforms(SpriteNodeMaterial, {
+  /** Animation time, advanced by the component each frame */
+  time: () => uniform(0.0),
+  /** 1 = soft circular fade, 0 = hard-edged circle */
+  fade: () => uniform(1.0),
+}) {
   constructor() {
     super()
+    const { time, fade } = this.uniforms
 
-    // @ts-ignore - Material properties
     this.transparent = true
-    // @ts-ignore - Material properties
     this.depthWrite = false
-    // @ts-ignore - Material properties
     this.blending = AdditiveBlending
 
     //* Read Instance Attributes ==============================
@@ -72,9 +65,8 @@ export class StarfieldMaterial extends SpriteNodeMaterial {
       // Distance attenuation: 30.0 / -viewPos.z
       const distanceAttenuation = float(30.0).div(viewPos.z.negate())
 
-      // Time-based twinkle animation: reduced amplitude (3.5 + 0.3*sin) vs original (3.0 + sin)
-      // This prevents all stars pulsing to max size simultaneously causing bright flash
-      const timeScale = float(3.5).add(sin(this._time.add(100.0)).mul(0.3))
+      // Low-amplitude twinkling limits bright flashes from synchronized stars.
+      const timeScale = float(3.5).add(sin(time.add(100.0)).mul(0.3))
 
       // Final size calculation - keep modest to avoid excessive overlap
       const size = particleSize.mul(distanceAttenuation).mul(timeScale).mul(0.04)
@@ -101,7 +93,7 @@ export class StarfieldMaterial extends SpriteNodeMaterial {
       const hardMask = float(1.0).sub(d.smoothstep(0.3, 0.5))
 
       // Select based on fade uniform: soft fade or hard circle
-      const circularOpacity = select(this._fade.equal(1.0), softFade, hardMask)
+      const circularOpacity = select(fade.equal(1.0), softFade, hardMask)
 
       // Reduce overall opacity to prevent additive buildup with thousands of stars
       const opacity = circularOpacity.mul(0.7)
@@ -110,27 +102,11 @@ export class StarfieldMaterial extends SpriteNodeMaterial {
     })()
   }
 
-  //* Uniform Accessors ==============================
-
   setTime(time: number) {
-    this._time.value = time
+    this.time = time
   }
 
   setFade(fade: number) {
-    this._fade.value = fade
-  }
-
-  get time() {
-    return this._time.value as number
-  }
-  set time(value) {
-    this._time.value = value
-  }
-
-  get fade() {
-    return this._fade.value as number
-  }
-  set fade(value) {
-    this._fade.value = value
+    this.fade = fade
   }
 }

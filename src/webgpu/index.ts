@@ -14,3 +14,6 @@ export * from './UI'
 export * from './Staging'
 export * from './Effects'
 export * from './Textures'
+
+export { withUniforms } from '@utils/withUniforms'
+export type { UniformFactory, UniformTable, UniformValue, WithUniforms, ReservedUniformName } from '@utils/withUniforms'

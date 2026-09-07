@@ -236,14 +236,17 @@ export class WireframeMaterialImpl extends withUniforms(MeshBasicNodeMaterial, {
  * @returns The modified geometry (for chaining)
  */
 export function setBarycentricCoordinates(geometry: THREE.BufferGeometry): THREE.BufferGeometry {
-  const position = geometry.getAttribute('position')
-  const count = position.count
-
   // Check if already indexed - we need non-indexed geometry for unique barycentric coords
   if (geometry.index) {
     // Convert to non-indexed
     geometry = geometry.toNonIndexed()
   }
+
+  // Read the vertex count only after the non-indexed conversion: toNonIndexed()
+  // expands the position attribute, so sizing the buffer from the original
+  // indexed count leaves the barycentric attribute too small (#2814)
+  const position = geometry.getAttribute('position')
+  const count = position.count
 
   const barycentricArray = new Float32Array(count * 3)
 

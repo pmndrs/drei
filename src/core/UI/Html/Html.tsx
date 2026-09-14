@@ -452,7 +452,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
             isMeshSizeSet.current = true
           }
 
-          occlusionMeshRef.current.lookAt(gl.camera.position)
+          occlusionMeshRef.current.lookAt(camera.position)
         }
       }
     })

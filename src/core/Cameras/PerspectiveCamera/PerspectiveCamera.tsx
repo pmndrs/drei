@@ -76,13 +76,15 @@ export const PerspectiveCamera: ForwardRefComponent<PerspectiveCameraProps, Pers
       const functional = isFunction(children)
       useFrame((state) => {
         if (functional && (frames === Infinity || count < frames)) {
+          const renderer = state.renderer
+          const oldRenderTarget = renderer.getRenderTarget()
           groupRef.current.visible = false
-          state.gl.setRenderTarget(fbo)
+          renderer.setRenderTarget(fbo)
           oldEnvMap = state.scene.background
           if (envMap) state.scene.background = envMap
-          state.gl.render(state.scene, cameraRef.current)
+          renderer.render(state.scene, cameraRef.current)
           state.scene.background = oldEnvMap
-          state.gl.setRenderTarget(null)
+          renderer.setRenderTarget(oldRenderTarget as THREE.WebGLRenderTarget | null)
           groupRef.current.visible = true
           count++
         }

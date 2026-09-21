@@ -21,6 +21,24 @@ fixedThree() {
     && mv "$tmp" "$pkg"
 }
 
+# Scaffolders install the newest react, but @react-three/fiber 9.7 caps its
+# react peer at <19.3, so `npm i $TGZ` fails with ERESOLVE on a fresh app.
+# Keep the app on the react line fiber accepts.
+fixedReact() {
+  local version="$1"
+  local pkg="$2"
+
+  local tmp
+  tmp=$(mktemp)
+
+  jq --arg v "$version" '
+    .dependencies = (.dependencies // {}) |
+    .dependencies.react = $v |
+    .dependencies["react-dom"] = $v
+  ' "$pkg" > "$tmp" \
+    && mv "$tmp" "$pkg"
+}
+
 PORT=5188
 DIST=../../dist
 tmp=$(mktemp -d)
@@ -60,6 +78,7 @@ appdir="$tmp/$appname"
 
 # drei
 fixedThree $THREE_VERSION "$appdir/package.json"
+fixedReact "~19.2.0" "$appdir/package.json"
 (cd $appdir; npm i; npm i $TGZ)
 
 # App.tsx
@@ -87,6 +106,7 @@ appdir="$tmp/$appname"
 
 # drei
 fixedThree $THREE_VERSION "$appdir/package.json"
+fixedReact "~19.2.0" "$appdir/package.json"
 (cd $appdir; npm i $TGZ)
 
 # App.tsx

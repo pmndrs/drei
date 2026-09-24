@@ -7,7 +7,9 @@ import {
 } from '@webgpu/Materials/WireframeMaterial'
 
 export interface WireframeProps {
+  /** Geometry to wireframe; omit to wireframe the parent Mesh/Line/Points */
   geometry?: THREE.BufferGeometry | React.RefObject<THREE.BufferGeometry>
+  /** Hide the diagonal edge shared by the two triangles of each quad, default: false */
   simplify?: boolean
 }
 
@@ -26,10 +28,6 @@ function isGeometry(object?: any | null): object is THREE.BufferGeometry {
 
 function isRefObject<T>(object?: any | null): object is React.RefObject<T> {
   return !!(object as React.RefObject<T>)?.current
-}
-
-function isRef<T>(object?: any | null): object is React.Ref<T> {
-  return object?.current !== undefined
 }
 
 function isWireframeGeometry(geometry: any): geometry is THREE.WireframeGeometry {
@@ -69,26 +67,27 @@ function WireframeWithCustomGeo({
   const [geometry, setGeometry] = React.useState<THREE.BufferGeometry>(null!)
 
   React.useLayoutEffect(() => {
-    let geom = getInputGeometry(customGeometry!)
+    const input = getInputGeometry(customGeometry!)
 
-    if (!geom) {
+    if (!input) {
       throw new Error('Wireframe: geometry prop must be a BufferGeometry or a ref to a BufferGeometry.')
     }
 
-    // setBarycentricCoordinates returns a new geometry if conversion was needed
-    geom = setBarycentricCoordinates(geom)
+    // setBarycentricCoordinates returns a NEW geometry when the input was
+    // indexed, so always draw its return value - the input has no barycentric
+    // attribute in that case.
+    const geom = setBarycentricCoordinates(input, simplify)
+    setGeometry(geom)
 
-    if (isRef(customGeometry)) {
-      setGeometry(geom)
+    return () => {
+      if (geom !== input) geom.dispose()
     }
   }, [simplify, customGeometry])
 
-  const drawnGeo = isRef(customGeometry) ? geometry : customGeometry
-
   return (
     <>
-      {drawnGeo && (
-        <mesh geometry={drawnGeo}>
+      {geometry && (
+        <mesh geometry={geometry}>
           <WireframeMaterial {...props} />
         </mesh>
       )}
@@ -111,7 +110,7 @@ function WireframeWithoutCustomGeo({
     const og = geom.clone()
 
     // setBarycentricCoordinates returns a new geometry if conversion was needed
-    geom = setBarycentricCoordinates(geom)
+    geom = setBarycentricCoordinates(geom, simplify)
 
     // Update parent mesh geometry if it changed
     const parent = objectRef.current.parent as THREE.Mesh

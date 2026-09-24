@@ -21,6 +21,20 @@ Controls use Three's built-in editors and support nested folders, colors, slider
 
 ### Fixes
 
+#### `Html` no longer shadows the renderer in its frame loop
+
+`Html`'s `useFrame` callback named its state argument `gl`, hiding the renderer
+destructured from `useThree()` in the same component. The blending-occlusion
+branch then read `gl.camera.position`, which only worked because `gl` there was
+the r3f root state, not the renderer (#2819). The callback no longer takes the
+argument and the occluder mesh looks at the already-in-scope scene `camera`.
+While there, the component now reads `renderer.domElement` instead of the
+deprecated `gl`, which warned on every render under r3f v10. Added a story that
+mounts blending occlusion with the default plane occluder behind a sphere, so the
+branch is rendered by the headless story run.
+
+**Files changed:** `src/core/UI/Html/Html.tsx`, `src/core/UI/Html/HTML.stories.tsx`
+
 #### Fix WebGPU node material constructors
 
 Fixed constructor crashes by exposing custom uniforms through `withUniforms`

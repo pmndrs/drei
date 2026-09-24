@@ -87,7 +87,7 @@ export const GizmoHelper = ({
           onTarget?.() ||
           (isCameraControls(defaultControls) ? defaultControls.getTarget(focusPoint.current) : defaultControls?.target)
       }
-      radius.current = mainCamera.position.distanceTo(target)
+      radius.current = mainCamera.position.distanceTo(focusPoint.current)
 
       // Rotate from current camera orientation
       q1.copy(mainCamera.quaternion)

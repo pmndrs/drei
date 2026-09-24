@@ -1,10 +1,81 @@
 import * as React from 'react'
-import { GLTFLoader, DRACOLoader, MeshoptDecoder, GLTF } from 'three-stdlib'
+import { GLTFLoader, DRACOLoader, GLTF } from 'three-stdlib'
 import { ObjectMap, useLoader } from '@react-three/fiber'
 import { Clone, CloneProps } from './Clone'
 
 let dracoLoader: DRACOLoader | null = null
 let decoderPath: string = 'https://www.gstatic.com/draco/versioned/decoders/1.5.5/'
+let meshoptDecoder: MeshoptDecoder | null = null
+let meshoptDecoderPromise: Promise<MeshoptDecoder> | null = null
+
+type MeshoptDecoder = {
+  supported: boolean
+  ready: Promise<void>
+  decodeGltfBuffer: (
+    target: Uint8Array,
+    count: number,
+    size: number,
+    source: Uint8Array,
+    mode: string,
+    filter?: string
+  ) => void
+  decodeGltfBufferAsync?: (
+    count: number,
+    size: number,
+    source: Uint8Array,
+    mode: string,
+    filter?: string
+  ) => Promise<Uint8Array>
+}
+type LazyMeshoptDecoder = Pick<MeshoptDecoder, 'supported' | 'ready' | 'decodeGltfBuffer' | 'decodeGltfBufferAsync'>
+type DecodeGltfBufferParameters = Parameters<MeshoptDecoder['decodeGltfBuffer']>
+
+function getMeshoptDecoder() {
+  if (!meshoptDecoderPromise) {
+    meshoptDecoderPromise = import('three/examples/jsm/libs/meshopt_decoder.module.js').then(({ MeshoptDecoder }) => {
+      meshoptDecoder = MeshoptDecoder as MeshoptDecoder
+      return meshoptDecoder
+    })
+  }
+
+  return meshoptDecoderPromise
+}
+
+let lazyMeshoptDecoder: LazyMeshoptDecoder | null = null
+function createLazyMeshoptDecoder(): LazyMeshoptDecoder {
+  if (lazyMeshoptDecoder) return lazyMeshoptDecoder
+
+  lazyMeshoptDecoder = {
+    get supported() {
+      return typeof WebAssembly === 'object' && (meshoptDecoder?.supported ?? true)
+    },
+    get ready() {
+      return getMeshoptDecoder().then((decoder) => decoder.ready)
+    },
+    decodeGltfBuffer: (...args: DecodeGltfBufferParameters) => {
+      if (!meshoptDecoder) {
+        throw new Error('Drei: MeshoptDecoder is not ready. Use decodeGltfBufferAsync or await decoder.ready first.')
+      }
+
+      meshoptDecoder.decodeGltfBuffer(...args)
+    },
+    decodeGltfBufferAsync: async (count, size, source, mode, filter) => {
+      const decoder = await getMeshoptDecoder()
+
+      if (decoder.decodeGltfBufferAsync) {
+        return decoder.decodeGltfBufferAsync(count, size, source, mode, filter)
+      }
+
+      await decoder.ready
+
+      const result = new Uint8Array(count * size)
+      decoder.decodeGltfBuffer(result, count, size, source, mode, filter)
+      return result
+    },
+  }
+
+  return lazyMeshoptDecoder
+}
 
 type Path = string | string[]
 type UseDraco = boolean | string
@@ -24,7 +95,7 @@ function extensions(useDraco: UseDraco = true, useMeshopt: UseMeshopt = true, ex
       loader.setDRACOLoader(dracoLoader)
     }
     if (useMeshopt) {
-      loader.setMeshoptDecoder(typeof MeshoptDecoder === 'function' ? MeshoptDecoder() : MeshoptDecoder)
+      loader.setMeshoptDecoder(createLazyMeshoptDecoder())
     }
   }
 }

@@ -163,6 +163,43 @@ Closes #2811.
 
 ### Internal
 
+#### The examples app is typechecked, and CI runs it
+
+`examples/` had never been typechecked. Its `tsconfig` was there, but nothing
+ran it, and the demos had drifted from the v11 API in ways that only a type
+checker would catch: `Edges` given a material child and a `visible` prop it
+no longer takes, `CubeTexture` rendered without the `files`/`path` it
+requires, `SpriteAnimator` handed `fps="18"`, `Html` a `maxWidth` prop that
+does not exist, `Example` an `onPointerDown` typed as a DOM mouse event, and
+`FaceControls` still written against the pre-v11 API (`autostart`, `webcam`,
+`webcamVideoTextureSrc`, `onVideoFrame`, `controls.detect`). The demos are
+documentation of how to use v11, so each of those was a bug, not noise.
+`FaceControls` was rewritten to the `manualDetect` + `manualUpdate` pattern
+its stories use; the rest were corrected in place.
+
+Two of the errors were the checker disagreeing with itself. `examples/` had its
+own `@types/react`, so drei's files (resolved from the root) and the demos
+(resolved from `examples/`) saw two structurally identical but unrelated
+`Ref` types and could not pass one to the other. It also resolved a newer
+`typescript` than root, which judged two `@ts-expect-error` directives in
+`core/UI/Select` stale that root's compiler still needs. Neither was fixable
+with `paths` (tried; worse). Both are fixed by removing the duplicates:
+`examples/` no longer declares `@types/react`, `@types/react-dom` or
+`typescript`, so it inherits root's through normal module resolution, and
+`typecheck` runs root's compiler explicitly. `noUnusedLocals` and
+`noUnusedParameters` were dropped from the examples tsconfig for the same
+reason the earlier `noImplicitAny` alignment happened: they were only ever
+firing inside `../src`, on files root considers fine.
+
+`yarn test` now includes `test:examples`, and the `lint` CI job installs
+`examples/` and runs it.
+
+**Files changed:** `examples/package.json`, `examples/tsconfig.json`,
+`examples/yarn.lock`, `examples/src/demos/**`, `package.json`,
+`.github/workflows/release.yml`
+
+Fixes #2808.
+
 #### "Agnostic" was an assumption about a directory, and four components broke it
 
 110 of 143 components are classified `agnostic` — they live in `core/`,

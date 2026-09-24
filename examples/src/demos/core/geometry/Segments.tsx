@@ -1,7 +1,7 @@
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { OrbitControls } from '@react-three/drei/core'
 import { Segments, Segment, SegmentProps, SegmentObject } from '@react-three/drei/legacy'
-import { Segments as WebGPUSegments, Segment as WebGPUSegment } from '@react-three/drei/webgpu'
+import { Segment as WebGPUSegment } from '@react-three/drei/webgpu'
 import { ExampleCard } from '../../../components/ExampleCard'
 import { PlatformSwitch } from '@ex/components/PlatformSwitch'
 import { useRef } from 'react'
@@ -24,7 +24,7 @@ function Scene() {
 
   // for ref based update
   const segmentRef = useRef<SegmentObject>(null)
-  useFrame(({ elapsed }, delta) => {
+  useFrame(({ elapsed }) => {
     if (!segmentRef.current) return
 
     // Askew rotation: different frequencies and phases for each axis

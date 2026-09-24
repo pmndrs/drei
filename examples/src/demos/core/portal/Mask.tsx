@@ -1,4 +1,4 @@
-import { Suspense, useState } from 'react'
+import { Suspense, useState, type ComponentProps } from 'react'
 import {
   Mask,
   useMask,
@@ -11,8 +11,6 @@ import {
 } from '@react-three/drei/core'
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
-import { WebGPURenderer } from 'three/webgpu'
-import { useThree } from '@react-three/fiber'
 
 //* Mask Demo ==============================
 
@@ -29,7 +27,8 @@ const CircularMask = (props: any) => (
 )
 
 //* Box Component ---------------------------------
-const Box = ({ args = [1, 4, 1], radius = 0.05, smoothness = 4, color = 'black', ...boxProps }) => (
+type BoxProps = ComponentProps<typeof RoundedBox> & { color?: string }
+const Box = ({ args = [1, 4, 1], radius = 0.05, smoothness = 4, color = 'black', ...boxProps }: BoxProps) => (
   <RoundedBox args={args} radius={radius} smoothness={smoothness} {...boxProps}>
     <meshPhongMaterial color={color} />
   </RoundedBox>
@@ -90,9 +89,6 @@ function Scene() {
     </>
   )
 }
-
-const testRenderer = new WebGPURenderer()
-testRenderer.init()
 
 export default function MaskDemo() {
   return (

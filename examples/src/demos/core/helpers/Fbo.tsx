@@ -24,7 +24,7 @@ function SpinningThing() {
   )
 }
 
-function TargetWrapper({ target }: { target: THREE.RenderTarget }) {
+function TargetWrapper({ target }: { target: ReturnType<typeof useFBO> }) {
   const cam = useRef<THREE.PerspectiveCamera>(null!)
 
   const scene = useMemo(() => {
@@ -53,8 +53,6 @@ function TargetWrapper({ target }: { target: THREE.RenderTarget }) {
 }
 
 function Scene() {
-  const fbo = useFBO(256, 256)
-
   return (
     <>
       <OrbitControls makeDefault />
@@ -63,7 +61,10 @@ function Scene() {
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
 
-      <TargetWrapper target={fbo} />
+      {/* Fbo is the declarative wrapper around useFBO; the render target is handed to children */}
+      <Fbo width={256} height={256}>
+        {(target) => <TargetWrapper target={target} />}
+      </Fbo>
 
       <gridHelper args={[10, 10, '#444', '#333']} position={[0, -2, 0]} />
     </>

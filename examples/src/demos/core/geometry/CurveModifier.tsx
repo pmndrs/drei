@@ -1,5 +1,5 @@
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
-import { CurveModifier, OrbitControls } from '@react-three/drei/core'
+import { OrbitControls } from '@react-three/drei/core'
 import { Line } from '@react-three/drei/legacy'
 import { Line as WebGPIULine } from '@react-three/drei/webgpu'
 import { PlatformSwitch } from '@ex/components/PlatformSwitch'

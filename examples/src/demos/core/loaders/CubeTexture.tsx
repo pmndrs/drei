@@ -13,12 +13,21 @@ function Scene() {
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
 
-      {/* Mesh with cube texture environment map */}
-      <mesh>
-        <sphereGeometry args={[1, 32, 32]} />
-        <meshStandardMaterial color="hotpink" metalness={1} roughness={0} />
-        <CubeTexture />
-      </mesh>
+      {/* CubeTexture loads the six faces and hands the texture to its children */}
+      <CubeTexture
+        files={['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg']}
+        path="https://threejs.org/examples/textures/cube/Park3Med/"
+      >
+        {(texture) => (
+          <>
+            <primitive object={texture} attach="background" />
+            <mesh>
+              <sphereGeometry args={[1, 32, 32]} />
+              <meshStandardMaterial envMap={texture} metalness={1} roughness={0} />
+            </mesh>
+          </>
+        )}
+      </CubeTexture>
 
       <gridHelper args={[10, 10, '#444', '#333']} position={[0, -2, 0]} />
     </>
@@ -31,13 +40,6 @@ export default function CubeTextureDemo() {
       <ExampleCard demoName="CubeTexture" />
 
       <div className="demo-canvas">
-        <div style={{ padding: '20px', background: '#222', color: '#fff', textAlign: 'center' }}>
-          <p>
-            <strong>Note:</strong> CubeTexture requires cube map images.
-            <br />
-            See documentation for setup details.
-          </p>
-        </div>
         <CanvasWithToggle camera={{ position: [0, 0, 3], fov: 50 }}>
           <Scene />
         </CanvasWithToggle>

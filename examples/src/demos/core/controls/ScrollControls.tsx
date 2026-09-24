@@ -1,4 +1,4 @@
-import { ScrollControls, useScroll, OrbitControls } from '@react-three/drei/core'
+import { ScrollControls, useScroll } from '@react-three/drei/core'
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 import { useFrame } from '@react-three/fiber'

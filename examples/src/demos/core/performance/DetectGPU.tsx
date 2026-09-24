@@ -23,7 +23,7 @@ function Scene() {
       {/* GPU detection */}
       <DetectGPU>
         {({ device, fps, gpu, isMobile, tier, type }) => (
-          <Html maxWidth={600}>
+          <Html style={{ maxWidth: 600 }}>
             | device {device} fps {fps} | gpu {gpu} isMobile {isMobile?.toString()} | Tier {tier.toString()} Type {type}{' '}
             |
           </Html>

@@ -19,7 +19,7 @@ function Player() {
   const ref = useRef<THREE.Mesh>(null!)
   const [, get] = useKeyboardControls<Controls>()
 
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     const { forward, back, left, right, jump } = get()
     const speed = 5 * delta
 

@@ -1,5 +1,5 @@
 import { useFrame } from '@react-three/fiber'
-import { CameraShake, OrbitControls, PerspectiveCamera } from '@react-three/drei/core'
+import { CameraShake, OrbitControls } from '@react-three/drei/core'
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 import { useRef } from 'react'

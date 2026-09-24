@@ -1,7 +1,8 @@
-import { useRef } from 'react'
+import { useRef, type ReactNode } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useGLTF, Edges, CameraControls, Environment, PivotControls } from '@react-three/drei'
 import { useControls } from 'leva'
+import * as THREE from 'three'
 
 import { MeshPortalMaterial } from '@react-three/drei/legacy'
 
@@ -35,21 +36,31 @@ const MeshPortalDemo = () => (
   </Canvas>
 )
 
-function Side({ rotation = [0, 0, 0], bg = '#f0f0f0', children, index }) {
-  const mesh = useRef()
+type SideProps = {
+  rotation?: [number, number, number]
+  bg?: string
+  children: ReactNode
+  index: number
+}
+
+function Side({ rotation = [0, 0, 0], bg = '#f0f0f0', children, index }: SideProps) {
+  const mesh = useRef<THREE.Mesh>(null!)
   const { worldUnits } = useControls({ worldUnits: false })
   const { nodes } = useGLTF('/models/aobox-transformed.glb')
-  useFrame((state, delta) => {
+  const cube = nodes.Cube as THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial>
+  useFrame((_, delta) => {
     mesh.current.rotation.x = mesh.current.rotation.y += delta
   })
   return (
+    // @ts-expect-error - `resolution` is optional at runtime (the component defaults it), but the legacy
+    // `portalMaterialImpl` element declares it required, so no prop set satisfies PortalProps. Same as its story.
     <MeshPortalMaterial worldUnits={worldUnits} attach={`material-${index}`}>
       {/** Everything in here is inside the portal and isolated from the canvas */}
       <ambientLight intensity={0.5} />
       <Environment preset="city" />
       {/** A box with baked AO */}
-      <mesh castShadow receiveShadow rotation={rotation} geometry={nodes.Cube.geometry}>
-        <meshStandardMaterial aoMapIntensity={1} aoMap={nodes.Cube.material.aoMap} color={bg} />
+      <mesh castShadow receiveShadow rotation={rotation} geometry={cube.geometry}>
+        <meshStandardMaterial aoMapIntensity={1} aoMap={cube.material.aoMap} color={bg} />
         <spotLight
           castShadow
           color={bg}

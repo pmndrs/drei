@@ -75,7 +75,7 @@ function assignUniform(node: UniformNode<any, any> | TextureNode, factory: Unifo
 /**
  * Exposes custom TSL uniforms as material properties. Build shaders from `this.uniforms`.
  * Use Three's material nodes for built-in properties.
- * Create new instances for independent uniforms. `clone()` and `copy()` share shader graphs.
+ * `clone()` and `copy()` give each instance its own uniforms and keep the graphs its constructor built.
  *
  * @example
  * class PortalMaterial extends withUniforms(MeshBasicNodeMaterial, {
@@ -161,9 +161,24 @@ export function withUniforms<B extends AnyCtor, U extends Record<string, Uniform
       return this._uniforms
     }
 
-    /** Copies values for inherited accessors that NodeMaterial.copy does not visit. */
+    /**
+     * Keeps this instance's shader graphs and copies the source's uniform values.
+     *
+     * Graphs built by the constructor close over this instance's uniform nodes.
+     * `NodeMaterial.copy()` assigns node properties by reference, which would bind
+     * this material's shader to the source's uniform nodes and leave its own
+     * unread (#2828). A graph the source holds in a slot this instance's
+     * constructor left empty is shared, as three shares it.
+     */
     copy(source: this): this {
+      const ownGraphs: [string, unknown][] = []
+      for (const key of Object.keys(this)) {
+        const mine = (this as any)[key]
+        const theirs = (source as any)[key]
+        if (mine && mine.isNode && theirs && theirs.isNode) ownGraphs.push([key, mine])
+      }
       super.copy(source)
+      for (const [key, node] of ownGraphs) (this as any)[key] = node
       const from = (source as any)._uniforms as Record<string, UniformNode<any, any> | TextureNode> | undefined
       if (!from) return this
       for (const key of keys) {

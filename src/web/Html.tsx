@@ -457,6 +457,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
             {geometry || <planeGeometry />}
             {material || (
               <shaderMaterial
+                transparent
                 side={DoubleSide}
                 vertexShader={shaders.vertexShader}
                 fragmentShader={shaders.fragmentShader}

@@ -19,7 +19,42 @@ Controls use Three's built-in editors and support nested folders, colors, slider
 **Files changed:** `src/webgpu/Performance/Inspector`, `src/webgpu/index.ts`,
 `scripts/generate-native-exports.ts`, `examples/src/demos/componentRegistry.tsx`
 
-### Fixes
+#### `MeshDiscardMaterial` now has a WebGPU implementation
+
+`src/webgpu/Materials/DiscardMaterial` already held the TSL material — a
+`MeshBasicNodeMaterial` whose `fragmentNode` calls `Discard()` — but only as a
+process-wide singleton that `MeshTransmissionMaterial` and `AccumulativeShadows`
+swap onto a mesh for the duration of an FBO pass. There was no JSX wrapper, and
+nothing named `MeshDiscardMaterial` was exported from `/webgpu` at all;
+importing the legacy one into a WebGPU app hands `WebGPURenderer` a GLSL
+`ShaderMaterial`.
+
+Added `<MeshDiscardMaterial />` for the WebGPU entry. To give each element its
+own material without duplicating the TSL, `DiscardMaterial.tsx` now exports the
+constructible `DiscardNodeMaterial` class and the existing `DiscardMaterial`
+export is an instance of it — unchanged in type and behaviour for its current
+callers.
+
+The prop surface is `meshBasicMaterial` rather than legacy's `shaderMaterial`,
+because that is what the underlying material actually is; the props that do
+anything (`side`, `transparent`, `opacity`, `depthWrite`, `colorWrite`, …) are
+common to both. Ref behaviour matches: a `ForwardRefComponent` handing back the
+material instance.
+
+`src/native/index.ts` is generated from the built `/webgpu` declarations and
+still predates this export, so `MeshDiscardMaterial` is not yet re-exported for
+React Native — `yarn generate:native` will pick it up.
+
+**Files changed:**
+`src/webgpu/Materials/MeshDiscardMaterial/MeshDiscardMaterial.tsx`,
+`src/webgpu/Materials/MeshDiscardMaterial/MeshDiscardMaterial.stories.tsx`,
+`src/webgpu/Materials/MeshDiscardMaterial/index.ts`,
+`src/webgpu/Materials/DiscardMaterial/DiscardMaterial.tsx`,
+`src/webgpu/Materials/index.ts`
+
+Tracked in #2660.
+
+### Bug Fixes
 
 #### `Html` no longer shadows the renderer in its frame loop
 
@@ -61,8 +96,6 @@ Also fixed portal blur mask generation and cleanup.
 **Files changed:** `src/utils/withUniforms.ts`, `src/webgpu/Materials`,
 `src/webgpu/Effects`, `src/webgpu/Staging`, `src/webgpu/index.ts`
 
-### Bug Fixes
-
 #### WebGPU `Wireframe`: barycentric buffer sized before de-indexing, and `simplify` did nothing
 
 `setBarycentricCoordinates` read `position.count` from the geometry it was
@@ -92,45 +125,6 @@ with `npx vitest run <file> --environment node` and is not part of `yarn test`.
 **Files changed:** `src/webgpu/Materials/WireframeMaterial/WireframeMaterial.tsx`,
 `src/webgpu/Materials/WireframeMaterial/WireframeMaterial.test.ts`,
 `src/webgpu/Geometry/Wireframe/Wireframe.tsx`
-
-### Features
-
-#### `MeshDiscardMaterial` now has a WebGPU implementation
-
-`src/webgpu/Materials/DiscardMaterial` already held the TSL material — a
-`MeshBasicNodeMaterial` whose `fragmentNode` calls `Discard()` — but only as a
-process-wide singleton that `MeshTransmissionMaterial` and `AccumulativeShadows`
-swap onto a mesh for the duration of an FBO pass. There was no JSX wrapper, and
-nothing named `MeshDiscardMaterial` was exported from `/webgpu` at all;
-importing the legacy one into a WebGPU app hands `WebGPURenderer` a GLSL
-`ShaderMaterial`.
-
-Added `<MeshDiscardMaterial />` for the WebGPU entry. To give each element its
-own material without duplicating the TSL, `DiscardMaterial.tsx` now exports the
-constructible `DiscardNodeMaterial` class and the existing `DiscardMaterial`
-export is an instance of it — unchanged in type and behaviour for its current
-callers.
-
-The prop surface is `meshBasicMaterial` rather than legacy's `shaderMaterial`,
-because that is what the underlying material actually is; the props that do
-anything (`side`, `transparent`, `opacity`, `depthWrite`, `colorWrite`, …) are
-common to both. Ref behaviour matches: a `ForwardRefComponent` handing back the
-material instance.
-
-`src/native/index.ts` is generated from the built `/webgpu` declarations and
-still predates this export, so `MeshDiscardMaterial` is not yet re-exported for
-React Native — `yarn generate:native` will pick it up.
-
-**Files changed:**
-`src/webgpu/Materials/MeshDiscardMaterial/MeshDiscardMaterial.tsx`,
-`src/webgpu/Materials/MeshDiscardMaterial/MeshDiscardMaterial.stories.tsx`,
-`src/webgpu/Materials/MeshDiscardMaterial/index.ts`,
-`src/webgpu/Materials/DiscardMaterial/DiscardMaterial.tsx`,
-`src/webgpu/Materials/index.ts`
-
-Tracked in #2660.
-
-### Fixed
 
 #### `BakeShadows` was a silent no-op on WebGPU
 
@@ -221,8 +215,6 @@ would have outlived the conversion; the derived status now stands on its own.
 `src/webgpu/Materials/index.ts`, `component-overrides.json`
 
 Closes #2811.
-
-### Bug Fixes
 
 #### Legacy `ConvolutionMaterial` ignored `depthToBlurRatioBias`
 

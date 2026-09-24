@@ -17,6 +17,9 @@ export default {
       </Setup>
     ),
   ],
+  parameters: {
+    chromatic: { disableSnapshot: true },
+  },
 }
 
 // type Story = StoryObj

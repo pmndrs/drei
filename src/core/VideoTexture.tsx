@@ -4,17 +4,22 @@ import * as THREE from 'three'
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 import { useThree } from '@react-three/fiber'
 import { suspend } from 'suspend-react'
-import { type default as Hls, Events } from 'hls.js'
+import { type default as Hls } from 'hls.js'
 
 const IS_BROWSER = /* @__PURE__ */ (() =>
   typeof window !== 'undefined' &&
   typeof window.document?.createElement === 'function' &&
   typeof window.navigator?.userAgent === 'string')()
 
-let _HLSModule: typeof import('hls.js') | null = null
-async function getHls(...args: ConstructorParameters<typeof Hls>) {
-  _HLSModule ??= await import('hls.js') // singleton
-  const Ctor = _HLSModule.default
+type HLSModule = typeof import('hls.js')
+
+let _HLSModule: HLSModule | null = null
+async function getHlsModule() {
+  return (_HLSModule ??= await import('hls.js')) // singleton
+}
+
+function createHls(HLSModule: HLSModule, ...args: ConstructorParameters<typeof Hls>) {
+  const Ctor = HLSModule.default
   if (Ctor.isSupported()) {
     return new Ctor(...args)
   }
@@ -40,7 +45,7 @@ export function useVideoTexture(
     /** Auto start the video once unsuspended */
     start?: boolean
     /** HLS config */
-    hls?: Parameters<typeof getHls>[0]
+    hls?: ConstructorParameters<typeof Hls>[0]
     /**
      * request Video Frame Callback (rVFC)
      *
@@ -76,9 +81,10 @@ export function useVideoTexture(
 
         // hlsjs extension
         if (src && IS_BROWSER && src.endsWith('.m3u8')) {
-          const hls = (hlsRef.current = await getHls(hlsConfig))
+          const HLSModule = await getHlsModule()
+          const hls = (hlsRef.current = createHls(HLSModule, hlsConfig))
           if (hls) {
-            hls.on(Events.MEDIA_ATTACHED, () => void hls.loadSource(src))
+            hls.on(HLSModule.Events.MEDIA_ATTACHED, () => void hls.loadSource(src))
             hls.attachMedia(video)
           }
         }

@@ -32,6 +32,38 @@ Also fixed portal blur mask generation and cleanup.
 **Files changed:** `src/utils/withUniforms.ts`, `src/webgpu/Materials`,
 `src/webgpu/Effects`, `src/webgpu/Staging`, `src/webgpu/index.ts`
 
+### Bug Fixes
+
+#### WebGPU `Wireframe`: barycentric buffer sized before de-indexing, and `simplify` did nothing
+
+`setBarycentricCoordinates` read `position.count` from the geometry it was
+given, then called `toNonIndexed()` - which expands the position attribute
+(585 to 3072 vertices on a default `TorusKnotGeometry`) - and sized the
+`barycentric` attribute from the stale number. WGSL answers an out-of-range
+vertex fetch with zeros, so every indexed geometry lost most of its edges with
+no error (#2814). The count is now read after the conversion.
+
+The `simplify` prop was declared, documented and listed as an effect dependency
+but never read (#2815). It now does what the legacy component does: the third
+corner of each triangle gets `z = 1`, which hides the edge shared by the two
+triangles of a quad. The corner order alternates per triangle exactly as in
+legacy, so the same edge (the diagonal) is removed. The helper takes it as a
+second argument: `setBarycentricCoordinates(geometry, simplify = false)`.
+
+Also fixed `<Wireframe geometry={...}>` with an indexed geometry passed
+directly rather than as a ref: the de-indexed geometry the helper returned was
+discarded and the original - which has no `barycentric` attribute - was drawn.
+The component now always draws the returned geometry and disposes it on
+cleanup when the conversion created it.
+
+`WireframeMaterial.test.ts` now asserts the attribute sizing and the `simplify`
+layout. There is no unit vitest project yet (only `storybook`), so it runs
+with `npx vitest run <file> --environment node` and is not part of `yarn test`.
+
+**Files changed:** `src/webgpu/Materials/WireframeMaterial/WireframeMaterial.tsx`,
+`src/webgpu/Materials/WireframeMaterial/WireframeMaterial.test.ts`,
+`src/webgpu/Geometry/Wireframe/Wireframe.tsx`
+
 ### Features
 
 #### `MeshDiscardMaterial` now has a WebGPU implementation

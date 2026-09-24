@@ -85,7 +85,77 @@ React Native — `yarn generate:native` will pick it up.
 
 Tracked in #2660.
 
-### Fixed
+### Bug Fixes
+
+#### `Html` no longer shadows the renderer in its frame loop
+
+`Html`'s `useFrame` callback named its state argument `gl`, hiding the renderer
+destructured from `useThree()` in the same component. The blending-occlusion
+branch then read `gl.camera.position`, which only worked because `gl` there was
+the r3f root state, not the renderer (#2819). The callback no longer takes the
+argument and the occluder mesh looks at the already-in-scope scene `camera`.
+While there, the component now reads `renderer.domElement` instead of the
+deprecated `gl`, which warned on every render under r3f v10. Added a story that
+mounts blending occlusion with the default plane occluder behind a sphere, so the
+branch is rendered by the headless story run.
+
+**Files changed:** `src/core/UI/Html/Html.tsx`, `src/core/UI/Html/HTML.stories.tsx`
+
+#### `PerspectiveCamera` / `OrthographicCamera`: restore the previous render target and drop `state.gl`
+
+The film-into-texture path (children as a function) rendered through the deprecated
+`state.gl`, which warns on every access under r3f v10, and finished with
+`setRenderTarget(null)` -- resetting to the canvas regardless of what was bound
+before. Inside `View`, `RenderTexture`, `Hud` or a post-processing pipeline that
+dropped the caller's target on both renderers. The pass now uses `state.renderer`,
+saves `getRenderTarget()` before rendering and restores it afterwards, matching
+`RenderTexture`. No init guard was added: r3f v10 awaits `renderer.init()` in
+`configure()` before mounting the React tree, so `useFrame` cannot run against an
+uninitialised WebGPU backend (#2823).
+
+**Files changed:** `src/core/Cameras/PerspectiveCamera/PerspectiveCamera.tsx`,
+`src/core/Cameras/OrthographicCamera/OrthographicCamera.tsx`
+
+#### Fix WebGPU node material constructors
+
+Fixed constructor crashes by exposing custom uniforms through `withUniforms`
+without overriding Three's built-in properties (#2765, #2813). R3F props update
+the instance's shader uniforms. Use separate material instances for independent uniforms.
+
+Also fixed portal blur mask generation and cleanup.
+
+**Files changed:** `src/utils/withUniforms.ts`, `src/webgpu/Materials`,
+`src/webgpu/Effects`, `src/webgpu/Staging`, `src/webgpu/index.ts`
+
+#### WebGPU `Wireframe`: barycentric buffer sized before de-indexing, and `simplify` did nothing
+
+`setBarycentricCoordinates` read `position.count` from the geometry it was
+given, then called `toNonIndexed()` - which expands the position attribute
+(585 to 3072 vertices on a default `TorusKnotGeometry`) - and sized the
+`barycentric` attribute from the stale number. WGSL answers an out-of-range
+vertex fetch with zeros, so every indexed geometry lost most of its edges with
+no error (#2814). The count is now read after the conversion.
+
+The `simplify` prop was declared, documented and listed as an effect dependency
+but never read (#2815). It now does what the legacy component does: the third
+corner of each triangle gets `z = 1`, which hides the edge shared by the two
+triangles of a quad. The corner order alternates per triangle exactly as in
+legacy, so the same edge (the diagonal) is removed. The helper takes it as a
+second argument: `setBarycentricCoordinates(geometry, simplify = false)`.
+
+Also fixed `<Wireframe geometry={...}>` with an indexed geometry passed
+directly rather than as a ref: the de-indexed geometry the helper returned was
+discarded and the original - which has no `barycentric` attribute - was drawn.
+The component now always draws the returned geometry and disposes it on
+cleanup when the conversion created it.
+
+`WireframeMaterial.test.ts` now asserts the attribute sizing and the `simplify`
+layout. There is no unit vitest project yet (only `storybook`), so it runs
+with `npx vitest run <file> --environment node` and is not part of `yarn test`.
+
+**Files changed:** `src/webgpu/Materials/WireframeMaterial/WireframeMaterial.tsx`,
+`src/webgpu/Materials/WireframeMaterial/WireframeMaterial.test.ts`,
+`src/webgpu/Geometry/Wireframe/Wireframe.tsx`
 
 #### `BakeShadows` was a silent no-op on WebGPU
 
@@ -176,6 +246,29 @@ would have outlived the conversion; the derived status now stands on its own.
 `src/webgpu/Materials/index.ts`, `component-overrides.json`
 
 Closes #2811.
+
+#### Legacy `ConvolutionMaterial` ignored `depthToBlurRatioBias`
+
+The WebGL `ConvolutionMaterial` created a `depthToBlurRatioBias` uniform,
+declared it in the fragment shader, and then never read it: the depth clamp
+used a literal `0.25` instead. `BlurPass` forwards the prop into that uniform
+every frame, so setting `depthToBlurRatioBias` on the legacy
+`MeshReflectorMaterial` reached the GPU and did nothing.
+
+The GLSL now reads the uniform. Its default is `0.25`, so anyone leaving the
+prop alone sees no change.
+
+This is the legacy half of the fix that #2811 applied to the TSL port, which had
+inherited the same bug faithfully. Before this, the two renderers only agreed at
+the default; the WebGPU material honoured a non-default bias and the WebGL one
+silently did not. They now agree at any value.
+
+`MeshReflectorMaterialClass` has its own `depthToBlurRatioBias` uniform for the
+reflector shader itself and was already reading it; it is untouched.
+
+**Files changed:** `src/legacy/Materials/ConvolutionMaterial/ConvolutionMaterial.tsx`
+
+Fixes #2816.
 
 ### Internal
 

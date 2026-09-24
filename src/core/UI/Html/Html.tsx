@@ -194,7 +194,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
     }: HtmlProps,
     ref: React.Ref<HTMLDivElement>
   ) => {
-    const { gl, camera, scene, size, raycaster, events, viewport } = useThree()
+    const { renderer, camera, scene, size, raycaster, events, viewport } = useThree()
     const forceEven = useThree((state) => (state.internal as any).forceEven) as boolean | undefined
 
     // v10 r3f frustum is available
@@ -207,7 +207,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
     const transformOuterRef = React.useRef<HTMLDivElement>(null!)
     const transformInnerRef = React.useRef<HTMLDivElement>(null!)
     // Append to the connected element, which makes HTML work with views
-    const target = (portal?.current || events.connected || gl.domElement.parentNode) as HTMLElement
+    const target = (portal?.current || events.connected || renderer.domElement.parentNode) as HTMLElement
 
     const occlusionMeshRef = React.useRef<Mesh>(null!)
     const isMeshSizeSet = React.useRef<boolean>(false)
@@ -219,7 +219,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
     }, [occlude])
 
     React.useLayoutEffect(() => {
-      const el = gl.domElement as HTMLCanvasElement
+      const el = renderer.domElement as HTMLCanvasElement
 
       if (occlude && occlude === 'blending') {
         el.style.zIndex = `${Math.floor(zIndexRange[0] / 2)}`
@@ -230,7 +230,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
         el.style.position = null!
         el.style.pointerEvents = null!
       }
-    }, [occlude, zIndexRange, gl.domElement])
+    }, [occlude, zIndexRange, renderer.domElement])
 
     React.useLayoutEffect(() => {
       if (group.current) {
@@ -324,7 +324,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
 
     const visible = React.useRef(true)
 
-    useFrame((gl) => {
+    useFrame(() => {
       if (group.current) {
         camera.updateMatrixWorld()
         group.current.updateWorldMatrix(true, false)
@@ -452,7 +452,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
             isMeshSizeSet.current = true
           }
 
-          occlusionMeshRef.current.lookAt(gl.camera.position)
+          occlusionMeshRef.current.lookAt(camera.position)
         }
       }
     })

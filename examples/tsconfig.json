@@ -18,14 +18,14 @@
     "strict": true,
     /* Match the root tsconfig. drei's source is pulled in through the `../src`
        path aliases so that the examples app stays a live testbed — you edit
-       drei source and see it here immediately. But it has never been written
-       against `noImplicitAny`, so checking it under stricter rules than its own
-       project uses produces ~90 errors that root considers fine. Align, so the
-       two checkers agree about the same files. See #2808. */
+       drei source and see it here immediately. That also means drei's files are
+       checked here, so any rule stricter than root's (`noImplicitAny`,
+       `noUnusedLocals`, ...) reports errors in files root considers fine.
+       Keep these aligned with root, and run the same compiler: `typecheck` uses
+       drei's own `typescript` (a newer tsc judged a drei `@ts-expect-error`
+       stale that root's still needs). See #2808. */
     "noImplicitAny": false,
     "noImplicitThis": false,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
     /* Path aliases */

@@ -1,4 +1,4 @@
-import { Box, Html, Text3D, useContextBridge } from '@react-three/drei/core'
+import { Box, Html, useContextBridge } from '@react-three/drei/core'
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 import * as React from 'react'

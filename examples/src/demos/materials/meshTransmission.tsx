@@ -15,7 +15,6 @@ import {
   MeshTransmissionMaterial,
 } from '@react-three/drei/webgpu'
 import { useControls, button } from 'leva'
-import fontGlyphs from './Inter_Medium_Regular.json'
 
 export default function App() {
   const { autoRotate, text, shadow, ...config } = useControls({
@@ -45,12 +44,11 @@ export default function App() {
     debugMode: { value: 0, min: 0, max: 19, step: 1 },
     screenshot: button(() => {
       // Save the canvas as a *.png
+      const canvas = document.querySelector('canvas')
+      if (!canvas) return
       const link = document.createElement('a')
       link.setAttribute('download', 'canvas.png')
-      link.setAttribute(
-        'href',
-        document.querySelector('canvas').toDataURL('image/png').replace('image/png', 'image/octet-stream')
-      )
+      link.setAttribute('href', canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream'))
       link.click()
     }),
   })
@@ -134,7 +132,7 @@ const Grid = ({ number = 23, lineWidth = 0.026, height = 0.5 }) => (
   </Instances>
 )
 
-function Text({ children, config, font = fontGlyphs, ...props }) {
+function Text({ children, config, font = '/fonts/Inter_Medium_Regular.json', ...props }) {
   const texture = useLoader(
     HDRLoader,
     'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/aerodynamics_workshop_1k.hdr'

@@ -1,13 +1,14 @@
 import { Example, ExampleApi, OrbitControls } from '@react-three/drei/core'
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
+import type { ThreeEvent } from '@react-three/fiber'
 import { useCallback, useRef } from 'react'
 
 //* Example Demo ==============================
 
 function Scene() {
   const apiRef = useRef<ExampleApi>(null)
-  const handleClick = useCallback((e: React.MouseEvent) => {
+  const handleClick = useCallback((e: ThreeEvent<PointerEvent>) => {
     if (e.button === 2) {
       apiRef.current?.decr()
     } else {

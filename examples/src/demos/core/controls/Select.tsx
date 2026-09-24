@@ -1,26 +1,22 @@
 import { Select, OrbitControls, useSelect, Edges } from '@react-three/drei/core'
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
-import { useEffect, useState } from 'react'
+import type { ThreeElements } from '@react-three/fiber'
+import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 
 //* Select Demo ==============================
 
-function SelectableObject(props: any) {
-  const [hovered, setHover] = useState(false)
-  const selected = useSelect().map((sel) => sel.userData.store)
-
-  useEffect(() => {
-    console.log('selected', selected)
-  }, [selected])
-  const isSelected = false
+function SelectableObject(props: ThreeElements['mesh']) {
+  const ref = useRef<THREE.Mesh>(null!)
+  // useSelect reads the current selection from the enclosing <Select>
+  const isSelected = useSelect().includes(ref.current)
   return (
-    <mesh {...props} onPointerOver={() => setHover(true)} onPointerOut={() => setHover(false)}>
+    <mesh ref={ref} {...props}>
       <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color="orange" />
-      <Edges visible={isSelected} scale={1.1} renderOrder={1000}>
-        <meshBasicMaterial transparent color="#333" depthTest={false} />
-      </Edges>
+      <meshStandardMaterial color={isSelected ? 'hotpink' : 'orange'} />
+      {/* Edges is Line-based in v11: it is styled through props and takes no material child */}
+      {isSelected && <Edges scale={1.1} color="white" lineWidth={2} />}
     </mesh>
   )
 }

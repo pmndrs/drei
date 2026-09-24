@@ -2,6 +2,7 @@ import { useIntersect, OrbitControls } from '@react-three/drei/core'
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 import { useCallback, useState } from 'react'
+import type { Mesh } from 'three'
 
 //* useIntersect Demo ==============================
 
@@ -13,7 +14,7 @@ function IntersectingMesh() {
   }, [])
 
   // useIntersect detects when object is in view
-  const ref = useIntersect((isVisible) => handleVisible(isVisible))
+  const ref = useIntersect<Mesh>((isVisible) => handleVisible(isVisible))
 
   return (
     <mesh ref={ref} name="testMesh">

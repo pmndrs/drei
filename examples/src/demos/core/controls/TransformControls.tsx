@@ -1,23 +1,19 @@
 import { TransformControls, OrbitControls } from '@react-three/drei/core'
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
-import { useRef } from 'react'
-import * as THREE from 'three'
 
 //* TransformControls Demo ==============================
 
 function Scene() {
-  const boxRef = useRef<THREE.Mesh>(null!)
-
   return (
     <>
       {/* Lighting */}
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
 
-      {/* Transformable object */}
-      <TransformControls object={boxRef} mode="translate">
-        <mesh ref={boxRef} position={[0, 0.5, 0]}>
+      {/* Transformable object: TransformControls attaches to the wrapped child */}
+      <TransformControls mode="translate">
+        <mesh position={[0, 0.5, 0]}>
           <boxGeometry args={[1, 1, 1]} />
           <meshStandardMaterial color="hotpink" />
         </mesh>

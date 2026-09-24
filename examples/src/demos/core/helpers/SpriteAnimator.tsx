@@ -17,7 +17,7 @@ function Scene() {
       <SpriteAnimator
         position={[0, 0, 0]}
         frameName="Fly"
-        fps="18"
+        fps={18}
         scale={1.5}
         startFrame={0}
         endFrame={5}

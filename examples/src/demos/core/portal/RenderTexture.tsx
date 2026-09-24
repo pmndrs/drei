@@ -7,24 +7,6 @@ import * as THREE from 'three'
 
 //* RenderTexture Demo ==============================
 
-function RotatingBox() {
-  const meshRef = useRef<THREE.Mesh>(null)
-
-  useFrame((_, delta) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x += delta * 0.5
-      meshRef.current.rotation.y += delta * 0.3
-    }
-  })
-
-  return (
-    <mesh ref={meshRef}>
-      <torusKnotGeometry args={[0.5, 0.2, 64, 16]} />
-      <meshStandardMaterial color="hotpink" />
-    </mesh>
-  )
-}
-
 function Scene() {
   return (
     <>

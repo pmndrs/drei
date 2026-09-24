@@ -7,7 +7,8 @@
     "dev": "vite --mode legacy",
     "dev:webgpu": "vite --mode webgpu",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "node ../node_modules/typescript/bin/tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",
@@ -29,14 +30,11 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
     "@tailwindcss/vite": "^4.1.18",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.5",
     "@types/three": "^0.185.0",
     "@vitejs/plugin-react": "^4.3.3",
     "autoprefixer": "^10.4.23",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.18",
-    "typescript": "^5.6.3",
     "vite": "^5.4.11"
   }
 }

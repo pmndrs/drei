@@ -1514,6 +1514,7 @@ const UNKNOWN: Omit<ComponentStatus, 'name' | 'category'> = {
   webgpuStory: false,
   webgpuExercised: false,
   webgpuIsCopy: false,
+  agnosticButNot: false,
   legacyStory: false,
   assignee: null,
   reason: null,

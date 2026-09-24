@@ -5,7 +5,7 @@ import { ExampleCard } from '../../../components/ExampleCard'
 //* CatmullRomLine Demo ==============================
 
 function Scene() {
-  const points = [
+  const points: [number, number, number][] = [
     [-2, 0, 0],
     [-1, 1, 0],
     [0, 0, 0],

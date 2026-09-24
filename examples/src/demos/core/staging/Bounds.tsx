@@ -1,4 +1,4 @@
-import { Bounds, OrbitControls, useBounds } from '@react-three/drei/core'
+import { Bounds, useBounds } from '@react-three/drei/core'
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 import { useCallback, useEffect, useRef, useState } from 'react'

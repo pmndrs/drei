@@ -7,7 +7,7 @@ import { InstancedMesh } from 'three'
 //* Sampler Demo ==============================
 
 function Scene() {
-  const instancesRef = useRef<InstancedMesh>(null)
+  const instancesRef = useRef<InstancedMesh>(null!)
   return (
     <>
       <OrbitControls makeDefault />

@@ -31,7 +31,9 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'yarn'
       - run: yarn install
+      - run: yarn --cwd examples install
       - run: yarn test:lint
+      - run: yarn test:examples
 
   #* Build & Test ==============================
   # Build the package and run all tests

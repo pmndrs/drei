@@ -227,42 +227,43 @@ export class WireframeMaterialImpl extends withUniforms(MeshBasicNodeMaterial, {
  * Adds barycentric coordinates attribute to a geometry.
  * Required for WireframeMaterial to work.
  *
- * Each vertex in a triangle gets a unique barycentric coordinate:
- * - Vertex 0: (1, 0, 0)
- * - Vertex 1: (0, 1, 0)
- * - Vertex 2: (0, 0, 1)
+ * Each corner of a triangle gets a distinct barycentric coordinate so the
+ * fragment shader can measure its distance to the nearest edge. The layout
+ * matches the legacy (WebGL) Wireframe: triangles alternate between two corner
+ * orderings so that, with `simplify`, the edge hidden in each triangle is the
+ * diagonal shared by the two triangles of a quad.
+ *
+ * Indexed geometry is converted with `toNonIndexed()` first, because every
+ * triangle needs its own three vertices. In that case a NEW geometry is
+ * returned, so always use the return value.
  *
  * @param geometry - The geometry to add barycentric coordinates to
- * @returns The modified geometry (for chaining)
+ * @param simplify - Hide the diagonal edge of each quad, default: false
+ * @returns The geometry carrying the `barycentric` attribute (a new one if the
+ *   input was indexed)
  */
-export function setBarycentricCoordinates(geometry: THREE.BufferGeometry): THREE.BufferGeometry {
-  const position = geometry.getAttribute('position')
-  const count = position.count
-
-  // Check if already indexed - we need non-indexed geometry for unique barycentric coords
+export function setBarycentricCoordinates(geometry: THREE.BufferGeometry, simplify = false): THREE.BufferGeometry {
+  // Unique per-triangle corners require non-indexed geometry
   if (geometry.index) {
-    // Convert to non-indexed
     geometry = geometry.toNonIndexed()
   }
 
+  // Read the count AFTER the conversion: toNonIndexed() expands the position
+  // attribute (585 -> 3072 vertices on a default TorusKnotGeometry). Sizing the
+  // buffer from the indexed count leaves most vertices fetching out of range,
+  // which WGSL answers with zeros, so the wireframe silently vanishes (#2814).
+  const count = geometry.getAttribute('position').count
   const barycentricArray = new Float32Array(count * 3)
 
-  // Assign barycentric coordinates to each triangle
-  for (let i = 0; i < count; i += 3) {
-    // First vertex: (1, 0, 0)
-    barycentricArray[i * 3 + 0] = 1
-    barycentricArray[i * 3 + 1] = 0
-    barycentricArray[i * 3 + 2] = 0
+  // Q = 1 lifts the third corner's z, so z is no longer 0 along the whole of
+  // one edge and that edge is not drawn. Alternating the corner order per
+  // triangle makes that edge the shared diagonal of a quad.
+  const Q = simplify ? 1 : 0
+  const even = [0, 0, 1, 0, 1, 0, 1, 0, Q]
+  const odd = [0, 1, 0, 0, 0, 1, 1, 0, Q]
 
-    // Second vertex: (0, 1, 0)
-    barycentricArray[(i + 1) * 3 + 0] = 0
-    barycentricArray[(i + 1) * 3 + 1] = 1
-    barycentricArray[(i + 1) * 3 + 2] = 0
-
-    // Third vertex: (0, 0, 1)
-    barycentricArray[(i + 2) * 3 + 0] = 0
-    barycentricArray[(i + 2) * 3 + 1] = 0
-    barycentricArray[(i + 2) * 3 + 2] = 1
+  for (let i = 0, tri = 0; i + 2 < count; i += 3, tri++) {
+    barycentricArray.set(tri % 2 === 0 ? even : odd, i * 3)
   }
 
   geometry.setAttribute('barycentric', new THREE.BufferAttribute(barycentricArray, 3))

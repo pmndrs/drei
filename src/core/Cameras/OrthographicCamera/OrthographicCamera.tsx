@@ -75,16 +75,24 @@ export const OrthographicCamera: ForwardRefComponent<OrthographicCameraProps, Or
 
       let count = 0
       let oldEnvMap: THREE.Color | THREE.Texture | null = null
+      let oldRenderTarget: THREE.RenderTarget | null = null
       const functional = isFunction(children)
       useFrame((state) => {
         if (functional && (frames === Infinity || count < frames)) {
+          const { renderer } = state
           groupRef.current.visible = false
-          state.gl.setRenderTarget(fbo)
+          // Save whatever is bound right now (View, RenderTexture, Hud, a post-processing
+          // pass) rather than assuming the canvas, so the restore hands it back untouched.
+          oldRenderTarget = renderer.getRenderTarget()
           oldEnvMap = state.scene.background
           if (envMap) state.scene.background = envMap
-          state.gl.render(state.scene, cameraRef.current)
+          renderer.setRenderTarget(fbo)
+          renderer.render(state.scene, cameraRef.current)
+          // R3FRenderer is WebGLRenderer | WebGPURenderer, so the union's setRenderTarget
+          // only accepts WebGLRenderTarget while getRenderTarget() returns the wider
+          // RenderTarget. The cast is type-only; same pattern as RenderTexture.
+          renderer.setRenderTarget(oldRenderTarget as THREE.WebGLRenderTarget | null)
           state.scene.background = oldEnvMap
-          state.gl.setRenderTarget(null)
           groupRef.current.visible = true
           count++
         }

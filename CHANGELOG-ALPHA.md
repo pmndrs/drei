@@ -19,6 +19,28 @@ Controls use Three's built-in editors and support nested folders, colors, slider
 **Files changed:** `src/webgpu/Performance/Inspector`, `src/webgpu/index.ts`,
 `scripts/generate-native-exports.ts`, `examples/src/demos/componentRegistry.tsx`
 
+### Bug Fixes
+
+#### `Preload` now actually preloads on WebGPU (#2809)
+
+`Preload` called `gl.compile(scene, camera)` and assumed it was synchronous. On
+`WebGLRenderer` it is, but on the WebGPU `Renderer` `compile` is a getter that
+returns `compileAsync`, so the call handed back a promise nobody awaited and
+nothing was precompiled. Worse, the WebGPU renderer skips drawing any object
+whose pipeline is still compiling, so a fire-and-forget compile would make
+objects pop in one at a time.
+
+`Preload` now inspects what `renderer.compile()` returns: a synchronous result
+(WebGL) keeps the old behaviour, a promise (WebGPU) makes the component suspend
+via `suspend-react` until every pipeline is ready, so the first frame that
+reaches the screen is fully compiled on both renderers. Wrap it in a
+`<Suspense>` boundary as you would any other loader. It also reads
+`state.renderer` instead of the deprecated `state.gl`, and keeps the
+`#drei-platform` `CubeRenderTarget` handling from #2764. Added a story.
+
+**Files changed:** `src/core/Loaders/Preload/Preload.tsx`,
+`src/core/Loaders/Preload/Preload.stories.tsx`
+
 ### Fixes
 
 #### Fix WebGPU node material constructors

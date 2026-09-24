@@ -252,6 +252,57 @@ export const HTMLOccluderSt = {
 
 //
 
+function HTMLBlendingOccluderScene(props: HtmlProps) {
+  const turntableRef = useTurntable<React.ComponentRef<'group'>>()
+
+  // Non-transform blending occlusion with the default plane occluder (no custom
+  // geometry). This is the branch that orients the occluder mesh toward the
+  // scene camera every frame until its size is measured.
+  return (
+    <>
+      <group ref={turntableRef}>
+        <Icosahedron name="occluder" args={[5, 5]} position={[0, 0, 0]}>
+          <meshBasicMaterial color="hotpink" />
+          <PlatformSwitch
+            legacy={
+              <Html
+                {...props}
+                position={[0, 0, -6]}
+                className="html-story-label"
+                occlude="blending"
+                material={<HtmlMaterialLegacy transform={false} />}
+              >
+                Behind the sphere
+              </Html>
+            }
+            webgpu={
+              <Html
+                {...props}
+                position={[0, 0, -6]}
+                className="html-story-label"
+                occlude="blending"
+                material={<HtmlMaterialWebGPU transform={false} />}
+              >
+                Behind the sphere
+              </Html>
+            }
+          />
+        </Icosahedron>
+      </group>
+      <ambientLight intensity={0.8 * Math.PI} />
+      <pointLight intensity={1 * Math.PI} position={[0, 6, 0]} decay={0} />
+    </>
+  )
+}
+
+export const HTMLBlendingOccluderSt = {
+  args: {},
+  render: (args) => <HTMLBlendingOccluderScene {...args} />,
+  name: 'Blending occlusion',
+} satisfies Story
+
+//
+
 function HTMLBorderScene(props: HtmlProps) {
   return (
     <Icosahedron args={[5, 5]} position={[0, 0, 0]}>

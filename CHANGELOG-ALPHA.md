@@ -4,6 +4,33 @@ This changelog tracks changes made during the v11 alpha development cycle.
 
 ## Unreleased
 
+### Internal
+
+#### The story suite now sees uncaptured WebGPU errors
+
+The vitest story suite renders every story on a real WebGPU device, and a
+shader that failed to compile used to pass: three logs the device's
+`uncapturederror` and nothing asserted on it (#2817). Worse, the evidence was
+only sometimes there — a story's test resolves in milliseconds, before
+`requestDevice()` returns, so whether the GPU ever saw the shaders depended on
+how long the tab happened to live.
+
+`Setup` now wraps `renderer.onError` (the hook three routes every uncaptured
+GPU error through) and announces each Canvas the moment it mounts. With
+`DREI_STRICT_GPU=1`, `vitest.setup.ts` waits for the story's renderer to
+initialise, render a frame and flush its queue, then fails the story on any
+error that is not on a tiny allowlist. Without the flag the run keeps its old
+timing and only reports what arrived on its own, because the longer story
+lifetime also surfaces loader failures that need fixing first.
+
+The allowlist holds exactly one environmental cause and its cascade: three
+r0.185's mipmap WGSL uses `@interpolate(flat, either)`, which the Chromium 127
+that Playwright 1.45 pins cannot parse. Chrome 145 and 153 render the same
+stories clean, so it disappears with a Playwright bump.
+
+**Files changed:** `.storybook/gpuErrors.ts` (new), `.storybook/vitest.setup.ts`,
+`.storybook/Setup.tsx`, `vite.config.mts`
+
 ### Features
 
 #### Three.js Inspector for R3F v10

@@ -14,6 +14,9 @@ const __dirname = path.dirname(__filename)
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
   plugins: [react(), glslify()],
+  // Expose DREI_STRICT_GPU to the browser so `.storybook/vitest.setup.ts` can
+  // decide whether uncaptured WebGPU errors fail a story (#2817).
+  envPrefix: ['VITE_', 'DREI_'],
   resolve: {
     alias: {
       '@lib': path.resolve(__dirname, './lib'),

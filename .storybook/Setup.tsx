@@ -4,6 +4,7 @@ import { Canvas, CanvasProps, useThree } from '@react-three/fiber'
 
 import { OrbitControls } from 'drei'
 import { getTestEnvironment } from './testing'
+import { attachGpuErrorCapture, expectGpuRoot } from './gpuErrors'
 
 //* Types ==============================
 
@@ -89,6 +90,34 @@ function SchedulerPause() {
   return null
 }
 
+//* GPU Error Capture ==============================
+// Records uncaptured WebGPU validation errors so the vitest suite can fail on them (#2817).
+// `Setup` announces the canvas the moment it mounts (a story's test resolves long before
+// r3f finishes `requestDevice()`); `GpuErrorCapture` then reports in from inside the
+// Canvas once `renderer` exists in the store, at which point `onError` is live.
+
+function GpuErrorCapture({ release }: { release: () => void }) {
+  const renderer = useThree((state) => state.renderer)
+  const get = useThree((state) => state.get)
+
+  React.useEffect(() => {
+    if (!renderer) return
+    attachGpuErrorCapture({ renderer: renderer as any, getState: get }, release)
+  }, [renderer, get, release])
+
+  return null
+}
+
+function useExpectedGpuRoot() {
+  const releaseRef = React.useRef<() => void>(() => {})
+  // useState's initialiser runs during the first render, before r3f can have created anything.
+  React.useState(() => {
+    releaseRef.current = expectGpuRoot()
+  })
+  React.useEffect(() => () => releaseRef.current(), [])
+  return React.useCallback(() => releaseRef.current(), [])
+}
+
 //* SwitchCanvas Component ==============================
 // Switches between Legacy (WebGL) and WebGPU renderers
 
@@ -123,6 +152,9 @@ export const Setup = ({
   // Priority: explicit prop > test environment detection
   const shouldFreeze = freezeAnimations ?? testEnv.shouldFreezeAnimations
 
+  // Tell the vitest suite a canvas is on its way so it waits for the GPU before judging the story
+  const releaseGpuRoot = useExpectedGpuRoot()
+
   return (
     <>
       <OnlyTag type={limitedTo} />
@@ -135,6 +167,9 @@ export const Setup = ({
       >
         {/* Pause scheduler if in visual test environment */}
         {shouldFreeze && <SchedulerPause />}
+
+        {/* Record uncaptured WebGPU errors for the vitest suite; no-op on WebGL */}
+        <GpuErrorCapture release={releaseGpuRoot} />
 
         {children}
 

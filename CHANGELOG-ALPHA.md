@@ -19,6 +19,37 @@ Controls use Three's built-in editors and support nested folders, colors, slider
 **Files changed:** `src/webgpu/Performance/Inspector`, `src/webgpu/index.ts`,
 `scripts/generate-native-exports.ts`, `examples/src/demos/componentRegistry.tsx`
 
+### Fixes
+
+#### `withUniforms` materials survive `clone()` and `copy()`
+
+`material.clone()` on any WebGPU material built with `withUniforms` did not throw
+and did copy the uniform values, but `NodeMaterial.copy()` assigns node properties
+by reference, so the clone rendered with the original's shader graph and therefore
+the original's uniform nodes. Writes to the clone's uniforms went to nodes nothing
+read; writes to the original moved both meshes (#2828). `copy()` now keeps the
+graphs the instance's constructor built and copies the values across. Graphs
+assigned after construction are still shared, as three shares them.
+
+Added `src/utils/withUniforms.test.ts`, covering the helper and the eight
+`withUniforms` classes the `/webgpu` entry exports. It is not wired into
+`yarn test` yet; run it with a node vitest config that maps the tsconfig aliases.
+
+**Files changed:** `src/utils/withUniforms.ts`, `src/utils/withUniforms.test.ts`
+
+#### Fix WebGPU node material constructors
+
+Fixed constructor crashes by exposing custom uniforms through `withUniforms`
+without overriding Three's built-in properties (#2765, #2813). R3F props update
+the instance's shader uniforms. Use separate material instances for independent uniforms.
+
+Also fixed portal blur mask generation and cleanup.
+
+**Files changed:** `src/utils/withUniforms.ts`, `src/webgpu/Materials`,
+`src/webgpu/Effects`, `src/webgpu/Staging`, `src/webgpu/index.ts`
+
+### Features
+
 #### `MeshDiscardMaterial` now has a WebGPU implementation
 
 `src/webgpu/Materials/DiscardMaterial` already held the TSL material — a

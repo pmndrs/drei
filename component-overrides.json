@@ -38,10 +38,5 @@
     "classification": "todo",
     "assignee": "human-only",
     "reason": "Root-exported from external/ and classified agnostic, but it is a raw GLSL ShaderMaterial and types THREE.WebGLRenderer into its public surface. The upstream technique is WebGL-only, so this is probably wont-port — but that needs deciding and writing down, plus a runtime error, rather than being left misclassified. Tracked in #2818."
-  },
-  "Preload": {
-    "classification": "todo",
-    "assignee": "agent-ok",
-    "reason": "Calls gl.compile(), which on the WebGPU renderer is a getter aliasing compileAsync — it returns a promise nobody awaits, so preloading never happens. Not detectable by the agnostic check, because compile exists on both renderers and only the semantics differ. Tracked in #2809 and #2818."
   }
 }

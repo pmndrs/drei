@@ -117,7 +117,7 @@ export const componentStatus: Record<string, ComponentStatus> = {
   "PointMaterial": {"name":"PointMaterial","category":"Helpers","classification":"todo","rendererSupport":"universal","story":false,"test":true,"testAsserts":false,"docs":false,"legacy":false,"webgpu":false,"webgpuStory":false,"webgpuExercised":false,"webgpuIsCopy":false,"agnosticButNot":false,"legacyStory":false,"assignee":"human-only","reason":"Lives in core/ and is exported from the root entry, but patches PointsMaterial fragment GLSL through onBeforeCompile, which NodeMaterial never calls. On WebGPU the points render as hard squares instead of antialiased circles — silently, with no error. Also reads renderer.capabilities, which three/webgpu Renderer does not have. Needs a TSL implementation. Tracked in #2818."},
   "Points": {"name":"Points","category":"Geometry","classification":"agnostic","rendererSupport":"universal","story":true,"test":false,"testAsserts":false,"docs":false,"legacy":false,"webgpu":false,"webgpuStory":false,"webgpuExercised":false,"webgpuIsCopy":false,"agnosticButNot":false,"legacyStory":false,"assignee":null,"reason":null},
   "PositionalAudio": {"name":"PositionalAudio","category":"Helpers","classification":"agnostic","rendererSupport":"universal","story":true,"test":false,"testAsserts":false,"docs":true,"legacy":false,"webgpu":false,"webgpuStory":false,"webgpuExercised":false,"webgpuIsCopy":false,"agnosticButNot":false,"legacyStory":false,"assignee":null,"reason":null},
-  "Preload": {"name":"Preload","category":"Loaders","classification":"todo","rendererSupport":"universal","story":false,"test":true,"testAsserts":false,"docs":false,"legacy":false,"webgpu":false,"webgpuStory":false,"webgpuExercised":false,"webgpuIsCopy":false,"agnosticButNot":false,"legacyStory":false,"assignee":"agent-ok","reason":"Calls gl.compile(), which on the WebGPU renderer is a getter aliasing compileAsync — it returns a promise nobody awaits, so preloading never happens. Not detectable by the agnostic check, because compile exists on both renderers and only the semantics differ. Tracked in #2809 and #2818."},
+  "Preload": {"name":"Preload","category":"Loaders","classification":"agnostic","rendererSupport":"universal","story":true,"test":true,"testAsserts":false,"docs":false,"legacy":false,"webgpu":false,"webgpuStory":false,"webgpuExercised":false,"webgpuIsCopy":false,"agnosticButNot":false,"legacyStory":false,"assignee":null,"reason":null},
   "PresentationControls": {"name":"PresentationControls","category":"Controls","classification":"agnostic","rendererSupport":"universal","story":true,"test":false,"testAsserts":false,"docs":true,"legacy":false,"webgpu":false,"webgpuStory":false,"webgpuExercised":false,"webgpuIsCopy":false,"agnosticButNot":false,"legacyStory":false,"assignee":null,"reason":null},
   "QuadraticBezierLine": {"name":"QuadraticBezierLine","category":"Geometry","classification":"agnostic","rendererSupport":"universal","story":false,"test":true,"testAsserts":false,"docs":false,"legacy":false,"webgpu":false,"webgpuStory":false,"webgpuExercised":false,"webgpuIsCopy":false,"agnosticButNot":false,"legacyStory":false,"assignee":null,"reason":null},
   "RenderCubeTexture": {"name":"RenderCubeTexture","category":"Portal","classification":"agnostic","rendererSupport":"universal","story":false,"test":true,"testAsserts":false,"docs":false,"legacy":true,"webgpu":false,"webgpuStory":false,"webgpuExercised":false,"webgpuIsCopy":false,"agnosticButNot":false,"legacyStory":false,"assignee":null,"reason":null},
@@ -176,25 +176,25 @@ export const componentStatus: Record<string, ComponentStatus> = {
   "View": {"name":"View","category":"Portal","classification":"agnostic","rendererSupport":"universal","story":true,"test":false,"testAsserts":false,"docs":true,"legacy":false,"webgpu":false,"webgpuStory":false,"webgpuExercised":false,"webgpuIsCopy":false,"agnosticButNot":false,"legacyStory":false,"assignee":null,"reason":null},
   "WebcamVideoTexture": {"name":"WebcamVideoTexture","category":"Textures","classification":"agnostic","rendererSupport":"universal","story":true,"test":false,"testAsserts":false,"docs":false,"legacy":false,"webgpu":false,"webgpuStory":false,"webgpuExercised":false,"webgpuIsCopy":false,"agnosticButNot":false,"legacyStory":false,"assignee":null,"reason":null},
   "Wireframe": {"name":"Wireframe","category":"Geometry","classification":"implemented","rendererSupport":"dual","story":true,"test":false,"testAsserts":false,"docs":false,"legacy":true,"webgpu":true,"webgpuStory":true,"webgpuExercised":true,"webgpuIsCopy":false,"agnosticButNot":false,"legacyStory":false,"assignee":null,"reason":null},
-  "WireframeMaterial": {"name":"WireframeMaterial","category":"Materials","classification":"implemented","rendererSupport":"dual","story":true,"test":true,"testAsserts":false,"docs":false,"legacy":true,"webgpu":true,"webgpuStory":true,"webgpuExercised":true,"webgpuIsCopy":false,"agnosticButNot":false,"legacyStory":false,"assignee":null,"reason":null},
+  "WireframeMaterial": {"name":"WireframeMaterial","category":"Materials","classification":"implemented","rendererSupport":"dual","story":true,"test":true,"testAsserts":true,"docs":false,"legacy":true,"webgpu":true,"webgpuStory":true,"webgpuExercised":true,"webgpuIsCopy":false,"agnosticButNot":false,"legacyStory":false,"assignee":null,"reason":null},
 }
 
 export const componentStatusTotals = {
   "components": 144,
-  "agnostic": 106,
+  "agnostic": 107,
   "implemented": 28,
-  "todo": 5,
+  "todo": 4,
   "wontPort": 5,
-  "withStory": 105,
+  "withStory": 106,
   "webgpuImplemented": 31,
   "webgpuWithStory": 16,
   "webgpuExercised": 30,
   "webgpuCopies": 0,
   "agnosticButNot": 0,
   "withTestFile": 55,
-  "withRealTest": 0,
+  "withRealTest": 1,
   "withDocs": 48,
-  "agentOk": 2,
+  "agentOk": 1,
   "humanOnly": 3
 } as const
 

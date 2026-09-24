@@ -2,20 +2,20 @@
   "generated": "derived from the filesystem by scripts/audit-components.js — do not hand-edit",
   "totals": {
     "components": 144,
-    "agnostic": 106,
+    "agnostic": 107,
     "implemented": 28,
-    "todo": 5,
+    "todo": 4,
     "wontPort": 5,
-    "withStory": 105,
+    "withStory": 106,
     "webgpuImplemented": 31,
     "webgpuWithStory": 16,
     "webgpuExercised": 30,
     "webgpuCopies": 0,
     "agnosticButNot": 0,
     "withTestFile": 55,
-    "withRealTest": 0,
+    "withRealTest": 1,
     "withDocs": 48,
-    "agentOk": 2,
+    "agentOk": 1,
     "humanOnly": 3
   },
   "components": [
@@ -3277,9 +3277,9 @@
     {
       "name": "Preload",
       "category": "Loaders",
-      "classification": "todo",
-      "reason": "Calls gl.compile(), which on the WebGPU renderer is a getter aliasing compileAsync — it returns a promise nobody awaits, so preloading never happens. Not detectable by the agnostic check, because compile exists on both renderers and only the semantics differ. Tracked in #2809 and #2818.",
-      "assignee": "agent-ok",
+      "classification": "agnostic",
+      "reason": null,
+      "assignee": null,
       "trees": {
         "core": true,
         "legacy": false,
@@ -3287,19 +3287,19 @@
         "external": false,
         "experimental": false
       },
-      "story": false,
+      "story": true,
       "test": true,
       "testAsserts": false,
-      "exercised": false,
+      "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,
       "agnosticButNot": false,
       "coverageByTree": {
         "core": {
-          "story": false,
+          "story": true,
           "test": true,
           "docs": false,
-          "exercised": false
+          "exercised": true
         }
       },
       "shaderRisk": {
@@ -5549,7 +5549,7 @@
       },
       "story": true,
       "test": true,
-      "testAsserts": false,
+      "testAsserts": true,
       "exercised": true,
       "docs": false,
       "webgpuIsCopy": false,

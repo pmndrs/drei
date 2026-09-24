@@ -43,7 +43,7 @@ export class ConvolutionMaterial extends THREE.ShaderMaterial {
             vec4 depth = texture2D(depthBuffer, vUv);
             depthFactor = smoothstep(minDepthThreshold, maxDepthThreshold, 1.0-(depth.r * depth.a));
             depthFactor *= depthScale;
-            depthFactor = max(0.0, min(1.0, depthFactor + 0.25));
+            depthFactor = max(0.0, min(1.0, depthFactor + depthToBlurRatioBias));
           #endif
           
           vec4 sum = texture2D(inputBuffer, mix(vUv0, vUv, depthFactor));

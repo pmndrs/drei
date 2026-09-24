@@ -161,6 +161,31 @@ would have outlived the conversion; the derived status now stands on its own.
 
 Closes #2811.
 
+### Bug Fixes
+
+#### Legacy `ConvolutionMaterial` ignored `depthToBlurRatioBias`
+
+The WebGL `ConvolutionMaterial` created a `depthToBlurRatioBias` uniform,
+declared it in the fragment shader, and then never read it: the depth clamp
+used a literal `0.25` instead. `BlurPass` forwards the prop into that uniform
+every frame, so setting `depthToBlurRatioBias` on the legacy
+`MeshReflectorMaterial` reached the GPU and did nothing.
+
+The GLSL now reads the uniform. Its default is `0.25`, so anyone leaving the
+prop alone sees no change.
+
+This is the legacy half of the fix that #2811 applied to the TSL port, which had
+inherited the same bug faithfully. Before this, the two renderers only agreed at
+the default; the WebGPU material honoured a non-default bias and the WebGL one
+silently did not. They now agree at any value.
+
+`MeshReflectorMaterialClass` has its own `depthToBlurRatioBias` uniform for the
+reflector shader itself and was already reading it; it is untouched.
+
+**Files changed:** `src/legacy/Materials/ConvolutionMaterial/ConvolutionMaterial.tsx`
+
+Fixes #2816.
+
 ### Internal
 
 #### "Agnostic" was an assumption about a directory, and four components broke it

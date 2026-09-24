@@ -49,9 +49,16 @@ export function Select({
     },
     []
   )
+  // Fix #2170: onChange was only firing when downed=true (box-select mode),
+  // silently skipping single-select clicks. Split into two effects:
+  // 1. onChange fires for every selection change regardless of pointer state
   React.useEffect(() => {
-    if (downed) onChange?.(active)
-    else onChangePointerUp?.(active)
+    onChange?.(active)
+  }, [active])
+  // 2. onChangePointerUp fires when pointer is up (downed=false): covers both
+  //    single-click selections and the moment box-select is released
+  React.useEffect(() => {
+    if (!downed) onChangePointerUp?.(active)
   }, [active, downed])
   const onClick = React.useCallback((e) => {
     e.stopPropagation()

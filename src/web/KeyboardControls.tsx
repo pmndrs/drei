@@ -108,7 +108,7 @@ export function KeyboardControls({ map, children, onChange, domElement }: Keyboa
       source.removeEventListener('keydown', downHandler as EventListenerOrEventListenerObject)
       source.removeEventListener('keyup', upHandler as EventListenerOrEventListenerObject)
     }
-  }, [domElement, key])
+  }, [domElement, key, onChange])
 
   return <context.Provider value={api} children={children} />
 }

@@ -25,7 +25,7 @@ const useProgress = /* @__PURE__ */ create<Data>((set) => {
   DefaultLoadingManager.onLoad = () => {
     set({ active: false })
   }
-  DefaultLoadingManager.onError = (item) => set((state) => ({ errors: [...state.errors, item] }))
+  DefaultLoadingManager.onError = (item) => set((state) => ({ errors: [...state.errors, item].slice(-100) }))
   DefaultLoadingManager.onProgress = (item, loaded, total) => {
     if (loaded === total) {
       saveLastTotalLoaded = total

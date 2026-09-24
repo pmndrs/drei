@@ -21,6 +21,21 @@ Controls use Three's built-in editors and support nested folders, colors, slider
 
 ### Fixes
 
+#### `PerspectiveCamera` / `OrthographicCamera`: restore the previous render target and drop `state.gl`
+
+The film-into-texture path (children as a function) rendered through the deprecated
+`state.gl`, which warns on every access under r3f v10, and finished with
+`setRenderTarget(null)` -- resetting to the canvas regardless of what was bound
+before. Inside `View`, `RenderTexture`, `Hud` or a post-processing pipeline that
+dropped the caller's target on both renderers. The pass now uses `state.renderer`,
+saves `getRenderTarget()` before rendering and restores it afterwards, matching
+`RenderTexture`. No init guard was added: r3f v10 awaits `renderer.init()` in
+`configure()` before mounting the React tree, so `useFrame` cannot run against an
+uninitialised WebGPU backend (#2823).
+
+**Files changed:** `src/core/Cameras/PerspectiveCamera/PerspectiveCamera.tsx`,
+`src/core/Cameras/OrthographicCamera/OrthographicCamera.tsx`
+
 #### Fix WebGPU node material constructors
 
 Fixed constructor crashes by exposing custom uniforms through `withUniforms`

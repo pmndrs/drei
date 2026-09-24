@@ -18,7 +18,7 @@ export interface SvgProps extends Omit<ThreeElements['object3D'], 'ref'> {
 
 export const Svg: ForwardRefComponent<SvgProps, Object3D> = /* @__PURE__ */ forwardRef<Object3D, SvgProps>(
   function R3FSvg(
-    { src, skipFill, skipStrokes, fillMaterial, strokeMaterial, fillMeshProps, strokeMeshProps, ...props },
+    { src, skipFill, skipStrokes, fillMaterial, strokeMaterial, fillMeshProps, strokeMeshProps, renderOrder, ...props },
     ref
   ) {
     const svg = useLoader(SVGLoader, !src.startsWith('<svg') ? src : `data:image/svg+xml;utf8,${src}`)
@@ -39,10 +39,11 @@ export const Svg: ForwardRefComponent<SvgProps, Object3D> = /* @__PURE__ */ forw
       return () => strokeGeometries.forEach((group) => group && group.map((g) => g.dispose()))
     }, [strokeGeometries])
 
-    let renderOrder = 0
+    const customRenderOrder = renderOrder
+    let nextRenderOrder = 0
 
     return (
-      <object3D ref={ref} {...props}>
+      <object3D ref={ref} renderOrder={renderOrder} {...props}>
         <object3D scale={[1, -1, 1]}>
           {svg.paths.map((path, p) => (
             <Fragment key={p}>
@@ -50,7 +51,7 @@ export const Svg: ForwardRefComponent<SvgProps, Object3D> = /* @__PURE__ */ forw
                 path.userData?.style.fill !== undefined &&
                 path.userData.style.fill !== 'none' &&
                 SVGLoader.createShapes(path).map((shape, s) => (
-                  <mesh key={s} {...fillMeshProps} renderOrder={renderOrder++}>
+                  <mesh key={s} {...fillMeshProps} renderOrder={customRenderOrder ?? nextRenderOrder++}>
                     <shapeGeometry args={[shape]} />
                     <meshBasicMaterial
                       color={path.userData!.style.fill}
@@ -66,7 +67,12 @@ export const Svg: ForwardRefComponent<SvgProps, Object3D> = /* @__PURE__ */ forw
                 path.userData?.style.stroke !== undefined &&
                 path.userData.style.stroke !== 'none' &&
                 path.subPaths.map((_subPath, s) => (
-                  <mesh key={s} geometry={strokeGeometries[p]![s]} {...strokeMeshProps} renderOrder={renderOrder++}>
+                  <mesh
+                    key={s}
+                    geometry={strokeGeometries[p]![s]}
+                    {...strokeMeshProps}
+                    renderOrder={customRenderOrder ?? nextRenderOrder++}
+                  >
                     <meshBasicMaterial
                       color={path.userData!.style.stroke}
                       opacity={path.userData!.style.strokeOpacity}

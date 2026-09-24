@@ -23,6 +23,12 @@ export type TransformControlsProps = Omit<ThreeElement<typeof TransformControlsI
     showX?: boolean
     showY?: boolean
     showZ?: boolean
+    minX?: number
+    maxX?: number
+    minY?: number
+    maxY?: number
+    minZ?: number
+    maxZ?: number
     children?: React.ReactElement<THREE.Object3D>
     camera?: THREE.Camera
     onChange?: (e?: THREE.Event) => void
@@ -57,6 +63,12 @@ export const TransformControls: ForwardRefComponent<TransformControlsProps, Tran
         showX,
         showY,
         showZ,
+        minX,
+        maxX,
+        minY,
+        maxY,
+        minZ,
+        maxZ,
         ...props
       },
       ref
@@ -151,6 +163,12 @@ export const TransformControls: ForwardRefComponent<TransformControlsProps, Tran
             showX={showX}
             showY={showY}
             showZ={showZ}
+            minX={minX}
+            maxX={maxX}
+            minY={minY}
+            maxY={maxY}
+            minZ={minZ}
+            maxZ={maxZ}
           />
           <group ref={group} {...props}>
             {children}

@@ -26,7 +26,12 @@ export type SoftShadowsProps = {
   focus?: number
 }
 
-const pcss = ({ focus = 0, size = 25, samples = 10 }: SoftShadowsProps = {}) => `
+const pcss = ({ focus = 0, size = 25, samples = 10 }: SoftShadowsProps, packedDepth: boolean) => {
+  const depthSample = packedDepth
+    ? 'unpackRGBAToDepth( texture2D( shadowMap, uv + offset ) )'
+    : 'texture2D( shadowMap, uv + offset ).r'
+
+  return `
 #define PENUMBRA_FILTER_SIZE float(${size})
 #define RGB_NOISE_FUNCTION(uv) (randRGB(uv))
 vec3 randRGB(vec2 uv) {
@@ -60,7 +65,7 @@ vec3 highPassRandRGB(vec2 uv) {
 }
 
 
-vec2 vogelDiskSample(int sampleIndex, int sampleCount, float angle) {
+vec2 pcssVogelDiskSample(int sampleIndex, int sampleCount, float angle) {
   const float goldenAngle = 2.399963f; // radians
   float r = sqrt(float(sampleIndex) + 0.5f) / sqrt(float(sampleCount));
   float theta = float(sampleIndex) * goldenAngle + angle;
@@ -82,8 +87,8 @@ float findBlocker(sampler2D shadowMap, vec2 uv, float compare, float angle) {
 
   #pragma unroll_loop_start
   for(int i = 0; i < ${samples}; i ++) {
-    offset = (vogelDiskSample(j, ${samples}, angle) * texelSize) * 2.0 * PENUMBRA_FILTER_SIZE;
-    depth = unpackRGBAToDepth( texture2D( shadowMap, uv + offset));
+    offset = (pcssVogelDiskSample(j, ${samples}, angle) * texelSize) * 2.0 * PENUMBRA_FILTER_SIZE;
+    depth = ${depthSample};
     if (depth < compare) {
       blockerDepthSum += depth;
       blockers++;
@@ -107,9 +112,9 @@ float vogelFilter(sampler2D shadowMap, vec2 uv, float zReceiver, float filterRad
   vec2 offset = vec2(0.0);
   #pragma unroll_loop_start
   for (int i = 0; i < ${samples}; i++) {
-    vogelSample = vogelDiskSample(j, ${samples}, angle) * texelSize;
+    vogelSample = pcssVogelDiskSample(j, ${samples}, angle) * texelSize;
     offset = vogelSample * (1.0 + filterRadius * float(${size}));
-    shadow += step( zReceiver, unpackRGBAToDepth( texture2D( shadowMap, uv + offset ) ) );
+    shadow += step( zReceiver, ${depthSample} );
     j++;
   }
   #pragma unroll_loop_end
@@ -127,12 +132,17 @@ float PCSS (sampler2D shadowMap, vec4 coords) {
   float penumbraRatio = penumbraSize(zReceiver, avgBlockerDepth);
   return vogelFilter(shadowMap, uv, zReceiver, 1.25 * penumbraRatio, angle);
 }`
+}
 
 function reset(gl, scene, camera) {
   scene.traverse((object) => {
     if (object.material) {
-      gl.properties.remove(object.material)
-      object.material.dispose?.()
+      const materials = Array.isArray(object.material) ? object.material : [object.material]
+      materials.forEach((material) => {
+        gl.properties.remove(material)
+        material.dispose?.()
+        material.needsUpdate = true
+      })
     }
   })
   gl.info.programs.length = 0
@@ -145,15 +155,36 @@ export function SoftShadows({ focus = 0, samples = 10, size = 25 }: SoftShadowsP
   const camera = useThree((state) => state.camera)
   React.useEffect(() => {
     const original = THREE.ShaderChunk.shadowmap_pars_fragment
-    THREE.ShaderChunk.shadowmap_pars_fragment = THREE.ShaderChunk.shadowmap_pars_fragment
-      .replace('#ifdef USE_SHADOWMAP', '#ifdef USE_SHADOWMAP\n' + pcss({ size, samples, focus }))
-      .replace(
-        '#if defined( SHADOWMAP_TYPE_PCF )',
-        '\nreturn PCSS(shadowMap, shadowCoord);\n#if defined( SHADOWMAP_TYPE_PCF )'
-      )
+    // PCF shadows use a comparison sampler in newer three.js versions.
+    // That sampler cannot expose the raw depth needed for blocker search.
+    const packedDepth = !original.includes('sampler2DShadow')
+    // In newer three.js the final sampler2D overload is the Basic shadow path.
+    const getShadowStart = original.lastIndexOf('float getShadow( sampler2D shadowMap')
+    const frustumEnd = original.indexOf('if ( frustumTest ) {', getShadowStart) + 'if ( frustumTest ) {'.length
+
+    if (getShadowStart < 0 || frustumEnd < 'if ( frustumTest ) {'.length) {
+      console.warn('[SoftShadows] Could not find injection point in shadow shader')
+      return
+    }
+
+    const originalType = gl.shadowMap.type
+    // Newer three.js uses sampler2DShadow for PCF. PCSS needs the raw depth,
+    // which is available through the Basic shadow map's sampler2D instead.
+    if (!packedDepth) gl.shadowMap.type = THREE.BasicShadowMap
+
+    const hasIntensity = original.slice(getShadowStart, frustumEnd).includes('shadowIntensity')
+    const pcssReturn = hasIntensity
+      ? 'return mix( 1.0, PCSS( shadowMap, shadowCoord ), shadowIntensity );'
+      : 'return PCSS( shadowMap, shadowCoord );'
+    const shader = (original.slice(0, frustumEnd) + '\n' + pcssReturn + original.slice(frustumEnd)).replace(
+      '#ifdef USE_SHADOWMAP',
+      '#ifdef USE_SHADOWMAP\n' + pcss({ size, samples, focus }, packedDepth)
+    )
+    THREE.ShaderChunk.shadowmap_pars_fragment = shader
     reset(gl, scene, camera)
     return () => {
       THREE.ShaderChunk.shadowmap_pars_fragment = original
+      gl.shadowMap.type = originalType
       reset(gl, scene, camera)
     }
   }, [focus, size, samples])

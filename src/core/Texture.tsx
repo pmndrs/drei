@@ -22,8 +22,19 @@ export function useTexture<Url extends string[] | string | Record<string, string
   const gl = useThree((state) => state.gl)
   const textures = useLoader(TextureLoader, IsObject(input) ? Object.values(input) : input) as MappedTextureType<Url>
 
+  const mappedTextures = useMemo(() => {
+    if (IsObject(input)) {
+      const keyed = {} as MappedTextureType<Url>
+      let i = 0
+      for (const key in input) keyed[key] = textures[i++]
+      return keyed
+    } else {
+      return textures
+    }
+  }, [input, textures])
+
   useLayoutEffect(() => {
-    onLoad?.(textures)
+    onLoad?.(mappedTextures)
   }, [onLoad])
 
   // https://github.com/mrdoob/three.js/issues/22696
@@ -47,17 +58,6 @@ export function useTexture<Url extends string[] | string | Record<string, string
       })
     }
   }, [gl, textures])
-
-  const mappedTextures = useMemo(() => {
-    if (IsObject(input)) {
-      const keyed = {} as MappedTextureType<Url>
-      let i = 0
-      for (const key in input) keyed[key] = textures[i++]
-      return keyed
-    } else {
-      return textures
-    }
-  }, [input, textures])
 
   return mappedTextures
 }

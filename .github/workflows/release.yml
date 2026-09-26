@@ -34,6 +34,7 @@ jobs:
       - run: yarn --cwd examples install
       - run: yarn test:lint
       - run: yarn test:examples
+      - run: yarn test:components
 
   #* Build & Test ==============================
   # Build the package and run all tests

@@ -17,4 +17,4 @@ sourcecode: src/core/Staging/Sky/Sky.tsx
 <Sky distance={450000} sunPosition={[0, 1, 0]} inclination={0} azimuth={0.25} {...props} />
 ```
 
-> **Using WebGPU?** `Sky` works on both renderers: it wraps three's `Sky` on WebGL and `SkyMesh` on WebGPU. For a more realistic sky, look at [`@pmndrs/sky`](https://github.com/pmndrs/sky). It is a physically based sky and atmosphere for the WebGPU renderer, driven by real solar position, with aerial-perspective haze, a star field and R3F bindings. See the [docs](https://sky.docs.pmnd.rs).
+> **Using WebGPU?** Import `Sky` from `@react-three/drei/webgpu`, which wraps three's `SkyMesh`. The other entries wrap three's WebGL `Sky`, which the WebGPU renderer can't draw. For a more realistic sky, look at [`@pmndrs/sky`](https://github.com/pmndrs/sky). It is a physically based sky and atmosphere for the WebGPU renderer, driven by real solar position, with aerial-perspective haze, a star field and R3F bindings. See the [docs](https://sky.docs.pmnd.rs).

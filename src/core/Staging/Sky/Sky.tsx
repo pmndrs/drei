@@ -1,9 +1,9 @@
 import * as React from 'react'
-import { applyProps, ReactThreeFiber, useThree } from '@react-three/fiber'
-import { Sky as SkyImpl } from 'three/examples/jsm/objects/Sky.js'
-// webgpu
-import { SkyMesh } from 'three/examples/jsm/objects/SkyMesh.js'
+import { ReactThreeFiber } from '@react-three/fiber'
 import { Vector3 } from '#three'
+// WebGL builds get three's `Sky`, WebGPU builds get `SkyMesh` (TSL). See src/utils/three-addons*.ts
+import { Sky as SkyImpl } from '#three-addons'
+import type { SkyMesh } from 'three/examples/jsm/objects/SkyMesh.js'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 
 export type SkyProps = {
@@ -40,8 +40,9 @@ function toVector3(value: ReactThreeFiber.Vector3): Vector3 {
 /**
  * Adds a sky dome to your scene using THREE's Sky shader.
  *
- * Works on both renderers (`Sky` on WebGL, `SkyMesh` on WebGPU). For a physically based
- * atmosphere on WebGPU, see @pmndrs/sky: https://github.com/pmndrs/sky
+ * Resolved per build: `@react-three/drei/webgpu` renders three's `SkyMesh` (TSL), every other entry
+ * renders three's `Sky` (GLSL). For a physically based atmosphere on WebGPU, see @pmndrs/sky:
+ * https://github.com/pmndrs/sky
  *
  * @example Basic usage
  * ```jsx
@@ -63,20 +64,7 @@ export const Sky: ForwardRefComponent<SkyProps, SkyImpl> = /* @__PURE__ */ React
     }: SkyProps,
     ref
   ) => {
-    // detect if legacy or webgpu
-    const { isLegacy } = useThree()
-
-    const sky = React.useMemo(() => {
-      if (isLegacy) {
-        const skyInstance = new SkyImpl()
-        skyInstance.scale.setScalar(distance)
-        return skyInstance
-      } else {
-        const skyInstance = new SkyMesh()
-        skyInstance.scale.setScalar(distance)
-        return skyInstance
-      }
-    }, [isLegacy, distance])
+    const sky = React.useMemo(() => new SkyImpl(), [])
 
     React.useLayoutEffect(() => {
       sky.scale.setScalar(distance)
@@ -84,46 +72,15 @@ export const Sky: ForwardRefComponent<SkyProps, SkyImpl> = /* @__PURE__ */ React
 
     // Apply sky uniforms ---------------------------------
     React.useLayoutEffect(() => {
-      if (!sky) return
+      // WebGPU's SkyMesh exposes its uniforms as nodes on the mesh; WebGL's Sky keeps them on its material
+      const u = (sky as unknown as SkyMesh).isSkyMesh ? (sky as unknown as SkyMesh) : sky.material.uniforms
+      u.turbidity.value = turbidity
+      u.rayleigh.value = rayleigh
+      u.mieCoefficient.value = mieCoefficient
+      u.mieDirectionalG.value = mieDirectionalG
+      u.sunPosition.value.copy(toVector3(sunPosition))
+    }, [sky, turbidity, rayleigh, mieCoefficient, mieDirectionalG, sunPosition])
 
-      if (isLegacy) {
-        // Legacy: apply via material uniforms
-        applyProps(sky.material, {
-          mieCoefficient,
-          mieDirectionalG,
-          rayleigh,
-          sunPosition,
-          turbidity,
-        })
-      } else {
-        // WebGPU: SkyMesh has uniforms as direct properties
-        const webgpuSky = sky as SkyMesh
-        webgpuSky.turbidity.value = turbidity
-        webgpuSky.rayleigh.value = rayleigh
-        webgpuSky.mieCoefficient.value = mieCoefficient
-        webgpuSky.mieDirectionalG.value = mieDirectionalG
-
-        // Handle sunPosition - convert from R3F Vector3 format to actual Vector3
-        const sunVec = toVector3(sunPosition)
-        webgpuSky.sunPosition.value.copy(sunVec)
-      }
-    }, [sky, isLegacy, turbidity, rayleigh, mieCoefficient, mieDirectionalG, sunPosition])
-
-    // webgpu
-    if (!isLegacy) return <primitive object={sky} ref={ref} {...props} />
-
-    // legacy
-    return (
-      <primitive
-        object={sky}
-        ref={ref}
-        material-uniforms-mieCoefficient-value={mieCoefficient}
-        material-uniforms-mieDirectionalG-value={mieDirectionalG}
-        material-uniforms-rayleigh-value={rayleigh}
-        material-uniforms-sunPosition-value={sunPosition}
-        material-uniforms-turbidity-value={turbidity}
-        {...props}
-      />
-    )
+    return <primitive object={sky} ref={ref} {...props} />
   }
 )

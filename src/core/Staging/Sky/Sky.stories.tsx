@@ -6,8 +6,11 @@ import { Setup } from '@sb/Setup'
 
 import { Sky, Plane } from 'drei'
 
+// Storybook resolves `#three-addons` to the WebGL file for both renderers, so it always gets the
+// GLSL Sky here. The WebGPU SkyMesh path is covered by `yarn examples:webgpu`.
 export default {
   title: 'Staging/Sky',
+  tags: ['legacyOnly'],
   component: Sky,
   argTypes: {
     turbidity: { control: { type: 'range', min: 0, max: 10, step: 0.1 } },
@@ -19,7 +22,7 @@ export default {
   },
   decorators: [
     (Story, context) => (
-      <Setup renderer={context.globals.renderer}>
+      <Setup renderer={context.globals.renderer} limitedTo="legacy">
         <Story />
       </Setup>
     ),

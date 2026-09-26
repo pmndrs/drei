@@ -15,9 +15,8 @@ people not to use, `Stars` and `StarfieldMaterial` are removed from the
 `/webgpu` and `/native` entries. `Stars` stays in `/legacy` for WebGL, and
 `component-overrides.json` marks it `wont-port`, with the reason.
 
-`Sky` stays on both renderers. On WebGPU it wraps three's `SkyMesh`, and it was
-checked on a real WebGPU device: every prop reaches its uniform and the dome
-renders. Its docs now point to `@pmndrs/sky` for a physically based atmosphere.
+`Sky` stays on both renderers (see below) and its docs now point to
+`@pmndrs/sky` for a physically based atmosphere.
 
 **Files changed:** `src/webgpu/Staging/Stars/` (removed),
 `src/webgpu/Materials/StarsMaterial.tsx` (removed), `src/webgpu/Staging/index.ts`,
@@ -29,6 +28,25 @@ renders. Its docs now point to `@pmndrs/sky` for a physically based atmosphere.
 `component-status.json`, `component-status.generated.ts`,
 `devDocs/MIGRATION_V10_TO_V11.md`, `examples/src/demos/core/staging/Stars.tsx`,
 `examples/src/demos/componentRegistry.tsx`
+
+#### `Sky` picks its implementation at build time
+
+`Sky` used to import both three's WebGL `Sky` and its WebGPU `SkyMesh` and
+choose between them at runtime, so every entry bundled both, including three's
+WebGL renderer module in `/webgpu` and `/native`. It now imports through
+`#three-addons` like `Line` and `Edges`: `/webgpu` and `/native` get only
+`SkyMesh`, and the other entries get only `Sky`.
+
+What changes for users: `Sky` imported from the root entry or `/core` is now
+WebGL-only. On WebGPU, import it from `@react-three/drei/webgpu`, as the
+migration guide already says. Both built entries were rendered in a real
+`<Canvas>` (WebGL and WebGPU), with default and custom props reaching the
+uniforms. The Storybook story is now tagged `legacyOnly`, because Storybook
+aliases `#three-addons` to the WebGL file whichever renderer is selected.
+
+**Files changed:** `src/core/Staging/Sky/Sky.tsx`,
+`src/core/Staging/Sky/Sky.stories.tsx`, `src/core/Staging/Sky/Sky.docs.mdx`,
+`src/utils/three-addons.ts`, `src/utils/three-addons-webgpu.ts`
 
 ### Internal
 

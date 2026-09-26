@@ -4,6 +4,32 @@ This changelog tracks changes made during the v11 alpha development cycle.
 
 ## Unreleased
 
+### Breaking Changes
+
+#### `Stars` is gone from `/webgpu`; use `@pmndrs/sky` instead
+
+The WebGPU `Stars` never rendered (#2786), and
+[`@pmndrs/sky`](https://github.com/pmndrs/sky) now covers WebGPU skies, star
+field included, and does it better. Rather than fix a component we would tell
+people not to use, `Stars` and `StarfieldMaterial` are removed from the
+`/webgpu` and `/native` entries. `Stars` stays in `/legacy` for WebGL, and
+`component-overrides.json` marks it `wont-port`, with the reason.
+
+`Sky` stays on both renderers. On WebGPU it wraps three's `SkyMesh`, and it was
+checked on a real WebGPU device: every prop reaches its uniform and the dome
+renders. Its docs now point to `@pmndrs/sky` for a physically based atmosphere.
+
+**Files changed:** `src/webgpu/Staging/Stars/` (removed),
+`src/webgpu/Materials/StarsMaterial.tsx` (removed), `src/webgpu/Staging/index.ts`,
+`src/webgpu/Materials/index.ts`, `src/native/index.ts`,
+`src/utils/withUniforms.test.ts`, `src/utils/drei-platform.ts`,
+`src/utils/drei-platform-webgpu.ts`, `src/legacy/Staging/Stars/Stars.tsx`,
+`src/legacy/Staging/Stars/Stars.docs.mdx`, `src/core/Staging/Sky/Sky.tsx`,
+`src/core/Staging/Sky/Sky.docs.mdx`, `component-overrides.json`,
+`component-status.json`, `component-status.generated.ts`,
+`devDocs/MIGRATION_V10_TO_V11.md`, `examples/src/demos/core/staging/Stars.tsx`,
+`examples/src/demos/componentRegistry.tsx`
+
 ### Internal
 
 #### The story suite now sees uncaptured WebGPU errors

@@ -16,6 +16,10 @@
     "classification": "wont-port",
     "reason": "Implemented by patching a built-in material's GLSL through onBeforeCompile. TSL has no onBeforeCompile equivalent; box-projected environment mapping on WebGPU would be a new node-based implementation, not a port."
   },
+  "Stars": {
+    "classification": "wont-port",
+    "reason": "The WebGPU port never rendered (#2786) and was removed rather than fixed. @pmndrs/sky (https://github.com/pmndrs/sky) covers WebGPU skies, star field included, and does it better. Stars stays WebGL-only in /legacy."
+  },
   "ShadowAlpha": {
     "classification": "wont-port",
     "reason": "Patches the depth material's GLSL through onBeforeCompile to carry alpha into shadows. Same constraint as useBoxProjectedEnv — needs a new TSL implementation rather than a port."

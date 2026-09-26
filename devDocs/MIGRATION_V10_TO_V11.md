@@ -97,7 +97,7 @@ These components work with both WebGL and WebGPU renderers:
 
 - All cameras: `OrthographicCamera`, `PerspectiveCamera`
 - All controls: `OrbitControls`, `MapControls`, `TrackballControls`, etc.
-- Staging: `Environment`, `Float`, `Sky`, `Stars`, `Stage`, `Grid`, etc.
+- Staging: `Environment`, `Float`, `Sky`, `Stage`, `Grid`, etc.
 - Geometry: `Line`, `Capsule`, `RoundedBox`, `Text3D`, `Points`, etc.
 - Helpers: `Html`, `Text`, `PositionalAudio`, `Gizmos`, etc.
 - All loaders and hooks
@@ -139,6 +139,10 @@ These components have separate implementations for each renderer:
 - `ContactShadows`
 - `AccumulativeShadows`
 - And more...
+
+**WebGL only (no WebGPU version):**
+
+- `Stars`: import it from `@react-three/drei/legacy`. On WebGPU, use [`@pmndrs/sky`](https://github.com/pmndrs/sky), which has a star field.
 
 ---
 

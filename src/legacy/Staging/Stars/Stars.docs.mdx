@@ -9,6 +9,8 @@ sourcecode: src/legacy/Staging/Stars/Stars.tsx
 
 Legacy WebGL version using Points geometry with `gl_PointSize` for variable point sizes.
 
+> **WebGPU:** drei does not ship a WebGPU `Stars`. Use [`@pmndrs/sky`](https://github.com/pmndrs/sky) instead: a physically based sky and atmosphere for the WebGPU renderer, with a star field and R3F bindings. See the [docs](https://sky.docs.pmnd.rs).
+
 ```jsx
 <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
 ```

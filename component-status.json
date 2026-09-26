@@ -3,13 +3,13 @@
   "totals": {
     "components": 144,
     "agnostic": 107,
-    "implemented": 28,
+    "implemented": 27,
     "todo": 4,
-    "wontPort": 5,
+    "wontPort": 6,
     "withStory": 106,
-    "webgpuImplemented": 31,
-    "webgpuWithStory": 16,
-    "webgpuExercised": 30,
+    "webgpuImplemented": 30,
+    "webgpuWithStory": 15,
+    "webgpuExercised": 29,
     "webgpuCopies": 0,
     "agnosticButNot": 0,
     "withTestFile": 55,
@@ -4318,13 +4318,13 @@
     {
       "name": "Stars",
       "category": "Staging",
-      "classification": "implemented",
-      "reason": null,
+      "classification": "wont-port",
+      "reason": "The WebGPU port never rendered (#2786) and was removed rather than fixed. @pmndrs/sky (https://github.com/pmndrs/sky) covers WebGPU skies, star field included, and does it better. Stars stays WebGL-only in /legacy.",
       "assignee": null,
       "trees": {
         "core": false,
         "legacy": true,
-        "webgpu": true,
+        "webgpu": false,
         "external": false,
         "experimental": false
       },
@@ -4341,12 +4341,6 @@
           "test": false,
           "docs": true,
           "exercised": true
-        },
-        "webgpu": {
-          "story": true,
-          "test": false,
-          "docs": true,
-          "exercised": true
         }
       },
       "shaderRisk": {
@@ -4355,8 +4349,7 @@
         "shaderMaterial": false
       },
       "paths": {
-        "legacy": "src/legacy/Staging/Stars",
-        "webgpu": "src/webgpu/Staging/Stars"
+        "legacy": "src/legacy/Staging/Stars"
       }
     },
     {

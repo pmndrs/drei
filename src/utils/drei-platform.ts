@@ -19,7 +19,7 @@ export { MeshPortalMaterial } from '../legacy/Materials/MeshPortalMaterial'
 export { MeshDistortMaterial } from '../legacy/Materials/MeshDistortMaterial'
 export { MeshWobbleMaterial } from '../legacy/Materials/MeshWobbleMaterial'
 export { CloudMaterial } from '../legacy/Materials/CloudMaterial'
-// Note: StarfieldMaterial not exported here - Stars component is platform-specific (not aliased)
+// Note: StarfieldMaterial not exported here - Stars is WebGL-only (legacy); WebGPU users go to @pmndrs/sky
 // Note: SparklesMaterial not exported here - Sparkles component is platform-specific (not aliased)
 
 //* Effects & Helpers --------------------------------

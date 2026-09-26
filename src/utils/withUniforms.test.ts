@@ -4,7 +4,6 @@ import type { Material, Node } from 'three/webgpu'
 import { uniform, vec4 } from 'three/tsl'
 import { withUniforms } from './withUniforms'
 import { SparklesMaterial } from '@webgpu/Materials/SparklesMaterial'
-import { StarfieldMaterial } from '@webgpu/Materials/StarsMaterial'
 import { SpotLightMaterial } from '@webgpu/Materials/SpotLightMaterial/SpotLightMaterial'
 import { MeshReflectorMaterial } from '@webgpu/Materials/MeshReflectorMaterial/MeshReflectorMaterialClass'
 import { WireframeMaterialImpl } from '@webgpu/Materials/WireframeMaterial/WireframeMaterial'
@@ -119,7 +118,6 @@ const scalar = (name: string, create: () => Material, key: string): Row => ({ na
 
 const rows: Row[] = [
   scalar('SparklesMaterial', () => new SparklesMaterial(), 'time'),
-  scalar('StarfieldMaterial', () => new StarfieldMaterial(), 'fade'),
   scalar('SpotLightMaterial', () => new SpotLightMaterial(), 'attenuation'),
   scalar('MeshReflectorMaterial', () => new MeshReflectorMaterial(), 'mixStrength'),
   scalar('WireframeMaterialImpl', () => new WireframeMaterialImpl(), 'thickness'),

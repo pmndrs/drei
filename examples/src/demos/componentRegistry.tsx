@@ -1196,7 +1196,7 @@ export const components: DreiComponent[] = [
     description: 'Procedural starfield.',
     path: '/core/staging/stars',
     component: StarsDemo,
-    notes: '',
+    notes: 'WebGL only. For WebGPU, use @pmndrs/sky (https://github.com/pmndrs/sky).',
   },
   {
     name: 'useBoxProjectedEnv',

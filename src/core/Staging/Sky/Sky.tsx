@@ -40,6 +40,9 @@ function toVector3(value: ReactThreeFiber.Vector3): Vector3 {
 /**
  * Adds a sky dome to your scene using THREE's Sky shader.
  *
+ * Works on both renderers (`Sky` on WebGL, `SkyMesh` on WebGPU). For a physically based
+ * atmosphere on WebGPU, see @pmndrs/sky: https://github.com/pmndrs/sky
+ *
  * @example Basic usage
  * ```jsx
  * <Sky sunPosition={[0, 1, 0]} />

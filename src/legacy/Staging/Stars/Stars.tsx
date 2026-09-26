@@ -6,7 +6,7 @@ import { StarfieldMaterial } from '../../Materials/StarsMaterial'
 
 //* Legacy Stars Component (WebGL) ==============================
 // Uses Points geometry with gl_PointSize for variable point sizes
-// WebGPU cannot use this approach - see webgpu/Staging/Stars for the WebGPU version
+// WebGL-only. There is no WebGPU Stars in drei - use @pmndrs/sky (https://github.com/pmndrs/sky) instead
 
 export type StarsProps = {
   /** Radius of the inner sphere (default: 100) */

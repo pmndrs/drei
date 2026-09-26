@@ -31,6 +31,38 @@ const OUT_TS = path.join(ROOT, 'component-status.generated.ts')
 const OVERRIDES = path.join(ROOT, 'component-overrides.json')
 const REGISTRY = path.join(ROOT, 'examples/src/demos/componentRegistry.tsx')
 
+/**
+ * Whether `file` exists with exactly this spelling. `fs.existsSync` asks the
+ * filesystem, and the answer depends on the machine: macOS matches names
+ * case-insensitively, Linux does not. `Html/HTML.stories.tsx` counted as Html's
+ * story on a Mac and did not on Linux, so the committed status only passed
+ * `--check` on the machine that generated it. Comparing against the directory
+ * listing gives every machine the same answer. A name that differs only in case
+ * is recorded in CASE_MISMATCHES, and `--check` reports it.
+ */
+const LISTINGS = new Map()
+const CASE_MISMATCHES = new Set()
+function exists(file) {
+  const dir = path.dirname(file)
+  const base = path.basename(file)
+  if (!LISTINGS.has(dir)) {
+    let names = []
+    try {
+      names = fs.readdirSync(dir)
+    } catch {}
+    LISTINGS.set(dir, names)
+  }
+  const names = LISTINGS.get(dir)
+  if (names.includes(base)) return true
+  const near = names.find((n) => n.toLowerCase() === base.toLowerCase())
+  if (near)
+    CASE_MISMATCHES.add(
+      `${path.relative(ROOT, path.join(dir, near))} should be named ${base} — ` +
+        `the audit matches names exactly, so it is not counted on any filesystem`
+    )
+  return false
+}
+
 /** Trees that hold components, in entry-point terms. */
 const TREES = ['core', 'legacy', 'webgpu', 'external', 'experimental']
 
@@ -114,12 +146,12 @@ function findComponents(tree) {
       // A — folder named for its implementation
       const impl = path.join(full, `${entry.name}.tsx`)
       const implTs = path.join(full, `${entry.name}.ts`)
-      if (fs.existsSync(impl) || fs.existsSync(implTs)) {
-        found.push({ name: entry.name, dir: full, file: fs.existsSync(impl) ? impl : implTs })
+      if (exists(impl) || exists(implTs)) {
+        found.push({ name: entry.name, dir: full, file: exists(impl) ? impl : implTs })
       } else {
         // B — implementation lives in index.tsx. A pure re-export barrel is not one.
         const index = path.join(full, 'index.tsx')
-        if (fs.existsSync(index) && !isBarrel(index)) {
+        if (exists(index) && !isBarrel(index)) {
           found.push({ name: entry.name, dir: full, file: index })
         }
       }
@@ -152,6 +184,8 @@ function inspect(component, tree) {
   const source = read(file)
   const rel = path.relative(ROOT, dir)
   const category = path.relative(path.join(SRC, tree), path.dirname(dir)) || '(root)'
+  const story = exists(path.join(dir, `${name}.stories.tsx`))
+  const testFile = [`${name}.test.ts`, `${name}.test.tsx`].map((f) => path.join(dir, f)).find(exists)
 
   return {
     name,
@@ -160,20 +194,16 @@ function inspect(component, tree) {
     path: rel,
     // Held in memory for copy detection only — never persisted.
     normalized: normalizeSource(source),
-    story: fs.existsSync(path.join(dir, `${name}.stories.tsx`)),
-    test: fs.existsSync(path.join(dir, `${name}.test.ts`)) || fs.existsSync(path.join(dir, `${name}.test.tsx`)),
+    story,
+    test: !!testFile,
     // A test file that asserts nothing is not a test. All 64 co-located test
     // files were `it('TODO: Add tests after Phase 2', () => {})` — counting
     // them as coverage is the same "a file exists" mistake that made `done`
     // mean nothing. Report both so the gap is visible instead of flattering.
-    testAsserts: hasAssertions(
-      fs.existsSync(path.join(dir, `${name}.test.ts`))
-        ? path.join(dir, `${name}.test.ts`)
-        : path.join(dir, `${name}.test.tsx`)
-    ),
-    docs: fs.existsSync(path.join(dir, `${name}.docs.mdx`)),
+    testAsserts: !!testFile && hasAssertions(testFile),
+    docs: exists(path.join(dir, `${name}.docs.mdx`)),
     // Rendered by a story ANYWHERE, not just a co-located one.
-    exercised: fs.existsSync(path.join(dir, `${name}.stories.tsx`)) || exercisedByForeignStory(name, tree, dir),
+    exercised: story || exercisedByForeignStory(name, tree, dir),
     // import style — `#three` is the platform alias, bare `three` is not portable
     usesAlias: /from '#three/.test(source),
     usesBareThree: /from 'three'/.test(source),
@@ -495,6 +525,7 @@ if (args.includes('--check')) {
     ...checkCopies(status),
     ...checkAgnostic(status),
     ...checkRegistry(status),
+    ...CASE_MISMATCHES,
   ]
   const stale = fs.existsSync(OUT) && read(OUT).trim() !== JSON.stringify(status, null, 2).trim()
   if (stale) problems.push('component-status.json is out of date — run `node scripts/audit-components.js`')

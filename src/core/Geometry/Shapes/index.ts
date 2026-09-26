@@ -1,1 +1,1 @@
-export * from './shapes'
+export * from './Shapes'

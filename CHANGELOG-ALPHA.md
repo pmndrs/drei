@@ -32,6 +32,30 @@ renders. Its docs now point to `@pmndrs/sky` for a physically based atmosphere.
 
 ### Internal
 
+#### The component audit gives the same answer on Linux and macOS
+
+`yarn test:components` failed on a clean Linux checkout. It reported that the
+`Shapes` registry entry had no audit record and that both generated status files
+were stale. The audit found a component's files with `fs.existsSync`, and macOS
+matches file names case-insensitively, so the committed status had been
+generated there. Linux did not count `Html/HTML.stories.tsx` as `Html`'s story
+or `SpotLight/Spotlight.stories.tsx` as `SpotLight`'s. It also did not find
+`Shapes/shapes.tsx`, so the `Shapes` component disappeared.
+
+Those three files now follow the `<Name>.<suffix>` convention. The audit
+compares names against the directory listing instead of asking the filesystem,
+so every machine sees the same result. If a file differs from the expected
+name only in letter case, `--check` reports it on every filesystem. The status
+files it generates are unchanged. CI's `lint` job now runs
+`yarn test:components`.
+
+**Files changed:** `scripts/audit-components.js`,
+`src/core/Geometry/Shapes/Shapes.tsx` (renamed from `shapes.tsx`),
+`src/core/Geometry/Shapes/index.ts`,
+`src/core/UI/Html/Html.stories.tsx` (renamed from `HTML.stories.tsx`),
+`src/legacy/Staging/SpotLight/SpotLight.stories.tsx` (renamed from
+`Spotlight.stories.tsx`), `.github/workflows/release.yml`
+
 #### The story suite now sees uncaptured WebGPU errors
 
 The vitest story suite renders every story on a real WebGPU device, and a

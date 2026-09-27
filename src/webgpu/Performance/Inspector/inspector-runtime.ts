@@ -1,7 +1,7 @@
 // Browser-only runtime. Load on the client and keep it out of static package exports.
 import { Inspector } from 'three/examples/jsm/inspector/Inspector.js'
-import type { Renderer, WebGPURenderer } from 'three/webgpu'
 import { getConsoleFunction, setConsoleFunction } from 'three/webgpu'
+import type { Renderer, WebGPURenderer } from 'three/webgpu'
 
 // Timestamp readbacks are not exposed in Three's public types.
 type InspectorInternals = {
@@ -96,6 +96,7 @@ export async function attachInspector(
     // Sibling UI events can reach document listeners without entering the scene event source.
     // Mount before initialization to prevent automatic placement inside the canvas wrapper.
     eventSource.after(current.domElement)
+    current.init()
   } catch (error) {
     consoleEntry.active = false
     current.domElement.remove()

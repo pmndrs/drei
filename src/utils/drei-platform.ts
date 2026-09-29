@@ -31,6 +31,10 @@ export { WebGLRenderTarget as RenderTarget } from 'three'
 // WebGL uses WebGLCubeRenderTarget directly
 export { WebGLCubeRenderTarget as CubeRenderTarget } from 'three'
 
+//* Loaders --------------------------------
+// Gainmap decoding renders on the GPU and reads the result back, so each renderer needs its own loader
+export { GainMapLoader, HDRJPGLoader } from '@monogrid/gainmap-js'
+
 //* Portal --------------------------------
 export { RenderTexture } from '../legacy/Portal/RenderTexture'
 export { RenderCubeTexture } from '../legacy/Portal/RenderCubeTexture'

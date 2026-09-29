@@ -2908,18 +2908,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@monogrid/gainmap-js@npm:^3.0.6":
-  version: 3.0.6
-  resolution: "@monogrid/gainmap-js@npm:3.0.6"
-  dependencies:
-    promise-worker-transferable: "npm:^1.0.4"
-  peerDependencies:
-    three: ">= 0.159.0"
-  checksum: 10c0/35f25e50b15fb55c4d38d08334337bbeff784a2b4a6c4069c1eaee49d1c4c27b2119e938efaa1417cfd9c99902355b0aaf8d9b9fc296748eb4cd26de81dd43f3
-  languageName: node
-  linkType: hard
-
-"@monogrid/gainmap-js@npm:^3.4.0":
+"@monogrid/gainmap-js@npm:^3.2.0, @monogrid/gainmap-js@npm:^3.4.0":
   version: 3.4.0
   resolution: "@monogrid/gainmap-js@npm:3.4.0"
   dependencies:
@@ -3419,7 +3408,7 @@ __metadata:
     "@babel/runtime": "npm:^7.26.0"
     "@chromatic-com/storybook": "npm:^4.1.3"
     "@mediapipe/tasks-vision": "npm:0.10.17"
-    "@monogrid/gainmap-js": "npm:^3.0.6"
+    "@monogrid/gainmap-js": "npm:^3.2.0"
     "@playwright/test": "npm:^1.45.2"
     "@react-three/fiber": "npm:10.0.0-alpha.4"
     "@rollup/plugin-alias": "npm:^6.0.0"

@@ -10,7 +10,7 @@ import {
 } from '#three'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js'
 import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader.js'
-import { GainMapLoader, HDRJPGLoader } from '@monogrid/gainmap-js'
+import { GainMapLoader, HDRJPGLoader } from '#drei-platform'
 import { presetsObj, PresetsType } from '../environment-assets'
 import { useLayoutEffect } from 'react'
 

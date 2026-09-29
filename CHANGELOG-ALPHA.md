@@ -116,6 +116,28 @@ Controls use Three's built-in editors and support nested folders, colors, slider
 
 ### Bug Fixes
 
+#### `Environment` loads gainmap files on WebGPU (#2842)
+
+`<Environment files="*.jpg">` (and `.jpeg`/`.webp`) threw
+`TypeError: renderer.readRenderTargetPixels is not a function` on WebGPU. The
+root `@monogrid/gainmap-js` entry only ships WebGL loaders, which read the
+decoded gain map back with the synchronous `readRenderTargetPixels`; the WebGPU
+renderer only has `readRenderTargetPixelsAsync`. Since 3.2.0 the package also
+ships WebGPU loaders at `@monogrid/gainmap-js/webgpu`, with the same API.
+
+`useEnvironment` now takes `GainMapLoader` and `HDRJPGLoader` from
+`#drei-platform`, so `/webgpu` and `/native` get the WebGPU loaders and the
+other entries keep the WebGL ones. The minimum `@monogrid/gainmap-js` is now
+3.2.0. Both built entries were rendered in a real `<Canvas>` (WebGL and
+WebGPU) with the Gainmap story's file. The Gainmap story is tagged
+`legacyOnly`, because Storybook aliases `#drei-platform` to the WebGL file
+whichever renderer is selected.
+
+**Files changed:** `src/core/Staging/useEnvironment/useEnvironment.tsx`,
+`src/core/Staging/Environment/Environment.stories.tsx`,
+`src/utils/drei-platform.ts`, `src/utils/drei-platform-webgpu.ts`,
+`package.json`, `yarn.lock`
+
 #### `Preload` now actually preloads on WebGPU (#2809)
 
 `Preload` called `gl.compile(scene, camera)` and assumed it was synchronous. On

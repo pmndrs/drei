@@ -15,7 +15,12 @@ export default {
   component: Environment,
   decorators: [
     (Story, context) => (
-      <Setup renderer={context.globals.renderer} cameraPosition={new Vector3(0, 0, 10)} controls={false}>
+      <Setup
+        renderer={context.globals.renderer}
+        limitedTo={context.parameters.limitedTo ?? null}
+        cameraPosition={new Vector3(0, 0, 10)}
+        controls={false}
+      >
         <Story />
       </Setup>
     ),
@@ -146,4 +151,8 @@ export const EnvironmentSt4 = {
     },
   },
   name: 'Gainmap',
+  // Storybook resolves `#drei-platform` to the WebGL file for both renderers, so this story always
+  // gets the WebGL gainmap loaders. The WebGPU loaders are covered by the /webgpu build.
+  tags: ['legacyOnly'],
+  parameters: { limitedTo: 'legacy' },
 } satisfies Story

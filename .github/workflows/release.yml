@@ -42,6 +42,7 @@ jobs:
       - run: yarn build
       - run: yarn eslint:ci
       - run: yarn typecheck
+      - run: yarn test:unit
       - run: yarn prettier
       - run: (cd test/e2e; ./e2e.sh ${{ matrix.three-version }})
       - name: Upload Playwright screenshots

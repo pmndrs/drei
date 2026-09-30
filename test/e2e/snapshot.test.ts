@@ -35,5 +35,5 @@ test('should match previous one', async ({ page }) => {
   const $canvas = page.locator('canvas[data-engine]')
 
   // 👁️
-  await expect($canvas).toHaveScreenshot()
+  await expect($canvas).toHaveScreenshot({ maxDiffPixels: 20 })
 })

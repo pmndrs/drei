@@ -436,14 +436,18 @@ class ProgressiveLightMap {
     // Ping-pong two surface buffers for reading/writing
     const activeMap = this.buffer1Active ? this.progressiveLightMap1 : this.progressiveLightMap2
     const inactiveMap = this.buffer1Active ? this.progressiveLightMap2 : this.progressiveLightMap1
-    // Render the object's surface maps
+    // Render the object's surface maps with direct light only: since three r182
+    // scene.environment also lights MeshLambertMaterial, so clear it like the background
     const oldBg = this.scene.background
+    const oldEnv = this.scene.environment
     this.scene.background = null
+    this.scene.environment = null
     this.renderer.setRenderTarget(activeMap)
     this.previousShadowMap.value = inactiveMap.texture
     this.buffer1Active = !this.buffer1Active
     this.renderer.render(this.scene, camera)
     this.renderer.setRenderTarget(null)
     this.scene.background = oldBg
+    this.scene.environment = oldEnv
   }
 }

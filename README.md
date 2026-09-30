@@ -124,6 +124,7 @@ https://pmndrs.github.io/drei
         <ul>
           <li><a href="#example">Example</a></li>
           <li><a href="#html">Html</a></li>
+          <li><a href="#htmltexture--usehtmltexture">HtmlTexture / useHtmlTexture</a></li>
           <li><a href="#cycleraycast">CycleRaycast</a></li>
           <li><a href="#select">Select</a></li>
           <li><a href="#sprite-animator">Sprite Animator</a></li>
@@ -495,6 +496,10 @@ https://pmndrs.github.io/drei
 #### Html
 
 [Documentation has moved here](https://pmndrs.github.io/drei/misc/html)
+
+#### HtmlTexture / useHtmlTexture
+
+[Documentation has moved here](https://pmndrs.github.io/drei/misc/html-texture)
 
 #### CycleRaycast
 

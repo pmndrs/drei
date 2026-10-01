@@ -4,9 +4,11 @@ import { Mesh } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'
+import { PlatformSwitch } from '@sb/components/PlatformSwitch'
 
 import { Sphere, Plane } from 'drei'
 import { ContactShadows } from './ContactShadows'
+import { ContactShadows as ContactShadowsWebGPU } from '@webgpu/Staging/ContactShadows/ContactShadows'
 import { ComponentProps } from 'react'
 
 export default {
@@ -35,7 +37,21 @@ function ContactShadowsScene(props: ComponentProps<typeof ContactShadows>) {
         <meshBasicMaterial color="#2A8AFF" />
       </Sphere>
 
-      <ContactShadows {...props} position={[0, 0, 0]} scale={10} far={3} blur={3} rotation={[Math.PI / 2, 0, 0]} />
+      <PlatformSwitch
+        legacy={
+          <ContactShadows {...props} position={[0, 0, 0]} scale={10} far={3} blur={3} rotation={[Math.PI / 2, 0, 0]} />
+        }
+        webgpu={
+          <ContactShadowsWebGPU
+            {...props}
+            position={[0, 0, 0]}
+            scale={10}
+            far={3}
+            blur={3}
+            rotation={[Math.PI / 2, 0, 0]}
+          />
+        }
+      />
 
       <Plane args={[10, 10]} position={[0, -0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <meshBasicMaterial color="white" />

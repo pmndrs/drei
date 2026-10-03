@@ -19,9 +19,11 @@ import pixelmatch from 'pixelmatch'
 import { PNG } from 'pngjs'
 import * as fs from 'fs'
 import * as path from 'path'
+import { fileURLToPath } from 'node:url'
 
 //* Configuration ==============================
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const STORYBOOK_URL = process.env.STORYBOOK_URL || 'http://localhost:6006'
 const STORYBOOK_STATIC = path.resolve(__dirname, '../../storybook-static')
 const OUTPUT_DIR = path.resolve(__dirname, '../../test-results/parity')
@@ -45,6 +47,7 @@ interface StoryEntry {
   id: string
   title: string
   name: string
+  type: string
   tags?: string[]
 }
 
@@ -81,8 +84,13 @@ function discoverParityStories(): string[] {
     const parityStories: string[] = []
 
     for (const [id, entry] of Object.entries(index.entries)) {
-      // Check if story has 'parity' tag and is not a docs page
-      if (entry.tags?.includes('parity') && !id.endsWith('--docs')) {
+      // Compare only stories that support both renderers.
+      if (
+        entry.type === 'story' &&
+        entry.tags?.includes('parity') &&
+        !entry.tags.includes('webgpuOnly') &&
+        !entry.tags.includes('legacyOnly')
+      ) {
         parityStories.push(id)
       }
     }
@@ -151,11 +159,11 @@ test('Platform Parity - Legacy vs WebGPU comparison', async ({ page }) => {
 
     try {
       //* Capture Legacy render --
-      const legacyUrl = `${STORYBOOK_URL}/iframe.html?id=${storyId}&globals=renderer:legacy&viewMode=story`
+      const legacyUrl = `${STORYBOOK_URL}/iframe?id=${storyId}&globals=renderer:legacy&viewMode=story`
       await page.goto(legacyUrl)
 
       // Wait for canvas to appear
-      const canvas = page.locator('canvas[data-engine]')
+      const canvas = page.locator('#storybook-root canvas').first()
       await canvas.waitFor({ state: 'visible', timeout: 30000 })
 
       // Wait for scene to settle (animations to freeze, assets to load)
@@ -165,7 +173,7 @@ test('Platform Parity - Legacy vs WebGPU comparison', async ({ page }) => {
       console.log(`   ✓ Legacy captured`)
 
       //* Capture WebGPU render --
-      const webgpuUrl = `${STORYBOOK_URL}/iframe.html?id=${storyId}&globals=renderer:webgpu&viewMode=story`
+      const webgpuUrl = `${STORYBOOK_URL}/iframe?id=${storyId}&globals=renderer:webgpu&viewMode=story`
       await page.goto(webgpuUrl)
 
       await canvas.waitFor({ state: 'visible', timeout: 30000 })

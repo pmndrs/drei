@@ -1,13 +1,7 @@
 import { afterEach, beforeEach } from 'vitest'
 import { setProjectAnnotations } from '@storybook/react-vite'
 import * as projectAnnotations from './preview'
-import {
-  hasWebGpuDevice,
-  isKnownEnvironmentalGpuError,
-  resetGpuErrorCapture,
-  settleGpu,
-  takeGpuErrors,
-} from './gpuErrors'
+import { hasWebGpuDevice, resetGpuErrorCapture, settleGpu, takeGpuErrors } from './gpuErrors'
 
 // This is an important step to apply the right configuration when testing your stories.
 // More info at: https://storybook.js.org/docs/api/portable-stories/portable-stories-vitest#setprojectannotations
@@ -17,8 +11,7 @@ setProjectAnnotations([projectAnnotations])
 // Every story renders on a real WebGPU device. A shader that fails to compile
 // used to pass silently (#2817). `Setup` records the device's uncaptured errors;
 // with DREI_STRICT_GPU=1 we wait for the story's first frame to reach the GPU,
-// then fail the story on anything that is not a known environmental error
-// (see `gpuErrors.ts`).
+// then fail the story on any uncaptured error.
 //
 // Strict mode is opt-in for now. A story's test resolves in milliseconds, before
 // `requestDevice()` returns, so the wait is what makes the errors observable at
@@ -38,14 +31,12 @@ afterEach(async (context) => {
   if (strict) await settleGpu()
 
   const errors = takeGpuErrors()
-  const unexpected = errors.filter((error) => !isKnownEnvironmentalGpuError(error))
-  if (unexpected.length === 0) return
+  if (errors.length === 0) return
 
   const storyId = (context.task.meta as { storyId?: string }).storyId ?? context.task.name
-  const lines = unexpected.map((error) => `  - ${error.type}: ${error.message.trim()}`)
+  const lines = errors.map((error) => `  - ${error.type}: ${error.message.trim()}`)
   const summary =
-    `${unexpected.length} uncaptured WebGPU error${unexpected.length === 1 ? '' : 's'} in story "${storyId}"` +
-    (errors.length > unexpected.length ? ` (${errors.length - unexpected.length} allowlisted, not shown)` : '') +
+    `${errors.length} uncaptured WebGPU error${errors.length === 1 ? '' : 's'} in story "${storyId}"` +
     (hasWebGpuDevice() ? '' : ' [no WebGPU device]') +
     `:\n${lines.join('\n')}`
 

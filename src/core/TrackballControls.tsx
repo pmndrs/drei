@@ -47,15 +47,30 @@ export const TrackballControls: ForwardRefComponent<TrackballControlsProps, Trac
           if (regress) performance.regress()
           if (onChange) onChange(e)
         }
-        controls.addEventListener('change', callback)
-        if (onStart) controls.addEventListener('start', onStart)
-        if (onEnd) controls.addEventListener('end', onEnd)
-        return () => {
-          if (onStart) controls.removeEventListener('start', onStart)
-          if (onEnd) controls.removeEventListener('end', onEnd)
-          controls.removeEventListener('change', callback)
+
+        const onInput = () => invalidate()
+        const startCallback = (e: THREE.Event) => {
+          invalidate()
+          explDomElement.ownerDocument.addEventListener('pointermove', onInput, { passive: true })
+          explDomElement.addEventListener('touchmove', onInput, { passive: true })
+          if (onStart) onStart(e)
         }
-      }, [onChange, onStart, onEnd, controls, invalidate])
+        const endCallback = (e: THREE.Event) => {
+          explDomElement.ownerDocument.removeEventListener('pointermove', onInput)
+          explDomElement.removeEventListener('touchmove', onInput)
+          if (onEnd) onEnd(e)
+        }
+        controls.addEventListener('change', callback)
+        controls.addEventListener('start', startCallback)
+        controls.addEventListener('end', endCallback)
+        return () => {
+          controls.removeEventListener('start', startCallback)
+          controls.removeEventListener('end', endCallback)
+          controls.removeEventListener('change', callback)
+          explDomElement.ownerDocument.removeEventListener('pointermove', onInput)
+          explDomElement.removeEventListener('touchmove', onInput)
+        }
+      }, [onChange, onStart, onEnd, controls, invalidate, explDomElement])
 
       React.useEffect(() => {
         controls.handleResize()

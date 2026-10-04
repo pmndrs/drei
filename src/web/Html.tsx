@@ -280,6 +280,7 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
     })
 
     const visible = React.useRef(true)
+    const prevOcclude = React.useRef<typeof occlude>(undefined);
 
     useFrame((gl) => {
       if (group.current) {
@@ -287,8 +288,12 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
         group.current.updateWorldMatrix(true, false)
         const vec = transform ? oldPosition.current : calculatePosition(group.current, camera, size)
 
+        const occludeChanged = prevOcclude.current !== occlude
+        prevOcclude.current = occlude
+
         if (
           transform ||
+          occludeChanged ||
           Math.abs(oldZoom.current - camera.zoom) > eps ||
           Math.abs(oldPosition.current[0] - vec[0]) > eps ||
           Math.abs(oldPosition.current[1] - vec[1]) > eps

@@ -48,6 +48,31 @@ return (
     <meshBasicMaterial map={texture} toneMapped={false} />
 ```
 
+## Preloading
+
+You can create the texture ahead of time, before any component using it mounts, with `useVideoTexture.preload`. It fills the same cache as `useVideoTexture`, so the hook then returns the preloaded texture without suspending (once the `unsuspend` event has fired).
+
+```jsx
+useVideoTexture.preload('/video.mp4')
+```
+
+Only the `<video>` element and the texture are created: nothing is uploaded to the GPU until the texture is actually rendered. Pass [`preload: 'auto'`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#preload) to hint the browser to start buffering the video right away:
+
+```jsx
+useVideoTexture.preload('/video.mp4', { preload: 'auto' })
+```
+
+It accepts the same options as `useVideoTexture`, except `start` and `onVideoFrame`, which only make sense once the texture is in use.
+
+> [!Note]
+> The cache key is the src only: options are only taken into account the first time a texture is created for a given src, be it by `useVideoTexture.preload` or by `useVideoTexture`.
+
+To remove a texture from the cache (and destroy its hls.js instance, if any):
+
+```jsx
+useVideoTexture.clear('/video.mp4')
+```
+
 ## `MediaStream`
 
 It also accepts a [`MediaStream`](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream) from eg. [`.getDisplayMedia()`](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia) or [`.getUserMedia()`](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia):

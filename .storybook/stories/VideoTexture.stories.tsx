@@ -1,11 +1,11 @@
 import * as React from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import * as THREE from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '../Setup'
 
-import { Plane, VideoTexture, useTexture } from '../../src'
+import { Plane, VideoTexture, useTexture, useVideoTexture } from '../../src'
 
 export default {
   title: 'Misc/VideoTexture',
@@ -119,4 +119,39 @@ export const VideoTextureSt4 = {
   },
   render: (args) => <VideoTextureScene4 {...args} />,
   name: 'hls▸js',
+} satisfies Story
+
+//
+
+function VideoTextureScene5(props: React.ComponentProps<typeof VideoTexture>) {
+  const [mounted, setMounted] = useState(false)
+
+  // Start buffering the video before <VideoTexture> mounts
+  useEffect(() => {
+    useVideoTexture.preload(props.src, { preload: 'auto' })
+  }, [props.src])
+
+  return (
+    <>
+      <Plane args={[4, 2.25]} onClick={() => setMounted(true)}>
+        {mounted ? (
+          <React.Suspense fallback={<FallbackMaterial url="images/sintel-cover.jpg" />}>
+            <VideoTexture {...props}>
+              {(texture) => <meshBasicMaterial side={THREE.DoubleSide} map={texture} toneMapped={false} />}
+            </VideoTexture>
+          </React.Suspense>
+        ) : (
+          <FallbackMaterial url="images/sintel-cover.jpg" />
+        )}
+      </Plane>
+    </>
+  )
+}
+
+export const VideoTextureSt5 = {
+  args: {
+    src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+  },
+  render: (args) => <VideoTextureScene5 {...args} />,
+  name: 'Preload',
 } satisfies Story

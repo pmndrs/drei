@@ -50,24 +50,16 @@ return (
 
 ## Preloading
 
-You can create the texture ahead of time, before any component using it mounts, with `useVideoTexture.preload`. It fills the same cache as `useVideoTexture`, so the hook then returns the preloaded texture without suspending (once the `unsuspend` event has fired).
-
-```jsx
-useVideoTexture.preload('/video.mp4')
-```
-
-Only the `<video>` element and the texture are created: nothing is uploaded to the GPU until the texture is actually rendered. Pass [`preload: 'auto'`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#preload) to hint the browser to start buffering the video right away:
+`useVideoTexture.preload` creates the `<video>` element and its texture ahead of time, in the same cache as `useVideoTexture`. Nothing is uploaded to the GPU until the texture is rendered. Pass [`preload: 'auto'`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#preload) to start buffering right away:
 
 ```jsx
 useVideoTexture.preload('/video.mp4', { preload: 'auto' })
 ```
 
-It accepts the same options as `useVideoTexture`, except `start` and `onVideoFrame`, which only make sense once the texture is in use.
-
 > [!Note]
-> The cache key is the src only: options are only taken into account the first time a texture is created for a given src, be it by `useVideoTexture.preload` or by `useVideoTexture`.
+> The cache key is the src only: options only apply the first time a texture is created for a given src.
 
-To remove a texture from the cache (and destroy its hls.js instance, if any):
+`useVideoTexture.clear` removes it from the cache (and destroys its hls.js instance, if any):
 
 ```jsx
 useVideoTexture.clear('/video.mp4')

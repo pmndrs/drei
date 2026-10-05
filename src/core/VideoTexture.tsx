@@ -22,140 +22,93 @@ async function getHls(...args: ConstructorParameters<typeof Hls>) {
   return null
 }
 
-type VideoSrc = HTMLVideoElement['src' | 'srcObject']
-
-/**
- * Options used to create the `<video>` element and its texture.
- *
- * NB: the cache key is the src only, so these options are only taken into account
- * the first time a texture is created for a given src.
- */
-export type VideoTextureOptions = {
-  /** Event name that will unsuspend the video */
-  unsuspend?: keyof HTMLVideoElementEventMap
-  /** HLS config */
-  hls?: Parameters<typeof getHls>[0]
-} & Partial<Omit<HTMLVideoElement, 'children' | 'src' | 'srcObject'>>
-
-export type UseVideoTextureOptions = VideoTextureOptions & {
-  /** Auto start the video once unsuspended */
-  start?: boolean
-  /**
-   * request Video Frame Callback (rVFC)
-   *
-   * @see https://web.dev/requestvideoframecallback-rvfc/
-   * @see https://www.remotion.dev/docs/video-manipulation
-   * */
-  onVideoFrame?: VideoFrameRequestCallback
-}
-
-/**
- * hls.js instances, one per `<video>` element created from an `.m3u8` src.
- *
- * Kept outside of any component, since a texture can be created by `useVideoTexture.preload`
- * before any component mounts. An instance lives as long as its cache entry, and is destroyed
- * by `useVideoTexture.clear`.
- */
+// hls.js instances live as long as their cache entry: they are destroyed by `useVideoTexture.clear`
 const hlsInstances = new WeakMap<HTMLVideoElement, Hls>()
-
 function destroyHls(video: HTMLVideoElement) {
   hlsInstances.get(video)?.destroy()
   hlsInstances.delete(video)
 }
 
-/**
- * Textures still being created, by src.
- *
- * `useVideoTexture.clear` can be called before a texture is created (eg. right after
- * `useVideoTexture.preload`): it then flags the pending creation as cleared, and the hls.js
- * instance is destroyed once the creation completes.
- */
-type PendingCreation = { cleared: boolean }
-const pendingCreations = new Map<VideoSrc, PendingCreation>()
-
-/**
- * Create a `<video>` element and its `THREE.VideoTexture`.
- *
- * Resolves once the `unsuspend` event fires on the video. No GPU upload happens here:
- * it only happens once the texture is rendered.
- */
-async function createVideoTexture(
-  srcOrSrcObject: VideoSrc,
+function createVideoTexture(
+  srcOrSrcObject: HTMLVideoElement['src' | 'srcObject'],
   {
     unsuspend = 'loadedmetadata',
+    start = true,
     hls: hlsConfig = {},
     crossOrigin = 'anonymous',
     muted = true,
     loop = true,
     playsInline = true,
+    onVideoFrame,
     ...videoProps
-  }: VideoTextureOptions = {}
-): Promise<THREE.VideoTexture> {
-  const creation: PendingCreation = { cleared: false }
-  pendingCreations.set(srcOrSrcObject, creation)
-
-  const src = typeof srcOrSrcObject === 'string' ? srcOrSrcObject : undefined
-  const srcObject = typeof srcOrSrcObject === 'string' ? undefined : srcOrSrcObject
-
-  const video = Object.assign(document.createElement('video'), {
-    src,
-    srcObject,
-    crossOrigin,
-    loop,
-    muted,
-    playsInline,
-    ...videoProps,
-  })
-
-  // hlsjs extension
-  if (src && IS_BROWSER && src.endsWith('.m3u8')) {
-    const hls = await getHls(hlsConfig)
-    if (hls) {
-      hls.on(Events.MEDIA_ATTACHED, () => void hls.loadSource(src))
-      hls.attachMedia(video)
-      hlsInstances.set(video, hls)
+  }: {
+    /** Event name that will unsuspend the video */
+    unsuspend?: keyof HTMLVideoElementEventMap
+    /** Auto start the video once unsuspended */
+    start?: boolean
+    /** HLS config */
+    hls?: Parameters<typeof getHls>[0]
+    /**
+     * request Video Frame Callback (rVFC)
+     *
+     * @see https://web.dev/requestvideoframecallback-rvfc/
+     * @see https://www.remotion.dev/docs/video-manipulation
+     * */
+    onVideoFrame?: VideoFrameRequestCallback
+  } & Partial<Omit<HTMLVideoElement, 'children' | 'src' | 'srcObject'>> = {}
+) {
+  return new Promise<THREE.VideoTexture>(async (res) => {
+    let src: HTMLVideoElement['src'] | undefined = undefined
+    let srcObject: HTMLVideoElement['srcObject'] | undefined = undefined
+    if (typeof srcOrSrcObject === 'string') {
+      src = srcOrSrcObject
+    } else {
+      srcObject = srcOrSrcObject
     }
-  }
 
-  const texture = new THREE.VideoTexture(video)
+    const video = Object.assign(document.createElement('video'), {
+      src,
+      srcObject,
+      crossOrigin,
+      loop,
+      muted,
+      playsInline,
+      ...videoProps,
+    })
 
-  // There is no renderer here (this may run from `useVideoTexture.preload`), so default to sRGB,
-  // which is the renderer's default `outputColorSpace`. `useVideoTexture` matches the actual renderer.
-  texture.colorSpace = THREE.SRGBColorSpace
+    // hlsjs extension
+    if (src && IS_BROWSER && src.endsWith('.m3u8')) {
+      const hls = await getHls(hlsConfig)
+      if (hls) {
+        hls.on(Events.MEDIA_ATTACHED, () => void hls.loadSource(src))
+        hls.attachMedia(video)
+        hlsInstances.set(video, hls)
+      }
+    }
 
-  return new Promise((resolve) => {
-    video.addEventListener(
-      unsuspend,
-      () => {
-        if (pendingCreations.get(srcOrSrcObject) === creation) {
-          pendingCreations.delete(srcOrSrcObject)
-        }
+    const texture = new THREE.VideoTexture(video)
 
-        // Cleared while pending: nothing can reach this texture from the cache anymore
-        if (creation.cleared) {
-          destroyHls(video)
-        }
+    texture.colorSpace = THREE.SRGBColorSpace // no renderer here: `useVideoTexture` sets `gl.outputColorSpace`
 
-        resolve(texture)
-      },
-      { once: true }
-    )
+    video.addEventListener(unsuspend, () => {
+      res(texture)
+      // cleared while pending: the cache no longer holds this texture
+      setTimeout(() => peek([srcOrSrcObject]) !== texture && destroyHls(video))
+    })
   })
 }
 
+export type UseVideoTextureOptions = NonNullable<Parameters<typeof createVideoTexture>[1]>
+
 export function useVideoTexture(
-  srcOrSrcObject: VideoSrc,
-  { start = true, onVideoFrame, ...textureOptions }: UseVideoTextureOptions = {}
+  srcOrSrcObject: HTMLVideoElement['src' | 'srcObject'],
+  options: UseVideoTextureOptions = {}
 ) {
+  const { start = true, onVideoFrame } = options
   const gl = useThree((state) => state.gl)
 
-  const texture = suspend(() => createVideoTexture(srcOrSrcObject, textureOptions), [srcOrSrcObject])
-
-  // Match the renderer's output color space. This runs before the texture is first rendered,
-  // and is a no-op with the default sRGB output color space.
-  if (texture.colorSpace !== gl.outputColorSpace) {
-    texture.colorSpace = gl.outputColorSpace
-  }
+  const texture = suspend(() => createVideoTexture(srcOrSrcObject, options), [srcOrSrcObject])
+  texture.colorSpace = gl.outputColorSpace
 
   const video = texture.source.data as HTMLVideoElement
   useVideoFrame(video, onVideoFrame)
@@ -167,31 +120,13 @@ export function useVideoTexture(
   return texture
 }
 
-/**
- * Create the video texture ahead of time, eg. to start buffering the video (with `preload: 'auto'`)
- * before any component using it mounts. Same cache as `useVideoTexture`: options only apply the
- * first time a texture is created for a given src.
- */
-useVideoTexture.preload = (srcOrSrcObject: VideoSrc, options?: VideoTextureOptions) =>
+/** Options only apply the first time a texture is created for a given src */
+useVideoTexture.preload = (srcOrSrcObject: HTMLVideoElement['src' | 'srcObject'], options?: UseVideoTextureOptions) =>
   preload(() => createVideoTexture(srcOrSrcObject, options), [srcOrSrcObject])
 
-/**
- * Remove the video texture from the cache (and destroy its hls.js instance, if any).
- */
-useVideoTexture.clear = (srcOrSrcObject: VideoSrc) => {
-  // Still being created: its hls.js instance will be destroyed once the creation completes
-  const creation = pendingCreations.get(srcOrSrcObject)
-  if (creation) {
-    creation.cleared = true
-    pendingCreations.delete(srcOrSrcObject)
-  }
-
-  // Already created
+useVideoTexture.clear = (srcOrSrcObject: HTMLVideoElement['src' | 'srcObject']) => {
   const texture = peek([srcOrSrcObject]) as THREE.VideoTexture | undefined
-  if (texture) {
-    destroyHls(texture.source.data as HTMLVideoElement)
-  }
-
+  if (texture) destroyHls(texture.image)
   clear([srcOrSrcObject])
 }
 

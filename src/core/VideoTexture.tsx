@@ -30,14 +30,14 @@ type VideoSrc = HTMLVideoElement['src' | 'srcObject']
  * NB: the cache key is the src only, so these options are only taken into account
  * the first time a texture is created for a given src.
  */
-type VideoTextureOptions = {
+export type VideoTextureOptions = {
   /** Event name that will unsuspend the video */
   unsuspend?: keyof HTMLVideoElementEventMap
   /** HLS config */
   hls?: Parameters<typeof getHls>[0]
 } & Partial<Omit<HTMLVideoElement, 'children' | 'src' | 'srcObject'>>
 
-type UseVideoTextureOptions = VideoTextureOptions & {
+export type UseVideoTextureOptions = VideoTextureOptions & {
   /** Auto start the video once unsuspended */
   start?: boolean
   /**
@@ -58,6 +58,21 @@ type UseVideoTextureOptions = VideoTextureOptions & {
  */
 const hlsInstances = new WeakMap<HTMLVideoElement, Hls>()
 
+function destroyHls(video: HTMLVideoElement) {
+  hlsInstances.get(video)?.destroy()
+  hlsInstances.delete(video)
+}
+
+/**
+ * Textures still being created, by src.
+ *
+ * `useVideoTexture.clear` can be called before a texture is created (eg. right after
+ * `useVideoTexture.preload`): it then flags the pending creation as cleared, and the hls.js
+ * instance is destroyed once the creation completes.
+ */
+type PendingCreation = { cleared: boolean }
+const pendingCreations = new Map<VideoSrc, PendingCreation>()
+
 /**
  * Create a `<video>` element and its `THREE.VideoTexture`.
  *
@@ -76,6 +91,9 @@ async function createVideoTexture(
     ...videoProps
   }: VideoTextureOptions = {}
 ): Promise<THREE.VideoTexture> {
+  const creation: PendingCreation = { cleared: false }
+  pendingCreations.set(srcOrSrcObject, creation)
+
   const src = typeof srcOrSrcObject === 'string' ? srcOrSrcObject : undefined
   const srcObject = typeof srcOrSrcObject === 'string' ? undefined : srcOrSrcObject
 
@@ -106,7 +124,22 @@ async function createVideoTexture(
   texture.colorSpace = THREE.SRGBColorSpace
 
   return new Promise((resolve) => {
-    video.addEventListener(unsuspend, () => resolve(texture), { once: true })
+    video.addEventListener(
+      unsuspend,
+      () => {
+        if (pendingCreations.get(srcOrSrcObject) === creation) {
+          pendingCreations.delete(srcOrSrcObject)
+        }
+
+        // Cleared while pending: nothing can reach this texture from the cache anymore
+        if (creation.cleared) {
+          destroyHls(video)
+        }
+
+        resolve(texture)
+      },
+      { once: true }
+    )
   })
 }
 
@@ -146,11 +179,17 @@ useVideoTexture.preload = (srcOrSrcObject: VideoSrc, options?: VideoTextureOptio
  * Remove the video texture from the cache (and destroy its hls.js instance, if any).
  */
 useVideoTexture.clear = (srcOrSrcObject: VideoSrc) => {
+  // Still being created: its hls.js instance will be destroyed once the creation completes
+  const creation = pendingCreations.get(srcOrSrcObject)
+  if (creation) {
+    creation.cleared = true
+    pendingCreations.delete(srcOrSrcObject)
+  }
+
+  // Already created
   const texture = peek([srcOrSrcObject]) as THREE.VideoTexture | undefined
   if (texture) {
-    const video = texture.source.data as HTMLVideoElement
-    hlsInstances.get(video)?.destroy()
-    hlsInstances.delete(video)
+    destroyHls(texture.source.data as HTMLVideoElement)
   }
 
   clear([srcOrSrcObject])

@@ -150,7 +150,7 @@ function VideoTextureScene5(props: React.ComponentProps<typeof VideoTexture>) {
 
 export const VideoTextureSt5 = {
   args: {
-    src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+    src: 'https://threejs.org/examples/textures/sintel.mp4',
   },
   render: (args) => <VideoTextureScene5 {...args} />,
   name: 'Preload',

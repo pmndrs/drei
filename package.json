@@ -42,7 +42,7 @@
     "storybook": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider\" storybook dev -p 6006",
     "build-storybook": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider\" storybook build",
     "chromatic": "chromatic --project-token $CHROMATIC_PROJECT_TOKEN",
-    "copy": "copyfiles package.json README.md LICENSE dist && json -I -f dist/package.json -e \"this.private=false; this.devDependencies=undefined; this.optionalDependencies=undefined; this.scripts=undefined; this.husky=undefined; this.prettier=undefined; this.jest=undefined; this['lint-staged']=undefined;\"",
+    "copy": "copyfiles package.json README.md LICENSE dist && json -I -f dist/package.json -e \"this.private=false; this.devDependencies=undefined; this.optionalDependencies=undefined; this.scripts=undefined; this.husky=undefined; this.prettier=undefined; this.jest=undefined; this['lint-staged']=undefined; this.engines=undefined;\"",
     "copy:native": "copyfiles -u 2 src/native/package.json dist/native",
     "release": "semantic-release"
   },
@@ -137,6 +137,9 @@
     "react-dom": {
       "optional": true
     }
+  },
+  "engines": {
+    "node": "24.x"
   },
   "packageManager": "yarn@4.3.1"
 }

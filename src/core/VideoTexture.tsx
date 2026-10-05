@@ -29,7 +29,7 @@ function destroyHls(video: HTMLVideoElement) {
   hlsInstances.delete(video)
 }
 
-function createVideoTexture(
+async function createVideoTexture(
   srcOrSrcObject: HTMLVideoElement['src' | 'srcObject'],
   {
     unsuspend = 'loadedmetadata',
@@ -57,45 +57,46 @@ function createVideoTexture(
     onVideoFrame?: VideoFrameRequestCallback
   } & Partial<Omit<HTMLVideoElement, 'children' | 'src' | 'srcObject'>> = {}
 ) {
-  return new Promise<THREE.VideoTexture>(async (res) => {
-    let src: HTMLVideoElement['src'] | undefined = undefined
-    let srcObject: HTMLVideoElement['srcObject'] | undefined = undefined
-    if (typeof srcOrSrcObject === 'string') {
-      src = srcOrSrcObject
-    } else {
-      srcObject = srcOrSrcObject
-    }
+  let src: HTMLVideoElement['src'] | undefined = undefined
+  let srcObject: HTMLVideoElement['srcObject'] | undefined = undefined
+  if (typeof srcOrSrcObject === 'string') {
+    src = srcOrSrcObject
+  } else {
+    srcObject = srcOrSrcObject
+  }
 
-    const video = Object.assign(document.createElement('video'), {
-      src,
-      srcObject,
-      crossOrigin,
-      loop,
-      muted,
-      playsInline,
-      ...videoProps,
-    })
-
-    // hlsjs extension
-    if (src && IS_BROWSER && src.endsWith('.m3u8')) {
-      const hls = await getHls(hlsConfig)
-      if (hls) {
-        hls.on(Events.MEDIA_ATTACHED, () => void hls.loadSource(src))
-        hls.attachMedia(video)
-        hlsInstances.set(video, hls)
-      }
-    }
-
-    const texture = new THREE.VideoTexture(video)
-
-    texture.colorSpace = THREE.SRGBColorSpace // no renderer here: `useVideoTexture` sets `gl.outputColorSpace`
-
-    video.addEventListener(unsuspend, () => {
-      res(texture)
-      // cleared while pending: the cache no longer holds this texture
-      setTimeout(() => peek([srcOrSrcObject]) !== texture && destroyHls(video))
-    })
+  const video = Object.assign(document.createElement('video'), {
+    src,
+    srcObject,
+    crossOrigin,
+    loop,
+    muted,
+    playsInline,
+    ...videoProps,
   })
+
+  // hlsjs extension
+  if (src && IS_BROWSER && src.endsWith('.m3u8')) {
+    const hls = await getHls(hlsConfig)
+    if (hls) {
+      hls.on(Events.MEDIA_ATTACHED, () => void hls.loadSource(src))
+      hls.attachMedia(video)
+      hlsInstances.set(video, hls)
+    }
+  }
+
+  const texture = new THREE.VideoTexture(video)
+
+  texture.colorSpace = THREE.SRGBColorSpace // no renderer here: `useVideoTexture` sets `gl.outputColorSpace`
+
+  await new Promise((res) => video.addEventListener(unsuspend, res, { once: true }))
+
+  // cleared while pending: the cache no longer holds this texture
+  setTimeout(() => {
+    if (peek([srcOrSrcObject]) !== texture) destroyHls(video)
+  })
+
+  return texture
 }
 
 export type UseVideoTextureOptions = NonNullable<Parameters<typeof createVideoTexture>[1]>

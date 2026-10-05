@@ -105,6 +105,8 @@ const texture = useVideoTexture('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3
 })
 ```
 
+The hls.js instance lives as long as the texture's cache entry: it is destroyed by [`useVideoTexture.clear`](#preloading), not on unmount.
+
 ## `requestVideoFrameCallback` (rVFC)
 
 `useVideoTexture` supports [`requestVideoFrameCallback`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLVideoElement/requestVideoFrameCallback):

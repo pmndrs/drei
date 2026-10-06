@@ -228,6 +228,7 @@ export const PivotControls: ForwardRefComponent<PivotControlsProps, THREE.Group>
 
     const vec = new THREE.Vector3()
     useFrame((state) => {
+      if (!enabled && !matrix) return
       if (fixed) {
         const sf = calculateScaleFactor(gizmoRef.current.getWorldPosition(vec), scale, state.camera, state.size)
         cameraScale.current.setScalar(sf)

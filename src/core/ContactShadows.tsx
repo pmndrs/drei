@@ -55,6 +55,7 @@ export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Grou
       planeGeometry,
       depthMaterial,
       blurPlane,
+      blurCamera,
       horizontalBlurMaterial,
       verticalBlurMaterial,
       renderTargetBlur,
@@ -62,8 +63,9 @@ export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Grou
       const renderTarget = new THREE.WebGLRenderTarget(resolution, resolution)
       const renderTargetBlur = new THREE.WebGLRenderTarget(resolution, resolution)
       renderTargetBlur.texture.generateMipmaps = renderTarget.texture.generateMipmaps = false
-      const planeGeometry = new THREE.PlaneGeometry(width, height).rotateX(Math.PI / 2)
+      const planeGeometry = new THREE.PlaneGeometry(width, height)
       const blurPlane = new THREE.Mesh(planeGeometry)
+      const blurCamera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, -1, 1)
       const depthMaterial = new THREE.MeshDepthMaterial()
       depthMaterial.depthTest = depthMaterial.depthWrite = false
       depthMaterial.onBeforeCompile = (shader) => {
@@ -92,6 +94,7 @@ export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Grou
         planeGeometry,
         depthMaterial,
         blurPlane,
+        blurCamera,
         horizontalBlurMaterial,
         verticalBlurMaterial,
         renderTargetBlur,
@@ -106,14 +109,14 @@ export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Grou
       horizontalBlurMaterial.uniforms.h.value = (blur * 1) / 256
 
       gl.setRenderTarget(renderTargetBlur)
-      gl.render(blurPlane, shadowCamera.current)
+      gl.render(blurPlane, blurCamera)
 
       blurPlane.material = verticalBlurMaterial
       verticalBlurMaterial.uniforms.tDiffuse.value = renderTargetBlur.texture
       verticalBlurMaterial.uniforms.v.value = (blur * 1) / 256
 
       gl.setRenderTarget(renderTarget)
-      gl.render(blurPlane, shadowCamera.current)
+      gl.render(blurPlane, blurCamera)
 
       blurPlane.visible = false
     }
@@ -149,7 +152,7 @@ export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Grou
 
     return (
       <group rotation-x={Math.PI / 2} {...props} ref={ref}>
-        <mesh renderOrder={renderOrder} geometry={planeGeometry} scale={[1, -1, 1]} rotation={[-Math.PI / 2, 0, 0]}>
+        <mesh renderOrder={renderOrder} geometry={planeGeometry} scale={[1, -1, 1]} rotation={[Math.PI, 0, 0]}>
           <meshBasicMaterial transparent map={renderTarget.texture} opacity={opacity} depthWrite={depthWrite} />
         </mesh>
         <orthographicCamera ref={shadowCamera} args={[-width / 2, width / 2, height / 2, -height / 2, near, far]} />

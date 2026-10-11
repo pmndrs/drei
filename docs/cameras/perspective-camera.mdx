@@ -43,7 +43,7 @@ You can also drive it manually, it won't be responsive and you have to calculate
 <PerspectiveCamera manual aspect={...} onUpdate={(c) => c.updateProjectionMatrix()}>
 ```
 
-You can use the PerspectiveCamera to film contents into a RenderTarget, similar to CubeCamera. As a child you must provide a render-function which receives the texture as its first argument. The result of that function will _not follow the camera_, instead it will be set invisible while the FBO renders so as to avoid issues where the meshes that receive the texture are interrering.
+You can use the PerspectiveCamera to film contents into a RenderTarget, similar to CubeCamera. As a child you must provide a render-function which receives the texture as its first argument. The result of that function will _not follow the camera_, instead it will be set invisible while the FBO renders so as to avoid issues where the meshes that receive the texture are interfering.
 
 ```jsx
 <PerspectiveCamera position={[0, 0, 10]}>

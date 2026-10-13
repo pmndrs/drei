@@ -11,7 +11,7 @@ export type BackdropProps = ThreeElements['group'] & {
   children?: React.ReactNode
 }
 
-export function Backdrop({ children, floor = 0.25, segments = 20, receiveShadow, ...props }) {
+export function Backdrop({ children, floor = 0.25, segments = 20, receiveShadow, ...props }: BackdropProps) {
   const ref = React.useRef<PlaneGeometry>(null!)
   React.useLayoutEffect(() => {
     let i = 0

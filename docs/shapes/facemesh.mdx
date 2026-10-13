@@ -34,7 +34,7 @@ const points = faceLandmarkerResult.faceLandmarks[0]
 export type FacemeshProps = {
   /** an array of 468+ keypoints as returned by google/mediapipe tasks-vision, default: a sample face */
   points?: MediaPipePoints
-  /** @deprecated an face object as returned by tensorflow/tfjs-models face-landmarks-detection */
+  /** @deprecated a face object as returned by tensorflow/tfjs-models face-landmarks-detection */
   face?: MediaPipeFaceMesh
   /** constant width of the mesh, default: undefined */
   width?: number

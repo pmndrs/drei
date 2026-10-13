@@ -29,6 +29,8 @@ export function GradientTexture({
   ...props
 }: GradientTextureProps) {
   const gl = useThree((state: any) => state.gl)
+  // All of these feed the drawn gradient, so all must be deps; with only [stops] the
+  // memoized canvas went stale when colors/size/type/radii changed at runtime.
   const canvas: HTMLCanvasElement = React.useMemo(() => {
     const canvas = document.createElement('canvas')
     const context = canvas.getContext('2d')!
@@ -65,7 +67,7 @@ export function GradientTexture({
     context.restore()
 
     return canvas
-  }, [stops])
+  }, [stops, colors, size, width, type, innerCircleRadius, outerCircleRadius])
 
   return <canvasTexture colorSpace={gl.outputColorSpace} args={[canvas]} attach="map" {...props} />
 }

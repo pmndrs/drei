@@ -167,7 +167,7 @@ const useVideoFrame = (video: HTMLVideoElement, f?: VideoFrameRequestCallback) =
       f(...args)
       handle = video.requestVideoFrameCallback(callback)
     }
-    video.requestVideoFrameCallback(callback)
+    handle = video.requestVideoFrameCallback(callback)
 
     return () => video.cancelVideoFrameCallback(handle)
   }, [video, f])

@@ -116,6 +116,20 @@ Controls use Three's built-in editors and support nested folders, colors, slider
 
 ### Bug Fixes
 
+#### `GizmoHelper` lands the camera exactly on the clicked axis (#2763)
+
+The tween stopped once the camera was within 0.01 rad of the target, which
+left it slightly off the requested axis. For the top and bottom views that
+offset sits on the orbit pole, where `OrbitControls` derives its azimuth from
+the camera position, so the view ended up rotated by an amount that depended
+on where the camera started. Measured on the example over 8 starting
+positions, the −Y view's azimuth varied by up to 88.6°. The last frame now
+snaps onto the target rotation and goes through the same update path as the
+animation frames, which also adds the missing `invalidate()` for
+`frameloop="demand"`.
+
+**Files changed:** `src/core/Gizmos/gizmo/GizmoHelper.tsx`
+
 #### `Preload` now actually preloads on WebGPU (#2809)
 
 `Preload` called `gl.compile(scene, camera)` and assumed it was synchronous. On

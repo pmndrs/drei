@@ -68,9 +68,13 @@ and `PresentationControls` uses the return value to decide when to
 on the same frame. `misc.repeat`/`misc.clamp` come from `math` directly.
 
 The stories and the FaceControls example now use `math` directly. The Points
-story's buffer helpers are small loops over `vec3.transformQuat` and `lerp`. The
-`Image` docs replace maath's `RoundedPlaneGeometry`, which has no counterpart in
-`math`, with a `circleGeometry` example and a pointer to the `radius` prop.
+story's buffer helpers are small loops over `vec3.transformQuat` and `lerp`.
+maath's `RoundedPlaneGeometry` has no counterpart in `math`, so the `Image` docs
+now define a small `RoundedPlaneGeometry` on top of three's `ShapeGeometry`. It
+draws the outline in the unit square so the UVs run 0 to 1, and sets
+`parameters.width/height`, which `Image` reads to size the texture on a custom
+geometry. The usage, `<roundedPlaneGeometry args={[1, 2, 0.15]} />`, is
+unchanged.
 
 **Files changed:** `package.json`, `yarn.lock`, `src/utils/damp.ts` (new),
 `src/utils/damp.test.ts` (new),

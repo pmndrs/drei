@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { MathUtils, Quaternion, Vector3 } from 'three'
+import { MathUtils, Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'
@@ -8,8 +8,7 @@ import { Point, Points, PointMaterial } from 'drei'
 import { shaderMaterial } from '../../../legacy/Materials/shaderMaterial/shaderMaterial'
 import { extend, useFrame, useThree } from '@react-three/fiber'
 
-import * as buffer from 'maath/buffer'
-import * as misc from 'maath/misc'
+import { lerp, quat, remap, vec3, type Quat, type Vec3 } from 'math'
 
 export default {
   title: 'Geometry/Points',
@@ -25,8 +24,25 @@ export default {
 
 type Story = StoryObj<typeof Points>
 
-const rotationAxis = new Vector3(0, 1, 0).normalize()
-const q = new Quaternion()
+const rotationAxis: Vec3 = [0, 1, 0]
+const q = quat.create()
+const v = vec3.create()
+
+// Rotates every xyz triplet of `buffer` by `q`, in place
+function rotateBuffer(buffer: Float32Array, q: Quat) {
+  for (let i = 0; i < buffer.length; i += 3) {
+    vec3.set(v, buffer[i], buffer[i + 1], buffer[i + 2])
+    vec3.transformQuat(v, v, q)
+    buffer[i] = v[0]
+    buffer[i + 1] = v[1]
+    buffer[i + 2] = v[2]
+  }
+}
+
+// Writes the element-wise lerp of `a` and `b` into `out`
+function lerpBuffer(a: Float32Array, b: Float32Array, out: Float32Array, t: number) {
+  for (let i = 0; i < out.length; i++) out[i] = lerp(a[i], b[i], t)
+}
 
 const MyPointsMaterial = shaderMaterial(
   {
@@ -73,14 +89,12 @@ function BasicPointsBufferScene(props: React.ComponentProps<typeof Points>) {
 
   useFrame(({ elapsed }) => {
     const et = elapsed
-    const t = misc.remap(Math.sin(et), [-1, 1], [0, 1])
+    const t = remap(Math.sin(et), -1, 1, 0, 1)
 
-    buffer.rotate(color, { q: q.setFromAxisAngle(rotationAxis, t * 0.01) })
+    rotateBuffer(color, quat.setAxisAngle(q, rotationAxis, t * 0.01))
 
-    buffer.lerp(positionA, positionB, positionFinal, t)
-    buffer.rotate(positionB, {
-      q: q.setFromAxisAngle(rotationAxis, t * t * 0.1),
-    })
+    lerpBuffer(positionA, positionB, positionFinal, t)
+    rotateBuffer(positionB, quat.setAxisAngle(q, rotationAxis, t * t * 0.1))
   })
 
   return (

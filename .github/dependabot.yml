@@ -45,7 +45,7 @@ updates:
           # Excluding all 0.x leading-zero package (since dependabot consider eg: 0.7.3 -> 0.8.0 minor bump / as opposed to semver)
           - '@mediapipe/tasks-vision'
           - 'glsl-noise'
-          - 'maath'
+          - 'math'
           - 'stats.js'
           - 'suspend-react'
           - 'three-mesh-bvh'

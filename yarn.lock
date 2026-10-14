@@ -3459,7 +3459,7 @@ __metadata:
     hls.js: "npm:^1.5.17"
     husky: "npm:^9.1.7"
     json: "npm:^11.0.0"
-    maath: "npm:^0.10.8"
+    math: "npm:^0.1.0"
     pixelmatch: "npm:^7.1.0"
     pngjs: "npm:^7.0.0"
     prettier: "npm:^3.3.3"
@@ -10432,16 +10432,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"maath@npm:^0.10.8":
-  version: 0.10.8
-  resolution: "maath@npm:0.10.8"
-  peerDependencies:
-    "@types/three": ">=0.134.0"
-    three: ">=0.134.0"
-  checksum: 10c0/fb61faac89567595f7e25f261f8a9750d0ced674fd16c77c6e486a0c4a00c572fa37969d613d017380f8ea4e8ff357d481dcd94240a104a7969bc7e95b9fe99e
-  languageName: node
-  linkType: hard
-
 "magic-string@npm:^0.25.7":
   version: 0.25.9
   resolution: "magic-string@npm:0.25.9"
@@ -10576,6 +10566,13 @@ __metadata:
   bin:
     marked: bin/marked.js
   checksum: 10c0/e09da211544b787ecfb25fed07af206060bf7cd6d9de6cb123f15c496a57f83b7aabea93340aaa94dae9c94e097ae129377cad6310abc16009590972e85f4212
+  languageName: node
+  linkType: hard
+
+"math@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "math@npm:0.1.0"
+  checksum: 10c0/1cb47f1027c8cf2a988820cfc6ff0c9b7d41ff7fb8ed1c3579cdf9d9bd023b4813da631c58b362d3e730d40e12590f46f0ff48057543c3c4d0cdab8afbd31a7f
   languageName: node
   linkType: hard
 

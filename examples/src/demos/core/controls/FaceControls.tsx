@@ -16,7 +16,7 @@ import {
 import { Grid } from '@react-three/drei/webgpu'
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { useControls, buttonGroup, folder } from 'leva'
-import { easing } from 'maath'
+import { spring, spring3 } from 'math/time'
 import { ExampleCard } from '../../../components/ExampleCard'
 
 //* FaceControls Demo ==============================
@@ -98,12 +98,22 @@ function Scene() {
 
   // manualUpdate: drive the camera ourselves, with our own damping
   const [current] = useState(() => new THREE.Object3D())
+  const [springs] = useState(() => ({
+    position: spring3.create(),
+    x: spring.create(),
+    y: spring.create(),
+    z: spring.create(),
+  }))
   useFrame((_, delta) => {
     const target = faceControlsApiRef.current?.computeTarget()
     if (!target || !userCam) return
-    const eps = 1e-9
-    easing.damp3(current.position, target.position, gui.smoothTime, delta, undefined, undefined, eps)
-    easing.dampE(current.rotation, target.rotation, gui.smoothTime, delta, undefined, undefined, eps)
+    const { position: p, rotation: r } = target
+    current.position.fromArray(spring3.damp(springs.position, [p.x, p.y, p.z], gui.smoothTime, delta).value)
+    current.rotation.set(
+      spring.dampAngle(springs.x, r.x, gui.smoothTime, delta).value,
+      spring.dampAngle(springs.y, r.y, gui.smoothTime, delta).value,
+      spring.dampAngle(springs.z, r.z, gui.smoothTime, delta).value
+    )
     userCam.position.copy(current.position)
     userCam.rotation.copy(current.rotation)
   })

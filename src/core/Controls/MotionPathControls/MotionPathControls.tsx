@@ -1,7 +1,8 @@
 import * as THREE from '#three'
 import * as React from 'react'
 import { ThreeElements, useFrame, useThree, Instance, useInstanceHandle } from '@react-three/fiber'
-import { easing, misc } from 'maath'
+import { clamp, repeat } from 'math'
+import { damp, dampLookAt } from '@utils/damp'
 
 export type MotionPathProps = ThreeElements['group'] & {
   /** An optional array of THREE curves */
@@ -171,7 +172,7 @@ export const MotionPathControls = /* @__PURE__ */ React.forwardRef<MotionPathRef
 
     React.useLayoutEffect(() => {
       // When offset changes, normalise pos to avoid overshoot spinning
-      pos.current = misc.repeat(pos.current, 1)
+      pos.current = repeat(pos.current, 1)
     }, [offset])
 
     const vec = React.useMemo(() => new THREE.Vector3(), [])
@@ -179,33 +180,23 @@ export const MotionPathControls = /* @__PURE__ */ React.forwardRef<MotionPathRef
     useFrame((_state, delta) => {
       const lastOffset = state.offset
 
-      easing.damp(
-        pos,
-        'current',
-        offset !== undefined ? offset : state.current,
-        damping,
-        delta,
-        maxSpeed,
-        undefined,
-        eps
-      )
-      state.offset = loop ? misc.repeat(pos.current, 1) : misc.clamp(pos.current, 0, 1)
+      damp(pos, 'current', offset !== undefined ? offset : state.current, damping, delta, maxSpeed, eps)
+      state.offset = loop ? repeat(pos.current, 1) : clamp(pos.current, 0, 1)
 
       if (path.getCurveLengths().length > 0) {
         path.getPointAt(state.offset, state.point)
         path.getTangentAt(state.offset, state.tangent).normalize()
-        path.getPointAt(misc.repeat(pos.current - (lastOffset - state.offset), 1), state.next)
+        path.getPointAt(repeat(pos.current - (lastOffset - state.offset), 1), state.next)
         const target = object?.current instanceof THREE.Object3D ? object.current : camera
         target.position.copy(state.point)
 
         if (focus) {
-          easing.dampLookAt(
+          dampLookAt(
             target,
             isObject3DRef(focus) ? focus.current.getWorldPosition(vec) : focus,
             focusDamping,
             delta,
             maxSpeed,
-            undefined,
             eps
           )
         }

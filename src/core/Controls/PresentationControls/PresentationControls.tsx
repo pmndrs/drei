@@ -2,7 +2,7 @@ import * as React from 'react'
 import { MathUtils } from '#three'
 import { useFrame, useThree } from '@react-three/fiber'
 import { useGesture } from '@use-gesture/react'
-import { easing } from 'maath'
+import { damp3, dampE } from '@utils/damp'
 import * as THREE from '#three'
 
 export type PresentationControlProps = {
@@ -90,8 +90,8 @@ export function PresentationControls({
   useFrame((state, delta) => {
     let changed = false
 
-    changed ||= easing.damp3(ref.current.scale, animation.scale, animation.damping, delta)
-    changed ||= easing.dampE(ref.current.rotation, animation.rotation as any, animation.damping, delta)
+    changed ||= damp3(ref.current.scale, animation.scale, animation.damping, delta)
+    changed ||= dampE(ref.current.rotation, animation.rotation as any, animation.damping, delta)
 
     if (changed) state.invalidate()
   })

@@ -30,11 +30,31 @@ sourcecode: src/legacy/Materials/Image/Image.tsx
 You can have custom planes, for instance a rounded-corner plane.
 
 ```jsx
+import * as THREE from 'three'
 import { extend } from '@react-three/fiber'
 import { Image } from '@react-three/drei'
-import { easing, geometry } from 'maath'
 
-extend({ RoundedPlaneGeometry: geometry.RoundedPlaneGeometry })
+class RoundedPlaneGeometry extends THREE.ShapeGeometry {
+  constructor(width = 1, height = 1, radius = 0.1, segments = 8) {
+    const rx = radius / width
+    const ry = radius / height
+    const shape = new THREE.Shape()
+      .moveTo(0, ry)
+      .lineTo(0, 1 - ry)
+      .quadraticCurveTo(0, 1, rx, 1)
+      .lineTo(1 - rx, 1)
+      .quadraticCurveTo(1, 1, 1, 1 - ry)
+      .lineTo(1, ry)
+      .quadraticCurveTo(1, 0, 1 - rx, 0)
+      .lineTo(rx, 0)
+      .quadraticCurveTo(0, 0, 0, ry)
+    super(shape, segments)
+    this.translate(-0.5, -0.5, 0).scale(width, height, 1)
+    this.parameters = { width, height, radius, segments }
+  }
+}
+
+extend({ RoundedPlaneGeometry })
 
 <Image url="/file.jpg">
   <roundedPlaneGeometry args={[1, 2, 0.15]} />

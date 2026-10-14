@@ -17,7 +17,7 @@ import {
 } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import type { FaceLandmarker, FaceLandmarkerResult } from '@mediapipe/tasks-vision'
-import { easing } from 'maath'
+import { damp3, dampE } from '@utils/damp'
 
 import { VideoTexture, VideoTextureProps } from '@core/Textures/VideoTexture/VideoTexture'
 import { WebcamVideoTexture } from '@core/Textures/WebcamVideoTexture/WebcamVideoTexture'
@@ -200,8 +200,8 @@ export const FaceControls = /* @__PURE__ */ forwardRef<FaceControlsApi, FaceCont
           if (smoothTime > 0) {
             // damping current
             const eps = 1e-9
-            easing.damp3(current.position, target.position, smoothTime, delta, undefined, undefined, eps)
-            easing.dampE(current.rotation, target.rotation, smoothTime, delta, undefined, undefined, eps)
+            damp3(current.position, target.position, smoothTime, delta, undefined, eps)
+            dampE(current.rotation, target.rotation, smoothTime, delta, undefined, eps)
           } else {
             // instant
             current.position.copy(target.position)

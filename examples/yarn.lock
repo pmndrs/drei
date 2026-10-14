@@ -1134,6 +1134,7 @@ __metadata:
     clsx: "npm:^2.1.1"
     leva: "npm:^0.10.1"
     lucide-react: "npm:^0.562.0"
+    math: "npm:^0.1.0"
     postcss: "npm:^8.5.6"
     react: "npm:^19.2.8"
     react-dom: "npm:^19.2.8"
@@ -2438,6 +2439,13 @@ __metadata:
     promise-retry: "npm:^2.0.1"
     ssri: "npm:^13.0.0"
   checksum: 10c0/525f74915660be60b616bcbd267c4a5b59481b073ba125e45c9c3a041bb1a47a2bd0ae79d028eb6f5f95bf9851a4158423f5068539c3093621abb64027e8e461
+  languageName: node
+  linkType: hard
+
+"math@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "math@npm:0.1.0"
+  checksum: 10c0/1cb47f1027c8cf2a988820cfc6ff0c9b7d41ff7fb8ed1c3579cdf9d9bd023b4813da631c58b362d3e730d40e12590f46f0ff48057543c3c4d0cdab8afbd31a7f
   languageName: node
   linkType: hard
 

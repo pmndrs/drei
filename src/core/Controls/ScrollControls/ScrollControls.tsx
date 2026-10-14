@@ -3,7 +3,7 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
 import { context as fiberContext, RootState, useFrame, useThree } from '@react-three/fiber'
 import { DomEvent } from '@react-three/fiber/'
-import { easing } from 'maath'
+import { damp } from '@utils/damp'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 import { roundToPixelRatio } from '../../../utils/generic'
 
@@ -274,8 +274,8 @@ export function ScrollControls({
   let last = 0
   useFrame((_, delta) => {
     last = state.offset
-    easing.damp(state, 'offset', scroll.current, damping, delta, maxSpeed, undefined, eps)
-    easing.damp(state, 'delta', Math.abs(last - state.offset), damping, delta, maxSpeed, undefined, eps)
+    damp(state, 'offset', scroll.current, damping, delta, maxSpeed, eps)
+    damp(state, 'delta', Math.abs(last - state.offset), damping, delta, maxSpeed, eps)
     if (state.delta > eps) invalidate()
   })
   return <context.Provider value={state}>{children}</context.Provider>

@@ -50,6 +50,45 @@ aliases `#three-addons` to the WebGL file whichever renderer is selected.
 
 ### Internal
 
+#### `maath` replaced by `math`
+
+`pmndrs/maath` was renamed to [`pmndrs/math`](https://github.com/pmndrs/math)
+and is published on npm as `math`, so drei now depends on `math` instead of
+`maath`.
+
+`math` keeps maath's critically damped curve as `spring.damp` from `math/time`.
+It has no `maxSpeed` clamp, `eps` snap, "still moving" return value, or
+Vector3/Euler/Quaternion/lookAt variants, all of which drei's controls rely on.
+`ScrollControls` and `MotionPathControls` expose `maxSpeed` and `eps` as props,
+and `PresentationControls` uses the return value to decide when to
+`invalidate()`. The new internal `src/utils/damp.ts` ports maath's `damp`,
+`dampAngle`, `damp3`, `dampE`, `dampQ` and `dampLookAt` on top of
+`spring.damp`. The output differs from maath by at most about 1e-3 because
+`math` solves the exponential exactly instead of approximating it, and settles
+on the same frame. `misc.repeat`/`misc.clamp` come from `math` directly.
+
+The stories and the FaceControls example now use `math` directly. The Points
+story's buffer helpers are small loops over `vec3.transformQuat` and `lerp`.
+maath's `RoundedPlaneGeometry` has no counterpart in `math`, so the `Image` docs
+now define a small `RoundedPlaneGeometry` on top of three's `ShapeGeometry`. It
+draws the outline in the unit square so the UVs run 0 to 1, and sets
+`parameters.width/height`, which `Image` reads to size the texture on a custom
+geometry. The usage, `<roundedPlaneGeometry args={[1, 2, 0.15]} />`, is
+unchanged.
+
+**Files changed:** `package.json`, `yarn.lock`, `src/utils/damp.ts` (new),
+`src/utils/damp.test.ts` (new),
+`src/core/Controls/ScrollControls/ScrollControls.tsx`,
+`src/core/Controls/MotionPathControls/MotionPathControls.tsx`,
+`src/core/Controls/PresentationControls/PresentationControls.tsx`,
+`src/external/Controls/FaceControls/FaceControls.tsx`,
+`src/external/Controls/FaceControls/FaceControls.stories.tsx`,
+`src/core/Geometry/Points/Points.stories.tsx`,
+`src/core/Helpers/Instances/Instances.stories.tsx`,
+`src/legacy/Materials/Image/Image.docs.mdx`, `docs/abstractions/image.mdx`,
+`examples/package.json`, `examples/yarn.lock`,
+`examples/src/demos/core/controls/FaceControls.tsx`, `.github/dependabot.yml`
+
 #### The component audit gives the same answer on Linux and macOS
 
 `yarn test:components` failed on a clean Linux checkout. It reported that the

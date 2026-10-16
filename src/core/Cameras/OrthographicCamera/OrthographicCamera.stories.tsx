@@ -4,6 +4,9 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 import { Icosahedron, OrthographicCamera } from 'drei'
 import { Setup } from '@sb/Setup'
 
+import * as THREE from '#three'
+import { useFrame } from '@react-three/fiber'
+
 export default {
   title: 'Camera/OrthographicCamera',
   component: OrthographicCamera,
@@ -73,4 +76,33 @@ export const OrthographicCameraSceneSt = {
       `,
     },
   },
+} satisfies Story
+
+function FilmingScene(props: React.ComponentProps<typeof OrthographicCamera>) {
+  const subject = React.useRef<THREE.Mesh>(null!)
+  useFrame((state) => {
+    subject.current.rotation.y = state.elapsed
+  })
+  return (
+    <>
+      <mesh ref={subject} position={[0, 0, -5]}>
+        <torusKnotGeometry />
+        <meshNormalMaterial />
+      </mesh>
+      <OrthographicCamera position={[0, 0, 5]} {...props}>
+        {(texture) => (
+          <mesh position={[3, 0, 0]}>
+            <planeGeometry args={[2, 2]} />
+            <meshBasicMaterial map={texture} />
+          </mesh>
+        )}
+      </OrthographicCamera>
+    </>
+  )
+}
+
+export const OrthographicCameraFilmingSt = {
+  args: { frames: Infinity, zoom: 40 },
+  render: (args) => <FilmingScene {...args} />,
+  name: 'Filming into texture',
 } satisfies Story

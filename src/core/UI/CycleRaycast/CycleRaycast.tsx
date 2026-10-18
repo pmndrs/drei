@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from '#three'
-import { useThree } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/extension'
 
 export type CycleRaycastProps = {
   onChanged?: (hits: THREE.Intersection[], cycle: number) => null
@@ -29,13 +29,13 @@ export function CycleRaycast({
   const cycle = React.useRef(0)
   const setEvents = useThree((state) => state.setEvents)
   const get = useThree((state) => state.get)
-  const gl = useThree((state) => state.gl)
+  const renderer = useThree((state) => state.renderer)
 
   React.useEffect(() => {
     let hits: THREE.Intersection[] = []
     let lastEvent: PointerEvent = undefined!
     const prev = get().events.filter
-    const target = portal?.current ?? gl.domElement.parentNode
+    const target = portal?.current ?? renderer.domElement.parentNode
 
     // Render custom status
     const renderStatus = () => target && onChanged && onChanged(hits, Math.round(cycle.current) % hits.length)
@@ -105,6 +105,6 @@ export function CycleRaycast({
       if (scroll) document.removeEventListener('wheel', wheelEvent)
       document.removeEventListener('pointermove', moveEvent)
     }
-  }, [gl, get, setEvents, preventDefault, scroll, keyCode])
+  }, [renderer, get, setEvents, preventDefault, scroll, keyCode])
   return null
 }

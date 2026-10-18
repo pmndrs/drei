@@ -67,13 +67,20 @@ import { DiscardMaterial } from '@webgpu/Materials/DiscardMaterial'
 import { ForwardRefComponent } from '@utils/ts-utils'
 import { withUniforms } from '@utils/withUniforms'
 
-const EnvironmentBRDF = /*@__PURE__*/ Fn((inputs: any) => {
-  const { dotNV, specularColor, specularF90, roughness } = inputs
+const EnvironmentBRDF = /*@__PURE__*/ Fn(
+  (inputs: {
+    dotNV: THREE.Node<'float'>
+    specularColor: THREE.Node<'vec3'>
+    specularF90: THREE.Node<'float'>
+    roughness: THREE.Node<'float'>
+  }) => {
+    const { dotNV, specularColor, specularF90, roughness } = inputs
 
-  // DFGLUT is declared with `any` inputs, so its vec2 result is untyped here.
-  const fab = DFGLUT({ dotNV, roughness }) as unknown as THREE.Node<'vec2'>
-  return specularColor.mul(fab.x).add(specularF90.mul(fab.y))
-})
+    // DFGLUT is declared with `any` inputs, so its vec2 result is untyped here.
+    const fab = DFGLUT({ dotNV, roughness }) as unknown as THREE.Node<'vec2'>
+    return specularColor.mul(fab.x).add(specularF90.mul(fab.y))
+  }
+)
 
 //* Types ==============================
 

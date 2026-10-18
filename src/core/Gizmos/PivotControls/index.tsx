@@ -1,4 +1,4 @@
-import { useFrame, useThree } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/extension'
 import * as React from 'react'
 import * as THREE from '#three'
 

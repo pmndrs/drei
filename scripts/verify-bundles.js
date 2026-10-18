@@ -10,7 +10,7 @@
  * - No absolute paths in imports (portability)
  *
  * Each entry point should have the correct THREE imports based on its platform:
- * - Root/Core/External/Experimental: can have 'three' (renderer-agnostic)
+ * - Root/Core/External/Experimental: use WebGPU internals, matching Fiber's default
  * - Legacy: only 'three' (no three/webgpu or three/tsl)
  * - WebGPU: only 'three/webgpu' (no plain three)
  * - Native: only 'three/webgpu' (no plain three)
@@ -28,18 +28,18 @@ const checks = [
   {
     name: 'Root entry (@react-three/drei)',
     file: 'index.mjs',
-    // Root can have 'three' imports (renderer-agnostic)
-    shouldContain: [],
+    // Shared components must select WebGPU implementations by default.
+    shouldContain: ["from 'three/webgpu'"],
     shouldNotContain: [],
-    notes: 'Root entry is renderer-agnostic, may have plain three imports',
+    notes: "Root entry uses WebGPU internals, matching Fiber's default Canvas",
   },
   {
     name: 'Core entry (@react-three/drei/core)',
     file: 'core/index.mjs', // unbuild: flat structure
-    // Core is renderer-agnostic
-    shouldContain: [],
+    // Core uses the same platform aliases as the root entry.
+    shouldContain: ["from 'three/webgpu'"],
     shouldNotContain: [],
-    notes: 'Core entry is renderer-agnostic',
+    notes: 'Core entry uses WebGPU internals; use /legacy for WebGL',
   },
   {
     name: 'Legacy entry (@react-three/drei/legacy)',
@@ -169,8 +169,9 @@ function getAllJsFiles(dir, files = []) {
 }
 
 function analyzeEntryBundle(entryDir) {
-  // Get all JS files for an entry and analyze their imports
-  const files = getAllJsFiles(entryDir)
+  // Each entry has flat output. Exclude sibling entry directories under dist/
+  // so their imports cannot satisfy the root entry's checks.
+  const files = getAllJsFiles(entryDir).filter((file) => path.dirname(file) === entryDir)
   const allImports = new Set()
   let totalContent = ''
 

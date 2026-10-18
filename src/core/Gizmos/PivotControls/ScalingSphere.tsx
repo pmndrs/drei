@@ -1,6 +1,7 @@
 import * as React from 'react'
 import * as THREE from '#three'
-import { ThreeEvent, useThree } from '@react-three/fiber'
+import { ThreeEvent } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/extension'
 
 import { Html } from '@core/UI/Html'
 import { context } from './context'

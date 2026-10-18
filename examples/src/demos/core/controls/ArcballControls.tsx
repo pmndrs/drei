@@ -11,7 +11,7 @@ export default function ArcballControlsDemo() {
       <ExampleCard demoName="ArcballControls" />
 
       <div className="demo-canvas">
-        <CanvasWithToggle renderer camera={{ position: [0, 5, 5] }}>
+        <CanvasWithToggle camera={{ position: [0, 5, 5] }}>
           <ArcballControls makeDefault />
 
           <CommonScene />

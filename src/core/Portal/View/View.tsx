@@ -1,6 +1,7 @@
 import * as React from 'react'
 import * as THREE from '#three'
-import { RootState, context, createPortal, useFrame, useThree } from '@react-three/fiber'
+import { RootState, context, createPortal } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/extension'
 import tunnel from 'tunnel-rat'
 import { roundEven } from '../../../utils/roundEven'
 

@@ -1,4 +1,5 @@
-import { ReactThreeFiber, ThreeElement, ThreeElements, useThree } from '@react-three/fiber'
+import { ReactThreeFiber, ThreeElement, ThreeElements } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/extension'
 import * as React from 'react'
 import * as THREE from '#three'
 import { TransformControls as TransformControlsImpl } from 'three/examples/jsm/controls/TransformControls.js'
@@ -80,14 +81,14 @@ export const TransformControls: ForwardRefComponent<TransformControlsProps, Tran
       ref
     ) => {
       const defaultControls = useThree((state) => state.controls) as unknown as ControlsProto | undefined
-      const gl = useThree((state) => state.gl)
+      const renderer = useThree((state) => state.renderer)
       const events = useThree((state) => state.events)
       const defaultCamera = useThree((state) => state.camera)
       const invalidate = useThree((state) => state.invalidate)
       const get = useThree((state) => state.get)
       const set = useThree((state) => state.set)
       const explCamera = camera || defaultCamera
-      const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
+      const explDomElement = (domElement || events.connected || renderer.domElement) as HTMLElement
       const controls = React.useMemo(
         () => new TransformControlsImpl(explCamera, explDomElement),
         [explCamera, explDomElement]

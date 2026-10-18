@@ -1,6 +1,7 @@
 import * as React from 'react'
 import * as THREE from '#three'
-import { useThree, useFrame, extend, ThreeElement, ThreeElements } from '@react-three/fiber'
+import { extend, ThreeElement, ThreeElements } from '@react-three/fiber'
+import { useThree, useFrame } from '@react-three/fiber/legacy'
 import { ForwardRefComponent } from '@utils/ts-utils'
 import { SparklesMaterial } from '../../Materials/SparklesMaterial'
 

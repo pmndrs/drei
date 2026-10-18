@@ -15,15 +15,14 @@
 > - 💬 [Join the discussion](https://github.com/pmndrs/drei/discussions) — Questions or ideas
 > - 📋 [Track progress](https://github.com/pmndrs/drei/milestone/2) — See what's coming
 >
-> ⚠️ **This alpha bundles @react-three/fiber v10** until R3F v10 is published to NPM.
-> Remove any existing `@react-three/fiber` from your dependencies before testing.
+> This alpha requires `@react-three/fiber` **10.0.0-alpha.6 or newer**. R3F is a peer dependency; install it alongside Drei.
 
 A growing collection of useful helpers and fully functional, ready-made abstractions for [@react-three/fiber](https://github.com/pmndrs/react-three-fiber).
 
 If you make a component that is generic enough to be useful to others, think about [CONTRIBUTING](devDocs/CONTRIBUTING.md)!
 
 ```bash
-npm install @react-three/drei
+npm install @react-three/drei@alpha @react-three/fiber@alpha
 ```
 
 > [!IMPORTANT] > **v11 is ESM-only.** We no longer ship CommonJS bundles. This follows the ecosystem-wide shift to ESM as the standard — matching `@react-three/fiber`, Three.js, and [Storybook 10](https://storybook.js.org/blog/storybook-is-going-esm-only/). All modern bundlers handle ESM natively.
@@ -41,14 +40,14 @@ New scripts, components, shaders, can be addded here in this repo or in the upco
 import { PerspectiveCamera, OrbitControls, Environment } from '@react-three/drei'
 ```
 
-The root import includes renderer-agnostic components (core + external + experimental).
+The root import includes core, external, and experimental components. Its internal materials and render targets use WebGPU, matching Fiber 10's default `Canvas`. For `Canvas` from `@react-three/fiber/legacy`, import shared components such as `Stage` from `@react-three/drei/legacy` too.
 
 ### Entry Points (v11+)
 
 Drei v11 introduces multiple entry points for better tree-shaking and renderer-specific code:
 
 ```jsx
-// Renderer-agnostic components (works with both WebGL and WebGPU)
+// Default WebGPU renderer
 import { OrbitControls, Environment } from '@react-three/drei' // All
 import { OrbitControls } from '@react-three/drei/core' // Core only
 import { Bvh } from '@react-three/drei/external' // External wrappers
@@ -61,11 +60,11 @@ import { MeshDistortMaterial, Fbo } from '@react-three/drei/webgpu' // WebGPU on
 
 **When to use each:**
 
-- **Root import**: Best for most projects, includes all renderer-agnostic components
-- **/core**: Smallest bundle, production-ready components only
+- **Root import**: Core, external, and experimental components for Fiber's default WebGPU renderer
+- **/core**: Shared components with WebGPU internals
 - **/external**: External library wrappers (Bvh, CameraControls, etc.)
 - **/experimental**: Rough/experimental features
-- **/legacy**: WebGL-specific implementations (GLSL materials, WebGLRenderTarget)
+- **/legacy**: Shared components and WebGL implementations (GLSL materials, WebGLRenderTarget)
 - **/webgpu**: WebGPU-specific implementations (TSL materials, WebGPU render targets)
 
 See [MIGRATION_V10_TO_V11.md](devDocs/MIGRATION_V10_TO_V11.md) for details.

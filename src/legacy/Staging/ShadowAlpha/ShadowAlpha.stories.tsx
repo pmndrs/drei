@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'
 
-import { useFrame } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber/legacy'
 import { BufferGeometry, MeshStandardMaterial, type Mesh } from 'three'
 import { Icosahedron, Plane } from 'drei'
 import { ShadowAlpha } from './ShadowAlpha'

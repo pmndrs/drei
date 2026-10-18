@@ -1,7 +1,8 @@
 import * as THREE from '#three'
 import * as React from 'react'
 import { PerspectiveCamera as PerspectiveCameraImpl } from '#three'
-import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
+import { ThreeElements } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/extension'
 import { useFBO } from '@core/Portal/Fbo'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 

@@ -2,7 +2,7 @@ import { OrbitControls, useEnvironment } from '@react-three/drei/core'
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 import { useEffect } from 'react'
-import { useThree } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/extension'
 
 //* useEnvironment Demo ==============================
 

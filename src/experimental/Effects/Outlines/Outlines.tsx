@@ -1,7 +1,8 @@
 import * as THREE from '#three'
 import * as React from 'react'
 import { shaderMaterial } from '@legacy/Materials/shaderMaterial'
-import { extend, applyProps, ReactThreeFiber, useThree, ThreeElements } from '@react-three/fiber'
+import { extend, applyProps, ReactThreeFiber, ThreeElements } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/extension'
 import { toCreasedNormals } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import { version } from '@utils/constants'
 
@@ -111,8 +112,8 @@ export function Outlines({
 }: OutlinesProps) {
   const ref = React.useRef<THREE.Group>(null)
   const [material] = React.useState(() => new OutlinesMaterial({ side: THREE.BackSide }))
-  const { gl } = useThree()
-  const contextSize = gl.getDrawingBufferSize(new THREE.Vector2())
+  const { renderer } = useThree()
+  const contextSize = renderer.getDrawingBufferSize(new THREE.Vector2())
   React.useMemo(() => extend({ OutlinesMaterial }), [])
 
   const oldAngle = React.useRef(0)

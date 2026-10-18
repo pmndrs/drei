@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { extend, useFrame, ReactThreeFiber, ThreeElements, ThreeElement } from '@react-three/fiber'
+import { extend, ReactThreeFiber, ThreeElements, ThreeElement } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber/legacy'
 import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js'
 import { LineMaterial, LineMaterialParameters } from 'three/examples/jsm/lines/LineMaterial.js'
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js'

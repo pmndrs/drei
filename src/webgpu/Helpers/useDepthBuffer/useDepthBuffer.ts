@@ -102,21 +102,21 @@ function useDepthBuffer({ size = 256, frames = Infinity }: UseDepthBufferOptions
   useFrame(
     (state) => {
       if (frames === Infinity || frameCount.current < frames) {
-        const { gl, scene, camera } = state
+        const { renderer, scene, camera } = state
 
         // Step 1: Render scene depth to target A
         // At this point, volumetric meshes should be hidden by their own useFrame callbacks
-        gl.setRenderTarget(targetA as any)
-        gl.render(scene, camera)
+        renderer.setRenderTarget(targetA as any)
+        renderer.render(scene, camera)
 
         // Step 2: Copy depth from A to B as a color texture using TSL
         // This creates a separate render pass with B as render target
         depthUniform.value = targetA.depthTexture!
-        gl.setRenderTarget(targetB as any)
-        gl.render(copyScene, copyCamera)
+        renderer.setRenderTarget(targetB as any)
+        renderer.render(copyScene, copyCamera)
 
         // Reset render target for main render
-        gl.setRenderTarget(null)
+        renderer.setRenderTarget(null)
         frameCount.current++
       }
     },

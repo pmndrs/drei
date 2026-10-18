@@ -4,7 +4,8 @@
 
 import * as THREE from '#three'
 import * as React from 'react'
-import { extend, ReactThreeFiber, ThreeElements, useFrame, useThree } from '@react-three/fiber'
+import { extend, ReactThreeFiber, ThreeElements } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/legacy'
 import { useFBO } from '@core/Portal/Fbo'
 import { useHelper } from '@core/Gizmos/useHelper'
 import { shaderMaterial } from '@legacy/Materials/shaderMaterial'
@@ -340,7 +341,7 @@ export const Caustics: ForwardRefComponent<CausticsProps, THREE.Group> = /* @__P
     const camera = React.useRef<THREE.OrthographicCamera>(null!)
     const scene = React.useRef<THREE.Scene>(null!)
     const plane = React.useRef<THREE.Mesh<THREE.PlaneGeometry, CausticsProjectionMaterialType>>(null!)
-    const gl = useThree((state) => state.gl)
+    const renderer = useThree((state) => state.renderer)
     const helper = useHelper(debug && camera, THREE.CameraHelper)
 
     // Buffers for front and back faces
@@ -348,7 +349,7 @@ export const Caustics: ForwardRefComponent<CausticsProps, THREE.Group> = /* @__P
     const normalTargetB = useFBO(resolution, resolution, NORMALPROPS)
 
     // Check if FloatType is supported, if not, use HalfFloatType
-    if (!gl.extensions.get('OES_texture_float_linear')) {
+    if (!renderer.extensions.get('OES_texture_float_linear')) {
       console.warn(
         '[Caustics]: `OES_texture_float_linear` extension not supported, using HalfFloatType instead of FloatType'
       )
@@ -484,17 +485,17 @@ export const Caustics: ForwardRefComponent<CausticsProps, THREE.Group> = /* @__P
         scene.current.visible = true
 
         // Render front face normals
-        gl.setRenderTarget(normalTarget)
-        gl.clear()
+        renderer.setRenderTarget(normalTarget)
+        renderer.clear()
         scene.current.overrideMaterial = normalMat
-        gl.render(scene.current, camera.current)
+        renderer.render(scene.current, camera.current)
 
         // Render back face normals, if enabled
-        gl.setRenderTarget(normalTargetB)
-        gl.clear()
+        renderer.setRenderTarget(normalTargetB)
+        renderer.clear()
         if (backside) {
           scene.current.overrideMaterial = normalMatB
-          gl.render(scene.current, camera.current)
+          renderer.render(scene.current, camera.current)
         }
 
         // Remove the override material
@@ -506,20 +507,20 @@ export const Caustics: ForwardRefComponent<CausticsProps, THREE.Group> = /* @__P
         plane.current.material.lightViewMatrix = camera.current.matrixWorldInverse
         causticsMaterial.normalTexture = normalTarget.texture
         causticsMaterial.depthTexture = normalTarget.depthTexture
-        gl.setRenderTarget(causticsTarget)
-        gl.clear()
-        causticsQuad.render(gl)
+        renderer.setRenderTarget(causticsTarget)
+        renderer.clear()
+        causticsQuad.render(renderer)
 
         // Render back face caustics, if enabled
         causticsMaterial.ior = backsideIOR
         causticsMaterial.normalTexture = normalTargetB.texture
         causticsMaterial.depthTexture = normalTargetB.depthTexture
-        gl.setRenderTarget(causticsTargetB)
-        gl.clear()
-        if (backside) causticsQuad.render(gl)
+        renderer.setRenderTarget(causticsTargetB)
+        renderer.clear()
+        if (backside) causticsQuad.render(renderer)
 
         // Reset render target
-        gl.setRenderTarget(null)
+        renderer.setRenderTarget(null)
 
         // Switch the scene off if caustics is all that's wanted
         if (causticsOnly) scene.current.visible = false

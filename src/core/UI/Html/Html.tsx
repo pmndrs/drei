@@ -13,7 +13,8 @@ import {
   Mesh,
 } from '#three'
 import { Assign } from 'utility-types'
-import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
+import { ThreeElements } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/extension'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 import { roundEven } from '../../../utils/roundEven'
 import { roundToPixelRatio } from '../../../utils/generic'

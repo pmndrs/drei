@@ -15,7 +15,7 @@ import {
   useContext,
   ComponentRef,
 } from 'react'
-import { useFrame, useThree } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/extension'
 import type { FaceLandmarker, FaceLandmarkerResult } from '@mediapipe/tasks-vision'
 import { easing } from 'maath'
 

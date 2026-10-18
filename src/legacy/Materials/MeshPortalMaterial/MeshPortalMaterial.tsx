@@ -5,7 +5,8 @@
 
 import * as THREE from '#three'
 import * as React from 'react'
-import { ReactThreeFiber, ThreeElements, extend, useFrame, useThree } from '@react-three/fiber'
+import { ReactThreeFiber, ThreeElements, extend } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/legacy'
 import { useIntersect } from '@core/UI/useIntersect'
 import { useFBO } from '@core/Portal/Fbo'
 import { RenderTexture } from '@legacy/Portal/RenderTexture'
@@ -115,7 +116,7 @@ export const MeshPortalMaterial: ForwardRefComponent<PortalProps, ThreeElements[
       extend({ PortalMaterialImpl })
 
       const ref = React.useRef<ThreeElements['portalMaterialImpl']>(null!)
-      const { scene, gl, size, viewport, setEvents } = useThree()
+      const { scene, renderer, size, viewport, setEvents } = useThree()
       const maskRenderTarget = useFBO(resolution, resolution)
 
       const [priority, setPriority] = React.useState(0)
@@ -158,12 +159,12 @@ export const MeshPortalMaterial: ForwardRefComponent<PortalProps, ThreeElements[
           orthoCam.position.set(0, 0, 1)
           orthoCam.lookAt(0, 0, 0)
 
-          gl.setRenderTarget(maskRenderTarget)
-          gl.render(tempMesh, orthoCam)
-          const sg = makeSDFGenerator(resolution, resolution, gl)
+          renderer.setRenderTarget(maskRenderTarget)
+          renderer.render(tempMesh, orthoCam)
+          const sg = makeSDFGenerator(resolution, resolution, renderer)
           const sdf = sg(maskRenderTarget.texture)
           const readSdf = new Float32Array(resolution * resolution)
-          gl.readRenderTargetPixels(sdf, 0, 0, resolution, resolution, readSdf)
+          renderer.readRenderTargetPixels(sdf, 0, 0, resolution, resolution, readSdf)
           // Get smallest value in sdf
           let min = Infinity
           for (let i = 0; i < readSdf.length; i++) {
@@ -173,7 +174,7 @@ export const MeshPortalMaterial: ForwardRefComponent<PortalProps, ThreeElements[
           ref.current.size = min
           ref.current.sdf = sdf.texture
 
-          gl.setRenderTarget(null)
+          renderer.setRenderTarget(null)
         }
       }, [resolution, blur])
 
@@ -286,36 +287,39 @@ function ManagePortalScene({
     return [quad, blend]
   }, [])
 
-  useFrame((state) => {
-    let parent = (material?.current as any)?.__r3f.parent?.object
-    if (parent) {
-      // Move portal contents along with the parent if worldUnits is true
-      if (!worldUnits) {
-        // If the portal renders exclusively the original scene needs to be updated
-        if (priority && material.current?.blend === 1) parent.updateWorldMatrix(true, false)
-        scene.matrixWorld.copy(parent.matrixWorld)
-      } else scene.matrixWorld.identity()
+  useFrame(
+    (state) => {
+      let parent = (material?.current as any)?.__r3f.parent?.object
+      if (parent) {
+        // Move portal contents along with the parent if worldUnits is true
+        if (!worldUnits) {
+          // If the portal renders exclusively the original scene needs to be updated
+          if (priority && material.current?.blend === 1) parent.updateWorldMatrix(true, false)
+          scene.matrixWorld.copy(parent.matrixWorld)
+        } else scene.matrixWorld.identity()
 
-      // This bit is only necessary if the portal is blended, now it has a render-priority
-      // and will take over the render loop
-      if (priority) {
-        if (material.current?.blend && material.current?.blend > 0 && material.current?.blend < 1) {
-          // If blend is ongoing (> 0 and < 1) then we need to render both the root scene
-          // and the portal scene, both will then be mixed in the quad from above
-          blend.value = material.current.blend
-          state.gl.setRenderTarget(buffer1)
-          state.gl.render(scene, state.camera)
-          state.gl.setRenderTarget(buffer2)
-          state.gl.render(rootScene, state.camera)
-          state.gl.setRenderTarget(null)
-          quad.render(state.gl)
-        } else if (material.current?.blend === 1) {
-          // However if blend is 1 we only need to render the portal scene
-          state.gl.render(scene, state.camera)
+        // This bit is only necessary if the portal is blended, now it has a render-priority
+        // and will take over the render loop
+        if (priority) {
+          if (material.current?.blend && material.current?.blend > 0 && material.current?.blend < 1) {
+            // If blend is ongoing (> 0 and < 1) then we need to render both the root scene
+            // and the portal scene, both will then be mixed in the quad from above
+            blend.value = material.current.blend
+            state.renderer.setRenderTarget(buffer1)
+            state.renderer.render(scene, state.camera)
+            state.renderer.setRenderTarget(buffer2)
+            state.renderer.render(rootScene, state.camera)
+            state.renderer.setRenderTarget(null)
+            quad.render(state.renderer)
+          } else if (material.current?.blend === 1) {
+            // However if blend is 1 we only need to render the portal scene
+            state.renderer.render(scene, state.camera)
+          }
         }
       }
-    }
-  }, priority)
+    },
+    { phase: priority > 0 ? 'render' : 'update', priority: -priority }
+  )
   return <></>
 }
 

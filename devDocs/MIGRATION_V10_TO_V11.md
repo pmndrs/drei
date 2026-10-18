@@ -70,7 +70,7 @@ import { OrbitControls, Environment, Bvh, MeshDistortMaterial } from '@react-thr
 ### After (v11)
 
 ```tsx
-// Root - Renderer-agnostic components only (recommended for most users)
+// Root - shared components for Fiber's default WebGPU Canvas
 import { OrbitControls, Environment, Bvh } from '@react-three/drei'
 
 // Explicit entry points
@@ -83,7 +83,12 @@ import { MeshDistortMaterial } from '@react-three/drei/legacy' // WebGL only
 import { MeshDistortMaterial } from '@react-three/drei/webgpu' // WebGPU only
 ```
 
-**📝 Bundle behavior:** When importing from root, components use the default Three.js renderer path (WebGL). For WebGPU projects, import platform-specific components from `/webgpu` to get properly aliased code that won't bundle the WebGL renderer.
+**📝 Bundle behavior:** Root, `/core`, `/external`, and `/experimental` use WebGPU internals, matching `Canvas` from `@react-three/fiber`. Import additional WebGPU materials from `/webgpu`. For WebGL, pair `Canvas` from `@react-three/fiber/legacy` with shared components and materials from `@react-three/drei/legacy`:
+
+```tsx
+import { Canvas } from '@react-three/fiber/legacy'
+import { Stage, OrbitControls, MeshDistortMaterial } from '@react-three/drei/legacy'
+```
 
 ---
 
@@ -91,7 +96,7 @@ import { MeshDistortMaterial } from '@react-three/drei/webgpu' // WebGPU only
 
 ### Renderer-Agnostic (Root Export)
 
-These components work with both WebGL and WebGPU renderers:
+These shared components are built for each renderer. Use the root entry with WebGPU and `/legacy` with WebGL:
 
 **Core:**
 

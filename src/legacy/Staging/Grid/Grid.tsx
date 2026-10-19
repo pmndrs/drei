@@ -6,8 +6,7 @@
 
 import * as React from 'react'
 import * as THREE from '#three'
-import { extend, ThreeElements } from '@react-three/fiber'
-import { useFrame } from '@react-three/fiber/legacy'
+import { extend, ThreeElements, useFrame } from '@react-three/fiber/legacy'
 import { shaderMaterial } from '@legacy/Materials/shaderMaterial'
 import { ForwardRefComponent } from '@utils/ts-utils'
 import { version } from '@utils/constants'
@@ -45,7 +44,7 @@ export type GridProps = Omit<ThreeElements['mesh'], 'ref' | 'args'> &
     args?: ConstructorParameters<typeof THREE.PlaneGeometry>
   }
 
-declare module '@react-three/fiber' {
+declare module '@react-three/fiber/legacy' {
   interface ThreeElements {
     gridMaterial: ThreeElements['shaderMaterial'] & GridMaterialType
   }

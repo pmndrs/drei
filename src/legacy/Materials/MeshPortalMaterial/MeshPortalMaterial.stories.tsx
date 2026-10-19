@@ -1,10 +1,9 @@
 import * as React from 'react'
 import { useRef } from 'react'
-import { useFrame } from '@react-three/fiber/legacy'
+import { useFrame, useThree } from '@react-three/fiber/legacy'
 import { Meta, StoryObj } from '@storybook/react-vite'
 import { Mesh, Vector3 } from 'three'
 
-import { useThree } from '@react-three/fiber/legacy'
 import { Setup } from '@sb/Setup'
 import { Edges, useGLTF, PivotControls, Environment } from 'drei'
 import { Line as LegacyLine } from '@legacy/Geometry/Line'

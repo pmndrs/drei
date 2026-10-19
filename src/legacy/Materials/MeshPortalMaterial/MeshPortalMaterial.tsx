@@ -5,8 +5,7 @@
 
 import * as THREE from '#three'
 import * as React from 'react'
-import { ReactThreeFiber, ThreeElements, extend } from '@react-three/fiber'
-import { useFrame, useThree } from '@react-three/fiber/legacy'
+import { ReactThreeFiber, ThreeElements, extend, useFrame, useThree } from '@react-three/fiber/legacy'
 import { useIntersect } from '@core/UI/useIntersect'
 import { useFBO } from '@core/Portal/Fbo'
 import { RenderTexture } from '@legacy/Portal/RenderTexture'
@@ -49,7 +48,7 @@ const PortalMaterialImpl = /* @__PURE__ */ shaderMaterial(
    }`
 )
 
-declare module '@react-three/fiber' {
+declare module '@react-three/fiber/legacy' {
   interface ThreeElements {
     portalMaterialImpl: ThreeElements['shaderMaterial'] & {
       resolution: ReactThreeFiber.Vector2

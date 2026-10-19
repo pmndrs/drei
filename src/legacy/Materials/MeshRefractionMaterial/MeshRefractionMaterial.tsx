@@ -3,8 +3,7 @@
 
 import * as THREE from '#three'
 import * as React from 'react'
-import { extend, ReactThreeFiber, ThreeElements } from '@react-three/fiber'
-import { useThree, useFrame } from '@react-three/fiber/legacy'
+import { extend, ReactThreeFiber, ThreeElements, useThree, useFrame } from '@react-three/fiber/legacy'
 import { shaderMaterial } from '@legacy/Materials/shaderMaterial'
 import { MeshBVHUniformStruct, MeshBVH, SAH, shaderStructs, shaderIntersectFunction } from 'three-mesh-bvh'
 import { version } from '@utils/constants'
@@ -170,7 +169,7 @@ const MeshRefractionMaterial_ = /* @__PURE__ */ shaderMaterial(
   }`
 )
 
-declare module '@react-three/fiber' {
+declare module '@react-three/fiber/legacy' {
   interface ThreeElements {
     meshRefractionMaterial_: ThreeElements['shaderMaterial'] & {
       envMap?: THREE.CubeTexture | THREE.Texture | null

@@ -3,8 +3,7 @@
 
 import * as React from 'react'
 import * as THREE from '#three'
-import { ThreeElements } from '@react-three/fiber'
-import { useFrame, useThree } from '@react-three/fiber/legacy'
+import { ThreeElements, useFrame, useThree } from '@react-three/fiber/legacy'
 import { HorizontalBlurShader } from 'three/examples/jsm/shaders/HorizontalBlurShader.js'
 import { VerticalBlurShader } from 'three/examples/jsm/shaders/VerticalBlurShader.js'
 import { ForwardRefComponent } from '@utils/ts-utils'

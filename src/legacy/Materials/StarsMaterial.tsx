@@ -1,4 +1,5 @@
-import { ThreeElement } from '@react-three/fiber'
+import { ThreeElement } from '@react-three/fiber/legacy'
+
 import { ShaderMaterial } from '#three'
 import { version } from '@utils/constants'
 
@@ -48,7 +49,7 @@ export class StarfieldMaterial extends ShaderMaterial {
   }
 }
 
-declare module '@react-three/fiber' {
+declare module '@react-three/fiber/legacy' {
   interface ThreeElements {
     starfieldMaterial: ThreeElement<typeof StarfieldMaterial>
   }

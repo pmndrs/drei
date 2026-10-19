@@ -1,5 +1,5 @@
 import * as THREE from '#three'
-import { type ConstructorRepresentation } from '@react-three/fiber'
+import { type ConstructorRepresentation } from '@react-three/fiber/legacy'
 import { type MeshBVHUniformStruct } from 'three-mesh-bvh'
 
 type UniformValue =

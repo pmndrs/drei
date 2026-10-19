@@ -29,7 +29,7 @@ import {
   select,
   Discard,
 } from 'three/tsl'
-import { extend, ThreeElements, useFrame } from '@react-three/fiber'
+import { extend, ThreeElement, ThreeElements, useFrame } from '@react-three/fiber'
 import { ForwardRefComponent } from '@utils/ts-utils'
 import { withUniforms } from '@utils/withUniforms'
 
@@ -67,6 +67,13 @@ export type GridProps = Omit<ThreeElements['mesh'], 'ref' | 'args'> &
     /** Default plane-geometry arguments */
     args?: ConstructorParameters<typeof THREE.PlaneGeometry>
   }
+
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    // Suffixed so drei's own typecheck does not merge it with the legacy gridMaterial
+    gridMaterialWebGPU: ThreeElement<typeof GridMaterialImpl>
+  }
+}
 
 //* GridMaterial Implementation ==============================
 
@@ -271,7 +278,7 @@ export const Grid: ForwardRefComponent<GridProps, THREE.Mesh> = /* @__PURE__ */ 
     },
     fRef
   ) => {
-    extend({ GridMaterial: GridMaterialImpl })
+    extend({ GridMaterialWebGPU: GridMaterialImpl })
 
     const ref = React.useRef<THREE.Mesh>(null!)
     const materialRef = React.useRef<GridMaterialImpl>(null!)
@@ -301,8 +308,8 @@ export const Grid: ForwardRefComponent<GridProps, THREE.Mesh> = /* @__PURE__ */ 
 
     return (
       <mesh ref={ref} frustumCulled={false} {...props}>
-        <gridMaterial
-          ref={materialRef as any}
+        <gridMaterialWebGPU
+          ref={materialRef}
           side={side}
           cellSize={cellSize}
           sectionSize={sectionSize}

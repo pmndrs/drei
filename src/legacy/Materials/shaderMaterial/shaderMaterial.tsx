@@ -1,4 +1,6 @@
-import * as THREE from '#three'
+// Plain 'three', not #three: UniformsUtils is not on three/webgpu, and the root entry (built with
+// the WebGPU aliases) reaches this file through experimental Outlines and external Splat.
+import * as THREE from 'three'
 import { type ConstructorRepresentation } from '@react-three/fiber/legacy'
 import { type MeshBVHUniformStruct } from 'three-mesh-bvh'
 

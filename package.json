@@ -87,8 +87,10 @@
     "test:e2e": "cd test/e2e && ./e2e.sh",
     "test:examples": "yarn --cwd examples typecheck",
     "test:lint": "yarn eslint:ci && yarn typecheck && yarn prettier",
+    "test:stories": "vitest run --config vite.config.mts",
+    "test:stories:legacy": "cross-env DREI_RENDERER=legacy vitest run --config vite.config.mts",
     "test:parity": "playwright test --config=playwright.parity.config.ts",
-    "typecheck": "tsc --noEmit --emitDeclarationOnly false --strict --jsx react",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false --strict --jsx react && tsc -p tsconfig.webgpu.json --noEmit --emitDeclarationOnly false",
     "typegen": "tsc --emitDeclarationOnly"
   },
   "dependencies": {

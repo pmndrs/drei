@@ -31,7 +31,7 @@ import {
   materialColor,
 } from 'three/tsl'
 import * as React from 'react'
-import { extend, ReactThreeFiber, ThreeElements, useFrame, useThree } from '@react-three/fiber'
+import { extend, ReactThreeFiber, ThreeElement, ThreeElements, useFrame, useThree } from '@react-three/fiber'
 import { useFBO } from '@core/Portal/Fbo'
 import { useHelper } from '@core/Gizmos/useHelper'
 import { Edges } from '@core/Geometry/Edges'
@@ -63,6 +63,13 @@ export type CausticsProps = Omit<ThreeElements['group'], 'ref'> & {
   resolution?: number
   /** Camera position, it will point towards the contents bounds center, default: [5, 5, 5] */
   lightSource?: [x: number, y: number, z: number] | React.RefObject<THREE.Object3D>
+}
+
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    // Suffixed so drei's own typecheck does not merge it with the legacy causticsProjectionMaterial
+    causticsProjectionMaterialWebGPU: ThreeElement<typeof CausticsProjectionMaterial>
+  }
 }
 
 //* CausticsProjectionMaterial ==============================
@@ -369,7 +376,7 @@ export const Caustics: ForwardRefComponent<CausticsProps, THREE.Group> = /* @__P
     fref
   ) => {
     // Extend R3F with our custom material
-    extend({ CausticsProjectionMaterial })
+    extend({ CausticsProjectionMaterialWebGPU: CausticsProjectionMaterial })
 
     const ref = React.useRef<THREE.Group>(null!)
     const camera = React.useRef<THREE.OrthographicCamera>(null!)
@@ -587,7 +594,7 @@ export const Caustics: ForwardRefComponent<CausticsProps, THREE.Group> = /* @__P
         </scene>
         <mesh renderOrder={2} ref={plane} rotation-x={-Math.PI / 2}>
           <planeGeometry />
-          <causticsProjectionMaterial
+          <causticsProjectionMaterialWebGPU
             transparent
             color={color}
             causticsTexture={causticsTarget.texture}

@@ -1,5 +1,7 @@
 import * as React from 'react'
 import * as THREE from '#three'
+// Type-only: WebGLRenderer is not on three/webgpu, which the root entry's #three resolves to
+import type { WebGLRenderer } from 'three'
 import { RootState, context, createPortal } from '@react-three/fiber'
 import { useFrame, useThree } from '@react-three/fiber/extension'
 import tunnel from 'tunnel-rat'
@@ -93,7 +95,7 @@ function computeContainerPosition(canvasSize: CanvasSize, trackRect: DOMRect, fo
 
 // Type for renderer methods used by View (works for both WebGL and WebGPU)
 type ViewRenderer = Pick<
-  THREE.WebGLRenderer,
+  WebGLRenderer,
   | 'autoClear'
   | 'setViewport'
   | 'setScissor'

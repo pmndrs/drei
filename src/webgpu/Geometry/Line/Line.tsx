@@ -28,7 +28,9 @@ export type LineProps = Omit<
     segments?: boolean
     dashed?: boolean
     color?: ColorRepresentation
-  } & Omit<ThreeElement<typeof Line2>, 'ref' | 'args'>,
+  } & Omit<ThreeElement<typeof Line2>, 'ref' | 'args'> &
+    // rest props are spread onto the material too, as in the legacy Line
+    Omit<ThreeElement<typeof Line2NodeMaterial>, 'ref' | 'color' | 'vertexColors' | 'args' | 'linewidth' | 'dashed'>,
   'ref'
 >
 

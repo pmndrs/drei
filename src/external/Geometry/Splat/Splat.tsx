@@ -5,6 +5,8 @@
 //   Paul Henschel twitter.com/0xca0a
 
 import * as THREE from '#three'
+// Type-only: WebGLRenderer is not on three/webgpu, which the root entry's #three resolves to
+import type { WebGLRenderer } from 'three'
 import * as React from 'react'
 import { extend, useLoader, ThreeElements } from '@react-three/fiber'
 import { useThree, useFrame } from '@react-three/fiber/extension'
@@ -31,7 +33,7 @@ export type TargetMesh = THREE.Mesh<THREE.InstancedBufferGeometry, THREE.ShaderM
 
 export type SharedState = {
   url: string
-  gl: THREE.WebGLRenderer
+  gl: WebGLRenderer
   worker: Worker
   manager: THREE.LoadingManager
   stream: ReadableStreamDefaultReader<Uint8Array>
@@ -244,7 +246,7 @@ function createWorker(self: any) {
 
 class SplatLoader extends THREE.Loader<SharedState> {
   // WebGLRenderer, needs to be filled out!
-  gl: THREE.WebGLRenderer = null!
+  gl: WebGLRenderer = null!
   // Default chunk size for lazy loading
   chunkSize: number = 25000
 

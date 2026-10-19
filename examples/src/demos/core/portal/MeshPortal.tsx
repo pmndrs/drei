@@ -53,8 +53,6 @@ function Side({ rotation = [0, 0, 0], bg = '#f0f0f0', children, index }: SidePro
     mesh.current.rotation.x = mesh.current.rotation.y += delta
   })
   return (
-    // @ts-expect-error - `resolution` is optional at runtime (the component defaults it), but the legacy
-    // `portalMaterialImpl` element declares it required, so no prop set satisfies PortalProps. Same as its story.
     <MeshPortalMaterial worldUnits={worldUnits} attach={`material-${index}`}>
       {/** Everything in here is inside the portal and isolated from the canvas */}
       <ambientLight intensity={0.5} />

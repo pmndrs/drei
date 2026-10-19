@@ -6,6 +6,54 @@ This changelog tracks changes made during the v11 alpha development cycle.
 
 ### Breaking Changes
 
+#### Requires `@react-three/fiber` 10.0.0-alpha.6; the root entry is WebGPU (#2878)
+
+r3f alpha.6 makes `Canvas` from `@react-three/fiber` render with `WebGPURenderer` and moves
+`WebGLRenderer` to `@react-three/fiber/legacy`. drei follows it: the root, `/core`, `/external` and
+`/experimental` entries are now built with the WebGPU platform aliases, so their render targets and
+materials match the default Canvas. WebGL apps import `Canvas` from `/legacy` and drei from
+`/legacy`, which re-exports every shared component built for WebGL:
+
+```diff
+  // WebGPU (default)
+- import { Canvas } from '@react-three/fiber/webgpu'
++ import { Canvas } from '@react-three/fiber'
+  import { OrbitControls } from '@react-three/drei'
+  import { MeshDistortMaterial } from '@react-three/drei/webgpu'
+
+  // WebGL
+- import { Canvas } from '@react-three/fiber'
+- import { OrbitControls } from '@react-three/drei'
++ import { Canvas } from '@react-three/fiber/legacy'
++ import { OrbitControls, MeshDistortMaterial } from '@react-three/drei/legacy'
+```
+
+Peers are now `@react-three/fiber >=10.0.0-alpha.6` and `react`/`react-dom >=19.0 <19.4` (React
+19.3 is supported, as in r3f). r3f moved `shadows` into the renderer settings (`renderer={{ shadows }}`
+/ `gl={{ shadows }}`); docs that showed `<Canvas shadows>` or `<Canvas renderer={true}>` are updated.
+
+#2878 also moved deprecated `state.gl` reads to `state.renderer`, replaced numeric `useFrame`
+priorities (which run in the opposite order in v10) with phases, and fixed `RenderCubeTexture`'s
+capture order.
+
+**Fixed on top of #2878:**
+
+- `<Outlines>` (experimental) and `<Splat>` from the root entry threw
+  `Cannot read properties of undefined (reading 'clone')`: `shaderMaterial` reached
+  `THREE.UniformsUtils` through `#three`, and `three/webgpu` has no `UniformsUtils`. It imports
+  plain `three` now.
+- The WebGPU `Inspector` crashed on three r186, which removed `Inspector.init()`. It calls `init()`
+  only when present, so r185 keeps working (supersedes #2848).
+- Legacy elements are registered on `@react-three/fiber/legacy`'s `ThreeElements` instead of the
+  default entry's. They collided with WebGPU elements of the same name (strict WebGL apps got TS2717
+  on `meshTransmissionMaterial`) and leaked into WebGPU apps' JSX. The `@ts-expect-error` /
+  `@ts-ignore` workarounds for that collision are gone; WebGPU `MeshPortalMaterial`, `Caustics` and
+  `Grid` declare their own elements (`portalMaterialImplWebGPU`, `causticsProjectionMaterialWebGPU`,
+  `gridMaterialWebGPU`).
+- Legacy `MeshPortalMaterial` no longer types `resolution` as a required prop; the component computes
+  it.
+- The WebGPU `Line` types the material props it already forwards (`transparent`, `depthTest`, ...).
+
 #### `Stars` is gone from `/webgpu`; use `@pmndrs/sky` instead
 
 The WebGPU `Stars` never rendered (#2786), and
@@ -49,6 +97,29 @@ aliases `#three-addons` to the WebGL file whichever renderer is selected.
 `src/utils/three-addons.ts`, `src/utils/three-addons-webgpu.ts`
 
 ### Internal
+
+#### Core is checked and tested as each entry ships it (#2875)
+
+Core ships in both builds, but `tsconfig.json` and Storybook only ever resolved the WebGL aliases, so
+after #2878 nothing checked the code the root entry actually ships. `tsconfig.webgpu.json` typechecks
+it with the WebGPU aliases (`yarn typecheck` runs both), which is how the `UniformsUtils` crash above
+was found. Storybook picks its alias set with `DREI_RENDERER=webgpu|legacy` (default `webgpu`),
+applied per importer so `src/legacy/` keeps the WebGL set, and the toolbar starts on the build's
+renderer. `yarn test:stories` and `yarn test:stories:legacy` run each; both pass 225/225. A
+`Portals/Fbo > Platform target` story fails if the aliases drift. Running both modes fixed stories
+that only passed by accident: Sky now renders the TSL `SkyMesh` on WebGPU instead of being pinned to
+WebGL, the WebGPU Grid story pins itself to WebGPU, and Points/ScreenQuad stopped using
+`#include <encodings_fragment>` (removed in three r154).
+
+**Files changed:** `package.json`, `tsconfig.webgpu.json` (new), `CLAUDE.md`,
+`devDocs/MIGRATION_V10_TO_V11.md`, `.storybook/{main.mts,preview.tsx,index.d.ts}`,
+`src/legacy/**` (fiber imports and augmentations), `src/legacy/Materials/shaderMaterial`,
+`src/legacy/Materials/MeshPortalMaterial`, `src/webgpu/Materials/{MeshPortalMaterial,MeshTransmissionMaterial}`,
+`src/webgpu/Effects/Caustics`, `src/webgpu/Staging/Grid`, `src/webgpu/Geometry/Line`,
+`src/webgpu/Performance/Inspector`, `src/core/{Cameras,Portal/Mask,Portal/View,Helpers/useDepthBuffer,Staging/Sky}`,
+`src/core/Geometry/{CatmullRomLine,CubicBezierLine,QuadraticBezierLine}`, `src/external/Geometry/Splat`,
+stories (Sky, Grid, Points, ScreenQuad, Fbo, MeshPortalMaterial), Stage / Inspector / useGLTF /
+MeshTransmissionMaterial docs
 
 #### The component audit gives the same answer on Linux and macOS
 

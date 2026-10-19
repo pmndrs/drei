@@ -1,4 +1,4 @@
-import { useFrame } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber/extension'
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { OrthographicCamera } from '@react-three/drei/core'

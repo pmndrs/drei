@@ -47,7 +47,7 @@ const LUMA = /* @__PURE__ */ vec3(0.299, 0.587, 0.114)
 
 // Converts color to grayscale with adjustable intensity blend
 const toGrayscale = /* @__PURE__ */ Fn(
-  ({ inputColor, intensity }: { inputColor: ReturnType<typeof vec4>; intensity: ReturnType<typeof float> }) => {
+  ({ inputColor, intensity }: { inputColor: THREE.Node<'vec4'>; intensity: THREE.Node<'float'> }) => {
     const gray = vec3(dot(inputColor.rgb, LUMA))
     return vec4(mix(inputColor.rgb, gray, intensity), inputColor.a)
   }
@@ -58,7 +58,7 @@ const aspect = (size: any) => size.div(min(size.x, size.y))
 
 // Signed distance function for rounded rectangle (from iquilezles.org/articles/distfunctions)
 const udRoundBox = /* @__PURE__ */ Fn(
-  ({ p, b, r }: { p: ReturnType<typeof vec2>; b: ReturnType<typeof vec2>; r: ReturnType<typeof float> }) => {
+  ({ p, b, r }: { p: THREE.Node<'vec2'>; b: THREE.Node<'vec2'>; r: THREE.Node<'float'> }) => {
     return length(max(abs(p).sub(b).add(r), float(0))).sub(r)
   }
 )

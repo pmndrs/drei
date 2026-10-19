@@ -4,7 +4,7 @@
 // TSL Conversion: drei webgpu migration
 
 import * as THREE from 'three/webgpu'
-import { MeshBasicNodeMaterial, MeshNormalNodeMaterial, QuadMesh, Renderer } from 'three/webgpu'
+import { MeshBasicNodeMaterial, MeshNormalNodeMaterial, QuadMesh } from 'three/webgpu'
 import {
   Fn,
   uniform,
@@ -375,7 +375,7 @@ export const Caustics: ForwardRefComponent<CausticsProps, THREE.Group> = /* @__P
     const camera = React.useRef<THREE.OrthographicCamera>(null!)
     const scene = React.useRef<THREE.Scene>(null!)
     const plane = React.useRef<THREE.Mesh<THREE.PlaneGeometry, CausticsProjectionMaterial>>(null!)
-    const gl = useThree((state) => state.gl)
+    const renderer = useThree((state) => state.renderer)
     const helper = useHelper(debug && camera, THREE.CameraHelper)
 
     // FBOs for front and back face normals/caustics
@@ -536,17 +536,17 @@ export const Caustics: ForwardRefComponent<CausticsProps, THREE.Group> = /* @__P
         scene.current.visible = true
 
         // Render front face normals
-        gl.setRenderTarget(normalTarget)
-        gl.clear()
+        renderer.setRenderTarget(normalTarget)
+        renderer.clear()
         scene.current.overrideMaterial = normalMat
-        gl.render(scene.current, camera.current)
+        renderer.render(scene.current, camera.current)
 
         // Render back face normals (if enabled)
-        gl.setRenderTarget(normalTargetB)
-        gl.clear()
+        renderer.setRenderTarget(normalTargetB)
+        renderer.clear()
         if (backside) {
           scene.current.overrideMaterial = normalMatB
-          gl.render(scene.current, camera.current)
+          renderer.render(scene.current, camera.current)
         }
 
         scene.current.overrideMaterial = null
@@ -557,22 +557,20 @@ export const Caustics: ForwardRefComponent<CausticsProps, THREE.Group> = /* @__P
         plane.current.material.lightViewMatrix = camera.current.matrixWorldInverse
         causticsMaterial.normalTexture = normalTarget.texture
         causticsMaterial.depthTexture = normalTarget.depthTexture!
-        gl.setRenderTarget(causticsTarget)
-        gl.clear()
-        // TODO: R3F v10 will have proper WebGPU renderer types
-        causticsQuad.render(gl as unknown as Renderer)
+        renderer.setRenderTarget(causticsTarget)
+        renderer.clear()
+        causticsQuad.render(renderer)
 
         // Render back face caustics (if enabled)
         causticsMaterial.ior = backsideIOR
         causticsMaterial.normalTexture = normalTargetB.texture
         causticsMaterial.depthTexture = normalTargetB.depthTexture!
-        gl.setRenderTarget(causticsTargetB)
-        gl.clear()
-        // TODO: R3F v10 will have proper WebGPU renderer types
-        if (backside) causticsQuad.render(gl as unknown as Renderer)
+        renderer.setRenderTarget(causticsTargetB)
+        renderer.clear()
+        if (backside) causticsQuad.render(renderer)
 
         // Reset render target
-        gl.setRenderTarget(null)
+        renderer.setRenderTarget(null)
 
         // Hide scene if only showing caustics
         if (causticsOnly) scene.current.visible = false

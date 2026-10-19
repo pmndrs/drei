@@ -1,5 +1,6 @@
 import { useRef, type ReactNode } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Canvas } from '@react-three/fiber/legacy'
+import { useFrame } from '@react-three/fiber/extension'
 import { useGLTF, Edges, CameraControls, Environment, PivotControls } from '@react-three/drei'
 import { useControls } from 'leva'
 import * as THREE from 'three'
@@ -7,7 +8,7 @@ import * as THREE from 'three'
 import { MeshPortalMaterial } from '@react-three/drei/legacy'
 
 const MeshPortalDemo = () => (
-  <Canvas shadows camera={{ position: [-3, 0.5, 3] }}>
+  <Canvas gl={{ shadows: true }} camera={{ position: [-3, 0.5, 3] }}>
     <PivotControls anchor={[-1.1, -1.1, -1.1]} scale={0.75} lineWidth={3.5}>
       <mesh castShadow receiveShadow>
         <boxGeometry args={[2, 2, 2]} />

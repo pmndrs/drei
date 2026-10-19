@@ -1,10 +1,13 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
-import { Canvas, CanvasProps, useThree } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/extension'
 
 import { OrbitControls } from 'drei'
 import { getTestEnvironment } from './testing'
 import { attachGpuErrorCapture, expectGpuRoot } from './gpuErrors'
+import { SwitchCanvas, SwitchCanvasProps } from './components/PlatformSwitch'
+
+export { SwitchCanvas } from './components/PlatformSwitch'
 
 //* Types ==============================
 
@@ -12,13 +15,8 @@ type OnlyTagProps = {
   type: 'legacy' | 'webgpu' | null
 }
 
-type SwitchCanvasProps = React.ComponentProps<typeof Canvas> & {
-  asLegacy?: boolean
-  rendererParams?: React.ComponentProps<typeof Canvas>['renderer']
-}
-
 type SetupProps = React.PropsWithChildren<
-  CanvasProps & {
+  Omit<SwitchCanvasProps, 'asLegacy'> & {
     cameraFov?: number
     cameraPosition?: Vector3
     controls?: boolean
@@ -26,7 +24,6 @@ type SetupProps = React.PropsWithChildren<
     floor?: boolean
     renderer?: 'legacy' | 'webgpu'
     limitedTo?: 'legacy' | 'webgpu' | null
-    rendererParams?: React.ComponentProps<typeof Canvas>['renderer']
     /** Override animation freeze behavior (default: auto-detect from test environment) */
     freezeAnimations?: boolean
   }
@@ -118,17 +115,6 @@ function useExpectedGpuRoot() {
   return React.useCallback(() => releaseRef.current(), [])
 }
 
-//* SwitchCanvas Component ==============================
-// Switches between Legacy (WebGL) and WebGPU renderers
-
-export function SwitchCanvas({ asLegacy = false, rendererParams, ...props }: SwitchCanvasProps) {
-  // Key forces remount when switching renderers
-  if (asLegacy) return <Canvas key="legacy" {...props} gl={rendererParams} />
-
-  // For WebGPU: renderer={true} triggers WebGPU mode
-  return <Canvas key="webgpu" renderer={rendererParams ?? true} {...props} />
-}
-
 //* Setup Component ==============================
 // Main decorator for Storybook stories - handles renderer switching, scene setup, and test environment
 
@@ -141,7 +127,8 @@ export const Setup = ({
   floor = true,
   renderer = 'webgpu',
   limitedTo = null,
-  rendererParams = null,
+  rendererParams,
+  shadows = true,
   freezeAnimations,
   ...restProps
 }: SetupProps) => {
@@ -161,7 +148,7 @@ export const Setup = ({
       <SwitchCanvas
         asLegacy={isLegacy}
         rendererParams={{ antialias: true, ...rendererParams }}
-        shadows
+        shadows={shadows}
         camera={{ position: cameraPosition, fov: cameraFov }}
         {...restProps}
       >

@@ -4,7 +4,7 @@
 
 import * as React from 'react'
 import * as THREE from '#three'
-import { useThree } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/extension'
 import { forwardRef, useImperativeHandle } from 'react'
 import { type RenderTargetOptions } from '#three'
 import { RenderTarget } from '#drei-platform'
@@ -38,7 +38,7 @@ export function useFBO(
   height?: number,
   /**Settings */
   settings?: FBOSettings
-) {
+): RenderTarget<THREE.Texture> {
   const size = useThree((state) => state.size)
   const viewport = useThree((state) => state.viewport)
   const _width = typeof width === 'number' ? width : size.width * viewport.dpr

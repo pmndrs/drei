@@ -1,7 +1,8 @@
 import * as React from 'react'
 import * as THREE from '#three'
 import { SelectionBox } from 'three/examples/jsm/interactive/SelectionBox.js'
-import { ThreeElements, useThree } from '@react-three/fiber'
+import { ThreeElements } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/extension'
 import { shallow } from 'zustand/shallow'
 
 const context = /* @__PURE__ */ React.createContext<THREE.Object3D[]>([])
@@ -51,7 +52,7 @@ export function Select({
   ...props
 }: SelectProps) {
   const [downed, down] = React.useState(false)
-  const { setEvents, camera, raycaster, gl, controls, size, get } = useThree()
+  const { setEvents, camera, raycaster, renderer, controls, size, get } = useThree()
   const [hovered, hover] = React.useState(false)
   const [active, dispatch] = React.useReducer(
     // @ts-expect-error
@@ -97,7 +98,7 @@ export function Select({
     let isDown = false
 
     function prepareRay(event: PointerEvent, vec: THREE.Vector3) {
-      const canvas = gl.domElement
+      const canvas = renderer.domElement
       const rect = canvas.getBoundingClientRect()
 
       // Calculate position relative to canvas, not the event target
@@ -116,7 +117,7 @@ export function Select({
       if (controls) (controls as any).enabled = false
       setEvents({ enabled: false })
       down((isDown = true))
-      gl.domElement.parentElement?.appendChild(element)
+      renderer.domElement.parentElement?.appendChild(element)
       element.style.left = `${event.clientX}px`
       element.style.top = `${event.clientY}px`
       element.style.width = '0px'
@@ -181,7 +182,7 @@ export function Select({
       document.removeEventListener('pointermove', pointerMove, true)
       document.removeEventListener('pointerup', pointerUp)
     }
-  }, [size.width, size.height, raycaster, camera, controls, gl])
+  }, [size.width, size.height, raycaster, camera, controls, renderer])
 
   return (
     <group

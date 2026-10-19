@@ -388,9 +388,9 @@ shader.defines.USE_TRANSMISSION = '' // Force include transmission code
 ```javascript
 // FBO contains linear color data
 // If tone mapping is applied, then applied AGAIN during final render = wrong
-state.gl.toneMapping = THREE.NoToneMapping
+state.renderer.toneMapping = THREE.NoToneMapping
 // ... render to FBO ...
-state.gl.toneMapping = oldTone
+state.renderer.toneMapping = oldTone
 ```
 
 ### 3. DiscardMaterial Preserves Shadows

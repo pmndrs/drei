@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Texture } from '#three'
-import { useLoader, useThree } from '@react-three/fiber'
+import { useLoader } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/extension'
 import { useEffect, useLayoutEffect } from 'react'
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
 import { IsObject } from '../useTexture/useTexture'

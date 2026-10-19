@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { AudioLoader, AudioListener, PositionalAudio as PositionalAudioImpl } from '#three'
-import { useThree, useLoader, ThreeElements } from '@react-three/fiber'
+import { useLoader, ThreeElements } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/extension'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 
 export type PositionalAudioProps = Omit<ThreeElements['positionalAudio'], 'ref' | 'args'> & {

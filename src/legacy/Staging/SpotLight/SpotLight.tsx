@@ -16,7 +16,8 @@ import {
   RepeatWrapping,
   Object3D,
 } from '#three'
-import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
+import { ThreeElements } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/legacy'
 import { FullScreenQuad } from 'three/examples/jsm/postprocessing/Pass.js'
 import { SpotLightMaterial } from '@legacy/Materials/SpotLightMaterial'
 
@@ -139,7 +140,7 @@ function VolumetricMesh({
 
   // Copy depth buffer after the depth pass completes but before scene render
   useFrame(
-    ({ gl }) => {
+    ({ renderer }) => {
       if (!depthBuffer || !depthCopySetup) return
 
       const { depthCopyTarget, copyMaterial, copyQuad } = depthCopySetup
@@ -148,10 +149,10 @@ function VolumetricMesh({
       copyMaterial.uniforms.tDepth.value = depthBuffer
 
       // Render fullscreen quad to copy depth
-      const currentRT = gl.getRenderTarget()
-      gl.setRenderTarget(depthCopyTarget)
-      copyQuad.render(gl)
-      gl.setRenderTarget(currentRT)
+      const currentRT = renderer.getRenderTarget()
+      renderer.setRenderTarget(depthCopyTarget)
+      copyQuad.render(renderer)
+      renderer.setRenderTarget(currentRT)
     },
     { before: 'render' }
   )
@@ -298,18 +299,18 @@ function SpotlightShadowWithShader({
 
   React.useEffect(() => () => renderTarget.dispose(), [renderTarget])
 
-  useFrame(({ gl }, dt) => {
+  useFrame(({ renderer }, dt) => {
     uniforms.current.uTime.value += dt
 
     // Save current render target to restore after (prevents feedback loop)
-    const currentRenderTarget = gl.getRenderTarget()
+    const currentRenderTarget = renderer.getRenderTarget()
 
-    gl.setRenderTarget(renderTarget)
-    gl.clear()
-    fsQuad.render(gl)
+    renderer.setRenderTarget(renderTarget)
+    renderer.clear()
+    fsQuad.render(renderer)
 
     // Restore previous render target instead of setting to null
-    gl.setRenderTarget(currentRenderTarget)
+    renderer.setRenderTarget(currentRenderTarget)
   })
 
   return (

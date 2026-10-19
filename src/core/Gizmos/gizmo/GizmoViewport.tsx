@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { useThree, ThreeEvent, ThreeElements } from '@react-three/fiber'
+import { ThreeEvent, ThreeElements } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/extension'
 import { getMaxAnisotropy } from '@utils/generic'
 import { CanvasTexture } from '#three'
 import { useGizmoContext } from './GizmoHelper'

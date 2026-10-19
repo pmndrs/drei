@@ -27,7 +27,7 @@ function UseCustomRaycastScene() {
 
   const [hover, setHover] = React.useState<null | number>(null)
 
-  const gl = useThree(({ gl }) => gl)
+  const renderer = useThree(({ renderer }) => renderer)
   const scene = useThree(({ scene }) => scene)
   const camera = useThree(({ camera }) => camera)
 
@@ -35,20 +35,23 @@ function UseCustomRaycastScene() {
 
   const matrix = new THREE.Matrix4()
 
-  useFrame(() => {
-    matrix.copy(camera.matrix).invert()
+  useFrame(
+    () => {
+      matrix.copy(camera.matrix).invert()
 
-    if (ref.current) {
-      ref.current.quaternion.setFromRotationMatrix(matrix)
-    }
+      if (ref.current) {
+        ref.current.quaternion.setFromRotationMatrix(matrix)
+      }
 
-    gl.autoClear = true
-    gl.render(scene, camera)
+      renderer.autoClear = true
+      renderer.render(scene, camera)
 
-    gl.autoClear = false
-    gl.clearDepth()
-    gl.render(virtualScene, virtualCam.current)
-  }, 1)
+      renderer.autoClear = false
+      renderer.clearDepth()
+      renderer.render(virtualScene, virtualCam.current)
+    },
+    { phase: 'render' }
+  )
 
   const handlePointerOut = () => setHover(null)
   const handlePointerMove = (e: ThreeEvent<PointerEvent>) => setHover(Math.floor(e.faceIndex ?? 0 / 2))

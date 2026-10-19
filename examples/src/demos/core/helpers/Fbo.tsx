@@ -2,7 +2,8 @@ import { OrbitControls, Fbo, useFBO, PerspectiveCamera } from '@react-three/drei
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
 
-import { useFrame, createPortal } from '@react-three/fiber'
+import { createPortal } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber/extension'
 import * as THREE from 'three'
 
 import { useRef, useMemo } from 'react'

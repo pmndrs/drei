@@ -3,7 +3,8 @@
 
 import * as THREE from '#three'
 import * as React from 'react'
-import { extend, ReactThreeFiber, useThree, useFrame, ThreeElements } from '@react-three/fiber'
+import { extend, ReactThreeFiber, ThreeElements } from '@react-three/fiber'
+import { useThree, useFrame } from '@react-three/fiber/legacy'
 import { shaderMaterial } from '@legacy/Materials/shaderMaterial'
 import { MeshBVHUniformStruct, MeshBVH, SAH, shaderStructs, shaderIntersectFunction } from 'three-mesh-bvh'
 import { version } from '@utils/constants'

@@ -1,6 +1,7 @@
 import * as THREE from '#three'
 import * as React from 'react'
-import { extend, ReactThreeFiber, ThreeElements, useFrame, useThree } from '@react-three/fiber'
+import { extend, ReactThreeFiber, ThreeElements } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/legacy'
 import { shaderMaterial } from '@legacy/Materials/shaderMaterial'
 import { DiscardMaterial } from '@legacy/Materials/DiscardMaterial'
 import { ForwardRefComponent } from '@utils/ts-utils'
@@ -136,7 +137,7 @@ export const AccumulativeShadows: ForwardRefComponent<AccumulativeShadowsProps, 
     ) => {
       extend({ SoftShadowMaterial })
 
-      const gl = useThree((state) => state.gl)
+      const renderer = useThree((state) => state.renderer)
       const scene = useThree((state) => state.scene)
       const camera = useThree((state) => state.camera)
       const invalidate = useThree((state) => state.invalidate)
@@ -145,7 +146,7 @@ export const AccumulativeShadows: ForwardRefComponent<AccumulativeShadowsProps, 
       )
       const gLights = React.useRef<THREE.Group>(null!)
 
-      const [plm] = React.useState(() => new ProgressiveLightMap(gl, scene, resolution))
+      const [plm] = React.useState(() => new ProgressiveLightMap(renderer, scene, resolution))
       React.useLayoutEffect(() => {
         plm.configure(gPlane.current)
       }, [])

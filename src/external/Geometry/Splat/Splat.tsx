@@ -6,7 +6,8 @@
 
 import * as THREE from '#three'
 import * as React from 'react'
-import { extend, useThree, useFrame, useLoader, ThreeElements } from '@react-three/fiber'
+import { extend, useLoader, ThreeElements } from '@react-three/fiber'
+import { useThree, useFrame } from '@react-three/fiber/extension'
 import { shaderMaterial } from '../../../legacy/Materials/shaderMaterial'
 import { version } from '../../../utils/constants'
 
@@ -656,12 +657,16 @@ export function Splat({
   extend({ SplatMaterial })
 
   const ref = React.useRef<TargetMesh>(null!)
-  const gl = useThree((state) => state.gl)
+  const renderer = useThree((state) => state.renderer)
   const camera = useThree((state) => state.camera)
+
+  if (!('extensions' in renderer)) {
+    throw new Error('Splat requires WebGLRenderer. Import Canvas from @react-three/fiber/legacy.')
+  }
 
   // Shared state, globally memoized, the same url re-uses the same data
   const shared = useLoader(SplatLoader, src, (loader) => {
-    loader.gl = gl
+    loader.gl = renderer
     loader.chunkSize = chunkSize
   }) as SharedState
 

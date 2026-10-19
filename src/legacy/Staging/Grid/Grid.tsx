@@ -6,7 +6,8 @@
 
 import * as React from 'react'
 import * as THREE from '#three'
-import { extend, ThreeElements, useFrame } from '@react-three/fiber'
+import { extend, ThreeElements } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber/legacy'
 import { shaderMaterial } from '@legacy/Materials/shaderMaterial'
 import { ForwardRefComponent } from '@utils/ts-utils'
 import { version } from '@utils/constants'

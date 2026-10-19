@@ -116,6 +116,19 @@ Controls use Three's built-in editors and support nested folders, colors, slider
 
 ### Bug Fixes
 
+#### Depth capture and contact shadows preserve the caller's render target
+
+The core and WebGPU `useDepthBuffer` hooks and the legacy and WebGPU
+`ContactShadows` implementations now restore the previously bound render target
+after their offscreen passes, rather than resetting it to the canvas. A focused
+browser regression covers both renderers, finite capture limits, nested
+`RenderTexture` components, and post-processing pixel readback. Refs #2876.
+
+**Files changed:** `src/core/Helpers/useDepthBuffer/useDepthBuffer.ts`,
+`src/webgpu/Helpers/useDepthBuffer/useDepthBuffer.ts`,
+`src/legacy/Materials/ContactShadows/ContactShadows.tsx`,
+`src/webgpu/Staging/ContactShadows/ContactShadows.tsx`, `test/render-target/`
+
 #### `Preload` now actually preloads on WebGPU (#2809)
 
 `Preload` called `gl.compile(scene, camera)` and assumed it was synchronous. On

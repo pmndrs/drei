@@ -148,6 +148,7 @@ export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Grou
       if (shadowCamera.current && (frames === Infinity || count < frames)) {
         count++
 
+        const previousRenderTarget = renderer.getRenderTarget()
         initialBackground = scene.background
         initialOverrideMaterial = scene.overrideMaterial
 
@@ -160,7 +161,7 @@ export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Grou
 
         blurShadows(blur)
         if (smooth) blurShadows(blur * 0.4)
-        renderer.setRenderTarget(null)
+        renderer.setRenderTarget(previousRenderTarget)
 
         ref.current.visible = true
         scene.overrideMaterial = initialOverrideMaterial

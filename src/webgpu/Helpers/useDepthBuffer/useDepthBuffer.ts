@@ -103,6 +103,7 @@ function useDepthBuffer({ size = 256, frames = Infinity }: UseDepthBufferOptions
     (state) => {
       if (frames === Infinity || frameCount.current < frames) {
         const { renderer, scene, camera } = state
+        const previousRenderTarget = renderer.getRenderTarget()
 
         // Step 1: Render scene depth to target A
         // At this point, volumetric meshes should be hidden by their own useFrame callbacks
@@ -115,8 +116,8 @@ function useDepthBuffer({ size = 256, frames = Infinity }: UseDepthBufferOptions
         renderer.setRenderTarget(targetB as any)
         renderer.render(copyScene, copyCamera)
 
-        // Reset render target for main render
-        renderer.setRenderTarget(null)
+        // Restore the caller's target after both offscreen passes.
+        renderer.setRenderTarget(previousRenderTarget)
         frameCount.current++
       }
     },

@@ -256,6 +256,7 @@ export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Grou
       if (shadowCamera.current && (frames === Infinity || count < frames)) {
         count++
 
+        const previousRenderTarget = renderer.getRenderTarget()
         // Store initial scene state
         initialBackground = scene.background
         initialOverrideMaterial = scene.overrideMaterial
@@ -276,8 +277,8 @@ export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Grou
         blurShadows(blur)
         if (smooth) blurShadows(blur * 0.4)
 
-        // Reset render target
-        renderer.setRenderTarget(null)
+        // Restore the caller's target after the depth and blur passes.
+        renderer.setRenderTarget(previousRenderTarget)
 
         // Restore scene state
         ref.current.visible = true

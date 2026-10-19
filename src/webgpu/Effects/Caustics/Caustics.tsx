@@ -31,7 +31,7 @@ import {
   materialColor,
 } from 'three/tsl'
 import * as React from 'react'
-import { extend, ReactThreeFiber, ThreeElement, ThreeElements, useFrame, useThree } from '@react-three/fiber'
+import { extend, ReactThreeFiber, ThreeElements, useFrame, useThree } from '@react-three/fiber'
 import { useFBO } from '@core/Portal/Fbo'
 import { useHelper } from '@core/Gizmos/useHelper'
 import { Edges } from '@core/Geometry/Edges'
@@ -67,8 +67,15 @@ export type CausticsProps = Omit<ThreeElements['group'], 'ref'> & {
 
 declare module '@react-three/fiber' {
   interface ThreeElements {
-    // Suffixed so drei's own typecheck does not merge it with the legacy causticsProjectionMaterial
-    causticsProjectionMaterialWebGPU: ThreeElement<typeof CausticsProjectionMaterial>
+    // Suffixed so drei's own typecheck does not merge it with the legacy causticsProjectionMaterial.
+    // Structural, not ThreeElement<typeof Class>: each dist entry's .d.ts inlines its own copy of the
+    // class, and two nominal copies of one element type conflict (TS2717) in a consumer loading both.
+    causticsProjectionMaterialWebGPU: ThreeElements['meshBasicNodeMaterial'] & {
+      causticsTexture?: THREE.Texture
+      causticsTextureB?: THREE.Texture
+      lightProjMatrix?: THREE.Matrix4
+      lightViewMatrix?: THREE.Matrix4
+    }
   }
 }
 

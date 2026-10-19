@@ -29,7 +29,7 @@ import {
   select,
   Discard,
 } from 'three/tsl'
-import { extend, ThreeElement, ThreeElements, useFrame } from '@react-three/fiber'
+import { extend, ThreeElements, useFrame } from '@react-three/fiber'
 import { ForwardRefComponent } from '@utils/ts-utils'
 import { withUniforms } from '@utils/withUniforms'
 
@@ -70,8 +70,10 @@ export type GridProps = Omit<ThreeElements['mesh'], 'ref' | 'args'> &
 
 declare module '@react-three/fiber' {
   interface ThreeElements {
-    // Suffixed so drei's own typecheck does not merge it with the legacy gridMaterial
-    gridMaterialWebGPU: ThreeElement<typeof GridMaterialImpl>
+    // Suffixed so drei's own typecheck does not merge it with the legacy gridMaterial.
+    // Structural, not ThreeElement<typeof Class>: each dist entry's .d.ts inlines its own copy of the
+    // class, and two nominal copies of one element type conflict (TS2717) in a consumer loading both.
+    gridMaterialWebGPU: Omit<ThreeElements['meshBasicNodeMaterial'], keyof GridMaterialType> & GridMaterialType
   }
 }
 

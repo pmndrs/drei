@@ -32,7 +32,7 @@ import {
   int,
 } from 'three/tsl'
 import * as React from 'react'
-import { ReactThreeFiber, ThreeElement, ThreeElements, extend, useFrame, useThree } from '@react-three/fiber'
+import { ReactThreeFiber, ThreeElements, extend, useFrame, useThree } from '@react-three/fiber'
 import { useIntersect } from '@core/UI/useIntersect'
 import { useFBO } from '@core/Portal/Fbo'
 import { RenderTexture } from '@core/Portal/RenderTexture'
@@ -392,7 +392,15 @@ const makeSDFGenerator = (clientWidth: number, clientHeight: number, renderer: T
 
 declare module '@react-three/fiber' {
   interface ThreeElements {
-    portalMaterialImplWebGPU: ThreeElement<typeof PortalMaterialImpl>
+    // Structural, not ThreeElement<typeof Class>: each dist entry's .d.ts inlines its own copy of the
+    // class, and two nominal copies of one element type conflict (TS2717) in a consumer loading both.
+    portalMaterialImplWebGPU: ThreeElements['meshBasicNodeMaterial'] & {
+      blur?: number
+      blend?: number
+      size?: number
+      sdf?: THREE.Texture
+      resolution?: ReactThreeFiber.Vector2
+    }
   }
 }
 

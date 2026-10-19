@@ -8,7 +8,7 @@
  *  - Must depreciate in favor of https://github.com/mrdoob/three.js/issues/10600 when it's ready.
  */
 
-import { useFrame } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber/legacy'
 import * as React from 'react'
 import * as THREE from '#three'
 

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useThree } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/extension'
 
 /**
  * Disables pointer events when performance drops below threshold.

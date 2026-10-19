@@ -80,41 +80,43 @@ const fresnelEffect = /* @__PURE__ */ Fn(([viewDir, normal, power]: any[]) => {
 // Simplified total internal reflection approximation
 // Without BVH, we approximate multiple bounces using the surface normal
 // and a distance-based estimation
-const approximateRefraction = /* @__PURE__ */ Fn(([rayDir, normal, iorValue, bounceCount]: any[]) => {
-  // Initial refraction at surface entry
-  const entryDir = refract(rayDir, normal, float(1.0).div(iorValue)).toVar()
+const approximateRefraction = /* @__PURE__ */ Fn(
+  ([rayDir, normal, iorValue, bounceCount]: [Node<'vec3'>, Node<'vec3'>, Node<'float'>, Node<'float'>]) => {
+    // Initial refraction at surface entry
+    const entryDir = refract(rayDir, normal, float(1.0).div(iorValue)).toVar()
 
-  // Check for total internal reflection at entry
-  const entryValid = length(entryDir).greaterThan(0.0)
+    // Check for total internal reflection at entry
+    const entryValid = length(entryDir).greaterThan(0.0)
 
-  // Approximate internal path - for convex shapes, we estimate exit point
-  // using the opposite normal and accumulated bounce direction
-  const exitNormal = normal.negate().toVar()
-  const currentDir = entryDir.toVar()
+    // Approximate internal path - for convex shapes, we estimate exit point
+    // using the opposite normal and accumulated bounce direction
+    const exitNormal = normal.negate().toVar()
+    const currentDir = entryDir.toVar()
 
-  // Simulate bounces by progressively perturbing the direction
-  // This is an approximation - true accuracy requires BVH ray tracing
-  Loop({ start: 0, end: int(bounceCount), type: 'int' }, ({ i }) => {
-    const fi = float(i).add(1.0)
+    // Simulate bounces by progressively perturbing the direction
+    // This is an approximation - true accuracy requires BVH ray tracing
+    Loop({ start: 0, end: int(bounceCount), type: 'int' }, ({ i }) => {
+      const fi = float(i).add(1.0)
 
-    // Try to refract out
-    const exitDir = refract(currentDir, exitNormal, iorValue)
-    const canExit = length(exitDir).greaterThan(0.0)
+      // Try to refract out
+      const exitDir = refract(currentDir, exitNormal, iorValue)
+      const canExit = length(exitDir).greaterThan(0.0)
 
-    // If we can exit, we're done
-    // If not, reflect internally and continue
-    const reflectedDir = reflect(currentDir, exitNormal)
+      // If we can exit, we're done
+      // If not, reflect internally and continue
+      const reflectedDir = reflect(currentDir, exitNormal)
 
-    // Blend between exit and reflection based on whether exit is possible
-    currentDir.assign(select(canExit, exitDir, reflectedDir))
+      // Blend between exit and reflection based on whether exit is possible
+      currentDir.assign(select(canExit, exitDir, reflectedDir))
 
-    // Slightly rotate exit normal for next iteration (simulates curved surface)
-    exitNormal.assign(normalize(exitNormal.add(reflectedDir.mul(0.1).div(fi))))
-  })
+      // Slightly rotate exit normal for next iteration (simulates curved surface)
+      exitNormal.assign(normalize(exitNormal.add(reflectedDir.mul(0.1).div(fi))))
+    })
 
-  // Return entry direction if refraction failed, otherwise the computed exit direction
-  return select(entryValid, currentDir, reflect(rayDir, normal))
-})
+    // Return entry direction if refraction failed, otherwise the computed exit direction
+    return select(entryValid, currentDir, reflect(rayDir, normal))
+  }
+)
 
 //* MeshRefractionMaterial Implementation ==============================
 

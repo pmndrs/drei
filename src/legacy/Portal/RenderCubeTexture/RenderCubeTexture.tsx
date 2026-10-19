@@ -1,6 +1,7 @@
 import * as THREE from '#three'
 import * as React from 'react'
-import { ComputeFunction, ReactThreeFiber, ThreeElements, createPortal, useFrame, useThree } from '@react-three/fiber'
+import { ComputeFunction, ReactThreeFiber, ThreeElements, createPortal } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/legacy'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 
 export type RenderCubeTextureProps = Omit<ThreeElements['texture'], 'ref' | 'args' | 'rotation'> & {
@@ -103,7 +104,7 @@ export const RenderCubeTexture: ForwardRefComponent<RenderCubeTextureProps, Rend
             vScene,
             { events: { compute, priority: eventPriority } }
           )}
-          <primitive object={fbo.texture} {...props} />
+          {React.createElement('primitive', { object: fbo.texture, ...props })}
           <cubeCamera
             ref={camera}
             args={[near, far, fbo]}
@@ -134,11 +135,14 @@ function Container({
   camera: React.RefObject<THREE.CubeCamera>
 }) {
   let count = 0
-  useFrame((state) => {
-    if (frames === Infinity || count < frames) {
-      camera.current.update(state.gl, state.scene)
-      count++
-    }
-  }, renderPriority)
+  useFrame(
+    (state) => {
+      if (frames === Infinity || count < frames) {
+        camera.current.update(state.renderer, state.scene)
+        count++
+      }
+    },
+    { phase: renderPriority > 0 ? 'render' : 'update', priority: -renderPriority }
+  )
   return <>{children}</>
 }

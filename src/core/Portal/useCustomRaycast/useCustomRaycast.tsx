@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Raycaster, Camera, Intersection } from '#three'
-import { useThree, applyProps } from '@react-three/fiber'
+import { applyProps } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/extension'
 
 /**
  * Returns a raycast function for non-default cameras (HUDs, portals).

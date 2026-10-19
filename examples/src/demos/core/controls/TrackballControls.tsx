@@ -11,7 +11,7 @@ export default function TrackballControlsDemo() {
       <ExampleCard demoName="TrackballControls" />
 
       <div className="demo-canvas">
-        <CanvasWithToggle renderer camera={{ position: [0, 5, 5] }}>
+        <CanvasWithToggle camera={{ position: [0, 5, 5] }}>
           <TrackballControls makeDefault />
 
           <CommonScene />

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { MathUtils } from '#three'
-import { useFrame, useThree } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/extension'
 import { useGesture } from '@use-gesture/react'
 import { easing } from 'maath'
 import * as THREE from '#three'

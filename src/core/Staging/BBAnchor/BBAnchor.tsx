@@ -1,6 +1,7 @@
 import * as React from 'react'
 import * as THREE from '#three'
-import { ThreeElements, useFrame } from '@react-three/fiber'
+import { ThreeElements } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber/extension'
 
 const boundingBox = /* @__PURE__ */ new THREE.Box3()
 const boundingBoxSize = /* @__PURE__ */ new THREE.Vector3()

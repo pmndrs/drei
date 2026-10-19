@@ -17,7 +17,8 @@ import {
 
 import * as React from 'react'
 import { forwardRef, useMemo, useEffect } from 'react'
-import { extend, useFrame, useThree, ReactThreeFiber, EventManager, ThreeElement } from '@react-three/fiber'
+import { extend, ReactThreeFiber, EventManager, ThreeElement } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/extension'
 
 import CameraControlsImpl from 'camera-controls'
 import { ForwardRefComponent, Overwrite } from '../../../utils/ts-utils'
@@ -136,7 +137,7 @@ export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraCont
   }, [Impl])
 
   const defaultCamera = useThree((state) => state.camera)
-  const gl = useThree((state) => state.gl)
+  const renderer = useThree((state) => state.renderer)
   const invalidate = useThree((state) => state.invalidate)
   const events = useThree((state) => state.events) as EventManager<HTMLElement>
   const setEvents = useThree((state) => state.setEvents)
@@ -145,13 +146,16 @@ export const CameraControls: ForwardRefComponent<CameraControlsProps, CameraCont
   const performance = useThree((state) => state.performance)
 
   const explCamera = camera || defaultCamera
-  const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
+  const explDomElement = (domElement || events.connected || renderer.domElement) as HTMLElement
 
   const controls = useMemo(() => new Impl(explCamera), [Impl, explCamera])
 
-  useFrame((state, delta) => {
-    controls.update(delta)
-  }, -1)
+  useFrame(
+    (state, delta) => {
+      controls.update(delta)
+    },
+    { before: 'update' }
+  )
 
   useEffect(() => {
     controls.connect(explDomElement)

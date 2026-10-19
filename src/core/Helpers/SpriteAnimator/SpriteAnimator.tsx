@@ -1,6 +1,7 @@
 /* eslint react-hooks/exhaustive-deps: 1 */
 import * as React from 'react'
-import { ThreeElements, useFrame, Vector3 } from '@react-three/fiber'
+import { ThreeElements, Vector3 } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber/extension'
 import * as THREE from '#three'
 import { Instances, Instance } from '../Instances/Instances'
 import { Billboard } from '../../Staging/Billboard/Billboard'

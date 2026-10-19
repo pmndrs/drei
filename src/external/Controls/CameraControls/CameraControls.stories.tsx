@@ -49,12 +49,12 @@ const CameraControlsScene2 = (props: ComponentProps<typeof CameraControls>) => {
   const [virtualScene] = useState(() => new THREE.Scene())
   const cameraControlRef = useRef<CameraControls>(null!)
 
-  useFrame(({ gl }) => {
+  useFrame(({ renderer }) => {
     if (virtualCamera.current) {
-      gl.setRenderTarget(fbo)
-      gl.render(virtualScene, virtualCamera.current)
+      renderer.setRenderTarget(fbo)
+      renderer.render(virtualScene, virtualCamera.current)
 
-      gl.setRenderTarget(null)
+      renderer.setRenderTarget(null)
     }
   })
 

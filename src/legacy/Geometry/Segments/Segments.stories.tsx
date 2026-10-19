@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
-import { useFrame } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber/legacy'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Setup } from '@sb/Setup'

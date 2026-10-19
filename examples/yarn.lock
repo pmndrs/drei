@@ -526,17 +526,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@monogrid/gainmap-js@npm:^3.4.0":
-  version: 3.4.0
-  resolution: "@monogrid/gainmap-js@npm:3.4.0"
-  dependencies:
-    promise-worker-transferable: "npm:^1.0.4"
-  peerDependencies:
-    three: ">= 0.159.0"
-  checksum: 10c0/06104767a0f542b36e1e203fe569f78996babcdd52661f42db4f079f372b272e0849b86f84f7690b2c165a8ba931f77ad324fe82a09c9b23e26d20e76cabd3e7
-  languageName: node
-  linkType: hard
-
 "@napi-rs/wasm-runtime@npm:^1.1.0":
   version: 1.1.1
   resolution: "@napi-rs/wasm-runtime@npm:1.1.1"
@@ -570,9 +559,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pmndrs/scheduler@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@pmndrs/scheduler@npm:0.2.0"
+"@pmndrs/scheduler@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@pmndrs/scheduler@npm:0.3.0"
   peerDependencies:
     react: ">=18"
     react-dom: ">=18"
@@ -581,7 +570,7 @@ __metadata:
       optional: true
     react-dom:
       optional: true
-  checksum: 10c0/ca8b50c9dcbe002a20ea10d9fca33bd347b3419fd8545a22189ecedf515fd26a8ed835bfd4db3df8dad26c5f341e5de7d291fe1f59a583516995ffa162437329
+  checksum: 10c0/e00755c864b1ab6c793758a746105ba68ace070e94531cab832fef808824c37f307f2e0eaf065c859aabdf85d2f56c8a16330acfb0805c9cd6d9f86f6be15f45
   languageName: node
   linkType: hard
 
@@ -1124,7 +1113,7 @@ __metadata:
     "@radix-ui/react-slot": "npm:^1.2.4"
     "@radix-ui/react-switch": "npm:^1.2.6"
     "@react-three/drei": "link:.."
-    "@react-three/fiber": "npm:10.0.0-alpha.4"
+    "@react-three/fiber": "npm:10.0.0-alpha.6"
     "@tailwindcss/postcss": "npm:^4.1.18"
     "@tailwindcss/vite": "npm:^4.1.18"
     "@types/three": "npm:^0.185.0"
@@ -1151,28 +1140,27 @@ __metadata:
   languageName: node
   linkType: soft
 
-"@react-three/fiber@npm:10.0.0-alpha.4":
-  version: 10.0.0-alpha.4
-  resolution: "@react-three/fiber@npm:10.0.0-alpha.4"
+"@react-three/fiber@npm:10.0.0-alpha.6":
+  version: 10.0.0-alpha.6
+  resolution: "@react-three/fiber@npm:10.0.0-alpha.6"
   dependencies:
     "@babel/runtime": "npm:^7.28.6"
-    "@monogrid/gainmap-js": "npm:^3.4.0"
-    "@pmndrs/scheduler": "npm:^0.2.0"
+    "@pmndrs/scheduler": "npm:^0.3.0"
     dequal: "npm:^2.0.3"
-    its-fine: "npm:^2.0.0"
+    its-fine: "npm:^2.1.1"
     react-use-measure: "npm:^2.1.7"
-    scheduler: "npm:^0.27.0"
+    scheduler: "npm:^0.28.0"
     suspend-react: "npm:^0.1.3"
     use-sync-external-store: "npm:^1.6.0"
     zustand: "npm:^5.0.10"
   peerDependencies:
-    react: ">=19.0 <19.3"
-    react-dom: ">=19.0 <19.3"
+    react: ">=19.0 <19.4"
+    react-dom: ">=19.0 <19.4"
     three: ">=0.185.0"
   peerDependenciesMeta:
     react-dom:
       optional: true
-  checksum: 10c0/a4d43d788931c53e6ba446c75f79067d8bb3d5906b4ea29232717cec57de004ab453093409cebdf7e55e983f595cf3d9969cd1629d3e07cc05c6a6d0587f6619
+  checksum: 10c0/a639065bab5cb3c9414ffe02d568fe6ccff07ed14d8027c55b9685d4ea6023591ad5e3f9f96c0eb2c8343fc19a4f71126d8231a7cfecebec226fdc678d58c9ba
   languageName: node
   linkType: hard
 
@@ -2114,13 +2102,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"immediate@npm:~3.0.5":
-  version: 3.0.6
-  resolution: "immediate@npm:3.0.6"
-  checksum: 10c0/f8ba7ede69bee9260241ad078d2d535848745ff5f6995c7c7cb41cfdc9ccc213f66e10fa5afb881f90298b24a3f7344b637b592beb4f54e582770cdce3f1f039
-  languageName: node
-  linkType: hard
-
 "imurmurhash@npm:^0.1.4":
   version: 0.1.4
   resolution: "imurmurhash@npm:0.1.4"
@@ -2160,13 +2141,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-promise@npm:^2.1.0":
-  version: 2.2.2
-  resolution: "is-promise@npm:2.2.2"
-  checksum: 10c0/2dba959812380e45b3df0fb12e7cb4d4528c989c7abb03ececb1d1fd6ab1cbfee956ca9daa587b9db1d8ac3c1e5738cf217bdb3dfd99df8c691be4c00ae09069
-  languageName: node
-  linkType: hard
-
 "isexe@npm:^3.1.1":
   version: 3.1.1
   resolution: "isexe@npm:3.1.1"
@@ -2181,14 +2155,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"its-fine@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "its-fine@npm:2.0.0"
+"its-fine@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "its-fine@npm:2.1.1"
   dependencies:
     "@types/react-reconciler": "npm:^0.28.9"
   peerDependencies:
     react: ^19.0.0
-  checksum: 10c0/1ff1ff3257c0c7eb115c9c26cf0506eb84162edc1a63d3136780d146f7c7833298b240d0fcb46888909773f1a7d16539e0c03f2482cff1a5a502d6436686fe21
+  checksum: 10c0/847f22026bce46571c1cd48d36181e97d2280d3386d4442ca5a59a93b825dfdbffce779ce5e3110ccd3bff711b53349e5ddcfc968b8d9e84b3ef27a7dbd1eea9
   languageName: node
   linkType: hard
 
@@ -2245,15 +2219,6 @@ __metadata:
     react: ^18.0.0 || ^19.0.0
     react-dom: ^18.0.0 || ^19.0.0
   checksum: 10c0/5b5bdc34a69af25295f0f67a4a85a66508eb44c9ca93109b04c646704466380d9da2893905d01317b0d9836264a5e6f2b20680651931e7144079837505692031
-  languageName: node
-  linkType: hard
-
-"lie@npm:^3.0.2":
-  version: 3.3.0
-  resolution: "lie@npm:3.3.0"
-  dependencies:
-    immediate: "npm:~3.0.5"
-  checksum: 10c0/56dd113091978f82f9dc5081769c6f3b947852ecf9feccaf83e14a123bc630c2301439ce6182521e5fbafbde88e88ac38314327a4e0493a1bea7e0699a7af808
   languageName: node
   linkType: hard
 
@@ -2689,16 +2654,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"promise-worker-transferable@npm:^1.0.4":
-  version: 1.0.4
-  resolution: "promise-worker-transferable@npm:1.0.4"
-  dependencies:
-    is-promise: "npm:^2.1.0"
-    lie: "npm:^3.0.2"
-  checksum: 10c0/110d273cbba2631c318762f02c159531f1e05e4af91080368b9d4c02b880824ae4c49a8ec7094c6434989ea2ee8de913b21c809279babeaf447fc90a682dcd7c
-  languageName: node
-  linkType: hard
-
 "prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
@@ -2901,6 +2856,13 @@ __metadata:
   version: 0.27.0
   resolution: "scheduler@npm:0.27.0"
   checksum: 10c0/4f03048cb05a3c8fddc45813052251eca00688f413a3cee236d984a161da28db28ba71bd11e7a3dd02f7af84ab28d39fb311431d3b3772fed557945beb00c452
+  languageName: node
+  linkType: hard
+
+"scheduler@npm:^0.28.0":
+  version: 0.28.0
+  resolution: "scheduler@npm:0.28.0"
+  checksum: 10c0/783c8e5ce89d41273a02ed6dc0e3d24bd60e05c9e8f7e3adfc6c82e7c69935500d90e343f1ee26d592fc7504e8a2532573c6368def3e93bfe812391fa53efaf4
   languageName: node
   linkType: hard
 

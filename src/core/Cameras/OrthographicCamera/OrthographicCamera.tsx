@@ -1,7 +1,8 @@
 import * as THREE from '#three'
 import * as React from 'react'
 import { OrthographicCamera as OrthographicCameraImpl } from '#three'
-import { useThree, useFrame, ThreeElements } from '@react-three/fiber'
+import { ThreeElements } from '@react-three/fiber'
+import { useThree, useFrame } from '@react-three/fiber/extension'
 import { useFBO } from '@core/Portal/Fbo'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 

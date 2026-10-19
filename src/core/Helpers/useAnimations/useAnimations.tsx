@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Object3D, AnimationClip, AnimationAction, AnimationMixer } from '#three'
-import { useFrame } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber/extension'
 
 type Api<T extends AnimationClip> = {
   ref: React.RefObject<Object3D | undefined | null>

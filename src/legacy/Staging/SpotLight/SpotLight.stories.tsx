@@ -17,7 +17,7 @@ export default {
   component: SpotLight,
   decorators: [
     (Story, context) => (
-      <Setup renderer={context.globals.renderer} lights={false}>
+      <Setup renderer={context.globals.renderer} lights={false} limitedTo={context.parameters.limitedTo ?? null}>
         <Story />
       </Setup>
     ),
@@ -176,4 +176,6 @@ export const SpotlightShadowsSt = {
   },
   render: (args) => <SpotLightShadowsScene {...args} />,
   name: 'Shadows',
+  tags: ['legacyOnly'],
+  parameters: { limitedTo: 'legacy' },
 } satisfies Story

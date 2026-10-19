@@ -23,7 +23,7 @@ export default {
   },
   decorators: [
     (Story, context) => (
-      <Setup renderer={context.globals.renderer}>
+      <Setup renderer={context.globals.renderer} limitedTo={context.parameters.limitedTo ?? null}>
         <Story />
       </Setup>
     ),
@@ -66,4 +66,6 @@ function MeshWobbleMaterialRefScene(props: React.ComponentProps<typeof MeshWobbl
 export const MeshWobbleMaterialRefSt = {
   render: (args) => <MeshWobbleMaterialRefScene {...args} />,
   name: 'Ref',
+  tags: ['legacyOnly'],
+  parameters: { limitedTo: 'legacy' },
 } satisfies Story

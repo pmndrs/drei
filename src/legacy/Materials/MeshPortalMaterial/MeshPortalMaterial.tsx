@@ -62,7 +62,7 @@ declare module '@react-three/fiber' {
   }
 }
 
-export type PortalProps = Omit<ThreeElements['portalMaterialImpl'], 'ref' | 'blend'> & {
+export type PortalProps = Omit<ThreeElements['portalMaterialImpl'], 'ref' | 'blend' | 'resolution'> & {
   /** Mix the portals own scene with the world scene, 0 = world scene render,
    *  0.5 = both scenes render, 1 = portal scene renders, defaults to 0 */
   blend?: number

@@ -98,6 +98,29 @@ aliases `#three-addons` to the WebGL file whichever renderer is selected.
 
 ### Internal
 
+#### Chromatic captures stories instead of timing out
+
+On Chromatic, 24 stories failed with "Component error" because capture timed out: load > 15 s or
+render > 30 s. The Storybook animation freeze, meant to stop the render loop for visual tests, did
+nothing under r3f v10. `SchedulerPause` wrote `frameloop: 'never'` straight into the store, and v10's
+scheduler only hears about the mode through `setFrameloop()`. So every story rendered every frame,
+and the heavy ones (cube cameras, reflections, accumulated shadows, 1000 instances) never let a
+software-rendered page settle.
+
+The freeze now runs 30 frames, counted rather than timed so the frozen state does not depend on
+machine speed, then calls `setFrameloop('demand')`. r3f still renders when React commits, such as a
+model or HDR arriving later, then goes idle. The 30 frames let content that settles over a few frames
+finish first, like double-buffered render textures (#2884) and objects placed in `useFrame`. Stories
+using `OrbitControls autoRotate`, which invalidates every frame, gate it on `shouldFreezeAnimations()`.
+
+Measured on a production Storybook build in a browser identifying as Chromatic: stories still drawing
+once loaded went from 217 of 226 to 18, and 16 of the 19 timed-out stories now stop drawing. The
+remaining drawers are mostly expected (video textures, the Inspector, which opts out) or still under
+investigation (AccumulativeShadows, Stage, MarchingCubes).
+
+**Files changed:** `.storybook/Setup.tsx`, stories for BBAnchor, Environment, Decal, Caustics,
+MeshRefractionMaterial, AccumulativeShadows (legacy), MeshTransmissionMaterial and SpotLight
+
 #### Core is checked and tested as each entry ships it (#2875)
 
 Core ships in both builds, but `tsconfig.json` and Storybook only ever resolved the WebGL aliases, so

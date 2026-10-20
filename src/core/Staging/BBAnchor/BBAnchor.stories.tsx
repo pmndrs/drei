@@ -3,7 +3,7 @@ import { ComponentProps } from 'react'
 import * as THREE from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@sb/Setup'
+import { Setup, shouldFreezeAnimations } from '@sb/Setup'
 
 import { Icosahedron, Sphere, Html, BBAnchor, OrbitControls, useHelper } from 'drei'
 import { BoxHelper } from 'three'
@@ -36,7 +36,7 @@ function BBAnchorScene({
 
   return (
     <>
-      <OrbitControls autoRotate />
+      <OrbitControls autoRotate={!shouldFreezeAnimations()} />
       <Icosahedron ref={ref}>
         <meshBasicMaterial color="hotpink" wireframe />
         <BBAnchor {...props}>{children}</BBAnchor>

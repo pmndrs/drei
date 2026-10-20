@@ -4,7 +4,7 @@ import * as React from 'react'
 import { MathUtils, RepeatWrapping } from 'three'
 import { Circle, Environment, OrbitControls, PerspectiveCamera, Plane, useDepthBuffer, useTexture } from 'drei'
 import { SpotLight, SpotLightShadow } from './SpotLight'
-import { Setup } from '@sb/Setup'
+import { Setup, shouldFreezeAnimations } from '@sb/Setup'
 import { PlatformSwitch } from '@sb/components/PlatformSwitch'
 
 // Import WebGPU SpotLight and depth buffer hook for dual-platform support
@@ -115,7 +115,13 @@ function SpotLightShadowsScene(props: React.ComponentProps<typeof SpotLight>) {
 
   return (
     <>
-      <OrbitControls makeDefault autoRotate={true} autoRotateSpeed={0.5} minDistance={2} maxDistance={10} />
+      <OrbitControls
+        makeDefault
+        autoRotate={!shouldFreezeAnimations()}
+        autoRotateSpeed={0.5}
+        minDistance={2}
+        maxDistance={10}
+      />
       <PerspectiveCamera near={0.01} far={50} position={[1, 3, 1]} makeDefault fov={60} />
 
       <Environment preset="sunset" />

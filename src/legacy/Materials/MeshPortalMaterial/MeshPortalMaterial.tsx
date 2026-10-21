@@ -158,22 +158,27 @@ export const MeshPortalMaterial: ForwardRefComponent<PortalProps, ThreeElements[
           orthoCam.position.set(0, 0, 1)
           orthoCam.lookAt(0, 0, 0)
 
-          renderer.setRenderTarget(maskRenderTarget)
-          renderer.render(tempMesh, orthoCam)
-          const sg = makeSDFGenerator(resolution, resolution, renderer)
-          const sdf = sg(maskRenderTarget.texture)
-          const readSdf = new Float32Array(resolution * resolution)
-          renderer.readRenderTargetPixels(sdf, 0, 0, resolution, resolution, readSdf)
-          // Get smallest value in sdf
-          let min = Infinity
-          for (let i = 0; i < readSdf.length; i++) {
-            if (readSdf[i] < min) min = readSdf[i]
+          const previousTarget = renderer.getRenderTarget()
+          const previousActiveCubeFace = renderer.getActiveCubeFace()
+          const previousActiveMipmapLevel = renderer.getActiveMipmapLevel()
+          try {
+            renderer.setRenderTarget(maskRenderTarget)
+            renderer.render(tempMesh, orthoCam)
+            const sg = makeSDFGenerator(resolution, resolution, renderer)
+            const sdf = sg(maskRenderTarget.texture)
+            const readSdf = new Float32Array(resolution * resolution)
+            renderer.readRenderTargetPixels(sdf, 0, 0, resolution, resolution, readSdf)
+            // Get smallest value in sdf
+            let min = Infinity
+            for (let i = 0; i < readSdf.length; i++) {
+              if (readSdf[i] < min) min = readSdf[i]
+            }
+            min = -min
+            ref.current.size = min
+            ref.current.sdf = sdf.texture
+          } finally {
+            renderer.setRenderTarget(previousTarget, previousActiveCubeFace, previousActiveMipmapLevel)
           }
-          min = -min
-          ref.current.size = min
-          ref.current.sdf = sdf.texture
-
-          renderer.setRenderTarget(null)
         }
       }, [resolution, blur])
 

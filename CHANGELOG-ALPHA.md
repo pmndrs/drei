@@ -210,6 +210,15 @@ Controls use Three's built-in editors and support nested folders, colors, slider
 
 ### Bug Fixes
 
+#### Portal SDF initialization preserves the caller's render target
+
+Legacy MeshPortalMaterial restores the caller's target after SDF initialization,
+including when rendering throws. Both implementations preserve the active cube
+face and mip level. Fullscreen blend output is unchanged. Refs #2876.
+
+**Files changed:** `src/legacy/Materials/MeshPortalMaterial/MeshPortalMaterial.tsx`,
+`src/webgpu/Materials/MeshPortalMaterial/MeshPortalMaterial.tsx`, `test/portal-sdf-state/`
+
 #### `Preload` now actually preloads on WebGPU (#2809)
 
 `Preload` called `gl.compile(scene, camera)` and assumed it was synchronous. On

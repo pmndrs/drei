@@ -470,6 +470,8 @@ export const MeshPortalMaterial: ForwardRefComponent<PortalProps, PortalMaterial
 
         const sg = makeSDFGenerator(resolution, resolution, gpuRenderer)
         const previousTarget = gpuRenderer.getRenderTarget()
+        const previousActiveCubeFace = gpuRenderer.getActiveCubeFace()
+        const previousActiveMipmapLevel = gpuRenderer.getActiveMipmapLevel()
         const previousClearColor = gpuRenderer.getClearColor(new THREE.Color())
         const previousClearAlpha = gpuRenderer.getClearAlpha()
         let sdf: ReturnType<typeof sg.generate>
@@ -482,7 +484,7 @@ export const MeshPortalMaterial: ForwardRefComponent<PortalProps, PortalMaterial
           sg.dispose()
           throw error
         } finally {
-          gpuRenderer.setRenderTarget(previousTarget)
+          gpuRenderer.setRenderTarget(previousTarget, previousActiveCubeFace, previousActiveMipmapLevel)
           gpuRenderer.setClearColor(previousClearColor, previousClearAlpha)
           tempMesh.material.dispose()
         }

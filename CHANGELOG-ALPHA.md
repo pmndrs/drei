@@ -4,6 +4,17 @@ This changelog tracks changes made during the v11 alpha development cycle.
 
 ## Unreleased
 
+### Fixes
+
+- Restore the caller's render target (including cube face/mipmap), background,
+  tone mapping, and parent material after `MeshTransmissionMaterial` captures on
+  WebGL and WebGPU, including failed captures. Preserve material arrays instead
+  of replacing them with a single transmission material. Refs #2876.
+
+  **Files changed:** `src/legacy/Materials/MeshTransmissionMaterial/MeshTransmissionMaterial.tsx`,
+  `src/webgpu/Materials/MeshTransmissionMaterial/MeshTransmissionMaterial.tsx`,
+  `test/transmission-render-state/`.
+
 ### Breaking Changes
 
 #### `Stars` is gone from `/webgpu`; use `@pmndrs/sky` instead

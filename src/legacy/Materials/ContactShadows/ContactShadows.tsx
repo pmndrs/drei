@@ -141,29 +141,33 @@ export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Grou
     }
 
     let count = 0
-    let initialBackground: THREE.Color | THREE.Texture | null
-    let initialOverrideMaterial: THREE.Material | null
     useFrame(() => {
       if (shadowCamera.current && (frames === Infinity || count < frames)) {
         count++
 
-        initialBackground = scene.background
-        initialOverrideMaterial = scene.overrideMaterial
+        const previousRenderTarget = renderer.getRenderTarget()
+        const previousActiveCubeFace = renderer.getActiveCubeFace()
+        const previousActiveMipmapLevel = renderer.getActiveMipmapLevel()
+        const initialBackground = scene.background
+        const initialOverrideMaterial = scene.overrideMaterial
+        const initialVisibility = ref.current.visible
 
-        ref.current.visible = false
-        scene.background = null
-        scene.overrideMaterial = depthMaterial
+        try {
+          ref.current.visible = false
+          scene.background = null
+          scene.overrideMaterial = depthMaterial
 
-        renderer.setRenderTarget(renderTarget)
-        renderer.render(scene, shadowCamera.current)
+          renderer.setRenderTarget(renderTarget)
+          renderer.render(scene, shadowCamera.current)
 
-        blurShadows(blur)
-        if (smooth) blurShadows(blur * 0.4)
-        renderer.setRenderTarget(null)
-
-        ref.current.visible = true
-        scene.overrideMaterial = initialOverrideMaterial
-        scene.background = initialBackground
+          blurShadows(blur)
+          if (smooth) blurShadows(blur * 0.4)
+        } finally {
+          renderer.setRenderTarget(previousRenderTarget, previousActiveCubeFace, previousActiveMipmapLevel)
+          ref.current.visible = initialVisibility
+          scene.overrideMaterial = initialOverrideMaterial
+          scene.background = initialBackground
+        }
       }
     })
 

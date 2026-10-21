@@ -20,10 +20,20 @@ function useDepthBuffer({ size = 256, frames = Infinity }: { size?: number; fram
   const depthFBO = useFBO(w, h, depthConfig)
   useFrame((state) => {
     if (frames === Infinity || count < frames) {
-      // Type-only cast: the renderer union's setRenderTarget only accepts WebGLRenderTarget
-      state.renderer.setRenderTarget(depthFBO as WebGLRenderTarget)
-      state.renderer.render(state.scene, state.camera)
-      state.renderer.setRenderTarget(null)
+      const previousRenderTarget = state.renderer.getRenderTarget()
+      const previousActiveCubeFace = state.renderer.getActiveCubeFace()
+      const previousActiveMipmapLevel = state.renderer.getActiveMipmapLevel()
+      try {
+        // Type-only cast: the renderer union's setRenderTarget only accepts WebGLRenderTarget
+        state.renderer.setRenderTarget(depthFBO as WebGLRenderTarget)
+        state.renderer.render(state.scene, state.camera)
+      } finally {
+        state.renderer.setRenderTarget(
+          previousRenderTarget as WebGLRenderTarget | null,
+          previousActiveCubeFace,
+          previousActiveMipmapLevel
+        )
+      }
       count++
     }
   })

@@ -249,40 +249,45 @@ export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Grou
 
     // Frame counter and state preservation
     let count = 0
-    let initialBackground: THREE.Color | THREE.Texture | null
-    let initialOverrideMaterial: THREE.Material | null
+    const initialClearColor = React.useMemo(() => new THREE.Color(), [])
 
     useFrame(() => {
       if (shadowCamera.current && (frames === Infinity || count < frames)) {
         count++
 
+        const previousRenderTarget = renderer.getRenderTarget()
+        const previousActiveCubeFace = renderer.getActiveCubeFace()
+        const previousActiveMipmapLevel = renderer.getActiveMipmapLevel()
+        renderer.getClearColor(initialClearColor)
+        const initialClearAlpha = renderer.getClearAlpha()
         // Store initial scene state
-        initialBackground = scene.background
-        initialOverrideMaterial = scene.overrideMaterial
+        const initialBackground = scene.background
+        const initialOverrideMaterial = scene.overrideMaterial
+        const initialVisibility = ref.current.visible
 
-        // Hide shadow plane during capture
-        ref.current.visible = false
-        scene.background = null
-        scene.overrideMaterial = depthMaterial
+        try {
+          // Hide shadow plane during capture
+          ref.current.visible = false
+          scene.background = null
+          scene.overrideMaterial = depthMaterial
 
-        // Render depth to shadow render target
-        // Clear to WHITE (multiply blend: white = no change)
-        renderer.setRenderTarget(renderTarget as any)
-        renderer.setClearColor(0xffffff, 1)
-        renderer.clear(true, true, false)
-        renderer.render(scene, shadowCamera.current)
+          // Render depth to shadow render target
+          // Clear to WHITE (multiply blend: white = no change)
+          renderer.setRenderTarget(renderTarget as any)
+          renderer.setClearColor(0xffffff, 1)
+          renderer.clear(true, true, false)
+          renderer.render(scene, shadowCamera.current)
 
-        // Apply blur passes
-        blurShadows(blur)
-        if (smooth) blurShadows(blur * 0.4)
-
-        // Reset render target
-        renderer.setRenderTarget(null)
-
-        // Restore scene state
-        ref.current.visible = true
-        scene.overrideMaterial = initialOverrideMaterial
-        scene.background = initialBackground
+          // Apply blur passes
+          blurShadows(blur)
+          if (smooth) blurShadows(blur * 0.4)
+        } finally {
+          renderer.setRenderTarget(previousRenderTarget, previousActiveCubeFace, previousActiveMipmapLevel)
+          renderer.setClearColor(initialClearColor, initialClearAlpha)
+          ref.current.visible = initialVisibility
+          scene.overrideMaterial = initialOverrideMaterial
+          scene.background = initialBackground
+        }
       }
     })
 

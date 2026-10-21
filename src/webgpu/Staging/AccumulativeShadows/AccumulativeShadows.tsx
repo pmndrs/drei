@@ -213,17 +213,23 @@ class ProgressiveLightMap {
   }
 
   clear() {
+    const currentRenderTarget = this.renderer.getRenderTarget()
+    const currentActiveCubeFace = this.renderer.getActiveCubeFace()
+    const currentActiveMipmapLevel = this.renderer.getActiveMipmapLevel()
     // Save current clear color/alpha (use type assertion for WebGPU renderer compatibility)
     ;(this.renderer as any).getClearColor(this.clearColor)
     this.clearAlpha = this.renderer.getClearAlpha()
-    this.renderer.setClearColor('black', 1)
-    this.renderer.setRenderTarget(this.progressiveLightMap1 as THREE.RenderTarget)
-    this.renderer.clear()
-    this.renderer.setRenderTarget(this.progressiveLightMap2 as THREE.RenderTarget)
-    this.renderer.clear()
-    this.renderer.setRenderTarget(null)
-    // Restore clear color
-    ;(this.renderer as any).setClearColor(this.clearColor, this.clearAlpha)
+    try {
+      this.renderer.setClearColor('black', 1)
+      this.renderer.setRenderTarget(this.progressiveLightMap1 as THREE.RenderTarget)
+      this.renderer.clear()
+      this.renderer.setRenderTarget(this.progressiveLightMap2 as THREE.RenderTarget)
+      this.renderer.clear()
+    } finally {
+      this.renderer.setRenderTarget(currentRenderTarget, currentActiveCubeFace, currentActiveMipmapLevel)
+      // Restore clear color
+      ;(this.renderer as any).setClearColor(this.clearColor, this.clearAlpha)
+    }
 
     this.lights = []
     this.meshes = []
@@ -252,37 +258,38 @@ class ProgressiveLightMap {
 
   update(camera: THREE.Camera, blendWindow = 100) {
     if (!this.object) return
+    const currentRenderTarget = this.renderer.getRenderTarget()
+    const currentActiveCubeFace = this.renderer.getActiveCubeFace()
+    const currentActiveMipmapLevel = this.renderer.getActiveMipmapLevel()
+    const oldBg = this.scene.background
 
     // Set up the target material for UV-unwrapped rendering
     this.targetMat.averagingWindow = blendWindow
     const originalMaterial = this.object.material
-    this.object.material = this.targetMat
 
     // Disable frustum culling temporarily (UV unwrapping may place vertices outside view)
     const oldFrustumCulled = this.object.frustumCulled
-    this.object.frustumCulled = false
 
     // Ping-pong two surface buffers for reading/writing
     const activeMap = this.buffer1Active ? this.progressiveLightMap1 : this.progressiveLightMap2
     const inactiveMap = this.buffer1Active ? this.progressiveLightMap2 : this.progressiveLightMap1
 
     // Render the object's surface maps
-    const oldBg = this.scene.background
-    this.scene.background = null
-    this.renderer.setRenderTarget(activeMap as THREE.RenderTarget)
-    this.targetMat.previousShadowMap = inactiveMap.texture as THREE.Texture
-    this.buffer1Active = !this.buffer1Active
-
-    // Render with vertexNode outputting clip space directly from UVs
-    // The camera is still used for lighting calculations but vertex positions come from UV coords
-    this.renderer.render(this.scene, camera)
-
-    this.renderer.setRenderTarget(null)
-    this.scene.background = oldBg
-
-    // Restore original material and frustum culling
-    this.object.frustumCulled = oldFrustumCulled
-    this.object.material = originalMaterial
+    try {
+      this.object.material = this.targetMat
+      this.object.frustumCulled = false
+      this.scene.background = null
+      this.renderer.setRenderTarget(activeMap as THREE.RenderTarget)
+      this.targetMat.previousShadowMap = inactiveMap.texture as THREE.Texture
+      // The camera supplies lighting; vertex positions come from UV coords.
+      this.renderer.render(this.scene, camera)
+      this.buffer1Active = !this.buffer1Active
+    } finally {
+      this.renderer.setRenderTarget(currentRenderTarget, currentActiveCubeFace, currentActiveMipmapLevel)
+      this.scene.background = oldBg
+      this.object.frustumCulled = oldFrustumCulled
+      this.object.material = originalMaterial
+    }
   }
 }
 
@@ -358,18 +365,19 @@ export const AccumulativeShadows: ForwardRefComponent<AccumulativeShadowsProps, 
 
             // Switch accumulative lights on
             gLights.current.visible = true
-            // Collect scene lights and meshes
-            plm.prepare()
-
-            // Update the lightmap and the accumulative lights
-            for (let i = 0; i < frames; i++) {
-              api.lights.forEach((light) => light.update())
-              plm.update(camera, api.blend)
+            try {
+              // Collect scene lights and meshes
+              plm.prepare()
+              // Update the lightmap and the accumulative lights
+              for (let i = 0; i < frames; i++) {
+                api.lights.forEach((light) => light.update())
+                plm.update(camera, api.blend)
+              }
+            } finally {
+              // Restore the scene even if a light or render callback throws.
+              gLights.current.visible = false
+              plm.finish()
             }
-            // Switch lights off
-            gLights.current.visible = false
-            // Restore lights and meshes
-            plm.finish()
           },
         }),
         [plm, camera, scene, temporal, frames, blend, opacity, alphaTest, softShadowMat]

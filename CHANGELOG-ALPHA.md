@@ -4,6 +4,21 @@ This changelog tracks changes made during the v11 alpha development cycle.
 
 ## Unreleased
 
+### Fixes
+
+#### AccumulativeShadows preserves the caller's render state
+
+Both WebGL and WebGPU implementations restore the render target, active cube
+face and mip level after clearing or accumulating their light maps. Render and light callback exceptions also
+restore temporary scene background, materials, light intensity and visibility;
+WebGPU restores the catcher's frustum culling. Failed clears restore clear
+color and alpha. This lets an outer offscreen pass continue on its own target.
+Refs #2876.
+
+**Files changed:** `src/legacy/Materials/AccumulativeShadows/AccumulativeShadows.tsx`,
+`src/webgpu/Staging/AccumulativeShadows/AccumulativeShadows.tsx`,
+`test/accumulative-shadows/`
+
 ### Breaking Changes
 
 #### `Stars` is gone from `/webgpu`; use `@pmndrs/sky` instead

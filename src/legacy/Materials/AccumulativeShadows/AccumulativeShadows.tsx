@@ -180,18 +180,19 @@ export const AccumulativeShadows: ForwardRefComponent<AccumulativeShadowsProps, 
 
             // Switch accumulative lights on
             gLights.current.visible = true
-            // Collect scene lights and meshes
-            plm.prepare()
-
-            // Update the lightmap and the accumulative lights
-            for (let i = 0; i < frames; i++) {
-              api.lights.forEach((light) => light.update())
-              plm.update(camera, api.blend)
+            try {
+              // Collect scene lights and meshes
+              plm.prepare()
+              // Update the lightmap and the accumulative lights
+              for (let i = 0; i < frames; i++) {
+                api.lights.forEach((light) => light.update())
+                plm.update(camera, api.blend)
+              }
+            } finally {
+              // Restore the scene even if a light or render callback throws.
+              gLights.current.visible = false
+              plm.finish()
             }
-            // Switch lights off
-            gLights.current.visible = false
-            // Restore lights and meshes
-            plm.finish()
           },
         }),
         [plm, camera, scene, temporal, frames, blend, opacity, alphaTest]
@@ -406,15 +407,19 @@ class ProgressiveLightMap {
   }
 
   clear() {
+    const currentRenderTarget = this.renderer.getRenderTarget()
     this.renderer.getClearColor(this.clearColor)
     this.clearAlpha = this.renderer.getClearAlpha()
-    this.renderer.setClearColor('black', 1)
-    this.renderer.setRenderTarget(this.progressiveLightMap1)
-    this.renderer.clear()
-    this.renderer.setRenderTarget(this.progressiveLightMap2)
-    this.renderer.clear()
-    this.renderer.setRenderTarget(null)
-    this.renderer.setClearColor(this.clearColor, this.clearAlpha)
+    try {
+      this.renderer.setClearColor('black', 1)
+      this.renderer.setRenderTarget(this.progressiveLightMap1)
+      this.renderer.clear()
+      this.renderer.setRenderTarget(this.progressiveLightMap2)
+      this.renderer.clear()
+    } finally {
+      this.renderer.setRenderTarget(currentRenderTarget)
+      this.renderer.setClearColor(this.clearColor, this.clearAlpha)
+    }
 
     this.lights = []
     this.meshes = []
@@ -443,20 +448,26 @@ class ProgressiveLightMap {
 
   update(camera, blendWindow = 100) {
     if (!this.object) return
+    const currentRenderTarget = this.renderer.getRenderTarget()
+    const oldBg = this.scene.background
+    const originalMaterial = this.object.material
     // Set each object's material to the UV Unwrapped Surface Mapping Version
     this.averagingWindow.value = blendWindow
-    this.object.material = this.targetMat
     // Ping-pong two surface buffers for reading/writing
     const activeMap = this.buffer1Active ? this.progressiveLightMap1 : this.progressiveLightMap2
     const inactiveMap = this.buffer1Active ? this.progressiveLightMap2 : this.progressiveLightMap1
     // Render the object's surface maps
-    const oldBg = this.scene.background
-    this.scene.background = null
-    this.renderer.setRenderTarget(activeMap)
-    this.previousShadowMap.value = inactiveMap.texture
-    this.buffer1Active = !this.buffer1Active
-    this.renderer.render(this.scene, camera)
-    this.renderer.setRenderTarget(null)
-    this.scene.background = oldBg
+    try {
+      this.object.material = this.targetMat
+      this.scene.background = null
+      this.renderer.setRenderTarget(activeMap)
+      this.previousShadowMap.value = inactiveMap.texture
+      this.renderer.render(this.scene, camera)
+      this.buffer1Active = !this.buffer1Active
+    } finally {
+      this.renderer.setRenderTarget(currentRenderTarget)
+      this.scene.background = oldBg
+      this.object.material = originalMaterial
+    }
   }
 }

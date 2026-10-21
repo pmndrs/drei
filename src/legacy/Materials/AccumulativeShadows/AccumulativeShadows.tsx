@@ -408,6 +408,8 @@ class ProgressiveLightMap {
 
   clear() {
     const currentRenderTarget = this.renderer.getRenderTarget()
+    const currentActiveCubeFace = this.renderer.getActiveCubeFace()
+    const currentActiveMipmapLevel = this.renderer.getActiveMipmapLevel()
     this.renderer.getClearColor(this.clearColor)
     this.clearAlpha = this.renderer.getClearAlpha()
     try {
@@ -417,7 +419,7 @@ class ProgressiveLightMap {
       this.renderer.setRenderTarget(this.progressiveLightMap2)
       this.renderer.clear()
     } finally {
-      this.renderer.setRenderTarget(currentRenderTarget)
+      this.renderer.setRenderTarget(currentRenderTarget, currentActiveCubeFace, currentActiveMipmapLevel)
       this.renderer.setClearColor(this.clearColor, this.clearAlpha)
     }
 
@@ -449,6 +451,8 @@ class ProgressiveLightMap {
   update(camera, blendWindow = 100) {
     if (!this.object) return
     const currentRenderTarget = this.renderer.getRenderTarget()
+    const currentActiveCubeFace = this.renderer.getActiveCubeFace()
+    const currentActiveMipmapLevel = this.renderer.getActiveMipmapLevel()
     const oldBg = this.scene.background
     const originalMaterial = this.object.material
     // Set each object's material to the UV Unwrapped Surface Mapping Version
@@ -465,7 +469,7 @@ class ProgressiveLightMap {
       this.renderer.render(this.scene, camera)
       this.buffer1Active = !this.buffer1Active
     } finally {
-      this.renderer.setRenderTarget(currentRenderTarget)
+      this.renderer.setRenderTarget(currentRenderTarget, currentActiveCubeFace, currentActiveMipmapLevel)
       this.scene.background = oldBg
       this.object.material = originalMaterial
     }

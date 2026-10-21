@@ -40,7 +40,19 @@ try {
     })
     await server.listen()
     try {
-      for (const scenario of ['bound', 'default', 'reset', 'render-error', 'light-error', 'clear-error']) {
+      for (const scenario of [
+        'bound',
+        'default',
+        'reset',
+        'render-error',
+        'light-error',
+        'clear-error',
+        'cube-update',
+        'cube-reset',
+        'mip-update',
+        'mip-reset',
+      ]) {
+        if (process.env.TEST_SCENARIOS && !process.env.TEST_SCENARIOS.split(',').includes(scenario)) continue
         cases++
         const page = await browser.newPage()
         const errors = []
@@ -61,6 +73,7 @@ try {
           assert.deepEqual([...result.errors, ...errors], [], 'rendering errors')
           assert.equal(result.targets.length, 4, 'frame callbacks must run')
           assert.ok(result.targets.every(Boolean), 'caller target was lost')
+          assert.ok(result.subresources.every(Boolean), 'caller cube face or mip level was lost')
           if (scenario === 'bound' || scenario === 'default') {
             assert.ok(result.renders[0] > 0 && result.renders[1] > 0, 'finite accumulation did not run')
             assert.deepEqual(result.renders.slice(2), [0, 0], 'finite accumulation kept running')
@@ -69,10 +82,12 @@ try {
             for (const [state, restored] of Object.entries(result.checks[0])) {
               assert.ok(restored, `${state} was not restored`)
             }
-            assert.equal(result.caught, scenario === 'reset' ? undefined : `${scenario.split('-')[0]} sentinel`)
+            assert.equal(result.caught, scenario.endsWith('-error') ? `${scenario.split('-')[0]} sentinel` : undefined)
             assert.ok(result.renders[2] > 0, 'accumulator could not render after reset/failure')
           }
-          if (scenario !== 'default') assert.deepEqual(result.pixel, [0, 255, 0, 255], 'continuation missed outer FBO')
+          // The readback API reads mip 0; mip cases assert the active binding directly.
+          if (scenario !== 'default' && !scenario.startsWith('mip-'))
+            assert.deepEqual(result.pixel, [0, 255, 0, 255], 'continuation missed outer FBO')
         } catch (error) {
           failures++
           console.error(`${gpu ? 'WebGPU' : 'WebGL'} ${scenario}: ${error.message}`)

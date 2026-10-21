@@ -214,6 +214,8 @@ class ProgressiveLightMap {
 
   clear() {
     const currentRenderTarget = this.renderer.getRenderTarget()
+    const currentActiveCubeFace = this.renderer.getActiveCubeFace()
+    const currentActiveMipmapLevel = this.renderer.getActiveMipmapLevel()
     // Save current clear color/alpha (use type assertion for WebGPU renderer compatibility)
     ;(this.renderer as any).getClearColor(this.clearColor)
     this.clearAlpha = this.renderer.getClearAlpha()
@@ -224,7 +226,7 @@ class ProgressiveLightMap {
       this.renderer.setRenderTarget(this.progressiveLightMap2 as THREE.RenderTarget)
       this.renderer.clear()
     } finally {
-      this.renderer.setRenderTarget(currentRenderTarget)
+      this.renderer.setRenderTarget(currentRenderTarget, currentActiveCubeFace, currentActiveMipmapLevel)
       // Restore clear color
       ;(this.renderer as any).setClearColor(this.clearColor, this.clearAlpha)
     }
@@ -257,6 +259,8 @@ class ProgressiveLightMap {
   update(camera: THREE.Camera, blendWindow = 100) {
     if (!this.object) return
     const currentRenderTarget = this.renderer.getRenderTarget()
+    const currentActiveCubeFace = this.renderer.getActiveCubeFace()
+    const currentActiveMipmapLevel = this.renderer.getActiveMipmapLevel()
     const oldBg = this.scene.background
 
     // Set up the target material for UV-unwrapped rendering
@@ -281,7 +285,7 @@ class ProgressiveLightMap {
       this.renderer.render(this.scene, camera)
       this.buffer1Active = !this.buffer1Active
     } finally {
-      this.renderer.setRenderTarget(currentRenderTarget)
+      this.renderer.setRenderTarget(currentRenderTarget, currentActiveCubeFace, currentActiveMipmapLevel)
       this.scene.background = oldBg
       this.object.frustumCulled = oldFrustumCulled
       this.object.material = originalMaterial

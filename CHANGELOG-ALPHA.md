@@ -8,8 +8,8 @@ This changelog tracks changes made during the v11 alpha development cycle.
 
 #### AccumulativeShadows preserves the caller's render state
 
-Both WebGL and WebGPU implementations restore the render target after clearing
-or accumulating their light maps. Render and light callback exceptions also
+Both WebGL and WebGPU implementations restore the render target, active cube
+face and mip level after clearing or accumulating their light maps. Render and light callback exceptions also
 restore temporary scene background, materials, light intensity and visibility;
 WebGPU restores the catcher's frustum culling. Failed clears restore clear
 color and alpha. This lets an outer offscreen pass continue on its own target.

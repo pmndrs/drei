@@ -11,7 +11,7 @@ starts and closes its own Vite servers and browser. It uses the production WebGL
 and WebGPU aliases separately, requires the native WebGPU backend (no WebGL
 fallback), and runs an active R3F frame loop rather than Storybook's frozen loop.
 
-The 35 cases cover the core depth hook on both renderers, the directly imported
+The 42 cases cover the core depth hook on both renderers, the directly imported
 WebGPU depth hook, and both ContactShadows implementations. Each runs with a bound
 outer target, the default target, `frames={1}`, `frames={0}`, and two nested
 RenderTextures, plus a nonzero cube face and mip level. All cases also check clear
@@ -31,6 +31,12 @@ The cube case reads back face 3 directly after the continuation. The mip case
 checks the active mip level rather than pixel readback. `TEST_COMPONENT` and
 `TEST_SCENARIO` can select a focused subset of cases.
 
-This checks target restoration and rendering continuation, not artistic shadow
-quality or all other renderer state. Other sites listed in #2876 are outside
+The error case throws once from a mesh's `onBeforeRender` during capture and
+checks state after the error reaches R3F's scheduler. The expected error must
+propagate; target, scene background, override material, visibility, and clear
+state must already be restored. The two ContactShadows implementations also
+run with `visible={false}` to check that capture does not make them visible.
+
+This checks capture state restoration and rendering continuation, not artistic
+shadow quality or every renderer state. Other sites listed in #2876 are outside
 this focused regression.

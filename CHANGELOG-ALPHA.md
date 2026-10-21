@@ -125,6 +125,8 @@ browser regression covers both renderers, finite capture limits, nested
 `RenderTexture` components, cube faces, mip levels, and post-processing pixel
 readback. The active cube face and mip level are preserved, and WebGPU
 `ContactShadows` also restores the caller's clear color and alpha. Refs #2876.
+Restoration also runs when rendering throws, and contact shadows retain their
+original visibility instead of becoming visible after capture.
 
 **Files changed:** `src/core/Helpers/useDepthBuffer/useDepthBuffer.ts`,
 `src/webgpu/Helpers/useDepthBuffer/useDepthBuffer.ts`,

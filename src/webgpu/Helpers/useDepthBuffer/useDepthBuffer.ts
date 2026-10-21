@@ -107,19 +107,20 @@ function useDepthBuffer({ size = 256, frames = Infinity }: UseDepthBufferOptions
         const previousActiveCubeFace = renderer.getActiveCubeFace()
         const previousActiveMipmapLevel = renderer.getActiveMipmapLevel()
 
-        // Step 1: Render scene depth to target A
-        // At this point, volumetric meshes should be hidden by their own useFrame callbacks
-        renderer.setRenderTarget(targetA as any)
-        renderer.render(scene, camera)
+        try {
+          // Step 1: Render scene depth to target A
+          // At this point, volumetric meshes should be hidden by their own useFrame callbacks
+          renderer.setRenderTarget(targetA as any)
+          renderer.render(scene, camera)
 
-        // Step 2: Copy depth from A to B as a color texture using TSL
-        // This creates a separate render pass with B as render target
-        depthUniform.value = targetA.depthTexture!
-        renderer.setRenderTarget(targetB as any)
-        renderer.render(copyScene, copyCamera)
-
-        // Restore the caller's target after both offscreen passes.
-        renderer.setRenderTarget(previousRenderTarget, previousActiveCubeFace, previousActiveMipmapLevel)
+          // Step 2: Copy depth from A to B as a color texture using TSL
+          // This creates a separate render pass with B as render target
+          depthUniform.value = targetA.depthTexture!
+          renderer.setRenderTarget(targetB as any)
+          renderer.render(copyScene, copyCamera)
+        } finally {
+          renderer.setRenderTarget(previousRenderTarget, previousActiveCubeFace, previousActiveMipmapLevel)
+        }
         frameCount.current++
       }
     },

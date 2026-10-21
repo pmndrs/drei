@@ -56,14 +56,23 @@ try {
           ['nested', 'Infinity'],
           ['cube', 'Infinity'],
           ['mip', 'Infinity'],
+          ['error', 'Infinity'],
+          ['hidden', 'Infinity'],
         ]) {
+          if (scenario === 'hidden' && component !== 'contact') continue
           if (process.env.TEST_SCENARIO && scenario !== process.env.TEST_SCENARIO) continue
           cases++
           const page = await browser.newPage()
           const errors = []
-          page.on('pageerror', (error) => errors.push(error.message))
+          const expectedErrors = []
+          const recordError = (message) => {
+            if (scenario === 'error' && message.includes('Expected offscreen capture failure'))
+              expectedErrors.push(message)
+            else errors.push(message)
+          }
+          page.on('pageerror', (error) => recordError(error.message))
           page.on('console', (message) => {
-            if (message.type() === 'error') errors.push(message.text())
+            if (message.type() === 'error') recordError(message.text())
           })
           try {
             await page.goto(
@@ -74,10 +83,16 @@ try {
             console.log(JSON.stringify({ mode: gpu ? 'WebGPU' : 'WebGL', ...result, browserErrors: errors }))
             assert.equal(result.backend, gpu ? 'WebGPU' : 'WebGL', 'unexpected renderer backend/fallback')
             assert.deepEqual([...result.errors, ...errors], [], 'rendering errors')
-            assert.equal(result.targets.length, 6, 'frame callbacks must actually run')
+            assert.equal(result.targets.length, scenario === 'error' ? 1 : 6, 'frame callbacks must actually run')
             assert.ok(result.targets.every(Boolean), 'caller render target was lost')
             assert.ok(result.subresources.every(Boolean), 'caller cube face or mip level was lost')
             assert.ok(result.clears.every(Boolean), 'caller clear color or alpha was changed')
+            assert.ok(result.scenes.every(Boolean), 'caller scene background or override material was changed')
+            assert.ok(result.visibility.every(Boolean), 'contact shadow visibility was changed')
+            if (scenario === 'error') {
+              assert.ok(result.injected && expectedErrors.length > 0, 'capture did not throw the expected error')
+              continue
+            }
             assert.ok(result.postRestoredTarget, 'post-processing changed the caller target')
             if (frames === '0')
               assert.ok(

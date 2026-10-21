@@ -14,6 +14,7 @@ const params = new URLSearchParams(location.search)
 const component = params.get('component') || 'depth'
 const scenario = params.get('scenario') || 'bound'
 const frames = Number(params.get('frames') || Infinity)
+const expectedCaptureError = 'Expected offscreen capture failure'
 const result: any = {
   component,
   scenario,
@@ -21,6 +22,8 @@ const result: any = {
   targets: [],
   subresources: [],
   clears: [],
+  scenes: [],
+  visibility: [],
   renders: [],
   errors: [],
 }
@@ -34,7 +37,13 @@ function Depth({ gpu = false }: { gpu?: boolean }) {
 
 function Candidate() {
   return component === 'contact' ? (
-    <ContactShadows resolution={32} frames={frames} position={[0, -1, 0]} />
+    <ContactShadows
+      name="capture-candidate"
+      visible={scenario !== 'hidden'}
+      resolution={32}
+      frames={frames}
+      position={[0, -1, 0]}
+    />
   ) : (
     <Depth gpu={component === 'gpu-depth'} />
   )
@@ -66,6 +75,7 @@ function Nested() {
 
 function Probe() {
   const renderer: any = useThree((state) => state.renderer)
+  const rootScene = useThree((state) => state.scene)
   const data = React.useMemo(() => {
     const outer =
       scenario === 'cube'
@@ -75,7 +85,18 @@ function Probe() {
     scene.background = new THREE.Color('red')
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1)
     const post = scenario === 'cube' || scenario === 'mip' ? null : createPostProcessing(renderer, outer)
-    return { outer, scene, camera, post, clearColor: new THREE.Color(), frame: 0, renderCount: 0, busy: false }
+    return {
+      outer,
+      scene,
+      camera,
+      post,
+      clearColor: new THREE.Color(),
+      frame: 0,
+      renderCount: 0,
+      busy: false,
+      background: new THREE.Color('navy'),
+      overrideMaterial: new THREE.MeshBasicMaterial({ color: 'teal' }),
+    }
   }, [renderer])
 
   React.useLayoutEffect(() => {
@@ -97,16 +118,25 @@ function Probe() {
       })
     }
     const original = renderer.render
+    const originalBackground = rootScene.background
+    const originalOverrideMaterial = rootScene.overrideMaterial
+    if (scenario === 'error') {
+      rootScene.background = data.background
+      rootScene.overrideMaterial = data.overrideMaterial
+    }
     renderer.render = function (...args: any[]) {
       data.renderCount++
       return original.apply(this, args)
     }
     return () => {
       renderer.render = original
+      rootScene.background = originalBackground
+      rootScene.overrideMaterial = originalOverrideMaterial
+      data.overrideMaterial.dispose()
       data.outer.dispose()
       data.post?.dispose()
     }
-  }, [renderer, data])
+  }, [renderer, rootScene, data])
 
   // Simulate an outer pass retaining a target across R3F callbacks, as in #2832.
   useFrame(
@@ -140,7 +170,21 @@ function Probe() {
       result.clears.push(
         renderer.getClearColor(data.clearColor).getHexString() === 'ff0000' && renderer.getClearAlpha() === 0.25
       )
+      if (scenario === 'error') {
+        result.scenes.push(
+          rootScene.background === data.background && rootScene.overrideMaterial === data.overrideMaterial
+        )
+      }
+      if (component === 'contact' && (scenario === 'error' || scenario === 'hidden')) {
+        result.visibility.push(rootScene.getObjectByName('capture-candidate')?.visible === (scenario !== 'hidden'))
+      }
       result.renders.push(data.renderCount)
+      if (scenario === 'error') {
+        data.busy = true
+        result.done = true
+        renderer.setRenderTarget(null)
+        return
+      }
       // A continuation must draw green into the caller's target, not the canvas.
       data.scene.background.set('lime')
       renderer.render(data.scene, data.camera)
@@ -184,7 +228,14 @@ createRoot(document.getElementById('root')!).render(
   <Canvas camera={{ position: [0, 2, 5] }} dpr={1} frameloop="always">
     <Probe />
     {scenario === 'nested' ? <Nested /> : <Candidate />}
-    <mesh>
+    <mesh
+      onBeforeRender={() => {
+        if (scenario === 'error' && !result.injected) {
+          result.injected = true
+          throw new Error(expectedCaptureError)
+        }
+      }}
+    >
       <boxGeometry />
       <meshBasicMaterial color="blue" />
     </mesh>

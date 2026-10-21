@@ -782,11 +782,6 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
       }
     }, [fboBack.texture])
 
-    let oldBg: any
-    let oldEnvMapIntensity: number
-    let oldTone: THREE.ToneMapping
-    let parent: THREE.Object3D | undefined
-
     useFrame((state) => {
       ref.current.time = state.elapsed
       const renderer = state.renderer
@@ -796,96 +791,83 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
 
       // Render only if the buffer matches the built-in and no transmission sampler is set
       if (ref.current.buffer === fboMain.texture && !transmissionSampler) {
-        parent = (ref.current as any).__r3f?.parent?.object as THREE.Object3D | undefined
+        const parent = (ref.current as any).__r3f?.parent?.object as THREE.Mesh | undefined
 
         if (!parent) return
         // Save defaults
-        oldTone = renderer.toneMapping
-        oldBg = state.scene.background
-        oldEnvMapIntensity = ref.current.envMapIntensity
-
-        // Switch off tonemapping lest it double tone maps
-        renderer.toneMapping = THREE.NoToneMapping
-
-        // Set custom background if provided
-        if (background)
-          state.scene.background = background
-
-          // Use discardmaterial - parent invisible but shadows still cast
-        ;(parent as any).material = DiscardMaterial
+        const oldTarget = renderer.getRenderTarget()
+        const oldCubeFace = renderer.getActiveCubeFace()
+        const oldMipmapLevel = renderer.getActiveMipmapLevel()
+        const oldTone = renderer.toneMapping
+        const oldBg = state.scene.background
+        const oldMaterial = parent.material
 
         // For orthographic cameras, we need to update the projection matrix
         // to match the FBO aspect ratio, otherwise the frustum clips incorrectly
         const camera = state.camera as any
         const isOrtho = camera.isOrthographicCamera
-        let oldLeft: number, oldRight: number, oldTop: number, oldBottom: number
-        if (isOrtho) {
-          oldLeft = camera.left
-          oldRight = camera.right
-          oldTop = camera.top
-          oldBottom = camera.bottom
-          // Calculate the orthographic frustum for the FBO aspect ratio
-          const fboAspect = fboWidth / fboHeight
-          const screenAspect = screenWidth / screenHeight
-          if (Math.abs(fboAspect - screenAspect) > 0.001) {
-            // Adjust frustum to match FBO aspect while keeping the same view height
-            const viewHeight = oldTop - oldBottom
-            const newHalfWidth = (viewHeight * fboAspect) / 2
-            const centerX = (oldLeft + oldRight) / 2
-            camera.left = centerX - newHalfWidth
-            camera.right = centerX + newHalfWidth
+        const oldLeft = camera.left
+        const oldRight = camera.right
+        const oldTop = camera.top
+        const oldBottom = camera.bottom
+
+        try {
+          // Switch off tonemapping lest it double tone maps
+          renderer.toneMapping = THREE.NoToneMapping
+          if (background) state.scene.background = background
+          parent.material = DiscardMaterial
+
+          if (isOrtho) {
+            // Calculate the orthographic frustum for the FBO aspect ratio
+            const fboAspect = fboWidth / fboHeight
+            const screenAspect = screenWidth / screenHeight
+            if (Math.abs(fboAspect - screenAspect) > 0.001) {
+              // Adjust frustum to match FBO aspect while keeping the same view height
+              const viewHeight = oldTop - oldBottom
+              const newHalfWidth = (viewHeight * fboAspect) / 2
+              const centerX = (oldLeft + oldRight) / 2
+              camera.left = centerX - newHalfWidth
+              camera.right = centerX + newHalfWidth
+              camera.updateProjectionMatrix()
+            }
+          }
+
+          if (backside && backsideMaterialRef.current) {
+            // PASS 1: Render scene to fboBack (mesh invisible via DiscardMaterial)
+            renderer.setRenderTarget(fboBack)
+            renderer.clear()
+            state.renderer.render(state.scene, state.camera)
+
+            // PASS 2: Use SEPARATE material that samples fboBack, writes to fboMain
+            // This material's buffer is permanently set to fboBack.texture
+            ;(parent as any).material = backsideMaterialRef.current
+            backsideMaterialRef.current.thickness = backsideThickness
+            backsideMaterialRef.current.side = THREE.BackSide
+            backsideMaterialRef.current.envMapIntensity = backsideEnvMapIntensity
+
+            renderer.setRenderTarget(fboMain)
+            renderer.clear()
+            state.renderer.render(state.scene, state.camera)
+          } else {
+            // NO BACKSIDE: Render scene to fboMain (mesh invisible via DiscardMaterial)
+            renderer.setRenderTarget(fboMain)
+            renderer.clear()
+            state.renderer.render(state.scene, state.camera)
+          }
+        } finally {
+          parent.material = oldMaterial
+          // Restore orthographic camera if we modified it
+          if (isOrtho && Math.abs(fboWidth / fboHeight - screenWidth / screenHeight) > 0.001) {
+            camera.left = oldLeft
+            camera.right = oldRight
+            camera.top = oldTop
+            camera.bottom = oldBottom
             camera.updateProjectionMatrix()
           }
+          state.scene.background = oldBg
+          renderer.setRenderTarget(oldTarget as THREE.WebGLRenderTarget | null, oldCubeFace, oldMipmapLevel)
+          renderer.toneMapping = oldTone
         }
-
-        if (backside && backsideMaterialRef.current) {
-          // PASS 1: Render scene to fboBack (mesh invisible via DiscardMaterial)
-          renderer.setRenderTarget(fboBack)
-          renderer.clear()
-          state.renderer.render(state.scene, state.camera)
-
-          // PASS 2: Use SEPARATE material that samples fboBack, writes to fboMain
-          // This material's buffer is permanently set to fboBack.texture
-          ;(parent as any).material = backsideMaterialRef.current
-          backsideMaterialRef.current.thickness = backsideThickness
-          backsideMaterialRef.current.side = THREE.BackSide
-          backsideMaterialRef.current.envMapIntensity = backsideEnvMapIntensity
-
-          renderer.setRenderTarget(fboMain)
-          renderer.clear()
-          state.renderer.render(state.scene, state.camera)
-
-          // PASS 3 prep: Switch to main material for final screen render
-          // Main material's buffer is permanently fboMain.texture
-          ;(parent as any).material = ref.current
-          ref.current.thickness = thickness
-          ref.current.side = side
-          ref.current.envMapIntensity = oldEnvMapIntensity
-        } else {
-          // NO BACKSIDE: Render scene to fboMain (mesh invisible via DiscardMaterial)
-          renderer.setRenderTarget(fboMain)
-          renderer.clear()
-          state.renderer.render(state.scene, state.camera)
-
-          // Switch to main material for final screen render
-          ;(parent as any).material = ref.current
-          ref.current.thickness = thickness
-          ref.current.side = side
-        }
-
-        // Restore orthographic camera if we modified it
-        if (isOrtho && Math.abs(fboWidth / fboHeight - screenWidth / screenHeight) > 0.001) {
-          camera.left = oldLeft!
-          camera.right = oldRight!
-          camera.top = oldTop!
-          camera.bottom = oldBottom!
-          camera.updateProjectionMatrix()
-        }
-
-        // Restore state for final screen render
-        state.scene.background = oldBg
-        renderer.setRenderTarget(null)
-        renderer.toneMapping = oldTone
       }
     })
 

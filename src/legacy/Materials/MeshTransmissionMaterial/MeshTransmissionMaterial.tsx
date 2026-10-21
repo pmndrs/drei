@@ -436,54 +436,58 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
     const fboBack = useFBO(backsideResolution || resolution)
     const fboMain = useFBO(resolution)
 
-    let oldBg
-    let oldEnvMapIntensity
-    let oldTone
-    let parent
     useFrame((state) => {
       ref.current.time = state.elapsed
       // Render only if the buffer matches the built-in and no transmission sampler is set
       if (ref.current.buffer === fboMain.texture && !transmissionSampler) {
-        parent = (ref.current as any).__r3f.parent?.object as THREE.Object3D | undefined
+        const parent = (ref.current as any).__r3f.parent?.object as THREE.Mesh | undefined
         if (parent) {
           // Save defaults
-          oldTone = state.renderer.toneMapping
-          oldBg = state.scene.background
-          oldEnvMapIntensity = ref.current.envMapIntensity
+          const renderer = state.renderer
+          const oldTarget = renderer.getRenderTarget()
+          const oldCubeFace = renderer.getActiveCubeFace()
+          const oldMipmapLevel = renderer.getActiveMipmapLevel()
+          const oldTone = renderer.toneMapping
+          const oldBg = state.scene.background
+          const oldMaterial = parent.material
+          const oldEnvMapIntensity = ref.current.envMapIntensity
+          const oldThickness = ref.current.thickness
+          const oldSide = ref.current.side
+          const oldBuffer = ref.current.buffer
 
           // Switch off tonemapping lest it double tone maps
           // Save the current background and set the HDR as the new BG
           // Use discardmaterial, the parent will be invisible, but it's shadows will still be cast
-          state.renderer.toneMapping = THREE.NoToneMapping
-          if (background) state.scene.background = background
-          parent.material = discardMaterial
+          try {
+            renderer.toneMapping = THREE.NoToneMapping
+            if (background) state.scene.background = background
+            parent.material = discardMaterial
 
-          if (backside) {
-            // Render into the backside buffer
-            state.renderer.setRenderTarget(fboBack)
-            state.renderer.render(state.scene, state.camera)
-            // And now prepare the material for the main render using the backside buffer
-            parent.material = ref.current
-            parent.material.buffer = fboBack.texture
-            parent.material.thickness = backsideThickness
-            parent.material.side = THREE.BackSide
-            parent.material.envMapIntensity = backsideEnvMapIntensity
+            if (backside) {
+              // Render into the backside buffer
+              renderer.setRenderTarget(fboBack)
+              renderer.render(state.scene, state.camera)
+              // And now prepare the material for the main render using the backside buffer
+              parent.material = ref.current as unknown as THREE.Material
+              ref.current.buffer = fboBack.texture
+              ref.current.thickness = backsideThickness
+              ref.current.side = THREE.BackSide
+              ref.current.envMapIntensity = backsideEnvMapIntensity
+            }
+
+            // Render into the main buffer
+            renderer.setRenderTarget(fboMain)
+            renderer.render(state.scene, state.camera)
+          } finally {
+            parent.material = oldMaterial
+            ref.current.thickness = oldThickness
+            ref.current.side = oldSide
+            ref.current.buffer = oldBuffer
+            ref.current.envMapIntensity = oldEnvMapIntensity
+            state.scene.background = oldBg
+            renderer.setRenderTarget(oldTarget, oldCubeFace, oldMipmapLevel)
+            renderer.toneMapping = oldTone
           }
-
-          // Render into the main buffer
-          state.renderer.setRenderTarget(fboMain)
-          state.renderer.render(state.scene, state.camera)
-
-          parent.material = ref.current
-          parent.material.thickness = thickness
-          parent.material.side = side
-          parent.material.buffer = fboMain.texture
-          parent.material.envMapIntensity = oldEnvMapIntensity
-
-          // Set old state back
-          state.scene.background = oldBg
-          state.renderer.setRenderTarget(null)
-          state.renderer.toneMapping = oldTone
         }
       }
     })

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from '#three'
-import { Color, extend, ThreeElements, useThree } from '@react-three/fiber'
+import { Color, extend, ThreeElements, useThree } from '@react-three/fiber/legacy'
 import { shaderMaterial } from '@legacy/Materials/shaderMaterial'
 import { useTexture } from '@core/Loaders/useTexture'
 import { ForwardRefComponent } from '@utils/ts-utils'
@@ -30,7 +30,7 @@ type ImageMaterialType = ThreeElements['shaderMaterial'] & {
   grayscale?: number
 }
 
-declare module '@react-three/fiber' {
+declare module '@react-three/fiber/legacy' {
   interface ThreeElements {
     imageMaterial: ImageMaterialType
   }

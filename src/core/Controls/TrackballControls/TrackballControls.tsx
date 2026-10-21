@@ -1,4 +1,5 @@
-import { ReactThreeFiber, ThreeElement, useFrame, useThree } from '@react-three/fiber'
+import { ReactThreeFiber, ThreeElement } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/extension'
 import * as React from 'react'
 import * as THREE from '#three'
 import { TrackballControls as TrackballControlsImpl } from 'three/examples/jsm/controls/TrackballControls.js'
@@ -33,17 +34,20 @@ export type TrackballControlsProps = Omit<
 export const TrackballControls: ForwardRefComponent<TrackballControlsProps, TrackballControlsImpl> =
   /* @__PURE__ */ React.forwardRef<TrackballControlsImpl, TrackballControlsProps>(
     ({ makeDefault, camera, domElement, regress, onChange, onStart, onEnd, ...restProps }, ref) => {
-      const { invalidate, camera: defaultCamera, gl, events, set, get, performance, viewport } = useThree()
+      const { invalidate, camera: defaultCamera, renderer, events, set, get, performance, viewport } = useThree()
       const explCamera = camera || defaultCamera
-      const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
+      const explDomElement = (domElement || events.connected || renderer.domElement) as HTMLElement
       const controls = React.useMemo(
         () => new TrackballControlsImpl(explCamera as THREE.PerspectiveCamera),
         [explCamera]
       )
 
-      useFrame(() => {
-        if (controls.enabled) controls.update()
-      }, -1)
+      useFrame(
+        () => {
+          if (controls.enabled) controls.update()
+        },
+        { before: 'update' }
+      )
 
       React.useEffect(() => {
         controls.connect(explDomElement)

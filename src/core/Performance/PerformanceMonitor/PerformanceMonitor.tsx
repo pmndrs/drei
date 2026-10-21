@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { createContext, useContext, useRef, useState, useLayoutEffect } from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber/extension'
 
 type PerformanceMonitorHookApi = {
   onIncline: (api: PerformanceMonitorApi) => void

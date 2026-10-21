@@ -6,6 +6,7 @@ import { Meta, StoryObj } from '@storybook/react-vite'
 import { Setup } from '@sb/Setup'
 
 import { Fbo, TorusKnot, Box, PerspectiveCamera } from 'drei'
+import { RenderTarget } from '#drei-platform'
 
 export default {
   title: 'Portals/Fbo',
@@ -75,4 +76,25 @@ export const FboSt = {
   },
   render: (args) => <FboScene {...args} />,
   name: 'Default',
+} satisfies Story
+
+//* Platform guard ==============================
+// #drei-platform must follow the Storybook build (DREI_RENDERER, see .storybook/main.mts): the
+// default build tests what the root entry ships (a three/webgpu RenderTarget, which useFBO
+// returns), the legacy build what /legacy ships (a WebGLRenderTarget). A play function, because it
+// runs after render whatever the renderer's init timing; throwing fails the story run (#2875).
+
+export const PlatformTarget = {
+  name: 'Platform target',
+  render: () => <></>,
+  play: async () => {
+    const target = new RenderTarget(1, 1) as { isWebGLRenderTarget?: boolean; dispose(): void }
+    const isWebGLTarget = target.isWebGLRenderTarget === true
+    target.dispose()
+    if (isWebGLTarget !== (__DREI_RENDERER__ === 'legacy')) {
+      throw new Error(
+        `#drei-platform gave a ${isWebGLTarget ? 'WebGL' : 'WebGPU'} render target in the ${__DREI_RENDERER__} Storybook build (#2875)`
+      )
+    }
+  },
 } satisfies Story

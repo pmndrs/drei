@@ -87,8 +87,10 @@
     "test:e2e": "cd test/e2e && ./e2e.sh",
     "test:examples": "yarn --cwd examples typecheck",
     "test:lint": "yarn eslint:ci && yarn typecheck && yarn prettier",
+    "test:stories": "vitest run --config vite.config.mts",
+    "test:stories:legacy": "cross-env DREI_RENDERER=legacy vitest run --config vite.config.mts",
     "test:parity": "playwright test --config=playwright.parity.config.ts",
-    "typecheck": "tsc --noEmit --emitDeclarationOnly false --strict --jsx react",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false --strict --jsx react && tsc -p tsconfig.webgpu.json --noEmit --emitDeclarationOnly false",
     "typegen": "tsc --emitDeclarationOnly"
   },
   "dependencies": {
@@ -123,7 +125,7 @@
     "@babel/preset-typescript": "^7.26.0",
     "@chromatic-com/storybook": "^4.1.3",
     "@playwright/test": "^1.45.2",
-    "@react-three/fiber": "10.0.0-alpha.4",
+    "@react-three/fiber": "10.0.0-alpha.6",
     "@rollup/plugin-alias": "^6.0.0",
     "@rollup/plugin-babel": "^6.1.0",
     "@rollup/plugin-commonjs": "^29.0.0",
@@ -181,9 +183,9 @@
     "vitest": "^4.0.16"
   },
   "peerDependencies": {
-    "@react-three/fiber": ">=10.0.0-0",
-    "react": ">=19.0 <19.3",
-    "react-dom": ">=19.0 <19.3",
+    "@react-three/fiber": ">=10.0.0-alpha.6",
+    "react": ">=19.0 <19.4",
+    "react-dom": ">=19.0 <19.4",
     "three": ">=0.185"
   },
   "peerDependenciesMeta": {

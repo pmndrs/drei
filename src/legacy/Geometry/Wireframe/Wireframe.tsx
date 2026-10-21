@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { extend, ThreeElement } from '@react-three/fiber'
+import { extend, ThreeElement } from '@react-three/fiber/legacy'
 import {
   WireframeMaterial,
   WireframeMaterialProps,
@@ -9,7 +9,7 @@ import {
   useWireframeUniforms,
 } from '@legacy/Materials/WireframeMaterial'
 
-declare module '@react-three/fiber' {
+declare module '@react-three/fiber/legacy' {
   interface ThreeElements {
     meshWireframeMaterial: ThreeElement<typeof WireframeMaterial>
   }

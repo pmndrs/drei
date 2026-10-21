@@ -6,6 +6,54 @@ This changelog tracks changes made during the v11 alpha development cycle.
 
 ### Breaking Changes
 
+#### Requires `@react-three/fiber` 10.0.0-alpha.6; the root entry is WebGPU (#2878)
+
+r3f alpha.6 makes `Canvas` from `@react-three/fiber` render with `WebGPURenderer` and moves
+`WebGLRenderer` to `@react-three/fiber/legacy`. drei follows it: the root, `/core`, `/external` and
+`/experimental` entries are now built with the WebGPU platform aliases, so their render targets and
+materials match the default Canvas. WebGL apps import `Canvas` from `/legacy` and drei from
+`/legacy`, which re-exports every shared component built for WebGL:
+
+```diff
+  // WebGPU (default)
+- import { Canvas } from '@react-three/fiber/webgpu'
++ import { Canvas } from '@react-three/fiber'
+  import { OrbitControls } from '@react-three/drei'
+  import { MeshDistortMaterial } from '@react-three/drei/webgpu'
+
+  // WebGL
+- import { Canvas } from '@react-three/fiber'
+- import { OrbitControls } from '@react-three/drei'
++ import { Canvas } from '@react-three/fiber/legacy'
++ import { OrbitControls, MeshDistortMaterial } from '@react-three/drei/legacy'
+```
+
+Peers are now `@react-three/fiber >=10.0.0-alpha.6` and `react`/`react-dom >=19.0 <19.4` (React
+19.3 is supported, as in r3f). r3f moved `shadows` into the renderer settings (`renderer={{ shadows }}`
+/ `gl={{ shadows }}`); docs that showed `<Canvas shadows>` or `<Canvas renderer={true}>` are updated.
+
+#2878 also moved deprecated `state.gl` reads to `state.renderer`, replaced numeric `useFrame`
+priorities (which run in the opposite order in v10) with phases, and fixed `RenderCubeTexture`'s
+capture order.
+
+**Fixed on top of #2878:**
+
+- `<Outlines>` (experimental) and `<Splat>` from the root entry threw
+  `Cannot read properties of undefined (reading 'clone')`: `shaderMaterial` reached
+  `THREE.UniformsUtils` through `#three`, and `three/webgpu` has no `UniformsUtils`. It imports
+  plain `three` now.
+- The WebGPU `Inspector` crashed on three r186, which removed `Inspector.init()`. It calls `init()`
+  only when present, so r185 keeps working (supersedes #2848).
+- Legacy elements are registered on `@react-three/fiber/legacy`'s `ThreeElements` instead of the
+  default entry's. They collided with WebGPU elements of the same name (strict WebGL apps got TS2717
+  on `meshTransmissionMaterial`) and leaked into WebGPU apps' JSX. The `@ts-expect-error` /
+  `@ts-ignore` workarounds for that collision are gone; WebGPU `MeshPortalMaterial`, `Caustics` and
+  `Grid` declare their own elements (`portalMaterialImplWebGPU`, `causticsProjectionMaterialWebGPU`,
+  `gridMaterialWebGPU`).
+- Legacy `MeshPortalMaterial` no longer types `resolution` as a required prop; the component computes
+  it.
+- The WebGPU `Line` types the material props it already forwards (`transparent`, `depthTest`, ...).
+
 #### `Stars` is gone from `/webgpu`; use `@pmndrs/sky` instead
 
 The WebGPU `Stars` never rendered (#2786), and
@@ -49,6 +97,52 @@ aliases `#three-addons` to the WebGL file whichever renderer is selected.
 `src/utils/three-addons.ts`, `src/utils/three-addons-webgpu.ts`
 
 ### Internal
+
+#### Chromatic captures stories instead of timing out
+
+On Chromatic, 24 stories failed with "Component error" because capture timed out: load > 15 s or
+render > 30 s. The Storybook animation freeze, meant to stop the render loop for visual tests, did
+nothing under r3f v10. `SchedulerPause` wrote `frameloop: 'never'` straight into the store, and v10's
+scheduler only hears about the mode through `setFrameloop()`. So every story rendered every frame,
+and the heavy ones (cube cameras, reflections, accumulated shadows, 1000 instances) never let a
+software-rendered page settle.
+
+The freeze now runs 30 frames, counted rather than timed so the frozen state does not depend on
+machine speed, then calls `setFrameloop('demand')`. r3f still renders when React commits, such as a
+model or HDR arriving later, then goes idle. The 30 frames let content that settles over a few frames
+finish first, like double-buffered render textures (#2884) and objects placed in `useFrame`. Stories
+using `OrbitControls autoRotate`, which invalidates every frame, gate it on `shouldFreezeAnimations()`.
+
+Measured on a production Storybook build in a browser identifying as Chromatic: stories still drawing
+once loaded went from 217 of 226 to 18, and 16 of the 19 timed-out stories now stop drawing. The
+remaining drawers are mostly expected (video textures, the Inspector, which opts out) or still under
+investigation (AccumulativeShadows, Stage, MarchingCubes).
+
+**Files changed:** `.storybook/Setup.tsx`, stories for BBAnchor, Environment, Decal, Caustics,
+MeshRefractionMaterial, AccumulativeShadows (legacy), MeshTransmissionMaterial and SpotLight
+
+#### Core is checked and tested as each entry ships it (#2875)
+
+Core ships in both builds, but `tsconfig.json` and Storybook only ever resolved the WebGL aliases, so
+after #2878 nothing checked the code the root entry actually ships. `tsconfig.webgpu.json` typechecks
+it with the WebGPU aliases (`yarn typecheck` runs both), which is how the `UniformsUtils` crash above
+was found. Storybook picks its alias set with `DREI_RENDERER=webgpu|legacy` (default `webgpu`),
+applied per importer so `src/legacy/` keeps the WebGL set, and the toolbar starts on the build's
+renderer. `yarn test:stories` and `yarn test:stories:legacy` run each; both pass 225/225. A
+`Portals/Fbo > Platform target` story fails if the aliases drift. Running both modes fixed stories
+that only passed by accident: Sky now renders the TSL `SkyMesh` on WebGPU instead of being pinned to
+WebGL, the WebGPU Grid story pins itself to WebGPU, and Points/ScreenQuad stopped using
+`#include <encodings_fragment>` (removed in three r154).
+
+**Files changed:** `package.json`, `tsconfig.webgpu.json` (new), `CLAUDE.md`,
+`devDocs/MIGRATION_V10_TO_V11.md`, `.storybook/{main.mts,preview.tsx,index.d.ts}`,
+`src/legacy/**` (fiber imports and augmentations), `src/legacy/Materials/shaderMaterial`,
+`src/legacy/Materials/MeshPortalMaterial`, `src/webgpu/Materials/{MeshPortalMaterial,MeshTransmissionMaterial}`,
+`src/webgpu/Effects/Caustics`, `src/webgpu/Staging/Grid`, `src/webgpu/Geometry/Line`,
+`src/webgpu/Performance/Inspector`, `src/core/{Cameras,Portal/Mask,Portal/View,Helpers/useDepthBuffer,Staging/Sky}`,
+`src/core/Geometry/{CatmullRomLine,CubicBezierLine,QuadraticBezierLine}`, `src/external/Geometry/Splat`,
+stories (Sky, Grid, Points, ScreenQuad, Fbo, MeshPortalMaterial), Stage / Inspector / useGLTF /
+MeshTransmissionMaterial docs
 
 #### The component audit gives the same answer on Linux and macOS
 
@@ -137,6 +231,22 @@ reaches the screen is fully compiled on both renderers. Wrap it in a
 `src/core/Loaders/Preload/Preload.stories.tsx`
 
 ### Fixes
+
+#### `PerspectiveCamera` / `OrthographicCamera`: `frames` survives re-renders; film-into-texture stories
+
+The frame counter for the film-into-texture path was a `let` in the component
+body, so every React re-render reset it to 0. `frames={1}` filmed again on each
+re-render of the camera (57 times in 6 s under a 100 ms re-render, measured on
+both renderers) instead of once. It is now a ref, as in `CubeCamera`.
+
+Both cameras also get a "Filming into texture" story, which the path never had.
+Found and written by @Karine91 in #2832, which fixed #2823 a week before #2837
+and was missed in review.
+
+**Files changed:** `src/core/Cameras/PerspectiveCamera/PerspectiveCamera.tsx`,
+`src/core/Cameras/OrthographicCamera/OrthographicCamera.tsx`,
+`src/core/Cameras/PerspectiveCamera/PerspectiveCamera.stories.tsx`,
+`src/core/Cameras/OrthographicCamera/OrthographicCamera.stories.tsx`
 
 #### `withUniforms` materials survive `clone()` and `copy()`
 

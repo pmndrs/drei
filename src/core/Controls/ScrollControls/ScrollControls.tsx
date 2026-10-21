@@ -1,8 +1,9 @@
 import * as THREE from '#three'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
-import { context as fiberContext, RootState, useFrame, useThree } from '@react-three/fiber'
-import { DomEvent } from '@react-three/fiber/'
+import { context as fiberContext, RootState } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/extension'
+import { DomEvent } from '@react-three/fiber'
 import { easing } from 'maath'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 import { roundToPixelRatio } from '../../../utils/generic'
@@ -99,11 +100,11 @@ export function ScrollControls({
   style = {},
   children,
 }: ScrollControlsProps) {
-  const { get, setEvents, gl, size, invalidate, events } = useThree()
+  const { get, setEvents, renderer, size, invalidate, events } = useThree()
   const [el] = React.useState(() => document.createElement('div'))
   const [fill] = React.useState(() => document.createElement('div'))
   const [fixed] = React.useState(() => document.createElement('div'))
-  const target = gl.domElement.parentNode! as HTMLElement
+  const target = renderer.domElement.parentNode! as HTMLElement
   const scroll = React.useRef(0)
   const disableScrollUpdate = React.useRef(false)
 
@@ -172,7 +173,7 @@ export function ScrollControls({
     // Init scroll one pixel in to allow upward/leftward scroll
     el[horizontal ? 'scrollLeft' : 'scrollTop'] = 1
 
-    const oldTarget = (events.connected || gl.domElement) as HTMLElement
+    const oldTarget = (events.connected || renderer.domElement) as HTMLElement
     requestAnimationFrame(() => events.connect?.(el))
     const oldCompute = get().events.compute
     setEvents({

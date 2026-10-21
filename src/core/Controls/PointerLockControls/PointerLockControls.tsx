@@ -1,5 +1,6 @@
-import { EventManager, RootState, ThreeElement, useThree } from '@react-three/fiber'
-import { DomEvent } from '@react-three/fiber/'
+import { EventManager, RootState, ThreeElement } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/extension'
+import { DomEvent } from '@react-three/fiber'
 import * as React from 'react'
 import * as THREE from '#three'
 import { PointerLockControls as PointerLockControlsImpl } from 'three/examples/jsm/controls/PointerLockControls.js'
@@ -30,14 +31,14 @@ export const PointerLockControls: ForwardRefComponent<PointerLockControlsProps, 
     ({ domElement, selector, onChange, onLock, onUnlock, enabled = true, makeDefault, ...props }, ref) => {
       const { camera, ...rest } = props
       const setEvents = useThree((state) => state.setEvents)
-      const gl = useThree((state) => state.gl)
+      const renderer = useThree((state) => state.renderer)
       const defaultCamera = useThree((state) => state.camera)
       const invalidate = useThree((state) => state.invalidate)
       const events = useThree((state) => state.events) as EventManager<HTMLElement>
       const get = useThree((state) => state.get)
       const set = useThree((state) => state.set)
       const explCamera = camera || defaultCamera
-      const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
+      const explDomElement = (domElement || events.connected || renderer.domElement) as HTMLElement
 
       const controls = React.useMemo(() => new PointerLockControlsImpl(explCamera), [explCamera])
 

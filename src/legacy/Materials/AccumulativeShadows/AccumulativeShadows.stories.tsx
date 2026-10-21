@@ -4,7 +4,7 @@ import { ComponentProps } from 'react'
 import { FlakesTexture } from 'three/examples/jsm/textures/FlakesTexture.js'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@sb/Setup'
+import { Setup, shouldFreezeAnimations } from '@sb/Setup'
 import { PlatformSwitch } from '@sb/components/PlatformSwitch'
 
 import { useGLTF, OrbitControls, Environment } from 'drei'
@@ -48,7 +48,7 @@ function AccumulativeShadowScene(props: Omit<ComponentProps<typeof AccumulativeS
         }
       />
 
-      <OrbitControls autoRotate={true} />
+      <OrbitControls autoRotate={!shouldFreezeAnimations()} />
       <Environment preset="city" />
     </>
   )

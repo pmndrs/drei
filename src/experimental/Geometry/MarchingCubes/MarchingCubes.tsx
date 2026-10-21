@@ -2,7 +2,8 @@ import * as THREE from '#three'
 import * as React from 'react'
 import { Color, Group } from '#three'
 import { MarchingCubes as MarchingCubesImpl } from 'three/examples/jsm/objects/MarchingCubes.js'
-import { ThreeElements, useFrame } from '@react-three/fiber'
+import { ThreeElements } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber/extension'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 
 type Api = {
@@ -41,10 +42,13 @@ export const MarchingCubes: ForwardRefComponent<MarchingCubesProps, MarchingCube
       )
       const api = React.useMemo(() => ({ getParent: () => marchingCubesRef }), [])
 
-      useFrame(() => {
-        marchingCubes.update()
-        marchingCubes.reset()
-      }, -1) // To make sure the reset runs before the balls or planes are added
+      useFrame(
+        () => {
+          marchingCubes.update()
+          marchingCubes.reset()
+        },
+        { before: 'update' }
+      ) // To make sure the reset runs before the balls or planes are added
 
       return (
         <>

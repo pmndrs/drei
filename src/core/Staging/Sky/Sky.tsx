@@ -73,7 +73,9 @@ export const Sky: ForwardRefComponent<SkyProps, SkyImpl> = /* @__PURE__ */ React
     // Apply sky uniforms ---------------------------------
     React.useLayoutEffect(() => {
       // WebGPU's SkyMesh exposes its uniforms as nodes on the mesh; WebGL's Sky keeps them on its material
-      const u = (sky as unknown as SkyMesh).isSkyMesh ? (sky as unknown as SkyMesh) : sky.material.uniforms
+      const u = (sky as unknown as SkyMesh).isSkyMesh
+        ? (sky as unknown as SkyMesh)
+        : (sky.material as unknown as { uniforms: SkyMesh }).uniforms
       u.turbidity.value = turbidity
       u.rayleigh.value = rayleigh
       u.mieCoefficient.value = mieCoefficient

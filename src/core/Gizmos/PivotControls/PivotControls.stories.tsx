@@ -27,9 +27,9 @@ type Story = StoryObj<typeof PivotControls>
 
 // Hook to get the correct Line component based on renderer type
 function useLineComponent() {
-  const gl = useThree((state) => state.gl)
+  const renderer = useThree((state) => state.renderer)
   // Check if WebGPU renderer (has 'backend' property)
-  const isWebGPU = 'backend' in gl
+  const isWebGPU = 'backend' in renderer
   // Cast needed: legacy and webgpu Line have incompatible material types
   // but are functionally interchangeable for PivotControls usage
   return (isWebGPU ? WebGPULine : LegacyLine) as any

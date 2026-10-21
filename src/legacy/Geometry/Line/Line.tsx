@@ -8,7 +8,7 @@ import {
   InstancedInterleavedBuffer,
   InterleavedBufferAttribute,
 } from 'three'
-import { useThree, Vector2 as FiberVector2, Vector3 as FiberVector3, ThreeElement } from '@react-three/fiber'
+import { Vector2 as FiberVector2, Vector3 as FiberVector3, ThreeElement, useThree } from '@react-three/fiber/legacy'
 import { Line2 } from 'three/examples/jsm/lines/Line2.js'
 import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js'
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js'

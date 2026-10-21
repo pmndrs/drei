@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { useFrame } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber/extension'
 
 export function useTurntable<T extends THREE.Object3D>() {
   const ref = React.useRef<T>(null)

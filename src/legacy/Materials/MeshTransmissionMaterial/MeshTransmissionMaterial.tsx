@@ -9,7 +9,7 @@
 import * as THREE from '#three'
 import { IUniform } from '#three'
 import * as React from 'react'
-import { extend, ThreeElements, useFrame } from '@react-three/fiber'
+import { extend, ThreeElements, useFrame } from '@react-three/fiber/legacy'
 import { useFBO } from '@core/Portal/Fbo'
 import { DiscardMaterial } from '@legacy/Materials/DiscardMaterial'
 import { ForwardRefComponent } from '@utils/ts-utils'
@@ -75,7 +75,7 @@ interface Shader {
   fragmentShader: string
 }
 
-declare module '@react-three/fiber' {
+declare module '@react-three/fiber/legacy' {
   interface ThreeElements {
     meshTransmissionMaterial: MeshTransmissionMaterialType
   }
@@ -446,21 +446,21 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
         parent = (ref.current as any).__r3f.parent?.object as THREE.Object3D | undefined
         if (parent) {
           // Save defaults
-          oldTone = state.gl.toneMapping
+          oldTone = state.renderer.toneMapping
           oldBg = state.scene.background
           oldEnvMapIntensity = ref.current.envMapIntensity
 
           // Switch off tonemapping lest it double tone maps
           // Save the current background and set the HDR as the new BG
           // Use discardmaterial, the parent will be invisible, but it's shadows will still be cast
-          state.gl.toneMapping = THREE.NoToneMapping
+          state.renderer.toneMapping = THREE.NoToneMapping
           if (background) state.scene.background = background
           parent.material = discardMaterial
 
           if (backside) {
             // Render into the backside buffer
-            state.gl.setRenderTarget(fboBack)
-            state.gl.render(state.scene, state.camera)
+            state.renderer.setRenderTarget(fboBack)
+            state.renderer.render(state.scene, state.camera)
             // And now prepare the material for the main render using the backside buffer
             parent.material = ref.current
             parent.material.buffer = fboBack.texture
@@ -470,8 +470,8 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
           }
 
           // Render into the main buffer
-          state.gl.setRenderTarget(fboMain)
-          state.gl.render(state.scene, state.camera)
+          state.renderer.setRenderTarget(fboMain)
+          state.renderer.render(state.scene, state.camera)
 
           parent.material = ref.current
           parent.material.thickness = thickness
@@ -481,8 +481,8 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
 
           // Set old state back
           state.scene.background = oldBg
-          state.gl.setRenderTarget(null)
-          state.gl.toneMapping = oldTone
+          state.renderer.setRenderTarget(null)
+          state.renderer.toneMapping = oldTone
         }
       }
     })

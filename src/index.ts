@@ -1,5 +1,6 @@
 //* Root Entry Point ==============================
-// Includes: core + external + experimental (renderer-agnostic only)
+// Includes: core + external + experimental, using Fiber's default WebGPU renderer.
+// For WebGL, import shared components from /legacy as well.
 
 export * from './core'
 export * from './external'

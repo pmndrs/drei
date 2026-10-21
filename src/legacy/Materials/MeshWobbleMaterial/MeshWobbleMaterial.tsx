@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { IUniform, MeshStandardMaterial, MeshStandardMaterialParameters } from '#three'
-import { ThreeElements, useFrame } from '@react-three/fiber'
+import { ThreeElements, useFrame } from '@react-three/fiber/legacy'
 import { ForwardRefComponent } from '@utils/ts-utils'
 
 export interface Uniform<T> {
@@ -57,7 +57,7 @@ class WobbleMaterialImpl extends MeshStandardMaterial {
   }
 }
 
-declare module '@react-three/fiber' {
+declare module '@react-three/fiber/legacy' {
   interface ThreeElements {
     wobbleMaterialImpl: ThreeElements['meshStandardMaterial'] & {
       time?: number

@@ -1,6 +1,7 @@
 import * as THREE from '#three'
 import * as React from 'react'
-import { ThreeElement, ThreeElements, extend, useFrame } from '@react-three/fiber'
+import { ThreeElement, ThreeElements, extend } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber/extension'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 
 declare module '@react-three/fiber' {

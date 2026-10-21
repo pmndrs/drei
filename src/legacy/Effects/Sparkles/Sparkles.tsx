@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from '#three'
-import { useThree, useFrame, extend, ThreeElement, ThreeElements } from '@react-three/fiber'
+import { extend, ThreeElement, ThreeElements, useThree, useFrame } from '@react-three/fiber/legacy'
 import { ForwardRefComponent } from '@utils/ts-utils'
 import { SparklesMaterial } from '../../Materials/SparklesMaterial'
 
@@ -9,7 +9,7 @@ import { SparklesMaterial } from '../../Materials/SparklesMaterial'
 // WebGPU cannot use this approach - see webgpu/Effects/Sparkles for the WebGPU version
 
 //* Extend SparklesMaterial for JSX usage ==============================
-declare module '@react-three/fiber' {
+declare module '@react-three/fiber/legacy' {
   interface ThreeElements {
     sparklesMaterial: ThreeElement<typeof SparklesMaterial>
   }

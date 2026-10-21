@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@sb/Setup'
+import { Setup, shouldFreezeAnimations } from '@sb/Setup'
 import { PlatformSwitch } from '@sb/components/PlatformSwitch'
 import { useGLTF, Environment, OrbitControls } from 'drei'
 import { Caustics, CausticsProps } from './Caustics'
@@ -75,7 +75,13 @@ function CausticsScene(props: Omit<CausticsProps, 'ref'>) {
       />
 
       <Environment files="https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/aerodynamics_workshop_1k.hdr" />
-      <OrbitControls makeDefault autoRotate autoRotateSpeed={0.1} minPolarAngle={0} maxPolarAngle={Math.PI / 2} />
+      <OrbitControls
+        makeDefault
+        autoRotate={!shouldFreezeAnimations()}
+        autoRotateSpeed={0.1}
+        minPolarAngle={0}
+        maxPolarAngle={Math.PI / 2}
+      />
     </>
   )
 }

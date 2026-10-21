@@ -1,10 +1,10 @@
 import * as React from 'react'
 import { ShaderMaterial } from '#three'
-import { extend, ThreeElements } from '@react-three/fiber'
+import { extend, ThreeElements } from '@react-three/fiber/legacy'
 import { DiscardMaterial as DiscardMaterialImpl } from '@legacy/Materials/DiscardMaterial'
 import { ForwardRefComponent } from '@utils/ts-utils'
 
-declare module '@react-three/fiber' {
+declare module '@react-three/fiber/legacy' {
   interface ThreeElements {
     discardMaterialImpl: ThreeElements['shaderMaterial']
   }

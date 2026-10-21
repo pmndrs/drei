@@ -39,7 +39,7 @@ export default function SamplerDemo() {
       <ExampleCard demoName="Sampler" />
 
       <div className="demo-canvas">
-        <CanvasWithToggle camera={{ position: [0, 0, 3], fov: 50 }} renderer>
+        <CanvasWithToggle camera={{ position: [0, 0, 3], fov: 50 }}>
           <Scene />
         </CanvasWithToggle>
       </div>

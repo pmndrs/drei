@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Vector3 } from 'three'
-import { useThree } from '@react-three/fiber/extension'
+import { useFrame, useThree } from '@react-three/fiber/extension'
 
 import { OrbitControls } from 'drei'
 import { getTestEnvironment } from './testing'
@@ -69,20 +69,29 @@ const OnlyTag: React.FC<OnlyTagProps> = ({ type }) => {
 //* Scheduler Control ==============================
 // Uses R3F v10's scheduler to pause the render loop for visual testing
 
+// Frames to run before freezing. Enough for content that settles over a few frames: double-buffered
+// render textures show the previous frame's capture, and some stories place objects in useFrame.
+// Counted, not timed, so the frozen state does not depend on how fast the machine renders.
+const FRAMES_BEFORE_FREEZE = 30
+
 function SchedulerPause() {
-  const { set } = useThree()
+  const setFrameloop = useThree((state) => state.setFrameloop)
+  const frames = React.useRef(0)
 
-  React.useEffect(() => {
-    // R3F v10 exposes `set` which can update store state including frameloop
-    // Setting frameloop to 'never' stops the scheduler completely
-    // 'demand' would allow manual advances via invalidate()
-    set({ frameloop: 'never' })
+  // setFrameloop, not set({ frameloop }): r3f v10's scheduler only hears about the mode through
+  // setFrameloop, so a bare store write left every story rendering every frame. On Chromatic's
+  // software renderer the heavy stories (cube cameras, reflections, accumulated shadows) then
+  // never went idle and timed out instead of being captured.
+  // 'demand', not 'never': r3f still renders when React commits (a model or HDR arriving after the
+  // freeze), so the snapshot shows the loaded scene, then the canvas goes idle. Anything that
+  // invalidates every frame (OrbitControls autoRotate) keeps it busy — gate it on
+  // shouldFreezeAnimations() in the story.
+  useFrame(() => {
+    if (++frames.current === FRAMES_BEFORE_FREEZE) setFrameloop('demand')
+  })
 
-    return () => {
-      // Restore on unmount (though in tests this rarely matters)
-      set({ frameloop: 'always' })
-    }
-  }, [set])
+  // Restore on unmount (though in tests this rarely matters)
+  React.useEffect(() => () => setFrameloop('always'), [setFrameloop])
 
   return null
 }

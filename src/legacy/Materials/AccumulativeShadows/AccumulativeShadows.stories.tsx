@@ -4,7 +4,7 @@ import { ComponentProps } from 'react'
 import { FlakesTexture } from 'three/examples/jsm/textures/FlakesTexture.js'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@sb/Setup'
+import { Setup, shouldFreezeAnimations } from '@sb/Setup'
 
 import { useGLTF, OrbitControls, Environment } from 'drei'
 import { AccumulativeShadows, RandomizedLight } from './AccumulativeShadows'
@@ -34,7 +34,7 @@ function AccumulativeShadowScene(props: ComponentProps<typeof AccumulativeShadow
         <RandomizedLight amount={8} radius={4} ambient={0.5} bias={0.001} position={[5, 5, -10]} />
       </AccumulativeShadows>
 
-      <OrbitControls autoRotate={true} />
+      <OrbitControls autoRotate={!shouldFreezeAnimations()} />
       <Environment preset="city" />
     </>
   )

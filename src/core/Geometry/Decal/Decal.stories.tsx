@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@sb/Setup'
+import { Setup, shouldFreezeAnimations } from '@sb/Setup'
 import { Sampler, Decal, useTexture, useSurfaceSampler, PerspectiveCamera, OrbitControls } from 'drei'
 import { Euler, InstancedBufferAttribute, Matrix4, Quaternion, Vector3 } from 'three'
 import { ComponentProps } from 'react'
@@ -60,7 +60,7 @@ function DecalScene(_props: ComponentProps<typeof Sampler>) {
 
   return (
     <>
-      <OrbitControls makeDefault autoRotate autoRotateSpeed={0.75} />
+      <OrbitControls makeDefault autoRotate={!shouldFreezeAnimations()} autoRotateSpeed={0.75} />
       <PerspectiveCamera makeDefault position={[6, 6, 6]} />
 
       <directionalLight position={[1, -1, 1]} />

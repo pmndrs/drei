@@ -10,10 +10,11 @@ import { ShadowAlpha } from './ShadowAlpha'
 
 export default {
   title: 'Staging/ShadowAlpha',
+  tags: ['legacyOnly'],
   component: ShadowAlpha,
   decorators: [
     (Story, context) => (
-      <Setup renderer={context.globals.renderer} lights={false}>
+      <Setup renderer={context.globals.renderer} limitedTo="legacy" lights={false}>
         <Story />
       </Setup>
     ),

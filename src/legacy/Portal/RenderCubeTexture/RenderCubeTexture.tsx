@@ -134,12 +134,12 @@ function Container({
   children: React.ReactNode
   camera: React.RefObject<THREE.CubeCamera>
 }) {
-  let count = 0
+  const count = React.useRef(0)
   useFrame(
     (state) => {
-      if (frames === Infinity || count < frames) {
+      if (frames === Infinity || count.current < frames) {
         camera.current.update(state.renderer, state.scene)
-        count++
+        count.current++
       }
     },
     { phase: renderPriority > 0 ? 'render' : 'update', priority: -renderPriority }

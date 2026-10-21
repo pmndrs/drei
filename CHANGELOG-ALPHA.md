@@ -4,6 +4,15 @@ This changelog tracks changes made during the v11 alpha development cycle.
 
 ## Unreleased
 
+### Fixes
+
+- Publish each completed `RenderCubeTexture` capture before consumers render it,
+  including the first demand frame and the last finite frame. Preserve the core
+  and legacy capture budgets across React re-renders. Refs #2884.
+
+  **Files changed:** `src/core/Portal/RenderCubeTexture/RenderCubeTexture.tsx`,
+  `src/legacy/Portal/RenderCubeTexture/RenderCubeTexture.tsx`, `test/cube-capture/`.
+
 ### Breaking Changes
 
 #### `Stars` is gone from `/webgpu`; use `@pmndrs/sky` instead

@@ -232,6 +232,22 @@ reaches the screen is fully compiled on both renderers. Wrap it in a
 
 ### Fixes
 
+#### `PerspectiveCamera` / `OrthographicCamera`: `frames` survives re-renders; film-into-texture stories
+
+The frame counter for the film-into-texture path was a `let` in the component
+body, so every React re-render reset it to 0. `frames={1}` filmed again on each
+re-render of the camera (57 times in 6 s under a 100 ms re-render, measured on
+both renderers) instead of once. It is now a ref, as in `CubeCamera`.
+
+Both cameras also get a "Filming into texture" story, which the path never had.
+Found and written by @Karine91 in #2832, which fixed #2823 a week before #2837
+and was missed in review.
+
+**Files changed:** `src/core/Cameras/PerspectiveCamera/PerspectiveCamera.tsx`,
+`src/core/Cameras/OrthographicCamera/OrthographicCamera.tsx`,
+`src/core/Cameras/PerspectiveCamera/PerspectiveCamera.stories.tsx`,
+`src/core/Cameras/OrthographicCamera/OrthographicCamera.stories.tsx`
+
 #### `withUniforms` materials survive `clone()` and `copy()`
 
 `material.clone()` on any WebGPU material built with `withUniforms` did not throw

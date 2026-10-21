@@ -74,12 +74,14 @@ export const OrthographicCamera: ForwardRefComponent<OrthographicCameraProps, Or
         // that must exchange the default, and clean up after itself on unmount.
       }, [cameraRef, makeDefault, set])
 
-      let count = 0
+      // A ref, not a body-level `let`: a re-render must not reset the count, or `frames={1}`
+      // would film again every time the parent re-renders (same as CubeCamera).
+      const countRef = React.useRef(0)
       let oldEnvMap: THREE.Color | THREE.Texture | null = null
       let oldRenderTarget: THREE.RenderTarget | null = null
       const functional = isFunction(children)
       useFrame((state) => {
-        if (functional && (frames === Infinity || count < frames)) {
+        if (functional && (frames === Infinity || countRef.current < frames)) {
           const { renderer } = state
           groupRef.current.visible = false
           // Save whatever is bound right now (View, RenderTexture, Hud, a post-processing
@@ -95,7 +97,7 @@ export const OrthographicCamera: ForwardRefComponent<OrthographicCameraProps, Or
           renderer.setRenderTarget(oldRenderTarget as THREE.WebGLRenderTarget | null)
           state.scene.background = oldEnvMap
           groupRef.current.visible = true
-          count++
+          countRef.current++
         }
       })
 

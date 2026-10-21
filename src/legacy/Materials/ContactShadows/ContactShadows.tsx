@@ -149,6 +149,8 @@ export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Grou
         count++
 
         const previousRenderTarget = renderer.getRenderTarget()
+        const previousActiveCubeFace = renderer.getActiveCubeFace()
+        const previousActiveMipmapLevel = renderer.getActiveMipmapLevel()
         initialBackground = scene.background
         initialOverrideMaterial = scene.overrideMaterial
 
@@ -161,7 +163,7 @@ export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Grou
 
         blurShadows(blur)
         if (smooth) blurShadows(blur * 0.4)
-        renderer.setRenderTarget(previousRenderTarget)
+        renderer.setRenderTarget(previousRenderTarget, previousActiveCubeFace, previousActiveMipmapLevel)
 
         ref.current.visible = true
         scene.overrideMaterial = initialOverrideMaterial

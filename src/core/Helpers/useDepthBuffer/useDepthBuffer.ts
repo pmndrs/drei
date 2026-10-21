@@ -21,9 +21,15 @@ function useDepthBuffer({ size = 256, frames = Infinity }: { size?: number; fram
   useFrame((state) => {
     if (frames === Infinity || count < frames) {
       const previousRenderTarget = state.renderer.getRenderTarget()
+      const previousActiveCubeFace = state.renderer.getActiveCubeFace()
+      const previousActiveMipmapLevel = state.renderer.getActiveMipmapLevel()
       state.renderer.setRenderTarget(depthFBO)
       state.renderer.render(state.scene, state.camera)
-      state.renderer.setRenderTarget(previousRenderTarget as WebGLRenderTarget | null)
+      state.renderer.setRenderTarget(
+        previousRenderTarget as WebGLRenderTarget | null,
+        previousActiveCubeFace,
+        previousActiveMipmapLevel
+      )
       count++
     }
   })

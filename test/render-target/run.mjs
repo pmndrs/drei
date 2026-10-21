@@ -13,6 +13,7 @@ const browser = await chromium.launch({
   args: ['--enable-unsafe-webgpu', '--ignore-gpu-blocklist'],
 })
 let failures = 0
+let cases = 0
 try {
   for (const gpu of [false, true]) {
     const server = await createServer({
@@ -53,7 +54,11 @@ try {
           ['bound', '1'],
           ['bound', '0'],
           ['nested', 'Infinity'],
+          ['cube', 'Infinity'],
+          ['mip', 'Infinity'],
         ]) {
+          if (process.env.TEST_SCENARIO && scenario !== process.env.TEST_SCENARIO) continue
+          cases++
           const page = await browser.newPage()
           const errors = []
           page.on('pageerror', (error) => errors.push(error.message))
@@ -71,6 +76,8 @@ try {
             assert.deepEqual([...result.errors, ...errors], [], 'rendering errors')
             assert.equal(result.targets.length, 6, 'frame callbacks must actually run')
             assert.ok(result.targets.every(Boolean), 'caller render target was lost')
+            assert.ok(result.subresources.every(Boolean), 'caller cube face or mip level was lost')
+            assert.ok(result.clears.every(Boolean), 'caller clear color or alpha was changed')
             assert.ok(result.postRestoredTarget, 'post-processing changed the caller target')
             if (frames === '0')
               assert.ok(
@@ -85,7 +92,7 @@ try {
                   'finite frames kept rendering'
                 )
             }
-            if (scenario !== 'default') {
+            if (scenario !== 'default' && scenario !== 'mip') {
               assert.ok(
                 result.pixel[0] < 5 && result.pixel[1] > 250 && result.pixel[2] < 5,
                 'continuation/post-processing pixel is not green'
@@ -107,5 +114,5 @@ try {
 } finally {
   await browser.close()
 }
-console.log(`${failures ? 'FAIL' : 'PASS'}: 25 render-target scenarios, ${failures} failures`)
+console.log(`${failures ? 'FAIL' : 'PASS'}: ${cases} render-target scenarios, ${failures} failures`)
 process.exitCode = failures ? 1 : 0

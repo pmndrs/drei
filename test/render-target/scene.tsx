@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { Canvas } from '#test-fiber'
 import { useFrame, useThree } from '@react-three/fiber/extension'
 import * as THREE from '#three'
-import { RenderTarget } from '#drei-platform'
+import { RenderTarget, CubeRenderTarget } from '#drei-platform'
 import { useDepthBuffer } from '@core/Helpers/useDepthBuffer'
 import { RenderTexture } from '@core/Portal/RenderTexture'
 import { ContactShadows } from '#test-contact-shadows'
@@ -14,7 +14,16 @@ const params = new URLSearchParams(location.search)
 const component = params.get('component') || 'depth'
 const scenario = params.get('scenario') || 'bound'
 const frames = Number(params.get('frames') || Infinity)
-const result: any = { component, scenario, frames: String(frames), targets: [], renders: [], errors: [] }
+const result: any = {
+  component,
+  scenario,
+  frames: String(frames),
+  targets: [],
+  subresources: [],
+  clears: [],
+  renders: [],
+  errors: [],
+}
 ;(window as any).result = result
 
 function Depth({ gpu = false }: { gpu?: boolean }) {
@@ -58,12 +67,15 @@ function Nested() {
 function Probe() {
   const renderer: any = useThree((state) => state.renderer)
   const data = React.useMemo(() => {
-    const outer = new RenderTarget(16, 16, { type: THREE.UnsignedByteType })
+    const outer =
+      scenario === 'cube'
+        ? new CubeRenderTarget(16, { type: THREE.UnsignedByteType })
+        : new RenderTarget(16, 16, { type: THREE.UnsignedByteType, generateMipmaps: scenario === 'mip' })
     const scene = new THREE.Scene()
     scene.background = new THREE.Color('red')
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1)
-    const post = createPostProcessing(renderer, outer)
-    return { outer, scene, camera, post, frame: 0, renderCount: 0, busy: false }
+    const post = scenario === 'cube' || scenario === 'mip' ? null : createPostProcessing(renderer, outer)
+    return { outer, scene, camera, post, clearColor: new THREE.Color(), frame: 0, renderCount: 0, busy: false }
   }, [renderer])
 
   React.useLayoutEffect(() => {
@@ -92,7 +104,7 @@ function Probe() {
     return () => {
       renderer.render = original
       data.outer.dispose()
-      data.post.dispose()
+      data.post?.dispose()
     }
   }, [renderer, data])
 
@@ -101,10 +113,15 @@ function Probe() {
     () => {
       if (data.busy) return
       data.frame++
-      renderer.setRenderTarget(data.outer)
+      renderer.setRenderTarget(data.outer, scenario === 'cube' ? 3 : 0)
       data.scene.background.set('red')
       renderer.render(data.scene, data.camera)
-      renderer.setRenderTarget(scenario === 'default' ? null : data.outer)
+      renderer.setRenderTarget(
+        scenario === 'default' ? null : data.outer,
+        scenario === 'cube' ? 3 : 0,
+        scenario === 'mip' ? 1 : 0
+      )
+      renderer.setClearColor('red', 0.25)
       data.renderCount = 0
     },
     { phase: 'update', priority: 1000 }
@@ -116,6 +133,13 @@ function Probe() {
       if (data.busy) return
       const expected = scenario === 'default' ? null : data.outer
       result.targets.push(renderer.getRenderTarget() === expected)
+      result.subresources.push(
+        renderer.getActiveCubeFace() === (scenario === 'cube' ? 3 : 0) &&
+          renderer.getActiveMipmapLevel() === (scenario === 'mip' ? 1 : 0)
+      )
+      result.clears.push(
+        renderer.getClearColor(data.clearColor).getHexString() === 'ff0000' && renderer.getClearAlpha() === 0.25
+      )
       result.renders.push(data.renderCount)
       // A continuation must draw green into the caller's target, not the canvas.
       data.scene.background.set('lime')
@@ -123,12 +147,20 @@ function Probe() {
       if (data.frame === 6) {
         data.busy = true
         const current = renderer.getRenderTarget()
-        data.post.render()
+        data.post?.render()
         result.postRestoredTarget = renderer.getRenderTarget() === current
-        const output = data.post.output()
+        if (scenario === 'mip') {
+          result.done = true
+          renderer.setRenderTarget(null)
+          return
+        }
+        const output = data.post ? data.post.output() : data.outer
+        // Finish the outer pass before readback; WebGL's async cube readback
+        // otherwise tries to restore the cube's framebuffer array as one FBO.
+        if (scenario === 'cube') renderer.setRenderTarget(null)
         const read = renderer.isWebGLRenderer
-          ? renderer.readRenderTargetPixelsAsync(output, 8, 8, 1, 1, new Uint8Array(4))
-          : renderer.readRenderTargetPixelsAsync(output, 8, 8, 1, 1)
+          ? renderer.readRenderTargetPixelsAsync(output, 8, 8, 1, 1, new Uint8Array(4), scenario === 'cube' ? 3 : 0)
+          : renderer.readRenderTargetPixelsAsync(output, 8, 8, 1, 1, 0, scenario === 'cube' ? 3 : 0)
         Promise.resolve(read)
           .then((pixel) => {
             result.pixel = Array.from(pixel as ArrayLike<number>)

@@ -251,12 +251,17 @@ export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Grou
     let count = 0
     let initialBackground: THREE.Color | THREE.Texture | null
     let initialOverrideMaterial: THREE.Material | null
+    const initialClearColor = React.useMemo(() => new THREE.Color(), [])
 
     useFrame(() => {
       if (shadowCamera.current && (frames === Infinity || count < frames)) {
         count++
 
         const previousRenderTarget = renderer.getRenderTarget()
+        const previousActiveCubeFace = renderer.getActiveCubeFace()
+        const previousActiveMipmapLevel = renderer.getActiveMipmapLevel()
+        renderer.getClearColor(initialClearColor)
+        const initialClearAlpha = renderer.getClearAlpha()
         // Store initial scene state
         initialBackground = scene.background
         initialOverrideMaterial = scene.overrideMaterial
@@ -278,7 +283,8 @@ export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Grou
         if (smooth) blurShadows(blur * 0.4)
 
         // Restore the caller's target after the depth and blur passes.
-        renderer.setRenderTarget(previousRenderTarget)
+        renderer.setRenderTarget(previousRenderTarget, previousActiveCubeFace, previousActiveMipmapLevel)
+        renderer.setClearColor(initialClearColor, initialClearAlpha)
 
         // Restore scene state
         ref.current.visible = true

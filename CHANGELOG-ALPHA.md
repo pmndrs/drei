@@ -122,7 +122,9 @@ The core and WebGPU `useDepthBuffer` hooks and the legacy and WebGPU
 `ContactShadows` implementations now restore the previously bound render target
 after their offscreen passes, rather than resetting it to the canvas. A focused
 browser regression covers both renderers, finite capture limits, nested
-`RenderTexture` components, and post-processing pixel readback. Refs #2876.
+`RenderTexture` components, cube faces, mip levels, and post-processing pixel
+readback. The active cube face and mip level are preserved, and WebGPU
+`ContactShadows` also restores the caller's clear color and alpha. Refs #2876.
 
 **Files changed:** `src/core/Helpers/useDepthBuffer/useDepthBuffer.ts`,
 `src/webgpu/Helpers/useDepthBuffer/useDepthBuffer.ts`,

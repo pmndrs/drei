@@ -10,7 +10,13 @@
 
 import * as THREE from '#three'
 import * as React from 'react'
-import { createPortal, ThreeElements } from '@react-three/fiber'
+import {
+  attach as attachTexture,
+  createPortal,
+  detach as detachTexture,
+  resolve,
+  ThreeElements,
+} from '@react-three/fiber'
 import { useFrame, useThree } from '@react-three/fiber/extension'
 import { ForwardRefComponent } from '@utils/ts-utils'
 import { RenderTarget } from '#drei-platform'
@@ -42,6 +48,13 @@ export type RenderTextureProps = Omit<ThreeElements['texture'], 'ref' | 'args'> 
   children: React.ReactNode
 }
 
+type TextureAttachment = {
+  parent: Parameters<typeof attachTexture>[0]
+  child: Parameters<typeof attachTexture>[1]
+}
+
+const noAttach = () => () => {}
+
 //* RenderTexture Component ==============================
 
 export const RenderTexture: ForwardRefComponent<RenderTextureProps, THREE.Texture> = /* @__PURE__ */ React.forwardRef(
@@ -58,6 +71,7 @@ export const RenderTexture: ForwardRefComponent<RenderTextureProps, THREE.Textur
       stencilBuffer = false,
       depthBuffer = true,
       generateMipmaps = false,
+      attach,
       ...props
     },
     forwardRef
@@ -115,6 +129,77 @@ export const RenderTexture: ForwardRefComponent<RenderTextureProps, THREE.Textur
     // Track which buffer to display (0 = A, 1 = B)
     const readBufferIndex = React.useRef(0)
     const displayTextureRef = React.useRef<THREE.Texture>(fboA.texture as THREE.Texture)
+    const attachmentRef = React.useRef<TextureAttachment | null>(null)
+    const forwardedTextureRef = React.useRef<THREE.Texture | null>(null)
+    const refCleanup = React.useRef<(() => void) | null>(null)
+
+    const updateRef = React.useCallback(
+      (texture: THREE.Texture | null) => {
+        if (forwardedTextureRef.current === texture) return
+        const previous = forwardedTextureRef.current
+        forwardedTextureRef.current = texture
+
+        if (typeof forwardRef === 'function') {
+          if (refCleanup.current) {
+            const cleanup = refCleanup.current
+            refCleanup.current = null
+            cleanup()
+          } else if (previous) {
+            forwardRef(null)
+          }
+          if (texture) {
+            const cleanup = (forwardRef as React.RefCallback<THREE.Texture>)(texture)
+            if (typeof cleanup === 'function') refCleanup.current = cleanup
+          }
+        } else if (forwardRef) {
+          forwardRef.current = texture
+        }
+      },
+      [forwardRef]
+    )
+
+    const customAttach = React.useCallback(
+      (parent: unknown) => {
+        // Keep attachment bookkeeping separate from the reconciler-owned primitive.
+        const attachment: TextureAttachment = {
+          parent: { object: parent } as TextureAttachment['parent'],
+          child: {
+            object: displayTextureRef.current,
+            props: { attach },
+          } as TextureAttachment['child'],
+        }
+        attachTexture(attachment.parent, attachment.child)
+        attachmentRef.current = attachment
+
+        return () => {
+          if (attachmentRef.current === attachment) attachmentRef.current = null
+          detachTexture(attachment.parent, attachment.child)
+        }
+      },
+      [attach]
+    )
+
+    const publishTexture = React.useCallback(
+      (texture: THREE.Texture) => {
+        displayTextureRef.current = texture
+        const attachment = attachmentRef.current
+        if (attachment && attachment.child.object !== texture) {
+          const target = attachment.child.props.attach
+          if (typeof target === 'string') {
+            // Preserve previousAttach for unmount without recompiling the material every frame.
+            const { root, key } = resolve(attachment.parent.object, target)
+            root[key] = texture
+            attachment.child.object = texture
+          } else {
+            detachTexture(attachment.parent, attachment.child)
+            attachment.child.object = texture
+            attachTexture(attachment.parent, attachment.child)
+          }
+        }
+        updateRef(texture)
+      },
+      [updateRef]
+    )
 
     const [vScene] = React.useState(() => new THREE.Scene())
 
@@ -138,7 +223,10 @@ export const RenderTexture: ForwardRefComponent<RenderTextureProps, THREE.Textur
       [fboA]
     )
 
-    React.useImperativeHandle(forwardRef, () => displayTextureRef.current, [])
+    React.useLayoutEffect(() => {
+      updateRef(displayTextureRef.current)
+      return () => updateRef(null)
+    }, [updateRef])
 
     return (
       <>
@@ -149,7 +237,7 @@ export const RenderTexture: ForwardRefComponent<RenderTextureProps, THREE.Textur
             fboA={fboA}
             fboB={fboB}
             readBufferIndex={readBufferIndex}
-            displayTextureRef={displayTextureRef}
+            publishTexture={publishTexture}
           >
             {children}
             <group onPointerOver={() => null} />
@@ -157,7 +245,9 @@ export const RenderTexture: ForwardRefComponent<RenderTextureProps, THREE.Textur
           vScene,
           { events: { compute: compute || uvCompute, priority: eventPriority } }
         )}
-        {React.createElement('primitive', { object: fboA.texture, ...props })}
+        {/* Apply declarative texture props to both buffers; only one owns the parent attachment. */}
+        {React.createElement('primitive', { object: fboA.texture, ...props, attach: customAttach })}
+        {React.createElement('primitive', { object: fboB.texture, ...props, attach: noAttach })}
       </>
     )
   }
@@ -174,7 +264,7 @@ function Container({
   fboA,
   fboB,
   readBufferIndex,
-  displayTextureRef,
+  publishTexture,
 }: {
   frames: number
   renderPriority: number
@@ -182,53 +272,48 @@ function Container({
   fboA: InstanceType<typeof RenderTarget>
   fboB: InstanceType<typeof RenderTarget>
   readBufferIndex: React.MutableRefObject<number>
-  displayTextureRef: React.MutableRefObject<THREE.Texture>
+  publishTexture: (texture: THREE.Texture) => void
 }) {
   // Get portal state from useThree (works correctly, unlike useFrame's state)
-  const { scene: portalScene, camera: portalCamera, rootScene } = useThree()
+  const { scene: portalScene, camera: portalCamera } = useThree()
 
-  let count = 0
-  let oldAutoClear: boolean
-  let oldXrEnabled: boolean
-  let oldRenderTarget: THREE.RenderTarget | null
-  let oldIsPresenting: boolean
+  const count = React.useRef(0)
 
   useFrame(
     (state) => {
-      if (frames === Infinity || count < frames) {
+      if (frames === Infinity || count.current < frames) {
         // Double buffer: swap which FBO we read from vs write to
-        const readFbo = readBufferIndex.current === 0 ? fboA : fboB
         const writeFbo = readBufferIndex.current === 0 ? fboB : fboA
 
-        // Update display texture reference
-        displayTextureRef.current = readFbo.texture as THREE.Texture
-
         // Save state
-        oldAutoClear = state.renderer.autoClear
-        oldXrEnabled = state.renderer.xr.enabled
-        oldRenderTarget = state.renderer.getRenderTarget()
-        oldIsPresenting = state.renderer.xr.isPresenting
+        const oldAutoClear = state.renderer.autoClear
+        const oldXrEnabled = state.renderer.xr.enabled
+        const oldRenderTarget = state.renderer.getRenderTarget()
+        const oldCubeFace = state.renderer.getActiveCubeFace()
+        const oldMipmapLevel = state.renderer.getActiveMipmapLevel()
+        const oldIsPresenting = state.renderer.xr.isPresenting
 
         // Render portal scene to write buffer
         // Using portalScene/portalCamera from useThree (useFrame state has scheduler bug)
-        state.renderer.autoClear = true
-        state.renderer.xr.enabled = false
-        // three types WebGPU's XRManager.isPresenting readonly, but it is a plain
-        // writable field in both builds — three itself save/restores it this way.
-        ;(state.renderer.xr as { isPresenting: boolean }).isPresenting = false
-        state.renderer.setRenderTarget(writeFbo as THREE.WebGLRenderTarget)
-        state.renderer.render(portalScene, portalCamera)
-        state.renderer.setRenderTarget(oldRenderTarget as THREE.WebGLRenderTarget | null)
-
-        // Restore state
-        state.renderer.autoClear = oldAutoClear
-        state.renderer.xr.enabled = oldXrEnabled
-        ;(state.renderer.xr as { isPresenting: boolean }).isPresenting = oldIsPresenting
+        try {
+          state.renderer.autoClear = true
+          state.renderer.xr.enabled = false
+          // Both renderer builds expose a writable XR field despite the readonly type.
+          ;(state.renderer.xr as { isPresenting: boolean }).isPresenting = false
+          state.renderer.setRenderTarget(writeFbo as THREE.WebGLRenderTarget)
+          state.renderer.render(portalScene, portalCamera)
+        } finally {
+          state.renderer.setRenderTarget(oldRenderTarget as THREE.WebGLRenderTarget | null, oldCubeFace, oldMipmapLevel)
+          state.renderer.autoClear = oldAutoClear
+          state.renderer.xr.enabled = oldXrEnabled
+          ;(state.renderer.xr as { isPresenting: boolean }).isPresenting = oldIsPresenting
+        }
 
         // Swap buffers for next frame
         readBufferIndex.current = readBufferIndex.current === 0 ? 1 : 0
 
-        count++
+        count.current++
+        publishTexture(writeFbo.texture as THREE.Texture)
       }
     },
     { phase: renderPriority > 0 ? 'render' : 'update', priority: -renderPriority }

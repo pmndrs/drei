@@ -3,7 +3,7 @@
 // Contents run in a portal - isolated scene with own events/environment.
 //
 // NOTE: Uses double buffering (ping-pong) for WebGPU compatibility.
-// WebGPU doesn't allow a texture to be written and read in the same command buffer submission.
+// Portal content can sample the previous capture while the other buffer is written.
 //
 // BUG WORKAROUND: We get portalScene from useThree() because createPortal doesn't
 // correctly set state.scene in useFrame. This is an R3F bug that should be reported.
@@ -274,7 +274,7 @@ function DynamicTexture({
     () => {
       if (!materialRef.current) return
 
-      // Get the current read texture (the one NOT being rendered to)
+      // Get the most recently completed capture.
       const readTexture = displayTextureRef.current
 
       // Update material's texture
@@ -317,16 +317,12 @@ function Container({
   // Get portal state from useThree (works correctly, unlike useFrame's state)
   const { scene: portalScene } = useThree()
 
-  let count = 0
+  const count = React.useRef(0)
   useFrame(
     (state) => {
-      if (frames === Infinity || count < frames) {
-        // Double buffer: determine read/write FBOs
-        const readFbo = readBufferIndex.current === 0 ? fboA : fboB
+      if (frames === Infinity || count.current < frames) {
+        // Keep the previous capture available while rendering into the other FBO.
         const writeFbo = readBufferIndex.current === 0 ? fboB : fboA
-
-        // Update display texture reference (read from previous frame's render)
-        displayTextureRef.current = readFbo.texture
 
         // Swap camera's render target to the write buffer
         // CubeCamera internally uses this.renderTarget for its 6 face renders
@@ -335,10 +331,13 @@ function Container({
         // Render to write buffer using portalScene from useThree (useFrame state has scheduler bug)
         camera.update(state.renderer, portalScene)
 
+        // Publish the completed capture, including the final finite frame.
+        displayTextureRef.current = writeFbo.texture
+
         // Swap buffers for next frame
         readBufferIndex.current = readBufferIndex.current === 0 ? 1 : 0
 
-        count++
+        count.current++
       }
     },
     // Capture after scene/camera updates without taking over the main render.

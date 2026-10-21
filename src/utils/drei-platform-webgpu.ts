@@ -29,6 +29,10 @@ export { Outlines } from '../webgpu/Effects/Outlines'
 export { RenderTarget } from 'three/webgpu'
 export { CubeRenderTarget } from 'three/webgpu'
 
+//* Loaders --------------------------------
+// Gainmap decoding renders on the GPU and reads the result back, so each renderer needs its own loader
+export { GainMapLoader, HDRJPGLoader } from '@monogrid/gainmap-js/webgpu'
+
 //* Portal --------------------------------
 export { RenderTexture } from '../core/Portal/RenderTexture'
 export { RenderCubeTexture } from '../core/Portal/RenderCubeTexture'

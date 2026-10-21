@@ -6,11 +6,14 @@ This changelog tracks changes made during the v11 alpha development cycle.
 
 ### Fixes
 
-- Publish each completed `RenderCubeTexture` capture before consumers render it,
-  including the first demand frame and the last finite frame. Preserve the core
-  and legacy capture budgets across React re-renders. Refs #2884.
+- Publish each completed `RenderTexture`/`RenderCubeTexture` capture before
+  consumers render it, including the first demand frame and last finite frame.
+  Preserve capture budgets across React re-renders and keep RenderTexture refs,
+  texture properties, and attachment cleanup consistent across its two buffers.
+  Restore caller renderer state if a RenderTexture capture throws. Refs #2884.
 
-  **Files changed:** `src/core/Portal/RenderCubeTexture/RenderCubeTexture.tsx`,
+  **Files changed:** `src/core/Portal/RenderTexture/RenderTexture.tsx`,
+  `src/core/Portal/RenderCubeTexture/RenderCubeTexture.tsx`,
   `src/legacy/Portal/RenderCubeTexture/RenderCubeTexture.tsx`, `test/cube-capture/`.
 
 ### Breaking Changes

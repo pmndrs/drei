@@ -6,6 +6,9 @@
   </head>
   <body style="margin: 0">
     <div id="root" style="width: 128px; height: 128px"></div>
-    <script type="module" src="./scene.tsx"></script>
+    <script type="module">
+      if (new URLSearchParams(location.search).get('kind') === 'texture') import('./scene-texture.tsx')
+      else import('./scene.tsx')
+    </script>
   </body>
 </html>

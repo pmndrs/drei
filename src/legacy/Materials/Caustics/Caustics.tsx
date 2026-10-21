@@ -480,49 +480,56 @@ export const Caustics: ForwardRefComponent<CausticsProps, THREE.Group> = /* @__P
         causticsMaterial.intensity = intensity
         causticsMaterial.worldRadius = worldRadius
 
-        // Switch the scene on
-        scene.current.visible = true
+        const captureScene = scene.current
+        const previousRenderTarget = renderer.getRenderTarget()
+        const previousActiveCubeFace = renderer.getActiveCubeFace()
+        const previousActiveMipmapLevel = renderer.getActiveMipmapLevel()
+        const previousOverrideMaterial = captureScene.overrideMaterial
+        const previousVisibility = captureScene.visible
+        try {
+          // Switch the scene on
+          captureScene.visible = true
 
-        // Render front face normals
-        renderer.setRenderTarget(normalTarget)
-        renderer.clear()
-        scene.current.overrideMaterial = normalMat
-        renderer.render(scene.current, camera.current)
+          // Render front face normals
+          renderer.setRenderTarget(normalTarget)
+          renderer.clear()
+          captureScene.overrideMaterial = normalMat
+          renderer.render(captureScene, camera.current)
 
-        // Render back face normals, if enabled
-        renderer.setRenderTarget(normalTargetB)
-        renderer.clear()
-        if (backside) {
-          scene.current.overrideMaterial = normalMatB
-          renderer.render(scene.current, camera.current)
+          // Render back face normals, if enabled
+          renderer.setRenderTarget(normalTargetB)
+          renderer.clear()
+          if (backside) {
+            captureScene.overrideMaterial = normalMatB
+            renderer.render(captureScene, camera.current)
+          }
+
+          // Restore the previous override material
+          captureScene.overrideMaterial = previousOverrideMaterial
+
+          // Render front face caustics
+          causticsMaterial.ior = ior
+          plane.current.material.lightProjMatrix = camera.current.projectionMatrix
+          plane.current.material.lightViewMatrix = camera.current.matrixWorldInverse
+          causticsMaterial.normalTexture = normalTarget.texture
+          causticsMaterial.depthTexture = normalTarget.depthTexture
+          renderer.setRenderTarget(causticsTarget)
+          renderer.clear()
+          causticsQuad.render(renderer)
+
+          // Render back face caustics, if enabled
+          causticsMaterial.ior = backsideIOR
+          causticsMaterial.normalTexture = normalTargetB.texture
+          causticsMaterial.depthTexture = normalTargetB.depthTexture
+          renderer.setRenderTarget(causticsTargetB)
+          renderer.clear()
+          if (backside) causticsQuad.render(renderer)
+        } finally {
+          renderer.setRenderTarget(previousRenderTarget, previousActiveCubeFace, previousActiveMipmapLevel)
+          captureScene.overrideMaterial = previousOverrideMaterial
+          // causticsOnly hides the models after capture, including a failed capture.
+          captureScene.visible = causticsOnly ? false : previousVisibility
         }
-
-        // Remove the override material
-        scene.current.overrideMaterial = null
-
-        // Render front face caustics
-        causticsMaterial.ior = ior
-        plane.current.material.lightProjMatrix = camera.current.projectionMatrix
-        plane.current.material.lightViewMatrix = camera.current.matrixWorldInverse
-        causticsMaterial.normalTexture = normalTarget.texture
-        causticsMaterial.depthTexture = normalTarget.depthTexture
-        renderer.setRenderTarget(causticsTarget)
-        renderer.clear()
-        causticsQuad.render(renderer)
-
-        // Render back face caustics, if enabled
-        causticsMaterial.ior = backsideIOR
-        causticsMaterial.normalTexture = normalTargetB.texture
-        causticsMaterial.depthTexture = normalTargetB.depthTexture
-        renderer.setRenderTarget(causticsTargetB)
-        renderer.clear()
-        if (backside) causticsQuad.render(renderer)
-
-        // Reset render target
-        renderer.setRenderTarget(null)
-
-        // Switch the scene off if caustics is all that's wanted
-        if (causticsOnly) scene.current.visible = false
       }
     })
 

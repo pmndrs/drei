@@ -4,6 +4,19 @@ This changelog tracks changes made during the v11 alpha development cycle.
 
 ## Unreleased
 
+### Fixes
+
+#### Caustics restores the caller's offscreen render state
+
+The WebGL and WebGPU normal/caustic passes restore the caller's render target,
+active cube face and mip level. They also restore the content scene's override
+material and previous visibility when rendering throws. `causticsOnly` continues
+to hide the models after capture; otherwise previously hidden content stays
+hidden. Refs #2876.
+
+**Files changed:** `src/legacy/Materials/Caustics/Caustics.tsx`,
+`src/webgpu/Effects/Caustics/Caustics.tsx`, `test/caustics/`
+
 ### Breaking Changes
 
 #### Requires `@react-three/fiber` 10.0.0-alpha.6; the root entry is WebGPU (#2878)

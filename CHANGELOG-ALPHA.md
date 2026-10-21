@@ -210,6 +210,24 @@ Controls use Three's built-in editors and support nested folders, colors, slider
 
 ### Bug Fixes
 
+#### `FaceLandmarker` no longer hangs the page under StrictMode
+
+The FaceControls example made the page unresponsive as soon as it loaded.
+`FaceLandmarker` closed its MediaPipe instance in an effect cleanup. React's
+StrictMode runs that cleanup and then the effect again on the same component,
+so the tree kept using a closed landmarker, and `detectForVideo` on it never
+returns. The close now waits a tick and is cancelled if the effect runs again
+for the same instance. Real unmounts and option changes still close it.
+
+`useVideoFrame` (used by `VideoTexture` and `WebcamVideoTexture` for
+`onVideoFrame`) also did not store the handle of its first
+`requestVideoFrameCallback`. A cleanup before the first frame, which StrictMode
+always causes, cancelled nothing and left a second callback loop running, so
+`onVideoFrame` ran twice per frame.
+
+**Files changed:** `src/external/Helpers/FaceLandmarker/FaceLandmarker.tsx`,
+`src/core/Textures/VideoTexture/VideoTexture.tsx`
+
 #### `Preload` now actually preloads on WebGPU (#2809)
 
 `Preload` called `gl.compile(scene, camera)` and assumed it was synchronous. On

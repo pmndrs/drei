@@ -1,7 +1,7 @@
 /* eslint react-hooks/exhaustive-deps: 1 */
 declare const __MEDIAPIPE_TASKS_VISION_VERSION__: string
 import * as React from 'react'
-import { createContext, forwardRef, ReactNode, useContext, useEffect, useImperativeHandle } from 'react'
+import { createContext, forwardRef, ReactNode, useContext, useEffect, useImperativeHandle, useRef } from 'react'
 import type { FaceLandmarker as FaceLandmarkerImpl, FaceLandmarkerOptions } from '@mediapipe/tasks-vision'
 import { clear, suspend } from 'suspend-react'
 
@@ -48,10 +48,21 @@ export const FaceLandmarker = forwardRef<FaceLandmarkerImpl, FaceLandmarkerProps
       return FaceLandmarker.createFromOptions(vision, options)
     }, [basePath, opts])
 
+    // StrictMode runs this cleanup and then the effect again on the same instance. Closing right
+    // away would leave the tree holding a closed landmarker, and `detectForVideo` on it never
+    // returns, so close on the next tick unless the effect has run again for this instance.
+    const pendingClose = useRef<{ landmarker: FaceLandmarkerImpl; timeout: ReturnType<typeof setTimeout> }>(null)
     useEffect(() => {
+      if (pendingClose.current?.landmarker === faceLandmarker) {
+        clearTimeout(pendingClose.current.timeout)
+        pendingClose.current = null
+      }
       return () => {
-        faceLandmarker?.close()
-        clear([basePath, opts])
+        const timeout = setTimeout(() => {
+          faceLandmarker?.close()
+          clear([basePath, opts])
+        })
+        pendingClose.current = { landmarker: faceLandmarker, timeout }
       }
     }, [faceLandmarker, basePath, opts])
 

@@ -42,7 +42,7 @@ import { withUniforms } from '@utils/withUniforms'
 
 //* Types ==============================
 
-export type PortalProps = Omit<ThreeElements['meshBasicMaterial'], 'ref'> & {
+export type PortalProps = Omit<ThreeElements['portalMaterialImplWebGPU'], 'ref' | 'blend'> & {
   /** Mix the portals own scene with the world scene, 0 = world scene render,
    *  0.5 = both scenes render, 1 = portal scene renders, defaults to 0 */
   blend?: number
@@ -387,8 +387,22 @@ const makeSDFGenerator = (clientWidth: number, clientHeight: number, renderer: T
 //* MeshPortalMaterial Component ==============================
 
 //* Module Augmentation ==============================
-// Note: portalMaterialImpl is extended at runtime via extend()
-// Type definition is minimal to avoid conflicts with legacy material
+// Suffixed so drei's own typecheck, which loads the default and /legacy JSX maps together,
+// does not merge it with the legacy portalMaterialImpl.
+
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    // Structural, not ThreeElement<typeof Class>: each dist entry's .d.ts inlines its own copy of the
+    // class, and two nominal copies of one element type conflict (TS2717) in a consumer loading both.
+    portalMaterialImplWebGPU: ThreeElements['meshBasicNodeMaterial'] & {
+      blur?: number
+      blend?: number
+      size?: number
+      sdf?: THREE.Texture
+      resolution?: ReactThreeFiber.Vector2
+    }
+  }
+}
 
 export const MeshPortalMaterial: ForwardRefComponent<PortalProps, PortalMaterialImpl> =
   /* @__PURE__ */ React.forwardRef(
@@ -405,7 +419,7 @@ export const MeshPortalMaterial: ForwardRefComponent<PortalProps, PortalMaterial
       },
       fref
     ) => {
-      extend({ PortalMaterialImpl })
+      extend({ PortalMaterialImplWebGPU: PortalMaterialImpl })
 
       const ref = React.useRef<PortalMaterialImpl>(null!)
       const { scene, renderer, size, viewport, setEvents, invalidate } = useThree()
@@ -520,13 +534,12 @@ export const MeshPortalMaterial: ForwardRefComponent<PortalProps, PortalMaterial
       )
 
       return (
-        // @ts-ignore - portalMaterialImpl is dynamically extended, type conflicts with legacy
-        <portalMaterialImpl
-          ref={ref as any}
+        <portalMaterialImplWebGPU
+          ref={ref}
           blur={blur}
           blend={0}
           resolution={[size.width * viewport.dpr, size.height * viewport.dpr]}
-          attach={'material' as any}
+          attach="material"
           {...props}
         >
           <RenderTexture
@@ -545,7 +558,7 @@ export const MeshPortalMaterial: ForwardRefComponent<PortalProps, PortalMaterial
               worldUnits={worldUnits}
             />
           </RenderTexture>
-        </portalMaterialImpl>
+        </portalMaterialImplWebGPU>
       )
     }
   )

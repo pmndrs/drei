@@ -41,7 +41,7 @@ const ColorShiftMaterial = shaderMaterial(
     gl_FragColor = vec4(color,1.0);
 
     #include <tonemapping_fragment>
-    #include <encodings_fragment>
+    #include <colorspace_fragment>
   }
   `
 )

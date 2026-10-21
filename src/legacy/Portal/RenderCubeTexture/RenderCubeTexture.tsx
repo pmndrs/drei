@@ -1,7 +1,13 @@
 import * as THREE from '#three'
 import * as React from 'react'
-import { ComputeFunction, ReactThreeFiber, ThreeElements, createPortal } from '@react-three/fiber'
-import { useFrame, useThree } from '@react-three/fiber/legacy'
+import {
+  ComputeFunction,
+  ReactThreeFiber,
+  ThreeElements,
+  createPortal,
+  useFrame,
+  useThree,
+} from '@react-three/fiber/legacy'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 
 export type RenderCubeTextureProps = Omit<ThreeElements['texture'], 'ref' | 'args' | 'rotation'> & {

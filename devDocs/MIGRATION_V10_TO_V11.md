@@ -175,29 +175,28 @@ yarn add @react-three/drei@11
 
 ### Step 2: Update Imports
 
-#### If you're using WebGL (default):
+#### If you're using WebGPU (the default):
+
+`Canvas` from `@react-three/fiber` renders with WebGPU (R3F 10.0.0-alpha.6+), and drei's root entry is built for it.
 
 ```tsx
-// Most components can stay as-is
-import { OrbitControls, Environment } from '@react-three/drei'
+import { Canvas } from '@react-three/fiber'
+import { OrbitControls, Environment, Fbo } from '@react-three/drei'
 
-// Materials and render targets need explicit /legacy import
-import { MeshDistortMaterial } from '@react-three/drei/legacy'
-import { Fbo } from '@react-three/drei/legacy'
-```
-
-**Why explicit imports?** Components like `Fbo` and materials are tightly coupled to the renderer. Importing from root defaults to WebGL — if you're using WebGPU, these will break. Always import render targets and materials from your platform path.
-
-#### If you're using WebGPU:
-
-```tsx
-// Renderer-agnostic components work the same
-import { OrbitControls, Environment } from '@react-three/drei'
-
-// Use /webgpu for platform-specific components
+// TSL materials live in /webgpu
 import { MeshDistortMaterial } from '@react-three/drei/webgpu'
-import { Fbo } from '@react-three/drei/webgpu'
 ```
+
+#### If you're using WebGL:
+
+Import `Canvas` from `@react-three/fiber/legacy`, and drei from `/legacy`. It re-exports every shared component built for WebGL, so the root entry is not needed at all.
+
+```tsx
+import { Canvas } from '@react-three/fiber/legacy'
+import { OrbitControls, Environment, Fbo, MeshDistortMaterial } from '@react-three/drei/legacy'
+```
+
+**Why the split?** Components like `Fbo`, `RenderTexture` and the materials are tied to the renderer. The root entry uses WebGPU internals; on a `/legacy` Canvas they break, so WebGL apps import everything from `/legacy`.
 
 ### Step 3: Bundle Optimization (Optional)
 
@@ -218,27 +217,6 @@ import { MarchingCubes } from '@react-three/drei/experimental'
 ## Examples
 
 Here's how the same scene looks with different renderer configurations:
-
-### WebGL Project
-
-```tsx
-import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Environment } from '@react-three/drei'
-import { MeshDistortMaterial } from '@react-three/drei/legacy'
-
-function Scene() {
-  return (
-    <>
-      <OrbitControls />
-      <Environment preset="sunset" />
-      <mesh>
-        <sphereGeometry />
-        <MeshDistortMaterial distort={0.5} speed={2} />
-      </mesh>
-    </>
-  )
-}
-```
 
 ### WebGPU Project
 
@@ -261,7 +239,27 @@ function Scene() {
 }
 ```
 
-**📝 Pattern:** Notice how `OrbitControls` and `Environment` always come from root - they're renderer-agnostic. Only `MeshDistortMaterial` changes based on your renderer.
+### WebGL Project
+
+```tsx
+import { Canvas } from '@react-three/fiber/legacy'
+import { OrbitControls, Environment, MeshDistortMaterial } from '@react-three/drei/legacy'
+
+function Scene() {
+  return (
+    <>
+      <OrbitControls />
+      <Environment preset="sunset" />
+      <mesh>
+        <sphereGeometry />
+        <MeshDistortMaterial distort={0.5} speed={2} />
+      </mesh>
+    </>
+  )
+}
+```
+
+**📝 Pattern:** The Canvas import picks the renderer, and the drei entry follows it: root plus `/webgpu` with `@react-three/fiber`, `/legacy` alone with `@react-three/fiber/legacy`.
 
 ---
 
@@ -525,7 +523,7 @@ These components have **identical APIs** but different internal implementations:
 
 ### Tree-Shaking
 
-All entry points support tree-shaking. Importing from root won't pull in legacy or webgpu code.
+All entry points support tree-shaking: components you don't import drop out of the bundle.
 
 ---
 

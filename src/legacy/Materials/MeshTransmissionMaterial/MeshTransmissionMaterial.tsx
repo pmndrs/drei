@@ -9,8 +9,7 @@
 import * as THREE from '#three'
 import { IUniform } from '#three'
 import * as React from 'react'
-import { extend, ThreeElements } from '@react-three/fiber'
-import { useFrame } from '@react-three/fiber/legacy'
+import { extend, ThreeElements, useFrame } from '@react-three/fiber/legacy'
 import { useFBO } from '@core/Portal/Fbo'
 import { DiscardMaterial } from '@legacy/Materials/DiscardMaterial'
 import { ForwardRefComponent } from '@utils/ts-utils'
@@ -76,7 +75,7 @@ interface Shader {
   fragmentShader: string
 }
 
-declare module '@react-three/fiber' {
+declare module '@react-three/fiber/legacy' {
   interface ThreeElements {
     meshTransmissionMaterial: MeshTransmissionMaterialType
   }

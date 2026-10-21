@@ -1,5 +1,5 @@
-import { createPortal } from '@react-three/fiber'
-import { useFrame, useThree } from '@react-three/fiber/legacy'
+import { createPortal, useFrame, useThree } from '@react-three/fiber/legacy'
+
 import * as React from 'react'
 import * as THREE from 'three'
 import { ColorRepresentation, Group, Object3D, Vector2, Vector3 } from 'three'

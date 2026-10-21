@@ -12,14 +12,13 @@ import {
   UnsignedShortType,
   HalfFloatType,
 } from '#three'
-import { extend, ThreeElements, ThreeElement } from '@react-three/fiber'
-import { useFrame, useThree } from '@react-three/fiber/legacy'
+import { extend, ThreeElements, ThreeElement, useFrame, useThree } from '@react-three/fiber/legacy'
 
 import { BlurPass } from '@legacy/Materials/BlurPass'
 import { MeshReflectorMaterial as MeshReflectorMaterialImpl } from './MeshReflectorMaterialClass'
 import { ForwardRefComponent } from '@utils/ts-utils'
 
-declare module '@react-three/fiber' {
+declare module '@react-three/fiber/legacy' {
   interface ThreeElements {
     meshReflectorMaterialImpl: ThreeElement<typeof MeshReflectorMaterialImpl>
   }

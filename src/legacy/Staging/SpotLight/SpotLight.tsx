@@ -16,8 +16,7 @@ import {
   RepeatWrapping,
   Object3D,
 } from '#three'
-import { ThreeElements } from '@react-three/fiber'
-import { useFrame, useThree } from '@react-three/fiber/legacy'
+import { ThreeElements, useFrame, useThree } from '@react-three/fiber/legacy'
 import { FullScreenQuad } from 'three/examples/jsm/postprocessing/Pass.js'
 import { SpotLightMaterial } from '@legacy/Materials/SpotLightMaterial'
 

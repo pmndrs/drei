@@ -85,11 +85,11 @@ export const PerspectiveCamera: ForwardRefComponent<PerspectiveCameraProps, Pers
           oldRenderTarget = renderer.getRenderTarget()
           oldEnvMap = state.scene.background
           if (envMap) state.scene.background = envMap
-          renderer.setRenderTarget(fbo)
-          renderer.render(state.scene, cameraRef.current)
           // R3FRenderer is WebGLRenderer | WebGPURenderer, so the union's setRenderTarget
-          // only accepts WebGLRenderTarget while getRenderTarget() returns the wider
-          // RenderTarget. The cast is type-only; same pattern as RenderTexture.
+          // only accepts WebGLRenderTarget, while useFBO (a WebGPU RenderTarget in the WebGPU
+          // build) and getRenderTarget() give the wider RenderTarget. The casts are type-only.
+          renderer.setRenderTarget(fbo as THREE.WebGLRenderTarget)
+          renderer.render(state.scene, cameraRef.current)
           renderer.setRenderTarget(oldRenderTarget as THREE.WebGLRenderTarget | null)
           state.scene.background = oldEnvMap
           groupRef.current.visible = true

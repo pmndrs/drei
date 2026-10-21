@@ -96,7 +96,8 @@ export async function attachInspector(
     // Sibling UI events can reach document listeners without entering the scene event source.
     // Mount before initialization to prevent automatic placement inside the canvas wrapper.
     eventSource.after(current.domElement)
-    current.init()
+    // r185 initializes here; r186 dropped init() and initializes in setRenderer instead.
+    current.init?.()
   } catch (error) {
     consoleEntry.active = false
     current.domElement.remove()

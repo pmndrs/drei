@@ -1,7 +1,6 @@
 import * as THREE from '#three'
 import * as React from 'react'
-import { createPortal } from '@react-three/fiber'
-import { useFrame, useThree } from '@react-three/fiber/legacy'
+import { createPortal, useFrame, useThree } from '@react-three/fiber/legacy'
 
 type RenderHudProps = {
   defaultScene: THREE.Scene

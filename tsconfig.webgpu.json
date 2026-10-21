@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.json",
+  "//": "Root, core, external and experimental ship with the WebGPU aliases (build.config.ts), so they are typechecked with them too. tsconfig.json checks the same files with the WebGL aliases the /legacy entry uses.",
+  "compilerOptions": {
+    "paths": {
+      "three/webgpu": ["./node_modules/@types/three/build/three.webgpu.d.ts"],
+      "three/tsl": ["./node_modules/@types/three/build/three.tsl.d.ts"],
+      "#three": ["./node_modules/@types/three/build/three.webgpu.d.ts"],
+      "#three-addons": ["./src/utils/three-addons-webgpu"],
+      "#drei-platform": ["./src/utils/drei-platform-webgpu"],
+      "@core/*": ["./src/core/*"],
+      "@legacy/*": ["./src/legacy/*"],
+      "@webgpu/*": ["./src/webgpu/*"],
+      "@external/*": ["./src/external/*"],
+      "@experimental/*": ["./src/experimental/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@lib/*": ["./lib/*"]
+    }
+  },
+  "include": ["./src/index.ts", "./src/webgpu/index.ts", "./src/native"],
+  "exclude": ["./node_modules/**/*", "**/*.test.ts", "**/*.test.tsx", "**/*.stories.tsx"]
+}

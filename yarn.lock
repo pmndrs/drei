@@ -3484,8 +3484,8 @@ __metadata:
     zustand: "npm:^5.0.1"
   peerDependencies:
     "@react-three/fiber": ">=10.0.0-alpha.6"
-    react: ">=19.0 <19.3"
-    react-dom: ">=19.0 <19.3"
+    react: ">=19.0 <19.4"
+    react-dom: ">=19.0 <19.4"
     three: ">=0.185"
   peerDependenciesMeta:
     react-dom:

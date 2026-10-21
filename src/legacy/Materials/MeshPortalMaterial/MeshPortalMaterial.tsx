@@ -5,8 +5,7 @@
 
 import * as THREE from '#three'
 import * as React from 'react'
-import { ReactThreeFiber, ThreeElements, extend } from '@react-three/fiber'
-import { useFrame, useThree } from '@react-three/fiber/legacy'
+import { ReactThreeFiber, ThreeElements, extend, useFrame, useThree } from '@react-three/fiber/legacy'
 import { useIntersect } from '@core/UI/useIntersect'
 import { useFBO } from '@core/Portal/Fbo'
 import { RenderTexture } from '@legacy/Portal/RenderTexture'
@@ -49,7 +48,7 @@ const PortalMaterialImpl = /* @__PURE__ */ shaderMaterial(
    }`
 )
 
-declare module '@react-three/fiber' {
+declare module '@react-three/fiber/legacy' {
   interface ThreeElements {
     portalMaterialImpl: ThreeElements['shaderMaterial'] & {
       resolution: ReactThreeFiber.Vector2
@@ -62,7 +61,7 @@ declare module '@react-three/fiber' {
   }
 }
 
-export type PortalProps = Omit<ThreeElements['portalMaterialImpl'], 'ref' | 'blend'> & {
+export type PortalProps = Omit<ThreeElements['portalMaterialImpl'], 'ref' | 'blend' | 'resolution'> & {
   /** Mix the portals own scene with the world scene, 0 = world scene render,
    *  0.5 = both scenes render, 1 = portal scene renders, defaults to 0 */
   blend?: number

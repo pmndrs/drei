@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { RGBAFormat, HalfFloatType, WebGLRenderTarget, UnsignedByteType, TextureDataType, ColorSpace } from '#three'
-import { extend, ThreeElement, ThreeElements } from '@react-three/fiber'
-import { useThree, useFrame } from '@react-three/fiber/legacy'
+import { extend, ThreeElement, ThreeElements, useThree, useFrame } from '@react-three/fiber/legacy'
 import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
@@ -21,7 +20,7 @@ export type EffectsProps = Omit<ThreeElements['effectComposer'], 'ref' | 'args'>
   anisotropy?: number
 }
 
-declare module '@react-three/fiber' {
+declare module '@react-three/fiber/legacy' {
   interface ThreeElements {
     effectComposer: ThreeElement<typeof EffectComposer>
     renderPass: ThreeElement<typeof RenderPass>

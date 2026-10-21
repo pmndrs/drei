@@ -1,7 +1,6 @@
 import * as THREE from '#three'
 import * as React from 'react'
-import { extend, ReactThreeFiber, ThreeElements } from '@react-three/fiber'
-import { useFrame, useThree } from '@react-three/fiber/legacy'
+import { extend, ReactThreeFiber, ThreeElements, useFrame, useThree } from '@react-three/fiber/legacy'
 import { shaderMaterial } from '@legacy/Materials/shaderMaterial'
 import { DiscardMaterial } from '@legacy/Materials/DiscardMaterial'
 import { ForwardRefComponent } from '@utils/ts-utils'
@@ -78,7 +77,7 @@ type SoftShadowMaterialProps = {
   blend?: number
 }
 
-declare module '@react-three/fiber' {
+declare module '@react-three/fiber/legacy' {
   interface ThreeElements {
     softShadowMaterial: ThreeElements['shaderMaterial'] & SoftShadowMaterialProps
   }

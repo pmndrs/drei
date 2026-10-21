@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as THREE from 'three'
-import { useLoader } from '@react-three/fiber'
+import { useLoader } from '@react-three/fiber/legacy'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js'
 import { Meta, StoryObj } from '@storybook/react-vite'
 

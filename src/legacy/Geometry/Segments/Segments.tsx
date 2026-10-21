@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import * as React from 'react'
-import { extend, ReactThreeFiber, ThreeElements, ThreeElement } from '@react-three/fiber'
-import { useFrame } from '@react-three/fiber/legacy'
+import { extend, ReactThreeFiber, ThreeElements, ThreeElement, useFrame } from '@react-three/fiber/legacy'
+
 import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js'
 import { LineMaterial, LineMaterialParameters } from 'three/examples/jsm/lines/LineMaterial.js'
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js'
@@ -108,7 +108,7 @@ const Segments: ForwardRefComponent<SegmentsProps, LineSegments2> = /* @__PURE__
   )
 })
 
-declare module '@react-three/fiber' {
+declare module '@react-three/fiber/legacy' {
   interface ThreeElements {
     segmentObject: ThreeElement<typeof SegmentObject>
   }

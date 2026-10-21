@@ -4,8 +4,7 @@
 
 import * as THREE from '#three'
 import * as React from 'react'
-import { extend, ReactThreeFiber, ThreeElements } from '@react-three/fiber'
-import { useFrame, useThree } from '@react-three/fiber/legacy'
+import { extend, ReactThreeFiber, ThreeElements, useFrame, useThree } from '@react-three/fiber/legacy'
 import { useFBO } from '@core/Portal/Fbo'
 import { useHelper } from '@core/Gizmos/useHelper'
 import { shaderMaterial } from '@legacy/Materials/shaderMaterial'
@@ -85,7 +84,7 @@ export type CausticsProps = Omit<ThreeElements['group'], 'ref'> & {
   lightSource?: [x: number, y: number, z: number] | React.RefObject<THREE.Object3D>
 }
 
-declare module '@react-three/fiber' {
+declare module '@react-three/fiber/legacy' {
   interface ThreeElements {
     causticsProjectionMaterial: ThreeElements['meshNormalMaterial'] & {
       viewMatrix?: { value: THREE.Matrix4 }

@@ -139,7 +139,6 @@ export type MeshTransmissionMaterialProps = Omit<MeshTransmissionMaterialType, '
 
 declare module '@react-three/fiber' {
   interface ThreeElements {
-    // @ts-expect-error - WebGPU version has different type than legacy version
     meshTransmissionMaterial: MeshTransmissionMaterialType
   }
 }
@@ -903,7 +902,6 @@ export const MeshTransmissionMaterial: ForwardRefComponent<
         anisotropicBlur={anisotropicBlur ?? anisotropy}
         thickness={thickness}
         side={side}
-        // @ts-expect-error - the element type comes from the legacy augmentation, which has no debugMode
         debugMode={debugMode}
       />
     )

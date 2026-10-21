@@ -210,6 +210,15 @@ Controls use Three's built-in editors and support nested folders, colors, slider
 
 ### Bug Fixes
 
+#### Legacy MeshReflectorMaterial preserves caller render state
+
+Reflection and blur passes restore the caller's render target, active cube face
+and mip level. Parent visibility, XR and shadow-update flags are also restored
+when rendering throws. Refs #2876.
+
+**Files changed:** `src/legacy/Materials/MeshReflectorMaterial/MeshReflectorMaterial.tsx`,
+`test/reflector-render-state/`
+
 #### `Preload` now actually preloads on WebGPU (#2809)
 
 `Preload` called `gl.compile(scene, camera)` and assumed it was synchronous. On

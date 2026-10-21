@@ -210,21 +210,28 @@ export const MeshReflectorMaterial: ForwardRefComponent<MeshReflectorMaterialPro
         // For now, skip reflection rendering during active VR session to avoid blocking XR initialization
         if (renderer.xr.isPresenting) return
 
-        parent.visible = false
+        const currentRenderTarget = renderer.getRenderTarget()
+        const currentActiveCubeFace = renderer.getActiveCubeFace()
+        const currentActiveMipmapLevel = renderer.getActiveMipmapLevel()
+        const currentVisibility = parent.visible
         const currentXrEnabled = renderer.xr.enabled
         const currentShadowAutoUpdate = renderer.shadowMap.autoUpdate
-        beforeRender()
-        renderer.xr.enabled = false
-        renderer.shadowMap.autoUpdate = false
-        renderer.setRenderTarget(fbo1)
-        renderer.state.buffers.depth.setMask(true)
-        if (!renderer.autoClear) renderer.clear()
-        renderer.render(scene, virtualCamera)
-        if (hasBlur) blurpass.render(renderer, fbo1, fbo2)
-        renderer.xr.enabled = currentXrEnabled
-        renderer.shadowMap.autoUpdate = currentShadowAutoUpdate
-        parent.visible = true
-        renderer.setRenderTarget(null)
+        try {
+          parent.visible = false
+          beforeRender()
+          renderer.xr.enabled = false
+          renderer.shadowMap.autoUpdate = false
+          renderer.setRenderTarget(fbo1)
+          renderer.state.buffers.depth.setMask(true)
+          if (!renderer.autoClear) renderer.clear()
+          renderer.render(scene, virtualCamera)
+          if (hasBlur) blurpass.render(renderer, fbo1, fbo2)
+        } finally {
+          renderer.xr.enabled = currentXrEnabled
+          renderer.shadowMap.autoUpdate = currentShadowAutoUpdate
+          parent.visible = currentVisibility
+          renderer.setRenderTarget(currentRenderTarget, currentActiveCubeFace, currentActiveMipmapLevel)
+        }
       })
 
       return (

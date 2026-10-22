@@ -1,7 +1,8 @@
 import * as React from 'react'
-import { Vector3 } from 'three'
+import { BufferGeometry, Material, Vector3 } from 'three'
 import * as GeometryUtils from 'three/addons/utils/GeometryUtils.js'
 import { Meta, StoryObj } from '@storybook/react-vite'
+import { expect, waitFor } from 'storybook/test'
 
 import { Setup } from '@sb/Setup'
 import { PlatformSwitch } from '@sb/components/PlatformSwitch'
@@ -24,7 +25,12 @@ export default {
   component: LegacyLine,
   decorators: [
     (Story, context) => (
-      <Setup renderer={context.globals.renderer} controls={false} cameraPosition={new Vector3(0, 0, 17)}>
+      <Setup
+        renderer={context.globals.renderer}
+        limitedTo={context.parameters.limitedTo ?? null}
+        controls={false}
+        cameraPosition={new Vector3(0, 0, 17)}
+      >
         <Story />
       </Setup>
     ),
@@ -57,6 +63,129 @@ export const BasicLineSt = {
   argTypes: {
     color: { control: 'color' },
     segments: { control: 'boolean' },
+  },
+} satisfies StoryObj<typeof LegacyLine>
+
+//
+
+const initialLifecyclePoints = [
+  [0, 0, 0],
+  [1, 1, 1],
+] as [number, number, number][]
+
+const updatedLifecyclePoints = [
+  [0, 0, 0],
+  [2, 1, 1],
+] as [number, number, number][]
+
+type LineLifecycleResult = {
+  complete: boolean
+  initialMaterial?: Material
+  materialAfterPoints?: Material
+  materialAfterColor?: Material
+  initialGeometry?: BufferGeometry
+  geometryAfterPoints?: BufferGeometry
+  geometryAfterColor?: BufferGeometry
+  initialMaterialDisposeCount: number
+  currentMaterialDisposeCount: number
+  oldGeometryDisposeCount: number
+  currentGeometryDisposeCount: number
+  materialDisposeCountAfterPoints?: number
+  geometryDisposeCountAfterPoints?: number
+  materialDisposeCountAfterColor?: number
+  geometryDisposeCountAfterColor?: number
+}
+
+let lineLifecycleResult: LineLifecycleResult | undefined
+
+function LineLifecycleScene() {
+  const line = React.useRef<React.ComponentRef<typeof LegacyLine>>(null)
+  const phase = React.useRef(0)
+  const [points, setPoints] = React.useState(initialLifecyclePoints)
+  const [color, setColor] = React.useState('red')
+  const [mounted, setMounted] = React.useState(true)
+  const result = React.useRef<LineLifecycleResult>({
+    complete: false,
+    initialMaterialDisposeCount: 0,
+    currentMaterialDisposeCount: 0,
+    oldGeometryDisposeCount: 0,
+    currentGeometryDisposeCount: 0,
+  })
+
+  lineLifecycleResult = result.current
+
+  React.useEffect(() => {
+    const current = result.current
+
+    if (!mounted) {
+      current.complete = true
+      return
+    }
+
+    const instance = line.current
+    if (!instance) return
+
+    if (phase.current === 0) {
+      current.initialMaterial = instance.material as Material
+      current.initialGeometry = instance.geometry
+      current.initialMaterial.addEventListener('dispose', () => current.initialMaterialDisposeCount++)
+      current.initialGeometry.addEventListener('dispose', () => current.oldGeometryDisposeCount++)
+
+      phase.current = 1
+      setPoints(updatedLifecyclePoints)
+      return
+    }
+
+    if (phase.current === 1) {
+      current.materialAfterPoints = instance.material as Material
+      current.geometryAfterPoints = instance.geometry
+      current.materialDisposeCountAfterPoints = current.initialMaterialDisposeCount
+      current.geometryDisposeCountAfterPoints = current.oldGeometryDisposeCount
+      current.materialAfterPoints.addEventListener('dispose', () => current.currentMaterialDisposeCount++)
+      current.geometryAfterPoints.addEventListener('dispose', () => current.currentGeometryDisposeCount++)
+
+      phase.current = 2
+      setColor('blue')
+      return
+    }
+
+    if (phase.current === 2) {
+      current.materialAfterColor = instance.material as Material
+      current.geometryAfterColor = instance.geometry
+      current.materialDisposeCountAfterColor = current.initialMaterialDisposeCount
+      current.geometryDisposeCountAfterColor = current.oldGeometryDisposeCount
+
+      phase.current = 3
+      setMounted(false)
+    }
+  }, [color, mounted, points])
+
+  return mounted ? <LegacyLine ref={line} points={points} color={color} /> : null
+}
+
+export const Lifecycle = {
+  name: 'Lifecycle',
+  tags: ['!dev', '!autodocs', 'test', 'legacyOnly'],
+  parameters: { limitedTo: 'legacy' },
+  render: () => <LineLifecycleScene />,
+  play: async () => {
+    await waitFor(() => expect(lineLifecycleResult?.complete).toBe(true))
+
+    const result = lineLifecycleResult!
+    expect(result.materialAfterPoints).toBe(result.initialMaterial)
+    expect(result.geometryAfterPoints).not.toBe(result.initialGeometry)
+    expect(result.materialDisposeCountAfterPoints).toBe(0)
+    expect(result.geometryDisposeCountAfterPoints).toBe(1)
+
+    expect(result.materialAfterColor).toBe(result.materialAfterPoints)
+    expect(result.geometryAfterColor).toBe(result.geometryAfterPoints)
+    expect(result.materialDisposeCountAfterColor).toBe(0)
+    expect(result.geometryDisposeCountAfterColor).toBe(1)
+
+    expect(result.initialMaterialDisposeCount).toBe(1)
+    expect(result.currentMaterialDisposeCount).toBe(1)
+    expect(result.oldGeometryDisposeCount).toBe(1)
+    expect(result.currentGeometryDisposeCount).toBe(1)
   },
 } satisfies StoryObj<typeof LegacyLine>
 

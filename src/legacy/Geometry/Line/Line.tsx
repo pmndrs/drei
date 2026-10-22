@@ -100,15 +100,8 @@ export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = /* @_
     lineMaterial.needsUpdate = true
   }, [dashed, lineMaterial])
 
-  React.useEffect(() => {
-    const geom = lineGeom
-    const mat = lineMaterial
-
-    return () => {
-      geom.dispose()
-      mat.dispose()
-    }
-  }, [lineGeom, lineMaterial])
+  React.useEffect(() => () => lineGeom.dispose(), [lineGeom])
+  React.useEffect(() => () => lineMaterial.dispose(), [lineMaterial])
 
   return (
     <primitive object={line2} ref={ref} {...rest}>

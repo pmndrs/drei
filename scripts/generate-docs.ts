@@ -375,6 +375,20 @@ function discoverComponents(): ProcessedComponent[] {
     }
   }
 
+  // Validate the complete discovery result before any documentation is written.
+  const outputs = new Map<string, string>()
+  for (const component of components) {
+    const outputPath = path.resolve(component.outputPath)
+    const previousSource = outputs.get(outputPath)
+    if (previousSource) {
+      throw new Error(
+        `Documentation output collision at ${path.relative(paths.docs, outputPath)}: ` +
+          `${path.relative(paths.src, previousSource)} and ${path.relative(paths.src, component.filePath)}`
+      )
+    }
+    outputs.set(outputPath, component.filePath)
+  }
+
   return components
 }
 
@@ -430,11 +444,6 @@ async function main() {
 
   console.log('📚 TSDoc to MDX Documentation Generator\n')
 
-  // Backup existing docs before generation (unless --no-backup flag)
-  if (!skipBackup) {
-    backupDocs()
-  }
-
   // Discover components
   console.log('🔍 Discovering components...')
   let components = discoverComponents()
@@ -445,6 +454,11 @@ async function main() {
   }
 
   console.log(`   Found ${components.length} components\n`)
+
+  // Backup existing docs before generation (unless --no-backup flag)
+  if (!skipBackup) {
+    backupDocs()
+  }
 
   // Process each component
   let generated = 0
@@ -553,7 +567,13 @@ function startWatcher(initialComponents: ProcessedComponent[]): void {
   // Handle new files (might be a new component or docs template)
   watcher.on('add', (filePath) => {
     // Re-discover components to catch new ones
-    const newComponents = discoverComponents()
+    let newComponents: ProcessedComponent[]
+    try {
+      newComponents = discoverComponents()
+    } catch (error) {
+      console.error(error)
+      return
+    }
 
     // Update the map
     componentMap.clear()
@@ -646,7 +666,10 @@ function handleFileChange(filePath: string, componentMap: Map<string, ProcessedC
 import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 if (process.argv[1] === __filename) {
-  main().catch(console.error)
+  main().catch((error) => {
+    console.error(error)
+    process.exitCode = 1
+  })
 }
 
 export { extractTSDoc, generateFullMDX, processTemplate, discoverComponents }

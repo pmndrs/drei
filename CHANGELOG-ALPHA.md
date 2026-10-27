@@ -210,6 +210,15 @@ Controls use Three's built-in editors and support nested folders, colors, slider
 
 ### Bug Fixes
 
+#### Reject colliding generated documentation outputs (#2812)
+
+The docs generator now validates discovered output paths before backing up or writing docs.
+Conflicting components report both source paths and the shared destination, and generation exits
+with a failure status. Watch mode rejects conflicting additions without replacing its tracked map.
+This is a safeguard only; renderer-specific discovery and the shared-page model remain unchanged.
+
+**Files changed:** `scripts/generate-docs.ts`, `test/docs-output-collisions.test.mjs`, `package.json`.
+
 #### `Preload` now actually preloads on WebGPU (#2809)
 
 `Preload` called `gl.compile(scene, camera)` and assumed it was synchronous. On

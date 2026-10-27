@@ -263,13 +263,23 @@ export const Html: ForwardRefComponent<HtmlProps, HTMLDivElement> = /* @__PURE__
       if (wrapperClass) el.className = wrapperClass
     }, [wrapperClass, el])
 
-    // Dedicated cleanup effect for final component unmount
-    // This ensures React root is properly unmounted even if other effects don't clean up
+    // React DOM cannot unmount a root during another root's commit. Defer the
+    // teardown, but cancel it when StrictMode replays this effect so the same
+    // container never has two live roots.
+    const pendingUnmount = React.useRef<ReturnType<typeof setTimeout> | null>(null)
     React.useLayoutEffect(() => {
+      if (pendingUnmount.current !== null) {
+        clearTimeout(pendingUnmount.current)
+        pendingUnmount.current = null
+      }
       return () => {
-        if (root.current) {
-          root.current.unmount()
-          root.current = null
+        const currentRoot = root.current
+        if (currentRoot) {
+          pendingUnmount.current = setTimeout(() => {
+            currentRoot.unmount()
+            if (root.current === currentRoot) root.current = null
+            pendingUnmount.current = null
+          }, 0)
         }
       }
     }, [])

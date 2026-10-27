@@ -86,6 +86,7 @@
     "test:components": "node scripts/audit-components.js --check",
     "test:e2e": "cd test/e2e && ./e2e.sh",
     "test:examples": "yarn --cwd examples typecheck",
+    "test:html": "vitest run --config test/browser/vitest.config.ts",
     "test:lint": "yarn eslint:ci && yarn typecheck && yarn prettier",
     "test:stories": "vitest run --config vite.config.mts",
     "test:stories:legacy": "cross-env DREI_RENDERER=legacy vitest run --config vite.config.mts",

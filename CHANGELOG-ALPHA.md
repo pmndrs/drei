@@ -210,6 +210,16 @@ Controls use Three's built-in editors and support nested folders, colors, slider
 
 ### Bug Fixes
 
+#### Defer Html root teardown outside React commits (#2867)
+
+Html now defers its DOM root unmount until React has finished committing. Effect
+replay cancels a pending teardown and retains the existing root. Browser regressions
+cover cleanup with and without StrictMode, label remounts, portal moves, and transform
+changes with both renderer classes. WebGPURenderer uses its WebGL backend in these tests.
+
+**Files changed:** `src/core/UI/Html/Html.tsx`, `test/browser/Html.test.tsx`,
+`test/browser/vitest.config.ts`, `package.json`.
+
 #### `Preload` now actually preloads on WebGPU (#2809)
 
 `Preload` called `gl.compile(scene, camera)` and assumed it was synchronous. On

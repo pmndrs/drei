@@ -159,10 +159,6 @@ export function ScrollControls({
 
   React.useEffect(() => {
     if (events.connected === el) {
-      const containerLength = size[horizontal ? 'width' : 'height']
-      const scrollLength = el[horizontal ? 'scrollWidth' : 'scrollHeight']
-      const scrollThreshold = scrollLength - containerLength
-
       let current = 0
       let disableScroll = true
       let firstRun = true
@@ -171,6 +167,11 @@ export function ScrollControls({
         // Prevent first scroll because it is indirectly caused by the one pixel offset
         if (!enabled || firstRun) return
         invalidate()
+        // Measured on every scroll: this effect can run while a Suspense boundary has the canvas
+        // hidden (display: none), when the scroll length reads 0 and nothing re-runs it once shown
+        const containerLength = size[horizontal ? 'width' : 'height']
+        const scrollLength = el[horizontal ? 'scrollWidth' : 'scrollHeight']
+        const scrollThreshold = scrollLength - containerLength
         current = el[horizontal ? 'scrollLeft' : 'scrollTop']
         scroll.current = current / scrollThreshold
 

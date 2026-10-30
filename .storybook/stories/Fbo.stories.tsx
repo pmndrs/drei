@@ -24,8 +24,9 @@ type Story = StoryObj<typeof Fbo>
 function SpinningThing() {
   const mesh = React.useRef<React.ComponentRef<typeof TorusKnot>>(null!)
 
-  useFrame(() => {
-    mesh.current.rotation.x = mesh.current.rotation.y = mesh.current.rotation.z += 0.01
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime()
+    mesh.current.rotation.x = mesh.current.rotation.y = mesh.current.rotation.z = t
   })
 
   return (

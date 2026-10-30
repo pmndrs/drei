@@ -25,7 +25,7 @@ export default {
   },
   decorators: [
     (Story, context) => (
-      <Setup renderer={context.globals.renderer}>
+      <Setup renderer={context.globals.renderer} limitedTo={context.parameters.limitedTo ?? null}>
         <Story />
       </Setup>
     ),
@@ -67,4 +67,6 @@ function MeshDistortMaterialRefScene(props: React.ComponentProps<typeof MeshDist
 export const MeshDistortMaterialRefSt = {
   render: (args) => <MeshDistortMaterialRefScene {...args} />,
   name: 'Ref',
+  tags: ['legacyOnly'],
+  parameters: { limitedTo: 'legacy' },
 } satisfies Story

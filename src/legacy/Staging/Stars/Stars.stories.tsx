@@ -8,11 +8,11 @@ import { Stars } from './Stars'
 
 export default {
   title: 'Staging/Stars',
-  tags: ['dual'],
+  tags: ['legacyOnly'],
   component: Stars,
   decorators: [
     (Story, context) => (
-      <Setup renderer={context.globals.renderer}>
+      <Setup renderer={context.globals.renderer} limitedTo="legacy">
         <Story />
       </Setup>
     ),

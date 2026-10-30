@@ -11,10 +11,11 @@ import { ComponentProps } from 'react'
 
 export default {
   title: 'Staging/ContactShadows',
+  tags: ['legacyOnly'],
   component: ContactShadows,
   decorators: [
     (Story, context) => (
-      <Setup renderer={context.globals.renderer}>
+      <Setup renderer={context.globals.renderer} limitedTo="legacy">
         <Story />
       </Setup>
     ),

@@ -11,10 +11,11 @@ import { AccumulativeShadows, RandomizedLight } from './AccumulativeShadows'
 
 export default {
   title: 'Staging/AccumulativeShadows',
+  tags: ['legacyOnly'],
   component: AccumulativeShadows,
   decorators: [
     (Story, context) => (
-      <Setup renderer={context.globals.renderer}>
+      <Setup renderer={context.globals.renderer} limitedTo="legacy">
         <Story />
       </Setup>
     ),

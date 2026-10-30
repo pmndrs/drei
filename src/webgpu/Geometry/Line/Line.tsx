@@ -108,8 +108,16 @@ export const Line: ForwardRefComponent<LineProps, Line2 | LineSegments2> = /* @_
     lineMaterial.needsUpdate = true
   }, [dashed, lineMaterial])
 
-  // WebGPU: Skip explicit disposal - let browser GC handle it
-  // WebGPU's command buffer model can cause errors if buffers are disposed while commands still reference them
+  // Dispose the geometry and material this component replaces when they are
+  // swapped out, and the last ones on unmount. Relying on the GC leaks on
+  // three 0.185/0.186, where the renderer keeps strong references to rendered
+  // geometries and uploaded attributes until dispose (see #2897).
+  React.useEffect(() => {
+    return () => {
+      lineGeom.dispose()
+      lineMaterial.dispose()
+    }
+  }, [lineGeom, lineMaterial])
 
   return (
     <primitive object={line2} ref={ref} {...rest}>

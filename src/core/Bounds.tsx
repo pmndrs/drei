@@ -116,7 +116,7 @@ export function Bounds({
       const maxSize = Math.max(boxSize.x, boxSize.y, boxSize.z)
       const fitHeightDistance = isOrthographic(camera)
         ? maxSize * 4
-        : maxSize / (2 * Math.atan((Math.PI * camera.fov) / 360))
+        : maxSize / (2 * Math.tan((Math.PI * camera.fov) / 360))
       const fitWidthDistance = isOrthographic(camera) ? maxSize * 4 : fitHeightDistance / camera.aspect
       const distance = margin * Math.max(fitHeightDistance, fitWidthDistance)
 

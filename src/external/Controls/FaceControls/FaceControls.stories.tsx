@@ -2,7 +2,7 @@
 import * as THREE from 'three'
 import * as React from 'react'
 import { Meta, StoryObj } from '@storybook/react-vite'
-import * as easing from 'maath/easing'
+import { spring, spring3 } from 'math/time'
 
 import { Setup } from '@sb/Setup'
 
@@ -103,6 +103,12 @@ function FaceControlsScene3(props: ComponentProps<typeof FaceControls>) {
 
   const camera = useThree((state) => state.camera)
   const [current] = useState(() => new THREE.Object3D())
+  const [springs] = useState(() => ({
+    position: spring3.create(),
+    x: spring.create(),
+    y: spring.create(),
+    z: spring.create(),
+  }))
 
   useFrame((_, delta) => {
     const target = faceControlsRef.current?.computeTarget()
@@ -112,9 +118,13 @@ function FaceControlsScene3(props: ComponentProps<typeof FaceControls>) {
       // A. Define your own damping
       //
 
-      const eps = 1e-9
-      easing.damp3(current.position, target.position, 0.25, delta, undefined, undefined, eps)
-      easing.dampE(current.rotation, target.rotation, 0.25, delta, undefined, undefined, eps)
+      const { position: p, rotation: r } = target
+      current.position.fromArray(spring3.damp(springs.position, [p.x, p.y, p.z], 0.25, delta).value)
+      current.rotation.set(
+        spring.dampAngle(springs.x, r.x, 0.25, delta).value,
+        spring.dampAngle(springs.y, r.y, 0.25, delta).value,
+        spring.dampAngle(springs.z, r.z, 0.25, delta).value
+      )
       camera.position.copy(current.position)
       camera.rotation.copy(current.rotation)
 

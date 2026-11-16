@@ -5,7 +5,7 @@ import { Setup } from '@sb/Setup'
 
 import { useGLTF, Instances, Instance, createInstances, InstancedAttribute } from 'drei'
 import { useFrame } from '@react-three/fiber'
-import { clamp } from 'maath/misc'
+import { clamp } from 'math'
 
 export default {
   title: 'Performance/Instances',

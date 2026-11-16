@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber/legacy'
+
 import { Points, Vector3, Spherical, Color, AdditiveBlending } from '#three'
 import { ForwardRefComponent } from '@utils/ts-utils'
 import { StarfieldMaterial } from '../../Materials/StarsMaterial'

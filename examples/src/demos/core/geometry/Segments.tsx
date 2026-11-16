@@ -5,7 +5,7 @@ import { Segment as WebGPUSegment } from '@react-three/drei/webgpu'
 import { ExampleCard } from '../../../components/ExampleCard'
 import { PlatformSwitch } from '@ex/components/PlatformSwitch'
 import { useRef } from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber/extension'
 
 //* Segments Demo ==============================
 

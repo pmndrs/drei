@@ -16,7 +16,8 @@ import {
 } from '#three'
 
 import { CloudMaterial } from '#drei-platform'
-import { extend, applyProps, useFrame, ReactThreeFiber, ThreeElement, ThreeElements } from '@react-three/fiber'
+import { extend, applyProps, ReactThreeFiber, ThreeElement, ThreeElements } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber/extension'
 import { useTexture } from '../../Loaders/useTexture/useTexture'
 import { setUpdateRange } from '../../../utils/deprecated'
 

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Texture as _Texture, TextureLoader } from '#three'
-import { useLoader, useThree } from '@react-three/fiber'
+import { useLoader } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/extension'
 import { useLayoutEffect, useEffect, useMemo } from 'react'
 
 //* Types ==============================
@@ -31,7 +32,7 @@ export function useTexture<Url extends string[] | string | Record<string, string
   input: Url,
   onLoad?: (texture: MappedTextureType<Url>) => void
 ): MappedTextureType<Url> {
-  const gl = useThree((state) => state.gl)
+  const renderer = useThree((state) => state.renderer)
   const textures = useLoader(TextureLoader, IsObject(input) ? Object.values(input) : input) as MappedTextureType<Url>
 
   useLayoutEffect(() => {
@@ -42,7 +43,7 @@ export function useTexture<Url extends string[] | string | Record<string, string
   // Upload the texture to the GPU immediately instead of waiting for the first render
   // NOTE: only available for WebGLRenderer
   useEffect(() => {
-    if ('initTexture' in gl) {
+    if ('initTexture' in renderer) {
       let textureArray: _Texture[] = []
       if (Array.isArray(textures)) {
         textureArray = textures
@@ -54,11 +55,11 @@ export function useTexture<Url extends string[] | string | Record<string, string
 
       textureArray.forEach((texture) => {
         if (texture instanceof _Texture) {
-          gl.initTexture(texture)
+          renderer.initTexture(texture)
         }
       })
     }
-  }, [gl, textures])
+  }, [renderer, textures])
 
   const mappedTextures = useMemo(() => {
     if (IsObject(input)) {

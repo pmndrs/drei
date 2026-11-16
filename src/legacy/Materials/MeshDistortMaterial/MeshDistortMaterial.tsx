@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { IUniform, MeshPhysicalMaterial, MeshPhysicalMaterialParameters } from '#three'
-import { ThreeElements, useFrame } from '@react-three/fiber'
+import { ThreeElements, useFrame } from '@react-three/fiber/legacy'
 import { ForwardRefComponent } from '@utils/ts-utils'
 
 export interface Uniform<T> {
@@ -147,7 +147,7 @@ class DistortMaterialImpl extends MeshPhysicalMaterial {
   }
 }
 
-declare module '@react-three/fiber' {
+declare module '@react-three/fiber/legacy' {
   interface ThreeElements {
     distortMaterialImpl: ThreeElements['meshPhysicalMaterial'] & {
       time?: number

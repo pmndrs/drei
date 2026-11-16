@@ -2,8 +2,8 @@
 // Drei uses unbuild (Rollup) for bundling.
 // Each entry gets platform-specific aliases via separate build configs.
 //
-// - Root, Core, External, Experimental, Legacy: #three → 'three'
-// - WebGPU, Native: #three → 'three/webgpu'
+// - Root, Core, External, Experimental, WebGPU, Native: #three → 'three/webgpu'
+// - Legacy: #three → 'three'
 //
 // Why Rollup over Rolldown?
 // Rolldown has a bug where it resolves external dependencies to absolute paths
@@ -72,7 +72,7 @@ const externals = [
 //* Build Configuration ==============================
 
 export default defineBuildConfig([
-  //* WebGL Entries (use plain 'three') ==============================
+  //* Default Entries (match Fiber's WebGPU default) ==============================
 
   // Root entry - core + external + experimental
   {
@@ -90,13 +90,13 @@ export default defineBuildConfig([
     hooks: {
       'rollup:options': (ctx, options) => {
         options.plugins = options.plugins || []
-        ;(options.plugins as any[]).unshift(alias({ entries: webglAliases }), replace(replacements))
+        ;(options.plugins as any[]).unshift(alias({ entries: webgpuAliases }), replace(replacements))
       },
     },
     externals,
   },
 
-  // Core entry - renderer-agnostic components
+  // Core entry - shared components with WebGPU implementations
   {
     entries: [{ input: './src/core/index.ts', name: 'index' }],
     outDir: './dist/core',
@@ -112,7 +112,7 @@ export default defineBuildConfig([
     hooks: {
       'rollup:options': (ctx, options) => {
         options.plugins = options.plugins || []
-        ;(options.plugins as any[]).unshift(alias({ entries: webglAliases }), replace(replacements))
+        ;(options.plugins as any[]).unshift(alias({ entries: webgpuAliases }), replace(replacements))
       },
     },
     externals,
@@ -134,7 +134,7 @@ export default defineBuildConfig([
     hooks: {
       'rollup:options': (ctx, options) => {
         options.plugins = options.plugins || []
-        ;(options.plugins as any[]).unshift(alias({ entries: webglAliases }), replace(replacements))
+        ;(options.plugins as any[]).unshift(alias({ entries: webgpuAliases }), replace(replacements))
       },
     },
     externals,
@@ -156,7 +156,7 @@ export default defineBuildConfig([
     hooks: {
       'rollup:options': (ctx, options) => {
         options.plugins = options.plugins || []
-        ;(options.plugins as any[]).unshift(alias({ entries: webglAliases }), replace(replacements))
+        ;(options.plugins as any[]).unshift(alias({ entries: webgpuAliases }), replace(replacements))
       },
     },
     externals,

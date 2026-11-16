@@ -19,27 +19,41 @@ v11 supports **two renderers from one codebase**. That single fact drives the wh
 
 The root entry re-exports `core + external + experimental` only. **`legacy` and `webgpu` are deliberately excluded from root** — pulling either into the root barrel breaks the other renderer's users.
 
+Since r3f 10.0.0-alpha.6 the Canvas import picks the renderer, and drei follows it ([#2878](https://github.com/pmndrs/drei/pull/2878)): the root is **built with the WebGPU aliases** and pairs with `Canvas` from `@react-three/fiber` (plus `/webgpu` for TSL materials). `/legacy` re-exports all of core built with the WebGL aliases and pairs with `Canvas` from `@react-three/fiber/legacy` on its own.
+
 ### Build-time aliases — the mechanism
 
 Renderer-agnostic code never imports `three` directly. It imports an alias that resolves differently per build:
 
-| Alias            | WebGL build                  | WebGPU build                        |
-| ---------------- | ---------------------------- | ----------------------------------- |
-| `#three`         | `three`                      | `three/webgpu`                      |
-| `#three-addons`  | `src/utils/three-addons.ts`  | `src/utils/three-addons-webgpu.ts`  |
-| `#drei-platform` | `src/utils/drei-platform.ts` | `src/utils/drei-platform-webgpu.ts` |
+| Alias            | WebGL build (`/legacy`)      | WebGPU build (root, core, external, experimental, `/webgpu`, `/native`) |
+| ---------------- | ---------------------------- | ----------------------------------------------------------------------- |
+| `#three`         | `three`                      | `three/webgpu`                                                          |
+| `#three-addons`  | `src/utils/three-addons.ts`  | `src/utils/three-addons-webgpu.ts`                                      |
+| `#drei-platform` | `src/utils/drei-platform.ts` | `src/utils/drei-platform-webgpu.ts`                                     |
 
-Declared in three places that must stay in sync: `tsconfig.json`, `build.config.ts`, `.storybook/main.mts`.
+Declared in four places that must stay in sync: `build.config.ts`, `tsconfig.json` (WebGL), `tsconfig.webgpu.json` (WebGPU) and `.storybook/main.mts`. Core ships in both builds, so `yarn typecheck` checks it under both alias sets. Storybook serves one set per build: `DREI_RENDERER=webgpu` (default) or `legacy`, with `src/legacy/` always on the WebGL set. `Portals/Fbo > Platform target` fails if that drifts.
 
 **Rules:**
 
-- In `core/`, import three through **`#three`**, never bare `'three'`.
+- In `core/`, import three through **`#three`**, never bare `'three'`. The exception is a **type-only** import of a WebGL-only type (`import type { WebGLRenderer } from 'three'`), which is erased at build.
 - If a symbol exists in one renderer but not the other, do **not** reach for it through `#three` — route it through **`#drei-platform`**, which exports the right implementation per build.
 - `legacy/` may import `'three'` directly. `webgpu/` may import `'three/webgpu'` and `'three/tsl'` directly.
 
 That second rule is not theoretical. [#2764](https://github.com/pmndrs/drei/issues/2764) shipped a broken `/webgpu` entry because `core/Staging/Environment`, `core/Portal/RenderCubeTexture` and `core/Loaders/Preload` imported `WebGLCubeRenderTarget` from `#three` — a symbol `three/webgpu` does not export. The entry failed to _build_, taking r3f's own demos down with it.
 
-`yarn test:bundles` catches this class of mistake. Run it.
+`yarn test:bundles` catches this class of mistake. Run it. A namespace import (`THREE.UniformsUtils`) slips past both the build and `test:bundles` and fails only at runtime; the WebGPU typecheck pass catches it.
+
+### Which `@react-three/fiber` entry
+
+r3f mirrors the split: the default entry types its hooks for `WebGPURenderer`, `/legacy` for `WebGLRenderer`, and `/extension` holds the hooks typed for either. Every entry shares one runtime core, so this is about types — but each entry has its **own** `ThreeElements`, so it also decides which apps see a `declare module` element.
+
+| Tree                                  | Hooks & state types (`useThree`, `useFrame`, `RootState`, …) | Everything else (`ThreeElements`, `extend`, `createPortal`, …) | Augment              |
+| ------------------------------------- | ------------------------------------------------------------ | -------------------------------------------------------------- | -------------------- |
+| `core/`, `external/`, `experimental/` | `@react-three/fiber/extension` (renderer union)              | `@react-three/fiber`                                           | `@react-three/fiber` |
+| `legacy/`                             | `@react-three/fiber/legacy`                                  | `@react-three/fiber/legacy`                                    | `…/legacy`           |
+| `webgpu/`                             | `@react-three/fiber`                                         | `@react-three/fiber`                                           | `@react-three/fiber` |
+
+Never import `@react-three/fiber/webgpu` (deprecated, removed in r3f beta). drei's own typecheck loads the default and `/legacy` JSX maps together, so a `webgpu/` element must not reuse a `legacy/` element's name — suffix it (`portalMaterialImplWebGPU`, `gridMaterialWebGPU`).
 
 ## Component-as-a-Folder
 
@@ -83,18 +97,21 @@ This exists because the previous hand-maintained registry drifted badly: it clai
 ## Testing
 
 ```bash
-yarn test          # lint · typecheck · prettier · components · bundles · canary
+yarn test          # lint · typecheck (both alias sets) · prettier · components · bundles · canary
 yarn test:bundles  # entry-point import hygiene — the real integrity check
-yarn storybook     # renderer toggle in the toolbar switches WebGL/WebGPU
+yarn storybook     # WebGPU build; DREI_RENDERER=legacy yarn storybook for the WebGL build
 ```
 
 To actually render every story headlessly (not wired into `yarn test` yet):
 
 ```bash
-npx vitest run --config vite.config.mts   # 203 stories, ~25s
+yarn test:stories          # WebGPU aliases, what root ships — 225 stories, ~25s
+yarn test:stories:legacy   # WebGL aliases, what /legacy ships
 ```
 
-Stories default to the **WebGPU** renderer (`.storybook/preview.tsx`). Tag a WebGL-only story `legacyOnly` and pass `limitedTo="legacy"` to `<Setup>`.
+The first run after switching modes can fail with "Failed to fetch dynamically imported module": Vite re-optimizes deps for the new config. Run it again.
+
+Stories default to the build's renderer (`.storybook/preview.tsx`). Tag a WebGL-only story `legacyOnly` and pass `limitedTo="legacy"` to `<Setup>`; pin a `webgpu/` story with `limitedTo="webgpu"`.
 
 The example app is a **separate project** with its own `node_modules`:
 

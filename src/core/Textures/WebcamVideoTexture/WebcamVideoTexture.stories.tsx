@@ -36,4 +36,6 @@ function WebcamVideoTextureScene(props: React.ComponentProps<typeof WebcamVideoT
 export const WebcamVideoTextureSt = {
   render: (args) => <WebcamVideoTextureScene {...args} />,
   name: 'Default',
+  // Chromatic's capture machines have no camera, so getUserMedia rejects with "Requested device not found"
+  parameters: { chromatic: { disableSnapshot: true } },
 } satisfies Story

@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { useThree, createPortal, useFrame, extend, Euler, applyProps, ThreeElement } from '@react-three/fiber'
+import { createPortal, extend, Euler, applyProps, ThreeElement } from '@react-three/fiber'
+import { useThree, useFrame } from '@react-three/fiber/extension'
 import { Texture, Scene, CubeCamera, HalfFloatType, CubeTexture } from '#three'
 import { CubeRenderTarget } from '#drei-platform'
 import { GroundedSkybox as GroundProjectedEnvImpl } from 'three/examples/jsm/objects/GroundedSkybox.js'
@@ -255,7 +256,7 @@ export function EnvironmentPortal({
   preset = undefined,
   extensions,
 }: EnvironmentProps) {
-  const gl = useThree((state) => state.gl)
+  const renderer = useThree((state) => state.renderer)
   const defaultScene = useThree((state) => state.scene)
   const camera = React.useRef<CubeCamera>(null!)
   const [virtualScene] = React.useState(() => new Scene())
@@ -273,10 +274,10 @@ export function EnvironmentPortal({
 
   React.useLayoutEffect(() => {
     if (frames === 1) {
-      const autoClear = gl.autoClear
-      gl.autoClear = true
-      camera.current.update(gl, virtualScene)
-      gl.autoClear = autoClear
+      const autoClear = renderer.autoClear
+      renderer.autoClear = true
+      camera.current.update(renderer, virtualScene)
+      renderer.autoClear = autoClear
     }
     return setEnvProps(background, scene, defaultScene, fbo.texture, {
       backgroundBlurriness: blur ?? backgroundBlurriness,
@@ -285,15 +286,15 @@ export function EnvironmentPortal({
       environmentIntensity,
       environmentRotation,
     })
-  }, [children, virtualScene, fbo.texture, scene, defaultScene, background, frames, gl])
+  }, [children, virtualScene, fbo.texture, scene, defaultScene, background, frames, renderer])
 
   let count = 1
   useFrame(() => {
     if (frames === Infinity || count < frames) {
-      const autoClear = gl.autoClear
-      gl.autoClear = true
-      camera.current.update(gl, virtualScene)
-      gl.autoClear = autoClear
+      const autoClear = renderer.autoClear
+      renderer.autoClear = true
+      camera.current.update(renderer, virtualScene)
+      renderer.autoClear = autoClear
       count++
     }
   })

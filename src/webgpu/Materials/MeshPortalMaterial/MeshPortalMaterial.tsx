@@ -42,7 +42,7 @@ import { withUniforms } from '@utils/withUniforms'
 
 //* Types ==============================
 
-export type PortalProps = Omit<ThreeElements['meshBasicMaterial'], 'ref'> & {
+export type PortalProps = Omit<ThreeElements['portalMaterialImplWebGPU'], 'ref' | 'blend'> & {
   /** Mix the portals own scene with the world scene, 0 = world scene render,
    *  0.5 = both scenes render, 1 = portal scene renders, defaults to 0 */
   blend?: number
@@ -387,8 +387,22 @@ const makeSDFGenerator = (clientWidth: number, clientHeight: number, renderer: T
 //* MeshPortalMaterial Component ==============================
 
 //* Module Augmentation ==============================
-// Note: portalMaterialImpl is extended at runtime via extend()
-// Type definition is minimal to avoid conflicts with legacy material
+// Suffixed so drei's own typecheck, which loads the default and /legacy JSX maps together,
+// does not merge it with the legacy portalMaterialImpl.
+
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    // Structural, not ThreeElement<typeof Class>: each dist entry's .d.ts inlines its own copy of the
+    // class, and two nominal copies of one element type conflict (TS2717) in a consumer loading both.
+    portalMaterialImplWebGPU: ThreeElements['meshBasicNodeMaterial'] & {
+      blur?: number
+      blend?: number
+      size?: number
+      sdf?: THREE.Texture
+      resolution?: ReactThreeFiber.Vector2
+    }
+  }
+}
 
 export const MeshPortalMaterial: ForwardRefComponent<PortalProps, PortalMaterialImpl> =
   /* @__PURE__ */ React.forwardRef(
@@ -405,7 +419,7 @@ export const MeshPortalMaterial: ForwardRefComponent<PortalProps, PortalMaterial
       },
       fref
     ) => {
-      extend({ PortalMaterialImpl })
+      extend({ PortalMaterialImplWebGPU: PortalMaterialImpl })
 
       const ref = React.useRef<PortalMaterialImpl>(null!)
       const { scene, renderer, size, viewport, setEvents, invalidate } = useThree()
@@ -520,13 +534,12 @@ export const MeshPortalMaterial: ForwardRefComponent<PortalProps, PortalMaterial
       )
 
       return (
-        // @ts-ignore - portalMaterialImpl is dynamically extended, type conflicts with legacy
-        <portalMaterialImpl
-          ref={ref as any}
+        <portalMaterialImplWebGPU
+          ref={ref}
           blur={blur}
           blend={0}
           resolution={[size.width * viewport.dpr, size.height * viewport.dpr]}
-          attach={'material' as any}
+          attach="material"
           {...props}
         >
           <RenderTexture
@@ -545,7 +558,7 @@ export const MeshPortalMaterial: ForwardRefComponent<PortalProps, PortalMaterial
               worldUnits={worldUnits}
             />
           </RenderTexture>
-        </portalMaterialImpl>
+        </portalMaterialImplWebGPU>
       )
     }
   )
@@ -587,38 +600,41 @@ function ManagePortalScene({
     return [q, mat]
   }, [buffer1.texture, buffer2.texture])
 
-  useFrame((state) => {
-    const parent = (material?.current as any)?.__r3f?.parent?.object
-    if (parent) {
-      // Move portal contents along with the parent if worldUnits is true
-      if (!worldUnits) {
-        // If the portal renders exclusively the original scene needs to be updated
-        if (priority && material.current?.blend === 1) parent.updateWorldMatrix(true, false)
-        scene.matrixWorld.copy(parent.matrixWorld)
-      } else {
-        scene.matrixWorld.identity()
-      }
+  useFrame(
+    (state) => {
+      const parent = (material?.current as any)?.__r3f?.parent?.object
+      if (parent) {
+        // Move portal contents along with the parent if worldUnits is true
+        if (!worldUnits) {
+          // If the portal renders exclusively the original scene needs to be updated
+          if (priority && material.current?.blend === 1) parent.updateWorldMatrix(true, false)
+          scene.matrixWorld.copy(parent.matrixWorld)
+        } else {
+          scene.matrixWorld.identity()
+        }
 
-      // A blended portal owns rendering through its render priority.
-      // and will take over the render loop
-      if (priority) {
-        if (material.current && material.current.blend > 0 && material.current.blend < 1) {
-          // If blend is ongoing (> 0 and < 1) then we need to render both the root scene
-          // and the portal scene, both will then be mixed in the quad from above
-          blendMat.blend = material.current.blend
-          state.gl.setRenderTarget(buffer1)
-          state.gl.render(scene, state.camera)
-          state.gl.setRenderTarget(buffer2)
-          state.gl.render(rootScene, state.camera)
-          state.gl.setRenderTarget(null)
-          quad.render(state.gl as unknown as THREE.WebGPURenderer)
-        } else if (material.current?.blend === 1) {
-          // However if blend is 1 we only need to render the portal scene
-          state.gl.render(scene, state.camera)
+        // A blended portal owns rendering through its render priority.
+        // and will take over the render loop
+        if (priority) {
+          if (material.current && material.current.blend > 0 && material.current.blend < 1) {
+            // If blend is ongoing (> 0 and < 1) then we need to render both the root scene
+            // and the portal scene, both will then be mixed in the quad from above
+            blendMat.blend = material.current.blend
+            state.renderer.setRenderTarget(buffer1)
+            state.renderer.render(scene, state.camera)
+            state.renderer.setRenderTarget(buffer2)
+            state.renderer.render(rootScene, state.camera)
+            state.renderer.setRenderTarget(null)
+            quad.render(state.renderer)
+          } else if (material.current?.blend === 1) {
+            // However if blend is 1 we only need to render the portal scene
+            state.renderer.render(scene, state.camera)
+          }
         }
       }
-    }
-  }, priority)
+    },
+    { phase: priority > 0 ? 'render' : 'update', priority: -priority }
+  )
 
   return <></>
 }

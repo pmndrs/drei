@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
+import { ThreeElements } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/extension'
 import { Group, Matrix4, Object3D, OrthographicCamera as OrthographicCameraImpl, Quaternion, Vector3 } from '#three'
 import { OrbitControls as OrbitControlsType } from 'three/examples/jsm/controls/OrbitControls.js'
 

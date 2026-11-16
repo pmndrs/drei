@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { useMemo, useCallback } from 'react'
-import { ThreeEvent, useFrame } from '@react-three/fiber'
+import { ThreeEvent } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber/extension'
 import { Texture } from '#three'
 
 type Point = {

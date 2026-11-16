@@ -1,6 +1,7 @@
 import * as THREE from '#three'
 import * as React from 'react'
-import { ThreeElements, useFrame, useThree, Instance, useInstanceHandle } from '@react-three/fiber'
+import { ThreeElements, Instance, useInstanceHandle } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/extension'
 import { clamp, repeat } from 'math'
 import { damp, dampLookAt } from '@utils/damp'
 

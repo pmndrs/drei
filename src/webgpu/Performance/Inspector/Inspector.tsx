@@ -1,7 +1,6 @@
 import { useFrame, useThree } from '@react-three/fiber'
 import * as React from 'react'
 import type { Inspector as ThreeInspector } from 'three/examples/jsm/inspector/Inspector.js'
-import type { WebGPURenderer } from 'three/webgpu'
 import type { InspectorSession } from './inspector-runtime'
 
 // Turbopack dev evaluates the Inspector/Settings import cycle before Inspector's
@@ -28,7 +27,7 @@ export function useInspectorContext() {
 
 /** Three's inspector for R3F v10 WebGPU canvases with frameloop="always". */
 export function Inspector({ children, hide = false }: InspectorProps) {
-  const renderer = useThree((state) => state.renderer) as WebGPURenderer
+  const renderer = useThree((state) => state.renderer)
   const isLegacy = useThree((state) => state.isLegacy)
   const frameloop = useThree((state) => state.frameloop)
   const eventSource = useThree((state) => state.events.connected)

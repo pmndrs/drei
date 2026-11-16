@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { Suspense, useCallback, useRef, useState, type ComponentProps, type ComponentRef } from 'react'
-import { useFrame, type ThreeElements } from '@react-three/fiber'
+import { type ThreeElements } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber/extension'
 import {
   Environment,
   CameraControls,

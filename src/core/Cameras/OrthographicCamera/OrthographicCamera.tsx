@@ -1,7 +1,8 @@
 import * as THREE from '#three'
 import * as React from 'react'
 import { OrthographicCamera as OrthographicCameraImpl } from '#three'
-import { useThree, useFrame, ThreeElements } from '@react-three/fiber'
+import { ThreeElements } from '@react-three/fiber'
+import { useThree, useFrame } from '@react-three/fiber/extension'
 import { useFBO } from '@core/Portal/Fbo'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 
@@ -73,12 +74,14 @@ export const OrthographicCamera: ForwardRefComponent<OrthographicCameraProps, Or
         // that must exchange the default, and clean up after itself on unmount.
       }, [cameraRef, makeDefault, set])
 
-      let count = 0
+      // A ref, not a body-level `let`: a re-render must not reset the count, or `frames={1}`
+      // would film again every time the parent re-renders (same as CubeCamera).
+      const countRef = React.useRef(0)
       let oldEnvMap: THREE.Color | THREE.Texture | null = null
       let oldRenderTarget: THREE.RenderTarget | null = null
       const functional = isFunction(children)
       useFrame((state) => {
-        if (functional && (frames === Infinity || count < frames)) {
+        if (functional && (frames === Infinity || countRef.current < frames)) {
           const { renderer } = state
           groupRef.current.visible = false
           // Save whatever is bound right now (View, RenderTexture, Hud, a post-processing
@@ -86,15 +89,15 @@ export const OrthographicCamera: ForwardRefComponent<OrthographicCameraProps, Or
           oldRenderTarget = renderer.getRenderTarget()
           oldEnvMap = state.scene.background
           if (envMap) state.scene.background = envMap
-          renderer.setRenderTarget(fbo)
-          renderer.render(state.scene, cameraRef.current)
           // R3FRenderer is WebGLRenderer | WebGPURenderer, so the union's setRenderTarget
-          // only accepts WebGLRenderTarget while getRenderTarget() returns the wider
-          // RenderTarget. The cast is type-only; same pattern as RenderTexture.
+          // only accepts WebGLRenderTarget, while useFBO (a WebGPU RenderTarget in the WebGPU
+          // build) and getRenderTarget() give the wider RenderTarget. The casts are type-only.
+          renderer.setRenderTarget(fbo as THREE.WebGLRenderTarget)
+          renderer.render(state.scene, cameraRef.current)
           renderer.setRenderTarget(oldRenderTarget as THREE.WebGLRenderTarget | null)
           state.scene.background = oldEnvMap
           groupRef.current.visible = true
-          count++
+          countRef.current++
         }
       })
 

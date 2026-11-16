@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useFrame, useThree } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/legacy'
 import { AsciiEffect } from 'three/examples/jsm/effects/AsciiEffect.js'
 
 export type AsciiRendererProps = {
@@ -40,11 +40,11 @@ export function AsciiRenderer({
   resolution = 0.15,
 }: AsciiRendererProps) {
   // Reactive state
-  const { size, gl, scene, camera } = useThree()
+  const { size, renderer, scene, camera } = useThree()
 
   // Create effect
   const effect = React.useMemo(() => {
-    const effect = new AsciiEffect(gl, characters, { invert, color, resolution })
+    const effect = new AsciiEffect(renderer, characters, { invert, color, resolution })
     effect.domElement.style.position = 'absolute'
     effect.domElement.style.top = '0px'
     effect.domElement.style.left = '0px'
@@ -60,11 +60,11 @@ export function AsciiRenderer({
 
   // Append on mount, remove on unmount
   React.useEffect(() => {
-    gl.domElement.style.opacity = '0'
-    gl.domElement.parentNode!.appendChild(effect.domElement)
+    renderer.domElement.style.opacity = '0'
+    renderer.domElement.parentNode!.appendChild(effect.domElement)
     return () => {
-      gl.domElement.style.opacity = '1'
-      gl.domElement.parentNode!.removeChild(effect.domElement)
+      renderer.domElement.style.opacity = '1'
+      renderer.domElement.parentNode!.removeChild(effect.domElement)
     }
   }, [effect])
 
@@ -74,9 +74,12 @@ export function AsciiRenderer({
   }, [effect, size])
 
   // Take over render-loop (that is what the index is for)
-  useFrame((state) => {
-    effect.render(scene, camera)
-  }, renderIndex)
+  useFrame(
+    (state) => {
+      effect.render(scene, camera)
+    },
+    { phase: renderIndex > 0 ? 'render' : 'update', priority: -renderIndex }
+  )
 
   // return something to not break type signatures
   return <></>

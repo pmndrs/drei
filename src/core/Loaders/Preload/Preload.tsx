@@ -1,7 +1,7 @@
 import { Object3D, Camera, CubeCamera, Scene } from '#three'
 import { CubeRenderTarget } from '#drei-platform'
 import * as React from 'react'
-import { useThree } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/extension'
 import { suspend, clear } from 'suspend-react'
 
 export type PreloadProps = {

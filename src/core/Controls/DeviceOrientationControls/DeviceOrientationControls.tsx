@@ -1,4 +1,5 @@
-import { ReactThreeFiber, ThreeElement, useFrame, useThree } from '@react-three/fiber'
+import { ReactThreeFiber, ThreeElement } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/extension'
 import * as React from 'react'
 import * as THREE from '#three'
 import { DeviceOrientationControls as DeviceOrientationControlsImp } from '@lib/legacy/DeviceOrientationControls'
@@ -41,7 +42,7 @@ export const DeviceOrientationControls: ForwardRefComponent<
       return () => controls?.removeEventListener?.('change', callback)
     }, [onChange, controls, invalidate])
 
-    useFrame(() => controls?.update(), -1)
+    useFrame(() => controls?.update(), { before: 'update' })
 
     React.useEffect(() => {
       const current = controls

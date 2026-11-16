@@ -1,7 +1,8 @@
 import * as React from 'react'
 // @ts-ignore
 import { Text as TextMeshImpl, preloadFont } from 'troika-three-text'
-import { ReactThreeFiber, ThreeElements, useThree } from '@react-three/fiber'
+import { ReactThreeFiber, ThreeElements, useThree } from '@react-three/fiber/legacy'
+
 import { suspend } from 'suspend-react'
 import { ForwardRefComponent } from '@utils/ts-utils'
 

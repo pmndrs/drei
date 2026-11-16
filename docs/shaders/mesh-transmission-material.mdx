@@ -78,9 +78,9 @@ Or, by passing a texture to `buffer` manually, for instance using useFBO.
 ```jsx
 const buffer = useFBO()
 useFrame((state) => {
-  state.gl.setRenderTarget(buffer)
-  state.gl.render(state.scene, state.camera)
-  state.gl.setRenderTarget(null)
+  state.renderer.setRenderTarget(buffer)
+  state.renderer.render(state.scene, state.camera)
+  state.renderer.setRenderTarget(null)
 })
 return (
   <>

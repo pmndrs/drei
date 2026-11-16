@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useThree } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/extension'
 
 /**
  * Automatically adjusts DPR based on the performance system.
@@ -13,14 +13,14 @@ import { useThree } from '@react-three/fiber'
  * ```
  */
 export function AdaptiveDpr({ pixelated }: { pixelated?: boolean }) {
-  const gl = useThree((state) => state.gl)
+  const renderer = useThree((state) => state.renderer)
   const active = useThree((state) => state.internal.active)
   const current = useThree((state) => state.performance.current)
   const initialDpr = useThree((state) => state.viewport.initialDpr)
   const setDpr = useThree((state) => state.setDpr)
   // Restore initial pixelratio on unmount
   React.useEffect(() => {
-    const domElement = gl.domElement
+    const domElement = renderer.domElement
     return () => {
       if (active) setDpr(initialDpr)
       if (pixelated && domElement) domElement.style.imageRendering = 'auto'
@@ -29,7 +29,8 @@ export function AdaptiveDpr({ pixelated }: { pixelated?: boolean }) {
   // Set adaptive pixelratio
   React.useEffect(() => {
     setDpr(current * initialDpr)
-    if (pixelated && gl.domElement) gl.domElement.style.imageRendering = current === 1 ? 'auto' : 'pixelated'
+    if (pixelated && renderer.domElement)
+      renderer.domElement.style.imageRendering = current === 1 ? 'auto' : 'pixelated'
   }, [current])
   return null
 }

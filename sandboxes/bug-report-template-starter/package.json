@@ -10,7 +10,7 @@
   "dependencies": {
     "react": "*",
     "react-dom": "*",
-    "@react-three/fiber": "*",
+    "@react-three/fiber": "10.0.0-alpha.6",
     "three": "*"
   }
 }

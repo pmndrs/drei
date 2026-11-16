@@ -53,12 +53,7 @@ export default function App() {
     }),
   })
   return (
-    <Canvas
-      renderer={{ preserveDrawingBuffer: true }}
-      shadows
-      orthographic
-      camera={{ position: [10, 20, 20], zoom: 80 }}
-    >
+    <Canvas renderer={{ shadows: true }} orthographic camera={{ position: [10, 20, 20], zoom: 80 }}>
       <color attach="background" args={['#f2f2f5']} />
       {/** The text and the grid */}
       <Text config={config} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1, 2.25]}>

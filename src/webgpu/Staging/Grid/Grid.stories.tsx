@@ -11,7 +11,7 @@ export default {
   component: Grid,
   decorators: [
     (Story, context) => (
-      <Setup renderer={context.globals.renderer} cameraPosition={new Vector3(-5, 5, 10)}>
+      <Setup renderer={context.globals.renderer} limitedTo="webgpu" cameraPosition={new Vector3(-5, 5, 10)}>
         <Story />
       </Setup>
     ),

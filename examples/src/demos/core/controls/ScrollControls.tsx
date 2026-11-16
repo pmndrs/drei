@@ -1,7 +1,7 @@
 import { ScrollControls, useScroll } from '@react-three/drei/core'
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { ExampleCard } from '../../../components/ExampleCard'
-import { useFrame } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber/extension'
 import { useRef } from 'react'
 import * as THREE from 'three'
 

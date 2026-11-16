@@ -1,7 +1,10 @@
 import * as THREE from '#three'
+// Type-only: WebGLRenderer is not on three/webgpu, which the root entry's #three resolves to
+import type { WebGLRenderer } from 'three'
 import * as React from 'react'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
-import { ThreeElements, useThree } from '@react-three/fiber'
+import { ThreeElements } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/extension'
 
 export type MaskProps = Omit<ThreeElements['mesh'], 'ref' | 'id'> & {
   /** Each mask must have an id, you can have compound masks referring to the same id */
@@ -60,7 +63,7 @@ export const Mask: ForwardRefComponent<MaskProps, THREE.Mesh> = /* @__PURE__ */ 
       }
 
       // For WebGLRenderer, check context attributes
-      const webglRenderer = renderer as THREE.WebGLRenderer
+      const webglRenderer = renderer as WebGLRenderer
       ;(webglRenderer as any).stencil = true
       if (webglRenderer.getContext && typeof webglRenderer.getContext === 'function') {
         const context = webglRenderer.getContext()

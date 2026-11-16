@@ -68,6 +68,15 @@ export type GridProps = Omit<ThreeElements['mesh'], 'ref' | 'args'> &
     args?: ConstructorParameters<typeof THREE.PlaneGeometry>
   }
 
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    // Suffixed so drei's own typecheck does not merge it with the legacy gridMaterial.
+    // Structural, not ThreeElement<typeof Class>: each dist entry's .d.ts inlines its own copy of the
+    // class, and two nominal copies of one element type conflict (TS2717) in a consumer loading both.
+    gridMaterialWebGPU: Omit<ThreeElements['meshBasicNodeMaterial'], keyof GridMaterialType> & GridMaterialType
+  }
+}
+
 //* GridMaterial Implementation ==============================
 
 class GridMaterialImpl extends withUniforms(MeshBasicNodeMaterial, {
@@ -271,7 +280,7 @@ export const Grid: ForwardRefComponent<GridProps, THREE.Mesh> = /* @__PURE__ */ 
     },
     fRef
   ) => {
-    extend({ GridMaterial: GridMaterialImpl })
+    extend({ GridMaterialWebGPU: GridMaterialImpl })
 
     const ref = React.useRef<THREE.Mesh>(null!)
     const materialRef = React.useRef<GridMaterialImpl>(null!)
@@ -301,8 +310,8 @@ export const Grid: ForwardRefComponent<GridProps, THREE.Mesh> = /* @__PURE__ */ 
 
     return (
       <mesh ref={ref} frustumCulled={false} {...props}>
-        <gridMaterial
-          ref={materialRef as any}
+        <gridMaterialWebGPU
+          ref={materialRef}
           side={side}
           cellSize={cellSize}
           sectionSize={sectionSize}

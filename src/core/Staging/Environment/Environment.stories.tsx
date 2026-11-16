@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Vector3 } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@sb/Setup'
+import { Setup, shouldFreezeAnimations } from '@sb/Setup'
 
 import { Environment, PerspectiveCamera, OrbitControls } from 'drei'
 import { ContactShadows } from '../../../legacy/Materials/ContactShadows/ContactShadows'
@@ -34,7 +34,7 @@ function EnvironmentScene1(props: ComponentProps<typeof Environment>) {
         <torusKnotGeometry args={[1, 0.5, 128, 32]} />
         <meshStandardMaterial metalness={1} roughness={0} />
       </mesh>
-      <OrbitControls autoRotate />
+      <OrbitControls autoRotate={!shouldFreezeAnimations()} />
     </>
   )
 }
@@ -68,7 +68,7 @@ function EnvironmentScene2(props: ComponentProps<typeof Environment>) {
         <torusKnotGeometry args={[1, 0.5, 128, 32]} />
         <meshStandardMaterial metalness={1} roughness={0} />
       </mesh>
-      <OrbitControls autoRotate />
+      <OrbitControls autoRotate={!shouldFreezeAnimations()} />
     </>
   )
 }
@@ -95,7 +95,7 @@ function EnvironmentScene3(props: ComponentProps<typeof Environment>) {
         <meshStandardMaterial metalness={1} roughness={0} />
       </mesh>
       <ContactShadows resolution={1024} position={[0, 0, 0]} scale={100} blur={2} opacity={1} far={10} />
-      <OrbitControls autoRotate />
+      <OrbitControls autoRotate={!shouldFreezeAnimations()} />
       <PerspectiveCamera position={[40, 40, 40]} makeDefault />
     </>
   )
@@ -126,7 +126,7 @@ function EnvironmentScene4(props: ComponentProps<typeof Environment>) {
         <torusKnotGeometry args={[1, 0.5, 128, 32]} />
         <meshStandardMaterial metalness={1} roughness={0} />
       </mesh>
-      <OrbitControls autoRotate />
+      <OrbitControls autoRotate={!shouldFreezeAnimations()} />
     </>
   )
 }

@@ -1,4 +1,5 @@
-import { ThreeElements, useFrame } from '@react-three/fiber'
+import { ThreeElements } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber/extension'
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { RenderTexture, OrbitControls, PerspectiveCamera } from '@react-three/drei/core'
 import { ExampleCard } from '../../../components/ExampleCard'

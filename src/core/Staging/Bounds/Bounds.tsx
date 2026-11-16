@@ -1,7 +1,8 @@
 import * as React from 'react'
 import * as THREE from '#three'
 
-import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
+import { ThreeElements } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/extension'
 
 export type SizeProps = {
   box: THREE.Box3

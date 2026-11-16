@@ -26,7 +26,9 @@ export default {
 //   return <primitive object={nodes['node_damagedHelmet_-6514']} />
 // }
 
-export const InstancesSt = () => {
+// Story bodies live in components: Storybook calls a story function inside its own wrapper, so
+// hooks in it (useGLTF suspends) change the hook count between renders in production builds.
+function HelmetInstances() {
   const { nodes } = useGLTF('https://threejs.org/examples/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf')
 
   const helmet = nodes['node_damagedHelmet_-6514'] as Mesh
@@ -72,7 +74,7 @@ const Suzanne = () => {
   return <SuzaneInstnace ref={ref} position={instancePosition} rotation={instanceRotation} reveal={0} />
 }
 
-export const CreateInstancesSt = () => {
+function SuzanneInstances() {
   const { nodes } = useGLTF('suzanne.glb', true) as any
 
   const SuzanneMesh = nodes['Suzanne'] as Mesh
@@ -151,3 +153,7 @@ export const CreateInstancesSt = () => {
     </SuzaneInstances>
   )
 }
+
+export const InstancesSt = () => <HelmetInstances />
+
+export const CreateInstancesSt = () => <SuzanneInstances />

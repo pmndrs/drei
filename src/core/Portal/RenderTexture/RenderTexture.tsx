@@ -10,7 +10,8 @@
 
 import * as THREE from '#three'
 import * as React from 'react'
-import { createPortal, ThreeElements, useFrame, useThree } from '@react-three/fiber'
+import { createPortal, ThreeElements } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/extension'
 import { ForwardRefComponent } from '@utils/ts-utils'
 import { RenderTarget } from '#drei-platform'
 
@@ -156,7 +157,7 @@ export const RenderTexture: ForwardRefComponent<RenderTextureProps, THREE.Textur
           vScene,
           { events: { compute: compute || uvCompute, priority: eventPriority } }
         )}
-        <primitive object={fboA.texture} {...props} />
+        {React.createElement('primitive', { object: fboA.texture, ...props })}
       </>
     )
   }
@@ -192,43 +193,46 @@ function Container({
   let oldRenderTarget: THREE.RenderTarget | null
   let oldIsPresenting: boolean
 
-  useFrame((state) => {
-    if (frames === Infinity || count < frames) {
-      // Double buffer: swap which FBO we read from vs write to
-      const readFbo = readBufferIndex.current === 0 ? fboA : fboB
-      const writeFbo = readBufferIndex.current === 0 ? fboB : fboA
+  useFrame(
+    (state) => {
+      if (frames === Infinity || count < frames) {
+        // Double buffer: swap which FBO we read from vs write to
+        const readFbo = readBufferIndex.current === 0 ? fboA : fboB
+        const writeFbo = readBufferIndex.current === 0 ? fboB : fboA
 
-      // Update display texture reference
-      displayTextureRef.current = readFbo.texture as THREE.Texture
+        // Update display texture reference
+        displayTextureRef.current = readFbo.texture as THREE.Texture
 
-      // Save state
-      oldAutoClear = state.renderer.autoClear
-      oldXrEnabled = state.renderer.xr.enabled
-      oldRenderTarget = state.renderer.getRenderTarget()
-      oldIsPresenting = state.renderer.xr.isPresenting
+        // Save state
+        oldAutoClear = state.renderer.autoClear
+        oldXrEnabled = state.renderer.xr.enabled
+        oldRenderTarget = state.renderer.getRenderTarget()
+        oldIsPresenting = state.renderer.xr.isPresenting
 
-      // Render portal scene to write buffer
-      // Using portalScene/portalCamera from useThree (useFrame state has scheduler bug)
-      state.renderer.autoClear = true
-      state.renderer.xr.enabled = false
-      // three types WebGPU's XRManager.isPresenting readonly, but it is a plain
-      // writable field in both builds — three itself save/restores it this way.
-      ;(state.renderer.xr as { isPresenting: boolean }).isPresenting = false
-      state.renderer.setRenderTarget(writeFbo as THREE.WebGLRenderTarget)
-      state.renderer.render(portalScene, portalCamera)
-      state.renderer.setRenderTarget(oldRenderTarget as THREE.WebGLRenderTarget | null)
+        // Render portal scene to write buffer
+        // Using portalScene/portalCamera from useThree (useFrame state has scheduler bug)
+        state.renderer.autoClear = true
+        state.renderer.xr.enabled = false
+        // three types WebGPU's XRManager.isPresenting readonly, but it is a plain
+        // writable field in both builds — three itself save/restores it this way.
+        ;(state.renderer.xr as { isPresenting: boolean }).isPresenting = false
+        state.renderer.setRenderTarget(writeFbo as THREE.WebGLRenderTarget)
+        state.renderer.render(portalScene, portalCamera)
+        state.renderer.setRenderTarget(oldRenderTarget as THREE.WebGLRenderTarget | null)
 
-      // Restore state
-      state.renderer.autoClear = oldAutoClear
-      state.renderer.xr.enabled = oldXrEnabled
-      ;(state.renderer.xr as { isPresenting: boolean }).isPresenting = oldIsPresenting
+        // Restore state
+        state.renderer.autoClear = oldAutoClear
+        state.renderer.xr.enabled = oldXrEnabled
+        ;(state.renderer.xr as { isPresenting: boolean }).isPresenting = oldIsPresenting
 
-      // Swap buffers for next frame
-      readBufferIndex.current = readBufferIndex.current === 0 ? 1 : 0
+        // Swap buffers for next frame
+        readBufferIndex.current = readBufferIndex.current === 0 ? 1 : 0
 
-      count++
-    }
-  }, renderPriority)
+        count++
+      }
+    },
+    { phase: renderPriority > 0 ? 'render' : 'update', priority: -renderPriority }
+  )
 
   return <>{children}</>
 }

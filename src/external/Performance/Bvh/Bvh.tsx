@@ -1,4 +1,5 @@
-import { ThreeElements, useThree } from '@react-three/fiber'
+import { ThreeElements } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/extension'
 import * as React from 'react'
 import { Mesh, Group } from '#three'
 import { acceleratedRaycast, computeBoundsTree, disposeBoundsTree, SAH, SplitStrategy } from 'three-mesh-bvh'

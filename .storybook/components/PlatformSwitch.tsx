@@ -1,30 +1,26 @@
-// takes two components and based on the active platform outputs them
-
-import { Canvas, useThree } from '@react-three/fiber'
-import React from 'react'
-import { useState, useEffect } from 'react'
+import * as React from 'react'
+import { Canvas, CanvasProps, RendererSettingsConfig, RootState, ShadowsConfig } from '@react-three/fiber'
+import { Canvas as LegacyCanvas } from '@react-three/fiber/legacy'
+import { useThree } from '@react-three/fiber/extension'
+import type { WebGLRenderer, WebGLRendererParameters } from 'three'
+import type { WebGPURendererParameters } from 'three/webgpu'
 
 export function PlatformSwitch({ legacy, webgpu }: { legacy: React.ReactNode; webgpu: React.ReactNode }) {
-  const { isLegacy } = useThree()
+  const isLegacy = useThree((state) => state.isLegacy)
   return isLegacy ? legacy : webgpu
 }
 
-// wraps the canvas but flips the canvas to webgl or renderer (usefull for testing)
-
-type SwitchCanvasProps = React.ComponentProps<typeof Canvas> & {
+export type SwitchCanvasProps = Omit<CanvasProps, 'onCreated' | 'gl' | 'renderer' | 'primary' | 'share'> & {
+  onCreated?: (state: RootState) => void
   asLegacy?: boolean
-  rendererParams?: React.ComponentProps<typeof Canvas>['renderer']
+  shadows?: ShadowsConfig
+  rendererParams?: Partial<
+    WebGLRendererParameters & WebGPURendererParameters & Pick<WebGLRenderer, 'toneMapping' | 'outputColorSpace'>
+  > &
+    RendererSettingsConfig
 }
 
-export function SwitchCanvas({ asLegacy = false, rendererParams, ...props }: SwitchCanvasProps) {
-  // have to be harsher to rest things not just prop switching
-  if (asLegacy) return <Canvas {...props} gl={rendererParams} />
-  // For WebGPU: renderer={true} triggers WebGPU mode, renderer={undefined} doesn't
-  return <Canvas key="webgpu" renderer={rendererParams ?? true} {...props} />
-}
-
-// has a UI toggle to switch the renderer and saved to local storage
-
-interface CanvasWithToggleProps extends React.ComponentProps<typeof Canvas> {
-  rendererParams?: React.ComponentProps<typeof Canvas>['renderer']
+export function SwitchCanvas({ asLegacy = false, rendererParams, shadows, ...props }: SwitchCanvasProps) {
+  if (asLegacy) return <LegacyCanvas key="legacy" {...props} gl={{ shadows, ...rendererParams }} />
+  return <Canvas key="webgpu" {...props} renderer={{ shadows, ...rendererParams }} />
 }

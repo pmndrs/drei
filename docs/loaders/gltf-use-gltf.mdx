@@ -130,9 +130,9 @@ ktx2Loader.setTranscoderPath('https://unpkg.com/three@0.168.0/examples/jsm/libs/
 
 // ...
 
-const { gl } = useThree()
+const { renderer } = useThree()
 useGLTF('facecap.glb', true, true, (loader) => {
-  loader.setKTX2Loader(ktx2Loader.detectSupport(gl))
+  loader.setKTX2Loader(ktx2Loader.detectSupport(renderer))
 })
 ```
 

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
-import { useFrame } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber/legacy'
 
 import { Setup } from '@sb/Setup'
 import { PlatformSwitch } from '@sb/components/PlatformSwitch'

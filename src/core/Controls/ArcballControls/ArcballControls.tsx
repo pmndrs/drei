@@ -1,4 +1,5 @@
-import { EventManager, ReactThreeFiber, ThreeElement, useFrame, useThree } from '@react-three/fiber'
+import { EventManager, ReactThreeFiber, ThreeElement } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/extension'
 import * as React from 'react'
 import { forwardRef, useEffect, useMemo } from 'react'
 import { ArcballControls as ArcballControlsImpl } from 'three/examples/jsm/controls/ArcballControls.js'
@@ -36,18 +37,21 @@ export const ArcballControls: ForwardRefComponent<ArcballControlsProps, ArcballC
     ({ camera, makeDefault, regress, domElement, onChange, onStart, onEnd, ...restProps }, ref) => {
       const invalidate = useThree((state) => state.invalidate)
       const defaultCamera = useThree((state) => state.camera)
-      const gl = useThree((state) => state.gl)
+      const renderer = useThree((state) => state.renderer)
       const events = useThree((state) => state.events) as EventManager<HTMLElement>
       const set = useThree((state) => state.set)
       const get = useThree((state) => state.get)
       const performance = useThree((state) => state.performance)
       const explCamera = camera || defaultCamera
-      const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
+      const explDomElement = (domElement || events.connected || renderer.domElement) as HTMLElement
       const controls = useMemo(() => new ArcballControlsImpl(explCamera), [explCamera])
 
-      useFrame(() => {
-        if (controls.enabled) controls.update()
-      }, -1)
+      useFrame(
+        () => {
+          if (controls.enabled) controls.update()
+        },
+        { before: 'update' }
+      )
 
       useEffect(() => {
         controls.connect(explDomElement)

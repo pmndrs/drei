@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useFrame, useThree } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/extension'
 import { Vector3, Euler } from '#three'
 import { SimplexNoise } from 'three/examples/jsm/math/SimplexNoise.js'
 import { ForwardRefComponent } from '../../../utils/ts-utils'

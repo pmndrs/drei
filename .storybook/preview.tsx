@@ -41,8 +41,10 @@ const preview: Preview = {
       },
     },
   },
+  // Start on the renderer the build's platform aliases target (DREI_RENDERER, see main.mts), so
+  // core components render with the implementations that entry actually ships.
   initialGlobals: {
-    renderer: 'webgpu',
+    renderer: __DREI_RENDERER__,
   },
 
   tags: ['autodocs'],

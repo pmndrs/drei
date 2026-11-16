@@ -10,7 +10,8 @@
 
 import * as THREE from '#three'
 import * as React from 'react'
-import { ComputeFunction, ReactThreeFiber, ThreeElements, createPortal, useFrame, useThree } from '@react-three/fiber'
+import { ComputeFunction, ReactThreeFiber, ThreeElements, createPortal } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/extension'
 import { ForwardRefComponent } from '@utils/ts-utils'
 import { CubeRenderTarget } from '#drei-platform'
 
@@ -23,7 +24,7 @@ export type RenderCubeTextureProps = Omit<ThreeElements['texture'], 'ref' | 'arg
   depthBuffer?: boolean
   /** Optional generate mipmaps, defaults to false */
   generateMipmaps?: boolean
-  /** Optional render priority, defaults to 0 */
+  /** Optional render priority, defaults to -1 */
   renderPriority?: number
   /** Optional event priority, defaults to 0 */
   eventPriority?: number
@@ -215,8 +216,7 @@ export const RenderCubeTexture: ForwardRefComponent<RenderCubeTextureProps, Rend
           <DynamicTexture
             displayTextureRef={displayTextureRef}
             fboA={fboA}
-            fboB={fboB}
-            readBufferIndex={readBufferIndex}
+            renderPriority={renderPriority}
             {...props}
           />
         </>
@@ -231,14 +231,12 @@ export const RenderCubeTexture: ForwardRefComponent<RenderCubeTextureProps, Rend
 function DynamicTexture({
   displayTextureRef,
   fboA,
-  fboB,
-  readBufferIndex,
+  renderPriority,
   ...props
 }: {
   displayTextureRef: React.MutableRefObject<THREE.CubeTexture>
   fboA: CubeRenderTarget
-  fboB: CubeRenderTarget
-  readBufferIndex: React.MutableRefObject<number>
+  renderPriority: number
 } & Omit<ThreeElements['texture'], 'ref' | 'args'>) {
   const materialRef = React.useRef<THREE.Material | null>(null)
   const attachKey = typeof (props as any).attach === 'string' ? (props as any).attach : 'envMap'
@@ -271,19 +269,23 @@ function DynamicTexture({
     [attachKey]
   )
 
-  // Update texture on the material each frame BEFORE the Fisheye render
-  // Use priority -0.5 to run after Container (-1) but before default (0) and Fisheye's render
-  useFrame(() => {
-    if (!materialRef.current) return
+  // Publish the read buffer after capture, before consumers render it.
+  useFrame(
+    () => {
+      if (!materialRef.current) return
 
-    // Get the current read texture (the one NOT being rendered to)
-    const readTexture = displayTextureRef.current
+      // Get the current read texture (the one NOT being rendered to)
+      const readTexture = displayTextureRef.current
 
-    // Update material's texture
-    if (attachKey in materialRef.current) {
-      ;(materialRef.current as any)[attachKey] = readTexture
-    }
-  }, -0.5)
+      // Update material's texture
+      if (attachKey in materialRef.current) {
+        ;(materialRef.current as any)[attachKey] = readTexture
+      }
+    },
+    renderPriority > 0
+      ? { phase: 'render', priority: -renderPriority - 0.5 }
+      : { before: 'render', priority: -renderPriority - 0.5 }
+  )
 
   // Initial mount uses fboA texture
   return <primitive object={fboA.texture} attach={customAttach} />
@@ -316,28 +318,34 @@ function Container({
   const { scene: portalScene } = useThree()
 
   let count = 0
-  useFrame((state) => {
-    if (frames === Infinity || count < frames) {
-      // Double buffer: determine read/write FBOs
-      const readFbo = readBufferIndex.current === 0 ? fboA : fboB
-      const writeFbo = readBufferIndex.current === 0 ? fboB : fboA
+  useFrame(
+    (state) => {
+      if (frames === Infinity || count < frames) {
+        // Double buffer: determine read/write FBOs
+        const readFbo = readBufferIndex.current === 0 ? fboA : fboB
+        const writeFbo = readBufferIndex.current === 0 ? fboB : fboA
 
-      // Update display texture reference (read from previous frame's render)
-      displayTextureRef.current = readFbo.texture
+        // Update display texture reference (read from previous frame's render)
+        displayTextureRef.current = readFbo.texture
 
-      // Swap camera's render target to the write buffer
-      // CubeCamera internally uses this.renderTarget for its 6 face renders
-      ;(camera as any).renderTarget = writeFbo
+        // Swap camera's render target to the write buffer
+        // CubeCamera internally uses this.renderTarget for its 6 face renders
+        ;(camera as any).renderTarget = writeFbo
 
-      // Render to write buffer using portalScene from useThree (useFrame state has scheduler bug)
-      camera.update(state.gl, portalScene)
+        // Render to write buffer using portalScene from useThree (useFrame state has scheduler bug)
+        camera.update(state.renderer, portalScene)
 
-      // Swap buffers for next frame
-      readBufferIndex.current = readBufferIndex.current === 0 ? 1 : 0
+        // Swap buffers for next frame
+        readBufferIndex.current = readBufferIndex.current === 0 ? 1 : 0
 
-      count++
-    }
-  }, renderPriority)
+        count++
+      }
+    },
+    // Capture after scene/camera updates without taking over the main render.
+    renderPriority > 0
+      ? { phase: 'render', priority: -renderPriority }
+      : { before: 'render', priority: -renderPriority }
+  )
 
   return <>{children}</>
 }

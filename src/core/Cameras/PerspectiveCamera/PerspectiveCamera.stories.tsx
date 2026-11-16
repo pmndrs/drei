@@ -1,5 +1,7 @@
 import * as React from 'react'
 import { Meta, StoryObj } from '@storybook/react-vite'
+import * as THREE from '#three'
+import { useFrame } from '@react-three/fiber'
 
 import { Icosahedron, PerspectiveCamera } from 'drei'
 import { Setup } from '@sb/Setup'
@@ -64,4 +66,33 @@ export const PerspectiveCameraSceneSt = {
   },
   render: (args) => <PerspectiveCameraScene {...args} />,
   name: 'Default',
+} satisfies Story
+
+function FilmingScene(props: React.ComponentProps<typeof PerspectiveCamera>) {
+  const subject = React.useRef<THREE.Mesh>(null!)
+  useFrame((state) => {
+    subject.current.rotation.y = state.elapsed
+  })
+  return (
+    <>
+      <mesh ref={subject} position={[0, 0, -5]}>
+        <torusKnotGeometry />
+        <meshNormalMaterial />
+      </mesh>
+      <PerspectiveCamera position={[0, 0, 5]} {...props}>
+        {(texture) => (
+          <mesh position={[3, 0, 0]}>
+            <planeGeometry args={[2, 2]} />
+            <meshBasicMaterial map={texture} />
+          </mesh>
+        )}
+      </PerspectiveCamera>
+    </>
+  )
+}
+
+export const PerspectiveCameraFilmingSt = {
+  args: { frames: Infinity },
+  render: (args) => <FilmingScene {...args} />,
+  name: 'Filming into texture',
 } satisfies Story

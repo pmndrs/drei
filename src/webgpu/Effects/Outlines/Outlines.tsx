@@ -132,8 +132,8 @@ export function Outlines({
 }: OutlinesProps) {
   const ref = React.useRef<THREE.Group>(null)
   const [material] = React.useState(() => new OutlinesMaterial())
-  const { gl } = useThree()
-  const contextSize = gl.getDrawingBufferSize(new THREE.Vector2())
+  const { renderer } = useThree()
+  const contextSize = renderer.getDrawingBufferSize(new THREE.Vector2())
 
   // Extend R3F with our material
   React.useMemo(() => extend({ OutlinesMaterial }), [])

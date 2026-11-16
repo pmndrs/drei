@@ -27,7 +27,7 @@ export function GradientTexture({
   outerCircleRadius = 'auto',
   ...props
 }: GradientTextureProps) {
-  const gl = useThree((state: any) => state.gl)
+  const renderer = useThree((state) => state.renderer)
   const canvas: HTMLCanvasElement = React.useMemo(() => {
     const canvas = document.createElement('canvas')
     const context = canvas.getContext('2d')!
@@ -66,5 +66,5 @@ export function GradientTexture({
     return canvas
   }, [stops])
 
-  return <canvasTexture colorSpace={gl.outputColorSpace} args={[canvas]} attach="map" {...props} />
+  return <canvasTexture colorSpace={renderer.outputColorSpace} args={[canvas]} attach="map" {...props} />
 }

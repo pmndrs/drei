@@ -1,7 +1,8 @@
 /* eslint react-hooks/exhaustive-deps: 1 */
 import { Box3, Vector3, Sphere, Group, Object3D } from '#three'
 import * as React from 'react'
-import { ThreeElements, useThree } from '@react-three/fiber'
+import { ThreeElements } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/extension'
 import { ForwardRefComponent } from '../../../utils/ts-utils'
 
 export type OnCenterCallbackProps = {

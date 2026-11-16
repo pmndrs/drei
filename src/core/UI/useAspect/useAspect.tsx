@@ -1,4 +1,4 @@
-import { useThree } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/extension'
 
 /**
  * Calculates the size in viewport units that maintains an aspect ratio.

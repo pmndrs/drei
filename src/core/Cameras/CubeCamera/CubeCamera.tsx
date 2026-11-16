@@ -3,7 +3,8 @@
 
 import * as React from 'react'
 import { useEffect, useMemo, useCallback, useRef } from 'react'
-import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
+import { ThreeElements } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/extension'
 import { CubeCamera as ThreeCubeCamera, HalfFloatType, Fog, FogExp2, Texture, Group } from '#three'
 import { CubeRenderTarget } from '#drei-platform'
 
@@ -60,7 +61,7 @@ export type CubeCameraProps = Omit<ThreeElements['group'], 'children'> & {
  * @returns Object containing the cube render target (`fbo`), cube camera (`camera`), and an update function (`update`) to render the environment to the cube map.
  */
 export function useCubeCamera({ resolution = 256, near = 0.1, far = 1000, envMap, fog }: CubeCameraOptions = {}) {
-  const gl = useThree(({ gl }) => gl)
+  const renderer = useThree(({ renderer }) => renderer)
   const scene = useThree(({ scene }) => scene)
 
   /**
@@ -95,11 +96,11 @@ export function useCubeCamera({ resolution = 256, near = 0.1, far = 1000, envMap
     scene.background = envMap || originalBackground
     scene.fog = fog || originalFog
 
-    camera.update(gl, scene)
+    camera.update(renderer, scene)
 
     scene.fog = originalFog
     scene.background = originalBackground
-  }, [gl, scene, camera, envMap, fog])
+  }, [renderer, scene, camera, envMap, fog])
 
   return { fbo, camera, update }
 }

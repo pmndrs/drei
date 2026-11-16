@@ -5,7 +5,8 @@
 
 import * as THREE from '#three'
 import * as React from 'react'
-import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
+import { ThreeElements } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/extension'
 import { RenderCubeTexture, RenderCubeTextureApi } from '../RenderCubeTexture/RenderCubeTexture'
 
 export type FisheyeProps = ThreeElements['mesh'] & {
@@ -93,8 +94,8 @@ export function Fisheye({
   ) // fix things when resized #2165
 
   useFrame(
-    ({ gl }) => {
-      if (renderPriority) gl.render(sphere.current, orthoC)
+    ({ renderer }) => {
+      if (renderPriority) renderer.render(sphere.current, orthoC)
     },
     { phase: 'render' }
   )

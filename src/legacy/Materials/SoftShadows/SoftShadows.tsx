@@ -15,7 +15,7 @@
 
 import * as React from 'react'
 import * as THREE from '#three'
-import { useThree } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/legacy'
 
 export type SoftShadowsProps = {
   /** Size of the light source (the larger the softer the light), default: 25 */
@@ -128,15 +128,15 @@ float PCSS (sampler2D shadowMap, vec4 coords) {
   return vogelFilter(shadowMap, uv, zReceiver, 1.25 * penumbraRatio, angle);
 }`
 
-function reset(gl, scene, camera) {
+function reset(renderer, scene, camera) {
   scene.traverse((object) => {
     if (object.material) {
-      gl.properties.remove(object.material)
+      renderer.properties.remove(object.material)
       object.material.dispose?.()
     }
   })
-  gl.info.programs.length = 0
-  gl.compile(scene, camera)
+  renderer.info.programs.length = 0
+  renderer.compile(scene, camera)
 }
 
 /**
@@ -152,15 +152,15 @@ function reset(gl, scene, camera) {
  * ```
  */
 export function SoftShadows({ focus = 0, samples = 10, size = 25 }: SoftShadowsProps) {
-  const gl = useThree((state) => state.gl)
+  const renderer = useThree((state) => state.renderer)
   const scene = useThree((state) => state.scene)
   const camera = useThree((state) => state.camera)
   React.useEffect(() => {
     const originalShader = THREE.ShaderChunk.shadowmap_pars_fragment
-    const originalShadowMapType = gl.shadowMap.type
+    const originalShadowMapType = renderer.shadowMap.type
 
     // PCSS requires BasicShadowMap to read raw depth values (sampler2D, not sampler2DShadow)
-    gl.shadowMap.type = THREE.BasicShadowMap
+    renderer.shadowMap.type = THREE.BasicShadowMap
 
     // Inject PCSS shader code after USE_SHADOWMAP
     let shader = THREE.ShaderChunk.shadowmap_pars_fragment
@@ -183,12 +183,12 @@ export function SoftShadows({ focus = 0, samples = 10, size = 25 }: SoftShadowsP
     }
 
     THREE.ShaderChunk.shadowmap_pars_fragment = shader
-    reset(gl, scene, camera)
+    reset(renderer, scene, camera)
 
     return () => {
       THREE.ShaderChunk.shadowmap_pars_fragment = originalShader
-      gl.shadowMap.type = originalShadowMapType
-      reset(gl, scene, camera)
+      renderer.shadowMap.type = originalShadowMapType
+      reset(renderer, scene, camera)
     }
   }, [focus, size, samples])
   return null

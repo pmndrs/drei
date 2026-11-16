@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Setup } from '@sb/Setup'
+import { Setup, shouldFreezeAnimations } from '@sb/Setup'
 import { useGLTF, Environment, OrbitControls, Center } from 'drei'
 import { MeshTransmissionMaterial } from './MeshTransmissionMaterial'
 import { MeshTransmissionMaterial as MeshTransmissionMaterialWebGPU } from '../../../webgpu/Materials/MeshTransmissionMaterial'
@@ -69,7 +69,13 @@ function MeshTransmissionMaterialScene({
           <GelatinousCube TransmissionMaterial={TransmissionMaterial} {...props} />
         </Center>
       </group>
-      <OrbitControls minPolarAngle={0} maxPolarAngle={Math.PI / 2} autoRotate autoRotateSpeed={0.05} makeDefault />
+      <OrbitControls
+        minPolarAngle={0}
+        maxPolarAngle={Math.PI / 2}
+        autoRotate={!shouldFreezeAnimations()}
+        autoRotateSpeed={0.05}
+        makeDefault
+      />
       <Environment
         files="https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/dancing_hall_1k.hdr"
         background

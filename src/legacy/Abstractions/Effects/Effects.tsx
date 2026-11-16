@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { RGBAFormat, HalfFloatType, WebGLRenderTarget, UnsignedByteType, TextureDataType, ColorSpace } from '#three'
-import { extend, useThree, useFrame, ThreeElement, ThreeElements } from '@react-three/fiber'
+import { extend, ThreeElement, ThreeElements, useThree, useFrame } from '@react-three/fiber/legacy'
 import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
@@ -20,7 +20,7 @@ export type EffectsProps = Omit<ThreeElements['effectComposer'], 'ref' | 'args'>
   anisotropy?: number
 }
 
-declare module '@react-three/fiber' {
+declare module '@react-three/fiber/legacy' {
   interface ThreeElements {
     effectComposer: ThreeElement<typeof EffectComposer>
     renderPass: ThreeElement<typeof RenderPass>
@@ -76,7 +76,7 @@ export const Effects: ForwardRefComponent<EffectsProps, EffectComposer> = /* @__
     React.useMemo(() => extend({ EffectComposer, RenderPass, ShaderPass }), [])
     const composer = React.useRef<EffectComposer>(null!)
     React.useImperativeHandle(ref, () => composer.current, [])
-    const { scene, camera, gl, size, viewport } = useThree()
+    const { scene, camera, renderer, size, viewport } = useThree()
     const [target] = React.useState(() => {
       const t = new WebGLRenderTarget(size.width, size.height, {
         type: type || HalfFloatType,
@@ -98,11 +98,14 @@ export const Effects: ForwardRefComponent<EffectsProps, EffectComposer> = /* @__
     React.useEffect(() => {
       composer.current?.setSize(size.width, size.height)
       composer.current?.setPixelRatio(viewport.dpr)
-    }, [gl, size, viewport.dpr])
+    }, [renderer, size, viewport.dpr])
 
-    useFrame(() => {
-      if (!disableRender) composer.current?.render()
-    }, renderIndex)
+    useFrame(
+      () => {
+        if (!disableRender) composer.current?.render()
+      },
+      { phase: renderIndex > 0 ? 'render' : 'update', priority: -renderIndex }
+    )
 
     const passes: React.ReactNode[] = []
     if (!disableRenderPass)
@@ -115,7 +118,7 @@ export const Effects: ForwardRefComponent<EffectsProps, EffectComposer> = /* @__
     })
 
     return (
-      <effectComposer ref={composer} args={[gl, target]} {...props}>
+      <effectComposer ref={composer} args={[renderer, target]} {...props}>
         {passes}
       </effectComposer>
     )

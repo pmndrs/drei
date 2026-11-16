@@ -24,7 +24,7 @@ By default it gives you contact shadows and auto-centering.
 For a little more realistic results enable accumulative shadows, which requires that the canvas, and models, can handle shadows.
 
 ```jsx
-<Canvas shadows>
+<Canvas renderer={{ shadows: true }}>
   <Stage shadows="accumulative">
     <mesh castShadow />
   </Stage>

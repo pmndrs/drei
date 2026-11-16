@@ -2,7 +2,7 @@
 import * as React from 'react'
 import * as THREE from '#three'
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
-import { useThree } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/extension'
 import { suspend } from 'suspend-react'
 import type Hls from 'hls.js'
 
@@ -60,7 +60,7 @@ export function useVideoTexture(
     onVideoFrame?: VideoFrameRequestCallback
   } & Partial<Omit<HTMLVideoElement, 'children' | 'src' | 'srcObject'>> = {}
 ) {
-  const gl = useThree((state) => state.gl)
+  const renderer = useThree((state) => state.renderer)
   const hlsRef = useRef<Hls | null>(null)
 
   const texture = suspend(
@@ -95,7 +95,7 @@ export function useVideoTexture(
 
         const texture = new THREE.VideoTexture(video)
 
-        texture.colorSpace = gl.outputColorSpace
+        texture.colorSpace = renderer.outputColorSpace
 
         video.addEventListener(unsuspend, () => res(texture))
       }),

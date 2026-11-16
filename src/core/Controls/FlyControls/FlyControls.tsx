@@ -1,4 +1,5 @@
-import { EventManager, ThreeElement, useFrame, useThree } from '@react-three/fiber'
+import { EventManager, ThreeElement } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/extension'
 import * as React from 'react'
 import * as THREE from '#three'
 import { FlyControls as FlyControlsImpl } from 'three/examples/jsm/controls/FlyControls.js'
@@ -26,11 +27,11 @@ export const FlyControls: ForwardRefComponent<FlyControlsProps, FlyControlsImpl>
   const { onChange, makeDefault, ...rest } = props
   const invalidate = useThree((state) => state.invalidate)
   const camera = useThree((state) => state.camera)
-  const gl = useThree((state) => state.gl)
+  const renderer = useThree((state) => state.renderer)
   const events = useThree((state) => state.events) as EventManager<HTMLElement>
   const get = useThree((state) => state.get)
   const set = useThree((state) => state.set)
-  const explDomElement = (domElement || events.connected || gl.domElement) as HTMLElement
+  const explDomElement = (domElement || events.connected || renderer.domElement) as HTMLElement
   const controls = React.useMemo(() => new FlyControlsImpl(camera), [camera])
 
   React.useEffect(() => {

@@ -1,6 +1,7 @@
 /* eslint react-hooks/exhaustive-deps: 1 */
 import { Texture, TextureLoader } from '#three'
-import { useLoader, useThree, Vector3 } from '@react-three/fiber'
+import { useLoader, Vector3 } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/extension'
 import { useState } from 'react'
 import * as React from 'react'
 import * as THREE from '#three'

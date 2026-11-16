@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useThree } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/legacy'
 
 /**
  * Disables shadow map auto-update for baked, non-moving lights.
@@ -11,13 +11,13 @@ import { useThree } from '@react-three/fiber'
  * ```
  */
 export function BakeShadows() {
-  const gl = useThree((state) => state.gl)
+  const renderer = useThree((state) => state.renderer)
   useEffect(() => {
-    gl.shadowMap.autoUpdate = false
-    gl.shadowMap.needsUpdate = true
+    renderer.shadowMap.autoUpdate = false
+    renderer.shadowMap.needsUpdate = true
     return () => {
-      gl.shadowMap.autoUpdate = gl.shadowMap.needsUpdate = true
+      renderer.shadowMap.autoUpdate = renderer.shadowMap.needsUpdate = true
     }
-  }, [gl.shadowMap])
+  }, [renderer.shadowMap])
   return null
 }

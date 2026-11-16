@@ -168,7 +168,7 @@ export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Grou
   ) => {
     const ref = React.useRef<THREE.Group>(null!)
     const scene = useThree((state) => state.scene)
-    const gl = useThree((state) => state.gl)
+    const renderer = useThree((state) => state.renderer)
     const shadowCamera = React.useRef<THREE.OrthographicCamera>(null!)
 
     // Calculate actual dimensions based on scale
@@ -231,20 +231,20 @@ export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Grou
         horizontalBlurMaterial.inputTexture = renderTarget.texture
         horizontalBlurMaterial.blurAmount = blurAmount / 256
 
-        gl.setRenderTarget(renderTargetBlur as any)
-        gl.render(blurPlane, shadowCamera.current)
+        renderer.setRenderTarget(renderTargetBlur as any)
+        renderer.render(blurPlane, shadowCamera.current)
 
         // Vertical blur pass
         blurPlane.material = verticalBlurMaterial
         verticalBlurMaterial.inputTexture = renderTargetBlur.texture
         verticalBlurMaterial.blurAmount = blurAmount / 256
 
-        gl.setRenderTarget(renderTarget as any)
-        gl.render(blurPlane, shadowCamera.current)
+        renderer.setRenderTarget(renderTarget as any)
+        renderer.render(blurPlane, shadowCamera.current)
 
         blurPlane.visible = false
       },
-      [gl, blurPlane, horizontalBlurMaterial, verticalBlurMaterial, renderTarget, renderTargetBlur]
+      [renderer, blurPlane, horizontalBlurMaterial, verticalBlurMaterial, renderTarget, renderTargetBlur]
     )
 
     // Frame counter and state preservation
@@ -267,17 +267,17 @@ export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Grou
 
         // Render depth to shadow render target
         // Clear to WHITE (multiply blend: white = no change)
-        gl.setRenderTarget(renderTarget as any)
-        gl.setClearColor(0xffffff, 1)
-        gl.clear(true, true, false)
-        gl.render(scene, shadowCamera.current)
+        renderer.setRenderTarget(renderTarget as any)
+        renderer.setClearColor(0xffffff, 1)
+        renderer.clear(true, true, false)
+        renderer.render(scene, shadowCamera.current)
 
         // Apply blur passes
         blurShadows(blur)
         if (smooth) blurShadows(blur * 0.4)
 
         // Reset render target
-        gl.setRenderTarget(null)
+        renderer.setRenderTarget(null)
 
         // Restore scene state
         ref.current.visible = true

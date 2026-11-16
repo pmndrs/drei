@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { extend } from '@react-three/fiber'
+import { extend } from '@react-three/fiber/legacy'
 import { Texture } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 
@@ -47,7 +47,7 @@ const MyMaterial = shaderMaterial(
 )
 extend({ MyMaterial })
 
-declare module '@react-three/fiber' {
+declare module '@react-three/fiber/legacy' {
   interface ThreeElements {
     myMaterial: ThreeElements['shaderMaterial'] & {
       repeats: number

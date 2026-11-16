@@ -5,7 +5,8 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js'
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
 
-import { ObjectMap, useLoader, useThree } from '@react-three/fiber'
+import { ObjectMap, useLoader } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber/extension'
 import { Clone, CloneProps } from '../../Helpers/Clone/Clone'
 import { KTX2LoaderService } from '@utils/KTX2LoaderService'
 

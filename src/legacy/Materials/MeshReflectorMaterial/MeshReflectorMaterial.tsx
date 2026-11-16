@@ -12,13 +12,13 @@ import {
   UnsignedShortType,
   HalfFloatType,
 } from '#three'
-import { useFrame, useThree, extend, ThreeElements, ThreeElement } from '@react-three/fiber'
+import { extend, ThreeElements, ThreeElement, useFrame, useThree } from '@react-three/fiber/legacy'
 
 import { BlurPass } from '@legacy/Materials/BlurPass'
 import { MeshReflectorMaterial as MeshReflectorMaterialImpl } from './MeshReflectorMaterialClass'
 import { ForwardRefComponent } from '@utils/ts-utils'
 
-declare module '@react-three/fiber' {
+declare module '@react-three/fiber/legacy' {
   interface ThreeElements {
     meshReflectorMaterialImpl: ThreeElement<typeof MeshReflectorMaterialImpl>
   }
@@ -52,7 +52,7 @@ export const MeshReflectorMaterial: ForwardRefComponent<MeshReflectorMaterialPro
       ref
     ) => {
       extend({ MeshReflectorMaterialImpl })
-      const gl = useThree(({ gl }) => gl)
+      const renderer = useThree(({ renderer }) => renderer)
       const camera = useThree(({ camera }) => camera)
       const scene = useThree(({ scene }) => scene)
       blur = Array.isArray(blur) ? blur : [blur, blur]
@@ -153,7 +153,7 @@ export const MeshReflectorMaterial: ForwardRefComponent<MeshReflectorMaterialPro
         fbo1.depthTexture.type = UnsignedShortType
         const fbo2 = new WebGLRenderTarget(resolution, resolution, parameters)
         const blurpass = new BlurPass({
-          gl,
+          gl: renderer,
           resolution,
           width: blurX,
           height: blurY,
@@ -184,7 +184,7 @@ export const MeshReflectorMaterial: ForwardRefComponent<MeshReflectorMaterialPro
         }
         return [fbo1, fbo2, blurpass, reflectorProps]
       }, [
-        gl,
+        renderer,
         blurX,
         blurY,
         textureMatrix,
@@ -208,23 +208,23 @@ export const MeshReflectorMaterial: ForwardRefComponent<MeshReflectorMaterialPro
 
         // TODO: Implement per-eye reflection rendering for VR support
         // For now, skip reflection rendering during active VR session to avoid blocking XR initialization
-        if (gl.xr.isPresenting) return
+        if (renderer.xr.isPresenting) return
 
         parent.visible = false
-        const currentXrEnabled = gl.xr.enabled
-        const currentShadowAutoUpdate = gl.shadowMap.autoUpdate
+        const currentXrEnabled = renderer.xr.enabled
+        const currentShadowAutoUpdate = renderer.shadowMap.autoUpdate
         beforeRender()
-        gl.xr.enabled = false
-        gl.shadowMap.autoUpdate = false
-        gl.setRenderTarget(fbo1)
-        gl.state.buffers.depth.setMask(true)
-        if (!gl.autoClear) gl.clear()
-        gl.render(scene, virtualCamera)
-        if (hasBlur) blurpass.render(gl, fbo1, fbo2)
-        gl.xr.enabled = currentXrEnabled
-        gl.shadowMap.autoUpdate = currentShadowAutoUpdate
+        renderer.xr.enabled = false
+        renderer.shadowMap.autoUpdate = false
+        renderer.setRenderTarget(fbo1)
+        renderer.state.buffers.depth.setMask(true)
+        if (!renderer.autoClear) renderer.clear()
+        renderer.render(scene, virtualCamera)
+        if (hasBlur) blurpass.render(renderer, fbo1, fbo2)
+        renderer.xr.enabled = currentXrEnabled
+        renderer.shadowMap.autoUpdate = currentShadowAutoUpdate
         parent.visible = true
-        gl.setRenderTarget(null)
+        renderer.setRenderTarget(null)
       })
 
       return (

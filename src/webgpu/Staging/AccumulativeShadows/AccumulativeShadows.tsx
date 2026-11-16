@@ -308,7 +308,7 @@ export const AccumulativeShadows: ForwardRefComponent<AccumulativeShadowsProps, 
       },
       forwardRef
     ) => {
-      const gl = useThree((state) => state.gl) as unknown as THREE.WebGPURenderer
+      const renderer = useThree((state) => state.renderer)
       const scene = useThree((state) => state.scene)
       const camera = useThree((state) => state.camera)
       const invalidate = useThree((state) => state.invalidate)
@@ -318,7 +318,7 @@ export const AccumulativeShadows: ForwardRefComponent<AccumulativeShadowsProps, 
       // Create TSL material for the shadow plane
       const [softShadowMat] = React.useState(() => new SoftShadowMaterialImpl())
 
-      const [plm] = React.useState(() => new ProgressiveLightMap(gl, scene, resolution))
+      const [plm] = React.useState(() => new ProgressiveLightMap(renderer, scene, resolution))
       React.useLayoutEffect(() => {
         plm.configure(gPlane.current)
       }, [plm])

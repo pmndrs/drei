@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber/legacy'
 import { Mesh } from 'three'
 import { Meta, StoryObj } from '@storybook/react-vite'
 

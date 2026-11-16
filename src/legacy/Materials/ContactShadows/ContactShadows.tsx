@@ -3,7 +3,7 @@
 
 import * as React from 'react'
 import * as THREE from '#three'
-import { ThreeElements, useFrame, useThree } from '@react-three/fiber'
+import { ThreeElements, useFrame, useThree } from '@react-three/fiber/legacy'
 import { HorizontalBlurShader } from 'three/examples/jsm/shaders/HorizontalBlurShader.js'
 import { VerticalBlurShader } from 'three/examples/jsm/shaders/VerticalBlurShader.js'
 import { ForwardRefComponent } from '@utils/ts-utils'
@@ -66,7 +66,7 @@ export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Grou
   ) => {
     const ref = React.useRef<THREE.Group>(null!)
     const scene = useThree((state) => state.scene)
-    const gl = useThree((state) => state.gl)
+    const renderer = useThree((state) => state.renderer)
     const shadowCamera = React.useRef<THREE.OrthographicCamera>(null!)
 
     width = width * (Array.isArray(scale) ? scale[0] : scale || 1)
@@ -127,15 +127,15 @@ export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Grou
       horizontalBlurMaterial.uniforms.tDiffuse.value = renderTarget.texture
       horizontalBlurMaterial.uniforms.h.value = (blur * 1) / 256
 
-      gl.setRenderTarget(renderTargetBlur)
-      gl.render(blurPlane, shadowCamera.current)
+      renderer.setRenderTarget(renderTargetBlur)
+      renderer.render(blurPlane, shadowCamera.current)
 
       blurPlane.material = verticalBlurMaterial
       verticalBlurMaterial.uniforms.tDiffuse.value = renderTargetBlur.texture
       verticalBlurMaterial.uniforms.v.value = (blur * 1) / 256
 
-      gl.setRenderTarget(renderTarget)
-      gl.render(blurPlane, shadowCamera.current)
+      renderer.setRenderTarget(renderTarget)
+      renderer.render(blurPlane, shadowCamera.current)
 
       blurPlane.visible = false
     }
@@ -154,12 +154,12 @@ export const ContactShadows: ForwardRefComponent<ContactShadowsProps, THREE.Grou
         scene.background = null
         scene.overrideMaterial = depthMaterial
 
-        gl.setRenderTarget(renderTarget)
-        gl.render(scene, shadowCamera.current)
+        renderer.setRenderTarget(renderTarget)
+        renderer.render(scene, shadowCamera.current)
 
         blurShadows(blur)
         if (smooth) blurShadows(blur * 0.4)
-        gl.setRenderTarget(null)
+        renderer.setRenderTarget(null)
 
         ref.current.visible = true
         scene.overrideMaterial = initialOverrideMaterial

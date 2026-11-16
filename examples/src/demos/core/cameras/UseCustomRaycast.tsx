@@ -1,11 +1,12 @@
-import { createPortal, useFrame, useThree } from '@react-three/fiber'
+import { createPortal } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber/extension'
 import { useMemo, useRef, useState } from 'react'
 import { OrbitControls, OrthographicCamera, useCustomRaycast } from '@react-three/drei/core'
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'
 import { Mesh, OrthographicCamera as OrthographicCameraImpl, Scene, Matrix4 } from 'three'
 
 //* useCustomRaycast Demo ==============================
-// NOTE: This hook is ONLY needed for MANUAL RENDERING (gl.render).
+// NOTE: This hook is ONLY needed for MANUAL RENDERING (renderer.render).
 // Modern R3F portals have their own event systems - no need for this hook in most cases!
 
 function ManualRenderScene() {
@@ -13,7 +14,7 @@ function ManualRenderScene() {
   const cubeRef = useRef<Mesh>(null!)
   const [hover, setHover] = useState<number | null>(null)
 
-  const gl = useThree((state) => state.gl)
+  const renderer = useThree((state) => state.renderer)
   const mainScene = useThree((state) => state.scene)
   const mainCamera = useThree((state) => state.camera)
 
@@ -29,19 +30,22 @@ function ManualRenderScene() {
   const matrix = new Matrix4()
 
   //* Manual Rendering --------------------------------
-  // We're calling gl.render() directly, which bypasses R3F's event system
-  useFrame(() => {
-    matrix.copy(mainCamera.matrix).invert()
-    if (cubeRef.current) cubeRef.current.quaternion.setFromRotationMatrix(matrix)
+  // We're calling renderer.render() directly, which bypasses R3F's event system
+  useFrame(
+    () => {
+      matrix.copy(mainCamera.matrix).invert()
+      if (cubeRef.current) cubeRef.current.quaternion.setFromRotationMatrix(matrix)
 
-    // Manual rendering - this is why we need useCustomRaycast!
-    gl.autoClear = true
-    gl.render(mainScene, mainCamera)
+      // Manual rendering - this is why we need useCustomRaycast!
+      renderer.autoClear = true
+      renderer.render(mainScene, mainCamera)
 
-    gl.autoClear = false
-    gl.clearDepth()
-    gl.render(virtualScene, hudCameraRef.current)
-  }, 1)
+      renderer.autoClear = false
+      renderer.clearDepth()
+      renderer.render(virtualScene, hudCameraRef.current)
+    },
+    { phase: 'render' }
+  )
 
   return (
     <>
@@ -152,8 +156,9 @@ export default function UseCustomRaycastDemo() {
           <div>
             <h3>Manual Rendering Example</h3>
             <p>
-              <strong>When you need it:</strong> This uses <code>gl.render()</code> directly, bypassing R3F's event
-              system. The <code>useCustomRaycast</code> hook is <strong>REQUIRED</strong> to make pointer events work.
+              <strong>When you need it:</strong> This uses <code>renderer.render()</code> directly, bypassing R3F's
+              event system. The <code>useCustomRaycast</code> hook is <strong>REQUIRED</strong> to make pointer events
+              work.
             </p>
             <p>Pink cube in bottom-right uses manual rendering. Hover over faces to highlight them.</p>
           </div>
@@ -173,8 +178,8 @@ export default function UseCustomRaycastDemo() {
 
         <div style={{ marginTop: '1rem', padding: '1rem', background: '#f0f0f0', borderRadius: '4px' }}>
           <strong>TL;DR:</strong> In modern R3F, you almost never need this hook. Use it ONLY when doing manual
-          rendering with <code>gl.render()</code>. For normal scenes, portals, and HUDs (using drei components like{' '}
-          <code>Hud</code>), events work automatically!
+          rendering with <code>renderer.render()</code>. For normal scenes, portals, and HUDs (using drei components
+          like <code>Hud</code>), events work automatically!
         </div>
       </div>
 

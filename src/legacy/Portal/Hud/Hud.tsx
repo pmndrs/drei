@@ -1,6 +1,6 @@
 import * as THREE from '#three'
 import * as React from 'react'
-import { useFrame, useThree, createPortal } from '@react-three/fiber'
+import { createPortal, useFrame, useThree } from '@react-three/fiber/legacy'
 
 type RenderHudProps = {
   defaultScene: THREE.Scene
@@ -9,22 +9,25 @@ type RenderHudProps = {
 }
 
 function RenderHud({ defaultScene, defaultCamera, renderPriority = 1 }: RenderHudProps) {
-  const { gl, scene, camera } = useThree()
+  const { renderer, scene, camera } = useThree()
   let oldCLear
-  useFrame(() => {
-    oldCLear = gl.autoClear
-    if (renderPriority === 1) {
-      // Clear scene and render the default scene
-      gl.autoClear = true
-      gl.render(defaultScene, defaultCamera)
-    }
-    // Disable cleaning and render the portal with its own camera
-    gl.autoClear = false
-    gl.clearDepth()
-    gl.render(scene, camera)
-    // Restore default
-    gl.autoClear = oldCLear
-  }, renderPriority)
+  useFrame(
+    () => {
+      oldCLear = renderer.autoClear
+      if (renderPriority === 1) {
+        // Clear scene and render the default scene
+        renderer.autoClear = true
+        renderer.render(defaultScene, defaultCamera)
+      }
+      // Disable cleaning and render the portal with its own camera
+      renderer.autoClear = false
+      renderer.clearDepth()
+      renderer.render(scene, camera)
+      // Restore default
+      renderer.autoClear = oldCLear
+    },
+    { phase: renderPriority > 0 ? 'render' : 'update', priority: -renderPriority }
+  )
   // Without an element that receives pointer events state.pointer will always be 0/0
   return <group onPointerOver={() => null} />
 }

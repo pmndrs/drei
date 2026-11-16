@@ -1,4 +1,4 @@
-import { useFrame } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber/extension'
 import { OrbitControls } from '@react-three/drei/core'
 import { Trail } from '@react-three/drei/experimental'
 import { CanvasWithToggle } from '@ex/components/PlatformSwitch'

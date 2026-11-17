@@ -10,6 +10,9 @@ const root = process.platform === 'win32' ? path.resolve('/') : '/'
 const external = (id) => !id.startsWith('.') && !id.startsWith(root)
 const extensions = ['.js', '.jsx', '.ts', '.tsx', '.json']
 
+// Every source file is an entry, except the root index (built on its own) and the unit tests with their helpers.
+const entries = ['src/**/*.ts', 'src/**/*.tsx', '!src/index.ts', '!src/**/*.test.ts', '!src/**/*.test-utils.ts']
+
 const getBabelOptions = ({ useESModules }) => ({
   babelrc: false,
   extensions,
@@ -43,7 +46,7 @@ const getBabelOptions = ({ useESModules }) => ({
 
 export default [
   {
-    input: ['src/**/*.ts', 'src/**/*.tsx', '!src/index.ts'],
+    input: entries,
     output: { dir: `dist`, format: 'esm' },
     external,
     plugins: [
@@ -67,7 +70,7 @@ export default [
     preserveModules: true,
   },
   {
-    input: ['src/**/*.ts', 'src/**/*.tsx', '!src/index.ts'],
+    input: entries,
     output: { dir: `dist`, format: 'cjs' },
     external,
     plugins: [

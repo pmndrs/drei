@@ -36,9 +36,10 @@
     "eslint:ci": "eslint .",
     "prettier": "prettier --check .",
     "prettier-fix": "prettier --write .",
-    "test": "yarn eslint:ci && yarn typecheck && yarn prettier && (cd test/e2e; ./e2e.sh 0.180)",
+    "test": "yarn eslint:ci && yarn typecheck && yarn prettier && yarn test:unit && (cd test/e2e; ./e2e.sh 0.180)",
+    "test:unit": "vitest run",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false --strict --jsx react",
-    "typegen": "tsc --emitDeclarationOnly",
+    "typegen": "tsc --project tsconfig.build.json --emitDeclarationOnly",
     "storybook": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider\" storybook dev -p 6006",
     "build-storybook": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider\" storybook build",
     "chromatic": "chromatic --project-token $CHROMATIC_PROJECT_TOKEN",
@@ -125,7 +126,8 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3",
     "vite": "^5.4.11",
-    "vite-plugin-glslify": "^2.1.0"
+    "vite-plugin-glslify": "^2.1.0",
+    "vitest": "^3.2.4"
   },
   "peerDependencies": {
     "@react-three/fiber": "^9.0.0",

@@ -19,6 +19,14 @@ You'll find a sample [`Example.tsx`](src/core/Example.tsx) component and its ass
 
 Be sure your commit messages follow this specification: https://www.conventionalcommits.org/en/v1.0.0-beta.4/
 
+## Tests
+
+Unit tests run with [Vitest](https://vitest.dev). A test sits next to the module it covers, as `*.test.ts`; a helper used only by tests is named `*.test-utils.ts`. Both are left out of the published package.
+
+- `yarn test:unit` runs the unit tests once
+- `yarn vitest` runs them in watch mode
+- `yarn test` runs everything: lint, typecheck, formatting, the unit tests and the end-to-end snapshot test
+
 ## Storybook
 
 If you're adding a brand new feature, you need to make sure you add a storybook entry, here's a few tips:

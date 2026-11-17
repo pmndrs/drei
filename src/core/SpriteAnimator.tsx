@@ -82,7 +82,7 @@ export type SpriteAnimatorProps = {
     aspect: Vector3
   } | null
   /** Configuration options for the canvas context when loading textures
-   * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/CanvasRenderingContext2D
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/getContext#contextattributes
    */
   canvasRenderingContext2DSettings?: CanvasRenderingContext2DSettings
   /** Controls whether frame positions are rounded for precise pixel alignment.

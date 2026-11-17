@@ -4,6 +4,7 @@ import * as THREE from 'three'
 import { ThreeElements, useThree } from '@react-three/fiber'
 
 import { Line } from '../core/Line'
+import { computeEyeRotation } from './Facemesh.eye'
 
 export type MediaPipeFaceMesh = typeof FacemeshDatas.SAMPLE_FACE
 
@@ -417,11 +418,12 @@ export const FacemeshEye = /* @__PURE__ */ React.forwardRef<FacemeshEyeApi, Face
           const lookUp = faceBlendshapes.categories[blendshapes[2]].score
           const lookDown = faceBlendshapes.categories[blendshapes[3]].score
 
-          const hfov = FacemeshEyeDefaults.fov.horizontal * THREE.MathUtils.DEG2RAD
-          const vfov = FacemeshEyeDefaults.fov.vertical * THREE.MathUtils.DEG2RAD
-          const rx = hfov * 0.5 * (lookDown - lookUp)
-          const ry = vfov * 0.5 * (lookIn - lookOut) * (side === 'left' ? 1 : -1)
-          rotation.set(rx, ry, 0)
+          const { pitch, yaw } = computeEyeRotation(
+            { lookIn, lookOut, lookUp, lookDown },
+            side,
+            FacemeshEyeDefaults.fov
+          )
+          rotation.set(pitch, yaw, 0)
 
           irisDirRef.current.setRotationFromEuler(rotation)
         }

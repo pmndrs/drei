@@ -91,3 +91,17 @@ or get L/R iris direction:
 ```tsx
 api.eyeRightRef.current.irisDirRef.current.localToWorld(new THREE.Vector3(0, 0, -1))
 ```
+
+## Breaking changes
+
+### Unreleased
+
+<details>
+
+<summary>The eye rotation ranges are now applied to the right axes.</summary>
+
+The horizontal and vertical ranges of the eyes (`FacemeshEyeDefaults.fov`) were swapped: the horizontal one (100°) drove the pitch and the vertical one (90°) drove the yaw.
+
+With `eyes` on, `irisDirRef` now rotates up to ±50° sideways (was ±45°) and up to ±45° up or down (was ±50°).
+
+</details>

@@ -1,0 +1,93 @@
+---
+title: FaceTracking
+sourcecode: src/web/FaceTracking.tsx
+---
+
+<Intro>
+  One webcam and one face detection, shared between the components that need them.
+</Intro>
+
+Prerequisite: wrap into a [`FaceLandmarker`](https://drei.docs.pmnd.rs/misc/face-landmarker) provider
+
+```tsx
+<FaceLandmarker>
+  <FaceTracking>
+    <FaceControls />
+    {/* ...other components reading the same detection */}
+  </FaceTracking>
+</FaceLandmarker>
+```
+
+`FaceTracking` owns the webcam video texture and runs the detection once per video frame. The latest result is kept outside React state: a new result does not re-render anything.
+
+It is optional: [`FaceControls`](https://drei.docs.pmnd.rs/controls/face-controls) used alone creates one for itself. When a `FaceTracking` is above it, `FaceControls` uses that one and ignores its own `videoTexture`, `manualDetect` and `faceLandmarkerResult` props.
+
+```tsx
+export type FaceTrackingProps = {
+  /** VideoTexture or WebcamVideoTexture options */
+  videoTexture?: VideoTextureProps
+  /** Disable the automatic face-detection => you should provide `faceLandmarkerResult` yourself in this case */
+  manualDetect?: boolean
+  /** FaceLandmarker result, published as is when provided (it takes precedence over the automatic detection) */
+  faceLandmarkerResult?: FaceLandmarkerResult
+  /** The components sharing this webcam and this detection */
+  children?: ReactNode
+}
+
+export type FaceTrackingApi = {
+  /**
+   * The latest raw detection result, `undefined` until a first one is available.
+   * Meant to be read in the frame loop: a new result re-renders nothing.
+   * Only the first detected face (index 0) is used by drei components.
+   */
+  getResult: () => FaceLandmarkerResult | undefined
+  /** Be called with each new result. Returns the function that unsubscribes the listener. */
+  subscribe: (listener: (result: FaceLandmarkerResult | undefined) => void) => () => void
+  /** The video texture the detection runs on, `null` with `manualDetect` or while the video is not ready */
+  videoTextureRef: RefObject<THREE.VideoTexture | null>
+}
+```
+
+## Reading the result
+
+The api is available through `ref`, or with `useFaceTracking()` from a descendant (`null` when there is no `FaceTracking` above).
+
+Read the raw [`FaceLandmarkerResult`](https://ai.google.dev/edge/api/mediapipe/js/tasks-vision.facelandmarkerresult) in the frame loop:
+
+```tsx
+function JawOpen() {
+  const faceTracking = useFaceTracking()
+
+  useFrame(() => {
+    const result = faceTracking?.getResult()
+    const blendshapes = result?.faceBlendshapes?.[0] // only the first face
+    // ...
+  })
+
+  return null
+}
+```
+
+or subscribe, to be called once per detection:
+
+```tsx
+useEffect(() => faceTracking?.subscribe((result) => console.log(result)), [faceTracking])
+```
+
+## Video texture
+
+By default the webcam is used. Pass `videoTexture` to detect on a video file instead:
+
+```tsx
+<FaceTracking videoTexture={{ src: '/face.mp4' }}>{/* ... */}</FaceTracking>
+```
+
+## Manual detection
+
+With `manualDetect`, no video texture is created: run the detection yourself and pass each result as `faceLandmarkerResult`.
+
+```tsx
+<FaceTracking manualDetect faceLandmarkerResult={faceLandmarkerResult}>
+  {/* ... */}
+</FaceTracking>
+```

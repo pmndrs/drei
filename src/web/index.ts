@@ -24,6 +24,7 @@ export { DragControls } from './DragControls'
 
 // Misc
 export * from './FaceLandmarker'
+export * from './FaceTracking'
 
 // Shapes
 export * from './Facemesh'

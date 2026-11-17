@@ -143,6 +143,7 @@ https://pmndrs.github.io/drei
           <li><a href="#trail--useTrail">Trail / useTrail</a></li>
           <li><a href="#useSurfaceSampler">useSurfaceSampler</a></li>
           <li><a href="#facelandmarker">FaceLandmarker</a></li>
+          <li><a href="#facetracking">FaceTracking</a></li>
         </ul>
         <li><a href="#loading">Loaders</a></li>
         <ul>
@@ -567,6 +568,10 @@ https://pmndrs.github.io/drei
 #### FaceLandmarker
 
 [Documentation has moved here](https://pmndrs.github.io/drei/misc/face-landmarker)
+
+#### FaceTracking
+
+[Documentation has moved here](https://pmndrs.github.io/drei/misc/face-tracking)
 
 ### Loading
 

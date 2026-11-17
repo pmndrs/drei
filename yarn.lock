@@ -2811,10 +2811,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mediapipe/tasks-vision@npm:0.10.17":
-  version: 0.10.17
-  resolution: "@mediapipe/tasks-vision@npm:0.10.17"
-  checksum: 10c0/f2f5dd9ca39d562b902a6d964f8b786f17a143f42776d0d26b8c79632b10cf210e28d98ec92de757b7bb2e6595ed4f9bbf5e49f1709b09dc08709bd276ced442
+"@mediapipe/tasks-vision@npm:1.2.3":
+  version: 1.2.3
+  resolution: "@mediapipe/tasks-vision@npm:1.2.3"
+  checksum: 10c0/e289ec74bc0f291ceefb250dbca4fc9443bdd6b54bd9c96ac2d1099b60c2e2398950c107a1a0dfb2d23b52b34f77667bb69745bbe3f759e1a7d746867b1e130c
   languageName: node
   linkType: hard
 
@@ -3282,7 +3282,7 @@ __metadata:
     "@eslint/compat": "npm:^1.2.3"
     "@eslint/eslintrc": "npm:^3.2.0"
     "@eslint/js": "npm:^9.15.0"
-    "@mediapipe/tasks-vision": "npm:0.10.17"
+    "@mediapipe/tasks-vision": "npm:1.2.3"
     "@monogrid/gainmap-js": "npm:^3.0.6"
     "@playwright/test": "npm:^1.45.2"
     "@react-three/fiber": "npm:^9.0.0"

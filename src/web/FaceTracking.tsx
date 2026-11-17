@@ -29,7 +29,10 @@ export type FaceTrackingProps = {
   videoTexture?: VideoTextureProps
   /** Disable the automatic face-detection => you should provide `faceLandmarkerResult` yourself in this case */
   manualDetect?: boolean
-  /** FaceLandmarker result, published as is when provided (it takes precedence over the automatic detection) */
+  /**
+   * FaceLandmarker result, published as is when provided (it takes precedence over the automatic detection).
+   * Clearing it drops the result.
+   */
   faceLandmarkerResult?: FaceLandmarkerResult
   /** The components sharing this webcam and this detection */
   children?: ReactNode
@@ -72,8 +75,22 @@ export const FaceTracking = /* @__PURE__ */ forwardRef<FaceTrackingApi, FaceTrac
 
     const [store] = useState(() => createFaceTrackingStore(faceLandmarkerResult))
 
+    // Whether the store currently holds a provided result, so that clearing the prop drops it
+    const wasProvidedResultRef = useRef(faceLandmarkerResult !== undefined)
+
     useEffect(() => {
-      if (faceLandmarkerResult) store.publish(faceLandmarkerResult)
+      if (faceLandmarkerResult !== undefined) {
+        wasProvidedResultRef.current = true
+        store.publish(faceLandmarkerResult)
+        return
+      }
+
+      // Never provided: nothing to drop, and an automatic detection may already be published
+      if (!wasProvidedResultRef.current) return
+
+      // The provided result was cleared: drop it rather than keep it as a stale result
+      wasProvidedResultRef.current = false
+      store.publish(undefined)
     }, [faceLandmarkerResult, store])
 
     //

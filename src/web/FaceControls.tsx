@@ -3,7 +3,6 @@ import * as THREE from 'three'
 import * as React from 'react'
 import {
   useState,
-  Suspense,
   useEffect,
   useRef,
   useCallback,
@@ -13,18 +12,15 @@ import {
   RefObject,
   createContext,
   useContext,
-  ComponentRef,
+  useSyncExternalStore,
 } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import type { FaceLandmarker, FaceLandmarkerResult } from '@mediapipe/tasks-vision'
+import type { FaceLandmarkerResult } from '@mediapipe/tasks-vision'
 import { easing } from 'maath'
 
-import { VideoTexture, VideoTextureProps } from '../core/VideoTexture'
-import { WebcamVideoTexture } from './WebcamVideoTexture'
+import { VideoTextureProps } from '../core/VideoTexture'
 import { Facemesh, FacemeshApi, FacemeshProps } from './Facemesh'
-import { useFaceLandmarker } from './FaceLandmarker'
-
-type VideoFrame = Parameters<FaceLandmarker['detectForVideo']>[0]
+import { FaceTracking, FaceTrackingApi, useFaceTracking } from './FaceTracking'
 
 function mean(v1: THREE.Vector3, v2: THREE.Vector3) {
   return v1.clone().add(v2).multiplyScalar(0.5)
@@ -93,12 +89,43 @@ const FaceControlsContext = /* @__PURE__ */ createContext({} as FaceControlsApi)
  */
 
 export const FaceControls = /* @__PURE__ */ forwardRef<FaceControlsApi, FaceControlsProps>(
+  ({ videoTexture, manualDetect, faceLandmarkerResult, ...props }, fref) => {
+    const faceTracking = useFaceTracking()
+
+    // A `FaceTracking` above: share its webcam and its detection
+    if (faceTracking) {
+      return <FaceControlsImpl ref={fref} {...props} faceTracking={faceTracking} />
+    }
+
+    // None: an implicit one, for this `FaceControls` alone
+    return (
+      <FaceTracking videoTexture={videoTexture} manualDetect={manualDetect} faceLandmarkerResult={faceLandmarkerResult}>
+        <FaceControlsWithFaceTracking ref={fref} {...props} />
+      </FaceTracking>
+    )
+  }
+)
+
+type FaceControlsImplProps = Omit<FaceControlsProps, 'videoTexture' | 'manualDetect' | 'faceLandmarkerResult'>
+
+/** `FaceControls`, reading the `FaceTracking` its parent has just rendered */
+const FaceControlsWithFaceTracking = /* @__PURE__ */ forwardRef<FaceControlsApi, FaceControlsImplProps>(
+  (props, fref) => {
+    const faceTracking = useFaceTracking()
+    if (!faceTracking) return null // cannot happen: always rendered inside a `FaceTracking`
+
+    return <FaceControlsImpl ref={fref} {...props} faceTracking={faceTracking} />
+  }
+)
+
+const FaceControlsImpl = /* @__PURE__ */ forwardRef<
+  FaceControlsApi,
+  FaceControlsImplProps & { faceTracking: FaceTrackingApi }
+>(
   (
     {
+      faceTracking,
       camera,
-      videoTexture = { start: true },
-      manualDetect = false,
-      faceLandmarkerResult,
       manualUpdate = false,
       makeDefault,
       smoothTime = 0.25,
@@ -214,25 +241,6 @@ export const FaceControls = /* @__PURE__ */ forwardRef<FaceControlsApi, FaceCont
     })
 
     //
-    // onVideoFrame (only used if !manualDetect)
-    //
-
-    const videoTextureRef = useRef<ComponentRef<typeof VideoTexture>>(null)
-
-    const [_faceLandmarkerResult, setFaceLandmarkerResult] = useState<FaceLandmarkerResult>()
-    const faceLandmarker = useFaceLandmarker()
-    const onVideoFrame = useCallback<NonNullable<VideoTextureProps['onVideoFrame']>>(
-      (now, metadata) => {
-        const texture = videoTextureRef.current
-        if (!texture) return
-        const videoFrame = texture.source.data as VideoFrame
-        const result = faceLandmarker?.detectForVideo(videoFrame, now)
-        setFaceLandmarkerResult(result)
-      },
-      [faceLandmarker]
-    )
-
-    //
     // Ref API
     //
 
@@ -263,34 +271,14 @@ export const FaceControls = /* @__PURE__ */ forwardRef<FaceControlsApi, FaceCont
     //
     //
 
-    const result = faceLandmarkerResult ?? _faceLandmarkerResult
-
-    const points = result?.faceLandmarks[0]
-    const facialTransformationMatrix = result?.facialTransformationMatrixes?.[0]
-    const faceBlendshapes = result?.faceBlendshapes?.[0]
-
-    const videoTextureProps = { onVideoFrame, ...videoTexture }
-
     return (
       <FaceControlsContext.Provider value={api}>
-        {!manualDetect && (
-          <Suspense fallback={null}>
-            {'src' in videoTextureProps ? (
-              <VideoTexture ref={videoTextureRef} {...videoTextureProps} />
-            ) : (
-              <WebcamVideoTexture ref={videoTextureRef} {...videoTextureProps} />
-            )}
-          </Suspense>
-        )}
-
-        <Facemesh
+        <FaceControlsFacemesh
           ref={facemeshApiRef}
+          faceTracking={faceTracking}
           children={<meshNormalMaterial side={THREE.DoubleSide} />}
           {...facemesh}
-          points={points}
           depth={depth}
-          facialTransformationMatrix={facialTransformationMatrix}
-          faceBlendshapes={faceBlendshapes}
           eyes={eyes}
           eyesAsOrigin={eyesAsOrigin}
           offset={offset}
@@ -300,6 +288,32 @@ export const FaceControls = /* @__PURE__ */ forwardRef<FaceControlsApi, FaceCont
           visible={debug}
         />
       </FaceControlsContext.Provider>
+    )
+  }
+)
+
+/**
+ * The `Facemesh` of a `FaceControls`, fed with the first face of the latest detection result.
+ *
+ * `Facemesh` is driven by props, so each new result has to re-render it: this component subscribes to the
+ * results so that it is the only one to re-render, not the whole `FaceControls`.
+ */
+const FaceControlsFacemesh = /* @__PURE__ */ forwardRef<FacemeshApi, FacemeshProps & { faceTracking: FaceTrackingApi }>(
+  ({ faceTracking, ...props }, fref) => {
+    const result = useSyncExternalStore(faceTracking.subscribe, faceTracking.getResult, faceTracking.getResult)
+
+    const points = result?.faceLandmarks[0]
+    const facialTransformationMatrix = result?.facialTransformationMatrixes?.[0]
+    const faceBlendshapes = result?.faceBlendshapes?.[0]
+
+    return (
+      <Facemesh
+        ref={fref}
+        {...props}
+        points={points}
+        facialTransformationMatrix={facialTransformationMatrix}
+        faceBlendshapes={faceBlendshapes}
+      />
     )
   }
 )

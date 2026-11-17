@@ -28,6 +28,8 @@ Prerequisite: wrap into a [`FaceLandmarker`](https://drei.docs.pmnd.rs/misc/face
 <FaceControls />
 ```
 
+`FaceControls` runs its own webcam and face detection. To share them with other components, wrap them into a [`FaceTracking`](https://drei.docs.pmnd.rs/misc/face-tracking) provider: `videoTexture`, `manualDetect` and `faceLandmarkerResult` are then the provider's props, and are ignored on `FaceControls`.
+
 ```tsx
 export type FaceControlsProps = {
   /** The camera to be controlled */

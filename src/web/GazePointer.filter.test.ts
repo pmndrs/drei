@@ -172,6 +172,47 @@ describe('createGazeFilter', () => {
     })
   })
 
+  describe('a time constant of 0', () => {
+    it('turns the smoothing off: each accepted sample is the output, also right after a saccade', () => {
+      const filter = createGazeFilter({ timeConstant: 0 })
+      const samples = run(filter, { target: (time) => (time > 1000 ? B : A), duration: 2000, sigma: 5 })
+      const beforeSaccade = samples.filter(({ time }) => time <= 1000)
+      const afterSaccade = samples.filter(({ time }) => time > 1000)
+
+      for (const { input, output } of beforeSaccade) {
+        expect(output.x).toBeCloseTo(input.x, 6)
+        expect(output.y).toBeCloseTo(input.y, 6)
+      }
+      // The first sample at B is a candidate, the output holds. From the confirmation on, the output is the sample.
+      for (const { input, output } of afterSaccade.slice(1)) {
+        expect(Number.isFinite(output.x)).toBe(true)
+        expect(Number.isFinite(output.y)).toBe(true)
+        expect(output.x).toBeCloseTo(input.x, 6)
+        expect(output.y).toBeCloseTo(input.y, 6)
+      }
+    })
+
+    it('turns the memory of the noise estimate off, and still handles an outlier and a saccade', () => {
+      const isOutlier = (time: number) => Math.abs(time - 500) < 1
+      const filter = createGazeFilter({ noiseTimeConstant: 0 })
+      const samples = run(filter, {
+        target: (time) => (isOutlier(time) || time > 1000 ? B : A),
+        duration: 2000,
+        sigma: 5,
+      })
+      const outlier = samples.findIndex(({ time }) => isOutlier(time))
+
+      for (const { output } of samples) {
+        expect(Number.isFinite(output.x)).toBe(true)
+        expect(Number.isFinite(output.y)).toBe(true)
+      }
+      // The outlier is dismissed, and the noise estimate survives it: the saccade that follows is still detected.
+      expect(distance(samples[outlier + 1].output, A)).toBeLessThan(15)
+      const [, ...confirmed] = samples.filter(({ time }) => time > 1000)
+      for (const { output } of confirmed) expect(distance(output, B)).toBeLessThan(15)
+    })
+  })
+
   it('resets on a gap: the first point after it is not averaged with the points before it', () => {
     const filter = createGazeFilter()
     run(filter, { target: () => A, duration: 1000, sigma: 20 })

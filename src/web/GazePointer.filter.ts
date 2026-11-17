@@ -5,7 +5,8 @@ export type GazeFilterPoint = { x: number; y: number }
 export type GazeFilterOptions = {
   /**
    * Time constant of the exponential moving average, in milliseconds: the time the output takes to cover 63 % of a
-   * shift too small to be a saccade. Higher is steadier and slower. Default: 150
+   * shift too small to be a saccade. Higher is steadier and slower. 0 turns the averaging off: each accepted sample is
+   * the output. Default: 150
    */
   timeConstant?: number
   /**
@@ -25,7 +26,7 @@ export type GazeFilterOptions = {
   noise?: number
   /**
    * Time constant of the noise estimate, in milliseconds: how much of the recent signal the estimate remembers.
-   * Unused when `noise` is set. Default: 1000
+   * 0 turns the averaging off: the estimate is the latest distance alone. Unused when `noise` is set. Default: 1000
    */
   noiseTimeConstant?: number
 }
@@ -79,8 +80,13 @@ type Noise = {
  *
  * `1 - exp(-elapsed / timeConstant)` is the exponential part. While the average holds fewer samples than that weight
  * accounts for, `1 / count` is used instead, which makes the start a plain mean: the first sample is not over-weighted.
+ *
+ * A time constant that is not a positive finite number means no memory: the weight is 1, whatever the time elapsed.
  */
 function weight(elapsed: number, timeConstant: number, count: number) {
+  const hasMemory = Number.isFinite(timeConstant) && timeConstant > 0
+  if (!hasMemory) return 1
+
   const exponential = 1 - Math.exp(-Math.max(0, elapsed) / timeConstant)
   return Math.max(exponential, 1 / count)
 }

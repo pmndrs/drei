@@ -176,6 +176,81 @@ describe('the gaze point and the pick', () => {
   })
 })
 
+describe('a detection seen twice', () => {
+  // The component feeds the core on every rendered frame with the latest detection: at 60 frames per second and a
+  // 30 Hz webcam, every detection object comes twice.
+
+  /** A second of fixation on a at 30 Hz, then `next` detections fed in a row, half a 30 Hz period apart. */
+  function fixateThenFeed(next: GazeDetection[]) {
+    const core = createCore()
+    const { pick, calls } = createPick([a, b])
+    run(core, pick, { gaze: () => centerOf(a), to: 1000 })
+
+    const frames = next.map((detection, index) => core.update(detection, 1000 + (index * 1000) / 60, pick))
+    return { core, pick, calls, frames }
+  }
+
+  it('does not take the repeat of an outlier for the confirmation of a saccade', () => {
+    const outlier = look(centerOf(b))
+    const { core, pick, calls, frames } = fixateThenFeed([outlier, outlier])
+
+    // the point is held on a, where the pick function is still asked, and a stays the target
+    for (const frame of frames) {
+      expect(frame.point!.x).toBeCloseTo(centerOf(a).x, 3)
+      expect(frame.point!.y).toBeCloseTo(centerOf(a).y, 3)
+      expect(frame.target).toBe(a)
+    }
+    expect(calls.slice(-2).map((call) => call.target)).toEqual([a, a])
+
+    // back on a: the outlier is dropped
+    const back = core.update(look(centerOf(a)), 1000 + 2000 / 60, pick)
+    expect(back.point!.x).toBeCloseTo(centerOf(a).x, 3)
+    expect(back.target).toBe(a)
+  })
+
+  it('still jumps on a real saccade: two distinct detections at the new place', () => {
+    const { frames } = fixateThenFeed([look(centerOf(b)), look(centerOf(b))])
+
+    expect(frames[0].point!.x).toBeCloseTo(centerOf(a).x, 3)
+    expect(frames[1].point!.x).toBeCloseTo(centerOf(b).x, 3)
+  })
+
+  it('gives the same point at 60 frames per second, each detection twice, as at 30 without repeats', () => {
+    // a noisy fixation on a with one outlier, then a saccade to b
+    const detections = Array.from({ length: 90 }, (_, index) => {
+      if (index === 20) return look(centerOf(b))
+      return look(centerOf(index < 45 ? a : b), 0.5, index + 1)
+    })
+    const period = 1000 / 30
+
+    const once = createCore()
+    const twice = createCore()
+    const { pick } = createPick([a, b])
+
+    detections.forEach((detection, index) => {
+      const expected = once.update(detection, index * period, pick).point!
+      const first = twice.update(detection, index * period, pick).point!
+      const repeat = twice.update(detection, (index + 0.5) * period, pick).point!
+
+      expect(first.x).toBeCloseTo(expected.x, 9)
+      expect(first.y).toBeCloseTo(expected.y, 9)
+      expect(repeat).toEqual(first)
+    })
+  })
+
+  it('forgets the detection when disabled: the same one starts afresh once enabled again', () => {
+    const core = createCore()
+    const { pick } = createPick([a, b])
+    const detection = look(centerOf(a))
+
+    core.update(detection, 0, pick)
+    core.disable()
+    core.enable()
+
+    expect(core.update(detection, 100, pick).point!.x).toBeCloseTo(centerOf(a).x, 3)
+  })
+})
+
 describe('target election', () => {
   it('elects the target the user keeps looking at, then moves on it every frame', () => {
     const core = createCore()

@@ -352,7 +352,7 @@ export function gazeRay(
  * Intersects a gaze ray with the plane of the physical screen.
  *
  * The point is not limited to the surface of the screen: it can have negative coordinates or exceed the size of the
- * screen. Use `gazeToScreen` to get `null` in that case.
+ * screen. Use `gazeRayOnScreen` or `gazeToScreen` to get `null` in that case.
  *
  * @param ray A gaze ray in the webcam frame, as returned by `gazeRay`.
  * @param calibration A partial calibration; absent fields fall back to their priors.
@@ -398,6 +398,29 @@ export function gazeRayToScreen(
 }
 
 /**
+ * Where a gaze ray hits the physical screen: `gazeRayToScreen`, limited to the surface of the screen.
+ *
+ * @param ray A gaze ray in the webcam frame, as returned by `gazeRay`.
+ * @param calibration A partial calibration; absent fields fall back to their priors.
+ * @param options Only `screen` is read.
+ * @returns The point in screen pixels with its distance to the eyes in centimetres, or `null` when the ray misses
+ * the screen.
+ */
+export function gazeRayOnScreen(
+  ray: GazeRay,
+  calibration?: GazeCalibration,
+  options: GazeModelOptions = {}
+): GazeScreenPoint | null {
+  const screen = options.screen ?? getGazeScreen()
+
+  const point = gazeRayToScreen(ray, calibration, { ...options, screen })
+  if (!point) return null
+
+  const inside = point.x >= 0 && point.x <= screen.width && point.y >= 0 && point.y <= screen.height
+  return inside ? point : null
+}
+
+/**
  * Where on the physical screen the user is looking.
  *
  * @param detection A raw MediaPipe detection result.
@@ -412,16 +435,10 @@ export function gazeToScreen(
   calibration?: GazeCalibration,
   options: GazeModelOptions = {}
 ): GazeScreenPoint | null {
-  const screen = options.screen ?? getGazeScreen()
-
   const ray = gazeRay(detection, calibration, options)
   if (!ray) return null
 
-  const point = gazeRayToScreen(ray, calibration, { ...options, screen })
-  if (!point) return null
-
-  const inside = point.x >= 0 && point.x <= screen.width && point.y >= 0 && point.y <= screen.height
-  return inside ? point : null
+  return gazeRayOnScreen(ray, calibration, options)
 }
 
 /**

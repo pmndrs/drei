@@ -27,6 +27,16 @@
 // Time is in milliseconds and comes from the caller: the vote window, the blink grace and the dwell are durations
 // over the timestamps, not frame counts, so the behaviour does not depend on the frame rate.
 //
+// A detection seen twice
+// ----------------------
+//
+// The core is fed once per rendered frame with the latest detection, and the screen is often faster than the webcam:
+// at 60 frames per second and 30 Hz, every detection comes twice. A detection that is the very same object as the one
+// of the previous frame is not a new sample of the gaze: it does not go through the filter again, and the frame reuses
+// the signal and the filtered point of the previous one. Otherwise the repeat of an outlier would pass for the second
+// sample that confirms a saccade. The rest of the frame runs as usual: the pick (the scene may have moved), the vote,
+// the blink grace, the dwell, the events.
+//
 // Click and dwell
 // ---------------
 //
@@ -51,7 +61,7 @@ import { createGazeFilter, type GazeFilter, type GazeFilterOptions, type GazeFil
 import {
   gazeDegreesToPixels,
   gazeRay,
-  gazeToScreen,
+  gazeRayOnScreen,
   type GazeCalibration,
   type GazeDetection,
   type GazeEyeSignal,
@@ -168,7 +178,9 @@ export type GazePointerFrame<Target, Hit = undefined> = {
 /** A pointer core, as returned by `createGazePointerCore`. */
 export type GazePointerCore<Target, Hit = undefined> = {
   /**
-   * Feeds one frame. Call it once per rendered frame, with the latest detection.
+   * Feeds one frame. Call it once per rendered frame with the latest detection; a detection already seen is not
+   * filtered twice: when it is the same object as in the previous frame, the frame keeps the filtered point of that
+   * frame, and still picks, votes and emits.
    *
    * @param detection The latest raw MediaPipe detection, or `undefined` when there is none.
    * @param time Timestamp of the frame, in milliseconds. It must not go backwards.
@@ -287,6 +299,9 @@ export function createGazePointerCore<Target, Hit = undefined>(
   let hit: Hit | undefined = undefined
   /** The filtered gaze point of the latest frame. */
   let point: GazeFilterPoint | null = null
+  /** The detection of the latest frame and what it said about the gaze: the same object is not filtered twice. */
+  let lastDetection: GazeDetection | undefined = undefined
+  let lastSignal: Signal = 'none'
   /** The votes of the sliding window, oldest first. */
   let votes: Vote<Target, Hit>[] = []
   /** Timestamp of the latest frame that had a signal, `null` before the first one. */
@@ -318,11 +333,11 @@ export function createGazePointerCore<Target, Hit = undefined>(
   function readSignal(detection: GazeDetection | undefined): Signal {
     if (!detection || eyesClosed(detection)) return 'none'
 
-    const onScreen = gazeToScreen(detection, options.calibration, modelOptions())
-    if (onScreen) return onScreen
+    const ray = gazeRay(detection, options.calibration, modelOptions())
+    if (!ray) return 'none'
 
-    // No point: either the model has a gaze that misses the screen, or it has no gaze at all.
-    return gazeRay(detection, options.calibration, modelOptions()) ? 'away' : 'none'
+    // A gaze that misses the screen is looking away.
+    return gazeRayOnScreen(ray, options.calibration, modelOptions()) ?? 'away'
   }
 
   /** Releases the current target, if any, with a leave. */
@@ -383,12 +398,17 @@ export function createGazePointerCore<Target, Hit = undefined>(
     if (!enabled) return { point: null, target: null, radius: 0, dwellProgress: null, events }
     lastFrameTime = time
 
-    const signal = readSignal(detection)
+    // The same detection object as in the previous frame is not a new sample: its signal and the filtered point of
+    // that frame are reused, and the filter is not fed.
+    const repeated = detection !== undefined && detection === lastDetection
+    const signal = repeated ? lastSignal : readSignal(detection)
+    lastDetection = detection
+    lastSignal = signal
 
     if (signal === 'none') {
       // Nothing is known about the gaze: no point, no vote. The target is frozen until the grace delay is over;
       // then it is released, and the election starts afresh when the signal comes back.
-      point = filter.update(null, time)
+      if (!repeated) point = filter.update(null, time)
       const blinkGrace = options.blinkGrace ?? GazePointerCoreDefaults.blinkGrace
       if (lastSignalTime === null || time - lastSignalTime >= blinkGrace) {
         release(events)
@@ -402,7 +422,7 @@ export function createGazePointerCore<Target, Hit = undefined>(
     // The candidate of the frame. A gaze that misses the screen has no point, and votes for "no candidate".
     let candidate: GazePointerCandidate<Target, Hit> | null = null
     let radius = 0
-    point = filter.update(signal === 'away' ? null : { x: signal.x, y: signal.y }, time)
+    if (!repeated) point = filter.update(signal === 'away' ? null : { x: signal.x, y: signal.y }, time)
     if (signal !== 'away' && point !== null) {
       const tolerance = resolveGazeTolerance(options.tolerance, options.calibration)
       radius = gazeDegreesToPixels(tolerance, signal.distance, options.calibration, modelOptions())
@@ -447,6 +467,8 @@ export function createGazePointerCore<Target, Hit = undefined>(
     release(events)
     enabled = false
     point = null
+    lastDetection = undefined
+    lastSignal = 'none'
     votes = []
     lastSignalTime = null
     lastFrameTime = null

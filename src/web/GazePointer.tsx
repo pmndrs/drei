@@ -83,7 +83,10 @@ export type GazePointerProps = {
   filter?: GazeFilterOptions
   /** Shows the gaze point, the tolerance disc and the elected target over the Canvas. Default: false */
   debug?: boolean
-  /** Called when the dwell progress of the elected target changes. Needs `dwell`. */
+  /**
+   * Called when the dwell progress of the elected target changes. Needs `dwell`. It is not called when the target is
+   * released: reset your feedback from the `onPointerOut` of the target.
+   */
   onDwellProgress?: (event: GazePointerDwellEvent) => void
 }
 
@@ -166,8 +169,9 @@ const captureTarget = /* @__PURE__ */ Object.freeze({
  * A mesh with `onPointerOver`, `onPointerOut`, `onPointerMove`, `onPointerDown`, `onPointerUp` or `onClick` reacts
  * to the gaze, with no new handler.
  *
- * It uses the `FaceTracking` above it when there is one, and otherwise opens the webcam for itself. Without a webcam
- * (refused, missing) or without a face, the pointer is inactive and nothing is thrown.
+ * It uses the `FaceTracking` above it when there is one, and otherwise opens the webcam for itself. Without a face, or
+ * without a webcam (refused, missing) when it opens it itself, the pointer is inactive and nothing is thrown; under a
+ * `FaceTracking`, a webcam error is thrown by that provider.
  *
  * Pre-requisite: wrap into a `FaceLandmarker` provider:
  *
@@ -415,7 +419,12 @@ const GazePointerImpl = /* @__PURE__ */ forwardRef<GazePointerApi, GazePointerIm
     //
 
     useEffect(() => {
-      if (!enabled) return
+      if (!enabled) {
+        // A core is created enabled: a pointer mounted with `enabled={false}` has to be told. After the cleanup
+        // below, which has already disabled it, this emits nothing.
+        emit(core.disable())
+        return
+      }
 
       const { events, internal } = get()
       const previous = {

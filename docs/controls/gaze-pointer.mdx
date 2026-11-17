@@ -62,7 +62,10 @@ export type GazePointerProps = {
   filter?: GazeFilterOptions
   /** Shows the gaze point, the tolerance disc and the elected target over the Canvas. Default: false */
   debug?: boolean
-  /** Called when the dwell progress of the elected target changes. Needs `dwell`. */
+  /**
+   * Called when the dwell progress of the elected target changes. Needs `dwell`. It is not called when the target is
+   * released: reset your feedback from the `onPointerOut` of the target.
+   */
   onDwellProgress?: (event: GazePointerDwellEvent) => void
 }
 
@@ -372,14 +375,14 @@ useEffect(() => {
 
 `dwell` clicks by looking: a target elected for that many milliseconds is clicked, once. It has to be left before it can be dwell-clicked again. It is off by default.
 
-`onDwellProgress` reports the progress on the current target, from 0 to 1, for you to draw the feedback. It stays at 1 after the click, until the target is left.
+`onDwellProgress` reports the progress on the current target, from 0 to 1, for you to draw the feedback. It stays at 1 after the click, until the target is left. It is not called when the target is released: reset your feedback in the `onPointerOut` of the target.
 
 ```tsx
 const [dwell, setDwell] = useState<GazePointerDwellEvent | null>(null)
 
 <GazePointer dwell={1000} onDwellProgress={setDwell} />
 
-<mesh ref={buttonRef} onClick={activate}>
+<mesh ref={buttonRef} onClick={activate} onPointerOut={() => setDwell(null)}>
   <planeGeometry args={[2, 1]} />
   <meshBasicMaterial color={dwell?.object === buttonRef.current ? 'orange' : 'gray'} />
 </mesh>

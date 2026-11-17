@@ -8,6 +8,7 @@ import {
   gazeEyeAngles,
   gazePixelsToDegrees,
   gazeRay,
+  gazeRayOnScreen,
   gazeRayToScreen,
   gazeToScreen,
   getGazeScreen,
@@ -518,6 +519,36 @@ describe('when the model cannot tell', () => {
     expect(ray).not.toBeNull()
     expect(gazeRayToScreen(ray!, calibration, { screen })).toBeNull()
     expect(gazeToScreen({ ...detection(), facialTransformationMatrixes: [away] }, calibration, { screen })).toBeNull()
+  })
+})
+
+describe('gazeRayOnScreen', () => {
+  it('gives the point of the screen a ray hits, with its distance to the eyes', () => {
+    // straight ahead from the eyes: 10 cm below the webcam, in the middle of the width, 50 cm away
+    const point = gazeRayOnScreen({ origin: eyes, direction: [0, 0, 1] }, calibration, { screen })
+
+    expect(point?.x).toBeCloseTo(800, 6)
+    expect(point?.y).toBeCloseTo(400, 6)
+    expect(point?.distance).toBeCloseTo(50, 6)
+  })
+
+  it('is null when the ray hits the plane of the screen outside the screen', () => {
+    // far to the right of the user: 66.7 cm from the middle of a screen 40 cm wide
+    const ray = { origin: eyes, direction: [-0.8, 0, 0.6] } as const
+
+    expect(gazeRayToScreen(ray, calibration, { screen })?.x).toBeGreaterThan(screen.width)
+    expect(gazeRayOnScreen(ray, calibration, { screen })).toBeNull()
+  })
+
+  it('is null when the ray does not go towards the screen', () => {
+    expect(gazeRayOnScreen({ origin: eyes, direction: [0, 0, -1] }, calibration, { screen })).toBeNull()
+  })
+
+  it('is what `gazeToScreen` returns for the ray of a detection', () => {
+    const looking = detection({ eyeLookOutLeft: 0.2, eyeLookInRight: 0.2 })
+    const ray = gazeRay(looking, calibration, { screen })!
+
+    expect(gazeRayOnScreen(ray, calibration, { screen })).toEqual(gazeToScreen(looking, calibration, { screen }))
   })
 })
 

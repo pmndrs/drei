@@ -20,6 +20,7 @@ export * from './WebcamVideoTexture'
 
 // Controls
 export * from './FaceControls'
+export * from './GazePointer'
 export { DragControls } from './DragControls'
 
 // Misc

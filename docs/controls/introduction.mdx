@@ -18,6 +18,8 @@ Drei currently exports `OrbitControls` <Badge href="https://drei.vercel.app/?pat
 
 Some controls drive an object, not a camera, eg: `PresentationControls`.
 
+`GazePointer` <Badge href="https://drei.vercel.app/?path=/story/controls-gazepointer" color="storybook" logo="storybook">storybook</Badge> drives neither: it makes the gaze the pointer source of the Canvas events.
+
 But all controls involving a camera, react to the default one. If you have a `<PerspectiveCamera makeDefault />` in your scene, they will control it. If you need to inject an imperative camera or one that isn't the default, use the `camera` prop: `<OrbitControls camera={MyCamera} />`.
 
 

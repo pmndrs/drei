@@ -67,6 +67,7 @@ https://pmndrs.github.io/drei
           <li><a href="#presentationcontrols">PresentationControls</a></li>
           <li><a href="#keyboardcontrols">KeyboardControls</a></li>
           <li><a href="#FaceControls">FaceControls</a></li>
+          <li><a href="#gazepointer">GazePointer</a></li>
           <li><a href="#motionpathcontrols">MotionPathControls</a></li>
         </ul>
         <li><a href="#gizmos">Gizmos</a></li>
@@ -288,6 +289,10 @@ https://pmndrs.github.io/drei
 #### FaceControls
 
 [Documentation has moved here](https://pmndrs.github.io/drei/controls/face-controls)
+
+#### GazePointer
+
+[Documentation has moved here](https://pmndrs.github.io/drei/controls/gaze-pointer)
 
 #### MotionPathControls
 

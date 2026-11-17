@@ -1,0 +1,439 @@
+---
+title: GazePointer
+sourcecode: src/web/GazePointer.tsx
+---
+
+<Badge href="https://drei.vercel.app/?path=/story/controls-gazepointer" color="storybook" logo="storybook">storybook</Badge>
+
+<Intro>
+  A pointer driven by the gaze: the mesh you look at is hovered, and can be clicked.
+</Intro>
+
+Prerequisite: wrap into a [`FaceLandmarker`](https://drei.docs.pmnd.rs/misc/face-landmarker) provider
+
+```tsx
+<FaceLandmarker>...</FaceLandmarker>
+```
+
+```tsx
+<GazePointer dwell={1000} />
+
+<mesh
+  onPointerOver={() => setHovered(true)}
+  onPointerOut={() => setHovered(false)}
+  onClick={() => console.log('clicked')}
+>
+  <boxGeometry />
+</mesh>
+```
+
+`GazePointer` turns where the user looks into the pointer source of the r3f events of its Canvas. A mesh with `onPointerOver`, `onPointerOut`, `onPointerMove`, `onPointerDown`, `onPointerUp` or `onClick` reacts to the gaze, with no new handler. It renders nothing, shows no cursor (see `debug`) and has no children.
+
+The gaze picks one target among large ones, it does not point at a pixel: expect an accuracy of a few degrees. See [Designing targets](#designing-targets) and [Limits](#limits) before building a scene on it.
+
+It is not a camera control: it has no `makeDefault` and leaves r3f's `controls` alone.
+
+```tsx
+export type GazePointerProps = {
+  /**
+   * Whether the gaze drives the pointer events of the Canvas. While it does, the mouse and touch do not hover or
+   * click in the Canvas. `false` hands the events back to them and releases the hovered target. Default: true
+   */
+  enabled?: boolean
+  /**
+   * The calibration of the gaze model: a plain serialisable object, controlled. Every field is optional and falls
+   * back to its prior. Default: the priors alone (`GazePointerDefaults.desktop`)
+   */
+  calibration?: GazeCalibration
+  /**
+   * Tolerance of the election, in visual degrees: the half-angle of the cone around the gaze in which a target can
+   * be picked. Default: the residual error of the calibration with a floor of 2, or 4 without a residual
+   */
+  tolerance?: number
+  /** Dwell click: `false`, or how long a target has to be looked at before it is clicked, in ms. Default: false */
+  dwell?: false | number
+  /** How long the target survives a blink or a lost face, in ms. 0 releases it at once. Default: 300 */
+  blinkGrace?: number
+  /** Length of the vote window that steadies the election, in ms. Longer is steadier and slower. Default: 200 */
+  voteWindow?: number
+  /** Number of rays cast over the tolerance disc: the centre, then one or two rings. Default: 7 */
+  rays?: number
+  /** Settings of the gaze filter. Default: those of the filter */
+  filter?: GazeFilterOptions
+  /** Shows the gaze point, the tolerance disc and the elected target over the Canvas. Default: false */
+  debug?: boolean
+  /** Called when the dwell progress of the elected target changes. Needs `dwell`. */
+  onDwellProgress?: (event: GazePointerDwellEvent) => void
+}
+
+export type GazePointerDwellEvent = {
+  /** The elected target the dwell is running on. */
+  object: THREE.Object3D
+  /** From 0 (just elected) to 1 (clicked by the dwell). It stays at 1 until the target is released. */
+  progress: number
+}
+
+export type GazeFilterOptions = {
+  /**
+   * Time constant of the exponential moving average, in milliseconds: the time the output takes to cover 63 % of a
+   * shift too small to be a saccade. Higher is steadier and slower. Default: 150
+   */
+  timeConstant?: number
+  /**
+   * A sample farther from the mean of the current fixation than `noiseMultiplier` times the noise is a saccade
+   * candidate. Lower restarts on smaller eye movements, at the risk of restarting on noise. Default: 3
+   */
+  noiseMultiplier?: number
+  /**
+   * Floor of the saccade threshold, in pixels: whatever the noise, a move shorter than this is never a saccade.
+   * Default: 40
+   */
+  minThreshold?: number
+  /**
+   * Noise of the signal, in pixels: the root mean square distance of the raw points to the point being looked at.
+   * When set, it replaces the estimate the filter makes on its own. Default: undefined (estimated)
+   */
+  noise?: number
+  /**
+   * Time constant of the noise estimate, in milliseconds: how much of the recent signal the estimate remembers.
+   * Unused when `noise` is set. Default: 1000
+   */
+  noiseTimeConstant?: number
+}
+```
+
+Ref-api:
+
+```tsx
+const gazePointerRef = useRef<GazePointerApi>(null)
+
+<GazePointer ref={gazePointerRef} />
+```
+
+```tsx
+export type GazePointerApi = {
+  /**
+   * Clicks the elected target: pointer down, pointer up, click. Does nothing without a target.
+   * Call it from a key press, a voice command, a pinch.
+   */
+  click: () => void
+  /**
+   * Records one calibration sample: the user is looking at `target`, a point in screen pixels (see
+   * `gazeClientToScreen` to get one from a point of the page). The detections of the last half second are averaged.
+   * @returns Whether a sample was recorded: `false` when there was no face in that window.
+   */
+  addSample: (target: GazePoint) => boolean
+  /**
+   * Solves the recorded samples, starting from the current `calibration`.
+   * @returns The calibration to pass as the `calibration` prop, with its `residual` error in visual degrees, or
+   * `null` when the samples cannot be solved (fewer than five, or not spread over the screen).
+   */
+  solve: () => ResolvedGazeCalibration | null
+  /** Forgets the recorded samples. */
+  clearSamples: () => void
+  /** The filtered gaze point in screen pixels, `null` without a signal. Live: read it in the frame loop. */
+  readonly point: GazePoint | null
+  /** The elected object, or `null`. Live: read it in the frame loop. */
+  readonly target: THREE.Object3D | null
+}
+
+/** A point in pixels, in the screen frame or in the client frame. */
+export type GazePoint = { x: number; y: number }
+```
+
+## Usage
+
+### Alone
+
+Without a [`FaceTracking`](https://drei.docs.pmnd.rs/misc/face-tracking) above it, `GazePointer` opens the webcam and runs the face detection for itself.
+
+```tsx
+<Canvas>
+  <Suspense fallback={null}>
+    <FaceLandmarker>
+      <GazePointer />
+    </FaceLandmarker>
+  </Suspense>
+
+  {/* your scene, with its usual pointer handlers */}
+</Canvas>
+```
+
+Without a webcam (refused, missing, or a page that is not served over https), or while no face is detected, the pointer is inactive: `point` is `null`, nothing is hovered and nothing is thrown.
+
+### With `FaceControls`
+
+Put both under one [`FaceTracking`](https://drei.docs.pmnd.rs/misc/face-tracking): they share one webcam and one detection.
+
+```tsx
+<FaceLandmarker>
+  <FaceTracking>
+    <FaceControls />
+    <GazePointer />
+  </FaceTracking>
+</FaceLandmarker>
+```
+
+Under an explicit `FaceTracking`, the webcam belongs to the provider: a refused webcam throws from it, as it does for `FaceControls`.
+
+### With a calibration
+
+The gaze is computed by a geometric model: a ray from the eyes, intersected with the plane of the physical screen. What the model needs to know about the screen, the webcam and the user is the `calibration`, a plain object where every field is optional and falls back to a prior.
+
+With no `calibration`, the priors of `GazePointerDefaults.desktop` apply: a webcam about 1 cm above the middle of the top edge of the screen, and a screen of about 40 CSS pixels per centimetre. `GazePointerDefaults.mobile` is the other preset: a phone held in portrait, front camera in the middle of the top edge, about 60 CSS pixels per centimetre.
+
+```tsx
+<GazePointer calibration={GazePointerDefaults.mobile} />
+```
+
+State what you know by hand, the rest stays at the priors. Here, a 34.5 × 19.4 cm screen with the webcam 1 cm below the middle of its bottom edge:
+
+```tsx
+const calibration: GazeCalibration = {
+  screen: { width: 34.5, height: 19.4, offset: [0, 19.4 + 1, 0] },
+}
+
+<GazePointer calibration={calibration} />
+```
+
+A preset is itself a valid calibration, so it can be spread under your own values:
+
+```tsx
+const calibration: GazeCalibration = {
+  ...GazePointerDefaults.mobile,
+  screen: { ...GazePointerDefaults.mobile.screen, width: 7, height: 15 },
+}
+```
+
+```tsx
+export type GazeCalibration = {
+  /** The physical screen, relative to the webcam. */
+  screen?: {
+    /** Width of the screen in centimetres. Prior: its width in CSS pixels divided by `density`. */
+    width?: number
+    /** Height of the screen in centimetres. Prior: its height in CSS pixels divided by `density`. */
+    height?: number
+    /**
+     * Position of the middle of the top edge of the screen, in centimetres, in the webcam frame (+x to the left of
+     * the user, +y up, +z away from the user, behind the webcam).
+     * `[0, 0, 0]` is a webcam sitting exactly on the middle of the top edge; `[0, height, 0]` a webcam on the middle
+     * of the bottom edge.
+     */
+    offset?: readonly [x: number, y: number, z: number]
+    /**
+     * How much the webcam is pitched down towards the user relative to the screen, in degrees. Zero when the webcam
+     * looks along the normal of the screen, which is the case of a webcam built into the screen.
+     */
+    tilt?: number
+    /**
+     * CSS pixels per centimetre, used only to estimate `width` and `height` when they are absent.
+     * Not part of a solved calibration, which states both.
+     */
+    density?: number
+  }
+  /** The webcam. */
+  webcam?: {
+    /**
+     * Vertical field of view of the video, in degrees. MediaPipe assumes 63: with another value the distance of the
+     * head is rescaled accordingly.
+     */
+    fov?: number
+  }
+  /** Per-user correction of the eye angles: `corrected = raw * gain + offset`. */
+  eyes?: {
+    /** Unitless factors applied to the yaw and to the pitch. */
+    gain?: readonly [yaw: number, pitch: number]
+    /** Degrees added to the yaw and to the pitch. */
+    offset?: readonly [yaw: number, pitch: number]
+  }
+  /** Residual error in visual degrees, present when the calibration was produced by a solver. */
+  residual?: number
+}
+```
+
+## Calibrating
+
+The pointer works before any calibration, with a lower accuracy. A calibration fits it to the user: they look at a few known points of the screen, and the solver returns a `calibration`.
+
+The library ships the logic only. The calibration screen (which points, when to record, what to show) and the storage of the result belong to your app:
+
+- `addSample(target)` records that the user is looking at `target`, a point in screen pixels. It averages the detections of the last half second, so call it once the user has settled on the point.
+- `solve()` returns the calibration, or `null` when the samples cannot be solved. It needs at least five samples, spread over the screen.
+- `clearSamples()` forgets the samples.
+
+The gaze point and the samples are in the frame of the physical screen, not of the page, so that a calibration survives moving or resizing the window. `gazeClientToScreen` and `gazeScreenToClient` convert between the page (the frame of `getBoundingClientRect()`) and the screen, given `getGazeViewport()`, the position of the page on the screen.
+
+A minimal calibration screen: five dots shown one at a time, the space bar records the current one.
+
+```tsx
+/** Where the dots are, as fractions of the page */
+const DOTS = [
+  [0.5, 0.5],
+  [0.1, 0.1],
+  [0.9, 0.1],
+  [0.1, 0.9],
+  [0.9, 0.9],
+]
+
+function App() {
+  const gazePointerRef = useRef<GazePointerApi>(null)
+
+  // the storage is yours: here, localStorage
+  const [calibration, setCalibration] = useState<GazeCalibration | undefined>(() => {
+    const stored = localStorage.getItem('gaze-calibration')
+    return stored ? JSON.parse(stored) : undefined
+  })
+
+  /** Index of the dot being shown, `null` when not calibrating */
+  const [step, setStep] = useState<number | null>(null)
+
+  useEffect(() => {
+    if (step === null) return
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      const gazePointer = gazePointerRef.current
+      if (event.code !== 'Space' || !gazePointer) return
+
+      // the dot, from the page to the screen
+      const [u, v] = DOTS[step]
+      const dot = { x: u * window.innerWidth, y: v * window.innerHeight }
+      const recorded = gazePointer.addSample(gazeClientToScreen(dot, getGazeViewport()))
+      if (!recorded) return // no face in the last half second: stay on this dot
+
+      if (step < DOTS.length - 1) return setStep(step + 1)
+
+      const solved = gazePointer.solve()
+      if (solved) {
+        setCalibration(solved)
+        localStorage.setItem('gaze-calibration', JSON.stringify(solved))
+      }
+      gazePointer.clearSamples()
+      setStep(null)
+    }
+
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [step])
+
+  return (
+    <>
+      <Canvas>
+        <Suspense fallback={null}>
+          <FaceLandmarker>
+            <GazePointer ref={gazePointerRef} calibration={calibration} />
+          </FaceLandmarker>
+        </Suspense>
+        {/* your scene */}
+      </Canvas>
+
+      <button onClick={() => setStep(0)}>Calibrate</button>
+      {step !== null && (
+        <div
+          style={{
+            position: 'fixed',
+            left: `${DOTS[step][0] * 100}%`,
+            top: `${DOTS[step][1] * 100}%`,
+            width: 16,
+            height: 16,
+            margin: -8,
+            borderRadius: '50%',
+            background: 'red',
+          }}
+        />
+      )}
+    </>
+  )
+}
+```
+
+The solved calibration carries `residual`, its error on the calibration points in visual degrees: use it to ask the user to recalibrate when it is poor. It also sets the default `tolerance`: the residual, with a floor of 2 degrees.
+
+What a calibration does and does not do:
+
+- Taken from one head position, as above, it corrects the eyes only (`eyes.gain` and `eyes.offset`). The geometry of the screen cannot be told apart from the eye correction from a single position: `screen` and `webcam` stay at the priors, or at the values of the `calibration` prop at the time of `solve()`.
+- So when the real geometry differs from those values, the accuracy drops as the user moves away from where they calibrated, and the `residual` does not show it. If you know the size of the screen or the place of the webcam, pass them.
+- It is valid for the screen it was made on.
+- The position of the page on the screen is estimated from the size of the browser window. The estimate is exact in fullscreen, and wrong with docked devtools, a side panel or a page zoom.
+
+## Click and dwell
+
+A click is a neutral trigger. `click()` emits pointer down, pointer up and click on the elected target, and does nothing when there is none. Call it from whatever your app has: a key, a voice command, a switch.
+
+```tsx
+useEffect(() => {
+  const onKeyDown = (event: KeyboardEvent) => {
+    if (event.code === 'Space') gazePointerRef.current?.click()
+  }
+
+  window.addEventListener('keydown', onKeyDown)
+  return () => window.removeEventListener('keydown', onKeyDown)
+}, [])
+```
+
+`dwell` clicks by looking: a target elected for that many milliseconds is clicked, once. It has to be left before it can be dwell-clicked again. It is off by default.
+
+`onDwellProgress` reports the progress on the current target, from 0 to 1, for you to draw the feedback. It stays at 1 after the click, until the target is left.
+
+```tsx
+const [dwell, setDwell] = useState<GazePointerDwellEvent | null>(null)
+
+<GazePointer dwell={1000} onDwellProgress={setDwell} />
+
+<mesh ref={buttonRef} onClick={activate}>
+  <planeGeometry args={[2, 1]} />
+  <meshBasicMaterial color={dwell?.object === buttonRef.current ? 'orange' : 'gray'} />
+</mesh>
+```
+
+There is no press and hold and no drag. An app that uses both `click()` and `dwell` can get two activations close together on one target: guard against it if it matters.
+
+## How a target is elected
+
+- The `tolerance` is a cone around the gaze, in visual degrees of the user. On the screen it is a disc, larger when the user is farther away, sampled by `rays` rays cast from the camera. The interactive object hit closest to the centre is the candidate of the frame.
+- Each ray stops at the first interactive object, so a target hidden behind another one is never elected and gets no event. A mesh without handlers does not hide what is behind it, as in r3f.
+- A target is an object with handlers: a hit on a child counts for its closest ancestor that has some. An instanced mesh is one target.
+- The target changes when a challenger wins a majority of the frames of the `voteWindow`. "Nothing" votes like any target, so leaving follows the same rule. The first election and every change take about half the window.
+- A blink or a lost face freezes the target for `blinkGrace`. Beyond it, or when the gaze leaves the screen, the target is released: `onPointerOut` fires and the dwell is cancelled.
+
+The events are real r3f events, with a real intersection (`point`, `uv`, `face`, `object`). Their native event is a `PointerEvent` whose `pointerType` is `'gaze'`.
+
+To draw your own cursor, read `point` in the frame loop and bring it back to the page:
+
+```tsx
+useFrame(() => {
+  const point = gazePointerRef.current?.point
+  if (!point) return
+
+  const { x, y } = gazeScreenToClient(point, getGazeViewport())
+  cursor.style.transform = `translate(${x}px, ${y}px)`
+})
+```
+
+## Designing targets
+
+Design for the gaze as for a coarse pointer: few, large, well separated targets.
+
+Published guidance for headsets, which have dedicated eye trackers:
+
+- Meta: targets of at least 3 degrees, separated by at least 1 degree ([Eyes best practices](https://developers.meta.com/vr/design/eyes-best-practices/)). Its [gaze specifications](https://developers.meta.com/vr/design/gaze_specs/) describe a 2 degree cone, a 0.2 second window and a majority vote, which is what `tolerance`, `voteWindow` and the election above implement.
+- Apple: the centres of interactive items at least 60 points apart on visionOS ([Human Interface Guidelines, Eyes](https://developer.apple.com/design/human-interface-guidelines/eyes)).
+
+An angle becomes a length on the screen with `size = 2 × distance × tan(angle / 2)`:
+
+| | Desktop, 60 cm away, 40 px/cm | Phone, 30 cm away, 60 px/cm |
+| --- | --- | --- |
+| Target of 3° | 2 × 60 × tan(1.5°) = 3.1 cm, about 125 px | 2 × 30 × tan(1.5°) = 1.6 cm, about 95 px |
+| Gap of 1° | 2 × 60 × tan(0.5°) = 1.0 cm, about 40 px | 2 × 30 × tan(0.5°) = 0.5 cm, about 30 px |
+
+The pixel densities are those of the presets; measure yours if it matters.
+
+Take these as a floor. A webcam is less accurate than a headset, and the nearest target to the estimated gaze is the right one only while the error stays under half the distance between two centres. With the default tolerance of 4 degrees as the error to plan for, that is centres 8 degrees apart: 2 × 60 × tan(4°) = 8.4 cm, about 335 px on a desktop, so five columns on a 1920 px wide screen. At 2 degrees, the best a calibration gives by default, it is 4.2 cm, about 170 px. This is a rule of thumb derived from the geometry, not a measurement.
+
+## Limits
+
+- **Accuracy**: a few degrees. The gaze picks among large targets; it cannot select small or packed ones.
+- **Provisional settings**: the eye signal (the `eyeLook*` blendshapes of MediaPipe) and the default settings (filter, tolerance, vote window) are reasoned, not yet tuned on real recordings. Expect them to change.
+- **Desktop first**: the target is a computer with a webcam at the top of the screen. A phone goes through the `mobile` preset, in portrait, and holds a few large targets: at 3 degrees a target is already about a quarter of the width of a 390 px wide screen.
+- **One screen, one face**: a calibration is anchored to one screen, and only the first detected face is used.
+- **Browser chrome**: outside fullscreen the position of the page on the screen is an estimate, see [Calibrating](#calibrating).
+- **Exclusive while enabled**: the mouse and touch do not drive the events of the Canvas, and r3f's `events.connected` is `undefined`. The DOM outside the Canvas is untouched. There is no arbitration between the mouse and the gaze: drive `enabled` yourself.

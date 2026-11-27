@@ -210,6 +210,17 @@ Controls use Three's built-in editors and support nested folders, colors, slider
 
 ### Bug Fixes
 
+#### `MeshTransmissionMaterial` no longer bundles a second copy of three's nodes (#2905)
+
+The WebGPU `MeshTransmissionMaterial` imported `PhysicalLightingModel` from
+`three/src/nodes/functions/PhysicalLightingModel.js`. three lists `./src/nodes/**/*` as having
+side effects, so bundlers kept that copy of the node code next to `three/webgpu`, even in apps that
+never use the material. It now imports the same class from `three/webgpu`. In a minimal Vite build
+next to `three/webgpu`, the deep import added 410 KB (86 KB gzip); the `three/webgpu` import adds
+nothing.
+
+**Files changed:** `src/webgpu/Materials/MeshTransmissionMaterial/MeshTransmissionMaterial.tsx`
+
 #### `Preload` now actually preloads on WebGPU (#2809)
 
 `Preload` called `gl.compile(scene, camera)` and assumed it was synchronous. On

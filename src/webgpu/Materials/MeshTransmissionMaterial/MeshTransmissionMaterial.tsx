@@ -13,7 +13,7 @@
  */
 
 import * as THREE from 'three/webgpu'
-import { MeshPhysicalNodeMaterial } from 'three/webgpu'
+import { MeshPhysicalNodeMaterial, PhysicalLightingModel } from 'three/webgpu'
 import {
   Fn,
   uniform,
@@ -56,8 +56,6 @@ import {
   screenUV,
 } from 'three/tsl'
 
-// Import the base lighting model and BRDF functions
-import PhysicalLightingModel from 'three/src/nodes/functions/PhysicalLightingModel.js'
 import { mx_fractal_noise_vec3 } from 'three/tsl'
 
 import * as React from 'react'
